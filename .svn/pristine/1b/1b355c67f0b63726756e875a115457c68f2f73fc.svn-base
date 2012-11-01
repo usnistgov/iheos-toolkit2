@@ -1,0 +1,85 @@
+xdstest2 testing tool change log
+
+Version 1.0 
+Oct 29, 2007
+Initial release
+
+Version 1.1
+
+Schema validation routines looked to localhost for schema file.  Change this so 
+it looks to Public Registry server for these files.
+
+Added command line arguments to log file.
+
+Repaired operation of test 11710. It was returning failure when it had been
+successful.
+
+Version 1.2
+
+Fixed operation of --prepare command line option.  The ProvideAndRegister transaction was ignoring this option.
+
+---------------------------------------------------------
+
+xdstest2 was generating XOP format (using mime attachments) even though only metadata was transported. This 
+has been fixed so that the message is a simple SOAP Envelope.
+
+Fixed the shared schema reference libraries so they reference schema files correctly both on the server (localhost)
+and within xdstest2 (network reference to server). 
+
+to be released as Version 1.13
+
+---------------------------------------------------------
+
+Above shared schema fix was wrong.  This time I was able to test it properly.
+
+released as version 1.14
+
+---------------------------------------------------------
+
+Problem running test 11982 where metadata is sent but normal document
+attachment is missing. Tool was sending header
+	Content-Type: type="text/xml"
+which is not valid http, although
+	Content-Length: multipart/related; boundary=MIMEBoundaryurn_uuid_30615C45AB8F5F79FF1200322399377; type="text/xml"
+is valid.  It has been corrected it to 
+	Content-Type: "text/xml"
+
+Fixed HTTP header for Provide and Register.a request.  It was missing a LF in
+the normal CRLF end of line markers. Specifically, the missing LF was on 
+the blank line separating the headers from the body.
+
+released as version 1.17
+---------------------------------------------------------
+
+New file in mgmt subdirectory, default.xml.  This file will hold all default parameter values in the future. For now
+it holds a new parameter, HomeCommunityId which is used by the new XCA tests.
+
+released as version 1.19
+---------------------------------------------------------
+
+Fixed WS:Action values generated (and accepted) for XCA transactions.
+
+released as version 1.20
+---------------------------------------------------------
+
+Enabled <SOAP11/> to be selected for Retrieve
+
+released as version 1.21
+---------------------------------------------------------
+
+SOAP11 result was not being passed on to the low level retrieve logic.
+
+released as version 1.22
+---------------------------------------------------------
+
+Schema validation from xdstest2 now references schemas on server on port 80. This helps
+with corporate firewalls.
+
+released as version 1.23
+---------------------------------------------------------
+
+Fixed validation of home attribute on XGQ transaction.
+
+Log file now shows SOAP with Attachments faults
+
+

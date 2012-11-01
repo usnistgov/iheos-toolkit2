@@ -1,0 +1,42 @@
+<!--  Social history status observation: 2.16.840.1.113883.10.20.1.56 -->
+
+<!-- Successful assertions -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.56-checks' see='#p-2.16.840.1.113883.10.20.1.56-checks'>
+	<title>Social history status observation - checks validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.56"]'>
+	<report test= "document('voc.xml')/systems/system[@codeSystemName='SNOMED CT'][@group='SocialHistoryStatusCode']/code[@value = current()/cda:value/@code]">CONF-248: Success.</report> 	
+	</rule>
+</pattern>
+
+<!-- errors -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.56-errors' see='#p-2.16.840.1.113883.10.20.1.56-errors'>
+	<title>Social history status observation - errors validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.56"]'>
+	<assert test= "document('voc.xml')/systems/system[@codeSystemName='SNOMED CT'][@group='SocialHistoryStatusCode']/code[@value = current()/cda:value/@code]">CONF-248: The value for "Observation / value" in a social history status observation SHALL be selected from ValueSet 2.16.840.1.113883.1.11.20.17 SocialHistoryStatusCode STATIC 20061017.</assert> 	
+	</rule>
+</pattern>
+
+<!-- warning -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.56-warning' see='#p-2.16.840.1.113883.10.20.1.56-warning'>
+	<title>Social history status observation - warning validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.56"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+
+<!-- manual -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.56-manual' see='#p-2.16.840.1.113883.10.20.1.56-manual'>
+	<title>Social history status observation - manual validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.56"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+

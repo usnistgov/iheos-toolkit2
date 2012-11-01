@@ -1,0 +1,14 @@
+
+<s:Envelope  
+    xmlns:s="http://www.w3.org/2003/05/soap-envelope"  
+    xmlns:a="http://www.w3.org/2005/08/addressing"> 
+    <s:Header> 
+        <a:Action s:mustUnderstand="1">urn:ihe:iti:2007:RegisterDocumentSet-bResponse</a:Action> 
+        <a:RelatesTo>urn:uuid:1ec52e14-4aad-4ba1-b7d3-fc9812a21340</a:RelatesTo> 
+    </s:Header> 
+    <s:Body> 
+        <rs:RegistryResponse  
+            status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"  
+            xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"/> 
+    </s:Body> 
+</s:Envelope> 

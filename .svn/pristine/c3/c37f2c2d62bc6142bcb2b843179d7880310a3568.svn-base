@@ -1,0 +1,24 @@
+<html>
+
+<head>
+<title>Actor Configuration Help</title>
+</head>
+
+<body>
+
+<h1>Actor Configuration Help</h1>
+
+<p>Use this page to edit the actors configuration (actor.xml file). You must have the 
+admin password to save your edits.
+
+<p>When editing a Repository, you must have a repositoryUniqueId before you save and it
+must be unique within the configuration file (all actors).
+
+<p>When editing a Responding Gateway, you must have a homeCommunityId before you save and it
+must be unique within the configuration file.
+
+</body>
+
+
+
+</html>

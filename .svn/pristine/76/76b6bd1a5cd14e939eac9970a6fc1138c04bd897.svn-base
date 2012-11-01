@@ -1,0 +1,33 @@
+<html>
+
+<head>
+<title>Source Stored Document Help</title>
+</head>
+
+<body>
+
+<h1>Source Stored Document Help</h1>
+
+<p>This tool is for grading the <b>XDS.b_Doc_Source_Stores_Document</b> connectathon test.
+
+<p>The test has an XDS Document Source submitting a single document to a Document Repository
+which in turn forwards the metadata to a Document Registry. The Document Source is required
+to log the XDSSubmissionSet.uniqueId to the Gazelle chat window as:
+<br />
+<br />
+SSID: 1.2.3.4.5
+
+<p>This tool:
+<ul>
+<li>Issues a GetSubmissionSetAndContents Stored Query (using the SSID) to the Registry. 
+<li>The metadata returned is fully validated.
+<li>Issues a Retrieve Document Set to the Repository to retrieve the document. 
+<li>The document is
+validated against the metadata (size, hash, mime type).
+</ul>
+
+</body>
+
+
+
+</html>

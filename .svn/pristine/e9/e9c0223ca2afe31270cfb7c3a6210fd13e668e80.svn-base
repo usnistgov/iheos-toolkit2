@@ -1,0 +1,60 @@
+<!--  Social history section: 2.16.840.1.113883.10.20.1.15 -->
+
+<!-- Successful assertions -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.15-checks' see='#p-2.16.840.1.113883.10.20.1.15-checks'>
+	<title>Social history section - checks validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.15"]'>
+	
+        <report test="self::cda:section">CCD Section 3.7: Success.</report>
+        <report test="cda:text">CONF-232: Success.</report>
+        <report test="cda:code">CONF-233: Success.</report>
+        <report test="cda:code[@code='29762-2'][@codeSystem='2.16.840.1.113883.6.1']">CONF-234: Success.</report>
+        <report test="cda:title">CONF-235: Success.</report>	
+
+
+        <report test="descendant::*[cda:templateId/@root='2.16.840.1.113883.10.20.1.33']">CONF-232: Success.</report>
+        <report test="contains(translate(cda:title,'QWERTYUIOPASDFGHJKLZXCVBNM','qwertyuiopasdfghjklzxcvbnm'),'social history')">CONF-236: Success.</report>
+	
+	
+	</rule>
+</pattern>
+
+
+<!-- errors -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.15-errors' see='#p-2.16.840.1.113883.10.20.1.15-errors'>
+	<title>Social history section - errors validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.15"]'>
+        <assert test="self::cda:section">CCD Section 3.7: The root of a Social history section shall be 'section' in the HL7 namespace.</assert>
+	<assert test="cda:text">CONF-232: The Social history section SHALL contain a narrative block.</assert>
+        <assert test="cda:code">CONF-233: The social history section SHALL contain Section / code.</assert>
+        <assert test="cda:code[@code='29762-2'][@codeSystem='2.16.840.1.113883.6.1']">CONF-234: The value for "Section / code" SHALL be "29762-2" "Social history" 2.16.840.1.113883.6.1 LOINC STATIC</assert>
+        <assert test="cda:title">CONF-235: The social history section SHALL contain Section / title.</assert>
+
+
+	</rule>
+</pattern>
+
+<!-- warning -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.15-warning' see='#p-2.16.840.1.113883.10.20.1.15-warning'>
+	<title>Social history section - warning validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.15"]'>
+	<assert test="descendant::*[cda:templateId/@root='2.16.840.1.113883.10.20.1.33']">CONF-232: The Social history section SHOULD include one or more social history observations (templateId 2.16.840.1.113883.10.20.1.33)</assert>
+	<assert test="contains(translate(cda:title,'QWERTYUIOPASDFGHJKLZXCVBNM','qwertyuiopasdfghjklzxcvbnm'),'social history')">CONF-236: Section / title SHOULD be valued with a case-insensitive language-insensitive text string containing "social history".</assert>
+
+	</rule>
+</pattern>
+
+<!-- manual -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.15-manual' see='#p-2.16.840.1.113883.10.20.1.15-manual'>
+	<title>Social history section - manual validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.15"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+

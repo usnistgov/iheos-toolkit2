@@ -1,0 +1,21 @@
+Requirements
+
+xdstest2 packaged as a jar
+1 class with full javadocs defining API
+
+set testkit location
+set logdir location
+
+select collection/test/section
+run
+run secure
+get pass/fail
+get errors
+get send soap headers
+get send soap body
+get rcv soap headers
+get rcv soap body
+set site
+get endpoint used (test/section)
+
+use existing class for error reporting

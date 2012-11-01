@@ -1,0 +1,84 @@
+package gov.nist.toolkit.simulators.sim.rep;
+
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.registrymsg.registry.Response;
+import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
+import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.simulators.support.StoredDocument;
+import gov.nist.toolkit.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMElement;
+
+public class DocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
+	List<String> documentUids;
+	RetrieveMultipleResponse response;
+	RepIndex repIndex;
+	String repositoryUniqueId;
+
+	public DocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, String repositoryUniqueId) {
+		super(common);
+		this.documentUids = documentUids;
+		this.repIndex = common.repIndex;
+		this.repositoryUniqueId = repositoryUniqueId;
+	}
+
+	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+		try {
+			response = new RetrieveMultipleResponse();
+
+			common.addDocumentAttachments(documentUids, er);
+
+			Collection<StoredDocument> documents = common.getAttachments();
+
+			OMElement root = response.getRoot();
+
+			for (StoredDocument document : documents) {
+				String uid = document.uid;
+
+				StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
+
+				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
+
+				OMElement repId = MetadataSupport.om_factory.createOMElement(MetadataSupport.repository_unique_id_qnamens);
+				repId.setText(repositoryUniqueId);
+				docResponse.addChild(repId);
+
+				OMElement docId = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_unique_id_qnamens);
+				docId.setText(sd.uid);
+				docResponse.addChild(docId);
+
+				OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);
+				mimeType.setText(sd.mimeType);
+				docResponse.addChild(mimeType);
+
+				OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
+				docResponse.addChild(doc);
+
+				OMElement include = MetadataSupport.om_factory.createOMElement(MetadataSupport.xop_include_qnamens);
+				OMAttribute href = MetadataSupport.om_factory.createOMAttribute("href", null, "cid:" + document.cid);
+				include.addAttribute(href);
+				doc.addChild(include);
+
+				root.addChild(docResponse);
+			}
+		}
+		catch (Exception e) {
+			er.err(Code.XDSRepositoryError, e);
+			return;
+		}
+	}
+
+	public Response getResponse() {
+		return response;
+	}
+
+}

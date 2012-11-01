@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="tkbuild" name="xdstools2">
+
+	<property name="testkit" value="../../testkit"/>
+	<property name="localtestkit" value="war/toolkitx/testkit/tests" />
+	<property name="localtestdata" value="war/toolkitx/testkit/testdata" />
+	<property name="actorcollections" value="war/toolkitx/testkit/actorcollections" />
+	<property name="sessionCache" value="war/SessionCache" />
+	<property name="xdstest" value="war/toolkitx/xdstest" />
+	<property name="shared.lib" value="../../../shared-lib/lib"/>
+	<property name="war.bin" value="../xdstools2/war/WEB-INF/classes"/>
+	<property name="build.common.classes" value="${war.bin}"/>
+
+        <import file="../build-common.xml"/>
+
+	<target name="war-war" depends="update-collections">
+		<jar destfile="war.war">
+			<fileset dir="war" >
+				<exclude name="**/groovy*.jar"/>
+				<exclude name="**/rampart*"/>
+				<exclude name="**/rahas*"/>
+				<exclude name="**/postgres*.jar"/>
+				<exclude name="**/*saml*.jar"/>
+				<exclude name="**/*servlet-api.jar"/>
+				<exclude name="**/gwt-user.jar"/>
+				<exclude name="**/gwt-dev.jar"/>  
+				<exclude name="**/uniqueid_*.txt"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="ihe" depends="war-prep, ihe-config, war-war">
+		<move file="war.war" tofile="xdstools2.war"/>
+	</target>
+
+	<target name="ttt" depends="war-prep, listener, ttt-config, war-war">
+		<move file="war.war" tofile="ttt.war"/>
+	</target>
+
+	<target name="ihe-config">
+		<copy file="war/WEB-INF/toolkit.properties.ihe" 
+			tofile="war/WEB-INF/toolkit.properties" overwrite="yes"/>
+	</target>
+
+	<target name="ttt-config">
+		<copy file="war/WEB-INF/toolkit.properties.ttt" 
+			tofile="war/WEB-INF/toolkit.properties" overwrite="yes"/>
+	</target>
+
+    <target name="tkbuild" depends="war-prep, ihe-config, compile"/>
+
+	<target name="hit-testing" depends="ttt, listener"/>
+
+	<target name="listener" depends="war-prep">
+		<delete file="listener.jar" />
+
+		<jar destfile="listener.jar">
+			<fileset dir="war/WEB-INF" >
+				<include name="**/classes/**/*.class"/>
+				<include name="**/classes/**/*.properties"/>
+				<include name="**/*.p12"/>
+				<include name="**/lib/*"/>
+				<exclude name="**/*.jar"/>
+				<exclude name="**/uniqueid_*.txt"/>
+			</fileset>
+
+		</jar>
+	</target>
+
+	<target name="clean" depends="clean-cert, clean-war">
+		<delete dir="war/WEB-INF/classes"/>
+		<delete dir="war/WEB-INF/lib"/>
+		<delete file="ttt.war" failonerror="no"/>
+		<delete file="xdstools2.war" failonerror="no"/>
+		<delete file="listener.jar" failonerror="no"/>
+	</target>
+
+	<target name="war-prep" depends="assemble, install-cert, include-jars-in-war, doc">
+		<copy file="build.num" todir="war" overwrite="yes"/>
+		<mkdir dir="war/WEB-INF/classes"/>
+		<copy file="log4j.properties" todir="war/WEB-INF/classes" overwrite="yes"/>
+		<copy file="schematron.properties" todir="war/WEB-INF/classes" overwrite="yes"/>
+		<mkdir dir="war/DirectValidationReports"/>
+    </target>
+
+    <target name="install-cert">
+		<mkdir dir="war/pubcert"/>
+		<copy file="cert/mycert" tofile="war/pubcert/ttt_pem.txt" overwrite="yes"/>
+    	<copy file="cert/hit-testing.nist.gov.der" tofile="war/pubcert/hit-testing.nist.gov.der" overwrite="yes"/>
+		<mkdir dir="war/WEB-INF/privcert"/>
+		<copy file="cert/mykeystore.p12" todir="war/WEB-INF/privcert" overwrite="yes"/>
+	</target>
+
+	<target name="doc">
+		<mkdir dir="war/doc"/>
+		<copy todir="war/doc">
+    			<fileset dir="doc"/>
+		</copy>
+	</target>
+    
+	<target name="clean-cert">
+		<delete dir="war/pubcert"/>
+		<delete dir="war/WEB-INF/privcert"/>
+	</target>
+
+	<target name="include-jars-in-war">
+		<copy includeemptydirs="false" overwrite="false"
+		     todir="war/WEB-INF/lib">
+			<fileset dir="../../shared-lib/lib">
+				<include name="*.jar"/>
+				<include name="*.mar"/>
+<!--
+				<exclude name="groovy*.jar"/>
+				<exclude name="rampart*"/>
+				<exclude name="rahas*"/>
+				<exclude name="postgres*.jar"/>
+				<exclude name="*saml*.jar"/>
+				<exclude name="*servlet-api.jar"/>
+				<exclude name="gwt-user.jar"/>
+				<exclude name="gwt-dev.jar"/>  
+-->
+			</fileset>
+			<fileset dir="../../shared-lib/mar">
+				<include name="*.mar"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="update-collections">
+		<ant dir="../xdstest2" antfile="build.xml" target="testkit.collections" inheritAll="true" inheritRefs="true"/> 
+	</target>
+	
+	<target name="assemble" >
+		<mkdir dir="war/toolkitx/admin"/>
+		<copy todir="war/toolkitx/admin">
+			<fileset file="${testkit}/admin/version"/>
+		</copy>
+		<copy todir="war/toolkitx/testkit/tests">
+			<fileset dir="${testkit}/tests">
+				<exclude name="**/.svn"/>
+			</fileset>
+		</copy>
+		<copy todir="war/toolkitx/testkit/tests">
+			<fileset dir="${testkit}/examples">
+				<exclude name="**/.svn"/>
+			</fileset>
+		</copy>
+		<mkdir dir="war/toolkitx/testkit/xcpd"/>
+		<copy todir="war/toolkitx/testkit/xcpd">
+			<fileset dir="${testkit}/xcpd">
+				<exclude name="**/.svn"/>
+			</fileset>
+		</copy>
+		<copy todir="war/toolkitx/testkit/testdata">
+			<fileset dir="${testkit}/testdata">
+				<exclude name="**/.svn"/>
+			</fileset>
+		</copy>
+
+		<copy file="actors.xml" tofile="war/toolkitx/xdstest/actors.xml"/>
+		
+		<!-- the target names match the ActorType short names found
+		     in ATFactory.java
+		     -->
+		<copy file="${testkit}/collections/registryb.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/reg.tc"/>
+		<copy file="${testkit}/collections/repositoryb.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/rep.tc"/>
+		<copy file="${testkit}/collections/update.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/update.tc"/>
+		<copy file="${testkit}/collections/Document_Recipient.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/rec.tc"/>		
+		<copy file="${testkit}/collections/RG.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/rg.tc"/>
+		
+		<copy todir="war/toolkitx/xdstest/rampart/client_repositories/modules" file="../../shared-lib/mar/addressing-1.5.4.mar"/>
+		
+		<mkdir dir="${sessionCache}"/>
+		<mkdir dir="war/xdstools2/DocumentCache" />
+
+		<mkdir dir="war/WEB-INF/direct/mailer"/>
+
+
+		<copy todir="war/WEB-INF" file="../tk_props_default.txt"/>
+	</target>
+
+	<target name="clean-war">
+		<delete dir="war/toolkitx/admin" failonerror="false"/>
+		
+		<delete dir="war/xdstools2" failonerror="false"/>
+		
+		<delete file="war/toolkitx/xdstest/rampart/client_repositories/modules/addressing-1.5.4.mar" failonerror="false"/>
+		<delete dir="war/WEB-INF/classes" failonerror="false"/>
+		<delete dir="war/WEB-INF/lib" failonerror="false"/>
+		
+		<delete failonerror="false">
+			<fileset dir="${localtestkit}">
+				<include name="**/**/*"/>
+				<include name="**/*"/>
+				<include name="**"/>
+				<include name="*"/>
+			</fileset>
+		</delete>
+		
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${localtestkit}" includes="**/*"/>
+		</delete>       
+
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="gwt-unitCache"/>
+		</delete>
+		
+		<delete dir="${localtestdata}" failonerror="false"/>
+
+		<delete dir="war/SessionCache" failonerror="false"/>
+		<delete dir="war/WEB-INF/deploy" failonerror="false"/>
+		
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${actorcollections}" includes="**/*.tc"/>
+		</delete>
+		
+		<delete file="xdstools2.war"  failonerror="false"/>
+		<delete file="${xdstest}/uniqueid_base.txt"  failonerror="false"/>
+		<delete file="${xdstest}/uniqueid_incr.txt"  failonerror="false"/>
+		<delete file="war/toolkitx/codes/codes.xml"  failonerror="false"/>
+
+		<delete dir="war/DirectValidationReports"/>
+
+		<delete dir="war/WEB-INF/direct/mailer"/>
+		<delete dir="war/doc"/>
+	</target>
+
+	<property name="eclipse" value="/Applications/eclipse-indigo"/>
+
+	<path id="project.src.path">
+		<pathelement path="../docref/src"/>
+                <pathelement path="../common-datatypes,/src"/>
+                <pathelement path="../error-recording/src"/>
+                <pathelement path="../xds-exceptions/src"/>
+                <pathelement path="../utilities/src"/>
+                <pathelement path="../common/src"/>
+                <pathelement path="../actor-transaction/src"/>
+                <pathelement path="../tk/src"/>
+                <pathelement path="../email/src"/>
+                <pathelement path="../registry-support/src"/>
+                <pathelement path="../testkit-utilities/src"/>
+                <pathelement path="../registry-metadata/src"/>
+                <pathelement path="../site-management/src"/>
+                <pathelement path="../http/src"/>
+                <pathelement path="../dsig/src"/>
+                <pathelement path="../saml/src"/>
+                <pathelement path="../soap/src"/>
+                <pathelement path="../validators-support/src"/>
+                <pathelement path="../registry-metadata/src"/>
+                <pathelement path="../registry-msg-formats/src"/>
+                <pathelement path="../validators-registry-metadata/src"/>
+                <pathelement path="../direct/src"/>
+                <pathelement path="../validators-registry-message/src"/>
+                <pathelement path="../installation/src"/>
+                <pathelement path="../envSettings/src"/>
+                <pathelement path="../sim-common/src"/>
+                <pathelement path="../simDb/src"/>
+                <pathelement path="../xdstest2-logging/src"/>
+                <pathelement path="../xdstest2/src"/>
+                <pathelement path="../simManager/src"/>
+                <pathelement path="../actorfactory/src"/>
+                <pathelement path="../session/src"/>
+                <pathelement path="../xdstest-gui/src"/>
+                <pathelement path="../direct-sim/src"/>
+                <pathelement path="../simulators/src"/>
+                <pathelement path="../direct-listener/src"/>
+		<pathelement path="src"/>
+		<pathelement path="src/gov/nist/toolkit/xdstools2"/>
+		<pathelement path="../../shared-lib/src"/>
+	</path>
+
+	<property name="gwt.args" value="xdstools2"/>
+
+	<target name="gwtc"  description="GWT compile to JavaScript (production mode)">
+    		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+      			<classpath>
+				<pathelement location="/Users/bill/Documents/sf/shared-lib/lib/gwt-dev.jar"/>
+        			<pathelement location="war/WEB-INF/classes"/>
+			        <path refid="project.src.path"/>
+			        <pathelement location="${eclipse}/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201202290255-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA.jar" />
+			        <pathelement location="${eclipse}/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201202290255-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar" />
+		      </classpath>
+      			<!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
+		      <jvmarg value="-Xmx256M"/>
+		      <!--<arg line="-style PRETTY"/>-->
+		      <arg line="-war"/>
+      		      <arg value="war"/>
+      		      <!-- Additional arguments like -style PRETTY or -logLevel DEBUG -->
+      		      <arg line="${gwt.args}"/>
+                      <arg value="edu.calpoly.csc.scheduler"/>
+    		</java>
+	</target>
+
+</project>

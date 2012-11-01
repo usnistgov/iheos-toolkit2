@@ -1,0 +1,59 @@
+<!--  Supply activity: 2.16.840.1.113883.10.20.1.34 -->
+
+<!-- Successful assertions -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.34-checks' see='#p-2.16.840.1.113883.10.20.1.34-checks'>
+	<title>Supply activity - checks validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.34"]'>
+	
+    <report test="self::cda:supply">CONF-316: Success.</report>
+    <report test="@moodCode='EVN' or @moodCode='INT'">CONF-317: Success.</report>
+    <report test="cda:id">CONF-318: Success.</report>
+
+
+    <report test="count(cda:statusCode)=1">CONF-319: Success.</report>
+    <report test="count(cda:effectiveTime)=1">CONF-320: Success.</report>
+	
+	</rule>
+	    <rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.34"]//*[cda:templateId/@root="2.16.840.1.113883.10.20.1.43"]'>
+    <report test="parent::cda:entryRelationship/@typeCode='SUBJ'">CONF-337: Success.</report>	    
+	    </rule>
+</pattern>
+
+<!-- errors -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.34-errors' see='#p-2.16.840.1.113883.10.20.1.34-errors'>
+	<title>Supply activity - errors validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.34"]'>
+    <assert test="self::cda:supply">CONF-316: A supply activity (templateId 2.16.840.1.113883.10.20.1.34) SHALL be represented with Supply.</assert>
+    <assert test="@moodCode='EVN' or @moodCode='INT'">CONF-317: The value for "Supply / moodCode" in a medication activity SHALL be "EVN" or "INT" 2.16.840.1.113883.5.1001 ActMood STATIC.</assert>
+    <assert test="cda:id">CONF-318: A supply activity SHALL contain at least one Supply / id.</assert>
+	</rule>
+
+    <rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.34"]//*[cda:templateId/@root="2.16.840.1.113883.10.20.1.43"]'>
+    <assert test="parent::cda:entryRelationship/@typeCode='SUBJ'">CONF-337: The value for "entryRelationship / typeCode" in a relationship between a supply activity and fulfillment instruction SHALL be "SUBJ" "Subject" 2.16.840.1.113883.5.1002 ActRelationshipType STATIC.</assert>
+    </rule>
+	
+</pattern>
+
+<!-- warning -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.34-warning' see='#p-2.16.840.1.113883.10.20.1.34-warning'>
+	<title>Supply activity - warning validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.34"]'>
+    <assert test="count(cda:statusCode)=1">CONF-319: A supply activity SHOULD contain exactly one Supply / statusCode.</assert>
+    <assert test="count(cda:effectiveTime)=1">CONF-320: A supply activity SHOULD contain exactly one Supply / effectiveTime, to indicate the actual or intended time of dispensing.</assert>
+	</rule>
+</pattern>
+
+<!-- manual -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.34-manual' see='#p-2.16.840.1.113883.10.20.1.34-manual'>
+	<title>Supply activity - manual validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.34"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+

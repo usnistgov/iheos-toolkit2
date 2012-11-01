@@ -1,0 +1,59 @@
+<!--  Advance directive observation: 2.16.840.1.113883.10.20.1.17 -->
+
+<!-- Successful assertions -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.17-checks' see='#p-2.16.840.1.113883.10.20.1.17-checks'>
+	<title>Advance directive observation - checks validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.17"]'>
+
+	<report test="self::cda:observation">CONF-82: Success.</report>
+	<report test="@classCode='OBS'">CONF-83: Success.</report>
+	<report test="@moodCode='EVN'">CONF-84: Success.</report>
+	<report test="cda:id">CONF-85: Success.</report>
+	<report test="cda:statusCode">CONF-86: Success.</report>
+	<report test="cda:statusCode/@code='completed'">CONF-87: Success.</report>
+	<report test='count(descendant::*[cda:templateId/@root="2.16.840.1.113883.10.20.1.37"])=1'>CONF-98: Success.</report>
+	<report test='count(descendant::*[cda:templateId/@root="2.16.840.1.113883.10.20.1.36"])&lt;=1'>CONF-102: Success.</report>
+	
+	</rule>
+</pattern>
+
+<!-- errors -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.17-errors' see='#p-2.16.840.1.113883.10.20.1.17-errors'>
+	<title>Advance directive observation - errors validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.17"]'>
+	<assert test="self::cda:observation">CONF-82: An advance directive observation (templateId 2.16.840.1.113883.10.20.1.17) SHALL be represented with Observation.</assert>
+	<assert test="@classCode='OBS'">CONF-83: The value for Observation / classCode in an advance directive observation SHALL be 'OBS' 2.16.840.1.113883.5.6 ActClass STATIC.</assert>
+	<assert test="@moodCode='EVN'">CONF-84: The value for Observation / moodCode in an advance directive observation SHALL be 'EVN' 2.16.840.1.113883.5.1001 ActMood STATIC.</assert>
+	<assert test="cda:id">CONF-85: An advance directive observation SHALL contain at least one Observation / id.</assert>
+	<assert test="cda:statusCode">CONF-86: An advance directive observation SHALL contain exactly one Observation / statusCode.</assert>
+	<assert test="cda:statusCode/@code='completed'">CONF-87: The value for Observation / statusCode in an advance directive observation SHALL be 'completed'  2.16.840.1.113883.5.14 ActStatus STATIC.</assert>
+	<assert test='count(descendant::*[cda:templateId/@root="2.16.840.1.113883.10.20.1.37"])=1'>CONF-98: An advance directive observation SHALL contain exactly one advance directive status observation.</assert>
+	<assert test='count(descendant::*[cda:templateId/@root="2.16.840.1.113883.10.20.1.36"])&lt;=1'>CONF-102: An advance directive observation MAY contain exactly one advance directive reference.</assert>
+
+	</rule>
+</pattern>
+
+<!-- warning -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.17-warning' see='#p-2.16.840.1.113883.10.20.1.17-warning'>
+	<title>Advance directive observation - warning validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.17"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+
+<!-- manual -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.17-manual' see='#p-2.16.840.1.113883.10.20.1.17-manual'>
+	<title>Advance directive observation - manual validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.17"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+

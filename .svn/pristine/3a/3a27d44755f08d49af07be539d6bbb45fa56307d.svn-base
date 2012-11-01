@@ -1,0 +1,41 @@
+How synchronization is used in the simulator
+
+How synchronization is used in the simulator
+
+cache is servletContext
+
+SimServlet#getRegIndex
+synchronized(SimServlet)
+
+SimServlet#getRepIndex
+synchronized(SimServlet)
+
+
+Load and flush synched on SimServlet (single instance)
+
+SimServlet#doPost    (late)
+synchronized(SimServlet)
+scan and remove old indexes from cache
+
+
+Add and Delete synched by regIndex  (operation local to index)
+
+MetadataCollection#deleteRo    #purgeRo
+synchronized(regIndex)
+
+MetadataCollection#add(DocEntry)  // also Assoc, SubSet, Fol
+synchronized(regIndex)
+
+
+
+RegIndex#save     , #restore
+synchronized(this)
+
+
+RepIndex#save    , #restore
+synchronized(repIndex)
+
+
+DocumentCollection#add(StoredDocument),  #delete(uid)
+synchronized(repIndex)
+

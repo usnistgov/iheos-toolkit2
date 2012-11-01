@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="compile" name="direct-listener">
+
+        <import file="../build-common.xml"/>
+
+	<property name="port" value="2025"/>
+
+</project>

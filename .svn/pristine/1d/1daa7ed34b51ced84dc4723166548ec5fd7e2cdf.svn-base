@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="compile" name="xdstest2">
+
+        <import file="../build-common.xml"/>
+
+	<property name="testkit" value="../../testkit" />
+
+	<path id="run.classpath">
+		<pathelement path="bin"/>
+		<pathelement path="../utilities/bin"/>
+		<fileset dir="../${shared.lib}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<!-- build collections section of testkit -->
+	<target name="testkit.collections" depends="compile">
+		<mkdir dir="${testkit}/collections" />
+		<java 
+				classname="gov.nist.toolkit.testengine.scripts.BuildCollections" 
+				fork="true"  
+				failonerror="true">
+			<arg value="${testkit}"/>
+			<classpath>
+				<pathelement path="../xdstools2/war/WEB-INF/classes"/>
+				<path refid="run.classpath"/>
+			</classpath>
+			<arg value="25" />
+			<arg value="/Users/bill/tmp/toolkit/simdb/direct" />
+		</java>
+	</target>
+
+</project>

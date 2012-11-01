@@ -1,0 +1,122 @@
+This file documents the development environment for the XDS Toolkit.
+
+Todo:  Since the environment described below will change over time, we need a label that ties a 
+particular release of the toolkit to a particular version of the environment.  For now
+I am going to label the environment with a version number. When the environment is updated
+it will be labeled with the first version of the toolkit that uses that environment.
+
+Our basic development environment is:
+
+Eclipse (tend to use most recent version)
+Subversion plugin (for getting to sources on SourceForge)
+Ant - we use the built in facility.  Our builds are based entirely on ant.   
+Tomcat (most recent version) - we deploy to Tomcat but others have used pretty much
+    every other Servlet engine available
+
+Environment version 134
+
+Java 1.5
+Axis2 version 1.5
+Rampart version 1.5 (must match Axis2)
+GWT SDK 2.1.0 M2 (Eclipse plugin)
+
+Environment version 124
+
+Java 1.5
+Axis2 version 1.4
+Rampart version 1.4 (must match Axis2)
+GWT SDK 2.1.0 M2 (Eclipse plugin)
+
+
+Building the development environment
+
+1) Create a new Eclipse workspace
+
+2) Download the correct version of shared-lib from http://ihexds.nist.gov/XdsDocs/shared-lib.
+This results in a directory in the workspace directory (not visible through Eclipse) named
+shared-lib.  Shared-lib has a subdirectory lib which contains a large number of jar files.
+
+3) Checkout the following packages from SourceForge project IheOs.  The SVN repository location 
+is: 
+	https://iheos.svn.sourceforge.net/svnroot/iheos
+
+The packages are  (package-name    local-name     description) :
+	xds-registry-common2      common              common libraries
+	xdsLogV2                  xdsLogV2            old logging system
+	xdsref                    xdsref              reference files (coding, schema etc)
+	testkit                   testkit             test descriptions
+	xdstest2                  xdstest2            test engine
+	xdstoolkit                xdstoolkit          command line toolkit - need parts
+	xdstools2                 xdstools2           XDS Toolkit top level
+	system                    system              overall ant file
+	
+When performing the checkout of these packages, use the trunk directory for each. The exception
+is xdsLogV2 where you must use the main directory. In the above table, the second column, local-name,
+shows that the checkout of xds-registry-common2 is expected to be placed in the directory common
+and not xds-registry-common2.  The provide ant files expect this name.
+
+When the checkouts are complete the Package Explorer in Eclipse should look like:
+	common
+	system
+	testkit
+	xdsLogV2
+	xdsref
+	xdstest2
+	xdstoolkit
+	xdstools2
+	
+4) Configure build path. Eclipse will auto-compile java files when updates are made.  This is really nice since it catches 
+coding errors very quickly. For this to work, several packages must be told where the shared-lib
+contents are. For the following packages:
+	common
+	xdsLogV2
+	xdstest2
+	xdstools2
+click right and open Build Path -> Configure Build Path.  Clear the jar files listed on the Libraries
+tab using the Remove button.  Then using the Add External JARs... button add all the jar files in
+shared-lib/lib.
+
+5) Integrate the testkit and the toolkit. The packages xdstoolkit and testkit are separate
+projects/downloads but they need to be integrated to work properly. This means that the testkit
+must be copied or preferably symbolically linked under the xdstoolkit. To do this via
+linking (on a *nix system):
+    cd xdstoolkit
+    ln -s ../testkit testkit
+Now the testkit appears as part of the xdstoolkit. Next the testkit must be scanned and
+the collections established.  To do this from command line:
+    cd system
+    ant testkit.collections
+This builds the directory (and contents) xdstoolkit/collections.  Obviously this can also
+be done from within Eclipse (my favorite way) using the ant window.
+
+6) Build with ant. I use ant from within Eclipse.  To enable this go to the Eclipse menu
+Window -> Show View -> Ant which will add the Ant panel to your desktop.  Using the add ant button 
+(green plus sign followed by an ant icon), add the ant files from these projects:
+	common
+	xdstest2
+	xdstools2
+	system
+To compile the system, open xdstools2 under Ant and double-click on build-all-for-debug.  This will
+perform all the necessary java compiles.
+
+7) Compile the window descriptions.  The window descriptions are coded in java in xdstools2.  The tools
+to compile these descriptions cannot be driven by Ant.  Instead a special tool in Eclipse must be
+used. The window descriptions are coded in java which allows the entire system to be debugged in the
+java debugger.  For deployment, a special tool must be run to cross-compile the java into javascript.
+This tool is installed along with the GWT SDK plugin.  It shows up in the icon collection at the top 
+of the Eclipse window as a red toolbox with a big white letter G (for Google of course).  Select
+the xdstools2 project in the Package Explorer and push the red toolbox.  This will perform the cross
+compile.  Be patient, it can take several minutes.
+
+8) Generate the war for deployment. Use the war task from the xdstools2 ant file. This will generate
+the file xdstools2.war in the xdstools2 directory.  This file can be copied to the webapps directory
+of your favorite Servlet engine.
+
+9) When to compile the window descriptions.  When running the system in the debugger under Eclipse you
+do not need to compile the window descriptions.  The java version is used. Any changes to the java
+sources under gov.nist.registry.xdstools2.client in xdstools2 mean the java to javascript compiler must be
+run before generating a new jar.
+
+10) To run in the debugger. Along with installing GWT, you should also have installed the plugin for your
+favorite browser. GTW, when running in the debugger, auto launches my tools in the browser. You
+should find the GTW Development Mode tab in Eclipse for controlling this (refreshing, stopping, launching etc).

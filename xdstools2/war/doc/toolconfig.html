@@ -1,0 +1,66 @@
+<html>
+
+<head>
+<title>Tool Configuration Help</title>
+</head>
+
+<body>
+
+<h1>Tool Configuration Help</h1>
+
+<p>The toolkit has a small number of parameters that must be set after installation
+to configure for the local site. This panel is used to edit these parameters.
+The parameters are:
+
+<dl>
+<dt>Admin_password</dt>
+<dd>This password is needed to update the actors.xml file and to access this panel
+to configure the tool. When this password is changed, you must reload the 
+window in the browser for the change to take effect.</dd>
+<br />
+
+<dt>External_Cache</dt>
+<dd>This is a filesystem location external to the toolkit where the toolkit can store information. Being
+external, it is unaffected by installing a new version of the toolkit. The value of this parameter
+must be an absolute pathname of an existing, writable, empty directory. The toolkit will store 3 things here:
+actors.xml file (and/or actors directory) - the default copy is internal to the toolkit.  Any edits you make are stored here; 
+TestLogCache directory - for storage of Mesa test log files (log.xml); and the directory simdb
+were simulators store state.
+</dd>
+<br />
+
+<dt>Toolkit_Host and Toolkit_Port</dt>
+<dd>These will be used with the simulator system. Not used at the moment.</dd>
+<br />
+
+<dt>Enable_all_ciphers</dt>
+<dd>By default the TLS environment only enables two encyption cyphers, one Windows 
+friendly and one Linux Friendly.  When set to true, all cyphers available to the
+Java run time environment are allowed.</dd>
+<br />
+
+<dt>Use_Actors_File</dt>
+<dd>When true, the actors.xml file which is stored in the External Cache (see above) is used
+to hold the actor configurations.  Each system is represented by an XML Site element
+in the file. When false, the actors directory (in the External Cache directory)is used instead.  
+In this mode,
+each XML Site element is housed in its own file named by the site name (.xml). This second mode is required
+when configurations are being downloaded from Gazelle (Gazelle_Config_URL not emtpy).</dd>
+<br />
+
+<dt>Gazelle_Config_URL</dt>
+<dd>When not empty, this is the REST URL for Gazelle to be used to update
+the actors directory.  This overrides the setting for Use_Actors_File forcing
+the use of the directory form for Site config storage. When this parameter
+is empty, the Gazelle linkage is disabled and the Use_Actors_File
+setting is heeded.</dd>
+<br />
+</dl>
+
+
+
+</body>
+
+
+
+</html>

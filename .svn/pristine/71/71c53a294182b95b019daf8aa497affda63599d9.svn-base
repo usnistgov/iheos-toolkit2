@@ -1,0 +1,10 @@
+package gov.nist.toolkit.soap.axis2;
+
+import java.io.File;
+import java.io.IOException;
+
+public interface SecurityParams {
+	File getCodesFile();
+	File getKeystore() throws EnvironmentNotSelectedException;
+	String getKeystorePassword() throws IOException, EnvironmentNotSelectedException;
+}

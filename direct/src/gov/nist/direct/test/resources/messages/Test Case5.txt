@@ -1,0 +1,25 @@
+From - Fri Nov 04 14:30:24 2011
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00800000
+X-Mozilla-Keys:                                                                                 
+Message-ID: <4EB42F40.8040706@ssa-l0052.acct04.us.lmco.com>
+Date: Fri, 04 Nov 2011 14:30:24 -0400
+From: kiran <kiran@ssa-l0052.acct04.us.lmco.com>
+User-Agent: Mozilla/5.0 (Windows NT 5.1; rv:7.0.1) Gecko/20110929 Thunderbird/7.0.1
+MIME-Version: 1.0
+To: Ashish Rathee <ashish@ssa-w0066.acct04.us.lmco.com>
+CC: dave <dave@ssa-l0035.acct04.us.lmco.com>
+Subject: Re: testing multiple recipients
+References: <4EB42F0F.4020605@ssa-w0066.acct04.us.lmco.com>
+In-Reply-To: <4EB42F0F.4020605@ssa-w0066.acct04.us.lmco.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On 11/4/2011 2:29 PM, Ashish Rathee wrote:
+> 111111
+>
+> -ashish
+>
+kiran got it
+
+-kiran

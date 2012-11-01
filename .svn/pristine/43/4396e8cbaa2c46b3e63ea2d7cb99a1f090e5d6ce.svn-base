@@ -1,0 +1,74 @@
+<html>
+
+<head>
+<title>Simulator Technical Documentation</title>
+</head>
+
+<body>
+
+<h1>Simulator Technical Documentation</h1>
+
+<p>Simulators have an on-disk persistent component as well as an 
+active component.  This persistent component is created when the
+simulator is created defining its configuration, options, and 
+endpoints.
+The active component is created dynamically when a 
+message is received targetting the simulator. 
+
+<p>The most basic simulator component is the servlet that accepts
+its messages.  This servlet is defined by the class
+gov.nist.registry.xdstools2.server.simulator.SimServlet which
+is configured in web.xml to the address /simulator/*. The form of
+its address is:
+<pre>
+        /simulator/&lt;simulatorid>/&lt;actor>/&lt;transaction>
+</pre>
+
+<p>SimServlet#doPost decodes this address, creates the SimDb object,
+creates the ActorSimulatorConfig object holding the simulator
+configuration and walks if/then logic to launch the correct
+simulator code.
+
+<p>Each simulator is a class that defines its operation.  There is no
+formal Java Interface to follow but the the class 
+gov.nist.registry.xdstools2.server.simulator.actorRegistryActorSimulator
+is a good example. The constructor has the following arguments:
+
+<dl>
+<dt>RegIndex
+<dd>this is special for registry and not expected for others
+<dt>SimDb
+<dd>access object for simulator persistent data
+<dt>ActorSimulatorConfig
+<dd>holds the configuration information for this instance of the simulator 
+</dl> 
+
+<p>The run method has this interface:
+
+<dl>
+<dt>TransactionType 
+<dd>this is a value out of a enum that defines the transaction
+<dt> MessageValidatorEngine
+<dd>this is the validation engine from the validation engine. It maintains 
+the collection of validation (in this case simulator) steps to be run and
+allows new steps to be scheduled. Once a simulator is initialized through
+the constructor and the run method, its basic operation is identical
+to that of a validator.  The big difference is that a simulator
+is expected to generate a response message and possibly update
+the internal status of the simulator (for a registry, metadata 
+is saved by the register transaction).
+<dt>validation
+<dd>this is special to the registry validator, indicates a special
+validation to run
+<dt>SimCommon
+<dd>contains utility methods for use by the simulator
+</dl>
+
+<p>The run method returns a boolean indicating whether the simulator 
+database should be updated.  May not be useful for other simulator
+types.
+
+
+</body>
+
+</html>

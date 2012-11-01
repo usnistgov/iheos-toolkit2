@@ -1,0 +1,15 @@
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope">
+   <S:Header>
+      <wsa:Action s:mustUnderstand="1" xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+            xmlns:wsa="http://www.w3.org/2005/08/addressing">urn:ihe:iti:2007:RegistryStoredQueryResponse</wsa:Action>
+      <wsa:RelatesTo xmlns:wsa="http://www.w3.org/2005/08/addressing">urn:uuid:CF794145A1B3AA7C7E1321969208536</wsa:RelatesTo>
+   </S:Header>
+   <S:Body>
+      <query:AdhocQueryResponse status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success"
+            xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+         <RegistryObjectList xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+            <ObjectRef id="urn:uuid:df232291-be5d-45b4-b50e-f6be790bf325"/>
+         </RegistryObjectList>
+      </query:AdhocQueryResponse>
+   </S:Body>
+</S:Envelope>

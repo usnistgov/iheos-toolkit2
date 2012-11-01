@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope"
+    xmlns:a="http://www.w3.org/2005/08/addressing">
+    <s:Header>
+        <a:Action s:mustUnderstand="1">urn:ihe:iti:2007:RetrieveDocumentSet</a:Action>
+        <a:MessageID>urn:uuid:0fbfdced-6c01-4d09-a110-2201afedaa02</a:MessageID>
+        <a:ReplyTo s:mustUnderstand="1">
+            <a:Address>http://www.w3.org/2005/08/addressing/anonymous</a:Address>
+        </a:ReplyTo>
+        <a:To>http://localhost:2647/XdsService/IHEXDSRepository.svc</a:To>
+    </s:Header>
+    <s:Body>
+        <RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007">
+            <DocumentRequest>
+                <RepositoryUniqueId>1.3.6.1.4...1000</RepositoryUniqueId>
+                <DocumentUniqueId>1.3.6.1.4...2300</DocumentUniqueId>
+            </DocumentRequest>
+            <DocumentRequest>
+                <RepositoryUniqueId>1.3.6.1.4...1000</RepositoryUniqueId>
+                <DocumentUniqueId>1.3.6.1.4...2301</DocumentUniqueId>
+            </DocumentRequest>
+        </RetrieveDocumentSetRequest>
+    </s:Body>
+</s:Envelope>

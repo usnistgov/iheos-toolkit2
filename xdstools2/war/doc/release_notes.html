@@ -1,0 +1,289 @@
+<html>
+
+<head>
+<title>Release Notes</title>
+</head>
+
+<body>
+
+<h1>Release Notes</h1>
+
+<p>Release note are listed for each build number
+
+<h4>     (released     ) </h4>
+
+<ul>
+<li>Built with shared-lib version 151
+</ul>
+
+<h4>145 (released September 20, 2012)</h4>
+
+<ul>
+<li>Added CCDA/MDHT validator to Message Validator page
+<li>Added custom home page for MU2
+<li>Relaxed validation of env:mustUnderstand to match requirements in SOAP 1.2.  The stricter
+requirements from WS-I are no longer referenced by profile.
+<li>Added ability to enable features from config file
+<li>Fixed test engine interpretation of expected errors. Was throwing strange errors when a test expected an error response.
+<li>Updated testdata 12361 so it can be run from GUI (separate sections for each Patient ID)
+<ul>
+<li>Upgraded the bouncycastle jars from
+  <ul>
+  <li>bcprov-jdk15-132.jar
+  <li>bcprov-ext-jdk15-1.40.jar
+  </ul>
+to
+  <ul>
+  <li>bcprov-jdk15+-146.jar
+  <li>bcprov-ext-jdk15+-146.jar
+  </ul>
+after it was reported that the versions were inconsistent.  JBoss AS 6.0.1 
+failed with a message DEPLOYMENTS IN ERROR
+</li>
+
+</ul>
+</li>
+</ul>
+
+<h4>144</h4>
+
+<ul>
+<li>Version from NA2012 Connectathon
+<li>Added Default_Environment config parameter. This can be overridden by browser cookie.
+<li>Added support for Extra Metadata
+<li>Test 11909 contained a poorly formatted UUID
+</ul>
+
+<h4>143</h4>
+
+<ul>
+<li>Fixed bug - sites not displayed on Pre-Connectathon test tab
+</ul>
+
+<h4>142</h4>
+
+<ul>
+<li>12312 - yet another fix to assertion xpath
+<li>Fixed some subtle bugs in Simulator support and MU sim.  Thanks for the heads up Paulo.
+<li>Tests 12021, 12028, 12368, 12370 were missing from the toolkit.  Added them back in.
+</ul>
+
+<h4>141</h4>
+
+<ul>
+<li>Tests 11979, 11983, 11986, 12369 were missing from pre-connectathon Repository test list
+<li>The tests in the Pre-Connectathon tab are displated in test number order
+<li>The following Repository test data items had repositoryUniqueId, size, hash, URI coded
+in metadata.  They have been removed: XCA_NA5507, XCA_NA5508, XCA_NA5509.  
+</ul>
+
+<h5>bugs</h5>
+<ul>
+<li>If installed to a directory with a space character in the name (like c:\Program Files)
+then many internal files will not be found.  Usually the first to be noticed 
+are the schema files.
+<li>Retrieve transaction on Repository simulator does not work correctly yet.
+</ul>
+
+
+<h4>140</h4>
+
+<ul>
+<li>Bug fixes for release 138
+</ul>
+
+<h4>138</h4>
+
+<ul>
+<li>XDR validation now accepts new limited metadata definition
+<li>XDM validation now accepts new minimal metadata definition
+<li>XDM message validation added to Message Validation tab
+<li>Fixed bug in HTTP parser - binary part (like zip upload) now parsed correctly
+<li>Parts of Patient Discovery have been added
+<li>NwHIN format SAML has been added to Message Validator
+<li>Environment can now be chosen individually (per session).  Environment
+consists of chosen keystore and codes.xml.  If codes.xml not present in environment
+directory then default is used.
+<li>Remember open simulators across sessions (uses cookies)
+<li>Added mpq transaction type to actors.xml.  It is now the required 
+transaction type for MPQ transactions.
+<li>Fixed XML formatter so attribute namespace is presented
+<li>Improved error messages for malformed HTTP headers
+<li>Added mustUnderstand to SOAP Header returned from sims
+<li>Sims didn't log SOAPFault output
+<li>Added use of cookies to remember current simulator collection
+<li>Fixed logging of response headers from sims
+</ul>
+
+<h5>bugs</h5>
+
+
+
+<h4>137</h4>
+
+<ul>
+<li>Last few releases were built with Java 1.6 JRE which includes a few methods
+on the String class that are not present in 1.5.  Switched development environment
+back to JRE 1.5 so it will run with 1.5 or 1.6.
+<li>Added homeCommunityId and repositoryUniqueId processing to config
+linkage to Gazelle
+</ul>
+
+<h4>136</h4>
+
+<ul>
+<li>Message Validator: validation of XDR request message checked for wrong ws:Action
+<li>Inspector: added <i>Get All Versions</i> action to DocumentEntries which invokes
+GetDocuments with the lid as a parameter and $MetadataLevel=2
+</ul>
+
+<h4>135</h4>
+
+<ul>
+<li>Installed correct certificate for European Connectathon
+</ul>
+
+<h4>134</h4>
+
+<ul>
+<li>Fixed handling of &lt;NoPatientid/> instruction
+<li>keystore password moved to war/toolkitx/xdstest/keystores/keystore.properties
+<li>Add Xdstest2_version to log.xml so it will be accepted through EVS
+<li>Added GetFolderAndContents to home page
+<li>Added FindFolders query to home page
+<li>Added metadata contents summary to queries on home page
+<li>Log file cache moved under SessionCache so it deleted at the end of a session and on
+initialization
+<li>Upgrade to Axis2 version 1.5.4
+</ul>
+
+<h4>133</h4>
+
+<ul>
+<li>Problem at connectathon where a user would get results back from another user. Second
+symptom was getting strange stack traces instead error messages that related to real
+problems.  Issue was bug in management of session variable.  This has been fixed but the
+fix has broken the use of simulators.  This will be fixed in a later release.
+<li>Occasionally an error is repored related to not being able to load addressing module.  This
+has been tracked to a bug in Axis2 version 1.4 libraries.  Some recoding has minimized the
+frequency of this error.  Future upgrade to version 1.5 will actually fix it. 
+</ul>
+
+<h4>132</h4>
+
+<ul>
+<li>Added Dashboard for connectathon
+<li>Finished core of IG construction including junit tests.
+<li>Added better exception management to MetadataValidator page in hopes it helps solve
+the perceived hang problem
+<li>Added Repository Listing tab - lists Repositories by their repositoryUniqueId
+<li>Warning - since I don't yet have an IG that will fan out or route XC queries to test against, the handling of 
+these queries by the toolkit is suspect.
+<li>Fixed Cross Community query handling of homeCommunityId
+<li>Attribute DocumentEntry.documentAvailabilty - registry simulator is not ready to process this att yet
+</ul>
+
+<h4>131</h4>
+
+<ul>
+<li>Added support for DocumentEntry.documentAvailability
+<li>Bug in log scanner gave strange errors in Folder validation tool
+</ul>
+
+<h4>130</h4>
+
+<ul>
+<li>The first two tests for Metadata Update are installed and ready. The main documentation
+link is 
+<a href="http://ihewiki.wustl.edu/wiki/index.php/XDS_Test_Kit_2009-2010_Test_Requirements#Metadata_Update">here</a>
+but in reality most of the documentation for testing the Registry is displayed in the 
+Pre-Connectathon Tests tab. The extent of the Metadata Update support is just enough to support
+these tests. The Stored Query updates are not yet installed.
+<li>The new Registry simulator is ready for public testing. It has been tested using
+all the Registry specific tests in the Pre-Connectathon Tests tab (see note below
+about tests involving Patient IDs)
+<li>The Simulator Control and Simulator Message View tabs are ready for public testing.
+<li>Pre-Connectathon Tests tab ready for public testing. Warning - tests that manipulate
+the Patient ID do not yet work.  The additional Patient ID support in the toolkit is
+not ready for release.
+<li>Improved error message in Message Validator on HTTP parse error.
+<li>Added toolkit level config param to enable all ciphers
+<li>Added basic Metadata Update/Update DocumentEntry functionality.
+<li>Registry sim(Register transaction) passes all tests that do not involve multiple
+Patient IDs
+<li>Fixed GetDocuments tab. Now works with UUID and UID inputs
+</ul>
+
+<h4>129</h4>
+
+<ul>
+<li>Previous version spewed "Request Message is SIMPLE SOAP but MTOM is required" even when content type was undecided.
+<li>Added Registry simulator
+<li>Unresolved bugs:
+<ul>
+<li>NoPatientId tag does not work in xdstest2 in gui environment: test 11997
+<li>sim directories get created under war directory in debug
+</ul>
+</ul>
+
+<h4>128</h4>
+
+<ul>
+<li>Added Toolkit Configuration to user interface
+<li>Added refresh button to Site/Actor Configuration panel
+<li>Added back into configuration these jars: xercesImpl-2.8.1.jar, ebxmlrr-common.jar, commons-logging-1.1.jar
+<li>Tested successfully on these Tomcat versions: 5.5.31, 6.0.29, 7.0.2
+<li>Added Mesa Test tab
+<li>Added Simulator expiration
+<li>Altered filenames in LogCache so no : (colon) chars are used (illegal on Windows)
+<li>Unresolved bugs:
+<ul>
+</ul>
+</ul>
+
+<h4>127</h4>
+
+<ul>
+<li>Added Concepts of Operation to test kit documentation
+</ul>
+
+<h4>126</h4>
+
+<ul>
+<li>First installment of documentation on the test engine (xdstest). This
+installment documents the language it self.  More examples are needed and 
+new sections on Concepts of Operation and the log format are still needed.
+<li>Bug fix - Really poorly formatted SOAP Headers are reported as having
+null value.  Error message improved.
+</ul>
+
+<h4>125</h4>
+
+<ul>
+<li>Added more online documentation
+<li>Metadata Validator - removed endpoint option
+<li>Metadata Validator - disabled XDM option
+<li>Metadata Validator - Document Contents not always available - was labeled
+as an error.
+</ul>
+
+<h4>124</h4>
+
+<ul>
+<li>Add Message Validator page
+<li>Most forms of validation now produce documentation references when an error is 
+reported
+<li>Validations no longer stop at the first error
+<li>Add prototype Simulator Control page and start of infrastructre to support simulators
+</ul>
+
+
+<h4>98</h4>
+
+<ul>
+<li>Version used at IHE Connectathon in Bordeaux France, April 2010
+</ul>
+
+</body>
+
+</html>

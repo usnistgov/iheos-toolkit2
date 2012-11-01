@@ -1,0 +1,46 @@
+<!--  Vital signs organizer: 2.16.840.1.113883.10.20.1.35 -->
+
+<!-- Successful assertions -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.35-checks' see='#p-2.16.840.1.113883.10.20.1.35-checks'>
+	<title>Vital signs organizer - checks validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.35"]'>
+	<report test='cda:component/cda:observation[cda:templateId/@root="2.16.840.1.113883.10.20.1.31"]'>CONF-386, CONF-388: Success.</report>	
+	</rule>
+</pattern>
+
+
+<!-- errors -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.35-errors' see='#p-2.16.840.1.113883.10.20.1.35-errors'>
+	<title>Vital signs organizer - errors validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.35"]'>
+	<assert test='cda:component/cda:observation[cda:templateId/@root="2.16.840.1.113883.10.20.1.31"]'>CONF-386, CONF-388: Each vital signs organizers SHALL contain one or more result observations (templateId 2.16.840.1.113883.10.20.1.31)</assert>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+
+<!-- warning -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.35-warning' see='#p-2.16.840.1.113883.10.20.1.35-warning'>
+	<title>Vital signs organizer - warning validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.35"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+
+<!-- manual -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.35-manual' see='#p-2.16.840.1.113883.10.20.1.35-manual'>
+	<title>Vital signs organizer - manual validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.35"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+

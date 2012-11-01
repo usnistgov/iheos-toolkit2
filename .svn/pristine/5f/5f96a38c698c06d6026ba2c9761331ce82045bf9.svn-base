@@ -1,0 +1,101 @@
+<html>
+
+<head>
+<title>Creating and using an Environment</title>
+</head>
+
+<body>
+
+<h1>Creating and using an Environment</h1>
+
+An environment is a combination of:
+
+<ul>
+<li>keystore - a client certificate
+<li>codes.xml file - an Affinity Domain configuration
+</ul>
+
+<p>These elements used to be pre-installed in the toolkit and were nearly impossible to change in the field. 
+Now multiple environments can be loaded into the toolkit and selected from the user interface. Some
+typical use cases for environments are:
+
+<ul>
+<li>Loading certificates for both the North American and European Connectathons
+<li>Loading a certificate issued by your company for in-house testing
+<li>Specifying a custom codes.xml to conform to your local region's needs
+</ul>
+
+<p>Once an environment is established, it is selected from the Home page of the tool
+from the drop-down box labeled 'Environment'.
+
+<p>Environments are stored in the external cache in the directory 'environment'.  Each
+directory under that is the name of an environment. Under that directory is two items: 
+a codes.xml file and a keystore directory.  The keystore directory contains two files:
+keystore and keystore.properties.  Keystore is the actual keystore and keystore.properties
+is a properties file with a single property named keyStorePassword.
+
+<p>A graphical description looks like:
+
+<pre>
+bills-MacBook-Pro:toolkit bill$ ls -l
+total 16
+drwxr-xr-x   4 bill  staff   136 Sep  6 23:00 TestLogCache
+-rw-r--r--@  1 bill  staff  7684 Sep 22 15:33 actors.xml
+drwxr-xr-x   5 bill  staff   170 Sep  6 23:11 environment
+drwxr-xr-x   3 bill  staff   102 Sep 22 14:35 simdb
+bills-MacBook-Pro:toolkit bill$ 
+</pre>
+
+This shows the top-level contents of the external cache directory.  Looking inside the
+environment directory:
+
+<pre>
+bills-MacBook-Pro:environment bill$ ls -l
+total 0
+drwxr-xr-x  5 bill  staff  170 Sep  6 23:11 EURO2011
+drwxr-xr-x  5 bill  staff  170 Sep  6 23:11 NA2011
+bills-MacBook-Pro:environment bill$ 
+</pre>
+
+This shows environments for both the NA and Euro connectathons on my machine.  Looking
+inside NA2011:
+
+<pre>
+bills-MacBook-Pro:NA2011 bill$ ls -l
+total 192
+-rwx--xr-x@ 1 bill  staff  94593 Apr 11 09:23 codes.xml
+drwxr-xr-x  4 bill  staff    136 May 12 14:58 keystore
+bills-MacBook-Pro:NA2011 bill$ 
+</pre>
+
+And inside keystore:
+
+<pre>
+bills-MacBook-Pro:keystore bill$ ls -l
+total 16
+-rw-r--r--@ 1 bill  staff  2593 Nov  3  2010 keystore
+-rw-r--r--@ 1 bill  staff    25 May  9 20:40 keystore.properties
+bills-MacBook-Pro:keystore bill$ 
+</pre>
+
+The contents of the properties file are:
+
+<pre>
+bills-MacBook-Pro:keystore bill$ cat keystore.properties 
+keyStorePassword=changeit
+bills-MacBook-Pro:keystore bill$
+</pre>
+
+<p>In the future when I distribute a new keystore for a testing event, I will
+issue a zip file containing the contents of an environment (the directory NA2011 and
+its contents for example)
+
+<p>Note: Environments do not affect simulators.
+
+
+
+</body>
+
+
+
+</html>

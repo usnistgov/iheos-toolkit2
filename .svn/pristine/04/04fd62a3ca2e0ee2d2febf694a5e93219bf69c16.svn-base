@@ -1,0 +1,61 @@
+<!-- These schematron rules validate an PixV3 message Patient Registry Query by Indentifier PRPA_IN201309UV02 -->
+<!-- The following rules are in accordance with IHE IT Technical Framework Supplement 2009-2010  
+      Patient Identifier Cross-Reference HL7 V3 (PIXV3) and Patient Demographic Query HL7 V3 (PDQV3) August 10, 2009. -->
+
+<pattern id='PRPA_IN201309UV02-errors'>
+
+ <rule context='/msg:PRPA_IN201309UV02'>
+   <assert test='msg:interactionId/@extension="PRPA_IN201309UV02"'>Error: the attribute PRPA_IN201309UV02/interactionId/@extension shall equal PRPA_IN201309UV02.</assert>
+   <assert test='msg:processingModeCode/@code="T"'>Error: The attribute PRPA_IN201309UV02/processingModeCode/@code shall be set to T.</assert>
+   <assert test='msg:acceptAckCode/@code="AL"'>Error: The attribute PRPA_IN201309UV02/acceptAckCode/@code shall be set to AL.</assert>
+   <assert test='count(msg:receiver) = 1'>Error: The shall be 1 element PRPA_IN201309UV/receiver.</assert>
+ </rule>
+ 
+ <rule context='msg:PRPA_IN201309UV02/msg:controlActProcess'>
+   <assert test='@moodCode="RQO"'>Error: The attribute PRPA_IN201309UV02/controlActProcess/moodCode shall be set RQO.</assert>  
+   <assert test='msg:code'>Error: The element PRPA_IN201309UV02/controlActProcess/code shall be present.</assert>
+   <assert test='msg:code[@code ="PRPA_TE201309UV"]'>Error: The attribute PRPA_IN201309UV02/controlActProcess/code/@code shall have the value PRPA_TE201309UV.</assert>
+   <assert test='not(msg:authorOrPerformer[@typeCode="AUT"])'>Error: The element PRPA_IN201309UV02/authorOrPerformer/@typeCode shall be set to AUT.</assert> 
+   <assert test='not(msg:text)'>Error: The element PRPA_IN201309UV02/controlActProcess/text shall not be present.</assert>
+   <assert test='not(msg:priortyCode)'>Error: The element PRPA_IN201309UV02/controlActProcess/priortyCode shall not be present.</assert>
+   <assert test='not(msg:reasonCode)'>Error: The element PRPA_IN201309UV02/controlActProcess/reasonCode shall not be present.</assert>
+   <assert test='not(msg:overseer)'>Error: The element PRPA_IN201309UV02/controlActProcess/overseer shall not be present.</assert>
+</rule>
+
+<rule context='msg:PRPA_IN201309UV02/msg:controlActProcess/msg:queryByParameter'>
+   <assert test='count(msg:parameterList/msg:patientIdentifier) = 1'>Error: The shall be 1 element controlActProcess/queryByParameter/parameterList/patientIdentifier.</assert>
+   <assert test='count(msg:parameterList/msg:patientIdentifier/msg:value) = 1'>Error: The shall be 1 element controlActProcess/queryByParameter/parameterList/patientIdentifier/value.</assert>     
+   <assert test='msg:responsePriorityCode/@code = "I"'>Error: The attribute controlActProcess/queryByParameter/responsePriorityCode/@code is required and is fixed to "I".</assert>
+   <assert test='msg:statusCode/@code = "new"'>Error: The attribute controlActProcess/queryByParameter/statusCode/@code is defaulted to "new".</assert>   
+   <assert test ='msg:parameterList/msg:dataSource'>
+      Warning: Since no DataSource element is present the Pix Management Actor shall return patient identifiers for all domains for which it processes a corresponding identifier.
+   </assert>
+ </rule>  
+ 
+ <rule context='//msg:controlActProcess/msg:queryByParameter/msg:parameterList/msg:dataSource'>  
+   <assert test='count(msg:value) = 1'>Error: The element parameterList/dataSource shall contain one value.</assert>
+   <assert test='not(msg:value/@extension)'>Error: the attribute parameterList/dataSource/value/@extension shall not be present.</assert>
+   <assert test='msg:value/@assigningAuthority'>
+       Error: The attribute parameterList/dataSource/value/@assigningAuthority shall be present as the identifier for a specific domain. 
+   </assert>
+   <assert test='msg:value/@root'>Error: The attribute parameterList/dataSource/value/@root shall be present and represented as a valid ISO OID. </assert>
+ </rule>
+ 
+ </pattern>
+ 
+ <pattern id='PRPA_IN201309UV02-note'>
+ 
+ <rule context='/msg:PRPA_IN201309UV02'>   
+   <assert test='not(msg:id/@root)'>Note: The attribute PRPA_IN201309UV02/id/@root should be a unique UUID.</assert>
+   <assert test='not(msg:creationTime/@value)'>Note: The attribute PRPA_IN201309UV02/creationTime/@value should be generated for each message.</assert>
+ </rule>
+ 
+ <rule context='msg:PRPA_IN201309UV02/msg:controlActProcess/msg:queryByParameter'>
+   <assert test='not(msg:parameterList/msg:id)'>Note: The optional attribute queryByParameter.patientList.id was removed from the model.</assert>
+   <assert test='not(msg:responseElementGroupId)'>Note: The optional attribute queryByParameter.responseElementGroupId was removed from the model.</assert>
+   <assert test='not(msg:modifyCode)'>Note: The optional attribute queryByParameter.modifyCode was removed from the model.</assert>
+   <assert test='not(msg:executionAndDeliveryTime)'>Note: The optional attribute queryByParameter.executionAndDeliveryTime was removed from the model.</assert>  
+ </rule>
+ 
+ </pattern>
+ 

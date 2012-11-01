@@ -1,0 +1,12 @@
+<query:AdhocQueryResponse
+    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+    >
+    <rim:RegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+        <rim:ObjectRef id="urn:uuid:22c85315-12cd-4d52-97a9-8d827f03ddc5" home=""/>
+        <rim:ObjectRef id="urn:uuid:6eb82cee-a028-4db2-b346-8837d5043227" home=""/>
+        <rim:ObjectRef id="urn:uuid:d2dc7a78-577d-4be7-8c33-c097879cf96b" home=""/>
+        <rim:ObjectRef id="urn:uuid:94fc7d01-e216-4873-8168-ee94e760e8bd" home=""/>
+        <rim:ObjectRef id="urn:uuid:9d6fdebb-16dc-4d7f-935c-8621c9692d83" home=""/>
+        <rim:ObjectRef id="urn:uuid:44b9abc1-c4dc-4b95-b099-9415baaf3880" home=""/>
+    </rim:RegistryObjectList>
+</query:AdhocQueryResponse>

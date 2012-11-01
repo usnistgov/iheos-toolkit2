@@ -1,0 +1,39 @@
+<!-- These schematron rules validate an PixV3 message Patient Registry Record Added MCCI_IN000002UV01 -->
+<!-- The following rules are in accordance with IHE IT Technical Framework Supplement 2007-2008  
+      Patient Identifier Cross-Reference HL7 V3 (PIXV3) and Patient Demographic Query HL7 V3 (PDQV3) August 15, 2007 as
+      referenced by NHIN Trail Implementations Service Interface Specifications Subject Discovery V1.8 7/03/2008-->
+
+<!-- See Page 97 to 102 in the IHE document -->
+
+<pattern id='MCCI_IN000002UV01-errors'>
+
+ <rule context='/msg:MCCI_IN000002UV01'>
+   <assert test='not(msg:profileId)'>Error: The element MCCI_IN000002UV01/profileId shall not be present.</assert>
+   <assert test='not(msg:attachmentText)'>Error: The element MCCI_IN000002UV01/attachmentText shall not be present.</assert>
+   <assert test='not(msg:sender/msg:telecom)'>Error: The element MCCI_IN000002UV01/sender/telecom shall not be present.</assert>
+   <assert test='not(msg:receiver/msg:telecom)'>Error: The element MCCI_IN000002UV01/reciever/telecom shall not be present.</assert>
+   <assert test='not(//msg:device/msg:desc)'>Error: The element //device/desc shall not be present.</assert>
+   <assert test='not(//msg:device/msg:existenceTime)'>Error: The element //device/existenceTime shall not be present.</assert>
+   <assert test='not(msg:acknowlegement/msg:messageWaitingNumber)'>Error: The element MCCI_IN000002UV01/acknowlegement/messageNumber shall not be present.</assert>
+   <assert test='not(msg:acknowlegement/msg:messageWaitingPriorityCode)'>Error: The element MCCI_IN000002UV01/acknowlegement/messageWaitingPriorityCode shall not be present.</assert>
+   <assert test='not(msg:attentionLine)'>Error: The element MCCI_IN000002UV01/attentionLine shall not be present.</assert>
+   <assert test='not(msg:respondTo)'>Error: The element MCCI_IN000002UV01/respondTo shall not be present.</assert>
+   <assert test='msg:acceptAckCode/@code="NE"'>Error: The attribute MCCI_IN000002UV01/acceptAckCode/@code shall be set to NE.</assert>
+   <assert test='msg:acknowledgement'>Error: The element MCCI_IN000002UV01/acknowledgement shall be set to NE.</assert>  
+   <assert test='msg:device/@extension'>Warning: The MCCI_IN000002Uv01/id/@extension shall not have a value.</assert>
+ </rule>
+ 
+ </pattern>
+ 
+ <pattern id='MCCI_IN000002UV01-note'>
+ 
+ <rule context='/msg:MCCI_IN000002UV01'>   
+   <assert test='not(msg:id/@root)'>Note: The attribute MCCI_IN000002UV01/id/@root should be a unique message UUID.</assert>
+   <assert test='not(msg:creationTime/@value)'>Note: The attribute MCCI_IN000002UV01/creationTime/@value should represent the time the message was created.</assert>
+   <assert test='not(msg:receiver/msg:device/msg:id/@root)'>Note: The attribute MCCI_IN000002UV01/device/id/@root should be the HomeCommunityId of the receiving system.</assert>
+   <assert test='not(msg:sender/msg:device/msg:id/@root)'>Note: The attribute MCCI_IN000002UV01/device/id/@root should be the HomeCommunityId of the sending system.</assert>
+   <assert test='not(msg:acknowledgement/msg:targetMessage/msg:id)'>Note: The //acknowledgement/targetMessage/id should reflect the id of the received message.</assert>
+ </rule>
+ 
+ </pattern>
+ 

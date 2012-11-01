@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is is an instance of a SAML message using the SAML V.2 spec
+	It contains notes about where the different constraints can be found in the specs
+	and additional notes about the elements forming the message.
+ -->
+
+<S12:Header xmlns:S12="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:wsa="http://www.w3.org/2005/08/addressing">
+	<!-- http://www.ws-i.org/Profiles/BasicProfile-2_0%28WGD%29.html#WSADDR 
+		Support for WS-Addressing by a specific "service" is optional. However, a 
+		service may require the use of WS-Addressing, in which case, for successful 
+		interaction with that service, a client will need to support it. -->
+
+	<!-- TODO : not sure where is specified S12:mustUnderstand="true" -->
+	<wsse:security
+		xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+		xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+		xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+		S12:mustUnderstand="true">
+
+
+
+		<!-- http://www.ws-i.org/Profiles/BasicSecurityProfile-1.1.html#SAMLToken 
+			A SAML assertion can be put as is in the wsse:Security Tag -->
+		<!-- http://docs.oasis-open.org/wss-m/wss/v1.1.1/os/wss-SAMLTokenProfile-v1.1.1-os.html 
+			section 3.3 -->
+		<saml2:Assertion ID="AssertionID"> <!-- xs:ID as defined by http://www.w3.org/TR/xml-Id/ -->
+
+			IssueInstant="2008-10-07T13:00:34.484Z" <!-- xs:dateTame as defined by 
+				http://www.w3.org/TR/xmlschema-2/ -->
+			Version="2.0" <!-- always 2.0 -->
+			>
+			<Issuer>
+				<!-- required - system security officer for init. NHIO. has a NameID 
+					Format attribute and a value set accordingly -->
+			</Issuer>
+			<Subject>
+				<!-- the person making the request at the init NHIO. includes a NameID 
+					Format attribute. only formats “X509SubjectName” and “emailAddress” are allowed 
+					in this element -->
+				<NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">
+					CN=Alex G. Bell,O=1.22.333.4444,UID=abell
+				</NameID>
+				<!-- For explanation about the other attr, refer to the SAML 2.0 standard 
+					as referenced in section 1.4 of this specification -->
+				<SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:holder-of-key">
+					<SubjectConfirmationData>
+						<ds:KeyInfo>
+							<ds:RSAKeyValue>
+								<ds:Modulus>vYxVZKIzVdGMSBkW4bYnV80MV/RgQKV1bf/DX8laMO45P6uYp+snzz2XM0S6o3JGQtXQ=
+								</ds:Modulus>
+								<ds:Exponent>AQAB</ds:Exponent>
+							</ds:RSAKeyValue>
+							<ds:KeyValue />
+						</ds:KeyInfo>
+					</SubjectConfirmationData>
+				</SubjectConfirmation>
+			</Subject>
+
+			<!-- Now we defined the SAML statement elements : either authentication 
+				/ attribute or Authorization decision statements -->
+			<saml2:AuthnStatement AuthnInstant="2005-01-31T12:00:00Z"> <!-- attr required. The AuthnInstant attribute (required) specifies the time 
+					at which the authentication took place. -->
+				SessionIndex="67775277772" <!-- optional The SessionIndex attribute (optional) 
+					identifies the session between the Subject and the Authentication Authority. -->
+				>
+				<saml2:SubjectLocality Address="112.16.133.144"
+					DNSName="ME001122.cs.mynetwork.net"> <!-- optional elt. specifies the DNS domain name and IP address for the system 
+						entity that was authenticated. -->
+					/>
+					<saml2:AuthnContext>  <!-- REQUIRED -->
+						<saml2:AuthnContextClassRef> <!-- REQUIRED. There is a list of possible values described in the spec -->
+							urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+						</saml2:AuthnContextClassRef>
+					</saml2:AuthnContext>
+				</saml2:SubjectLocality>
+			</saml2:AuthnStatement>
+
+			<saml2:AttributeStatement>
+				<!-- The <AttributeStatement> is required to contain <Attribute> elements 
+					as defined by the OASIS XSPA profile of SAML -->
+				<!-- all attr except resource ID and National provider identifier are 
+					required -->
+				<saml2:Attribute Name="urn:oasis:names:tc:xacml:1.0:subject:subject-id"> <!-- contains user name description (for auditing) -->
+					<saml2:AttributeValue>Dr Joe Smith</saml2:AttributeValue>
+				</saml2:Attribute>
+				<saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:organization"> <!-- contains user organization (for auditing) -->
+					<saml2:AttributeValue>Best Clinic</saml2:AttributeValue>
+				</saml2:Attribute>
+				<saml2:Attribute
+					Name="urn:oasis:names:tc:xspa:1.0:subject:organization-id">
+					<!-- The organization ID may be an Object Identifier (OID), using the 
+						urn format (that is, “urn:oid:” appended with the OID); or it may be a URL 
+						assigned to that organization -->
+					<saml2:AttributeValue>urn:oid: 2.16.840.1.113883.3.18.101
+					</saml2:AttributeValue>
+				</saml2:Attribute>
+				<saml2:Attribute Name="urn:nhin:names:saml:homeCommunityId">
+					<!-- The value shall be the Home Community ID (an Object Identifier) 
+						assigned to the NHIO that is initiating the request, using the urn format 
+						(that is, “urn:oid:” appended with the OID). For information regarding OIDs, 
+						refer to http://www.oid-info.com/faq.htm -->
+					<saml2:AttributeValue>urn:oid:2.16.840.1.113883.3.190
+					</saml2:AttributeValue>
+				</saml2:Attribute>
+				<saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:subject:role">
+					<saml2:AttributeValue>
+						<Role xmlns="urn:hl7-org:v3" xsi:type="CE" code="112247003"
+							codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"
+							displayName="Medical doctor" />
+						<!-- The Role Element shall contain the SNOMED CT value representing 
+							the role that the user isplaying when making he request. The value set to 
+							be used is “User Role” and the OID 2.16.840.1.113883.3.18.6.1.156 as defined 
+							in HITSP C80. Here it is Medical doctor. -->
+					</saml2:AttributeValue>
+				</saml2:Attribute>
+				<saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:purposeofuse">
+					<saml2:AttributeValue>
+						<!-- This <Attribute> element shall have the Name attribute set to 
+							“urn:oasis:names:tc:xspa:1.0:subject:purposeofuse”7. The value of the <AttributeValue> 
+							element is a child element, “PurposeOfUse”, in the namespace “urn:hl7-org:v3”, 
+							whose content is defined by the “CE” (coded element) data type from the HL7 
+							version 3 specification. -->
+						<PurposeForUse xmlns="urn:hl7-org:v3" xsi:type="CE"
+							code="TREATMENT" codeSystem="2.16.840.1.113883.3.18.7.1"
+							codeSystemName="nhin-purpose" displayName="Treatment" />
+						<!-- The value of the Purpose of Use attribute shall be a urn:hl7-org:v3:CE 
+							element, specifying the coded value representing the user's purpose in issuing 
+							the request, choosing from the value set listed in the authorization specification -->
+					</saml2:AttributeValue>
+				</saml2:Attribute>
+				<saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:resource:resource-id">
+					<!-- This attribute is OPTIONAL, as it may not be needed for cases in 
+						which the data being exchanged does not pertain to a specific patient (e.g. 
+						population health data). The value of the Patient Identifier attribute MUST 
+						be specified when the InstanceAccessConsentPolicy attribute is specified 
+						in an Authorization Decision Statement. -->
+					<saml2:AttributeValue>543797436^^^&amp;1.2.840.113619.6.197&amp;ISO
+					</saml2:AttributeValue>
+					<!-- The patient identifier MUST consist of two parts; the OID for the 
+						assigning authority and the identifier of the patient within that assigning 
+						authority. The value MUST be formatted using the following syntax: IDNumber^^^&OIDofAA&ISO 
+						where IDNumber is the identifier of the patient within the assigning authority, 
+						and OIDofAA is the OID for the assigning authority. -->
+				</saml2:Attribute>
+				<saml2:Attribute Name=" urn:oasis:names:tc:xspa:2.0:subject:npi">
+					<!-- A National Provider Identifier (NPI) is a unique 10-digit identification 
+						number issued to health care providers in the United States by the Centers 
+						for Medicare and Medicaid Services (CMS). This attribute provides the ability 
+						to specify an NPI value as part of the SAML assertion that accompanies a 
+						message that is transmitted across the NHIN. -->
+					<saml2:AttributeValue>1234567890</saml2:AttributeValue>
+				</saml2:Attribute>
+			</saml2:AttributeStatement>
+
+			<saml2:AuthzDecisionStatement> <!-- OPTIONAL -->
+				xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion"
+				Decision="Permit"> <!-- AS IS -->
+				Resource="" <!-- The Resource attribute of the Authorization Decision 
+					Statement must be the URI of the endpoint to which the request is addressed 
+					or an empty URI reference (“”) -->
+				>
+				<saml2:Action Namespace="urn:oasis:names:tc:SAML:1.0:action:rwedc">Execute</saml2:Action> <!-- AS IS -->
+				<saml2:Evidence>
+					<!-- contains a single <Assertion> child element -->
+					<saml2:Assertion ID="da20c267-0f95-4cf4-8bc1-6daa5d84201e"
+						IssueInstant="2008-10-20T19:59:10.843Z" Version="2.0">
+						<saml2:Issuer> <!-- required -->
+							Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">CN=SAML
+							User,OU=SU,O=SAML User,L=Los Angeles,ST=CA,C=US
+						</saml2:Issuer>
+						<!-- optional element saml2:conditions -->
+						<saml2:Conditions NotBefore="”2008-10-20T19:59:10.843Z"
+							NotOnOrAfter="2008-12-25T00:00:00.000Z">
+							/>
+							<saml2:AttributeStatement> <!-- required -->
+								<!-- There must be at least one of the following Attributes in the 
+									Attribute Statement : accessConsentPolicy or InstanceAccessConsentPolicy. -->
+								<saml2:Attribute Name="AccessConsentPolicy"
+									NameFormat="http://www.hhs.gov/healthit/nhin">
+									<!-- The value(s) for this attribute will be the OIDs of the access 
+										policies that the asserting entity has previously agreed to with other entities. -->
+									<saml2:AttributeValue>urn:oid:1.2.3.4</saml2:AttributeValue>
+								</saml2:Attribute>
+								<saml2:Attribute Name="InstanceAccessConsentPolicy"
+									NameFormat="http://www.hhs.gov/healthit/nhin">
+									<!-- The value(s) of this attribute will be the OIDs of the patient 
+										specific access policy instances. If a requestor specifies this Attribute, 
+										the requestor MUST support the ability for the specified policy document(s) 
+										to be retrieved via the transactions defined in HITSP TP30. -->
+									<saml2:AttributeValue
+										xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance"
+										xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">urn:oid:1.2.3.4.123456789
+									</saml2:AttributeValue>
+								</saml2:Attribute>
+							</saml2:AttributeStatement>
+						</saml2:Conditions>
+					</saml2:Assertion>
+				</saml2:Evidence>
+			</saml2:AuthzDecisionStatement>
+
+			<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+				<!-- p.20 : An assertion signed by the asserting party supports assertion 
+					integrity, authentication of the asserting party to the receiving party, 
+					and, if the signature is based on the SAML authority’s public/private key 
+					pair, non-repudiation of origin. -->
+				<ds:SignedInfo>
+					<ds:CanonicalizationMethod
+						Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+					<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+					<ds:Reference URI="#51cb7689-0957-46a2-938e-1add75577ab7">
+						<!-- XML Digital Signatures are applied to data objects through an 
+							indirection or URI reference; when signing the SAML assertion the URI reference 
+							must match the Assertion ID attribute value. The <ds:Reference> element also 
+							specifies the transformation algorithms the digest method and the calculated 
+							digest value. -->
+						<!-- The transformation algorithms must be listed in the order that 
+							they are to be applied and may only consist of a subset of enveloped signature 
+							transform, exclusive canonicalization transform, and exclusive canonicalization 
+							with comments. -->
+						<ds:Transforms>
+							<ds:Transform
+								Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+							<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+						</ds:Transforms>
+						<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+						<ds:DigestValue>a3XVN23H2N/ga+08AGqGHD1euKc=</ds:DigestValue>
+					</ds:Reference>
+				</ds:SignedInfo>
+				<!-- The SignatureValue element contains the actual value of the digital 
+					signature; it is always encoded using base64. -->
+				<ds:SignatureValue>L8Liyz+6pLwNP9YBfIRbrDVUJtM2YcLuN3+HPjspQEHmZ2uTXWYuy7XTM9dqmN93w0ypVM7egjRe
+					=
+				</ds:SignatureValue>
+				<ds:KeyInfo>
+					<ds:KeyValue>
+						<ds:RSAKeyValue>
+							<ds:Modulus>vYxVZKIzVdGMSBkW4bYnV80MV/RgQKV1bf/DoMTX8laMO45P6=
+							</ds:Modulus>
+							<ds:Exponent>AQAB</ds:Exponent>
+						</ds:RSAKeyValue>
+					</ds:KeyValue>
+				</ds:KeyInfo>
+			</ds:Signature>
+
+		</saml2:Assertion>
+
+		<!-- http://www.ws-i.org/Profiles/BasicSecurityProfile-1.1.html#Timestamps -->
+		<wsu:Timestamp wsu:Id="#TimeStamp"> <!-- id allows reference in XML signature -->
+			<!--The timestamp digitally signed by the signature below to avoid tampering -->
+			<wsu:Created>2008-10-07T13:00:34Z</wsu:Created> <!-- All time in UTC format . spec : XML Schema type (dateTime). -->
+			<wsu:Expires>2008-10-07T13:05:34Z</wsu:Expires> <!-- TEST : Ordering matter -->
+		</wsu:Timestamp>
+
+
+		<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+			Id="_2">
+			<!--Authorization Framework : In order to prevent the manipulation of 
+				the stated range of valid times for the given message by a third party in 
+				a replay attack, the security timestamp is digitally signed. The <wsse:Security> 
+				element will contain a <ds:Signature> element which specifies the algorithms 
+				and transformations applied during the signing process. This element must 
+				conform to the XML Signature specification, which is described in section 
+				3.3.4. -->
+			<ds:SignedInfo>
+				<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+					<exc14n:InclusiveNamespaces
+						xmlns:exc14n="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="wsse S12" />
+				</ds:CanonicalizationMethod>
+				<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+				<ds:Reference URI="#TimeStamp"> <!-- reference is made here to the timestamp -->
+					<ds:Transforms>
+						<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+							<!--note : exclusiveNamespaces is the recommended element -->
+							<exc14n:InclusiveNamespaces
+								xmlns:exc14n="http://www.w3.org/2001/10/xml-exc-c14n#"
+								PrefixList="wsu wsse S12" />
+						</ds:Transform>
+					</ds:Transforms>
+					<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+					<ds:DigestValue>V4M61OBEnSuOx2quKvUnithajQs=</ds:DigestValue>
+				</ds:Reference>
+			</ds:SignedInfo>
+			<!-- The SignatureValue element contains the actual value of the digital 
+				signature; it is always encoded using base64. -->
+			<ds:SignatureValue>
+				Re51XgZggnnxhZwENu4Ld6rxD+s1uorHuqBvSquv9P41CamJhw
+				xOJnL7HqMJfDD+XgM+5gIH8NaL
+				9q4l1eoT9h3/XdBWJlvsQBVPdj3KsJLWbU3vSGcMlZBF+UEPfsQGGjjuI9TQnNO6ez0GD6Gmdaz3
+				jbIn8h+LaTHF7Le7uJA=
+			</ds:SignatureValue>
+
+			<!-- Authorization Framework : This piece comes from the timestamp discussion 
+				p.11. The saml assertion is identified as the security token -->
+			<ds:KeyInfo>
+				<!-- NOTE : wsse:SecurityTokenReference provides the ability to reference 
+					the SAML assertion -->
+				<wsse:SecurityTokenReference
+					xmlns:wsse11='http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd'
+					wsse11:TokenType='http://docs.oasis-open.org/wss/oasis-wss-saml-tokenprofile-1.1#SAMLV2.0'>
+					<!-- http://www.ws-i.org/Profiles/BasicSecurityProfile-1.1.html#SAMLToken 
+						R6617 Any SECURITY_TOKEN_REFERENCE to a SAML_V2_0_TOKEN MUST contain a wsse11:TokenType 
+						attribute with a value of "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0". -->
+
+					<wsse:KeyIdentifier wsu:Id='Token01'
+						ValueType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLID">
+						<!-- http://www.ws-i.org/Profiles/BasicSecurityProfile-1.1.html#SAMLToken 
+							R6616 Any STR_KEY_IDENTIFIER ValueType attribute that references a SAML_V2_0_TOKEN 
+							MUST have a value of "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLID" -->
+						<!-- Also described in http://docs.oasis-open.org/wss-m/wss/v1.1.1/os/wss-SAMLTokenProfile-v1.1.1-os.html 
+							section 3.4.2 -->
+						AssertionID
+						<!-- Authorization Framework : must match the assertion ID -->
+
+						<!-- http://www.ws-i.org/Profiles/BasicSecurityProfile-1.1.html#SAMLToken 
+							R6604 Any STR_KEY_IDENTIFIER that references a SAML_TOKEN MUST NOT include 
+							an EncodingType attribute. C R6605 Any STR_KEY_IDENTIFIER that references 
+							a SAML_TOKEN MUST have a value encoded as an xs:string. -->
+					</wsse:KeyIdentifier>
+				</wsse:SecurityTokenReference>
+
+				<ds:KeyValue>
+					<ds:RSAKeyValue>
+						<ds:Modulus>vYxVZKIzVdGMSBkW4bYnV80MV/RgQKV1bf/DoMTX8laMO45P6=
+						</ds:Modulus>
+						<ds:Exponent>AQAB</ds:Exponent>
+					</ds:RSAKeyValue>
+				</ds:KeyValue>
+			</ds:KeyInfo>
+			<ds:KeyInfo />
+		</ds:Signature>
+
+	</wsse:security>
+
+	<!-- WS-Addressing. WS-Addressing is a part of core Web services infrastructure. 
+		To facilitate interoperability and to provide a common baseline, this profile 
+		requires compliant clients and services to provide support for WS-Addressing 
+		Core, WS-Addressing SOAP Binding and WS-Addressing Metadata. Support for 
+		WS-Addressing by a specific "service" is optional. However, a service may 
+		require the use of WS-Addressing, in which case, for successful interaction 
+		with that service, a client will need to support it. -->
+
+</S12:Header>
+

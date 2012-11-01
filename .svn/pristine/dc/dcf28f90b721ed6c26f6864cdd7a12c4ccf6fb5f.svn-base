@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>Pre-Connectathon Test Help</title>
+</head>
+
+<body>
+
+<h1>Pre-Connectathon Test Help</h1>
+
+<p>This tool can be thought of as a graphical interface for the old xdstest command line tool. It is
+actually quite different since it is interactive and multi-user.
+
+<p>You will need to configure the toolkit to use this page.   
+
+<p>To configure this facility go to the home tab and open [Toolkit Configuration] at the top.  You will need
+the admin password (the default is easy). Edit the property External_Cache to be the full path to an empty directory on the
+system.  You need write permission to this directory.  Save the properties and go to the Pre-Connectathon Tests tab.
+
+<p>At the top of the Pre-Connectathon Tests tab you will see a 'Test Session' entry.  A test session is just an area for
+you to save your test data in.  Its only significance is that it is separate from other test sessions, so the 
+data can be kept separate.  A test session can represent a different user or tests run against a different 
+system.  The tool does not give it any significance other then being separate from the others. If you configured
+the External_Cache to be /usr/bill/toolkit and created a test session with name bill then the resulting log files
+will be found in /usr/bill/toolkit/TestLogCache/bill.  The contents of that directory is identical to the old
+xdstest tool.
+
+<p>To start using the panel, select a test session or add a new one. A test session name will become a 
+directory name in the directory you created above in the Toolkit Configuration panel.  So choose a name that
+is a legal directory name on your system.  If you entered /usr/bill/toolkit for External_Cache above then 
+you will see the following directory structure after running a few tests:
+
+<pre>
+/usr/bill/toolkit/
+                  actors.xml
+                  TestLogCache/bill/tests/11903/log.xml
+</pre>
+
+where I entered for a Test Session the string <i>bill</i>.
+
+<p>Next select the actor type to be tested.
+
+<p>Next select the test to be run. The test README file will be displayed. 
+
+<p>If the test has multiple sections, you can choose the section to run or run all of them in order.
+
+<p>You can view the test plan 
+(XML-based test script) using the 'View testplan' button.  If the test has multiple sections, you must
+select the section first.
+
+<p>Enter the Patient ID to be used. Not all tests require a Patient ID.
+
+<p>Select whether you are using TLS and then the system. The system selection list will
+change when you select/de-delect TLS since when you select TLS only systems configured for 
+TLS will be shown. The same goes for systems without non-TLS configurations. 
+To add systems, to the Site/Actor Configuration menu item 
+on the home tab.
+
+<p>After running, you can examing the logs and data by using the 'Inspect Results' button.  This takes you 
+to an inspector that allows you to view metadata and log files and give access to secondary queries that
+may help in debug. Note that this facility should already be familiar to most since we have been using
+it at Connectathons for 2 years.
+
+<p>Once a test is successful, you can extract the log.xml files to upload into Gazelle.  There is no tooling
+support for this but above you created the directory for logs to be deposited in (the Test Session), so you can find them 
+easily for upload.
+
+<h2>Extracting log.xml files for Gazelle upload</h2>
+
+<p>This form of the test tool generates the same log files, log.xml, as the command line version.  The
+issue is where to find them so they can be uploaded. Review the External_Cache example above.  The <i>tests</i>
+directory shown has the same structure as it did with the command line version of the tool.  Create your
+test log zip file from that directory structure.  
+
+</html>

@@ -1,0 +1,149 @@
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" xmlns:wsse11="http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd" xmlns:exc14n="http://www.w3.org/2001/10/xml-exc-c14n#">
+	<S:Header>
+		<To xmlns="http://www.w3.org/2005/08/addressing">https://nhinri2c23.aegis.net:443/RespondingGateway_Query_Service/DocQuery</To>
+		<Action xmlns="http://www.w3.org/2005/08/addressing">urn:ihe:iti:2007:CrossGatewayQuery</Action>
+		<ReplyTo xmlns="http://www.w3.org/2005/08/addressing">
+			<Address>http://www.w3.org/2005/08/addressing/anonymous</Address>
+		</ReplyTo>
+		<MessageID xmlns="http://www.w3.org/2005/08/addressing">uuid:2b07fa11-381d-4244-bda3-8cb764b028e2</MessageID>
+		<wsse:Security S:mustUnderstand="true">
+			<wsu:Timestamp xmlns:ns17="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512" xmlns:ns16="http://schemas.xmlsoap.org/soap/envelope/" wsu:Id="_1">
+				<wsu:Created>2010-08-26T15:53:11Z</wsu:Created>
+				<wsu:Expires>2010-08-26T15:58:11Z</wsu:Expires>
+			</wsu:Timestamp>
+			<saml2:Assertion xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:exc14n="http://www.w3.org/2001/10/xml-exc-c14n#" xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" xmlns:xs="http://www.w3.org/2001/XMLSchema" ID="0564df7f-f88f-4f56-8f97-d59c8f224284" IssueInstant="2010-08-26T15:53:11.433Z" Version="2.0">
+				<saml2:Issuer Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">O=Social Security Administration,L=Baltimore,ST=Maryland,C=US</saml2:Issuer>
+				<saml2:Subject>
+					<saml2:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">UID=CN=</saml2:NameID>
+					<saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:holder-of-key">
+						<saml2:SubjectConfirmationData>
+							<ds:KeyInfo>
+								<ds:KeyValue>
+									<ds:RSAKeyValue>
+										<ds:Modulus>jK0Txf3GWau5TnOA5VSZo4HRHtgJT4h+5ewomSoHupkqFLo0OSojAmn+q5Wc/Q5g02m1KQ9GXzB5WgCUy+jJHTA7q3vhZXdd3WJhed0sOloPVwt9bwjGjJ3dr2zt/YIvvb4gLG8EUFGTkiLyeMCJSQXucA0ZZwBI82iBasDVAac=</ds:Modulus>
+										<ds:Exponent>AQAB</ds:Exponent>
+									</ds:RSAKeyValue>
+								</ds:KeyValue>
+							</ds:KeyInfo>
+						</saml2:SubjectConfirmationData>
+					</saml2:SubjectConfirmation>
+				</saml2:Subject>
+				<saml2:AuthnStatement AuthnInstant="2010-08-26T15:53:10.837Z" SessionIndex="12345">
+					<saml2:SubjectLocality Address="158.147.185.100" DNSName="ssa.gov"/>
+					<saml2:AuthnContext>
+						<saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:X509</saml2:AuthnContextClassRef>
+					</saml2:AuthnContext>
+				</saml2:AuthnStatement>
+				<saml2:AttributeStatement>
+					<saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:subject-id">
+						<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">MEGAHIT</saml2:AttributeValue>
+					</saml2:Attribute>
+					<saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:organization">
+						<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">Social Security Administration</saml2:AttributeValue>
+					</saml2:Attribute>
+					<saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:organization-id">
+						<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">2.16.840.1.113883.3.184.6.1</saml2:AttributeValue>
+					</saml2:Attribute>
+					<saml2:Attribute Name="urn:nhin:names:saml:homeCommunityId">
+						<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">2.16.840.1.113883.3.184.6.1</saml2:AttributeValue>
+					</saml2:Attribute>
+					<saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:subject:role">
+						<saml2:AttributeValue>
+							<hl7:Role xmlns:hl7="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" code="106328005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED_CT" displayName="Social worker" xsi:type="hl7:CE"/>
+						</saml2:AttributeValue>
+					</saml2:Attribute>
+					<saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:purposeofuse">
+						<saml2:AttributeValue>
+							<hl7:PurposeForUse xmlns:hl7="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" code="COVERAGE" codeSystem="2.16.840.1.113883.3.18.7.1" codeSystemName="nhin-purpose" displayName="Disclosures for insurance or disability coverage determination" xsi:type="hl7:CE"/>
+						</saml2:AttributeValue>
+					</saml2:Attribute>
+					<saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:resource:resource-id">
+						<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">2222^^^&amp;amp;2.16.840.1.113883.3.184.6.1&amp;amp;ISO</saml2:AttributeValue>
+					</saml2:Attribute>
+				</saml2:AttributeStatement>
+				<saml2:AuthzDecisionStatement Decision="Permit" Resource="https://nhinri2c23.aegis.net:443/RespondingGateway_Query_Service/DocQuery">
+					<saml2:Action Namespace="urn:oasis:names:tc:SAML:1.0:action:rwedc">Execute</saml2:Action>
+					<saml2:Evidence>
+						<saml2:Assertion ID="40df7c0a-ff3e-4b26-baeb-f2910f6d05a9" IssueInstant="2010-08-26T15:53:10.859Z" Version="2.0">
+							<saml2:Issuer Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">O=Social Security Administration,L=Baltimore,ST=Maryland,C=US</saml2:Issuer>
+							<saml2:Conditions NotBefore="2010-08-26T15:53:10.860Z" NotOnOrAfter="2010-08-26T15:53:10.861Z"/>
+							<saml2:AttributeStatement>
+								<saml2:Attribute Name="AccessConsentPolicy" NameFormat="http://www.hhs.gov/healthit/nhin"/>
+								<saml2:Attribute Name="InstanceAccessConsentPolicy" NameFormat="http://www.hhs.gov/healthit/nhin">
+									<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">urn:oid:2.16.840.1.113883.3.184.6.1.2222</saml2:AttributeValue>
+								</saml2:Attribute>
+							</saml2:AttributeStatement>
+						</saml2:Assertion>
+					</saml2:Evidence>
+				</saml2:AuthzDecisionStatement>
+				<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+					<ds:SignedInfo>
+						<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+						<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+						<ds:Reference URI="#0564df7f-f88f-4f56-8f97-d59c8f224284">
+							<ds:Transforms>
+								<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+								<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+							</ds:Transforms>
+							<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+							<ds:DigestValue>ljBx+unbHvKEhdqDYsa7L+3Y/hA=</ds:DigestValue>
+						</ds:Reference>
+					</ds:SignedInfo>
+					<ds:SignatureValue>BpYAqSyiP3QxXd6b3W5jDXG7nJbfvwwpOy/0wc08IvvSgwDyPXNApa+iCzb0OmKOdW55nKTVLw7f
+DPJFIfVvNwnVK7SicxV1WDs6jWOJYaqUG63AcuUqun1xQWOzIQQxHJ5PTJtzoU+ywtm8c29vTfNT
+LudYLUDdIOVZrydJZB0=</ds:SignatureValue>
+					<ds:KeyInfo>
+						<ds:KeyValue>
+							<ds:RSAKeyValue>
+								<ds:Modulus>jK0Txf3GWau5TnOA5VSZo4HRHtgJT4h+5ewomSoHupkqFLo0OSojAmn+q5Wc/Q5g02m1KQ9GXzB5
+WgCUy+jJHTA7q3vhZXdd3WJhed0sOloPVwt9bwjGjJ3dr2zt/YIvvb4gLG8EUFGTkiLyeMCJSQXu
+cA0ZZwBI82iBasDVAac=</ds:Modulus>
+								<ds:Exponent>AQAB</ds:Exponent>
+							</ds:RSAKeyValue>
+						</ds:KeyValue>
+					</ds:KeyInfo>
+				</ds:Signature>
+			</saml2:Assertion>
+			<ds:Signature xmlns:ns17="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512" xmlns:ns16="http://schemas.xmlsoap.org/soap/envelope/" Id="_2">
+				<ds:SignedInfo>
+					<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+						<exc14n:InclusiveNamespaces PrefixList="wsse S"/>
+					</ds:CanonicalizationMethod>
+					<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+					<ds:Reference URI="#_1">
+						<ds:Transforms>
+							<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+								<exc14n:InclusiveNamespaces PrefixList="wsu wsse S"/>
+							</ds:Transform>
+						</ds:Transforms>
+						<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+						<ds:DigestValue>VDoEHObjsvP2O8Sj3ewvny4xpCM=</ds:DigestValue>
+					</ds:Reference>
+				</ds:SignedInfo>
+				<ds:SignatureValue>JvYPxR2uEO/RrEC7tmgb8pAAm9ZyN9EOXKaYsrYme0V1+RuPqCQ/twGdul9Z1lzIEsbr8jEteg0zJLIsbP0CkVIV89dmb0xvm13Mcw2KMTotxmFz3n9U+JaJ4Zf4oKSPmS0kmuvlw2iZIErbwCYHQkIIwyePVpOkixcUSoK721U=</ds:SignatureValue>
+				<ds:KeyInfo>
+					<wsse:SecurityTokenReference wsse11:TokenType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0">
+						<wsse:KeyIdentifier ValueType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLID">0564df7f-f88f-4f56-8f97-d59c8f224284</wsse:KeyIdentifier>
+					</wsse:SecurityTokenReference>
+				</ds:KeyInfo>
+			</ds:Signature>
+		</wsse:Security>
+	</S:Header>
+	<S:Body>
+		<ns4:AdhocQueryRequest xmlns:ns2="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" xmlns:ns3="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:ns4="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" xmlns:ns5="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:ns6="urn:gov:hhs:fha:nhinc:gateway:samltokendata" maxResults="-1" startIndex="0" federated="false">
+			<ns4:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+			<ns3:AdhocQuery home="urn:oid:2.16.840.1.113883.3.184.6.1" id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
+				<ns3:Slot name="$XDSDocumentEntryStatus">
+					<ns3:ValueList>
+						<ns3:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</ns3:Value>
+					</ns3:ValueList>
+				</ns3:Slot>
+				<ns3:Slot name="$XDSDocumentEntryPatientId">
+					<ns3:ValueList>
+						<ns3:Value>'RI2.102.00001^^^&amp;2.16.840.1.113883.3.425&amp;ISO'</ns3:Value>
+					</ns3:ValueList>
+				</ns3:Slot>
+			</ns3:AdhocQuery>
+		</ns4:AdhocQueryRequest>
+	</S:Body>
+</S:Envelope>

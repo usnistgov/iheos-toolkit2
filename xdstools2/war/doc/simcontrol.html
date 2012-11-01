@@ -1,0 +1,252 @@
+<html>
+
+<head>
+<title>Simulator Control Help</title>
+</head>
+
+<body>
+
+<h1>Simulator Control Help</h1>
+
+<h4>Contents</h4>
+
+<ul>
+<li><a href="#gettingstarted">Getting Started</a>
+<li><a href="#simulators">Simulators</a>
+<li><a href="ops">Operations</a>
+<li><a href="#simdb">Simulator Database</a>
+</ul>
+
+<h2><a name="gettingstarted">Getting Started</a></h2>
+
+<p>To create a new simulator, select actor type and push 'Create Actor Simulator'.  This will create simulator
+(within toolkit) and make its endpoints available in the other tools in the toolkit. Save the simulator id
+for the next time you want to use it.
+
+<p>Note that the simulator's endpoints are listed
+
+<p>The simulator's name is show.  It can be edited. This affects how it is listed in other tools (like queries).
+
+<p>The simulator may have options to enable or disable.  The edit box controlling an optoin takes the values 
+true or false (true is enabled).
+
+<h2><a name="simulators">Simulators</a></h2>
+
+<p>A simulator is a lightweight implementation of an IHE actor implemented within this toolkit.
+In general, simulators are private and not shared between developers. This rule can be bent
+in some cases. A simulator has the following benefits (comparison is made against the 
+Document Registry implementation part of the Public Registry service):
+<ul>
+<li>Affinity Domain configuration controlled by user (future)
+<li>Private database reflecting Patient Identity Feed (future)
+<li>User can delete data
+</ul>
+
+<p>Specific documentation on constructing new simulators is found 
+<a href="simulator.html">here</a>.
+
+<h2><a name="ops">Operations</a></h2>
+
+<p>A user creates one or more simulators, uses them, then deletes them.  Administratively, simulators left
+unused for 30 days are deleted automatically.
+
+<p>This tab is used to create, edit, and delete simulators.
+
+<h3>Basic Features</h3>
+
+<ul>
+<li>The 'Select actor type' selector and the 'Create Actor Simulator' button are used to create
+a new simulator.
+<li>The edit box contains a comma separated list of simulator ids.  Creating a new simulator
+adds its id to this box. The 'Load Simulators' button will load the simulators whose ids
+are listed in the box. Details about loaded simulators are displayed below the box.
+<li>Below the box is a list of simulator configurations.  Each configuration is displayed
+as a property list of name/value pairs.  Some values can be edited. 
+<li>Each configuration has a set of buttons on the right:
+<ul>
+<li>Save - save the edits
+<li>Delete - delete the simulator
+</ul>  
+</ul>
+
+<h3>Endpoints</h3>
+
+<p>The toolkit generates all the necessary Web Service endpoints for an instance of 
+an actor. To do this, the toolkit must know the hostname and port where it is running.
+These must be configured via the Toolkit Configuration panel which is available from the Home
+menu.  You must have the admin password to edit.
+
+<p>The important parameters are:
+
+<ul>
+<li>Toolkit_Host - the hostname where the toolkit is running
+<li>Toolkit_Port - the port where the toolkit is running
+</ul>
+
+<p>Each endpoint is specific to the simulator, actor, and transaction.  The simulator
+is identified by the simulator id.
+
+<h3>More Details</h3>
+
+New simulators, when created, update the panel by:
+
+<ul>
+<li>Adding the simulator id to the box located below the 'Create Actor Simulator' button
+<li>Details of the simulator are displayed below
+</ul>
+
+<p>Simulators have the following system assigned attributes:
+
+<ul>
+<li>Simulator ID - a UUID identifying the simulator.  
+<li>Simulator Type - registry, repository, responding gateway, etc
+<li>Creation Time
+<li>Assigned endpoints and ids (repositoryUniqueId, homeCommunityId)
+</ul>
+
+<p>Simulators have the following user editable attributes:
+
+<ul>
+<li>Name
+<li>Owner
+<li>Description
+</ul>
+
+<p>Of these, only Name is used by the system.
+
+<p>Additionally, if the actor defines a named option that the toolkit supports, it will
+be displayed here and can be enabled or disabled. 
+
+<p>If these are edited, the 'Save' button will save the updates.
+
+<p>The 'Delete' button will delete the simulator and all its data. Delete means delete, 
+there is no undo.
+
+<p>When a simulator is created, it will automatically show up on actor instance lists
+in other tabs in this tool. The site name is constructed from the Name followed by a dot 
+followed by the simulator type.  If you create only one actor of a type, then the 
+default name is adequate.  If you create two, they will be assigned the same name.  Oops. 
+Two registries using the default name will show up as Private.registry.
+This is where the Name attribute is needed.  Edit this attribute to get a unique site name
+for use in other tools.
+
+<p>As you create simulators, the top edit box reflects the simulators with a comma separated list
+of the simulator ids. As you delete simulators, this list is also affected. A design goal of this
+toolkit is to not require any type of user registration.  It is a lot of work to build and maintain
+and a pain in the neck to everyone.  With no user registration, how do we keep track
+of the simulators you create?   This comma separated list of simulator ids is the record.  After
+creating a collection of simulators to support a piece of your testing, copy the list to a file
+on your system. Later when you need to load the same collection of simulators, copy/paste
+the simulator id list back into the edit box and push the 'Load Simulators' button.
+
+<p>When you use this panel to create a simulator, it automatically shows up on the
+actor selection panels within each of the tools. When you close your session with the toolkit, go home
+for the weekend, and come back on Monday, all this will have been forgotton.  How do you get your actors back?
+Well, your actors did not go away. Their configuration and data are still on disk.  But the tool has
+forgotton all about which ones are yours. Remember this is designed to support multiple concurrent users.  To
+get your simulators back, find that file that you saved the list of simulator ids into.  Copy the id list, open
+the Simulator Control panel, paste the list, and hit the 'Load Simulators' button.  Now the tool knows which
+simulators to load into this session.  
+
+<h2><a name="simdb">Simulator Database</a></h2>
+
+<p>The simulators in this tool use no database engine so there is none to install. Instead, the simulators
+use a section of the filesystem to hold data and status.  The [Toolkit Configuration] menu available on the home menu
+has a property called 'Simulator_database_directory'.  An writable, empty directory must be created on the
+system and its path entered as the value of this property.
+
+<p>Each time you create a simulator it is given a unique UUID, you saw that on the Simulator Control panel.
+That UUID becomes a directory name under this Simulator_database_directory directory. This directory
+contains two items:
+<ul>
+<li>A file named simctl.ser which holds the configuration information displayed on the Simulator
+Control panel
+<li>A directory naming the type of actor this is: registry, repository, etc.
+</ul>
+
+<p>You will see the simctl.ser type file a lot. The .ser file type is a typical file extension for files
+that contain serialized Java objects. This file (and others like it) are readable/writable by Java and are 
+essentially binary files.
+
+<p>To explain the format of the actor directory (regitry, repository etc.) I use the registry simulator
+as an example.  As a refresher, a registry receives metadata in Register transactions.  This metadata is
+stored and index for later query.  It also accepts a Store Query transaction to retrieve metadata. To manage
+this data, the registry directory contains 3 items:
+<ul>
+<li>rb directory holding the contents of every Register transaction it has received
+<li>reg_db.ser file, a serialized Java object collection, that is the searchable index of the registry actor.
+The Stored Query implementation present in the registry actor knows how to search this index to find
+DocumentEntries etc. 
+<li>sq directory holding the contents of every Stored Query transactoin it has received.
+</ul>
+
+<h3>rb directory</h3>
+
+<p>This directory contains directories, each with a timestamp for a name.  Each of these sub-directories
+holds the contents of a single register transaction to the registry simulator. The sub-directories
+have the this internal structure:
+
+<ul>
+<li>log.txt file - this is the output of the new message validator infrastructure. It's contents
+shows the internal processing that went on when executing the register transaction. It has
+no connection to the xdstest output file called log.xml.
+<li>request_hdr.txt - this is the us-ascii text of the HTTP header of the request message.  
+<li>request_body.bin - this is the byte array (Java byte[]) of the body of the HTTP request message.
+It is saved in this format since one needs to decode the HTTP header to know what character set
+is used to encode the body.
+<li>response_hdr.txt - HTTP header of the response message
+<li>response_body.txt - HTTP body of the response message  
+<li>Registry directory - this directory contains an XML file for each metadata object submitted in 
+the register transaction.  If the register transaction contained a SubmissionSet, DocumentEntry, and
+HasMember Association then this directory will have 3 XML files, each holding one of these objects
+and named for the id of the object.  So a DocumentEntry with id=urn:uuid:87cc729b-0530-4f40-abd3-a7d29331f227
+will have the filename 87cc729b_0530_4f40_abd3_a7d29331f227.xml. 
+</ul>
+
+<h4>Significance of the directory structure</h4>
+
+<p>Inside the registry directory, the reg_db.ser file and rb directory work together to hold the contents
+of the registry.  The only record of the metadata for a DocumentEntry, for example, would be in a file
+2010_10_25_16_02_46/Registry/87cc729b_0530_4f40_abd3_a7d29331f227.xml where the components of this path are the
+timestamp of the message, the Registry directory which holds the registry contents of the message, and 
+87cc729b_0530_4f40_abd3_a7d29331f227.xml which holds the XML form of a single registry object, a DocumentEntry
+for example. The registry does not use this file structure to process Stored Queries.  Instead, it loads 
+the reg_db.ser file which contains all the information about all submitted messages (register transactions) 
+in a form that is easy to search.  In essense, the Document Registry actor is split into a searchable
+index and a metadata repository. Kinda twists the terminology used in XDS doesn't it?
+
+<p>To service a Stored Query, the reg_db.ser file is consulted. The requested objects are found.  If the
+Stored Query request asks for ObjectRefs in return, the response message is formed just from this file.  If
+LeafClass is requested, then the XML files holding the full content of the relevant objects are gathered
+to build the response.
+
+<p>Beside allowing the simulator to manage a very small index file, there is a second benefit to this design.
+The individual timestamped directories (children of the rb directory), each holding the contents of a single
+submission, can be individually deleted.  When a message directory is deleted, the registy index 'forgets' 
+about this submission.  Users have full control over the deletion of metadata from their instance of 
+a registry simulator. Deleting a message directory, deletes its HTTP message and metadata content.
+When the Simulator Message View panel allows you to delete messages, it is doing just that, deleting
+the directory representing the message. But, you can bypass the toolkit here and simply delete the 
+directory using your favorite file system tools.  They are probably more sophisticated than anything
+that will ever be built into this toolkit.
+</body>
+
+<h3>sq directory</h3>
+
+<p>Where the rb directory held the contents of every register transaction, this directory
+holds the contents of every Stored Query transaction. It contains the following files with the same
+significance as those in the rb directory:
+
+<ul>
+<li>log.txt file - this is the output of the new message validator infrastructure. It's contents
+shows the internal processing that went on when executing the stored query transaction. It has
+no connection to the xdstest output file called log.xml.
+<li>request_hdr.txt - this is the us-ascii text of the HTTP header of the request message.  
+<li>request_body.bin - this is the byte array (Java byte[]) of the body of the HTTP request message.
+It is saved in this format since one needs to decode the HTTP header to know what character set
+is used to encode the body.
+<li>response_hdr.txt - HTTP header of the response message
+<li>response_body.txt - HTTP body of the response message  
+</ul>
+
+</html>

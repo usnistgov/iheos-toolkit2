@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="xdstools2">
+        <wb-resource deploy-path="/WEB-INF/web.xml" source-path="/war/WEB-INF/web.xml"/>
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/war" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/gwt"/>
+        <dependent-module archiveName="actor-transaction-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/actor-transaction/actor-transaction">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="common-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/common/common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="common-datatypes-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/common-datatypes/common-datatypes">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="docref-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/docref/docref">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="error-recording-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/error-recording/error-recording">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="http-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/http/http">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="registry-metadata-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/registry-metadata/registry-metadata">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="registry-msg-formats-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/registry-msg-formats/registry-msg-formats">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="registry-support-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/registry-support/registry-support">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sim-common-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sim-common/sim-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="simulators-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/simulators/simulators">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="site-management-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/site-management/site-management">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="soap-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/soap/soap">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="dsig-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/dsig/dsig">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="saml-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/saml/saml">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="testkit-utilities-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/testkit-utilities/testkit-utilities">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="utilities-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/utilities/utilities">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="validators-registry-message-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/validators-registry-message/validators-registry-message">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="direct-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/direct/direct">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="validators-registry-metadata-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/validators-registry-metadata/validators-registry-metadata">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="validators-support-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/validators-support/validators-support">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xds-exceptions-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/xds-exceptions/xds-exceptions">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xdstest2-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/xdstest2/xdstest2">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="xdstest2-logging-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/xdstest2-logging/xdstest2-logging">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="xdstools2"/>
+        <property name="java-output-path" value="/xdstools2/target/classes"/>
+    </wb-module>
+</project-modules>

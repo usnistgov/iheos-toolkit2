@@ -1,0 +1,35 @@
+TTD
+
+Create system config file:
+	Assigns a system a name
+	Contains endpoints for each transaction
+	Can describe multiple systems
+	TLS/non-TLS
+	
+Add command line option to use a system config file
+
+Create file format for test lists
+	Single file contains multiple named lists
+	Create command line option to use
+	
+To find testkit
+	1) use env variable 
+	2) use command line option
+	
+Add help file accessible via command line
+
+Define a label for a test that forces new patient id to be used
+Allocate patient ids from a list
+
+Output from a test run (single test list) goes to directory pointed
+to by command line option
+
+Command line option to list all errors from a test run showing
+error messages
+
+Document language
+
+Use slash char to signify directory OR test with test spec:
+	tests/11234/SOAP11/by_uuid
+Use env var to identify correct slash char
+	

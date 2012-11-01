@@ -1,0 +1,27 @@
+<body>
+
+<h2>Message validation package</h2>
+
+<p>Validation systems are built up from a collection of simple validators which are linked together by the
+validation engine. A validation system is usually started through a factory class.
+
+<p>This package supplies the validation engine, a collection of factory methods to initialize the validation,
+validators for HTTP, SOAP, XD* message element, status reporting for both a simple text output and with full markup for the
+GTW/toolkit environment.  A simple class, ValidationContext, is used to drive the validation by managing a list of validation
+goals the the individual validators respond to.
+
+<p>Each validation step is represented by an instance of a validation class.  A validation class is any class that
+subclasses MessageValidator providing a run method to execute the validation step.  A validatation system is
+an instance of the class MessageValidatorEngine which maintains a queue of validation steps.
+Validation steps are scheduled with a method call the validation engine which places the step on the queue. When the application
+built from these parts calls the run method on the engine, all queued validation steps are executed. The engine
+guards against steps being run more than once. New steps can be queued at any time to be run at the next run request
+to the engine.
+
+<p>Validation output is coordinated though the interface ErrorRecorder.  Two implementations of this interface are 
+TextErrorRecorderBuilder which generates pure text output and GwtErrorRecorder (located in the package xdstools2) for 
+output to the XDS Toolkit. Each validation step has its own error recorder instance. Because of this most validator code
+carries around a ErrorRecorder factory so new error recorder instances can be created for new steps. 
+
+
+</body>

@@ -1,0 +1,1 @@
+This is an arbitrary text file that should not evaluate as a CDA.

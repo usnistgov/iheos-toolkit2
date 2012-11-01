@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="build" name="direct-faq">
+
+       <taskdef resource="net/sf/antcontrib/antlib.xml">
+                 <classpath>
+                    <pathelement location="../shared-lib/lib/ant-contrib.jar"/>
+                  </classpath>
+                </taskdef>
+
+
+	<target name="clean">
+		<delete>
+			<fileset dir=".">
+				<include name="*.html"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="build">
+		<for param="file">
+			<fileset dir="." includes="*.md"/>
+			<sequential>
+				<antcall target="markdown">
+					<param name="mdfile" value="@{file}"/>
+				</antcall>
+			</sequential>
+		</for>
+	</target>
+
+	<target name="markdown">
+		<echo message="mdfile=${mdfile}"/>
+		<exec executable="../scripts/markdown.sh">
+			<arg value="${mdfile}"/>
+		</exec>
+	</target>
+
+</project>

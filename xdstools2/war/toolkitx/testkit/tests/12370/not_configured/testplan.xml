@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>12370/not_configured</Test>
+    <TestStep id="submit">
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <!-- Association Documentation Classification does not apply to HasMember associations.  Transacation must return error -->
+        <RegisterTransaction>
+            <XDSb/>
+            <MetadataFile>single_doc.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

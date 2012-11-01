@@ -1,0 +1,17 @@
+Project xdstest2 Release Notes
+
+All environment variables are now optional and can all be replaced
+by command line arguments.
+
+All uses of Groovy language have been removed.
+
+Big clean up of command line arguments. Help text (xdstest -h) is 
+now stored in xdstoolkit/xdstest/help.txt.
+
+Clean up of  --test (-t) and --testcollection (-tc) options.
+
+Change to format of actors.xml file.  Home attribute has been removed from
+the transaction element.  Instead, a new home element is used to define
+the homeCommunityId for the site.
+
+Library xds-registry-common2.jar renamed to xds-common.jar.

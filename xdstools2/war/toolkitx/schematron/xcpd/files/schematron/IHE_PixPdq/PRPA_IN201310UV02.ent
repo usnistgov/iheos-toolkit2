@@ -1,0 +1,75 @@
+<!-- These schematron rules validate an PixV3 message Patient Registry Query by Indentifier PRPA_IN201310UV02 -->
+<!-- The following rules are in accordance with IHE IT Technical Framework Supplement 2009-2010  
+      Patient Identifier Cross-Reference HL7 V3 (PIXV3) and Patient Demographic Query HL7 V3 (PDQV3) August 10, 2009. -->
+
+
+<pattern id='PRPA_IN201310UV02-errors'>
+
+ <rule context='/msg:PRPA_IN201310UV02'>
+ 
+   <assert test='msg:interactionId/@extension="PRPA_IN201310UV02"'>Error: the attribute PRPA_IN201310UV02/interactionId/@extension shall equal PRPA_IN201310UV02.</assert>
+      <assert test='msg:processingModeCode/@code="T"'>Error: The attribute PRPA_IN201310UV02/processingModeCode/@code shall be set to T.</assert>
+   <assert test='msg:acceptAckCode/@code="NE"'>Error: The attribute PRPA_IN201310UV02/acceptAckCode/@code shall be set to NE.</assert>
+   <assert test='count(msg:receiver) = 1'>Error: The shall be 1 element PRPA_IN201310UV/receiver.</assert>
+ </rule>  
+   
+ <rule context='/msg:PRPA_IN201310UV02/msg:controlActProcess'>
+   <assert test='@moodCode="EVN"'>Error: The attribute PRPA_IN201310UV02/controlActProcess/moodCode shall be set RQO.</assert>  
+   <assert test='msg:code'>Error: The element PRPA_IN201310UV02/controlActProcess/code shall be present.</assert>
+   <assert test='msg:code/@code ="PRPA_TE201310UV"'>Error: The attribute PRPA_IN201310UV02/controlActProcess/code/@code shall have the value PRPA_TE201310UV.</assert>  
+   <assert test='not(msg:text)'>Error: The element PRPA_IN201310UV02/controlActProcess/text shall not be present.</assert>
+   <assert test='not(msg:priortyCode)'>Error: The element PRPA_IN201310UV02/controlActProcess/priortyCode shall not be present.</assert>
+   <assert test='not(msg:reasonCode)'>Error: The element PRPA_IN201310UV02/controlActProcess/reasonCode shall not be present.</assert>
+   <assert test='not(msg:overseer)'>Error: The element PRPA_IN201310UV02/controlActProcess/overseer shall not be present.</assert>
+   <assert test='not(msg:authorOrPerformer)'>Error: The element PRPA_IN201310UV02/controlActProcess/authorOrPerformer shall not be present.</assert>
+   <assert test='not(msg:dataEnterer)'>Error: The element PRPA_IN201310UV02/controlActProcess/dataEnterer shall not be present.</assert>
+   <assert test='not(msg:reasonOf)'>Error: The element PRPA_IN201310UV02/controlActProcess/reasonOf shall not be present.</assert>
+   <assert test='not(msg:informationRecipient)'>Error: The element PRPA_IN201310UV02/controlActProcess/informationRecipient shall not be present.</assert>
+   <assert test='not(msg:subject/msg:registrationEvent/msg:inFullfilmentOf)'>Error: The element PRPA_IN201310UV02/controlActProcess/subject/registrationEvent/inFullfilmentOf shall not be present.</assert>
+   <assert test='not(msg:subject/msg:registrationEvent/msg:definition)'>Error: The element PRPA_IN201310UV02/controlActProcess/subject/registrationEvent/definition shall not be present.</assert>
+   <assert test='count(msg:subject/msg:registrationEvent) = 1'>Error: There shall be one element controlActProcess/subject/registrationEvent.</assert>
+   <assert test='count(msg:subject/msg:registrationEvent/msg:subject1/msg:patient) = 1'>Error: The shall be 1 element controlActProcess/subject/registrationEvent/subject1/patient.</assert>    
+   <assert test='count(msg:subject/msg:registrationEvent/msg:subject1/msg:queryByParameter) = 1'>Error: The shall be 1 element controlActProcess/subject/registrationEvent/subject1/queryByParameter.</assert>
+   <assert test='not(msg:subject/msg:registrationEvent/msg:subject1/msg:queryByParameter)'>
+       Warning: The element //controlActProcess/subject/registrationEvent/Subject1/queryByParameter shall be a copy of the original query.</assert>
+ </rule>
+   
+  <rule context='//msg:patient/msg:providerOrganization'>  
+   <assert test='msg:id/@root'> Error: The patient/providerOrganization/id shall have only a root expressed as an ISO OID matching the id/@root attributes of the element patient</assert> 
+   <assert test='not(msg:id/@root)'>
+       Warning: The patient/providerOrganization/id shall have only a root expressed as an ISO OID matching the id/@root attributes of the element patient</assert>
+   <assert test='msg:contactParty'>Error: The patient/providerOrganization shall have an ContactParty element</assert>
+   <assert test='msg:contactParty/msg:addr'>Error: The patient/providerOrganization/contactParty shall have a addr element.</assert>
+   <assert test='(msg:contactParty/msg:addr) and (normalize-space(msg:contactParty/msg:addr) or count(msg:contactParty/msg:addr/child::*) > 0)'>Warning: The element contactParty/addr should have a value.</assert>
+   <assert test='msg:contactParty/msg:telecom'>Error: The patient/providerOrganization/contactParty shall have a telecom element.</assert>
+   <assert test='(msg:contactParty/msg:telecom/@value) and (normalize-space(msg:contactParty/msg:telecom/@value))'>Warning: The element contactParty/telecom should have a value.</assert>
+ </rule>
+ 
+ </pattern>
+ 
+ <pattern id='PRPA_IN201310UV02-note'>
+ 
+ <rule context='/msg:PRPA_IN201310UV02'>   
+   <assert test='not(msg:id/@root)'>Note: The attribute PRPA_IN201310UV02/id/@root should be a unique UUID.</assert>
+   <assert test='not(msg:creationTime/@value)'>Note: The attribute PRPA_IN201310UV02/creationTime/@value should be generated for each message.</assert>   
+   <assert test='not(msg:controlActProcess/msg:subject/msg:registrationEvent/msg:custodian)'>Note: The class registrationEvent/custodian was removed.</assert>
+   <assert test='not(msg:controlActProcess/msg:subject/msg:registrationEvent/msg:author)'>Note: The class registrationEvent/authr was removed.</assert>
+   <assert test='not(msg:controlActProcess/msg:subject/msg:registrationEvent/msg:definition)'>Note: The class registrationEvent/definition was removed.</assert>
+   <assert test='not(msg:controlActProcess/msg:subject/msg:registrationEvent/msg:custodian)'>Note: The class registrationEvent/inFullfillmentOf was removed.</assert>
+   <assert test='not(msg:controlActProcess/msg:subject/msg:registrationEvent/msg:replacement)'>Note: The class registrationEvent/replacementOf was removed.</assert>
+</rule>
+ 
+<rule context='/msg:PRPA_IN201310UV02/msg:controlActProcess/msg:subject/msg:registrationEvent/msg:subject1/msg:patient'>
+   <assert test='not(msg:effectiveTime)'>Note: The optional attribute patient.effectiveTime was removed.</assert>
+   <assert test='not(msg:patientNonPersonLivingSubject)'>Note: The optional attribute patient.patientNonPersonLivingSubject was removed.</assert>
+   <assert test='not(msg:veryImportantPersonCode)'>Note: The optional attribute patient.veryImportantPersonCode was removed.</assert>   
+   <assert test='not(msg:coveredPartyOf)'>Note: The optional attribute patient.coveredPartyOf was removed.</assert>   
+   <assert test='not(msg:patientPerson/msg:asCitizen)'>Note: The optional attribute patientPerson.asCitizen was removed.</assert> 
+   <assert test='not(msg:patientPerson/msg:asStudent)'>Note: The optional attribute patientPerson.asStudent was removed.</assert>
+   <assert test='not(msg:patientPerson/msg:asEmployee)'>Note: The optional attribute patientPerson.asEmployee was removed.</assert>
+   <assert test='not(msg:patientPerson/msg:asMember)'>Note: The optional attribute patientPerson.asMember was removed.</assert>      
+   <assert test='not(msg:patientPerson/msg:asPatientOfOtherProvider)'>Note: The optional attribute patientPerson.asPatientOfOtherProvider was removed.</assert>   
+ </rule>  
+ 
+ </pattern>
+ 

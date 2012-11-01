@@ -1,0 +1,29 @@
+syntax:glob
+
+# class files and libs
+build
+lib
+
+
+# folders created by gwt
+xdstools2/.gwt
+xdstools2/gwt-unitCache/
+xdstools2/war/WEB-INF/lib
+xdstools2/war/WEB-INF/classes
+xdstools2/war/WEB-INF/deploy
+
+
+#the war produced
+*.war
+
+#eclipse settings
+# .settings/
+# .project
+# .classpath
+
+#MAC
+.DS_Store
+
+#diff tools and linux backup files
+*~
+*.orig

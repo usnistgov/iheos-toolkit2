@@ -1,0 +1,62 @@
+<!-- These schematron rules validate an XCPD message Patient Registry Find Candidates Query PRPA_IN201305UV02 -->
+
+<pattern id='NHIN_SubjDiscV1_305-errors'>
+
+<rule context='/msg:PRPA_IN201305UV02/msg:controlActProcess/msg:queryByParameter/msg:parameterList'> 
+
+<assert test='msg:livingSubjectAdministrativeGender'>
+       Error: The element livingSubjectAdministrativeGender is required.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+    <assert test='msg:livingSubjectAdministrativeGender/msg:value/@code="M" 
+               or msg:livingSubjectAdministrativeGender/msg:value/@code="F"  
+               or msg:livingSubjectAdministrativeGender/msg:value/@code="UN"'>
+       Error: The livingSubjectAdministrativeGender/value/@code uses the HL7 code of M (Male), F (Female), or UN (Undifferentiated) .
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+     <assert test='msg:livingSubjectBirthTime'>
+       Error: The element livingSubjectBirthTime is required.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+</rule>
+
+<rule context='/msg:PRPA_IN201305UV02/msg:controlActProcess/msg:queryByParameter/msg:parameterList/msg:livingSubjectName'> 
+
+    <assert test='msg:value/msg:given'>
+       Error: The element "given" is required for parameter livingSubjectName.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+     <assert test='msg:value/msg:family'>
+       Error: The element "family" is required for parameter livingSubjectName.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+</rule>
+
+ <rule context='/msg:PRPA_IN201305UV02/msg:controlActProcess/msg:queryByParameter/msg:parameterList/msg:patientAddress/msg:value'>
+    <assert test='msg:streetAddressLine'>
+       Error: The element streetAddressLine is required for element parameterList/patientAddress/value.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+    <assert test='msg:city'>
+       Error: The element city is required for element parameterList/patientAddress/value.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+        <assert test='msg:state'>
+       Error: The element state is required for element parameterList/patientAddress/value.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+     <assert test='msg:postalCode'>
+       Error: The element postalCode is required for element parameterList/patientAddress/value.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5 Demographic Requirements in Request and Response.
+    </assert>
+  
+   </rule>
+   
+   <rule context='/msg:PRPA_IN201305UV02/msg:controlActProcess/msg:queryByParameter/msg:parameterList/msg:patientTelecom/msg:value'>
+     <assert test='substring(@value,1,4)="tel:"'>
+       Error: The patientTelecom number must be implemented in a "tel:" URI.
+       See NHIN_PatientDiscovery_V1 Section 3.1.5.1 Coding Telephone Numbers.
+    </assert>
+   </rule>
+
+</pattern>
