@@ -81,7 +81,6 @@
 		simDb,
 		xdstest2-logging,
 		xdstest2,
-		simManager,
 		actorfactory,
 		session,
 		xdstest-gui,
