@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="src" path="actorfactory/src"/>
 	<classpathentry kind="src" path="security-common/src"/>
 	<classpathentry kind="src" path="soap/test/resources"/>

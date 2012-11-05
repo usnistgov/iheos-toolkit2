@@ -1,3 +1,0 @@
-SQ.b
-TestData
-registryb
