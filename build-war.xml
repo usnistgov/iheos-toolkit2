@@ -1,31 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="tkbuild" name="xdstools2">
 
-	<!-- outside dependencies -->
-	<property name="xdstest2.dir" location="../xdstest2" />
-
+	<!-- dependencies -->
+	<property name="testkit.dir" location="../testkit" />
+	<property name="xdstest2.dir" location="xdstest2" />
+	<property name="resources.dir" value="xdstools2" />
+	
+	<property name="configuration.file" value="tk_props_default.txt" />
+	
+	
 	<!-- define the repositories needed to build the war -->
 	<property name="war.toolkitx.dir" location="${war.dir}/toolkitx" />
 	<property name="war.testkit.dir" location="${war.toolkitx.dir}/testkit" />
 	<property name="war.xdstest.dir" location="${war.dir}/toolkitx/xdstest" />
 	<property name="war.sessionCache.dir" location="${war.dir}/SessionCache" />
+	<property name="war.documentCache.dir" location="${war.dir}/xdstools2/DocumentCache" />
+	<property name="war.mailer.dir" location="${war.dir}/WEB-INF/direct/mailer" />
 
 	<!-- WHAT FOR delegates to xdstests2. -->
 	<target name="update-collections">
 		<ant dir="${xdstest2.dir}" antfile="build.xml" target="testkit.collections" inheritAll="true" inheritRefs="true" />
 	</target>
-
-	<target name="war-prep" depends="include-jars-in-war, assemble, install-cert, doc">
-		<copy file="build.num" todir="war" overwrite="yes" />
-		<mkdir dir="${war.dir}" />
-		<mkdir dir="${war.lib.dir}" />
-		<!-- TODO check : why do we put them there ? -->
-		<mkdir dir="war/WEB-INF/classes" />
-		<copy file="log4j.properties" todir="war/WEB-INF/classes" overwrite="yes" />
-		<copy file="schematron.properties" todir="war/WEB-INF/classes" overwrite="yes" />
-		<mkdir dir="war/DirectValidationReports" />
+	
+	<!-- review exclusion list. Duplicate with copy to war.lib step -->
+	<target name="war" >
+		<jar destfile="war.war">
+			<fileset dir="war" >
+				<exclude name="**/groovy*.jar"/>
+				<exclude name="**/rampart*"/>
+				<exclude name="**/rahas*"/>
+				<exclude name="**/postgres*.jar"/>
+				<exclude name="**/*saml*.jar"/>
+				<exclude name="**/*servlet-api.jar"/>
+				<exclude name="**/gwt-user.jar"/>
+				<exclude name="**/gwt-dev.jar"/>  
+				<exclude name="**/uniqueid_*.txt"/>
+			</fileset>
+		</jar>
 	</target>
 
+	<target name="war-prep" depends="include-jars-in-war, include-classes, assemble, install-cert, doc">
+		<mkdir dir="${war.dir}" />
+		<mkdir dir="${war.lib.dir}" />
+		<mkdir dir="${war.classes.dir}" />
+		
+		<copy file="${resources.dir}/build.num" todir="${war.dir}" overwrite="yes" />
+		<!-- TODO check : why do we put them there ? -->
+		<copy file="${resources.dir}/log4j.properties" todir="${war.classes.dir}" overwrite="yes" />
+		<copy file="${resources.dir}/schematron.properties" todir="${war.classes.dir}" overwrite="yes" />
+		<mkdir dir="${war.dir}/DirectValidationReports" />
+	</target>
+
+	<!-- copy all runtime libs to the war -->
+		<target name="include-classes">
+			<copy includeemptydirs="false" overwrite="false" todir="${war.classes.dir}">
+				<fileset dir="${build.dir}">
+				</fileset>
+			</copy>
+		</target>
+	
 	<!-- copy all runtime libs to the war -->
 	<target name="include-jars-in-war">
 		<copy includeemptydirs="false" overwrite="false" todir="${war.lib.dir}">
@@ -69,7 +102,7 @@
 			</fileset>
 		</copy>
 
-		<copy file="actors.xml" tofile="${war.xdstest.dir}/actors.xml" />
+		<copy file="${resources.dir}/actors.xml" tofile="${war.xdstest.dir}/actors.xml" />
 
 		<!-- the target names match the ActorType short names found in ATFactory.java-->
 		<copy file="${testkit.dir}/collections/registryb.tc" tofile="${war.testkit.dir}/actorcollections/reg.tc" />
@@ -82,33 +115,32 @@
 		<copy todir="${war.xdstest.dir}/rampart/client_repositories/modules" file="${shared.mar.dir}/addressing-1.5.4.mar" />
 
 		<mkdir dir="${war.sessionCache.dir}" />
-		<mkdir dir="war/xdstools2/DocumentCache" />
-
-		<mkdir dir="war/WEB-INF/direct/mailer" />
+		<mkdir dir="${war.documentCache.dir}" />
+		<mkdir dir="${war.mailer.dir}" />
 		
-		<copy todir="war/WEB-INF" file="../tk_props_default.txt" />
+		<copy todir="${war.dir}/WEB-INF" file="${configuration.file}" />
 	</target>
 
 	<!-- REVIEW where those certs come from -->
 	<target name="install-cert">
 		<mkdir dir="${war.dir}/pubcert" />
-		<copy file="cert/mycert" tofile="${war.dir}/pubcert/ttt_pem.txt" overwrite="yes" />
-		<copy file="cert/hit-testing.nist.gov.der" tofile="${war.dir}/pubcert/hit-testing.nist.gov.der" overwrite="yes" />
+		<copy file="${resources.dir}/cert/mycert" tofile="${war.dir}/pubcert/ttt_pem.txt" overwrite="yes" />
+		<copy file="${resources.dir}/cert/hit-testing.nist.gov.der" tofile="${war.dir}/pubcert/hit-testing.nist.gov.der" overwrite="yes" />
 		<mkdir dir="${war.dir}/WEB-INF/privcert" />
-		<copy file="cert/mykeystore.p12" todir="war/WEB-INF/privcert" overwrite="yes" />
+		<copy file="${resources.dir}/cert/mykeystore.p12" todir="${war.dir}/WEB-INF/privcert" overwrite="yes" />
 	</target>
 
 	<target name="doc">
-		<mkdir dir="war/doc" />
-		<copy todir="war/doc">
-			<fileset dir="doc" />
+		<mkdir dir="${war.dir}/doc" />
+		<copy todir="${war.dir}/doc">
+			<fileset dir="${resources.dir}/doc" />
 		</copy>
 	</target>
 
 
 	<target name="clean" depends="clean-cert, clean-war">
-		<delete dir="war/WEB-INF/classes" />
-		<delete dir="war/WEB-INF/lib" />
+		<delete dir="${war.classes.dir}" />
+		<delete dir="${war.lib.dir}" />
 		<delete file="ttt.war" failonerror="no" />
 		<delete file="xdstools2.war" failonerror="no" />
 		<delete file="listener.jar" failonerror="no" />

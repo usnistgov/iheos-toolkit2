@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="actorfactory/src"/>
 	<classpathentry kind="src" path="security-common/src"/>
 	<classpathentry kind="src" path="soap/test/resources"/>
@@ -47,7 +48,6 @@
 	<classpathentry excluding="src/" kind="src" path="direct-listener"/>
 	<classpathentry kind="src" path="results/src"/>
 	<classpathentry kind="src" path="direct-support/src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/ant-contrib.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/axiom-api-1.2.10.jar"/>
@@ -148,5 +148,5 @@
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/xmlsec-1.4.2.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/xmltooling-1.2.0.jar"/>
-	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

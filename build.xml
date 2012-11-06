@@ -96,8 +96,6 @@
 	<property name="shared.lib.dir" location="../shared-lib/lib" />
 	<property name="shared.mar.dir" location="../shared-lib/mar" />
 
-	<property name="testkit.dir" location="../testkit" />
-
 	<!-- local cache of the libs -->
 	<property name="lib.dir" location="lib" />
 
@@ -107,6 +105,7 @@
 	<!-- output directories -->
 	<property name="war.dir" location="war" />
 	<property name="war.lib.dir" location="${war.dir}/WEB-INF/lib" />
+	<property name="war.classes.dir" location="${war.dir}/WEB-INF/classes" />
 
 	<!-- properties used by the compiler -->
 	<property name="source" value="1.6" />
@@ -149,7 +148,7 @@
 	</path>
 
 	<target name="clean">
-		<ant file="build-war.xml" target="clean" />
+		<ant antfile="build-war.xml" target="clean" />
 	</target>
 
 	<!-- Prepare the build. 
@@ -182,7 +181,7 @@
 	</target>
 
 	<!-- jar all the .class files and put the jar in ${war.lib.dir}.-->
-	<target name="jar" depends="compile">
+	<target name="jar">
 		<jar jarfile="${war.lib.dir}/${jar.name}" basedir="${build.dir}/">
 		</jar>
 	</target>
@@ -220,20 +219,21 @@
 
 	<!-- This target bypasses GWT-compile. Useful for debugging within Eclipse -->
 	<target name="war-prep" depends="compile, jar">
-		<ant file="build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war-prep" />
+		<ant antfile="build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war-prep" />
 	</target>
 
 	<target name="war" depends="compile, gwt-compile, jar, war-prep">
-		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
+		<ant antfile="build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>
+	
+
+
+	<!-- ==================== -->
 
 	<!-- REVIEW -->
 	<target name="listener" depends="compile, war-prep">
 		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="listener" />
 	</target>
-
-
-	<!-- ==================== -->
 
 	<target name="ihe" depends="compile">
 		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ihe" />

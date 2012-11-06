@@ -5,6 +5,11 @@ build
 lib
 
 
+#check. created by eclipse
+*bin
+*.class
+
+
 # folders created by gwt
 xdstools2/.gwt
 xdstools2/gwt-unitCache/
