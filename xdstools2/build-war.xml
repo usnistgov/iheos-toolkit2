@@ -105,7 +105,6 @@
 		<mkdir dir="${war.mailer.dir}" />
 
 		<!-- copy configuration files -->
-		<copy file="${config.dir}/build.num" todir="${war.dir}" overwrite="yes" />
 		<copy file="${config.dir}/actors.xml" tofile="${war.xdstest.dir}/actors.xml" />
 
 		<!-- TODO check : why do we put them there ? -->
@@ -113,21 +112,14 @@
 		<copy file="${config.dir}/schematron.properties" todir="${war.classes.dir}" overwrite="yes" />
 
 		<!-- copy public resources that seems needed -->
-		<mkdir dir="${war.toolkitx.dir}/schema" />
-		<copy todir="${war.toolkitx.dir}/schema">
-			<fileset dir="${resources.dir}/public_resources/toolkitx/schema">
-				<exclude name="**/.svn" />
-			</fileset>
-		</copy>
-		<mkdir dir="${war.toolkitx.dir}/schematron" />
-		<copy todir="${war.toolkitx.dir}/schematron">
-			<fileset dir="${resources.dir}/public_resources/toolkitx/schematron">
+		<copy todir="${war.dir}" overwrite="yes">
+			<fileset dir="${resources.dir}/public_resources/">
 				<exclude name="**/.svn" />
 			</fileset>
 		</copy>
 
 		<!-- copy private resources -->
-		<copy todir="${war.dir}/WEB-INF">
+		<copy todir="${war.dir}/WEB-INF" overwrite="yes">
 			<fileset dir="${resources.dir}/private_resources">
 				<exclude name="**/.svn" />
 			</fileset>
