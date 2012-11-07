@@ -157,7 +157,7 @@
 	</path>
 
 	<target name="clean">
-		<ant antfile="build-war.xml" target="clean" />
+		<ant antfile="${staging.area}/build-war.xml" target="clean" />
 	</target>
 
 	<!-- Prepare the build. 

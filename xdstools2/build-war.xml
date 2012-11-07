@@ -4,15 +4,13 @@
 	<!-- dependencies -->
 	<property name="testkit.dir" location="../../testkit" />
 	<property name="xdstest2.dir" location="../xdstest2" />
-	<property name="resources.dir" value="." />
-
-	<property name="configuration.file" value="tk_props_default.txt" />
-
+	<property name="resources.dir" location="." />
+	<property name="config.dir" location="${resources.dir}/default_config" />
 
 	<!-- define the repositories needed to build the war -->
 	<property name="war.toolkitx.dir" location="${war.dir}/toolkitx" />
 	<property name="war.testkit.dir" location="${war.toolkitx.dir}/testkit" />
-	<property name="war.xdstest.dir" location="${war.dir}/toolkitx/xdstest" />
+	<property name="war.xdstest.dir" location="${war.toolkitx.dir}/xdstest" />
 	<property name="war.sessionCache.dir" location="${war.dir}/SessionCache" />
 	<property name="war.documentCache.dir" location="${war.dir}/xdstools2/DocumentCache" />
 	<property name="war.mailer.dir" location="${war.dir}/WEB-INF/direct/mailer" />
@@ -70,16 +68,10 @@
 		</java>
 	</target>
 
-	<target name="war-prep" depends="include-jars-in-war, include-classes, assemble, install-cert, doc">
+	<target name="war-prep" depends="include-jars-in-war, include-classes, copy-resources, assemble-from-testkit, install-cert, doc">
 		<mkdir dir="${war.dir}" />
 		<mkdir dir="${war.lib.dir}" />
 		<mkdir dir="${war.classes.dir}" />
-
-		<copy file="${resources.dir}/build.num" todir="${war.dir}" overwrite="yes" />
-		<!-- TODO check : why do we put them there ? -->
-		<copy file="${resources.dir}/log4j.properties" todir="${war.classes.dir}" overwrite="yes" />
-		<copy file="${resources.dir}/schematron.properties" todir="${war.classes.dir}" overwrite="yes" />
-		<mkdir dir="${war.dir}/DirectValidationReports" />
 	</target>
 
 	<!-- copy all runtime libs to the war -->
@@ -100,10 +92,51 @@
 		</copy>
 	</target>
 
-	<!-- create a whole bunch of directories to hold data we want to ship in the war -->
-	<target name="assemble">
-		
-		
+	<!-- copy resources -->
+	<target name="copy-resources">
+
+		<!-- CHECK where we need to put rampart .mar file.
+		TODO : it should not be copied from shared-libs-->
+		<copy todir="${war.xdstest.dir}/rampart/client_repositories/modules" file="${shared.mar.dir}/addressing-1.5.4.mar" />
+
+		<!-- required directories -->
+		<mkdir dir="${war.sessionCache.dir}" />
+		<mkdir dir="${war.documentCache.dir}" />
+		<mkdir dir="${war.mailer.dir}" />
+
+		<!-- copy configuration files -->
+		<copy file="${config.dir}/build.num" todir="${war.dir}" overwrite="yes" />
+		<copy file="${config.dir}/actors.xml" tofile="${war.xdstest.dir}/actors.xml" />
+
+		<!-- TODO check : why do we put them there ? -->
+		<copy file="${config.dir}/log4j.properties" todir="${war.classes.dir}" overwrite="yes" />
+		<copy file="${config.dir}/schematron.properties" todir="${war.classes.dir}" overwrite="yes" />
+
+		<!-- copy public resources that seems needed -->
+		<mkdir dir="${war.toolkitx.dir}/schema" />
+		<copy todir="${war.toolkitx.dir}/schema">
+			<fileset dir="${resources.dir}/public_resources/toolkitx/schema">
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+		<mkdir dir="${war.toolkitx.dir}/schematron" />
+		<copy todir="${war.toolkitx.dir}/schematron">
+			<fileset dir="${resources.dir}/public_resources/toolkitx/schematron">
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+		<!-- copy private resources -->
+		<copy todir="${war.dir}/WEB-INF">
+			<fileset dir="${resources.dir}/private_resources">
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<!-- copy resoures from testkit -->
+	<target name="assemble-from-testkit">
 		<mkdir dir="${war.toolkitx.dir}/admin" />
 		<copy todir="${war.toolkitx.dir}/admin">
 			<fileset file="${testkit.dir}/admin/version">
@@ -135,8 +168,6 @@
 			</fileset>
 		</copy>
 
-		<copy file="${resources.dir}/actors.xml" tofile="${war.xdstest.dir}/actors.xml" />
-
 		<!-- the target names match the ActorType short names found in ATFactory.java-->
 		<copy file="${testkit.dir}/collections/registryb.tc" tofile="${war.testkit.dir}/actorcollections/reg.tc" />
 		<copy file="${testkit.dir}/collections/repositoryb.tc" tofile="${war.testkit.dir}/actorcollections/rep.tc" />
@@ -144,14 +175,6 @@
 		<copy file="${testkit.dir}/collections/Document_Recipient.tc" tofile="${war.testkit.dir}/actorcollections/rec.tc" />
 		<copy file="${testkit.dir}/collections/RG.tc" tofile="${war.testkit.dir}/actorcollections/rg.tc" />
 
-		<!-- CHECK where we need to put rampart .mar file -->
-		<copy todir="${war.xdstest.dir}/rampart/client_repositories/modules" file="${shared.mar.dir}/addressing-1.5.4.mar" />
-
-		<mkdir dir="${war.sessionCache.dir}" />
-		<mkdir dir="${war.documentCache.dir}" />
-		<mkdir dir="${war.mailer.dir}" />
-
-		<copy todir="${war.dir}/WEB-INF" file="${configuration.file}" />
 	</target>
 
 	<!-- REVIEW where those certs come from -->
@@ -166,66 +189,18 @@
 	<target name="doc">
 		<mkdir dir="${war.dir}/doc" />
 		<copy todir="${war.dir}/doc">
-			<fileset dir="${resources.dir}/doc" />
+			<fileset dir="${resources.dir}/public_resources/doc" />
 		</copy>
 	</target>
 
-
-	<target name="clean" depends="clean-cert, clean-war">
-		<delete dir="${war.classes.dir}" />
-		<delete dir="${war.lib.dir}" />
-		<delete file="ttt.war" failonerror="no" />
-		<delete file="xdstools2.war" failonerror="no" />
-		<delete file="listener.jar" failonerror="no" />
-	</target>
-
-	<target name="clean-cert">
-		<delete dir="war/pubcert" />
-		<delete dir="war/WEB-INF/privcert" />
-	</target>
-
-	<target name="clean-war">
-		<delete dir="war/toolkitx/admin" failonerror="false" />
-		<delete dir="war/xdstools2" failonerror="false" />
-
-		<delete file="${war.xdstest.dir}/rampart/client_repositories/modules/addressing-1.5.4.mar" failonerror="false" />
-		<delete dir="{war.lib.dir}" failonerror="false" />
-
-		<delete failonerror="false">
-			<fileset dir="${war.testkit.tests}">
-				<include name="**/**/*" />
-				<include name="**/*" />
-				<include name="**" />
-				<include name="*" />
+	<!-- clean but exclude web.xml and gwt-servlet.jar (to pacify eclipse gwt plugin) -->
+	<target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="${war.dir}" includes="**/*">
+				<exclude name="**/web.xml" />
+				<exclude name="**/gwt-servlet.jar" />
 			</fileset>
 		</delete>
-
-		<delete includeemptydirs="true" failonerror="false">
-			<fileset dir="${war.testkit.tests}" includes="**/*" />
-		</delete>
-
-		<delete includeemptydirs="true" failonerror="false">
-			<fileset dir="gwt-unitCache" />
-		</delete>
-
-		<delete dir="${localtestdata}" failonerror="false" />
-
-		<delete dir="${war.sessionCache.dir}" failonerror="false" />
-		<delete dir="war/WEB-INF/deploy" failonerror="false" />
-
-		<delete includeemptydirs="true" failonerror="false">
-			<fileset dir="${actorcollections}" includes="**/*.tc" />
-		</delete>
-
-		<delete file="xdstools2.war" failonerror="false" />
-		<delete file="${xdstest}/uniqueid_base.txt" failonerror="false" />
-		<delete file="${xdstest}/uniqueid_incr.txt" failonerror="false" />
-		<delete file="war/toolkitx/codes/codes.xml" failonerror="false" />
-
-		<delete dir="war/DirectValidationReports" />
-
-		<delete dir="war/WEB-INF/direct/mailer" />
-		<delete dir="war/doc" />
 	</target>
 
 
