@@ -256,6 +256,8 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			}
 		} catch (Throwable e) {
 			logger.error(ExceptionUtil.exception_details(e));
+			if (session.res == null)                 
+                session.res = new AssertionResults();
 			session.res.add(ExceptionUtil.exception_details(e), false);
 			return mkResult();
 		}

@@ -39,6 +39,8 @@ public class SendDirect extends CommonServiceManager {
 			
 			params.put("signingCertPassword", signingPassword);
 
+			escapeWindowsBackslashes(params);
+			
 			Result r = session.xdsTestServiceManager().xdstest("DirectSendTemplate", sections, params, params2, areas, true);
 			return asList(r);
 		} catch (Exception e) {
@@ -46,6 +48,20 @@ public class SendDirect extends CommonServiceManager {
 		} finally {
 			session.clear();
 		}
+	}
+	
+	void escapeWindowsBackslashes(Map<String, String> parms) {
+		for (String key : parms.keySet()) {
+			String value = parms.get(key);
+			value = value.replaceAll("\\\\", "\\\\\\\\");
+			parms.put(key, value);
+		}
+	}
+	
+	static public void main(String[] args) {
+		String value = "ab\\cd";
+		String value2 = value.replaceAll("\\\\", "\\\\\\\\");
+		System.out.println("new value is " + value2);
 	}
 
 }

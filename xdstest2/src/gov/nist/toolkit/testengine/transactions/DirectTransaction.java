@@ -11,9 +11,12 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -39,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.mail.Address;
 import javax.mail.Message;
@@ -51,6 +55,8 @@ import javax.mail.internet.MimeMultipart;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1InputStream;
@@ -103,64 +109,6 @@ public class DirectTransaction extends BasicTransaction {
 	static final Logger logger = Logger.getLogger(DirectTransaction.class);
 
 
-	//
-	// certificate serial number seed.
-	//
-	static int  serialNo = 1;
-
-	static AuthorityKeyIdentifier createAuthorityKeyId(
-			PublicKey pub) 
-					throws IOException
-					{
-		ByteArrayInputStream bIn = new ByteArrayInputStream(pub.getEncoded());
-		SubjectPublicKeyInfo info = new SubjectPublicKeyInfo(
-				(ASN1Sequence)new ASN1InputStream(bIn).readObject());
-
-		return new AuthorityKeyIdentifier(info);
-					}
-
-	static SubjectKeyIdentifier createSubjectKeyId(
-			PublicKey pub) 
-					throws IOException
-					{
-		ByteArrayInputStream bIn = new ByteArrayInputStream(pub.getEncoded());
-
-		SubjectPublicKeyInfo info = new SubjectPublicKeyInfo(
-				(ASN1Sequence)new ASN1InputStream(bIn).readObject());
-
-		return new SubjectKeyIdentifier(info);
-					}
-
-	/**
-	 * create a basic X509 certificate from the given keys
-	 */
-	static X509Certificate makeCertificate(
-			KeyPair subKP,
-			String  subDN,
-			KeyPair issKP,
-			String  issDN)
-					throws GeneralSecurityException, IOException, OperatorCreationException
-					{
-		PublicKey  subPub  = subKP.getPublic();
-		PrivateKey issPriv = issKP.getPrivate();
-		PublicKey  issPub  = issKP.getPublic();
-
-		X509v3CertificateBuilder v3CertGen = new JcaX509v3CertificateBuilder(new X500Name(issDN), BigInteger.valueOf(serialNo++), new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis() + (1000L * 60 * 60 * 24 * 100)), new X500Name(subDN), subPub);
-
-		v3CertGen.addExtension(
-				X509Extension.subjectKeyIdentifier,
-				false,
-				createSubjectKeyId(subPub));
-
-		v3CertGen.addExtension(
-				X509Extension.authorityKeyIdentifier,
-				false,
-				createAuthorityKeyId(issPub));
-
-		return new JcaX509CertificateConverter().setProvider("BC").getCertificate(v3CertGen.build(new JcaContentSignerBuilder("SHA1withRSA").setProvider("BC").build(issPriv)));
-					}
-
-
 	static { 
 		// add BC in case it isn't yet a valid security provider 
 		Security.addProvider(new BouncyCastleProvider()); 
@@ -182,7 +130,7 @@ public class DirectTransaction extends BasicTransaction {
 		if (!s_ctx.getStatus())
 			return;
 
-		Security.addProvider(new BouncyCastleProvider());
+		/*Security.addProvider(new BouncyCastleProvider());
 
 		//
 		// set up our certs
@@ -266,6 +214,8 @@ public class DirectTransaction extends BasicTransaction {
 		caps.addCapability(SMIMECapability.dES_EDE3_CBC);
 		caps.addCapability(SMIMECapability.rC2_CBC, 128);
 		caps.addCapability(SMIMECapability.dES_CBC);
+		caps.addCapability(new ASN1ObjectIdentifier("1.2.840.113549.1.7.1"));
+		caps.addCapability(new ASN1ObjectIdentifier("1.2.840.113549.1.9.22.1"));
 
 		signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
 		
@@ -304,16 +254,41 @@ public class DirectTransaction extends BasicTransaction {
         
         msg1.setText(bodyContent);
         
-        // -- Set the attachment --  
-        MimeBodyPart ccda = new MimeBodyPart();  
-        FileDataSource fds = new FileDataSource(attachmentContentFile);
-        if (attachmentContentFile.toString().endsWith(".xml"))
-        	ccda.setContent(fds, "text/xml");
-        else if (attachmentContentFile.toString().endsWith(".zip"))
-        	ccda.setContent(fds, "application/zip");
-        else
-        	ccda.setContent(fds, "text/plain");
-        ccda.setFileName(fds.getName());  
+        // -- Set the attachment --
+        MimeBodyPart ccda = new MimeBodyPart();
+     
+        String attachmentFileName = attachmentContentFile.getName();
+        
+        if (attachmentContentFile.toString().endsWith(".xml")) {
+
+            byte[] fileContent = FileUtils.readFileToByteArray(attachmentContentFile);
+            byte[] content = Base64.encodeBase64(fileContent);
+
+            InternetHeaders partHeaders = new InternetHeaders();
+            partHeaders.addHeader("Content-Type", "text/xml; name="+attachmentFileName);
+            partHeaders.addHeader("Content-Transfer-Encoding", "base64");
+            partHeaders.addHeader("Content-Disposition", "attachment; filename="+attachmentFileName);
+
+            ccda = new MimeBodyPart(partHeaders, content);
+        }
+        else if (attachmentContentFile.toString().endsWith(".zip")) {
+        	byte[] fileContent = FileUtils.readFileToByteArray(attachmentContentFile);
+            byte[] content = Base64.encodeBase64(fileContent);
+
+
+            InternetHeaders partHeaders = new InternetHeaders();
+            partHeaders.addHeader("Content-Type", "application/zip; name="+attachmentFileName);
+            partHeaders.addHeader("Content-Transfer-Encoding", "base64");
+            partHeaders.addHeader("Content-Disposition", "attachment; filename="+attachmentFileName);
+            
+            ccda = new MimeBodyPart(partHeaders, content);
+        }
+        else {
+        	FileDataSource fds = new FileDataSource(attachmentContentFile);
+        	
+        	ccda.setDataHandler(new DataHandler(fds));
+            ccda.setFileName(fds.getName());
+        }
         
         MimeMultipart mp = new MimeMultipart();
         
@@ -329,13 +304,13 @@ public class DirectTransaction extends BasicTransaction {
 		
         MimeMultipart mm = gen.generate(m);
 
-        try {
-        	OutputStream ostmp = new FileOutputStream(new File("/home/ttt/direct.send.txt"));
-        	String ctype = mm.getContentType();
-        	ostmp.write(ctype.getBytes());
-        	ostmp.write(new String("\r\n\r\n").getBytes());
-        	mm.writeTo(ostmp);
-        } catch (Throwable t) {}
+        
+        /*OutputStream ostmp = new FileOutputStream(new File("/Users/bill/tmp/direct.send.txt"));
+        String ctype = mm.getContentType();
+        ostmp.write(ctype.getBytes());
+        ostmp.write(new String("\r\n\r\n").getBytes());
+        mm.writeTo(ostmp);
+		
         
 		//
 		// Get a Session object and create the mail message
@@ -346,9 +321,23 @@ public class DirectTransaction extends BasicTransaction {
 		Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
 		Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
 
-		MimeMessage body = new MimeMessage(session);
-		body.setContent(mm, mm.getContentType());
-		body.saveChanges();
+
+		MimeBodyPart body = new MimeBodyPart();
+		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+		try {
+			mm.writeTo(oStream);
+			oStream.flush();
+			InternetHeaders headers = new InternetHeaders();
+			headers.addHeader("Content-Type", mm.getContentType());
+
+			body = new MimeBodyPart(headers, oStream.toByteArray());
+			IOUtils.closeQuietly(oStream);
+
+		}    
+
+		catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
 
 		//
 		// Open the key store
@@ -380,6 +369,8 @@ public class DirectTransaction extends BasicTransaction {
 		Certificate[]   chain = ks.getCertificateChain(keyAlias);
 		*/
 		
+		/*
+		
 		// Encryption cert
 		X509Certificate encCert = null;
         
@@ -395,14 +386,14 @@ public class DirectTransaction extends BasicTransaction {
         }
 
 
-		/* Create the encrypter */
+		// Create the encrypter
         SMIMEEnvelopedGenerator encrypter = new SMIMEEnvelopedGenerator();
         try {
         	encrypter.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encCert).setProvider("BC"));
         } catch (Exception e1) {
         	throw new Exception("Error loading encryption cert - must be in X.509 format", e1);
         }
-		/* Encrypt the message */
+		// Encrypt the message
 		MimeBodyPart encryptedPart = encrypter.generate(body,
 				// RC2_CBC
 				new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC).setProvider("BC").build());
@@ -415,12 +406,22 @@ public class DirectTransaction extends BasicTransaction {
 		msg.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
 		msg.setDisposition("attachment");
 		msg.setFileName("smime.p7m");
-		msg.saveChanges();
+		msg.saveChanges();*/
 		
-		try {
-			OutputStream ostmp1 = new FileOutputStream(new File("/home/ttt/direct.send.enc.txt"));
-			msg.writeTo(ostmp1);
-		} catch (Throwable t) {}
+		Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
+		Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
+		
+		
+		Properties props = System.getProperties();
+		Session session = Session.getDefaultInstance(props, null);
+		MimeMessage msg = new MimeMessage(session);
+		
+		msg = createSendMail(toAddress, fromAddress);
+		/*InputStream is2 = new FileInputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));
+		msg = new MimeMessage(session, is2);*/
+		
+        //OutputStream ostmp1 = new FileOutputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted_before_sending.txt"));
+        //msg.writeTo(ostmp1);
 
 		// For test purpose NEED to be removed
 		// TODO        
@@ -619,12 +620,17 @@ public class DirectTransaction extends BasicTransaction {
 		}
 		else if (part_name.equals("AttachmentContentFile")) {
 			String text = part.getText();
-			if (text.startsWith("/"))
+			if (text.startsWith("/") || text.charAt(1) == ':')
 				attachmentContentFile = new File(text);
 			else
 				attachmentContentFile = new File(testConfig.testplanDir + File.separator + text);
 			if (!attachmentContentFile.exists()) {
-				s_ctx.set_error("AttachmentContentFile points to file that does not exist, " + attachmentContentFile.toString());
+				File acf2 = new File(text);
+				if (!acf2.exists()) {
+					s_ctx.set_error("AttachmentContentFile points to file that does not exist, " + attachmentContentFile.toString());
+				} else {
+					attachmentContentFile = acf2;
+				}
 			}
 		}
 		else if (part_name.equals("DirectSystemMailerHostname")) {
@@ -643,6 +649,283 @@ public class DirectTransaction extends BasicTransaction {
 	@Override
 	protected String getBasicTransactionName() {
 		return "Direct";
+	}
+	
+	public MimeMessage createSendMail(String toAddress, String fromAddress) {
+		Security.addProvider(new BouncyCastleProvider());
+
+		try {
+		//
+		// set up our certs
+		//
+		KeyPairGenerator    kpg  = KeyPairGenerator.getInstance("RSA", "BC");
+
+		kpg.initialize(1024, new SecureRandom());
+
+		//List                certList = new ArrayList();
+
+		//
+        // Open the key store
+        //
+        KeyStore    ks = KeyStore.getInstance("PKCS12", "BC");    
+        
+        Map<String, Object> extra2 = planContext.getExtraLinkage2();
+        byte[] signingCert = (byte[]) extra2.get("signingCert");
+        Object signingCertPwO = planContext.getExtraLinkage().get("signingCertPassword");
+        String signingCertPw = (signingCertPwO == null) ? "" : signingCertPwO.toString();        
+
+        try {
+        	ks.load(Io.bytesToInputStream(signingCert), signingCertPw.toCharArray());
+        } catch (Throwable e) {
+        	throw new Exception("Signing private key may be in wrong format, PKCS12 expected", e);
+        }
+
+        Enumeration e = ks.aliases();
+        String      keyAlias = null;
+
+        while (e.hasMoreElements())
+        {
+            String  alias = (String)e.nextElement();
+
+            if (ks.isKeyEntry(alias))
+            {
+                keyAlias = alias;
+            }
+        }
+
+        if (keyAlias == null)
+        {
+            System.err.println("can't find a private key!");
+            System.exit(0);
+        }
+
+        Certificate[]   chain = ks.getCertificateChain(keyAlias);
+		
+        //
+		// cert that issued the signing certificate
+		//
+        String              signDN = ((X509Certificate) chain[0]).getIssuerDN().toString();
+		
+		//certList.add(chain[0]);
+        
+
+		//
+		// be careful about setting extra headers here. Some mail clients
+		// ignore the To and From fields (for example) in the body part
+		// that contains the multipart. The result of this will be that the
+		// signature fails to verify... Outlook Express is an example of
+		// a client that exhibits this behaviour.
+		//
+
+        Collection<X509Certificate> signingCertificates = new ArrayList<X509Certificate>();
+        X509CertificateEx signCert = X509CertificateEx.fromX509Certificate((X509Certificate) chain[0], (PrivateKey)ks.getKey(keyAlias, "".toCharArray()));
+        
+        System.out.println(signCert);
+        
+        signingCertificates.add(signCert);
+
+		//
+		// create a CertStore containing the certificates we want carried
+		// in the signature
+		//
+		Store certs = new JcaCertStore(signingCertificates);
+
+		//
+		// create some smime capabilities in case someone wants to respond
+		//
+		ASN1EncodableVector         signedAttrs = new ASN1EncodableVector();
+		SMIMECapabilityVector       caps = new SMIMECapabilityVector();
+
+		caps.addCapability(SMIMECapability.dES_EDE3_CBC);
+		caps.addCapability(SMIMECapability.rC2_CBC, 128);
+		caps.addCapability(SMIMECapability.dES_CBC);
+		caps.addCapability(new ASN1ObjectIdentifier("1.2.840.113549.1.7.1"));
+		caps.addCapability(new ASN1ObjectIdentifier("1.2.840.113549.1.9.22.1"));
+
+		signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
+		
+		//logger.debug("Signing Cert is \n = " + signCert.toString());
+		//
+		// add an encryption key preference for encrypted responses -
+		// normally this would be different from the signing certificate...
+		//
+		IssuerAndSerialNumber   issAndSer = new IssuerAndSerialNumber(
+				new X500Name(signDN), signCert.getSerialNumber());
+
+		signedAttrs.add(new SMIMEEncryptionKeyPreferenceAttribute(issAndSer));
+
+		//
+		// create the generator for creating an smime/signed message
+		//
+		SMIMESignedGenerator gen = new SMIMESignedGenerator();
+
+		//
+		// add a signer to the generator - this specifies we are using SHA1 and
+		// adding the smime attributes above to the signed attributes that
+		// will be generated as part of the signature. The encryption algorithm
+		// used is taken from the key - in this RSA with PKCS1Padding
+		//
+		gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BC").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA1withRSA", signCert.getPrivateKey(), signCert));
+
+		//
+		// add our pool of certs and cerls (if any) to go with the signature
+		//
+		gen.addCertificates(certs);
+		
+        //
+        // create the base for our message
+        //
+        MimeBodyPart    msg1 = new MimeBodyPart();
+        
+        msg1.setText("Message Test");
+        
+        //File contentFile = new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/CCDA_CCD_b1_Ambulatory.xml");
+
+        byte[] fileContent = FileUtils.readFileToByteArray(attachmentContentFile);
+        byte[] content = Base64.encodeBase64(fileContent);
+
+
+        InternetHeaders partHeaders = new InternetHeaders();
+        partHeaders.addHeader("Content-Type", "text/xml; name="+attachmentContentFile.getName());
+        partHeaders.addHeader("Content-Transfer-Encoding", "base64");
+        partHeaders.addHeader("Content-Disposition", "attachment; filename="+attachmentContentFile.getName());
+
+        MimeBodyPart ccda = new MimeBodyPart(partHeaders, content);
+
+        MimeMultipart mp = new MimeMultipart();
+        
+        mp.addBodyPart(msg1);
+        mp.addBodyPart(ccda);
+        
+        MimeBodyPart m = new MimeBodyPart();
+        m.setContent(mp);
+
+		//
+		// extract the multipart object from the SMIMESigned object.
+		//
+		
+        MimeMultipart mm = gen.generate(m);
+
+        
+        /*OutputStream ostmp = new FileOutputStream(new File("/Users/bill/tmp/direct.send.txt"));
+        String ctype = mm.getContentType();
+        ostmp.write(ctype.getBytes());
+        ostmp.write(new String("\r\n\r\n").getBytes());
+        mm.writeTo(ostmp);*/
+        
+		//
+		// Get a Session object and create the mail message
+		//
+		Properties props = System.getProperties();
+		Session session = Session.getDefaultInstance(props, null);
+
+		Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
+		Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
+
+        MimeBodyPart body = new MimeBodyPart();
+        ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+        try
+        {
+        	mm.writeTo(oStream);
+        	oStream.flush();
+        	InternetHeaders headers = new InternetHeaders();
+        	headers.addHeader("Content-Type", mm.getContentType());
+
+
+
+
+        	body = new MimeBodyPart(headers, oStream.toByteArray());
+        	IOUtils.closeQuietly(oStream);
+
+        }    
+
+        catch (Exception ex)
+        {
+        	throw new RuntimeException(ex);
+        }
+
+
+		//
+		// Open the key store
+		//
+		/*
+		KeyStore    ks = KeyStore.getInstance("PKCS12", "BC");
+
+		ks.load(new FileInputStream(certFile.toString()), certFilePassword.toCharArray());
+
+		Enumeration e = ks.aliases();
+		String      keyAlias = null;
+
+		while (e.hasMoreElements())
+		{
+			String  alias = (String)e.nextElement();
+
+			if (ks.isKeyEntry(alias))
+			{
+				keyAlias = alias;
+			}
+		}
+
+		if (keyAlias == null)
+		{
+			System.err.println("can't find a private key!");
+			System.exit(0);
+		}
+
+		Certificate[]   chain = ks.getCertificateChain(keyAlias);
+		*/
+		
+        // Encryption cert
+        X509Certificate encCert = null;
+
+        ByteArrayInputStream is;
+        try {
+        	byte[] encryptionCertBA = (byte[]) planContext.getExtraLinkage2().get("encryptionCert");
+        	is = new ByteArrayInputStream(encryptionCertBA);
+        	CertificateFactory x509CertFact = CertificateFactory.getInstance("X.509");
+        	encCert = (X509Certificate)x509CertFact.generateCertificate(is);
+        	logger.debug("Encrypton cert = \n" + encCert.toString());
+        } catch (Exception e1) {
+        	throw new Exception("Error loading X.509 encryption cert - probably wrong format", e1);
+        }
+
+        System.out.println(encCert);
+
+		/* Create the encrypter */
+        SMIMEEnvelopedGenerator encrypter = new SMIMEEnvelopedGenerator();
+        try {
+        	encrypter.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encCert).setProvider("BC"));
+        } catch (Exception e1) {
+        	throw new Exception("Error loading encryption cert - must be in X.509 format", e1);
+        }
+        /* Encrypt the message */
+        MimeBodyPart encryptedPart = encrypter.generate(body,
+        		// RC2_CBC
+        		new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC).setProvider("BC").build());
+
+        MimeMessage msg = new MimeMessage(session);
+        msg.setFrom(fromUser);
+        msg.setRecipient(Message.RecipientType.TO, toUser);
+        msg.setSentDate(new Date());
+        msg.setSubject("Test message");
+        msg.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
+        msg.setDisposition("attachment");
+		msg.setFileName("smime.p7m");
+		msg.saveChanges();
+		
+		/*
+		OutputStream ostmp1 = new FileOutputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));
+        msg.writeTo(ostmp1);
+        OutputStream ostmp2 = new FileOutputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3_body.txt"));
+        body.writeTo(ostmp2);
+        */
+		
+		return msg;
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

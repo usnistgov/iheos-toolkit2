@@ -134,6 +134,8 @@ public class DirectSenderTab extends GenericQueryTab {
 	FileUpload upload = null;
 	FormPanel form = null;
 	VerticalPanel vpan = new VerticalPanel();
+	boolean submitComplete = true;
+
 	
 	void addCertUpload(boolean submit, String label, String doc, String fieldSuffix, boolean showPassword) {
 		//
@@ -181,6 +183,8 @@ public class DirectSenderTab extends GenericQueryTab {
 			public void onSubmit(SubmitEvent event) {
 				if (!checkInputs()) 
 					event.cancel();
+				else
+					submitComplete = false;
 			}
 		});
 		form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
@@ -188,6 +192,9 @@ public class DirectSenderTab extends GenericQueryTab {
 			// is fired.
 			@Override
 			public void onSubmitComplete(SubmitCompleteEvent event) {
+				if (submitComplete)
+					return;
+				submitComplete = true;
 				Map<String, String> parms = new HashMap<String, String>();
 				resultPanel.clear();
 
