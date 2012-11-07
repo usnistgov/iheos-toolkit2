@@ -102,6 +102,8 @@
 
 	<!-- create a whole bunch of directories to hold data we want to ship in the war -->
 	<target name="assemble">
+		
+		
 		<mkdir dir="${war.toolkitx.dir}/admin" />
 		<copy todir="${war.toolkitx.dir}/admin">
 			<fileset file="${testkit.dir}/admin/version">
