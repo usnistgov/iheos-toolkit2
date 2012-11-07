@@ -13,14 +13,7 @@ lib
 # folders created by gwt
 xdstools2/.gwt
 xdstools2/gwt-unitCache/
-xdstools2/war/WEB-INF/lib
-xdstools2/war/WEB-INF/classes
-xdstools2/war/WEB-INF/deploy
-# xdstools2/war/toolkitx
-xdstools2/war/doc
-xdstools2/war/pubcert
-xdstools2/war/SessionCache
-xdstools2/war/xdstools2
+xdstools2/war
 
 
 #the war produced
