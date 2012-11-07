@@ -1,0 +1,68 @@
+
+
+<pattern id='MCCI_IN000002UV01-errors'>
+
+<rule context='/*'> 
+   <assert test='not(*/msg:device/msg:id/@extension)'>
+      Error: MCCI_IN000200UV01 Device id.  IHE restriction, id.extension SHALL NOT have a value.
+      See Table O.1.2-1
+   </assert>
+
+   <assert test='msg:acceptAckCode/@code="NE"'>
+      Error: The attribute acceptAckCode/@code shall be set to NE. (Don't ack an ack.)
+      See Section O.1.2.
+   </assert>
+
+   <assert test='msg:acknowledgement'>
+      Error: Acknowledgement is a required class.
+      See Section O.1.2.
+   </assert>
+
+!-- 
+We split this into two (seperate check for sender and receiver) because matches will not work 
+with multiple results.
+The schema allows for only one sender and IHE allows for only one receiver.
+
+     Also note the '^' and '$' characters.  This prevents the "matches" function from only matching
+     a subset.
+-->
+
+   <assert test='matches(msg:sender/msg:device/msg:id/@root,"^[0-2](\.(0|[1-9][0-9]*))*$")'>
+      Error: MCCI_IN000200UV01 Device id.  IHE restriction, id.root SHALL be an ISO OID.
+      See Table O.1.2-1
+   </assert>
+
+   <assert test='matches(msg:receiver/msg:device/msg:id/@root,"^[0-2](\.(0|[1-9][0-9]*))*$")'>
+      Error: MCCI_IN000200UV01 Device id.  IHE restriction, id.root SHALL be an ISO OID.
+      See Table O.1.2-1
+   </assert>
+
+   <assert test='not(/*/*/msg:device/msg:asAgent/msg:representedOrganization/msg:id/@extension)'>
+      Error: MCCI_IN000200UV01 Organization id.  IHE restriction, id.extension SHALL NOT have a value.
+      See Table O.1.2-1
+   </assert>
+
+<!--
+     We split this into two (seperate check for sender and receiver) because matches will not work
+     with multiple results.
+     The schema allows for only one sender and IHE allows for only one receiver.
+
+     Also note the '^' and '$' characters.  This prevents the "matches" function from only matching
+     a subset.
+-->
+
+   <assert test='not(/*/*/msg:device/msg:asAgent/msg:representedOrganization) or
+                matches(/*/msg:sender/msg:device/msg:asAgent/msg:representedOrganization/msg:id/@root,"^[0-2](\.(0|[1-9][0-9]*))*$")'>
+      Error: MCCI_IN000200UV01 Organization id.  IHE restriction, id.root SHALL be an ISO OID.
+      See Table O.1.2-1
+   </assert>
+
+   <assert test='not(/*/*/msg:device/msg:asAgent/msg:representedOrganization) or
+                matches(/*/msg:receiver/msg:device/msg:asAgent/msg:representedOrganization/msg:id/@root,"^[0-2](\.(0|[1-9][0-9]*))*$")'>
+      Error: MCCI_IN000200UV01 Organization id.  IHE restriction, id.root SHALL be an ISO OID.
+      See Table O.1.2-1
+   </assert>
+
+</rule>
+
+</pattern>

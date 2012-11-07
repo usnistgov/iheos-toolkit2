@@ -85,27 +85,36 @@
 		xdstools2
 	" />
 
-	<property name="toolkit.home" location="${basedir}" />
-
-	<!-- define the different artifacts name -->
-	<property name="jar.name" value="toolkit.jar" />
-	<property name="war.name" value="toolkit.war" />
-
 	<!-- Outside dependencies -->
 	<!-- TO BE CHANGED. We still expect to find the librairies directory one level above  -->
 	<property name="shared.lib.dir" location="../shared-lib/lib" />
 	<property name="shared.mar.dir" location="../shared-lib/mar" />
+
+	<!-- main directories -->
+	<property name="toolkit.home" location="${basedir}" />
+	<property name="staging.area" location="xdstools2" />
+
+	<!-- output directories -->
+	<property name="war.dir" location="${staging.area}/war" />
+	<property name="war.lib.dir" location="${war.dir}/WEB-INF/lib" />
+	<property name="war.classes.dir" location="${war.dir}/WEB-INF/classes" />
+
+	<!-- define the different artifacts name -->
+	<property name="jar.name" value="toolkit.jar" />
+	<property name="war.name" value="toolkit.war" />
+	
+	<!-- toolkit admin properties file-->
+	<property name="config.file" value="toolkit.properties" />
+	<property file="${config.file}" prefix="user" />
+
+	<!-- we ship the toolkit with a default_cache -->
+	<property name="default_cache.dir" location="${staging.area}/default_cache" />
 
 	<!-- local cache of the libs -->
 	<property name="lib.dir" location="lib" />
 
 	<!-- all compiled sources are placed there -->
 	<property name="build.dir" location="build" />
-
-	<!-- output directories -->
-	<property name="war.dir" location="war" />
-	<property name="war.lib.dir" location="${war.dir}/WEB-INF/lib" />
-	<property name="war.classes.dir" location="${war.dir}/WEB-INF/classes" />
 
 	<!-- properties used by the compiler -->
 	<property name="source" value="1.6" />
@@ -153,11 +162,12 @@
 
 	<!-- Prepare the build. 
 	quick fix, waiting for full ivy dependency management : all shared-libs copied in lib directory. 
-	creates various directories.
+	creates various directories we need.
 	-->
 	<target name="prepare">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${lib.dir}" />
+		<mkdir dir="${war.dir}" />
 
 		<copy todir="${lib.dir}">
 			<fileset dir="${shared.lib.dir}">
@@ -190,42 +200,18 @@
 		The compiler expects a war folder to exists and add folders and files to it.
 		 -->
 	<target name="gwt-compile">
-		<java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
-			<classpath>
-				<pathelement location="${build.dir}" />
-				<!-- src dirs are added to ensure that gwt module.xml file(s) are on the classpath. -->
-				<pathelement location="${xdstools2.src.dir}" />
-				<pathelement location="${sim-common.src.dir}" />
-				<pathelement location="${xdstest-gui.src.dir}" />
-				<pathelement location="${testengine.src.dir}" />
-				<pathelement location="${site-management.src.dir}" />
-				<pathelement location="${validators-support.src.dir}" />
-				<pathelement location="${registry-msg-formats.src.dir}" />
-				<pathelement location="${error-recording.src.dir}" />
-				<pathelement location="${registry-metadata.src.dir}" />
-				<pathelement location="${common-datatypes.src.dir}" />
-				<pathelement location="${actor-transaction.src.dir}" />
-				<pathelement location="${direct-sim.src.dir}" />
-				<pathelement location="${tk.src.dir}" />
-				<pathelement location="${results.src.dir}" />
-				<pathelement location="${actorfactory.src.dir}" />
-				<path refid="classpath" />
-			</classpath>
-			<jvmarg value="-Xmx256M" />
-			<!-- define the entry point to the application -->
-			<arg value="gov.nist.toolkit.xdstools2.Xdstools2" />
-		</java>
+		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="gwt-compile" />
 	</target>
 
 	<!-- This target bypasses GWT-compile. Useful for debugging within Eclipse -->
 	<target name="war-prep" depends="compile, jar">
-		<ant antfile="build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war-prep" />
+		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war-prep" />
 	</target>
 
 	<target name="war" depends="compile, gwt-compile, jar, war-prep">
-		<ant antfile="build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
+		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>
-	
+
 
 
 	<!-- ==================== -->
@@ -265,12 +251,6 @@
 			</fileset>
 		</scp>
 	</target>
-
-	<!--WHAT FOR -->
-	<target name="build" depends="compile, war-prep, war" />
-
-	<!--WHAT FOR -->
-	<target name="rebuild" depends="clean, build" />
 
 	<!--WHAT FOR -->
 	<target name="install-faq-hit" depends="compile-direct-faq">

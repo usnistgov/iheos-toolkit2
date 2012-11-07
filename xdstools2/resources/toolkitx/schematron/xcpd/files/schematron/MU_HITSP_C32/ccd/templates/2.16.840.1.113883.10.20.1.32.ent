@@ -1,0 +1,61 @@
+<!--  Result organizer: 2.16.840.1.113883.10.20.1.32 -->
+
+
+<!-- Successful assertions -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.32-checks' see='#p-2.16.840.1.113883.10.20.1.32-checks'>
+	<title>Result organizer - checks validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.32"]'>
+
+	<report test="self::cda:organizer">CONF-393: Success.</report>
+	<report test="@moodCode='EVN'">CONF394-: Success.</report>
+	<report test="cda:id">CONF-395: Success.</report>
+	<report test="count(cda:statusCode)=1">CONF-396: Success.</report>
+	<report test="count(cda:code)=1">CONF-397: Success.</report>
+	<report test="cda:component">CONF-402: Success.</report>
+	<report test="cda:component/cda:observation[cda:templateId/@root='2.16.840.1.113883.10.20.1.31']">CONF-405: Success.</report>
+
+
+            <report test="cda:code[@codeSystem='2.16.840.1.113883.6.1' or @codeSystem='2.16.840.1.113883.6.96']">CONF-398: Success.</report>
+	</rule>
+</pattern>
+
+
+<!-- errors -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.32-errors' see='#p-2.16.840.1.113883.10.20.1.32-errors'>
+	<title>Result organizer - errors validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.32"]'>
+	<assert test="self::cda:organizer">CONF-393: A result organizer (templateId 2.16.840.1.113883.10.20.1.32) SHALL be represented with Organizer.</assert>
+	<assert test="@moodCode='EVN'">CONF394-: The value for Organizer / moodCode in a result organizer SHALL be EVN.</assert>
+	<assert test="cda:id">CONF-395: A result organizer SHALL contain at least one Organizer / id.</assert>
+	<assert test="count(cda:statusCode)=1">CONF-396: A result organizer SHALL contain exactly one Organizer / statusCode.</assert>
+	<assert test="count(cda:code)=1">CONF-397: A result organizer SHALL contain exactly one Organizer / code.</assert>
+	<assert test="cda:component">CONF-402: A result organizer SHALL contain one or more Organizer / component.</assert>
+	<!-- Duplicate rule ? 
+	<assert test='.//cda:templateId[@root="2.16.840.1.113883.10.20.1.31"]'>Each result organizers SHALL contain one or more result observations (templateId  2.16.840.1.113883.10.20.1.31).</assert>
+	-->
+	<assert test="cda:component/cda:observation[cda:templateId/@root='2.16.840.1.113883.10.20.1.31']">CONF-405: The target of one or more result organizer Organizer / component relationships SHALL be a result observation.</assert>
+	</rule>
+</pattern>
+
+<!-- warning -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.32-warning' see='#p-2.16.840.1.113883.10.20.1.32-warning'>
+	<title>Result organizer - warning validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.32"]'>
+	<assert test="cda:code[@codeSystem='2.16.840.1.113883.6.1' or @codeSystem='2.16.840.1.113883.6.96']">CONF-398: The value for Organizer / code in a result organizer SHOULD be selected from LOINC (codeSystem 2.16.840.1.113883.6.1) or SNOMED CT (codeSystem 2.16.840.1.113883.6.96)</assert>	
+	</rule>
+</pattern>
+
+<!-- manual -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.32-manual' see='#p-2.16.840.1.113883.10.20.1.32-manual'>
+	<title>Result organizer - manual validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.32"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+

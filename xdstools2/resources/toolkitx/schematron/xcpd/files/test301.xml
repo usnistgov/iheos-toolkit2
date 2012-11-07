@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PRPA_IN201301UV02 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="urn:hl7-org:v3 file:///Users/gunn/Connectathon2009/IHEPIXPDQV3/PIXV3.Support.Materials.v3/schema/HL7V3/NE2008/multicacheschemas/PRPA_IN201301UV02.xsd"
+ xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0">
+    <id root="0cc360d6-445e-11dc-a6be-3603d6866807"/>
+    <creationTime value="20070803130712"/>
+    <interactionId root="2.16.840.1.113883.1.6" extension="PRPA_IN201301UV02"/>
+    <processingCode code="P"/>
+    <processingModeCode code="T"/>
+    <acceptAckCode code="AL"/>
+    <receiver typeCode="RCV">
+        <device classCode="DEV" determinerCode="INSTANCE">
+            <id root="1.2.840.114350.1.13.99999.4567"/>
+            <telecom value="https://example.org/PatientFeed"/>
+        </device>
+    </receiver>
+    <sender typeCode="SND">
+        <device classCode="DEV" determinerCode="INSTANCE">
+            <id root="1.2.840.114350.1.13.99998.8734"/>
+        </device>
+    </sender>
+    <controlActProcess classCode="CACT" moodCode="EVN">
+        <code code="PRPA_TE201301UV02"/>
+        <subject typeCode="SUBJ">
+            <registrationEvent classCode="REG" moodCode="EVN">
+                <id nullFlavor="NA"/>
+                <statusCode code="active"/>
+                <subject1 typeCode="SBJ">
+                    <patient classCode="PAT">
+                        <id root="1.2.840.114350.1.13.99998.8734" extension="34827G409"/>
+                        <statusCode code="active"/>
+                       
+                        <patientPerson classCode="PSN" >
+                            <name>
+                                <given>James</given>
+                                <family>Dean</family>
+                            </name>
+                            
+                            <telecom value="tel:+1-299-555-4444;ext=2342" use="WP"/>
+                            <administrativeGenderCode code="M"/>
+                            <birthTime value="19570323"/>
+                            <addr>
+                                <streetAddressLine>3443 South Beach Avenue</streetAddressLine>
+                                <city>Some City</city>
+                                <state>IL</state>
+                            </addr>
+                            
+                            <asCitizen>
+                              <politicalNation classCode="NAT">
+                                  <code></code>
+                              </politicalNation>
+                          </asCitizen>
+                           
+                            
+                            <asOtherIDs classCode="PAT">
+                                <id root="1.2.840.114350.1.13.99997.2.3412" extension="38273N237"/>
+                                <scopingOrganization classCode="ORG" determinerCode="INSTANCE">
+                                    <id root="1.2.840.114350.1.13.99997.2.3412"/>
+                                </scopingOrganization>
+                            </asOtherIDs>
+                            <asOtherIDs classCode="PAT">
+                                <id root="2.16.840.1.113883.4.1" extension="999-99-4452"/>
+                                <scopingOrganization classCode="ORG" determinerCode="INSTANCE">
+                                    <id root="2.16.840.1.113883.4.1"/>
+                                </scopingOrganization>
+                            </asOtherIDs>
+                          
+                            
+                        </patientPerson>
+                        <providerOrganization classCode="ORG" determinerCode="INSTANCE">
+                            <id root="1.2.840.114350.1.13.99998.8734"/>
+                            <name>Good Health Clinic</name>
+                            <contactParty classCode="CON">
+                                <telecom value="tel:+1-342-555-8394"></telecom>
+                            </contactParty>
+                        </providerOrganization>
+                    </patient>
+                </subject1>
+              
+                <custodian typeCode="CST">
+                    <assignedEntity classCode="ASSIGNED">
+                        <id  root="1.2.840.114350.1.13.99998.8734"/>
+                        <assignedOrganization classCode="ORG" determinerCode="INSTANCE">
+                            <name>Good Health Clinic</name>
+                        </assignedOrganization>   
+                    </assignedEntity>
+                </custodian>
+          
+            </registrationEvent>
+        </subject>
+    </controlActProcess>
+</PRPA_IN201301UV02>

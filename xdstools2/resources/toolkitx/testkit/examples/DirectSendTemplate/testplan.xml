@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>Direct1</Test>
+    <TestStep id="send">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <DirectTransaction>
+		<NoMetadata/>
+		<CertFile>keystore.p12</CertFile>
+		<CertFilePassword>changeit</CertFilePassword>
+		<BodyContent>My first Direct message</BodyContent>
+		<DirectFromAddress>$directFromAddress$</DirectFromAddress>
+		<DirectToAddress>$directToAddress$</DirectToAddress>
+		<Subject>Direct Validation Request</Subject>
+		<AttachmentContentFile>$messagePath$</AttachmentContentFile>
+		<DirectSystemMailerHostname>$serverName$</DirectSystemMailerHostname>
+		<DirectSystemMailerPort>$serverPort$</DirectSystemMailerPort>
+        </DirectTransaction>
+    </TestStep>
+</TestPlan>

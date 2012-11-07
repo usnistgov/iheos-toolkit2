@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12001/eval</Test>
+    <TestStep id="folder_and_contents">
+        <Goal>Use GetFolderAndContents to retrieve Folder with DocumentEntry inside</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <StoredQueryTransaction>
+	    <XDSb/>
+            <UseReport section="create_folder" step="submit_fol" reportName="foluid" useAs="$uniqueid$"/>   
+            <Metadata>
+                <query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+                    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+                    <AdhocQuery id="urn:uuid:b909a503-523d-4517-8acf-8e5834dfc4c7">
+                        <Slot name="$XDSFolderUniqueId">
+                            <ValueList>
+                                <Value>'$uniqueid$'</Value>
+                            </ValueList>
+                        </Slot>
+                    </AdhocQuery>
+                </query:AdhocQueryRequest>
+            </Metadata>
+            <!--
+            <UseId testdir="../create_folder" id="Folder" step="submit_fol"
+                section="AssignedUids" symbol="$uniqueid$"/>
+                -->
+            <ExpectedContents>
+                <Associations count="1"/>
+                <Documents count="1"/>
+                <Folders count="1"/>
+            </ExpectedContents>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>

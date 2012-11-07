@@ -1,0 +1,58 @@
+<!-- These schematron rules validate an PixV3 message Patient Registry Record Revised PRPA_IN201302UV02 -->
+<!-- The following rules are in accordance with IHE IT Technical Framework Supplement 2009-2010  
+      Patient Identifier Cross-Reference HL7 V3 (PIXV3) and Patient Demographic Query HL7 V3 (PDQV3) August 10, 2009. -->
+
+<pattern id='PRPA_IN201302UV02-errors'>
+
+<rule context='/msg:PRPA_IN201302UV02'>  
+   <assert test='msg:interactionId/@extension="PRPA_IN201302UV02"'>Error: the attribute PRPA_IN201302UV02/interactionId/@extension shall equal PRPA_IN201302UV02.</assert>
+   <assert test='msg:processingModeCode/@code="T"'>Error: The attribute PRPA_IN201302UV02/processingModeCode/@code shall be set to T.</assert>
+   <assert test='msg:acceptAckCode/@code="AL"'>Error: The attribute PRPA_IN201302UV02/acceptAckCode/@code shall be set to AL.</assert>
+   <assert test='count(msg:receiver) = 1'>Error: The shall be 1 element PRPA_IN201302UV02/receiver.</assert>
+</rule> 
+  
+<rule context='/msg:PRPA_IN201302UV02/msg:controlActProcess'>
+   <assert test='msg:code'>Error: The element PRPA_IN201302UV02/controlActProcess/code shall be present.</assert>
+   <assert test='msg:code/@code="PRPA_TE201302UV02UV"'>Error: The attribute PRPA_IN201302UV02/controlActProcess/code/@code shall have the trigger event code value PRPA_TE201302UV02.</assert>
+   <assert test='msg:subject/msg:registrationEvent/msg:statusCode/@code="active"'>Error: The attribute PRPA_IN201302UV02/controlActProcess/subject/registrationEvent/statuscode@code shall be set to active.</assert>
+   <assert test='not(descendant::msg:replacementOf)'>Error: The element replacementOf shall not be present.</assert>
+   <assert test='not(descendant::msg:patient/msg:providerOrganizaton/msg:id/@root)'>Error: The attribute for /patient/providerOrganization/id/@root shall have only a root expressed as an ISO OID.</assert>
+</rule>
+ 
+<rule context='/msg:PRPA_IN201302UV02/msg:controlActProcess/msg:subject/msg:registrationEvent'>   
+   <assert test='descendant::msg:patientPerson[@classCode="PSN"]'>Error: The patientPerson element shall have a classCode attribute equal to "PSN".</assert>
+   <assert test='descendant::msg:patientPerson[@determinerCode="INSTANCE"]'>Error: The patientPerson element shall have a determinerCode attribute equal to "INSTANCE".</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:asOtherIDs[@classCode="CIT"]) or descendant::msg:patientPerson/msg:personalRelationship[@classCode="EMP"]'>Error: The patientPerson/asOtherIDs/@classCode can be any specialization of "role" except for Citizen or Employee.</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:personalRelationship) or descendant::msg:patientPerson/msg:personalRelationship[@classCode="PRS"]'>Error: The patientPerson/personalRelationship element shall have a classCode attribute equal to "PRS".</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:asCitizen) or descendant::msg:patientPerson/msg:asCitizen[@classCode="CIT"]'>Error: The patientPerson/asCitizen element shall have a classCode attribute equal to "CIT".</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:asCitizen/msg:politicalNation) or descendant::msg:patientPerson/msg:asCitizen/msg:politicalNation[@classCode="NAT"]'>Error: The patientPerson/asCitizen/politicalNation element shall have a classCode attribute equal to "NAT".</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:asEmployee) or descendant::msg:patientPerson/msg:asEmployee[@classCode="EMP"]'>Error: The patientPerson/asEmployee element shall have a classCode attribute equal to "EMP".</assert>  
+</rule>
+</pattern>
+ 
+
+<pattern id='PRPA_IN201302UV02-note'>
+ 
+ <rule context='/msg:PRPA_IN201302UV02/msg:controlActProcess/msg:subject/msg:registrationEvent'>       
+      <assert test='not(descendant::msg:patientPerson/msg:telecom)
+    or (descendant::msg:patientPerson/msg:telecom/@value or descendant::msg:patientPerson/msg:telecom/@nullFlavor)'>
+           Note: A patientPerson telecom should have a non-blank telecom element or nullFlavor.</assert>  
+   <assert test='not(descendant::msg:patientPerson/msg:addr) or ((normalize-space(descendant::msg:patientPerson/msg:addr) 
+    or count(descendant::msg:patientPerson/msg:addr/child::*) &gt; 0) or (descendant::msg:patientPerson/msg:addr/@nullFlavor))'>
+           Note: A patientPerson address should have a non-blank addr element or nullFlavor.</assert> 
+   <assert test='(descendant::msg:patientPerson/msg:name) and (normalize-space(descendant::msg:patientPerson/msg:name) or count(descendant::msg:patientPerson/msg:name/child::*) &gt; 0)'>Note: The element patientPerson/name element should have a value.</assert> 
+   <assert test='not(descendant::msg:patientPerson/msg:languageCommunication/msg:languageCode)'>Note: The patientPerson/LanguageCommunication/languageCode should represent the language the focal person communicates in.</assert>
+
+   <assert test='not(descendant::msg:patientPerson/msg:asPatientOfOtherProvider)'>Note: The role patientPerson/asPatientOfOtherProvider was omitted.</assert> 
+   <assert test='not(descendant::msg:patientPerson/msg:guarantorRole)'>Note: The role patientPerson/guarantorRole was omitted.</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:guardian)'>Note: The role patientPerson/guardian was omitted.</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:contactParty)'>Note: The role patientPerson/contactParty was omitted.</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:asMember)'>Note: The role patientPerson/asMember was omitted.</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:careGiver)'>Note: The role patientPerson/careGiver was omitted.</assert>
+   <assert test='not(descendant::msg:patientPerson/msg:asStudent)'>Note: The role patientPerson/asStudent was omitted.</assert>  
+   <assert test='not(descendant::msg:patient/msg:coveredPartyOf)'>Note: The participation patient/coveredPartyOf was omitted.</assert>
+   <assert test='not(descendant::msg:patient/msg:subjectOf)'>Note: The participation patient/subjectOf was omitted.</assert>
+</rule>
+ 
+</pattern>
+ 

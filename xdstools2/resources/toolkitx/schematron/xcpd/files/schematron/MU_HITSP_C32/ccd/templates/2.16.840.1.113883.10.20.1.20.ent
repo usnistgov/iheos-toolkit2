@@ -1,0 +1,77 @@
+<!--  Coverage activity: 2.16.840.1.113883.10.20.1.20 -->
+
+<!-- Successful assertions -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.20-checks' see='#p-2.16.840.1.113883.10.20.1.20-checks'>
+	<title>Coverage activity - checks validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.20"]'>
+
+	<report test="self::cda:act">CONF-35: Success.</report>
+	<report test="self::cda:act[@classCode='ACT']">CONF-36: Success.</report>
+	<report test="self::cda:act[@moodCode='DEF']">CONF-37: Success.</report>
+	<report test="cda:id">CONF-38: Success.</report>
+	<report test="count(cda:statusCode) = 1">CONF-39: Success.</report>
+	<report test="cda:statusCode[@code='completed']">CONF-40: Success.</report>
+	<report test="cda:code[@code='48768-6'][@codeSystem='2.16.840.1.113883.6.1']">CONF-42: Success.</report>
+	<report test="cda:entryRelationship">CONF-43: Success.</report>
+	<report test="not(cda:entryRelationship[cda:sequenceNumber[position()=2]])">CONF-44: Success.</report>
+	<report test="not(cda:entryRelationship[not(@typeCode='COMP')])">CONF-45: Success.</report>
+
+	</rule>
+
+           <rule context="*[cda:templateId/@root='2.16.840.1.113883.10.20.1.20']/cda:entryRelationship[@typeCode='COMP']">
+
+	<report test="*/cda:templateId[@root='2.16.840.1.113883.10.20.1.26']">CONF-46: Success.</report>
+	
+	</rule>
+	
+	
+</pattern>
+
+<!-- errors -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.20-errors' see='#p-2.16.840.1.113883.10.20.1.20-errors'>
+	<title>Coverage activity - errors validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.20"]'>
+	<assert test="self::cda:act">CONF-35: A coverage activity (templateId 2.16.840.1.113883.10.20.1.20) SHALL be represented with Act.</assert>
+	<assert test="self::cda:act[@classCode='ACT']">CONF-36: The value for Act / classCode in a coverage activity SHALL be 'ACT' 2.16.840.1.113883.5.6 ActClass STATIC.</assert>
+	<assert test="self::cda:act[@moodCode='DEF']">CONF-37: The value for Act / moodCode in a coverage activity SHALL be "DEF" 2.16.840.1.113883.5.1001 ActMood STATIC.</assert>
+	<assert test="cda:id">CONF-38: A coverage activity SHALL contain at least one Act / id.</assert>
+	<assert test="count(cda:statusCode) = 1">CONF-39: A coverage activity SHALL contain exactly one Act / statusCode.</assert>
+	<assert test="cda:statusCode[@code='completed']">CONF-40: The value for Act / statusCode in a coverage activity SHALL be 'completed'  2.16.840.1.113883.5.14 ActStatus STATIC.</assert>
+	<assert test="cda:code[@code='48768-6'][@codeSystem='2.16.840.1.113883.6.1']">CONF-42: The value for 'Act / code' in a coverage activity SHALL be '48768-6' 'Payment sources' 2.16.840.1.113883.6.1 LOINC STATIC.</assert>
+	<assert test="cda:entryRelationship">CONF-43: A coverage activity SHALL contain one or more Act / entryRelationship. </assert>
+	<assert test="not(cda:entryRelationship[cda:sequenceNumber[position()=2]])">CONF-44: An entryRelationship in a coverage activity MAY contain exactly one entryRelationship / sequenceNumber, which serves to order the payment sources.</assert>
+	<assert test="not(cda:entryRelationship[not(@typeCode='COMP')])">CONF-45: The value for Act / entryRelationship / typeCode in a coverage activity SHALL be "COMP"  2.16.840.1.113883.5.1002 ActRelationshipType STATIC.</assert>
+
+
+	</rule>
+	<!-- coverage activity entry relationship-->
+	<rule context="*[cda:templateId/@root='2.16.840.1.113883.10.20.1.20']/cda:entryRelationship[@typeCode='COMP']">
+	<assert test="*/cda:templateId[@root='2.16.840.1.113883.10.20.1.26']">CONF-46: The target of a coverage activity with Act / entryRelationship / @typeCode='COMP' SHALL be a policy activity (templateId 2.16.840.1.113883.10.20.1.26).</assert>
+
+	</rule>
+</pattern>
+
+<!-- warning -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.20-warning' see='#p-2.16.840.1.113883.10.20.1.20-warning'>
+	<title>Coverage activity - warning validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.20"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+
+<!-- manual -->
+
+<pattern id='p-2.16.840.1.113883.10.20.1.20-manual' see='#p-2.16.840.1.113883.10.20.1.20-manual'>
+	<title>Coverage activity - manual validation phase</title>
+	<rule context='*[cda:templateId/@root="2.16.840.1.113883.10.20.1.20"]'>
+	<!--
+	<report test='.'></report>
+	-->
+	</rule>
+</pattern>
+
