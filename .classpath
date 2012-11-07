@@ -30,7 +30,6 @@
 	<classpathentry kind="src" path="site-management/src"/>
 	<classpathentry kind="src" path="session/src"/>
 	<classpathentry kind="src" path="simDb/src"/>
-	<classpathentry kind="src" path="simManager/src"/>
 	<classpathentry kind="src" path="soap/src"/>
 	<classpathentry kind="src" path="testkit-utilities/src"/>
 	<classpathentry kind="src" path="tk/src"/>
@@ -147,5 +146,6 @@
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/xmlsec-1.4.2.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/Documents/workspace/shared-lib/lib/xmltooling-1.2.0.jar"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>
