@@ -15,9 +15,11 @@ xdstools2/.gwt
 xdstools2/gwt-unitCache/
 xdstools2/war
 
-
 #the war produced
 *.war
+
+#the listener jar
+xdstools2/listener.jar
 
 #eclipse settings
 # .settings/

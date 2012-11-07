@@ -68,7 +68,10 @@
 		</java>
 	</target>
 
-	<target name="war-prep" depends="include-jars-in-war, include-classes, copy-resources, assemble-from-testkit, install-cert, doc">
+	<target name="war-prep" depends="make-dir, include-jars-in-war, include-classes, copy-resources, assemble-from-testkit, install-cert, doc">
+	</target>
+
+	<target name="make-dir">
 		<mkdir dir="${war.dir}" />
 		<mkdir dir="${war.lib.dir}" />
 		<mkdir dir="${war.classes.dir}" />
@@ -76,8 +79,9 @@
 
 	<!-- copy all runtime libs to the war -->
 	<target name="include-classes">
-		<copy includeemptydirs="false" overwrite="false" todir="${war.classes.dir}">
+		<copy includeemptydirs="false" overwrite="true" todir="${war.classes.dir}">
 			<fileset dir="${build.dir}">
+				<include name="**/*.class" />
 			</fileset>
 		</copy>
 	</target>
@@ -196,6 +200,21 @@
 	</target>
 
 
+	<!-- REVIEW : this task seems to basically jar all the class files + some properties -->
+	<target name="listener" depends="war-prep">
+		<delete file="listener.jar" />
+		<jar destfile="listener.jar">
+			<fileset dir="war/WEB-INF">
+				<include name="**/classes/**/*.class" />
+				<include name="**/classes/**/*.properties" />
+				<include name="**/*.p12" />
+				<include name="**/lib/*" />
+				<exclude name="**/*.jar" />
+				<exclude name="**/uniqueid_*.txt" />
+			</fileset>
+		</jar>
+	</target>
+
 	<!-- ============================================ -->
 
 
@@ -219,21 +238,7 @@
 
 	<target name="hit-testing" depends="ttt, listener" />
 
-	<target name="listener" depends="war-prep">
-		<delete file="listener.jar" />
 
-		<jar destfile="listener.jar">
-			<fileset dir="war/WEB-INF">
-				<include name="**/classes/**/*.class" />
-				<include name="**/classes/**/*.properties" />
-				<include name="**/*.p12" />
-				<include name="**/lib/*" />
-				<exclude name="**/*.jar" />
-				<exclude name="**/uniqueid_*.txt" />
-			</fileset>
-		</jar>
-
-	</target>
 
 
 </project>

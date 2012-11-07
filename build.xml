@@ -95,10 +95,10 @@
 	<property name="staging.area" location="xdstools2" />
 
 	<!-- output directories -->
-	<property name="war.dir" location="${staging.area}/war" />
+	<property name="war.dir" location="xdstools2/war" />
 	<property name="war.lib.dir" location="${war.dir}/WEB-INF/lib" />
 	<property name="war.classes.dir" location="${war.dir}/WEB-INF/classes" />
-
+	
 	<!-- define the different artifacts name -->
 	<property name="jar.name" value="toolkit.jar" />
 	<property name="war.name" value="toolkit.war" />
@@ -204,12 +204,20 @@
 	</target>
 
 	<!-- This target bypasses GWT-compile. Useful for debugging within Eclipse -->
-	<target name="war-prep" depends="compile, jar">
+	<target name="war-prep" depends="compile">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war-prep" />
 	</target>
 
-	<target name="war" depends="compile, gwt-compile, jar, war-prep">
+	<target name="war" depends="compile, gwt-compile, war-prep">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
+	</target>
+	
+	<target name="ttt" depends="compile">
+		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ttt" />
+	</target>
+	
+	<target name="listener" depends="war">
+		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="listener" />
 	</target>
 
 
@@ -217,16 +225,9 @@
 	<!-- ==================== -->
 
 	<!-- REVIEW -->
-	<target name="listener" depends="compile, war-prep">
-		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="listener" />
-	</target>
 
 	<target name="ihe" depends="compile">
 		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ihe" />
-	</target>
-
-	<target name="ttt" depends="compile">
-		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ttt" />
 	</target>
 
 	<!--WHAT FOR -->
