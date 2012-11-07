@@ -11,6 +11,7 @@ lib
 
 
 # folders created by gwt
+.gwt
 xdstools2/.gwt
 xdstools2/gwt-unitCache/
 xdstools2/war

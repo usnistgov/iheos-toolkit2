@@ -265,10 +265,10 @@ class doComms implements Runnable {
 
 			TkPropsServer ccdaProps = reportingProps.withPrefixRemoved("ccdatype");
 			String ccdaType = null;
-			for (int i=1; i<25; i++) {
+			for (int i=1; i<50; i++) {
 				String en = Integer.toString(i);
-				String type = ccdaProps.get("type" + en);
-				String ccdaTo = ccdaProps.get("directTo" + en);
+				String type = ccdaProps.get("type" + en, null);
+				String ccdaTo = ccdaProps.get("directTo" + en, null);
 				if (type == null || ccdaTo == null)
 					break;
 				if (ccdaTo.equals(to)) {
