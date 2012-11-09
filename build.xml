@@ -142,10 +142,12 @@
 	<property name="results.src.dir" location="results/src" />
 	<property name="actorfactory.src.dir" location="actorfactory/src" />
 
-	<!-- antlib is bundled with the 3rd party librairies -->
+	<!-- antlib is bundled with the 3rd party librairies.
+	Since the lib.dir might not be initialized or could be cleaned-up,
+	we get the definition of antlib from the shared.lib.dir -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
-			<pathelement location="${lib.dir}/ant-contrib.jar" />
+			<pathelement location="${shared.lib.dir}/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
 
