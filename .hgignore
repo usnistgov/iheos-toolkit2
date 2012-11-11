@@ -11,9 +11,11 @@ xdstools2/gwt-unitCache/
 xdstools2/war/WEB-INF/lib
 xdstools2/war/WEB-INF/classes
 xdstools2/war/WEB-INF/deploy
+xdstools2/war/xdstools2
 
 # folders brough in from testkit
 xdstools2/war/toolkitx/testkit
+
 
 #the war produced
 *.war
