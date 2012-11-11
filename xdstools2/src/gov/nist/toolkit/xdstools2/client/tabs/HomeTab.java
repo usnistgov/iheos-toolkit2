@@ -187,7 +187,7 @@ public class HomeTab extends GenericQueryTab {
 
 		topPanel.add(new HTML("<hr />"));
 
-		topPanel.add(new HTML("TTT Trust Anchor can be displayed from <a href=\"pubcert/hit-testing.nist.gov.der\">here</a>.  " 
+		topPanel.add(new HTML("TTT Trust Anchor can be displayed from <a href=\"pubcert/hit-testing.nist.gov-RootCA.der\">here</a>.  " 
 				));
 
 		topPanel.add(new HTML("<hr />"));

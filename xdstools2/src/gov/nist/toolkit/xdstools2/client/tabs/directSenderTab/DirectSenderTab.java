@@ -8,6 +8,7 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
@@ -107,6 +109,22 @@ public class DirectSenderTab extends GenericQueryTab {
 
 		new LoadTestdataList(toolkitService, "direct-messages", messageSelectionListBox, CHOOSE).run();
 		
+		HorizontalPanel formatPanel = new HorizontalPanel();
+		List<RadioButton> wrappedSelection = new ArrayList<RadioButton>();
+		RadioButton wrappedRadio = new RadioButton("Wrapped");
+		wrappedRadio.setText("Wrapped");
+		wrappedRadio.setEnabled(false);
+		wrappedSelection.add(wrappedRadio);
+
+		RadioButton unwrappedRadio = new RadioButton("Unwrapped");
+		unwrappedRadio.setText("Unwrapped");
+		unwrappedRadio.setValue(true);
+		wrappedSelection.add(unwrappedRadio);
+		mainGrid.setWidget(row, 0, new HTML("Message format"));
+		formatPanel.add(unwrappedRadio);
+		formatPanel.add(wrappedRadio);
+		mainGrid.setWidget(row, 2, formatPanel);
+		
 		topPanel.add(mainGrid);
 		
 		topPanel.add(new HTML("<br /><hr /><br />"));
@@ -114,7 +132,8 @@ public class DirectSenderTab extends GenericQueryTab {
 		
 		addCertUpload(false, 
 				"Signing Cert",
-				"This cert will be used to sign the message. It must be in PKCS12 format and include the private key. The password field should be left blank if the key is not password protected", 
+				"This cert will be used to sign the message. It must be in PKCS12 format and include the private key. The password field should be left blank if the key is not password protected. " +
+				"The OU (organizational unit) of this cert must match the domain name of the From Address entered above. This assumes a domain level cert.", 
 				"1", 
 				true);
 		
