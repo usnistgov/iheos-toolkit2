@@ -22,13 +22,11 @@
 
 	<!-- review exclusion list. Duplicate with copy to war.lib step -->
 	<target name="war">
-		<jar destfile="war.war">
+		<jar destfile="${target.dir}/war.war">
 			<fileset dir="war">
 				<exclude name="**/groovy*.jar" />
-				<exclude name="**/rampart*" />
 				<exclude name="**/rahas*" />
 				<exclude name="**/postgres*.jar" />
-				<exclude name="**/*saml*.jar" />
 				<exclude name="**/*servlet-api.jar" />
 				<exclude name="**/gwt-user.jar" />
 				<exclude name="**/gwt-dev.jar" />

@@ -107,7 +107,7 @@ public class KeyStoreAccessObject {
 			//keystorePassword = "nwhin_gavin";
 			//alias = "keystore";
 			
-			String keystoreURL = props.getProperty("DSIG_keystore_url");
+			String keystoreURL = keystoreDir + File.separator + "keystore";
 			this.keystorePassword = props.getProperty("DSIG_keystore_password");
 			this.alias = props.getProperty("DSIG_keystore_alias");
 			System.out.println("DSIG: keystore is " + keystoreURL);

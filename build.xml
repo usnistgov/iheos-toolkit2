@@ -98,11 +98,11 @@
 	<property name="war.dir" location="xdstools2/war" />
 	<property name="war.lib.dir" location="${war.dir}/WEB-INF/lib" />
 	<property name="war.classes.dir" location="${war.dir}/WEB-INF/classes" />
-	
+
 	<!-- define the different artifacts name -->
 	<property name="jar.name" value="toolkit.jar" />
 	<property name="war.name" value="toolkit.war" />
-	
+
 	<!-- toolkit admin properties file-->
 	<property name="config.file" value="toolkit.properties" />
 	<property file="${config.file}" prefix="user" />
@@ -115,6 +115,9 @@
 
 	<!-- all compiled sources are placed there -->
 	<property name="build.dir" location="build" />
+	
+	<!-- target repository where artifacts are put-->
+	<property name="target.dir" location="." />
 
 	<!-- properties used by the compiler -->
 	<property name="source" value="1.6" />
@@ -159,6 +162,10 @@
 	</path>
 
 	<target name="clean">
+		<delete includeemptydirs="true">
+			<fileset dir="${build.dir}" includes="**/*">
+			</fileset>
+		</delete>
 		<ant antfile="${staging.area}/build-war.xml" target="clean" />
 	</target>
 
@@ -213,11 +220,11 @@
 	<target name="war" depends="compile, gwt-compile, war-prep">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>
-	
+
 	<target name="ttt" depends="compile">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ttt" />
 	</target>
-	
+
 	<target name="listener" depends="war">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="listener" />
 	</target>
