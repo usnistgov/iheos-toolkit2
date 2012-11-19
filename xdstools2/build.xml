@@ -86,7 +86,8 @@
     <target name="install-cert">
 		<mkdir dir="war/pubcert"/>
 		<copy file="cert/mycert" tofile="war/pubcert/ttt_pem.txt" overwrite="yes"/>
-    	<copy file="cert/hit-testing.nist.gov.der" tofile="war/pubcert/hit-testing.nist.gov.der" overwrite="yes"/>
+    	        <copy file="cert/hit-testing.nist.gov.der" tofile="war/pubcert/hit-testing.nist.gov.der" overwrite="yes"/>
+    	        <copy file="cert/hit-testing.nist.gov-RootCA.der" tofile="war/pubcert/hit-testing.nist.gov-RootCA.der" overwrite="yes"/>
 		<mkdir dir="war/WEB-INF/privcert"/>
 		<copy file="cert/mykeystore.p12" todir="war/WEB-INF/privcert" overwrite="yes"/>
 	</target>
