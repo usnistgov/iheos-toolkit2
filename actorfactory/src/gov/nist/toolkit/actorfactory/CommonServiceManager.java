@@ -40,7 +40,7 @@ public class CommonServiceManager {
 		return lst;
 	}
 
-	protected List<Result> buildExtendedResultList(Exception e) {
+	protected List<Result> buildExtendedResultList(Throwable e) {
 		Result r = new Result();
 		r.addAssertion(ExceptionUtil.exception_details(e), false);
 		return this.asList(r);

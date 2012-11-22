@@ -3,6 +3,7 @@ package gov.nist.toolkit.directsim;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsim.client.DirectRegistrationData;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.session.server.DirectConfigManager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,24 +16,20 @@ import java.io.Serializable;
 
 
 public class DirectUserManager extends DirectManagers {
+	DirectConfigManager directConfig = new DirectConfigManager(Installation.installation().externalCache());
 	
 	public DirectUserManager() {
-	}
-
-	String pathToContactFile() {
-		return Installation.installation().externalCache() + File.separator + "direct" +
-				File.separator + "contact" + File.separator;
 	}
 
 	
 	// Used for finding contactAddresses
 	public File contactPath(File contact) {
-		return new File( pathToContactFile() + 
+		return new File( directConfig.pathToContactFile() + 
 				DirectEmailAddr.FILENAME(contact.toString()));
 	}
 	
 	public File contactPath(ContactRegistrationData contact) {
-		String filename = pathToContactFile() + DirectEmailAddr.FILENAME(contact.contactAddr);
+		String filename = directConfig.pathToContactFile() + DirectEmailAddr.FILENAME(contact.contactAddr);
 		return new File(filename);
 	}
 	

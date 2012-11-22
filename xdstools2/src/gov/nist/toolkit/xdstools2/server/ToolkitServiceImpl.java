@@ -18,6 +18,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.client.XdstestLogId;
+import gov.nist.toolkit.session.server.DirectConfigManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -103,7 +104,8 @@ ToolkitService {
 	}
 	public String toolkitPubCert()  throws NoServletSessionException { return new DirectServiceManager(session()).toolkitPubCert(); }
 	public List<Result> directSend(Map<String, String> parms) throws NoServletSessionException { return new DirectServiceManager(session()).directSend(parms); }
-	
+	public List<String> getEncryptionCertDomains() { return new DirectConfigManager(Installation.installation().externalCache()).getEncryptionCertDomains(); }
+
 
 	// Site Services
 	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }

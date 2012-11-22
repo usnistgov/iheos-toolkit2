@@ -6,19 +6,16 @@ import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.ListBox;
 
 public class LoadTestdataList {
 	ToolkitServiceAsync toolkit;
 	String listName;
-	ListBox listbox;
-	String firstElement = null;
+	DirectSenderTab.Display display;
 
-	public LoadTestdataList(ToolkitServiceAsync toolkit, String listName, ListBox listbox, String firstElement) {
+	public LoadTestdataList(ToolkitServiceAsync toolkit, String listName, DirectSenderTab.Display display) {
 		this.toolkit = toolkit;
 		this.listName = listName;
-		this.listbox = listbox;
-		this.firstElement = firstElement;
+		this.display = display;
 	}
 
 	public void run() {
@@ -34,13 +31,6 @@ public class LoadTestdataList {
 
 		@Override
 		public void onSuccess(List<String> arg0) {
-			listbox.clear();
-			if (firstElement != null) {
-				listbox.addItem(firstElement);
-			}
-			for (String i : arg0)
-				listbox.addItem(i);
-		}
-
-	};
+			display.setMessageSelections(arg0);
+	}};
 }

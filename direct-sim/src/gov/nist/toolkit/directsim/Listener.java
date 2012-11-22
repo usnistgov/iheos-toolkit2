@@ -53,6 +53,8 @@ public class Listener {
 	static String externalCache;
 	static String pathToPrivateKey;
 
+	static Logger logger = Logger.getLogger(Listener.class);
+
 	static {
 		MessageValidatorFactory fact = new MessageValidatorFactory();
 	}
@@ -108,7 +110,7 @@ class doComms implements Runnable {
 	String mailFrom = null;
 	boolean logInputs = true;
 
-	static Logger logger = Logger.getLogger(Listener.class);
+	static Logger logger = Logger.getLogger(doComms.class);
 
 	doComms(Socket server, File externalCache, String pathToPrivateKey) {
 		this.server=server;
@@ -374,7 +376,7 @@ class doComms implements Runnable {
 				logger.error("Cannot send email (" + e.getClass().getName() + ". " + e.getMessage());
 			}
 		} else {
-			logger.info("Validation announcement not sent - disabled in configuration - report text is:\n" + validationReport.toString());
+			logger.info("Validation announcement not sent - disabled in configuration \n" );
 		}
 
 		logger.info("Done");
