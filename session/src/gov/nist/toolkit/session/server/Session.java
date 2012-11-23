@@ -68,6 +68,7 @@ public class Session implements SecurityParams {
 	public AssertionResults res;
 	public TransactionSettings transactionSettings = new TransactionSettings();
 	public boolean isAdmin = false;
+	public boolean isSoap = true;
 	
 	byte[] lastUpload = null;
 	byte[] input2 = null;

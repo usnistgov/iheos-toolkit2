@@ -105,6 +105,7 @@ public class DirectTransaction extends BasicTransaction {
 	String mailerHostname = null;
 	int mailerPort = 25;
 	boolean useSMTPProtocol = true;
+	boolean sendWrapped = true;
 
 	static final Logger logger = Logger.getLogger(DirectTransaction.class);
 
@@ -416,7 +417,11 @@ public class DirectTransaction extends BasicTransaction {
 		Session session = Session.getDefaultInstance(props, null);
 		MimeMessage msg = new MimeMessage(session);
 		
-		msg = createSendMail(toAddress, fromAddress);
+		if (sendWrapped) {
+			msg = createWrapedSendMail(toAddress, fromAddress);
+		} else {
+			msg = createSendMail(toAddress, fromAddress);
+		}
 		/*InputStream is2 = new FileInputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));
 		msg = new MimeMessage(session, is2);*/
 		
@@ -585,6 +590,12 @@ public class DirectTransaction extends BasicTransaction {
 		else if (part_name.equals("CertFilePassword")) {
 			if (certFilePassword == null)
 				certFilePassword = part.getText();
+		}
+		else if (part_name.equals("Wrapped")) {
+			sendWrapped = false;
+			String val = part.getText();
+			if (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("yes"))
+				sendWrapped = true;
 		}
 		else if (part_name.equals("BodyContent")) {
 			bodyContent = part.getText();

@@ -196,6 +196,13 @@ public class HomeTab extends GenericQueryTab {
 		topPanel.add(drcvTbl.contentValidation());
 
 		topPanel.add(new HTML("<hr />"));
+
+		topPanel.add(new HTML("<h3>Support</h3>"));
+		topPanel.add(new HTML("The support mailing list for this tool is: <a href=\"mailto:transport-testing-tool@googlegroups.com\">transport-testing-tool@googlegroups.com</a>"));
+		
+		topPanel.add(new HTML("Frequently asked questions (FAQ) (warning - PDF) can be found at: <a href=\"http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf\">http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf</a>"));
+		topPanel.add(new HTML("<hr />"));
+		
 	}
 
 	void loadCCDAGrid() {

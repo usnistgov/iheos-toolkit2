@@ -45,6 +45,7 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 		HasValueChangeHandlers<String> getToAddressTextBox();
 	    HasClickHandlers getKnownCertSubmitButton();
 		void setEncryptionCertAvailable(String domain, boolean avail);
+		boolean isWrapped();
 	}
 	
 	Display display;
@@ -151,6 +152,7 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 		parms.put("$direct_to_address$", display.getToAddress());
 		parms.put("$direct_to_domain$", getDomain(display.getToAddress()));
 		parms.put("$ccda_attachment_file$", display.getSelectedMessageName());
+		parms.put("$send_wrapped$", (display.isWrapped()) ? "True" : "False");
 
 		toolkitService.directSend(parms, new AsyncCallback<List<Result>> () {
 			public void onFailure(Throwable caught) {

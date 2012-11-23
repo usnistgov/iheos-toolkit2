@@ -102,9 +102,9 @@
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.eclipse.ocl_1.3.0.v200905271400.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.eclipse.ocl.ecore_1.3.0.v200905271400.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.emf.runtime_1.0.0.201210151242.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda_1.1.0.201210151242.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.consol_1.0.0.201210151253.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.mu2consol_0.7.0.201210151253.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda_1.1.0.201209071536.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.consol_1.0.0.201211140345.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.mu2consol_0.7.0.201209201609.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.resources_1.1.0.201210151242.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.hl7.datatypes_1.1.0.201210151242.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.hl7.rim_1.1.0.201210151242.jar"/>

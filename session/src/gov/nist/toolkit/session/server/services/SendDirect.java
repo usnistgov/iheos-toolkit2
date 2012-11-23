@@ -66,6 +66,8 @@ public class SendDirect extends CommonServiceManager {
 
 			escapeWindowsBackslashes(params);
 			
+			session.isSoap = false;
+			
 			Result r = session.xdsTestServiceManager().xdstest("DirectSendTemplate", sections, params, params2, areas, true);
 			return asList(r);
 		} catch (Throwable e) {

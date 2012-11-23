@@ -34,7 +34,8 @@ public class DirectSenderView implements DirectSenderTab.Display {
 	FormPanel form = null;
 	HTML certAvailableMessage;
 	VerticalPanel vpan = new VerticalPanel();
-	
+	RadioButton wrappedRadio;
+	 
 	DirectSenderTab dsTab;
 	String sendingDomain;
 
@@ -67,7 +68,7 @@ public class DirectSenderView implements DirectSenderTab.Display {
 		fromAddressPanel.add(new HTML("@" + sendingDomain));
 		topPanel.add(fromAddressPanel);
 		topPanel.add(new HTML("<p>The message content will be signed using the " +
-		"private key for this sending domain which was installed in the toolkit. " +
+		"private key for this sending domain (" + sendingDomain + ") which was installed in the toolkit. " +
 				"The public key will be sent as part of the message payload and will be used by the " +
 		" receiving HISP to validate the content."));
 
@@ -86,12 +87,12 @@ public class DirectSenderView implements DirectSenderTab.Display {
 		topPanel.add(new HTML("<h3>Message format</h3>"));
 		HorizontalPanel formatPanel = new HorizontalPanel();
 		List<RadioButton> wrappedSelection = new ArrayList<RadioButton>();
-		RadioButton wrappedRadio = new RadioButton("Wrapped");
+		wrappedRadio = new RadioButton("wrapped_unwrapped", "Wrapped");
 		wrappedRadio.setText("Wrapped");
-		wrappedRadio.setEnabled(false);
+//		wrappedRadio.setEnabled(false);
 		wrappedSelection.add(wrappedRadio);
 
-		RadioButton unwrappedRadio = new RadioButton("Unwrapped");
+		RadioButton unwrappedRadio = new RadioButton("wrapped_unwrapped", "Unwrapped");
 		unwrappedRadio.setText("Unwrapped");
 		unwrappedRadio.setValue(true);
 		wrappedSelection.add(unwrappedRadio);
@@ -99,7 +100,7 @@ public class DirectSenderView implements DirectSenderTab.Display {
 		formatPanel.add(wrappedRadio);
 		topPanel.add(formatPanel);
 		topPanel.add(new HTML("<p>If wrapped format is chosen then the following header fields will " + 
-		" be moved from the outer RFC 822 header into the encrypted part of the message: "));
+		" be moved from the outer RFC 822 header into the encrypted part of the message: To, From, Subject, Date."));
 		
 		topPanel.add(new HTML("<br /><hr /><br />"));
 		topPanel.add(new HTML("<h3>Encyption Certificate</h3>"));
@@ -270,5 +271,10 @@ public class DirectSenderView implements DirectSenderTab.Display {
 	@Override
 	public HasClickHandlers getKnownCertSubmitButton() {
 		return submitButton;
+	}
+
+	@Override
+	public boolean isWrapped() {
+		return wrappedRadio.getValue();
 	}
 }

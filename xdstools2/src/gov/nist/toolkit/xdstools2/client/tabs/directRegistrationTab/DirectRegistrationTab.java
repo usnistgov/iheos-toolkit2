@@ -87,8 +87,15 @@ public class DirectRegistrationTab extends GenericQueryTab {
 		HTML title = new HTML();
 		title.setHTML("<h2>Registration for Transport Testing Tool</h2>");
 		topPanel.add(title);
+		
+		topPanel.add(new HTML("These instructions cover the special requirements for sending Direct messages to the NIST Transport Testing Tool " +
+		" Direct message validation system. By its nature, it is difficult to get feedback from the recipient of a Direct/SMTP message. So, to enable message valiation " +
+		" feedback, we require pre-registration. This pre-registration links a Direct (From) address that is used to send to the validator to a normal " +
+		" email account.  Validation reports are sent back to the email account for review by the user. This panel allows the user to register their email " +
+		" account and link one or more Direct (From) account to it. Direct messages sent from a non-registered Direct (From) address will not be validated " +
+		" nor reported on."));
 
-		topPanel.add(new HTML(required));
+		topPanel.add(new HTML("<p>" + required));
 
 		grid.setCellSpacing(20);
 

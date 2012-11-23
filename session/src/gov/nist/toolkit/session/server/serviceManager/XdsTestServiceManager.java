@@ -200,21 +200,24 @@ public class XdsTestServiceManager extends CommonServiceManager {
 				return mkResult();
 			}
 			session.xt.setSecure(session.isTls()) ;
-			if (session.isTls())
-				session.res.add("Using TLS");
-			else
-				session.res.add("Not using TLS");
+			
+			if (session.isSoap) {
+				if (session.isTls())
+					session.res.add("Using TLS");
+				else
+					session.res.add("Not using TLS");
 
-			session.xt.setWssec(session.isSaml());
-			if (session.isSaml())
-				session.res.add("Using SAML");
-			else
-				session.res.add("Not using SAML");
+				session.xt.setWssec(session.isSaml());
+				if (session.isSaml())
+					session.res.add("Using SAML");
+				else
+					session.res.add("Not using SAML");
 
 
-			if (session.siteSpec != null)
-				session.res.add("Site: " + session.siteSpec.name);
-
+				if (session.siteSpec != null)
+					session.res.add("Site: " + session.siteSpec.name);
+			}
+			
 			session.res.add("Parameters:");
 			for (String param : params.keySet()) {
 				session.res.add("..." + param + ": " + params.get(param));

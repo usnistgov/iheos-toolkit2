@@ -60,13 +60,12 @@ public class CcdaValidator {
 		ValidationResult result = new ValidationResult();
 		EClass type = typeMap.get(validationType);
 		
-		if (type == null)
-			throw new Exception("Do not understand validation type " + validationType + 
-					". The configured types are " + typeMap.keySet());
+		if (type == null || validationType.trim().equals("")) 
+			CDAUtil.load(is);
+		else
+			CDAUtil.loadAs(is, type, result);
 
-		logger.info("Starting CCDA validation");
-		
-		CDAUtil.loadAs(is, type, result);
+		logger.info("Starting CCDA validation, validate as a " + ((type == null) ? "Plain CCDA" : type));
 		
 		int errors = 0;
 		int warnings = 0;
