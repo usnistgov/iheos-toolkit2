@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.direct.utils.TextErrorRecorderModif;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
  
@@ -30,7 +30,7 @@ public class DirectMessageValidatorReplyToTest {
 	// DTS 117, Reply-to, Optional
 	@Test
 	public void testReplyTo() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateReplyTo(er, "test@test.com, test2@test.com");
 		assertTrue(!er.hasErrors());
@@ -38,7 +38,7 @@ public class DirectMessageValidatorReplyToTest {
 	
 	@Test
 	public void testReplyTo2() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateReplyTo(er, "test@test.com");
 		assertTrue(!er.hasErrors());
@@ -46,7 +46,7 @@ public class DirectMessageValidatorReplyToTest {
 	
 	@Test
 	public void testReplyTo3() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateReplyTo(er, "test.test.com");  // Not valid, not an e-mail address
 		assertTrue(er.hasErrors());
@@ -54,7 +54,7 @@ public class DirectMessageValidatorReplyToTest {
 	
 	@Test
 	public void testReplyTo4() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateReplyTo(er, "");  // Not present
 		assertTrue(!er.hasErrors());

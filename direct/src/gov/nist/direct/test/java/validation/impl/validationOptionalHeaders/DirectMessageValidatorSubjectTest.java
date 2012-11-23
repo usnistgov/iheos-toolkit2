@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.direct.utils.TextErrorRecorderModif;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
  
@@ -30,7 +30,7 @@ public class DirectMessageValidatorSubjectTest {
 	// DTS 124, Subject, Optional
 	@Test
 	public void testSubject() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateSubject(er, "Simple subject", "smime.p7s");
 		assertTrue(!er.hasErrors());
@@ -38,7 +38,7 @@ public class DirectMessageValidatorSubjectTest {
 	
 	@Test
 	public void testSubject2() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateSubject(er, "Simple subject XDM/1.0/DDM", "IHE_XDM.zip");   
 		assertTrue(!er.hasErrors());
@@ -46,7 +46,7 @@ public class DirectMessageValidatorSubjectTest {
 	
 	@Test
 	public void testSubject3() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateSubject(er, "Simple subject", "IHE_XDM.zip");   // Not valid, MUST contain XDM/1.0/DDM
 		assertTrue(er.hasErrors());

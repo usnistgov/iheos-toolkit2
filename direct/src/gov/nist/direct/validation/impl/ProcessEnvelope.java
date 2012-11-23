@@ -89,7 +89,7 @@ public class ProcessEnvelope {
 		
 	}
 	
-	public void validateMessageHeader(ErrorRecorder er, Message m, LinkedHashMap<String, Integer> summary, int partNumber, boolean wrapped) throws Exception {
+	public void validateMessageHeader(ErrorRecorder er, Message m, LinkedHashMap<String, Integer> summary, int partNumber) throws Exception {
 		er.sectionHeading("Message Header Checklist");
 		
 		String shift = "";
@@ -102,59 +102,33 @@ public class ProcessEnvelope {
 		// DTS 196, Validate All Headers
 		String[] header = ValidationUtils.getHeadersAndContent((MimeMessage) m).get(0);
 		String[] headerContent =ValidationUtils.getHeadersAndContent((MimeMessage) m).get(1);
-		if(wrapped) {
-			msgValidator.validateWrappedAllHeaders(er, header, headerContent);
-		} else {
-			msgValidator.validateAllHeaders(er, header, headerContent);
-		}
+		msgValidator.validateAllHeaders(er, header, headerContent);
 		
 		// DTS 114 Validate Orig Date
-		if(wrapped) {
-			msgValidator.validateWrappedOrigDate(er, searchHeaderSimple(m, "date"));
-		} else {
-			msgValidator.validateOrigDate(er, searchHeaderSimple(m, "date"));
-		}
+		msgValidator.validateOrigDate(er, searchHeaderSimple(m, "date"));
 		summary.put(shift + "Orig-Date: "+searchHeaderSimple(m, "date")+" (Part number: "+partNumber+")", er.getNbErrors());
 		
 		// DTS 115 Validate From
-		String from = "";
 		if(m.getFrom() != null) {
-			from = m.getFrom()[0].toString();
+			for(int i=0;i<m.getFrom().length;i++) {
+				msgValidator.validateFrom(er, m.getFrom()[0].toString());
+				summary.put(shift + "From: "+m.getFrom()[0].toString()+" (Part number: "+partNumber+")", er.getNbErrors());
+			}
 		}
-		if(wrapped) {
-			msgValidator.validateWrappedFrom(er, from);
-		} else {
-			msgValidator.validateFrom(er, from);
-		}
-		summary.put(shift + "From: "+from+" (Part number: "+partNumber+")", er.getNbErrors());
 		
 		// DTS 118 Validate To
-		String to = "";
 		if(m.getRecipients(Message.RecipientType.TO) != null) {
-			to = m.getRecipients(Message.RecipientType.TO)[0].toString();
+			msgValidator.validateTo(er, m.getRecipients(Message.RecipientType.TO)[0].toString());
+			summary.put(shift + "To: "+m.getRecipients(Message.RecipientType.TO)[0].toString()+" (Part number: "+partNumber+")", er.getNbErrors());
 		}
-		if(wrapped) {
-			msgValidator.validateWrappedTo(er, to);
-		} else {
-			msgValidator.validateTo(er, to);
-		}
-		summary.put(shift + "To: "+to+" (Part number: "+partNumber+")", er.getNbErrors());
 			
 		// DTS 121, Validate Message-Id
-		if(wrapped) {
-			msgValidator.validateWrappedMessageId(er, searchHeaderSimple(m, "message-id"));
-		} else {
-			msgValidator.validateMessageId(er, searchHeaderSimple(m, "message-id"));
-		}
+		msgValidator.validateMessageId(er, searchHeaderSimple(m, "message-id"));
 		summary.put(shift + "Message-Id: "+searchHeaderSimple(m, "message-id")+" (Part number: "+partNumber+")", er.getNbErrors());
 		
 		// DTS 102b Validate Mime Version
 		// Searching for Mime Version Header and Value
-		if(wrapped) {
-			msgValidator.validateWrappedMIMEVersion(er, searchHeaderSimple(m, "mime-version"));
-		} else {
-			msgValidator.validateMIMEVersion(er, searchHeaderSimple(m, "mime-version"));
-		}
+		msgValidator.validateMIMEVersion(er, searchHeaderSimple(m, "mime-version"));
 		summary.put(shift + "MIME-Version: "+searchHeaderSimple(m, "mime-version")+" (Part number: "+partNumber+")", er.getNbErrors());
 		
 		// DTS 103-105 Validate Return Path
@@ -162,11 +136,7 @@ public class ProcessEnvelope {
 		String returnPath = "";
 		for(int i=0;i<searchRes.size();i++) {
 			returnPath = searchRes.get(i);
-			if(wrapped) {
-				msgValidator.validateWrappedReturnPath(er, returnPath);
-			} else {
-				msgValidator.validateReturnPath(er, returnPath);
-			}
+			msgValidator.validateReturnPath(er, returnPath);
 		}
 		if(!returnPath.equals("")) {
 			summary.put(shift + "Return-Path: "+returnPath+" (Part number: "+partNumber+")", er.getNbErrors());
@@ -178,11 +148,7 @@ public class ProcessEnvelope {
 		for(int i=0;i<searchRes.size();i++) {
 			received = searchRes.get(i);
 			received = received.replaceAll("\\s", "");
-			if(wrapped) {
-				msgValidator.validateWrappedReceived(er, received);
-			} else {
-				msgValidator.validateReceived(er, received);
-			}
+			msgValidator.validateReceived(er, received);
 		}
 		summary.put(shift + "Received: "+received+" (Part number: "+partNumber+")", er.getNbErrors());
 		
@@ -304,11 +270,7 @@ public class ProcessEnvelope {
 		}
 		
 		// DTS 128 Validate Disposition-Notification-To
-		if(wrapped) {
-			msgValidator.validateWrappedDispositionNotificationTo(er, searchHeaderSimple(m, "disposition-notification-to"));
-		} else {
-			msgValidator.validateDispositionNotificationTo(er, searchHeaderSimple(m, "disposition-notification-to"));
-		}
+		msgValidator.validateDispositionNotificationTo(er, searchHeaderSimple(m, "disposition-notification-to"));
 		if(!searchHeaderSimple(m, "disposition-notification-to").equals("")) {
 			summary.put(shift + "Disposition-Notification-To: "+searchHeaderSimple(m, "disposition-notification-to")+" (Part number: "+partNumber+")", er.getNbErrors());
 		}

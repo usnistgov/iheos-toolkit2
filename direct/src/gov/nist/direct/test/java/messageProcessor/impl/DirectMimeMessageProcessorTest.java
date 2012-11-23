@@ -20,7 +20,7 @@ package gov.nist.direct.test.java.messageProcessor.impl;
 import static org.junit.Assert.fail;
 import gov.nist.direct.messageParser.DirectMessageProcessor;
 import gov.nist.direct.messageParser.impl.DirectMimeMessageProcessor;
-import gov.nist.direct.utils.TextErrorRecorderModif;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -31,7 +31,7 @@ public class DirectMimeMessageProcessorTest {
 
 	@Test
 	public void testProcessAndValidateDirectMessage() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 
 		String messageUnderTestPath = "target/test-classes/messages/signed-encrypted-xdm.eml";
 		byte[] messageUnderTest = null;

@@ -112,15 +112,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 	private LinkedHashMap<String, Integer> summary = new LinkedHashMap<String, Integer>();
 	private int partNumber;
 	private int shiftNumber;
-	WrappedMessageParser wrappedParser = new WrappedMessageParser();
 
 	public void processAndValidateDirectMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc){
 		directCertificate = _directCertificate;
 		password = _password;
 		this.vc = vc;
-		
-		// Parse the message to see if it is wrapped
-		wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
 		
 		// Set the part number to 1
 		partNumber = 1;
@@ -237,7 +233,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 				// Separate ErrorRecorder 2
 				ErrorRecorder separate2 = new GwtErrorRecorder();
 				
-				process.validateMessageHeader(separate2, (Message)p, summary, partNumber, true);
+				process.validateMessageHeader(separate2, (Message)p, summary, partNumber);
 				er.concat(separate2);
 
 				// DTS 151, Validate First MIME Part Body
@@ -393,7 +389,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Separate ErrorRecorder
 		ErrorRecorder separate2 = new GwtErrorRecorder();
-		process.validateMessageHeader(separate2, m, summary, 0, !wrappedParser.getWrapped());
+		process.validateMessageHeader(separate2, m, summary, 0);
 		er.concat(separate2);
 		
 		// MIME Entity Validation
@@ -886,9 +882,4 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		}
 		return shiftIndent;
 	}
-	
-	public void messageParser() {
-		
-	}
-	
 }

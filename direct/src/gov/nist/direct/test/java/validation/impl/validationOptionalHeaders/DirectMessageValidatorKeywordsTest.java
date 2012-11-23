@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.direct.utils.TextErrorRecorderModif;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
  
@@ -30,7 +30,7 @@ public class DirectMessageValidatorKeywordsTest {
 	// DTS 126, Keywords, Optional
 	@Test
 	public void testKeywords() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateKeywords(er, "test, validator, keyword");
 		assertTrue(!er.hasErrors());
@@ -38,7 +38,7 @@ public class DirectMessageValidatorKeywordsTest {
 	
 	@Test
 	public void testKeywords2() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateKeywords(er, "");   // Not present
 		assertTrue(!er.hasErrors());

@@ -17,7 +17,7 @@ Author: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationRequiredHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.direct.utils.TextErrorRecorderModif;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
@@ -27,7 +27,7 @@ public class DirectMessageValidatorMessageIdTest {
 	// DTS 121, Message-Id, Required
 	@Test
 	public void testMessageId() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateMessageId(er, "<4EC2C25A.8090002@ssa-w0066.acct04.us.lmco.com>");
 		assertTrue(!er.hasErrors());
@@ -35,7 +35,7 @@ public class DirectMessageValidatorMessageIdTest {
 			
 	@Test
 	public void testMessageId2() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateMessageId(er, "4EC2C25A.8090002@ssa-w0066.acct04.us.lmco.com");   // Not a valid name
 		assertTrue(er.hasErrors());

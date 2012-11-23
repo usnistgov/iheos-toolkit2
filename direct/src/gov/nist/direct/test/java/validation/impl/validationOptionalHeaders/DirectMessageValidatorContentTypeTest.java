@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.direct.utils.TextErrorRecorderModif;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
  
@@ -31,7 +31,7 @@ public class DirectMessageValidatorContentTypeTest {
 	// DTS 201, Content-Type Name, Optional
 	@Test
 	public void testContentTypeName() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeNameOptional(er, "smime.p7m");
 		assertTrue(!er.hasErrors());
@@ -39,7 +39,7 @@ public class DirectMessageValidatorContentTypeTest {
 	
 	@Test
 	public void testContentTypeName2() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeNameOptional(er, "");   // Not present
 		assertTrue(er.hasErrors());
@@ -49,7 +49,7 @@ public class DirectMessageValidatorContentTypeTest {
 	// DTS 202, Content-Type S/MIME-Type, Optional
 	@Test
 	public void testContentTypeSMIMEType() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeSMIMETypeOptional(er, "enveloped-data");
 		assertTrue(!er.hasErrors());
@@ -57,7 +57,7 @@ public class DirectMessageValidatorContentTypeTest {
 	
 	@Test
 	public void testContentTypeSMIMEType2() {
-		ErrorRecorder er = new TextErrorRecorderModif();
+		ErrorRecorder er = new TextErrorRecorder();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeSMIMETypeOptional(er, "enveloped");  // Not valid
 		assertTrue(er.hasErrors());
@@ -66,7 +66,7 @@ public class DirectMessageValidatorContentTypeTest {
 	// DTS 203, Content Disposition, Optional
 		@Test
 		public void testContentDisposition() {
-			ErrorRecorder er = new TextErrorRecorderModif();
+			ErrorRecorder er = new TextErrorRecorder();
 			DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 			validator.validateContentDispositionOptional(er, "smime.p7m");
 			assertTrue(!er.hasErrors());
@@ -74,7 +74,7 @@ public class DirectMessageValidatorContentTypeTest {
 		
 		@Test
 		public void testContentDisposition2() {
-			ErrorRecorder er = new TextErrorRecorderModif();
+			ErrorRecorder er = new TextErrorRecorder();
 			DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 			validator.validateContentDispositionOptional(er, "smime");  // Not valid
 			assertTrue(!er.hasErrors());

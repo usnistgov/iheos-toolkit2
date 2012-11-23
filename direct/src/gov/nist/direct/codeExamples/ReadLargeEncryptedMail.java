@@ -1,4 +1,4 @@
-package gov.nist.direct.messageGenerator;
+package gov.nist.direct.codeExamples;
 
 import java.security.KeyStore;
 import java.security.PrivateKey;
