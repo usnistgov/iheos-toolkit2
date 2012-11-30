@@ -19,6 +19,7 @@ package gov.nist.direct.messageParser.impl;
 
 import gov.nist.direct.messageParser.DirectMessageProcessor;
 import gov.nist.direct.messageParser.MessageParser;
+import gov.nist.direct.utils.ValidationSummary;
 import gov.nist.direct.validation.MessageValidatorFacade;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.validation.impl.ProcessEnvelope;
@@ -112,11 +113,16 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 	private LinkedHashMap<String, Integer> summary = new LinkedHashMap<String, Integer>();
 	private int partNumber;
 	private int shiftNumber;
+	private ValidationSummary validationSummary = new ValidationSummary();
+	WrappedMessageParser wrappedParser = new WrappedMessageParser();
 
 	public void processAndValidateDirectMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc){
 		directCertificate = _directCertificate;
 		password = _password;
 		this.vc = vc;
+		
+		// Parse the message to see if it is wrapped
+		wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
 		
 		// Set the part number to 1
 		partNumber = 1;
@@ -181,6 +187,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 				}
 			}
 		}
+		System.out.println(validationSummary);
 	}
 
 	/**
@@ -233,7 +240,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 				// Separate ErrorRecorder 2
 				ErrorRecorder separate2 = new GwtErrorRecorder();
 				
-				process.validateMessageHeader(separate2, (Message)p, summary, partNumber);
+				process.validateMessageHeader(separate2, (Message)p, summary, partNumber, true);
 				er.concat(separate2);
 
 				// DTS 151, Validate First MIME Part Body
@@ -385,11 +392,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Update the summary
 		summary.put("Encrypted Message", er.getNbErrors());
+		validationSummary.recordKey("Encrypted Message", er.hasErrors(), true);
 
 		
 		// Separate ErrorRecorder
 		ErrorRecorder separate2 = new GwtErrorRecorder();
-		process.validateMessageHeader(separate2, m, summary, 0);
+		process.validateMessageHeader(separate2, m, summary, 0, !wrappedParser.getWrapped());
 		er.concat(separate2);
 		
 		// MIME Entity Validation
@@ -402,6 +410,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		// DTS 133a, Content-Type
 		msgValidator.validateMessageContentTypeA(separate, m.getContentType());
 		summary.put(getShiftIndent(shiftNumber) + "Content-type: "+m.getContentType(), separate.getNbErrors());
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Content-type: "+m.getContentType(), separate.hasErrors(), true);
 		
 		// DTS 201, Content-Type Name
 		msgValidator.validateContentTypeNameOptional(separate, m.getContentType());
