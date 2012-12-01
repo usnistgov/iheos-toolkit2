@@ -1,5 +1,6 @@
 package gov.nist.toolkit.directsim;
 
+import gov.nist.direct.messageDispatch.MessageDispatchUtils;
 import gov.nist.toolkit.actorfactory.DirectActorFactory;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsupport.SMTPException;
@@ -33,6 +34,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 import org.mortbay.log.Log;
@@ -139,23 +144,37 @@ class doComms implements Runnable {
 		}
 
 		try {
-			String m = readIncomingSMTPMessage(server, "smtp.hit-testing.nist.gov");
+			String m = readIncomingSMTPMessage(server, reportingProps.get("direct.toolkit.smtp.domain"));   //"smtp.hit-testing.nist.gov");
 			message.append(m);
 		} catch (EOFException e) {
 
 		} catch (IOException ioe) {
 			logger.error("IOException on socket listen: " + ioe);
-			//			ioe.printStackTrace();
+			return;
 		} catch (SMTPException e) {
 			logger.error("SMTPException on socket listen: " + e);
-			//			e.printStackTrace();
+			return;
+		} catch (PropertyNotFoundException e) {
+			logger.error("tk_props property direct.toolkit.smtp.domain not found: " + e);
+			return;
 		}
 		finally {
 			try {
 				server.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				return;
 			}
+		}
+		
+		MimeMessage mmsg;
+		boolean isMdn;
+		try {
+			mmsg = new MimeMessage(Session.getDefaultInstance(System.getProperties(), null), Io.bytesToInputStream(message.toString().getBytes()));
+			isMdn = MessageDispatchUtils.isMDN(mmsg);
+		} catch (MessagingException e2) {
+			logger.error("Message fails MimeMessage parser");
+			return;
 		}
 
 		HtmlValFormatter hvf = new HtmlValFormatter();
