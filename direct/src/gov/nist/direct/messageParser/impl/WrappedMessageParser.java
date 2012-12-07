@@ -23,6 +23,8 @@ import gov.nist.direct.messageParser.MessageParser;
 import gov.nist.direct.validation.MessageValidatorFacade;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.RecipientId;
 import org.bouncycastle.cms.RecipientInformation;
@@ -216,14 +218,21 @@ public class WrappedMessageParser {
 			res = SMIMEUtil.toMimeBodyPart(recipient.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider("BC")));
 		} catch (UnrecoverableKeyException e1) {
 			e1.printStackTrace();
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (KeyStoreException e1) {
 			e1.printStackTrace();
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (NoSuchAlgorithmException e1) {
 			e1.printStackTrace();
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (SMIMEException e1) {
 			e1.printStackTrace();
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (CMSException e1) {
 			e1.printStackTrace();
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+		} catch (Exception e1) {
+			er.err("0", "Error with the certificate: Unable to decrypt message maybe it is the wrong certificate", "", "", "Certificate file");
 		}
 
 		return res;

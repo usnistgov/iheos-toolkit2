@@ -20,6 +20,7 @@ package gov.nist.direct.messageParser.impl;
 import gov.nist.direct.messageParser.DirectMessageProcessor;
 import gov.nist.direct.messageParser.MessageParser;
 import gov.nist.direct.utils.ValidationSummary;
+import gov.nist.direct.utils.ValidationSummary.Status;
 import gov.nist.direct.validation.MessageValidatorFacade;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.validation.impl.ProcessEnvelope;
@@ -224,6 +225,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			
 			// Summary
 			summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": message/rfc822 interpreted as a message", er.getNbErrors());
+			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": message/rfc822 interpreted as a message", Status.PART, true);
 			
 			p = (Part)p.getContent();
 			if (p instanceof Message) {
@@ -234,13 +236,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 				// Separate ErrorRecorder
 				ErrorRecorder separate = new GwtErrorRecorder();
 				
-				process.validateMimeEntity(separate, p, summary, shiftNumber+1);
+				process.validateMimeEntity(separate, p, summary, validationSummary, shiftNumber+1);
 				er.concat(separate);
 				
 				// Separate ErrorRecorder 2
 				ErrorRecorder separate2 = new GwtErrorRecorder();
 				
-				process.validateMessageHeader(separate2, (Message)p, summary, partNumber, true);
+				process.validateMessageHeader(separate2, (Message)p, summary, validationSummary, partNumber, true);
 				er.concat(separate2);
 
 				// DTS 151, Validate First MIME Part Body
@@ -251,6 +253,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 				separate.concat(separate2);
 				
 				summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": message/rfc822 interpreted as a message", separate.getNbErrors());
+				validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": message/rfc822 interpreted as a message", separate.hasErrors(), true);
 				partNumber++;
 
 				if(p.getContent() instanceof MimeMultipart) {
@@ -307,7 +310,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			
 			// Separate ErrorRecorder
 			ErrorRecorder separate = new GwtErrorRecorder();
-			process.validateMimeEntity(separate, p, summary, shiftNumber);
+			process.validateMimeEntity(separate, p, summary, validationSummary, shiftNumber);
 			er.concat(separate);
 			
 			// Increase shift number
@@ -350,7 +353,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			
 			// Separate ErrorRecorder
 			ErrorRecorder separate = new GwtErrorRecorder();
-			process.validateMimeEntity(separate, p, summary, shiftNumber);
+			process.validateMimeEntity(separate, p, summary, validationSummary,shiftNumber);
 			er.concat(separate);
 			
 			// Increase shift number to display indentation
@@ -371,6 +374,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			er.detail("Couldn't figure out the type"+"  Content Name: "+p.getContent().getClass().getName());
 			// Summary
 			summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": Unknown part type", 0);
+			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": Unknown part type", Status.PART, true);
 			partNumber++;
 
 		}
@@ -392,19 +396,19 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Update the summary
 		summary.put("Encrypted Message", er.getNbErrors());
-		validationSummary.recordKey("Encrypted Message", er.hasErrors(), true);
+		validationSummary.recordKey("Encrypted Message", Status.PART, true);
 
 		
 		// Separate ErrorRecorder
 		ErrorRecorder separate2 = new GwtErrorRecorder();
-		process.validateMessageHeader(separate2, m, summary, 0, !wrappedParser.getWrapped());
+		process.validateMessageHeader(separate2, m, summary, validationSummary, 0, !wrappedParser.getWrapped());
 		er.concat(separate2);
 		
 		// MIME Entity Validation
 
 		// Separate ErrorRecorder
 		ErrorRecorder separate = new GwtErrorRecorder();
-		process.validateMimeEntity(separate, m, summary, shiftNumber);
+		process.validateMimeEntity(separate, m, summary, validationSummary, shiftNumber);
 		er.concat(separate);
 		
 		// DTS 133a, Content-Type
@@ -428,6 +432,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 
 		// Update the summary
 		summary.put("Encrypted Message", er.getNbErrors());
+		validationSummary.updateInfos("Encrypted Message", er.hasErrors(), true);
 	}
 
 
@@ -442,10 +447,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Summary
 		summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": plain/text interpreted as a text content", er.getNbErrors());
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": plain/text interpreted as a text content", Status.PART, true);
 		
 		// Separate ErrorRecorder
 		ErrorRecorder separate = new GwtErrorRecorder();
-		process.validateMimeEntity(separate, p, summary, shiftNumber+1);
+		process.validateMimeEntity(separate, p, summary, validationSummary, shiftNumber+1);
 		er.concat(separate);
 		
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
@@ -455,6 +461,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Update the summary
 		summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": plain/text interpreted as a text content", separate.getNbErrors());
+		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": plain/text interpreted as a text content", separate.hasErrors(), true);
 		partNumber++;
 	}
 
@@ -485,6 +492,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Update the summary
 		summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", er.getNbErrors());
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", Status.PART, true);
+		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", er.hasErrors(), true);
 		partNumber++;
 	}
 
@@ -581,6 +590,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			
 			// Update summary
 			summary.put("Signature", separate.getNbErrors());
+			validationSummary.updateSignatureStatus(separate.hasErrors());
 			er.concat(separate);
 
 		}
@@ -657,6 +667,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		if (keyAlias == null)
 		{
 			logger.error("Can't find a private key in encryption keystore.");
+			er.err("0", "Can't find a private key in encryption keystore.", "", "", "Certificate file");
+			
 			// DTS 129, Message Body
 			msgValidator.validateMessageBody(er, false);
 
@@ -674,6 +686,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			cert = (X509Certificate)ks.getCertificate(keyAlias);
 		} catch (KeyStoreException e1) {
 			logger.error("Error extracting private key: " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error extracting private key: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		}
 		RecipientId     recId = new JceKeyTransRecipientId(cert);
 
@@ -682,8 +695,10 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			m = new SMIMEEnveloped((MimeMessage)p);
 		} catch (MessagingException e1) {
 			logger.error("Error un-enveloping message body: " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (CMSException e1) {
 			logger.error("Error un-enveloping message body: " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		}
 		RecipientInformationStore   recipients = m.getRecipientInfos();
 		RecipientInformation        recipient = recipients.get(recId);
@@ -694,15 +709,23 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			res = SMIMEUtil.toMimeBodyPart(recipient.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider("BC")));
 		} catch (UnrecoverableKeyException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (KeyStoreException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (NoSuchAlgorithmException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (SMIMEException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
 		} catch (CMSException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+		}  catch (Exception e1) {
+			er.err("0", "Error with the certificate: Unable to decrypt message maybe it is the wrong certificate", "", "", "Certificate file");
 		}
+
 
 		if(res==null) {
 			// DTS 129, Message Body
@@ -732,6 +755,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		// Update summary
 		summary.put("", 0);
 		summary.put("Decrypted Message", separate.getNbErrors());
+		validationSummary.recordKey("Decrypted Message", Status.PART, true);
+		validationSummary.updateInfos("Decrypted Message", separate.hasErrors(), true);
 
 		return res;
 	}
@@ -745,6 +770,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 
 		// Update summary
 		summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/zip interpreted as a XDM Content", er.getNbErrors());
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/zip interpreted as a XDM Content", Status.PART, true);
 		
 		// DTS 129, Validate First MIME Part
 		er.detail("\n====================Process Zip Part==========================\n");
@@ -752,13 +778,14 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Separate ErrorRecorder
 		ErrorRecorder separate = new GwtErrorRecorder();
-		process.validateMimeEntity(separate, p, summary, shiftNumber+1);
+		process.validateMimeEntity(separate, p, summary, validationSummary, shiftNumber+1);
 		er.concat(separate);
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
 		msgValidator.validateFirstMIMEPart(er, true);
 		
 		// Update summary
 		summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/zip interpreted as a XDM Content", separate.getNbErrors());
+		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/zip interpreted as a XDM Content", separate.hasErrors(), true);
 		
 		partNumber++;
 		
@@ -784,6 +811,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 
 		// Update summary
 		summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": octet/stream", er.getNbErrors());
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": octet/stream", Status.PART, true);
 		
 		// DTS 129, Validate First MIME Part
 		er.detail("\n====================Process Octet Stream Part==========================\n");
@@ -791,7 +819,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Separate ErrorRecorder
 		ErrorRecorder separate = new GwtErrorRecorder();
-		process.validateMimeEntity(separate, p, summary, shiftNumber+1);
+		process.validateMimeEntity(separate, p, summary, validationSummary, shiftNumber+1);
 		er.concat(separate);
 		
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
@@ -799,6 +827,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		// Update summary
 		summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": octet/stream", separate.getNbErrors());
+		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": octet/stream", separate.hasErrors(), true);
 		partNumber++;
 
 		this.processAttachments(er, p);

@@ -4,21 +4,27 @@ import java.util.ArrayList;
 
 public class ValidationSummary {
 	
+	public enum Status {VALID, ERROR, PART};
+	
 	class SummaryEntry {
 		String key;
-		boolean value;
+		Status value;
 	}
 	
 	
 	private ArrayList<SummaryEntry> encryptedMessageSummaryList;
 	private ArrayList<SummaryEntry> decryptedMessageSummaryList;
+	private SummaryEntry signatureStatus;
 	
 	public ValidationSummary() {
 		encryptedMessageSummaryList = new ArrayList<ValidationSummary.SummaryEntry>();
 		decryptedMessageSummaryList = new ArrayList<ValidationSummary.SummaryEntry>();
+		signatureStatus = new SummaryEntry();
+		signatureStatus.key = "Signature";
+		signatureStatus.value = Status.VALID;
 	}
 	
-	public void recordKey(String key, boolean value, boolean encrypted) {
+	public void recordKey(String key, Status value, boolean encrypted) {
 		SummaryEntry sumEntry = new SummaryEntry();
 		sumEntry.key = key;
 		sumEntry.value = value;
@@ -29,7 +35,22 @@ public class ValidationSummary {
 		}
 	}
 	
-	public void updateInfos(String key, boolean value, boolean encrypted) {
+	public void recordKey(String key, boolean hasError, boolean encrypted) {
+		SummaryEntry sumEntry = new SummaryEntry();
+		sumEntry.key = key;
+		if(hasError) {
+			sumEntry.value = Status.ERROR;
+		} else {
+			sumEntry.value = Status.VALID;
+		}
+		if(encrypted) {
+			encryptedMessageSummaryList.add(sumEntry);
+		} else {
+			decryptedMessageSummaryList.add(sumEntry);
+		}
+	}
+	
+	public void updateInfos(String key, Status value, boolean encrypted) {
 		if(encrypted) {
 			int index = findIndex(key, encryptedMessageSummaryList);
 			if(index != -1) {
@@ -43,13 +64,39 @@ public class ValidationSummary {
 		}
 	}
 	
+	public void updateInfos(String key, boolean hasErrors, boolean encrypted) {
+		if(encrypted) {
+			int index = findIndex(key, encryptedMessageSummaryList);
+			if(index != -1) {
+				if(hasErrors) {
+					encryptedMessageSummaryList.get(index).value = Status.ERROR;
+				}
+			}
+		} else {
+			int index = findIndex(key, decryptedMessageSummaryList);
+			if(index != -1) {
+				if(hasErrors) {
+					decryptedMessageSummaryList.get(index).value = Status.ERROR;
+				} else {
+					decryptedMessageSummaryList.get(index).value = Status.VALID;
+				}
+			}
+		}
+	}
+	
 	public int findIndex(String key, ArrayList<SummaryEntry> summary) {
 		for(int i=0;i<summary.size();i++) {
-			if(summary.get(i).equals(key)) {
+			if(summary.get(i).key.equals(key)) {
 				return i;
 			}
 		}
 		return -1;
+	}
+	
+	public void updateSignatureStatus(boolean status) {
+		if(!status) {
+			signatureStatus.value = Status.ERROR;
+		}
 	}
 	
 	public String toString() {
@@ -62,6 +109,8 @@ public class ValidationSummary {
 		for(int i=0;i<decryptedMessageSummaryList.size();i++) {
 			res += decryptedMessageSummaryList.get(i).key + ": " + decryptedMessageSummaryList.get(i).value + "\n";
 		}
+		// Signature
+		res += signatureStatus.key + ": " + signatureStatus.value + "\n";
 		return res;
 	}
 	
