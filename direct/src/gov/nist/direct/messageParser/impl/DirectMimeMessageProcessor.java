@@ -189,6 +189,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			}
 		}
 		System.out.println(validationSummary);
+		//TODO Remove the comment and remove the old summary
+		//validationSummary.writeErrorRecorder(er);
 	}
 
 	/**
@@ -590,7 +592,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			
 			// Update summary
 			summary.put("Signature", separate.getNbErrors());
-			validationSummary.updateSignatureStatus(separate.hasErrors());
+			validationSummary.updateSignatureStatus(!separate.hasErrors());
 			er.concat(separate);
 
 		}

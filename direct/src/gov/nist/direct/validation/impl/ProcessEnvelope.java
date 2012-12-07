@@ -4,6 +4,7 @@ import gov.nist.direct.utils.ValidationSummary;
 import gov.nist.direct.utils.ValidationUtils;
 import gov.nist.direct.validation.MessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -96,6 +97,9 @@ public class ProcessEnvelope {
 	public void validateMessageHeader(ErrorRecorder er, Message m, LinkedHashMap<String, Integer> summary, ValidationSummary validationSummary, int partNumber, boolean wrapped) throws Exception {
 		er.sectionHeading("Message Header Checklist");
 		
+		// Separate ErrorRecorder for the summary
+		ErrorRecorder separate = new GwtErrorRecorder();
+		
 		String shift = "";
 		if(partNumber==0) {
 			shift = "-----";
@@ -114,12 +118,15 @@ public class ProcessEnvelope {
 		
 		// DTS 114 Validate Orig Date
 		if(wrapped) {
-			msgValidator.validateWrappedOrigDate(er, searchHeaderSimple(m, "date"));
+			msgValidator.validateWrappedOrigDate(separate, searchHeaderSimple(m, "date"));
 		} else {
-			msgValidator.validateOrigDate(er, searchHeaderSimple(m, "date"));
+			msgValidator.validateOrigDate(separate, searchHeaderSimple(m, "date"));
 		}
-		summary.put(shift + "Orig-Date: "+searchHeaderSimple(m, "date")+" (Part number: "+partNumber+")", er.getNbErrors());
-		validationSummary.recordKey(shift + "Orig-Date: "+searchHeaderSimple(m, "date"), er.hasErrors(), true);
+		summary.put(shift + "Orig-Date: "+searchHeaderSimple(m, "date")+" (Part number: "+partNumber+")", separate.getNbErrors());
+		validationSummary.recordKey(shift + "Orig-Date: "+searchHeaderSimple(m, "date"), separate.hasErrors(), true);
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 115 Validate From
 		String from = "";
@@ -127,12 +134,15 @@ public class ProcessEnvelope {
 			from = m.getFrom()[0].toString();
 		}
 		if(wrapped) {
-			msgValidator.validateWrappedFrom(er, from);
+			msgValidator.validateWrappedFrom(separate, from);
 		} else {
-			msgValidator.validateFrom(er, from);
+			msgValidator.validateFrom(separate, from);
 		}
-		summary.put(shift + "From: "+from+" (Part number: "+partNumber+")", er.getNbErrors());
-		validationSummary.recordKey(shift + "From: "+from, er.hasErrors(), true);
+		summary.put(shift + "From: "+from+" (Part number: "+partNumber+")", separate.getNbErrors());
+		validationSummary.recordKey(shift + "From: "+from, separate.hasErrors(), true);
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 118 Validate To
 		String to = "";
@@ -140,31 +150,40 @@ public class ProcessEnvelope {
 			to = m.getRecipients(Message.RecipientType.TO)[0].toString();
 		}
 		if(wrapped) {
-			msgValidator.validateWrappedTo(er, to);
+			msgValidator.validateWrappedTo(separate, to);
 		} else {
-			msgValidator.validateTo(er, to);
+			msgValidator.validateTo(separate, to);
 		}
-		summary.put(shift + "To: "+to+" (Part number: "+partNumber+")", er.getNbErrors());
-		validationSummary.recordKey(shift + "To: "+to, er.hasErrors(), true);
+		summary.put(shift + "To: "+to+" (Part number: "+partNumber+")", separate.getNbErrors());
+		validationSummary.recordKey(shift + "To: "+to, separate.hasErrors(), true);
 			
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
+		
 		// DTS 121, Validate Message-Id
 		if(wrapped) {
-			msgValidator.validateWrappedMessageId(er, searchHeaderSimple(m, "message-id"));
+			msgValidator.validateWrappedMessageId(separate, searchHeaderSimple(m, "message-id"));
 		} else {
-			msgValidator.validateMessageId(er, searchHeaderSimple(m, "message-id"));
+			msgValidator.validateMessageId(separate, searchHeaderSimple(m, "message-id"));
 		}
-		summary.put(shift + "Message-Id: "+searchHeaderSimple(m, "message-id")+" (Part number: "+partNumber+")", er.getNbErrors());
-		validationSummary.recordKey(shift + "Message-Id: "+searchHeaderSimple(m, "message-id"), er.hasErrors(), true);
+		summary.put(shift + "Message-Id: "+searchHeaderSimple(m, "message-id")+" (Part number: "+partNumber+")", separate.getNbErrors());
+		validationSummary.recordKey(shift + "Message-Id: "+searchHeaderSimple(m, "message-id"), separate.hasErrors(), true);
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 102b Validate Mime Version
 		// Searching for Mime Version Header and Value
 		if(wrapped) {
-			msgValidator.validateWrappedMIMEVersion(er, searchHeaderSimple(m, "mime-version"));
+			msgValidator.validateWrappedMIMEVersion(separate, searchHeaderSimple(m, "mime-version"));
 		} else {
-			msgValidator.validateMIMEVersion(er, searchHeaderSimple(m, "mime-version"));
+			msgValidator.validateMIMEVersion(separate, searchHeaderSimple(m, "mime-version"));
 		}
-		summary.put(shift + "MIME-Version: "+searchHeaderSimple(m, "mime-version")+" (Part number: "+partNumber+")", er.getNbErrors());
-		validationSummary.recordKey(shift + "MIME-Version: "+searchHeaderSimple(m, "mime-version"), er.hasErrors(), true);
+		summary.put(shift + "MIME-Version: "+searchHeaderSimple(m, "mime-version")+" (Part number: "+partNumber+")", separate.getNbErrors());
+		validationSummary.recordKey(shift + "MIME-Version: "+searchHeaderSimple(m, "mime-version"), separate.hasErrors(), true);
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 103-105 Validate Return Path
 		searchRes = searchHeader(m, "return-path");
@@ -172,15 +191,18 @@ public class ProcessEnvelope {
 		for(int i=0;i<searchRes.size();i++) {
 			returnPath = searchRes.get(i);
 			if(wrapped) {
-				msgValidator.validateWrappedReturnPath(er, returnPath);
+				msgValidator.validateWrappedReturnPath(separate, returnPath);
 			} else {
-				msgValidator.validateReturnPath(er, returnPath);
+				msgValidator.validateReturnPath(separate, returnPath);
 			}
 		}
 		if(!returnPath.equals("")) {
-			summary.put(shift + "Return-Path: "+returnPath+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Return-Path: "+returnPath, er.hasErrors(), true);
+			summary.put(shift + "Return-Path: "+returnPath+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Return-Path: "+returnPath, separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 104-106 Validate Received
 		searchRes = searchHeader(m, "received");
@@ -189,85 +211,118 @@ public class ProcessEnvelope {
 			received = searchRes.get(i);
 			received = received.replaceAll("\\s", "");
 			if(wrapped) {
-				msgValidator.validateWrappedReceived(er, received);
+				msgValidator.validateWrappedReceived(separate, received);
 			} else {
-				msgValidator.validateReceived(er, received);
+				msgValidator.validateReceived(separate, received);
 			}
 		}
-		summary.put(shift + "Received: "+received+" (Part number: "+partNumber+")", er.getNbErrors());
-		validationSummary.recordKey(shift + "Received: "+received, er.hasErrors(), true);
+		summary.put(shift + "Received: "+received+" (Part number: "+partNumber+")", separate.getNbErrors());
+		validationSummary.recordKey(shift + "Received: "+received, separate.hasErrors(), true);
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 107 Validate Resent-Date
-		msgValidator.validateResentDate(er, searchHeaderSimple(m, "resent-date"));
+		msgValidator.validateResentDate(separate, searchHeaderSimple(m, "resent-date"));
 		if(!searchHeaderSimple(m, "resent-date").equals("")) {
-			summary.put(shift + "Resent-Date: "+searchHeaderSimple(m, "resent-date")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Resent-Date: "+searchHeaderSimple(m, "resent-date"), er.hasErrors(), true);
+			summary.put(shift + "Resent-Date: "+searchHeaderSimple(m, "resent-date")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Resent-Date: "+searchHeaderSimple(m, "resent-date"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 108 Validate Resent-From
-		msgValidator.validateResentFrom(er, searchHeaderSimple(m, "resent-from"));
+		msgValidator.validateResentFrom(separate, searchHeaderSimple(m, "resent-from"));
 		if(!searchHeaderSimple(m, "resent-from").equals("")) {
-			summary.put(shift + "Resent-From: "+searchHeaderSimple(m, "resent-from")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Resent-From: "+searchHeaderSimple(m, "resent-from"), er.hasErrors(), true);
+			summary.put(shift + "Resent-From: "+searchHeaderSimple(m, "resent-from")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Resent-From: "+searchHeaderSimple(m, "resent-from"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 109 Validate Resent-Sender
-		msgValidator.validateResentSender(er, searchHeaderSimple(m, "resent-sender"), searchHeaderSimple(m, "resent-from"));
+		msgValidator.validateResentSender(separate, searchHeaderSimple(m, "resent-sender"), searchHeaderSimple(m, "resent-from"));
 		if(!searchHeaderSimple(m, "resent-sender").equals("")) {
-			summary.put(shift + "Resent-Sender: "+searchHeaderSimple(m, "resent-sender")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Resent-Sender: "+searchHeaderSimple(m, "resent-sender"), er.hasErrors(), true);
+			summary.put(shift + "Resent-Sender: "+searchHeaderSimple(m, "resent-sender")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Resent-Sender: "+searchHeaderSimple(m, "resent-sender"), separate.hasErrors(), true);
 		}
 		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
+		
 		// DTS 113 Validate Resent-Msg-Id
-		msgValidator.validateResentMsgId(er, searchHeaderSimple(m, "resent-msg-id"));
+		msgValidator.validateResentMsgId(separate, searchHeaderSimple(m, "resent-msg-id"));
 		if(!searchHeaderSimple(m, "resent-msg-id").equals("")) {
-			summary.put(shift + "Resent-Msg-Id: "+searchHeaderSimple(m, "resent-msg-id")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Resent-Msg-Id: "+searchHeaderSimple(m, "resent-msg-id"), er.hasErrors(), true);
+			summary.put(shift + "Resent-Msg-Id: "+searchHeaderSimple(m, "resent-msg-id")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Resent-Msg-Id: "+searchHeaderSimple(m, "resent-msg-id"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 116 Validate Sender
 		if(m.getFrom() != null) {
 			msgValidator.validateSender(er, searchHeaderSimple(m, "sender"), m.getFrom());
 			if(!searchHeaderSimple(m, "sender").equals("")) {
-				summary.put(shift + "Sender: "+searchHeaderSimple(m, "sender")+" (Part number: "+partNumber+")", er.getNbErrors());
-				validationSummary.recordKey(shift + "Sender: "+searchHeaderSimple(m, "sender"), er.hasErrors(), true);
+				summary.put(shift + "Sender: "+searchHeaderSimple(m, "sender")+" (Part number: "+partNumber+")", separate.getNbErrors());
+				validationSummary.recordKey(shift + "Sender: "+searchHeaderSimple(m, "sender"), separate.hasErrors(), true);
 			}
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 117 Validate Reply To
 		if(m.getReplyTo() != null) {
-			msgValidator.validateReplyTo(er, m.getReplyTo()[0].toString());
+			msgValidator.validateReplyTo(separate, m.getReplyTo()[0].toString());
 			if(!m.getReplyTo()[0].toString().equals("")) {
-				summary.put(shift + "Reply-To: "+m.getReplyTo()[0].toString()+" (Part number: "+partNumber+")", er.getNbErrors());
-				validationSummary.recordKey(shift + "Reply-To: "+m.getReplyTo()[0].toString(), er.hasErrors(), true);
+				summary.put(shift + "Reply-To: "+m.getReplyTo()[0].toString()+" (Part number: "+partNumber+")", separate.getNbErrors());
+				validationSummary.recordKey(shift + "Reply-To: "+m.getReplyTo()[0].toString(), separate.hasErrors(), true);
 			}
 		}
 		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
+		
 		// DTS 110 Validate Resent-To
-		msgValidator.validateResentTo(er, searchHeaderSimple(m, "resent-to"));
+		msgValidator.validateResentTo(separate, searchHeaderSimple(m, "resent-to"));
 		if(!searchHeaderSimple(m, "resent-to").equals("")) {
-			summary.put(shift + "Resent-To: "+searchHeaderSimple(m, "resent-to")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Resent-To: "+searchHeaderSimple(m, "resent-to"), er.hasErrors(), true);
+			summary.put(shift + "Resent-To: "+searchHeaderSimple(m, "resent-to")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Resent-To: "+searchHeaderSimple(m, "resent-to"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 111 Validate Resent-Cc
-		msgValidator.validateResentCc(er, searchHeaderSimple(m, "resent-cc"));
+		msgValidator.validateResentCc(separate, searchHeaderSimple(m, "resent-cc"));
 		if(!searchHeaderSimple(m, "resent-cc").equals("")) {
-			summary.put(shift + "Resent-Cc: "+searchHeaderSimple(m, "resent-cc")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Resent-Cc: "+searchHeaderSimple(m, "resent-cc"), er.hasErrors(), true);
+			summary.put(shift + "Resent-Cc: "+searchHeaderSimple(m, "resent-cc")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Resent-Cc: "+searchHeaderSimple(m, "resent-cc"), separate.hasErrors(), true);
 		}
 		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
+		
 		// DTS 112 Validate Resent-Bcc
-		msgValidator.validateResentBcc(er, searchHeaderSimple(m, "resent-bcc"));
+		msgValidator.validateResentBcc(separate, searchHeaderSimple(m, "resent-bcc"));
 		if(!searchHeaderSimple(m, "resent-bcc").equals("")) {
-			summary.put(shift + "Resent-Bcc: "+searchHeaderSimple(m, "resent-bcc")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Resent-Bcc: "+searchHeaderSimple(m, "resent-bcc"), er.hasErrors(), true);
+			summary.put(shift + "Resent-Bcc: "+searchHeaderSimple(m, "resent-bcc")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Resent-Bcc: "+searchHeaderSimple(m, "resent-bcc"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 197 Validate Resent Fields
 		String[] resentField = null;
 		resentField = ValidationUtils.getHeadersAndContent((MimeMessage) m).get(0);
-		msgValidator.validateResentFields(er, resentField);
+		msgValidator.validateResentFields(separate, resentField);
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 119 Validate Cc
 		searchRes = searchHeader(m, "cc");
@@ -276,70 +331,94 @@ public class ProcessEnvelope {
 			cc = searchRes.get(i);
 			cc = cc.replaceAll("\\s", "");
 		}
-		msgValidator.validateCc(er, cc);
+		msgValidator.validateCc(separate, cc);
 		if(!cc.equals("")) {
-			summary.put(shift + "Cc: "+cc+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Cc: "+cc, er.hasErrors(), true);
+			summary.put(shift + "Cc: "+cc+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Cc: "+cc, separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 120 Validate Bcc
 		msgValidator.validateBcc(er, searchHeaderSimple(m, "bcc"));
 		if(!searchHeaderSimple(m, "bcc").equals("")) {
-			summary.put(shift + "Bcc: "+searchHeaderSimple(m, "bcc")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Bcc: "+searchHeaderSimple(m, "bcc"), er.hasErrors(), true);
+			summary.put(shift + "Bcc: "+searchHeaderSimple(m, "bcc")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Bcc: "+searchHeaderSimple(m, "bcc"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 122 Validate In-Reply-To
-		msgValidator.validateInReplyTo(er, searchHeaderSimple(m, "in-reply-to"), searchHeaderSimple(m, "date"));
+		msgValidator.validateInReplyTo(separate, searchHeaderSimple(m, "in-reply-to"), searchHeaderSimple(m, "date"));
 		if(!searchHeaderSimple(m, "in-reply-to").equals("")) {
-			summary.put(shift + "In-Reply-To: "+searchHeaderSimple(m, "in-reply-to")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "In-Reply-To: "+searchHeaderSimple(m, "in-reply-to"), er.hasErrors(), true);
+			summary.put(shift + "In-Reply-To: "+searchHeaderSimple(m, "in-reply-to")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "In-Reply-To: "+searchHeaderSimple(m, "in-reply-to"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 123 Validate Reference
-		msgValidator.validateReferences(er, searchHeaderSimple(m, "references"));
+		msgValidator.validateReferences(separate, searchHeaderSimple(m, "references"));
 		if(!searchHeaderSimple(m, "references").equals("")) {
-			summary.put(shift + "References: "+searchHeaderSimple(m, "references")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "References: "+searchHeaderSimple(m, "references"), er.hasErrors(), true);
+			summary.put(shift + "References: "+searchHeaderSimple(m, "references")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "References: "+searchHeaderSimple(m, "references"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 124 Validate Subject
-		msgValidator.validateSubject(er, m.getSubject(), m.getContentType());
+		msgValidator.validateSubject(separate, m.getSubject(), m.getContentType());
 		if(m.getSubject() != null) {
-			summary.put(shift + "Subject: "+m.getSubject()+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Subject: "+m.getSubject(), er.hasErrors(), true);
+			summary.put(shift + "Subject: "+m.getSubject()+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Subject: "+m.getSubject(), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 125 Validate Comment
-		msgValidator.validateComments(er, searchHeaderSimple(m, "comments"));
+		msgValidator.validateComments(separate, searchHeaderSimple(m, "comments"));
 		if(!searchHeaderSimple(m, "comments").equals("")) {
-			summary.put(shift + "Comment: "+searchHeaderSimple(m, "comments")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Comment: "+searchHeaderSimple(m, "comments"), er.hasErrors(), true);
+			summary.put(shift + "Comment: "+searchHeaderSimple(m, "comments")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Comment: "+searchHeaderSimple(m, "comments"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 126 Validate Keywords
-		msgValidator.validateKeywords(er, searchHeaderSimple(m, "keywords"));
+		msgValidator.validateKeywords(separate, searchHeaderSimple(m, "keywords"));
 		if(!searchHeaderSimple(m, "keywords").equals("")) {
-			summary.put(shift + "Keyword: "+searchHeaderSimple(m, "keywords")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Keyword: "+searchHeaderSimple(m, "keywords"), er.hasErrors(), true);
+			summary.put(shift + "Keyword: "+searchHeaderSimple(m, "keywords")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Keyword: "+searchHeaderSimple(m, "keywords"), separate.hasErrors(), true);
 		}
 		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
+		
 		// DTS 127 Validate Optional Fields
-		msgValidator.validateOptionalField(er, searchHeaderSimple(m, "optional-field"));
+		msgValidator.validateOptionalField(separate, searchHeaderSimple(m, "optional-field"));
 		if(!searchHeaderSimple(m, "optional-field").equals("")) {
-			summary.put(shift + "Optional-Fields: "+searchHeaderSimple(m, "optional-field")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Optional-Fields: "+searchHeaderSimple(m, "optional-field"), er.hasErrors(), true);
+			summary.put(shift + "Optional-Fields: "+searchHeaderSimple(m, "optional-field")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Optional-Fields: "+searchHeaderSimple(m, "optional-field"), separate.hasErrors(), true);
 		}
+		
+		er.concat(separate);
+		separate = new GwtErrorRecorder();
 		
 		// DTS 128 Validate Disposition-Notification-To
 		if(wrapped) {
-			msgValidator.validateWrappedDispositionNotificationTo(er, searchHeaderSimple(m, "disposition-notification-to"));
+			msgValidator.validateWrappedDispositionNotificationTo(separate, searchHeaderSimple(m, "disposition-notification-to"));
 		} else {
-			msgValidator.validateDispositionNotificationTo(er, searchHeaderSimple(m, "disposition-notification-to"));
+			msgValidator.validateDispositionNotificationTo(separate, searchHeaderSimple(m, "disposition-notification-to"));
 		}
 		if(!searchHeaderSimple(m, "disposition-notification-to").equals("")) {
-			summary.put(shift + "Disposition-Notification-To: "+searchHeaderSimple(m, "disposition-notification-to")+" (Part number: "+partNumber+")", er.getNbErrors());
-			validationSummary.recordKey(shift + "Disposition-Notification-To: "+searchHeaderSimple(m, "disposition-notification-to"), er.hasErrors(), true);
+			summary.put(shift + "Disposition-Notification-To: "+searchHeaderSimple(m, "disposition-notification-to")+" (Part number: "+partNumber+")", separate.getNbErrors());
+			validationSummary.recordKey(shift + "Disposition-Notification-To: "+searchHeaderSimple(m, "disposition-notification-to"), separate.hasErrors(), true);
 		}
 		
 		/**************************/

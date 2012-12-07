@@ -1,5 +1,7 @@
 package gov.nist.direct.utils;
 
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
+
 import java.util.ArrayList;
 
 public class ValidationSummary {
@@ -112,6 +114,53 @@ public class ValidationSummary {
 		// Signature
 		res += signatureStatus.key + ": " + signatureStatus.value + "\n";
 		return res;
+	}
+	
+	public void writeErrorRecorder(ErrorRecorder er) {
+		for(int i=0;i<encryptedMessageSummaryList.size();i++) {
+			switch(encryptedMessageSummaryList.get(i).value) {
+			case VALID:
+				er.detail(encryptedMessageSummaryList.get(i).key);
+				break;
+			case ERROR:
+				er.err("", encryptedMessageSummaryList.get(i).key, "", "", "");
+				break;
+			case PART:
+				er.sectionHeading(encryptedMessageSummaryList.get(i).key);
+				break;
+			default:
+				break;
+			}
+		}
+		// Decrypted Message Headers
+		for(int i=0;i<decryptedMessageSummaryList.size();i++) {
+			switch(decryptedMessageSummaryList.get(i).value) {
+			case VALID:
+				er.detail(decryptedMessageSummaryList.get(i).key);
+				break;
+			case ERROR:
+				er.err("", decryptedMessageSummaryList.get(i).key, "", "", "");
+				break;
+			case PART:
+				er.sectionHeading(decryptedMessageSummaryList.get(i).key);
+				break;
+			default:
+				break;
+			}
+		}
+		
+		// Signature
+		switch(signatureStatus.value) {
+		case VALID:
+			er.detail(signatureStatus.key);
+			break;
+		case ERROR:
+			er.err("", signatureStatus.key, "", "", "");
+			break;
+		default:
+			break;
+		}
+		
 	}
 	
 	
