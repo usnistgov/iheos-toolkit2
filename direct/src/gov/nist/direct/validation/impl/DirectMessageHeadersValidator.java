@@ -46,7 +46,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		if(isAscii) {
 			er.detail("     Success:  DTS 196 - All headers are valid");
 		} else {
-			er.warning("196", "All headers check is invalid.", "", "DTS 196");
+			er.err("196", "All headers check is invalid.", "", "DTS 196", "");
 		}
 		
 	}
@@ -304,54 +304,46 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 114, Orig-Date, Required
 	public void validateOrigDate(ErrorRecorder er, String origDate) {
-		if(origDate.equals("")) {
-			er.warning("114", "Date is not present", "", "DTS 114");
-		} else {
-			final String dayOfWeek = "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
-			final String time = "([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}";
-			final String timezone = "[-+]((0[0-9]|1[0-3])([03]0|45)|1400)";
-			final String letterTimezone = "\\([A-Z]*\\)";
-			final String whitespace = "\\s";
-			final String date = "((31 (Jan|Mar|May|Jul|Aug|Oct|Dec))" +    			// 31th of each month
-					"|(30 (Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +      		// 30th of each month except Feb
-					"|([0-2]?\\d (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +  // days: 01-29th or 1-29th for each month
-					" " +
-					"((19|20)(\\d{2})))";												// years: 1900 to 2099.
-			// handle bissextile years?
-			final String datePattern = dayOfWeek + "," + whitespace + date + whitespace + time + whitespace + timezone + "(" + whitespace + letterTimezone + ")" + "?";
+		final String dayOfWeek = "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
+		final String time = "([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}";
+		final String timezone = "[-+]((0[0-9]|1[0-3])([03]0|45)|1400)";
+		final String letterTimezone = "\\([A-Z]*\\)";
+		final String whitespace = "\\s";
+		final String date = "((31 (Jan|Mar|May|Jul|Aug|Oct|Dec))" +    			// 31th of each month
+		"|(30 (Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +      		// 30th of each month except Feb
+		"|([0-2]?\\d (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +  // days: 01-29th or 1-29th for each month
+		" " +
+		"((19|20)(\\d{2})))";												// years: 1900 to 2099.
+		// handle bissextile years?
+		final String datePattern = dayOfWeek + "," + whitespace + date + whitespace + time + whitespace + timezone + "(" + whitespace + letterTimezone + ")" + "?";
 
-			Pattern pattern = Pattern.compile(datePattern, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(origDate);
+		Pattern pattern = Pattern.compile(datePattern, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(origDate);
 
-			/*
+		/*
 		Date formattedDate = null;
 		try {
 			formattedDate = ValidationUtils.parseDate(origDate);            // parses the date string using all available formats
 		} catch (java.text.ParseException e) {
 			e.printStackTrace();
 		} 
-
+		
 		ValidationUtils.setDate(formattedDate);
-			 */
+		*/
 
-			if(matcher.matches()) {
-				er.detail("     Success:  DTS 114 - Orig Date is valid");
-			} else {
-				er.err("114", "Orig Date is invalid.", "", "DTS 114", "");
-			}
+		if(matcher.matches()) {
+			er.detail("     Success:  DTS 114 - Orig Date is valid");
+		} else {
+			er.err("114", "Orig Date is invalid.", "", "DTS 114", "");
 		}
 	}
 
 	// DTS 115, From, Required
 	public void validateFrom(ErrorRecorder er, String from) {
-		if(from.equals("")) {
-			er.warning("115", "From field is not present", "", "DTS 115");
+		if (ValidationUtils.validateEmailAddressFormatRFC2822(from)){
+			er.detail("     Success:  DTS 115 - From field is valid");
 		} else {
-			if (ValidationUtils.validateEmailAddressFormatRFC2822(from)){
-				er.detail("     Success:  DTS 115 - From field is valid");
-			} else {
-				er.err("115", "From field is invalid.", "", "DTS 115", "");
-			}
+			er.err("115", "From field is invalid.", "", "DTS 115", "");
 		}
 		
 	}
@@ -381,46 +373,38 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 117, Reply-To, Optional
 	public void validateReplyTo(ErrorRecorder er, String replyTo) {
-		if(replyTo.equals("")) {
-			er.warning("117", "Reply-To field is not present", "", "DTS 117");
+		final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
+		final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">" + "(;([0-9,a-z,_,-]+ )*<" + email + ">)*";
+		final String replyToFormat =  email + "|" + emailWithName;
+		Pattern pattern = Pattern.compile(replyToFormat, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(replyTo);
+		if(matcher.matches()) {
+			er.detail("     Success:  DTS 117 - Reply-To field is valid");
+		} else if(replyTo.equals("")) {
+			er.detail("     Info:  DTS 117 - Reply-To field is not present");
 		} else {
-			final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-			final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">" + "(;([0-9,a-z,_,-]+ )*<" + email + ">)*";
-			final String replyToFormat =  email + "|" + emailWithName;
-			Pattern pattern = Pattern.compile(replyToFormat, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(replyTo);
-			if(matcher.matches()) {
-				er.detail("     Success:  DTS 117 - Reply-To field is valid");
-			} else if(replyTo.equals("")) {
-				er.detail("     Info:  DTS 117 - Reply-To field is not present");
-			} else {
-				er.err("117", "Reply-To field is invalid.", "", "DTS 117", "");
-			}
+			er.err("117", "Reply-To field is invalid.", "", "DTS 117", "");
 		}
 		
 	}
 
 	// DTS 118, To, Required
 	public void validateTo(ErrorRecorder er, String to) {
-		if(to.equals("")) {
-			er.warning("118", "To field is not present", "", "DTS 118");
+		// labels must start with a letter, end with a letter or digit, and have as interior characters only letters, digits, and hyphen
+		// each label MUST be zero to 63 octets in length
+		final String label = "([a-z]([-]?[0-9a-z]+){0,61}[0-9a-z])";
+		// labels are separated by dots
+		// Each Node (email address) MUST have a label 
+		//final String domainName = "(" + label + ".)+";
+		final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
+		final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
+		final String toFormat =  email + "|" + emailWithName;
+		Pattern pattern = Pattern.compile(toFormat, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(to);
+		if(matcher.matches()) {
+			er.detail("     Success:  DTS 118 - To field is valid");
 		} else {
-			// labels must start with a letter, end with a letter or digit, and have as interior characters only letters, digits, and hyphen
-			// each label MUST be zero to 63 octets in length
-			final String label = "([a-z]([-]?[0-9a-z]+){0,61}[0-9a-z])";
-			// labels are separated by dots
-			// Each Node (email address) MUST have a label 
-			//final String domainName = "(" + label + ".)+";
-			final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-			final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
-			final String toFormat =  email + "|" + emailWithName;
-			Pattern pattern = Pattern.compile(toFormat, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(to);
-			if(matcher.matches()) {
-				er.detail("     Success:  DTS 118 - To field is valid");
-			} else {
-				er.err("118", "To field is invalid.", "", "DTS 118", "");
-			}
+			er.err("118", "To field is invalid.", "", "DTS 118", "");
 		}
 		
 	}
@@ -439,37 +423,29 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		} else {
 			er.err("119", "Cc field is invalid.", "", "DTS 119", "");
 		}
-
+		
 	}
 	
 	// DTS 120, Bcc, Optional
 	public void validateBcc(ErrorRecorder er, String bcc) {
 		if(bcc.equals("")) {
-			er.detail("     Info:  DTS 120 - Bcc is not present");
+			er.detail("     Success:  DTS 120 - Bcc field is valid");
 		} else {
-			if(bcc.equals("")) {
-				er.detail("     Success:  DTS 120 - Bcc field is valid");
-			} else {
-				er.err("120", "Bcc field is invalid.", "", "DTS 120", "");
-			}
+			er.err("120", "Bcc field is invalid.", "", "DTS 120", "");
 		}
 		
 	}
 
 	// DTS 121, Message-Id, Required
 	public void validateMessageId(ErrorRecorder er, String messageId) {
-		if(messageId.equals("")) {
-			er.warning("121", "Message-Id field is not present", "", "DTS 121");
+		//handle display		
+		Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(messageId);
+		//er.detail(matcher.matches());
+		if(matcher.matches()) {
+			er.detail("     Success:  DTS 121 - Message Id is valid");
 		} else {
-			//handle display		
-			Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(messageId);
-			//er.detail(matcher.matches());
-			if(matcher.matches()) {
-				er.detail("     Success:  DTS 121 - Message Id is valid");
-			} else {
-				er.err("121", "Message Id field is invalid.", "", "DTS 121", "");
-			}
+			er.err("121", "Message Id field is invalid.", "", "DTS 121", "");
 		}
 	}
 
@@ -573,17 +549,13 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 102b, MIME-Version, Required
 	public void validateMIMEVersion(ErrorRecorder er, String MIMEVersion) {
-		if(MIMEVersion.equals("")) {
-			er.warning("102b", "MIME-Version field is not present", "", "DTS 102b");
+		final String mimeFormat = "[0-9]\\.[0-9].*";
+		Pattern pattern = Pattern.compile(mimeFormat);
+		Matcher matcher = pattern.matcher(MIMEVersion);
+		if(matcher.matches()) {
+			er.detail("     Success:  DTS 102b - MIME Version is valid");
 		} else {
-			final String mimeFormat = "[0-9]\\.[0-9].*";
-			Pattern pattern = Pattern.compile(mimeFormat);
-			Matcher matcher = pattern.matcher(MIMEVersion);
-			if(matcher.matches()) {
-				er.detail("     Success:  DTS 102b - MIME Version is valid");
-			} else {
-				er.err("102b", "MIME Version is invalid.", "", "DTS 102b", "");
-			}
+			er.err("102b", "MIME Version is invalid.", "", "DTS 102b", "");
 		}
 		
 	}

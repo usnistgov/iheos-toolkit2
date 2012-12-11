@@ -21,17 +21,17 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
-import gov.nist.direct.codeExamples.CreateEncryptedMail;
-import gov.nist.direct.codeExamples.CreateLargeEncryptedMail;
-import gov.nist.direct.codeExamples.ReadLargeEncryptedMail;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.messageGenerator.CreateEncryptedMail;
+import gov.nist.direct.messageGenerator.CreateLargeEncryptedMail;
+import gov.nist.direct.messageGenerator.ReadLargeEncryptedMail;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
 import org.junit.Test;
 
 public class DirectMimeMessageGeneratorTest {
-	ErrorRecorder er = new TextErrorRecorder();
+	ErrorRecorder er = new TextErrorRecorderModif();
 	
 
 	String certFilename = "C://workspace_toolkit_test/toolkit/direct/src/gov/nist/direct/test/resources/certificates/dazais(NIST).p12";

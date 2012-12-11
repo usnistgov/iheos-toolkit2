@@ -1,8 +1,8 @@
-package gov.nist.direct.mdn.messageDispatch.test;
+package gov.nist.messageDispatch.test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import gov.nist.direct.mdn.messageDispatch.MessageDispatchUtils;
+import gov.nist.messageDispatch.MessageDispatchUtils;
 import gov.nist.direct.messageParser.MessageParser;
 import gov.nist.direct.messageParser.impl.MimeMessageParser;
 import gov.nist.direct.utils.Utils;
