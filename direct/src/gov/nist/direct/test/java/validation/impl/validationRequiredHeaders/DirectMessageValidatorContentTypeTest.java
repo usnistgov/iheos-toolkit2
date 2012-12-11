@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationRequiredHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class DirectMessageValidatorContentTypeTest {
 	// DTS 133a, Content-Type, Required
 	@Test
 	public void testContentTypeName() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentType(er, "application/pkcs7-mime");
 		assertTrue(!er.hasErrors());
@@ -35,7 +35,7 @@ public class DirectMessageValidatorContentTypeTest {
 	
 	@Test
 	public void testContentTypeName2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentType(er, "application");   // Not a valid name
 		assertTrue(er.hasErrors());
@@ -45,7 +45,7 @@ public class DirectMessageValidatorContentTypeTest {
 	// DTS 133b, Content-Type, Required
 	@Test
 	public void testContentTypeName3() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentType2(er, "multipart/signed");
 		assertTrue(!er.hasErrors());
@@ -53,7 +53,7 @@ public class DirectMessageValidatorContentTypeTest {
 		
 	@Test
 	public void testContentTypeName4() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentType2(er, "multipart");  // Not valid
 		assertTrue(er.hasErrors());
@@ -62,7 +62,7 @@ public class DirectMessageValidatorContentTypeTest {
 	// DTS 160, Content Type Miclag, Required
 	@Test
 	public void testContentTypeMicalg() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeMicalg(er, "sha-1");
 		assertTrue(!er.hasErrors());
@@ -70,7 +70,7 @@ public class DirectMessageValidatorContentTypeTest {
 	
 	@Test
 	public void testContentTypeMicalg2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeMicalg(er, "sha-2");  // Not valid
 		assertTrue(er.hasErrors());
@@ -79,7 +79,7 @@ public class DirectMessageValidatorContentTypeTest {
 	// DTS 205, Content Type Protocol, Required
 	@Test
 	public void testContentTypeProtocol() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeProtocol(er, "\"application/pkcs7-signature\"");
 		assertTrue(!er.hasErrors());
@@ -87,7 +87,7 @@ public class DirectMessageValidatorContentTypeTest {
 					
 	@Test
 	public void testContentTypeProtocol2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeProtocol(er, "application");  // Not valid
 		assertTrue(er.hasErrors());
@@ -96,7 +96,7 @@ public class DirectMessageValidatorContentTypeTest {
 	// DTS 206, Content-Transfer-Encoding, Required
 	@Test
 	public void testContentTransferEncoding() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTransferEncoding(er, "base64");
 		assertTrue(!er.hasErrors());
@@ -104,7 +104,7 @@ public class DirectMessageValidatorContentTypeTest {
 					
 	@Test
 	public void testContentTransferEncoding2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTransferEncoding(er, "base");  // Not valid
 		assertTrue(er.hasErrors());

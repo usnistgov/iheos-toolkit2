@@ -1,4 +1,4 @@
-package gov.nist.direct.mdn.messageDispatch;
+package gov.nist.messageDispatch;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

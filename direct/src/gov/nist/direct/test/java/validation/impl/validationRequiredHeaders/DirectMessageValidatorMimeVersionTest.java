@@ -17,7 +17,7 @@ Author: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationRequiredHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
@@ -27,7 +27,7 @@ public class DirectMessageValidatorMimeVersionTest {
 	// DTS 102b, MIME Version, Required
 	@Test
 	public void testMimeVersion() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateMIMEVersion(er, "1.0");
 		assertTrue(!er.hasErrors());
@@ -35,7 +35,7 @@ public class DirectMessageValidatorMimeVersionTest {
 			
 	@Test
 	public void testMessageId2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateMIMEVersion(er, "1,0");   // Not a valid name
 		assertTrue(er.hasErrors());

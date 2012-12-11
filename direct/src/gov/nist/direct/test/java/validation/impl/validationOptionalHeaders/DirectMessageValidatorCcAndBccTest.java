@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
@@ -29,7 +29,7 @@ public class DirectMessageValidatorCcAndBccTest {
 	// DTS 119, cc, Optional
 	@Test
 	public void testCc() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateCc(er, "test@test.com");
 		assertTrue(!er.hasErrors());
@@ -37,7 +37,7 @@ public class DirectMessageValidatorCcAndBccTest {
 		
 	@Test
 	public void testCc2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateCc(er, "test.com");    // Not a mail address
 		assertTrue(er.hasErrors());
@@ -45,7 +45,7 @@ public class DirectMessageValidatorCcAndBccTest {
 		
 	@Test
 	public void testCc3() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateCc(er, "Test <test@test.com> Test");   // Not valid
 		assertTrue(er.hasErrors());
@@ -54,7 +54,7 @@ public class DirectMessageValidatorCcAndBccTest {
 	// DTS 120, bcc, Optional
 	@Test
 	public void testBcc() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateBcc(er, "");
 		assertTrue(!er.hasErrors());
@@ -62,7 +62,7 @@ public class DirectMessageValidatorCcAndBccTest {
 		
 	@Test
 	public void testBcc2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateBcc(er, "test@test.com");         // Address MUST NOT be present
 		assertTrue(er.hasErrors());
