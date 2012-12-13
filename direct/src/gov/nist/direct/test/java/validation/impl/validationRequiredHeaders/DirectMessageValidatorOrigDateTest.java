@@ -17,7 +17,7 @@ Author: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationRequiredHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
@@ -27,7 +27,7 @@ public class DirectMessageValidatorOrigDateTest {
 	// DTS 114, Orig-Date, Required
 	@Test
 	public void testOrigDate() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateOrigDate(er, "Tue, 15 Nov 2011 14:49:46 -0500");
 		assertTrue(!er.hasErrors());
@@ -35,7 +35,7 @@ public class DirectMessageValidatorOrigDateTest {
 		
 	@Test
 	public void testOrigDate2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateOrigDate(er, "Tuesday, 15 November 2011 14:49:46 -0500");   // Not a valid name
 		assertTrue(er.hasErrors());

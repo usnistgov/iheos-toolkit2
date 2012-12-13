@@ -21,9 +21,9 @@ import static org.junit.Assert.*;
 
 import java.util.Arrays;
 
-import gov.nist.direct.messageGenerator.CreateEncryptedMail;
-import gov.nist.direct.messageGenerator.CreateLargeEncryptedMail;
-import gov.nist.direct.messageGenerator.ReadLargeEncryptedMail;
+import gov.nist.direct.bouncycastleCodeExamples.CreateEncryptedMail;
+import gov.nist.direct.bouncycastleCodeExamples.CreateLargeEncryptedMail;
+import gov.nist.direct.bouncycastleCodeExamples.ReadLargeEncryptedMail;
 import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;

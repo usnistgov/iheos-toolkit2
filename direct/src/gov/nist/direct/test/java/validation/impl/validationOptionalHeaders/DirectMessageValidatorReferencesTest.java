@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
  
@@ -30,7 +30,7 @@ public class DirectMessageValidatorReferencesTest {
 	// DTS 123, References, Optional
 	@Test
 	public void testReferences() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateReferences(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730@test.com>");
 		assertTrue(!er.hasErrors());
@@ -38,7 +38,7 @@ public class DirectMessageValidatorReferencesTest {
 	
 	@Test
 	public void testReferences2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateReferences(er,"a2a51091-4d9e-4c64-b703-39d1ee332730@test.com");  // No < >
 		assertTrue(er.hasErrors());
@@ -46,7 +46,7 @@ public class DirectMessageValidatorReferencesTest {
 	
 	@Test
 	public void testReferences3() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateReferences(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730.test.com>");  // No @
 		assertTrue(er.hasErrors());

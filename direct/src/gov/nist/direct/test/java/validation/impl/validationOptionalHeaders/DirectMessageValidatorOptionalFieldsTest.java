@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
  
@@ -30,7 +30,7 @@ public class DirectMessageValidatorOptionalFieldsTest {
 	
 	@Test
 	public void testOptionalFields() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateOptionalField(er, "test");
 		assertTrue(!er.hasErrors());
@@ -38,7 +38,7 @@ public class DirectMessageValidatorOptionalFieldsTest {
 	
 	@Test
 	public void testOptionalFields2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateOptionalField(er, "");   // Not present
 		assertTrue(!er.hasErrors());

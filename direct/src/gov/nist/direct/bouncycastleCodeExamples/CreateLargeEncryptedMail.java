@@ -1,4 +1,4 @@
-package gov.nist.direct.messageGenerator;
+package gov.nist.direct.bouncycastleCodeExamples;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.security.KeyStore;

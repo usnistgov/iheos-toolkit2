@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
  
@@ -30,7 +30,7 @@ public class DirectMessageValidatorSignatureHeadersTest {
 	// DTS 160, Content-Type Name, Optional
 	@Test
 	public void testContentTypeName() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeNameOptional(er, "smime.p7s");
 		assertTrue(!er.hasErrors());
@@ -39,7 +39,7 @@ public class DirectMessageValidatorSignatureHeadersTest {
 	// DTS 183, EncapsulatedContentInfo.eContent, Optional
 	@Test
 	public void testEncapsulatedContentInfo() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateEncapsuledInfo2(er, "");
 		assertTrue(!er.hasErrors());
@@ -48,7 +48,7 @@ public class DirectMessageValidatorSignatureHeadersTest {
 	// DTS 167, Certificates, Optional
 	@Test
 	public void testCertificates() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateCertificates(er, "");
 		assertTrue(!er.hasErrors());
@@ -57,7 +57,7 @@ public class DirectMessageValidatorSignatureHeadersTest {
 	// DTS 168, Crls, Optional
 	@Test
 	public void testCrls() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateCrls(er, "");
 		assertTrue(!er.hasErrors());
@@ -66,7 +66,7 @@ public class DirectMessageValidatorSignatureHeadersTest {
 	// DTS 169, SignerInfos, Optional
 	@Test
 	public void testSignerInfos() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateSignerInfos(er, "2012-05-05T08:15:30-05:00");
 		assertTrue(!er.hasErrors());
@@ -74,7 +74,7 @@ public class DirectMessageValidatorSignatureHeadersTest {
 	
 	@Test
 	public void testSignerInfos2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateSignerInfos(er, "May, 5 2012  8:15:30");   // Not valid, not in UTC format
 		assertTrue(er.hasErrors());
@@ -83,7 +83,7 @@ public class DirectMessageValidatorSignatureHeadersTest {
 	// DTS 173, SignerInfos.sid, Optional
 	@Test
 	public void testSignerInfosSid() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateSignerInfosSid(er, "");
 		assertTrue(!er.hasErrors());
@@ -92,7 +92,7 @@ public class DirectMessageValidatorSignatureHeadersTest {
 	// DTS 181, SignerInfos.unsignedAttrs, Optional
 	@Test
 	public void testSignerInfosUnsignedAttrs() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateSignerInfosUnsignedAttrs(er, "");
 		assertTrue(!er.hasErrors());

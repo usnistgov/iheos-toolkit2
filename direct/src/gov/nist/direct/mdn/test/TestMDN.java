@@ -46,7 +46,6 @@ public class TestMDN {
 			mdn = MDNGenerator.create("ack", "starugh-stateline.com", "NHIN Direct Security Agent", null,
 					"externUser1@starugh-stateline.com", "<9501051053.aa04167@IETF.CNR I.Reston.VA.US>", Disposition.COMPILE_TIME_CONSTANT);
 		} catch (MessagingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -61,7 +60,6 @@ public class TestMDN {
 		
 				assertTrue(MessageDispatchUtils.isMDN(mimeMsg));
 			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
 	}

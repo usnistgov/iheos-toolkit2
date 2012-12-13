@@ -18,7 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.test.java.validation.impl.validationOptionalHeaders;
 
 import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
  
@@ -30,7 +30,7 @@ public class DirectMessageValidatorDispositionNotificationToTest {
 	// DTS 128, Disposition-Notification-To, Optional
 	@Test
 	public void testDispositionNotificationTo() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateDispositionNotificationTo(er, "test@test.com");
 		assertTrue(!er.hasErrors());
@@ -38,7 +38,7 @@ public class DirectMessageValidatorDispositionNotificationToTest {
 		
 	@Test
 	public void testDispositionNotificationTo2() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateDispositionNotificationTo(er, "test.test.com");  // Not valid, not an e-mail address
 		assertTrue(er.hasErrors());
@@ -46,7 +46,7 @@ public class DirectMessageValidatorDispositionNotificationToTest {
 	
 	@Test
 	public void testDispositionNotificationTo3() {
-		ErrorRecorder er = new TextErrorRecorder();
+		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateDispositionNotificationTo(er, "Test <test@test.com> Test");  // Not valid
 		assertTrue(er.hasErrors());
