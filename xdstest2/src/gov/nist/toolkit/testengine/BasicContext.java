@@ -113,15 +113,17 @@ public class BasicContext  extends OmLogger {
 		return out;
 	}
 
-	void error(OMElement test_step_output, String msg) {
+	void error(OMElement test_step_output, String msg) throws XdsInternalException {
 		add_name_value(test_step_output, "Error", msg);
 		error(msg);
+		throw new XdsInternalException(msg);
 	}
 
-	void fault(OMElement test_step_output, String code, String msg) {
+	void fault(OMElement test_step_output, String code, String msg) throws XdsInternalException {
 		add_name_value(test_step_output, "SOAPFault", code + ": " + msg);
 		add_name_value(test_step_output, "Error", code + ": " + msg);
 		error(msg);
+		throw new XdsInternalException(msg);
 	}
 
 	OMElement build_results_document() {

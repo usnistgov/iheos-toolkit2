@@ -35,6 +35,11 @@ public class TestStepLogContent  implements Serializable {
 	String endpoint;
 	List<String> errors;
 	List<String> details;
+	String inputMetadata;
+	String result;
+	String inHeader = null;
+	String outHeader = null;
+	String rootString;
 
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
@@ -126,7 +131,7 @@ public class TestStepLogContent  implements Serializable {
 				}
 			}
 		}
-		throw new Exception("Step: " + id + " has no <Result/> block");
+		throw new Exception("Step: " + id + " has no &ltResult/> block");
 	}
 
 	public RegistryResponseLog getRegistryResponse() throws Exception {
@@ -214,8 +219,6 @@ public class TestStepLogContent  implements Serializable {
 		return details;
 	}
 
-	String inputMetadata;
-
 	public String getInputMetadata() {
 		return inputMetadata;
 	}
@@ -243,8 +246,6 @@ public class TestStepLogContent  implements Serializable {
 		}
 	}
 
-	String result;
-
 	public String getResult() {
 		return result;
 	}
@@ -264,8 +265,6 @@ public class TestStepLogContent  implements Serializable {
 		}
 	}
 
-	String inHeader = null;
-
 	public String getInHeader() {
 		return inHeader;
 	}
@@ -277,8 +276,6 @@ public class TestStepLogContent  implements Serializable {
 		}
 	}
 
-	String outHeader = null;
-
 	public String getOutHeader() {
 		return outHeader;
 	}
@@ -289,8 +286,6 @@ public class TestStepLogContent  implements Serializable {
 		} catch (Exception e) {
 		}
 	}
-
-	String rootString;
 
 	public String getRoot() {
 		return rootString;

@@ -49,7 +49,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/addressing-1.5.4.mar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/ant-contrib.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/apache-mailet-base-1.1.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/axiom-api-1.2.10.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/axiom-dom-1.2.10.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/axiom-impl-1.2.10.jar"/>
@@ -70,6 +70,7 @@
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/commons-fileupload-1.2.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/commons-httpclient-3.1.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/ebxmlrr-common.jar"/>
@@ -101,14 +102,14 @@
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.eclipse.emf.ecore.xmi_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.eclipse.ocl_1.3.0.v200905271400.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.eclipse.ocl.ecore_1.3.0.v200905271400.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.emf.runtime_1.0.0.201210151242.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda_1.1.0.201209071536.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.consol_1.0.0.201211140345.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.mu2consol_0.7.0.201209201609.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.resources_1.1.0.201210151242.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.hl7.datatypes_1.1.0.201210151242.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.hl7.rim_1.1.0.201210151242.jar"/>
-	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.hl7.vocab_1.1.0.201210151242.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.emf.runtime_1.0.0.201211301436.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda_1.1.0.201211301436.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.consol_1.0.0.201212010137.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.mu2consol_0.7.0.201211301442.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.cda.resources_1.1.0.201211301436.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.hl7.datatypes_1.1.0.201211301436.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.hl7.rim_1.1.0.201211301436.jar"/>
+	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.hl7.vocab_1.1.0.201211301436.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/org.openhealthtools.mdht.uml.term.models_1.1.0.201210151242.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/postgresql.jar"/>
 	<classpathentry kind="lib" path="xdstools2/war/WEB-INF/lib/resolver-2.9.1.jar"/>

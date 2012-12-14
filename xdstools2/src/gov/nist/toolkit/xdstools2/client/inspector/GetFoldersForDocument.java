@@ -22,7 +22,7 @@ public class GetFoldersForDocument implements ClickHandler {
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 		public void onFailure(Throwable caught) {
-			Result result = new Result();
+			Result result = Result.RESULT("GetAssociations");
 			result.assertions.add(caught.getMessage());
 			result.testName = "GetAssociations";
 			it.addToHistory(result);

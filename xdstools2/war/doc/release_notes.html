@@ -10,10 +10,25 @@
 
 <p>Release note are listed for each build number
 
-<h4>153  (Direct updates only)   (released , 2012 ) </h4>
+<h4>155  (MU 2 updates only)   (released December 14, 2012 ) </h4>
+<ul>
+<li>Built with shared-lib version 155
+<li>SAML tested between TTT and Connect instance
+<li>MDHT (CCDA Validation) (version 12062012)
+   <ul>
+   <li>Multiple race codes in recordTarget section of CCDA header were not allowed due to the sdtc schema extension not being present. This is now fixed.
+   <li>ADDR Type not handling Null Flavor in MDHT when the top level element is null. This has been corrected.
+   <li>NPI forced for RepOrg and AuthoringDevice which is not correct, NPI is only valid for Assigned Person. This is now fixed.
+   </ul>
+</li>
+<li>Alan added this <a href="https://sourceforge.net/p/iheos/wiki/TransportTestingToolConfiguration/">configuration guide</a>
+</ul>
+
+
+<h4>153  (MU 2 updates only)   (released November 23, 2012 ) </h4>
 
 <ul>
-<li>Built with shared-lib version 151c
+<li>Built with shared-lib version 153
 <li>Includes update MDHT validator for CCDA (version 11142012)
 <ul>
 <li>Fixed the Allergy Section validations based on Community feedback.

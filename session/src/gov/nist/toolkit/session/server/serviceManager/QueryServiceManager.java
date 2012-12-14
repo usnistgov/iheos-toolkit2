@@ -12,6 +12,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.client.Result;
@@ -286,7 +287,7 @@ public class QueryServiceManager extends CommonServiceManager {
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();
-		Result result = new Result();
+		Result result = ResultBuilder.RESULT("getLastMetadata"); 
 		results.add(result);
 
 		try {

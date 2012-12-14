@@ -17,6 +17,11 @@ import javax.xml.parsers.FactoryConfigurationError;
 
 import org.apache.axiom.om.OMElement;
 
+/**
+ * Object version of log.xml content.
+ * @author bill
+ *
+ */
 public class LogFileContent implements Serializable {
 	/**
 	 * 

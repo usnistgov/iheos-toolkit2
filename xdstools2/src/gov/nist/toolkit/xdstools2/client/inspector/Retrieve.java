@@ -21,9 +21,8 @@ public class Retrieve implements ClickHandler {
 		AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 			public void onFailure(Throwable caught) {
-				Result result = new Result();
+				Result result = Result.RESULT("Retrieve");
 				result.assertions.add(caught.getMessage(), false);
-				result.testName = "Retrieve";
 				it.addToHistory(result);
 			}
 

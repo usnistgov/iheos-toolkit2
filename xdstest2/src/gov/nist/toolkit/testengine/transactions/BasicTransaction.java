@@ -713,10 +713,10 @@ public abstract class BasicTransaction extends OmLogger {
 	
 	String failMsg = null;
 	
-	public void fail(String msg) {
+	public void fail(String msg) throws XdsInternalException {
 		failMsg = msg;
-		s_ctx.set_error(msg);
 		failed();
+		s_ctx.set_error(msg);
 	}
 	
 	public String getFail() {

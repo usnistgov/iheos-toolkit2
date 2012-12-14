@@ -24,6 +24,12 @@ public class EnvSetting {
 		settings.put(sessionId, new EnvSetting(name, dir));
 	}
 	
+	public EnvSetting(String sessionId, String name) {
+		File dir = Installation.installation().environmentFile(name);
+		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
+		settings.put(sessionId, new EnvSetting(name, dir));
+	}
+	
 	private EnvSetting(String name, File dir) {
 		this.envName = name;
 		this.envDir = dir;

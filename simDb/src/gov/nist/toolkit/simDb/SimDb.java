@@ -84,7 +84,7 @@ public class SimDb {
 			throw new IOException("Cannot create content in Simulator database, creation of " + ipDir.toString() + " failed");
 
 		if (actor != null && transaction != null) {
-			String transdir = ipdir + File.separator + actor + File.separator + transaction;
+			String transdir = ipDir + File.separator + actor + File.separator + transaction;
 			transactionDir = new File(transdir);
 			transactionDir.mkdirs();
 			if (!transactionDir.isDirectory())
@@ -263,29 +263,6 @@ public class SimDb {
 	}
 
 	public List<String> getTransInstances(String ignored_actor, String trans) {
-//		List<String> transs;
-//		if (trans == null) {
-//			transs = getTransactionNames(actor);
-//		} else {
-//			transs = new ArrayList<String>();
-//			transs.add(trans);
-//		}
-//		List<String> names = new ArrayList<String>();
-//
-//		for (String tr : transs) {
-//			File[] files = getTransInstanceFiles(actor, tr);
-//			for (int i=0; i<files.length; i++) {
-//				File f = files[i];
-//				if (!f.isDirectory())
-//					continue;
-//				String name = f.getName(); 
-//				names.add(name + " " + tr);
-//			}
-//		}
-//		
-//		String[] nameArray = names.toArray(new String[0]);
-//		java.util.Arrays.sort(nameArray);	
-//		
 		List<String> names = new ArrayList<String>();
 
 		for (File actor : ipDir.listFiles()) {
@@ -577,7 +554,7 @@ public class SimDb {
 		return getRequestMsgBodyFile(event);
 	}
 
-	String nowAsFilenameBase() {
+	public String nowAsFilenameBase() {
 		Date date = new Date();
 		
 		Calendar c  = Calendar.getInstance();

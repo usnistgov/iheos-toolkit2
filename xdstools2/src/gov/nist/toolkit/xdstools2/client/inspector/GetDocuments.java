@@ -31,9 +31,8 @@ public class GetDocuments implements ClickHandler {
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 		public void onFailure(Throwable caught) {
-			Result result = new Result();
+			Result result = Result.RESULT("GetDocuments");
 			result.assertions.add(caught.getMessage());
-			result.testName = "GetDocuments";
 			it.addToHistory(result);
 		}
 
