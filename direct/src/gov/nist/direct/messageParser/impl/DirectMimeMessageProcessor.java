@@ -132,9 +132,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 
 		logger.debug("ValidationContext is " + vc.toString());
 		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, inputDirectMessage);
+		// New ErrorRecorder to put summary first
+		ErrorRecorder mainEr = new GwtErrorRecorder();
+		MimeMessage mm = parser.parseMessage(mainEr, inputDirectMessage);
 		try {
-			processPart(er, mm);
+			processPart(mainEr, mm);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -144,6 +146,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		er.detail("############################Message Content Summary################################");
 		er.detail("");
 		
+		/*
 		// Put the signature at the end
 		if(summary.containsKey("Signature")) {
 			int signatureValidation = summary.get("Signature");
@@ -187,10 +190,18 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 					previousValue++;
 				}
 			}
-		}
-		System.out.println(validationSummary);
+		}*/
+		
 		//TODO Remove the comment and remove the old summary
-		//validationSummary.writeErrorRecorder(er);
+		ErrorRecorder summaryEr = new GwtErrorRecorder();
+		validationSummary.writeErrorRecorder(summaryEr);
+		er.concat(summaryEr);
+		
+		er.detail("");
+		er.detail("############################Detailed Validation################################");
+		er.detail("");
+		
+		er.concat(mainEr);
 	}
 
 	/**

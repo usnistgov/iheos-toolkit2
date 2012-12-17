@@ -117,6 +117,7 @@ public class ValidationSummary {
 	}
 	
 	public void writeErrorRecorder(ErrorRecorder er) {
+		// Encrypted Message Headers
 		for(int i=0;i<encryptedMessageSummaryList.size();i++) {
 			switch(encryptedMessageSummaryList.get(i).value) {
 			case VALID:
@@ -132,6 +133,7 @@ public class ValidationSummary {
 				break;
 			}
 		}
+		
 		// Decrypted Message Headers
 		for(int i=0;i<decryptedMessageSummaryList.size();i++) {
 			switch(decryptedMessageSummaryList.get(i).value) {
