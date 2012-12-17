@@ -148,6 +148,9 @@ public class SAMLMessageValidator extends MessageValidator {
 	    	boolean signatureValue = XMLSignatureValidatorUtil.verifySignatureForXMLDocument(XMLUtils.toDOM(assertion));
 	    	if( signatureValue){
 	    		er.detail("Valid Assertion Digital Signature. ");
+	    	}else{
+	    		err("Invalid Digital Signature.");
+	    	}
 	    	
 			
 			//Subject Validation
@@ -181,6 +184,8 @@ public class SAMLMessageValidator extends MessageValidator {
 	    	}else{
 	    		err("Attribute Oraganization is required.", "Attribute Oraganization");
 	    	}
+	    	
+	    	//TODO REMOVE THIS!!!
 	    	//OraganizationId Validation
 	    	er.challenge("Attribute OraganizationId Validation");
 	    	if( assertionType.getUserInfo().getOrg().getHomeCommunityId()!=null){
@@ -196,12 +201,17 @@ public class SAMLMessageValidator extends MessageValidator {
 	    	}else{
 	    		err("Attribute HomeCommunityId is required.", "Attribute HomeCommunityId");
 	    	}
+	    	
+	    	//needs CodeUtils to get access to codes.xml
+	    	CodesUtil codesUtil = new CodesUtil(vc);
+	    	
+	    	
 	    	//purposeofuse validation
 	    	er.challenge("Attribute PurposeOfUse Validation");
 	    	if( assertionType.getPurposeOfDisclosureCoded()!=null){
 	    		CeType ceType = assertionType.getPurposeOfDisclosureCoded() ;
 	    		
-	    		CodeTypeBean codetype = CodesUtil.getCodeTypeList().get("purposeofuse");
+	    		CodeTypeBean codetype = codesUtil.getCodeTypeList().get("purposeofuse");
 	    		
 	    		if(ceType.getCodeSystem()!=null){
 	    			if (! ceType.getCodeSystem().equalsIgnoreCase(codetype.getClassScheme()))
@@ -246,7 +256,7 @@ public class SAMLMessageValidator extends MessageValidator {
 	    	if( assertionType.getUserInfo().getRoleCoded()!=null){
 	    		CeType ceType = assertionType.getUserInfo().getRoleCoded() ;
 	    		
-	    		CodeTypeBean codetype = CodesUtil.getCodeTypeList().get("role");
+	    		CodeTypeBean codetype = codesUtil.getCodeTypeList().get("role");
 	    		
 	    		if(ceType.getCodeSystem()!=null){
 	    			if (! ceType.getCodeSystem().equalsIgnoreCase(codetype.getClassScheme()))
@@ -451,9 +461,7 @@ public class SAMLMessageValidator extends MessageValidator {
 				}
 			
 			}
-	    	}else{
-	    		err("Invalid Digital Signature.");
-	    	}
+
 	    	}catch (Exception e1) {
 				// TODO Auto-generated catch block
 				System.out.println(e1.getMessage());

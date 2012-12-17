@@ -1,5 +1,7 @@
 package gov.nist.toolkit.saml.util;
 
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
@@ -24,14 +26,13 @@ public class CodesUtil {
 	private static Document dom;
 	private static Hashtable<String, CodeTypeBean> codeTypeList = null; // <codeType->name, CodeType>
 	// private static Hashtable<String, CodeBean> codeList;		 // <code->name, Code>
+	private ValidationContext vc;
 	
-	public CodesUtil() {
-		
+	public CodesUtil(ValidationContext vc) {
+		this.vc = vc;
 	}
-	
-	
 
-	private static void parseXmlFile(){
+	public void parseXmlFile(){
 		//get the factory
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		
@@ -40,7 +41,8 @@ public class CodesUtil {
 			//Using factory get an instance of document builder
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			//parse using builder to get DOM representation of the XML file
-			dom = db.parse("/Users/bill/tmp/tolkit/environment/nwin-ed/codes.xml");
+			System.out.println(vc.getCodesFilename());
+			dom = db.parse(vc.getCodesFilename());
 			parseDocument();
 			
 		} catch(ParserConfigurationException pce) {
@@ -55,7 +57,7 @@ public class CodesUtil {
 	}
 
 	
-	private static void parseDocument(){
+	public void parseDocument(){
 		//get the root elememt
 		Element docEle = dom.getDocumentElement();
 		
@@ -99,7 +101,7 @@ public class CodesUtil {
 		return bean;
 	}
 */
-	private static Hashtable<String, CodeBean> getCode(Element element) {
+	public Hashtable<String, CodeBean> getCode(Element element) {
 		Hashtable<String, CodeBean> code = new Hashtable<String, CodeBean>();
 		CodeBean bean = new CodeBean();
 		
@@ -117,7 +119,7 @@ public class CodesUtil {
 		return code;
 	}
 	
-	public static Hashtable<String, CodeTypeBean> getCodeTypeList() {
+	public Hashtable<String, CodeTypeBean> getCodeTypeList() {
 		if (codeTypeList == null) {
 			parseXmlFile ();
 		}

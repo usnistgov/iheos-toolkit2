@@ -36,10 +36,20 @@ public class SAMLtest {
 		}
 		
 		@Test
-		public void littleIntegrationTest(){
-			MessageValidatorEngine mve = new MessageValidatorEngine();
-//			SAMLMessageValidator validator = new SAMLMessageValidator(vc, xml, erBuilder, mvc, rvi);
-//			mve.addMessageValidator("testSAML", , er);
+		public void ttt_request_message_Test() throws XdsInternalException, FactoryConfigurationError {
+		//	String filename = "sovann_PDI.xml";
+			String filename = "almost_valid_saml_headers.xml";
+			File f = new File("saml/test/resources/"+ filename );
+			OMElement xml = Util.parse_xml(f);
+			
+			ValidationContext vc = new ValidationContext();
+			SAMLMessageValidator validator = new SAMLMessageValidator(vc, xml, null , null , null);
+			ErrorRecorder err = new TextErrorRecorder();
+			validator.run(err, null);
+			
+			System.out.println("Error Recording : ");
+			System.out.println( err.toString() );
+			
 		}
 
 

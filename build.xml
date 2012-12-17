@@ -216,7 +216,11 @@
 	<target name="war-prep" depends="compile">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war-prep" />
 	</target>
-
+	
+	<target name="war-no-gwt-compile" depends="compile, war-prep">
+		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
+	</target>
+	
 	<target name="war" depends="compile, gwt-compile, war-prep">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>

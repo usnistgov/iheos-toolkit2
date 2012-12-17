@@ -101,13 +101,8 @@ public class KeyStoreAccessObject {
 				throw new LoadKeystoreException("Cannot load DSIG property file from " + keystoreDir, null, e);
 				//throw new LoadKeystoreException("Cannot load DSIG property file from " + pathToKeystoreProperties, null, e);
 			}
-			//String keystoreURL = "/Users/ebxmlrr/tmp/toolkitnwhin/environment/NwHIN/keystore/keystore.jks";	
-			//String keystoreURL = "C:\\xdstools2_environment\\environment\\NwHIN\\keystore\\keystore.jks";
-			//keystorePassword = System.getProperty("DSIG_keystore_password");
-			//keystorePassword = "nwhin_gavin";
-			//alias = "keystore";
-			
-			String keystoreURL = keystoreDir + File.separator + "keystore";
+
+			String keystoreURL = keystoreDir + File.separator + props.getProperty("keystore_url");
 			this.keystorePassword = props.getProperty("DSIG_keystore_password");
 			this.alias = props.getProperty("DSIG_keystore_alias");
 			System.out.println("DSIG: keystore is " + keystoreURL);
