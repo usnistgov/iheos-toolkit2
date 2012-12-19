@@ -5,6 +5,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.DirectConfigManager;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.testengine.logrepository.DirectRepository;
 import gov.nist.toolkit.utilities.io.Io;
 
 import java.io.File;
@@ -24,7 +25,6 @@ public class SendDirect extends CommonServiceManager {
 	
 	static final Logger logger = Logger.getLogger(SendDirect.class);
 
-	
 	public SendDirect(Session session, Map<String, String> params, byte[] signingCert, byte[] encryptionCert, String signingCertPassword, String unused)  {
 		this.session = session;
 		this.params = params;
@@ -36,6 +36,9 @@ public class SendDirect extends CommonServiceManager {
 
 	public List<Result> run() {
 		try {
+			String user = session.getMesaSessionName();
+			if (user == null || user.equals(""))
+				throw new Exception("TestSession must be selected.");
 //			session.transactionSettings.assignPatientId = false;
 			List<String> sections = null;
 
@@ -67,6 +70,12 @@ public class SendDirect extends CommonServiceManager {
 			escapeWindowsBackslashes(params);
 			
 			session.isSoap = false;
+			
+//			session.transactionSettings.logDir = new File(
+//					Installation.installation().directSendLogFile("bill") + 
+//					File.separator + new SimDb().nowAsFilenameBase()  );
+			
+			session.transactionSettings.logRepository = new DirectRepository(user).getNewLogRepository();
 			
 			Result r = session.xdsTestServiceManager().xdstest("DirectSendTemplate", sections, params, params2, areas, true);
 			return asList(r);

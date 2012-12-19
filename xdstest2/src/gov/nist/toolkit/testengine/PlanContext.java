@@ -249,17 +249,20 @@ public class PlanContext extends BasicContext {
 			add_name_value(results_document, "MetadataValidationError", ExceptionUtil.exception_details(e));
 			status = false;
 			set_status_in_output();
+			transactionSettings.res.add(e.getMessage(), "", false);
 		}
 		catch (XdsException e) {  
 			String errorDetails = ExceptionUtil.exception_details(e);
 			add_name_value(results_document, "FatalError", errorDetails);
 			status = false;
 			set_status_in_output();
+			transactionSettings.res.add(e.getMessage(), "", false);
 		}
 		catch (Exception e) {  
 			add_name_value(results_document, "FatalError", ExceptionUtil.exception_details(e));
 			status = false;
 			set_status_in_output();
+			transactionSettings.res.add(e.getMessage(), "", false);
 		}
 
 		if (writeLogFiles) {
@@ -275,10 +278,10 @@ public class PlanContext extends BasicContext {
 				os.flush();
 				os.close();
 
-				if (phone_home_log_files == null) {
-					phone_home_log_files = new ArrayList<OMElement>();
-				}
-				phone_home_log_files.add(results_document);
+//				if (phone_home_log_files == null) {
+//					phone_home_log_files = new ArrayList<OMElement>();
+//				}
+//				phone_home_log_files.add(results_document);
 
 			} catch (FileNotFoundException e) {
 				System.out.println("Cannot create file log.xml (" + logFile + ")");

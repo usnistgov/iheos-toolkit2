@@ -200,8 +200,9 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 
 	public boolean isTestLogCachePrivate() {
-		String testLogCache = getPropertyManager().getExternalCache() + File.separator + "TestLogCache";
-		return !"internal".equals(testLogCache);
+		return true;
+//		String testLogCache = getPropertyManager().getExternalCache() + File.separator + "TestLogCache";
+//		return !"internal".equals(testLogCache);
 	}
 
 	public String getImplementationVersion() {

@@ -1,11 +1,7 @@
 package gov.nist.toolkit.results.client;
 
-
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -18,17 +14,36 @@ public class Result  implements IsSerializable, Serializable {
 	public XdstestLogId logId;
 	public List<StepResult> stepResults;
 	String text = null;
-	boolean pass = true;
+	public boolean pass = true;
 	transient public boolean includesMetadata = false;
-
+	
 	public Result() {
+		
+	}
+
+	public Result(String timestamp) {
+		this.timestamp = timestamp;
 		assertions = new AssertionResults();
 		stepResults = new ArrayList<StepResult>();
 		testName = "Metadata";
-		timestamp = new Date().toString();
 	}
 	
-	public boolean passed() { return pass && !assertions.isFailed(); }
+	static public Result RESULT(String testname) {
+		Result r = new Result("");
+		r.testName = testname;
+		return r;
+	}
+	
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append(testName).append("\n");
+		buf.append(assertions.toString());
+		
+		return buf.toString();
+	}
+	
+	public boolean passed() { return pass && (assertions == null || !assertions.isFailed()); }
 	
 	public void setTestName(String name) { testName = name; }
 	

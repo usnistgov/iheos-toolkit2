@@ -127,64 +127,10 @@ public class DirectTransaction extends BasicTransaction {
 	@Override
 	protected void run(OMElement request) throws Exception {
 
-		if (!verifyParameters())
-			return;
+		verifyParameters();
 
 		if (!s_ctx.getStatus())
 			return;
-
-		/*Security.addProvider(new BouncyCastleProvider());
-
-		//
-		// set up our certs
-		//
-		KeyPairGenerator    kpg  = KeyPairGenerator.getInstance("RSA", "BC");
-
-		kpg.initialize(1024, new SecureRandom());
-
-		//List                certList = new ArrayList();
-
-		//
-        // Open the key store
-        //
-        KeyStore    ks = KeyStore.getInstance("PKCS12", "BC");
-        
-        Map<String, Object> extra2 = planContext.getExtraLinkage2();
-        byte[] signingCert = (byte[]) extra2.get("signingCert");
-        Object signingCertPwO = planContext.getExtraLinkage().get("signingCertPassword");
-        String signingCertPw = (signingCertPwO == null) ? "" : signingCertPwO.toString();
-
-        try {
-        	ks.load(Io.bytesToInputStream(signingCert), signingCertPw.toCharArray());
-        } catch (Throwable e) {
-        	throw new Exception("Signing private key may be in wrong format, PKCS12 expected", e);
-        }
-
-        Enumeration e = ks.aliases();
-        String      keyAlias = null;
-
-        while (e.hasMoreElements())
-        {
-            String  alias = (String)e.nextElement();
-
-            if (ks.isKeyEntry(alias))
-            {
-                keyAlias = alias;
-            }
-        }
-
-        if (keyAlias == null)
-        {
-            System.err.println("can't find a private key!");
-            System.exit(0);
-        }
-
-        Certificate[]   chain = ks.getCertificateChain(keyAlias);
-		
-        //
-		// cert that issued the signing certificate
-		//
-        String              signDN = ((X509Certificate) chain[0]).getIssuerDN().toString();
 		
 		//certList.add(chain[0]);
         
@@ -306,110 +252,6 @@ public class DirectTransaction extends BasicTransaction {
 		//
 		
         MimeMultipart mm = gen.generate(m);
-
-        
-        /*OutputStream ostmp = new FileOutputStream(new File("/Users/bill/tmp/direct.send.txt"));
-        String ctype = mm.getContentType();
-        ostmp.write(ctype.getBytes());
-        ostmp.write(new String("\r\n\r\n").getBytes());
-        mm.writeTo(ostmp);
-		
-        
-		//
-		// Get a Session object and create the mail message
-		//
-		Properties props = System.getProperties();
-		Session session = Session.getDefaultInstance(props, null);
-
-		Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
-		Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
-
-
-		MimeBodyPart body = new MimeBodyPart();
-		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-		try {
-			mm.writeTo(oStream);
-			oStream.flush();
-			InternetHeaders headers = new InternetHeaders();
-			headers.addHeader("Content-Type", mm.getContentType());
-
-			body = new MimeBodyPart(headers, oStream.toByteArray());
-			IOUtils.closeQuietly(oStream);
-
-		}    
-
-		catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-
-		//
-		// Open the key store
-		//
-		/*
-		KeyStore    ks = KeyStore.getInstance("PKCS12", "BC");
-
-		ks.load(new FileInputStream(certFile.toString()), certFilePassword.toCharArray());
-
-		Enumeration e = ks.aliases();
-		String      keyAlias = null;
-
-		while (e.hasMoreElements())
-		{
-			String  alias = (String)e.nextElement();
-
-			if (ks.isKeyEntry(alias))
-			{
-				keyAlias = alias;
-			}
-		}
-
-		if (keyAlias == null)
-		{
-			System.err.println("can't find a private key!");
-			System.exit(0);
-		}
-
-		Certificate[]   chain = ks.getCertificateChain(keyAlias);
-		*/
-		
-		/*
-		
-		// Encryption cert
-		X509Certificate encCert = null;
-        
-        ByteArrayInputStream is;
-        try {
-        	byte[] encryptionCertBA = (byte[]) planContext.getExtraLinkage2().get("encryptionCert");
-        	is = new ByteArrayInputStream(encryptionCertBA);
-            CertificateFactory x509CertFact = CertificateFactory.getInstance("X.509");
-            encCert = (X509Certificate)x509CertFact.generateCertificate(is);
-            logger.debug("Encrypton cert = \n" + encCert.toString());
-        } catch (Exception e1) {
-        	throw new Exception("Error loading X.509 encryption cert - probably wrong format", e1);
-        }
-
-
-		// Create the encrypter
-        SMIMEEnvelopedGenerator encrypter = new SMIMEEnvelopedGenerator();
-        try {
-        	encrypter.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encCert).setProvider("BC"));
-        } catch (Exception e1) {
-        	throw new Exception("Error loading encryption cert - must be in X.509 format", e1);
-        }
-		// Encrypt the message
-		MimeBodyPart encryptedPart = encrypter.generate(body,
-				// RC2_CBC
-				new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC).setProvider("BC").build());
-
-		MimeMessage msg = new MimeMessage(session);
-		msg.setFrom(fromUser);
-		msg.setRecipient(Message.RecipientType.TO, toUser);
-		msg.setSentDate(new Date());
-		msg.setSubject(subject);
-		msg.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
-		msg.setDisposition("attachment");
-		msg.setFileName("smime.p7m");
-		msg.saveChanges();*/
 		
 		Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
 		Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
@@ -424,15 +266,9 @@ public class DirectTransaction extends BasicTransaction {
 		} else {
 			msg = createSendMail(toAddress, fromAddress);
 		}
-		/*InputStream is2 = new FileInputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));
-		msg = new MimeMessage(session, is2);*/
 		
-        //OutputStream ostmp1 = new FileOutputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted_before_sending.txt"));
-        //msg.writeTo(ostmp1);
-
-		// For test purpose NEED to be removed
-		// TODO        
-		//msg.writeTo(new FileOutputStream("encrypted.txt"));
+		logger.info("MessageId="+ msg.getMessageID());
+		
 
 		logger.debug("Opening socket to Direct system on " + mailerHostname + ":" + mailerPort + "...");
 		Socket socket = new Socket(mailerHostname, mailerPort);
@@ -539,43 +375,68 @@ public class DirectTransaction extends BasicTransaction {
 //		return in;
 //	}
 
-	boolean verifyParameters() {
-		boolean ok = true;
+	void verifyParameters() throws XdsInternalException  {
+		List<String> errors = new ArrayList<String>();
 
 		if (certFile == null) {
-			s_ctx.set_error("CertFile parameter missing");
-			ok = false;
+			try {
+				s_ctx.set_error("CertFile parameter missing");
+			} catch (XdsInternalException e) {
+				errors.add(e.getMessage());
+			}
 		}
 		if (certFilePassword == null) {
-			s_ctx.set_error("CertFilePassword parameter missing");
-			ok = false;
+			try {
+				s_ctx.set_error("CertFilePassword parameter missing");
+			} catch (XdsInternalException e) {
+				errors.add(e.getMessage());
+			}
 		}
 		if (bodyContent == null) {
-			s_ctx.set_error("BodyContentFile and BodyContent parameters missing");
-			ok = false;
+			try {
+				s_ctx.set_error("BodyContentFile and BodyContent parameters missing");
+			} catch (XdsInternalException e) {
+				errors.add(e.getMessage());
+			}
 		}
 		if (fromAddress == null) {
-			s_ctx.set_error("DirectFromAddress parameter missing");
-			ok = false;
+			try {
+				s_ctx.set_error("DirectFromAddress parameter missing");
+			} catch (XdsInternalException e) {
+				errors.add(e.getMessage());
+			}
 		}
 		if (toAddress == null) {
-			s_ctx.set_error("DirectToAddress parameter missing");
-			ok = false;
+			try {
+				s_ctx.set_error("DirectToAddress parameter missing");
+			} catch (XdsInternalException e) {
+				errors.add(e.getMessage());
+			}
 		}
 		if (subject == null) {
-			s_ctx.set_error("Subject parameter missing");
-			ok = false;
+			try {
+				s_ctx.set_error("Subject parameter missing");
+			} catch (XdsInternalException e) {
+				errors.add(e.getMessage());
+			}
 		}
 		if (attachmentContentFile == null) {
-			s_ctx.set_error("AttachmentContentFile parameter missing");
-			ok = false;
+			try {
+				s_ctx.set_error("AttachmentContentFile parameter missing");
+			} catch (XdsInternalException e) {
+				errors.add(e.getMessage());
+			}
 		}
 		if (mailerHostname == null) {
-			s_ctx.set_error("DirectSystemMailerHostname parameter missing");
-			ok = false;
+			try {
+				s_ctx.set_error("DirectSystemMailerHostname parameter missing");
+			} catch (XdsInternalException e) {
+				errors.add(e.getMessage());
+			}
 		}
 
-		return ok;
+		if (errors.size() > 0)
+			throw new XdsInternalException(errors.toString());
 	}
 
 	@Override

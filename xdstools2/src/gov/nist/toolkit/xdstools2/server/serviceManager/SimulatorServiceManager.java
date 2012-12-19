@@ -10,6 +10,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simDb.SimDb;
@@ -62,7 +63,7 @@ public class SimulatorServiceManager extends CommonServiceManager {
 	public List<Result> getSelectedMessage(String simFileSpec) {
 		logger.debug(session.id() + ": " + "getSelectedMessage");
 		List<Result> results = new ArrayList<Result>();
-		Result result = new Result();
+		Result result = ResultBuilder.RESULT("getSelectedMessage");
 		results.add(result);
 		try {
 			SimDb sdb = SimManager.get(session.id()).getSimDb(session.getDefaultSimId());
@@ -78,7 +79,7 @@ public class SimulatorServiceManager extends CommonServiceManager {
 	public List<Result> getSelectedMessageResponse(String simFileSpec) {
 		logger.debug(session.id() + ": " + "getSelectedMessageResponse");
 		List<Result> results = new ArrayList<Result>();
-		Result result = new Result();
+		Result result = ResultBuilder.RESULT("getSelectedMessageResponse");
 		results.add(result);
 		try {
 			SimDb sdb = SimManager.get(session.id()).getSimDb(session.getDefaultSimId());

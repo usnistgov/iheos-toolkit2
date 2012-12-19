@@ -60,13 +60,17 @@ public class CcdaValidator {
 		ValidationResult result = new ValidationResult();
 		EClass type = typeMap.get(validationType);
 		
+		logger.info("Starting CCDA validation, validate as a " + ((type == null) ? "Plain CCDA" : type));
+		long start_time = System.currentTimeMillis();
+		
 		if (type == null || validationType.trim().equals("")) 
 			CDAUtil.load(is);
 		else
 			CDAUtil.loadAs(is, type, result);
-
-		logger.info("Starting CCDA validation, validate as a " + ((type == null) ? "Plain CCDA" : type));
 		
+		long end_time = System.currentTimeMillis();
+		long run_time = end_time - start_time;
+
 		int errors = 0;
 		int warnings = 0;
 		int details = 0;
@@ -88,5 +92,7 @@ public class CcdaValidator {
 		}
 		
 		logger.info("CCDA Validation complete: " + errors + " errors, " + warnings + " warnings, " + details + " details.");
+		logger.info("MHDT run time was " + run_time + " mSec");
+		logger.info("Validation, was a " + ((type == null) ? "Plain CCDA" : type));
 	}
 }

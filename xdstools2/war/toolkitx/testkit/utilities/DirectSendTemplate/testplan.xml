@@ -13,7 +13,7 @@
 		<Subject>Direct Validation Request</Subject>
 		<AttachmentContentFile>$messagePath$</AttachmentContentFile>
 		<DirectSystemMailerHostname>$direct_server_name$</DirectSystemMailerHostname>
-		<DirectSystemMailerPort>25</DirectSystemMailerPort>
+		<DirectSystemMailerPort>12999</DirectSystemMailerPort>
         </DirectTransaction>
     </TestStep>
 </TestPlan>

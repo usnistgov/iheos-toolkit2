@@ -79,7 +79,7 @@ public class Session implements SecurityParams {
 	String password1 = null;
 	String password2 = null;
 	
-	File tomcatSessionCache = null;   // one for this Tomcat session (corresponds to this Session object)
+//	File tomcatSessionCache = null;   // one for this Tomcat session (corresponds to this Session object)
 	File mesaSessionCache = null;     // changes each time new mesaSessionName changes
 	
 	Metadata lastMetadata = null;
@@ -172,7 +172,9 @@ public class Session implements SecurityParams {
 
 	}
 	
-	public File getTomcatSessionCache() { return tomcatSessionCache; }
+	public File getTomcatSessionCache() { 
+		return new File(Installation.installation().warHome() + File.separator + "SessionCache" + File.separator + sessionId); 
+		}
 	public File getMesaSessionCache() { return mesaSessionCache; }
 	
 	public String getServerIP() {
@@ -187,7 +189,7 @@ public class Session implements SecurityParams {
 		this(warHome, siteServiceManager);
 		this.sessionId = sessionId;
 
-		tomcatSessionCache = new File(warHome + File.separator + "SessionCache" + File.separator + sessionId); 		
+//		tomcatSessionCache = new File(warHome + File.separator + "SessionCache" + File.separator + sessionId); 		
 	}
 	
 	public Session(File warHome, SiteServiceManager siteServiceManager) {
@@ -415,20 +417,20 @@ public class Session implements SecurityParams {
 	public void clear() {
 		xt = null;
 		res = null;
-		transactionSettings = null;
+//		transactionSettings = null;
 	}
 	
 	boolean lessThan(String a, String b) {
 		return a.compareTo(b) == -1;
 	}
 		
-	public void saveLogMapInSessionCache(LogMap log, XdstestLogId id) throws XdsException {
-		new RawLogCache(tomcatSessionCache).logOut(id, log);
-		
-		if (mesaSessionExists()) {
-			new RawLogCache(mesaSessionCache).logOut(id, log);
-		}
-	}
+//	public void saveLogMapInSessionCache(LogMap log, XdstestLogId id) throws XdsException {
+//		new RawLogCache(getTomcatSessionCache()).logOut(id, log);
+//		
+//		if (mesaSessionExists()) {
+//			new RawLogCache(mesaSessionCache).logOut(id, log);
+//		}
+//	}
 	
 	public Metadata getLastMetadata() {
 		return lastMetadata;
@@ -443,15 +445,19 @@ public class Session implements SecurityParams {
 	 * 
 	 */
 
-	public File getEnvironmentDir() {
-		return EnvSetting.getEnvSetting(sessionId).getEnvDir();
+	public File getEnvironmentDir() throws EnvironmentNotSelectedException {
+		try {
+			return EnvSetting.getEnvSetting(sessionId).getEnvDir();
+		} catch (Exception e) {
+			throw new EnvironmentNotSelectedException("", e);
+		}
 	}
 	
-	public File getEnvironment() { return getEnvironmentDir(); }
+	public File getEnvironment() throws EnvironmentNotSelectedException { return getEnvironmentDir(); }
 	
-	public File getCodesFile() {
+	public File getCodesFile() throws EnvironmentNotSelectedException {
 		if (getEnvironmentDir() == null) 
-			return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
+			return null; // new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
 		File f = new File(getEnvironmentDir() + File.separator + "codes.xml");
 		if (f.exists())
 			return f;
@@ -484,7 +490,7 @@ public class Session implements SecurityParams {
 		logger.debug(getId() + ": " + "getEnvironmentNames");
 		List<String> names = new ArrayList<String>();
 		
-		File k = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
+		File k = Installation.installation().environmentFile();     //propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
 		if (!k.exists() || !k.isDirectory())
 			return names;
 		File[] files = k.listFiles();
@@ -529,7 +535,7 @@ public class Session implements SecurityParams {
 	}
 	
 	public void setEnvironment(String name, String externalCache) {
-		File k = new File(externalCache + File.separator + "environment" + File.separator + name);
+		File k = Installation.installation().environmentFile(name);
 		if (!k.exists() || !k.isDirectory())
 			k = null;
 		currentEnvironmentName = name;
@@ -566,7 +572,7 @@ public class Session implements SecurityParams {
 
 	public File getToolkitFile() {
 		if (toolkit == null)
-			toolkit = new File(Installation.installation().warHome() + File.separator + "toolkitx");
+			toolkit = Installation.installation().toolkitxFile();    //new File(Installation.installation().warHome() + File.separator + "toolkitx");
 		return toolkit;
 	}
 

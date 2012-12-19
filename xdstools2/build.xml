@@ -146,6 +146,12 @@
 				<exclude name="**/.svn"/>
 			</fileset>
 		</copy>
+		<mkdir dir="war/toolkitx/testkit/selftest"/>
+		<copy todir="war/toolkitx/testkit/selftest">
+			<fileset dir="${testkit}/selftest">
+				<exclude name="**/.svn"/>
+			</fileset>
+		</copy>
 		<mkdir dir="war/toolkitx/testkit/xcpd"/>
 		<copy todir="war/toolkitx/testkit/xcpd">
 			<fileset dir="${testkit}/xcpd">
