@@ -1,6 +1,6 @@
 package gov.nist.toolkit.directsim;
 
-import gov.nist.direct.messageDispatch.MessageDispatchUtils;
+import gov.nist.messageDispatch.MessageDispatchUtils;
 import gov.nist.toolkit.actorfactory.DirectActorFactory;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsupport.SMTPException;

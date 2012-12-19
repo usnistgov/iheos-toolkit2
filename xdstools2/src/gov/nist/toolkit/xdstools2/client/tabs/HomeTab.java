@@ -36,16 +36,7 @@ public class HomeTab extends GenericQueryTab {
 
 	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		// valid values are ihe and direct. If direct not specified then default to ihe. This
-		// drives selection of correct installation web page
-		String toolkitType = Xdstools2.tkProps().get("toolkit.home","");
-		if ("".equals(toolkitType))
-			toolkitType = "ihe";
-		toolkitType = toolkitType.trim();
-		if (toolkitType.equals("direct"))
-			toolkitType = "ttt";
+		topPanel = new VerticalPanel();	
 
 		select = true;
 		myContainer.addTab(topPanel, "Home", select );
@@ -71,7 +62,7 @@ public class HomeTab extends GenericQueryTab {
 		menubar.add(h);
 
 		HTML instLink = new HTML();
-		instLink.setHTML("<a href=\"" + "doc/install" + toolkitType + ".html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
+		instLink.setHTML("<a href=\"" + "doc/install.html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
 		menubar.add(instLink);
 
 		topPanel.add(menubar);
@@ -503,4 +494,3 @@ public class HomeTab extends GenericQueryTab {
 
 
 }
-	
