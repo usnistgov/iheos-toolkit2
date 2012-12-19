@@ -1,5 +1,6 @@
 package gov.nist.direct.messageParser.impl;
 
+import gov.nist.direct.config.Config;
 import gov.nist.direct.utils.ParseUtils;
 import gov.nist.direct.utils.ValidationUtils;
 import gov.nist.direct.validation.impl.ProcessEnvelope;
@@ -21,8 +22,7 @@ import javax.mail.Part;
  *
  */
 public class MDNMessageProcessor {
-	public final int ACCEPTED_DELAY_FOR_MDN_RECEPTION = 1000000; // (400ms max of RTT + processing time by other system) x 3
-	
+
 	
 
 	private void processMDNMessage(ErrorRecorder er, Part p) throws ParseException {
@@ -39,7 +39,7 @@ public class MDNMessageProcessor {
 		Date sendDate = sendHistory.getMessageSendTime(messageID);
 		
 		int timeOffset = TimerUtils.getTimeDifference(receiveDate, sendDate);
-		if (timeOffset <= ACCEPTED_DELAY_FOR_MDN_RECEPTION){
+		if (timeOffset <= Config.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
 			// send to mdn validation
 		} else {
 			// message an mdn was received but delay was too long
