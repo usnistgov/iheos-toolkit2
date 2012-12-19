@@ -61,7 +61,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	void buildWrapper() {
 		tabPanel = new TabPanel();
-		RootPanel.get().add(tabPanel);
+		RootPanel.get().insert(tabPanel, 0);
+//		RootPanel.get().add(tabPanel);
 
 
 		tabPanel.setWidth("100%");

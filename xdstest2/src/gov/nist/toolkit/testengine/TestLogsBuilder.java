@@ -2,7 +2,6 @@ package gov.nist.toolkit.testengine;
 
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.testengine.LogMap.LogMapItem;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
 

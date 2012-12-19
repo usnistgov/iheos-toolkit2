@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
@@ -10,29 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 public class CommonServiceManager {
-//	Session session = null;
 	PropertyServiceManager propertyServiceMgr = null;
 	SiteServiceManager siteServiceMgr = null;
 	
 	public CommonServiceManager() {
 	
 	}
-
-//	SiteServiceManager siteServiceManager() {
-//		if (siteServiceMgr == null)
-//			siteServiceMgr = new SiteServiceManager();
-//		return siteServiceMgr;
-//	}
-
-//	PropertyServiceManager propertyServiceManager() {
-//		if (propertyServiceMgr == null)
-//			propertyServiceMgr = new PropertyServiceManager();
-//		return propertyServiceMgr;
-//	}
-
-//	protected String getSessionIdIfAvailable(Session session) {
-//		return session.getId();
-//	}
 	
 	protected List<Result> asList(Result r) {
 		List<Result> lst = new ArrayList<Result>();
@@ -41,7 +25,7 @@ public class CommonServiceManager {
 	}
 
 	protected List<Result> buildExtendedResultList(Throwable e) {
-		Result r = new Result();
+		Result r = ResultBuilder.RESULT("test");
 		r.addAssertion(ExceptionUtil.exception_details(e), false);
 		return this.asList(r);
 	}
@@ -68,25 +52,25 @@ public class CommonServiceManager {
 
 
 	public List<Result> buildResultList(Exception e) {
-		Result r = new Result();
+		Result r = ResultBuilder.RESULT("test");
 		r.addAssertion(e.getMessage(), false);
 		return this.asList(r);
 	}
 
 	public List<Result> buildResultList(String errorMsg) {
-		Result r = new Result();
+		Result r = ResultBuilder.RESULT("test");
 		r.addAssertion(errorMsg, false);
 		return this.asList(r);
 	}
 
 	public Result buildResult(Exception e) {
-		Result r = new Result();
+		Result r = ResultBuilder.RESULT("test");
 		r.addAssertion(ExceptionUtil.exception_details(e), false);
 		return r;
 	}
 
 	public Result buildResult() {
-		return new Result();
+		return ResultBuilder.RESULT("test");
 	}
 
 

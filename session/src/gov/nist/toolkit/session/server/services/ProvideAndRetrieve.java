@@ -2,6 +2,8 @@ package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.results.ResultBuilder;
+import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.session.server.Session;
@@ -36,8 +38,7 @@ public class ProvideAndRetrieve extends CommonServiceManager {
 //			Site si = session.siteServiceManager().getSites().getSite(session.siteSpec.name);
 			String repuid = si.getRepositoryUniqueId();
 			if (repuid == null) {
-				Result r = new Result();
-				r.assertions.add("Repository has no configured repositoryUniqueId", false);
+				Result r = ResultBuilder.RESULT(testName, null, new AssertionResult("Repository has no configured repositoryUniqueId","",false), null);
 				return asList(r);
 			}
 			params.put("$repositoryUniqueId$", repuid);

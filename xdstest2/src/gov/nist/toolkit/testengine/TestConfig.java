@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine;
 
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.logrepository.LogRepository;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,7 +18,7 @@ public class TestConfig {
 	public File testkitHome = null;
 	
 	// location of log directory
-	public File logdirHome = null;
+	public LogRepository logRepository = null;
 	
 	// Directory holding testplan.xml and its support files
 	 public File testplanDir = null;

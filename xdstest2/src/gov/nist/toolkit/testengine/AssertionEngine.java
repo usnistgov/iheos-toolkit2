@@ -140,7 +140,7 @@ public class AssertionEngine {
 		this.output = output;
 	}
 
-	public void run(ErrorReportingInterface err, OMElement assertion_output) {
+	public void run(ErrorReportingInterface err, OMElement assertion_output) throws XdsInternalException {
 		OmLogger logger = new OmLogger();
 		try {
 			parseDataRefs();

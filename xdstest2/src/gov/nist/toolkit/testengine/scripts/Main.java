@@ -33,7 +33,7 @@ public class Main implements SecurityParams {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		engine.setLogdirLocation(me.logDir);
+//		engine.setLogdirLocation(me.logDir);
 
 		me.run();
 	}

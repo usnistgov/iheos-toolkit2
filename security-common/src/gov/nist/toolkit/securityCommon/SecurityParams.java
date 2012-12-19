@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 public interface SecurityParams {
-	File getCodesFile();
+	File getCodesFile() throws EnvironmentNotSelectedException;
 	File getKeystore() throws EnvironmentNotSelectedException;
 	String getKeystorePassword() throws IOException, EnvironmentNotSelectedException;
 	

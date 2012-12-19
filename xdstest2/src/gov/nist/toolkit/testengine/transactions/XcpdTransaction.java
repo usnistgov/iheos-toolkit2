@@ -1,18 +1,16 @@
 package gov.nist.toolkit.testengine.transactions;
 
+import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.valregmsg.validation.schematron.ReportProcessor;
+import gov.nist.toolkit.valregmsg.validation.schematron.schematronValidation;
+import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.testengine.StepContext;
-import gov.nist.toolkit.testengine.TransactionSettings;
-import gov.nist.toolkit.valregmsg.validation.schematron.*;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -63,7 +61,7 @@ public class XcpdTransaction extends BasicTransaction {
 
 	}
 
-	private void validate_response(OMElement result) {
+	private void validate_response(OMElement result) throws XdsInternalException {
 		
 	try {
 		    String warHome = System.getProperty("warHome");
@@ -114,7 +112,10 @@ public class XcpdTransaction extends BasicTransaction {
 			s_ctx.add_name_value(instruction_output, "Detail", "No Schema Errors Found");
 		} else {
 			for (int i = 0; i < schemaErrors.size(); i++) {
-				s_ctx.set_error(i + ") " + schemaErrors.get(i).toString());
+				try {
+					s_ctx.set_error(i + ") " + schemaErrors.get(i).toString());
+				} catch (XdsInternalException e) {
+				}
 		}	
 		// Sets schematron reporting
 		s_ctx.add_name_value(instruction_output, "Detail", "");

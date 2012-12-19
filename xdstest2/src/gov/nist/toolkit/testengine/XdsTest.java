@@ -5,6 +5,8 @@ import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.logrepository.LogRepository;
+import gov.nist.toolkit.testengine.logrepository.TestLogRepository;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
@@ -34,7 +36,7 @@ public class XdsTest {
 	File testkit;
 	String mgmt;
 	File toolkit;
-	File logDir;
+	LogRepository logRepository;
 	String testNum;
 	String testPart;
 	List<TestDetails> testSpecs;     
@@ -134,7 +136,7 @@ public class XdsTest {
 		bassert(toolkit != null && toolkit.exists(),"XDSTOOLKIT directory " + toolkit + " does not exist");
 		bassert(new File(toolkit + "/xdstest").exists(),"XDSTOOLKIT directory " + toolkit + " is not really the toolkit, no xdstest subdirectory exists");
 
-		bassert(logDir != null && logDir.isDirectory(),"XDSTESTLOGDIR directory " + logDir + " does not exist or is not a directory");
+//		bassert(logRepository != null && logRepository.isDirectory(),"XDSTESTLOGDIR directory " + logRepository + " does not exist or is not a directory");
 
 		bassert(testkit != null && testkit.exists(),"XDSTESTKIT directory " + testkit + " does not exist");
 		bassert(new File(testkit + "/tests").exists(),"XDSTESTKIT directory " + testkit + " is not really the testkit, no tests subdirectory exists");
@@ -173,6 +175,11 @@ public class XdsTest {
 		}
 	}
 
+	/**
+	 * Load config from environment. Used only from command line incantation. From
+	 * GUI, these are already filled in.
+	 * @throws Exception
+	 */
 	public void loadFromEnvironment() throws Exception  {
 		String toolkitstr = getFromEnv("XDSTOOLKIT");
 		String testkitdir = getFromEnv("XDSTESTKIT");
@@ -182,7 +189,7 @@ public class XdsTest {
 		if (testkitdir != null)
 			testkit = new File(testkitdir);
 		if (logdirstr != null)
-			logDir = new File(logdirstr);
+			logRepository = new TestLogRepository(null).getNewLogRepository();  //new File(logdirstr);
 		if (toolkitstr != null)
 			toolkit = new File(toolkitstr);
 
@@ -346,7 +353,7 @@ public class XdsTest {
 
 	private void initTestConfig() {
 		testConfig.testkitHome = testkit;
-		testConfig.logdirHome = logDir;
+		testConfig.logRepository = logRepository;
 		testConfig.site = site;
 		testConfig.secure = secure;
 		testConfig.saml = wssec;
@@ -636,7 +643,7 @@ public class XdsTest {
 		runHadError = false;
 		try {
 			TransactionSettings ts = new TransactionSettings();
-			ts.logDir = logDir;
+			ts.logRepository = logRepository;
 			runAndReturnLogs(null, null, ts, true);
 		} catch (Exception e1) {
 			if (showExceptionTrace) 
@@ -670,9 +677,9 @@ public class XdsTest {
 				testConfig.testplanDir = testPlanFile.getParentFile();
 				testConfig.logFile = null;
 				
-				File logDirectory = logDir;
-				if (ts != null && ts.logDir != null)
-					logDirectory = ts.logDir;
+				File logDirectory = logRepository.logDir();
+				if (ts != null && ts.logRepository != null)
+					logDirectory = ts.logRepository.logDir();
 
 				if (writeLogFiles) {
 					testConfig.logFile = new TestKitLog(logDirectory, testkit).getLogFile(testPlanFile);
@@ -727,8 +734,9 @@ public class XdsTest {
 
 		parseOperationOptions();
 
-		if (logDir == null)
-			logDir = testkit;  // put logs right next to testplans
+		if (logRepository == null)
+			throw new Exception("logRepository not configured");
+			//logRepository = testkit;  // put logs right next to testplans
 
 		boolean tlsConfigured = false;
 		try { 
@@ -795,7 +803,7 @@ public class XdsTest {
 						sections.add(section);
 					}
 					if (sections != null) {
-						ts.setLogDir(logDir);
+						ts.setLogDir(logRepository.logDir());
 						ts.selectSections(sections);
 					}
 				}
@@ -885,12 +893,12 @@ public class XdsTest {
 
 
 
-	public File getLogDir() {
-		return logDir;
+	public File getLogDir() throws IOException {
+		return logRepository.logDir();
 	}
 
-	public void setLogDir(File logDir) {
-		this.logDir = logDir;
+	public void setLogRepository(LogRepository logRepository) {
+		this.logRepository = logRepository;
 	}
 
 
@@ -931,7 +939,8 @@ public class XdsTest {
 	public void setToolkit(File toolkit) {
 		this.toolkit = toolkit;
 		mgmt = toolkit + File.separator + "xdstest";
-		logDir = new File(toolkit + File.separator + "logs");
+		logRepository = new TestLogRepository(null);
+//		logRepository = new File(toolkit + File.separator + "logs");
 		testConfig.testmgmt_dir = mgmt;
 	}
 

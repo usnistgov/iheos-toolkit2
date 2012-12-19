@@ -5,6 +5,7 @@ import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.errormgr.AssertionResults;
+import gov.nist.toolkit.testengine.logrepository.LogRepository;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.StepGoals;
 import gov.nist.toolkit.testenginelogging.TestDetails;
@@ -40,13 +41,13 @@ import org.apache.log4j.Logger;
 public class Xdstest2 {
 
 	XdsTest xt;
-	File logdir;
+	LogRepository logRepository;
 	File testkit;
 	String testnum;
 	Site site;
 	File toolkitDir;
 	List<String> sections;
-	List<TestDetails> testSpecs;
+	List<TestDetails> testDetails;
 	SecurityParams tki;
 	public boolean involvesMetadata = false;   // affects logging
 	static Logger logger = Logger.getLogger(Xdstest2.class);
@@ -73,8 +74,10 @@ public class Xdstest2 {
 	void foofoo() {
 		  TrustManager[] trustAllCerts = new TrustManager[] {
 		            new X509TrustManager() {
-		                public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
-		                public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+		                @SuppressWarnings("unused")
+						public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+		                @SuppressWarnings("unused")
+						public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
 		                public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
 						public void checkClientTrusted(
 								java.security.cert.X509Certificate[] arg0,
@@ -118,35 +121,8 @@ public class Xdstest2 {
 	}
 
 	void initSecurity(File toolkitDir) throws FileNotFoundException, IOException, EnvironmentNotSelectedException {
-//		String keystore;
-//		String keyStorePassword;
-//		
-//		if (tki == null) {
-//			keystore = toolkitDir.toString() + 
-//			File.separator + "xdstest" + File.separator + "keystores" + File.separator + "keystore";
-//
-//			Properties props = loadProperties(toolkitDir);
-//			keyStorePassword = props.getProperty("keyStorePassword", "changeit");
-//
-//		} 
-		
 		System.setProperty("javax.net.debug", "ssl");
-		
-//		logger.error("Keystore set to " + keystore);
-//		logger.error("Keystore password set to " + keyStorePassword);
-//		
-//		System.setProperty("javax.net.ssl.keyStore", keystore);
-//		System.setProperty("javax.net.ssl.keyStorePassword", keyStorePassword);
-//
-//		System.setProperty("javax.net.ssl.trustStore", keystore);
-//		System.setProperty("javax.net.ssl.trustStorePassword", keyStorePassword);
-
 		enableNormalCiphers();
-
-		//		String x = System.setProperty("https.cipherSuites", cipherSuites);
-		//		if (defaultCipherSuites == null)
-		//			defaultCipherSuites = x;
-
 	}
 
 	public static void enableAllCiphers() {
@@ -161,7 +137,6 @@ public class Xdstest2 {
 			defaultCipherSuites = System.setProperty("https.cipherSuites", cipherSuites);
 		else
 			System.setProperty("https.cipherSuites", cipherSuites);
-
 	}
 
 	/**
@@ -195,12 +170,13 @@ public class Xdstest2 {
 	 * Each log file is named log.xml. The directory structure of logDir reflects that of the
 	 * testkit.
 	 * 
-	 * @param logDir
+	 * @param logRepository
+	 * @throws IOException 
 	 */
-	public void setLogdirLocation(File logDir) {
-		this.logdir = logDir;
-		logDir.mkdirs();
-		xt.setLogDir(logDir);
+	public void setLogdirLocation(LogRepository logRepository) throws IOException {
+		this.logRepository = logRepository;
+		this.logRepository.logDir().mkdirs();
+		xt.setLogRepository(logRepository);
 	}
 
 	/**
@@ -236,7 +212,7 @@ public class Xdstest2 {
 			ts = new TestDetails(xt.getTestkit(), testname);
 		else
 			ts = new TestDetails(xt.getTestkit(), testname, areas);
-		ts.setLogDir(logdir);
+		ts.setLogDir(logRepository.logDir());
 		if (doLogCheck) {
 			if (sections != null && sections.size() != 0)
 				ts.selectSections(sections);
@@ -247,7 +223,7 @@ public class Xdstest2 {
 	public void setTest(String testName, File testDir) throws Exception {
 		testnum = testName;
 		TestDetails ts = new TestDetails(testDir);
-		ts.setLogDir(logdir);
+		ts.setLogDir(logRepository.logDir());
 		xt.addTestSpec(ts);
 	}
 
@@ -327,8 +303,8 @@ public class Xdstest2 {
 	public void run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
 		logger.debug("Running " + testnum);
-		testSpecs = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
-		if (testSpecs == null)
+		testDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
+		if (testDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");
 	}
 
@@ -361,14 +337,14 @@ public class Xdstest2 {
 		if (sectionsToScan != null && sectionsToScan.size() == 0) 
 			sectionsToScan = null;
 
-		if (testSpecs.size() > 1) 
+		if (testDetails.size() > 1) 
 			sectionsToScan = null;
 
 		AssertionResults res = new AssertionResults();
 		String dashes = "------------------------------------------------------------------------------------------------";
 
 		res.add(dashes);
-		for (TestDetails testSpec : testSpecs) {
+		for (TestDetails testSpec : testDetails) {
 			res.add("Test: " + testSpec.getTestNum());
 			res.add(dashes);
 			Collection<String> sections;
@@ -445,7 +421,7 @@ public class Xdstest2 {
 	 * @return
 	 */
 	public List<TestDetails> getTestSpecs() {
-		return testSpecs;
+		return testDetails;
 	}
 
 	/**
@@ -458,10 +434,10 @@ public class Xdstest2 {
 	public LogMap getLogMap() throws Exception {
 		LogMap lm = new LogMap();
 
-		if (testSpecs == null)
+		if (testDetails == null)
 			throw new Exception("Xdstest2#getLogMap: testSpecs is null");
 
-		for (TestDetails testSpec : testSpecs) {
+		for (TestDetails testSpec : testDetails) {
 			for (String section : testSpec.getTestPlanLogs().keySet()) {
 				LogFileContent testLog = testSpec.getTestPlanLogs().get(section);
 				if (testLog == null) {

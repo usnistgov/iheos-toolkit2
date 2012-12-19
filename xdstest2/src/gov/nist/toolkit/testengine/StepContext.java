@@ -10,6 +10,7 @@ import gov.nist.toolkit.testengine.transactions.EpsosTransaction;
 import gov.nist.toolkit.testengine.transactions.GenericSoap11Transaction;
 import gov.nist.toolkit.testengine.transactions.IGQTransaction;
 import gov.nist.toolkit.testengine.transactions.MPQTransaction;
+import gov.nist.toolkit.testengine.transactions.MockTransaction;
 import gov.nist.toolkit.testengine.transactions.MuTransaction;
 import gov.nist.toolkit.testengine.transactions.NullTransaction;
 import gov.nist.toolkit.testengine.transactions.ProvideAndRegisterTransaction;
@@ -120,17 +121,17 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		return status;
 	}
 
-	public  void set_error(String msg) {
+	public  void set_error(String msg) throws XdsInternalException {
+		setStatus(false);
 		error(test_step_output, msg);
-		setStatus(false);
 	}
 	
-	public void set_fault(String code, String msg) {
+	public void set_fault(String code, String msg) throws XdsInternalException {
+		setStatus(false);
 		fault(test_step_output, code, msg);
-		setStatus(false);
 	}
 	
-	public void set_fault(AxisFault e) {
+	public void set_fault(AxisFault e) throws XdsInternalException {
 //		String code = "";
 		String detail = "";
 		try {
@@ -140,11 +141,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			
 		}
 		detail = detail + " : " + e.getMessage();
-		fault(test_step_output, detail, detail);
 		setStatus(false);
+		fault(test_step_output, detail, detail);
 	}
 
-	public void fail(String message) {
+	public void fail(String message) throws XdsInternalException {
 		set_error(message);
 	}
 
@@ -304,6 +305,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				else if (instruction_name.equals("PublishTransaction")) 
 				{
 					transaction = new DsubPublishTransaction(this, instruction, instruction_output);
+				} 
+				else if (instruction_name.equals("MockTransaction")) 
+				{
+					transaction = new MockTransaction(this, instruction, instruction_output);
 				} 
 				else if (instruction_name.equals("ProvideAndRegisterTransaction")) 
 				{

@@ -28,23 +28,15 @@ public class LogMap implements Serializable {
 	public List<LogMapItem> getItems() { return items; }
 	
 	public Map<String, LogFileContent> getLogFileContentMap() { return logFileContent; }
-
-	public class LogMapItem implements Serializable {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -290403612300468696L;
-		public String testName;
-		public LogFileContent log;
+	
+	public List<String> getKeys() {
+		List<String> keys = new ArrayList<String>();
 		
-		public LogMapItem(String testName, LogFileContent log) {
-			this.testName = testName;
-			this.log = log;
+		for (LogMapItem item : items) {
+			keys.add(item.testName);
 		}
 		
-		public String toString() {
-			return "[LogMapItem: testName=" + testName + " log=" + log.toString() + "]";
-		}
+		return keys;
 	}
 	
 	public String toString() {

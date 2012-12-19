@@ -23,9 +23,8 @@ public class GetSubmissionSets implements ClickHandler {
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 		public void onFailure(Throwable caught) {
-			Result result = new Result();
+			Result result = Result.RESULT("GetSubmissionSets");
 			result.assertions.add(caught.getMessage());
-			result.testName = "GetSubmissionSets";
 			it.addToHistory(result);
 		}
 

@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import gov.nist.toolkit.tk.client.PropertyNotFoundException;
+import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.FeatureManager;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -34,7 +36,16 @@ public class HomeTab extends GenericQueryTab {
 
 	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();	
+		topPanel = new VerticalPanel();
+		
+		// valid values are ihe and direct. If direct not specified then default to ihe. This
+		// drives selection of correct installation web page
+		String toolkitType = Xdstools2.tkProps().get("toolkit.home","");
+		if ("".equals(toolkitType))
+			toolkitType = "ihe";
+		toolkitType = toolkitType.trim();
+		if (toolkitType.equals("direct"))
+			toolkitType = "ttt";
 
 		select = true;
 		myContainer.addTab(topPanel, "Home", select );
@@ -60,7 +71,7 @@ public class HomeTab extends GenericQueryTab {
 		menubar.add(h);
 
 		HTML instLink = new HTML();
-		instLink.setHTML("<a href=\"" + "doc/install.html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
+		instLink.setHTML("<a href=\"" + "doc/install" + toolkitType + ".html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
 		menubar.add(instLink);
 
 		topPanel.add(menubar);
@@ -180,14 +191,28 @@ public class HomeTab extends GenericQueryTab {
 
 
 	private void displayDirectHome() {
+		TkProps pubcertConfig = tkProps().withPrefixRemoved("direct.pubcert");
+		String cert = "";
+		String trustanchor = "";
+		try {
+			 cert = pubcertConfig.get("pubcert");
+		} catch (PropertyNotFoundException e) {
+			new PopupMessage("Configuration parameter direct.pubcert.pubcert cannot be loaded from tk_props.txt properties file located in the external cache");
+		}
+		try {
+			trustanchor = pubcertConfig.get("trustanchor");
+		} catch (PropertyNotFoundException e) {
+			new PopupMessage("Configuration parameter direct.pubcert.trustanchor cannot be loaded from tk_props.txt properties file located in the external cache");
+		}
+		
 		topPanel.add(new HTML("<hr />"));
 
-		topPanel.add(new HTML("TTT Public Cert can be displayed from <a href=\"pubcert/hit-testing.nist.gov.der\">here</a>.  " +
+		topPanel.add(new HTML("TTT Public Cert can be displayed from <a href=\"pubcert/" + cert + "\">here</a>.  " +
 				"The Mime Body of the Direct message must be encrypted with this self-signed Public Cert."));
 
 		topPanel.add(new HTML("<hr />"));
 
-		topPanel.add(new HTML("TTT Trust Anchor can be displayed from <a href=\"pubcert/hit-testing.nist.gov-RootCA.der\">here</a>.  " 
+		topPanel.add(new HTML("TTT Trust Anchor can be displayed from <a href=\"pubcert/" + trustanchor + "\">here</a>.  " 
 				));
 
 		topPanel.add(new HTML("<hr />"));
@@ -199,6 +224,9 @@ public class HomeTab extends GenericQueryTab {
 
 		topPanel.add(new HTML("<h3>Support</h3>"));
 		topPanel.add(new HTML("The support mailing list for this tool is: <a href=\"mailto:transport-testing-tool@googlegroups.com\">transport-testing-tool@googlegroups.com</a>"));
+		
+		topPanel.add(new HTML("...which can be browsed from <a href=\"https://groups.google.com/forum/?fromgroups#!forum/transport-testing-tool\">https://groups.google.com/forum/?fromgroups#!forum/transport-testing-tool</a>"));
+		topPanel.add(new HTML("<br />"));
 		
 		topPanel.add(new HTML("Frequently asked questions (FAQ) (warning - PDF) can be found at: <a href=\"http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf\">http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf</a>"));
 		topPanel.add(new HTML("<hr />"));
@@ -475,3 +503,4 @@ public class HomeTab extends GenericQueryTab {
 
 
 }
+	
