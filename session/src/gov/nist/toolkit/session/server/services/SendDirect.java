@@ -36,9 +36,12 @@ public class SendDirect extends CommonServiceManager {
 
 	public List<Result> run() {
 		try {
-			String user = session.getMesaSessionName();
-			if (user == null || user.equals(""))
-				throw new Exception("TestSession must be selected.");
+//			String user = session.getMesaSessionName();
+//			if (user == null || user.equals(""))
+//				throw new Exception("TestSession must be selected.");
+			String user = "DefaultDirectUser";
+			
+			
 //			session.transactionSettings.assignPatientId = false;
 			List<String> sections = null;
 
@@ -54,11 +57,13 @@ public class SendDirect extends CommonServiceManager {
 			params2.put("signingCert", signingCert);
 			params.put("signingCertPassword", signingPassword);
 
+			String targetDomain = params.get("$direct_to_domain$").trim();
+			logger.debug("Target domain is " + targetDomain);
+			params.put("$direct_server_name$", "mail." + targetDomain);
+
 			if (encryptionCert == null) {
 				// not uploaded - pre-installed for a known domain - go find it
 				// it is required to be in .der format 
-				String targetDomain = params.get("$direct_to_domain$");
-				logger.debug("Target domain is " + targetDomain);
 				File certFile = directConfig.getEncryptionCertFile(targetDomain);
 				if (certFile == null)
 					throw new Exception("Cannot load pre-installed cert for domain " + targetDomain);

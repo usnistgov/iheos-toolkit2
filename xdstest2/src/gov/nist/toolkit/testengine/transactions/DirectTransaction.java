@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -130,7 +131,16 @@ public class DirectTransaction extends BasicTransaction {
 		//msg.writeTo(new FileOutputStream("encrypted.txt"));
 
 		logger.debug("Opening socket to Direct system on " + mailerHostname + ":" + mailerPort + "...");
-		Socket socket = new Socket(mailerHostname, mailerPort);
+		Socket socket;
+		try {
+			socket = new Socket(mailerHostname, mailerPort);
+		} catch (UnknownHostException e) {
+			s_ctx.set_error("Error connecting to " + mailerHostname + ":" + mailerPort + " - " + e.getMessage());
+			return;
+		} catch (IOException e) {
+			s_ctx.set_error("Error connecting to " + mailerHostname + ":" + mailerPort + " - " + e.getMessage());
+			return;
+		}
 		logger.debug("\t...Success");
 
 		// org.bouncycastle.cms.CMSException: exception wrapping content key: 

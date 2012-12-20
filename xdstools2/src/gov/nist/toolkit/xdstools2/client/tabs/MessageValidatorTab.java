@@ -306,6 +306,8 @@ public class MessageValidatorTab extends TabbedWindow {
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
+//		disableEnvMgr();
+		disableTestSesMgr();
 
 		container.addTab(topPanel, "Message Validator", select);
 		addCloseButton(container,topPanel, null);

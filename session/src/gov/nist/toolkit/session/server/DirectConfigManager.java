@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.server;
 
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -8,9 +9,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class DirectConfigManager {
 	String externalCache;
 	String sep = File.separator;
+	
+	static Logger logger = Logger.getLogger(DirectConfigManager.class);
+
 	
 	public DirectConfigManager(File externalCache) {
 		this.externalCache = externalCache + sep;
@@ -55,14 +61,21 @@ public class DirectConfigManager {
 	public File getEncryptionCertFile(String domain) {
 		final String theDomain = domain;
 		File certDir = new File(pathToEncryptionCertsDir());
-		if (!certDir.exists() || !certDir.isDirectory())
+		logger.info("Looking for encryption certs for domain " + domain + " in " + certDir + " ...");
+		if (!certDir.exists() || !certDir.isDirectory()) {
+			logger.error("   ... NOT FOUND");
 			return null;
+		}
 		String[] files = certDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File arg0, String arg1) {
 				return arg1.startsWith(theDomain);
 			}
 		});
+		ArrayList<String> fileL = new ArrayList<String>();
+		for (int i=0; i<files.length; i++)
+			fileL.add(files[i]);
+		logger.info("... found " + fileL);
 		if (files.length == 1)
 			return new File(certDir + sep + files[0]);
 		return null;
@@ -121,6 +134,8 @@ public class DirectConfigManager {
 			String domain = file.substring(0, file.lastIndexOf(".der"));
 			domains.add(domain);
 		}
+		
+		logger.info("Found encryption certs for domains " + domains);
 		
 		return domains;
 	}

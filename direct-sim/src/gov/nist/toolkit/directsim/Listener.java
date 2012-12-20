@@ -349,14 +349,23 @@ class doComms implements Runnable {
 		String url = null;
 		File reportFile = null;
 		try {
-			url = reportingProps.get("baseurl") + reportId + ".html";
-			reportFile = new File(reportingProps.get("directory") + reportId + ".html");
+			String baseurl = reportingProps.get("baseurl"); 
+			url = 	baseurl +
+					((baseurl.endsWith("/") ? "" : "/")) +
+					reportId + 
+					".html";
+			String dir = reportingProps.get("directory");
+			reportFile = new File(dir +
+					((dir.endsWith(File.separator)) ? "" : File.separator   )  + 
+					reportId + 
+					".html");
 		} catch (PropertyNotFoundException e1) {
 			logger.fatal(e1.getMessage());
 		}
 
 		// Save it off report behind the URL
 		try {
+			logger.info("Saving report to " + reportFile);
 			logger.info("Report available from " + url);
 			Io.stringToFile(reportFile, validationReport.toString());
 		} catch (Exception e) {

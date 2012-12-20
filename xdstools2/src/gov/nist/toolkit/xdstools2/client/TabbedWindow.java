@@ -25,6 +25,8 @@ public abstract class TabbedWindow {
 	//	EnvironmentSelector environmentSelector = null;
 	EnvironmentManager environmentManager = null;
 	public TestSessionManager testSessionManager = null;
+	boolean envMgrEnabled = true;
+	boolean testSesMgrEnabled = true;
 	TabContainer tabContainer;
 
 	final public ToolkitServiceAsync toolkitService = GWT
@@ -36,6 +38,9 @@ public abstract class TabbedWindow {
 
 
 	abstract public void onTabLoad(TabContainer container, boolean select, String eventName);
+	
+	public void disableEnvMgr() { envMgrEnabled = false; }
+	public void disableTestSesMgr() { testSesMgrEnabled = false; }
 
 	// getWindowShortName() + ".html"is documentation file in /doc
 	abstract public String getWindowShortName();
@@ -47,8 +52,10 @@ public abstract class TabbedWindow {
 		onTabSelection();
 
 		if (Xdstools2.showEnvironment) {
-			environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
-			testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
+			if (envMgrEnabled)
+				environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
+			if (testSesMgrEnabled)
+				testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
 		}
 	}
 

@@ -59,6 +59,8 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 
 	public DirectSenderTab() {
 		super(new NullSiteActorManager());
+		disableEnvMgr();
+		disableTestSesMgr();
 	}
 
 	@Override
@@ -99,7 +101,7 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 					@Override
 					public void onSuccess(List<String> arg0) {
 						knownTargetDomains = arg0;
-						String domain = email.substring(email.indexOf('@') + 1);
+						String domain = email.substring(email.indexOf('@') + 1).trim();
 						
 						boolean found = knownTargetDomains.contains(domain);
 						display.setEncryptionCertAvailable(domain, found);

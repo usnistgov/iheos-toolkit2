@@ -76,6 +76,8 @@ public class DirectRegistrationTab extends GenericQueryTab {
 			String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
+		disableEnvMgr();
+		disableTestSesMgr();
 		
 		container.addTab(topPanel, "DirectRegistration", select);
 		addCloseButton(container,topPanel, null);
