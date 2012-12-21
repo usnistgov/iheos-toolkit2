@@ -50,12 +50,15 @@ import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.util.Store;
 
 import gov.nist.direct.messageGenerator.MessageGenerator;
+import gov.nist.toolkit.testengine.StepContext;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;
 import gov.nist.toolkit.testengine.transactions.X509CertificateEx;
 import gov.nist.toolkit.utilities.io.Io;
 
 public class UnwrappedMessageGenerator implements MessageGenerator {
 
+	protected StepContext s_ctx;
+	
 	public UnwrappedMessageGenerator() {
 		// TODO Auto-generated constructor stub
 	}
@@ -290,6 +293,7 @@ public class UnwrappedMessageGenerator implements MessageGenerator {
         	CertificateFactory x509CertFact = CertificateFactory.getInstance("X.509");
         	encCert = (X509Certificate)x509CertFact.generateCertificate(is);
         } catch (Exception e1) {
+        	s_ctx.set_error("Error loading X.509 encryption cert - probably wrong format");
         	throw new Exception("Error loading X.509 encryption cert - probably wrong format", e1);
         }
 

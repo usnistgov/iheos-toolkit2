@@ -28,7 +28,7 @@ public class ProcessEnvelope {
 	private MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
 
 	
-	public void validateMimeEntity(ErrorRecorder er, Part m, LinkedHashMap<String, Integer> summary, ValidationSummary validationSummary, int partNumber) throws Exception {		
+	public void validateMimeEntity(ErrorRecorder er, Part m, ValidationSummary validationSummary, int partNumber) throws Exception {		
 		// Calculate the shift
 		String shift = "";
 		for(int i=0;i<partNumber;i++) {
@@ -69,7 +69,6 @@ public class ProcessEnvelope {
 		
 		// Update summary
 		if(m.getContentType() != null) {
-			summary.put(shift + "Content-type: "+m.getContentType(), er.getNbErrors());
 			validationSummary.recordKey(shift + "Content-type: "+m.getContentType(), er.hasErrors(), true);
 		}
 		
@@ -79,7 +78,6 @@ public class ProcessEnvelope {
 		// DTS 161-194 Validate Content-Disposition Filename
 		if(m.getFileName() != null) {
 			msgValidator.validateContentDispositionFilename(er, m.getFileName());
-			summary.put(shift + "Content-Disposition: "+m.getDisposition(), er.getNbErrors());
 			validationSummary.recordKey(shift + "Content-Disposition: "+m.getDisposition(), er.hasErrors(), true);
 			
 		}
@@ -94,7 +92,7 @@ public class ProcessEnvelope {
 		
 	}
 	
-	public void validateMessageHeader(ErrorRecorder er, Message m, LinkedHashMap<String, Integer> summary, ValidationSummary validationSummary, int partNumber, boolean wrapped) throws Exception {
+	public void validateMessageHeader(ErrorRecorder er, Message m, ValidationSummary validationSummary, int partNumber, boolean wrapped) throws Exception {
 		er.sectionHeading("Message Header Checklist");
 		
 		// Separate ErrorRecorder for the summary
@@ -122,7 +120,6 @@ public class ProcessEnvelope {
 		} else {
 			msgValidator.validateOrigDate(separate, searchHeaderSimple(m, "date"));
 		}
-		summary.put(shift + "Orig-Date: "+searchHeaderSimple(m, "date")+" (Part number: "+partNumber+")", separate.getNbErrors());
 		validationSummary.recordKey(shift + "Orig-Date: "+searchHeaderSimple(m, "date"), separate.hasErrors(), true);
 		
 		er.concat(separate);
@@ -138,7 +135,6 @@ public class ProcessEnvelope {
 		} else {
 			msgValidator.validateFrom(separate, from);
 		}
-		summary.put(shift + "From: "+from+" (Part number: "+partNumber+")", separate.getNbErrors());
 		validationSummary.recordKey(shift + "From: "+from, separate.hasErrors(), true);
 		
 		er.concat(separate);
@@ -154,7 +150,6 @@ public class ProcessEnvelope {
 		} else {
 			msgValidator.validateTo(separate, to);
 		}
-		summary.put(shift + "To: "+to+" (Part number: "+partNumber+")", separate.getNbErrors());
 		validationSummary.recordKey(shift + "To: "+to, separate.hasErrors(), true);
 			
 		er.concat(separate);
@@ -166,7 +161,6 @@ public class ProcessEnvelope {
 		} else {
 			msgValidator.validateMessageId(separate, searchHeaderSimple(m, "message-id"));
 		}
-		summary.put(shift + "Message-Id: "+searchHeaderSimple(m, "message-id")+" (Part number: "+partNumber+")", separate.getNbErrors());
 		validationSummary.recordKey(shift + "Message-Id: "+searchHeaderSimple(m, "message-id"), separate.hasErrors(), true);
 		
 		er.concat(separate);
@@ -179,7 +173,6 @@ public class ProcessEnvelope {
 		} else {
 			msgValidator.validateMIMEVersion(separate, searchHeaderSimple(m, "mime-version"));
 		}
-		summary.put(shift + "MIME-Version: "+searchHeaderSimple(m, "mime-version")+" (Part number: "+partNumber+")", separate.getNbErrors());
 		validationSummary.recordKey(shift + "MIME-Version: "+searchHeaderSimple(m, "mime-version"), separate.hasErrors(), true);
 		
 		er.concat(separate);
@@ -197,7 +190,6 @@ public class ProcessEnvelope {
 			}
 		}
 		if(!returnPath.equals("")) {
-			summary.put(shift + "Return-Path: "+returnPath+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Return-Path: "+returnPath, separate.hasErrors(), true);
 		}
 		
@@ -216,7 +208,6 @@ public class ProcessEnvelope {
 				msgValidator.validateReceived(separate, received);
 			}
 		}
-		summary.put(shift + "Received: "+received+" (Part number: "+partNumber+")", separate.getNbErrors());
 		validationSummary.recordKey(shift + "Received: "+received, separate.hasErrors(), true);
 		
 		er.concat(separate);
@@ -225,7 +216,6 @@ public class ProcessEnvelope {
 		// DTS 107 Validate Resent-Date
 		msgValidator.validateResentDate(separate, searchHeaderSimple(m, "resent-date"));
 		if(!searchHeaderSimple(m, "resent-date").equals("")) {
-			summary.put(shift + "Resent-Date: "+searchHeaderSimple(m, "resent-date")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Resent-Date: "+searchHeaderSimple(m, "resent-date"), separate.hasErrors(), true);
 		}
 		
@@ -235,7 +225,6 @@ public class ProcessEnvelope {
 		// DTS 108 Validate Resent-From
 		msgValidator.validateResentFrom(separate, searchHeaderSimple(m, "resent-from"));
 		if(!searchHeaderSimple(m, "resent-from").equals("")) {
-			summary.put(shift + "Resent-From: "+searchHeaderSimple(m, "resent-from")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Resent-From: "+searchHeaderSimple(m, "resent-from"), separate.hasErrors(), true);
 		}
 		
@@ -245,7 +234,6 @@ public class ProcessEnvelope {
 		// DTS 109 Validate Resent-Sender
 		msgValidator.validateResentSender(separate, searchHeaderSimple(m, "resent-sender"), searchHeaderSimple(m, "resent-from"));
 		if(!searchHeaderSimple(m, "resent-sender").equals("")) {
-			summary.put(shift + "Resent-Sender: "+searchHeaderSimple(m, "resent-sender")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Resent-Sender: "+searchHeaderSimple(m, "resent-sender"), separate.hasErrors(), true);
 		}
 		
@@ -255,7 +243,6 @@ public class ProcessEnvelope {
 		// DTS 113 Validate Resent-Msg-Id
 		msgValidator.validateResentMsgId(separate, searchHeaderSimple(m, "resent-msg-id"));
 		if(!searchHeaderSimple(m, "resent-msg-id").equals("")) {
-			summary.put(shift + "Resent-Msg-Id: "+searchHeaderSimple(m, "resent-msg-id")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Resent-Msg-Id: "+searchHeaderSimple(m, "resent-msg-id"), separate.hasErrors(), true);
 		}
 		
@@ -266,7 +253,6 @@ public class ProcessEnvelope {
 		if(m.getFrom() != null) {
 			msgValidator.validateSender(er, searchHeaderSimple(m, "sender"), m.getFrom());
 			if(!searchHeaderSimple(m, "sender").equals("")) {
-				summary.put(shift + "Sender: "+searchHeaderSimple(m, "sender")+" (Part number: "+partNumber+")", separate.getNbErrors());
 				validationSummary.recordKey(shift + "Sender: "+searchHeaderSimple(m, "sender"), separate.hasErrors(), true);
 			}
 		}
@@ -278,7 +264,6 @@ public class ProcessEnvelope {
 		if(m.getReplyTo() != null) {
 			msgValidator.validateReplyTo(separate, m.getReplyTo()[0].toString());
 			if(!m.getReplyTo()[0].toString().equals("")) {
-				summary.put(shift + "Reply-To: "+m.getReplyTo()[0].toString()+" (Part number: "+partNumber+")", separate.getNbErrors());
 				validationSummary.recordKey(shift + "Reply-To: "+m.getReplyTo()[0].toString(), separate.hasErrors(), true);
 			}
 		}
@@ -289,7 +274,6 @@ public class ProcessEnvelope {
 		// DTS 110 Validate Resent-To
 		msgValidator.validateResentTo(separate, searchHeaderSimple(m, "resent-to"));
 		if(!searchHeaderSimple(m, "resent-to").equals("")) {
-			summary.put(shift + "Resent-To: "+searchHeaderSimple(m, "resent-to")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Resent-To: "+searchHeaderSimple(m, "resent-to"), separate.hasErrors(), true);
 		}
 		
@@ -299,7 +283,6 @@ public class ProcessEnvelope {
 		// DTS 111 Validate Resent-Cc
 		msgValidator.validateResentCc(separate, searchHeaderSimple(m, "resent-cc"));
 		if(!searchHeaderSimple(m, "resent-cc").equals("")) {
-			summary.put(shift + "Resent-Cc: "+searchHeaderSimple(m, "resent-cc")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Resent-Cc: "+searchHeaderSimple(m, "resent-cc"), separate.hasErrors(), true);
 		}
 		
@@ -309,7 +292,6 @@ public class ProcessEnvelope {
 		// DTS 112 Validate Resent-Bcc
 		msgValidator.validateResentBcc(separate, searchHeaderSimple(m, "resent-bcc"));
 		if(!searchHeaderSimple(m, "resent-bcc").equals("")) {
-			summary.put(shift + "Resent-Bcc: "+searchHeaderSimple(m, "resent-bcc")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Resent-Bcc: "+searchHeaderSimple(m, "resent-bcc"), separate.hasErrors(), true);
 		}
 		
@@ -333,7 +315,6 @@ public class ProcessEnvelope {
 		}
 		msgValidator.validateCc(separate, cc);
 		if(!cc.equals("")) {
-			summary.put(shift + "Cc: "+cc+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Cc: "+cc, separate.hasErrors(), true);
 		}
 		
@@ -343,7 +324,6 @@ public class ProcessEnvelope {
 		// DTS 120 Validate Bcc
 		msgValidator.validateBcc(er, searchHeaderSimple(m, "bcc"));
 		if(!searchHeaderSimple(m, "bcc").equals("")) {
-			summary.put(shift + "Bcc: "+searchHeaderSimple(m, "bcc")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Bcc: "+searchHeaderSimple(m, "bcc"), separate.hasErrors(), true);
 		}
 		
@@ -353,7 +333,6 @@ public class ProcessEnvelope {
 		// DTS 122 Validate In-Reply-To
 		msgValidator.validateInReplyTo(separate, searchHeaderSimple(m, "in-reply-to"), searchHeaderSimple(m, "date"));
 		if(!searchHeaderSimple(m, "in-reply-to").equals("")) {
-			summary.put(shift + "In-Reply-To: "+searchHeaderSimple(m, "in-reply-to")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "In-Reply-To: "+searchHeaderSimple(m, "in-reply-to"), separate.hasErrors(), true);
 		}
 		
@@ -363,7 +342,6 @@ public class ProcessEnvelope {
 		// DTS 123 Validate Reference
 		msgValidator.validateReferences(separate, searchHeaderSimple(m, "references"));
 		if(!searchHeaderSimple(m, "references").equals("")) {
-			summary.put(shift + "References: "+searchHeaderSimple(m, "references")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "References: "+searchHeaderSimple(m, "references"), separate.hasErrors(), true);
 		}
 		
@@ -373,7 +351,6 @@ public class ProcessEnvelope {
 		// DTS 124 Validate Subject
 		msgValidator.validateSubject(separate, m.getSubject(), m.getContentType());
 		if(m.getSubject() != null) {
-			summary.put(shift + "Subject: "+m.getSubject()+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Subject: "+m.getSubject(), separate.hasErrors(), true);
 		}
 		
@@ -383,7 +360,6 @@ public class ProcessEnvelope {
 		// DTS 125 Validate Comment
 		msgValidator.validateComments(separate, searchHeaderSimple(m, "comments"));
 		if(!searchHeaderSimple(m, "comments").equals("")) {
-			summary.put(shift + "Comment: "+searchHeaderSimple(m, "comments")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Comment: "+searchHeaderSimple(m, "comments"), separate.hasErrors(), true);
 		}
 		
@@ -393,7 +369,6 @@ public class ProcessEnvelope {
 		// DTS 126 Validate Keywords
 		msgValidator.validateKeywords(separate, searchHeaderSimple(m, "keywords"));
 		if(!searchHeaderSimple(m, "keywords").equals("")) {
-			summary.put(shift + "Keyword: "+searchHeaderSimple(m, "keywords")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Keyword: "+searchHeaderSimple(m, "keywords"), separate.hasErrors(), true);
 		}
 		
@@ -403,7 +378,6 @@ public class ProcessEnvelope {
 		// DTS 127 Validate Optional Fields
 		msgValidator.validateOptionalField(separate, searchHeaderSimple(m, "optional-field"));
 		if(!searchHeaderSimple(m, "optional-field").equals("")) {
-			summary.put(shift + "Optional-Fields: "+searchHeaderSimple(m, "optional-field")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Optional-Fields: "+searchHeaderSimple(m, "optional-field"), separate.hasErrors(), true);
 		}
 		
@@ -417,7 +391,6 @@ public class ProcessEnvelope {
 			msgValidator.validateDispositionNotificationTo(separate, searchHeaderSimple(m, "disposition-notification-to"));
 		}
 		if(!searchHeaderSimple(m, "disposition-notification-to").equals("")) {
-			summary.put(shift + "Disposition-Notification-To: "+searchHeaderSimple(m, "disposition-notification-to")+" (Part number: "+partNumber+")", separate.getNbErrors());
 			validationSummary.recordKey(shift + "Disposition-Notification-To: "+searchHeaderSimple(m, "disposition-notification-to"), separate.hasErrors(), true);
 		}
 		
@@ -464,7 +437,7 @@ public class ProcessEnvelope {
         msgValidator.validateMIMEEntityBody(er, mimeEntityBody.getCount());
         
         // DTS 204, MIME Entity
-		this.validateMimeEntity(er, m, new LinkedHashMap<String, Integer>(), new ValidationSummary(), 0);
+		this.validateMimeEntity(er, m, new ValidationSummary(), 0);
 		msgValidator.validateMIMEEntity2(er, true);
 		
 	}
