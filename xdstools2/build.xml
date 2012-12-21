@@ -37,6 +37,10 @@
 		<move file="war.war" tofile="ttt.war"/>
 	</target>
 
+	<target name="bill" depends="war-prep, listener, bill-config, war-war">
+		<move file="war.war" tofile="ttt.war"/>
+	</target>
+
 	<target name="ihe-config">
 		<copy file="war/WEB-INF/toolkit.properties.ihe" 
 			tofile="war/WEB-INF/toolkit.properties" overwrite="yes"/>
@@ -44,6 +48,11 @@
 
 	<target name="ttt-config">
 		<copy file="war/WEB-INF/toolkit.properties.ttt" 
+			tofile="war/WEB-INF/toolkit.properties" overwrite="yes"/>
+	</target>
+
+	<target name="bill-config">
+		<copy file="war/WEB-INF/toolkit.properties.bill" 
 			tofile="war/WEB-INF/toolkit.properties" overwrite="yes"/>
 	</target>
 

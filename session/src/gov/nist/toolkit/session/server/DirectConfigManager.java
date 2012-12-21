@@ -1,7 +1,6 @@
 package gov.nist.toolkit.session.server;
 
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl;
 
 import java.io.File;
 import java.io.FilenameFilter;

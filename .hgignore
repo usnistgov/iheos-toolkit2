@@ -8,6 +8,8 @@ lib
 # folders created by gwt
 xdstools2/.gwt
 xdstools2/gwt-unitCache/
+
+#
 xdstools2/war/WEB-INF/lib
 xdstools2/war/WEB-INF/classes
 xdstools2/war/WEB-INF/deploy

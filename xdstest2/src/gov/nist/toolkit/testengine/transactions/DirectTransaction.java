@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.transactions;
 
+import gov.nist.direct.x509.X509CertificateEx;
 import gov.nist.toolkit.directsupport.SMTPException;
 import gov.nist.toolkit.testengine.StepContext;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;

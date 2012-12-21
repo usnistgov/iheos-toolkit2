@@ -48,8 +48,10 @@
 
 	<property name="sub-projects" value="
 		docref,
+		timer,
 		common-datatypes,
 		error-recording,
+		message-dispatch,
 		xds-exceptions,
 		utilities,
 		common,
@@ -122,6 +124,10 @@
 
 	<target name="ttt" depends="compile">
 		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ttt"/>
+	</target>
+
+	<target name="bill" depends="compile">
+		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="bill"/>
 	</target>
 
 	<target name="hit-testing">
