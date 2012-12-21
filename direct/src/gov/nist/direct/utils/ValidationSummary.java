@@ -22,7 +22,7 @@ public class ValidationSummary {
 		encryptedMessageSummaryList = new ArrayList<ValidationSummary.SummaryEntry>();
 		decryptedMessageSummaryList = new ArrayList<ValidationSummary.SummaryEntry>();
 		signatureStatus = new SummaryEntry();
-		signatureStatus.key = "-----Signature";
+		signatureStatus.key = "Signature";
 		signatureStatus.value = Status.VALID;
 	}
 	
