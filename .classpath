@@ -29,7 +29,6 @@
 	<classpathentry kind="src" path="site-management/src"/>
 	<classpathentry kind="src" path="session/src"/>
 	<classpathentry kind="src" path="simDb/src"/>
-	<classpathentry kind="src" path="simManager/src"/>
 	<classpathentry kind="src" path="soap/src"/>
 	<classpathentry kind="src" path="testkit-utilities/src"/>
 	<classpathentry kind="src" path="tk/src"/>
