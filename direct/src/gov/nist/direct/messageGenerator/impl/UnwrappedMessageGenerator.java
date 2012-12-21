@@ -50,8 +50,8 @@ import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.util.Store;
 
 import gov.nist.direct.messageGenerator.MessageGenerator;
+import gov.nist.direct.x509.X509CertificateEx;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;
-import gov.nist.toolkit.testengine.transactions.X509CertificateEx;
 import gov.nist.toolkit.utilities.io.Io;
 
 public class UnwrappedMessageGenerator implements MessageGenerator {
