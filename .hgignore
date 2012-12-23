@@ -8,6 +8,7 @@ lib
 # folders created by gwt
 xdstools2/.gwt
 xdstools2/gwt-unitCache/
+.gwt-tmp
 
 #
 xdstools2/war/WEB-INF/lib
@@ -15,12 +16,20 @@ xdstools2/war/WEB-INF/classes
 xdstools2/war/WEB-INF/deploy
 xdstools2/war/xdstools2
 
-# folders brough in from testkit
+# folders brought in from testkit
 xdstools2/war/toolkitx/testkit
 
+# file brought in from toolkit
+xdstools2/war/doc
+xdstools2/war/pubcert
+xdstools2/war/WEB-INF/privcert
+xdstools2/war/toolkitx/admin/version
+xdstools2/war/toolkitx/xdstest/rampart/client_repositories/modules/addressing-1.5.4.mar
+xdstools2/war/WEB-INF/toolkit.properties
 
-#the war produced
+#the war/jars produced
 *.war
+xdstools2/listener.jar
 
 #eclipse settings
 # .settings/
