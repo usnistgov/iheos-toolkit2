@@ -27,6 +27,7 @@ import gov.nist.toolkit.tk.TkPropsServer;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 import gov.nist.toolkit.xdsexception.XdsException;
 
 import java.io.File;
@@ -128,9 +129,8 @@ public class Session implements SecurityParams {
 		siteSpec.isAsync = async;
 	}
 	
-	public void verifyCurrentEnvironment() throws XdsException {
-		if (EnvSetting.getEnvSetting(sessionId) == null)
-			throw new XdsException("No Environment Selected", null);
+	public void verifyCurrentEnvironment() throws NoSessionException {
+		EnvSetting.getEnvSetting(sessionId);
 	}
 	
 	// not to be trusted. Use SimulatorServiceManager instead

@@ -19,6 +19,7 @@ import gov.nist.toolkit.simulators.support.ValidateMessageService;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdstools2.server.simulator.support.ServletSimulator;
 
@@ -222,6 +223,9 @@ public class SimulatorServiceManager extends CommonServiceManager {
 			SimulatorConfig sc = scl.get(0);
 			logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + sc.getId());
 			return scl;
+		} catch (EnvironmentNotSelectedException e) {
+			logger.error("Environment Not Selected");
+			throw new Exception("Environment Not Selected");
 		} catch (Exception e) {
 			logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
 			throw new Exception(e.getClass().getName() + ": " + e.getMessage());

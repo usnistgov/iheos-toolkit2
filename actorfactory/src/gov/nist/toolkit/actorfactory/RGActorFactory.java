@@ -7,6 +7,8 @@ import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class RGActorFactory extends ActorFactory {
 	RegistryActorFactory registryActorFactory;
 	RepositoryActorFactory repositoryActorFactory;
 
-	protected List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) {
+	protected List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.RESPONDING_GATEWAY;
 		SimulatorConfig sc; 
 		if (configureBase)

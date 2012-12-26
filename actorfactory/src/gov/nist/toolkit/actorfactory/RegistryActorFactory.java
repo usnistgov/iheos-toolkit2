@@ -8,6 +8,8 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -24,11 +26,11 @@ public class RegistryActorFactory extends ActorFactory {
 				TransactionType.UPDATE
 				);
 	
-	public List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) {
+	public List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		return buildNew(simm, null, configureBase);
 	}
 
-	public List<SimulatorConfig> buildNew(SimManager simm, String simId, boolean configureBase) {
+	public List<SimulatorConfig> buildNew(SimManager simm, String simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)

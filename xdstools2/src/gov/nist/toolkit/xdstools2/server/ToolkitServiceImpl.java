@@ -293,6 +293,7 @@ ToolkitService {
 //		return mc.getFrom().getAddress();
 //	}
 
+	// Used only for non-servlet use (Dashboard is good example)
 	static public final String sessionVarName = "MySession";
 	String sessionID = null;
 	
@@ -319,6 +320,8 @@ ToolkitService {
 		standAloneSession = s;
 	}
 	
+	// This exception is passable to the GUI.  The server side exception
+	// is NoSessionException
 	public Session session() throws NoServletSessionException {
 		Session s = getSession();
 		if (s == null)

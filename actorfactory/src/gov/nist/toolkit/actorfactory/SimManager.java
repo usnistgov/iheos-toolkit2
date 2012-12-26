@@ -7,6 +7,8 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +71,7 @@ public class SimManager {
 		return sessionId;
 	}
 	
-	public File getCodesFile() {
+	public File getCodesFile() throws EnvironmentNotSelectedException, NoSessionException {
 		EnvSetting setting  = EnvSetting.getEnvSetting(sessionId);
 		return setting.getCodesFile();
 	}
