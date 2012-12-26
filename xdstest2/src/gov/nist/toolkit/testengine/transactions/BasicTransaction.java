@@ -39,6 +39,7 @@ import gov.nist.toolkit.xdsexception.SchemaValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.File;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1191,6 +1192,7 @@ public abstract class BasicTransaction extends OmLogger {
 			);
 		}
 		catch (AxisFault e) {
+			s_ctx.set_error("Endpoint is " + endpoint);
 			if ( !s_ctx.expectFault())
 				s_ctx.set_fault(e);
 		}
