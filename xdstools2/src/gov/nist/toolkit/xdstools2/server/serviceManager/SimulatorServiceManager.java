@@ -234,15 +234,31 @@ public class SimulatorServiceManager extends CommonServiceManager {
 
 	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception  {
 		logger.debug(session.id() + ": " + "getSimConfigs " + ids);
+		
+		// Carefully now, some simulators may have expired, return only those that still exist
+		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
+		List<String> tmpIdList = new ArrayList<String>();
+		List<String> goodIdList = new ArrayList<String>();
+		SimulatorFactory simFact = new SimulatorFactory(SimManager.get(session.id()));
+		for (String id : ids) {
+			tmpIdList.clear();
+			tmpIdList.add(id);
+			List<SimulatorConfig> configList = simFact.loadSimulators(tmpIdList);
+			if (!configList.isEmpty() && !configList.get(0).isExpired()) {
+				goodIdList.add(id);
+				configs.add(configList.get(0));
+			}
+		}
+		
 		try {
-			List<SimulatorConfig> configs = new SimulatorFactory(SimManager.get(session.id())).loadSimulators(ids);
+//			List<SimulatorConfig> configs = new SimulatorFactory(SimManager.get(session.id())).loadSimulators(ids);
 
 			SiteServiceManager.getSiteServiceManager().loadSites(session.id());
 
-			session.loadActorSimulatorConfigs(SiteServiceManager.getSiteServiceManager().getSites(), ids);
+			session.loadActorSimulatorConfigs(SiteServiceManager.getSiteServiceManager().getSites(), goodIdList);
 
 			return configs;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.error("getSimConfigs", e);
 			throw new Exception(e.getMessage());
 		}

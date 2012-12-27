@@ -11,6 +11,7 @@ import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdsexception.NoSimulatorException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +35,7 @@ public abstract class ActorFactory {
 	protected abstract List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws Exception;
 //	protected abstract List<SimulatorConfig> buildNew(Session session, SimulatorConfig asc) throws Exception;
 	protected abstract void verifyActorConfigurationOptions(SimulatorConfig config);
-	public abstract Site getActorSite(SimulatorConfig asc, Site site);
+	public abstract Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
 	public abstract List<TransactionType> getIncomingTransactions();
 //	protected abstract void addConfigElements(SimulatorConfig asc);
 

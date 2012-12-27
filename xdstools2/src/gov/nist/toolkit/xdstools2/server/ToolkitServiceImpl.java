@@ -288,11 +288,6 @@ ToolkitService {
 		return context;
 	}
 
-//	String getClientIP() {
-//		MessageContext mc = MessageContext.getCurrentMessageContext();
-//		return mc.getFrom().getAddress();
-//	}
-
 	// Used only for non-servlet use (Dashboard is good example)
 	static public final String sessionVarName = "MySession";
 	String sessionID = null;
@@ -344,12 +339,21 @@ ToolkitService {
 		Session s = null;
 		HttpSession hsession = null;
 		if (request != null) {
-			hsession = request.getSession();
+			hsession = request.getSession(true);
 			s = (Session) hsession.getAttribute(sessionVarName);
 			if (s != null)
 				return s;
 			servletContext();
 		}
+		
+		// Force short session timeout for testing
+		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
+		
+		//******************************************
+		//
+		// New session object to be created
+		//
+		//******************************************
 		File warHome = null;
 		if (s == null) {
 			ServletContext sc = servletContext();

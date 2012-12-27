@@ -112,7 +112,7 @@ public class SimManager {
 	
 	public SimulatorConfig getSimulatorConfig(String simId) {
 		for (SimulatorConfig config : simConfigs()) {
-			if (simId.equals(config.getId()))
+			if (simId.equals(config.getId()) && !config.isExpired())
 				return config;
 		}
 		return null;
@@ -137,7 +137,8 @@ public class SimManager {
 		List<SimulatorConfig> actorSimulatorConfigs = get(sessionId).simConfigs();
 		
 		for (SimulatorConfig asc : actorSimulatorConfigs) {
-			sites.putSite(getSite(asc));
+			if (!asc.isExpired())
+				sites.putSite(getSite(asc));
 		}
 		
 		sites.buildRepositoriesSite();
