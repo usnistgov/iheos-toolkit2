@@ -217,7 +217,6 @@ ToolkitService {
 	public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().reloadPropertyFile(); }
 	public String getAttributeValue(String username, String attName) throws Exception { return Installation.installation().propertyServiceManager().getAttributeValue(username, attName); }
 	public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue); }
-	public List<String> getFeatureList() throws NoServletSessionException  { servletContext(); return Installation.installation().propertyServiceManager().getFeatureList(); }
 
 	
 	// Simulator Service

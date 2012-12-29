@@ -168,8 +168,6 @@ public interface ToolkitService extends RemoteService  {
 	public String getDefaultAssigningAuthority() throws NoServletSessionException ;
 	public String getAttributeValue(String username, String attName) throws Exception;
 	public void setAttributeValue(String username, String attName, String attValue) throws Exception;
-	public List<String> getFeatureList() throws NoServletSessionException ;
-
 	
 	public Map<String, String> getSessionProperties() throws NoServletSessionException;
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
