@@ -125,6 +125,7 @@ public class QueryBoilerplate {
 	void remove() {
 		genericQueryTab.topPanel.remove(genericQueryTab.resultPanel);
 		genericQueryTab.menuPanel.remove(reload);
+		initMainGrid();
 	}
 
 	// clean out mainGrid so the actors can be re-added
