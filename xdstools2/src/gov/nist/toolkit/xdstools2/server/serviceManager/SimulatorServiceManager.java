@@ -40,13 +40,13 @@ import org.apache.log4j.Logger;
  */
 public class SimulatorServiceManager extends CommonServiceManager {
 	static Logger logger = Logger.getLogger(SimulatorServiceManager.class);
-	
+
 	Session session;
 
 	public SimulatorServiceManager(Session session)  {
 		this.session = session;
 	}
-	
+
 	public List<String> getTransInstances(String simid, String xactor, String trans) throws Exception
 	{
 		logger.debug(session.id() + ": " + "getTransInstances : " + simid + " - " + xactor + " - " + trans);
@@ -234,7 +234,7 @@ public class SimulatorServiceManager extends CommonServiceManager {
 
 	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception  {
 		logger.debug(session.id() + ": " + "getSimConfigs " + ids);
-		
+
 		// Carefully now, some simulators may have expired, return only those that still exist
 		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
 		List<String> tmpIdList = new ArrayList<String>();
@@ -243,15 +243,25 @@ public class SimulatorServiceManager extends CommonServiceManager {
 		for (String id : ids) {
 			tmpIdList.clear();
 			tmpIdList.add(id);
-			List<SimulatorConfig> configList = simFact.loadSimulators(tmpIdList);
-			if (!configList.isEmpty() && !configList.get(0).isExpired()) {
-				goodIdList.add(id);
-				configs.add(configList.get(0));
+			try {
+				List<SimulatorConfig> configList = simFact.loadSimulators(tmpIdList);
+				if (!configList.isEmpty() && !configList.get(0).isExpired()) {
+					goodIdList.add(id);
+					configs.add(configList.get(0));
+				}
+			} catch (Throwable t) {
+				// sim id does not exist - return it to GUI as expired so that it gets deleted from Cookies
+				logger.error("getSimConfigs", t);
+				SimulatorConfig c = new SimulatorConfig();
+				c.isExpired(true);
+				configs.clear();
+				configs.add(c);
+				return configs;
 			}
 		}
-		
+
 		try {
-//			List<SimulatorConfig> configs = new SimulatorFactory(SimManager.get(session.id())).loadSimulators(ids);
+			//			List<SimulatorConfig> configs = new SimulatorFactory(SimManager.get(session.id())).loadSimulators(ids);
 
 			SiteServiceManager.getSiteServiceManager().loadSites(session.id());
 

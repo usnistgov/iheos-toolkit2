@@ -338,7 +338,7 @@ ToolkitService {
 		Session s = null;
 		HttpSession hsession = null;
 		if (request != null) {
-			hsession = request.getSession(true);
+			hsession = request.getSession();
 			s = (Session) hsession.getAttribute(sessionVarName);
 			if (s != null)
 				return s;
@@ -346,7 +346,7 @@ ToolkitService {
 		}
 		
 		// Force short session timeout for testing
-		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
+//		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
 		
 		//******************************************
 		//
