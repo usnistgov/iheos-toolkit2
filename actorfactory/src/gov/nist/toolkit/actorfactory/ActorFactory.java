@@ -181,13 +181,17 @@ public abstract class ActorFactory {
 	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
 		String transtype = SimDb.getTransactionDirName(ele.transType);
 		
+		String contextName = Installation.installation().tkProps.get("toolkit.servlet.context", "xdstools2");
+		
 		return "http"
 		+ ((isTLS) ? "s" : "")
 		+ "://" 
 		+ Installation.installation().propertyServiceManager().getToolkitHost() 
 		+ ":" 
 		+ ((isTLS) ? Installation.installation().propertyServiceManager().getToolkitTlsPort() : Installation.installation().propertyServiceManager().getToolkitPort()) 
-		+ "/xdstools2/simulator/" 
+		+ "/"  
+		+ contextName  
+		+ "/sim/" 
 		+ asc.getId() 
 		+ "/" +
 		actor           //asc.getType().toLowerCase()

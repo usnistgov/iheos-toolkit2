@@ -1,16 +1,24 @@
 package gov.nist.toolkit.installation;
 
 
+import gov.nist.toolkit.tk.TkLoader;
+import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl;
+
 import java.io.File;
 
 import javax.servlet.ServletContext;
+
+import org.apache.log4j.Logger;
 
 public class Installation {
 	File warHome = null;
 	File externalCache = null;
 	String sep = File.separator;
-	
+	public TkProps tkProps;
+
 	PropertyServiceManager propertyServiceMgr = null;
+	static Logger logger = Logger.getLogger(Installation.class);
 
 	static Installation me = null;
 
@@ -37,7 +45,15 @@ public class Installation {
 		this.warHome = warHome; 
 		}
 	public File externalCache() { return externalCache; }
-	public void externalCache(File externalCache) { this.externalCache = externalCache; }
+	public void externalCache(File externalCache) { 
+		this.externalCache = externalCache;
+		try {
+			tkProps = TkLoader.tkProps();
+		} catch (Exception e) {
+			logger.error("Cannot load tk_props.txt file from External Cache", e);
+		}
+
+	}
 	
 	public boolean initialized() { return warHome != null && externalCache != null; }
 	
