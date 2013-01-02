@@ -464,6 +464,10 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		msgValidator.validateBody(er, p, (String)p.getContent());
 		//this.processAttachments(er, p);
 		
+		er.detail("#####################plain/text message######################");
+		er.detail(p.getContent().toString());
+		er.detail("##########################################################");
+		
 		// Update the summary
 		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": plain/text interpreted as a text content", separate.hasErrors(), true);
 		partNumber++;
