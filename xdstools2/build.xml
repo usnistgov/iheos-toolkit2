@@ -13,7 +13,13 @@
 
         <import file="../build-common.xml"/>
 
-	<target name="war-war" depends="update-collections">
+	<!--
+		All 
+	-->
+        <target name="tkbuild" depends="war-prep, ihe-config, war-war"/>
+
+	<!-- Assumes WAR structure already built.  This only generates the WAR file. -->
+	<target name="war-war">
 		<jar destfile="war.war">
 			<fileset dir="war" >
 				<exclude name="**/groovy*.jar"/>
@@ -55,8 +61,6 @@
 		<copy file="war/WEB-INF/toolkit.properties.bill" 
 			tofile="war/WEB-INF/toolkit.properties" overwrite="yes"/>
 	</target>
-
-    <target name="tkbuild" depends="war-prep, ihe-config, compile"/>
 
 	<target name="hit-testing" depends="ttt, listener"/>
 
@@ -140,7 +144,7 @@
 		<ant dir="../xdstest2" antfile="build.xml" target="testkit.collections" inheritAll="true" inheritRefs="true"/> 
 	</target>
 	
-	<target name="assemble" >
+	<target name="assemble" depends="update-collections">
 		<mkdir dir="war/toolkitx/admin"/>
 		<copy todir="war/toolkitx/admin">
 			<fileset file="${testkit}/admin/version"/>
