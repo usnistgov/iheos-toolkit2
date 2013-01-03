@@ -22,7 +22,7 @@
 
 	<!-- review exclusion list. Duplicate with copy to war.lib step -->
 	<target name="war">
-		<jar destfile="${target.dir}/war.war">
+		<jar destfile="${target.dir}/${war.name}">
 			<fileset dir="war">
 				<exclude name="**/groovy*.jar" />
 				<exclude name="**/rahas*" />

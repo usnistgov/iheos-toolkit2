@@ -61,7 +61,7 @@
 	<classpathentry kind="lib" path="lib/axis2-saaj-api-1.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/axis2-transport-http-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/axis2-transport-local-1.5.4.jar"/>
-	<classpathentry kind="lib" path="lib/backport-util-concurrent-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/backport-util-concurrent-3.1.jar" sourcepath="/Users/gerardin/.m2/repository/backport-util-concurrent/backport-util-concurrent/3.1/backport-util-concurrent-3.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/bcmail-jdk15on-147.jar"/>
 	<classpathentry kind="lib" path="lib/bcpkix-jdk15on-147.jar"/>
 	<classpathentry kind="lib" path="lib/bcprov-jdk15on-147.jar"/>

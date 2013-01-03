@@ -59,9 +59,9 @@
 		http,
 		security-common,
 		dsig,
+		validators-support,
 		saml,
 		soap,
-		validators-support,
 		validators-ccda,
 		registry-metadata,
 		registry-msg-formats,
@@ -101,7 +101,7 @@
 
 	<!-- define the different artifacts name -->
 	<property name="jar.name" value="toolkit.jar" />
-	<property name="war.name" value="toolkit.war" />
+	<property name="war.name" value="xdstools2.war" />
 
 	<!-- toolkit admin properties file-->
 	<property name="config.file" value="toolkit.properties" />
