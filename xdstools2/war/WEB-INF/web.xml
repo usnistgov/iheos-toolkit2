@@ -56,12 +56,12 @@
 	
 	<filter-mapping>
 		<filter-name>response-header-log</filter-name>
-		<url-pattern>/simulator/*</url-pattern>
+		<url-pattern>/sim/*</url-pattern>
 	</filter-mapping>
  
 	<filter-mapping>
 		<filter-name>response-header-log2</filter-name>
-		<url-pattern>/xdstools2/simulator/*</url-pattern>
+		<url-pattern>/xdstools2/sim/*</url-pattern>
 	</filter-mapping>
 	
 	<listener>
@@ -129,12 +129,12 @@
  
 	<servlet-mapping>
 		<servlet-name>simulatorServlet</servlet-name>
-		<url-pattern>/simulator/*</url-pattern>
+		<url-pattern>/sim/*</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>simulatorServlet</servlet-name>
-		<url-pattern>/xdstools2/simulator/*</url-pattern>
+		<url-pattern>/xdstools2/sim/*</url-pattern>
 	</servlet-mapping>
 
 	<!--

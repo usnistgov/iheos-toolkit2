@@ -330,7 +330,7 @@ public class SimServlet  extends HttpServlet {
 		String[] uriParts = uri.split("\\/");
 		String toolkitServletName = (uriParts.length < 2) ? "" : uriParts[1];
 		
-		String endpointFormat = " - Endpoint format is http://" + request.getLocalName() + ":" + request.getLocalPort() + "/" + toolkitServletName + "/simulator/simid/actor/transaction[/validation] " + 
+		String endpointFormat = " - Endpoint format is http://" + request.getLocalName() + ":" + request.getLocalPort() + "/" + toolkitServletName + "/sim/simid/actor/transaction[/validation] " + 
 		"where simid, actor and transaction are variables for simulators. "  + 
 		"If validation is included, then this validation must be performed successfully for the transaction to be successful. " +
 		" Validations are documented as part of tests that use them.";
@@ -338,7 +338,7 @@ public class SimServlet  extends HttpServlet {
 		// endpoint parsing
 		//
 		// endpoing looks like
-		// http://host:port/xdstools2/simulator/simid/actor/transaction[/validation]
+		// http://host:port/xdstools2/sim/simid/actor/transaction[/validation]
 		// where
 		//   simid is a uniqueID for a simulator
 		//   actor
@@ -352,7 +352,7 @@ public class SimServlet  extends HttpServlet {
 		int simIndex;
 
 		for (simIndex=0; simIndex<uriParts.length; simIndex++) {
-			if ("simulator".equals(uriParts[simIndex]))
+			if ("sim".equals(uriParts[simIndex]))
 				break;
 		}
 		if (simIndex >= uriParts.length) {
