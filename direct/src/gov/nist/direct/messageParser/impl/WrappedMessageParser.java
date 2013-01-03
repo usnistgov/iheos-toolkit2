@@ -144,7 +144,7 @@ public class WrappedMessageParser {
 		} catch (KeyStoreException e1) {
 			er.err("0", "Error in keystore creation", "", "", "Certificate file");
 		} catch (NoSuchProviderException e1) {
-			er.err("0", "Error in keystore creation", "", "", "Certificate file");
+			er.err("0", "Error in keystore creation NoSuchProviderException", "", "", "Certificate file");
 		}
 
 		// Message Validator
@@ -156,11 +156,13 @@ public class WrappedMessageParser {
 			} 
 			ks.load(certificate, password.toCharArray());
 		} catch (NoSuchAlgorithmException e1) {
-			er.err("0", "Error in loading certificate", "", "", "Certificate file");
+			er.err("0", "Error in loading certificate NoSuchAlgorithmException", "", "", "Certificate file");
 		} catch (CertificateException e1) {
-			er.err("0", "Error in loading certificate", "", "", "Certificate file");
+			er.err("0", "Error in loading certificate CertificateException", "", "", "Certificate file");
 		} catch (IOException e1) {
-			er.err("0", "Error in loading certificate (decryption)", "", "", "Certificate file");
+			er.err("0", "Error in loading certificate IOException (decryption)", "", "", "Certificate file");
+		} catch (Exception e1) {
+			er.err("0", "Cannot load the certificate. Probably wrong certificate file", "", "", "Certificate file");
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -168,7 +170,7 @@ public class WrappedMessageParser {
 		try {
 			e = ks.aliases();
 		} catch (KeyStoreException e1) {
-			er.err("0", "Error in loading certificate", "", "", "Certificate file");
+			er.err("0", "Error in loading certificate KeyStoreException", "", "", "Certificate file");
 		}
 		String      keyAlias = null;
 
@@ -183,7 +185,7 @@ public class WrappedMessageParser {
 						keyAlias = alias;
 					}
 				} catch (KeyStoreException e1) {
-					er.err("0", "Error in loading certificate", "", "", "Certificate file");
+					er.err("0", "Error in loading certificate. Cannot load alias", "", "", "Certificate file");
 				}
 			}
 		}

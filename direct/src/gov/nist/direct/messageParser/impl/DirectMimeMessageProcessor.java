@@ -134,73 +134,37 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		// New ErrorRecorder to put summary first
 		ErrorRecorder mainEr = new GwtErrorRecorder();
 		MimeMessage mm = parser.parseMessage(mainEr, inputDirectMessage);
+		
+		// Check if valid Direct Message
 		try {
-			processPart(mainEr, mm);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-		er.detail("");
-		er.detail("############################Message Content Summary################################");
-		er.detail("");
-		
-		/*
-		// Put the signature at the end
-		if(summary.containsKey("Signature")) {
-			int signatureValidation = summary.get("Signature");
-			summary.remove("Signature");
-			summary.put("Signature", signatureValidation);
+			if(!mm.isMimeType("application/pkcs7-mime")) {
+				er.err("Message File", "The file is not a Direct Message", "", "", "Message File");
+				logger.error("File is not a Direct Message");
+			} else {
+				try {
+					processPart(mainEr, mm);
+					er.detail("");
+					er.detail("############################Message Content Summary################################");
+					er.detail("");
+					
+					ErrorRecorder summaryEr = new GwtErrorRecorder();
+					validationSummary.writeErrorRecorder(summaryEr);
+					er.concat(summaryEr);
+					
+					er.detail("");
+					er.detail("###############################Detailed Validation#################################");
+					er.detail("");
+					
+					er.concat(mainEr);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+			}
+		} catch (MessagingException e1) {
+			e1.printStackTrace();
 		}
 		
-		String partPattern = "-*Part [0-9][0-9]?:.*";
-		
-		Set cles = summary.keySet();
-		Iterator it = cles.iterator();
-		int previousValue = 0;
-		while (it.hasNext()) {
-			String key = (String) it.next();
-			int value = summary.get(key);
-			
-			// Determine if it is a part
-			Pattern pattern = Pattern.compile(partPattern, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(key);
-			
-			if(value==previousValue) {
-				if(matcher.matches()){
-					er.sectionHeading(key);
-				} else {
-					er.detail(key);					
-				}
-			} else if(value<previousValue) {
-				if(matcher.matches()){
-					er.sectionHeading(key);
-				} else {
-					er.detail(key);
-				}
-				previousValue=value;
-			} else {
-				if(matcher.matches()){
-					er.sectionHeading(key);
-				} else {
-					er.err("", key, "", "", "");
-				}
-				if((value-previousValue)==1) {
-					previousValue++;
-				}
-			}
-		}*/
-		
-		//TODO Remove the comment and remove the old summary
-		ErrorRecorder summaryEr = new GwtErrorRecorder();
-		validationSummary.writeErrorRecorder(summaryEr);
-		er.concat(summaryEr);
-		
-		er.detail("");
-		er.detail("############################Detailed Validation################################");
-		er.detail("");
-		
-		er.concat(mainEr);
 	}
 
 	/**
