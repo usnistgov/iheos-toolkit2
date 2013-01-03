@@ -17,14 +17,12 @@ public class MyServletContextListener implements ServletContextListener {
 	}
 
 	public void contextInitialized(ServletContextEvent arg0) {
-		cleanup(arg0);
+//		cleanup(arg0);
 	}
 
 	void cleanup(ServletContextEvent arg0) {
 		File sessionCache = new File(arg0.getServletContext().getRealPath("SessionCache"));
 		
-		if (sessionCache == null)
-			return;
 		if (sessionCache.listFiles() == null)
 			return;
 

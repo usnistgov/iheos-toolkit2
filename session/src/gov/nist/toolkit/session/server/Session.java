@@ -10,7 +10,6 @@ import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.XdstestLogId;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
@@ -18,16 +17,13 @@ import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.LogMap;
-import gov.nist.toolkit.testengine.RawLogCache;
 import gov.nist.toolkit.testengine.TransactionSettings;
 import gov.nist.toolkit.testengine.Xdstest2;
 import gov.nist.toolkit.tk.TkLoader;
-import gov.nist.toolkit.tk.TkPropsServer;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -128,9 +124,8 @@ public class Session implements SecurityParams {
 		siteSpec.isAsync = async;
 	}
 	
-	public void verifyCurrentEnvironment() throws XdsException {
-		if (EnvSetting.getEnvSetting(sessionId) == null)
-			throw new XdsException("No Environment Selected", null);
+	public void verifyCurrentEnvironment() throws NoSessionException {
+		EnvSetting.getEnvSetting(sessionId);
 	}
 	
 	// not to be trusted. Use SimulatorServiceManager instead
@@ -502,7 +497,7 @@ public class Session implements SecurityParams {
 	}
 	
 	public TkProps tkProps() throws Exception {
-		return TkLoader.tkProps();
+		return TkLoader.tkProps(Installation.installation().getTkPropsFile());
 /*		File installedTkProps = new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
 		if (installedTkProps.exists())
 			try {

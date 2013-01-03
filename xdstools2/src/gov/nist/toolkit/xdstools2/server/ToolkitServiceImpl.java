@@ -217,7 +217,6 @@ ToolkitService {
 	public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().reloadPropertyFile(); }
 	public String getAttributeValue(String username, String attName) throws Exception { return Installation.installation().propertyServiceManager().getAttributeValue(username, attName); }
 	public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue); }
-	public List<String> getFeatureList() throws NoServletSessionException  { servletContext(); return Installation.installation().propertyServiceManager().getFeatureList(); }
 
 	
 	// Simulator Service
@@ -263,7 +262,7 @@ ToolkitService {
 		new PropertyServiceManager(warhome).getPropertyManager().update(props);
 		reloadPropertyFile();
 		Installation.installation().externalCache(eCacheFile);
-		TkLoader.tkProps();
+		TkLoader.tkProps(Installation.installation().getTkPropsFile());
 		return "";
 	}
 
@@ -288,11 +287,7 @@ ToolkitService {
 		return context;
 	}
 
-//	String getClientIP() {
-//		MessageContext mc = MessageContext.getCurrentMessageContext();
-//		return mc.getFrom().getAddress();
-//	}
-
+	// Used only for non-servlet use (Dashboard is good example)
 	static public final String sessionVarName = "MySession";
 	String sessionID = null;
 	
@@ -319,6 +314,8 @@ ToolkitService {
 		standAloneSession = s;
 	}
 	
+	// This exception is passable to the GUI.  The server side exception
+	// is NoSessionException
 	public Session session() throws NoServletSessionException {
 		Session s = getSession();
 		if (s == null)
@@ -347,6 +344,15 @@ ToolkitService {
 				return s;
 			servletContext();
 		}
+		
+		// Force short session timeout for testing
+//		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
+		
+		//******************************************
+		//
+		// New session object to be created
+		//
+		//******************************************
 		File warHome = null;
 		if (s == null) {
 			ServletContext sc = servletContext();

@@ -33,7 +33,6 @@ public abstract class TabbedWindow {
 			.create(ToolkitService.class);
 
 	public TabbedWindow() {
-		new FeatureManager().load(toolkitService);
 	}
 
 

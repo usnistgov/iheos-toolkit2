@@ -19,6 +19,7 @@ import gov.nist.toolkit.simulators.support.ValidateMessageService;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdstools2.server.simulator.support.ServletSimulator;
 
@@ -39,13 +40,13 @@ import org.apache.log4j.Logger;
  */
 public class SimulatorServiceManager extends CommonServiceManager {
 	static Logger logger = Logger.getLogger(SimulatorServiceManager.class);
-	
+
 	Session session;
 
 	public SimulatorServiceManager(Session session)  {
 		this.session = session;
 	}
-	
+
 	public List<String> getTransInstances(String simid, String xactor, String trans) throws Exception
 	{
 		logger.debug(session.id() + ": " + "getTransInstances : " + simid + " - " + xactor + " - " + trans);
@@ -222,6 +223,9 @@ public class SimulatorServiceManager extends CommonServiceManager {
 			SimulatorConfig sc = scl.get(0);
 			logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + sc.getId());
 			return scl;
+		} catch (EnvironmentNotSelectedException e) {
+			logger.error("Environment Not Selected");
+			throw new Exception("Environment Not Selected");
 		} catch (Exception e) {
 			logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
 			throw new Exception(e.getClass().getName() + ": " + e.getMessage());
@@ -230,15 +234,41 @@ public class SimulatorServiceManager extends CommonServiceManager {
 
 	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception  {
 		logger.debug(session.id() + ": " + "getSimConfigs " + ids);
+
+		// Carefully now, some simulators may have expired, return only those that still exist
+		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
+		List<String> tmpIdList = new ArrayList<String>();
+		List<String> goodIdList = new ArrayList<String>();
+		SimulatorFactory simFact = new SimulatorFactory(SimManager.get(session.id()));
+		for (String id : ids) {
+			tmpIdList.clear();
+			tmpIdList.add(id);
+			try {
+				List<SimulatorConfig> configList = simFact.loadSimulators(tmpIdList);
+				if (!configList.isEmpty() && !configList.get(0).isExpired()) {
+					goodIdList.add(id);
+					configs.add(configList.get(0));
+				}
+			} catch (Throwable t) {
+				// sim id does not exist - return it to GUI as expired so that it gets deleted from Cookies
+				logger.error("getSimConfigs", t);
+				SimulatorConfig c = new SimulatorConfig();
+				c.isExpired(true);
+				configs.clear();
+				configs.add(c);
+				return configs;
+			}
+		}
+
 		try {
-			List<SimulatorConfig> configs = new SimulatorFactory(SimManager.get(session.id())).loadSimulators(ids);
+			//			List<SimulatorConfig> configs = new SimulatorFactory(SimManager.get(session.id())).loadSimulators(ids);
 
 			SiteServiceManager.getSiteServiceManager().loadSites(session.id());
 
-			session.loadActorSimulatorConfigs(SiteServiceManager.getSiteServiceManager().getSites(), ids);
+			session.loadActorSimulatorConfigs(SiteServiceManager.getSiteServiceManager().getSites(), goodIdList);
 
 			return configs;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.error("getSimConfigs", e);
 			throw new Exception(e.getMessage());
 		}

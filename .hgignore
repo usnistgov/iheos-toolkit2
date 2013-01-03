@@ -10,11 +10,11 @@ xdstools2/.gwt
 xdstools2/gwt-unitCache/
 .gwt-tmp
 
-#
 xdstools2/war/WEB-INF/lib
 xdstools2/war/WEB-INF/classes
 xdstools2/war/WEB-INF/deploy
 xdstools2/war/xdstools2
+xdstools2/listener.jar
 
 # folders brought in from testkit
 xdstools2/war/toolkitx/testkit

@@ -144,7 +144,7 @@ public class ATFactory implements IsSerializable, Serializable {
 	public enum ActorType implements IsSerializable, Serializable {
 		REGISTRY (
 				"Document Registry", 
-				Arrays.asList("DOC_REGISTRY"),
+				Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
 				"reg", 
 				Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
 				true,

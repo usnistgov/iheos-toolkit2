@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.FeatureManager;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
@@ -53,8 +52,6 @@ public class FindDocumentsTab extends GenericQueryTab {
 		int row = 0;
 
 		selectOnDemand = new CheckBox();
-		selectOnDemand.setVisible(FeatureManager.isFeatureEnabled("OnDemand"));
-		selectOnDemand.setValue(FeatureManager.isFeatureEnabled("OnDemand"));
 		selectOnDemand.setText("Include On-Demand DocumentEntries");
 		mainGrid.setWidget(row, 0, selectOnDemand);
 		row++;

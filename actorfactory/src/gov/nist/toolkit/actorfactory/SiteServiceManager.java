@@ -82,10 +82,8 @@ public class SiteServiceManager extends CommonServiceManager {
 	}
 
 	public void loadSites(String sessionId) throws FactoryConfigurationError, Exception {
-//		if (sites == null) {
 			loadExternalSites(sessionId);
 			addSimulatorSites(sessionId);
-//		}
 	}
 
 	public Sites loadExternalSites(String sessionId) throws FactoryConfigurationError,

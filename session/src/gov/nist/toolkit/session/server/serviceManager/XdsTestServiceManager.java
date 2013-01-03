@@ -16,6 +16,7 @@ import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.ResultSummary;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestLogs;
@@ -27,7 +28,6 @@ import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.LogMap;
-import gov.nist.toolkit.testengine.RawLogCache;
 import gov.nist.toolkit.testengine.ResultPersistence;
 import gov.nist.toolkit.testengine.RetInfo;
 import gov.nist.toolkit.testengine.RetrieveB;
@@ -269,7 +269,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	}
 
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession) {
-		logger.debug(session.id() + ": " + "getTestResults()");
+		logger.debug(session.id() + ": " + "getTestResults() ids=" + testIds + " testSession=" + testSession );
 
 		Map<String, Result> map = new HashMap<String, Result>();
 
@@ -412,7 +412,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	}
 
 	public List<String> getTestIndex(String test) throws Exception   {
-		logger.debug(session.id() + ": " + "getTestIndex" + test);
+		logger.debug(session.id() + ": " + "getTestIndex " + test);
 		TestDefinition tt;
 		try {
 			tt = new TestDefinition(getTestKit().getTestDir(test));
@@ -455,10 +455,12 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			// of the test engine.  Need to re-label it so the logs can later
 			// be properly pulled from the external_cache.
 			Result result = xdstest(testName, sections, params, params2, null, stopOnFirstFailure);
-
+//			ResultSummary summary = new ResultSummary(result);
+			ResultPersistence rPer = new ResultPersistence();
+			
 			// Save results to external_cache.  
 			try {
-				new ResultPersistence().write(result, mesaTestSession);
+				rPer.write(result, mesaTestSession);
 			}
 			catch (Exception e) {
 				result.assertions.add(ExceptionUtil.exception_details(e), false);
@@ -670,7 +672,13 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	}
 
 	Result buildResult(List<TestDetails> testSpecs, XdstestLogId logId) throws Exception {
-		Result result = ResultBuilder.RESULT("Combined Test");
+		String label = "";
+		if (testSpecs.size() == 1) {
+			label = testSpecs.get(0).getTestNum();
+		} else {
+			label = "Combined Test";
+		}
+		Result result = ResultBuilder.RESULT(label);
 		result.logId = logId;
 		//		Result result = mkResult(logId);
 

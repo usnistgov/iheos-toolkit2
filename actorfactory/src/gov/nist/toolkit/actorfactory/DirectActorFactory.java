@@ -5,6 +5,8 @@ import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.util.Arrays;
@@ -17,7 +19,7 @@ public class DirectActorFactory extends ActorFactory {
 					TransactionType.DIRECT
 					);
 	
-	public List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) {
+	public List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.DIRECT_SERVER;
 		SimulatorConfig sc;
 		if (configureBase)

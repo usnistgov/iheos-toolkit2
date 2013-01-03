@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import gov.nist.toolkit.tk.client.PropertyNotFoundException;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.client.FeatureManager;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -72,30 +71,18 @@ public class HomeTab extends GenericQueryTab {
 
 				);
 
-		new FeatureManager().addCallback(new MainGridLoader());
-
-		//		toolkitService.getToolkitEnableNwHIN( new AsyncCallback<String>() {
-		//			public void onFailure(Throwable caught) {
-		//				new PopupMessage("getToolkitEnableNwHIN() call failed: " + caught.getMessage());
-		//			}
-		//
-		//			public void onSuccess(String result) {
-		//				nwhin_flag = result;
-		//				loadMainGrid(nwhin_flag);
-		//			}
-		//		});
-
-
-
+//		new FeatureManager().addCallback(new MainGridLoader());
+		
+		new MainGridLoader().featuresLoadedCallback();
 	}
 
 	boolean forDirect = false;
 	boolean forIHE = false;
 	boolean forNwHIN = false;
 
-	class MainGridLoader implements FeatureManager.FeaturesLoadedNotificationRecipient {
+	class MainGridLoader {
 
-		@Override
+		//@Override
 		public void featuresLoadedCallback() {
 			String th = Xdstools2.tkProps().get("toolkit.home","");
 
@@ -342,11 +329,6 @@ public class HomeTab extends GenericQueryTab {
 		if (forIHE) {
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(myContainer, TabLauncher.mesaTabLabel)));
 			row++;
-
-			if (FeatureManager.isFeatureEnabled("MesaTestSelection")) {
-				mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testRunnerTabLabel, new TabLauncher(myContainer, TabLauncher.testRunnerTabLabel)));
-				row++;
-			}
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testLogLabel, new TabLauncher(myContainer, TabLauncher.testLogLabel)));
 			row++;

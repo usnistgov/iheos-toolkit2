@@ -29,6 +29,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	String type;
 //	String[] values;   // these are possible values
 	Date expires;
+	boolean isExpired = false;
 	List<SimulatorConfigElement> elements  = new ArrayList<SimulatorConfigElement>();
 	
 	// used to record RGs for use with an IG
@@ -38,6 +39,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	// this is not a fixed attribute so it doesn't show in editor
 	public List<Site> remoteSites = null;
 	
+	public boolean isExpired() { return isExpired; }
+	public void isExpired(boolean is) { isExpired = is; }
 	
 	// not sure what to do with the other attributes, leave alone for now
 	public void add(SimulatorConfig asc) {

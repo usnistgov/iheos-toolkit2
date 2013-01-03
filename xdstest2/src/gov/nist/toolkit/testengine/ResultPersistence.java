@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine;
 
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.ResultSummary;
 import gov.nist.toolkit.xdsexception.XdsException;
 
 import java.io.File;
@@ -44,7 +45,10 @@ public class ResultPersistence {
 	}
 
 	String getFilePath(String testName,String testSession, boolean write) throws IOException {
-		File dir = new File(Installation.installation().propertyServiceManager().getTestLogCache().toString() + File.separator + testSession + File.separator + "Results");
+		File dir = new File(
+				Installation.installation().propertyServiceManager().getTestLogCache().toString() + File.separator + 
+				testSession + File.separator + 
+				"Results");
 		if (write)
 			dir.mkdirs();
 		

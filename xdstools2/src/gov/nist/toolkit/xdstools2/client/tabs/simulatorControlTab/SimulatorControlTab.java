@@ -135,7 +135,7 @@ public class SimulatorControlTab extends TabbedWindow {
 		toolkitService.getNewSimulator(actorTypeName, new AsyncCallback<List<SimulatorConfig>>() {
 
 			public void onFailure(Throwable caught) {
-				new PopupMessage("getNewSimulator:" + caught.getMessage());
+				new PopupMessage("Error creating new simulator: " + caught.getMessage());
 			}
 
 			public void onSuccess(List<SimulatorConfig> configs) {

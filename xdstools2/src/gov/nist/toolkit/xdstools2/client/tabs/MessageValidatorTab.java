@@ -8,7 +8,6 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValFormatter;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.FeatureManager;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.RenameSimFileDialogBox;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -42,7 +41,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MessageValidatorTab extends TabbedWindow {
@@ -124,7 +122,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		messageTypeButtons = new ArrayList<RadioButton>();
 		panel.add(html(bold("XD* Message Types")));
 		for (String type : validationTypes) {
-			if (!FeatureManager.isFeatureEnabled("NCPDP_Validation") && type.equals(ValidationType_ncpdp)) 
+			if (type.equals(ValidationType_ncpdp)) 
 				continue;
 
 			boolean addToPanel = true;

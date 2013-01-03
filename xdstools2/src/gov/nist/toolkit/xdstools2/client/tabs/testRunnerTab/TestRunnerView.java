@@ -82,6 +82,7 @@ public class TestRunnerView implements TestRunnerPresenter.TestDisplay {
 			@Override
 			public void onClick(ClickEvent event) {
 				errorDisplayPanel.setVisible(false);
+				clearErrorButton.setVisible(false);
 				errorDisplay.setHTML("");
 			}
 			
@@ -94,44 +95,6 @@ public class TestRunnerView implements TestRunnerPresenter.TestDisplay {
 		
 		sectionsView = new TestRunnerSectionsView();
 		topPanel.add(sectionsView.build());
-		
-//		
-//		// test selection
-//		HorizontalPanel selectTestPanel = new HorizontalPanel();
-//		topPanel.add(selectTestPanel);
-//		
-//		HTML selectTestLabel = new HTML();
-//		selectTestLabel.setText("Select Test: ");
-//		selectTestPanel.add(selectTestLabel);
-//		
-//		if (mesaTestSelectionFeature()) {
-//			selectTestList.setVisibleItemCount(10);
-//		}
-//		selectTestPanel.add(selectTestList);
-//		selectTestList.addChangeHandler(new TestSelectionChangeHandler());
-//		
-//		addReadme();
-//
-//		// section selection
-//		topPanel.add(selectSectionPanel);
-//		
-//		HTML selectSectionLabel = new HTML();
-//		selectSectionLabel.setText("Select Section: ");
-//		selectSectionPanel.add(selectSectionLabel);
-//		
-//		selectSectionPanel.add(selectSectionList);
-//		
-//		topPanel.add(selectSectionViewButton);
-//		selectSectionViewButton.addClickHandler(new SelectSectionViewButtonClickHandler());
-//
-//		
-//	
-//		mainGrid = new FlexTable();
-//		
-//		topPanel.add(mainGrid);
-//
-//
-		
 	}
 	
 
@@ -143,7 +106,6 @@ public class TestRunnerView implements TestRunnerPresenter.TestDisplay {
 		for (String name : nameDisp) {
 			selectActorList.addItem(name);
 		}
-		
 
 	}
 
@@ -193,10 +155,11 @@ public class TestRunnerView implements TestRunnerPresenter.TestDisplay {
 		testGridPanel.clear();
 		testGrid = new FlexTable();
 
-		String[] captions = {"Test ID",
-				"Test Description",
-				"System under test is",
-				"Sections",
+		String[] captions = {
+				"Test",
+//				"Test Description",
+//				"System under test is",
+//				"Sections",
 				"Run?",
 				"Timestamp",
 				"Passed",
@@ -226,14 +189,15 @@ public class TestRunnerView implements TestRunnerPresenter.TestDisplay {
 		model.displayRow = row;
 		model.isGrey = makeGrey;
 
-		testGrid.setText  (row, 0, model.testId);
+		testGrid.setHTML(row, 0, model.testId + "<br />" + model.testDescription);
+//		testGrid.setText  (row, 0, model.testId + "\n" + model.testDescription);
 		if (model.isGrey) testGrid.getCellFormatter().setStyleName(model.displayRow, 0, "my-table-band");
 		
-		testGrid.setText  (row, 1, model.testDescription);
-		if (model.isGrey) testGrid.getCellFormatter().setStyleName(model.displayRow, 1, "my-table-band");
+//		testGrid.setText  (row, 1, model.testDescription);
+//		if (model.isGrey) testGrid.getCellFormatter().setStyleName(model.displayRow, 1, "my-table-band");
 
-		testGrid.setText  (row, 2, (model.isInitiator) ? "Initiator" : "Responder");
-		if (model.isGrey) testGrid.getCellFormatter().setStyleName(model.displayRow, 2, "my-table-band");
+//		testGrid.setText  (row, 2, (model.isInitiator) ? "Initiator" : "Responder");
+//		if (model.isGrey) testGrid.getCellFormatter().setStyleName(model.displayRow, 2, "my-table-band");
 
 		
 		updateTestRow(model);
@@ -246,14 +210,14 @@ public class TestRunnerView implements TestRunnerPresenter.TestDisplay {
 		ViewLogButton viewLogButton = null;
 		Button b;
 		
-		int col = 3;
+		int col = 1;   // 3
 		
-		//open
-		b = new Button("Open");
-		w = b;
-		testGrid.setWidget(model.displayRow, col, w);
-		if (model.isGrey) testGrid.getCellFormatter().setStyleName(model.displayRow, col, "my-table-band");
-		col++;
+//		//open
+//		b = new Button("Open");
+//		w = b;
+//		testGrid.setWidget(model.displayRow, col, w);
+//		if (model.isGrey) testGrid.getCellFormatter().setStyleName(model.displayRow, col, "my-table-band");
+//		col++;
 		
 		// Run
 		try {
@@ -326,14 +290,20 @@ public class TestRunnerView implements TestRunnerPresenter.TestDisplay {
 
 	@Override
 	public void setErrorDisplay(String error) {
-		errorDisplay.setHTML("<font color=\"#FF0000\">" + error + "</font>");
-		errorDisplayPanel.setVisible(true);
+		if (error == null || error.equals(""))
+			clearErrorDisplay();
+		else {
+			errorDisplay.setHTML("<font color=\"#FF0000\">" + error + "</font>");
+			errorDisplayPanel.setVisible(true);
+			clearErrorButton.setVisible(true);
+		}
 	}
 
 
 	@Override
 	public void clearErrorDisplay() {
 		errorDisplayPanel.setVisible(false);
+		clearErrorButton.setVisible(false);
 		errorDisplay.setHTML("");
 	}
 

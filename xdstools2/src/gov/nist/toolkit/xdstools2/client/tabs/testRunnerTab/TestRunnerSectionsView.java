@@ -16,6 +16,8 @@ public class TestRunnerSectionsView implements TestRunnerSectionsPresenter.Secti
 	HTML sectionsHeaderLabel = new HTML();
 	VerticalPanel mainPanel = new VerticalPanel();
 	VerticalPanel testGridPanel = new VerticalPanel();
+	List<RunButton> runButtons = new ArrayList<RunButton>();
+	List<ViewLogButton> viewLogButtons = new ArrayList<ViewLogButton>();
 	FlexTable testGrid;
 	String testName;
 	List<String> sections;
@@ -58,8 +60,6 @@ public class TestRunnerSectionsView implements TestRunnerSectionsPresenter.Secti
 	}
 	
 	
-	List<RunButton> runButtons = new ArrayList<RunButton>();
-	
 	class RunButton extends Button {
 		TestDetailsModel model;
 		
@@ -70,8 +70,6 @@ public class TestRunnerSectionsView implements TestRunnerSectionsPresenter.Secti
 		}
 	}
 	
-	List<ViewLogButton> viewLogButtons = new ArrayList<ViewLogButton>();
-
 	class ViewLogButton extends Button {
 		String testId;
 		
@@ -100,14 +98,6 @@ public class TestRunnerSectionsView implements TestRunnerSectionsPresenter.Secti
 		}
 		row++;
 		
-//		boolean makeGrey = false;
-//		for (TestDetailsModel model : details) {
-//			insertTestRow(model, row, makeGrey);
-//			row++;
-//			makeGrey = !makeGrey;
-//		}
-		
-
 		testGridPanel.add(testGrid);
 		
 	}
@@ -124,7 +114,6 @@ public class TestRunnerSectionsView implements TestRunnerSectionsPresenter.Secti
 
 		testGrid.setText  (row, 2, (model.isInitiator) ? "Initiator" : "Responder");
 		if (model.isGrey) testGrid.getCellFormatter().setStyleName(model.displayRow, 2, "my-table-band");
-
 		
 		updateTestRow(model);
 		
