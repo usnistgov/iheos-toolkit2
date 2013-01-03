@@ -497,7 +497,7 @@ public class Session implements SecurityParams {
 	}
 	
 	public TkProps tkProps() throws Exception {
-		return TkLoader.tkProps();
+		return TkLoader.tkProps(Installation.installation().getTkPropsFile());
 /*		File installedTkProps = new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
 		if (installedTkProps.exists())
 			try {

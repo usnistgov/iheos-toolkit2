@@ -3,7 +3,6 @@ package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl;
 
 import java.io.File;
 
@@ -48,11 +47,15 @@ public class Installation {
 	public void externalCache(File externalCache) { 
 		this.externalCache = externalCache;
 		try {
-			tkProps = TkLoader.tkProps();
+			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
 			logger.error("Cannot load tk_props.txt file from External Cache", e);
 		}
 
+	}
+	
+	public File getTkPropsFile() {
+		return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
 	}
 	
 	public boolean initialized() { return warHome != null && externalCache != null; }

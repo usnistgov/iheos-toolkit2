@@ -262,7 +262,7 @@ ToolkitService {
 		new PropertyServiceManager(warhome).getPropertyManager().update(props);
 		reloadPropertyFile();
 		Installation.installation().externalCache(eCacheFile);
-		TkLoader.tkProps();
+		TkLoader.tkProps(Installation.installation().getTkPropsFile());
 		return "";
 	}
 
