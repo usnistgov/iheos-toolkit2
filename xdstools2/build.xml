@@ -188,6 +188,8 @@
 			tofile="war/toolkitx/testkit/actorcollections/rec.tc"/>		
 		<copy file="${testkit}/collections/RG.tc" 
 			tofile="war/toolkitx/testkit/actorcollections/rg.tc"/>
+		<copy file="${testkit}/collections/Initialize_for_Stored_Query.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/Initialize_for_Stored_Query.tc"/>
 		
 		<copy todir="war/toolkitx/xdstest/rampart/client_repositories/modules" file="../../shared-lib/mar/addressing-1.5.4.mar"/>
 		
