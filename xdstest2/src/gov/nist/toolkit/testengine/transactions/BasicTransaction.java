@@ -1192,7 +1192,7 @@ public abstract class BasicTransaction extends OmLogger {
 			);
 		}
 		catch (AxisFault e) {
-			s_ctx.set_error("Endpoint is " + endpoint);
+			s_ctx.set_error("SOAPFault: " + e.getMessage() + "\nEndpoint is " + endpoint);
 			if ( !s_ctx.expectFault())
 				s_ctx.set_fault(e);
 		}
