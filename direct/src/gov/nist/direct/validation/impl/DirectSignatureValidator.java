@@ -158,10 +158,10 @@ public class DirectSignatureValidator implements SignatureValidator {
 			if(digestAlgo.equals(micalg)) {
 				er.detail("     Success:  DTS 165 - Digest Algorithm is valid");
 			} else {
-				er.err("165", "Digest Algorithm is not valid", "", "DTS 165", "");
+				er.err("165", "Digest Algorithm does not equal the S/MIME content-type micalg value.", "", "", "DTS 165");
 			}
 		} else {
-			er.err("165", "Digest Algorithm is not valid", "", "DTS 165", "");
+			er.err("165", "Digest Algorithm is not valid. It MUST contain either value \"sha1\" or \"sha256\".", "", "", "DTS 165");
 		}
 		
 	}
@@ -347,15 +347,13 @@ public class DirectSignatureValidator implements SignatureValidator {
 			}
 			else
 			{
-				er.err("C1", "Signature Failed!", "", "C1", "C1");
+				er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
 			}
 		} catch (OperatorCreationException e) {
-			// TODO Auto-generated catch block
-			er.err("C1", "Signature Failed!", "", "C1", "C1");
+			er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
 			e.printStackTrace();
 		} catch (CMSException e) {
-			// TODO Auto-generated catch block
-			er.err("C1", "Signature Failed!", "", "C1", "C1");
+			er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
 			e.printStackTrace();
 		}
 		
