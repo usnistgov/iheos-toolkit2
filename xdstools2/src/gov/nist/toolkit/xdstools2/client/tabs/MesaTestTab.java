@@ -44,7 +44,7 @@ public class MesaTestTab extends GenericQueryTab {
 	ListBox selectActorList = new ListBox();
 	ListBox selectTestList = new ListBox();
 	ListBox selectSectionList = new ListBox();
-	Button selectSectionViewButton = new Button("View testplan");
+	Button selectSectionViewButton = new Button("View this section's testplan");
 	ScrollPanel readmeBox = new ScrollPanel();
 	TextBox patientIdBox = new TextBox();
 	Map<String, String> actorCollectionMap;  // name => description
@@ -115,7 +115,7 @@ public class MesaTestTab extends GenericQueryTab {
 		
 		selectSectionPanel.add(selectSectionList);
 		
-		topPanel.add(selectSectionViewButton);
+		selectSectionPanel.add(selectSectionViewButton);
 		selectSectionViewButton.addClickHandler(new SelectSectionViewButtonClickHandler());
 
 		

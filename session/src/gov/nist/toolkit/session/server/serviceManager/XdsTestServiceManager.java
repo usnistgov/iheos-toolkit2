@@ -160,7 +160,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 			if (session.transactionSettings.logRepository == null)
 				session.transactionSettings.logRepository = new SessionRepository(session.getId()).getNewLogRepository();
-			session.xt.setLogdirLocation(session.transactionSettings.logRepository);
+			session.xt.setLogRepository(session.transactionSettings.logRepository);
 			
 			try {
 				if (testName.startsWith("tc:")) {
@@ -480,6 +480,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	}
 
 	public String getTestplanAsText(String testname, String section) throws Exception {
+		try {
 		logger.debug(session.id() + ": " + "getTestplanAsText");
 		List<String> sections = new ArrayList<String>();
 		sections.add(section);
@@ -504,6 +505,9 @@ public class XdsTestServiceManager extends CommonServiceManager {
 				throw new Exception("Cannot load test plan " + testname + "#" + section);
 		}
 		return new OMFormatter(tsFile).toString();
+		} catch (Throwable t) {
+			throw new Exception(t.getMessage() + "\n" + ExceptionUtil.exception_details(t));
+		}
 	}
 
 	public List<String> getTestlogListing(String sessionName) throws Exception {
