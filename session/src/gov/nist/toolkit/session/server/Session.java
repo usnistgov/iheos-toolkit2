@@ -496,30 +496,13 @@ public class Session implements SecurityParams {
 		return names;
 	}
 	
-	public TkProps tkProps() throws Exception {
-		return TkLoader.tkProps(Installation.installation().getTkPropsFile());
-/*		File installedTkProps = new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
-		if (installedTkProps.exists())
-			try {
-				return TkLoader.LOAD(installedTkProps).toTkProps();
-			} catch (IOException e) {
-				// ignore
-			}
-		File defaultTkProps = new File(Installation.installation().warHome() + File.separator + "WEB-INF" + File.separator +
-				"tk_props_default.txt");
-		TkProps p = null;
+	public TkProps tkProps() {
 		try {
-			p = TkLoader.LOAD(defaultTkProps).toTkProps();
-		} catch (IOException e) {
-			throw new Exception("Cannot load tk_props", e);
+			return TkLoader.tkProps(Installation.installation().getTkPropsFile());
+		} catch (Throwable t) {
+			return new TkProps();
 		}
-		try {
-			TkLoader.SAVE(new TkPropsServer(p), installedTkProps);
-		} catch (IOException e) {
-			// ignore
-		}
-		return p;
-*/	}
+	}
 	
 	/**
 	 * Sets name of current environment (for this session)

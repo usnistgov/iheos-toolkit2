@@ -205,7 +205,7 @@ ToolkitService {
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
 	
 	// Property Service
-	public TkProps getTkProps() throws NoServletSessionException, Exception { return session().tkProps(); }
+	public TkProps getTkProps() throws NoServletSessionException { return session().tkProps(); }
 	public String getDefaultEnvironment()  throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getDefaultEnvironment(); }
 	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
 	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
@@ -262,7 +262,11 @@ ToolkitService {
 		new PropertyServiceManager(warhome).getPropertyManager().update(props);
 		reloadPropertyFile();
 		Installation.installation().externalCache(eCacheFile);
-		TkLoader.tkProps(Installation.installation().getTkPropsFile());
+		try {
+			TkLoader.tkProps(Installation.installation().getTkPropsFile());
+		} catch (Throwable t) {
+			
+		}
 		return "";
 	}
 

@@ -225,6 +225,12 @@ public abstract class ActorFactory {
 		simdb.delete(simDir);
 	}
 	
+	public boolean simExists(SimulatorConfig config) throws IOException {
+		SimDb simdb = simManager.getSimDb(config.getId());
+		File simDir = simdb.getSimDir();
+		return simDir.exists();
+	}
+	
 	public List<SimulatorConfig> loadSimulators(List<String> ids) throws IOException, ClassNotFoundException {
 		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
 		

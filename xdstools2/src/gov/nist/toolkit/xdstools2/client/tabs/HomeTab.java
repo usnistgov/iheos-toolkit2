@@ -84,7 +84,13 @@ public class HomeTab extends GenericQueryTab {
 
 		//@Override
 		public void featuresLoadedCallback() {
-			String th = Xdstools2.tkProps().get("toolkit.home","");
+			String th = "";
+			
+			try {
+				th = Xdstools2.tkProps().get("toolkit.home","");
+			} catch (Throwable t) {
+				
+			}
 
 			mainGrid = new FlexTable();
 			mainGrid.setCellSpacing(20);
@@ -329,6 +335,11 @@ public class HomeTab extends GenericQueryTab {
 		if (forIHE) {
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(myContainer, TabLauncher.mesaTabLabel)));
 			row++;
+
+			if (Xdstools2.tkProps().get("toolkit.mainmenu.experimental", "false").equalsIgnoreCase("true")) {
+				mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testRunnerTabLabel, new TabLauncher(myContainer, TabLauncher.testRunnerTabLabel)));
+				row++;
+			}
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testLogLabel, new TabLauncher(myContainer, TabLauncher.testLogLabel)));
 			row++;

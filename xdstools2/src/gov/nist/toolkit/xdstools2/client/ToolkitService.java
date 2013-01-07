@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client;
 
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.directsim.DirectServiceManager;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsim.client.DirectRegistrationData;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -20,7 +19,6 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +40,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> directSend(Map<String, String> parms) throws NoServletSessionException;
 	List<String> getEncryptionCertDomains();
 
-	public TkProps getTkProps() throws NoServletSessionException, Exception;
+	public TkProps getTkProps() throws NoServletSessionException;
 	
 	/* Test management */
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession) throws NoServletSessionException ;

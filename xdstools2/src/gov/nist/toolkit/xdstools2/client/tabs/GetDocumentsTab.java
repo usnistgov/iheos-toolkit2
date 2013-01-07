@@ -96,7 +96,7 @@ public class GetDocumentsTab  extends GenericQueryTab {
 				return;
 			}
 			
-			String errMsg = queryBoilerplate.transactionSelectionManager.verifySelection();
+			String errMsg = transactionSelectionManager.verifySelection();
 			if (errMsg != null) {
 				new PopupMessage(errMsg);
 				return;
