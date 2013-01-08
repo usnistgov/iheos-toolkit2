@@ -90,18 +90,38 @@ public class SimManager {
 //	}
 //	
 	// Return sims specific to this session
-	public List<SimulatorConfig> simConfigs() {
+	public List<SimulatorConfig> simConfigs() throws IOException {
 		if (actorSimulatorConfigs == null) {
 			actorSimulatorConfigs = new ArrayList<SimulatorConfig>();
+		} else {
+			purgeDeletedSims();
 		}
 		return actorSimulatorConfigs;
 	}
 	
-	public void addSimConfig(SimulatorConfig sc) {
+	void purgeDeletedSims() throws IOException {
+		List<SimulatorConfig> deletions = null;
+		for (SimulatorConfig sc : actorSimulatorConfigs) {
+			String simtype = sc.getType();
+			ActorType at = ActorType.findActor(simtype);
+			ActorFactory af = ActorFactory.getActorFactory(at);
+			if (!af.simExists(sc)) {
+				if (deletions == null)
+					deletions = new ArrayList<SimulatorConfig>();
+				deletions.add(sc);
+				af.deleteSimulator(sc);
+			}
+		}
+		if (deletions != null) {
+			actorSimulatorConfigs.removeAll(deletions);
+		}
+	}
+	
+	public void addSimConfig(SimulatorConfig sc) throws IOException {
 		simConfigs().add(sc);
 	}
 	
-	public void addSimConfigs(List<SimulatorConfig> scs) {
+	public void addSimConfigs(List<SimulatorConfig> scs) throws IOException {
 		for (SimulatorConfig sc : scs)
 			simConfigs().add(sc);
 	}
@@ -110,7 +130,7 @@ public class SimManager {
 		actorSimulatorConfigs = configs;
 	}
 	
-	public SimulatorConfig getSimulatorConfig(String simId) {
+	public SimulatorConfig getSimulatorConfig(String simId) throws IOException {
 		for (SimulatorConfig config : simConfigs()) {
 			if (simId.equals(config.getId()) && !config.isExpired())
 				return config;

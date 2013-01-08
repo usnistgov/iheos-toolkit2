@@ -122,8 +122,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 			@Override
 			public void onSuccess(TkProps arg0) {
 				props = arg0;
-				if (props.isEmpty())
-					new PopupMessage("Load of TkProps failed");
+//				if (props.isEmpty())
+//					new PopupMessage("Load of TkProps failed");
 				if (newHomeTab)
 					onModuleLoad2();
 			}

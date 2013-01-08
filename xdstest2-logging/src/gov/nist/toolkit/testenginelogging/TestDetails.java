@@ -56,7 +56,6 @@ public class TestDetails  {
 	}
 	
 	public void setLogDir(File logdir) {
-//		System.out.println("TestSpec#setLogDir " + logdir.toString());
 		this.logdir = logdir;
 	}
 
@@ -243,6 +242,8 @@ public class TestDetails  {
 	}
 
 	public File getTestLogDir() {
+		if (logdir == null)
+			return null;
 		return new File(logdir + File.separator + area + File.separatorChar + testNum);
 	}
 
@@ -269,8 +270,11 @@ public class TestDetails  {
 		File index = getIndexFile();
 		if (index.exists()) 
 			return getTestLogsFromIndex(index, upToSection);
-		else 
-			logfiles.add(new File(getTestLogDir().toString() + File.separatorChar + "log.xml"));
+		else {
+			File testlogdir = getTestLogDir();
+			if (testlogdir != null)
+				logfiles.add(new File(testlogdir.toString() + File.separatorChar + "log.xml"));
+		}
 		
 		return logfiles;
 	}
@@ -302,6 +306,8 @@ public class TestDetails  {
 	 */
 	List<File> getTestLogsFromIndex(File index, String upToSection) throws Exception {
 		List<File> logs = new ArrayList<File>();
+		if (logdir == null)
+			return logs;
 		
 		if (!index.exists())
 			return logs;
@@ -323,6 +329,8 @@ public class TestDetails  {
 	
 	public List<String> getSectionsFromTestDef(File testdir) throws IOException {
 		List<String> sections = new ArrayList<String>();
+		if (logdir == null)
+			return sections;
 		
 		File index = new File(testdir + File.separator + "index.idx");
 		
@@ -343,6 +351,8 @@ public class TestDetails  {
 	
 	public File getTestLog(String testNum, String section) {
 		File path;
+		if (logdir == null)
+			return null;
 		
 		if (section != null && !section.equals("") && !section.equals("None"))
 			path = new File(logdir + File.separator + area + File.separator + testNum + File.separatorChar + section + File.separatorChar + "log.xml");

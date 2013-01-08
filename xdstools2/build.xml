@@ -182,12 +182,17 @@
 		<!-- the target names match the ActorType short names found
 		     in ATFactory.java
 		     -->
+		<!-- 
 		<copy file="${testkit}/collections/registryb.tc" 
 			tofile="war/toolkitx/testkit/actorcollections/reg.tc"/>
 		<copy file="${testkit}/collections/repositoryb.tc" 
 			tofile="war/toolkitx/testkit/actorcollections/rep.tc"/>
 		<copy file="${testkit}/collections/update.tc" 
-			tofile="war/toolkitx/testkit/actorcollections/update.tc"/>
+			tofile="war/toolkitx/testkit/actorcollections/update.tc"/> -->
+		<concat destfile="war/toolkitx/testkit/actorcollections/reg.tc">
+			<filelist dir="${testkit}/collections"
+					files="registryb.tc, update.tc"/>
+		</concat>
 		<copy file="${testkit}/collections/Document_Recipient.tc" 
 			tofile="war/toolkitx/testkit/actorcollections/rec.tc"/>		
 		<copy file="${testkit}/collections/RG.tc" 

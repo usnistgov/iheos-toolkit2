@@ -152,14 +152,14 @@ public class ATFactory implements IsSerializable, Serializable {
 				),
 				// Update option on Document Registry
 				// this should be removed once implications are re-discovered
-		UPDATE (
-				"Update Option",       
-				new ArrayList<String>(),
-				"update", 
-				new ArrayList<TransactionType>(),
-				false,
-				null
-				),
+//		UPDATE (
+//				"Update Option",       
+//				new ArrayList<String>(),
+//				"update", 
+//				new ArrayList<TransactionType>(),
+//				false,
+//				null
+//				),
 		REPOSITORY (
 				"Document Repository", 
 				Arrays.asList("DOC_REPOSITORY"),

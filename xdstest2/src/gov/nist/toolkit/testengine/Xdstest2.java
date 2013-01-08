@@ -173,7 +173,7 @@ public class Xdstest2 {
 	 * @param logRepository
 	 * @throws IOException 
 	 */
-	public void setLogdirLocation(LogRepository logRepository) throws IOException {
+	public void setLogRepository(LogRepository logRepository) throws IOException {
 		this.logRepository = logRepository;
 		this.logRepository.logDir().mkdirs();
 		xt.setLogRepository(logRepository);
@@ -212,7 +212,8 @@ public class Xdstest2 {
 			ts = new TestDetails(xt.getTestkit(), testname);
 		else
 			ts = new TestDetails(xt.getTestkit(), testname, areas);
-		ts.setLogDir(logRepository.logDir());
+		if (logRepository != null)
+			ts.setLogDir(logRepository.logDir());
 		if (doLogCheck) {
 			if (sections != null && sections.size() != 0)
 				ts.selectSections(sections);
@@ -223,7 +224,8 @@ public class Xdstest2 {
 	public void setTest(String testName, File testDir) throws Exception {
 		testnum = testName;
 		TestDetails ts = new TestDetails(testDir);
-		ts.setLogDir(logRepository.logDir());
+		if (logRepository != null)
+			ts.setLogDir(logRepository.logDir());
 		xt.addTestSpec(ts);
 	}
 
