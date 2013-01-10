@@ -10,12 +10,22 @@
 
 <p>Release note are listed for each build number
 
-<h4>157  (IHE updates only)   (released January 6, 2013 ) </h4>
+<h4>158 (MDHT updates only (released January 10, 2913)
+
 <ul>
-<li>Built with shared-lib version 155
-<li>Maintenance on simulator sub-system
-<li>Make IHE version work without tk_props
-<li>Tested installed tests. Prior maintenance affected test performance.
+<li>MHDT version 12212012 installed:
+<ul>
+<li>Comment Activity Author constraint should be a ÒMAYÓ and not a ÒSHALLÓ Ð CONF 9433
+<li>Functional and Cognitive status will not require structured entries because there is no standard
+vocabulary requirement for the data elements.
+<li>CONF 9050 and CONF 15603 constraints were implemented incorrectly.
+<li>Plan of Care section will allow multiple observations. Previously only one observation was being allowed.
+<li>Plan of Care section entries will be optional and not required.
+<li>Null Flavor check on code in the Results section was requiring a LOINC code system which has now been
+corrected.
+<li>Null Flavor on playing Entity within observations for allergies (CONF 7421, 10083, 10084) was not being
+allowed, this has been corrected.
+</ul>
 </ul>
 
 <h4>156  (MU 2 updates only)   (released December 19, 2012 ) </h4>
