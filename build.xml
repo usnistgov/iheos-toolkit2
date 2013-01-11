@@ -14,17 +14,17 @@
 			This is only necessary if you are trying to generate a war file for deployment to tomcat.  If you
 			just want to run in the debugger, the ant war-prep is enough 
 		
-		* ant ttt (or ant ihe) build war file ttt.war (or xdstools2.war) appropriate for the named project
+		* ant ttt (or ant ihe) builds war file ttt.war (or xdstools2.war) appropriate for the named project
                         The difference is the copy of war/WEB-INF/toolkit.properties installed
 
 	  The result is the file xdstools2/ttt.war (or xdstools2/xdstools2.war)
 	  If ant ttt is run then a second file is generated, listener.jar which contains the port 25 listener for T3
-          It must be installed on hit-testing with the help of some scripts.  The procedure is:
+          It must be installed on hit-testing using scripts. The procedure is:
 		1) scp listener.jar bill@hit-testing
-		2) ssh bill@hist-testing
+		2) ssh bill@hit-testing
 			3) cd bin
 			4) screen -ls    // to get id of service
-			5) scrren -d -r <id>   // to bring service into forground
+			5) screen -d -r <id>   // to bring service into foreground
 			6) ^c                  // to kill it
 			7) ./prep-listener.sh   // to build ~/bin/listener directory contents (port 25 listener)
 			8) ./start-screen.sh	// to start listener using screen(1) command
@@ -60,6 +60,7 @@
 		installation,
 		email,
 		registry-support,
+		testkit,
 		testkit-utilities,
 		registry-metadata,
 		site-management,

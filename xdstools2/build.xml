@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="tkbuild" name="xdstools2">
 
-	<property name="testkit" value="../../testkit"/>
+	<property name="testkit" value="../testkit"/>
 	<property name="localtestkit" value="war/toolkitx/testkit/tests" />
 	<property name="localtestdata" value="war/toolkitx/testkit/testdata" />
 	<property name="actorcollections" value="war/toolkitx/testkit/actorcollections" />
