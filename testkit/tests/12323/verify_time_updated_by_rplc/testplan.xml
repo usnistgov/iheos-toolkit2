@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12323/verify_time_updated_by_rplc</Test>
+    <TestStep id="getFolder">
+        <Goal>Issue a GetFolders query</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <StoredQueryTransaction>
+	    <XDSb/>
+            <UseReport section="has_time" step="has_time" reportName="folid" useAs="$uuid1$"/>  
+            <Metadata>
+                <query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+                    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+                    <AdhocQuery id="urn:uuid:5737b14c-8a1a-4539-b659-e03a34a5e1e4">
+                        <Slot name="$XDSFolderEntryUUID">
+                            <ValueList>
+                                <Value>('$uuid1$')</Value>
+                            </ValueList>
+                        </Slot>
+                    </AdhocQuery>
+                </query:AdhocQueryRequest>
+            </Metadata>
+            <!--
+            <UseId testdir="../has_time" id="Folder" step="has_time"
+                section="AssignedUuids" symbol="$uuid1$"/>
+                -->
+            <Report name="lastUpdateTime" section="Result">
+				//*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='lastUpdateTime']/*[local-name()='ValueList']/*[local-name()='Value']
+			</Report>
+            <ExpectedContents>
+                <SubmissionSets count="0"/>
+                <Associations count="0"/>
+                <Documents count="0"/>
+                <Folders count="1"/>
+            </ExpectedContents>
+        </StoredQueryTransaction>
+    </TestStep>
+    <TestStep id="verify_time_updated_by_rplc">
+        <Goal>Verify Folder lastUpdatedTime was updated by document replace</Goal>
+    	<NullTransaction>
+            <UseReport section="verify_time_updated" step="verify_time_updated" reportName="updated_time" useAs="original_time"/>  
+            <UseReport section="THIS" step="getFolder" reportName="lastUpdateTime" useAs="after_rplc_time"/>  
+            <Assertions>
+                <Assert id="dateUpdated">
+                'original_time' &lt; 'after_rplc_time'
+                </Assert>
+            </Assertions>
+    	</NullTransaction>
+    </TestStep>
+</TestPlan>

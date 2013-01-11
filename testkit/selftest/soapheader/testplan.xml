@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>soapheader</Test>
+    <TestStep id="object_refs">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>FindDocuments</SQ>
+            <Assertion>Basic ObjectRef return</Assertion>
+        </Rule>
+        <StoredQueryTransaction>
+            <XDSb/>
+            <Metadata>
+                <query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+                    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+                    <AdhocQuery id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
+                        <Slot name="$XDSDocumentEntryPatientId">
+                            <ValueList>
+                                <Value>'b89182560b284fd^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO'</Value>
+                            </ValueList>
+                        </Slot>
+                        <Slot name="$XDSDocumentEntryStatus">
+                            <ValueList>
+                                <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</Value>
+                            </ValueList>
+                        </Slot>
+                    </AdhocQuery>
+                </query:AdhocQueryRequest>
+            </Metadata>
+            <SOAPHeader>
+                <wsse:Security S:mustUnderstand="1" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" 
+                    xmlns:S="http://schemas.xmlsoap.org/soap/envelope/"
+                    xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+                    <wsu:Timestamp wsu:Id="_1" xmlns:ns14="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512" xmlns:ns13="http://www.w3.org/2003/05/soap-envelope">
+                        <wsu:Created>2009-11-05T14:31:36Z</wsu:Created>
+                        <wsu:Expires>2010-08-05T14:36:36Z</wsu:Expires>
+                    </wsu:Timestamp>
+                    <saml2:Assertion ID="1217946696171" IssueInstant="2008-08-05T10:31:36.171-04:00" Version="20" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:exc14n="http://www.w3.org/2001/10/xml-exc-c14n#" xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xenc="http://www.w3.org/2001/04/xmlenc#">
+                        <saml2:Issuer Format="urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName">CN=SAML User,OU=SU,O=SAML User,L=Los Angeles,ST=CA,C=US</saml2:Issuer>
+                        <saml2:Subject>
+                            <saml2:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName">CN=SAML User,OU=SU,O=SAML User,L=Los Angeles,ST=CA,C=US</saml2:NameID>
+                            <saml2:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:sender-vouches">
+                                <saml2:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName">CN=SAML User,OU=SU,O=SAML User,L=Los Angeles,ST=CA,C=US</saml2:NameID>
+                            </saml2:SubjectConfirmation>
+                        </saml2:Subject>
+                        <saml2:Conditions NotBefore="2009-22-05T09:31:36.171-04:00" NotOnOrAfter="2010-08-05T11:31:36.171-04:00"/>
+                        <saml2:AttributeStatement>
+                            <saml2:Attribute Name="attrSv2">
+                                <saml2:AttributeValue ns6:type="ns7:string" xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns7="http://www.w3.org/2001/XMLSchema">ATTRSV2</saml2:AttributeValue>
+                            </saml2:Attribute>
+                        </saml2:AttributeStatement>
+                    </saml2:Assertion>
+                    <wsse:SecurityTokenReference wsu:Id="uuid_af237bd2-b757-406b-85c3-a6833361697b" xmlns:ns14="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512" xmlns:ns13="http://www.w3.org/2003/05/soap-envelope">
+                        <wsse:KeyIdentifier ValueType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.0#SAMLAssertionID">1217946696171</wsse:KeyIdentifier>
+                    </wsse:SecurityTokenReference>
+                </wsse:Security>
+            </SOAPHeader>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>

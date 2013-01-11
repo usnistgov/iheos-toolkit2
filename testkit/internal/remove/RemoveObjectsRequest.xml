@@ -1,0 +1,13 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!--$Header: /cvsroot/ebxmlrr/ebxmlrr/misc/samples/RemoveObjectsRequest1.xml,v 1.4 2003/04/11 02:37:49 farrukh_najmi Exp $-->
+<!-- It is to test what happens when the repository items do not exist-->
+<rs:RemoveObjectsRequest xmlns="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.0"
+	xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.0" deletionScope="DeleteAll">
+	<ObjectRefList>
+		<ObjectRef id="urn:uuid:95a77bf3-0966-4fe6-aea2-c27e0c0cea2f"/>
+		<ObjectRef id="urn:uuid:82f44a9d-16b1-44a8-81a9-d19f7692f365"/>
+		<ObjectRef id="urn:uuid:7e44b35d-b39d-4d61-9f08-e466f591e604"/>
+	</ObjectRefList>
+</rs:RemoveObjectsRequest>

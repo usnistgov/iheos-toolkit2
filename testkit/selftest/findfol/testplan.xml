@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>findfol</Test>
+    <Rule>Submit data to XDS.b registry to support SQ testing</Rule>
+    
+    <TestStep id="new_patient_id">
+        <NewPatientId/>
+    </TestStep>
+    
+    <TestStep id="submit_doc_w_fol">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>R</Transaction>
+            <Assertion>Single document in a folder submission supports various query
+            testing</Assertion>
+        </Rule>
+        <RegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <MetadataFile>single_doc_w_fol.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+    
+    <TestStep id="submit_doc_w_fol2">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>R</Transaction>
+            <Assertion>Single document in a folder submission supports various query
+                testing</Assertion>
+        </Rule>
+        <RegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <MetadataFile>single_doc_w_fol.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+    
+</TestPlan>

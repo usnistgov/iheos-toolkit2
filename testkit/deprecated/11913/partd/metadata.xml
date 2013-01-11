@@ -1,0 +1,47 @@
+<AdhocQueryRequest
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1"
+    xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"
+    xmlns:q = "urn:oasis:names:tc:ebxml-regrep:query:xsd:2.1"
+    xmlns="urn:oasis:names:tc:ebxml-regrep:query:xsd:2.1"
+>
+    <ResponseOption returnType = "LeafClass" returnComposedObjects="true"/>
+    <SQLQuery>
+
+SELECT DISTINCT ass.id FROM Association ass, ExtrinsicObject eo, RegistryPackage ss, RegistryPackage fol
+WHERE
+ (
+	(ass.sourceObject = ss.id AND ass.targetObject = fol.id) OR
+	(ass.sourceObject = fol.id AND ass.targetObject = eo.id)
+
+
+ ) AND
+  eo.id IN
+  	(SELECT eo.id FROM ExtrinsicObject eo, ExternalIdentifier patId
+  		WHERE
+   		  eo.status IN $XDSDocumentEntryStatus AND
+    		  patId.registryObject = eo.id AND
+    		  patId.identificationScheme = 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427' AND
+    		  patId.value = $patientId
+		  ) AND
+  
+  ss.id IN
+  	 (SELECT ss.id FROM RegistryPackage ss, ExternalIdentifier patId
+          WHERE
+  	    ss.status IN $XDSSubmissionSetStatus AND
+	    patId.registryObject = ss.id AND
+  	    patId.identificationScheme = 'urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446' AND
+  	    patId.value = $patientId
+	 ) AND
+   fol.id IN
+        (SELECT fol.id FROM RegistryPackage fol, ExternalIdentifier patId
+	 WHERE
+	    fol.status IN $XDSFolderStatus AND
+  	    patId.registryObject = fol.id AND
+  	    patId.identificationScheme = 'urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a' AND
+  	    patId.value = $patientId
+	)
+
+</SQLQuery>
+</AdhocQueryRequest>
+   
