@@ -141,7 +141,7 @@ public class AssertionEngine {
 	}
 
 	public void run(ErrorReportingInterface err, OMElement assertion_output) throws XdsInternalException {
-		OmLogger logger = new OmLogger();
+		ILogger logger = new TestLogFactory().getLogger();
 		try {
 			parseDataRefs();
 			buildDataModel();

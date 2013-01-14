@@ -15,7 +15,6 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsPreparsedException;
-import gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -135,7 +134,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			}
 			
 			if (s_ctx.getPlan().getExtraLinkage() != null)
-				s_ctx.add_name_value(instruction_output, "TemplateParams", s_ctx.getPlan().getExtraLinkage());
+				testLog.add_name_value(instruction_output, "TemplateParams", s_ctx.getPlan().getExtraLinkage());
 			
 			if (clean_params)
 				cleanRetParams(request_ele);
@@ -150,9 +149,9 @@ public class RetrieveTransaction extends BasicTransaction {
 					fatal ("XGR: " + ExceptionUtil.exception_details(e));
 				}
 
-				s_ctx.add_name_value(instruction_output, "InputMetadata", Util.deep_copy(request_ele));
+				testLog.add_name_value(instruction_output, "InputMetadata", Util.deep_copy(request_ele));
 
-				s_ctx.add_name_value(instruction_output, "Linkage", this.local_linkage_data.toString());
+				testLog.add_name_value(instruction_output, "Linkage", this.local_linkage_data.toString());
 
 				if (this.useIG) 
 					parseIGREndpoint(home, testConfig.secure);
@@ -189,9 +188,9 @@ public class RetrieveTransaction extends BasicTransaction {
 
 				}
 
-				s_ctx.add_name_value(instruction_output, "InputMetadata", Util.deep_copy(request_ele));
+				testLog.add_name_value(instruction_output, "InputMetadata", Util.deep_copy(request_ele));
 
-				s_ctx.add_name_value(instruction_output, "Linkage", this.local_linkage_data.toString());
+				testLog.add_name_value(instruction_output, "Linkage", this.local_linkage_data.toString());
 
 				if (useReportManager == null && 
 						(repositoryUniqueId == null || repositoryUniqueId.equals(""))) {
@@ -226,7 +225,7 @@ public class RetrieveTransaction extends BasicTransaction {
 				ret_b.setSoap12(soap_1_2);
 				ret_b.setReferenceMetadata(reference_metadata);
 				OMElement result = ret_b.run();
-				s_ctx.add_name_value(instruction_output, "Result", result);
+				testLog.add_name_value(instruction_output, "Result", result);
 				ret_b.validate();
 			} 
 			catch (XdsPreparsedException e) {
@@ -503,7 +502,7 @@ public class RetrieveTransaction extends BasicTransaction {
 		String part_name = part.getLocalName();
 		if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + part.getText();
-			s_ctx.add_name_value(instruction_output, "MetadataFile", metadata_filename);
+			testLog.add_name_value(instruction_output, "MetadataFile", metadata_filename);
 		} 
 //		else if (part_name.equals("Metadata")) { 
 //			metadata_filename = "";
@@ -511,11 +510,11 @@ public class RetrieveTransaction extends BasicTransaction {
 //		} 
 		else if (part_name.equals("ExpectedContents")) {
 			expected_contents = part;
-			s_ctx.add_name_value(instruction_output, "ExpectedContents", part);
+			testLog.add_name_value(instruction_output, "ExpectedContents", part);
 		} 
 		else if (part_name.equals("ExpectedMimeType")) {
 			expected_mime_type = part.getText();
-			s_ctx.add_name_value(instruction_output, "ExpectedMimeType", part);
+			testLog.add_name_value(instruction_output, "ExpectedMimeType", part);
 		} 
 		else if (part_name.equals("RemoveHomeFromRequest")) {
 			removeHomeFromRequest = true;
@@ -526,7 +525,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			filename =testConfig.testplanDir + File.separator + part.getText();
 			uid = part.getAttributeValue(new QName("uid"));
 			referenced_documents.put(uid, filename);
-			s_ctx.add_name_value(instruction_output, "ReferenceDocument", part);
+			testLog.add_name_value(instruction_output, "ReferenceDocument", part);
 		} 
 		else if (part_name.equals("ReferenceMetadata")) {
 			String testdir = part.getAttributeValue(new QName("testdir"));
@@ -537,15 +536,15 @@ public class RetrieveTransaction extends BasicTransaction {
 		}
 		else if (part_name.equals("UseId")) {
 			use_id.add(part);
-			s_ctx.add_name_value(instruction_output, "UseId", part);
+			testLog.add_name_value(instruction_output, "UseId", part);
 		}
 		else if (part_name.equals("UseRepositoryUniqueId")) {
 			this.use_repository_unique_id.add(part);
-			s_ctx.add_name_value(instruction_output, "UseRepositoryUniqueId", part);
+			testLog.add_name_value(instruction_output, "UseRepositoryUniqueId", part);
 		}
 		else if (part_name.equals("UseXPath")) {
 			use_xpath.add(part);
-			s_ctx.add_name_value(instruction_output, "UseXRef", part);
+			testLog.add_name_value(instruction_output, "UseXRef", part);
 		}
 //		else if (part_name.equals("Assertions")) {
 //			parse_assertion_instruction(part);
@@ -555,7 +554,7 @@ public class RetrieveTransaction extends BasicTransaction {
 		} 
 		else if (part_name.equals("SOAP11")) {
 			soap_1_2 = false;
-			this.s_ctx.add_simple_element(this.instruction_output, "SOAP11");
+			testLog.add_simple_element(this.instruction_output, "SOAP11");
 		} 
 		else if (part_name.equals("URI")) {
 			uri = part.getText();
@@ -565,7 +564,7 @@ public class RetrieveTransaction extends BasicTransaction {
 		} 
 		else if (part_name.equals("CleanParams")) {
 			clean_params = true;
-			s_ctx.add_name_value(instruction_output, "CleanParams", part);
+			testLog.add_name_value(instruction_output, "CleanParams", part);
 		}
 		else if (part_name.equals("XDSa")) {
 			xds_version = BasicTransaction.xds_a;

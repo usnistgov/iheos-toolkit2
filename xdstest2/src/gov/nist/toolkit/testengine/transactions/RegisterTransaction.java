@@ -52,12 +52,12 @@ public class RegisterTransaction extends BasicTransaction {
 			soapCall(request);
 			OMElement result = getSoapResult();
 			if (result != null) {
-				this.s_ctx.add_name_value(instruction_output, "Result", result);
+				testLog.add_name_value(instruction_output, "Result", result);
 
 				validate_response(result);
 
 			} else {
-				this.s_ctx.add_name_value(instruction_output, "Result", "None");
+				testLog.add_name_value(instruction_output, "Result", "None");
 				s_ctx.set_error("Result was null");
 			}
 
