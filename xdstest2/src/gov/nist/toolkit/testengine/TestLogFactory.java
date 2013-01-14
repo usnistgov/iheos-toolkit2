@@ -9,4 +9,6 @@ public class TestLogFactory {
 	
 	public OmLogger getLogger() { return logger; }
 	
+	public TestLogFactory() {}
+	
 }
