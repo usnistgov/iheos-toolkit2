@@ -27,10 +27,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 public class RepPnRSim extends TransactionSimulator implements MetadataGeneratingSim {
 	Metadata m = null;
 	SimulatorConfig asc;
+	static Logger logger = Logger.getLogger(RepPnRSim.class);
 
 	public RepPnRSim(SimCommon common, SimulatorConfig asc) {
 		super(common);
@@ -76,6 +78,8 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 
 					size = contents.length;
 					hash = new Hash().compute_hash(contents);
+					logger.info("Size (at Repository) is " + size);
+					logger.info("Hash (at Repository) is " + hash);
 
 					sdMap.put(uid, storedDocument);
 
@@ -91,6 +95,8 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 						sdMap.put(uid, storedDocument);
 						size = storedDocument.content.length;
 						hash = new Hash().compute_hash(storedDocument.content);
+						logger.info("Size (at Repository) is " + size);
+						logger.info("Hash (at Repository) is " + hash);
 					} else {
 						throw new XDSMissingDocumentException("Document contents for document " + eoId + " not available in message", Mtom.XOP_example2);
 					}
@@ -141,7 +147,23 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 			for (String uid : sdMap.keySet()) {
 				StoredDocument sd = sdMap.get(uid);
 				common.repIndex.getDocumentCollection().add(sd);
-				Io.bytesToFile(sd.getPathToDocument(), sdMap.get(uid).content);
+				byte[] content = sdMap.get(uid).content;
+				Io.bytesToFile(sd.getPathToDocument(), content);
+				byte[] content2 = Io.bytesFromFile(sd.getPathToDocument());
+				logger.info("Verifying storage...");
+				if (content.length != content2.length) {
+					logger.error("Repository: stored " + content.length + " bytes");
+					logger.error("         read back " + content2.length + " bytes");
+				}
+				int working_size = (content.length < content2.length) ? content.length : content2.length;
+				try {
+					for (int i=0; i<working_size; i++) {
+						if (content[i] != content2[i])
+							throw new Exception("Byte " + i + " differs");
+					}
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
 			}
 			
 			// issue soap call to registry

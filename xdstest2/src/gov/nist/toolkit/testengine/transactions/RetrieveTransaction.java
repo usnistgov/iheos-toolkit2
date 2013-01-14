@@ -15,6 +15,7 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsPreparsedException;
+import gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
 import org.jaxen.JaxenException;
 
 public class RetrieveTransaction extends BasicTransaction {
@@ -41,7 +43,7 @@ public class RetrieveTransaction extends BasicTransaction {
 	boolean useIG = false;
 	boolean removeHomeFromRequest = false;
 	boolean clean_params = false;
-
+	static Logger logger = Logger.getLogger(RetrieveTransaction.class);
 	public String toString() {
 
 		return "RetrieveTransaction: *************" +
