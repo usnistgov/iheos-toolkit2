@@ -80,7 +80,7 @@ public class SendDirect extends CommonServiceManager {
 //					Installation.installation().directSendLogFile("bill") + 
 //					File.separator + new SimDb().nowAsFilenameBase()  );
 			
-			session.transactionSettings.logRepository = new DirectRepository(user).getNewLogRepository();
+			session.transactionSettings.logRepository = new DirectRepository().getNewLogRepository(user);
 			
 			Result r = session.xdsTestServiceManager().xdstest("DirectSendTemplate", sections, params, params2, areas, true);
 			return asList(r);

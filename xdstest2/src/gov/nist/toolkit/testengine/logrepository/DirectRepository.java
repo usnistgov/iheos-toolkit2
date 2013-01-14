@@ -10,13 +10,12 @@ import org.apache.log4j.Logger;
 
 public class DirectRepository extends LogRepository {
 	Logger logger = Logger.getLogger(DirectRepository.class);
-
-	public DirectRepository(String user) {
-		super(user);
+	
+	public DirectRepository() {
 	}
 
 	@Override
-	public LogRepository getNewLogRepository() throws IOException {
+	public LogRepository getNewLogRepository(String user) throws IOException {
 		logDir = new File(
 				Installation.installation().directSendLogFile(user) + 
 				File.separator + new SimDb().nowAsFilenameBase()  );
