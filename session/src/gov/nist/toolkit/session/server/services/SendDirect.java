@@ -5,7 +5,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.DirectConfigManager;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.testengine.logrepository.DirectRepository;
+import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.utilities.io.Io;
 
 import java.io.File;
@@ -80,7 +80,8 @@ public class SendDirect extends CommonServiceManager {
 //					Installation.installation().directSendLogFile("bill") + 
 //					File.separator + new SimDb().nowAsFilenameBase()  );
 			
-			session.transactionSettings.logRepository = new DirectRepository().getNewLogRepository(user);
+			session.transactionSettings.logRepository = //new DirectRepository().getNewLogRepository(user);
+			new LogRepositoryFactory().getRepository(Installation.installation().directSendLogs(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 			
 			Result r = session.xdsTestServiceManager().xdstest("DirectSendTemplate", sections, params, params2, areas, true);
 			return asList(r);

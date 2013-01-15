@@ -6,6 +6,7 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.errormgr.AssertionResults;
 import gov.nist.toolkit.testengine.logrepository.LogRepository;
+import gov.nist.toolkit.testengine.logrepository.LogRepository1;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.StepGoals;
 import gov.nist.toolkit.testenginelogging.TestDetails;

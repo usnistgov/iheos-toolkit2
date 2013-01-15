@@ -1,31 +1,17 @@
 package gov.nist.toolkit.testengine.logrepository;
 
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.simDb.SimDb;
-
-import java.io.File;
-
 import org.apache.log4j.Logger;
 
-public class SessionRepository extends LogRepository {
+public class SessionRepository  {
+	LogRepository log;
 	Logger logger = Logger.getLogger(SessionRepository.class);
 
-	public SessionRepository(String user) {
-		super(user);   // user is sessionId
-	}
+//	public SessionRepository(String user) throws IOException {
+//		log = new LogRepositoryFactory().getRepository(Installation.installation().sessionCache(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+//	}
 
-	@Override
-	public LogRepository getNewLogRepository() {
-		logDir = new File(
-				Installation.installation().sessionLogFile(user) + 
-				File.separator + new SimDb().nowAsFilenameBase()  );
-		logDir.mkdirs();
-		return this;
-	}
-
-	@Override
-	protected Logger getLogger() {
-		return logger;
+	public LogRepository getLogRepository() {
+		return log;
 	}
 
 }

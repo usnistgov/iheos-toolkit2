@@ -1,6 +1,5 @@
 package gov.nist.toolkit.testengine.logrepository;
 
-import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simDb.SimDb;
 
 import java.io.File;
@@ -8,13 +7,14 @@ import java.io.IOException;
 
 public class LogRepositoryFactory {
 
-	enum Id_type { TIME_ID, SPECIFIC_ID };
-	enum IO_format { JAVA_SERIALIZATION, JACKSON };
+	public enum Id_type { TIME_ID, SPECIFIC_ID };
+	public enum IO_format { JAVA_SERIALIZATION, JACKSON };
 	
-	public LogRepositoryFactory(String user, IO_format format, Id_type idType, String id) throws IOException {
-		LogRepositoryImpl impl = new LogRepositoryImpl();
-		impl.logDir = getLogDir(user, idType, id);
+	public LogRepository getRepository(File location, String user, IO_format format, Id_type idType, String id) throws IOException {
+		LogRepository impl = new LogRepository();
+		impl.logDir = getLogDir(location, user, idType, id);
 		impl.logger = getLoggerIO(format);
+		return impl;
 	}
 	
 	ILoggerIO getLoggerIO(IO_format ioFormat) {
@@ -27,10 +27,10 @@ public class LogRepositoryFactory {
 		}
 	}
 	
-	File getLogDir(String user, Id_type idType, String id) throws IOException {
+	File getLogDir(File location, String user, Id_type idType, String id) throws IOException {
 		if (idType == Id_type.TIME_ID) {
 			File logDir = new File(
-					Installation.installation().directSendLogFile(user) + 
+					location + File.separator + user + 
 					File.separator + new SimDb().nowAsFilenameBase()  );
 			logDir.mkdirs();
 			if (!logDir.exists()) 
@@ -40,7 +40,7 @@ public class LogRepositoryFactory {
 			return logDir;
 		} else if (idType == Id_type.SPECIFIC_ID) {
 			File logDir = new File(
-					Installation.installation().directSendLogFile(user) + 
+					location + File.separator + user + 
 					File.separator + id  );
 			logDir.mkdirs();
 			if (!logDir.exists()) 
