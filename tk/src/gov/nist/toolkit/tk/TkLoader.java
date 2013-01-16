@@ -13,6 +13,9 @@ public class TkLoader {
 		LinesOfFile lof;
 		TkPropsServer p = new TkPropsServer();
 		
+		if (!file.exists()) 
+			throw new IOException("Property file " + file + " does not exist");
+		
 		lof = new LinesOfFile(file);
 		while(lof.hasNext()) {
 			String l = lof.next();
