@@ -207,13 +207,17 @@
 
 		<mkdir dir="war/WEB-INF/direct/mailer"/>
 
+		<copy todir="war/scripts" overwrite="true">
+			<fileset dir="scripts"/>
+		</copy>
 
-		<copy todir="war/WEB-INF" file="../tk_props_default.txt"/>
+		<!-- <copy todir="war/WEB-INF" file="../tk_props_default.txt"/> -->
 	</target>
 
 	<target name="clean-war">
 		<delete dir="war/toolkitx/admin" failonerror="false"/>
 		
+		<delete dir="war/scripts" failonerror="false"/>
 		<delete dir="war/xdstools2" failonerror="false"/>
 		
 		<delete file="war/toolkitx/xdstest/rampart/client_repositories/modules/addressing-1.5.4.mar" failonerror="false"/>

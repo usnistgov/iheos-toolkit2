@@ -1,0 +1,6 @@
+smtp.starttls : true
+host : smtp.gmail.com
+smtp.port : 465
+smtp.auth : true
+debug : true
+gmail.style : true
