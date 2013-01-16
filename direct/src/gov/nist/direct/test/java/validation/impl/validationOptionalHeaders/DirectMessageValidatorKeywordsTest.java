@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorKeywordsTest {
 	
 	// DTS 126, Keywords, Optional
+	// Result: Success
 	@Test
 	public void testKeywords() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -36,6 +37,7 @@ public class DirectMessageValidatorKeywordsTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testKeywords2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

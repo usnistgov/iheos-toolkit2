@@ -110,7 +110,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 	private byte[] directCertificate;
 	private String password;
 	private int attnum = 1;
-	ValidationContext vc;
+	ValidationContext vc = new ValidationContext();
 	private int partNumber;
 	private int shiftNumber;
 	private ValidationSummary validationSummary = new ValidationSummary();
@@ -455,9 +455,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
 			docVC.isDIRECT = false;
 			docVC.isCCDA = true;
+			
+			if(directCertificate!=null) {
+				MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
+				mve.run();
+			}
 
-			MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
-			mve.run();
 		} else {
 			er.detail("Is not a CDA R2 so no validation attempted");
 		}

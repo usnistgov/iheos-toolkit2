@@ -25,6 +25,7 @@ import org.junit.Test;
 
 public class DirectMessageValidatorMimeVersionTest {
 	// DTS 102b, MIME Version, Required
+	// Result: Success
 	@Test
 	public void testMimeVersion() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -33,6 +34,7 @@ public class DirectMessageValidatorMimeVersionTest {
 		assertTrue(!er.hasErrors());
 	}
 			
+	// Result: Fail
 	@Test
 	public void testMessageId2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

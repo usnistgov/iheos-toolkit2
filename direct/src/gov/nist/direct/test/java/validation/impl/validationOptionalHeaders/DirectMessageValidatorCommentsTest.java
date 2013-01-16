@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorCommentsTest {
 	
 	// DTS 125, Comments, Optional
+	// Result: Success
 	@Test
 	public void testComments() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -37,6 +38,7 @@ public class DirectMessageValidatorCommentsTest {
 	}
 		
 		
+	// Result: Fail
 	@Test
 	public void testComments2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

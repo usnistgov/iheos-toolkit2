@@ -25,6 +25,7 @@ import org.junit.Test;
 
 public class DirectMessageValidatorOrigDateTest {
 	// DTS 114, Orig-Date, Required
+	// Result: Success
 	@Test
 	public void testOrigDate() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -33,6 +34,7 @@ public class DirectMessageValidatorOrigDateTest {
 		assertTrue(!er.hasErrors());
 	}
 		
+	// Result: Fail
 	@Test
 	public void testOrigDate2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

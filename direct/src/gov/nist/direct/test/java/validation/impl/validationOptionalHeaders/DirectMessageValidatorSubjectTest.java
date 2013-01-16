@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorSubjectTest {
 	
 	// DTS 124, Subject, Optional
+	//Result: Success
 	@Test
 	public void testSubject() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -36,6 +37,7 @@ public class DirectMessageValidatorSubjectTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	//Result: Success
 	@Test
 	public void testSubject2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -44,6 +46,7 @@ public class DirectMessageValidatorSubjectTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	//Result: Fail
 	@Test
 	public void testSubject3() {
 		ErrorRecorder er = new TextErrorRecorderModif();

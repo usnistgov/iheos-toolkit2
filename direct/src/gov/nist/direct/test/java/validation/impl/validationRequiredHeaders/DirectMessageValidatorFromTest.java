@@ -25,6 +25,7 @@ import org.junit.Test;
 
 public class DirectMessageValidatorFromTest {
 	// DTS 115, From, Required
+	// Result: Succes
 	@Test
 	public void testFrom() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -33,6 +34,7 @@ public class DirectMessageValidatorFromTest {
 		assertTrue(!er.hasErrors());
 	}
 			
+	// Result: Fail
 	@Test
 	public void testFrom2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
