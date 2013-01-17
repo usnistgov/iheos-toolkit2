@@ -162,7 +162,7 @@ public class WrappedMessageParser {
 		} catch (IOException e1) {
 			er.err("0", "Error in loading certificate IOException (decryption)", "", "", "Certificate file");
 		} catch (Exception e1) {
-			er.err("0", "Cannot load the certificate. Probably wrong certificate file", "", "", "Certificate file");
+			er.err("0", "Cannot load the certificate (decryption). Probably wrong format certificate file", "", "", "Certificate file");
 		}
 
 		@SuppressWarnings("rawtypes")
