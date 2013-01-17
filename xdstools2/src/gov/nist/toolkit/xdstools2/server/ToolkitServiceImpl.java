@@ -285,7 +285,7 @@ ToolkitService {
 			
 			File warHome = new File(context.getRealPath("/"));
 			System.setProperty("warHome", warHome.toString());
-			System.out.println("warHome [ToolkitServiceImpl]: " + warHome);
+			logger.info("warHome [ToolkitServiceImpl]: " + warHome);
 			Installation.installation().warHome(warHome);
 		}
 		return context;
