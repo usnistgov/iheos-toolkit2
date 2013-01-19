@@ -59,6 +59,8 @@ public class CSVEntry {
 	}
 	
 	public String get(int i) {
+		if (i >= items.size())
+			return "";
 		return items.get(i);
 	}
 
