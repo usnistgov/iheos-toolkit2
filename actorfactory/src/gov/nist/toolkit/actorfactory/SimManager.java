@@ -105,6 +105,7 @@ public class SimManager {
 			String simtype = sc.getType();
 			ActorType at = ActorType.findActor(simtype);
 			ActorFactory af = ActorFactory.getActorFactory(at);
+			af.setSimManager(this);  // doesn't get set otherwise on sim reload
 			if (!af.simExists(sc)) {
 				if (deletions == null)
 					deletions = new ArrayList<SimulatorConfig>();

@@ -16,7 +16,6 @@ import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.ResultSummary;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestLogs;
@@ -34,8 +33,8 @@ import gov.nist.toolkit.testengine.RetrieveB;
 import gov.nist.toolkit.testengine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.TransactionSettings;
 import gov.nist.toolkit.testengine.Xdstest2;
+import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.testengine.logrepository.SessionRepository;
-import gov.nist.toolkit.testengine.logrepository.TestLogRepository;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
@@ -159,7 +158,8 @@ public class XdsTestServiceManager extends CommonServiceManager {
 				session.res = new AssertionResults();
 
 			if (session.transactionSettings.logRepository == null)
-				session.transactionSettings.logRepository = new SessionRepository(session.getId()).getNewLogRepository();
+				session.transactionSettings.logRepository = new LogRepositoryFactory().
+				getRepository(Installation.installation().sessionCache(), session.getId(), LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 			session.xt.setLogRepository(session.transactionSettings.logRepository);
 			
 			try {
@@ -440,7 +440,8 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			session.setSiteSpec(siteSpec);
 			
 			if (session.transactionSettings.logRepository == null) {
-				session.transactionSettings.logRepository = new TestLogRepository(mesaTestSession); 
+				session.transactionSettings.logRepository = new LogRepositoryFactory().
+						getRepository(Installation.installation().testLogFile(), mesaTestSession, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null); 
 				session.transactionSettings.writeLogs = true;
 			}
 

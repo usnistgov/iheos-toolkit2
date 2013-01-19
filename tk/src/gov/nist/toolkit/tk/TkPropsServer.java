@@ -72,6 +72,16 @@ public class TkPropsServer {
 		return false;
 	}
 
+	public void set(String name, String value) {
+		Ps s = getEntry(name);
+		if (s == null) {
+			Ps x = new Ps(name, value);
+			p.add(x);
+		} else {
+			s.value = value;
+		}
+	}
+
 	TkPropsServer startsWith(String prefix) {
 		List<Ps> ps = new ArrayList<Ps>();
 
@@ -117,6 +127,14 @@ public class TkPropsServer {
 
 	public TkPropsServer withPrefixRemoved(String prefix) {
 		return withPrefix(prefix).rmPrefix(prefix);
+	}
+
+	Ps getEntry(String name) {
+		for (Ps x : p) {
+			if (x.name.equals(name))
+				return x;
+		}
+		return null;
 	}
 
 	public String get(String name) throws PropertyNotFoundException {

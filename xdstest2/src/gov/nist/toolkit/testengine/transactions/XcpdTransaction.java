@@ -43,14 +43,14 @@ public class XcpdTransaction extends BasicTransaction {
 			soapCall(request);
 			OMElement result = getSoapResult();
 			if (result != null) {
-				this.s_ctx.add_name_value(instruction_output, "Result", result);
+				testLog.add_name_value(instruction_output, "Result", result);
 				
 				// here get validation call and put here
 				
 				
 				validate_response(result);
 			} else {
-				this.s_ctx.add_name_value(instruction_output, "Result", "None");
+				testLog.add_name_value(instruction_output, "Result", "None");
 				s_ctx.set_error("Result was null");
 			}
 
@@ -99,17 +99,17 @@ public class XcpdTransaction extends BasicTransaction {
 
 		// Sets header reporting
 		HashMap<String, String> reportHeader = rp.getHeaderValues();
-		   s_ctx.add_name_value(instruction_output, "Detail", "ValidationStatus: " + reportHeader.get("ValidationStatus"));
-	       s_ctx.add_name_value(instruction_output, "Detail", "DateOfTest: " + reportHeader.get("DateOfTest"));
-		   s_ctx.add_name_value(instruction_output, "Detail", "ResultOfTest: " + reportHeader.get("ResultOfTest"));
-	       s_ctx.add_name_value(instruction_output, "Detail", "TotalErrorCount: " + reportHeader.get("ErrorCount"));
+		testLog.add_name_value(instruction_output, "Detail", "ValidationStatus: " + reportHeader.get("ValidationStatus"));
+		testLog.add_name_value(instruction_output, "Detail", "DateOfTest: " + reportHeader.get("DateOfTest"));
+		testLog.add_name_value(instruction_output, "Detail", "ResultOfTest: " + reportHeader.get("ResultOfTest"));
+		testLog.add_name_value(instruction_output, "Detail", "TotalErrorCount: " + reportHeader.get("ErrorCount"));
 		
 		// Sets schema reporting
-	    s_ctx.add_name_value(instruction_output, "Detail", "");
-	    s_ctx.add_name_value(instruction_output, "Detail", "---- Schema Report ----");
+		testLog.add_name_value(instruction_output, "Detail", "");
+		testLog.add_name_value(instruction_output, "Detail", "---- Schema Report ----");
 		ArrayList<String> schemaErrors = rp.getSchemaErrors();
 		if (schemaErrors == null) {
-			s_ctx.add_name_value(instruction_output, "Detail", "No Schema Errors Found");
+			testLog.add_name_value(instruction_output, "Detail", "No Schema Errors Found");
 		} else {
 			for (int i = 0; i < schemaErrors.size(); i++) {
 				try {
@@ -118,20 +118,20 @@ public class XcpdTransaction extends BasicTransaction {
 				}
 		}	
 		// Sets schematron reporting
-		s_ctx.add_name_value(instruction_output, "Detail", "");
-		s_ctx.add_name_value(instruction_output, "Detail", "---- Schematron Report ----");
+			testLog.add_name_value(instruction_output, "Detail", "");
+			testLog.add_name_value(instruction_output, "Detail", "---- Schematron Report ----");
 		@SuppressWarnings("rawtypes")
 		ArrayList<HashMap> schematronErrors = rp.getSchematronErrors();
 		if (schematronErrors == null) {
-			s_ctx.add_name_value(instruction_output, "Detail", "No Schematron Errors Found");
+			testLog.add_name_value(instruction_output, "Detail", "No Schematron Errors Found");
 		} else {
 			for (int j = 0; j < schematronErrors.size(); j++) {
 				@SuppressWarnings("rawtypes")
 				HashMap errorMsg = (HashMap) schematronErrors.get(j);
-				s_ctx.add_name_value(instruction_output, "Detail", "Message: " + errorMsg.get("Message").toString());
-				s_ctx.add_name_value(instruction_output, "Detail", "Context: " + errorMsg.get("Context").toString());
-				s_ctx.add_name_value(instruction_output, "Detail", "Test: " + errorMsg.get("Test").toString());
-				s_ctx.add_name_value(instruction_output, "Detail", "");
+				testLog.add_name_value(instruction_output, "Detail", "Message: " + errorMsg.get("Message").toString());
+				testLog.add_name_value(instruction_output, "Detail", "Context: " + errorMsg.get("Context").toString());
+				testLog.add_name_value(instruction_output, "Detail", "Test: " + errorMsg.get("Test").toString());
+				testLog.add_name_value(instruction_output, "Detail", "");
 			}
 		}
 	}	

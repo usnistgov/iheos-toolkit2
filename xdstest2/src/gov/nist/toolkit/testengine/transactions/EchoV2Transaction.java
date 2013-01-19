@@ -33,10 +33,10 @@ public class EchoV2Transaction  extends BasicTransaction {
 			String part_name = part.getLocalName();
 			if (part_name.equals("MetadataFile")) {
 				metadata_filename = part.getText();
-				s_ctx.add_name_value(instruction_output, "MetadataFile", metadata_filename);
+				testLog.add_name_value(instruction_output, "MetadataFile", metadata_filename);
 			} else if (part_name.equals("ParseMetadata")) {
 				String value = part.getText();
-				s_ctx.add_name_value(instruction_output, "ParseMetadata", value);
+				testLog.add_name_value(instruction_output, "ParseMetadata", value);
 				if (value.equals("False"))
 					parse_metadata = false;
 			}
@@ -71,7 +71,7 @@ public class EchoV2Transaction  extends BasicTransaction {
 				throw new XdsInternalException("Echo Transaction (as coded in testplan step '" + s_ctx.get("step_id") + "') must reference a file containing an EchoV2Metadata");
 
 		} 
-		s_ctx.add_name_value(	instruction_output, 
+		testLog.add_name_value(	instruction_output, 
 				"InputMetadata", 
 				Util.deep_copy(metadata.getRoot()));
 
@@ -84,7 +84,7 @@ public class EchoV2Transaction  extends BasicTransaction {
 			OMElement result = serviceClient.sendReceive(metadata.getRoot());
 
 			if (result != null) {
-				s_ctx.add_name_value(instruction_output, "Result", result);
+				testLog.add_name_value(instruction_output, "Result", result);
 
 				validate_registry_response(result, MetadataTypes.METADATA_TYPE_R);
 			}

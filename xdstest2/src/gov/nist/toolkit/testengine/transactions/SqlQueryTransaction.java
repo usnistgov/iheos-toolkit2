@@ -30,16 +30,16 @@ public class SqlQueryTransaction extends QueryTransaction {
 		String part_name = part.getLocalName();
 		if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + part.getText();
-			s_ctx.add_name_value(instruction_output, "MetadataFile", metadata_filename);
+			testLog.add_name_value(instruction_output, "MetadataFile", metadata_filename);
 		} else if (part_name.equals("Metadata")) { 
 			metadata_filename = "";
 			metadata = part.getFirstElement();
 		} else if (part_name.equals("ExpectedContents")) {
 			expected_contents = part;
-			s_ctx.add_name_value(instruction_output, "ExpectedContents", part);
+			testLog.add_name_value(instruction_output, "ExpectedContents", part);
 		} else if (part_name.equals("UseId")) {
 			use_id.add(part);
-			s_ctx.add_name_value(instruction_output, "UseId", part);
+			testLog.add_name_value(instruction_output, "UseId", part);
 		} else
 			parseBasicInstruction(part);
 
@@ -69,7 +69,7 @@ public class SqlQueryTransaction extends QueryTransaction {
 		if (use_id.size() > 0)
 			compileUseIdLinkage(m, use_id);
 
-		s_ctx.add_name_value(instruction_output, "InputMetadata", Util.deep_copy(metadata_ele));
+		testLog.add_name_value(instruction_output, "InputMetadata", Util.deep_copy(metadata_ele));
 
 		OMNamespace ns = metadata_ele.getNamespace();
 		String ns_uri = ns.getNamespaceURI();
@@ -113,7 +113,7 @@ public class SqlQueryTransaction extends QueryTransaction {
 			OMElement result = null;
 			result = serviceClient.sendReceive(metadata_ele);
 
-			s_ctx.add_name_value(instruction_output, "Result", result);
+			testLog.add_name_value(instruction_output, "Result", result);
 
 			validate_registry_response_no_set_status(result, metadata_type);
 

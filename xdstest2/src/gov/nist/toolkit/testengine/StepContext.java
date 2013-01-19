@@ -174,7 +174,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		System.out.println("\tStep: " + step_id);
 
 
-		test_step_output = add_simple_element_with_id(
+		test_step_output = testLog.add_simple_element_with_id(
 				plan_context.getResultsDocument(), 
 				"TestStep", 
 				step_id);
@@ -189,7 +189,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			if (instruction_name.equals("ExpectedStatus")) 
 			{
 				expected_status = instruction.getText();
-				add_name_value(test_step_output, instruction_name, expected_status);
+				testLog.add_name_value(test_step_output, instruction_name, expected_status);
 				setExpectedStatus(new TransactionStatus(expected_status));
 			} 
 			else if (instruction_name.equals("Rule")) 
@@ -198,12 +198,12 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			else if (instruction_name.equals("Goal")) 
 			{
 				String goal = instruction.getText();
-				add_name_value(test_step_output, instruction_name, goal);
+				testLog.add_name_value(test_step_output, instruction_name, goal);
 			} 
 			else if (instruction_name.equals("RegistryEndpoint")) 
 			{
 				plan_context.defaultRegistryEndpoint = instruction.getText();
-				add_name_value(test_step_output, instruction); 
+				testLog.add_name_value(test_step_output, instruction); 
 				plan_context.setRegistryEndpoint(plan_context.defaultRegistryEndpoint);
 			} 
 			else if (instruction_name.equals("NewPatientId"))  
@@ -223,20 +223,20 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			else if (instruction_name.equals("ExpectedErrorMessage")) 
 			{
 				expected_error_message = instruction.getText();
-				add_name_value(test_step_output, instruction_name, expected_error_message);
+				testLog.add_name_value(test_step_output, instruction_name, expected_error_message);
 				setExpectedErrorMessage(expected_error_message);
 			} 
 			else if (instruction_name.equals("ExpectedErrorCode")) 
 			{
 				expected_error_code = instruction.getText();
-				add_name_value(test_step_output, instruction); 
+				testLog.add_name_value(test_step_output, instruction); 
 			} 
 			else {
 				resetStatus();
 				OMElement instruction_output = null;
 				BasicTransaction transaction = null;
 				
-				instruction_output = add_simple_element(test_step_output, instruction_name);
+				instruction_output = testLog.add_simple_element(test_step_output, instruction_name);
 				instruction_output.addAttribute("step", step_id, null);
 				
 				if (instruction_name.equals("SqlQueryTransaction")) 
@@ -347,7 +347,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				transaction.doRun();				
 				
 				if (transaction != null && getStatus() /*== false*/) {
-					OMElement assertion_output = add_simple_element(
+					OMElement assertion_output = testLog.add_simple_element(
 							test_step_output, 
 							"Assertions");
 					transaction.runAssertionEngine(instruction_output, this, assertion_output);

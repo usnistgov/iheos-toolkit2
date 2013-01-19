@@ -87,6 +87,10 @@ public class Installation {
 		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
 	}
 
+	public File directSendLogs() {
+		return new File(externalCache + sep + "direct" + sep + "sendlog");
+	}
+
 	public File sessionLogFile(String sessionId) {
 		return new File(warHome + sep + "SessionCache" + sep + sessionId);
 	}
@@ -95,8 +99,8 @@ public class Installation {
 		return new File(warHome + sep + "SessionCache");
 	}
 
-	public File testLogFile(String user) {
-		return new File(externalCache + sep + "TestLogCache" + sep + user);
+	public File testLogFile() {
+		return new File(externalCache + sep + "TestLogCache");
 	}
 
 }

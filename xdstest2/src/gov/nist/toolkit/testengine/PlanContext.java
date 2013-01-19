@@ -167,9 +167,9 @@ public class PlanContext extends BasicContext {
 		try {
 			results_document = build_results_document();	
 
-			add_name_value(results_document, "Xdstest2_version", testConfig.testkitVersion);
-			add_name_value(results_document, "Xdstest2_args", testConfig.args);
-			add_name_value(results_document, "testkit_version", testConfig.testkitVersion);
+			testLog.add_name_value(results_document, "Xdstest2_version", testConfig.testkitVersion);
+			testLog.add_name_value(results_document, "Xdstest2_args", testConfig.args);
+			testLog.add_name_value(results_document, "testkit_version", testConfig.testkitVersion);
 
 			//			String testplan_str = Io.stringFromFile(testplanFile);
 			//			
@@ -202,18 +202,18 @@ public class PlanContext extends BasicContext {
 				if (part_name.equals("RegistryEndpoint")) 
 				{
 					defaultRegistryEndpoint = part.getText();
-					add_name_value(results_document, part); 
+					testLog.add_name_value(results_document, part); 
 					setRegistryEndpoint(defaultRegistryEndpoint);
 				} 
 				else if (part_name.equals("PatientId")) 
 				{
 					default_patient_id = part.getText();
-					add_name_value(results_document, part);
+					testLog.add_name_value(results_document, part);
 					setPatientId(default_patient_id);
 				} 
 				else if (part_name.equals("Test")) 
 				{
-					add_name_value(results_document, part);
+					testLog.add_name_value(results_document, part);
 					test_num = part.getText();
 				} 
 				else if (part_name.equals("Rule")) 
@@ -246,20 +246,20 @@ public class PlanContext extends BasicContext {
 
 		} 
 		catch (MetadataValidationException e) {
-			add_name_value(results_document, "MetadataValidationError", ExceptionUtil.exception_details(e));
+			testLog.add_name_value(results_document, "MetadataValidationError", ExceptionUtil.exception_details(e));
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
 		}
 		catch (XdsException e) {  
 			String errorDetails = ExceptionUtil.exception_details(e);
-			add_name_value(results_document, "FatalError", errorDetails);
+			testLog.add_name_value(results_document, "FatalError", errorDetails);
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
 		}
 		catch (Exception e) {  
-			add_name_value(results_document, "FatalError", ExceptionUtil.exception_details(e));
+			testLog.add_name_value(results_document, "FatalError", ExceptionUtil.exception_details(e));
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);

@@ -124,27 +124,27 @@ public class StoredQueryTransaction extends QueryTransaction {
 		String part_name = part.getLocalName();
 		if (part_name.equals("ExpectedContents")) {
 			expected_contents = part;
-			s_ctx.add_name_value(instruction_output, "ExpectedContents", part);
+			testLog.add_name_value(instruction_output, "ExpectedContents", part);
 		} 
 		else if (part_name.equals("UseXPath")) {
 			use_xpath.add(part);
-			s_ctx.add_name_value(instruction_output, "UseXRef", part);
+			testLog.add_name_value(instruction_output, "UseXRef", part);
 		}
 		else if (part_name.equals("UseObjectRef")) {
 			use_object_ref.add(part);
-			s_ctx.add_name_value(instruction_output, "UseObjectRef", part);
+			testLog.add_name_value(instruction_output, "UseObjectRef", part);
 		} 
 		else if (part_name.equals("SOAP11")) {
 			soap_1_2 = false;
-			s_ctx.add_name_value(instruction_output, "SOAP11", part);
+			testLog.add_name_value(instruction_output, "SOAP11", part);
 		}
 		else if (part_name.equals("SOAP12")) {
 			soap_1_2 = true;
-			s_ctx.add_name_value(instruction_output, "SOAP12", part);
+			testLog.add_name_value(instruction_output, "SOAP12", part);
 		}
 		else if (part_name.equals("CleanParams")) {
 			clean_params = true;
-			s_ctx.add_name_value(instruction_output, "CleanParams", part);
+			testLog.add_name_value(instruction_output, "CleanParams", part);
 		}
 		else {
 			parseBasicInstruction(part);
