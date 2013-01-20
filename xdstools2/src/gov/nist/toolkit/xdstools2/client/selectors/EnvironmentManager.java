@@ -185,7 +185,10 @@ public class EnvironmentManager {
 	}
 	
 	void updateServer() {
-		toolkitService.setEnvironment(environmentState.getEnvironmentName(), setEnvironmentCallback);
+		String envName = environmentState.getEnvironmentName();
+		if (envName == null || envName.equals(""))
+			return;
+		toolkitService.setEnvironment(envName, setEnvironmentCallback);
 	}
 
 
