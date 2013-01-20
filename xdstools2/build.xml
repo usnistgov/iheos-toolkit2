@@ -185,10 +185,13 @@
 		<!-- 
 		<copy file="${testkit}/collections/registryb.tc" 
 			tofile="war/toolkitx/testkit/actorcollections/reg.tc"/>
-		<copy file="${testkit}/collections/repositoryb.tc" 
-			tofile="war/toolkitx/testkit/actorcollections/rep.tc"/>
 		<copy file="${testkit}/collections/update.tc" 
 			tofile="war/toolkitx/testkit/actorcollections/update.tc"/> -->
+
+
+
+		<copy file="${testkit}/collections/repositoryb.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/rep.tc"/>
 		<concat destfile="war/toolkitx/testkit/actorcollections/reg.tc">
 			<filelist dir="${testkit}/collections"
 					files="registryb.tc, update.tc"/>
