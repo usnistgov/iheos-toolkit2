@@ -58,8 +58,11 @@ public class EnvironmentManager {
 		environmentListBox.addChangeHandler(new EnvironmentChangeHandler());
 
 		updateEnvironmentListBox();
+		
+		loadEnvironmentNames(null);
+		getDefaultEnvironment();
 
-		loadEnvironmentNames(Cookies.getCookie(CookieManager.ENVIRONMENTCOOKIENAME));
+//		loadEnvironmentNames(Cookies.getCookie(CookieManager.ENVIRONMENTCOOKIENAME));
 		
 	}
 	
@@ -120,7 +123,8 @@ public class EnvironmentManager {
 
 			public void onSuccess(List<String> result) {
 				environmentState.setEnvironmentNameChoices(result);
-				environmentState.setEnvironmentName(initialEnvironmentName);
+				if (environmentState.getEnvironmentName() == null)
+					environmentState.setEnvironmentName(initialEnvironmentName);
 
 				if (environmentState.isFirstManager() && !environmentState.isValid())
 					getDefaultEnvironment();
@@ -150,7 +154,8 @@ public class EnvironmentManager {
 	}
 	
 	void getDefaultEnvironment() {
-		toolkitService.getDefaultEnvironment(getDefaultEnvironmentCallback);
+		if (environmentState.getEnvironmentName() == null)
+			toolkitService.getDefaultEnvironment(getDefaultEnvironmentCallback);
 	}
 	
 	AsyncCallback<String> getDefaultEnvironmentCallback = new AsyncCallback<String> () {
@@ -173,9 +178,9 @@ public class EnvironmentManager {
 	
 	
 	void updateCookie() {
-		if (environmentState.isValid())
-			Cookies.setCookie(CookieManager.ENVIRONMENTCOOKIENAME, environmentState.getEnvironmentName());
-		else
+//		if (environmentState.isValid())
+//			Cookies.setCookie(CookieManager.ENVIRONMENTCOOKIENAME, environmentState.getEnvironmentName());
+//		else
 			Cookies.removeCookie(CookieManager.ENVIRONMENTCOOKIENAME);		
 	}
 	
