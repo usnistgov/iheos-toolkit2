@@ -22,7 +22,7 @@ public class CSVEntry {
 				
 			} else if (c == ',') {
 				if (stringStart == -1) {
-					
+					add("");
 				} else {
 					add(line.substring(stringStart, cursor).trim());
 					stringStart = -1;

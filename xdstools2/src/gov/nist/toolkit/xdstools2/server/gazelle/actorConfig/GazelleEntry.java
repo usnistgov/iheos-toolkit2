@@ -7,10 +7,10 @@ public class GazelleEntry extends CSVEntry {
 	static final int GazelleConfigActor = 4;
 	static final int GazelleConfigIsSecure = 5;
 	static final int GazelleConfigIsApproved = 6;
-	static final int GazelleConfigUrl = 7;
+	static final int GazelleConfigUrl = 8;
 	static final int GazelleConfigPort = 12;
 	static final int GazelleConfigPortSecured = 11;
-	static final int GazelleConfigDetail = 9;
+	static final int GazelleConfigDetail = 10;
 
 	public String getSystem() { return get(GazelleConfigSystem); }
 	public String getHost() { return get(GazelleConfigHost); }
@@ -42,5 +42,21 @@ public class GazelleEntry extends CSVEntry {
 		super(line);
 		
 		System.out.println("System: " + getSystem());
+	}
+	
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("[");
+		buf.append(" System=").append(getSystem());
+		buf.append(" Host=").append(getHost());
+		buf.append(" Actor=").append(getActor());
+		buf.append(" Trans=").append(getTransId());
+		buf.append(" Secure=").append(getIsSecure());
+		buf.append(" Approved=").append(getIsApproved());
+		buf.append(" URL=").append(getURL());
+		buf.append("]");
+		
+		return buf.toString();
 	}
 }

@@ -47,6 +47,8 @@ public class ConfigToXml {
 
 		Sites sites = new Sites();
 		for (String sysName : gMap.keySet()) {
+			if (sysName == null || sysName.equals(""))
+				continue;
 			String actorName = sysName; 
 			Site site = buildSite(actorName, gMap.get(sysName), conflictBuffer);
 			lastSite = site;
@@ -97,7 +99,9 @@ public class ConfigToXml {
 
 		List<SysConfig> configs = new ArrayList<SysConfig>();
 
+		System.out.println("Building Site for " + sysname);
 		for (GazelleEntry entry : entries) {
+			System.out.println(entry);
 			SysConfig sysConfig = new SysConfig(this, entry);
 			TransactionType trans = sysConfig.trans;
 			
