@@ -7,7 +7,7 @@
 	<property name="actorcollections" value="war/toolkitx/testkit/actorcollections" />
 	<property name="sessionCache" value="war/SessionCache" />
 	<property name="xdstest" value="war/toolkitx/xdstest" />
-	<property name="shared.lib" value="../../../shared-lib/lib"/>
+	<property name="shared.lib" value="../shared-lib/lib"/>
 	<property name="war.bin" value="../xdstools2/war/WEB-INF/classes"/>
 	<property name="build.common.classes" value="${war.bin}"/>
 
@@ -88,13 +88,16 @@
 		<delete file="listener.jar" failonerror="no"/>
 	</target>
 
-	<target name="war-prep" depends="assemble, install-cert, include-jars-in-war, doc">
+	<target name="war-prep" depends="assemble, install-cert, include-jars-in-war, doc, log4j">
 		<copy file="build.num" todir="war" overwrite="yes"/>
 		<mkdir dir="war/WEB-INF/classes"/>
-		<copy file="log4j.properties" todir="war/WEB-INF/classes" overwrite="yes"/>
 		<copy file="schematron.properties" todir="war/WEB-INF/classes" overwrite="yes"/>
 		<mkdir dir="war/DirectValidationReports"/>
     </target>
+	
+	<target name="log4j">
+		<copy file="log4j.properties" todir="war/WEB-INF/classes" overwrite="yes"/>
+	</target>
 
     <target name="install-cert">
 		<mkdir dir="war/pubcert"/>
@@ -143,8 +146,8 @@
 	<target name="update-collections">
 		<ant dir="../xdstest2" antfile="build.xml" target="testkit.collections" inheritAll="true" inheritRefs="true"/> 
 	</target>
-	
-	<target name="assemble" depends="update-collections">
+
+	<target name="assemble-from-testkit" depends="update-collections">
 		<mkdir dir="war/toolkitx/admin"/>
 		<copy todir="war/toolkitx/admin">
 			<fileset file="${testkit}/admin/version"/>
@@ -176,6 +179,21 @@
 				<exclude name="**/.svn"/>
 			</fileset>
 		</copy>
+		<copy file="${testkit}/collections/repositoryb.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/rep.tc"/>
+		<concat destfile="war/toolkitx/testkit/actorcollections/reg.tc">
+			<filelist dir="${testkit}/collections"
+					files="registryb.tc, update.tc"/>
+		</concat>
+		<copy file="${testkit}/collections/Document_Recipient.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/rec.tc"/>		
+		<copy file="${testkit}/collections/RG.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/rg.tc"/>
+		<copy file="${testkit}/collections/Initialize_for_Stored_Query.tc" 
+			tofile="war/toolkitx/testkit/actorcollections/Initialize_for_Stored_Query.tc"/>
+	</target>
+	
+	<target name="assemble" depends="assemble-from-testkit">
 
 		<copy file="actors.xml" tofile="war/toolkitx/xdstest/actors.xml"/>
 		
@@ -190,18 +208,6 @@
 
 
 
-		<copy file="${testkit}/collections/repositoryb.tc" 
-			tofile="war/toolkitx/testkit/actorcollections/rep.tc"/>
-		<concat destfile="war/toolkitx/testkit/actorcollections/reg.tc">
-			<filelist dir="${testkit}/collections"
-					files="registryb.tc, update.tc"/>
-		</concat>
-		<copy file="${testkit}/collections/Document_Recipient.tc" 
-			tofile="war/toolkitx/testkit/actorcollections/rec.tc"/>		
-		<copy file="${testkit}/collections/RG.tc" 
-			tofile="war/toolkitx/testkit/actorcollections/rg.tc"/>
-		<copy file="${testkit}/collections/Initialize_for_Stored_Query.tc" 
-			tofile="war/toolkitx/testkit/actorcollections/Initialize_for_Stored_Query.tc"/>
 		
 		<copy todir="war/toolkitx/xdstest/rampart/client_repositories/modules" file="../../shared-lib/mar/addressing-1.5.4.mar"/>
 		
