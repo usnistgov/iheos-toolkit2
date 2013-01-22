@@ -7,10 +7,10 @@ import gov.nist.toolkit.saml.util.SamlConstants;
  *
  */
 public class SubjectBean {
-    private String subjectName;
+    private String subjectName; // <saml:NameID>
     private String subjectNameIDFormat = SamlConstants.NAMEID_FORMAT_UNSPECIFIED;
-    private String subjectNameQualifier;
-    private String subjectConfirmationMethod;
+    private String subjectNameQualifier; // does not seems used
+    private String subjectConfirmationMethod; // <saml:SubjectConfirmation @Method>
     private KeyInfoBean keyInfo;
 
     /**
@@ -19,6 +19,8 @@ public class SubjectBean {
     public SubjectBean() {
     }
 
+    
+    // The constructor used so far... -Antoine
     /**
      * Constructor SubjectBean creates a new SubjectBean instance.
      *
@@ -34,24 +36,6 @@ public class SubjectBean {
         this.subjectName = subjectName;
         this.subjectNameQualifier = subjectNameQualifier;
         this.subjectConfirmationMethod = subjectConfirmationMethod;
-    }
-    
-    /**
-     * Constructor SubjectBean creates a new SubjectBean instance.
-     *
-     * @param subjectName of type String
-     * @param subjectNameQualifier of type String
-     * @param subjectConfirmationMethod of type String
-     * @param subjectNameIDFormat of type String
-     */
-    public SubjectBean(
-        String subjectName, 
-        String subjectNameQualifier, 
-        String subjectConfirmationMethod,
-        String subjectNameIDFormat
-    ) {
-        this(subjectName, subjectNameQualifier, subjectConfirmationMethod);
-        this.subjectNameIDFormat = subjectNameIDFormat;
     }
 
     /**

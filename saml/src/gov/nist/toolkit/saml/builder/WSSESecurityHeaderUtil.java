@@ -367,7 +367,11 @@ public class WSSESecurityHeaderUtil {
 
 		// Create a DOMSignContext and specify the RSA PrivateKey and
 		// location of the resulting XMLSignature's parent element.
-		DOMSignContext domSignCtx = new DOMSignContext(pvtKey, assrtElement);
+	    
+	    //(MA1024) fix. assertion signature has to be placed after the issuer. -Antoine
+	    Node nextSibling = assrtElement.getElementsByTagName("saml:Subject").item(0);
+	    
+		DOMSignContext domSignCtx = new DOMSignContext(pvtKey, assrtElement,nextSibling);
 		//domSignCtx.setDefaultNamespacePrefix(DS_PREFIX);
 		domSignCtx.putNamespacePrefix(javax.xml.crypto.dsig.XMLSignature.XMLNS, DS_PREFIX);
 		domSignCtx.setIdAttributeNS(assrtElement, null, "ID");//added for GWT error		
@@ -418,11 +422,13 @@ public class WSSESecurityHeaderUtil {
             prefixes.add(S_TAG); 
             c14nSpec = new ExcC14NParameterSpec(prefixes);
             
+            List<Transform> transformList = new ArrayList<Transform>();
+    		transformList.add(fac.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null));
+    		transformList.add(fac.newTransform(CanonicalizationMethod.EXCLUSIVE, (C14NMethodParameterSpec) null));    
 		
+    		//(MA115) -fix . Add transformations -Antoine
 		Reference ref = fac.newReference
-		(referenceURI, fac.newDigestMethod(DigestMethod.SHA1, null),
-				Collections.singletonList(fac.newTransform
-						(CanonicalizationMethod.EXCLUSIVE, (C14NMethodParameterSpec) c14nSpec)),null,null);
+		(referenceURI, fac.newDigestMethod(DigestMethod.SHA1, null),transformList,null,null);
 
 		prefixes.remove(0);
 		 c14nSpec = new ExcC14NParameterSpec(prefixes);

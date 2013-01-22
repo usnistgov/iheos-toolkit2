@@ -33,11 +33,9 @@ public class SOAPmessageBuilder_FromSoapObject_Test {
 	
 	private final String WAR_HOME= getClass().getClassLoader().getResource(".").getPath();
 	//the soap code calls it axis2 repository...  
-	private final String HARCODED_PATH_TO_RAMPART="/Users/gerardin/Documents/workspace/toolkit/xdstools2/war/toolkitx/xdstest";
+	private final String HARCODED_PATH_TO_RAMPART="/Users/gerardin/Documents/workspace/iheos_FROM_SOURCEFORGE/xdstools2/war/toolkitx/xdstest";
 	
-	private final String HARCODED_PATH_TO_ENVIRONMENT="/Users/gerardin/IHE-Testing/xdstools2_environment/environment/EURO2012";
-
-//	private final String HARCODED_PATH_TO_OUTPUT_FOLDER="/Users/gerardin/IHE-Testing/tests";
+	private final String HARCODED_PATH_TO_ENVIRONMENT="/Users/gerardin/IHE-Testing/xdstools2_environment/environment/NA2013-2";
 	
 	private final String MESSAGE_NAME="findpatient.xml";
 

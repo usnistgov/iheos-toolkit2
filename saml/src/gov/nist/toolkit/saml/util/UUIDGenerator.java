@@ -35,7 +35,8 @@ public class UUIDGenerator {
             incrementingValue = 0;
             i = 0;
         }
-        return baseUUID + System.currentTimeMillis() + i;
+        //ass underscore to enforce conformance (MA 1026) -Antoine
+        return "_" + baseUUID + System.currentTimeMillis() + i;
     }
 
     protected static synchronized void getInitialUUID() {

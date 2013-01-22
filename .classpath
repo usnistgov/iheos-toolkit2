@@ -49,13 +49,13 @@
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
 	<classpathentry kind="lib" path="lib/ant-contrib.jar"/>
-	<classpathentry kind="lib" path="lib/axiom-api-1.2.10.jar"/>
+	<classpathentry kind="lib" path="lib/axiom-api-1.2.10.jar" sourcepath="/Users/gerardin/.m2/repository/org/apache/ws/commons/axiom/axiom-api/1.2.10/axiom-api-1.2.10-sources.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-dom-1.2.10.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-impl-1.2.10.jar"/>
 	<classpathentry kind="lib" path="lib/axis2-adb-1.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/axis2-adb-codegen-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/axis2-codegen-1.5.4.jar"/>
-	<classpathentry kind="lib" path="lib/axis2-kernel-1.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/axis2-kernel-1.5.4.jar" sourcepath="/Users/gerardin/.m2/repository/org/apache/axis2/axis2-kernel/1.5.4/axis2-kernel-1.5.4-sources.jar"/>
 	<classpathentry kind="lib" path="lib/axis2-mtompolicy-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/axis2-saaj-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/axis2-saaj-api-1.4.1.jar"/>
@@ -93,7 +93,7 @@
 	<classpathentry kind="lib" path="lib/neethi-2.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/net.sourceforge.lpg.lpgjavaruntime_1.1.0.v200803061910.jar"/>
 	<classpathentry kind="lib" path="lib/not-yet-commons-ssl-0.3.9.jar"/>
-	<classpathentry kind="lib" path="lib/opensaml-2.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/opensaml-2.2.3.jar" sourcepath="/Users/gerardin/IHE-Testing/Libs-sources/opensaml-2.5.1-1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/openws-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.5.0.v200906151043.jar"/>
