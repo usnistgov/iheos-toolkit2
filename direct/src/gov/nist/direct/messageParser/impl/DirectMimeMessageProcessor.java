@@ -446,6 +446,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 
 		// Send to C-CDA validation tool.
 		InputStream attachmentContents = p.getInputStream();
+		
+		// Display CCDA Document
+		er.detail("#####################CCDA Content######################");
+		er.detail(p.getContent().toString());
+		er.detail("####################################################");
+		logger.info(p.getContent().toString());
+		
 
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
 
