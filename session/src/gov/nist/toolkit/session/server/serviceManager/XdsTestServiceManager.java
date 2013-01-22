@@ -441,7 +441,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			
 			if (session.transactionSettings.logRepository == null) {
 				session.transactionSettings.logRepository = new LogRepositoryFactory().
-						getRepository(Installation.installation().testLogFile(), mesaTestSession, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null); 
+						getRepository(Installation.installation().testLogFile(), mesaTestSession, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.SPECIFIC_ID, testName); 
 				session.transactionSettings.writeLogs = true;
 			}
 
