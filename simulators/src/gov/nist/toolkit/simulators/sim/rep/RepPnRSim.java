@@ -25,6 +25,7 @@ import gov.nist.toolkit.xdsexception.XDSMissingDocumentException;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -61,6 +62,22 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 
 			Map<String, StoredDocument> sdMap = new HashMap<String, StoredDocument>();
 
+			// verify that all attached documents are repesented in metadata by a DocumentEntry
+			Set<String> idsWithAttachments = dam.getIds();
+			for (String id : idsWithAttachments) {
+				boolean foundit = false;
+				for (OMElement eo : m.getExtrinsicObjects()) {
+					String eoId = m.getId(eo);
+					if (eoId != null && eoId.equals(id)) {
+						foundit = true;
+						break;
+					}
+				}
+				if (!foundit) 
+					er.err(XdsErrorCode.Code.XDSMissingDocumentMetadata, "Document with id " + id + " not represented by DocumentEntry in metadata",null, Mtom.XOP_example2);
+			}
+			
+			
 			for (OMElement eo : m.getExtrinsicObjects()) {
 				String eoId = m.getId(eo);
 				String uid = m.getUniqueIdValue(eo);
@@ -98,6 +115,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 						logger.info("Size (at Repository) is " + size);
 						logger.info("Hash (at Repository) is " + hash);
 					} else {
+						er.err(XdsErrorCode.Code.XDSMissingDocument, "Document contents for document " + eoId + " not available in message",null, Mtom.XOP_example2);
 						throw new XDSMissingDocumentException("Document contents for document " + eoId + " not available in message", Mtom.XOP_example2);
 					}
 				}
