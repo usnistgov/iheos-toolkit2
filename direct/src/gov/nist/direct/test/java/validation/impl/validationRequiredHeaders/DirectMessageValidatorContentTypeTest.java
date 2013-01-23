@@ -25,6 +25,7 @@ import org.junit.Test;
 
 public class DirectMessageValidatorContentTypeTest {
 	// DTS 133a, Content-Type, Required
+	// Result: Success
 	@Test
 	public void testContentTypeName() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -33,6 +34,7 @@ public class DirectMessageValidatorContentTypeTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentTypeName2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -43,6 +45,7 @@ public class DirectMessageValidatorContentTypeTest {
 		
 		
 	// DTS 133b, Content-Type, Required
+	// Result: Success
 	@Test
 	public void testContentTypeName3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -51,6 +54,7 @@ public class DirectMessageValidatorContentTypeTest {
 		assertTrue(!er.hasErrors());
 	}
 		
+	// Result: Fail
 	@Test
 	public void testContentTypeName4() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -60,6 +64,7 @@ public class DirectMessageValidatorContentTypeTest {
 	}
 	
 	// DTS 160, Content Type Miclag, Required
+	// Result: Success
 	@Test
 	public void testContentTypeMicalg() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -68,6 +73,7 @@ public class DirectMessageValidatorContentTypeTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentTypeMicalg2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -77,14 +83,16 @@ public class DirectMessageValidatorContentTypeTest {
 	}
 	
 	// DTS 205, Content Type Protocol, Required
+	// Result: Success
 	@Test
 	public void testContentTypeProtocol() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTypeProtocol(er, "\"application/pkcs7-signature\"");
 		assertTrue(!er.hasErrors());
-		}
+	}
 					
+	// Result: Fail
 	@Test
 	public void testContentTypeProtocol2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -94,14 +102,16 @@ public class DirectMessageValidatorContentTypeTest {
 	}
 	
 	// DTS 206, Content-Transfer-Encoding, Required
+	// Result: Success
 	@Test
 	public void testContentTransferEncoding() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		validator.validateContentTransferEncoding(er, "base64");
 		assertTrue(!er.hasErrors());
-		}
+	}
 					
+	// Result: Fail
 	@Test
 	public void testContentTransferEncoding2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

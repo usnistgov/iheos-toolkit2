@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client;
 
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.directsim.DirectServiceManager;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsim.client.DirectRegistrationData;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -20,7 +19,6 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +38,9 @@ public interface ToolkitService extends RemoteService  {
 	String toolkitPubCert()throws NoServletSessionException;
 	ContactRegistrationData saveCertFromUpload(ContactRegistrationData reg, String directAddr)  throws NoServletSessionException, Exception;
 	List<Result> directSend(Map<String, String> parms) throws NoServletSessionException;
+	List<String> getEncryptionCertDomains();
 
-	public TkProps getTkProps() throws NoServletSessionException, Exception;
+	public TkProps getTkProps() throws NoServletSessionException;
 	
 	/* Test management */
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession) throws NoServletSessionException ;
@@ -167,8 +166,6 @@ public interface ToolkitService extends RemoteService  {
 	public String getDefaultAssigningAuthority() throws NoServletSessionException ;
 	public String getAttributeValue(String username, String attName) throws Exception;
 	public void setAttributeValue(String username, String attName, String attValue) throws Exception;
-	public List<String> getFeatureList() throws NoServletSessionException ;
-
 	
 	public Map<String, String> getSessionProperties() throws NoServletSessionException;
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;

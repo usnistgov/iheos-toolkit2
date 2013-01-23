@@ -2,7 +2,7 @@
 <project basedir="." default="war" name="xdstools2">
 
 	<!-- dependencies -->
-	<property name="testkit.dir" location="../../testkit" />
+	<property name="testkit.dir" location="../testkit" />
 	<property name="xdstest2.dir" location="../xdstest2" />
 	<property name="resources.dir" location="." />
 	<property name="config.dir" location="${resources.dir}/default_config" />
@@ -15,12 +15,12 @@
 	<property name="war.documentCache.dir" location="${war.dir}/xdstools2/DocumentCache" />
 	<property name="war.mailer.dir" location="${war.dir}/WEB-INF/direct/mailer" />
 
-	<!-- WHAT FOR delegates to xdstests2. -->
+	<!-- do some work on testkit collections -->
 	<target name="update-collections">
 		<ant dir="${xdstest2.dir}" antfile="build.xml" target="testkit.collections" inheritAll="true" inheritRefs="true" />
 	</target>
 
-	<!-- review exclusion list. Duplicate with copy to war.lib step -->
+	<!-- !! review exclusion list. Duplicate with copy to war.lib step -->
 	<target name="war">
 		<jar destfile="${target.dir}/${war.name}">
 			<fileset dir="war">
@@ -162,13 +162,30 @@
 			</fileset>
 		</copy>
 
+		<mkdir dir="${war.testkit.dir}/selftest" />
+		<copy todir="${war.testkit.dir}/selftest">
+			<fileset dir="${testkit.dir}/selftest">
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
 		<!-- the target names match the ActorType short names found in ATFactory.java-->
+		<copy file="${testkit.dir}/collections/repositoryb.tc" tofile="${war.testkit.dir}/actorcollections/rep.tc" />
+		<concat destfile="${war.testkit.dir}/actorcollections/reg.tc">
+			<filelist dir="${testkit.dir}/collections" files="registryb.tc, update.tc" />
+		</concat>
+		<copy file="${testkit.dir}/collections/Document_Recipient.tc" tofile="${war.testkit.dir}/actorcollections/rec.tc" />
+		<copy file="${testkit.dir}/collections/RG.tc" tofile="${war.testkit.dir}/actorcollections/rg.tc" />
+		<copy file="${testkit.dir}/collections/Initialize_for_Stored_Query.tc" tofile="${war.testkit.dir}/actorcollections/Initialize_for_Stored_Query.tc" />
+
+		<!-- !! kept for debugging. Must be removed afetrwards-->
+		<!--
 		<copy file="${testkit.dir}/collections/registryb.tc" tofile="${war.testkit.dir}/actorcollections/reg.tc" />
 		<copy file="${testkit.dir}/collections/repositoryb.tc" tofile="${war.testkit.dir}/actorcollections/rep.tc" />
 		<copy file="${testkit.dir}/collections/update.tc" tofile="${war.testkit.dir}/actorcollections/update.tc" />
 		<copy file="${testkit.dir}/collections/Document_Recipient.tc" tofile="${war.testkit.dir}/actorcollections/rec.tc" />
 		<copy file="${testkit.dir}/collections/RG.tc" tofile="${war.testkit.dir}/actorcollections/rg.tc" />
-
+		-->
 	</target>
 
 	<!-- REVIEW where those certs come from -->
@@ -215,6 +232,10 @@
 
 	<!-- ============================================ -->
 
+	<!-- !! check that this target works  -->
+	<target name="log4j">
+		<copy file="log4j.properties" todir="war/WEB-INF/classes" overwrite="yes" />
+	</target>
 
 	<target name="ihe" depends="war-prep, ihe-config">
 		<move file="war.war" tofile="xdstools2.war" />
@@ -231,10 +252,6 @@
 	<target name="ttt-config">
 		<copy file="war/WEB-INF/toolkit.properties.ttt" tofile="war/WEB-INF/toolkit.properties" overwrite="yes" />
 	</target>
-
-	<target name="tkbuild" depends="war-prep, ihe-config" />
-
-	<target name="hit-testing" depends="ttt, listener" />
 
 
 

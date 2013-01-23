@@ -105,10 +105,10 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 
 
 				if (result == null) {
-					this.s_ctx.add_name_value(instruction_output, "Result", "None");
+					testLog.add_name_value(instruction_output, "Result", "None");
 					s_ctx.set_error("Result was null");
 				} else {
-					this.s_ctx.add_name_value(instruction_output, "Result", result);
+					testLog.add_name_value(instruction_output, "Result", result);
 
 					validate_registry_response(
 							result, 
@@ -148,15 +148,15 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 				OMElement response = swa.send(null, body);
 
 				OMElement soap_header_in = swa.getHeader();
-				s_ctx.add_name_value(instruction_output, "InHeader", Util.deep_copy( soap_header_in));
+				testLog.add_name_value(instruction_output, "InHeader", Util.deep_copy( soap_header_in));
 
 				OMElement soap_header_out = null;
-				s_ctx.add_name_value(instruction_output, "OutHeader", Util.deep_copy( soap_header_out));
+				testLog.add_name_value(instruction_output, "OutHeader", Util.deep_copy( soap_header_out));
 
 				OMElement result = swa.getBody();
 				if (result == null) {
-					this.s_ctx.add_name_value(instruction_output, "Result", "None");
-					s_ctx.add_name_value(instruction_output, "StepStatus", "Failure");
+					testLog.add_name_value(instruction_output, "Result", "None");
+					testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 					System.out.println("The result was NULL");
 				} else {
 					OMElement fault = MetadataSupport.firstChildWithLocalName(result, "Fault");
@@ -172,11 +172,11 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 					} else {
 						OMElement rr = MetadataSupport.firstChildWithLocalName(result, "RegistryResponse"); 
 						if (rr == null) {
-							this.s_ctx.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
-							s_ctx.add_name_value(instruction_output, "StepStatus", "Failure");
+							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
+							testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 							s_ctx.set_error("Result has no RegistryResponse");
 						} else {
-							this.s_ctx.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
+							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
 							validate_registry_response(rr, MetadataTypes.METADATA_TYPE_PR);
 						}
 					}
@@ -253,26 +253,26 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 				.getMessageContext(WSDLConstants.MESSAGE_LABEL_IN_VALUE);
 
 				OMElement soap_header_in = response.getEnvelope().getHeader();
-				s_ctx.add_name_value(instruction_output, "InHeader", Util.deep_copy( soap_header_in));
+				testLog.add_name_value(instruction_output, "InHeader", Util.deep_copy( soap_header_in));
 
 				MessageContext request = mepClient
 				.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
 				OMElement soap_header_out = response.getEnvelope().getHeader();
-				s_ctx.add_name_value(instruction_output, "OutHeader", Util.deep_copy( soap_header_out));
+				testLog.add_name_value(instruction_output, "OutHeader", Util.deep_copy( soap_header_out));
 
 				SOAPBody result = response.getEnvelope().getBody();
 				if (result == null) {
-					this.s_ctx.add_name_value(instruction_output, "Result", "None");
-					s_ctx.add_name_value(instruction_output, "StepStatus", "Failure");
+					testLog.add_name_value(instruction_output, "Result", "None");
+					testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 					System.out.println("The result was NULL");
 				} else {
 					OMElement rr = MetadataSupport.firstChildWithLocalName(result, "RegistryResponse"); 
 					if (rr == null) {
-						this.s_ctx.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
-						s_ctx.add_name_value(instruction_output, "StepStatus", "Failure");
+						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
+						testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 						s_ctx.set_error("Result has no RegistryResponse");
 					} else {
-						this.s_ctx.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
+						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
 						validate_registry_response(rr, MetadataTypes.METADATA_TYPE_PR);
 					}
 				}

@@ -2,6 +2,7 @@ package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
+import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.session.server.Session;
@@ -29,7 +30,7 @@ public class UpdateDocumentEntry extends CommonServiceManager {
 			areas[0] = "testdata-registry";
 
 //			Result r = toolkit.xdstest(testName, sections, params, areas, true);
-			return asList(new Result());
+			return asList(ResultBuilder.RESULT("UpdateDocumentEntry"));
 		} catch (Exception e) {
 			return buildExtendedResultList(e);
 		} finally {

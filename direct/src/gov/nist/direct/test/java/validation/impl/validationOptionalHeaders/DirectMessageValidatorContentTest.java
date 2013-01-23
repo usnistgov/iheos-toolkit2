@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorContentTest {
 	
 	// DTS 161-194, Content-Disposition filename, Optional
+	// Result: Success
 	@Test
 	public void testContentDispositionFilename() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -36,6 +37,7 @@ public class DirectMessageValidatorContentTest {
 		assertTrue(!er.hasErrors());
 	}
 
+	// Result: Success
 	@Test
 	public void testContentDispositionFilename2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -44,6 +46,7 @@ public class DirectMessageValidatorContentTest {
 		assertTrue(!er.hasErrors());
 	}
 
+	// Result: Success
 	@Test
 	public void testContentDispositionFilename3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -52,6 +55,7 @@ public class DirectMessageValidatorContentTest {
 		assertTrue(!er.hasErrors());
 	}
 
+	// Result: Fail
 	@Test
 	public void testContentDispositionFilename4() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -60,6 +64,7 @@ public class DirectMessageValidatorContentTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentDispositionFilename5() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -68,6 +73,7 @@ public class DirectMessageValidatorContentTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentDispositionFilename6() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -85,6 +91,7 @@ public class DirectMessageValidatorContentTest {
 		assertTrue(!er.hasErrors());
 	}
 
+	// Result: Fail
 	@Test
 	public void testContentId2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -94,6 +101,7 @@ public class DirectMessageValidatorContentTest {
 	}
 	
 	// DTS 135-142-144, Content-Description, Optional
+	// Result: Success
 	@Test
 	public void testContentDescription() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -103,63 +111,71 @@ public class DirectMessageValidatorContentTest {
 	}
 	
 	// DTS 136-148-157, Content-Transfer-Encoding, Optional
+	// Result: Success
 	@Test
 	public void testContentTransfertEncoding() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateContentTransferEncodingOptional(er, "7bit");
+		validator.validateContentTransferEncodingOptional(er, "7bit", "multipart/signed");
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Success
 	@Test
 	public void testContentTransfertEncoding2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateContentTransferEncodingOptional(er, "8bit");
+		validator.validateContentTransferEncodingOptional(er, "8bit", "multipart/mixed");
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentTransfertEncoding3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateContentTransferEncodingOptional(er, "binary");
-		assertTrue(!er.hasErrors());
+		validator.validateContentTransferEncodingOptional(er, "binary", "text/plain");
+		assertTrue(er.hasErrors());
 	}
 	
+	// Result: Success
 	@Test
 	public void testContentTransfertEncoding4() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateContentTransferEncodingOptional(er, "quoted-printable");
+		validator.validateContentTransferEncodingOptional(er, "quoted-printable", "text/plain");
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Success
 	@Test
 	public void testContentTransfertEncoding5() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateContentTransferEncodingOptional(er, "base-64");
+		validator.validateContentTransferEncodingOptional(er, "base-64", "applicaion/zip");
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Success
 	@Test
 	public void testContentTransfertEncoding6() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateContentTransferEncodingOptional(er, "7-bit transfert encoding");
+		validator.validateContentTransferEncodingOptional(er, "7-bit transfert encoding", "text/xml");
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentTransfertEncoding7() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateContentTransferEncodingOptional(er, "application/octet-stream");
+		validator.validateContentTransferEncodingOptional(er, "7bit", "application/octet-stream");
 		assertTrue(er.hasErrors());
 	}
 	
 	// DTS 138-149, Content-*, Optional
+	// Result: Success
 	@Test
 	public void testContentAll() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -168,6 +184,7 @@ public class DirectMessageValidatorContentTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentAll2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

@@ -82,10 +82,8 @@ public class SiteServiceManager extends CommonServiceManager {
 	}
 
 	public void loadSites(String sessionId) throws FactoryConfigurationError, Exception {
-//		if (sites == null) {
 			loadExternalSites(sessionId);
 			addSimulatorSites(sessionId);
-//		}
 	}
 
 	public Sites loadExternalSites(String sessionId) throws FactoryConfigurationError,
@@ -314,7 +312,10 @@ public class SiteServiceManager extends CommonServiceManager {
 		try {
 			loadSites(sessionId);
 			Sites sits = SimManager.getAllSites(sessionId, sites);
-			return new TransactionOfferingFactory(sits).get();
+			logger.debug("site Names: " + sits.getSiteNames());
+			TransactionOfferings to = new TransactionOfferingFactory(sits).get();
+//			logger.debug(sessionId + ":\n" + to);
+			return to;
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e));
 			throw new Exception("getTransactionOfferings() failed", e);

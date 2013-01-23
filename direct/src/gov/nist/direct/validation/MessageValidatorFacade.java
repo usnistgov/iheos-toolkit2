@@ -25,6 +25,6 @@ import java.util.List;
 
 import org.bouncycastle.cms.SignerInformation;
 
-public interface MessageValidatorFacade extends MessageValidator, MimeEntityValidator, MessageHeadersValidator, SignatureValidator{
+public interface MessageValidatorFacade extends MessageValidator, MimeEntityValidator, MessageHeadersValidator, WrappedMessageHeadersValidator, SignatureValidator{
 
 }

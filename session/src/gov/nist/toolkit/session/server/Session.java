@@ -10,7 +10,6 @@ import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.XdstestLogId;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
@@ -18,16 +17,13 @@ import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.LogMap;
-import gov.nist.toolkit.testengine.RawLogCache;
 import gov.nist.toolkit.testengine.TransactionSettings;
 import gov.nist.toolkit.testengine.Xdstest2;
 import gov.nist.toolkit.tk.TkLoader;
-import gov.nist.toolkit.tk.TkPropsServer;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -68,6 +64,7 @@ public class Session implements SecurityParams {
 	public AssertionResults res;
 	public TransactionSettings transactionSettings = new TransactionSettings();
 	public boolean isAdmin = false;
+	public boolean isSoap = true;
 	
 	byte[] lastUpload = null;
 	byte[] input2 = null;
@@ -78,7 +75,7 @@ public class Session implements SecurityParams {
 	String password1 = null;
 	String password2 = null;
 	
-	File tomcatSessionCache = null;   // one for this Tomcat session (corresponds to this Session object)
+//	File tomcatSessionCache = null;   // one for this Tomcat session (corresponds to this Session object)
 	File mesaSessionCache = null;     // changes each time new mesaSessionName changes
 	
 	Metadata lastMetadata = null;
@@ -127,9 +124,8 @@ public class Session implements SecurityParams {
 		siteSpec.isAsync = async;
 	}
 	
-	public void verifyCurrentEnvironment() throws XdsException {
-		if (EnvSetting.getEnvSetting(sessionId) == null)
-			throw new XdsException("No Environment Selected", null);
+	public void verifyCurrentEnvironment() throws NoSessionException {
+		EnvSetting.getEnvSetting(sessionId);
 	}
 	
 	// not to be trusted. Use SimulatorServiceManager instead
@@ -171,7 +167,9 @@ public class Session implements SecurityParams {
 
 	}
 	
-	public File getTomcatSessionCache() { return tomcatSessionCache; }
+	public File getTomcatSessionCache() { 
+		return new File(Installation.installation().warHome() + File.separator + "SessionCache" + File.separator + sessionId); 
+		}
 	public File getMesaSessionCache() { return mesaSessionCache; }
 	
 	public String getServerIP() {
@@ -186,7 +184,7 @@ public class Session implements SecurityParams {
 		this(warHome, siteServiceManager);
 		this.sessionId = sessionId;
 
-		tomcatSessionCache = new File(warHome + File.separator + "SessionCache" + File.separator + sessionId); 		
+//		tomcatSessionCache = new File(warHome + File.separator + "SessionCache" + File.separator + sessionId); 		
 	}
 	
 	public Session(File warHome, SiteServiceManager siteServiceManager) {
@@ -414,20 +412,20 @@ public class Session implements SecurityParams {
 	public void clear() {
 		xt = null;
 		res = null;
-		transactionSettings = null;
+//		transactionSettings = null;
 	}
 	
 	boolean lessThan(String a, String b) {
 		return a.compareTo(b) == -1;
 	}
 		
-	public void saveLogMapInSessionCache(LogMap log, XdstestLogId id) throws XdsException {
-		new RawLogCache(tomcatSessionCache).logOut(id, log);
-		
-		if (mesaSessionExists()) {
-			new RawLogCache(mesaSessionCache).logOut(id, log);
-		}
-	}
+//	public void saveLogMapInSessionCache(LogMap log, XdstestLogId id) throws XdsException {
+//		new RawLogCache(getTomcatSessionCache()).logOut(id, log);
+//		
+//		if (mesaSessionExists()) {
+//			new RawLogCache(mesaSessionCache).logOut(id, log);
+//		}
+//	}
 	
 	public Metadata getLastMetadata() {
 		return lastMetadata;
@@ -442,15 +440,19 @@ public class Session implements SecurityParams {
 	 * 
 	 */
 
-	public File getEnvironmentDir() {
-		return EnvSetting.getEnvSetting(sessionId).getEnvDir();
+	public File getEnvironmentDir() throws EnvironmentNotSelectedException {
+		try {
+			return EnvSetting.getEnvSetting(sessionId).getEnvDir();
+		} catch (Exception e) {
+			throw new EnvironmentNotSelectedException("", e);
+		}
 	}
 	
-	public File getEnvironment() { return getEnvironmentDir(); }
+	public File getEnvironment() throws EnvironmentNotSelectedException { return getEnvironmentDir(); }
 	
-	public File getCodesFile() {
+	public File getCodesFile() throws EnvironmentNotSelectedException {
 		if (getEnvironmentDir() == null) 
-			return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
+			return null; // new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
 		File f = new File(getEnvironmentDir() + File.separator + "codes.xml");
 		if (f.exists())
 			return f;
@@ -483,7 +485,7 @@ public class Session implements SecurityParams {
 		logger.debug(getId() + ": " + "getEnvironmentNames");
 		List<String> names = new ArrayList<String>();
 		
-		File k = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
+		File k = Installation.installation().environmentFile();     //propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
 		if (!k.exists() || !k.isDirectory())
 			return names;
 		File[] files = k.listFiles();
@@ -494,41 +496,27 @@ public class Session implements SecurityParams {
 		return names;
 	}
 	
-	public TkProps tkProps() throws Exception {
-		return TkLoader.tkProps();
-/*		File installedTkProps = new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
-		if (installedTkProps.exists())
-			try {
-				return TkLoader.LOAD(installedTkProps).toTkProps();
-			} catch (IOException e) {
-				// ignore
-			}
-		File defaultTkProps = new File(Installation.installation().warHome() + File.separator + "WEB-INF" + File.separator +
-				"tk_props_default.txt");
-		TkProps p = null;
+	public TkProps tkProps() {
 		try {
-			p = TkLoader.LOAD(defaultTkProps).toTkProps();
-		} catch (IOException e) {
-			throw new Exception("Cannot load tk_props", e);
+			return TkLoader.tkProps(Installation.installation().getTkPropsFile());
+		} catch (Throwable t) {
+			return new TkProps();
 		}
-		try {
-			TkLoader.SAVE(new TkPropsServer(p), installedTkProps);
-		} catch (IOException e) {
-			// ignore
-		}
-		return p;
-*/	}
+	}
 	
 	/**
 	 * Sets name of current environment (for this session)
 	 * @throws 
 	 */
 	public void setEnvironment(String name) {
+		if (name == null || name.equals(""))
+			return;
+		logger.debug(getId() + ": " + " Environment set to " + name);
 		setEnvironment(name, Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
 	}
 	
 	public void setEnvironment(String name, String externalCache) {
-		File k = new File(externalCache + File.separator + "environment" + File.separator + name);
+		File k = Installation.installation().environmentFile(name);
 		if (!k.exists() || !k.isDirectory())
 			k = null;
 		currentEnvironmentName = name;
@@ -565,7 +553,7 @@ public class Session implements SecurityParams {
 
 	public File getToolkitFile() {
 		if (toolkit == null)
-			toolkit = new File(Installation.installation().warHome() + File.separator + "toolkitx");
+			toolkit = Installation.installation().toolkitxFile();    //new File(Installation.installation().warHome() + File.separator + "toolkitx");
 		return toolkit;
 	}
 

@@ -140,8 +140,8 @@ public class AssertionEngine {
 		this.output = output;
 	}
 
-	public void run(ErrorReportingInterface err, OMElement assertion_output) {
-		OmLogger logger = new OmLogger();
+	public void run(ErrorReportingInterface err, OMElement assertion_output) throws XdsInternalException {
+		ILogger logger = new TestLogFactory().getLogger();
 		try {
 			parseDataRefs();
 			buildDataModel();
@@ -163,8 +163,9 @@ public class AssertionEngine {
 				AXIOMXPath xpathExpression = new AXIOMXPath (assertion.xpath);
 				String result = xpathExpression.stringValueOf(data);
 				if (result == null || !result.toLowerCase().equals("true")) {
-					err.fail("AssertionEngine: assertion " + assertion.id + " failed - detailed result is " + result);
-					err.fail("Assertion is " + assertion.xpath);
+					StringBuffer errs = new StringBuffer();
+					errs.append("AssertionEngine: assertion " + assertion.id + " failed - detailed result is " + result + "\n" +
+					      "Assertion is " + assertion.xpath);
 					int equals_index = findNotEqualsNotInBrackets(assertion.xpath);
 					if (equals_index == -1)
 						equals_index = findEqualsNotInBrackets(assertion.xpath);
@@ -187,11 +188,12 @@ public class AssertionEngine {
 						else
 							right_side_value = (new AXIOMXPath(right_side_xpath)).stringValueOf(data);
 						
-						err.fail("AssertionEngine: assertion " + assertion.id + " left side value is " + left_side_value);
-						err.fail("AssertionEngine: assertion " + assertion.id + " right side value is " + right_side_value);
-						err.fail("AssertionEngine: operator is " + tokenAt(assertion.xpath, equals_index));
+						errs.append("AssertionEngine: assertion " + assertion.id + " left side value is " + left_side_value + "\n" +
+								"AssertionEngine: assertion " + assertion.id + " right side value is " + right_side_value + "\n"+
+								"AssertionEngine: operator is " + tokenAt(assertion.xpath, equals_index));
 					}
 					logger.add_name_value_with_id(assertion_output, "AssertionStatus", assertion.id, "fail");
+					err.fail(errs.toString());
 				} else {
 					logger.add_name_value_with_id(assertion_output, "AssertionStatus", assertion.id, "pass");
 					err.setInContext("AssertionEngine: assertion " + assertion.id, "pass");

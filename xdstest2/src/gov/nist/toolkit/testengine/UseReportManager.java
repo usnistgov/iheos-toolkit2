@@ -49,9 +49,10 @@ public class UseReportManager  {
 			if (config.verbose) 
 				System.out.println("\tLoading logs for test " + test + " section " + section);
 			TestDetails tspec = new TestDetails(config.testkitHome, test);
-			tspec.setLogDir(config.logdirHome);
+			tspec.setLogDir(config.logRepository.logDir());
 			File testlogFile = tspec.getTestLog(test, section);
-			priorTests.put((section.equals("") ? "None" : section), new LogFileContent(testlogFile));
+			if (testlogFile != null)
+				priorTests.put((section.equals("") ? "None" : section), new LogFileContent(testlogFile));
 		}
 	}
 	

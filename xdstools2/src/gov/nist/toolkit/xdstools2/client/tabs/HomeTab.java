@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import gov.nist.toolkit.xdstools2.client.FeatureManager;
+import gov.nist.toolkit.tk.client.PropertyNotFoundException;
+import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -70,32 +71,26 @@ public class HomeTab extends GenericQueryTab {
 
 				);
 
-		new FeatureManager().addCallback(new MainGridLoader());
-
-		//		toolkitService.getToolkitEnableNwHIN( new AsyncCallback<String>() {
-		//			public void onFailure(Throwable caught) {
-		//				new PopupMessage("getToolkitEnableNwHIN() call failed: " + caught.getMessage());
-		//			}
-		//
-		//			public void onSuccess(String result) {
-		//				nwhin_flag = result;
-		//				loadMainGrid(nwhin_flag);
-		//			}
-		//		});
-
-
-
+//		new FeatureManager().addCallback(new MainGridLoader());
+		
+		new MainGridLoader().featuresLoadedCallback();
 	}
 
 	boolean forDirect = false;
 	boolean forIHE = false;
 	boolean forNwHIN = false;
 
-	class MainGridLoader implements FeatureManager.FeaturesLoadedNotificationRecipient {
+	class MainGridLoader {
 
-		@Override
+		//@Override
 		public void featuresLoadedCallback() {
-			String th = Xdstools2.tkProps().get("toolkit.home","");
+			String th = "";
+			
+			try {
+				th = Xdstools2.tkProps().get("toolkit.home","");
+			} catch (Throwable t) {
+				
+			}
 
 			mainGrid = new FlexTable();
 			mainGrid.setCellSpacing(20);
@@ -180,14 +175,28 @@ public class HomeTab extends GenericQueryTab {
 
 
 	private void displayDirectHome() {
+		TkProps pubcertConfig = tkProps().withPrefixRemoved("direct.pubcert");
+		String cert = "";
+		String trustanchor = "";
+		try {
+			 cert = pubcertConfig.get("pubcert");
+		} catch (PropertyNotFoundException e) {
+			new PopupMessage("Configuration parameter direct.pubcert.pubcert cannot be loaded from tk_props.txt properties file located in the external cache");
+		}
+		try {
+			trustanchor = pubcertConfig.get("trustanchor");
+		} catch (PropertyNotFoundException e) {
+			new PopupMessage("Configuration parameter direct.pubcert.trustanchor cannot be loaded from tk_props.txt properties file located in the external cache");
+		}
+		
 		topPanel.add(new HTML("<hr />"));
 
-		topPanel.add(new HTML("TTT Public Cert can be displayed from <a href=\"pubcert/hit-testing.nist.gov.der\">here</a>.  " +
+		topPanel.add(new HTML("TTT Public Cert can be displayed from <a href=\"pubcert/" + cert + "\">here</a>.  " +
 				"The Mime Body of the Direct message must be encrypted with this self-signed Public Cert."));
 
 		topPanel.add(new HTML("<hr />"));
 
-		topPanel.add(new HTML("TTT Trust Anchor can be displayed from <a href=\"pubcert/hit-testing.nist.gov.der\">here</a>.  " 
+		topPanel.add(new HTML("TTT Trust Anchor can be displayed from <a href=\"pubcert/" + trustanchor + "\">here</a>.  " 
 				));
 
 		topPanel.add(new HTML("<hr />"));
@@ -196,6 +205,16 @@ public class HomeTab extends GenericQueryTab {
 		topPanel.add(drcvTbl.contentValidation());
 
 		topPanel.add(new HTML("<hr />"));
+
+		topPanel.add(new HTML("<h3>Support</h3>"));
+		topPanel.add(new HTML("The support mailing list for this tool is: <a href=\"mailto:transport-testing-tool@googlegroups.com\">transport-testing-tool@googlegroups.com</a>"));
+		
+		topPanel.add(new HTML("...which can be browsed from <a href=\"https://groups.google.com/forum/?fromgroups#!forum/transport-testing-tool\">https://groups.google.com/forum/?fromgroups#!forum/transport-testing-tool</a>"));
+		topPanel.add(new HTML("<br />"));
+		
+		topPanel.add(new HTML("Frequently asked questions (FAQ) (warning - PDF) can be found at: <a href=\"http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf\">http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf</a>"));
+		topPanel.add(new HTML("<hr />"));
+		
 	}
 
 	void loadCCDAGrid() {
@@ -317,7 +336,7 @@ public class HomeTab extends GenericQueryTab {
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(myContainer, TabLauncher.mesaTabLabel)));
 			row++;
 
-			if (FeatureManager.isFeatureEnabled("MesaTestSelection")) {
+			if (Xdstools2.tkProps().get("toolkit.mainmenu.experimental", "false").equalsIgnoreCase("true")) {
 				mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testRunnerTabLabel, new TabLauncher(myContainer, TabLauncher.testRunnerTabLabel)));
 				row++;
 			}

@@ -49,8 +49,8 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 
 		boolean isAsync = false;
 
-		registryActorFactory.getActorSite(sc, site);
-		repositoryActorFactory.getActorSite(sc, site);
+		new RegistryActorFactory().getActorSite(sc, site);
+		new RepositoryActorFactory().getActorSite(sc, site);
 
 		return site;
 	}
@@ -58,8 +58,8 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 	@Override
 	public List<TransactionType> getIncomingTransactions() {
 		List<TransactionType> tt = new ArrayList<TransactionType>();
-		tt.addAll(registryActorFactory.getIncomingTransactions());
-		tt.addAll(repositoryActorFactory.getIncomingTransactions());
+		tt.addAll(new RegistryActorFactory().getIncomingTransactions());
+		tt.addAll(new RepositoryActorFactory().getIncomingTransactions());
 		return tt;
 	}
 

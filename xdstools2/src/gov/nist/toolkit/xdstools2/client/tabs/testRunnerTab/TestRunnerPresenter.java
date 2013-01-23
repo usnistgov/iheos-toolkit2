@@ -58,6 +58,9 @@ public class TestRunnerPresenter {
 	ToolkitServiceAsync toolkitService;
 	TabContainer container;
 	SiteSelectionWidget siteSelectionWidget = null;
+	/**
+	 * Test id ==> Test description
+	 */
 	Map<String, String> testCollectionMap;  // name => description for selected actor
 	Map<String, Result> results = new HashMap<String, Result>();            // testId => results
 	// map of testName => section name list
@@ -91,7 +94,7 @@ public class TestRunnerPresenter {
 					
 					addSiteSelectionWidget();
 					
-					loadTestsForActor();
+					loadTestResults();
 				}
 				
 			});
@@ -155,11 +158,18 @@ public class TestRunnerPresenter {
 			if (pid != null && !pid.equals("")) { 
 				pid = pid.trim();
 				parms.put("$patientid$", pid);
+			} else {
+				new PopupMessage("Patient ID must be entered");
+				return;
 			}
 			
 			String testSessionName = container.getTestSessionState().getTestSessionName();
 			
 			SiteSpec siteSpec = getSelectedSiteSpec();
+			if (siteSpec == null) {
+				new PopupMessage("Site must be selected");
+				return;
+			}
 			siteSpec.isTls = siteSelectionWidget.isTlsSelected();
 			
 			String testId = runButton.model.testId;
@@ -291,7 +301,7 @@ public class TestRunnerPresenter {
 	boolean testResultsLoaded = false;
 	boolean sectionNamesLoaded = false;
 	
-	void loadTestsForActor() {
+	void loadTestResults() {
 		if (currentActorCode == null)
 			return;
 

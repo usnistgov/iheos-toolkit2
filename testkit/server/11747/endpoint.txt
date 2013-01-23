@@ -1,0 +1,1 @@
+http.+repositoryA2doc$

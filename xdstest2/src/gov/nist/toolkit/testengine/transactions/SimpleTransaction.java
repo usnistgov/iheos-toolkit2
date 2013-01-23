@@ -50,13 +50,13 @@ public class SimpleTransaction extends BasicTransaction {
 
 
 			if (result != null) {
-				this.s_ctx.add_name_value(instruction_output, "Result", result);
+				testLog.add_name_value(instruction_output, "Result", result);
 			} else {
-				this.s_ctx.add_name_value(instruction_output, "Result", "None");
+				testLog.add_name_value(instruction_output, "Result", "None");
 				s_ctx.set_error("Result was null");
 			}
 
-			s_ctx.add_name_value(instruction_output, "Result", result);
+			testLog.add_name_value(instruction_output, "Result", result);
 
 			RegistryResponseParser registry_response = new RegistryResponseParser(result);
 
@@ -78,7 +78,7 @@ public class SimpleTransaction extends BasicTransaction {
 		if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + part.getText();
 			metadata_ele = Util.parse_xml(new File(metadata_filename));
-			s_ctx.add_name_value(instruction_output, "MetadataFile", metadata_filename);
+			testLog.add_name_value(instruction_output, "MetadataFile", metadata_filename);
 		} else if (part_name.equals("Metadata")) { 
 			metadata_filename = "";
 			metadata_ele = part.getFirstElement();

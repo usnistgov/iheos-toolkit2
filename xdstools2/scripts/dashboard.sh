@@ -9,20 +9,20 @@
 # value approved for use at NA Connectathon
 pid='911^^^&1.3.6.1.4.1.21367.13.20.1000&ISO'
 
-environment="EURO2012"
+environment="na2013"
 
 # Development machine
-#home=/Users/bill
-#workspace=$home/workspaces/new-structure
-#externalCache=$home/tmp/toolkit
-#war=$workspace/xdstools2/war
-#servlet_jar=$workspace/shared-lib/lib/servlet-api.jar
+home=/Users/bill
+externalCache=$home/tmp/na2013
+#war=/Users/bill/tomcat1/webapps/xdstools2
+war=../war
+servlet_jar=/Users/bill/tomcat1/common/lib/servlet-api.jar
 
 # Deploy on nistred
-home=/home/user
-war=$home/tomcat1/webapps/xdstools2
-externalCache=$home/tmp/toolkit
-servlet_jar=$home/tomcat1/common/lib/servlet-api.jar
+#home=/home/user
+#war=$home/tomcat1/webapps/xdstools2
+#externalCache=$home/tmp/toolkit
+#servlet_jar=$home/tomcat1/common/lib/servlet-api.jar
 
 # Location for classes and libraries
 webinf=$war/WEB-INF
@@ -30,7 +30,7 @@ webinf=$war/WEB-INF
 # sets env var CLASSPATH
 #source /Users/bill/tmp/class/xdstoolkit/lib/classpath
 
-outdir=$home/tmp/toolkit/Dashboard
+outdir=$externalCache/Dashboard
 
 
 # #######################################
@@ -69,7 +69,7 @@ do
 	
 	echo "running ..."
 	
-	java gov.nist.registry.xdstools2.scripts.DashboardDaemon $pid $war/ $outdir $environment $externalCache
+	java gov.nist.toolkit.xdstools2.scripts.DashboardDaemon $pid $war/ $outdir $environment $externalCache
 	
 	echo "... done"
 	

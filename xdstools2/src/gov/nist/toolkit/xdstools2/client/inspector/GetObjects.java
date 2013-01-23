@@ -21,9 +21,8 @@ public class GetObjects implements ClickHandler {
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 		public void onFailure(Throwable caught) {
-			Result result = new Result();
+			Result result = Result.RESULT("GetObjects");
 			result.assertions.add(caught.getMessage());
-			result.testName = "GetObjects";
 			it.addToHistory(result);
 		}
 

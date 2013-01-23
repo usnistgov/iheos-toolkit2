@@ -12,9 +12,10 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 
-public class BasicContext  extends OmLogger {
+public class BasicContext  {
 	BasicContext parent_context;
 	HashMap atts;
+	OmLogger testLog = new TestLogFactory().getLogger();
 	
 	public BasicContext(BasicContext parent_context) {
 		this.parent_context = parent_context;
@@ -113,15 +114,17 @@ public class BasicContext  extends OmLogger {
 		return out;
 	}
 
-	void error(OMElement test_step_output, String msg) {
-		add_name_value(test_step_output, "Error", msg);
+	void error(OMElement test_step_output, String msg) throws XdsInternalException {
+		testLog.add_name_value(test_step_output, "Error", msg);
 		error(msg);
+		throw new XdsInternalException(msg);
 	}
 
-	void fault(OMElement test_step_output, String code, String msg) {
-		add_name_value(test_step_output, "SOAPFault", code + ": " + msg);
-		add_name_value(test_step_output, "Error", code + ": " + msg);
+	void fault(OMElement test_step_output, String code, String msg) throws XdsInternalException {
+		testLog.add_name_value(test_step_output, "SOAPFault", code + ": " + msg);
+		testLog.add_name_value(test_step_output, "Error", code + ": " + msg);
 		error(msg);
+		throw new XdsInternalException(msg);
 	}
 
 	OMElement build_results_document() {

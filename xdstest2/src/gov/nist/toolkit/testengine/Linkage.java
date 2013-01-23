@@ -312,7 +312,7 @@ public class Linkage extends BasicLinkage {
 				replace_string_in_text_and_attributes(metadata_ele, symbol, ruid);
 		}
 		if(result != null)
-			new OmLogger().add_name_value(instruction_output, "UseRepositoryUniqueId", result.toString());
+			new TestLogFactory().getLogger().add_name_value(instruction_output, "UseRepositoryUniqueId", result.toString());
 		return result;
 	}
 
@@ -449,7 +449,7 @@ public class Linkage extends BasicLinkage {
 			}
 		}
 		if (linkage != null)
-			new OmLogger().add_name_value(instruction_output, "UseXPath", Util.xmlizeHashMap(linkage));
+			new TestLogFactory().getLogger().add_name_value(instruction_output, "UseXPath", Util.xmlizeHashMap(linkage));
 
 		return linkage;
 	}
@@ -561,7 +561,7 @@ public class Linkage extends BasicLinkage {
 
 		}
 		if (linkage != null)
-			new OmLogger().add_name_value(instruction_output, "UseId", Util.xmlizeHashMap(linkage));
+			new TestLogFactory().getLogger().add_name_value(instruction_output, "UseId", Util.xmlizeHashMap(linkage));
 		return linkage;
 	}
 
@@ -628,7 +628,7 @@ public class Linkage extends BasicLinkage {
 				replace_string_in_text_and_attributes(metadata_ele, symbol, value);
 		}
 		if(linkage != null)
-			new OmLogger().add_name_value(instruction_output, "UseObjectRef", Util.xmlizeHashMap(linkage));
+			new TestLogFactory().getLogger().add_name_value(instruction_output, "UseObjectRef", Util.xmlizeHashMap(linkage));
 		return linkage;
 	}
 

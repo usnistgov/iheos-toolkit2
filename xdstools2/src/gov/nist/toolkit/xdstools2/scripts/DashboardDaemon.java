@@ -12,9 +12,9 @@ import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.LogMap;
+import gov.nist.toolkit.testengine.LogMapItem;
 import gov.nist.toolkit.testengine.TransactionSettings;
 import gov.nist.toolkit.testengine.Xdstest2;
-import gov.nist.toolkit.testengine.LogMap.LogMapItem;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
@@ -149,6 +149,7 @@ public class DashboardDaemon {
 			}
 			TransactionSettings ts = new TransactionSettings();
 			ts.assignPatientId = false;
+			ts.siteSpec = new SiteSpec();
 			ts.siteSpec.isAsync = false;
 			ts.securityParams = s; 
 			try {
@@ -273,6 +274,7 @@ public class DashboardDaemon {
 			Map<String, String> parms = new HashMap<String, String>();
 			parms.put("$patientid$", pid);
 			TransactionSettings ts = new TransactionSettings();
+			ts.siteSpec = new SiteSpec();
 			ts.assignPatientId = false;
 			ts.siteSpec.isAsync = false;
 			ts.securityParams = s; 

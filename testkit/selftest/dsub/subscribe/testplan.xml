@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>dsub/subscribe</Test>
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <DsubSubscribeTransaction>
+            <ParseMetadata>False</ParseMetadata>
+            <Metadata>
+
+                <wsnt:Subscribe xmlns:wsnt="http://docs.oasis-open.org/wsn/b-2"
+                    xmlns:a="http://www.w3.org/2005/08/addressing"
+                    xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+                    <!-- The address where 
+                        the notification is to be sent -->
+                    <wsnt:ConsumerReference>
+                        <a:Address>https://NotificationRecipientServer/xdsBnotification</a:Address>
+                    </wsnt:ConsumerReference>
+                    <!-- Filter (Stored Query) for deciding what gets put in notifications 
+                        The dialect is either ihe:MinimalDocumentEntry (looks like RetrieveDocumentSet) 
+                        or ihe:FullDocumentEntry (full metadata)
+                        -->
+                    <wsnt:Filter>
+                        <wsnt:TopicExpression
+                            Dialect="http://docs.oasis-open.org/wsn/t-1/TopicExpression/Simple"
+                            >ihe:FullDocumentEntry</wsnt:TopicExpression>
+                        <rim:AdhocQuery id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
+                            <rim:Slot name="$XDSDocumentEntryPatientId">
+                                <rim:ValueList>
+                                    <rim:Value>'st3498702^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO'</rim:Value>
+                                </rim:ValueList>
+                            </rim:Slot>
+                            <rim:Slot name="$XDSDocumentEntryHealthcareFacilityTypeCode">
+                                <rim:ValueList>
+                                    <rim:Value>('Emergency Department')</rim:Value>
+                                </rim:ValueList>
+                            </rim:Slot>
+                        </rim:AdhocQuery>
+                    </wsnt:Filter>
+                    <wsnt:InitialTerminationTime>2010-05-31T00:00:00.00000Z</wsnt:InitialTerminationTime>
+                </wsnt:Subscribe>
+
+            </Metadata>
+        </DsubSubscribeTransaction>
+    </TestStep>
+</TestPlan>

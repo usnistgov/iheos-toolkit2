@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class SimulatorServiceManagerConfigsTest {
 	}
 	
 	@Test
-	public void simInSimConfigsTest() {
+	public void simInSimConfigsTest() throws IOException {
 		int beforeSimsSize = sm.simConfigs().size();
 		Assert.assertEquals(0, beforeSimsSize);
 		createNewRegistry();

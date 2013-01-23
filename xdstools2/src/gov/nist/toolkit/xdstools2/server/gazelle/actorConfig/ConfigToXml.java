@@ -6,6 +6,7 @@ import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,12 +47,14 @@ public class ConfigToXml {
 
 		Sites sites = new Sites();
 		for (String sysName : gMap.keySet()) {
+			if (sysName == null || sysName.equals(""))
+				continue;
 			String actorName = sysName; 
 			Site site = buildSite(actorName, gMap.get(sysName), conflictBuffer);
 			lastSite = site;
 			if (site == null) {
-				conflictBuffer.append("Entry for system " + sysName + " not loaded\n");
-				System.out.println("Entry for system " + sysName + " not loaded\n");
+				conflictBuffer.append("Entry for system <" + sysName + "> not loaded\n");
+				System.out.println("Entry for system <" + sysName + "> not loaded\n");
 				ignoredSiteCount++;
 				continue;
 			}
@@ -96,7 +99,9 @@ public class ConfigToXml {
 
 		List<SysConfig> configs = new ArrayList<SysConfig>();
 
+		System.out.println("Building Site for " + sysname);
 		for (GazelleEntry entry : entries) {
+			System.out.println(entry);
 			SysConfig sysConfig = new SysConfig(this, entry);
 			TransactionType trans = sysConfig.trans;
 			
@@ -106,8 +111,8 @@ public class ConfigToXml {
 			if (sysConfig.isAsync)
 				continue;
 			
-			if (!sysConfig.isApproved)
-				continue;
+//			if (!sysConfig.isApproved)
+//				continue;
 
 			configs.add(sysConfig);
 
@@ -150,37 +155,37 @@ public class ConfigToXml {
 	}
 
 
-//	public static void main(String[] args) {
-//		File actorsDir = new File("/Users/bill/tmp/toolkit/actors");
-//		String systemName = "ALL";   // "ALL";
-//		GazelleConfigs gConfigs = null; 
-//		OidConfigs oConfigs = null;
-//
-//		try {
-//			oConfigs = new OidConfigs();
-//			new CSVParser(new File(actorsDir + File.separator + "oidSummary.csv"), oConfigs, new OidEntryFactory());
-//
-//
-//			if (systemName.equals("ALL")) {
-//				//			new ConfigPull(gazelleUrl, actorsDir).pull();
-//
-//				gConfigs = new GazelleConfigs();
-//				new CSVParser(new File(actorsDir + File.separator + "aegis.txt"), gConfigs, new GazelleEntryFactory());
-//
-//				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
-//			}
-//			else {
-//				//			new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
-//
-//				gConfigs = new GazelleConfigs();
-//				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), gConfigs, new GazelleEntryFactory());
-//
-//				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
-//			}
-//		} catch (Exception e) {
-//			System.out.println(ExceptionUtil.exception_details(e));
-//		}
-//
-//	}
+	public static void main(String[] args) {
+		File actorsDir = new File("/Users/bill/tmp/na2013/actors");
+		String systemName = "ALL";   // "ALL";
+		GazelleConfigs gConfigs = null; 
+		OidConfigs oConfigs = null;
+
+		try {
+			oConfigs = new OidConfigs();
+			new CSVParser(new File(actorsDir + File.separator + "oidSummary.csv"), oConfigs, new OidEntryFactory());
+
+
+			if (systemName.equals("ALL")) {
+				//			new ConfigPull(gazelleUrl, actorsDir).pull();
+
+				gConfigs = new GazelleConfigs();
+				new CSVParser(new File(actorsDir + File.separator + "all.csv"), gConfigs, new GazelleEntryFactory());
+
+				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
+			}
+			else {
+				//			new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
+
+				gConfigs = new GazelleConfigs();
+				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), gConfigs, new GazelleEntryFactory());
+
+				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
+			}
+		} catch (Exception e) {
+			System.out.println(ExceptionUtil.exception_details(e));
+		}
+
+	}
 
 }

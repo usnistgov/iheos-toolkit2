@@ -1,5 +1,6 @@
 package gov.nist.toolkit.directsim;
 
+import gov.nist.messageDispatch.MessageDispatchUtils;
 import gov.nist.toolkit.actorfactory.DirectActorFactory;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsupport.SMTPException;
@@ -34,6 +35,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+
 import org.apache.log4j.Logger;
 import org.mortbay.log.Log;
 
@@ -52,6 +57,8 @@ public class Listener {
 	private static int port=4444, maxConnections=0;
 	static String externalCache;
 	static String pathToPrivateKey;
+
+	static Logger logger = Logger.getLogger(Listener.class);
 
 	static {
 		MessageValidatorFactory fact = new MessageValidatorFactory();
@@ -108,7 +115,7 @@ class doComms implements Runnable {
 	String mailFrom = null;
 	boolean logInputs = true;
 
-	static Logger logger = Logger.getLogger(Listener.class);
+	static Logger logger = Logger.getLogger(doComms.class);
 
 	doComms(Socket server, File externalCache, String pathToPrivateKey) {
 		this.server=server;
@@ -137,23 +144,37 @@ class doComms implements Runnable {
 		}
 
 		try {
-			String m = readIncomingSMTPMessage(server, "smtp.hit-testing.nist.gov");
+			String m = readIncomingSMTPMessage(server, reportingProps.get("direct.toolkit.smtp.domain"));   //"smtp.hit-testing.nist.gov");
 			message.append(m);
 		} catch (EOFException e) {
 
 		} catch (IOException ioe) {
 			logger.error("IOException on socket listen: " + ioe);
-			//			ioe.printStackTrace();
+			return;
 		} catch (SMTPException e) {
 			logger.error("SMTPException on socket listen: " + e);
-			//			e.printStackTrace();
+			return;
+		} catch (PropertyNotFoundException e) {
+			logger.error("tk_props property direct.toolkit.smtp.domain not found: " + e);
+			return;
 		}
 		finally {
 			try {
 				server.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				return;
 			}
+		}
+		
+		MimeMessage mmsg;
+		boolean isMdn;
+		try {
+			mmsg = new MimeMessage(Session.getDefaultInstance(System.getProperties(), null), Io.bytesToInputStream(message.toString().getBytes()));
+			isMdn = MessageDispatchUtils.isMDN(mmsg);
+		} catch (MessagingException e2) {
+			logger.error("Message fails MimeMessage parser");
+			return;
 		}
 
 		HtmlValFormatter hvf = new HtmlValFormatter();
@@ -328,14 +349,23 @@ class doComms implements Runnable {
 		String url = null;
 		File reportFile = null;
 		try {
-			url = reportingProps.get("baseurl") + reportId + ".html";
-			reportFile = new File(reportingProps.get("directory") + reportId + ".html");
+			String baseurl = reportingProps.get("baseurl"); 
+			url = 	baseurl +
+					((baseurl.endsWith("/") ? "" : "/")) +
+					reportId + 
+					".html";
+			String dir = reportingProps.get("directory");
+			reportFile = new File(dir +
+					((dir.endsWith(File.separator)) ? "" : File.separator   )  + 
+					reportId + 
+					".html");
 		} catch (PropertyNotFoundException e1) {
 			logger.fatal(e1.getMessage());
 		}
 
 		// Save it off report behind the URL
 		try {
+			logger.info("Saving report to " + reportFile);
 			logger.info("Report available from " + url);
 			Io.stringToFile(reportFile, validationReport.toString());
 		} catch (Exception e) {
@@ -374,7 +404,7 @@ class doComms implements Runnable {
 				logger.error("Cannot send email (" + e.getClass().getName() + ". " + e.getMessage());
 			}
 		} else {
-			logger.info("Validation announcement not sent - disabled in configuration - report text is:\n" + validationReport.toString());
+			logger.info("Validation announcement not sent - disabled in configuration \n" );
 		}
 
 		logger.info("Done");

@@ -17,6 +17,7 @@ Inner wrappers are DirectDecoder
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,14 +61,42 @@ public class CcdaValidator {
 		ValidationResult result = new ValidationResult();
 		EClass type = typeMap.get(validationType);
 		
-		if (type == null)
-			throw new Exception("Do not understand validation type " + validationType + 
-					". The configured types are " + typeMap.keySet());
+		logger.info("Starting CCDA validation, validate as a " + ((type == null) ? "Plain CCDA" : type));
+		long start_time = System.currentTimeMillis();
+		
+		try {
+		if (type == null || validationType.trim().equals("")) {
+			CDAUtil.load(is);
+		
+		    // Save the CCDA document for future reference.
+			String outputFileName = "CCDA_" + start_time + ".xml";
+			FileOutputStream os = new FileOutputStream(outputFileName);
+			byte[] buf = new byte[1024];
+		      int len;
+		      while ((len = is.read(buf)) > 0) {
+		         os.write(buf, 0, len);
+		      }
+		}
+		else {
+			CDAUtil.loadAs(is, type, result);
+			
+			// Save the CCDA document for future reference.
+			String outputFileName = "CCDA_" + start_time + ".xml";
+			FileOutputStream os = new FileOutputStream(outputFileName);
+			byte[] buf = new byte[1024];
+			int len;
+			while ((len = is.read(buf)) > 0) {
+			  os.write(buf, 0, len);
+            }	 
+		}
+		 
+		} catch (Exception e) {
+			er.err("FATAL ERROR in Loading the document for MDHT validation, check to ensure document format is XML, MESSAGE FROM INTERNAL EXCEPTION = " + e.getMessage(), "", "","", "");
+		}
+		
+		long end_time = System.currentTimeMillis();
+		long run_time = end_time - start_time;
 
-		logger.info("Starting CCDA validation");
-		
-		CDAUtil.loadAs(is, type, result);
-		
 		int errors = 0;
 		int warnings = 0;
 		int details = 0;
@@ -89,5 +118,7 @@ public class CcdaValidator {
 		}
 		
 		logger.info("CCDA Validation complete: " + errors + " errors, " + warnings + " warnings, " + details + " details.");
+		logger.info("MHDT run time was " + run_time + " mSec");
+		logger.info("Validation, was a " + ((type == null) ? "Plain CCDA" : type));
 	}
 }

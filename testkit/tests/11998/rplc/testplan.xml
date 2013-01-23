@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>11998/rplc</Test>
+    
+       <!-- Allocate new Patient ID so following RPLC operation will fail -->
+       <TestStep id="init_patient_id">
+          <ExpectedStatus>Success</ExpectedStatus>
+          <NewPatientId/>
+       </TestStep>
+       
+       <!--  Attempt RPLC -->
+       <TestStep id="rplc">
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <Rule>
+            <Transaction>R</Transaction>
+            <Assertion>Issue RPLC</Assertion>
+        </Rule>
+        <RegisterTransaction>
+            <XDSb/>
+            <UseId testdir="../submit" id="Document01" step="submit" section="AssignedUuids"
+                symbol="$rplc_doc_uuid$"/>
+            
+            <MetadataFile>rplc.xml</MetadataFile>
+            
+            
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

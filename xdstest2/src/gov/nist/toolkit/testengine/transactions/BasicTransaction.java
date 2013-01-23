@@ -20,6 +20,7 @@ import gov.nist.toolkit.testengine.RegistryUtility;
 import gov.nist.toolkit.testengine.ReportManager;
 import gov.nist.toolkit.testengine.StepContext;
 import gov.nist.toolkit.testengine.TestConfig;
+import gov.nist.toolkit.testengine.TestLogFactory;
 import gov.nist.toolkit.testengine.TestMgmt;
 import gov.nist.toolkit.testengine.TransactionSettings;
 import gov.nist.toolkit.testengine.TransactionStatus;
@@ -54,11 +55,12 @@ import org.apache.axiom.om.OMFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
 
-public abstract class BasicTransaction extends OmLogger {
+public abstract class BasicTransaction  {
 	protected OMElement instruction;
 	protected OMElement instruction_output;
 	PlanContext planContext = null;
 	protected StepContext s_ctx;
+	OmLogger testLog = new TestLogFactory().getLogger();
 
 	boolean step_failure = false;
 	boolean no_convert = false;
@@ -220,7 +222,7 @@ public abstract class BasicTransaction extends OmLogger {
 				reportManager.setXML(instruction_output);
 				reportManager.generate();
 				reportManager.report(getPlan().getExtraLinkage());
-				s_ctx.add_name_value(instruction_output, reportManager.toXML());
+				testLog.add_name_value(instruction_output, reportManager.toXML());
 			}
 
 		}
@@ -258,7 +260,7 @@ public abstract class BasicTransaction extends OmLogger {
 			useReportManager.resolve(sectionLogs);
 
 			useReportManager.apply(metadata_element);
-			s_ctx.add_name_value(instruction_output, useReportManager.toXML());
+			testLog.add_name_value(instruction_output, useReportManager.toXML());
 		}
 	}
 
@@ -516,9 +518,9 @@ public abstract class BasicTransaction extends OmLogger {
 	void add_step_status_to_output() {
 		s_ctx.setStatusInOutput(!step_failure);
 		if (step_failure)
-			s_ctx.add_name_value(instruction_output, "StepStatus", "Failure");
+			testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 		else
-			s_ctx.add_name_value(instruction_output, "StepStatus", "Success");
+			testLog.add_name_value(instruction_output, "StepStatus", "Success");
 	}
 
 
@@ -638,7 +640,7 @@ public abstract class BasicTransaction extends OmLogger {
 				fatal("No endpoint specified for transaction " + trans + " and XDS version " + xds_version_name() + 
 						" and secure = " + testConfig.secure +
 						" on site " + testConfig.site.getSiteName() + "\nactor config is " + testConfig.site.toString());
-			s_ctx.add_name_value(instruction_output, "Endpoint", endpoint);
+			testLog.add_name_value(instruction_output, "Endpoint", endpoint);
 		} else {
 			if (testConfig.verbose)
 				System.out.println("endpoint coming from testplan.xml");
@@ -675,7 +677,7 @@ public abstract class BasicTransaction extends OmLogger {
 				}
 			}
 		}
-		s_ctx.add_name_value(instruction_output, "Endpoint", endpoint);
+		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
 		showEndpoint();
 	}
 
@@ -691,7 +693,7 @@ public abstract class BasicTransaction extends OmLogger {
 					fatal(e.getMessage());
 				}
 		}
-		s_ctx.add_name_value(instruction_output, "Endpoint", endpoint);
+		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
 		showEndpoint();
 	}
 
@@ -707,16 +709,16 @@ public abstract class BasicTransaction extends OmLogger {
 					fatal(ExceptionUtil.exception_details(e, 5));
 				}
 		}
-		s_ctx.add_name_value(instruction_output, "Endpoint", endpoint);
+		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
 		showEndpoint();
 	}
 	
 	String failMsg = null;
 	
-	public void fail(String msg) {
+	public void fail(String msg) throws XdsInternalException {
 		failMsg = msg;
-		s_ctx.set_error(msg);
 		failed();
+		s_ctx.set_error(msg);
 	}
 	
 	public String getFail() {
@@ -733,7 +735,7 @@ public abstract class BasicTransaction extends OmLogger {
 
 
 	protected void log_metadata(OMElement submission) throws XdsInternalException {
-		this.s_ctx.add_name_value(	instruction_output, 
+		testLog.add_name_value(	instruction_output, 
 				"InputMetadata", Util.deep_copy(submission));
 	}
 
@@ -779,7 +781,7 @@ public abstract class BasicTransaction extends OmLogger {
 				String forced_patient_id = s_ctx.get("PatientId");
 				HashMap<String, String> patient_map;
 				patient_map = tm.assignPatientId(metadata, forced_patient_id);
-				this.s_ctx.add_name_value(instruction_output, generate_xml("AssignedPatientId", patient_map));
+				testLog.add_name_value(instruction_output, generate_xml("AssignedPatientId", patient_map));
 			}
 
 			// compile in results of previous steps
@@ -789,7 +791,7 @@ public abstract class BasicTransaction extends OmLogger {
 
 			if ( assign_uids ) {
 				Map<String, String> uniqueid_map = tm.assignUniqueIds(metadata, no_assign_uid_to);
-				this.s_ctx.add_name_value(instruction_output, generate_xml("AssignedUids", uniqueid_map));
+				testLog.add_name_value(instruction_output, generate_xml("AssignedUids", uniqueid_map));
 				if (reportManager == null)
 					reportManager = new ReportManager(testConfig);
 				reportManager.report(uniqueid_map, "_uid");
@@ -797,14 +799,14 @@ public abstract class BasicTransaction extends OmLogger {
 
 			// assign sourceId
 			Map<String, String> sourceid_map = tm.assignSourceId(metadata);
-			this.s_ctx.add_name_value(instruction_output, generate_xml("AssignedSourceId", sourceid_map));
+			testLog.add_name_value(instruction_output, generate_xml("AssignedSourceId", sourceid_map));
 
 			// assign uuids
 			if (assign_uuids) {
 				IdParser ip = new IdParser(metadata);
 				ip.compileSymbolicNamesIntoUuids();
 				nameUuidMap = ip.getSymbolicNameUuidMap();
-				this.s_ctx.add_name_value(instruction_output, generate_xml("AssignedUuids", nameUuidMap));
+				testLog.add_name_value(instruction_output, generate_xml("AssignedUuids", nameUuidMap));
 				if (reportManager == null)
 					reportManager = new ReportManager(testConfig);
 				reportManager.report(nameUuidMap, "_uuid");
@@ -880,7 +882,7 @@ public abstract class BasicTransaction extends OmLogger {
 		} 
 		else if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + File.separator + part.getText();
-			this.s_ctx.add_name_value(this.instruction_output, "MetadataFile", metadata_filename);
+			testLog.add_name_value(this.instruction_output, "MetadataFile", metadata_filename);
 		} 
 		else if (part_name.equals("AssignUuids")) {
 			assign_uuids = true;
@@ -908,7 +910,7 @@ public abstract class BasicTransaction extends OmLogger {
 		}
 		else if (part_name.equals("ParseMetadata")) {
 			String value = part.getText();
-			this.s_ctx.add_name_value(this.instruction_output, "ParseMetadata", value);
+			testLog.add_name_value(this.instruction_output, "ParseMetadata", value);
 			if (value.equals("False"))
 				parse_metadata = false;
 		} 
@@ -920,7 +922,7 @@ public abstract class BasicTransaction extends OmLogger {
 			
 			if (additionalHeaders == null)
 				additionalHeaders = new ArrayList<OMElement>();
-			this.s_ctx.add_name_value(this.instruction_output, "SOAPHeader", part.getFirstElement());
+			testLog.add_name_value(this.instruction_output, "SOAPHeader", part.getFirstElement());
 
 			additionalHeaders.add(part.getFirstElement());
 		}
@@ -945,34 +947,34 @@ public abstract class BasicTransaction extends OmLogger {
 		}
 		else if (part_name.equals("UseId")) {
 			use_id.add(part);
-			s_ctx.add_name_value(instruction_output, "UseId", part);
+			testLog.add_name_value(instruction_output, "UseId", part);
 		}
 		else if (part_name.equals("UseRepositoryUniqueId")) {
 			use_repository_unique_id.add(part);
-			s_ctx.add_name_value(instruction_output, "UseRepositoryUniqueId", part);
+			testLog.add_name_value(instruction_output, "UseRepositoryUniqueId", part);
 		}
 		else if (part_name.equals("Assertions")) {
 			parse_assertion_instruction(part);
 		} 
 		else if (part_name.equals("XDSb")) {
 			xds_version = BasicTransaction.xds_b;
-			this.s_ctx.add_simple_element(this.instruction_output, "Xdsb");
+			testLog.add_simple_element(this.instruction_output, "Xdsb");
 		} 
 		else if (part_name.equals("XDSa")) {
 			xds_version = BasicTransaction.xds_a;
-			this.s_ctx.add_simple_element(this.instruction_output, "Xdsa");
+			testLog.add_simple_element(this.instruction_output, "Xdsa");
 		} 
 		else if (part_name.equals("NoPatientId")) {
 			assign_patient_id = false;
-			this.s_ctx.add_simple_element(this.instruction_output, "NoPatientId");
+			testLog.add_simple_element(this.instruction_output, "NoPatientId");
 		} 
 		else if (part_name.equals("SOAP11")) {
 			soap_1_2 = false;
-			this.s_ctx.add_simple_element(this.instruction_output, "SOAP11");
+			testLog.add_simple_element(this.instruction_output, "SOAP11");
 		} 
 		else if (part_name.equals("ASync")) {
 			async = true;
-			this.s_ctx.add_simple_element(this.instruction_output, "ASync");
+			testLog.add_simple_element(this.instruction_output, "ASync");
 		} 
 		else if (part_name.equals("WaitBefore")) {
 			String millisecondsStr = part.getText();
@@ -1177,7 +1179,7 @@ public abstract class BasicTransaction extends OmLogger {
 		*/
 
 		try {
-			s_ctx.add_name_value(instruction_output, "InputMetadata", requestBody);
+			testLog.add_name_value(instruction_output, "InputMetadata", requestBody);
 
 			soap.setSecurityParams(s_ctx.getTransactionSettings().securityParams);
 			
@@ -1191,6 +1193,7 @@ public abstract class BasicTransaction extends OmLogger {
 			);
 		}
 		catch (AxisFault e) {
+			s_ctx.set_error("SOAPFault: " + e.getMessage() + "\nEndpoint is " + endpoint);
 			if ( !s_ctx.expectFault())
 				s_ctx.set_fault(e);
 		}
@@ -1217,11 +1220,11 @@ public abstract class BasicTransaction extends OmLogger {
 	}
 	public void logSoapRequest(Soap soap) {
 		try {
-			s_ctx.add_name_value(instruction_output, "OutHeader", soap.getOutHeader());
-			s_ctx.add_name_value(instruction_output, "OutAction", getRequestAction());
-			s_ctx.add_name_value(instruction_output, "ExpectedInAction", getResponseAction());
-			s_ctx.add_name_value(instruction_output, "InHeader", soap.getInHeader());
-			s_ctx.add_name_value(instruction_output, "Result", soap.getResult());
+			testLog.add_name_value(instruction_output, "OutHeader", soap.getOutHeader());
+			testLog.add_name_value(instruction_output, "OutAction", getRequestAction());
+			testLog.add_name_value(instruction_output, "ExpectedInAction", getResponseAction());
+			testLog.add_name_value(instruction_output, "InHeader", soap.getInHeader());
+			testLog.add_name_value(instruction_output, "Result", soap.getResult());
 		} catch (Exception e) {
 			System.out.println("oops");
 			e.printStackTrace();

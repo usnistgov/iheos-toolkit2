@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorResentFieldTest {
 	
 	// DTS 110, Resent-to, Optional
+	// Result: Success
 	@Test
 	public void testResentTo() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -36,6 +37,7 @@ public class DirectMessageValidatorResentFieldTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testResentTo2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -44,6 +46,7 @@ public class DirectMessageValidatorResentFieldTest {
 		assertTrue(er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testResentTo3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -53,6 +56,7 @@ public class DirectMessageValidatorResentFieldTest {
 	}
 	
 	// DTS 111, Resent-cc, Optional
+	// Result: Success
 	@Test
 	public void testResentCc() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -61,6 +65,7 @@ public class DirectMessageValidatorResentFieldTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testResentCc2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -69,6 +74,7 @@ public class DirectMessageValidatorResentFieldTest {
 		assertTrue(er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testResentCc3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -78,6 +84,7 @@ public class DirectMessageValidatorResentFieldTest {
 	}
 	
 	// DTS 112, Resent-bcc, Optional
+	// Result: Success
 	@Test
 	public void testResentBcc() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -86,6 +93,7 @@ public class DirectMessageValidatorResentFieldTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testResentBcc2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -94,6 +102,7 @@ public class DirectMessageValidatorResentFieldTest {
 		assertTrue(er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testResentBcc3() {
 		ErrorRecorder er = new TextErrorRecorderModif();

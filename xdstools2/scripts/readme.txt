@@ -1,12 +1,14 @@
-The script grab-release.sh will pull a particular release, identified by 
-a build number, from SVN on SourceForge.  It includes several 
-packages that would be downloaded into a directory. One could then
-cd xdstools2 and run ant war to create an loadable war file.  But,
-it would not work.  XDS Toolkit GUI is built on the Google Web
-Toolkit which allows me to write my GUI code in Java and a tool
-compiles that Jave into JavaScript for auto-loading into the
-browser.  But, Google hasn't released an ant task for doing that
-compile.  The only way to do it (that I know of) is to use the 
-Eclipse plugin.  This Eclipse plugin must be used to generate
-the JavaScript before the war that gets generated has any
-real value.
+This directory contains useful scripts, sometimes for debugging
+or installation validation and sometimes they are just useful 
+tools.  
+
+For any of these two work, the toolkit must be installed on
+a Unix-like system with bash installed. Each utility must
+be executed from this directory.  Relative file paths
+are used to reference necessary parts of the toolkit and
+these paths are constructed assuming this is the working directory.
+
+Each utility accepts the -h command line parameter which will
+display hopefully usefull help information.
+
+Sub-directories exist to hold support files for the utilities.

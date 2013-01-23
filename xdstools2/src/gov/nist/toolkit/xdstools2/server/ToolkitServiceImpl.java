@@ -18,6 +18,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.client.XdstestLogId;
+import gov.nist.toolkit.session.server.DirectConfigManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -103,7 +104,8 @@ ToolkitService {
 	}
 	public String toolkitPubCert()  throws NoServletSessionException { return new DirectServiceManager(session()).toolkitPubCert(); }
 	public List<Result> directSend(Map<String, String> parms) throws NoServletSessionException { return new DirectServiceManager(session()).directSend(parms); }
-	
+	public List<String> getEncryptionCertDomains() { return new DirectConfigManager(Installation.installation().externalCache()).getEncryptionCertDomains(); }
+
 
 	// Site Services
 	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
@@ -194,17 +196,19 @@ ToolkitService {
 	
 	// Gazelle Service
 	public String reloadSystemFromGazelle(String systemName) throws Exception { return new GazelleServiceManager(session()).reloadSystemFromGazelle(systemName); }
-
-	// Session
+	
+	// Environment management
 	public List<String> getEnvironmentNames() throws NoServletSessionException { return session().getEnvironmentNames(); }
 	public String setEnvironment(String name) throws NoServletSessionException { session().setEnvironment(name); return name; }
 	public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
+	public String getDefaultEnvironment()  throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getDefaultEnvironment(); }
+
+	// Session
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
 	
 	// Property Service
-	public TkProps getTkProps() throws NoServletSessionException, Exception { return session().tkProps(); }
-	public String getDefaultEnvironment()  throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getDefaultEnvironment(); }
+	public TkProps getTkProps() throws NoServletSessionException { return session().tkProps(); }
 	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
 	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
 	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }
@@ -215,7 +219,6 @@ ToolkitService {
 	public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().reloadPropertyFile(); }
 	public String getAttributeValue(String username, String attName) throws Exception { return Installation.installation().propertyServiceManager().getAttributeValue(username, attName); }
 	public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue); }
-	public List<String> getFeatureList() throws NoServletSessionException  { servletContext(); return Installation.installation().propertyServiceManager().getFeatureList(); }
 
 	
 	// Simulator Service
@@ -261,7 +264,11 @@ ToolkitService {
 		new PropertyServiceManager(warhome).getPropertyManager().update(props);
 		reloadPropertyFile();
 		Installation.installation().externalCache(eCacheFile);
-		TkLoader.tkProps();
+		try {
+			TkLoader.tkProps(Installation.installation().getTkPropsFile());
+		} catch (Throwable t) {
+			
+		}
 		return "";
 	}
 
@@ -280,17 +287,13 @@ ToolkitService {
 			
 			File warHome = new File(context.getRealPath("/"));
 			System.setProperty("warHome", warHome.toString());
-			System.out.println("warHome [ToolkitServiceImpl]: " + warHome);
+			logger.info("warHome [ToolkitServiceImpl]: " + warHome);
 			Installation.installation().warHome(warHome);
 		}
 		return context;
 	}
 
-//	String getClientIP() {
-//		MessageContext mc = MessageContext.getCurrentMessageContext();
-//		return mc.getFrom().getAddress();
-//	}
-
+	// Used only for non-servlet use (Dashboard is good example)
 	static public final String sessionVarName = "MySession";
 	String sessionID = null;
 	
@@ -317,6 +320,8 @@ ToolkitService {
 		standAloneSession = s;
 	}
 	
+	// This exception is passable to the GUI.  The server side exception
+	// is NoSessionException
 	public Session session() throws NoServletSessionException {
 		Session s = getSession();
 		if (s == null)
@@ -345,6 +350,15 @@ ToolkitService {
 				return s;
 			servletContext();
 		}
+		
+		// Force short session timeout for testing
+//		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
+		
+		//******************************************
+		//
+		// New session object to be created
+		//
+		//******************************************
 		File warHome = null;
 		if (s == null) {
 			ServletContext sc = servletContext();

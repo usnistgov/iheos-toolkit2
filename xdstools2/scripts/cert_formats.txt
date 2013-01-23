@@ -1,0 +1,31 @@
+Certificate formats and utilities
+
+**********************  DER   (Public Key)
+
+openssl x509 -inform DER -text -in hit-testing.nist.gov.der
+
+grep for line containing Subject:   and    CN=
+value of CN is domain name
+   
+raw input line looks like:
+        Subject: emailAddress=hit-testing.nist.gov, CN=hit-testing.nist.gov, C=USA, ST=MD, L=Gaithersburg, O=hit-testing.nist.gov
+
+
+public key - grep for "Public Key Algorithm"
+
+DNS: domain-name can be used
+
+
+********************     P12 (private key)
+
+openssl pkcs12 -in hit-testing.nist.gov.p12 -nokeys -password pass:
+
+if password not empty then -password file:password may work (haven't tested)
+
+key line of output is 
+subject=/emailAddress=hit-testing.nist.gov/CN=hit-testing.nist.gov/C=USA/ST=MD/L=Gaithersburg/O=hit-testing.nist.gov
+
+looks like CN is key entry
+
+if pass in garbage file instead of p12 then error looks like
+14501:error:0D07207B:asn1 encoding routines:ASN1_get_object:header too long:/SourceCache/OpenSSL098/OpenSSL098-44/src/crypto/asn1/asn1_lib.c:150:

@@ -2,7 +2,10 @@ package gov.nist.toolkit.testengine;
 
 import gov.nist.toolkit.utilities.io.Sha1Bean;
 
+import org.apache.log4j.Logger;
+
 public class RetInfo {
+	static Logger logger = Logger.getLogger(RetInfo.class);
 
 	protected String doc_uid;
 	protected String rep_uid;
@@ -64,6 +67,7 @@ public class RetInfo {
 	}
 
 	public void setHash(String hash) {
+		logger.info("Retrieve: hash is " + hash);
 		this.hash = hash;
 	}
 
@@ -72,10 +76,12 @@ public class RetInfo {
 	}
 
 	public void setSize(int size) {
+		logger.info("Retrieve size is " + size);
 		this.size = size;
 	}
 	
 	public void setSize(String size) {
+		logger.info("Retrieve size is " + size);
 		this.size = Integer.parseInt(size);
 	}
 

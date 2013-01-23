@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorOptionalFieldsTest {
 	
 	
+	// Result: Success
 	@Test
 	public void testOptionalFields() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -36,6 +37,7 @@ public class DirectMessageValidatorOptionalFieldsTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testOptionalFields2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

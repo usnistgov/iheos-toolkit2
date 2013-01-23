@@ -3,6 +3,8 @@ Some Connectathon notes
 The config param is blank by default forcing the use of actors.xml 
 instead of actors/.  The value of this field for Euro 2011 was
 http://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=15
+The value for na20132 was 
+http://ihe.wustl.edu/gazelle-na/systemConfigurations.seam?testingSessionId=23
 Each season it may be necessary to ask Eric for a new value.  The EU-CAT
 part and testingSessionId are probably the only things that change.
 

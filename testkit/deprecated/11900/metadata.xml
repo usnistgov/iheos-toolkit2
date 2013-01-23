@@ -1,0 +1,25 @@
+<query:AdhocQueryRequest xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+  <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"></query:ResponseOption>
+  <rim:AdhocQuery id="urn:uuid:10b545ea-725c-446d-9b95-8aeb444eddf3">
+    <rim:Slot name="$XDSSubmissionSetStatus">
+      <rim:ValueList>
+        <rim:Value>(&apos;urn:oasis:names:tc:ebxml-regrep:StatusType:Approved&apos;)</rim:Value>
+      </rim:ValueList>
+    </rim:Slot>
+    <rim:Slot name="$XDSDocumentEntryStatus">
+      <rim:ValueList>
+        <rim:Value>(&apos;urn:oasis:names:tc:ebxml-regrep:StatusType:Approved&apos;)</rim:Value>
+      </rim:ValueList>
+    </rim:Slot>
+    <rim:Slot name="$XDSFolderStatus">
+      <rim:ValueList>
+        <rim:Value>(&apos;urn:oasis:names:tc:ebxml-regrep:StatusType:Approved&apos;)</rim:Value>
+      </rim:ValueList>
+    </rim:Slot>
+    <rim:Slot name="$patientId">
+      <rim:ValueList>
+        <rim:Value>'$PatientId'</rim:Value>
+      </rim:ValueList>
+    </rim:Slot>
+  </rim:AdhocQuery>
+</query:AdhocQueryRequest>

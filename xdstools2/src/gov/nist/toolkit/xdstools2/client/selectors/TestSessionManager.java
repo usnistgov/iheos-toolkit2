@@ -196,7 +196,7 @@ public class TestSessionManager {
 			
 			testSessionState.updated(testSessionManager);
 
-			toolkitService.setEnvironment(value, setTestSessionCallback);
+			toolkitService.setMesaTestSession(value, setTestSessionCallback);
 		}
 
 	}

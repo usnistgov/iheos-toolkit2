@@ -32,7 +32,7 @@ public class DashboardServiceManager extends CommonServiceManager {
 		} catch (Exception e) {
 			logger.debug("Failed to load Registry Dashboard data from " + dashboard);
 			logger.debug(ExceptionUtil.exception_details(e));
-			throw new Exception("getDashBoardRegistryData() failed", e);
+			throw new Exception("getDashBoardRegistryData() failed - " + e.getMessage() , e);
 		}
 	}
 
@@ -44,7 +44,7 @@ public class DashboardServiceManager extends CommonServiceManager {
 		} catch (Exception e) {
 			logger.debug("Failed to load Repository Dashboard data from " + dashboard);
 			logger.debug(ExceptionUtil.exception_details(e));
-			throw new Exception("getDashBoardRepositoryData() failed", e);
+			throw new Exception("getDashBoardRepositoryData() failed - " + e.getMessage(), e);
 		}
 	}
 

@@ -46,24 +46,24 @@ class SysConfig {
 
 
 
-	String buildUrl(GazelleEntry entry) {
-		boolean secure = entry.getIsSecure();
-		return 
-				"http" +
-				((secure) ? "s" : "") +
-				"://" +
-				entry.getHost() + 
-				":" + 
-				(secure ? entry.getPortSecured() : entry.getPort()) +
-				"/" + entry.getURL();
-	}
+//	String buildUrl(GazelleEntry entry) {
+//		boolean secure = entry.getIsSecure();
+//		return 
+//				"http" +
+//				((secure) ? "s" : "") +
+//				"://" +
+//				entry.getHost() + 
+//				":" + 
+//				(secure ? entry.getPortSecured() : entry.getPort()) +
+//				"/" + entry.getURL();
+//	}
 
 	SysConfig(ConfigToXml configToXml, GazelleEntry entry) {
 		this.entry = entry;
 		this.configToXml = configToXml;
 		sysName = entry.getSystem();
 		isApproved = entry.getIsApproved();
-		url = buildUrl(entry);
+		url = entry.getURL();
 		isSecure = entry.getIsSecure();
 		actor = entry.getActor();
 		transId = entry.getTransId();

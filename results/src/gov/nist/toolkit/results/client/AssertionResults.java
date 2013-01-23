@@ -21,11 +21,38 @@ public class AssertionResults implements IsSerializable, Serializable {
 		assertions.add(new AssertionResult(assertion, status));
 	}
 	
+	public void add(AssertionResults ars) {
+		for (AssertionResult ar : ars.assertions)
+			assertions.add(ar);
+	}
+	
+	public int size() {
+		if (assertions == null)
+			return 0;
+		return assertions.size();
+	}
+	
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		
+		int i = 1;
+		for (AssertionResult ar : assertions) {
+			buf.append(i).append(":\t").append(ar.toString()).append("\n");
+			i++;
+		}
+		
+		return buf.toString();
+	}
+	
 	/* (non-Javadoc)
 	 * @see gov.nist.registry.xdstools2.client.AssertionResultsInterface#add(java.lang.String, java.lang.String)
 	 */
 	public void add(String assertion, String info) {
 		assertions.add(new AssertionResult(assertion, info));
+	}
+	
+	public void add(AssertionResult ar) {
+		assertions.add(ar);
 	}
 	
 	/* (non-Javadoc)

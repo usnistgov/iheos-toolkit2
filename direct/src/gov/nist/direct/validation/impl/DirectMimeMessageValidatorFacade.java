@@ -36,6 +36,7 @@ public class DirectMimeMessageValidatorFacade implements MessageValidatorFacade 
 	private DirectMessageHeadersValidator messageHeadersValidator = new DirectMessageHeadersValidator();
 	private DirectMessageValidator directMessageValidator = new DirectMessageValidator();
 	private DirectSignatureValidator signatureValidator = new DirectSignatureValidator();
+	private DirectWrappedMessageHeadersValidator wrappedMessageHeaderValidator = new DirectWrappedMessageHeadersValidator();
 
 	// ************************************************
 	// *********** MIME Entity checks *****************
@@ -110,8 +111,8 @@ public class DirectMimeMessageValidatorFacade implements MessageValidatorFacade 
 	}
 	
 	// DTS 136-148-157, Content-Transfer-Encoding, Optional
-	public void validateContentTransferEncodingOptional(ErrorRecorder er, String content) {
-		mimeEntityValidator.validateContentTransferEncodingOptional(er, content);
+	public void validateContentTransferEncodingOptional(ErrorRecorder er, String contentTransfertEncoding, String contentType) {
+		mimeEntityValidator.validateContentTransferEncodingOptional(er, contentTransfertEncoding, contentType);
 		
 	}
 	
@@ -626,6 +627,171 @@ public class DirectMimeMessageValidatorFacade implements MessageValidatorFacade 
 	public void validateKeySize(ErrorRecorder er, String key){
 		signatureValidator.validateKeySize(er, key);
 	}
+	
+	
+	/**
+	 * Wrapped Message Validation
+	 */
+	
+	// DTS 196, All Headers, Required
+		public void validateWrappedAllHeaders(ErrorRecorder er, String[] header, String[] headerContent) {
+			wrappedMessageHeaderValidator.validateWrappedAllHeaders(er, header, headerContent);
+			
+		}
+		
+		// DTS 103-105, Return Path, Conditional
+		public void validateWrappedReturnPath(ErrorRecorder er, String returnPath) {
+			wrappedMessageHeaderValidator.validateWrappedReturnPath(er, returnPath);
+			
+		}
+		
+		// DTS 104-106, Received, Conditional
+		public void validateWrappedReceived(ErrorRecorder er, String received) {
+			wrappedMessageHeaderValidator.validateWrappedReceived(er, received);
+			
+		}
+
+		// DTS 197, Resent Fields, Required
+		public void validateWrappedResentFields(ErrorRecorder er, String[] resentField) {
+			wrappedMessageHeaderValidator.validateWrappedResentFields(er, resentField);
+			
+		}
+		
+		// DTS 107, Resent-Date, Conditional
+		public void validateWrappedResentDate(ErrorRecorder er, String resentDate) {
+			wrappedMessageHeaderValidator.validateWrappedResentDate(er, resentDate);
+			
+		}
+		
+		// DTS 108, Resent-From, Conditional
+		public void validateWrappedResentFrom(ErrorRecorder er, String resentFrom) {
+			wrappedMessageHeaderValidator.validateWrappedResentFrom(er, resentFrom);
+			
+		}
+		
+		// DTS 109, Resent-Sender, Conditional
+		public void validateWrappedResentSender(ErrorRecorder er, String resentSender, String resentFrom) {
+			wrappedMessageHeaderValidator.validateWrappedResentSender(er, resentSender, resentFrom);
+			
+		}
+
+		// DTS 110, Resent-to, Optional
+		public void validateWrappedResentTo(ErrorRecorder er, String resentTo) {
+			wrappedMessageHeaderValidator.validateWrappedResentTo(er, resentTo);
+			
+		}
+
+		// DTS 111, Resent-cc, Optional
+		public void validateWrappedResentCc(ErrorRecorder er, String resentCc) {
+			wrappedMessageHeaderValidator.validateWrappedResentCc(er, resentCc);
+			
+		}
+
+		// DTS 112, Resent-bcc, Optional
+		public void validateWrappedResentBcc(ErrorRecorder er, String resentBcc) {
+			wrappedMessageHeaderValidator.validateWrappedResentBcc(er, resentBcc);
+			
+		}
+
+		// DTS 113, Resent-Msg-Id, Conditional
+		public void validateWrappedResentMsgId(ErrorRecorder er, String resentMsgId) {
+			wrappedMessageHeaderValidator.validateWrappedResentMsgId(er, resentMsgId);
+			
+		}
+		
+		// DTS 114, Orig-Date, Required
+		public void validateWrappedOrigDate(ErrorRecorder er, String origDate) {
+			wrappedMessageHeaderValidator.validateWrappedOrigDate(er, origDate);
+		}
+
+		// DTS 115, From, Required
+		public void validateWrappedFrom(ErrorRecorder er, String from) {
+			wrappedMessageHeaderValidator.validateWrappedFrom(er, from);
+			
+		}
+		
+		// DTS 116, Sender, Conditional
+		public void validateWrappedSender(ErrorRecorder er, String sender, Address[] from) {
+			wrappedMessageHeaderValidator.validateWrappedSender(er, sender, from);
+			
+		}
+		
+		// DTS 117, Reply-To, Optional
+		public void validateWrappedReplyTo(ErrorRecorder er, String replyTo) {
+			wrappedMessageHeaderValidator.validateWrappedReplyTo(er, replyTo);
+			
+		}
+
+		// DTS 118, To, Required
+		public void validateWrappedTo(ErrorRecorder er, String to) {
+			wrappedMessageHeaderValidator.validateWrappedTo(er, to);
+			
+		}
+		
+		// DTS 119, cc, Optional
+		public void validateWrappedCc(ErrorRecorder er, String cc) {
+			wrappedMessageHeaderValidator.validateWrappedCc(er, cc);
+			
+		}
+		
+		// DTS 120, Bcc, Optional
+		public void validateWrappedBcc(ErrorRecorder er, String bcc) {
+			wrappedMessageHeaderValidator.validateWrappedBcc(er, bcc);
+			
+		}
+
+		// DTS 121, Message-Id, Required
+		public void validateWrappedMessageId(ErrorRecorder er, String messageId) {
+			wrappedMessageHeaderValidator.validateWrappedMessageId(er, messageId);
+		}
+
+		// DTS 122, In-reply-to, Optional
+		public void validateWrappedInReplyTo(ErrorRecorder er, String inReplyTo, String date) {
+			wrappedMessageHeaderValidator.validateWrappedInReplyTo(er, inReplyTo, date);
+			
+		}
+		
+		// DTS 123, References, Optional
+		public void validateWrappedReferences(ErrorRecorder er, String references) {
+			wrappedMessageHeaderValidator.validateWrappedReferences(er, references);
+			
+		}
+		
+		// DTS 124, Subject, Optional
+		public void validateWrappedSubject(ErrorRecorder er, String subject, String filename) {
+			wrappedMessageHeaderValidator.validateWrappedSubject(er, subject, filename);
+			
+		}
+		
+		// DTS 125, Comments, Optional
+		public void validateWrappedComments(ErrorRecorder er, String comments) {
+			wrappedMessageHeaderValidator.validateWrappedComments(er, comments);
+			
+		}
+		
+		// DTS 126, Keywords, Optional
+		public void validateWrappedKeywords(ErrorRecorder er, String keyword) {
+			wrappedMessageHeaderValidator.validateWrappedKeywords(er, keyword);
+			
+		}
+		
+		// DTS 127, Optional-field, Optional
+		public void validateWrappedOptionalField(ErrorRecorder er, String optionalField) {
+			wrappedMessageHeaderValidator.validateWrappedOptionalField(er, optionalField);
+			
+		}
+		
+		// DTS 128, Disposition-Notification-To, Optional
+		public void validateWrappedDispositionNotificationTo(ErrorRecorder er, String dispositionNotificationTo) {
+			wrappedMessageHeaderValidator.validateWrappedDispositionNotificationTo(er, dispositionNotificationTo);
+			
+		}
+		
+		// DTS 102b, MIME-Version, Required
+		public void validateWrappedMIMEVersion(ErrorRecorder er, String MIMEVersion) {
+			wrappedMessageHeaderValidator.validateWrappedMIMEVersion(er, MIMEVersion);
+			
+		}
 
 	
 

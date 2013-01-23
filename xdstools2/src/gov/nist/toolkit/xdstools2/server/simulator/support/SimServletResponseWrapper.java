@@ -21,13 +21,13 @@ public class SimServletResponseWrapper extends HttpServletResponseWrapper {
 	}
 	
 	public void setHeader(String name, String value) {
-		logger.fatal(name + " => " + value);
+//		logger.fatal(name + " => " + value);
 		headers.put(name, value);
 		response.setHeader(name, value);
 	}
 	
 	public void addHeader(String name, String value) {
-		logger.fatal(name + " => " + value);
+//		logger.fatal(name + " => " + value);
 		headers.put(name, value);
 		response.addHeader(name, value);
 	}

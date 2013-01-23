@@ -87,25 +87,6 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		return getPropertyManager().getDefaultAssigningAuthority();
 	}
 
-	public List<String> getFeatureList() {
-		logger.debug(": " + "getFeatureList");
-		List<String> features = new ArrayList<String>();
-		File f = new File(getPropertyManager().getExternalCache() + File.separator + "features.txt");
-		
-		if (!f.exists() || !f.canRead())
-			return features;
-		
-		try {
-			String[] fs = Io.stringFromFile(f).split("\n");
-			for (int i=0; i<fs.length; i++) features.add(fs[i].trim());
-		} catch (IOException e) {
-			return features;		
-		}
-		logger.debug(": " + "getFeatureList => " + features);
-
-		return features;
-	}
-
 	public PropertyManager getPropertyManager() {
 		loadPropertyManager();
 		return propertyManager;
@@ -200,8 +181,9 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 
 	public boolean isTestLogCachePrivate() {
-		String testLogCache = getPropertyManager().getExternalCache() + File.separator + "TestLogCache";
-		return !"internal".equals(testLogCache);
+		return true;
+//		String testLogCache = getPropertyManager().getExternalCache() + File.separator + "TestLogCache";
+//		return !"internal".equals(testLogCache);
 	}
 
 	public String getImplementationVersion() {

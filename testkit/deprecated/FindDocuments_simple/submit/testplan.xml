@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>FindDocuments/submit</Test>
+    <RegistryEndpoint>http://129.6.24.109:9080/axis2/services/xdsregistryb</RegistryEndpoint>
+    <PatientId>abb39f6131a94a0^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO</PatientId>
+    <TestStep id="submit_doc">
+        <Rule>
+            <Transaction>R</Transaction>
+            <Assertion>Single document submission supports various query testing</Assertion>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <AssignUuids/>
+            <MetadataFile>single_doc.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

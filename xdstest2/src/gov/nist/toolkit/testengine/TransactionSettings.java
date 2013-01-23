@@ -1,9 +1,9 @@
 package gov.nist.toolkit.testengine;
 
+import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.securityCommon.SecurityParams;
-
-import java.io.File;
+import gov.nist.toolkit.testengine.logrepository.LogRepository;
 
 public class TransactionSettings {
 	/**
@@ -11,10 +11,15 @@ public class TransactionSettings {
 	 */
 	public Boolean assignPatientId = null;   // allows for null (unknown)
 	public String patientId = null;
-	public File logDir = null;
+//	public File logDir = null;
+	public LogRepository logRepository = null;
 	public boolean writeLogs = false;
 	public SiteSpec siteSpec;
-	public File toolkitx;
+	public AssertionResults res = null;
 	
 	public SecurityParams securityParams = null;
+	
+	public TransactionSettings() {
+		res = new AssertionResults();
+	}
 }

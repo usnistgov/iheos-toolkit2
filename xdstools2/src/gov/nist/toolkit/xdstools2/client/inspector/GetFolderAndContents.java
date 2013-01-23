@@ -22,7 +22,7 @@ public class GetFolderAndContents implements ClickHandler {
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 		public void onFailure(Throwable caught) {
-			Result result = new Result();
+			Result result = Result.RESULT("GetFolderAndContents");
 			result.assertions.add(caught.getMessage());
 			result.testName = "GetFolderAndContents";
 			it.addToHistory(result);

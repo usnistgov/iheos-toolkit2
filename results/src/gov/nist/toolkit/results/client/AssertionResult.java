@@ -11,6 +11,10 @@ public class AssertionResult implements IsSerializable, Serializable {
 	public boolean status;
 	public String info;
 	
+	public String toString() {
+		return ((status) ? "" : "  FAIL  " ) + "[ " + assertion + " ]" + "[ " + info + " ]";
+	}
+	
 	public AssertionResult() {
 		assertion = "";
 		status = true;

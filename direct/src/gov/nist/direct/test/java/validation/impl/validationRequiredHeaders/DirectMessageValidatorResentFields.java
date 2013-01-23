@@ -9,6 +9,7 @@ import org.junit.Test;
 
 public class DirectMessageValidatorResentFields {
 	// DTS 197, Resent-fields, Required
+	// Result: Success
 	@Test
 	public void testResentFields() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -18,6 +19,7 @@ public class DirectMessageValidatorResentFields {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testResentFields2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

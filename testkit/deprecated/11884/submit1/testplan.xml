@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>11884/submit1</Test>
+    <PatientId>290f56b761c441c^^^&amp;1.3.6.1.4.1.21367.2008.2.1&amp;ISO</PatientId>
+    <!-- Submit document in submission set    -->
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>single_doc.xml</MetadataFile>
+            <AssignUuids/>
+        </RegisterTransaction>
+    </TestStep>
+    <PatientId>1839133e17ca401^^^&amp;1.3.6.1.4.1.21367.2008.2.1&amp;ISO</PatientId>
+    <!--  Submit new submission set (with different patient id) with 
+        Reference association to first document  -->
+    <TestStep id="submit_ref">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>ref.xml</MetadataFile>
+            <UseId id="Document01" step="submit" section="AssignedUuids"
+                symbol="$orig_doc_uuid$"/>
+        </RegisterTransaction>
+    </TestStep>
+    <!--  Submit new submission set (with different patient id) with 
+        Reference association to non-extistant document, must fail  -->
+    <TestStep id="submit_bad_ref">
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>bad_ref.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+    <!--  Submit new submission with Reference association to document in 
+        same submission, must fail.  -->
+    <TestStep id="ref_internal">
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>ref_internal.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+    <!--  Submit new submission with Original association to document in first submission, 
+        must fail.  -->
+    <TestStep id="ref_internal">
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>ref_original.xml</MetadataFile>
+            <UseId id="Document01" step="submit" section="AssignedUuids"
+                symbol="$orig_doc_uuid$"/>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

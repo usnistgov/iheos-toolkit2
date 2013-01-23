@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="tkbuild" name="toolkit">
+<project basedir="." default="war" name="toolkit">
 
 	<!-- To build toolkit ...
 
@@ -14,17 +14,17 @@
 			This is only necessary if you are trying to generate a war file for deployment to tomcat.  If you
 			just want to run in the debugger, the ant war-prep is enough 
 		
-		* ant ttt (or ant ihe) build war file ttt.war (or xdstools2.war) appropriate for the named project
+		* ant ttt (or ant ihe) builds war file ttt.war (or xdstools2.war) appropriate for the named project
                         The difference is the copy of war/WEB-INF/toolkit.properties installed
 
 	  The result is the file xdstools2/ttt.war (or xdstools2/xdstools2.war)
 	  If ant ttt is run then a second file is generated, listener.jar which contains the port 25 listener for T3
-          It must be installed on hit-testing with the help of some scripts.  The procedure is:
+          It must be installed on hit-testing using scripts. The procedure is:
 		1) scp listener.jar bill@hit-testing
-		2) ssh bill@hist-testing
+		2) ssh bill@hit-testing
 			3) cd bin
 			4) screen -ls    // to get id of service
-			5) scrren -d -r <id>   // to bring service into forground
+			5) screen -d -r <id>   // to bring service into foreground
 			6) ^c                  // to kill it
 			7) ./prep-listener.sh   // to build ~/bin/listener directory contents (port 25 listener)
 			8) ./start-screen.sh	// to start listener using screen(1) command
@@ -34,23 +34,23 @@
 
 	<!--
 	Be careful when adding new classes or dependencies between classes.  Eclipse will compile all the sub-projects
-	in one big build thus ignoring the dependencies.  This ant script builds things in order shown below. It is 
-	very easy to introduce forward references that cannot be resolved.  A better solution is needed for
-	modularation but for now...
+	in one big build thus ignoring the dependencies.  This ant script builds things in order. It is 
+	very easy to introduce forward references that cannot be resolved.
 -->
-	<!-- TO FIX THIS PROBLEM, WE COULD EITHER USE IVY, OR LOOP THROUGH ALL SOURCES AND ADD THEM TO THE CLASSPATH 
-	THUS EMULATING WAS ECLISPE DOES -->
+	<!-- TO FIX THIS PROBLEM, WE COULD IVY DEPENDENCY RESOLUTION MECHANISM -->
 
 	<property name="sub-projects" value="
 		docref,
+		timer,
 		common-datatypes,
 		error-recording,
+		message-dispatch,
 		xds-exceptions,
 		utilities,
 		common,
 		actor-transaction,
-		installation,
 		tk,
+		installation,
 		email,
 		registry-support,
 		testkit-utilities,
@@ -59,9 +59,9 @@
 		http,
 		security-common,
 		dsig,
-		validators-support,
 		saml,
 		soap,
+		validators-support,
 		validators-ccda,
 		registry-metadata,
 		registry-msg-formats,
@@ -124,9 +124,6 @@
 	<property name="target" value="1.6" />
 	<property name="compile.excludes" value="" />
 
-	<!-- properties used to create the listener -->
-	<property name="direct-host" value="hit" />
-	<property name="direct-port" value="25" />
 
 	<!-- those are all the directories containing GWT sources -->
 	<property name="xdstools2.src.dir" location="xdstools2/src" />
@@ -217,6 +214,7 @@
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war-prep" />
 	</target>
 	
+	<!-- This target bypasses GWT-compile. Useful to build the war if gui did not change -->
 	<target name="war-no-gwt-compile" depends="compile, war-prep">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>
@@ -225,75 +223,30 @@
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>
 
+	    <!-- ================================================= 
+	          convenience methods for different configurations              
+	         ================================================= -->
+
+	    <!-- ================================= 
+	          target: ttt              
+	         ================================= -->
 	<target name="ttt" depends="compile">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ttt" />
 	</target>
-
-	<target name="listener" depends="war">
-		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="listener" />
+	
+		    <!-- ================================= 
+	          target: ihe              
+	         ================================= -->
+		<target name="ihe" depends="compile">
+		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ihe"/>
 	</target>
 
-
-
-	<!-- ==================== -->
-
-	<!-- REVIEW -->
-
-	<target name="ihe" depends="compile">
-		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ihe" />
-	</target>
-
-	<!--WHAT FOR -->
-	<target name="all" depends="ihe, ttt" />
-
-	<!--WHAT FOR -->
-	<target name="tkbuild" depends="compile">
-		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="tkbuild" />
-	</target>
-
-	<!--WHAT FOR -->
-	<target name="hit-testing">
-		<ant dir="xdstools2" target="hit-testing" />
-	</target>
-
-	<!--WHAT FOR -->
-	<target name="hit-testing-install" depends="hit-testing">
-		<scp todir="bill@ttt">
-			<fileset dir="xdstest2">
-				<include name="listener.jar" />
-				<include name="ttt.war" />
-			</fileset>
-		</scp>
-	</target>
-
-	<!--WHAT FOR -->
-	<target name="install-faq-hit" depends="compile-direct-faq">
-		<scp todir="bill@ttt/webapps/ROOT/docs/faq">
-			<fileset dir="direct-faq">
-				<include name="*.html" />
-			</fileset>
-		</scp>
-	</target>
-
-	<!--WHAT FOR -->
+		    <!-- ================================= 
+	          target: compile-direct-faq            
+	         ================================= -->
+	<!-- generate documentation -->
 	<target name="compile-direct-faq">
 		<ant dir="direct-faq" target="compile" />
-	</target>
-
-	<!--WHAT FOR -->
-	<target name="run-listener" depends="war-prep">
-		<echo>Listen on port 12999</echo>
-		<java classname="gov.nist.toolkit.directsim.Listener" fork="true" failonerror="true">
-			<arg value="12999" />
-			<arg value="/Users/bill/tmp/ttt" />
-			<arg value="xdstools2/war/WEB-INF/privcert/mykeystore.p12" />
-			<classpath>
-				<pathelement path="xdstools2/war/WEB-INF/classes" />
-				<fileset dir="xdstools2/war/WEB-INF/lib">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-		</java>
 	</target>
 
 </project>

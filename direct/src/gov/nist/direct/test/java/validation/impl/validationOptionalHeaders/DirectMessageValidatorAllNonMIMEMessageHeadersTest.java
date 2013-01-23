@@ -27,12 +27,23 @@ import org.junit.Test;
 public class DirectMessageValidatorAllNonMIMEMessageHeadersTest {
 		
 	// DTS ?, All Non-MIME Message Headers, Optional
-		@Test
-		public void testAllNonMIMEMesssageHeaders() {
-			ErrorRecorder er = new TextErrorRecorderModif();
-			DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-			validator.validateAllNonMIMEMessageHeaders(er, "");
-			assertTrue(!er.hasErrors());
-		}
+	// Result: Success
+	@Test
+	public void testAllNonMIMEMesssageHeaders() {
+		ErrorRecorder er = new TextErrorRecorderModif();
+		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
+		validator.validateAllNonMIMEMessageHeaders(er, "");
+		assertTrue(!er.hasErrors());
+	}
 	
+	// Result: Fail
+	@Test
+	public void testAllNonMIMEMesssageHeaders2() {
+		ErrorRecorder er = new TextErrorRecorderModif();
+		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
+		er.err("145", "Test DTS 145 not valid", "", "DTS 145", "");
+		validator.validateAllNonMIMEMessageHeaders(er, "");
+		assertTrue(er.hasErrors());
+	}
+
 }

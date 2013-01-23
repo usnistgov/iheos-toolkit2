@@ -25,13 +25,19 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 
 public class Utils {
@@ -137,6 +143,17 @@ public class Utils {
 	}
 
 
+	public static void printToFile(MimeMessage msg, String outputFile){
+	  try {
+		msg.writeTo(new FileOutputStream(outputFile));
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (MessagingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	}
 
 
 	public static void printHeader(String dts, String textToValidate){

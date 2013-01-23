@@ -17,24 +17,19 @@ import org.apache.log4j.Logger;
  */
 public class SessionListener implements HttpSessionListener {
 	static Logger logger = Logger.getLogger(SessionListener.class);
-		
-	String sessionId;
-	HttpSession s;
-	
+			
 	void init(HttpSessionEvent arg0) {
-		s = arg0.getSession();
-		sessionId = s.getId();
 	}
 	
 	public void sessionCreated(HttpSessionEvent arg0) {
-		init(arg0);
+		HttpSession s = arg0.getSession();
+		String sessionId = s.getId();
 		logger.info("Session " + sessionId + " started");
-				
-		PerSessionCache.initRawLogCache(s.getServletContext(), sessionId);
 	}
 
 	public void sessionDestroyed(HttpSessionEvent arg0) {
-		init(arg0);
+		HttpSession s = arg0.getSession();
+		String sessionId = s.getId();
 		logger.info("Session " + sessionId + " stopped");
 
 		File sessionCache = PerSessionCache.getSessionCache(s.getServletContext().getRealPath("/"), sessionId);

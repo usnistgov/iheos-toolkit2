@@ -1,6 +1,8 @@
 package gov.nist.toolkit.envSetting;
 
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.util.HashMap;
@@ -15,11 +17,20 @@ public class EnvSetting {
 	
 	static Logger logger = Logger.getLogger(EnvSetting.class);
 
-	static public EnvSetting getEnvSetting(String sessionId) {
-		return settings.get(sessionId);
+	static public EnvSetting getEnvSetting(String sessionId) throws NoSessionException {
+		EnvSetting s = settings.get(sessionId);
+		if (s == null)
+			throw new NoSessionException("");
+		return s;
 	}
 
 	public EnvSetting(String sessionId, String name, File dir) {
+		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
+		settings.put(sessionId, new EnvSetting(name, dir));
+	}
+	
+	public EnvSetting(String sessionId, String name) {
+		File dir = Installation.installation().environmentFile(name);
 		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
 		settings.put(sessionId, new EnvSetting(name, dir));
 	}
@@ -37,9 +48,10 @@ public class EnvSetting {
 		return envDir;
 	}
 	
-	public File getCodesFile() {
+	public File getCodesFile() throws EnvironmentNotSelectedException {
 		if (envDir == null) 
-			return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
+			throw new EnvironmentNotSelectedException("");
+//			return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
 		File f = new File(envDir + File.separator + "codes.xml");
 		if (f.exists())
 			return f;

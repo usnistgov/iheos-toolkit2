@@ -138,7 +138,7 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 	
 	// DTS 161-194, Content-Disposition filename, Optional
 	public void validateContentDispositionFilename(ErrorRecorder er, String content) {
-		final String extension =  ".*\\.p7c$|.*\\.p7z$|.*\\.p7s$";
+		final String extension =  ".*\\.p7c$|.*\\.p7z$|.*\\.p7s$|.*\\.p7m$";
 		Pattern pattern = Pattern.compile(extension, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(content);
 		if(matcher.matches()) {
@@ -166,25 +166,59 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 	
 	// DTS 134-143, Content-Id, Optional
 	public void validateContentId(ErrorRecorder er, String content) {
-		Assert.fail("Not Yet Implemented");
+		if(content.equals("")) {
+			er.detail("Info: DTS 134-143 - Content-Id field is not present");
+		} else {
+			//handle display		
+			Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(content);
+			//er.detail(matcher.matches());
+			if(matcher.matches()) {
+				er.detail("     Success:  DTS 134-143 - Content-Id is valid");
+			} else {
+				er.err("134-143", "Content-Id field is invalid.", "", "DTS 134-143", "");
+			}
+		}
 		
 	}
 	
 	// DTS 135-142-144, Content-Description, Optional
 	public void validateContentDescription(ErrorRecorder er, String content) {
-		Assert.fail("Not Yet Implemented");
+		if(content.equals("")) {
+			er.detail("Info: DTS 135-142-144 - Content-Description field is not present");
+		} else {
+			er.detail("Success: DTS 135-142-144 - Content-Description field is valid");
+		}
 		
 	}
 	
 	// DTS 136-148-157, Content-Transfer-Encoding, Optional
-	public void validateContentTransferEncodingOptional(ErrorRecorder er, String content) {
-		Assert.fail("Not Yet Implemented");
+	public void validateContentTransferEncodingOptional(ErrorRecorder er, String contentTransfertEncoding, String contentType) {
+		if(contentType.contains("multipart") || contentType.contains("message")) {
+			if(contentTransfertEncoding.contains("7bit") || contentTransfertEncoding.contains("8bit") || contentTransfertEncoding.contains("binary")) {
+				er.detail("Success: DTS 136-148-157 - Content-Transfer-Encoding is valid");
+			} else {
+				er.err("136-148-157", "Content-Transfer-Encoding is not valid", "", "DTS 136-148-157", "");
+			}
+		} else {
+			if(contentTransfertEncoding.contains("quoted-printable") || contentTransfertEncoding.contains("base-64") || contentTransfertEncoding.contains("7-bit")) {
+				er.detail("Success: DTS 136-148-157 - Content-Transfer-Encoding is valid");
+			} else if(contentTransfertEncoding.startsWith("X-")) {
+				er.detail("Info: DTS 136-148-157 - Content-Transfer-Encoding start with X- and do not need to be checked");
+			} else {
+				er.err("136-148-157", "Content-Transfer-Encoding is not valid", "", "DTS 136-148-157", "");
+			}
+		}
 		
 	}
 	
 	// DTS 138-149, Content-*, Optional
 	public void validateContentAll(ErrorRecorder er, String content) {
-		Assert.fail("Not Yet Implemented");
+		if(content.startsWith("content-")) {
+			er.detail("Success: DTS 138-149 - Content-* is valid");
+		} else {
+			er.err("138-149", "Content-* is not valid", "", "DTS 138-149", "");
+		}
 		
 	}
 	

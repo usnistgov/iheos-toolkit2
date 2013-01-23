@@ -250,16 +250,20 @@ public class DirectMessageValidator implements MessageValidator {
 	
 	// DTS ?, All Non-MIME Message Headers
 	public void validateAllNonMIMEMessageHeaders(ErrorRecorder er, String nonMIMEHeader) {
-		Assert.fail("Not Yet Implemented");
+		if(er.hasErrors()) {
+			er.err("?", "Some Non MIME Message Headers are not valid", "", "DTS ?", "");
+		} else {
+			er.detail("All Non MIME Message Headers are valids");
+		}
 		
 	}
 	
 	// DTS 155, Content-Type, Required
 	public void validateContentType2(ErrorRecorder er, String contentType) {
-		if(contentType.contains("application/pkcs7-signature")) {
+		if(contentType.contains("multipart/signed")) {
 			er.detail("     Success:  DTS 155 - Content-Type verified");
 		} else {
-			er.err("155", "Content-Type is not equal to \"application/pkcs7-signature\"", "", "DTS 151", "");
+			er.err("155", "Content-Type is not equal to multipart/signed", "", "DTS 151", "");
 		}
 	
 	}
@@ -291,7 +295,11 @@ public class DirectMessageValidator implements MessageValidator {
 
 	// DTS 182, EncapsuledContentInfo.eContentInfo, Required
 	public void validateEncapsuledInfo2(ErrorRecorder er, String encapsulatedInfo) {
-		Assert.fail("Not Yet Implemented");
+		if(encapsulatedInfo.equals("")) {
+			er.detail("Success:  DTS 182 - EncapsulatedContentInfo is not present");
+		} else {
+			er.err("182", "EncapsulatedContentInfo must be absent", "", "DTS 182", "");
+		}
 		
 	}
 	

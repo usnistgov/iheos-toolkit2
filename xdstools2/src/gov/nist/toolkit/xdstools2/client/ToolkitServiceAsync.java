@@ -33,10 +33,11 @@ public interface ToolkitServiceAsync {
 	void toolkitPubCert(AsyncCallback<String> cert);
 	void saveCertFromUpload(ContactRegistrationData reg, String directAddr, AsyncCallback<ContactRegistrationData> callback);
 	void directSend(Map<String, String> parms, AsyncCallback<List<Result>> callback);
-	
+	void getEncryptionCertDomains(AsyncCallback<List<String>> asyncCallback);
+
+
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
-	void getFeatureList(AsyncCallback<List<String>> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
 	void setSessionProperties(Map<String, String> props, AsyncCallback callback);
 	void setMesaTestSession(String sessionName, AsyncCallback callback);

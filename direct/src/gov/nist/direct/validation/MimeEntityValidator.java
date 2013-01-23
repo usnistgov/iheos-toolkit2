@@ -96,7 +96,7 @@ public interface MimeEntityValidator  {
 	 * @param er
 	 * @param content
 	 */
-	public void validateContentTransferEncodingOptional(ErrorRecorder er, String content);
+	public void validateContentTransferEncodingOptional(ErrorRecorder er, String contentTransfertEncoding, String contentType);
 	
 	/**
 	 *  DTS 138-149, Content-*, Optional

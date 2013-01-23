@@ -4,14 +4,13 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.Collection;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Cookies;
@@ -23,7 +22,14 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class SimulatorControlTab extends TabbedWindow {
+public class SimulatorControlTab extends GenericQueryTab {
+
+	public SimulatorControlTab(BaseSiteActorManager siteActorManager) {
+		super(siteActorManager);
+	}
+
+	public SimulatorControlTab() {
+		super(new FindDocumentsSiteActorManager());	}
 
 	protected TabContainer myContainer;
 	ListBox         actorSelectListBox = new ListBox();
@@ -33,8 +39,8 @@ public class SimulatorControlTab extends TabbedWindow {
 	Button          createActorSimulatorButton = new Button("Create Actor Simulator");
 	Button          loadSimulatorsButton = new Button("Load Simulators");
 
-	final protected ToolkitServiceAsync toolkitService = GWT
-	.create(ToolkitService.class);
+//	final protected ToolkitServiceAsync toolkitService = GWT
+//	.create(ToolkitService.class);
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
@@ -42,6 +48,13 @@ public class SimulatorControlTab extends TabbedWindow {
 
 		container.addTab(topPanel, "Sim Control", select);
 		addCloseButton(container,topPanel, null);
+		
+		addActorReloader();
+		
+		runEnabled = false;
+		samlEnabled = false;
+		tlsEnabled = false;
+		enableInspectResults = false;
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Simulator Control</h2>");
@@ -135,7 +148,7 @@ public class SimulatorControlTab extends TabbedWindow {
 		toolkitService.getNewSimulator(actorTypeName, new AsyncCallback<List<SimulatorConfig>>() {
 
 			public void onFailure(Throwable caught) {
-				new PopupMessage("getNewSimulator:" + caught.getMessage());
+				new PopupMessage("Error creating new simulator: " + caught.getMessage());
 			}
 
 			public void onSuccess(List<SimulatorConfig> configs) {
@@ -168,6 +181,8 @@ public class SimulatorControlTab extends TabbedWindow {
 			
 		});
 	}
+	
+	
 
 	public String getWindowShortName() {
 		return "simcontrol";
