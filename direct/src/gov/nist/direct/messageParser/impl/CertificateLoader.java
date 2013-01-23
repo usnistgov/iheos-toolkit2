@@ -3,6 +3,8 @@ package gov.nist.direct.messageParser.impl;
 import gov.nist.direct.validation.MessageValidatorFacade;
 import gov.nist.direct.validation.impl.DirectMimeMessageValidatorFacade;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -10,7 +12,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.Security;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 
@@ -33,6 +38,7 @@ public class CertificateLoader {
 	
 	
 	public CertificateLoader(InputStream certificate, String password) throws Exception {
+		
 		//
 		// Open the key store
 		//
@@ -60,6 +66,18 @@ public class CertificateLoader {
 		} catch (IOException e1) {
 			throw new IOException();
 		} catch (Exception e1) {
+			// Verifying certificate format
+			X509Certificate encCert = null;
+
+	        System.out.println("Trying to read as a public certificate");
+	        try {
+	        	CertificateFactory x509CertFact = CertificateFactory.getInstance("X.509", "BC");
+	        	encCert = (X509Certificate)x509CertFact.generateCertificate(certificate);
+	        	System.out.println("It is a public certificate");
+	        	System.out.println(encCert);
+	        } catch (Exception e2) {
+	        	System.out.println("It is not a public certificate");
+	        }
 			throw new Exception();
 		}
 
@@ -98,6 +116,7 @@ public class CertificateLoader {
 		
 		try {
 			cert = (X509Certificate)ks.getCertificate(keyAlias);
+			System.out.println(cert);
 		} catch (KeyStoreException e1) {
 			throw new KeyStoreException();
 		}
