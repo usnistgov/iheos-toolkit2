@@ -105,10 +105,16 @@
 		<mkdir dir="${war.sessionCache.dir}" />
 		<mkdir dir="${war.documentCache.dir}" />
 		<mkdir dir="${war.mailer.dir}" />
+		<mkdir dir="${war.dir}/scripts"/>
 
 		<!-- copy configuration files -->
 		<copy file="${config.dir}/actors.xml" tofile="${war.xdstest.dir}/actors.xml" />
 
+		<!-- copy scripts-->
+		<copy todir="war/scripts" overwrite="true">
+			<fileset dir="scripts"/>
+		</copy>
+		
 		<!-- TODO check : why do we put them there ? -->
 		<copy file="${config.dir}/log4j.properties" todir="${war.classes.dir}" overwrite="yes" />
 		<copy file="${config.dir}/schematron.properties" todir="${war.classes.dir}" overwrite="yes" />
