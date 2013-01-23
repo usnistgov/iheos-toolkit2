@@ -11,8 +11,10 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
@@ -59,6 +61,14 @@ public class DocumentAttachmentMapper  extends MessageValidator {
 		throw new Exception("Document " + docId + " not part of message, available ids are " + storedDocuments.keySet());
 	}
 	
+	public Set<String> getIds() {
+		Set<String> ids = new HashSet<String>();
+		for (String id : storedDocuments.keySet())
+			ids.add(id);
+		for (String id : docIds.keySet())
+			ids.add(id);
+		return ids;
+	}
 	
 	public String getDocumentContentsIdForDocumentId(String docId) {
 		return docIds.get(docId);

@@ -30,7 +30,7 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 
-public class RetrieveB extends OmLogger {
+public class RetrieveB {
 	String endpoint = null;
 	protected RetContext r_ctx = null;
 	protected OMElement log_parent = null;
@@ -42,6 +42,7 @@ public class RetrieveB extends OmLogger {
 	boolean async = false;
 	UseReportManager useReportManager = null;
 	BasicTransaction basicTransaction;
+	OmLogger testLog = new TestLogFactory().getLogger();
 
 	public void setIsXca(boolean isXca) { is_xca = isXca; }
 
@@ -248,7 +249,7 @@ public class RetrieveB extends OmLogger {
 			String mtom_mime = mtom.getContent_type();
 			boolean isOptimized = mtom.isOptimized();
 			if (this.log_parent != null) 
-				this.add_simple_element_with_id(log_parent, "IsOptimized", (isOptimized) ? "true" : "false");
+				testLog.add_simple_element_with_id(log_parent, "IsOptimized", (isOptimized) ? "true" : "false");
 			
 			// MTOM encoding does not require correct/accurate content type.  If MTOM package punted 
 			// and used application/octet-stream then take mime type from retrieve response metadata
@@ -341,24 +342,24 @@ public class RetrieveB extends OmLogger {
 			}
 
 			if (this.log_parent != null) {
-				this.add_name_value(
+				testLog.add_name_value(
 						this.log_parent, 
 						"ContentType", 
-						this.create_name_value("Original", req.getContent_type()), 
-						this.create_name_value("Query", query_mime_type), 
-						this.create_name_value("Retrieve", rsp.getContent_type()));
-				this.add_name_value(
+						testLog.create_name_value("Original", req.getContent_type()), 
+						testLog.create_name_value("Query", query_mime_type), 
+						testLog.create_name_value("Retrieve", rsp.getContent_type()));
+				testLog.add_name_value(
 						this.log_parent, 
 						"Hash", 
-						this.create_name_value("Original", req.getHash()), 
-						this.create_name_value("Query", query_hash), 
-						this.create_name_value("Retrieve", rsp.getHash()));
-				this.add_name_value(
+						testLog.create_name_value("Original", req.getHash()), 
+						testLog.create_name_value("Query", query_hash), 
+						testLog.create_name_value("Retrieve", rsp.getHash()));
+				testLog.add_name_value(
 						this.log_parent, 
 						"Size", 
-						this.create_name_value("Original", String.valueOf(req.getSize())), 
-						this.create_name_value("Query", query_size), 
-						this.create_name_value("Retrieve", String.valueOf(rsp.getSize())));
+						testLog.create_name_value("Original", String.valueOf(req.getSize())), 
+						testLog.create_name_value("Query", query_size), 
+						testLog.create_name_value("Retrieve", String.valueOf(rsp.getSize())));
 			}
 
 			//

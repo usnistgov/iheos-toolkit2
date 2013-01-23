@@ -196,17 +196,19 @@ ToolkitService {
 	
 	// Gazelle Service
 	public String reloadSystemFromGazelle(String systemName) throws Exception { return new GazelleServiceManager(session()).reloadSystemFromGazelle(systemName); }
-
-	// Session
+	
+	// Environment management
 	public List<String> getEnvironmentNames() throws NoServletSessionException { return session().getEnvironmentNames(); }
 	public String setEnvironment(String name) throws NoServletSessionException { session().setEnvironment(name); return name; }
 	public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
+	public String getDefaultEnvironment()  throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getDefaultEnvironment(); }
+
+	// Session
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
 	
 	// Property Service
 	public TkProps getTkProps() throws NoServletSessionException { return session().tkProps(); }
-	public String getDefaultEnvironment()  throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getDefaultEnvironment(); }
 	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
 	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
 	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }
@@ -285,7 +287,7 @@ ToolkitService {
 			
 			File warHome = new File(context.getRealPath("/"));
 			System.setProperty("warHome", warHome.toString());
-			System.out.println("warHome [ToolkitServiceImpl]: " + warHome);
+			logger.info("warHome [ToolkitServiceImpl]: " + warHome);
 			Installation.installation().warHome(warHome);
 		}
 		return context;

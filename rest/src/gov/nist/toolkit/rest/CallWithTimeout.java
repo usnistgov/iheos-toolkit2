@@ -82,7 +82,7 @@ public class CallWithTimeout {
 		   Map<String, String> parms = new HashMap<String, String>();
 		   parms.put("CCDA_Validation_Type", "Clinical Office Visit Summary");
 		try {
-			result = cwt.post(new File(""), parms);
+			result = cwt.post(new File("CCDA_CCD_b1_Ambulatory.xml"), parms);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

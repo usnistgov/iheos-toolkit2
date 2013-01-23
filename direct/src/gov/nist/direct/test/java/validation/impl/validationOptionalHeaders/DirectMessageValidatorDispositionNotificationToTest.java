@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorDispositionNotificationToTest {
 	
 	// DTS 128, Disposition-Notification-To, Optional
+	// Result: Success
 	@Test
 	public void testDispositionNotificationTo() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -36,6 +37,7 @@ public class DirectMessageValidatorDispositionNotificationToTest {
 		assertTrue(!er.hasErrors());
 	}
 		
+	// Result: Fail
 	@Test
 	public void testDispositionNotificationTo2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -44,6 +46,7 @@ public class DirectMessageValidatorDispositionNotificationToTest {
 		assertTrue(er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testDispositionNotificationTo3() {
 		ErrorRecorder er = new TextErrorRecorderModif();

@@ -26,6 +26,7 @@ xdstools2/war/WEB-INF/privcert
 xdstools2/war/toolkitx/admin/version
 xdstools2/war/toolkitx/xdstest/rampart/client_repositories/modules/addressing-1.5.4.mar
 xdstools2/war/WEB-INF/toolkit.properties
+xdstools2/war/scripts
 
 #the war/jars produced
 *.war

@@ -64,8 +64,12 @@ public class QueryBoilerplate {
 	}
 
 	void remove() {
-		genericQueryTab.topPanel.remove(genericQueryTab.resultPanel);
-		genericQueryTab.menuPanel.remove(reload);
+		if (genericQueryTab == null)
+			return;
+		if (genericQueryTab.resultPanel != null)
+			genericQueryTab.topPanel.remove(genericQueryTab.resultPanel);
+		if (reload != null)
+			genericQueryTab.menuPanel.remove(reload);
 		genericQueryTab.initMainGrid();
 	}
 

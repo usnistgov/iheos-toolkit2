@@ -110,7 +110,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 	private byte[] directCertificate;
 	private String password;
 	private int attnum = 1;
-	ValidationContext vc;
+	ValidationContext vc = new ValidationContext();
 	private int partNumber;
 	private int shiftNumber;
 	private ValidationSummary validationSummary = new ValidationSummary();
@@ -446,6 +446,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 
 		// Send to C-CDA validation tool.
 		InputStream attachmentContents = p.getInputStream();
+		
+		// Display CCDA Document
+		er.detail("#####################CCDA Content######################");
+		er.detail(p.getContent().toString());
+		er.detail("####################################################");
+		logger.info(p.getContent().toString());
+		
 
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
 
@@ -455,9 +462,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
 			docVC.isDIRECT = false;
 			docVC.isCCDA = true;
+			
+			if(directCertificate!=null) {
+				MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
+				mve.run();
+			}
 
-			MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
-			mve.run();
 		} else {
 			er.detail("Is not a CDA R2 so no validation attempted");
 		}
@@ -603,6 +613,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			er.err("0", "Error in loading certificate", "", "", "Certificate file");
 		} catch (IOException e1) {
 			logger.error("Error loading certificate (decryption): " + ExceptionUtil.exception_details(e1));
+			er.err("0", "Error in loading certificate (decryption)", "", "", "Certificate file");
+		} catch (Exception e1) {
+			logger.error("Error loading certificate (decryption): " + ExceptionUtil.exception_details(e1) + e1.toString());
 			er.err("0", "Error in loading certificate (decryption)", "", "", "Certificate file");
 		}
 
@@ -805,7 +818,23 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 	 */
 	public void processAttachments(ErrorRecorder er, Part p) throws Exception{
 		if (!p.isMimeType("multipart/*") && !(p instanceof Message)){
+			
+			if(p.getFileName().contains(".zip")) {
+				er.detail("Try validation as XDM");
+				ValidationContext docVC = new ValidationContext();
+				docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
+				docVC.isDIRECT = false;
+				docVC.isCCDA = false;
+				docVC.isXDM = true;
+				
+				InputStream attachmentContents = p.getInputStream();
+				byte[] contents = Io.getBytesFromInputStream(attachmentContents);
 
+				MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
+				mve.run();
+			}
+			
+			
 //			logger.info("Processing attachments, Validation context is " + vc.toString());
 //			
 //			// Send to C-CDA validation tool.

@@ -76,7 +76,7 @@ public class DsubSubscribeTransaction extends BasicTransaction {
 		response_parms_map.put("subscriptionId", sub_id);
 		
 		
-		s_ctx.add_name_value(instruction_output, generate_xml("SubscriptionParms", response_parms_map));
+		testLog.add_name_value(instruction_output, generate_xml("SubscriptionParms", response_parms_map));
 
 
 		add_step_status_to_output();

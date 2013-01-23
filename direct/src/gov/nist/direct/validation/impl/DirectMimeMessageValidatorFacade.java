@@ -111,8 +111,8 @@ public class DirectMimeMessageValidatorFacade implements MessageValidatorFacade 
 	}
 	
 	// DTS 136-148-157, Content-Transfer-Encoding, Optional
-	public void validateContentTransferEncodingOptional(ErrorRecorder er, String content) {
-		mimeEntityValidator.validateContentTransferEncodingOptional(er, content);
+	public void validateContentTransferEncodingOptional(ErrorRecorder er, String contentTransfertEncoding, String contentType) {
+		mimeEntityValidator.validateContentTransferEncodingOptional(er, contentTransfertEncoding, contentType);
 		
 	}
 	

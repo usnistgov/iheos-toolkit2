@@ -27,6 +27,7 @@ import org.junit.Test;
 public class DirectMessageValidatorCcAndBccTest {
 	
 	// DTS 119, cc, Optional
+	// Result: Success
 	@Test
 	public void testCc() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -34,7 +35,8 @@ public class DirectMessageValidatorCcAndBccTest {
 		validator.validateCc(er, "test@test.com");
 		assertTrue(!er.hasErrors());
 	}	
-		
+	
+	// Result: Fail
 	@Test
 	public void testCc2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -43,6 +45,7 @@ public class DirectMessageValidatorCcAndBccTest {
 		assertTrue(er.hasErrors());
 	}
 		
+	// Result: Fail
 	@Test
 	public void testCc3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -52,6 +55,7 @@ public class DirectMessageValidatorCcAndBccTest {
 	}
 	
 	// DTS 120, bcc, Optional
+	// Result: Success
 	@Test
 	public void testBcc() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -60,6 +64,7 @@ public class DirectMessageValidatorCcAndBccTest {
 		assertTrue(!er.hasErrors());
 	}		
 		
+	// Result: Fail
 	@Test
 	public void testBcc2() {
 		ErrorRecorder er = new TextErrorRecorderModif();

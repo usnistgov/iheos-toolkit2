@@ -149,6 +149,7 @@ public class DashboardDaemon {
 			}
 			TransactionSettings ts = new TransactionSettings();
 			ts.assignPatientId = false;
+			ts.siteSpec = new SiteSpec();
 			ts.siteSpec.isAsync = false;
 			ts.securityParams = s; 
 			try {
@@ -273,6 +274,7 @@ public class DashboardDaemon {
 			Map<String, String> parms = new HashMap<String, String>();
 			parms.put("$patientid$", pid);
 			TransactionSettings ts = new TransactionSettings();
+			ts.siteSpec = new SiteSpec();
 			ts.assignPatientId = false;
 			ts.siteSpec.isAsync = false;
 			ts.securityParams = s; 

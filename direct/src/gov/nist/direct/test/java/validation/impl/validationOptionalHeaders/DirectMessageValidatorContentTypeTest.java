@@ -29,14 +29,16 @@ public class DirectMessageValidatorContentTypeTest {
 	
 	
 	// DTS 201, Content-Type Name, Optional
+	// Result: Success
 	@Test
 	public void testContentTypeName() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateContentTypeNameOptional(er, "smime.p7m");
+		validator.validateContentTypeNameOptional(er, "name=smime.p7m");
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentTypeName2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -47,6 +49,7 @@ public class DirectMessageValidatorContentTypeTest {
 		
 		
 	// DTS 202, Content-Type S/MIME-Type, Optional
+	// Result: Success
 	@Test
 	public void testContentTypeSMIMEType() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -55,6 +58,7 @@ public class DirectMessageValidatorContentTypeTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testContentTypeSMIMEType2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -64,21 +68,23 @@ public class DirectMessageValidatorContentTypeTest {
 	}
 	
 	// DTS 203, Content Disposition, Optional
-		@Test
-		public void testContentDisposition() {
-			ErrorRecorder er = new TextErrorRecorderModif();
-			DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-			validator.validateContentDispositionOptional(er, "smime.p7m");
-			assertTrue(!er.hasErrors());
-		}
-		
-		@Test
-		public void testContentDisposition2() {
-			ErrorRecorder er = new TextErrorRecorderModif();
-			DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-			validator.validateContentDispositionOptional(er, "smime");  // Not valid
-			assertTrue(!er.hasErrors());
-		}
-	
+	// Result: Success
+	@Test
+	public void testContentDisposition() {
+		ErrorRecorder er = new TextErrorRecorderModif();
+		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
+		validator.validateContentDispositionOptional(er, "smime.p7m");
+		assertTrue(!er.hasErrors());
+	}
+
+	// Result: Fail
+	@Test
+	public void testContentDisposition2() {
+		ErrorRecorder er = new TextErrorRecorderModif();
+		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
+		validator.validateContentDispositionOptional(er, "smime");  // Not valid
+		assertTrue(!er.hasErrors());
+	}
+
 
 }

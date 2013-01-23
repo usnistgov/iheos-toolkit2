@@ -8,8 +8,11 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import javax.mail.Message;
@@ -135,26 +138,17 @@ public class WrappedMessageParser {
 	}
 	
 	public Part processSMIMEEnvelope(ErrorRecorder er, Part p, InputStream certificate, String password) {
-		//
-		// Open the key store
-		//
-		KeyStore ks = null;
+		
+		CertificateLoader certLoader = null;
+		RecipientId     recId = null;		
+		
 		try {
-			ks = KeyStore.getInstance("PKCS12", "BC");
+			certLoader = new CertificateLoader(certificate, password);
+			recId = new JceKeyTransRecipientId(certLoader.getX509Certificate());
 		} catch (KeyStoreException e1) {
 			er.err("0", "Error in keystore creation", "", "", "Certificate file");
 		} catch (NoSuchProviderException e1) {
 			er.err("0", "Error in keystore creation NoSuchProviderException", "", "", "Certificate file");
-		}
-
-		// Message Validator
-		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
-
-		try {
-			if(password == null) {
-				password="";
-			} 
-			ks.load(certificate, password.toCharArray());
 		} catch (NoSuchAlgorithmException e1) {
 			er.err("0", "Error in loading certificate NoSuchAlgorithmException", "", "", "Certificate file");
 		} catch (CertificateException e1) {
@@ -162,44 +156,9 @@ public class WrappedMessageParser {
 		} catch (IOException e1) {
 			er.err("0", "Error in loading certificate IOException (decryption)", "", "", "Certificate file");
 		} catch (Exception e1) {
-			er.err("0", "Cannot load the certificate. Probably wrong certificate file", "", "", "Certificate file");
+			er.err("0", "Cannot load the certificate (decryption). Probably wrong format certificate file", "", "", "Certificate file");
 		}
 
-		@SuppressWarnings("rawtypes")
-		Enumeration e = null;
-		try {
-			e = ks.aliases();
-		} catch (KeyStoreException e1) {
-			er.err("0", "Error in loading certificate KeyStoreException", "", "", "Certificate file");
-		}
-		String      keyAlias = null;
-
-		if (e != null) {
-			while (e.hasMoreElements())
-			{
-				String  alias = (String)e.nextElement();
-
-				try {
-					if (ks.isKeyEntry(alias))
-					{
-						keyAlias = alias;
-					}
-				} catch (KeyStoreException e1) {
-					er.err("0", "Error in loading certificate. Cannot load alias", "", "", "Certificate file");
-				}
-			}
-		}
-
-		//
-		// find the certificate for the private key and generate a 
-		// suitable recipient identifier.
-		//
-		X509Certificate cert = null;
-		try {
-			cert = (X509Certificate)ks.getCertificate(keyAlias);
-		} catch (KeyStoreException e1) {
-		}
-		RecipientId     recId = new JceKeyTransRecipientId(cert);
 
 		SMIMEEnveloped m = null;
 		try {
@@ -216,17 +175,7 @@ public class WrappedMessageParser {
 
 		MimeBodyPart res = null;
 		try {
-			PrivateKey pkey = (PrivateKey)ks.getKey(keyAlias, null);
-			res = SMIMEUtil.toMimeBodyPart(recipient.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider("BC")));
-		} catch (UnrecoverableKeyException e1) {
-			e1.printStackTrace();
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
-		} catch (KeyStoreException e1) {
-			e1.printStackTrace();
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
-		} catch (NoSuchAlgorithmException e1) {
-			e1.printStackTrace();
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			res = SMIMEUtil.toMimeBodyPart(recipient.getContent(new JceKeyTransEnvelopedRecipient(certLoader.getPrivateKey()).setProvider("BC")));
 		} catch (SMIMEException e1) {
 			e1.printStackTrace();
 			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");

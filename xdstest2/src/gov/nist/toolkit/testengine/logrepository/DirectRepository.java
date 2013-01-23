@@ -1,36 +1,16 @@
 package gov.nist.toolkit.testengine.logrepository;
 
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.simDb.SimDb;
-
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 
-public class DirectRepository extends LogRepository {
+public class DirectRepository {
 	Logger logger = Logger.getLogger(DirectRepository.class);
+	LogRepository log;
+	
+//	public DirectRepository(String user) throws IOException {
+//		log = new LogRepositoryFactory().getRepository(Installation.installation().directSendLogs(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+//	}
 
-	public DirectRepository(String user) {
-		super(user);
+	public LogRepository getLogRepository() {
+		return log;
 	}
-
-	@Override
-	public LogRepository getNewLogRepository() throws IOException {
-		logDir = new File(
-				Installation.installation().directSendLogFile(user) + 
-				File.separator + new SimDb().nowAsFilenameBase()  );
-		logDir.mkdirs();
-		if (!logDir.exists()) 
-			throw new IOException("Cannot create log directory " + logDir.toString());
-		if (!logDir.isDirectory()) 
-			throw new IOException("Cannot create log directory " + logDir.toString());
-		return this;
-	}
-
-	@Override
-	protected Logger getLogger() {
-		return logger;
-	}
-
 }

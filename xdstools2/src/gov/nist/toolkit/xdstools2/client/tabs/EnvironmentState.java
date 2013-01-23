@@ -5,6 +5,13 @@ import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Single instance is created by Xdstools2.java to manage environment choices.
+ * Each tab gets a copy of EnvironmentManager.java
+ * @author bill
+ *
+ */
 public class EnvironmentState {
 	String environmentName = null;
 	List<String> environmentNameChoices = new ArrayList<String>();

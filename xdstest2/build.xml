@@ -3,7 +3,7 @@
 
         <import file="../build-common.xml"/>
 
-	<property name="testkit" value="../../testkit" />
+	<property name="testkit" value="../testkit" />
 
 	<path id="run.classpath">
 		<pathelement path="bin"/>

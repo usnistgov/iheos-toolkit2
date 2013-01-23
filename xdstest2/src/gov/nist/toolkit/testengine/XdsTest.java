@@ -1,12 +1,13 @@
 package gov.nist.toolkit.testengine;
 
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.logrepository.LogRepository;
-import gov.nist.toolkit.testengine.logrepository.TestLogRepository;
+import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
@@ -189,7 +190,8 @@ public class XdsTest {
 		if (testkitdir != null)
 			testkit = new File(testkitdir);
 		if (logdirstr != null)
-			logRepository = new TestLogRepository(null).getNewLogRepository();  //new File(logdirstr);
+			logRepository = //new TestLogRepository(null).getNewLogRepository();  //new File(logdirstr);
+		new LogRepositoryFactory().getRepository(Installation.installation().testLogFile(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 		if (toolkitstr != null)
 			toolkit = new File(toolkitstr);
 
@@ -936,10 +938,11 @@ public class XdsTest {
 		this.wssec = wssec;
 	}
 
-	public void setToolkit(File toolkit) {
+	public void setToolkit(File toolkit) throws IOException {
 		this.toolkit = toolkit;
 		mgmt = toolkit + File.separator + "xdstest";
-		logRepository = new TestLogRepository(null);
+		logRepository = //new TestLogRepository(null);
+		new LogRepositoryFactory().getRepository(Installation.installation().testLogFile(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 //		logRepository = new File(toolkit + File.separator + "logs");
 		testConfig.testmgmt_dir = mgmt;
 	}

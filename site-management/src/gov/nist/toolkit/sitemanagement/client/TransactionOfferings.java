@@ -21,6 +21,22 @@ public class TransactionOfferings implements IsSerializable {
 		}
 	}
 	
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("TransactionOfferings:\n");
+		buf.append("Non-TLS\n");
+		for (TransactionType t : map.keySet()) {
+			buf.append("\t").append(t).append("\n");
+		}
+		buf.append("TLS\n");
+		for (TransactionType t : tmap.keySet()) {
+			buf.append("\t").append(t).append("\n");
+		}
+		
+		return buf.toString();
+	}
+	
 	public TransactionOfferings() {} // For GWT
 
 }

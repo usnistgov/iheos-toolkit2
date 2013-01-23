@@ -17,12 +17,12 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DashboardTab  extends GenericQueryTab {
-//	final protected ToolkitServiceAsync toolkitService = GWT
-//	.create(ToolkitService.class);
-	
+	//	final protected ToolkitServiceAsync toolkitService = GWT
+	//	.create(ToolkitService.class);
+
 	List<RegistryStatus> regData;
 	List<RepositoryStatus> repData;
-	
+
 	VerticalPanel mainDataArea = new VerticalPanel();
 	Anchor reload;
 
@@ -34,17 +34,17 @@ public class DashboardTab  extends GenericQueryTab {
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
-		
-		
+
+
 		container.addTab(topPanel, "Dashboard", select);
 		addCloseButton(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>XDS Dashboard</h2>");
 		topPanel.add(title);
-		
+
 		topPanel.add(mainDataArea);
-		
+
 		reload = new Anchor();
 		reload.setTitle("Reload actors configuration");
 		reload.setText("[reload]");
@@ -54,37 +54,41 @@ public class DashboardTab  extends GenericQueryTab {
 			public void onClick(ClickEvent event) {
 				load();
 			}
-			
+
 		});
 
-		
+
 		load();
 	}
-	
+
 	void draw() {
-		
-		mainDataArea.add(html(repData.get(0).date));
-		
+
+		try {
+			mainDataArea.add(html(repData.get(0).date));
+		} catch (Exception e) {
+
+		}
+
 		mainDataArea.add(html(h4("Repository => Registry Mapping")));
-		
+
 		String happyGif = "icons/happy0024.gif";
 		String sadGif = "icons/sad0019.gif";
-		
+
 		String happyHtml = "<img src=\"" + happyGif + "\"/>";
 		String sadHtml = "<img src=\"" + sadGif + "\"/>";
-		
+
 		FlexTable repTable = new FlexTable();
 		repTable.setBorderWidth(2);
 		repTable.setCellSpacing(0);
 		int row=0;
-		
+
 		repTable.setHTML(row, 1, h5("Repository"));
 		repTable.setHTML(row, 2, h5("Registry"));
 		repTable.setHTML(row, 3, h5("Repository PnR Endpoint"));
 		repTable.setHTML(row, 4, h5("Messages"));
-		
+
 		row++;
-		
+
 		for (RepositoryStatus rep : repData) {
 			if (rep.status)
 				repTable.setHTML(row, 0, happyHtml);
@@ -96,22 +100,22 @@ public class DashboardTab  extends GenericQueryTab {
 			repTable.setText(row, 4, start(rep.getErrorsAsString() + rep.fatalError));
 			row++;
 		}
-		
+
 		mainDataArea.add(repTable);
-		
+
 		mainDataArea.add(html(h4("Registry Status")));
 
 		FlexTable regTable = new FlexTable();
 		regTable.setBorderWidth(2);
 		regTable.setCellSpacing(0);
 		row=0;
-		
+
 		regTable.setHTML(row, 1, h5("Registry"));
 		regTable.setHTML(row, 2, h5("SQ Endpoint"));
 		regTable.setHTML(row, 3, h5("Messages"));
-		
+
 		row++;
-		
+
 		for (RegistryStatus reg : regData) {
 			if (reg.status)
 				regTable.setHTML(row, 0, happyHtml);
@@ -122,12 +126,12 @@ public class DashboardTab  extends GenericQueryTab {
 			regTable.setText(row, 3, start(reg.getErrorsAsString() + reg.fatalError));
 			row++;
 		}
-		
+
 		mainDataArea.add(regTable);
-		
-		
+
+
 	}
-	
+
 	String start(String txt) {
 		if (txt == null)
 			return "";
@@ -135,13 +139,13 @@ public class DashboardTab  extends GenericQueryTab {
 			return "";
 		return txt.substring(0, min(256, txt.length()));
 	}
-	
+
 	int min(int a, int b) {
 		if (a < b)
 			return a;
 		return b;
 	}
-	
+
 	String red(String txt, boolean isRed) {
 		if (isRed)
 			return red(txt);
@@ -151,16 +155,16 @@ public class DashboardTab  extends GenericQueryTab {
 	String h4(String txt) {
 		return "<h4>" + txt + "</h4>";
 	}
-	
+
 	String h5(String txt) {
 		return "<h5>" + txt + "</h5>";
 	}
-	
+
 	boolean regDone = false;
 	boolean repDone = false;
 
 	void load() {
-		
+
 		regDone = false;
 		repDone = false;
 
@@ -175,11 +179,11 @@ public class DashboardTab  extends GenericQueryTab {
 			public void onSuccess(List<RegistryStatus> result) {
 				regData = result;
 				regDone = true;
-				
+
 				if (regDone && repDone)
 					draw();
 			}
-			
+
 		});
 
 		toolkitService.getDashboardRepositoryData(new AsyncCallback<List<RepositoryStatus>>() {
@@ -194,14 +198,14 @@ public class DashboardTab  extends GenericQueryTab {
 
 				if (regDone && repDone)
 					draw();
-}
-			
+			}
+
 		});
 
-	
+
 	}
-	
-	
+
+
 	public String getWindowShortName() {
 		return "dashboard";
 	}

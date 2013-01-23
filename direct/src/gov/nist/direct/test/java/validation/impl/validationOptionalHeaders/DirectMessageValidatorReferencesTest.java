@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorReferencesTest {
 	
 	// DTS 123, References, Optional
+	// Result: Success
 	@Test
 	public void testReferences() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -36,6 +37,7 @@ public class DirectMessageValidatorReferencesTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testReferences2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -44,6 +46,7 @@ public class DirectMessageValidatorReferencesTest {
 		assertTrue(er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testReferences3() {
 		ErrorRecorder er = new TextErrorRecorderModif();

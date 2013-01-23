@@ -327,7 +327,6 @@ public class WrappedMessageGenerator implements MessageGenerator {
         msg.setFrom(fromUser);
         msg.setRecipient(Message.RecipientType.TO, toUser);
         msg.setSentDate(new Date());
-        msg.setSubject(subject);
         msg.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
         msg.setDisposition("attachment");
 		msg.setFileName("smime.p7m");

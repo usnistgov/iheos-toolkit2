@@ -16,14 +16,14 @@ public class MockTransaction extends BasicTransaction {
 
 	@Override
 	protected void run(OMElement request) throws Exception {
-		s_ctx.add_name_value(instruction_output, "Endpoint", "http://localhost:8080/myendpoint");
-		s_ctx.add_name_value(	instruction_output, 
+		testLog.add_name_value(instruction_output, "Endpoint", "http://localhost:8080/myendpoint");
+		testLog.add_name_value(	instruction_output, 
 				"InputMetadata", MetadataSupport.om_factory.createOMElement("MyTopElement", null));
-		s_ctx.add_name_value(instruction_output, "OutHeader", MetadataSupport.om_factory.createOMElement("Header", null));
-		s_ctx.add_name_value(instruction_output, "OutAction", "Action");
-		s_ctx.add_name_value(instruction_output, "ExpectedInAction", "Action");
-		s_ctx.add_name_value(instruction_output, "InHeader", MetadataSupport.om_factory.createOMElement("Header", null));
-		s_ctx.add_name_value(instruction_output, "Result", MetadataSupport.om_factory.createOMElement("RegistryResponse", null));
+		testLog.add_name_value(instruction_output, "OutHeader", MetadataSupport.om_factory.createOMElement("Header", null));
+		testLog.add_name_value(instruction_output, "OutAction", "Action");
+		testLog.add_name_value(instruction_output, "ExpectedInAction", "Action");
+		testLog.add_name_value(instruction_output, "InHeader", MetadataSupport.om_factory.createOMElement("Header", null));
+		testLog.add_name_value(instruction_output, "Result", MetadataSupport.om_factory.createOMElement("RegistryResponse", null));
 	}
 
 	@Override

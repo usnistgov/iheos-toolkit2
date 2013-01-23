@@ -28,6 +28,7 @@ import org.junit.Test;
 public class DirectMessageValidatorReplyToTest {
 	
 	// DTS 117, Reply-to, Optional
+	// Result: Success
 	@Test
 	public void testReplyTo() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -36,6 +37,7 @@ public class DirectMessageValidatorReplyToTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Success
 	@Test
 	public void testReplyTo2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -44,6 +46,7 @@ public class DirectMessageValidatorReplyToTest {
 		assertTrue(!er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testReplyTo3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
@@ -52,6 +55,7 @@ public class DirectMessageValidatorReplyToTest {
 		assertTrue(er.hasErrors());
 	}
 	
+	// Result: Fail
 	@Test
 	public void testReplyTo4() {
 		ErrorRecorder er = new TextErrorRecorderModif();

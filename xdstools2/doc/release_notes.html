@@ -10,12 +10,40 @@
 
 <p>Release note are listed for each build number
 
-<h4>157  (IHE updates only)   (released January 6, 2013 ) </h4>
+<h4>159          </h4>
+
+<h5>Direct</h5>
 <ul>
-<li>Built with shared-lib version 155
-<li>Maintenance on simulator sub-system
-<li>Make IHE version work without tk_props
-<li>Tested installed tests. Prior maintenance affected test performance.
+<li>Added plain/txt attachments to validation log
+<li>Add private key validation to startup of listener
+(<a href="http://sourceforge.net/p/iheos/code/ci/1a4476653788e902be699a182ee31ad0f81a433d/"> commit </a>)
+(<a href="http://sourceforge.net/p/iheos/code/ci/fcf717fe5670bf6a3a418bc75c7ed4ea5ae50b4f/"> commit </a>)
+</ul>
+
+<h5>IHE</h5>
+<ul>
+<li>Updated Gazelle interface to match current version of Gazelle 
+(<a href="http://sourceforge.net/p/iheos/code/ci/e22fcc2b8856c9017c38079cc9c736a7b4d74c17/">commit</a>)
+<li>SOAP message validator was updated some time ago to loosen the requirements on the mustUnderstand attribute.
+The values 1, 0, true (ingore case comparison), and false (ignore case comparison) are all acceptable values.
+</ul>
+
+<h4>158 (MDHT updates only (released January 10, 2913)</h4>
+
+<ul>
+<li>MHDT version 12212012 installed:
+<ul>
+<li>Comment Activity Author constraint should be a ÒMAYÓ and not a ÒSHALLÓ Ð CONF 9433
+<li>Functional and Cognitive status will not require structured entries because there is no standard
+vocabulary requirement for the data elements.
+<li>CONF 9050 and CONF 15603 constraints were implemented incorrectly.
+<li>Plan of Care section will allow multiple observations. Previously only one observation was being allowed.
+<li>Plan of Care section entries will be optional and not required.
+<li>Null Flavor check on code in the Results section was requiring a LOINC code system which has now been
+corrected.
+<li>Null Flavor on playing Entity within observations for allergies (CONF 7421, 10083, 10084) was not being
+allowed, this has been corrected.
+</ul>
 </ul>
 
 <h4>156  (MU 2 updates only)   (released December 19, 2012 ) </h4>

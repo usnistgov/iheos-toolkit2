@@ -404,7 +404,7 @@ public class DirectTransaction extends BasicTransaction {
 		byte[] signingCert = (byte[]) extra2.get("signingCert");
 		// Get the signing certificate password
 		Object signingCertPwO = planContext.getExtraLinkage().get("signingCertPassword");
-		String signingCertPw = (signingCertPwO == null) ? "" : signingCertPwO.toString();        
+		String signingCertPw = (signingCertPwO == null) ? "" : signingCertPwO.toString();
 		
 		// Get the encryption certificate
 		byte[] encryptionCertBA = (byte[]) planContext.getExtraLinkage2().get("encryptionCert");

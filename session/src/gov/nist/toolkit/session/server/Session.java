@@ -509,6 +509,9 @@ public class Session implements SecurityParams {
 	 * @throws 
 	 */
 	public void setEnvironment(String name) {
+		if (name == null || name.equals(""))
+			return;
+		logger.debug(getId() + ": " + " Environment set to " + name);
 		setEnvironment(name, Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
 	}
 	

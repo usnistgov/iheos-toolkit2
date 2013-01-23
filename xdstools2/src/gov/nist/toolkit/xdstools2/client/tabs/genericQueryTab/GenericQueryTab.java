@@ -67,7 +67,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	CheckBox doTls = new CheckBox("TLS?");
 	ListBox samlListBox = new ListBox();
 	List<RadioButton> byActorButtons = null;
-//	public Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons;
+	//	public Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons;
 
 	List<Result> results;
 	private Button inspectButton;
@@ -77,11 +77,11 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	public boolean doASYNC = false;
 	BaseSiteActorManager siteActorManager;// = new SiteActorManager(this);
 	boolean hasPatientIdParam = false;
-	
+
 	static TransactionOfferings transactionOfferings = null;  // Loaded from server
 
 	protected QueryBoilerplate queryBoilerplate = null;
-	
+
 
 	HTML statusBox = new HTML();
 	public TextBox pidTextBox;
@@ -91,7 +91,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		me = this;
 		this.siteActorManager = siteActorManager;
 		siteActorManager.setGenericQueryTab(this);
-		
+
 
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
@@ -101,7 +101,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	public boolean isTLS() {
 		return doTls.getValue();
 	}
-	
+
 	public boolean isSaml() {
 		int selection = samlListBox.getSelectedIndex();
 		if (selection == 1)
@@ -110,7 +110,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	}
 
 	protected AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
-		
+
 
 		public void onFailure(Throwable caught) {
 			resultPanel.clear();
@@ -145,29 +145,29 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	};
 
 
-	
+
 	public void tabIsSelected() { 
 		System.out.println("tab selected: " + getCommonSiteSpec());
-		
+
 		doTls.setValue(getCommonSiteSpec().isTls());
 		samlListBox.setSelectedIndex((getCommonSiteSpec().isSaml) ? 1 : 0);
 		if (pidTextBox != null)
 			pidTextBox.setText(getCommonPatientId());
 
-//		String defaultName = defaultSiteSpec.getName();
-//		for (RadioButton rb : byActorButtons) {
-//			String name = rb.getName();
-//			if (defaultName.equals(name)) rb.setValue(true);
-//		}
+		//		String defaultName = defaultSiteSpec.getName();
+		//		for (RadioButton rb : byActorButtons) {
+		//			String name = rb.getName();
+		//			if (defaultName.equals(name)) rb.setValue(true);
+		//		}
 
 	}
-	
+
 	public void setSiteSpec(SiteSpec siteSpec) { setCommonSiteSpec(siteSpec); }
-	
-//	protected SiteSpec verifySiteSelection() {
-//		setCommonSiteSpec(siteActorManager.verifySiteSelection());
-//		return getCommonSiteSpec();
-//	}
+
+	//	protected SiteSpec verifySiteSelection() {
+	//		setCommonSiteSpec(siteActorManager.verifySiteSelection());
+	//		return getCommonSiteSpec();
+	//	}
 
 	public QueryBoilerplate getQueryBoilerplate() {
 		return queryBoilerplate;
@@ -327,23 +327,25 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	public void setInspectButton(Button inspectButton) {
 		this.inspectButton = inspectButton;
 	}
-	
-	Anchor reload;
-	
+
+	Anchor reload = null;
+
 	public void addActorReloader() {
-		reload = new Anchor();
-		reload.setTitle("Reload actors configuration");
-		reload.setText("[reload]");
-		me.addToMenu(reload);
+		if (reload == null) {
+			reload = new Anchor();
+			reload.setTitle("Reload actors configuration");
+			reload.setText("[reload]");
+			me.addToMenu(reload);
 
-		reload.addClickHandler(new ClickHandler() {
+			reload.addClickHandler(new ClickHandler() {
 
-			public void onClick(ClickEvent event) {
-				//					redisplay();
-				reloadTransactionOfferings();
-			}
+				public void onClick(ClickEvent event) {
+					//					redisplay();
+					reloadTransactionOfferings();
+				}
 
-		});
+			});
+		}
 	}
 
 	void reloadTransactionOfferings() {
@@ -366,7 +368,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + e.getMessage() + "</font>"));
 		}
 	}
-	
+
 	// clean out mainGrid so the actors can be re-added
 	public void initMainGrid() {
 		if (mainGrid == null) {

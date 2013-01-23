@@ -22,7 +22,7 @@ public class CSVEntry {
 				
 			} else if (c == ',') {
 				if (stringStart == -1) {
-					
+					add("");
 				} else {
 					add(line.substring(stringStart, cursor).trim());
 					stringStart = -1;
@@ -59,6 +59,8 @@ public class CSVEntry {
 	}
 	
 	public String get(int i) {
+		if (i >= items.size())
+			return "";
 		return items.get(i);
 	}
 

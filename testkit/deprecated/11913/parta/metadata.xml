@@ -1,0 +1,32 @@
+<AdhocQueryRequest
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1"
+    xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"
+    xmlns:q = "urn:oasis:names:tc:ebxml-regrep:query:xsd:2.1"
+    xmlns="urn:oasis:names:tc:ebxml-regrep:query:xsd:2.1"
+>
+    <ResponseOption returnType = "LeafClass" returnComposedObjects="true"/>
+    <SQLQuery>
+
+SELECT eo.id 
+FROM ExtrinsicObject eo, ExternalIdentifier patId
+ , Classification cCode         # $XDSDocumentEntryConfidentialityCode
+ , Classification fmtCode       # $XDSDocumentEntryFormatCode
+WHERE
+  eo.status IN $XDSDocumentEntryStatus AND
+  eo.objectType = 'urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1' AND
+  patId.registryObject = eo.id AND
+  patId.identificationScheme = 'urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427' AND
+  patId.value = $patientId
+ AND ( cCode.classifiedObject = eo.id AND                                                 # $XDSDocumentEntryConfidentialityCode
+      cCode.classificationScheme = 'urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f' AND    # $XDSDocumentEntryConfidentialityCode
+      cCode.nodeRepresentation IN $XDSDocumentEntryConfidentialityCode  )                 # $XDSDocumentEntryConfidentialityCode
+# format code
+  AND (fmtCode.classifiedObject = eo.id AND                                              # $XDSDocumentEntryFormatCode
+      fmtCode.classificationScheme = 'urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d' AND  # $XDSDocumentEntryFormatCode
+      fmtCode.nodeRepresentation IN $XDSDocumentEntryFormatCode)                           # $XDSDocumentEntryFormatCode
+
+
+</SQLQuery>
+</AdhocQueryRequest>
+

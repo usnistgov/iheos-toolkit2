@@ -67,7 +67,7 @@ public class XCQTransaction extends StoredQueryTransaction {
 		String part_name = part.getLocalName();
 		if (part_name.equals("homeCommunityId")) {
 			expectedHomeCommunityId =  part.getText();
-			s_ctx.add_name_value(instruction_output, "homeCommunityId", expectedHomeCommunityId);
+			testLog.add_name_value(instruction_output, "homeCommunityId", expectedHomeCommunityId);
 		} 
 		else
 			super.parseInstruction(part);
