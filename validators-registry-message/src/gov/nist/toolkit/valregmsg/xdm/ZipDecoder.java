@@ -5,11 +5,12 @@ import gov.nist.toolkit.utilities.io.Io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 public class ZipDecoder {
 
-	OMap parse(InputStream in) throws IOException {
+	OMap parse(InputStream in) throws ZipException, IOException {
 		OMap contents = new OMap();
 
 		ZipInputStream zis = null;

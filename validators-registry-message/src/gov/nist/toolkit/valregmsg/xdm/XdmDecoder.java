@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipException;
 
 import org.apache.axiom.om.OMElement;
 
@@ -33,7 +34,7 @@ public class XdmDecoder extends MessageValidator {
 		this.erBuilder = erBuilder;
 		in = zipInputStream;
 	}
-
+	
 	OMap contents;
 	
 	boolean showContents = false;
@@ -55,13 +56,34 @@ public class XdmDecoder extends MessageValidator {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Does this InputStream hold an XDM?
+	 * This will typically be called as:
+	 *     new XdmDecoder().detect(is);
+	 * and react to it by catching these three exceptions.
+	 * @param is InputStream to test
+	 * @throws ZipException - fails ZIP decoding
+	 * @throws IOException - really bad
+	 * @throws XDMException - ZIP decoding ok, critical XDM elements missing - probably ZIP of some other content
+	 */
+	public void detect(InputStream is) throws ZipException, IOException, XDMException {
+		contents = new ZipDecoder().parse(is);
+		if (!isXDM())
+			throw new XDMException("ZIP does not contain XDM content");
+	}
 	
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 
 		er.challenge("Decoding ZIP");
 		try {
 			contents = new ZipDecoder().parse(in);
-		} catch (IOException e) {
+		} 
+		catch (ZipException e) {
+			er.err(Code.NoCode, e);
+			return;
+		}
+		catch (IOException e) {
 			er.err(Code.NoCode, e);
 			return;
 		}
@@ -257,6 +279,15 @@ public class XdmDecoder extends MessageValidator {
 //			}
 //		}
 //	}
+	
+	public boolean isXDM() {
+		if (!hasIheXdm()) return false;
+		for (Path path: getSubsetDirs()) {
+			if (hasMetadata(path))
+				return true;
+		}
+		return false;
+	}
 	
 	boolean hasMetadata(Path subsetDir) {
 		Path x = subsetDir.withFile("METADATA.XML");
