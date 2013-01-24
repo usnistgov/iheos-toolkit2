@@ -15,8 +15,9 @@ Author: Frederic de Vaulx
  */
 
 
-package gov.nist.direct.utils;
+package gov.nist.direct.logging.utils;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -25,18 +26,42 @@ public class LogWriter {
 	protected static String defaultLogFile = "output\result";
 	protected static String extension = ".txt";
 
-	public static void write(String s) throws IOException {
-		String path = defaultLogFile + "001" + extension;
-		write(path, s);
-	}
-
+	
+	/**
+	 * Write to specified file using a String pathname
+	 * @param f
+	 * @param s
+	 * @throws IOException
+	 */
 	public static void write(String f, String s) throws IOException {
-
 		FileWriter aWriter = new FileWriter(f, true);
 		aWriter.write(s + "\n");
 		aWriter.flush();
 		aWriter.close();
 	}
 	
+	/**
+	 * Write to specified file using filename
+	 * @param f
+	 * @param s
+	 * @throws IOException
+	 */
+	public static void write(File f, String s) throws IOException {
+		FileWriter aWriter = new FileWriter(f, true);
+		aWriter.write(s + "\n");
+		aWriter.flush();
+		aWriter.close();
+	}
+	
+	/**
+	 * Write to default output file for testing purposes
+	 * 
+	 * @param s
+	 * @throws IOException
+	 */
+	public static void write(String s) throws IOException {
+		String path = defaultLogFile + "001" + extension;
+		write(path, s);
+	}
 	
 }

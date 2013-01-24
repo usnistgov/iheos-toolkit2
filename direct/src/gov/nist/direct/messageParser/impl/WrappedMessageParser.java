@@ -8,8 +8,11 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import javax.mail.Message;
@@ -137,9 +140,11 @@ public class WrappedMessageParser {
 	public Part processSMIMEEnvelope(ErrorRecorder er, Part p, InputStream certificate, String password) {
 		
 		CertificateLoader certLoader = null;
+		RecipientId     recId = null;		
 		
 		try {
 			certLoader = new CertificateLoader(certificate, password);
+			recId = new JceKeyTransRecipientId(certLoader.getX509Certificate());
 		} catch (KeyStoreException e1) {
 			er.err("0", "Error in keystore creation", "", "", "Certificate file");
 		} catch (NoSuchProviderException e1) {
@@ -154,7 +159,6 @@ public class WrappedMessageParser {
 			er.err("0", "Cannot load the certificate (decryption). Probably wrong format certificate file", "", "", "Certificate file");
 		}
 
-		RecipientId     recId = new JceKeyTransRecipientId(certLoader.getX509Certificate());
 
 		SMIMEEnveloped m = null;
 		try {
