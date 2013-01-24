@@ -53,6 +53,7 @@ public class CertificateLoader {
 
 		// Message Validator
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
+		
 
 		try {
 			if(password == null) {
@@ -66,7 +67,9 @@ public class CertificateLoader {
 		} catch (IOException e1) {
 			throw new IOException();
 		} catch (Exception e1) {
+			
 			// Verifying certificate format
+			certificate.reset();
 			X509Certificate encCert = null;
 
 	        System.out.println("Trying to read as a public certificate");
