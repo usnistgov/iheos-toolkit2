@@ -77,7 +77,7 @@ public class CertificateLoader {
 	        	CertificateFactory x509CertFact = CertificateFactory.getInstance("X.509", "BC");
 	        	encCert = (X509Certificate)x509CertFact.generateCertificate(certificate);
 	        	System.out.println("It is a public certificate");
-	        	System.out.println(encCert);
+	        	//System.out.println(encCert);
 	        } catch (Exception e2) {
 	        	System.out.println("It is not a public certificate");
 	        }
@@ -119,7 +119,7 @@ public class CertificateLoader {
 		
 		try {
 			cert = (X509Certificate)ks.getCertificate(keyAlias);
-			System.out.println(cert);
+			//System.out.println(cert);
 		} catch (KeyStoreException e1) {
 			throw new KeyStoreException();
 		}

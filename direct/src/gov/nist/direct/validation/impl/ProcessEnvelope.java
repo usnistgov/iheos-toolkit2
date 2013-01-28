@@ -75,12 +75,14 @@ public class ProcessEnvelope {
 		// DTS 156 Validate Content Type Disposition
 		msgValidator.validateContentTypeDisposition(er, m.getDisposition(), m.getContentType());
 		
+		/*
 		// DTS 161-194 Validate Content-Disposition Filename
 		if(m.getFileName() != null) {
 			msgValidator.validateContentDispositionFilename(er, m.getFileName());
 			validationSummary.recordKey(shift + "Content-Disposition: "+m.getDisposition(), er.hasErrors(), true);
 			
 		}
+		*/
 		
 		
 		/**************************/
