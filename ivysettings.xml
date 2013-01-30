@@ -1,0 +1,26 @@
+<ivysettings>
+	<settings defaultResolver="default" />
+	<include url="${ivy.default.settings.dir}/ivysettings-public.xml" />
+	<include url="${ivy.default.settings.dir}/ivysettings-shared.xml" />
+	<include url="${ivy.default.settings.dir}/ivysettings-local.xml" />
+	<include url="${ivy.default.settings.dir}/ivysettings-main-chain.xml" />
+	<include url="${ivy.default.settings.dir}/ivysettings-default-chain.xml" />
+
+	<property name="local-maven2-dir" value="${user.home}/.m2/repository/" />
+	<resolvers>
+
+		<filesystem name="local-maven-2" m2compatible="true" local="true">
+			<artifact
+				pattern="${local-maven2-dir}/[organisation]/[module]/[revision]/[module]-[revision].[ext]" />
+			<ivy
+				pattern="${local-maven2-dir}/[organisation]/[module]/[revision]/[module]-[revision].pom" />
+		</filesystem>
+
+		<chain name="default" returnFirst="true">
+			<resolver ref="local-maven-2"/>
+			<resolver ref="local" />
+			<resolver ref="main" />
+		</chain>
+	</resolvers>
+
+</ivysettings>

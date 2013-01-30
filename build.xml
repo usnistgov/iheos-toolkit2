@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="war" name="toolkit">
+<project basedir="." default="war" name="toolkit" xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<!-- To build toolkit ...
 
@@ -158,6 +158,51 @@
 		</fileset>
 	</path>
 
+    <!-- ================================================= 
+          This section downloads, installs and configures ivy.
+          It seems the easier and less intrusive way to get ivy in shared-libs.               
+         ================================================= -->
+	
+	
+    <property name="ivy.install.version" value="2.3.0" />
+    <property name="ivy.jar.dir" location="${shared.lib.dir}" />
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.3.0.jar" />
+
+    <target name="download-ivy" unless="offline">
+
+        <mkdir dir="${ivy.jar.dir}"/>
+        <!-- download Ivy from web site so that it can be used even without any special installation -->
+        <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" 
+             dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+
+    <target name="init-ivy" depends="download-ivy">
+      <!-- try to load ivy here from ivy home, in case the user has not already dropped
+              it into ant's lib dir (note that the latter copy will always take precedence).
+              We will not fail as long as local lib dir exists (it may be empty) and
+              ivy is in at least one of ant's lib dir or the local lib dir. -->
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    	
+	<!-- we use a custom ivysettings file -->
+    		<property name="ivy.settings.dir" value="." />
+    		<ivy:settings file="${ivy.settings.dir}/ivysettings.xml" />
+    	
+    </target>
+
+
+	
+    <target name="resolve" description="--> retrieve dependencies with ivy" depends="init-ivy">
+        <ivy:retrieve />
+    </target>
+	
+    <!-- ================================================= 
+         target: clean        
+         ================================================= -->
+	
 	<target name="clean">
 		<delete includeemptydirs="true">
 			<fileset dir="${build.dir}" includes="**/*">
@@ -165,7 +210,10 @@
 		</delete>
 		<ant antfile="${staging.area}/build-war.xml" target="clean" />
 	</target>
-
+	
+    <!-- ================================================= 
+         target: prepare
+         ================================================= -->
 	<!-- Prepare the build. 
 	quick fix, waiting for full ivy dependency management : all shared-libs copied in lib directory. 
 	creates various directories we need.
@@ -178,6 +226,7 @@
 		<copy todir="${lib.dir}">
 			<fileset dir="${shared.lib.dir}">
 				<exclude name="antlib.jar" />
+				<exclude name="ivy.2.3.0.jar" />
 			</fileset>
 		</copy>
 		<!-- TODO check if we need that -->
@@ -186,6 +235,9 @@
 		</copy>
 	</target>
 
+    <!-- ================================================= 
+         target: compile
+         ================================================= -->
 	<!-- each sub-projects build its own sources in the build directory-->
 	<target name="compile" depends="prepare">
 		<for param="sub-build" list="${sub-projects}" trim="true">
@@ -196,12 +248,19 @@
 		</for>
 	</target>
 
+	
+    <!-- ================================================= 
+         target: jar
+         ================================================= -->
 	<!-- jar all the .class files and put the jar in ${war.lib.dir}.-->
 	<target name="jar">
 		<jar jarfile="${war.lib.dir}/${jar.name}" basedir="${build.dir}/">
 		</jar>
 	</target>
 
+    <!-- ================================================= 
+         target: gwt-compile
+         ================================================= -->
 	<!-- invoke the GWT compiler to generate the javascript.
 		The compiler expects a war folder to exists and add folders and files to it.
 		 -->
@@ -223,6 +282,8 @@
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>
 
+	
+	
 	    <!-- ================================================= 
 	          convenience methods for different configurations              
 	         ================================================= -->

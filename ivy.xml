@@ -1,0 +1,6 @@
+<ivy-module version="2.0">
+    <info organisation="gov.nist.test-toolkit" module="hello-ivy"/>
+    <dependencies>
+        <dependency org="gov.nist.toolkit" name="wsseToolkit" rev="0.0.1-SNAPSHOT"/>
+    </dependencies>
+</ivy-module>
