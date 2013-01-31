@@ -49,7 +49,11 @@ public class HomeTab extends GenericQueryTab {
 		docLink.setHTML("<a href=\"" + "doc/home.html" + "\" target=\"_blank\">" +  "[help]" + "</a>");
 		//		topPanel.add(docLink);
 
-		Hyperlink h = HyperlinkFactory.link("&nbsp;&nbsp;[about]&nbsp;&nbsp;", new ClickHandler() {
+		HTML about = new HTML();
+		about.setHTML("<a href=\"" + "doc/about.html" + "\" target=\"_blank\">" +  "[about]" + "</a>");
+		//		topPanel.add(docLink);
+		
+		Hyperlink h = HyperlinkFactory.link("&nbsp;&nbsp;[about version]&nbsp;&nbsp;", new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
 				new PopupMessage(aboutMessage);
@@ -59,6 +63,7 @@ public class HomeTab extends GenericQueryTab {
 
 		menubar.add(docLink);
 		menubar.add(h);
+		menubar.add(about);
 
 		HTML instLink = new HTML();
 		instLink.setHTML("<a href=\"" + "doc/install.html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
@@ -70,6 +75,10 @@ public class HomeTab extends GenericQueryTab {
 				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + TabLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new TabLauncher(myContainer, TabLauncher.toolConfigTabLabel))
 
 				);
+		
+		HTML faq = new HTML();
+		faq.setHTML("<a href=\"" + "doc/faq.html" + "\" target=\"_blank\">" +  "[FAQ]" + "</a>");
+		menubar.add(faq);
 
 //		new FeatureManager().addCallback(new MainGridLoader());
 		
