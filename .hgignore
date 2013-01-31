@@ -2,7 +2,7 @@ syntax:glob
 
 # class files and libs
 build
-lib
+lib/**
 
 
 #check. created by eclipse

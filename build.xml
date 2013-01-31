@@ -59,9 +59,9 @@
 		http,
 		security-common,
 		dsig,
+		validators-support,
 		saml,
 		soap,
-		validators-support,
 		validators-ccda,
 		registry-metadata,
 		registry-msg-formats,
@@ -124,7 +124,6 @@
 	<property name="target" value="1.6" />
 	<property name="compile.excludes" value="" />
 
-
 	<!-- those are all the directories containing GWT sources -->
 	<property name="xdstools2.src.dir" location="xdstools2/src" />
 	<property name="sim-common.src.dir" location="sim-common/src" />
@@ -154,9 +153,11 @@
 	<!-- classpath -->
 	<path id="classpath">
 		<fileset dir="${lib.dir}">
-			<include name="*.jar" />
+			<include name="**/*.jar" />
 		</fileset>
 	</path>
+	
+	<echo message="classpath : ${toString:classpath}" />
 
     <!-- ================================================= 
           This section downloads, installs and configures ivy.
@@ -184,11 +185,11 @@
         <path id="ivy.lib.path">
             <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
         </path>
-        <taskdef resource="org/apache/ivy/ant/antlib.xml"
-                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    	<taskdef resource="org/apache/ivy/ant/antlib.xml"
+    	                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     	
 	<!-- we use a custom ivysettings file -->
-    		<property name="ivy.settings.dir" value="." />
+    		<property name="ivy.settings.dir" location="." />
     		<ivy:settings file="${ivy.settings.dir}/ivysettings.xml" />
     	
     </target>
@@ -196,7 +197,8 @@
 
 	
     <target name="resolve" description="--> retrieve dependencies with ivy" depends="init-ivy">
-        <ivy:retrieve />
+    	<ivy:cleancache />
+        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact].[ext]"  />
     </target>
 	
     <!-- ================================================= 
@@ -218,7 +220,7 @@
 	quick fix, waiting for full ivy dependency management : all shared-libs copied in lib directory. 
 	creates various directories we need.
 	-->
-	<target name="prepare">
+	<target name="prepare" >
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${lib.dir}" />
 		<mkdir dir="${war.dir}" />
