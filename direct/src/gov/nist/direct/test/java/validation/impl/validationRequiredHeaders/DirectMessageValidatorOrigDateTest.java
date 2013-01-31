@@ -30,7 +30,7 @@ public class DirectMessageValidatorOrigDateTest {
 	public void testOrigDate() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateOrigDate(er, "Tue, 15 Nov 2011 14:49:46 -0500");
+		validator.validateOrigDate(er, "Tue, 15 Nov 2011 14:49:46 -0500", false);
 		assertTrue(!er.hasErrors());
 	}
 		
@@ -39,7 +39,7 @@ public class DirectMessageValidatorOrigDateTest {
 	public void testOrigDate2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateOrigDate(er, "Tuesday, 15 November 2011 14:49:46 -0500");   // Not a valid name
+		validator.validateOrigDate(er, "Tuesday, 15 November 2011 14:49:46 -0500", false);   // Not a valid name
 		assertTrue(er.hasErrors());
 	}
 }

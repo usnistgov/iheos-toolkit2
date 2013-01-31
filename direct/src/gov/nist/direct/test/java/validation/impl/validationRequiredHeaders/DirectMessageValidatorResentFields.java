@@ -15,7 +15,7 @@ public class DirectMessageValidatorResentFields {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		String[] resentFields = {"from", "to", "date", "resent-date", "resent-from", "resent-to", "content-type", "content-disposition"};
-		validator.validateResentFields(er, resentFields);
+		validator.validateResentFields(er, resentFields, false);
 		assertTrue(!er.hasErrors());
 	}
 	
@@ -25,7 +25,7 @@ public class DirectMessageValidatorResentFields {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
 		String[] resentFields = {"from", "to", "date", "resent-date", "resent-from", "content-type", "resent-to", "content-disposition"};
-		validator.validateResentFields(er, resentFields);
+		validator.validateResentFields(er, resentFields, false);
 		assertTrue(er.hasErrors());
 	}
 	

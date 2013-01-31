@@ -110,18 +110,10 @@ public class ProcessEnvelope {
 		// DTS 196, Validate All Headers
 		String[] header = ValidationUtils.getHeadersAndContent((MimeMessage) m).get(0);
 		String[] headerContent =ValidationUtils.getHeadersAndContent((MimeMessage) m).get(1);
-		if(wrapped) {
-			msgValidator.validateWrappedAllHeaders(er, header, headerContent);
-		} else {
-			msgValidator.validateAllHeaders(er, header, headerContent);
-		}
+		msgValidator.validateAllHeaders(er, header, headerContent, wrapped);
 		
 		// DTS 114 Validate Orig Date
-		if(wrapped) {
-			msgValidator.validateWrappedOrigDate(separate, searchHeaderSimple(m, "date"));
-		} else {
-			msgValidator.validateOrigDate(separate, searchHeaderSimple(m, "date"));
-		}
+		msgValidator.validateOrigDate(separate, searchHeaderSimple(m, "date"), wrapped);
 		validationSummary.recordKey(shift + "Orig-Date: "+searchHeaderSimple(m, "date"), separate.hasErrors(), true);
 		
 		er.concat(separate);
@@ -130,14 +122,12 @@ public class ProcessEnvelope {
 		// DTS 115 Validate From
 		String from = "";
 		if(m.getFrom() != null) {
-			from = m.getFrom()[0].toString();
+			for(int i=0;i<m.getFrom().length;i++) {
+				from = m.getFrom()[i].toString();
+				msgValidator.validateFrom(separate, from, wrapped);
+				validationSummary.recordKey(shift + "From: "+ from, separate.hasErrors(), true);
+			}
 		}
-		if(wrapped) {
-			msgValidator.validateWrappedFrom(separate, from);
-		} else {
-			msgValidator.validateFrom(separate, from);
-		}
-		validationSummary.recordKey(shift + "From: "+from, separate.hasErrors(), true);
 		
 		er.concat(separate);
 		separate = new GwtErrorRecorder();
@@ -147,22 +137,14 @@ public class ProcessEnvelope {
 		if(m.getRecipients(Message.RecipientType.TO) != null) {
 			to = m.getRecipients(Message.RecipientType.TO)[0].toString();
 		}
-		if(wrapped) {
-			msgValidator.validateWrappedTo(separate, to);
-		} else {
-			msgValidator.validateTo(separate, to);
-		}
+		msgValidator.validateTo(separate, to, wrapped);
 		validationSummary.recordKey(shift + "To: "+to, separate.hasErrors(), true);
 			
 		er.concat(separate);
 		separate = new GwtErrorRecorder();
 		
 		// DTS 121, Validate Message-Id
-		if(wrapped) {
-			msgValidator.validateWrappedMessageId(separate, searchHeaderSimple(m, "message-id"));
-		} else {
-			msgValidator.validateMessageId(separate, searchHeaderSimple(m, "message-id"));
-		}
+		msgValidator.validateMessageId(separate, searchHeaderSimple(m, "message-id"), wrapped);
 		validationSummary.recordKey(shift + "Message-Id: "+searchHeaderSimple(m, "message-id"), separate.hasErrors(), true);
 		
 		er.concat(separate);
@@ -170,11 +152,7 @@ public class ProcessEnvelope {
 		
 		// DTS 102b Validate Mime Version
 		// Searching for Mime Version Header and Value
-		if(wrapped) {
-			msgValidator.validateWrappedMIMEVersion(separate, searchHeaderSimple(m, "mime-version"));
-		} else {
-			msgValidator.validateMIMEVersion(separate, searchHeaderSimple(m, "mime-version"));
-		}
+		msgValidator.validateMIMEVersion(separate, searchHeaderSimple(m, "mime-version"), wrapped);
 		validationSummary.recordKey(shift + "MIME-Version: "+searchHeaderSimple(m, "mime-version"), separate.hasErrors(), true);
 		
 		er.concat(separate);
@@ -185,11 +163,7 @@ public class ProcessEnvelope {
 		String returnPath = "";
 		for(int i=0;i<searchRes.size();i++) {
 			returnPath = searchRes.get(i);
-			if(wrapped) {
-				msgValidator.validateWrappedReturnPath(separate, returnPath);
-			} else {
-				msgValidator.validateReturnPath(separate, returnPath);
-			}
+			msgValidator.validateReturnPath(separate, returnPath, wrapped);
 		}
 		if(!returnPath.equals("")) {
 			validationSummary.recordKey(shift + "Return-Path: "+returnPath, separate.hasErrors(), true);
@@ -204,11 +178,7 @@ public class ProcessEnvelope {
 		for(int i=0;i<searchRes.size();i++) {
 			received = searchRes.get(i);
 			received = received.replaceAll("\\s", "");
-			if(wrapped) {
-				msgValidator.validateWrappedReceived(separate, received);
-			} else {
-				msgValidator.validateReceived(separate, received);
-			}
+			msgValidator.validateReceived(separate, received, wrapped);
 		}
 		validationSummary.recordKey(shift + "Received: "+received, separate.hasErrors(), true);
 		
@@ -216,7 +186,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 107 Validate Resent-Date
-		msgValidator.validateResentDate(separate, searchHeaderSimple(m, "resent-date"));
+		msgValidator.validateResentDate(separate, searchHeaderSimple(m, "resent-date"), wrapped);
 		if(!searchHeaderSimple(m, "resent-date").equals("")) {
 			validationSummary.recordKey(shift + "Resent-Date: "+searchHeaderSimple(m, "resent-date"), separate.hasErrors(), true);
 		}
@@ -225,7 +195,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 108 Validate Resent-From
-		msgValidator.validateResentFrom(separate, searchHeaderSimple(m, "resent-from"));
+		msgValidator.validateResentFrom(separate, searchHeaderSimple(m, "resent-from"), wrapped);
 		if(!searchHeaderSimple(m, "resent-from").equals("")) {
 			validationSummary.recordKey(shift + "Resent-From: "+searchHeaderSimple(m, "resent-from"), separate.hasErrors(), true);
 		}
@@ -234,7 +204,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 109 Validate Resent-Sender
-		msgValidator.validateResentSender(separate, searchHeaderSimple(m, "resent-sender"), searchHeaderSimple(m, "resent-from"));
+		msgValidator.validateResentSender(separate, searchHeaderSimple(m, "resent-sender"), searchHeaderSimple(m, "resent-from"), wrapped);
 		if(!searchHeaderSimple(m, "resent-sender").equals("")) {
 			validationSummary.recordKey(shift + "Resent-Sender: "+searchHeaderSimple(m, "resent-sender"), separate.hasErrors(), true);
 		}
@@ -243,7 +213,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 113 Validate Resent-Msg-Id
-		msgValidator.validateResentMsgId(separate, searchHeaderSimple(m, "resent-msg-id"));
+		msgValidator.validateResentMsgId(separate, searchHeaderSimple(m, "resent-msg-id"), wrapped);
 		if(!searchHeaderSimple(m, "resent-msg-id").equals("")) {
 			validationSummary.recordKey(shift + "Resent-Msg-Id: "+searchHeaderSimple(m, "resent-msg-id"), separate.hasErrors(), true);
 		}
@@ -253,7 +223,7 @@ public class ProcessEnvelope {
 		
 		// DTS 116 Validate Sender
 		if(m.getFrom() != null) {
-			msgValidator.validateSender(er, searchHeaderSimple(m, "sender"), m.getFrom());
+			msgValidator.validateSender(er, searchHeaderSimple(m, "sender"), m.getFrom(), wrapped);
 			if(!searchHeaderSimple(m, "sender").equals("")) {
 				validationSummary.recordKey(shift + "Sender: "+searchHeaderSimple(m, "sender"), separate.hasErrors(), true);
 			}
@@ -264,7 +234,7 @@ public class ProcessEnvelope {
 		
 		// DTS 117 Validate Reply To
 		if(m.getReplyTo() != null) {
-			msgValidator.validateReplyTo(separate, m.getReplyTo()[0].toString());
+			msgValidator.validateReplyTo(separate, m.getReplyTo()[0].toString(), wrapped);
 			if(!m.getReplyTo()[0].toString().equals("")) {
 				validationSummary.recordKey(shift + "Reply-To: "+m.getReplyTo()[0].toString(), separate.hasErrors(), true);
 			}
@@ -274,7 +244,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 110 Validate Resent-To
-		msgValidator.validateResentTo(separate, searchHeaderSimple(m, "resent-to"));
+		msgValidator.validateResentTo(separate, searchHeaderSimple(m, "resent-to"), wrapped);
 		if(!searchHeaderSimple(m, "resent-to").equals("")) {
 			validationSummary.recordKey(shift + "Resent-To: "+searchHeaderSimple(m, "resent-to"), separate.hasErrors(), true);
 		}
@@ -283,7 +253,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 111 Validate Resent-Cc
-		msgValidator.validateResentCc(separate, searchHeaderSimple(m, "resent-cc"));
+		msgValidator.validateResentCc(separate, searchHeaderSimple(m, "resent-cc"), wrapped);
 		if(!searchHeaderSimple(m, "resent-cc").equals("")) {
 			validationSummary.recordKey(shift + "Resent-Cc: "+searchHeaderSimple(m, "resent-cc"), separate.hasErrors(), true);
 		}
@@ -292,7 +262,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 112 Validate Resent-Bcc
-		msgValidator.validateResentBcc(separate, searchHeaderSimple(m, "resent-bcc"));
+		msgValidator.validateResentBcc(separate, searchHeaderSimple(m, "resent-bcc"), wrapped);
 		if(!searchHeaderSimple(m, "resent-bcc").equals("")) {
 			validationSummary.recordKey(shift + "Resent-Bcc: "+searchHeaderSimple(m, "resent-bcc"), separate.hasErrors(), true);
 		}
@@ -303,7 +273,7 @@ public class ProcessEnvelope {
 		// DTS 197 Validate Resent Fields
 		String[] resentField = null;
 		resentField = ValidationUtils.getHeadersAndContent((MimeMessage) m).get(0);
-		msgValidator.validateResentFields(separate, resentField);
+		msgValidator.validateResentFields(separate, resentField, wrapped);
 		
 		er.concat(separate);
 		separate = new GwtErrorRecorder();
@@ -315,7 +285,7 @@ public class ProcessEnvelope {
 			cc = searchRes.get(i);
 			cc = cc.replaceAll("\\s", "");
 		}
-		msgValidator.validateCc(separate, cc);
+		msgValidator.validateCc(separate, cc, wrapped);
 		if(!cc.equals("")) {
 			validationSummary.recordKey(shift + "Cc: "+cc, separate.hasErrors(), true);
 		}
@@ -324,7 +294,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 120 Validate Bcc
-		msgValidator.validateBcc(er, searchHeaderSimple(m, "bcc"));
+		msgValidator.validateBcc(er, searchHeaderSimple(m, "bcc"), wrapped);
 		if(!searchHeaderSimple(m, "bcc").equals("")) {
 			validationSummary.recordKey(shift + "Bcc: "+searchHeaderSimple(m, "bcc"), separate.hasErrors(), true);
 		}
@@ -333,7 +303,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 122 Validate In-Reply-To
-		msgValidator.validateInReplyTo(separate, searchHeaderSimple(m, "in-reply-to"), searchHeaderSimple(m, "date"));
+		msgValidator.validateInReplyTo(separate, searchHeaderSimple(m, "in-reply-to"), searchHeaderSimple(m, "date"), wrapped);
 		if(!searchHeaderSimple(m, "in-reply-to").equals("")) {
 			validationSummary.recordKey(shift + "In-Reply-To: "+searchHeaderSimple(m, "in-reply-to"), separate.hasErrors(), true);
 		}
@@ -342,7 +312,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 123 Validate Reference
-		msgValidator.validateReferences(separate, searchHeaderSimple(m, "references"));
+		msgValidator.validateReferences(separate, searchHeaderSimple(m, "references"), wrapped);
 		if(!searchHeaderSimple(m, "references").equals("")) {
 			validationSummary.recordKey(shift + "References: "+searchHeaderSimple(m, "references"), separate.hasErrors(), true);
 		}
@@ -351,7 +321,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 124 Validate Subject
-		msgValidator.validateSubject(separate, m.getSubject(), m.getContentType());
+		msgValidator.validateSubject(separate, m.getSubject(), m.getContentType(), wrapped);
 		if(m.getSubject() != null) {
 			validationSummary.recordKey(shift + "Subject: "+m.getSubject(), separate.hasErrors(), true);
 		}
@@ -360,7 +330,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 125 Validate Comment
-		msgValidator.validateComments(separate, searchHeaderSimple(m, "comments"));
+		msgValidator.validateComments(separate, searchHeaderSimple(m, "comments"), wrapped);
 		if(!searchHeaderSimple(m, "comments").equals("")) {
 			validationSummary.recordKey(shift + "Comment: "+searchHeaderSimple(m, "comments"), separate.hasErrors(), true);
 		}
@@ -369,7 +339,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 126 Validate Keywords
-		msgValidator.validateKeywords(separate, searchHeaderSimple(m, "keywords"));
+		msgValidator.validateKeywords(separate, searchHeaderSimple(m, "keywords"), wrapped);
 		if(!searchHeaderSimple(m, "keywords").equals("")) {
 			validationSummary.recordKey(shift + "Keyword: "+searchHeaderSimple(m, "keywords"), separate.hasErrors(), true);
 		}
@@ -378,7 +348,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 127 Validate Optional Fields
-		msgValidator.validateOptionalField(separate, searchHeaderSimple(m, "optional-field"));
+		msgValidator.validateOptionalField(separate, searchHeaderSimple(m, "optional-field"), wrapped);
 		if(!searchHeaderSimple(m, "optional-field").equals("")) {
 			validationSummary.recordKey(shift + "Optional-Fields: "+searchHeaderSimple(m, "optional-field"), separate.hasErrors(), true);
 		}
@@ -387,11 +357,7 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 128 Validate Disposition-Notification-To
-		if(wrapped) {
-			msgValidator.validateWrappedDispositionNotificationTo(separate, searchHeaderSimple(m, "disposition-notification-to"));
-		} else {
-			msgValidator.validateDispositionNotificationTo(separate, searchHeaderSimple(m, "disposition-notification-to"));
-		}
+		msgValidator.validateDispositionNotificationTo(separate, searchHeaderSimple(m, "disposition-notification-to"), wrapped);
 		if(!searchHeaderSimple(m, "disposition-notification-to").equals("")) {
 			validationSummary.recordKey(shift + "Disposition-Notification-To: "+searchHeaderSimple(m, "disposition-notification-to"), separate.hasErrors(), true);
 		}

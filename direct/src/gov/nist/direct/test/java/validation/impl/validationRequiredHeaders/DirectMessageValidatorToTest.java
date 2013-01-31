@@ -30,7 +30,7 @@ public class DirectMessageValidatorToTest {
 	public void testTo() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateTo(er, "Ashish Rathee <ashish@ssa-w0066.acct04.us.lmco.com>");
+		validator.validateTo(er, "Ashish Rathee <ashish@ssa-w0066.acct04.us.lmco.com>", false);
 		assertTrue(!er.hasErrors());
 	}
 			
@@ -39,7 +39,7 @@ public class DirectMessageValidatorToTest {
 	public void testTo2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateTo(er, "ashish.ssa-w0066.acct04.us.lmco.com");   // Not a valid name
+		validator.validateTo(er, "ashish.ssa-w0066.acct04.us.lmco.com", false);   // Not a valid name
 		assertTrue(er.hasErrors());
 	}
 }

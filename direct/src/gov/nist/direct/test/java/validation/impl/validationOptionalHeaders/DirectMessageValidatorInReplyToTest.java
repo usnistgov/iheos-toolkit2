@@ -33,7 +33,7 @@ public class DirectMessageValidatorInReplyToTest {
 	public void testInReplyTo() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateInReplyTo(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730@test.com>", "Mon, 16 Apr 2012 12:08:19");
+		validator.validateInReplyTo(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730@test.com>", "Mon, 16 Apr 2012 12:08:19", false);
 		assertTrue(!er.hasErrors());
 	}
 	
@@ -42,7 +42,7 @@ public class DirectMessageValidatorInReplyToTest {
 	public void testInReplyTo2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateInReplyTo(er, "a2a51091-4d9e-4c64-b703-39d1ee332730@test.com", "Mon, 16 Apr 2012 12:08:19");    // Not valid, no < >
+		validator.validateInReplyTo(er, "a2a51091-4d9e-4c64-b703-39d1ee332730@test.com", "Mon, 16 Apr 2012 12:08:19", false);    // Not valid, no < >
 		assertTrue(er.hasErrors());
 	}
 	
@@ -51,7 +51,7 @@ public class DirectMessageValidatorInReplyToTest {
 	public void testInReplyTo3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateInReplyTo(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730.test.com>", "Mon, 16 Apr 2012 12:08:19");    // Not valid, no @
+		validator.validateInReplyTo(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730.test.com>", "Mon, 16 Apr 2012 12:08:19", false);    // Not valid, no @
 		assertTrue(er.hasErrors());
 	}
 }

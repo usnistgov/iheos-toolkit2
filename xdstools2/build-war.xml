@@ -243,12 +243,12 @@
 		<copy file="log4j.properties" todir="war/WEB-INF/classes" overwrite="yes" />
 	</target>
 
-	<target name="ihe" depends="war-prep, ihe-config">
-		<move file="war.war" tofile="xdstools2.war" />
+	<target name="ihe" depends="war, ihe-config">
+		<move file="${toolkit.home}/${war.name}" tofile="xdstools2.war" />
 	</target>
 
-	<target name="ttt" depends="war-prep, listener, ttt-config">
-		<move file="war.war" tofile="ttt.war" />
+	<target name="ttt" depends="ttt-config">
+		<move file="${toolkit.home}/${war.name}" tofile="xdstools2.war" />
 	</target>
 
 	<target name="ihe-config">

@@ -32,7 +32,7 @@ public class DirectMessageValidatorCcAndBccTest {
 	public void testCc() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateCc(er, "test@test.com");
+		validator.validateCc(er, "test@test.com", false);
 		assertTrue(!er.hasErrors());
 	}	
 	
@@ -41,7 +41,7 @@ public class DirectMessageValidatorCcAndBccTest {
 	public void testCc2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateCc(er, "test.com");    // Not a mail address
+		validator.validateCc(er, "test.com", false);    // Not a mail address
 		assertTrue(er.hasErrors());
 	}
 		
@@ -50,7 +50,7 @@ public class DirectMessageValidatorCcAndBccTest {
 	public void testCc3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateCc(er, "Test <test@test.com> Test");   // Not valid
+		validator.validateCc(er, "Test <test@test.com> Test", false);   // Not valid
 		assertTrue(er.hasErrors());
 	}
 	
@@ -60,7 +60,7 @@ public class DirectMessageValidatorCcAndBccTest {
 	public void testBcc() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateBcc(er, "");
+		validator.validateBcc(er, "", false);
 		assertTrue(!er.hasErrors());
 	}		
 		
@@ -69,7 +69,7 @@ public class DirectMessageValidatorCcAndBccTest {
 	public void testBcc2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateBcc(er, "test@test.com");         // Address MUST NOT be present
+		validator.validateBcc(er, "test@test.com", false);         // Address MUST NOT be present
 		assertTrue(er.hasErrors());
 	}
 	

@@ -33,7 +33,7 @@ public class DirectMessageValidatorDispositionNotificationToTest {
 	public void testDispositionNotificationTo() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateDispositionNotificationTo(er, "test@test.com");
+		validator.validateDispositionNotificationTo(er, "test@test.com", false);
 		assertTrue(!er.hasErrors());
 	}
 		
@@ -42,7 +42,7 @@ public class DirectMessageValidatorDispositionNotificationToTest {
 	public void testDispositionNotificationTo2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateDispositionNotificationTo(er, "test.test.com");  // Not valid, not an e-mail address
+		validator.validateDispositionNotificationTo(er, "test.test.com", false);  // Not valid, not an e-mail address
 		assertTrue(er.hasErrors());
 	}
 	
@@ -51,7 +51,7 @@ public class DirectMessageValidatorDispositionNotificationToTest {
 	public void testDispositionNotificationTo3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateDispositionNotificationTo(er, "Test <test@test.com> Test");  // Not valid
+		validator.validateDispositionNotificationTo(er, "Test <test@test.com> Test", false);  // Not valid
 		assertTrue(er.hasErrors());
 	}	
 }
