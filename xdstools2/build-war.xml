@@ -109,7 +109,9 @@
 
 		<!-- copy configuration files -->
 		<copy file="${config.dir}/actors.xml" tofile="${war.xdstest.dir}/actors.xml" />
-
+		<!-- TODO : CHECK. QUICK FIX FOR DEBUGGING. WE NEED TO AGREE ON A CONVENTION FOR RESOURCES COPYING-->
+		<copy file="${config.dir}/sourceid.txt" tofile="${war.xdstest.dir}/sourceid.txt" />
+		
 		<!-- copy scripts-->
 		<copy todir="war/scripts" overwrite="true">
 			<fileset dir="scripts"/>

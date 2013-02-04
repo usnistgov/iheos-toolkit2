@@ -73,10 +73,10 @@ public class SamlAssertionData {
 				"Social Security Administration");
 		AttributeStatementBean attrStatement3 = createAttributeStatement(
 				subject, "urn:oasis:names:tc:xspa:1.0:subject:organization-id",
-				"urn:oid:2.16.840.1.113883.3.184.6.1");
+				"urn:oid:2.2");
 		AttributeStatementBean attrStatement4 = createAttributeStatement(
 				subject, "urn:nhin:names:saml:homeCommunityId",
-				"urn:oid:2.16.840.1.113883.3.184.6.1");
+				"urn:oid:2.2");
 
 		// Those values are not valid
 		AttributeStatementBean attrStatement5 = createAttributeStatement(
@@ -87,7 +87,7 @@ public class SamlAssertionData {
 				"2.16.840.1.113883.3.184.6.1");
 		AttributeStatementBean attrStatement7 = createAttributeStatement(
 				subject, "urn:oasis:names:tc:xacml:2.0:resource:resource-id",
-				"2.16.840.1.113883.3.184.6.1");
+				"D123401^^^&1.1&ISO");
 		
 		
 		

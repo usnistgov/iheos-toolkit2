@@ -218,9 +218,10 @@ public class Soap implements SoapInterface {
 			// securityHeader =
 			// OMAbstractFactory.getOMFactory().createOMElement("Security", ns);
 
+			
 			 securityHeader = WSSESecurityHeaderUtil.getWSSecOMElement(securityParams);
 			 getSoapHeader().addChild(securityHeader);
-/*
+			/*
 			try {
 				Element header = WsseToolkitAdapter.buildHeader();
 				
@@ -234,7 +235,6 @@ public class Soap implements SoapInterface {
 			}
 
 			getSoapHeader().addChild(securityHeader);
-			
 			*/
 		}
 

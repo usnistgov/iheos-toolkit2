@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:wsse11="http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd"
+	xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<S:Header>
+		<To xmlns="http://www.w3.org/2005/08/addressing">http://www.w3.org/2005/08/addressing/anonymous</To>
+		<Action xmlns="http://www.w3.org/2005/08/addressing">http://www.w3.org/2005/08/addressing/fault
+		</Action>
+		<MessageID xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:6754ed9b-628e-47a2-b680-be5430fe1db5
+		</MessageID>
+		<RelatesTo xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:03F62A8D9B5FF0FED91359648743641
+		</RelatesTo>
+		<wsse:Security S:mustUnderstand="true">
+			<wsu:Timestamp
+				xmlns:ns15="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512"
+				xmlns:ns14="http://schemas.xmlsoap.org/soap/envelope/" wsu:Id="_1">
+				<wsu:Created>2013-01-31T16:12:24Z</wsu:Created>
+				<wsu:Expires>2013-01-31T16:17:24Z</wsu:Expires>
+			</wsu:Timestamp>
+			<wsse11:SignatureConfirmation
+				xmlns:ns15="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512"
+				xmlns:ns14="http://schemas.xmlsoap.org/soap/envelope/"
+				Value="M+EmXdvT9HMWX4QNSyCJeLA0aKV07Jcjfugl6hSaOWPodnaTrlJ5nscSD52UezhwtSZqXpY9vBgPkBMpNLviAee8i7qWVsxJ0xH2P45lE3Y3NshQ8wUtH86xFI+tqYGytZuVAQmcWgjlOY/8V0+wU24ToKe3snCstjTeu1XasqtNiTGVXTfpzLWYC0HdSfcRsiQIsp06YRw0+k3dByPDO9BJ8vz5h4ED7595Czlf3S96/S9suFw4MArR4KG05AX/Bcgvjy3TyTJke5T1k2iOEMKJNvQ+xFMXJTjKSL49JJdCqws8I/cWZBQPVPZCp8Y2500sl4jVbjyA4vUXuvR5Ig=="
+				wsu:Id="_5002" />
+		</wsse:Security>
+	</S:Header>
+	<S:Body>
+		<S:Fault xmlns:ns4="http://schemas.xmlsoap.org/soap/envelope/">
+			<S:Code>
+				<S:Value>S:Receiver</S:Value>
+			</S:Code>
+			<S:Reason>
+				<S:Text xml:lang="en">java.lang.NullPointerException</S:Text>
+			</S:Reason>
+		</S:Fault>
+	</S:Body>
+</S:Envelope>

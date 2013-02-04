@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope"
+	xmlns:wsse11="http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd"
+	xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+	xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<S:Header>
+		<To xmlns="http://www.w3.org/2005/08/addressing">http://www.w3.org/2005/08/addressing/anonymous</To>
+		<Action xmlns="http://www.w3.org/2005/08/addressing">urn:ihe:iti:2007:CrossGatewayQueryResponse
+		</Action>
+		<MessageID xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:0bfc19b9-5979-4315-8ebe-d5ef34ed9aee
+		</MessageID>
+		<RelatesTo xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:C4838573189269747A1359664661152
+		</RelatesTo>
+		<wsse:Security S:mustUnderstand="true">
+			<wsu:Timestamp
+				xmlns:ns15="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512"
+				xmlns:ns14="http://schemas.xmlsoap.org/soap/envelope/" wsu:Id="_1">
+				<wsu:Created>2013-01-31T20:37:42Z</wsu:Created>
+				<wsu:Expires>2013-01-31T20:42:42Z</wsu:Expires>
+			</wsu:Timestamp>
+			<wsse11:SignatureConfirmation
+				xmlns:ns15="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512"
+				xmlns:ns14="http://schemas.xmlsoap.org/soap/envelope/"
+				Value="d1r+EpiPLiLVj6sxXZHZr2OqLaftxIyyNErvIT3XmJtvIbT/RJmC+cyGRV/hdySAWl6thH7mmDucBj8MNq2Y1VUI7bGTb8rKVTYWB8MG5Xb4O7k4JrOniWUAVcHIHBdOXPsgoCI91c88xibYae354SGL+No/dIxXcG0XFib6EN/dQaH9O62OnEAVH7D84Uy92k8/OMyVgk/TCQfX0BFxRLg7YJFtxlWevNtIukht7LjKxFSdrI4t/5goZnTsFui4YdePq2Dgw4r2OL7fVsHm9lNoEVfDEJwUMlLy1GfskMubSVgF9wputUC+S8usYyr06+nLK9mmxnPhUsJtmNr7pA=="
+				wsu:Id="_5002" />
+		</wsse:Security>
+	</S:Header>
+	<S:Body>
+		<ns3:AdhocQueryResponse xmlns:ns2="urn:gov:hhs:fha:nhinc:gateway:samltokendata"
+			xmlns:ns3="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" xmlns:ns4="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+			xmlns:ns5="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0" xmlns:ns6="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0"
+			status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure">
+			<ns5:RegistryErrorList>
+				<ns5:RegistryError codeContext="XDSUnknownPatientId"
+					errorCode="XDSRepositoryError" severity="urn:oasis:names:tc:ebxml-regrep:ErrorSeverityType:Error"></ns5:RegistryError>
+			</ns5:RegistryErrorList>
+			<ns4:RegistryObjectList />
+		</ns3:AdhocQueryResponse>
+	</S:Body>
+</S:Envelope>
