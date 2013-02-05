@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>mock</Test>
+    <Rule>Mock test for junit testing</Rule>
+    <TestStep id="mock1">
+        <Rule>
+            <Transaction>Mock</Transaction>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <MockTransaction>
+	   	<NoMetadata/>
+		<Metadata>
+			<Submit/>
+		</Metadata>
+        </MockTransaction>
+    </TestStep>    
+    
+    
+</TestPlan>
