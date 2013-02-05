@@ -1,6 +1,5 @@
 package gov.nist.toolkit.valregmsg.validation.factories;
 
-import gov.nist.registry.common2.direct.DirectDecoder;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactory2I;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -124,8 +123,6 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			mvc = getValidatorForXDM(erBuilder, input, mvc, vc, rvi);
 		} else if (vc.isNcpdp) {
 			mvc = getValidatorForNcpdp(erBuilder, inputString, mvc, vc, rvi);
-		} else if (vc.isDIRECT) {
-			mvc = getValidatorForDirect(erBuilder, input, directCertInput, mvc, vc);
 		} else if (vc.isCCDA) {
 			mvc = getValidatorForCCDA(erBuilder, input, mvc, vc);
 		} else if (vc.hasHttp) {
@@ -222,25 +219,6 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		return getValidatorContext(erBuilder, xml, mvc, null, vc, rvi);
 	}
 
-	/**
-	 * Start a new validation where input is known to be a DIRECT message
-	 * @param erBuilder ErrorRecorder factory. A new ErrorRecorder is allocated and used for each validation step.
-	 * @param input DIRECT input string
-	 * @param mvc validation engine to use.  If null then create a new one
-	 * @param vc description of the validations to be performed
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
-	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
-	 * ValidationContext is created so the goals of the validation are not yet known.
-	 */
-	static public MessageValidatorEngine getValidatorForDirect(ErrorRecorderBuilder erBuilder, byte[] input, byte[] certificate, MessageValidatorEngine mvc, ValidationContext vc) {
-		mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-		if (certificate == null) {
-			ErrorRecorder er = reportError(erBuilder, mvc, "Direct Validator", "No Certificate");
-			return mvc;
-		}
-		mvc.addMessageValidator("DIRECT Validator", new DirectDecoder(vc, erBuilder, Io.bytesToInputStream(input), Io.bytesToInputStream(certificate)), erBuilder.buildNewErrorRecorder());
-		return mvc;
-	}
 
 	static public MessageValidatorEngine getValidatorForCCDA(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, ValidationContext vc) {
 		mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
