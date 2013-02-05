@@ -24,11 +24,6 @@
                                 <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved', 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated')</Value>
                             </ValueList>
                         </Slot>
-                        <Slot name="$XDSDocumentEntryType">
-                            <ValueList>
-                                <Value>$object_types$</Value>
-                            </ValueList>
-                        </Slot>
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>

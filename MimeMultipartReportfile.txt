@@ -1,15 +1,15 @@
-Message-ID: <1171070186.1.1359552151445.JavaMail.gerardin@raymond.nist.gov>
+Message-ID: <1330867948.1.1360099287720.JavaMail.gerardin@raymond.nist.gov>
 MIME-Version: 1.0
 Content-Type: multipart/report; 
-	boundary="----=_Part_0_1037347589.1359552151402"; 
+	boundary="----=_Part_0_327782931.1360099287717"; 
 	report-type=disposition-notification
 
-------=_Part_0_1037347589.1359552151402
+------=_Part_0_327782931.1360099287717
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 
 ack
-------=_Part_0_1037347589.1359552151402
+------=_Part_0_327782931.1360099287717
 Content-Type: message/disposition-notification
 Content-Transfer-Encoding: 7bit
 
@@ -18,4 +18,4 @@ Final-Recepient: rfc822; externUser1@starugh-stateline.com
 Original-Message-ID: <9501051053.aa04167@IETF.CNR I.Reston.VA.US>
 COMPILE_TIME_CONSTANT
 
-------=_Part_0_1037347589.1359552151402--
+------=_Part_0_327782931.1360099287717--

@@ -54,11 +54,6 @@
                     <Value>e543712c0e10501972de13a5bfcbe826c49feb75</Value>
                 </ValueList>
             </Slot>
-            <Slot name="URI">
-                <ValueList>
-                    <Value>http://</Value>
-                </ValueList>
-            </Slot>
             <Slot name="serviceStartTime">
                 <ValueList>
                     <Value>200812230800</Value>
@@ -71,7 +66,7 @@
             </Slot>
             <Slot name="sourcePatientId">
                 <ValueList>
-                    <Value>PHN-18905^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
+                    <Value>GREEN33333^^^&amp;1.3.6.1.4.1.21367.13.20.2000&amp;ISO</Value>
                 </ValueList>
             </Slot>
             <Slot name="sourcePatientInfo">

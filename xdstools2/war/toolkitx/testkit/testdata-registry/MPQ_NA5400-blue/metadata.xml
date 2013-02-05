@@ -193,7 +193,7 @@
                 </Name>
                 <Slot name="codingScheme">
                     <ValueList>
-                        <Value>MPQ Testing</Value>
+                        <Value>Connect-a-thon healthcareFacilityTypeCodes</Value>
                     </ValueList>
                 </Slot>
             </Classification>

@@ -16,7 +16,7 @@ xdstools2/.gwt
 xdstools2/gwt-unitCache/
 .gwt-tmp
 
-xdstools2/war
+xdstools2/war/**
 
 #the war produced
 *.war

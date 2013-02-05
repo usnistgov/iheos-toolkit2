@@ -54,11 +54,6 @@
                     <Value>e543712c0e10501972de13a5bfcbe826c49feb75</Value>
                 </ValueList>
             </Slot>
-            <Slot name="URI">
-                <ValueList>
-                    <Value>http://</Value>
-                </ValueList>
-            </Slot>
             <Slot name="serviceStartTime">
                 <ValueList>
                     <Value>201103230800</Value>
