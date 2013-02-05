@@ -18,6 +18,7 @@ public class AttributeBuilder {
 	
 	public AttributeBuilder withSingleValue(String value){
 		attribute.setAttributeValues(Collections.singletonList(value));
+		attribute.setQualifiedName("http://www.w3.org/2001/XMLSchema");
 		return this;
 	}
 	
