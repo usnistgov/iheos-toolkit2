@@ -39,3 +39,5 @@ syntax: regexp
 ^\.settings/org\.apache\.ivyde\.eclipse\.prefs$
 syntax: regexp
 ^xdstools2/\.project$
+syntax: regexp
+^\.gwt$

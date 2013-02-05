@@ -54,13 +54,7 @@
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
 	<classpathentry kind="lib" path="lib/ant-contrib.jar"/>
-	<classpathentry kind="lib" path="lib/antlr.jar"/>
 	<classpathentry kind="lib" path="lib/apache-mailet-base-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/asm-analysis.jar"/>
-	<classpathentry kind="lib" path="lib/asm-commons.jar"/>
-	<classpathentry kind="lib" path="lib/asm-tree.jar"/>
-	<classpathentry kind="lib" path="lib/asm-util.jar"/>
-	<classpathentry kind="lib" path="lib/asm.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-api-1.2.10.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-dom-1.2.10.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-impl-1.2.10.jar"/>
@@ -87,12 +81,9 @@
 	<classpathentry kind="lib" path="lib/ebxmlrr-common.jar"/>
 	<classpathentry kind="lib" path="lib/edireader-4.7.3.jar"/>
 	<classpathentry kind="lib" path="lib/groovy-all-1.7.6.jar"/>
-	<classpathentry kind="lib" path="lib/groovy-xml.jar"/>
-	<classpathentry kind="lib" path="lib/groovy.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
-	<classpathentry kind="lib" path="lib/hamcrest-core.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/ivy-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/jargs-1.0.jar"/>
@@ -104,7 +95,6 @@
 	<classpathentry kind="lib" path="lib/joda-time-1.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/jsr173_1.0_api.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
-	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/mail-1.4.5.jar"/>
 	<classpathentry kind="lib" path="lib/mailapi.jar"/>
@@ -152,7 +142,6 @@
 	<classpathentry kind="lib" path="lib/woden-api-1.0M8.jar"/>
 	<classpathentry kind="lib" path="lib/wsdl4j-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/wss4j-1.5.4.jar"/>
-	<classpathentry kind="lib" path="lib/wsseToolkit.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.4.jar"/>
 	<classpathentry kind="lib" path="lib/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/xbean_xpath.jar"/>
@@ -166,6 +155,5 @@
 	<classpathentry kind="lib" path="lib/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/xmlsec-1.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/xmltooling-1.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/xmlunit.jar"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>

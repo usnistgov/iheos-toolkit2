@@ -156,8 +156,6 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-	
-	<echo message="classpath : ${toString:classpath}" />
 
     <!-- ================================================= 
           This section downloads, installs and configures ivy.
