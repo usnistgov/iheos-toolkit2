@@ -42,6 +42,7 @@ public class ProvideAndRetrieve extends CommonServiceManager {
 				return asList(r);
 			}
 			params.put("$repositoryUniqueId$", repuid);
+			params.put("$repuid$", repuid);
 
 			Result r = session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, false);
 			return asList(r);
