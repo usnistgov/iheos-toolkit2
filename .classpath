@@ -49,8 +49,6 @@
 	<classpathentry kind="src" path="timer/src"/>
 	<classpathentry kind="src" path="rest/src"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
 	<classpathentry kind="lib" path="lib/ant-contrib.jar"/>
@@ -155,5 +153,6 @@
 	<classpathentry kind="lib" path="lib/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/xmlsec-1.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/xmltooling-1.2.0.jar"/>
+
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>
