@@ -33,3 +33,5 @@ xdstools2/listener.jar
 #diff tools and linux backup files
 *~
 *.orig
+syntax: regexp
+^\.classpath$

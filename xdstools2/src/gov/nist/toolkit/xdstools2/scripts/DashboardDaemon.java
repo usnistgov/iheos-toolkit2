@@ -49,6 +49,10 @@ public class DashboardDaemon {
 	public File getDashboardDirectory() {
 		return new File(output);
 	}
+	
+	public Session getSession() {
+		return s;
+	}
 
 	public DashboardDaemon(String warHome, String outputDirStr, String environment, String externalCache)  {
 		this.environmentName = environment;
