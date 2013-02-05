@@ -513,20 +513,20 @@ public abstract class AbstractRegistryObject {
 	}
 
 	public void validateClassifications(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource)  {
-		er.challenge("Classifications present are legal");
+		er.challenge("Validating Classifications present are legal");
 		validateClassificationsLegal(er, desc, resource);
-		er.challenge("Required Classifications present");
-		this.validateRequiredClassificationsPresent(er, vc, desc, resource);
-		er.challenge("Classifications coded correctly");
+		er.challenge("Validating Required Classifications present");
+		validateRequiredClassificationsPresent(er, vc, desc, resource);
+		er.challenge("Validating Classifications coded correctly");
 		validateClassificationsCodedCorrectly(er, vc);
 	}
 
 	public void validateExternalIdentifiers(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource) {
-		er.challenge("ExternalIdentifiers present are legal");
+		er.challenge("Validating ExternalIdentifiers present are legal");
 		validateExternalIdentifiersLegal(er, desc, resource);
-		er.challenge("Required ExternalIdentifiers present");
+		er.challenge("Validating Required ExternalIdentifiers present");
 		validateRequiredExternalIdentifiersPresent(er, vc, desc, resource);
-		er.challenge("ExternalIdentifiers coded correctly");
+		er.challenge("Validating ExternalIdentifiers coded correctly");
 		validateExternalIdentifiersCodedCorrectly(er, vc, desc, resource);
 	}
 	
@@ -572,11 +572,11 @@ public abstract class AbstractRegistryObject {
 	}
 
 	public void validateSlots(ErrorRecorder er, ValidationContext vc) {
-		er.challenge("Slots present are legal");
+		er.challenge("Validating that Slots present are legal");
 		validateSlotsLegal(er);
-		er.challenge("Required Slots present");
+		er.challenge("Validating required Slots present");
 		validateRequiredSlotsPresent(er, vc);
-		er.challenge("Slots coded correctly");
+		er.challenge("Validating Slots are coded correctly");
 		validateSlotsCodedCorrectly(er, vc);
 	}
 

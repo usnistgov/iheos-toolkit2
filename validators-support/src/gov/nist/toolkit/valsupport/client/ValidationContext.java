@@ -421,6 +421,8 @@ public class ValidationContext  implements IsSerializable {
 		return isSQ && isResponse;
 	}
 	public boolean hashRequired() {
+		if (isXDRMinimal) return false;
+		if (isXDRLimited) return false;
 		if (isXDR) return false;
 		if (isXDM) return true;
 		if (isPnR) return false;
