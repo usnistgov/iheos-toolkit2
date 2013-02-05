@@ -36,6 +36,10 @@ public class DirectMessageTimestamp extends MessageTimestamp {
 		this.messageID = messageID;
 	}
 	
+	public String toString() {
+		return timestamp.toString();
+	}
+	
 	
 
 }

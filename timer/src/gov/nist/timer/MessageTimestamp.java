@@ -13,5 +13,8 @@ public abstract class MessageTimestamp {
 
 	public abstract void setMessageID(String messageID);
 	
+	public abstract String toString();
+
+	
 
 }
