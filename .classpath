@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="actorfactory/src"/>
+	<classpathentry kind="src" path="validators-direct-factory/src"/>
 	<classpathentry kind="src" path="security-common/src"/>
 	<classpathentry kind="src" path="soap/test/resources"/>
 	<classpathentry kind="src" path="soap/test/java"/>
@@ -51,7 +52,6 @@
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
-	<classpathentry kind="lib" path="lib/ant-contrib.jar"/>
 	<classpathentry kind="lib" path="lib/apache-mailet-base-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-api-1.2.10.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-dom-1.2.10.jar"/>
@@ -83,7 +83,6 @@
 	<classpathentry kind="lib" path="lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/ivy-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/jargs-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-api-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-impl-2.1.7.jar"/>
