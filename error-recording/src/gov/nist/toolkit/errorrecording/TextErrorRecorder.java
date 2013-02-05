@@ -18,13 +18,13 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 	
 	public List<ErrorInfo> errMsgs = new ArrayList<ErrorInfo>();
-
-
+	
 	public void err(String msg, String resource) {
 		ErrorInfo ei = new ErrorInfo();
 		ei.indent = 2;
 		ei.msg = msg;
 		ei.resource = resource;
+		ei.isError = true;
 		errMsgs.add(ei);
 		lastErrCount++;
 	}
@@ -39,6 +39,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 		ErrorInfo ei = new ErrorInfo();
 		ei.indent = 0;
 		ei.msg = msg;
+		ei.isError = false;
 		errMsgs.add(ei);
 	}
 
@@ -47,6 +48,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 		tagLastInfo2();
 		ErrorInfo ei = new ErrorInfo();
 		ei.indent = 1;
+		ei.isError = false;
 		ei.msg = msg;
 		errMsgs.add(ei);
 	}
@@ -75,8 +77,8 @@ public class TextErrorRecorder implements ErrorRecorder {
 		}
 		
 		ErrorInfo last = errMsgs.get(errMsgs.size() - 1);
-		if (last.indent == 1)
-			last.msg = last.msg + " - ok";
+//		if (last.indent == 1)
+//			last.msg = last.msg + " - ok";
 	}
 	
 	public void showErrorInfo() {
@@ -115,19 +117,18 @@ public class TextErrorRecorder implements ErrorRecorder {
 		ErrorInfo ei = new ErrorInfo();
 		ei.indent = 1;
 		ei.msg = msg;
+		ei.isError = false;
 		errMsgs.add(ei);
 	}
 
 	public void err(String code, String msg, String location, String resource,
 			Object logMessage) {
-		// TODO Auto-generated method stub
-		
+		err(msg, resource);
 	}
 
 	public void err(Code code, String msg, String location, String resource,
 			Object log_message) {
-		// TODO Auto-generated method stub
-		
+		err(msg, resource);
 	}
 
 	public void err(Code code, String msg, String resource) {
@@ -139,17 +140,19 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	public void err(Code code, String msg, String location, String resource) {
-		// TODO Auto-generated method stub
-		
+		err(msg, resource);
 	}
 
 	public void err(Code code, String msg, Object location, String resource) {
-		// TODO Auto-generated method stub
-		
+		err(msg, resource);
 	}
 
 	public boolean hasErrors() {
-		return errMsgs.size() > 0;
+		for (ErrorInfo ei : errMsgs) {
+			if (ei.isError)
+				return true;
+		}
+		return false;
 	}
 
 	public void err(String code, String msg, String location, String severity,
@@ -170,6 +173,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 		ei.isError = false;
 		ei.indent = 2;
 		ei.msg = msg;
+		ei.isError = false;
 		ei.resource = resource;
 		errMsgs.add(ei);
 		lastErrCount++;
