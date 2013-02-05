@@ -153,6 +153,6 @@
 	<classpathentry kind="lib" path="lib/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/xmlsec-1.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/xmltooling-1.2.0.jar"/>
-
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>
