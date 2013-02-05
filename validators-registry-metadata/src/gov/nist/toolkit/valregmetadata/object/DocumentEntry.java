@@ -50,6 +50,10 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 				"sourcePatientId"
 		);
 
+	static List<String> directRequiredSlots = 
+			Arrays.asList(
+			);
+
 
 	static public ClassAndIdDescription classificationDescription = new ClassAndIdDescription();
 	static {
@@ -90,6 +94,39 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		classificationDescription.names.put(MetadataSupport.XDSDocumentEntry_author_uuid, "Author");
 	} 
 	
+	static public ClassAndIdDescription directClassificationDescription = new ClassAndIdDescription();
+	static {
+		directClassificationDescription.definedSchemes =
+			Arrays.asList(
+					MetadataSupport.XDSDocumentEntry_classCode_uuid ,
+					MetadataSupport.XDSDocumentEntry_confCode_uuid ,
+					MetadataSupport.XDSDocumentEntry_eventCode_uuid ,
+					MetadataSupport.XDSDocumentEntry_formatCode_uuid ,
+					MetadataSupport.XDSDocumentEntry_hcftCode_uuid ,
+					MetadataSupport.XDSDocumentEntry_psCode_uuid ,
+					MetadataSupport.XDSDocumentEntry_typeCode_uuid,
+					MetadataSupport.XDSDocumentEntry_author_uuid
+			);
+		directClassificationDescription.requiredSchemes = 
+			Arrays.asList(
+			);
+		directClassificationDescription.multipleSchemes =
+			Arrays.asList(
+					MetadataSupport.XDSDocumentEntry_author_uuid,
+					MetadataSupport.XDSDocumentEntry_confCode_uuid,
+					MetadataSupport.XDSDocumentEntry_eventCode_uuid
+			);
+		directClassificationDescription.names = new HashMap<String, String>();
+		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_classCode_uuid, "Class Code");
+		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_confCode_uuid, "Confidentiality Code");
+		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_eventCode_uuid, "Event Codelist");
+		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_formatCode_uuid, "Format Code");
+		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_hcftCode_uuid, "Healthcare Facility Type Code");
+		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_psCode_uuid, "Practice Setting Code");
+		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_typeCode_uuid, "Type Code");
+		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_author_uuid, "Author");
+	} 
+	
 	static public ClassAndIdDescription externalIdentifierDescription = new ClassAndIdDescription();
 	static {
 		externalIdentifierDescription.definedSchemes =
@@ -127,6 +164,25 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		XDMexternalIdentifierDescription.names = new HashMap<String, String>();
 		XDMexternalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_patientid_uuid, "Patient ID");
 		XDMexternalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_uniqueid_uuid, "Unique ID");
+	}
+
+	static public ClassAndIdDescription directExternalIdentifierDescription = new ClassAndIdDescription();
+	static {
+		directExternalIdentifierDescription.definedSchemes =
+			Arrays.asList(
+					MetadataSupport.XDSDocumentEntry_patientid_uuid,
+					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
+			);
+		
+		directExternalIdentifierDescription.requiredSchemes = 
+			Arrays.asList(
+					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
+					);
+		directExternalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
+		
+		directExternalIdentifierDescription.names = new HashMap<String, String>();
+		directExternalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_patientid_uuid, "Patient ID");
+		directExternalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_uniqueid_uuid, "Unique ID");
 	}
 
 	static List<String> statusValues = 
@@ -199,9 +255,14 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 
 		validateSlots(er, vc);
 
-		validateClassifications(er, vc, classificationDescription, table415);
+		if (vc.isXDRMinimal)
+			validateClassifications(er, vc, directClassificationDescription, table415);
+		else
+			validateClassifications(er, vc, classificationDescription, table415);
 
-		if (vc.isXDM || vc.isXDRLimited)
+		if (vc.isXDRMinimal)
+			validateExternalIdentifiers(er, vc, directExternalIdentifierDescription, table415);
+		else if (vc.isXDM || vc.isXDRLimited)
 			validateExternalIdentifiers(er, vc, XDMexternalIdentifierDescription, table415);
 		else
 			validateExternalIdentifiers(er, vc, externalIdentifierDescription, table415);
@@ -217,7 +278,13 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
 		// Slots always required
 		
-		if (!(vc.isXDM || vc.isXDRLimited)) {
+		if (vc.isXDRMinimal) {
+			for (String slotName : directRequiredSlots) {
+				if (getSlot(slotName) == null)
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
+			}
+		}
+		else if (!(vc.isXDM || vc.isXDRLimited)) {
 			for (String slotName : requiredSlots) {
 				if (getSlot(slotName) == null)
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);

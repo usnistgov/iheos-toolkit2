@@ -14,6 +14,8 @@ lib/**
 .gwt
 xdstools2/.gwt
 xdstools2/gwt-unitCache/
+.gwt-tmp
+
 xdstools2/war
 
 #the war produced
@@ -33,13 +35,14 @@ xdstools2/listener.jar
 #diff tools and linux backup files
 *~
 *.orig
+
+
 syntax: regexp
-<<<<<<< local
+
 ^\.externalToolBuilders$
 syntax: regexp
 ^\.settings/org\.apache\.ivyde\.eclipse\.prefs$
 syntax: regexp
 ^xdstools2/\.project$
 syntax: regexp
-^\.gwt$=======
-^\.classpath$>>>>>>> other
+^\.gwt

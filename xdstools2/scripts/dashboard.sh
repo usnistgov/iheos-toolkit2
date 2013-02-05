@@ -15,7 +15,7 @@ environment="na2013"
 home=/Users/bill
 externalCache=$home/tmp/na2013
 #war=/Users/bill/tomcat1/webapps/xdstools2
-war=../war
+war=..
 servlet_jar=/Users/bill/tomcat1/common/lib/servlet-api.jar
 
 # Deploy on nistred
