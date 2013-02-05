@@ -53,6 +53,7 @@ public class CertificateLoader {
 
 		// Message Validator
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
+		
 
 		try {
 			if(password == null) {
@@ -66,7 +67,9 @@ public class CertificateLoader {
 		} catch (IOException e1) {
 			throw new IOException();
 		} catch (Exception e1) {
+			
 			// Verifying certificate format
+			certificate.reset();
 			X509Certificate encCert = null;
 
 	        System.out.println("Trying to read as a public certificate");
@@ -74,7 +77,7 @@ public class CertificateLoader {
 	        	CertificateFactory x509CertFact = CertificateFactory.getInstance("X.509", "BC");
 	        	encCert = (X509Certificate)x509CertFact.generateCertificate(certificate);
 	        	System.out.println("It is a public certificate");
-	        	System.out.println(encCert);
+	        	//System.out.println(encCert);
 	        } catch (Exception e2) {
 	        	System.out.println("It is not a public certificate");
 	        }
@@ -116,7 +119,7 @@ public class CertificateLoader {
 		
 		try {
 			cert = (X509Certificate)ks.getCertificate(keyAlias);
-			System.out.println(cert);
+			//System.out.println(cert);
 		} catch (KeyStoreException e1) {
 			throw new KeyStoreException();
 		}

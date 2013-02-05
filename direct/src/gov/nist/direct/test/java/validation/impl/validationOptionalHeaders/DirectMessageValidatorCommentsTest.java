@@ -33,7 +33,7 @@ public class DirectMessageValidatorCommentsTest {
 	public void testComments() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateComments(er, "just a simple comment");
+		validator.validateComments(er, "just a simple comment", false);
 		assertTrue(!er.hasErrors());
 	}
 		
@@ -43,7 +43,7 @@ public class DirectMessageValidatorCommentsTest {
 	public void testComments2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateComments(er, "");     // Comments field not present
+		validator.validateComments(er, "", false);     // Comments field not present
 		assertTrue(!er.hasErrors());
 	}
 }

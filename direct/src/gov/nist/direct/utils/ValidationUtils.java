@@ -33,6 +33,8 @@ import javax.mail.BodyPart;
 import javax.mail.Header;
 import javax.mail.MessagingException;
 import javax.mail.Session;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
@@ -444,6 +446,60 @@ public class ValidationUtils {
 			}
 		}
 		return bool;
+	}
+	
+	public static String getDatePattern() {
+		final String dayOfWeek = "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
+		final String time = "([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}";
+		final String timezone = "[-+]((0[0-9]|1[0-3])([03]0|45)|1400)";
+		final String letterTimezone = "\\([A-Z]*\\)";
+		final String whitespace = "\\s";
+		final String date = "(31 (Jan|Mar|May|Jul|Aug|Oct|Dec)" +    			// 31th of each month
+				"|30 (Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)" +      		// 30th of each month except Feb
+				"|[0-2]?\\d (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +  // days: 01-29th or 1-29th for each month
+				" " +
+				"((19|20)(\\d{2}))";												// years: 1900 to 2099.
+		// handle bissextile years?
+		final String datePattern = dayOfWeek + "," + whitespace + date + whitespace + time + whitespace + timezone + "(" +  whitespace + letterTimezone + ")" + "?";
+
+		return datePattern;
+	}
+	
+	public static boolean validateDate(String origDate) {
+		Pattern pattern = Pattern.compile(getDatePattern(), Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(origDate);
+		
+		if(matcher.matches()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static String getAddrSpecPattern() {
+		return "<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">";
+	}
+	
+	public static boolean validateAddrSpec(String addrSpec) {
+		Pattern pattern = Pattern.compile(getAddrSpecPattern(), Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(addrSpec);
+		
+		if(matcher.matches()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean validateEmail(String email) {
+		boolean valid = true;
+		try {
+			InternetAddress emailAddr = new InternetAddress(email);
+			emailAddr.validate();
+		} catch (AddressException e) {
+			valid = false;
+		}
+		return valid;
 	}
 
 	

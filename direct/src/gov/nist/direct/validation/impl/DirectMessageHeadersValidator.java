@@ -22,6 +22,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.Address;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import junit.framework.Assert;
 import gov.nist.direct.utils.ValidationUtils;
@@ -36,7 +38,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 
 	// DTS 196, All Headers, Required
-	public void validateAllHeaders(ErrorRecorder er, String[] header, String[] headerContent) {
+	public void validateAllHeaders(ErrorRecorder er, String[] header, String[] headerContent, boolean wrapped) {
 		boolean isAscii = true;
 		for(int i=0;i<header.length;i++) {
 			if(!ValidationUtils.isAscii(header[i]) || !ValidationUtils.isAscii(headerContent[i])) {
@@ -45,22 +47,22 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		}
 		if(isAscii) {
 			er.detail("     Success:  DTS 196 - All headers are valid");
+		} else if(!isAscii && wrapped) {
+			er.err("196", "All headers check is invalid.", "", "DTS 196", "");
 		} else {
-			er.warning("196", "All headers check is invalid.", "", "DTS 196");
+			er.warning("196", "All headers check is invalid.", "", "DTS 196");			
 		}
 		
 	}
 	
 	// DTS 103-105, Return Path, Conditional
-	public void validateReturnPath(ErrorRecorder er, String returnPath) {
+	public void validateReturnPath(ErrorRecorder er, String returnPath, boolean wrapped) {
 		if(returnPath.equals("")) {
 			er.warning("103-105", "DTS 103-105 - Return Path field is not present", "", "");
 			return;
 		}
 		
-		Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(returnPath);
-		if(matcher.matches()) {
+		if(ValidationUtils.validateAddrSpec(returnPath)) {
 			er.detail("     Success:  DTS 103-105 - Return Path field is valid");
 		} else {
 			er.err("103-105", "Return Path field is invalid.", "", "DTS 103-105", "");
@@ -69,7 +71,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 104-106, Received, Conditional
-	public void validateReceived(ErrorRecorder er, String received) {
+	public void validateReceived(ErrorRecorder er, String received, boolean wrapped) {
 		String[] content_split = null;
 		String content_split_right = "";
 		String content_split_left = "";
@@ -82,17 +84,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		final String by = "by[0-9a-zA-Z]+([_, \\., \\-]?[0-9a-zA-Z]+)*(\\([0-9,a-z,A-Z,\\s]*\\))?with([A-Za-z])*(id|ID)[0-9a-zA-Z]+([_, \\., \\-]?[0-9a-zA-Z]+)*";
 		final String fore =  "for" + "<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">;";
 		
-		final String dayOfWeek = "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
-		final String time = "([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}";
-		final String timezone = "[-+]((0[0-9]|1[0-3])([03]0|45)|1400)";
-		//final String whitespace = "\\s";
-		final String date = "((31(Jan|Mar|May|Jul|Aug|Oct|Dec))" +    			// 31th of each month
-		"|(30(Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +      		// 30th of each month except Feb
-		"|([0-2]?\\d(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +  // days: 01-29th or 1-29th for each month
-		"((19|20)(\\d{2})))";												// years: 1900 to 2099.
-		// handle bissextile years?
-		final String timezoneLetter = "\\([A-Za-z]*\\)";
-		final String datePattern = dayOfWeek + "," + date + time + timezone + timezoneLetter;
+		final String datePattern = ValidationUtils.getDatePattern();
 		
 		// From field validation
 		if(received.contains("from") && received.contains("by")) {
@@ -146,7 +138,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 197, Resent Fields, Required
-	public void validateResentFields(ErrorRecorder er, String[] resentField) {
+	public void validateResentFields(ErrorRecorder er, String[] resentField, boolean wrapped) {
 		int i = 0;
 		boolean present = false;
 		while(i<resentField.length && !resentField[i].contains("resent")) {
@@ -174,40 +166,20 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 107, Resent-Date, Conditional
-	public void validateResentDate(ErrorRecorder er, String resentDate) {
-		final String dayOfWeek = "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
-		final String time = "([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}";
-		final String timezone = "[-+]((0[0-9]|1[0-3])([03]0|45)|1400)";
-		final String whitespace = "\\s";
-		final String date = "((31 (Jan|Mar|May|Jul|Aug|Oct|Dec))" +    			// 31th of each month
-		"|(30 (Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +      		// 30th of each month except Feb
-		"|([0-2]?\\d (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +  // days: 01-29th or 1-29th for each month
-		" " +
-		"((19|20)(\\d{2})))";												// years: 1900 to 2099.
-		// handle bissextile years?
-		final String datePattern = dayOfWeek + "," + whitespace + date + whitespace + time + whitespace + timezone;
-
-		Pattern pattern = Pattern.compile(datePattern, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(resentDate);
-
-		if(matcher.matches()) {
+	public void validateResentDate(ErrorRecorder er, String resentDate, boolean wrapped) {
+		if(ValidationUtils.validateDate(resentDate)) {
 			er.detail("     Success:  DTS 107 - Resent-Date is valid");
 		} else if (resentDate.equals("")) { 
 			er.detail("     Info:  DTS 107 - Resent-Date is not present");
 		} else{
 			er.err("107", "Resent-Date is invalid.", "", "DTS 107", "");
 		}
-		
+
 	}
-	
+
 	// DTS 108, Resent-From, Conditional
-	public void validateResentFrom(ErrorRecorder er, String resentFrom) {
-		final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";  // source: http://tools.netshiftmedia.com/regexlibrary/
-		final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
-		final String fromFormat =  email + "|" + emailWithName;
-		Pattern pattern = Pattern.compile(fromFormat, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(resentFrom);
-		if(matcher.matches()) {
+	public void validateResentFrom(ErrorRecorder er, String resentFrom, boolean wrapped) {
+		if(ValidationUtils.validateEmail(resentFrom)) {
 			er.detail("     Success:  DTS 108 - Resent-From field is valid");
 		} else if (resentFrom.equals("")) { 
 			er.detail("     Info:  DTS 108 - Resent-From is not present");
@@ -218,13 +190,8 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 109, Resent-Sender, Conditional
-	public void validateResentSender(ErrorRecorder er, String resentSender, String resentFrom) {
-		final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-		final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
-		final String fromFormat =  email + "|" + emailWithName;
-		Pattern pattern = Pattern.compile(fromFormat, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(resentFrom);
-		if(matcher.matches() && !resentSender.equals(resentFrom)) {
+	public void validateResentSender(ErrorRecorder er, String resentSender, String resentFrom, boolean wrapped) {
+		if(ValidationUtils.validateEmail(resentSender) && !resentSender.equals(resentFrom)) {
 			er.detail("     Success:  DTS 109 - Resent-Sender field is valid");
 		} else if (resentFrom.equals("")) { 
 			er.detail("     Info:  DTS 109 - Resent-Sender is not present");
@@ -237,13 +204,8 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 110, Resent-to, Optional
-	public void validateResentTo(ErrorRecorder er, String resentTo) {
-		final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-		final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
-		final String fromFormat =  email + "|" + emailWithName;
-		Pattern pattern = Pattern.compile(fromFormat, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(resentTo);
-		if(matcher.matches()) {
+	public void validateResentTo(ErrorRecorder er, String resentTo, boolean wrapped) {
+		if(ValidationUtils.validateEmail(resentTo)) {
 			er.detail("     Success:  DTS 110 - Resent-To field is valid");
 		} else if (resentTo.equals("")) { 
 			er.detail("     Info:  DTS 110 - Resent-To is not present");
@@ -254,13 +216,8 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 111, Resent-cc, Optional
-	public void validateResentCc(ErrorRecorder er, String resentCc) {
-		final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-		final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
-		final String fromFormat =  email + "|" + emailWithName;
-		Pattern pattern = Pattern.compile(fromFormat, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(resentCc);
-		if(matcher.matches()) {
+	public void validateResentCc(ErrorRecorder er, String resentCc, boolean wrapped) {
+		if(ValidationUtils.validateEmail(resentCc)) {
 			er.detail("     Success:  DTS 111 - Resent-Cc field is valid");
 		} else if (resentCc.equals("")) { 
 			er.detail("     Info:  DTS 111 - Resent-Cc is not present");
@@ -271,13 +228,8 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 112, Resent-bcc, Optional
-	public void validateResentBcc(ErrorRecorder er, String resentBcc) {
-		final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-		final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
-		final String fromFormat =  email + "|" + emailWithName;
-		Pattern pattern = Pattern.compile(fromFormat, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(resentBcc);
-		if(matcher.matches()) {
+	public void validateResentBcc(ErrorRecorder er, String resentBcc, boolean wrapped) {
+		if(ValidationUtils.validateEmail(resentBcc)) {
 			er.detail("     Success:  DTS 112 - Resent-Bcc field is valid");
 		} else if (resentBcc.equals("")) { 
 			er.detail("     Info:  DTS 112 - Resent-Bcc is not present");
@@ -288,11 +240,8 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 113, Resent-Msg-Id, Conditional
-	public void validateResentMsgId(ErrorRecorder er, String resentMsgId) {
-		Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(resentMsgId);
-		//er.detail(matcher.matches());
-		if(matcher.matches()) {
+	public void validateResentMsgId(ErrorRecorder er, String resentMsgId, boolean wrapped) {
+		if(ValidationUtils.validateAddrSpec(resentMsgId)) {
 			er.detail("     Success:  DTS 113 - Resent-Msg-Id field is valid");
 		} else if (resentMsgId.equals("")) { 
 			er.detail("     Info:  DTS 113 - Resent-Msg-Id is not present");
@@ -303,38 +252,13 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 114, Orig-Date, Required
-	public void validateOrigDate(ErrorRecorder er, String origDate) {
-		if(origDate.equals("")) {
-			er.warning("114", "Date is not present", "", "DTS 114");
+	public void validateOrigDate(ErrorRecorder er, String origDate, boolean wrapped) {
+		if(origDate.equals("") && !wrapped) {
+			er.detail("Info:  DTS - 114  - Wrapped Message: Date is not present on the outer (encrypted) message");
+		} else if(origDate.equals("") && wrapped) {
+			er.err("114", "Date is not present", "", "", "DTS 114");
 		} else {
-			final String dayOfWeek = "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
-			final String time = "([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}";
-			final String timezone = "[-+]((0[0-9]|1[0-3])([03]0|45)|1400)";
-			final String letterTimezone = "\\([A-Z]*\\)";
-			final String whitespace = "\\s";
-			final String date = "((31 (Jan|Mar|May|Jul|Aug|Oct|Dec))" +    			// 31th of each month
-					"|(30 (Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +      		// 30th of each month except Feb
-					"|([0-2]?\\d (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +  // days: 01-29th or 1-29th for each month
-					" " +
-					"((19|20)(\\d{2})))";												// years: 1900 to 2099.
-			// handle bissextile years?
-			final String datePattern = dayOfWeek + "," + whitespace + date + whitespace + time + whitespace + timezone + "(" + whitespace + letterTimezone + ")" + "?";
-
-			Pattern pattern = Pattern.compile(datePattern, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(origDate);
-
-			/*
-		Date formattedDate = null;
-		try {
-			formattedDate = ValidationUtils.parseDate(origDate);            // parses the date string using all available formats
-		} catch (java.text.ParseException e) {
-			e.printStackTrace();
-		} 
-
-		ValidationUtils.setDate(formattedDate);
-			 */
-
-			if(matcher.matches()) {
+			if(ValidationUtils.validateDate(origDate)) {
 				er.detail("     Success:  DTS 114 - Orig Date is valid");
 			} else {
 				er.err("114", "Orig Date is invalid.", "", "DTS 114", "");
@@ -343,11 +267,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 115, From, Required
-	public void validateFrom(ErrorRecorder er, String from) {
-		if(from.equals("")) {
+	public void validateFrom(ErrorRecorder er, String from, boolean wrapped) {
+		if(from.equals("") && !wrapped) {
 			er.warning("115", "From field is not present", "", "DTS 115");
 		} else {
-			if (ValidationUtils.validateEmailAddressFormatRFC2822(from)){
+			if (ValidationUtils.validateEmail(from)){
 				er.detail("     Success:  DTS 115 - From field is valid");
 			} else {
 				er.err("115", "From field is invalid.", "", "DTS 115", "");
@@ -357,14 +281,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 116, Sender, Conditional
-	public void validateSender(ErrorRecorder er, String sender, Address[] from) {
+	public void validateSender(ErrorRecorder er, String sender, Address[] from, boolean wrapped) {
 		if(from.length>1) {
-			final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";  // source: http://tools.netshiftmedia.com/regexlibrary/
-			final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
-			final String fromFormat =  email + "|" + emailWithName;
-			Pattern pattern = Pattern.compile(fromFormat, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(sender);
-			if(matcher.matches()) {
+			if(ValidationUtils.validateEmail(sender)) {
 				er.detail("     Success:  DTS 116 - Sender field is valid");
 			} else {
 				er.err("116", "Sender field is invalid.", "", "DTS 116", "");
@@ -380,16 +299,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 117, Reply-To, Optional
-	public void validateReplyTo(ErrorRecorder er, String replyTo) {
+	public void validateReplyTo(ErrorRecorder er, String replyTo, boolean wrapped) {
 		if(replyTo.equals("")) {
 			er.warning("117", "Reply-To field is not present", "", "DTS 117");
 		} else {
-			final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-			final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">" + "(;([0-9,a-z,_,-]+ )*<" + email + ">)*";
-			final String replyToFormat =  email + "|" + emailWithName;
-			Pattern pattern = Pattern.compile(replyToFormat, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(replyTo);
-			if(matcher.matches()) {
+			if(ValidationUtils.validateEmail(replyTo)) {
 				er.detail("     Success:  DTS 117 - Reply-To field is valid");
 			} else if(replyTo.equals("")) {
 				er.detail("     Info:  DTS 117 - Reply-To field is not present");
@@ -401,22 +315,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 118, To, Required
-	public void validateTo(ErrorRecorder er, String to) {
-		if(to.equals("")) {
+	public void validateTo(ErrorRecorder er, String to, boolean wrapped) {
+		if(to.equals("") && !wrapped) {
 			er.warning("118", "To field is not present", "", "DTS 118");
-		} else {
-			// labels must start with a letter, end with a letter or digit, and have as interior characters only letters, digits, and hyphen
-			// each label MUST be zero to 63 octets in length
-			final String label = "([a-z]([-]?[0-9a-z]+){0,61}[0-9a-z])";
-			// labels are separated by dots
-			// Each Node (email address) MUST have a label 
-			//final String domainName = "(" + label + ".)+";
-			final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-			final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">";
-			final String toFormat =  email + "|" + emailWithName;
-			Pattern pattern = Pattern.compile(toFormat, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(to);
-			if(matcher.matches()) {
+		} else {			
+			if(ValidationUtils.validateEmail(to)) {
 				er.detail("     Success:  DTS 118 - To field is valid");
 			} else {
 				er.err("118", "To field is invalid.", "", "DTS 118", "");
@@ -426,28 +329,25 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 119, cc, Optional
-	public void validateCc(ErrorRecorder er, String cc) {
-		final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-		final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">" + "(;([0-9,a-z,_,-]+ )*<" + email + ">)*";
-		final String ccFormat =  email + "|" + emailWithName;
-		Pattern pattern = Pattern.compile(ccFormat, Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(cc);
-		if(matcher.matches()) {
-			er.detail("     Success:  DTS 119 - Cc field is valid");
-		} else if(cc.equals("")) {
+	public void validateCc(ErrorRecorder er, String cc, boolean wrapped) {
+		if(cc.equals("")) {
 			er.detail("     Info:  DTS 119 - Cc is not present");
 		} else {
-			er.err("119", "Cc field is invalid.", "", "DTS 119", "");
+			if(ValidationUtils.validateEmail(cc)) {
+				er.detail("     Success:  DTS 119 - Cc field is valid");
+			} else {
+				er.err("119", "Cc field is invalid.", "", "DTS 119", "");
+			}
 		}
 
 	}
 	
 	// DTS 120, Bcc, Optional
-	public void validateBcc(ErrorRecorder er, String bcc) {
+	public void validateBcc(ErrorRecorder er, String bcc, boolean wrapped) {
 		if(bcc.equals("")) {
 			er.detail("     Info:  DTS 120 - Bcc is not present");
 		} else {
-			if(bcc.equals("")) {
+			if(ValidationUtils.validateEmail(bcc)) {
 				er.detail("     Success:  DTS 120 - Bcc field is valid");
 			} else {
 				er.err("120", "Bcc field is invalid.", "", "DTS 120", "");
@@ -457,15 +357,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 121, Message-Id, Required
-	public void validateMessageId(ErrorRecorder er, String messageId) {
-		if(messageId.equals("")) {
+	public void validateMessageId(ErrorRecorder er, String messageId, boolean wrapped) {
+		if(messageId.equals("") && !wrapped) {
 			er.warning("121", "Message-Id field is not present", "", "DTS 121");
 		} else {
-			//handle display		
-			Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(messageId);
-			//er.detail(matcher.matches());
-			if(matcher.matches()) {
+			if(ValidationUtils.validateAddrSpec(messageId)) {
 				er.detail("     Success:  DTS 121 - Message Id is valid");
 			} else {
 				er.err("121", "Message Id field is invalid.", "", "DTS 121", "");
@@ -474,11 +370,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 
 	// DTS 122, In-reply-to, Optional
-	public void validateInReplyTo(ErrorRecorder er, String inReplyTo, String date) {
+	public void validateInReplyTo(ErrorRecorder er, String inReplyTo, String date, boolean wrapped) {
 		// Check 1: Must be formatted as one or more <randomstringwithoutspaces@randomstringwithoutspaces>
-		Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(inReplyTo);
-		if(matcher.matches()) {
+		if(ValidationUtils.validateAddrSpec(inReplyTo)) {
 			er.detail("     Success:  DTS 122 - In-Reply-To field is valid");
 		} else if(inReplyTo.equals("")) {
 			er.detail("     Info:  DTS 122 - In-Reply-To is not present");
@@ -489,10 +383,8 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 123, References, Optional
-	public void validateReferences(ErrorRecorder er, String references) {
-		Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(references);
-		if(matcher.matches()) {
+	public void validateReferences(ErrorRecorder er, String references, boolean wrapped) {
+		if(ValidationUtils.validateAddrSpec(references)) {
 			er.detail("     Success:  DTS 123 - Reference field is valid");
 		} else if(references.equals("")) {
 			er.detail("     Info:  DTS 123 - Reference is not present");
@@ -503,12 +395,12 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 124, Subject, Optional
-	public void validateSubject(ErrorRecorder er, String subject, String filename) {
+	public void validateSubject(ErrorRecorder er, String subject, String filename, boolean wrapped) {
 		if(filename.contains("zip")) {
-			if(subject.contains("XDM/1.0/DDM")) {
-				er.detail("     Success:  DTS 124 - Subject field is valid");
-			} else if(subject == null) {
+			if(subject == null) {
 				er.warning("124", "Subject field is not present", "", "DTS 124");
+			} else if(subject.contains("XDM/1.0/DDM")) {
+				er.detail("     Success:  DTS 124 - Subject field is valid");
 			} else {
 				er.err("124", "Subject field is invalid", "", "DTS 124", "");
 			} 
@@ -523,7 +415,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 125, Comments, Optional
-	public void validateComments(ErrorRecorder er, String comments) {
+	public void validateComments(ErrorRecorder er, String comments, boolean wrapped) {
 		if(comments.equals("")) {
 			er.detail("     Info:  DTS 125 - Comments is not present");
 		} else {
@@ -533,7 +425,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 126, Keywords, Optional
-	public void validateKeywords(ErrorRecorder er, String keyword) {
+	public void validateKeywords(ErrorRecorder er, String keyword, boolean wrapped) {
 		if(keyword.equals("")) {
 			er.detail("     Info:  DTS 126 - Keywords is not present");
 		} else {
@@ -543,7 +435,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 127, Optional-field, Optional
-	public void validateOptionalField(ErrorRecorder er, String optionalField) {
+	public void validateOptionalField(ErrorRecorder er, String optionalField, boolean wrapped) {
 		if(optionalField.equals("")) {
 			er.detail("     Info:  DTS 127 - Optional-field is not present");
 		} else {
@@ -553,16 +445,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 128, Disposition-Notification-To, Optional
-	public void validateDispositionNotificationTo(ErrorRecorder er, String dispositionNotificationTo) {
+	public void validateDispositionNotificationTo(ErrorRecorder er, String dispositionNotificationTo, boolean wrapped) {
 		if(dispositionNotificationTo.equals("")) {
 			er.detail("     Info:  DTS 128 - Disposition-Notification-To field is not present");
 		} else {
-			final String email = "([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+";
-			final String emailWithName = "([0-9,a-z,_,-]+ )*<" + email + ">" + "(;([0-9,a-z,_,-]+ )*<" + email + ">)*";
-			final String ccFormat =  email + "|" + emailWithName;
-			Pattern pattern = Pattern.compile(ccFormat, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(dispositionNotificationTo);
-			if(matcher.matches()) {
+			if(ValidationUtils.validateEmail(dispositionNotificationTo)) {
 				er.detail("     Success:  DTS 128 - Disposition-Notification-To field is valid");
 			} else {
 				er.err("128", "Disposition-Notification-To field is invalid.", "", "DTS 128", "");
@@ -572,8 +459,8 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	}
 	
 	// DTS 102b, MIME-Version, Required
-	public void validateMIMEVersion(ErrorRecorder er, String MIMEVersion) {
-		if(MIMEVersion.equals("")) {
+	public void validateMIMEVersion(ErrorRecorder er, String MIMEVersion, boolean wrapped) {
+		if(MIMEVersion.equals("") && !wrapped) {
 			er.warning("102b", "MIME-Version field is not present", "", "DTS 102b");
 		} else {
 			final String mimeFormat = "[0-9]\\.[0-9].*";

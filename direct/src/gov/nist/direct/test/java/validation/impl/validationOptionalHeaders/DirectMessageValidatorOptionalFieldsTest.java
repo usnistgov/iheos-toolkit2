@@ -33,7 +33,7 @@ public class DirectMessageValidatorOptionalFieldsTest {
 	public void testOptionalFields() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateOptionalField(er, "test");
+		validator.validateOptionalField(er, "test", false);
 		assertTrue(!er.hasErrors());
 	}
 	
@@ -42,7 +42,7 @@ public class DirectMessageValidatorOptionalFieldsTest {
 	public void testOptionalFields2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateOptionalField(er, "");   // Not present
+		validator.validateOptionalField(er, "", false);   // Not present
 		assertTrue(!er.hasErrors());
 	}
 	

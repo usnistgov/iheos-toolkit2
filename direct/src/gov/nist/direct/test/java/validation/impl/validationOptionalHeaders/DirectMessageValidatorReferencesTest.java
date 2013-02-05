@@ -33,7 +33,7 @@ public class DirectMessageValidatorReferencesTest {
 	public void testReferences() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateReferences(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730@test.com>");
+		validator.validateReferences(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730@test.com>", false);
 		assertTrue(!er.hasErrors());
 	}
 	
@@ -42,7 +42,7 @@ public class DirectMessageValidatorReferencesTest {
 	public void testReferences2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateReferences(er,"a2a51091-4d9e-4c64-b703-39d1ee332730@test.com");  // No < >
+		validator.validateReferences(er,"a2a51091-4d9e-4c64-b703-39d1ee332730@test.com", false);  // No < >
 		assertTrue(er.hasErrors());
 	}
 	
@@ -51,7 +51,7 @@ public class DirectMessageValidatorReferencesTest {
 	public void testReferences3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateReferences(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730.test.com>");  // No @
+		validator.validateReferences(er, "<a2a51091-4d9e-4c64-b703-39d1ee332730.test.com>", false);  // No @
 		assertTrue(er.hasErrors());
 	}
 }

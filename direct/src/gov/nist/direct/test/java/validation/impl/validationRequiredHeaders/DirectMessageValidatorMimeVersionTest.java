@@ -30,7 +30,7 @@ public class DirectMessageValidatorMimeVersionTest {
 	public void testMimeVersion() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateMIMEVersion(er, "1.0");
+		validator.validateMIMEVersion(er, "1.0", false);
 		assertTrue(!er.hasErrors());
 	}
 			
@@ -39,7 +39,7 @@ public class DirectMessageValidatorMimeVersionTest {
 	public void testMessageId2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateMIMEVersion(er, "1,0");   // Not a valid name
+		validator.validateMIMEVersion(er, "1,0", false);   // Not a valid name
 		assertTrue(er.hasErrors());
 	}
 }

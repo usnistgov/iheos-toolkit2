@@ -33,7 +33,7 @@ public class DirectMessageValidatorKeywordsTest {
 	public void testKeywords() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateKeywords(er, "test, validator, keyword");
+		validator.validateKeywords(er, "test, validator, keyword", false);
 		assertTrue(!er.hasErrors());
 	}
 	
@@ -42,7 +42,7 @@ public class DirectMessageValidatorKeywordsTest {
 	public void testKeywords2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateKeywords(er, "");   // Not present
+		validator.validateKeywords(er, "", false);   // Not present
 		assertTrue(!er.hasErrors());
 	}
 }

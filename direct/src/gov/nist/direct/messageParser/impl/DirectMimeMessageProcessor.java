@@ -29,6 +29,8 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valccda.CdaDetector;
+import gov.nist.toolkit.valregmsg.xdm.XDMException;
+import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
@@ -159,6 +161,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					er.err("0", e.toString(), "", "", "Error");
 				}				
 			}
 		} catch (MessagingException e1) {
@@ -265,11 +268,35 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 
 		} else if (p.isMimeType("application/zip")) {
 			//er.detail("This is a zip"+"  Content Name: "+p.getContent().getClass().getName());
-			this.processZip(er, p);
+			try {
+				this.processZip(er, p);
+			}  catch(IOException e) {
+				logger.error("The content is not a valid XDM conent\n" + ExceptionUtil.exception_details(e));
+				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM conent", Status.ERROR, false);
+				er.err("0", "The content is not a valid XDM conent", "", "", "XDM Content");
+			} catch(XDMException e) {
+				logger.error("The content is not a valid XDM conent\n" + ExceptionUtil.exception_details(e));
+				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM conent", Status.ERROR, false);
+				er.err("0", "The content is not a valid XDM conent", "", "", "XDM Content");
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 
 		}  else if (p.isMimeType("application/x-zip-compressed")) {
 			//er.detail("This is a zip"+"  Content Name: "+p.getContent().getClass().getName());
-			this.processZip(er, p);
+			try {
+				this.processZip(er, p);
+			}  catch(IOException e) {
+				logger.error("The content is not a valid XDM conent\n" + ExceptionUtil.exception_details(e));
+				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM conent", Status.ERROR, false);
+				er.err("0", "The content is not a valid XDM conent", "", "", "XDM Content");
+			} catch(XDMException e) {
+				logger.error("The content is not a valid XDM conent\n" + ExceptionUtil.exception_details(e));
+				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM conent", Status.ERROR, false);
+				er.err("0", "The content is not a valid XDM conent", "", "", "XDM Content");
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 
 		} else if (p.isMimeType("application/octet-stream")) {
 			//er.detail("This is a binary"+"  Content Name: "+p.getContent().getClass().getName());
@@ -399,6 +426,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 			contentDisposition = m.getFileName();
 		}
 		msgValidator.validateContentDispositionOptional(separate, contentDisposition);
+		
+		// DTS 161-194 Validate Content-Disposition Filename
+		if(m.getFileName() != null) {
+			msgValidator.validateContentDispositionFilename(er, m.getFileName());
+			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Content-Disposition: "+m.getDisposition(), er.hasErrors(), true);
+
+		}
 		
 
 		// Update the summary
@@ -746,7 +780,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 	 * 
 	 * */
 	//TODO should probably be replaced later by a call to an XDM validator in the toolkit
-	public void processZip(ErrorRecorder er, Part p) throws Exception{
+	public void processZip(ErrorRecorder er, Part p) throws IOException, XDMException, Exception {
 
 		// Update summary
 		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/zip interpreted as a XDM Content", Status.PART, true);
@@ -769,6 +803,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		
 		InputStream attachmentContents = p.getInputStream();
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
+		
+		// Use the XDMDecoder to make sure it is XMD content before running XDM validator
+		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, attachmentContents);
+		decoder.detect(attachmentContents);
+
 
 		er.detail("Try validation as XDM");
 		ValidationContext docVC = new ValidationContext();
@@ -779,6 +818,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 
 		MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
 		mve.run();
+
 	}
 
 	/**
@@ -806,6 +846,20 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": octet/stream", separate.hasErrors(), true);
 		partNumber++;
 
+		InputStream attachmentContents = p.getInputStream();
+		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
+		
+		// Use the XDMDecoder to make sure it is XMD content before running XDM validator
+		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, attachmentContents);
+		try {
+		decoder.detect(attachmentContents);
+		} catch(IOException e) {
+			er.detail("The file is not an XDM content");
+			return;
+		} catch(XDMException e) {
+			er.detail("The file is not an XDM content");
+			return;
+		}
 		this.processAttachments(er, p);
 	}
 
@@ -817,43 +871,38 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessor {
 	 * @throws Exception
 	 */
 	public void processAttachments(ErrorRecorder er, Part p) throws Exception{
-		if (!p.isMimeType("multipart/*") && !(p instanceof Message)){
-			
-			if(p.getFileName().contains(".zip")) {
-				er.detail("Try validation as XDM");
-				ValidationContext docVC = new ValidationContext();
-				docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
-				docVC.isDIRECT = false;
-				docVC.isCCDA = false;
-				docVC.isXDM = true;
-				
-				InputStream attachmentContents = p.getInputStream();
-				byte[] contents = Io.getBytesFromInputStream(attachmentContents);
+		er.detail("Try validation as XDM");
+		ValidationContext docVC = new ValidationContext();
+		docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
+		docVC.isDIRECT = false;
+		docVC.isCCDA = false;
+		docVC.isXDM = true;
 
-				MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
-				mve.run();
-			}
-			
-			
-//			logger.info("Processing attachments, Validation context is " + vc.toString());
-//			
-//			// Send to C-CDA validation tool.
-//			InputStream attachmentContents = p.getInputStream();
-//
-//			byte[] contents = Io.getBytesFromInputStream(attachmentContents);
-//			
-//			er.detail("Forcing validation of attachment as CCDA");
-//			// This should be driven by Part type information  - this will do for now
-//			ValidationContext docVC = new ValidationContext();
-//			docVC.clone(vc);
-//			docVC.isDIRECT = false;
-//			docVC.isCCDA = true;
-//			
-//			MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
-//			//			MessageValidatorEngine mve = MessageValidatorFactory.getValidator((ErrorRecorderBuilder)er, contents, null, vc, null);
-//			mve.run();
-		}
-		er.detail("Attachment not processed because mimeType is multipart");
+		InputStream attachmentContents = p.getInputStream();
+		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
+
+		MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
+		mve.run();
+
+
+		//			logger.info("Processing attachments, Validation context is " + vc.toString());
+		//			
+		//			// Send to C-CDA validation tool.
+		//			InputStream attachmentContents = p.getInputStream();
+		//
+		//			byte[] contents = Io.getBytesFromInputStream(attachmentContents);
+		//			
+		//			er.detail("Forcing validation of attachment as CCDA");
+		//			// This should be driven by Part type information  - this will do for now
+		//			ValidationContext docVC = new ValidationContext();
+		//			docVC.clone(vc);
+		//			docVC.isDIRECT = false;
+		//			docVC.isCCDA = true;
+		//			
+		//			MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
+		//			//			MessageValidatorEngine mve = MessageValidatorFactory.getValidator((ErrorRecorderBuilder)er, contents, null, vc, null);
+		//			mve.run();
+		//er.detail("Attachment not processed because mimeType is multipart");
 	}
 
 

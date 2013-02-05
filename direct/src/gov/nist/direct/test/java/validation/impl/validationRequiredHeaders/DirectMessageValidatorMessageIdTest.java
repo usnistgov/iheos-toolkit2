@@ -30,7 +30,7 @@ public class DirectMessageValidatorMessageIdTest {
 	public void testMessageId() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateMessageId(er, "<4EC2C25A.8090002@ssa-w0066.acct04.us.lmco.com>");
+		validator.validateMessageId(er, "<4EC2C25A.8090002@ssa-w0066.acct04.us.lmco.com>", false);
 		assertTrue(!er.hasErrors());
 	}
 			
@@ -39,7 +39,7 @@ public class DirectMessageValidatorMessageIdTest {
 	public void testMessageId2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateMessageId(er, "4EC2C25A.8090002@ssa-w0066.acct04.us.lmco.com");   // Not a valid name
+		validator.validateMessageId(er, "4EC2C25A.8090002@ssa-w0066.acct04.us.lmco.com", false);   // Not a valid name
 		assertTrue(er.hasErrors());
 	}
 }

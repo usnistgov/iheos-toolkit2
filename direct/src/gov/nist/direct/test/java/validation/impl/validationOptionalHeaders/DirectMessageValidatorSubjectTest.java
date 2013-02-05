@@ -33,7 +33,7 @@ public class DirectMessageValidatorSubjectTest {
 	public void testSubject() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateSubject(er, "Simple subject", "smime.p7s");
+		validator.validateSubject(er, "Simple subject", "smime.p7s", false);
 		assertTrue(!er.hasErrors());
 	}
 	
@@ -42,7 +42,7 @@ public class DirectMessageValidatorSubjectTest {
 	public void testSubject2() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateSubject(er, "Simple subject XDM/1.0/DDM", "IHE_XDM.zip");   
+		validator.validateSubject(er, "Simple subject XDM/1.0/DDM", "IHE_XDM.zip", false);   
 		assertTrue(!er.hasErrors());
 	}
 	
@@ -51,7 +51,7 @@ public class DirectMessageValidatorSubjectTest {
 	public void testSubject3() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 		DirectMimeMessageValidatorFacade validator = new DirectMimeMessageValidatorFacade();
-		validator.validateSubject(er, "Simple subject", "IHE_XDM.zip");   // Not valid, MUST contain XDM/1.0/DDM
+		validator.validateSubject(er, "Simple subject", "IHE_XDM.zip", false);   // Not valid, MUST contain XDM/1.0/DDM
 		assertTrue(er.hasErrors());
 	}	
 }
