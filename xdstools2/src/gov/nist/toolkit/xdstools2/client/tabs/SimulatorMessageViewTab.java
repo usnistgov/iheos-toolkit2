@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.Panel;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.RadioButtonGroup;
@@ -106,8 +107,8 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		inOutPanel.add(transInPanel);
 		inOutPanel.add(transOutPanel);
 
-		simControlPanel.add(html(h2("Simulator Msg View")));
-		simControlPanel.add(html(h2("Simulator:")));
+		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator Msg View")));
+		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator:")));
 
 		simControlPanel.add(simulatorNamesListBox);
 		loadSimulatorNamesListBox();
@@ -120,7 +121,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 		transactionDisplayPanel.add(transactionNamesPanel);
 
-		transactionDisplayPanel.add(html(bold("Messages")));
+		transactionDisplayPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Messages")));
 		transInstanceListBox.setVisibleItemCount(20);
 		transactionDisplayPanel.add(transInstanceListBox);
 
@@ -191,7 +192,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 			public void onSuccess(List<String> transNames) {
 				transactionNamesPanel.clear();
-				transactionNamesPanel.add(html(bold("Transaction: ")));
+				transactionNamesPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Transaction: ")));
 
 
 				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), simidFinal);

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -64,12 +65,12 @@ public class DashboardTab  extends GenericQueryTab {
 	void draw() {
 
 		try {
-			mainDataArea.add(html(repData.get(0).date));
+			mainDataArea.add(HtmlMarkup.html(repData.get(0).date));
 		} catch (Exception e) {
 
 		}
 
-		mainDataArea.add(html(h4("Repository => Registry Mapping")));
+		mainDataArea.add(HtmlMarkup.html(HtmlMarkup.h4("Repository => Registry Mapping")));
 
 		String happyGif = "icons/happy0024.gif";
 		String sadGif = "icons/sad0019.gif";
@@ -82,10 +83,10 @@ public class DashboardTab  extends GenericQueryTab {
 		repTable.setCellSpacing(0);
 		int row=0;
 
-		repTable.setHTML(row, 1, h5("Repository"));
-		repTable.setHTML(row, 2, h5("Registry"));
-		repTable.setHTML(row, 3, h5("Repository PnR Endpoint"));
-		repTable.setHTML(row, 4, h5("Messages"));
+		repTable.setHTML(row, 1, HtmlMarkup.h5("Repository"));
+		repTable.setHTML(row, 2, HtmlMarkup.h5("Registry"));
+		repTable.setHTML(row, 3, HtmlMarkup.h5("Repository PnR Endpoint"));
+		repTable.setHTML(row, 4, HtmlMarkup.h5("Messages"));
 
 		row++;
 
@@ -94,7 +95,7 @@ public class DashboardTab  extends GenericQueryTab {
 				repTable.setHTML(row, 0, happyHtml);
 			else
 				repTable.setHTML(row, 0, sadHtml);
-			repTable.setHTML(row, 1, red(rep.name, !rep.status));
+			repTable.setHTML(row, 1, HtmlMarkup.red(rep.name, !rep.status));
 			repTable.setText(row, 2, rep.registry);
 			repTable.setText(row, 3, rep.endpoint);
 			repTable.setText(row, 4, start(rep.getErrorsAsString() + rep.fatalError));
@@ -103,16 +104,16 @@ public class DashboardTab  extends GenericQueryTab {
 
 		mainDataArea.add(repTable);
 
-		mainDataArea.add(html(h4("Registry Status")));
+		mainDataArea.add(HtmlMarkup.html(HtmlMarkup.h4("Registry Status")));
 
 		FlexTable regTable = new FlexTable();
 		regTable.setBorderWidth(2);
 		regTable.setCellSpacing(0);
 		row=0;
 
-		regTable.setHTML(row, 1, h5("Registry"));
-		regTable.setHTML(row, 2, h5("SQ Endpoint"));
-		regTable.setHTML(row, 3, h5("Messages"));
+		regTable.setHTML(row, 1, HtmlMarkup.h5("Registry"));
+		regTable.setHTML(row, 2, HtmlMarkup.h5("SQ Endpoint"));
+		regTable.setHTML(row, 3, HtmlMarkup.h5("Messages"));
 
 		row++;
 
@@ -121,7 +122,7 @@ public class DashboardTab  extends GenericQueryTab {
 				regTable.setHTML(row, 0, happyHtml);
 			else
 				regTable.setHTML(row, 0, sadHtml);
-			regTable.setHTML(row, 1, red(reg.name, !reg.status));
+			regTable.setHTML(row, 1, HtmlMarkup.red(reg.name, !reg.status));
 			regTable.setText(row, 2, reg.endpoint);
 			regTable.setText(row, 3, start(reg.getErrorsAsString() + reg.fatalError));
 			row++;
@@ -146,19 +147,6 @@ public class DashboardTab  extends GenericQueryTab {
 		return b;
 	}
 
-	String red(String txt, boolean isRed) {
-		if (isRed)
-			return red(txt);
-		return txt;
-	}
-
-	String h4(String txt) {
-		return "<h4>" + txt + "</h4>";
-	}
-
-	String h5(String txt) {
-		return "<h5>" + txt + "</h5>";
-	}
 
 	boolean regDone = false;
 	boolean repDone = false;
@@ -173,7 +161,7 @@ public class DashboardTab  extends GenericQueryTab {
 		toolkitService.getDashboardRegistryData(new AsyncCallback<List<RegistryStatus>>() {
 
 			public void onFailure(Throwable caught) {
-				mainDataArea.add(html(caught.getMessage()));
+				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));
 			}
 
 			public void onSuccess(List<RegistryStatus> result) {
@@ -189,7 +177,7 @@ public class DashboardTab  extends GenericQueryTab {
 		toolkitService.getDashboardRepositoryData(new AsyncCallback<List<RepositoryStatus>>() {
 
 			public void onFailure(Throwable caught) {
-				mainDataArea.add(html(caught.getMessage()));
+				mainDataArea.add(HtmlMarkup.html(caught.getMessage()));
 			}
 
 			public void onSuccess(List<RepositoryStatus> result) {

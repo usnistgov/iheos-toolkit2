@@ -6,6 +6,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValFormatter;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.RenameSimFileDialogBox;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -126,15 +127,15 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		//Message Types
 		messageTypeButtons = new ArrayList<RadioButton>();
-		panel.add(html("<hr />"));
-		panel.add(html(bold("Message Types")));
+		panel.add(HtmlMarkup.html("<hr />"));
+		panel.add(HtmlMarkup.html(HtmlMarkup.bold("Message Types")));
 		for (String type : msgValidationTypes) {
 			if (type.equals(ValidationType_ncpdp)) 
 				continue;
 			addValidationTypeRadioButton(panel, type, enable);
 		}
-		panel.add(html("<hr />"));
-		panel.add(html(bold("Document Types")));
+		panel.add(HtmlMarkup.html("<hr />"));
+		panel.add(HtmlMarkup.html(HtmlMarkup.bold("Document Types")));
 		for (String type : docTypeValidationTypes) {
 			if (type.equals(ValidationType_ncpdp)) 
 				continue;
@@ -159,16 +160,16 @@ public class MessageValidatorTab extends TabbedWindow {
 		if (type.equals(ValidationType_NwHINxcpd)) {
 		}
 		if (type.equals(ValidationType_ncpdp)) {
-			panel.add(html("<hr />"));
-			panel.add(html(bold("E-Prescription")));
+			panel.add(HtmlMarkup.html("<hr />"));
+			panel.add(HtmlMarkup.html(HtmlMarkup.bold("E-Prescription")));
 		}
 		if (type.equals(ValidationType_C32)) {
 		}
 		if (type.equals(ValidationType_direct)) {
 		}
 		if (type.equals(ValidationType_CCDA)) {
-			panel.add(html("<hr />"));
-			panel.add(html(bold("CCDA Document Validator (CCDA validation may take more than a minute to run)")));
+			panel.add(HtmlMarkup.html("<hr />"));
+			panel.add(HtmlMarkup.html(HtmlMarkup.bold("CCDA Document Validator (CCDA validation may take more than a minute to run)")));
 			
 			List<String> ccdaTypes = ccdaSel.ccdaTypes();
 			for (String ctype : ccdaTypes) {
@@ -225,8 +226,8 @@ public class MessageValidatorTab extends TabbedWindow {
 	RadioButton responseMessage;
 
 	void addInOutTypesRadioGroup(VerticalPanel panel, boolean enable) {
-		panel.add(html("<hr />"));
-		panel.add(html(bold("In/Out Message Types")));
+		panel.add(HtmlMarkup.html("<hr />"));
+		panel.add(HtmlMarkup.html(HtmlMarkup.bold("In/Out Message Types")));
 		requestMessage = new RadioButton(inOutGroupName, "Request Message");
 		responseMessage = new RadioButton(inOutGroupName, "Response Message");
 
@@ -328,9 +329,9 @@ public class MessageValidatorTab extends TabbedWindow {
 		container.addTab(topPanel, "Message Validator", select);
 		addCloseButton(container,topPanel, null);
 
-		topPanel.add(html(h2("Message Validator")));
+		topPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Message Validator")));
 
-		topPanel.add(html("<hr />"));
+		topPanel.add(HtmlMarkup.html("<hr />"));
 
 		VerticalPanel messageTypeArea = new VerticalPanel();	
 		VerticalPanel validationCheckBoxes = new VerticalPanel();
@@ -356,8 +357,8 @@ public class MessageValidatorTab extends TabbedWindow {
 		addInOutTypesRadioGroup(inOutTypeArea, false);
 
 		// Validation Check Boxes
-		validationCheckBoxes.add(html("<hr />"));
-		validationCheckBoxes.add(html(bold("Message Structure Validators")));
+		validationCheckBoxes.add(HtmlMarkup.html("<hr />"));
+		validationCheckBoxes.add(HtmlMarkup.html(HtmlMarkup.bold("Message Structure Validators")));
 		crossCommunity = new CheckBox();
 		crossCommunity.setText("Cross-Community");
 		crossCommunity.setValue(false);
@@ -400,7 +401,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		//
 
 
-		topPanel.add(html("<hr />"));
+		topPanel.add(HtmlMarkup.html("<hr />"));
 		VerticalPanel fromWhereArea = new VerticalPanel();
 		HorizontalPanel inputTypeArea = new HorizontalPanel();
 		//		inputTypeArea.add(fromFileRadioButton);
@@ -415,7 +416,7 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		VerticalPanel simArea = new VerticalPanel();
 
-		simEndpointMessage = html("My Simulator");
+		simEndpointMessage = HtmlMarkup.html("My Simulator");
 		simArea.add(simEndpointMessage);
 		requestSimEndpoint();
 
@@ -430,7 +431,7 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		HorizontalPanel endpointPartsArea = new HorizontalPanel();
 		endpointPartsArea.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		endpointPartsArea.add(html("Captured Messages"));
+		endpointPartsArea.add(HtmlMarkup.html("Captured Messages"));
 
 		simArea.add(endpointPartsArea);
 
@@ -572,7 +573,7 @@ public class MessageValidatorTab extends TabbedWindow {
 			}
 		});
 
-		topPanel.add(html("<hr/>"));
+		topPanel.add(HtmlMarkup.html("<hr/>"));
 	} //end onTabLoad
 
 	private void refreshFileUploadPanel() {

@@ -3,11 +3,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.messageValidator;
 import gov.nist.toolkit.tk.client.PropertyNotFoundException;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -42,7 +42,7 @@ public class CcdaTypeSelection {
 	}
 	
 	public void addCcdaTypesRadioGroup(VerticalPanel panel, List<String> ccdaTypeNames) {
-		panel.add(html(bold("CCDA Types for XDM or XDR content (CCDA validation may take a minute or more to run)")));
+		panel.add(HtmlMarkup.html(HtmlMarkup.bold("CCDA Types for XDM or XDR content (CCDA validation may take a minute or more to run)")));
 		ccdaTypes = new ArrayList<RadioButton>();
 		for (String name : ccdaTypeNames) {
 			RadioButton r = new RadioButton(ccdaTypesGroupName, name); 
@@ -66,16 +66,6 @@ public class CcdaTypeSelection {
 				return r.getText();
 		}
 		return "";
-	}
-
-	String bold(String msg) {
-		return "<b>" + msg + "</b>";
-	}
-
-	public HTML html(String msg) {
-		HTML h = new HTML();
-		h.setHTML(msg);
-		return h;
 	}
 
 	void addDocTypeToValidation(ValidationContext vc) {
