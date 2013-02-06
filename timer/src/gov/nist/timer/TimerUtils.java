@@ -16,5 +16,13 @@ public class TimerUtils {
 		
 	}
 	
+	/**
+	 * Returns the Accepted Delay for MDN Reception, in minutes. Delay is now hardcoded but will be later stored in config file.
+	 * @return
+	 */
+	public static int getACCEPTED_DELAY_FOR_MDN_RECEPTION() {
+		return 30;
+	}
+	
 
 }
