@@ -7,6 +7,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.directRegistrationTab.DirectRegistrationTab;
 import gov.nist.toolkit.xdstools2.client.tabs.directSenderTab.DirectSenderTab;
+import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;

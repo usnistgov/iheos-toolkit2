@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
@@ -44,14 +45,14 @@ public class RepositoryListingTab extends GenericQueryTab {
 		title.setHTML("<h2>Repository Listing</h2>");
 		topPanel.add(title);
 
-		topPanel.add(html(h3("By Name")));
+		topPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
 
 		byNameTable.setBorderWidth(1);
 		byNameTable.setCellSpacing(0);
 
 		topPanel.add(byNameTable);
 
-		topPanel.add(html(h3("By repositoryUniqueId")));
+		topPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
 
 		topPanel.add(byUidTable);
 
@@ -112,8 +113,8 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 		row=0;
 		col = 0;
-		byNameTable.setHTML(row, col++, bold("Repository Name"));
-		byNameTable.setHTML(row, col++, bold("repositoryUniqueId"));
+		byNameTable.setHTML(row, col++, HtmlMarkup.bold("Repository Name"));
+		byNameTable.setHTML(row, col++, HtmlMarkup.bold("repositoryUniqueId"));
 		row++;
 
 		for (String name : namea) {
@@ -128,8 +129,8 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 		row=0;
 		col=1;
-		byUidTable.setHTML(row, col++, bold("repositoryUniqueId"));
-		byUidTable.setHTML(row, col++, bold("Repository Name"));
+		byUidTable.setHTML(row, col++, HtmlMarkup.bold("repositoryUniqueId"));
+		byUidTable.setHTML(row, col++, HtmlMarkup.bold("Repository Name"));
 		row++;
 
 		for (String uid : uids)	 {

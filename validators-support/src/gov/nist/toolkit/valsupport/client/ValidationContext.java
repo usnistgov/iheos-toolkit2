@@ -393,6 +393,12 @@ public class ValidationContext  implements IsSerializable {
 		if (!metadataPatterns.isEmpty()) 
 			buf.append(";MetadataPatterns:").append(metadataPatterns);
 		buf.append(";CCDA type is " + ccdaType);
+		
+		if (innerContexts != null) {
+			for (ValidationContext v : innerContexts) {
+				buf.append("[").append(v.toString()).append("]");
+			}
+		}
 
 		return buf.toString();
 	}
