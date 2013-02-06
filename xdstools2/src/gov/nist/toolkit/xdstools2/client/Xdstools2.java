@@ -3,10 +3,10 @@ package gov.nist.toolkit.xdstools2.client;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
-import gov.nist.toolkit.xdstools2.client.tabs.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
 import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
 import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
+import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testRunnerTab.TestRunnerTab;
 
 import com.google.gwt.core.client.EntryPoint;

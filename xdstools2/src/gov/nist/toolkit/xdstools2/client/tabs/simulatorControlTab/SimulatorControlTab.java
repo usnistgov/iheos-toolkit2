@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
@@ -61,7 +62,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		topPanel.add(title);
 
 		HorizontalPanel actorSelectPanel = new HorizontalPanel();
-		actorSelectPanel.add(html("Select actor type"));
+		actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
 		actorSelectPanel.add(actorSelectListBox);
 		loadActorSelectListBox();
 		
@@ -92,7 +93,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		
 		topPanel.add(simIdsPanel);
 		
-		topPanel.add(html("<br />"));
+		topPanel.add(HtmlMarkup.html("<br />"));
 		
 		topPanel.add(simConfigWrapperPanel);
 		

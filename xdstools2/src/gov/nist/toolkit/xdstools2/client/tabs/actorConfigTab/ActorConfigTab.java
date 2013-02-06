@@ -6,6 +6,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
@@ -194,7 +195,7 @@ public class ActorConfigTab extends GenericQueryTab {
 		String boxwidth = "600px";
 		boolean TLS = true;
 
-		HTML nameLabel = new HTML(bold("Site Name"));
+		HTML nameLabel = new HTML(HtmlMarkup.bold("Site Name"));
 		actorEditGrid.setWidget(row, 0, nameLabel);
 
 		TextBox nameBox = new TextBox();
@@ -204,8 +205,8 @@ public class ActorConfigTab extends GenericQueryTab {
 		actorEditGrid.setWidget(row, 1, nameBox);
 		row++;
 
-		actorEditGrid.setWidget(row, 1, new HTML(bold(getTlsLabel(booleanValues().get(0)) + " Endpoints")));
-		actorEditGrid.setWidget(row, 2, new HTML(bold(getTlsLabel(booleanValues().get(1)) + " Endpoints")));
+		actorEditGrid.setWidget(row, 1, new HTML(HtmlMarkup.bold(getTlsLabel(booleanValues().get(0)) + " Endpoints")));
+		actorEditGrid.setWidget(row, 2, new HTML(HtmlMarkup.bold(getTlsLabel(booleanValues().get(1)) + " Endpoints")));
 		row++;
 
 		for (ActorType actorType : TransactionCollection.getActorTypes()) {
@@ -215,7 +216,7 @@ public class ActorConfigTab extends GenericQueryTab {
 				continue;
 			
 			String actorTypeName = actorType.getName();
-			HTML actorTypeLabel = new HTML(bold(actorTypeName));
+			HTML actorTypeLabel = new HTML(HtmlMarkup.bold(actorTypeName));
 			actorEditGrid.setWidget(row, 1, actorTypeLabel);
 			row++;
 

@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -44,18 +45,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 			tbl.clear();			
 			int row = 0;
 			
-			tbl.setWidget(row, 0, simulatorControlTab.html("Simulator Type"));
-			tbl.setWidget(row, 1, simulatorControlTab.html(config.getType()));
+			tbl.setWidget(row, 0, HtmlMarkup.html("Simulator Type"));
+			tbl.setWidget(row, 1, HtmlMarkup.html(config.getType()));
 			
 			row++;
 			
-			tbl.setWidget(row, 0, simulatorControlTab.html("Simulator ID"));
-			tbl.setWidget(row, 1, simulatorControlTab.html(config.getId()));
+			tbl.setWidget(row, 0, HtmlMarkup.html("Simulator ID"));
+			tbl.setWidget(row, 1, HtmlMarkup.html(config.getId()));
 			
 			row++;
 			
-			tbl.setWidget(row, 0, simulatorControlTab.html("Expiration"));
-			tbl.setWidget(row, 1, simulatorControlTab.html(config.getExpiration().toString()));
+			tbl.setWidget(row, 0, HtmlMarkup.html("Expiration"));
+			tbl.setWidget(row, 1, HtmlMarkup.html(config.getExpiration().toString()));
 			
 			row++;
 			
@@ -74,7 +75,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 			}
 						
 			if (config.areRemoteSitesNecessary()) {
-				tbl.setWidget(row, 0, this.simulatorControlTab.html(config.getRemoteSitesLabel()));
+				tbl.setWidget(row, 0, HtmlMarkup.html(config.getRemoteSitesLabel()));
 				HorizontalPanel boxes = new HorizontalPanel();
 				tbl.setWidget(row, 1, boxes);
 				
@@ -91,14 +92,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 			saveButton.addClickHandler(new SaveButtonClickHandler(simulatorControlTab, config));
 			hpanel.add(saveButton);
 
-			hpanel.add(this.simulatorControlTab.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+			hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
 			
 			
 			Button deleteButton = new Button("Delete");
 			deleteButton.addClickHandler(new DeleteButtonClickHandler(simulatorControlTab, config));
 			hpanel.add(deleteButton);
 			
-			panel.add(this.simulatorControlTab.html("<br />"));
+			panel.add(HtmlMarkup.html("<br />"));
 		}
 		
 		

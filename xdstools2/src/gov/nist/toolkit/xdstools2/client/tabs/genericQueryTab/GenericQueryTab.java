@@ -12,6 +12,7 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.TabbedWindow;
@@ -292,11 +293,11 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	String red(String msg, boolean status) {
 		if (status)
 			return msg;
-		return red(msg);
+		return HtmlMarkup.red(msg);
 	}
 
 	public void setStatus(String message, boolean status) {
-		statusBox.setHTML(bold(red(message,status)));
+		statusBox.setHTML(HtmlMarkup.bold(red(message,status)));
 	}
 
 	public String getRunningMessage() {
