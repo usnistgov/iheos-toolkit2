@@ -1,9 +1,7 @@
-package gov.nist.toolkit.xdstools2.client.tabs;
+package gov.nist.toolkit.xdstools2.client.tabs.messageValidator;
 
 
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.tk.client.PropertyNotFoundException;
-import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValFormatter;
@@ -15,6 +13,7 @@ import gov.nist.toolkit.xdstools2.client.TabbedWindow;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +67,7 @@ public class MessageValidatorTab extends TabbedWindow {
 	final VerticalPanel chooseFromEndpointArea = new VerticalPanel();
 	final FormPanel uploadForm = new FormPanel();
 	final ListBox simFilesListBox = new ListBox();
-
+	CcdaTypeSelection ccdaSel;
 
 
 	final protected ToolkitServiceAsync toolkitService = GWT
@@ -155,31 +154,23 @@ public class MessageValidatorTab extends TabbedWindow {
 			rb.setEnabled(enable);
 
 		if (type.equals(ValidationType_xcpd)) {
-			//panel.add(html("<hr />"));
-//			panel.add(html(bold("IHE XCPD")));
 		}
 
 		if (type.equals(ValidationType_NwHINxcpd)) {
-			//panel.add(html("<hr />"));
-			//panel.add(html(bold("NwHIN Patient Discovery Message Types")));
 		}
 		if (type.equals(ValidationType_ncpdp)) {
 			panel.add(html("<hr />"));
 			panel.add(html(bold("E-Prescription")));
 		}
 		if (type.equals(ValidationType_C32)) {
-			//panel.add(html("<hr />"));
-			//panel.add(html(bold("CDA Document Validator")));
 		}
 		if (type.equals(ValidationType_direct)) {
-		//	panel.add(html("<hr />"));
-		//	panel.add(html(bold("DIRECT Message")));
 		}
 		if (type.equals(ValidationType_CCDA)) {
 			panel.add(html("<hr />"));
 			panel.add(html(bold("CCDA Document Validator (CCDA validation may take more than a minute to run)")));
 			
-			List<String> ccdaTypes = ccdaTypes();
+			List<String> ccdaTypes = ccdaSel.ccdaTypes();
 			for (String ctype : ccdaTypes) {
 				RadioButton rb1 = new RadioButton(validationGroupName, ctype);
 				rb1.addClickHandler(msgTypeClickHandler);
@@ -209,31 +200,10 @@ public class MessageValidatorTab extends TabbedWindow {
 					enableContentType = true;
 				}
 			}
-			enableCcdaTypesRadioGroup(enableContentType);
+			ccdaSel.enableCcdaTypesRadioGroup(enableContentType);
 		}
 		
 	};
-	
-	List<String> ccdaTypes() {
-		List<String> types = new ArrayList<String>();
-		
-		TkProps ccdaProps = tkProps().withPrefixRemoved("direct.reporting.ccdatype");
-		for (int i=1; i<30; i++) {
-			String en = Integer.toString(i);
-			
-			String ctype = null;
-			String display = null;
-			try {
-				ctype = ccdaProps.get("type" + en);
-				display = ccdaProps.get("display" + en);
-			} catch (PropertyNotFoundException e) {
-			}
-			if (ctype == null || display == null)
-				break;
-			types.add(ctype + " - " + display);
-		}
-		return types;
-	}
 	
 	String simpleCcdaType(String type) {
 		String[] parts = type.split("-");
@@ -267,35 +237,6 @@ public class MessageValidatorTab extends TabbedWindow {
 		panel.add(responseMessage);
 	}
 	
-	List<RadioButton> ccdaTypes;
-	String ccdaTypesGroupName = "CCDATypesGroupName";
-	
-	void addCcdaTypesRadioGroup(VerticalPanel panel, List<String> ccdaTypeNames) {
-		panel.add(html(bold("CCDA Types for XDM or XDR content (CCDA validation may take a minute or more to run)")));
-		ccdaTypes = new ArrayList<RadioButton>();
-		for (String name : ccdaTypeNames) {
-			RadioButton r = new RadioButton(ccdaTypesGroupName, name); 
-			ccdaTypes.add(r);
-			panel.add(r);
-		}
-		RadioButton r = new RadioButton(ccdaTypesGroupName, "Non-CCDA content");
-		ccdaTypes.add(r);
-		panel.add(r);
-	}
-	
-	void enableCcdaTypesRadioGroup(boolean enable) {
-		for (RadioButton r : ccdaTypes) {
-			r.setEnabled(enable);
-		}
-	}
-	
-	String getCcdaContentType() {
-		for (RadioButton r : ccdaTypes) {
-			if (r.getValue())
-				return r.getText();
-		}
-		return "";
-	}
 
 	boolean isRequestType() {
 		return requestMessage.getValue();
@@ -317,12 +258,6 @@ public class MessageValidatorTab extends TabbedWindow {
 		return httpWrapper.getValue();
 	}
 
-	void addDocType(ValidationContext vc, String ccdaContentType) {
-		ValidationContext vc2 = new ValidationContext();
-		vc2.ccdaType = ccdaContentType;
-		vc.addInnerContext(vc2);
-	}
-
 	void loadValidationContext(ValidationContext vc) {
 		String msgType = getMessageType();
 		if (msgType.equals(ValidationTypeR_b))
@@ -333,7 +268,7 @@ public class MessageValidatorTab extends TabbedWindow {
 			vc.isXDM = true;
 		else if (msgType.equals(ValidationTypeDirectXDM)) {
 			vc.isXDM = true;
-			addDocType(vc, getCcdaContentType());
+			ccdaSel.addDocTypeToValidation(vc);
 		}
 		else if (msgType.equals(ValidationTypeXDR)) {
 			vc.isXDR = true;
@@ -342,7 +277,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		else if (msgType.equals(ValidationTypeDirectXDR)) {
 			vc.isXDR = true;
 			vc.isPnR = true;
-			addDocType(vc, getCcdaContentType());
+			ccdaSel.addDocTypeToValidation(vc);
 		}
 		else if (msgType.equals(ValidationType_Ret))
 			vc.isRet = true;
@@ -359,7 +294,7 @@ public class MessageValidatorTab extends TabbedWindow {
 			vc.isC32 = true;
 		else if (msgType.equals(ValidationType_direct)) {
 			vc.isDIRECT = true;
-			addDocType(vc, getCcdaContentType());
+			ccdaSel.addDocTypeToValidation(vc);
 		}
 		else if (msgType.equals(ValidationType_CCDA))
 			vc.isCCDA = true;
@@ -387,26 +322,15 @@ public class MessageValidatorTab extends TabbedWindow {
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
-//		disableEnvMgr();
 		disableTestSesMgr();
+		ccdaSel = new CcdaTypeSelection(tkProps());
 
 		container.addTab(topPanel, "Message Validator", select);
 		addCloseButton(container,topPanel, null);
 
 		topPanel.add(html(h2("Message Validator")));
 
-//		FlexTable mainGrid = new FlexTable();
-//		mainGrid.setCellSpacing(40);
-
-//		int row = 0;
-
-//		topPanel.add(mainGrid);
-
-		// File Chooser
-//		VerticalPanel fileChooserArea = new VerticalPanel();
-		//topPanel.add(fileChooserArea);	
 		topPanel.add(html("<hr />"));
-//		mainGrid.setWidget(row,3, fileChooserArea);
 
 		VerticalPanel messageTypeArea = new VerticalPanel();	
 		VerticalPanel validationCheckBoxes = new VerticalPanel();
@@ -420,22 +344,11 @@ public class MessageValidatorTab extends TabbedWindow {
 		topH.add(messageTypeArea);
 		topH.add(rightSideVert);
 		rightSideVert.add(typesAndWrappers);
-		addCcdaTypesRadioGroup(rightSideVert, ccdaTypes());
-		enableCcdaTypesRadioGroup(false);
+		ccdaSel.addCcdaTypesRadioGroup(rightSideVert, ccdaSel.ccdaTypes());
+		ccdaSel.enableCcdaTypesRadioGroup(false);
 		typesAndWrappers.add(inOutTypeArea);
 		typesAndWrappers.add(validationCheckBoxes);
 		
-		
-
-		//mainGrid.setBorderWidth(10);
-//		mainGrid.getFlexCellFormatter().setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_TOP);
-//		mainGrid.getFlexCellFormatter().setVerticalAlignment(0, 1, HasVerticalAlignment.ALIGN_TOP);
-//		mainGrid.getFlexCellFormatter().setVerticalAlignment(0, 2, HasVerticalAlignment.ALIGN_TOP);
-//
-//		mainGrid.setWidget(row,0, messageTypeArea);
-//		mainGrid.setWidget(row,1, inOutTypeArea);
-//		mainGrid.setWidget(row,2, validationCheckBoxes);		
-
 		// Message type radio buttons
 		addValidationTypesRadioGroup(messageTypeArea, true);
 
@@ -535,7 +448,6 @@ public class MessageValidatorTab extends TabbedWindow {
 				new GwtValFormatter().clearResults();
 				final ValidationContext vc = new ValidationContext();
 				loadValidationContext(vc);
-				System.out.println("vs is " + vc.toString());
 				vc.hasSoap = true;
 				int sel = simFilesListBox.getSelectedIndex();
 				if (sel == -1) {
