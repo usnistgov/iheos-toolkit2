@@ -40,11 +40,28 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 	
 	// DTS 190, All Mime Header Fields, Required
 	public void validateAllMimeHeaderFields(ErrorRecorder er, String header) {
-		Assert.fail("Not Yet Implemented");
-		
+		if(header.contains("\"")) {
+			String[] splitHeader = null;
+			splitHeader = header.split("\"");
+			if(splitHeader.length==1) {
+				if(splitHeader[0].contains("(")) {
+					er.err("190", "Mime Header Fields is valid: Content-Disposition contains comment", "", "", "DTS 190");
+				} else {
+					er.detail("Success:  DTS 190 - Mime Header Fields is valid");
+				}
+			} else if(splitHeader.length>2) {
+				if(splitHeader[2].contains("(")) {
+					er.err("190", "Mime Header Fields is valid: Content-Disposition contains comment", "", "", "DTS 190");
+				} else {
+					er.detail("Success:  DTS 190 - Mime Header Fields is valid");
+				}
+			}
+		} else {
+			er.detail("Success:  DTS 190 - Mime Header Fields is valid");	
+		}
 	}
 	
-	// DTS 102a, MIME-Version
+	// DTS 102a, MIME-Version, Optinal
 	public void validateAllMIMEVersion(ErrorRecorder er, String mimeVersion) {
 		Assert.fail("Not Yet Implemented");
 		
