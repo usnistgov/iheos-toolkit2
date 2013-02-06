@@ -227,32 +227,4 @@ public abstract class TabbedWindow {
 		topPanel.add(msgBox);		
 	}
 
-	protected String red(String msg) {
-		return "<font color=\"#FF0000\">" + msg  + "</font>";
-	}
-
-	protected String bold(String msg) {
-		return "<b>" + msg + "</b>";
-	}
-
-	protected String h3(String msg) {
-		return "<h3>" + msg + "</h3>";
-	}
-
-	protected String h2(String msg) {
-		return "<h2>" + msg + "</h2>";
-	}
-
-	public HTML html(String msg) {
-		HTML h = new HTML();
-		h.setHTML(msg);
-		return h;
-	}
-
-	protected HTML text(String msg) {
-		HTML h = new HTML();
-		h.setText(msg);
-		return h;
-	}
-
 }

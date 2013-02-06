@@ -3,6 +3,7 @@ package gov.nist.toolkit.actorfactory.client;
 
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	String remoteSitesLabel;
 	// this is not a fixed attribute so it doesn't show in editor
 	public List<Site> remoteSites = null;
+	
+	// This is only used to record validation requirements for included document(s)
+	ValidationContext vc = null;
 	
 	public boolean isExpired() { return isExpired; }
 	public void isExpired(boolean is) { isExpired = is; }
