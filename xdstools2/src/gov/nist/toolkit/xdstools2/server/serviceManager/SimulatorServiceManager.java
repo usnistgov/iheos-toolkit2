@@ -216,7 +216,7 @@ public class SimulatorServiceManager extends CommonServiceManager {
 	}
 
 	public List<SimulatorConfig> getNewSimulator(String actorTypeName) throws Exception  {
-		logger.debug(session.id() + ": " + "getNewSimulator");
+		logger.debug(session.id() + ": " + "getNewSimulator(type=" + actorTypeName + ")");
 		try {
 			List<SimulatorConfig> scl = new SimulatorFactory(SimManager.get(session.id())).buildNewSimulator(SimManager.get(session.id()), actorTypeName);
 			SimManager.get(session.id()).addSimConfigs(scl);
