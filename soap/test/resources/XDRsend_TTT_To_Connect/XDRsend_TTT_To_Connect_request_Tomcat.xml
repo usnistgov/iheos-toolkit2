@@ -1,10 +1,10 @@
 
---MIMEBoundary_9dc6ddedf4144ca914ea532a95feb0184c1996ae96abe653
+--MIMEBoundary_e8e2934a69d3ef15fb408dead4c846b9fa665d03165bc0d0
 Content-Type: application/xop+xml; charset=UTF-8;
 type="application/soap+xml"
 Content-Transfer-Encoding: binary
 Content-ID:
-<0.8dc6ddedf4144ca914ea532a95feb0184c1996ae96abe653@apache.org>
+<0.f8e2934a69d3ef15fb408dead4c846b9fa665d03165bc0d0@apache.org>
 
 <?xml version='1.0' encoding='UTF-8'?>
 <soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
@@ -17,12 +17,12 @@ Content-ID:
 				xmlns:ns16="http://schemas.xmlsoap.org/soap/envelope/"
 				xmlns:ns17="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512"
 				wsu:Id="_1">
-				<wsu:Created>2013-02-05T21:58:07Z</wsu:Created>
-				<wsu:Expires>2013-02-05T22:03:07Z</wsu:Expires>
+				<wsu:Created>2013-02-06T22:44:42Z</wsu:Created>
+				<wsu:Expires>2013-02-06T22:49:42Z</wsu:Expires>
 			</wsu:Timestamp>
 			<saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
-				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="_43456C0C7AEF93F3B313601014875111"
-				IssueInstant="2013-02-05T21:58:07.511Z" Version="2.0" xsi:type="saml:AssertionType">
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="_D7A5D6E3A22645D4FC13601905533111"
+				IssueInstant="2013-02-06T22:42:33.311Z" Version="2.0" xsi:type="saml:AssertionType">
 				<saml:Issuer
 					Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">CN=lambdaMan@nist.gov,O=Nist Test
 					Lab,L=Gaithersburg,ST=Maryland,C=US</saml:Issuer>
@@ -31,21 +31,21 @@ Content-ID:
 						<ds:CanonicalizationMethod
 							Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
 						<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
-						<ds:Reference URI="#_43456C0C7AEF93F3B313601014875111">
+						<ds:Reference URI="#_D7A5D6E3A22645D4FC13601905533111">
 							<ds:Transforms>
 								<ds:Transform
 									Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
 								<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
 							</ds:Transforms>
 							<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-							<ds:DigestValue>zNplMvjV9wCUvjLuejZ3cL9todc=</ds:DigestValue>
+							<ds:DigestValue>ev1QVfLwo0KT9dPVZXjQNxqQ+Ns=</ds:DigestValue>
 						</ds:Reference>
 					</ds:SignedInfo>
-					<ds:SignatureValue>cQOgMw9PdFYJiS5ZljLg1dG6HSv+JGMoIoraZeV3BL2qe5lV20mQXhUUnjheK5o5PSFAQUtHLFyR
-						bvQG9l3TZv78khzhW6Xrylnt/fiXHumVCgP3C+X03VpNuvBe6nBWTipg/OrAKJ+oBioofPe6LpwA
-						avKH4wCgD9uWgA/ZIG9Gozc8bxLxluvTmoW0pA6NPLXuQU2O99SHyD7xU6Q2UpLPY+jsOCT8TCY7
-						+No6Cka9NkVn4Y3tTuIQVoRR40bwkp0oV/4Iu/bPAt32fw3lC3v2SVTHGpWZcheLfMyE/urbWo/s
-						4w0of/xQ8nkx8CBD+j8VD8m9nZcQ35695HyHSw==
+					<ds:SignatureValue>KFhLnofupLKGrxJknR8gJppP8CaGTOtvTrZQP9N4oIh0g3+7zANZ2BWQITm47HSTRxwiuboDeTLR
+						aLBkcCAElS2n2oyD7NWo9TPJFMbnmHxaz5f4gR43fbY1+Fv3LCaLdqr6Z3pTpRnDGqhI6JWSs+L9
+						ux/QkwoDRl+C+ai4t/2KVMxz8g+n7bmOhVhfDdEyGfNbi/QHVEoqLE0Man82yE0jsN01FIV3t1ZS
+						5S6J3KV07LxXg+kfC4XudBoeNcWXwWAm4Vk0gIvJpeoqAy3pMslDzTb8hKYjgP62egjx7b9IR4EC
+						o8mLTH9BqzyfwXJqw64hoEcc+fAggD3ZlNGttg==
 					</ds:SignatureValue>
 					<ds:KeyInfo>
 						<ds:KeyValue>
@@ -84,7 +84,7 @@ Content-ID:
 						</saml:SubjectConfirmationData>
 					</saml:SubjectConfirmation>
 				</saml:Subject>
-				<saml:AuthnStatement AuthnInstant="2013-02-05T21:58:07.516Z"
+				<saml:AuthnStatement AuthnInstant="2013-02-06T22:42:33.326Z"
 					SessionIndex="12345">
 					<saml:SubjectLocality Address="158.147.185.10"
 						DNSName="ssa.gov" />
@@ -94,50 +94,49 @@ Content-ID:
 					</saml:AuthnContext>
 				</saml:AuthnStatement>
 				<saml:AttributeStatement>
-					<saml:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:subject-id"
+					<saml:Attribute Name="http://www.w3.org/2001/XMLSchema"
 						NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
 						<saml:AttributeValue xsi:type="xs:string">uid=joe,ou=people,ou=saml-demo,o=example.com
 						</saml:AttributeValue>
 					</saml:Attribute>
 				</saml:AttributeStatement>
 				<saml:AttributeStatement>
-					<saml:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:organization"
+					<saml:Attribute Name="http://www.w3.org/2001/XMLSchema"
 						NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
 						<saml:AttributeValue xsi:type="xs:string">Social Security
 							Administration</saml:AttributeValue>
 					</saml:Attribute>
 				</saml:AttributeStatement>
 				<saml:AttributeStatement>
-					<saml:Attribute
-						Name="urn:oasis:names:tc:xspa:1.0:subject:organization-id"
+					<saml:Attribute Name="http://www.w3.org/2001/XMLSchema"
 						NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
 						<saml:AttributeValue xsi:type="xs:string">urn:oid:2.2
 						</saml:AttributeValue>
 					</saml:Attribute>
 				</saml:AttributeStatement>
 				<saml:AttributeStatement>
-					<saml:Attribute Name="urn:nhin:names:saml:homeCommunityId"
+					<saml:Attribute Name="http://www.w3.org/2001/XMLSchema"
 						NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
 						<saml:AttributeValue xsi:type="xs:string">urn:oid:2.2
 						</saml:AttributeValue>
 					</saml:Attribute>
 				</saml:AttributeStatement>
 				<saml:AttributeStatement>
-					<saml:Attribute Name="urn:oasis:names:tc:xacml:2.0:subject:role"
+					<saml:Attribute Name="http://www.w3.org/2001/XMLSchema"
 						NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
 						<saml:AttributeValue xsi:type="xs:string">2.16.840.1.113883.3.18.6.1.15
 						</saml:AttributeValue>
 					</saml:Attribute>
 				</saml:AttributeStatement>
 				<saml:AttributeStatement>
-					<saml:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:purposeofuse"
+					<saml:Attribute Name="http://www.w3.org/2001/XMLSchema"
 						NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
 						<saml:AttributeValue xsi:type="xs:string">2.16.840.1.113883.3.184.6.1
 						</saml:AttributeValue>
 					</saml:Attribute>
 				</saml:AttributeStatement>
 				<saml:AttributeStatement>
-					<saml:Attribute Name="urn:oasis:names:tc:xacml:2.0:resource:resource-id"
+					<saml:Attribute Name="http://www.w3.org/2001/XMLSchema"
 						NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
 						<saml:AttributeValue xsi:type="xs:string">D123401^^^&amp;1.1&amp;ISO
 						</saml:AttributeValue>
@@ -147,14 +146,14 @@ Content-ID:
 					Resource="https://nhinri2c23.aegis.net:443/RespondingGateway_Query_Service/DocQuery">
 					<saml:Action Namespace="urn:oasis:names:tc:SAML:1.0:action:rwedc">Execute</saml:Action>
 					<saml:Evidence>
-						<saml:Assertion ID="_43456C0C7AEF93F3B313601014875252"
-							IssueInstant="2013-02-05T21:58:07.525Z" Version="2.0"
+						<saml:Assertion ID="_D7A5D6E3A22645D4FC13601905533582"
+							IssueInstant="2013-02-06T22:42:33.358Z" Version="2.0"
 							xsi:type="saml:AssertionType">
 							<saml:Issuer
 								Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">CN=lambdaMan@nist.gov,O=Nist Test
 								Lab,L=Gaithersburg,ST=Maryland,C=US</saml:Issuer>
-							<saml:Conditions NotBefore="2013-02-05T21:58:07.525Z"
-								NotOnOrAfter="2013-02-05T22:03:07.525Z" />
+							<saml:Conditions NotBefore="2013-02-06T22:42:33.361Z"
+								NotOnOrAfter="2013-02-06T22:47:33.361Z" />
 							<saml:AttributeStatement>
 								<saml:Attribute Name="InstanceAccessConsentPolicy"
 									NameFormat="http://www.hhs.gov/healthit/nhin">
@@ -183,28 +182,28 @@ Content-ID:
 							<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
 						</ds:Transforms>
 						<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-						<ds:DigestValue>ZSV5EwGD02mi2oVGWtKrfwtnfe0=</ds:DigestValue>
+						<ds:DigestValue>wK8UtTOSmvwi7u2StZQQZ/Y1Nfc=</ds:DigestValue>
 					</ds:Reference>
 				</ds:SignedInfo>
-				<ds:SignatureValue>YDTbaIL2y087SNpXy979wjebyr3+67N1/NR/LOwNNYq27oWFzk6fgX4FzJDmGid1wxkhz4YD5BKm
-					dGSNXYsdoNPvuG+88N01oDp8zd0ZEfYKaOEjg76f8ldZWVVzDcQBriYGMSWD2yPgZHNFWsjkMGzD
-					CNslPusA6G9s8nxq51ogz6l/NgxzKp8pC3n4QPa94fPjjHuVzcEhdqNV3QiVS8j4zchfuisOX7vJ
-					zJy2Mqc0ayG4rO+cmn1FDQbKaV2hfPT/9m7sCnkEeHQPpioF6tkt/zmhvmKH+rUr4OFf2/h5OOoo
-					Ktkdz2wM3mlNLNcQATc/L+aCR0weDKPUExdC2A==
+				<ds:SignatureValue>VppkEp2Gr5hsoAYTEYcOAmsHIBelEOJeJSrcInMGsF1Ij2mxntp+cbeGTal3v6MszD1iCIiIy3nW
+					ZIZsV3grZmK+5cmYprOVc0sf4HUEa//8w/s4THulLjnd/BlpL9YKUTmrnYROIyCitu2MUZkKwthN
+					3jLXRqrg56lceJFItIYFVIwFLfjByqNXwtuEMMH6EBFAQ7yYrfXvFu0zC+/gFJftAvuS+RKcf4Fk
+					9g1mUu2dr4/HY9ek4l5K7MOleQ0+vUqS+cl+rQ7XK/dS0pIGw1Gzsncur4+OfaD8+5Oz+xmsBmkP
+					gOq2C1+mADZz/ctGurCziLMi5KgEKSsl5Ycs5g==
 				</ds:SignatureValue>
 				<ds:KeyInfo>
 					<wsse:SecurityTokenReference
 						xmlns:wsse11="http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd"
 						wsse11:TokenType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0">
 						<wsse:KeyIdentifier
-							ValueType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLID">_43456C0C7AEF93F3B313601014875111</wsse:KeyIdentifier>
+							ValueType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLID">_D7A5D6E3A22645D4FC13601905533111</wsse:KeyIdentifier>
 					</wsse:SecurityTokenReference>
 				</ds:KeyInfo>
 			</ds:Signature>
 		</wsse:Security>
 		<wsa:To soapenv:mustUnderstand="true">https://192.168.188.128:9892/Gateway/DocumentSubmission/2_0/DocumentRepositoryXDR_Service
 		</wsa:To>
-		<wsa:MessageID soapenv:mustUnderstand="true">urn:uuid:7B738C381487CB98BC1360101488036
+		<wsa:MessageID soapenv:mustUnderstand="true">urn:uuid:C22048A35E5754F78D1360190713785
 		</wsa:MessageID>
 		<wsa:Action soapenv:mustUnderstand="true">urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b
 		</wsa:Action>
@@ -217,13 +216,13 @@ Content-ID:
 				<rim:RegistryObjectList
 					xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
 					<rim:ExtrinsicObject
-						id="urn:uuid:55c00b8d-9a1c-47de-9661-c81c8086700d" mimeType="text/xml"
+						id="urn:uuid:2ad0977f-e798-4d43-a1da-b0acde8403d1" mimeType="text/xml"
 						objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1">
 						<rim:ExternalIdentifier
 							identificationScheme="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab"
-							value="1.42.20130205165804.2"
+							value="1.42.20130206174054.2"
 							objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
-							id="id_1" registryObject="urn:uuid:55c00b8d-9a1c-47de-9661-c81c8086700d">
+							id="id_1" registryObject="urn:uuid:2ad0977f-e798-4d43-a1da-b0acde8403d1">
 							<rim:Name>
 								<rim:LocalizedString value="XDSDocumentEntry.uniqueId"></rim:LocalizedString>
 
@@ -233,7 +232,7 @@ Content-ID:
 
 					</rim:ExtrinsicObject>
 					<rim:RegistryPackage
-						id="urn:uuid:e94cb922-b509-4a5e-9358-c6b174c697f8"
+						id="urn:uuid:3efd4a95-a26c-4238-80a4-9b12d3067f3b"
 						objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:RegistryPackage">
 						<rim:Slot name="intendedRecipient">
 							<rim:ValueList>
@@ -253,7 +252,7 @@ Content-ID:
 						</rim:Slot>
 						<rim:Classification
 							classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"
-							classifiedObject="urn:uuid:e94cb922-b509-4a5e-9358-c6b174c697f8"
+							classifiedObject="urn:uuid:3efd4a95-a26c-4238-80a4-9b12d3067f3b"
 							nodeRepresentation=""
 							objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification"
 							id="id_2">
@@ -270,9 +269,9 @@ Content-ID:
 						</rim:Classification>
 						<rim:ExternalIdentifier
 							identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"
-							value="1.42.20130205165804.3"
+							value="1.42.20130206174054.3"
 							objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
-							id="id_3" registryObject="urn:uuid:e94cb922-b509-4a5e-9358-c6b174c697f8">
+							id="id_3" registryObject="urn:uuid:3efd4a95-a26c-4238-80a4-9b12d3067f3b">
 							<rim:Name>
 								<rim:LocalizedString value="XDSSubmissionSet.uniqueId"></rim:LocalizedString>
 
@@ -283,7 +282,7 @@ Content-ID:
 							identificationScheme="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832"
 							value="2.2"
 							objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:ExternalIdentifier"
-							id="id_4" registryObject="urn:uuid:e94cb922-b509-4a5e-9358-c6b174c697f8">
+							id="id_4" registryObject="urn:uuid:3efd4a95-a26c-4238-80a4-9b12d3067f3b">
 							<rim:Name>
 								<rim:LocalizedString value="XDSSubmissionSet.sourceId"></rim:LocalizedString>
 
@@ -296,14 +295,14 @@ Content-ID:
 
 
 					</rim:RegistryPackage>
-					<rim:Classification classifiedObject="urn:uuid:e94cb922-b509-4a5e-9358-c6b174c697f8"
+					<rim:Classification classifiedObject="urn:uuid:3efd4a95-a26c-4238-80a4-9b12d3067f3b"
 						classificationNode="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"
-						id="urn:uuid:1d9cb276-a6aa-4eae-86f0-9d2fff0ac4a1"
+						id="urn:uuid:1803ad9e-1c19-46de-b51c-e9f6a9004649"
 						objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification"></rim:Classification>
 					<rim:Association
 						associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"
-						sourceObject="urn:uuid:e94cb922-b509-4a5e-9358-c6b174c697f8"
-						targetObject="urn:uuid:55c00b8d-9a1c-47de-9661-c81c8086700d" id="urn:uuid:e01f5555-4757-4e4d-bb5a-c1765a86d4be"
+						sourceObject="urn:uuid:3efd4a95-a26c-4238-80a4-9b12d3067f3b"
+						targetObject="urn:uuid:2ad0977f-e798-4d43-a1da-b0acde8403d1" id="urn:uuid:fbac9d2f-b214-48a6-8ca2-888e09e016b7"
 						objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Association">
 						<rim:Slot name="SubmissionSetStatus">
 							<rim:ValueList>
@@ -316,18 +315,18 @@ Content-ID:
 					</rim:Association>
 				</rim:RegistryObjectList>
 			</lcm:SubmitObjectsRequest>
-			<xdsb:Document id="urn:uuid:55c00b8d-9a1c-47de-9661-c81c8086700d">
+			<xdsb:Document id="urn:uuid:2ad0977f-e798-4d43-a1da-b0acde8403d1">
 				<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
-					href="cid:1.bdc6ddedf4144ca914ea532a95feb0184c1996ae96abe653@apache.org" />
+					href="cid:1.c8e2934a69d3ef15fb408dead4c846b9fa665d03165bc0d0@apache.org" />
 			</xdsb:Document>
 		</xdsb:ProvideAndRegisterDocumentSetRequest>
 	</soapenv:Body>
 </soapenv:Envelope>
---MIMEBoundary_9dc6ddedf4144ca914ea532a95feb0184c1996ae96abe653
+--MIMEBoundary_e8e2934a69d3ef15fb408dead4c846b9fa665d03165bc0d0
 Content-Type: application/octet-stream
 Content-Transfer-Encoding: binary
 Content-ID:
-<1.bdc6ddedf4144ca914ea532a95feb0184c1996ae96abe653@apache.org>
+<1.c8e2934a69d3ef15fb408dead4c846b9fa665d03165bc0d0@apache.org>
 
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="CDA.xsl"?>
@@ -2825,4 +2824,4 @@ Content-ID:
 	</component>
 </ClinicalDocument>
 
---MIMEBoundary_9dc6ddedf4144ca914ea532a95feb0184c1996ae96abe653--
+--MIMEBoundary_e8e2934a69d3ef15fb408dead4c846b9fa665d03165bc0d0--
