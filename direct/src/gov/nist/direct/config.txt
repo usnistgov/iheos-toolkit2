@@ -1,1 +1,0 @@
-ACCEPTED_DELAY_FOR_MDN_RECEPTION = 1000000  --  (400ms max of RTT + processing time by other system) x 3
