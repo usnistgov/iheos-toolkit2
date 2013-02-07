@@ -25,9 +25,9 @@ xdstools2/war/**
 xdstools2/listener.jar
 
 #eclipse settings
-# .settings/
-# .project
-# .classpath
+.settings/
+.project
+.classpath
 
 #MAC
 .DS_Store
