@@ -86,4 +86,6 @@ direct.toolkit.dns.domain: hit-testing.nist.gov
 
 direct.toolkit.smtp.domain: smtp.hit-testing.nist.gov
 
+# Authorized delay for MDN reception (in minutes)
+direct.mdn.receptionDelay: 30
 

@@ -72,8 +72,14 @@ public class ProcessEnvelope {
 			validationSummary.recordKey(shift + "Content-type: "+m.getContentType(), er.hasErrors(), true);
 		}
 		
+		
+		String contentTypeDisposition = "";
+		if(m.getDisposition() != null) {
+			contentTypeDisposition = m.getDisposition();
+		}
+		
 		// DTS 156 Validate Content Type Disposition
-		msgValidator.validateContentTypeDisposition(er, m.getDisposition(), m.getContentType());
+		msgValidator.validateContentTypeDisposition(er, contentTypeDisposition, m.getContentType());
 		
 		/*
 		// DTS 161-194 Validate Content-Disposition Filename
@@ -83,6 +89,9 @@ public class ProcessEnvelope {
 			
 		}
 		*/
+		
+		// DTS 190, All Mime Header Fields, Required
+		msgValidator.validateAllMimeHeaderFields(er, contentTypeDisposition);
 		
 		
 		/**************************/

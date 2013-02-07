@@ -1,0 +1,12 @@
+to: externUser1+readreceipt@starugh-stateline.com
+content-type: multipart/report; report-type=disposition-notification; boundary="----=_Part_4_22594487.1289571140002"
+message-id: 0018deb9-4f90-4c46-81c0-4023b1f9979f
+From: user1@cerner.com
+
+------=_Part_4_22594487.1289571140002
+
+Your message has been successfully processed.
+------=_Part_4_22594487.1289571140002
+Content-Type: message/disposition-notification
+Disposition: automatic-action/MDN-sent-automatically;processed
+Reporting-UA: messaging.cerner.com;Security Agent

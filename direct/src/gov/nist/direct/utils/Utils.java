@@ -22,11 +22,13 @@ import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.utilities.io.Io;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -213,6 +215,18 @@ public class Utils {
 		return array;
 		
 	}
+	
+	/**
+	 * 
+	 * @param file filepath
+	 * @throws IOException 
+	 */
+public static void writeToFile(String s, File file) throws IOException{
+	BufferedWriter out = new BufferedWriter(new FileWriter(file));
+	out.write(s);
+	out.close();
+
+}
 	
 
 	// Getters and Setters

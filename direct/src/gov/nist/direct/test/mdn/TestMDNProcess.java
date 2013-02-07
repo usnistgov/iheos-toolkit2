@@ -1,4 +1,4 @@
-package gov.nist.direct.mdn.test;
+package gov.nist.direct.test.mdn;
 
 import java.util.ArrayList;
 import java.util.Date;
