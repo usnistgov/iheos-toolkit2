@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
+import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.CcdaTypeSelection;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -72,6 +73,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 					new ConfigBooleanBox(ele, tbl, row);
 					row++;
 				} 
+			}
+			
+			// display document types if configured
+			if (config.getValidationContext() != null) {
+				CcdaTypeSelection cts = new CcdaTypeSelection(null, config.getValidationContext());
+				VerticalPanel ccdaSelection = new VerticalPanel();
+				cts.addCcdaTypesRadioGroup(ccdaSelection, null);
 			}
 						
 			if (config.areRemoteSitesNecessary()) {
