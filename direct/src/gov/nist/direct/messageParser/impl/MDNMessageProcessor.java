@@ -1,6 +1,5 @@
 package gov.nist.direct.messageParser.impl;
 
-import gov.nist.direct.config.Config;
 import gov.nist.direct.utils.ParseUtils;
 import gov.nist.direct.utils.ValidationUtils;
 import gov.nist.direct.validation.impl.ProcessEnvelope;
@@ -39,10 +38,13 @@ public class MDNMessageProcessor {
 		Date sendDate = sendHistory.getMessageSendTime(messageID);
 		
 		int timeOffset = TimerUtils.getTimeDifference(receiveDate, sendDate);
-		if (timeOffset <= Config.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
+		if (timeOffset <= TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
+			
 			// send to mdn validation
 		} else {
-			// message an mdn was received but delay was too long
+			// message that an mdn was received but delay was too long
+			//er.err(null, "MDN processing", "The MDN was received after the authorized delay had expired. The delay is "+ TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION(),  timeOffset);
+			
 		}
 		
 		// need to delete regularly outdated message logs from the singleton.
