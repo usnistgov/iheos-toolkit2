@@ -41,6 +41,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public List<Site> remoteSites = null;
 	
 	// This is only used to record validation requirements for included document(s)
+	// vc != null triggers UI to display selections from tk_props and accept
+	// selection.
 	ValidationContext vc = null;
 	
 	public boolean isExpired() { return isExpired; }
@@ -185,5 +187,12 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		return get("Name").asString() + "." + getType();
 	}
 	
+	public ValidationContext getValidationContext() {
+		return vc;
+	}
+	
+	public void setValidationContext(ValidationContext vc) {
+		this.vc = vc;
+	}
 
 }

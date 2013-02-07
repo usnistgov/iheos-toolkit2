@@ -40,6 +40,7 @@
 	<!-- TO FIX THIS PROBLEM, WE COULD IVY DEPENDENCY RESOLUTION MECHANISM -->
 
 	<property name="sub-projects" value="
+		dns,
 		docref,
 		timer,
 		common-datatypes,

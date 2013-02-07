@@ -9,6 +9,12 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * Simulator configuration supervisor - holds multiple SimConfigMgr objects, each one manages
+ * the details for a single simulator.
+ * @author bill
+ *
+ */
 class SimConfigSuper {
 	VerticalPanel panel;
 	List<SimConfigMgr> mgrs = new ArrayList<SimConfigMgr>();
@@ -50,6 +56,9 @@ class SimConfigSuper {
 		return false;
 	}
 	
+	/*
+	 * Delete existing instance of this simulator
+	 */
 	void delete(SimulatorConfig config) {
 		String targetId = config.getId();
 		SimConfigMgr toDelete = null;
