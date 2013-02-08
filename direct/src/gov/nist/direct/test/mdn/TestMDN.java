@@ -11,11 +11,11 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
-import gov.nist.direct.mdn.MDNGenerator;
-import gov.nist.direct.messageParser.MessageParser;
-import gov.nist.direct.messageParser.impl.MimeMessageParser;
+import gov.nist.direct.mdn.generate.MDNGenerator;
+import gov.nist.direct.messageProcessor.MessageProcessorInterface;
+import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
+import gov.nist.direct.messageProcessor.utils.MessageDispatchUtils;
 import gov.nist.direct.utils.Utils;
-import gov.nist.messageDispatch.MessageDispatchUtils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 
@@ -58,7 +58,7 @@ public class TestMDN {
 				mimeMsg.setContent(mdn);
 				Utils.printToFile(mimeMsg, "MimeMultipartReportfile.txt");
 		
-				assertTrue(MessageDispatchUtils.isMDN(mimeMsg));
+				assertTrue(MessageDispatchUtils.isMDN(er, mimeMsg));
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}	
