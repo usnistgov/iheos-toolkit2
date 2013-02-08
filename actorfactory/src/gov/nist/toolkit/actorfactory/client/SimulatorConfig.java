@@ -4,7 +4,6 @@ package gov.nist.toolkit.actorfactory.client;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.CcdaTypeSelection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
