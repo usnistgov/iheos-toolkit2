@@ -1,4 +1,4 @@
-package gov.nist.direct.test.mdn;
+package gov.nist.direct.test.java.mdn;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
