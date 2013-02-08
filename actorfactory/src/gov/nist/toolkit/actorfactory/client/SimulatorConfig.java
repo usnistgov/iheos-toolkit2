@@ -4,6 +4,7 @@ package gov.nist.toolkit.actorfactory.client;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.CcdaTypeSelection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	// vc != null triggers UI to display selections from tk_props and accept
 	// selection.
 	ValidationContext vc = null;
+	transient CcdaTypeSelection docTypeSelector;
 	
 	public boolean isExpired() { return isExpired; }
 	public void isExpired(boolean is) { isExpired = is; }
@@ -58,6 +60,24 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 //			if (getUserByName(ele.name) == null)
 //				user.add(ele);
 //		}
+	}
+	
+	/**
+	 * Update ValidationContext from CCDA selection inside CcdaTypeSelection. Called
+	 * just before saving SimulatorConfig back to server.
+	 */
+	public void updateDocTypeSelection() {
+		if (docTypeSelector == null)
+			return;
+		vc.ccdaType = docTypeSelector.getCcdaContentType();
+	}
+	
+	public void setDocTypeSelector(CcdaTypeSelection sel) {
+		docTypeSelector = sel;
+	}
+	
+	public CcdaTypeSelection getDocTypeSelector() {
+		return docTypeSelector;
 	}
 		
 	public String toString() {

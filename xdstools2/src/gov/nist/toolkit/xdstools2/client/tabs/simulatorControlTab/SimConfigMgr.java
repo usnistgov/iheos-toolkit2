@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.CcdaTypeSelection;
 
 import com.google.gwt.user.client.ui.Button;
@@ -77,9 +78,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 			
 			// display document types if configured
 			if (config.getValidationContext() != null) {
-				CcdaTypeSelection cts = new CcdaTypeSelection(null, config.getValidationContext());
+				CcdaTypeSelection cts = new CcdaTypeSelection(Xdstools2.tkProps(), config.getValidationContext());
+				config.setDocTypeSelector(cts);
 				VerticalPanel ccdaSelection = new VerticalPanel();
-				cts.addCcdaTypesRadioGroup(ccdaSelection, null);
+				cts.addCcdaTypesRadioGroup(ccdaSelection, null, "Expected CCDA Type for XDR content", true);
+				tbl.setWidget(row, 1, ccdaSelection);
 			}
 						
 			if (config.areRemoteSitesNecessary()) {

@@ -2,6 +2,7 @@ package gov.nist.toolkit.errorrecording;
 
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -58,6 +59,8 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	int lastErrCount = 0;
+	public ErrorRecorderBuilder errorRecorderBuilder;
+
 	
 	int getLastErrCountChange() {
 		int cnt = 0;
@@ -220,6 +223,11 @@ public class TextErrorRecorder implements ErrorRecorder {
 	public List<ValidatorErrorItem> getErrMsgs() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ErrorRecorderBuilder getErrorRecorderBuilder() {
+		return errorRecorderBuilder;
 	}
 	
 

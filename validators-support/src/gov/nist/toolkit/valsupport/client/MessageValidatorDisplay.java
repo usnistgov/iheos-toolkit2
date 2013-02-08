@@ -89,7 +89,6 @@ public class MessageValidatorDisplay {
 				case WARNING:
 					f.setDetail(f.blue(er.msg));
 					f.setReference(f.red(er.resource));
-					foundErrors = false;
 					f.setStatus(f.blue("warning"));
 					break;
 				}
@@ -105,12 +104,13 @@ public class MessageValidatorDisplay {
 			}
 		}
 
-		if (foundErrors)
+		if (foundErrors) {
 			f.setCell(f.red("Summary: Errors were found"), summaryRow, 0);
 //			resultsTable.setWidget(summaryRow, 0, html(f.red("Summary: Errors were found")));
-		else
-			f.setCell("Summary: No error were found", summaryRow, 0);
+		} else {
+			f.setCell("Summary: No errors were found", summaryRow, 0);
 //			resultsTable.setWidget(summaryRow, 0, html("Summary: No error were found"));
+		}
 
 	}
 

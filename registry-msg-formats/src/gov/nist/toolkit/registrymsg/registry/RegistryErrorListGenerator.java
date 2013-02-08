@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingCompletionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
@@ -498,6 +499,12 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	@Override
 	public List<ValidatorErrorItem> getErrMsgs() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ErrorRecorderBuilder getErrorRecorderBuilder() {
 		// TODO Auto-generated method stub
 		return null;
 	}

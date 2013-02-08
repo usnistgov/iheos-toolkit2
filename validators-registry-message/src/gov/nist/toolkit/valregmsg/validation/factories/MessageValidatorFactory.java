@@ -222,7 +222,12 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 
 	static public MessageValidatorEngine getValidatorForCCDA(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, ValidationContext vc) {
 		mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-		mvc.addMessageValidator("CCDA Validator", new CcdaMessageValidator(vc, erBuilder, Io.bytesToInputStream(input)), erBuilder.buildNewErrorRecorder());
+		if (vc != null && vc.ccdaType != null && !vc.ccdaType.equals("")) {
+			// The value "Non-CCDA content" is hard coded in
+			// gov/nist/toolkit/xdstools2/client/tabs/messageValidator/CcdaTypeSelection.java
+			if (!vc.ccdaType.contains("Non-CCDA content"))
+				mvc.addMessageValidator("CCDA Validator", new CcdaMessageValidator(vc, erBuilder, Io.bytesToInputStream(input)), erBuilder.buildNewErrorRecorder());
+		}
 		return mvc;
 	}
 

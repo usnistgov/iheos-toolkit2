@@ -29,6 +29,7 @@ import gov.nist.toolkit.utilities.xml.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
@@ -234,8 +235,8 @@ ToolkitService {
 	public List<Result> getSelectedMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessage(simFileSpec); }
 	public List<Result> getSelectedMessageResponse(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessageResponse(simFileSpec); }
 	public Map<String, String> getActorSimulatorNameMap() throws NoServletSessionException { return new SimulatorServiceManager(session()).getActorSimulatorNameMap(); }
-	public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException { return new SimulatorServiceManager(session()).validateMessage(vc); }
-	public MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException { return new SimulatorServiceManager(session()).validateMessage(vc, simFileName); }
+	public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc); }
+	public MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc, simFileName); }
 	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception { return new SimulatorServiceManager(session()).getSimConfigs(ids); }
 	public List<SimulatorConfig> getNewSimulator(String actorTypeName) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName); }
 	public void deleteSimFile(String simFileSpec) throws Exception { new SimulatorServiceManager(session()).deleteSimFile(simFileSpec); }

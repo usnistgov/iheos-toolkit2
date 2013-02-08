@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class CcdaTypeSelection {
 	TkProps tkProps;
-	List<RadioButton> ccdaTypes;
+	List<RadioButton> ccdaTypesRBs;
 	String ccdaTypesGroupName = "CCDATypesGroupName";
 	ValidationContext defaultValidationContext = null;
 
@@ -54,31 +54,42 @@ public class CcdaTypeSelection {
 	/**
 	 * Add CCDA Type Names to panel as radio buttons. 
 	 * @param panel
-	 * @param ccdaTypeNames if null, use names taken from TkProps
+	 * @param ccdaTypeNames if null, use names taken from TkProps.
+	 * Old caption was 
+	 * "CCDA Types for XDM or XDR content (CCDA validation may take a minute or more to run)"
 	 */
-	public void addCcdaTypesRadioGroup(VerticalPanel panel, List<String> ccdaTypeNames) {
+	public void addCcdaTypesRadioGroup(VerticalPanel panel, List<String> ccdaTypeNames, String caption, boolean noValidationByDefault) {
 		if (ccdaTypeNames == null)
 			ccdaTypeNames = ccdaTypes();
-		panel.add(HtmlMarkup.html(HtmlMarkup.bold("CCDA Types for XDM or XDR content (CCDA validation may take a minute or more to run)")));
-		ccdaTypes = new ArrayList<RadioButton>();
+		panel.add(HtmlMarkup.html(HtmlMarkup.bold(caption)));
+		ccdaTypesRBs = new ArrayList<RadioButton>();
 		for (String name : ccdaTypeNames) {
 			RadioButton r = new RadioButton(ccdaTypesGroupName, name); 
-			ccdaTypes.add(r);
+			ccdaTypesRBs.add(r);
 			panel.add(r);
 		}
+		
+		// This name is expected in
+		// gov/nist/toolkit/valregmsg/validation/factories/MessageValidatorFactory.java
 		RadioButton r = new RadioButton(ccdaTypesGroupName, "Non-CCDA content (no validation)");
-		ccdaTypes.add(r);
+		ccdaTypesRBs.add(r);
 		if (defaultValidationContext != null)
 			select(defaultValidationContext.ccdaType);
 		panel.add(r);
+		if (noValidationByDefault && selected() == null)
+			r.setValue(true);
 	}
 
+	public void addCcdaTypesRadioGroup(VerticalPanel panel, List<String> ccdaTypeNames, String caption) {
+		addCcdaTypesRadioGroup(panel, ccdaTypeNames, caption, false);
+	}
+	
 	void select(String value) {
 		if (value == null) { // unselect all
-			for (RadioButton rb : ccdaTypes)
+			for (RadioButton rb : ccdaTypesRBs)
 				rb.setValue(false);
 		} else {
-			for (RadioButton rb : ccdaTypes) {
+			for (RadioButton rb : ccdaTypesRBs) {
 				if (value.equals(rb.getText())) {
 					rb.setValue(true); // select matching RB
 					return;
@@ -86,15 +97,23 @@ public class CcdaTypeSelection {
 			}
 		}
 	}
-
+	
+	RadioButton selected() {
+		for (RadioButton rb : ccdaTypesRBs) {
+			if (rb.getValue())
+				return rb;
+		}
+		return null;
+	}
+	
 	public void enableCcdaTypesRadioGroup(boolean enable) {
-		for (RadioButton r : ccdaTypes) {
+		for (RadioButton r : ccdaTypesRBs) {
 			r.setEnabled(enable);
 		}
 	}
 
 	public String getCcdaContentType() {
-		for (RadioButton r : ccdaTypes) {
+		for (RadioButton r : ccdaTypesRBs) {
 			if (r.getValue())
 				return r.getText();
 		}

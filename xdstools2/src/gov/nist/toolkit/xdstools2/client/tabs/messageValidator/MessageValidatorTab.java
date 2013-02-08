@@ -345,7 +345,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		topH.add(messageTypeArea);
 		topH.add(rightSideVert);
 		rightSideVert.add(typesAndWrappers);
-		ccdaSel.addCcdaTypesRadioGroup(rightSideVert, ccdaSel.ccdaTypes());
+		ccdaSel.addCcdaTypesRadioGroup(rightSideVert, ccdaSel.ccdaTypes(), "CCDA Type for XDM or XDR content (CCDA validation may take a minute or more to run)");
 		ccdaSel.enableCcdaTypesRadioGroup(false);
 		typesAndWrappers.add(inOutTypeArea);
 		typesAndWrappers.add(validationCheckBoxes);

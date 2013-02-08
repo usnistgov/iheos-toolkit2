@@ -18,6 +18,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 
 import java.util.Collection;
 import java.util.List;
@@ -82,14 +83,14 @@ public interface ToolkitService extends RemoteService  {
 	@Deprecated
 	String getClientIPAddress();
 	
-	MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException;
+	MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException, EnvironmentNotSelectedClientException;
 	List<String> getTransInstances(String simid, String actor, String trans)  throws Exception;
 	
 	List<Result> getLastMetadata();
 	String getLastFilename();
 	String getTimeAndDate();
 	
-	MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException;
+	MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException;
 	
 	List<String> getSiteNames(boolean reload, boolean simAlso) throws NoServletSessionException ;
 	List<String> getRegistryNames() throws Exception;

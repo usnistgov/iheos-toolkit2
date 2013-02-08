@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdsexception;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 public class EnvironmentNotSelectedException extends Exception {
 
 	/**

@@ -12,14 +12,14 @@ public class CcdaMessageValidator extends MessageValidator {
 	InputStream in;
 	ErrorRecorderBuilder erBuilder;
 	String ccdaType;
-	
+
 	public CcdaMessageValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, InputStream ccdaInputStream) {
 		super(vc);
-		this.erBuilder = erBuilder;
+		this.erBuilder = erBuilder;   // never used.  ErrorRecorder is passed to run()
 		in = ccdaInputStream;
 		this.ccdaType = vc.ccdaType;
 	}
-	
+
 	/**
 	 * 09/24/2012 : Rama Ramakrishnan : Invoking the CDA validation statically.
 	 * 
@@ -28,9 +28,8 @@ public class CcdaMessageValidator extends MessageValidator {
 	 */
 	@Override
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
-		
-		er.challenge("Validating the CCDA against CCDA type " + ccdaType);
-		
+		er.challenge("Validating the CCDA against CCDA type &lt;" + ccdaType + ">");
+
 		try {
 			CcdaValidator.validateCDA(in, ccdaType, er);
 		} catch (Exception e) {
