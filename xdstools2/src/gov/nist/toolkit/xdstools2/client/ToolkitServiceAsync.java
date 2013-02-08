@@ -34,7 +34,8 @@ public interface ToolkitServiceAsync {
 	void saveCertFromUpload(ContactRegistrationData reg, String directAddr, AsyncCallback<ContactRegistrationData> callback);
 	void directSend(Map<String, String> parms, AsyncCallback<List<Result>> callback);
 	void getEncryptionCertDomains(AsyncCallback<List<String>> asyncCallback);
-
+	void getDirectMsgIds(String user, AsyncCallback<List<String>> callback);
+	void getDirectOutgoingMsgStatus(String user, List<String> msg_ids, AsyncCallback<List<SmtpMessageStatus>> callback);
 
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);

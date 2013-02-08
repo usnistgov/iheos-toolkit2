@@ -40,6 +40,8 @@ public interface ToolkitService extends RemoteService  {
 	ContactRegistrationData saveCertFromUpload(ContactRegistrationData reg, String directAddr)  throws NoServletSessionException, Exception;
 	List<Result> directSend(Map<String, String> parms) throws NoServletSessionException;
 	List<String> getEncryptionCertDomains();
+	List<String> getDirectMsgIds(String user);
+	List<SmtpMessageStatus> getDirectOutgoingMsgStatus(String user, List<String> msg_ids);
 
 	public TkProps getTkProps() throws NoServletSessionException;
 	
