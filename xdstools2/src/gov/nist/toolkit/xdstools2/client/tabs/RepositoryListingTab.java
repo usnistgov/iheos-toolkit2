@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;

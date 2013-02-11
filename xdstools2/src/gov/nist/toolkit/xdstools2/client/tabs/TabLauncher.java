@@ -7,6 +7,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.directRegistrationTab.DirectRegistrationTab;
 import gov.nist.toolkit.xdstools2.client.tabs.directSenderTab.DirectSenderTab;
+import gov.nist.toolkit.xdstools2.client.tabs.directStatusTab.DirectStatusTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 
@@ -51,6 +52,7 @@ public class TabLauncher implements ClickHandler {
 	
 	final static public String directRegistrationTabLabel = "Registration";
 	final static public String directSendTabLabel = "Send Direct Message";
+	final static public String directViewTabLabel = "View Direct Message Status";
 	final static public String directMessageValidatorTabLabel = "Message and CCDA document validators";
 
 	
@@ -115,6 +117,8 @@ public class TabLauncher implements ClickHandler {
 			new DirectRegistrationTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(directSendTabLabel)) 
 			new DirectSenderTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(directViewTabLabel)) 
+			new DirectStatusTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(mesaTabLabel)) 
 			new MesaTestTab().onAbstractTabLoad(container, true, "Pre-Con Tests");
 		else if (tabType.equals(testRunnerTabLabel)) 

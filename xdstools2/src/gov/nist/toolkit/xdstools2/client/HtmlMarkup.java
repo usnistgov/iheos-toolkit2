@@ -1,4 +1,4 @@
-package gov.nist.toolkit.http.client;
+package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.ui.HTML;
 
@@ -32,9 +32,9 @@ public class HtmlMarkup {
 		return "<h2>" + msg + "</h2>";
 	}
 
-	public static HTML text(String msg) {
+	public static HTML text(String html) {
 		HTML h = new HTML();
-		h.setText(msg);
+		h.setHTML(html);
 		return h;
 	}
 	

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.TabContainer;

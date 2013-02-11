@@ -2,11 +2,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab;
 
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
-import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;

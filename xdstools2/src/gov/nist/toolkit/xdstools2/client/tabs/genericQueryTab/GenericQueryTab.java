@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
-import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.AnyId;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
@@ -13,6 +12,7 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.TabbedWindow;

@@ -11,10 +11,10 @@ public class LogAccessMock {
 	static Map<String, List<SmtpMessageStatus>> data; 
 	
 	static {
-		SmtpMessageStatus msg1 = new SmtpMessageStatus("msg1", "today1", "yesterday1", "Ok", "mdn1");
-		SmtpMessageStatus msg2 = new SmtpMessageStatus("msg2", "today2", "yesterday2", "Ok", "mdn2");
-		SmtpMessageStatus msg3 = new SmtpMessageStatus("msg3", "today3", "yesterday3", "Error", "mdn3");
-		SmtpMessageStatus msg4 = new SmtpMessageStatus("msg4", "today4", "yesterday4", "Ok", "mdn4");
+		SmtpMessageStatus msg1 = new SmtpMessageStatus("msg1", "yesterday1", "tomorrow1", "today1", "Ok",      "mdn1");
+		SmtpMessageStatus msg2 = new SmtpMessageStatus("msg2", "yesterday2", "today2",    "----",   "Timeout", "----");
+		SmtpMessageStatus msg3 = new SmtpMessageStatus("msg3", "today1", "today3", "yesterday3", "Error", "mdn3");
+		SmtpMessageStatus msg4 = new SmtpMessageStatus("msg4", "today1", "today4", "yesterday4", "Ok", "mdn4");
 				
 		List<SmtpMessageStatus> alist = new ArrayList<SmtpMessageStatus>();
 		alist.add(msg1);
