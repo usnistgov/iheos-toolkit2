@@ -1,7 +1,7 @@
 package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
-import gov.nist.direct.mdn.validate.MDNValidator;
+import gov.nist.direct.mdn.validate.ProcessMDN;
 import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
 import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.messageProcessor.direct.directImpl.WrappedMessageProcessor;
@@ -54,12 +54,18 @@ public class MDNMessageProcessor {
 		password = _password;
 		this.vc = vc;
 		
+		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+		
+		// Check if MDN is encrypted
+		
+		
+		
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
 		 checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
 		 
 		 // Validate MDN
-		 MDNValidator mdnv = new MDNValidator();
-		 mdnv.validate();
+		 ProcessMDN mdnv = new ProcessMDN();
+		 mdnv.validate(er, mm);
 		 
 		// need to delete regularly outdated message logs from the singleton.
 			
