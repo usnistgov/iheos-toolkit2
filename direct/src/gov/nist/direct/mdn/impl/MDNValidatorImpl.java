@@ -173,25 +173,45 @@ public class MDNValidatorImpl implements MDNValidator{
 	/**
 	 *  DTS 463, failure-field, Required
 	 */
-	public void validateFailureField(ErrorRecorder er, String sthg) {
+	public void validateFailureField(ErrorRecorder er, String failure) {
+		if(MDNUtils.validateTextField(failure)) {
+			er.detail("Success:  DTS 463 - Failure field is valid");
+		} else {
+			er.err("463", "Failure field is not valid", "", "", "DTS 463");
+		}
 	}
 	
 	/**
 	 *  DTS 464, error-field, Required
 	 */
-	public void validateErrorField(ErrorRecorder er, String sthg) {
+	public void validateErrorField(ErrorRecorder er, String error) {
+		if(MDNUtils.validateTextField(error)) {
+			er.detail("Success:  DTS 464 - Error field is valid");
+		} else {
+			er.err("464", "Error field is not valid", "", "", "DTS 464");
+		}
 	}
 	
 	/**
 	 *  DTS 465, warning-field, Required
 	 */
-	public void validateWarningField(ErrorRecorder er, String sthg) {
+	public void validateWarningField(ErrorRecorder er, String warning) {
+		if(MDNUtils.validateTextField(warning)) {
+			er.detail("Success:  DTS 465 - Warning field is valid");
+		} else {
+			er.err("465", "Warning field is not valid", "", "", "DTS 465");
+		}
 	}
 	
 	/**
 	 *  DTS 466, extension-field, Required
 	 */
-	public void validateExtensionField(ErrorRecorder er, String sthg) {
+	public void validateExtensionField(ErrorRecorder er, String extension) {
+		if(MDNUtils.validateTextField(extension)) {
+			er.detail("Success:  DTS 466 - Extension field is valid");
+		} else {
+			er.err("466", "Extension field is not valid", "", "", "DTS 466");
+		}
 	}
 
 
