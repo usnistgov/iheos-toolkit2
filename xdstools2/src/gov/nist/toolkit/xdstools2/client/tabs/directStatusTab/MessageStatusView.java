@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.directStatusTab;
 
-import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
+import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.SmtpMessageStatus;
 
 import java.util.List;

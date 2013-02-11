@@ -1,9 +1,9 @@
 package gov.nist.toolkit.actorfactory.client;
 
+import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.tk.client.PropertyNotFoundException;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 
 import java.util.ArrayList;
 import java.util.List;

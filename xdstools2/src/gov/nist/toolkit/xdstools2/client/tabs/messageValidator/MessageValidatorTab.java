@@ -2,12 +2,12 @@ package gov.nist.toolkit.xdstools2.client.tabs.messageValidator;
 
 
 import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
+import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValFormatter;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.RenameSimFileDialogBox;
 import gov.nist.toolkit.xdstools2.client.TabContainer;

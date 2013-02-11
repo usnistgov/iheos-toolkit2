@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.http.client;
 
 import com.google.gwt.user.client.ui.HTML;
 

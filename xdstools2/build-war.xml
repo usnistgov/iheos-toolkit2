@@ -48,6 +48,7 @@
 				<pathelement location="${xdstest-gui.src.dir}" />
 				<pathelement location="${testengine.src.dir}" />
 				<pathelement location="${site-management.src.dir}" />
+				<pathelement location="${http.src.dir}" />
 				<pathelement location="${validators-support.src.dir}" />
 				<pathelement location="${registry-msg-formats.src.dir}" />
 				<pathelement location="${error-recording.src.dir}" />
