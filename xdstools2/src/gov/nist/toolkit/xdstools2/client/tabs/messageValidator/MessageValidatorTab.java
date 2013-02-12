@@ -843,7 +843,8 @@ public class MessageValidatorTab extends TabbedWindow {
 
 					else if (msgType.equals(ValidationTypeR_b) ||
 							msgType.equals(ValidationTypeXDR) ||
-							msgType.equals(ValidationType_PnR_b) ) {
+							msgType.equals(ValidationType_PnR_b) ||
+							msgType.equals(ValidationTypeDirectXDR)) {
 						requestMessage.setValue(true);
 						responseMessage.setValue(false);
 						crossCommunity.setValue(false);
