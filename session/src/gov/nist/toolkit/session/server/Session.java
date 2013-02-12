@@ -23,7 +23,6 @@ import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -124,7 +123,7 @@ public class Session implements SecurityParams {
 		siteSpec.isAsync = async;
 	}
 	
-	public void verifyCurrentEnvironment() throws NoSessionException {
+	public void verifyCurrentEnvironment() throws EnvironmentNotSelectedException {
 		EnvSetting.getEnvSetting(sessionId);
 	}
 	
