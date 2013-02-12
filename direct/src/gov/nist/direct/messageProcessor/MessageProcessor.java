@@ -51,10 +51,10 @@ public class MessageProcessor implements MessageProcessorInterface {
 	/**
 	 * Facade handler to process all types of messages
 	 */
-	public void processMessage(ErrorRecorder er, byte[] message, byte[] _directCertificate, String _password, ValidationContext vc) {
+	public void processMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc) {
 
 		// Parse the message
-		MimeMessage mm = MimeMessageParser.parseMessage(er, message);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, inputDirectMessage);
 		
 		
 		// determine message type
@@ -68,13 +68,8 @@ public class MessageProcessor implements MessageProcessorInterface {
 				 
 				 // Process message
 				 MDNMessageProcessor mdnProc = new MDNMessageProcessor();
-				 try {
-					mdnProc.processMDNMessage(er, message, _directCertificate, _password, vc);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-								 
+				mdnProc.processMDNMessage(er, inputDirectMessage, _directCertificate, _password, vc);
+			 
 			}
 			
 			
@@ -84,8 +79,15 @@ public class MessageProcessor implements MessageProcessorInterface {
 			 
 			 // Display Message type
 			 er.detail("The file was recognized as a DIRECT message.");
-			}
+			 
+			 // Process message
+			 DirectMimeMessageProcessor directProc = new DirectMimeMessageProcessor();
+			 directProc.processAndValidateDirectMessage(er, inputDirectMessage, _directCertificate, _password, vc);
+		}
 			
+		
+		
+		// ----- Unknown type  -----
 			else {
 				er.err("Message File", "The file is neither a DIRECT message nor an MDN.", "", "", "Message File");
 			}

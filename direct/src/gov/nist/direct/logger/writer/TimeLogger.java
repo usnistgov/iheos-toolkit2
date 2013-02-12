@@ -6,17 +6,18 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Logs dates to MDN and Direct log file structure
+ * Logs dates to MDN and Direct log file structure.
  * @author dazais
  *
  */
 public class TimeLogger {
 
-	public void logDate(String s, File f) throws IOException {
-			Utils.writeToFile(s, f);
+	public void logDate(String s, LogStructure ls, String transactionType, String messageType, String username, String messageId) throws IOException {
+		String dateLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
+		Utils.writeToFile(s, new File(dateLogPath)); // ask to overwrite? which failsafes?
 		}
 
-
-
+	
+	
 
 }

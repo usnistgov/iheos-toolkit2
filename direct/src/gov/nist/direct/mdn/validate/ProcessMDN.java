@@ -26,10 +26,10 @@ public class ProcessMDN {
 		// Process envelope for header searching function
 		ProcessEnvelope procEnv = new ProcessEnvelope();
 		
-		String dispNotifTo = procEnv.searchHeaderSimple(p, "disposition-dotification-to");
+		String dispNotifTo = procEnv.searchHeaderSimple(p, "disposition-notification-to");
 		String originalRecipient = procEnv.searchHeaderSimple(p, "original-recipient");
 		String reportingUA = procEnv.searchHeaderSimple(p, "reporting-ua");
-		String mdnGateway = procEnv.searchHeaderSimple(p, "mdn -gateway");
+		String mdnGateway = procEnv.searchHeaderSimple(p, "mdn-gateway");
 		String finalRecipient = procEnv.searchHeaderSimple(p, "final-recipient");
 		String originalMessageID = procEnv.searchHeaderSimple(p, "original-message-id");
 		String disposition = procEnv.searchHeaderSimple(p, "disposition");

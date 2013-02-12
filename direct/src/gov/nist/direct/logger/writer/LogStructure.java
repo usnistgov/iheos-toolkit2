@@ -12,7 +12,6 @@ package gov.nist.direct.logger.writer;
 public class LogStructure {
 	
 	private String LOG_ROOT;
-
 	
 	private final String DIRECT_RECEIVE_FOLDER = "/directReceive";
 	private final String DIRECT_SEND_FOLDER = "/directSend";
@@ -20,12 +19,17 @@ public class LogStructure {
 	private final String DIRECT_MESSAGE_FOLDER = "/direct";
 	private final String MDN_MESSAGE_FOLDER = "/mdn";
 	 
-	private final String MESSAGE_CONTENTS = "/message-contents.txt";
-	private final String DECRYPTED_MESSAGE = "/decrypted-message"; // needs part number + ".txt" ext.
+	private final String MESSAGE_CONTENTS = "/message-contents.txt"; // needs part number + ".txt" ext.
+	private final String DECRYPTED_MESSAGE = "/encrypted-message"; 
 	private final String MESSAGE_STATUS = "/status.txt";
 	private final String TIMESTAMP = "/timestamp.txt";
 	
 
+	public LogStructure(String logRoot){
+		LOG_ROOT = logRoot;
+	}
+	
+	
 	
 
 	public String getLOG_ROOT() {
@@ -40,7 +44,7 @@ public class LogStructure {
 	}
 	
 	
-	public String getDecryptedMessageLogPath(String transactionType, String messageType, String username, String messageId) {
+	public String getEncryptedMessageLogPath(String transactionType, String messageType, String username, String messageId) {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);
 		String path = fullPath + DECRYPTED_MESSAGE;
 		return path;
@@ -52,12 +56,20 @@ public class LogStructure {
 		return path;
 	}
 	
-	public String getTimestampLogPath(String transactionType, String messageType, String username, String messageId) {
+	public String getDateLogPath(String transactionType, String messageType, String username, String messageId) {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);
 		String path = fullPath + TIMESTAMP;
 		return path;
 	}
 	
+	/**
+	 * Utility function that returns part of the log path
+	 * @param transactionType
+	 * @param messageType
+	 * @param username
+	 * @param messageId
+	 * @return
+	 */
 	public String getFullPath(String transactionType, String messageType, String username, String messageId){
 		String defaultPath = LOG_ROOT + "/" + username + DIRECT_RECEIVE_FOLDER + "/" + messageId + DIRECT_MESSAGE_FOLDER;
 

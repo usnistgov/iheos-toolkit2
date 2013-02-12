@@ -49,10 +49,12 @@ public class MDNMessageProcessor {
 		
 	}
 	
-	public void processMDNMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc) throws ParseException {
+	public void processMDNMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc) {
 		directCertificate = _directCertificate;
 		password = _password;
 		this.vc = vc;
+		
+		// message is parsed multiple times in following calls. TODO
 		
 		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 		
@@ -94,8 +96,10 @@ public void checkMdnMessageProperties(ErrorRecorder er, byte[] inputDirectMessag
 		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 		
 		
-		// Get MDN message ID
+		
+		// Get MDN message ID and compare to existing logs
 		String messageID = ParseUtils.searchHeaderSimple(mm, "message-id");
+		//look for log
 		
 		// Get MDN reception time
 		String date = ParseUtils.searchHeaderSimple(mm, "date");
