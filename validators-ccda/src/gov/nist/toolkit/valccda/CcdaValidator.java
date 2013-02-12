@@ -16,6 +16,7 @@ Inner wrappers are DirectDecoder
  */
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -59,9 +60,16 @@ public class CcdaValidator {
 	public synchronized static void validateCDA(InputStream is, String validationType, ErrorRecorder er) throws Exception {
 		Mu2consolPackage.eINSTANCE.eClass();
 		ValidationResult result = new ValidationResult();
-		EClass type = typeMap.get(validationType);
+		EClass type = null; //typeMap.get(validationType);
 		
-		logger.info("Starting CCDA validation, validate as a " + ((type == null) ? "Plain CCDA" : type));
+		for (String nam : typeMap.keySet()) {
+			if (validationType.startsWith(nam)) {
+				type = typeMap.get(nam);
+				break;
+			}
+		}
+		
+		logger.info("Starting CCDA validation, validate as a " + ((validationType == null) ? "Plain CCDA" : validationType));
 		long start_time = System.currentTimeMillis();
 		
 		try {
@@ -103,7 +111,7 @@ public class CcdaValidator {
 		
 		for (Diagnostic dq : result.getErrorDiagnostics()) {
 			CDADiagnostic cdaDiagnosticq = new CDADiagnostic(dq);
-			er.err(null, cdaDiagnosticq.getCode() + "|" + cdaDiagnosticq.getMessage(), cdaDiagnosticq.getPath(), cdaDiagnosticq.getSource());
+			er.err(Code.NoCode, cdaDiagnosticq.getCode() + "|" + cdaDiagnosticq.getMessage(), cdaDiagnosticq.getPath(), cdaDiagnosticq.getSource());
 			errors++;
 		}
 		for (Diagnostic dq : result.getWarningDiagnostics()) {
@@ -119,6 +127,10 @@ public class CcdaValidator {
 		
 		logger.info("CCDA Validation complete: " + errors + " errors, " + warnings + " warnings, " + details + " details.");
 		logger.info("MHDT run time was " + run_time + " mSec");
-		logger.info("Validation, was a " + ((type == null) ? "Plain CCDA" : type));
+		logger.info("Validation, was a " + ((validationType == null) ? "Plain CCDA" : validationType));
+		
+		er.detail("CCDA Validation complete: " + errors + " errors, " + warnings + " warnings, " + details + " details.");
+		er.detail("MHDT run time was " + run_time + " mSec");
+		er.detail("Validation, was a " + ((validationType == null) ? "Plain CCDA" : validationType));
 	}
 }

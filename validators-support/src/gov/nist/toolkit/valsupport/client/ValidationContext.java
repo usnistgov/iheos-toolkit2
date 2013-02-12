@@ -5,6 +5,7 @@ import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.commondatatypes.client.SchematronMetadataTypes;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author bill
  *
  */
-public class ValidationContext  implements IsSerializable {
+public class ValidationContext  implements Serializable, IsSerializable {
 
 	String codesFilename = null;
 
@@ -116,9 +117,9 @@ public class ValidationContext  implements IsSerializable {
 	}
 	
 	public ValidationContext getInnerContext(int i) {
-		if (i >= innerContexts.size())
-			return null;
-		return innerContexts.get(i);
+		if (i < innerContexts.size())
+			return innerContexts.get(i);
+		return null;
 	}
 	
 	//

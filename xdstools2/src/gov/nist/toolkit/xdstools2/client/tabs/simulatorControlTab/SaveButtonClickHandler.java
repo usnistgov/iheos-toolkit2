@@ -17,6 +17,7 @@ class SaveButtonClickHandler implements ClickHandler {
 	}
 
 	public void onClick(ClickEvent event) {
+		config.updateDocTypeSelection();
 		simulatorControlTab.toolkitService.putSimConfig(config, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {

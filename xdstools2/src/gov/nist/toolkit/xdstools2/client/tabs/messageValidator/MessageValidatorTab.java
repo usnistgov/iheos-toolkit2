@@ -1,12 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.tabs.messageValidator;
 
 
+import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
+import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValFormatter;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.RenameSimFileDialogBox;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -60,11 +61,11 @@ public class MessageValidatorTab extends TabbedWindow {
 
 	final RadioButton fromFileRadioButton = new RadioButton("InputType", "From File");
 	final RadioButton fromEndpointRadioButton = new RadioButton("InputType", "From Endpoint");
-	List<RadioButton> inputTypeButtons = 
-			Arrays.asList(
-					fromFileRadioButton,
-					fromEndpointRadioButton
-					);
+//	List<RadioButton> inputTypeButtons = 
+//			Arrays.asList(
+//					fromFileRadioButton,
+//					fromEndpointRadioButton
+//					);
 	final VerticalPanel chooseFromEndpointArea = new VerticalPanel();
 	final FormPanel uploadForm = new FormPanel();
 	final ListBox simFilesListBox = new ListBox();
@@ -119,6 +120,25 @@ public class MessageValidatorTab extends TabbedWindow {
 					ValidationType_C32,
 					ValidationType_CCDA
 					);
+
+	static List<String> ccdaRequiredValidationTypes = 
+			Arrays.asList(
+					ValidationTypeDirectXDM,
+					ValidationTypeDirectXDR,
+					ValidationType_direct
+					);
+	
+	boolean requiresCCDA(String type) {
+		return ccdaRequiredValidationTypes.contains(type);
+	}
+	
+	boolean isMessageValidationType(String type) {
+		return msgValidationTypes.contains(type);
+	}
+
+	boolean isDocumentValidationType(String type) {
+		return docTypeValidationTypes.contains(type);
+	}
 
 	List<RadioButton> messageTypeButtons;
 	Map<String, RadioButton> messageTypeButtonMap = new HashMap<String, RadioButton>();
@@ -194,18 +214,31 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		@Override
 		public void onClick(ClickEvent event) {
-			boolean enableContentType = false;
-			for (String type : messageTypeButtonMap.keySet()) {
-				RadioButton r = messageTypeButtonMap.get(type);
-				if (r.getValue() && type.indexOf("MU 2 CCDA") != -1) {
-					enableContentType = true;
-				}
-			}
-			ccdaSel.enableCcdaTypesRadioGroup(enableContentType);
+			selectionChanged();
 		}
+
 		
 	};
-	
+
+	void selectionChanged() {
+		boolean enableContentType = false;
+		
+		for (String type : messageTypeButtonMap.keySet()) {
+			RadioButton r = messageTypeButtonMap.get(type);
+			 //type.indexOf("MU 2 CCDA") != -1) {
+			if (r.getValue()) {
+				boolean withHttpWrapper = httpWrapper.getValue();
+				if (isMessageValidationType(type) && requiresCCDA(type) && withHttpWrapper) {
+					enableContentType = true;
+				} else if (isDocumentValidationType(type) && requiresCCDA(type)) {
+					enableContentType = true;
+				}
+				break;
+			}
+		}
+		ccdaSel.enableCcdaTypesRadioGroup(enableContentType);
+	}
+
 	String simpleCcdaType(String type) {
 		String[] parts = type.split("-");
 		if (parts.length == 0)
@@ -345,7 +378,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		topH.add(messageTypeArea);
 		topH.add(rightSideVert);
 		rightSideVert.add(typesAndWrappers);
-		ccdaSel.addCcdaTypesRadioGroup(rightSideVert, ccdaSel.ccdaTypes());
+		ccdaSel.addCcdaTypesRadioGroup(rightSideVert, ccdaSel.ccdaTypes(), "CCDA Type for XDM or XDR content (CCDA validation may take a minute or more to run)");
 		ccdaSel.enableCcdaTypesRadioGroup(false);
 		typesAndWrappers.add(inOutTypeArea);
 		typesAndWrappers.add(validationCheckBoxes);
@@ -381,6 +414,13 @@ public class MessageValidatorTab extends TabbedWindow {
 		httpWrapper.setText("with HTTP Wrapper");
 		httpWrapper.setValue(false);
 		httpWrapper.setEnabled(false);
+		httpWrapper.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				selectionChanged();
+			}
+		});
 		validationCheckBoxes.add(httpWrapper);
 
 		lessdetail = new CheckBox();
@@ -555,9 +595,9 @@ public class MessageValidatorTab extends TabbedWindow {
 		chooseFromEndpointArea.setVisible(false);
 		fromWhereArea.add(chooseFromEndpointArea);
 
-		for (RadioButton b : inputTypeButtons) {
-			b.addValueChangeHandler(inputTypeChangedHandler);
-		}
+//		for (RadioButton b : inputTypeButtons) {
+//			b.addValueChangeHandler(inputTypeChangedHandler);
+//		}
 
 		for (RadioButton b : messageTypeButtons) {
 			b.addValueChangeHandler(messageTypeValueChangedHandler);
@@ -575,7 +615,7 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		topPanel.add(HtmlMarkup.html("<hr/>"));
 	} //end onTabLoad
-
+	
 	private void refreshFileUploadPanel() {
 
 		fileUploadPanel.clear();
@@ -791,6 +831,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		//		toolkitService.getSimFileSpecs(getSimFileNamesCallback);
 	}
 
+	// this now is only used to initialize the settings
 	ValueChangeHandler<Boolean> messageTypeValueChangedHandler = new ValueChangeHandler<Boolean>() {
 
 		public void onValueChange(ValueChangeEvent<Boolean> ignored) {
@@ -842,7 +883,8 @@ public class MessageValidatorTab extends TabbedWindow {
 
 					else if (msgType.equals(ValidationTypeR_b) ||
 							msgType.equals(ValidationTypeXDR) ||
-							msgType.equals(ValidationType_PnR_b) ) {
+							msgType.equals(ValidationType_PnR_b) ||
+							msgType.equals(ValidationTypeDirectXDR)) {
 						requestMessage.setValue(true);
 						responseMessage.setValue(false);
 						crossCommunity.setValue(false);

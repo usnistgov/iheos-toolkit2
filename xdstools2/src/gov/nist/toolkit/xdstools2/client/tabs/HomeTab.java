@@ -170,6 +170,10 @@ public class HomeTab extends GenericQueryTab {
 		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val2, new TabLauncher(myContainer, val2)));
 		row++;
 
+		String val3 = "View Direct Message Status";
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val3, new TabLauncher(myContainer, val3)));
+		row++;
+
 
 		// ***************************************************************************
 

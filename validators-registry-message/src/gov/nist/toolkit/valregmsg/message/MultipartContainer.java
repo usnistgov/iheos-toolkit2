@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.http.MultipartMessageBa;
 import gov.nist.toolkit.http.MultipartParserBa;
 import gov.nist.toolkit.http.PartBa;
+import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
@@ -38,6 +39,10 @@ public class MultipartContainer extends MessageValidator {
 				sdi.charset = charset;
 				contentMap.put(contentId, sdi);
 				er.detail(contentId + " ==> " + body.length + " characters");
+				if (i > 0 && vc.getInnerContextCount() > 0) {
+					er.detail("Scheduling validation of CCDA in part " + (i + 1));
+					MessageValidatorFactory.getValidatorForCCDA(er.getErrorRecorderBuilder(), body, mvc, vc.getInnerContext(0));
+				}
 			}
 		}
 	}
