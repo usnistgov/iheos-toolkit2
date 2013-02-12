@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 rel. 2 (http://www.altova.com) by Len Gallagher (NIST) -->
+<ccr:ContinuityOfCareRecord xsi:schemaLocation="urn:astm-org:CCR CCRV1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ccr="urn:astm-org:CCR">
+	<ccr:CCRDocumentObjectID>CCR_AMBv11_DS01</ccr:CCRDocumentObjectID>
+	<ccr:Language>
+		<ccr:Text>US English</ccr:Text>
+		<ccr:Code>
+			<ccr:Value>en-US</ccr:Value>
+		</ccr:Code>
+	</ccr:Language>
+	<ccr:Version>V1.0</ccr:Version>
+	<ccr:DateTime>
+		<ccr:ExactDateTime>2010-03-25T13:15:00-05:00</ccr:ExactDateTime>
+	</ccr:DateTime>
+	<ccr:Patient>
+		<ccr:ActorID>PatientID_1</ccr:ActorID>
+	</ccr:Patient>
+	<ccr:From>
+		<ccr:ActorLink>
+			<ccr:ActorID>AuthorID_01</ccr:ActorID>
+			<ccr:ActorRole>
+				<ccr:Text>Personal Physician</ccr:Text>
+			</ccr:ActorRole>
+		</ccr:ActorLink>
+	</ccr:From>
+	<ccr:To>
+		<ccr:ActorLink>
+			<ccr:ActorID>RecipientID_01</ccr:ActorID>
+			<ccr:ActorRole>
+				<ccr:Text>Interested Party</ccr:Text>
+			</ccr:ActorRole>
+		</ccr:ActorLink>
+	</ccr:To>
+	<ccr:Purpose>
+		<ccr:Description>
+			<ccr:Text>Transfer of Care</ccr:Text>
+		</ccr:Description>
+	</ccr:Purpose>
+	<ccr:Body>
+		<ccr:Problems>
+			
+               <ccr:Problem>
+				<ccr:CCRDataObjectID>ProbID_1</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>5/5/06</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Type>
+					<ccr:Text>Finding</ccr:Text>
+				</ccr:Type>
+				<ccr:Description>
+					<ccr:Text>Coronary Artery Disease (CAD)</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>414.01</ccr:Value>
+						<ccr:CodingSystem>ICD9-CM</ccr:CodingSystem>
+					</ccr:Code>
+					<ccr:Code>
+						<ccr:Value>53741008</ccr:Value>
+						<ccr:CodingSystem>SNOMED CT</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Description>
+				<ccr:Status>
+					<ccr:Text>Chronic</ccr:Text>
+				</ccr:Status>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+			</ccr:Problem>
+			
+                         <ccr:Problem>
+				<ccr:CCRDataObjectID>ProbID_2</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>5/5/06</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Type>
+					<ccr:Text>Symptom</ccr:Text>
+				</ccr:Type>
+				<ccr:Description>
+					<ccr:Text>Hypertension, Essential</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>401.9</ccr:Value>
+						<ccr:CodingSystem>ICD9-CM</ccr:CodingSystem>
+					</ccr:Code>
+					<ccr:Code>
+						<ccr:Value>59621000</ccr:Value>
+						<ccr:CodingSystem>SNOMED CT</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Description>
+				<ccr:Status>
+					<ccr:Text>Active</ccr:Text>
+				</ccr:Status>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+			</ccr:Problem>
+		
+                        <ccr:Problem>
+				<ccr:CCRDataObjectID>ProbID_3</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>12/22/02</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Type>
+					<ccr:Text>Diagnosis</ccr:Text>
+				</ccr:Type>
+				<ccr:Description>
+					<ccr:Text>Asthma, unspecified</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>493.00</ccr:Value>
+						<ccr:CodingSystem>ICD9-CM</ccr:CodingSystem>
+					</ccr:Code>
+					<ccr:Code>
+						<ccr:Value>195967001</ccr:Value>
+						<ccr:CodingSystem>SNOMED CT</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Description>
+				<ccr:Status>
+					<ccr:Text>Active</ccr:Text>
+				</ccr:Status>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+			</ccr:Problem>
+		
+
+</ccr:Problems>
+		
+
+
+                 <ccr:Alerts>
+			<ccr:Alert>
+				<ccr:CCRDataObjectID>AlertID_1</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>6/27/96</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Type>
+					<ccr:Text>Drug Allergy</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>416098002</ccr:Value>
+						<ccr:CodingSystem>SNOMED CT</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Type>
+				<ccr:Description>
+					<ccr:Text>Codeine allergy</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>293597001</ccr:Value>
+						<ccr:CodingSystem>SNOMED CT</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Description>
+				<ccr:Status>
+					<ccr:Text>Active</ccr:Text>
+				</ccr:Status>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+				<ccr:Agent>
+					<ccr:Products>
+						<ccr:Product>
+							<ccr:CCRDataObjectID/>
+							<ccr:Source/>
+							<ccr:Product>
+								<ccr:ProductName>
+									<ccr:Text>Codeine</ccr:Text>
+									<ccr:Code>
+										<ccr:Value>2670</ccr:Value>
+										<ccr:CodingSystem>RxNorm</ccr:CodingSystem>
+									</ccr:Code>
+								</ccr:ProductName>
+							</ccr:Product>
+						</ccr:Product>
+					</ccr:Products>
+				</ccr:Agent>
+				<ccr:Reaction>
+					<ccr:Description>
+						<ccr:Text>Hives, nausea</ccr:Text>
+					</ccr:Description>
+				</ccr:Reaction>
+			</ccr:Alert>
+		
+  	<ccr:Alert>
+				<ccr:CCRDataObjectID>AlertID_2</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>3/25/04</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Type>
+					<ccr:Text>Drug Allergy</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>416098002</ccr:Value>
+						<ccr:CodingSystem>SNOMED CT</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Type>
+				<ccr:Description>
+					<ccr:Text>Indomethacin allergy</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>2943620004</ccr:Value>
+						<ccr:CodingSystem>SNOMED CT</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Description>
+				<ccr:Status>
+					<ccr:Text>Active</ccr:Text>
+				</ccr:Status>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+				<ccr:Reaction>
+					<ccr:Description>
+						<ccr:Text>Nausea, dizziness, headache</ccr:Text>
+					</ccr:Description>
+				</ccr:Reaction>
+			</ccr:Alert>
+		</ccr:Alerts>
+
+		<ccr:Medications>
+
+                          <ccr:Medication>
+				<ccr:CCRDataObjectID>MedID_01</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>5/5/2006</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Status>
+					<ccr:Text>Active</ccr:Text>
+				</ccr:Status>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+				<ccr:Product>
+					<ccr:ProductName>
+						<ccr:Text>furosemide</ccr:Text>
+						<ccr:Code>
+							<ccr:Value>200801</ccr:Value>
+							<ccr:CodingSystem>RxNorm</ccr:CodingSystem>
+						</ccr:Code>
+					</ccr:ProductName>
+					<ccr:BrandName>
+						<ccr:Text>Lasix</ccr:Text>
+					</ccr:BrandName>
+					<ccr:Strength>
+						<ccr:Value>20</ccr:Value>
+						<ccr:Units>
+							<ccr:Unit>mg</ccr:Unit>
+						</ccr:Units>
+					</ccr:Strength>
+					<ccr:Form>
+						<ccr:Text>Tablet</ccr:Text>
+					</ccr:Form>
+				</ccr:Product>
+				<ccr:Directions>
+					<ccr:Direction>
+						<ccr:Frequency>
+							<ccr:Value>1 tab BID PO</ccr:Value>
+						</ccr:Frequency>
+					</ccr:Direction>
+				</ccr:Directions>
+				<ccr:PatientInstructions>
+					<ccr:Instruction>
+						<ccr:Text>1 tablet by mouth 2 times per day</ccr:Text>
+					</ccr:Instruction>
+				</ccr:PatientInstructions>
+			</ccr:Medication>
+
+
+
+                          <ccr:Medication>
+				<ccr:CCRDataObjectID>MedID_02</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>5/5/2006</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Status>
+					<ccr:Text>Active</ccr:Text>
+				</ccr:Status>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+				<ccr:Product>
+					<ccr:ProductName>
+						<ccr:Text>potassium chloride</ccr:Text>
+                                                  <ccr:Code>
+							<ccr:Value>628958</ccr:Value>
+							<ccr:CodingSystem>RxNorm</ccr:CodingSystem>
+						</ccr:Code>
+					</ccr:ProductName>
+					<ccr:BrandName>
+						<ccr:Text>Klor-Con</ccr:Text>	
+					</ccr:BrandName>
+					<ccr:Strength>
+						<ccr:Value>10</ccr:Value>
+						<ccr:Units>
+							<ccr:Unit>mEq</ccr:Unit>
+						</ccr:Units>
+					</ccr:Strength>
+					<ccr:Form>
+						<ccr:Text>Tablet</ccr:Text>
+					</ccr:Form>
+				</ccr:Product>
+				<ccr:Directions>
+					<ccr:Direction>
+						<ccr:Frequency>
+							<ccr:Value>1 tab BID PO</ccr:Value>
+						</ccr:Frequency>
+					</ccr:Direction>
+				</ccr:Directions>
+				<ccr:PatientInstructions>
+					<ccr:Instruction>
+						<ccr:Text>1 tablet by mouth 2 times per day</ccr:Text>
+					</ccr:Instruction>
+				</ccr:PatientInstructions>
+			</ccr:Medication>
+
+                         <ccr:Medication>
+				<ccr:CCRDataObjectID>MedID_03</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>12/22/2002</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Status>
+					<ccr:Text>Active</ccr:Text>
+				</ccr:Status>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+				<ccr:Product>
+					<ccr:ProductName>
+						<ccr:Text>metaproterenol sulfate</ccr:Text>
+						<ccr:Code>
+							<ccr:Value>206833</ccr:Value>
+							<ccr:CodingSystem>RxNorm</ccr:CodingSystem>
+						</ccr:Code>
+					</ccr:ProductName>
+					<ccr:BrandName>
+						<ccr:Text>Alupent Inhalation Aerosol</ccr:Text>
+					</ccr:BrandName>
+					<ccr:Strength>
+						<ccr:Value>15</ccr:Value>
+						<ccr:Units>
+							<ccr:Unit>mg/ml</ccr:Unit>
+						</ccr:Units>
+					</ccr:Strength>
+					<ccr:Form>
+						<ccr:Text>puff</ccr:Text>
+					</ccr:Form>
+				</ccr:Product>
+				<ccr:Directions>
+					<ccr:Direction>
+						<ccr:Dose>
+							<ccr:Value>2</ccr:Value>
+							<ccr:Units>
+								<ccr:Unit>puffs</ccr:Unit>
+							</ccr:Units>
+						</ccr:Dose>
+						<ccr:Route>
+							<ccr:Text>Inhaled</ccr:Text>
+						</ccr:Route>
+						<ccr:Frequency>
+							<ccr:Value>Q4h as needed</ccr:Value>
+						</ccr:Frequency>
+					</ccr:Direction>
+				</ccr:Directions>
+				<ccr:PatientInstructions>
+					<ccr:Instruction>
+						<ccr:Text>2 puffs inhaled every 4 hours as needed</ccr:Text>
+					</ccr:Instruction>
+				</ccr:PatientInstructions>
+			</ccr:Medication>
+	
+                </ccr:Medications>
+
+	
+              <ccr:Results>
+			  <ccr:Result>
+				<ccr:CCRDataObjectID>ResultID_01</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>9/16/09</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Type>
+					<ccr:Text>Chemistry</ccr:Text>
+				</ccr:Type>
+				<ccr:Description>
+					<ccr:Text>Potassium</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>2823-3</ccr:Value>
+						<ccr:CodingSystem>LOINC</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Description>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+				<ccr:Test>
+					<ccr:CCRDataObjectID/>
+					<ccr:Description>
+						<ccr:Text>Potassium</ccr:Text>
+						<ccr:Code>
+							<ccr:Value>2823-3</ccr:Value>
+							<ccr:CodingSystem>LOINC</ccr:CodingSystem>
+						</ccr:Code>
+					</ccr:Description>
+					<ccr:Status>
+						<ccr:Text>final result</ccr:Text>
+					</ccr:Status>
+					<ccr:Source/>
+					<ccr:TestResult>
+						<ccr:Value>4.3</ccr:Value>
+						<ccr:Units>
+							<ccr:Unit>mg/dl</ccr:Unit>
+						</ccr:Units>
+					</ccr:TestResult>
+					<ccr:NormalResult>
+						<ccr:Normal>
+							<ccr:Value>3.5 - 5.3</ccr:Value>
+							<ccr:Units>
+								<ccr:Unit>mg/dl</ccr:Unit>
+							</ccr:Units>
+							<ccr:Source/>
+						</ccr:Normal>
+					</ccr:NormalResult>
+				</ccr:Test>
+			</ccr:Result>
+
+
+
+
+			 <ccr:Result>
+				<ccr:CCRDataObjectID>ResultID_02</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>9/16/09</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Type>
+					<ccr:Text>Chemistry</ccr:Text>
+				</ccr:Type>
+				<ccr:Description>
+					<ccr:Text>Total cholesterol</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>14647-2</ccr:Value>
+						<ccr:CodingSystem>LOINC</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Description>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+				<ccr:Test>
+					<ccr:CCRDataObjectID/>
+					<ccr:Description>
+						<ccr:Text>Total cholesterol</ccr:Text>
+						<ccr:Code>
+							<ccr:Value>14647-2</ccr:Value>
+							<ccr:CodingSystem>LOINC</ccr:CodingSystem>
+						</ccr:Code>
+					</ccr:Description>
+					<ccr:Status>
+						<ccr:Text>final result</ccr:Text>
+					</ccr:Status>
+					<ccr:Source/>
+					<ccr:TestResult>
+						<ccr:Value>162</ccr:Value>
+						<ccr:Units>
+							<ccr:Unit>mg/dl</ccr:Unit>
+						</ccr:Units>
+					</ccr:TestResult>
+					<ccr:NormalResult>
+						<ccr:Normal>
+							<ccr:Value>&lt; 200</ccr:Value>
+							<ccr:Units>
+								<ccr:Unit>mg/dl</ccr:Unit>
+							</ccr:Units>
+							<ccr:Source/>
+						</ccr:Normal>
+					</ccr:NormalResult>
+				</ccr:Test>
+			</ccr:Result>
+			
+            <ccr:Result>
+				<ccr:CCRDataObjectID>ResultID_03</ccr:CCRDataObjectID>
+				<ccr:DateTime>
+					<ccr:ApproximateDateTime>
+						<ccr:Text>2/16/10</ccr:Text>
+					</ccr:ApproximateDateTime>
+				</ccr:DateTime>
+				<ccr:Type>
+					<ccr:Text>Imaging - X-ray</ccr:Text>
+				</ccr:Type>
+				<ccr:Description>
+					<ccr:Text>Chest X-ray, PA</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>24648-8</ccr:Value>
+						<ccr:CodingSystem>LOINC</ccr:CodingSystem>
+					</ccr:Code>					
+				</ccr:Description>
+				<ccr:Source>
+					<ccr:Actor>
+						<ccr:ActorID>AuthorID_01</ccr:ActorID>
+					</ccr:Actor>
+				</ccr:Source>
+				<ccr:Test>
+					<ccr:CCRDataObjectID/>
+					<ccr:Description>
+						<ccr:Text>Chest X-ray, PA</ccr:Text>
+						<ccr:Code>
+							<ccr:Value>24648-8</ccr:Value>
+							<ccr:CodingSystem>LOINC</ccr:CodingSystem>
+						</ccr:Code>
+						
+					</ccr:Description>
+					<ccr:Status>
+						<ccr:Text>final result</ccr:Text>
+					</ccr:Status>
+					<ccr:Source/>
+					<ccr:TestResult>
+						<ccr:Description>
+							<ccr:Text>Increased bronchial wall markings, patchy infiltrates</ccr:Text>
+						</ccr:Description>
+					</ccr:TestResult>
+				</ccr:Test>
+			</ccr:Result>
+		</ccr:Results>
+		
+   
+	</ccr:Body>
+	<ccr:Actors>
+		<ccr:Actor>
+			<ccr:ActorObjectID>PatientID_1</ccr:ActorObjectID>
+			<ccr:Person>
+				<ccr:Name>
+					<ccr:BirthName>
+						<ccr:Given>John</ccr:Given>
+						<ccr:Given>D.</ccr:Given>
+						<ccr:Family>Stuart</ccr:Family>
+					</ccr:BirthName>
+				</ccr:Name>
+				<ccr:DateOfBirth>
+					<ccr:ExactDateTime>1953-02-15T11:20:00-05:00</ccr:ExactDateTime>
+				</ccr:DateOfBirth>
+				<ccr:Gender>
+					<ccr:Text>Male</ccr:Text>
+					<ccr:Code>
+						<ccr:Value>M</ccr:Value>
+						<ccr:CodingSystem>HL7 AdministrativeGender</ccr:CodingSystem>
+					</ccr:Code>
+				</ccr:Gender>
+			</ccr:Person>
+			<ccr:IDs>
+				<ccr:ID>9996799589</ccr:ID>
+				<ccr:IssuedBy>
+					<ccr:ActorID>ClinicID_01</ccr:ActorID>
+					<ccr:ActorRole>
+						<ccr:Text>Medical Record Number Generator</ccr:Text>
+					</ccr:ActorRole>
+				</ccr:IssuedBy>
+				<ccr:Source/>
+			</ccr:IDs>
+			<ccr:Address>
+				<ccr:Line1>5739 Hazel Street</ccr:Line1>
+				<ccr:City>Williamsport</ccr:City>
+				<ccr:State>PA</ccr:State>
+				<ccr:PostalCode>17701</ccr:PostalCode>
+			</ccr:Address>
+			<ccr:Telephone>
+				<ccr:Value>+1-570-898-2189</ccr:Value>
+			</ccr:Telephone>
+			<ccr:Source/>
+		</ccr:Actor>
+		<ccr:Actor>
+			<ccr:ActorObjectID>AuthorID_01</ccr:ActorObjectID>
+			<ccr:Person>
+				<ccr:Name>
+					<ccr:BirthName>
+						<ccr:Given>Thomas</ccr:Given>
+						<ccr:Family>Henry</ccr:Family>
+						<ccr:Suffix>MD</ccr:Suffix>
+					</ccr:BirthName>
+				</ccr:Name>
+			</ccr:Person>
+			<ccr:Address>
+				<ccr:Line1>5544 Sutter Street</ccr:Line1>
+				<ccr:City>Williamsport</ccr:City>
+				<ccr:State>PA</ccr:State>
+				<ccr:PostalCode>17701</ccr:PostalCode>
+			</ccr:Address>
+			<ccr:Telephone>
+				<ccr:Value>+1-301-975-3260</ccr:Value>
+			</ccr:Telephone>
+			<ccr:Source/>
+		</ccr:Actor>
+		<ccr:Actor>
+			<ccr:ActorObjectID>RecipientID_01</ccr:ActorObjectID>
+			<ccr:Person>
+				<ccr:Name>
+					<ccr:BirthName>
+						<ccr:Given>Interested</ccr:Given>
+						<ccr:Family>AnyPerson</ccr:Family>
+					</ccr:BirthName>
+				</ccr:Name>
+			</ccr:Person>
+			<ccr:Source/>
+		</ccr:Actor>
+		<ccr:Actor>
+			<ccr:ActorObjectID>ManufID_1</ccr:ActorObjectID>
+			<ccr:Organization>
+				<ccr:Name>GLAXOSMITHKLINE</ccr:Name>
+			</ccr:Organization>
+			<ccr:Source/>
+		</ccr:Actor>
+		<ccr:Actor>
+			<ccr:ActorObjectID>ManufID_2</ccr:ActorObjectID>
+			<ccr:Organization>
+				<ccr:Name>Merck</ccr:Name>
+			</ccr:Organization>
+			<ccr:Source/>
+		</ccr:Actor>
+		<ccr:Actor>
+			<ccr:ActorObjectID>ClinicID_01</ccr:ActorObjectID>
+			<ccr:Organization>
+				<ccr:Name>Metropolitan Clinic</ccr:Name>
+			</ccr:Organization>
+			<ccr:Address>
+				<ccr:Line1>5544 Sutter Street</ccr:Line1>
+				<ccr:City>Williamsport</ccr:City>
+				<ccr:State>PA</ccr:State>
+				<ccr:PostalCode>17701</ccr:PostalCode>
+			</ccr:Address>
+			<ccr:Source/>
+		</ccr:Actor>
+			</ccr:Actors>
+</ccr:ContinuityOfCareRecord>
