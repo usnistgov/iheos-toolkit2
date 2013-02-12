@@ -49,7 +49,7 @@ public class MDNMessageProcessor {
 		
 	}
 	
-	public void processMDNMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc) throws ParseException {
+	public void processMDNMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc) {
 		directCertificate = _directCertificate;
 		password = _password;
 		this.vc = vc;
