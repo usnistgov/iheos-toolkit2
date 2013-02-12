@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,24 +42,27 @@ public class TestMDN {
 	@Test
 	public void testMDNGeneration(){
 		
-		MimeMultipartReport mdn = null;
-		try {
-			mdn = MDNGenerator.create("ack", "starugh-stateline.com", "NHIN Direct Security Agent", null,
-					"externUser1@starugh-stateline.com", "<9501051053.aa04167@IETF.CNR I.Reston.VA.US>", Disposition.COMPILE_TIME_CONSTANT);
-		} catch (MessagingException e1) {
-			e1.printStackTrace();
-		}
+		String signingCert = "direct/src/gov/nist/direct/test/resources/certificates/mhunter.p12";
+		byte[] signCert = null;
+		String encryptionCert = "direct/src/gov/nist/direct/test/resources/certificates/mhunter.cer";
+		byte[] encCert = null;
+		
+		signCert = Utils.getByteFile(signingCert);
+		encCert = Utils.getByteFile(encryptionCert);
+		
+		MimeMessage mdn = null;
+		mdn = MDNGenerator.createSignedAndEncrypted("ack", "starugh-stateline.com", "NHIN Direct Security Agent", null,
+				"externUser1@starugh-stateline.com", "<9501051053.aa04167@IETF.CNR I.Reston.VA.US>", 
+				Disposition.COMPILE_TIME_CONSTANT, "test@test.com", "test2@test.com", "Test MDN", encCert, signCert, "mhunter");
 		
 		
 			// Creates a new MimeMessage message using the MimeMultipartReport contents
 			Properties props = System.getProperties();
 		    Session session = Session.getDefaultInstance(props, null);
-			MimeMessage mimeMsg = new MimeMessage(session);
 			try {
-				mimeMsg.setContent(mdn);
-				Utils.printToFile(mimeMsg, "MimeMultipartReportfile.txt");
+				Utils.printToFile(mdn, "MDNFile.txt");
 		
-				assertTrue(MessageDispatchUtils.isMDN(er, mimeMsg));
+				assertTrue(MessageDispatchUtils.isMDN(er, mdn));
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}	

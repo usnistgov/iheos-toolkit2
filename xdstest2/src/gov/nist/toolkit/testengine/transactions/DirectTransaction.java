@@ -4,6 +4,7 @@ import gov.nist.direct.directGenerator.impl.UnwrappedMessageGenerator;
 import gov.nist.direct.directGenerator.impl.WrappedMessageGenerator;
 import gov.nist.direct.x509.X509CertificateEx;
 import gov.nist.toolkit.directsupport.SMTPException;
+import gov.nist.toolkit.dns.DnsLookup;
 import gov.nist.toolkit.testengine.StepContext;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;
 import gov.nist.toolkit.utilities.io.Io;
@@ -69,6 +70,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.mail.smime.SMIMEEnvelopedGenerator;
 import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.util.Store;
+import org.xbill.DNS.TextParseException;
 
 public class DirectTransaction extends BasicTransaction {
 	File certFile = null;
@@ -381,7 +383,14 @@ public class DirectTransaction extends BasicTransaction {
 			}
 		}
 		else if (part_name.equals("DirectSystemMailerHostname")) {
-			mailerHostname = part.getText();
+			//mailerHostname = part.getText();
+			DnsLookup lookup = new DnsLookup();
+			try {
+				mailerHostname = lookup.getMxRecord(part.getText());
+			} catch (TextParseException e) {
+				s_ctx.set_error("Cannot get the mailer hostname " + e.toString());
+				e.printStackTrace();
+			}
 		}
 		else
 			parseBasicInstruction(part);
