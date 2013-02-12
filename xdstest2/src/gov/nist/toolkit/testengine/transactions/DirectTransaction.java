@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.direct.messageGenerator.impl.UnwrappedMessageGenerator;
-import gov.nist.direct.messageGenerator.impl.WrappedMessageGenerator;
+import gov.nist.direct.directGenerator.impl.UnwrappedMessageGenerator;
+import gov.nist.direct.directGenerator.impl.WrappedMessageGenerator;
 import gov.nist.direct.x509.X509CertificateEx;
 import gov.nist.toolkit.directsupport.SMTPException;
 import gov.nist.toolkit.testengine.StepContext;
