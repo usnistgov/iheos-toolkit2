@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -73,6 +74,20 @@ public class Utils {
 		//		}
 		return input;
 
+	}
+	
+	public static byte[] getByteFile(String path) {
+		File file = new File(path);
+		byte[] byteArray = new byte[(int) file.length()];
+		try {
+			FileInputStream fileInputStream = new FileInputStream(file);
+			fileInputStream.read(byteArray);
+			fileInputStream.close();
+			return byteArray;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 
