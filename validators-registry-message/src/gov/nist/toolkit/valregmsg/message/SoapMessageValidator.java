@@ -112,7 +112,8 @@ public class SoapMessageValidator extends MessageValidator {
 			}
 		}
 		
-		//CHECK IF SAML VALIDATION IS NEEDED
+		//ADD SAML VALIDATION IF NEEDED. -@Antoine
+		//TODO check if this is the best place to do so.
 		OMElement security = MetadataSupport.firstChildWithLocalName(header, "Security");
 		if(security != null){
 			vc.hasSaml = true; // setting the flag is not really necessary, for consistency only.

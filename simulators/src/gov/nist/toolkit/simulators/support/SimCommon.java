@@ -248,8 +248,10 @@ public class SimCommon {
 		//			return fault;
 		//		}
 
+		//TODO CHECK IF DESIRABLE: WE SEEMS TO RETURN ONLY THR FIRST ERROR FOUND. - @Antoine
+		
 		SoapFault sf;
-
+		
 		sf = getFaultFromMessageValidator(HttpMessageValidator.class);
 		if (sf != null) return sf;
 
