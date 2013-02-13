@@ -8,6 +8,7 @@ separator
 war=..
 #cat $war/WEB-INF/toolkit.properties
 
+########################################################################
 echo "Looking in $war/WEB-INF/toolkit.properties to find External Cache location"
 EC=`awk -f cert-check-files/external_cache.awk < $war/WEB-INF/toolkit.properties`
 echo "External Cache is <$EC>" 
@@ -18,6 +19,7 @@ then
 	exit
 fi
 
+########################################################################
 echo ""
 echo "Looking in tk_props.txt file ($EC/tk_props.txt) for DNS domain name"
 DOMAIN=`awk -f cert-check-files/domain_name.awk < $EC/tk_props.txt`
@@ -31,6 +33,7 @@ fi
 
 separator
 
+########################################################################
 echo "Can encrypt using public key for sending to the following domains:"
 pub_enc_keys=`ls $EC/direct/encrypt_certs`
 for key in $pub_enc_keys
@@ -44,6 +47,7 @@ echo "which are represented by der files in $EC/direct/encrypt_certs"
 
 separator
 
+########################################################################
 echo "Checking config for signing messages..."
 if [[ -e $EC/direct/signing_cert/$DOMAIN.p12 ]]
 then
@@ -65,6 +69,7 @@ fi
 
 separator
 
+########################################################################
 echo "Examining the public certs we offer for download from TTT..."
 echo "   Looking in $war/pubcert..."
 pubpubcert=`awk -v propname=direct.pubcert.pubcert -f cert-check-files/tk_props_get.awk < $EC/tk_props.txt`
@@ -100,16 +105,35 @@ then
 	echo "     Bad, anchor cert must be in der format and have .der extension"
 fi
 
+echo ""
+invanchorcert=`awk -v propname=direct.pubcert.invtrustrelanchor -f cert-check-files/tk_props_get.awk < $EC/tk_props.txt`
+if [[ -e $war/pubcert/$invanchorcert ]]
+then
+	echo "     Good, found $invanchorcert"
+	echo "     which seems to be the invalid relationship trust anchor cert"
+else
+	echo "     Bad, did not find $invanchorcert"
+	echo "     which was expected"
+fi
+
+if [[ `basename $invanchorcert .der` == $invanchorcert ]]
+then
+	echo ""
+	echo "     Bad, invalid truct relationship anchor cert must be in der format and have .der extension"
+fi
+
 separator
 
+########################################################################
 echo "Checking private key used for decryption..."
 echo "    Looking in $war/WEB-INF/privcert"
-if [[ `ls -1 $war/WEB-INF/privcert | wc -l` == 1 ]]
+if [[ `ls -1 $war/WEB-INF/privcert | wc -l` -eq 1 ]]
 then
 	echo "    Good, only a single file found"
 	single=1
 else
 	echo "    Bad, should only find a single file here"
+	echo "      Found `ls -1 $war/WEB-INF/privcert`"
 	single=0
 fi
 
@@ -118,8 +142,10 @@ then
 	if [[ `basename $war/WEB-INF/privcert/* .p12` == "$war/WEB-INF/privcert/*" ]] 
 	then
 		echo "    Bad, private key file must be in .p12 format"
+		echo "      Found `ls -1 $war/WEB-INF/privcert`"
 	else
 		echo "    Good, .p12 format found"
+		echo "      Found `ls -1 $war/WEB-INF/privcert`"
 	fi
 fi
 
