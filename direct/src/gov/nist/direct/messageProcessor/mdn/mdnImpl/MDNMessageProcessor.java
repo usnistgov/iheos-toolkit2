@@ -56,7 +56,8 @@ public class MDNMessageProcessor {
 		
 		// message is parsed multiple times in following calls. TODO
 		
-		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+		// MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+		// wrong, need a MimeMultipartReport parser
 		
 		// Check if MDN is encrypted
 		
@@ -67,7 +68,7 @@ public class MDNMessageProcessor {
 		 
 		 // Validate MDN
 		 ProcessMDN mdnv = new ProcessMDN();
-		 mdnv.validate(er, mm);
+		// mdnv.validate(er, mm);
 		 
 		// need to delete regularly outdated message logs from the singleton.
 			
