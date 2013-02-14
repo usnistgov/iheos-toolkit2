@@ -68,7 +68,12 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 454, Original-Recipient-Header, warning
 	 */
 	public void validateOriginalRecipientHeader(ErrorRecorder er, String originalRecipient) {
-		if(originalRecipient.contains("rfc822;")) {
+		if(originalRecipient.equals("")) {
+			er.warning("454", "Original-Recipient Field is not present", "", "DTS 454");
+		} else {
+			if(!originalRecipient.contains("rfc822;")) {
+				er.warning("454", "Original-Recipient header should normaly contain \"rfc822\"", "", "DTS 454");
+			}
 			String[] splitHeader = null;
 			splitHeader = originalRecipient.split(";");
 			String email = splitHeader[1];
@@ -77,8 +82,6 @@ public class MDNValidatorImpl implements MDNValidator{
 			} else {
 				er.err("454", "Original-Recipient header is not valid", "", "", "DTS 454");
 			}
-		} else {
-			er.err("454", "Original-Recipient header is not valid", "", "", "DTS 454");
 		}
 	}
 	

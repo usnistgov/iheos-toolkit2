@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class TimeLogger {
 
-	public void logDate(String s, LogStructure ls, String transactionType, String messageType, String username, String messageId) throws IOException {
+	public void logDate(String s, LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String dateLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
 		Utils.writeToFile(s, new File(dateLogPath)); // ask to overwrite? which failsafes?
 		}

@@ -1,5 +1,10 @@
 package gov.nist.direct.logger.writer;
 
+import gov.nist.timer.SendHistorySingleton;
+import gov.nist.timer.impl.DirectMessageTimestamp;
+
+import java.util.ArrayList;
+
 /**
  * Current structure is:
  * username > directReceive or Send > messageId > direct or mdn > data as text files.
@@ -9,7 +14,7 @@ package gov.nist.direct.logger.writer;
  * @author dazais
  *
  */
-public class LogStructure {
+public class LogStructureSingleton {
 	
 	private String LOG_ROOT;
 	
@@ -19,27 +24,54 @@ public class LogStructure {
 	private final String DIRECT_MESSAGE_FOLDER = "/direct";
 	private final String MDN_MESSAGE_FOLDER = "/mdn";
 	 
-	private final String MESSAGE_CONTENTS = "/message-contents.txt"; // needs part number + ".txt" ext.
+	private final String MDN_MESSAGE_CONTENTS = "/mdn-contents.txt";
+	private final String DIRECT_MESSAGE_CONTENTS = "/direct-contents.txt"; // needs part number + ".txt" ext.
 	private final String DECRYPTED_MESSAGE = "/encrypted-message"; 
 	private final String MESSAGE_STATUS = "/status.txt";
-	private final String TIMESTAMP = "/timestamp.txt";
+	private final String DATE_LOG = "/date.txt";
 	
-
-	public LogStructure(String logRoot){
+	
+	private static LogStructureSingleton LogStructureSingleton;
+	
+	
+	/**
+	 * Private constructor
+	 * @param logRoot
+	 */
+	private LogStructureSingleton(String logRoot){
 		LOG_ROOT = logRoot;
 	}
 	
 	
-	
+	public static synchronized LogStructureSingleton getLogStructureSingleton() {
+		if (LogStructureSingleton == null) {
+			String logRoot = getLOG_ROOT();
+			LogStructureSingleton = new LogStructureSingleton(logRoot);
+		}
+		return LogStructureSingleton;
+	}
 
-	public String getLOG_ROOT() {
-		return LOG_ROOT;
+	
+	
+	
+ /**
+  * Todo needs to be changed to tk_props
+  * @return
+  */
+	private static String getLOG_ROOT() {
+		return "/direct-logs";
 	}
 	
 	
-	public String getMessageContentsLogPath(String transactionType, String messageType, String username, String messageId) {
+	public String getDirectMessageLogPath(String transactionType, String messageType, String username, String messageId) {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);
-		String path = fullPath + MESSAGE_CONTENTS;
+		String path = fullPath + DIRECT_MESSAGE_CONTENTS;
+		return path;
+	}
+	
+	public String getMDNLogPath(String transactionType, String messageType, String username, String messageId) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + MDN_MESSAGE_CONTENTS;
 		return path;
 	}
 	
@@ -58,9 +90,10 @@ public class LogStructure {
 	
 	public String getDateLogPath(String transactionType, String messageType, String username, String messageId) {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);
-		String path = fullPath + TIMESTAMP;
+		String path = fullPath + DATE_LOG;
 		return path;
 	}
+	
 	
 	/**
 	 * Utility function that returns part of the log path
@@ -70,7 +103,7 @@ public class LogStructure {
 	 * @param messageId
 	 * @return
 	 */
-	public String getFullPath(String transactionType, String messageType, String username, String messageId){
+	private String getFullPath(String transactionType, String messageType, String username, String messageId){
 		String defaultPath = LOG_ROOT + "/" + username + DIRECT_RECEIVE_FOLDER + "/" + messageId + DIRECT_MESSAGE_FOLDER;
 
 		if ((transactionType == "DIRECT_SEND") &&  (messageType == "DIRECT")){	
@@ -88,12 +121,6 @@ public class LogStructure {
 		return defaultPath;
 	}
 
-
-	// TODO needs to be changed to a location in tk_props
-	public void setLOG_ROOT() {
-		LOG_ROOT = "/direct-logs";
-		
-	}
 
 	
 	

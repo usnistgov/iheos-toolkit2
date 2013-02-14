@@ -13,8 +13,8 @@ import java.io.IOException;
 public class DirectContentLogger {
 
 
-	public void logMessageContents(String s, LogStructure ls, String transactionType, String messageType, String username, String messageId) throws IOException {
-		String contentsLogPath = ls.getMessageContentsLogPath(transactionType, messageType, username, messageId);
+	public void logMessageContents(String s, LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
+		String contentsLogPath = ls.getDirectMessageLogPath(transactionType, messageType, username, messageId);
 		Utils.writeToFile(s, new File(contentsLogPath));
 		}
 

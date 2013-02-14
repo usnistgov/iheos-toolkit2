@@ -22,5 +22,5 @@ public interface MessageLoggerInterface {
 	 * @param messageId
 	 * @throws IOException
 	 */
-	public void log(Object msg, LogStructure ls, String transactionType, String messageType, String partType, String username, String messageId) throws IOException;
+	public void log(Object msg, LogStructureSingleton ls, String transactionType, String messageType, String partType, String username, String messageId) throws IOException;
 }

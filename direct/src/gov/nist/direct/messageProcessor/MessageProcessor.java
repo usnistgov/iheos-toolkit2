@@ -60,10 +60,11 @@ public class MessageProcessor implements MessageProcessorInterface {
 		// determine message type
 		// ------ MDN -------
 		try {
-			if (MessageDispatchUtils.isMDN(er, mm)){
+			if (MessageDispatchUtils.isMDN(er, mm)){ // using mimemessage parser instead of MDNparser, might not work
 				 messageType = mdnMessageType;
 				 
 				 // Display Message type
+				 System.out.println("The file was recognized as an MDN message.");
 				 er.detail("The file was recognized as an MDN message.");
 				 
 				 // Process message
@@ -74,11 +75,12 @@ public class MessageProcessor implements MessageProcessorInterface {
 			
 			
 		// ------ DIRECT -------
-		if (MessageDispatchUtils.isDIRECT(er, mm)){
+			else if (MessageDispatchUtils.isDIRECT(er, mm)){
 			 messageType = directMessageType;
 			 
 			 // Display Message type
 			 er.detail("The file was recognized as a DIRECT message.");
+			 System.out.println("The file was recognized as a DIRECT message.");
 			 
 			 // Process message
 			 DirectMimeMessageProcessor directProc = new DirectMimeMessageProcessor();

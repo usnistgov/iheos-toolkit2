@@ -17,6 +17,7 @@ Authors: Frederic de Vaulx
 
 package gov.nist.direct.utils;
 
+import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.utilities.io.Io;
@@ -41,6 +42,8 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+
+import org.apache.mailet.base.mail.MimeMultipartReport;
 
 
 public class Utils {
@@ -241,6 +244,28 @@ public static void writeToFile(String s, File file) throws IOException{
 	out.write(s);
 	out.close();
 
+}
+
+
+public static MimeMessage getMimeMessage(String path){
+	byte[] data = getMessage(path);
+	return MimeMessageParser.parseMessage(er, data); 
+}
+
+/**
+ * Not tested
+ * @param path
+ * @return
+ */
+public static MimeMultipartReport getMDN(String path){
+	byte[] data = getMessage(path);
+	String msg = data.toString();
+	return new MimeMultipartReport(msg);
+}
+
+public static String readFile(String path){
+byte[] data = getMessage(path);
+return data.toString();
 }
 	
 
