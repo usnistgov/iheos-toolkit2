@@ -44,12 +44,13 @@ public class MimeMessageParser {
 
 		if (message != null){
 			// Convert byte[] into InputStream and create MimeMessage
-			try {
 				InputStream is = new ByteArrayInputStream(message);
-				msg = new MimeMessage(session, is);
-			} catch (MessagingException e) {
-				er.err(null, e);
-			}
+				try {
+					msg = new MimeMessage(session, is);
+				} catch (MessagingException e) {
+					er.err( null, e);
+					e.printStackTrace();
+				}
 		}
 		return msg;
 	}

@@ -139,7 +139,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		logger.debug("ValidationContext is " + vc.toString());
 
-		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+		MimeMessage mm;
+			mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+			
+
+		
+		
 		
 		
 		// Check if valid Direct Message

@@ -14,6 +14,22 @@ import javax.mail.internet.MimeMessage;
 import org.apache.mailet.base.mail.MimeMultipartReport;
 
 public class DirectLogReader {
+	
+	/**
+	 * UserID should probably be the user email address.
+	 * @param userID
+	 * @return
+	 */
+	public ArrayList getUserLogs(String userID, LogStructureSingleton ls){
+		//use UserLog
+		
+		//readMessageStatus for DirectSend / direct + its message id + date
+		//readMessageStatus for DirectSend / mdn +date
+		
+		//same thing for DirectReceive
+		return null;
+		
+	}
 
 
 	public MimeMessage readDirectMessage (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {

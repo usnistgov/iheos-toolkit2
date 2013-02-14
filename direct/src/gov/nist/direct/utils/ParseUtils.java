@@ -53,6 +53,30 @@ public class ParseUtils {
 		}
 		return head;
 	}
+	
+
+	@SuppressWarnings("rawtypes")
+	public static boolean isHeaderPresent(Part m, String header) {
+		String[] tab = {header};
+		String head = "";
+		Enumeration e = null;
+		try {
+			e = m.getAllHeaders();
+		} catch (MessagingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		while (e.hasMoreElements()) {
+			Header hed = (Header)e.nextElement();
+			head = hed.getValue();
+			System.out.println(header);
+			System.out.println(head);
+			if (head.contains(header)) return true;
+			else return false;
+		}
+		return false;
+	}
 
 
 }

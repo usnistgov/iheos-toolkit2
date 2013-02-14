@@ -18,10 +18,13 @@ import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import java.text.ParseException;
 import java.util.Date;
 
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
+import org.apache.mailet.base.mail.MimeMultipartReport;
 
 /**
  * Parses an MDN message for a message ID. It looks up the ID in the list of timestamps and calculates the time offset between sending and reception.
@@ -49,26 +52,40 @@ public class MDNMessageProcessor {
 		
 	}
 	
+	// message is parsed multiple times in following calls. TODO
 	public void processMDNMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc) {
 		directCertificate = _directCertificate;
 		password = _password;
 		this.vc = vc;
 		
-		// message is parsed multiple times in following calls. TODO
-		
-		// MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
-		// wrong, need a MimeMultipartReport parser
-		
 		// Check if MDN is encrypted
 		
 		
 		
+		// Convert to Java type MultipartReport
+		 MimeMultipartReport m = new MimeMultipartReport(inputDirectMessage.toString());
+		System.out.println("MimeMultipartReport");
+		 
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
 		 checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
+		 System.out.println("checkMdnMessageProperties");
 		 
 		 // Validate MDN
 		 ProcessMDN mdnv = new ProcessMDN();
-		// mdnv.validate(er, mm);
+		try {
+			for (int i=0;i<m.getCount();i++){
+					try {
+						m.getBodyPart(i);
+					} catch (MessagingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mdnv.validate(er, (Part)m);
+			}
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		 
 		// need to delete regularly outdated message logs from the singleton.
 			
@@ -93,17 +110,30 @@ public void checkMdnMessageProperties(ErrorRecorder er, byte[] inputDirectMessag
 		
 		logger.debug("ValidationContext is " + vc.toString());
 		
-
-		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
-		
-		
+		 MimeMultipartReport m = new MimeMultipartReport(inputDirectMessage.toString());
+		Multipart mm = (Multipart)m;
 		
 		// Get MDN message ID and compare to existing logs
-		String messageID = ParseUtils.searchHeaderSimple(mm, "message-id");
+		String messageID = null;
+		try {
+			/***
+			 * issue is here
+			 */
+			messageID = ParseUtils.searchHeaderSimple(mm.getBodyPart(1), "message-id");
+		} catch (MessagingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		//look for log
 		
 		// Get MDN reception time
-		String date = ParseUtils.searchHeaderSimple(mm, "date");
+		String date = null;
+		try {
+			date = ParseUtils.searchHeaderSimple(mm.getBodyPart(0), "date");
+		} catch (MessagingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Date receiveDate = null;
 		
 		// Compares reception time for the MDN to send time for the original Direct message.
