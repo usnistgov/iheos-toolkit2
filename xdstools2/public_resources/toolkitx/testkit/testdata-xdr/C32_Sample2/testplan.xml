@@ -8,7 +8,7 @@
             <AssignUuids/>
             <NoPatientId/>
             <MetadataFile>single_doc.xml</MetadataFile>
-            <Document id="Document01">CCDA_CCD_Ambulatory.xml</Document>
+            <Document id="Document01">C32_Sample2.xml</Document>
             <SOAPHeader>
             	<direct:metadata-level xmlns:direct="urn:direct:addressing">minimal</direct:metadata-level>
             	<!-- This is used in SOAP to Direct transition only -->
