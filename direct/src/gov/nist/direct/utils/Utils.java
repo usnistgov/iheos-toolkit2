@@ -34,6 +34,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -239,8 +243,14 @@ public class Utils {
 	 * @param file filepath
 	 * @throws IOException 
 	 */
-public static void writeToFile(String s, File file) throws IOException{
-	BufferedWriter out = new BufferedWriter(new FileWriter(file));
+public static void writeToFile(String s, String strPath) throws IOException{
+	File f = new File(strPath);
+	
+	if(!f.exists()) {
+		Path path = Paths.get(strPath);
+		Files.createFile(path);
+	}
+	BufferedWriter out = new BufferedWriter(new FileWriter(f.toString()));
 	out.write(s);
 	out.close();
 
@@ -266,6 +276,19 @@ public static MimeMultipartReport getMDN(String path){
 public static String readFile(String path){
 byte[] data = getMessage(path);
 return data.toString();
+}
+
+/**
+ * Removes lower than and upper than (< and >) characters that encapsulate an email address
+ * @return
+ */
+public String trimEmailAddress(String str){
+	String trimmedStr = null;
+if(str.contains("<")) {
+	trimmedStr = str.substring(1, str.lastIndexOf('>'));
+	return trimmedStr;
+}
+return str;
 }
 	
 
