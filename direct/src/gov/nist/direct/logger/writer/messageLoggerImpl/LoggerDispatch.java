@@ -1,6 +1,6 @@
 package gov.nist.direct.logger.writer.messageLoggerImpl;
 
-import gov.nist.direct.logger.writer.LogStructureSingleton;
+import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.writer.MessageLoggerInterface;
 
 import java.io.FileNotFoundException;
@@ -14,7 +14,7 @@ import org.apache.mailet.base.mail.MimeMultipartReport;
 public class LoggerDispatch implements MessageLoggerInterface {
 
 	@Override
-	public void log(Object o, LogStructureSingleton ls, String transactionType, String messageType, String partType, String username, String messageId) {
+	public void log(Object o, LogPathsSingleton ls, String transactionType, String messageType, String partType, String username, String messageId) {
 
 		if(!o.equals(null)){ 
 		

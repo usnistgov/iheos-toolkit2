@@ -1,5 +1,7 @@
 package gov.nist.direct.logger.writer;
 
+import gov.nist.direct.logger.LogPathsSingleton;
+
 import java.io.IOException;
 
 import javax.mail.internet.MimeMessage;
@@ -22,5 +24,5 @@ public interface MessageLoggerInterface {
 	 * @param messageId
 	 * @throws IOException
 	 */
-	public void log(Object msg, LogStructureSingleton ls, String transactionType, String messageType, String partType, String username, String messageId) throws IOException;
+	public void log(Object msg, LogPathsSingleton ls, String transactionType, String messageType, String partType, String username, String messageId) throws IOException;
 }
