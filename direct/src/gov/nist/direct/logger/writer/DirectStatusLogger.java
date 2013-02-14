@@ -20,7 +20,7 @@ public class DirectStatusLogger {
 	// Logging a message status
 	public void logMessageStatus(String s, LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String statusLogPath = ls.getMessageStatusLogPath(transactionType, messageType, username, messageId);
-		Utils.writeToFile(s, new File(statusLogPath));
+		Utils.writeToFile(s, statusLogPath);
 		}
 	
 

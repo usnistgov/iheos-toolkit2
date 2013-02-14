@@ -4,6 +4,7 @@ import gov.nist.direct.directValidator.MessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.logger.MessageLog;
 import gov.nist.direct.mdn.MDNValidator;
 import gov.nist.direct.mdn.impl.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -41,6 +42,7 @@ import javax.mail.Multipart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -194,20 +196,27 @@ public class MDNMessageProcessor {
 //			}
 
 			
+
+		// Get MDN sender name (username)
+		String username = ParseUtils.searchHeaderSimple((Part)m, "from");
+		//InternetAddress user_addr = new InternetAddress(username);
 			
-			
-		
 		// Get MDN message ID and compare to existing logs
 		String messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
+		messageID.trim();
+		String test = null;
+		
+	
+		messageID = test;
 		
 		// Get MDN reception time
 		String date = ParseUtils.searchHeaderSimple((Part)m, "date");
-		Date receiveDate = null;
 		
 		// Write MDN info to existing Direct log
-		//MessageLog log = new MessageLog(messageId, date, LogPathsSingleton _ls, String transactionType, String messageType, String username){
-
-
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		MessageLog msgLog = new MessageLog(messageID, ls);
+		msgLog.logMDN("RECEIVED", username, "DIRECT_SEND", "MDN", messageID, date);
+		
 		// Compares reception time for the MDN to send time for the original Direct message.
 //		try {
 //			receiveDate = ValidationUtils.parseDate(date);
