@@ -34,10 +34,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -244,15 +240,19 @@ public class Utils {
 	 * @throws IOException 
 	 */
 public static void writeToFile(String s, String strPath) throws IOException{
+	System.out.println(strPath);
 	File f = new File(strPath);
-	
-	if(!f.exists()) {
-		Path path = Paths.get(strPath);
-		Files.createFile(path);
+	f.setWritable(true);
+		if(!f.exists()) {
+		f.getParentFile().mkdirs();
+			f.createNewFile();
 	}
-	BufferedWriter out = new BufferedWriter(new FileWriter(f.toString()));
-	out.write(s);
-	out.close();
+	//BufferedWriter out = new BufferedWriter(new FileWriter(f.toString()));
+		
+	FileOutputStream fos = new FileOutputStream(f);
+	fos.write(s.getBytes());
+	fos.flush();
+	fos.close();
 
 }
 
@@ -282,7 +282,7 @@ return data.toString();
  * Removes lower than and upper than (< and >) characters that encapsulate an email address
  * @return
  */
-public String trimEmailAddress(String string){
+public static String trimEmailAddress(String string){
 	String str = string.trim();
 	String trimmedStr = null;
 if(str.contains("<")) {

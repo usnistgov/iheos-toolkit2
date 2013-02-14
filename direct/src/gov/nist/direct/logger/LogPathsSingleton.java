@@ -3,6 +3,10 @@ package gov.nist.direct.logger;
 import gov.nist.timer.SendHistorySingleton;
 import gov.nist.timer.impl.DirectMessageTimestamp;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 /**
@@ -18,17 +22,17 @@ public class LogPathsSingleton {
 	
 	private String LOG_ROOT;
 	
-	private final String DIRECT_RECEIVE_FOLDER = "/directReceive";
-	private final String DIRECT_SEND_FOLDER = "/directSend";
+	private final String DIRECT_RECEIVE_FOLDER = "\\directReceive";
+	private final String DIRECT_SEND_FOLDER = "\\directSend";
 	
-	private final String DIRECT_MESSAGE_FOLDER = "/direct";
-	private final String MDN_MESSAGE_FOLDER = "/mdn";
+	private final String DIRECT_MESSAGE_FOLDER = "\\direct";
+	private final String MDN_MESSAGE_FOLDER = "\\mdn";
 	 
-	private final String MDN_MESSAGE_CONTENTS = "/mdn-contents.txt";
-	private final String DIRECT_MESSAGE_CONTENTS = "/direct-contents.txt"; // needs part number + ".txt" ext.
-	private final String DECRYPTED_MESSAGE = "/encrypted-message"; 
-	private final String MESSAGE_STATUS = "/status.txt";
-	private final String DATE_LOG = "/date.txt";
+	private final String MDN_MESSAGE_CONTENTS = "\\mdn-contents.txt";
+	private final String DIRECT_MESSAGE_CONTENTS = "\\direct-contents.txt"; // needs part number + ".txt" ext.
+	private final String DECRYPTED_MESSAGE = "\\encrypted-message"; 
+	private final String MESSAGE_STATUS = "\\status.txt";
+	private final String DATE_LOG = "\\date.txt";
 	
 	
 	private static LogPathsSingleton LogStructureSingleton;
@@ -46,6 +50,15 @@ public class LogPathsSingleton {
 	public static synchronized LogPathsSingleton getLogStructureSingleton() {
 		if (LogStructureSingleton == null) {
 			String logRoot = getLOG_ROOT();
+			
+			// check if directory exists
+			File dir = new File(logRoot);
+			if(!dir.exists()) {
+				dir.mkdir();
+				dir.setWritable(true);
+				dir.setReadable(true);
+				System.out.println("Created directory "+ logRoot);
+			}
 			LogStructureSingleton = new LogPathsSingleton(logRoot);
 		}
 		return LogStructureSingleton;
@@ -59,7 +72,7 @@ public class LogPathsSingleton {
   * @return
   */
 	private static String getLOG_ROOT() {
-		return "/direct-logs";
+		return "C:\\Workspace\\toolkit\\direct-logs";
 	}
 	
 	
@@ -149,19 +162,19 @@ public class LogPathsSingleton {
 	 * @return
 	 */
 	private String getFullPath(String transactionType, String messageType, String username, String messageId){
-		String defaultPath = LOG_ROOT + "/" + username + DIRECT_RECEIVE_FOLDER + "/" + messageId + DIRECT_MESSAGE_FOLDER;
+		String defaultPath = LOG_ROOT + "\\" + username + DIRECT_RECEIVE_FOLDER + "\\" + messageId + DIRECT_MESSAGE_FOLDER;
 
 		if ((transactionType == "DIRECT_SEND") &&  (messageType == "DIRECT")){	
-			return LOG_ROOT + "/" + username + DIRECT_SEND_FOLDER + "/" + messageId + DIRECT_MESSAGE_FOLDER;
+			return LOG_ROOT + "\\" + username + DIRECT_SEND_FOLDER + "\\" + messageId + DIRECT_MESSAGE_FOLDER;
 	}
 		if ((transactionType == "DIRECT_SEND") &&  (messageType == "MDN")){	
-			return LOG_ROOT + "/" + username + DIRECT_SEND_FOLDER + "/" + messageId + MDN_MESSAGE_FOLDER;
+			return LOG_ROOT + "\\" + username + DIRECT_SEND_FOLDER + "\\" + messageId + MDN_MESSAGE_FOLDER;
 	}
 		if ((transactionType == "DIRECT_RECEIVE") &&  (messageType == "DIRECT")){	
 			return defaultPath;	}
 		
 		if ((transactionType == "DIRECT_RECEIVE") &&  (messageType == "MDN")){	
-			return LOG_ROOT + "/" + username + DIRECT_RECEIVE_FOLDER + "/" + messageId + MDN_MESSAGE_FOLDER;
+			return LOG_ROOT + "\\" + username + DIRECT_RECEIVE_FOLDER + "\\" + messageId + MDN_MESSAGE_FOLDER;
 	}
 		return defaultPath;
 	}

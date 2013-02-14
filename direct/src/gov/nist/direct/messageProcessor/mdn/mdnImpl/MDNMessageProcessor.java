@@ -14,6 +14,7 @@ import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.messageProcessor.direct.directImpl.WrappedMessageProcessor;
 import gov.nist.direct.utils.ParseUtils;
+import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationSummary;
 import gov.nist.direct.utils.ValidationUtils;
 import gov.nist.timer.SendHistorySingleton;
@@ -202,13 +203,9 @@ public class MDNMessageProcessor {
 		//InternetAddress user_addr = new InternetAddress(username);
 			
 		// Get MDN message ID and compare to existing logs
-		String messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
-		messageID.trim();
-		String test = null;
-		
+		String _messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
+		String messageID = Utils.trimEmailAddress(_messageID);
 	
-		messageID = test;
-		
 		// Get MDN reception time
 		String date = ParseUtils.searchHeaderSimple((Part)m, "date");
 		
