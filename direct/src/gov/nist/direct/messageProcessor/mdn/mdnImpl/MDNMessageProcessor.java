@@ -3,6 +3,8 @@ package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 import gov.nist.direct.directValidator.MessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
+import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.logger.MessageLog;
 import gov.nist.direct.mdn.MDNValidator;
 import gov.nist.direct.mdn.impl.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -12,6 +14,7 @@ import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.messageProcessor.direct.directImpl.WrappedMessageProcessor;
 import gov.nist.direct.utils.ParseUtils;
+import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationSummary;
 import gov.nist.direct.utils.ValidationUtils;
 import gov.nist.timer.SendHistorySingleton;
@@ -40,6 +43,7 @@ import javax.mail.Multipart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -101,17 +105,17 @@ public class MDNMessageProcessor {
 		this.encrypted = false;
 		this.signed = false;
 
-//		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
-//
-//		try {
-//			this.processPart(er, mm);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		
-		 
 		 // Validate MDN and encryption
+		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+
+		try {
+			this.processPart(er, mm);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		MDNValidator mdnv = new MDNValidatorImpl();
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
 
@@ -119,7 +123,7 @@ public class MDNMessageProcessor {
 		
 		
 		// Convert to Java type MultipartReport
-		 MimeMultipartReport m = new MimeMultipartReport(inputDirectMessage.toString());
+		// MimeMultipartReport m = new MimeMultipartReport(inputDirectMessage.toString());
 		System.out.println("MimeMultipartReport");
 		 
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
@@ -169,61 +173,66 @@ public class MDNMessageProcessor {
 
 		logger.debug("ValidationContext is " + vc.toString());
 
-		 MimeMultipartReport m = new MimeMultipartReport(inputDirectMessage.toString());
+		MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 		
 		 
 		 // Process all parts
-		 int count = 0;
-		try {
-			count = m.getCount();
-		} catch (MessagingException e2) {
-			// message malformed, has no parts
-			e2.printStackTrace();
-		}
-			for (int i = 0; i < count; i++){
-				try {
-					this.processPart(er, m.getBodyPart(i));
-				} catch (MessagingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//		 int count = 0;
+//		try {
+//			count = m.getCount();
+//		} catch (MessagingException e2) {
+//			// message malformed, has no parts
+//			e2.printStackTrace();
+//		}
+//			for (int i = 0; i < count; i++){
+//				try {
+//					this.processPart(er, m.getBodyPart(i));
+//				} catch (MessagingException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
 
 			
+
+		// Get MDN sender name (username)
+		String username = ParseUtils.searchHeaderSimple((Part)m, "from");
+		//InternetAddress user_addr = new InternetAddress(username);
 			
-			
-		
 		// Get MDN message ID and compare to existing logs
-		String messageID = null;
-
-		messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
-		// write to file
-		
+		String _messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
+		String messageID = Utils.trimEmailAddress(_messageID);
+	
 		// Get MDN reception time
 		String date = ParseUtils.searchHeaderSimple((Part)m, "date");
-		Date receiveDate = null;
-
+		
+		// Write MDN info to existing Direct log
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		MessageLog msgLog = new MessageLog(messageID, ls);
+		msgLog.logMDN("RECEIVED", username, "DIRECT_SEND", "MDN", messageID, date);
+		
 		// Compares reception time for the MDN to send time for the original Direct message.
-		try {
-			receiveDate = ValidationUtils.parseDate(date);
-
-			SendHistorySingleton sendHistory = SendHistorySingleton.getSendHistory();
-			Date sendDate = sendHistory.getMessageSendTime(messageID);
-
-			int timeOffset = TimerUtils.getTimeDifference(receiveDate, sendDate);
-			if (timeOffset <= TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
-			} else {
-				// message that an mdn was received but delay was too long
-				//er.err(null, "MDN processing", "The MDN was received after the authorized delay had expired. The delay is "+ TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION(),  timeOffset);
-			}
-
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			receiveDate = ValidationUtils.parseDate(date);
+//
+//			SendHistorySingleton sendHistory = SendHistorySingleton.getSendHistory();
+//			Date sendDate = sendHistory.getMessageSendTime(messageID);
+//
+//			int timeOffset = TimerUtils.getTimeDifference(receiveDate, sendDate);
+//			if (timeOffset <= TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
+//			} else {
+//				// message that an mdn was received but delay was too long
+//				//er.err(null, "MDN processing", "The MDN was received after the authorized delay had expired. The delay is "+ TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION(),  timeOffset);
+//			}
+//
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		System.out.println("Done.");
 
 	}
 

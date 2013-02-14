@@ -11,7 +11,6 @@ public class MessageLog {
 	
 	// attributes relevant to the Direct message sent
 	private String messageId;
-	private Date directMsgDateSent;
 	private Date expirationDate; // delay after which MDN is considered as arriving too late
 
 	
@@ -21,19 +20,17 @@ public class MessageLog {
 	private LogPathsSingleton ls;
 	
 	
-	public MessageLog(String _messageId, Date _directMsgDateSent, LogPathsSingleton _ls, String transactionType, String messageType, String username){
+	public MessageLog(String _messageId, LogPathsSingleton _ls){
 		messageId = _messageId;
-		directMsgDateSent = _directMsgDateSent;
 		ls = _ls;
 		
-		logDirectMessage(username, transactionType, messageType);
 	}
 	
 	/**
 	 * Completes a Direct message log with matching MDN logs
 	 * @param messageId
 	 */
-	public void logMDN(String status, String username, String transactionType, String messageType, String messageId, Date receivedDate){
+	public void logMDN(String status, String username, String transactionType, String messageType, String messageId, String receivedDate){
 		// Log MDN status
 		DirectStatusLogger dl = new DirectStatusLogger();
 		try {
@@ -46,7 +43,7 @@ public class MessageLog {
 		// Log received date
 				TimeLogger tl = new TimeLogger();
 				try {
-					tl.logDate(receivedDate.toString(), ls, transactionType, messageType, username, messageId);
+					tl.logDate(receivedDate, ls, transactionType, messageType, username, messageId);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -61,11 +58,11 @@ public class MessageLog {
 	
 	}
 	
-	public void logDirectMessage(String username, String transactionType, String messageType){
+	public void logDirectMessage(String username, String directMsgDateSent, String transactionType, String messageType){
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
 		try {
-			tl.logDate(directMsgDateSent.toString(), ls, transactionType, messageType, username, messageId);
+			tl.logDate(directMsgDateSent, ls, transactionType, messageType, username, messageId);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -75,5 +72,8 @@ public class MessageLog {
 		
 		// Log full Direct Message
 	}
+	
+	
+
 
 }

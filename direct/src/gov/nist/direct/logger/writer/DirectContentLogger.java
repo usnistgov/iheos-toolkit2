@@ -16,7 +16,7 @@ public class DirectContentLogger {
 
 	public void logMessageContents(String s, LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String contentsLogPath = ls.getDirectMessageLogPath(transactionType, messageType, username, messageId);
-		Utils.writeToFile(s, new File(contentsLogPath));
+		Utils.writeToFile(s, contentsLogPath);
 		}
 
 

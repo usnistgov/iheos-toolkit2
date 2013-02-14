@@ -15,7 +15,7 @@ public class TimeLogger {
 
 	public void logDate(String s, LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String dateLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
-		Utils.writeToFile(s, new File(dateLogPath)); // ask to overwrite? which failsafes?
+		Utils.writeToFile(s, dateLogPath); // ask to overwrite? which failsafes?
 		}
 
 	

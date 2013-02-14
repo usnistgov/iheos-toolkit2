@@ -239,10 +239,20 @@ public class Utils {
 	 * @param file filepath
 	 * @throws IOException 
 	 */
-public static void writeToFile(String s, File file) throws IOException{
-	BufferedWriter out = new BufferedWriter(new FileWriter(file));
-	out.write(s);
-	out.close();
+public static void writeToFile(String s, String strPath) throws IOException{
+	System.out.println(strPath);
+	File f = new File(strPath);
+	f.setWritable(true);
+		if(!f.exists()) {
+		f.getParentFile().mkdirs();
+			f.createNewFile();
+	}
+	//BufferedWriter out = new BufferedWriter(new FileWriter(f.toString()));
+		
+	FileOutputStream fos = new FileOutputStream(f);
+	fos.write(s.getBytes());
+	fos.flush();
+	fos.close();
 
 }
 
@@ -266,6 +276,20 @@ public static MimeMultipartReport getMDN(String path){
 public static String readFile(String path){
 byte[] data = getMessage(path);
 return data.toString();
+}
+
+/**
+ * Removes lower than and upper than (< and >) characters that encapsulate an email address
+ * @return
+ */
+public static String trimEmailAddress(String string){
+	String str = string.trim();
+	String trimmedStr = null;
+if(str.contains("<")) {
+	trimmedStr = str.substring(1, str.lastIndexOf('>'));
+	return trimmedStr;
+}
+return str;
 }
 	
 
