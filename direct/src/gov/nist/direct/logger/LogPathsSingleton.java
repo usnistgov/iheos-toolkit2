@@ -88,6 +88,51 @@ public class LogPathsSingleton {
 		return path;
 	}
 	
+	public String getDIRECT_RECEIVE_FOLDER() {
+		return DIRECT_RECEIVE_FOLDER;
+	}
+
+
+	public String getDIRECT_SEND_FOLDER() {
+		return DIRECT_SEND_FOLDER;
+	}
+
+
+	public String getDIRECT_MESSAGE_FOLDER() {
+		return DIRECT_MESSAGE_FOLDER;
+	}
+
+
+	public String getMDN_MESSAGE_FOLDER() {
+		return MDN_MESSAGE_FOLDER;
+	}
+
+
+	public String getMDN_MESSAGE_CONTENTS() {
+		return MDN_MESSAGE_CONTENTS;
+	}
+
+
+	public String getDIRECT_MESSAGE_CONTENTS() {
+		return DIRECT_MESSAGE_CONTENTS;
+	}
+
+
+	public String getDECRYPTED_MESSAGE() {
+		return DECRYPTED_MESSAGE;
+	}
+
+
+	public String getMESSAGE_STATUS() {
+		return MESSAGE_STATUS;
+	}
+
+
+	public String getDATE_LOG() {
+		return DATE_LOG;
+	}
+
+
 	public String getDateLogPath(String transactionType, String messageType, String username, String messageId) {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);
 		String path = fullPath + DATE_LOG;

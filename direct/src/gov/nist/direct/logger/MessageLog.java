@@ -75,5 +75,8 @@ public class MessageLog {
 		
 		// Log full Direct Message
 	}
+	
+	
+
 
 }
