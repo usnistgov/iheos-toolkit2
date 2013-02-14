@@ -40,7 +40,7 @@ import org.bouncycastle.mail.smime.SMIMESignedGenerator;
  * This class is based on code from the open source Apache James server.
  * https://www.java2s.com/Open-Source/Java/Web-Mail/james-2.3.1/org/apache/james/util/mail/mdn
  *
- *
+ * @author jnp3
  * @author dazais
  *
  */
