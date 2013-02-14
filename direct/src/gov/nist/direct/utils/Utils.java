@@ -282,7 +282,8 @@ return data.toString();
  * Removes lower than and upper than (< and >) characters that encapsulate an email address
  * @return
  */
-public String trimEmailAddress(String str){
+public String trimEmailAddress(String string){
+	String str = string.trim();
 	String trimmedStr = null;
 if(str.contains("<")) {
 	trimmedStr = str.substring(1, str.lastIndexOf('>'));
