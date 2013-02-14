@@ -111,12 +111,10 @@ public class MDNMessageProcessor {
 //		}
 		
 		 
-		 // Validate MDN
+		 // Validate MDN and encryption
 		MDNValidator mdnv = new MDNValidatorImpl();
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
-		
 
-		// Check if MDN is encrypted
 		
 		
 		
@@ -172,31 +170,40 @@ public class MDNMessageProcessor {
 		logger.debug("ValidationContext is " + vc.toString());
 
 		 MimeMultipartReport m = new MimeMultipartReport(inputDirectMessage.toString());
-		Multipart mm = (Multipart)m;
-
 		
+		 
+		 // Process all parts
+		 int count = 0;
+		try {
+			count = m.getCount();
+		} catch (MessagingException e2) {
+			// message malformed, has no parts
+			e2.printStackTrace();
+		}
+			for (int i = 0; i < count; i++){
+				try {
+					this.processPart(er, m.getBodyPart(i));
+				} catch (MessagingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			
+			
+			
 		
 		// Get MDN message ID and compare to existing logs
 		String messageID = null;
-		try {
-			/***
-			 * issue is here
-			 */
-			messageID = ParseUtils.searchHeaderSimple(mm.getBodyPart(1), "message-id");
-		} catch (MessagingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		//look for log
+
+		messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
+		// write to file
 		
 		// Get MDN reception time
-		String date = null;
-		try {
-			date = ParseUtils.searchHeaderSimple(mm.getBodyPart(0), "date");
-		} catch (MessagingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		String date = ParseUtils.searchHeaderSimple((Part)m, "date");
 		Date receiveDate = null;
 
 		// Compares reception time for the MDN to send time for the original Direct message.
@@ -227,7 +234,7 @@ public class MDNMessageProcessor {
 
 		if (p == null)
 			return;
-		//er.detail("Processing Part");
+
 		// If the Part is a Message then first validate the Envelope
 		if (p instanceof Message){
 			System.out.println("Message");

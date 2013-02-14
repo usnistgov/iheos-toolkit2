@@ -70,7 +70,7 @@ public class MessageProcessor implements MessageProcessorInterface {
 				 // Process message
 				 MDNMessageProcessor mdnProc = new MDNMessageProcessor();
 				mdnProc.processMDNMessage(er, inputDirectMessage, _directCertificate, _password, vc);
-			 
+				 System.out.println("MDN message was processed.");
 			}
 			
 			
@@ -85,7 +85,8 @@ public class MessageProcessor implements MessageProcessorInterface {
 			 // Process message
 			 DirectMimeMessageProcessor directProc = new DirectMimeMessageProcessor();
 			 directProc.processAndValidateDirectMessage(er, inputDirectMessage, _directCertificate, _password, vc);
-		}
+			 System.out.println("Direct message was processed.");
+			}
 			
 		
 		

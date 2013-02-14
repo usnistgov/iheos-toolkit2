@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import gov.nist.direct.logger.writer.LogStructureSingleton;
+import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationUtils;
 
@@ -20,7 +20,7 @@ public class DirectLogReader {
 	 * @param userID
 	 * @return
 	 */
-	public ArrayList getUserLogs(String userID, LogStructureSingleton ls){
+	public ArrayList getUserLogs(String userID, LogPathsSingleton ls){
 		//use UserLog
 		
 		//readMessageStatus for DirectSend / direct + its message id + date
@@ -32,33 +32,33 @@ public class DirectLogReader {
 	}
 
 
-	public MimeMessage readDirectMessage (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	public MimeMessage readDirectMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 		String messageContentsLogPath = ls.getDirectMessageLogPath(transactionType, messageType, username, messageId);
 		return Utils.getMimeMessage(messageContentsLogPath);
 	}
 	
-	public byte[] readDirectMessageToByteArray (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	public byte[] readDirectMessageToByteArray (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 		String messageContentsLogPath = ls.getDirectMessageLogPath(transactionType, messageType, username, messageId);
 		return Utils.getMessage(messageContentsLogPath);
 	}
 	
-public MimeMultipartReport readMDNMessage (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
+public MimeMultipartReport readMDNMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String mdnLogPath = ls.getMDNLogPath(transactionType, messageType, username, messageId);
 	return Utils.getMDN(mdnLogPath);
 	}
 
-public byte[] readMDNMessageToByteArray (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
+public byte[] readMDNMessageToByteArray (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String mdnLogPath = ls.getMDNLogPath(transactionType, messageType, username, messageId);
 	return Utils.getMessage(mdnLogPath);
 	}
 
-public MimeMessage readEncryptedDirectMessage (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
+public MimeMessage readEncryptedDirectMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String encryptedLogPath = ls.getEncryptedMessageLogPath(transactionType, messageType, username, messageId);
 	return Utils.getMimeMessage(encryptedLogPath);
 	
 }
 
-public String readMessageStatus (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
+public String readMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String statusLogPath = ls.getMessageStatusLogPath(transactionType, messageType, username, messageId);
 	ArrayList<String> read = Utils.readFile(new File(statusLogPath));
 	
@@ -68,7 +68,7 @@ public String readMessageStatus (LogStructureSingleton ls, String transactionTyp
 }
 
 
-public Date readLogDate (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
+public Date readLogDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
 	String str = Utils.readFile(mdnLogPath);
 	

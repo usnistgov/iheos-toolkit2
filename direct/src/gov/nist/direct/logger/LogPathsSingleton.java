@@ -1,4 +1,4 @@
-package gov.nist.direct.logger.writer;
+package gov.nist.direct.logger;
 
 import gov.nist.timer.SendHistorySingleton;
 import gov.nist.timer.impl.DirectMessageTimestamp;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @author dazais
  *
  */
-public class LogStructureSingleton {
+public class LogPathsSingleton {
 	
 	private String LOG_ROOT;
 	
@@ -31,22 +31,22 @@ public class LogStructureSingleton {
 	private final String DATE_LOG = "/date.txt";
 	
 	
-	private static LogStructureSingleton LogStructureSingleton;
+	private static LogPathsSingleton LogStructureSingleton;
 	
 	
 	/**
 	 * Private constructor
 	 * @param logRoot
 	 */
-	private LogStructureSingleton(String logRoot){
+	private LogPathsSingleton(String logRoot){
 		LOG_ROOT = logRoot;
 	}
 	
 	
-	public static synchronized LogStructureSingleton getLogStructureSingleton() {
+	public static synchronized LogPathsSingleton getLogStructureSingleton() {
 		if (LogStructureSingleton == null) {
 			String logRoot = getLOG_ROOT();
-			LogStructureSingleton = new LogStructureSingleton(logRoot);
+			LogStructureSingleton = new LogPathsSingleton(logRoot);
 		}
 		return LogStructureSingleton;
 	}

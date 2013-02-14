@@ -1,6 +1,6 @@
 package gov.nist.direct.logger.writer.messageLoggerImpl;
 
-import gov.nist.direct.logger.writer.LogStructureSingleton;
+import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.writer.MessageLoggerInterface;
 import gov.nist.direct.utils.Utils;
 
@@ -16,7 +16,7 @@ import org.hamcrest.core.IsInstanceOf;
 
 public class EncryptedMessageLogger {
 
-	public void log(MimeMessage msg, LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) throws FileNotFoundException, IOException {
+	public void log(MimeMessage msg, LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) throws FileNotFoundException, IOException {
 		String encryptedLogPath = ls.getEncryptedMessageLogPath(transactionType, messageType, username, messageId);
 
 		try {
