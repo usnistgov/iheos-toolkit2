@@ -383,14 +383,14 @@ public class DirectTransaction extends BasicTransaction {
 			}
 		}
 		else if (part_name.equals("DirectSystemMailerHostname")) {
-			//mailerHostname = part.getText();
-			DnsLookup lookup = new DnsLookup();
+			mailerHostname = part.getText();
+			/*DnsLookup lookup = new DnsLookup();
 			try {
 				mailerHostname = lookup.getMxRecord(part.getText());
 			} catch (TextParseException e) {
 				s_ctx.set_error("Cannot get the mailer hostname " + e.toString());
 				e.printStackTrace();
-			}
+			}*/
 		}
 		else
 			parseBasicInstruction(part);
