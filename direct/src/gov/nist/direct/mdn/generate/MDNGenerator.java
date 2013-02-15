@@ -109,6 +109,7 @@ public class MDNGenerator {
 		mdnReport.append((original_message_id == null ? "" : original_message_id));
 		mdnReport.append("\r\n");
 		// 5) disposition-field
+		mdnReport.append("Disposition: ");
 		mdnReport.append(disposition.toString());
 		mdnReport.append("\r\n");
 		MimeBodyPart mdnPart = new MimeBodyPart();
