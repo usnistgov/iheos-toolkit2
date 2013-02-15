@@ -1,11 +1,15 @@
 package gov.nist.direct.logger;
 
+import gov.nist.direct.logger.writer.DirectContentLogger;
 import gov.nist.direct.logger.writer.DirectStatusLogger;
 import gov.nist.direct.logger.writer.TimeLogger;
 import gov.nist.direct.logger.writer.messageLoggerImpl.MDNLogger;
 
 import java.io.IOException;
 import java.util.Date;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 public class MessageLog {
 	
@@ -58,7 +62,7 @@ public class MessageLog {
 	
 	}
 	
-	public void logDirectMessage(String username, String directMsgDateSent, String transactionType, String messageType){
+	public void logDirectMessage(String username, String directMsgDateSent, String transactionType, String messageType, MimeMessage directMessage){
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
 		try {
@@ -68,11 +72,27 @@ public class MessageLog {
 			e.printStackTrace();
 		}
 		
-		// don't log expiration date
+		// log expiration date
 		
 		// Log full Direct Message
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		DirectContentLogger dcl = new DirectContentLogger();
+		try {
+			dcl.logMessageContents(directMessage.getContent().toString(), ls, transactionType, messageType, username, messageId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
+	
+	// uses username and messageid
+	public void readLog(String username){
+		
+	}
 	
 
 

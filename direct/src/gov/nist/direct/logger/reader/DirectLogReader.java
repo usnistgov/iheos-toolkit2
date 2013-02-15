@@ -6,8 +6,11 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.logger.UserLog;
+
 import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationUtils;
+import gov.nist.direct.logger.LoggerUtils;
 
 import javax.mail.internet.MimeMessage;
 
@@ -20,16 +23,20 @@ public class DirectLogReader {
 	 * @param userID
 	 * @return
 	 */
-	public ArrayList getUserLogs(String userID, LogPathsSingleton ls){
-		//use UserLog
-		
-		//readMessageStatus for DirectSend / direct + its message id + date
-		//readMessageStatus for DirectSend / mdn +date
-		
-		//same thing for DirectReceive
-		return null;
-		
-	}
+//	public ArrayList<UserLog> getAllLogs(LogPathsSingleton ls){
+//		ArrayList<UserLog> allUserLogs = new ArrayList<UserLog>();
+//		
+//		// parse all users
+//		String userspath =	ls.getLOG_ROOT();
+//		ArrayList<String> users = LoggerUtils.listFilesForFolder(userspath);
+//		while(users.iterator().hasNext()){
+//			UserLog log = UserLog.readUserLogs(users.iterator().next());
+//		}
+//		
+//		
+//		return null;
+//		
+//	}
 
 
 	public MimeMessage readDirectMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {

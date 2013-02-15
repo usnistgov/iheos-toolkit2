@@ -29,6 +29,7 @@ import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.valccda.CdaDetector;
 import gov.nist.toolkit.valregmsg.xdm.XDMException;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
@@ -485,7 +486,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		
 		// Display CCDA Document
 		er.detail("#####################CCDA Content######################");
-		er.detail(p.getContent().toString());
+		String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
+		er.detail(html_formatted_ccda);
 		er.detail("####################################################");
 		logger.info(p.getContent().toString());
 		
