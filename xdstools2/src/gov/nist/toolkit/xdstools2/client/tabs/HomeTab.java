@@ -154,7 +154,7 @@ public class HomeTab extends GenericQueryTab {
 		
 		
 		HTML instLink = new HTML();
-		instLink.setHTML("<a href=\"" + "doc/direct-how-to.html" + "\" target=\"_blank\">" +  "How to use the Direct Tools" + "</a>");
+		instLink.setHTML("<a href=\"" + "http://healthcare.nist.gov/ttt.html" + "\" target=\"_blank\">" +  "How to use the Direct Tools" + "</a>");
 		mainGrid.setWidget(row, col, instLink);
 		row++;
 
