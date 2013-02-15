@@ -1,13 +1,8 @@
 package gov.nist.direct.logger;
 
-import gov.nist.timer.SendHistorySingleton;
-import gov.nist.timer.impl.DirectMessageTimestamp;
+import gov.nist.toolkit.installation.Installation;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 
 /**
  * Current structure is:
@@ -72,7 +67,7 @@ public class LogPathsSingleton {
   * @return
   */
 	private static String getLOG_ROOT() {
-		return "C:\\Workspace\\toolkit\\direct-logs";
+		return Installation.installation().externalCache().getPath() + "\\direct\\logs";
 	}
 	
 	

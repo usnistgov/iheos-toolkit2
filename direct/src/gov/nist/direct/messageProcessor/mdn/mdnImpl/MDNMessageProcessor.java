@@ -87,11 +87,15 @@ public class MDNMessageProcessor {
 	ErrorRecorder mainEr;
 	boolean encrypted;
 	boolean signed;
+	LogPathsSingleton ls;
+	
+	private String MDN_STATUS;
 
 	public MDNMessageProcessor(){
 
 		// New ErrorRecorder for the MDN validation summary
 		mainEr = new GwtErrorRecorder();
+		ls = LogPathsSingleton.getLogStructureSingleton();
 
 
 	}
@@ -106,7 +110,7 @@ public class MDNMessageProcessor {
 		this.signed = false;
 
 		
-		 // Validate MDN and encryption
+		 // --------- Validate MDN and encryption ---------
 		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 
 		try {
@@ -118,13 +122,15 @@ public class MDNMessageProcessor {
 
 		MDNValidator mdnv = new MDNValidatorImpl();
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
-
 		
-		
+		// Check validation status
+		MDN_STATUS = "NON VALID";
+		if (!er.hasErrors())  MDN_STATUS = "VALID";
+	
 		
 		// Convert to Java type MultipartReport
 		// MimeMultipartReport m = new MimeMultipartReport(inputDirectMessage.toString());
-		System.out.println("MimeMultipartReport");
+		//System.out.println("MimeMultipartReport");
 		 
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
 		checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
@@ -174,29 +180,7 @@ public class MDNMessageProcessor {
 		logger.debug("ValidationContext is " + vc.toString());
 
 		MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
-		
-		 
-		 // Process all parts
-//		 int count = 0;
-//		try {
-//			count = m.getCount();
-//		} catch (MessagingException e2) {
-//			// message malformed, has no parts
-//			e2.printStackTrace();
-//		}
-//			for (int i = 0; i < count; i++){
-//				try {
-//					this.processPart(er, m.getBodyPart(i));
-//				} catch (MessagingException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-
-			
+				
 
 		// Get MDN sender name (username)
 		String username = ParseUtils.searchHeaderSimple((Part)m, "from");
@@ -210,9 +194,8 @@ public class MDNMessageProcessor {
 		String date = ParseUtils.searchHeaderSimple((Part)m, "date");
 		
 		// Write MDN info to existing Direct log
-		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		MessageLog msgLog = new MessageLog(messageID, ls);
-		msgLog.logMDN("RECEIVED", username, "DIRECT_SEND", "MDN", messageID, date);
+		msgLog.logMDN(MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date);
 		
 		// Compares reception time for the MDN to send time for the original Direct message.
 //		try {

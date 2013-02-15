@@ -28,20 +28,20 @@ public class DirectMessageValidatorFactory implements MessageValidatorFactory2I 
 	static public MessageValidatorEngine getValidatorForDirect(ErrorRecorderBuilder erBuilder, byte[] input, byte[] certificate, MessageValidatorEngine mvc, ValidationContext vc) {
 		mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
 		if (certificate == null) {
-			ErrorRecorder er = reportError(erBuilder, mvc, "Direct Validator", "No Certificate");
+			ErrorRecorder er = reportError(erBuilder, mvc, "Message Validator", "No Certificate");
 			return mvc;
 		}
-		mvc.addMessageValidator("DIRECT Validator", new DirectDecoder(vc, erBuilder, Io.bytesToInputStream(input), Io.bytesToInputStream(certificate)), erBuilder.buildNewErrorRecorder());
+		mvc.addMessageValidator("Message Validator", new DirectDecoder(vc, erBuilder, Io.bytesToInputStream(input), Io.bytesToInputStream(certificate)), erBuilder.buildNewErrorRecorder());
 		return mvc;
 	}
 
 	@Override
 	public MessageValidatorEngine getValidator(ErrorRecorderBuilder erBuilder, byte[] input, byte[] directCertInput, ValidationContext vc, RegistryValidationInterface rvi) {
 		MessageValidatorEngine mvc = new MessageValidatorEngine();
-		if (erBuilder != null) {
-			ErrorRecorder er = report(erBuilder, mvc, "Requested Validation Context");
-			er.detail(vc.toString());
-		}
+		//if (erBuilder != null) {
+		//	ErrorRecorder er = report(erBuilder, mvc, "Requested Validation Context");
+		//  er.detail(vc.toString());
+		//}
 
 		String inputString = new String(input).trim();
 
