@@ -3,9 +3,11 @@ package gov.nist.direct.utils;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import javax.mail.Address;
 import javax.mail.Header;
 import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.internet.MimeMessage;
 
 public class ParseUtils {
 	
@@ -76,6 +78,18 @@ public class ParseUtils {
 			else return false;
 		}
 		return false;
+	}
+	
+	public static String getFromAddress(MimeMessage m) {
+		try {
+			Address from = m.getFrom()[0];
+			String res = from.toString();
+			res = Utils.trimEmailAddress(res);
+			return res;
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 
