@@ -60,20 +60,20 @@ public class MessageProcessor implements MessageProcessorInterface {
 		// determine message type
 		// ------ MDN -------
 		try {
-			if (MessageDispatchUtils.isMDN(er, mm)){ // using mimemessage parser instead of MDNparser, might not work
-				 messageType = mdnMessageType;
-				 
-				 // Display Message type
-				 System.out.println("The file was recognized as an MDN message.");
-				 er.detail("The file was recognized as an MDN message.");
-				 
-				 // Process message
-				 MDNMessageProcessor mdnProc = new MDNMessageProcessor();
+			if (MessageDispatchUtils.isMDN(er, inputDirectMessage, _directCertificate, _password)){ // using mimemessage parser instead of MDNparser, might not work
+				messageType = mdnMessageType;
+
+				// Display Message type
+				System.out.println("The file was recognized as an MDN message.");
+				er.detail("The file was recognized as an MDN message.");
+
+				// Process message
+				MDNMessageProcessor mdnProc = new MDNMessageProcessor();
 				mdnProc.processMDNMessage(er, inputDirectMessage, _directCertificate, _password, vc);
-				 System.out.println("MDN message was processed.");
+				System.out.println("MDN message was processed.");
 			}
-			
-			
+
+
 		// ------ DIRECT -------
 			else if (MessageDispatchUtils.isDIRECT(er, mm)){
 			 messageType = directMessageType;

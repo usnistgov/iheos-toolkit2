@@ -44,6 +44,7 @@ import org.bouncycastle.mail.smime.SMIMEUtil;
 public class WrappedMessageProcessor {
 	
 	private boolean wrapped;
+	private boolean isMDN;
 	
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
@@ -51,6 +52,7 @@ public class WrappedMessageProcessor {
 	
 	public WrappedMessageProcessor() {
 		wrapped = false;
+		isMDN = false;
 	}
 	
 	public void messageParser(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password) {
@@ -133,6 +135,10 @@ public class WrappedMessageProcessor {
 				this.processPart(er, mp.getBodyPart(i));	
 			}
 
+		} else if (p.isMimeType("multipart/report")) {
+			this.isMDN = true;
+		} else if (p.isMimeType("message/disposition-notification")) {
+			this.isMDN = true;
 		} else {
 			System.out.println("Unrecognized part");
 
@@ -193,6 +199,10 @@ public class WrappedMessageProcessor {
 	
 	public boolean getWrapped() {
 		return this.wrapped;
+	}
+	
+	public boolean getIsMDN() {
+		return this.isMDN;
 	}
 	
 }
