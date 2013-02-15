@@ -129,7 +129,7 @@ public class MDNMessageProcessor {
 	
 		
 		// Convert to Java type MultipartReport
-		// MimeMultipartReport m = new MimeMultipartReport(inputDirectMessage.toString());
+		//MultipartReport mmr = new MultipartReport(inputDirectMessage.toString());
 		//System.out.println("MimeMultipartReport");
 		 
 		// Check MDN properties (Date received, Sender, compare to original Direct message)

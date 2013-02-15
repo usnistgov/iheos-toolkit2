@@ -25,7 +25,7 @@ public class LogPathsSingleton {
 	 
 	private final String MDN_MESSAGE_CONTENTS = "\\mdn-contents.txt";
 	private final String DIRECT_MESSAGE_CONTENTS = "\\direct-contents.txt"; // needs part number + ".txt" ext.
-	private final String DECRYPTED_MESSAGE = "\\encrypted-message"; 
+	private final String DECRYPTED_MESSAGE = "\\encrypted-message.txt"; 
 	private final String MESSAGE_STATUS = "\\status.txt";
 	private final String DATE_LOG = "\\date.txt";
 	
@@ -66,8 +66,12 @@ public class LogPathsSingleton {
   * Todo needs to be changed to tk_props
   * @return
   */
-	private static String getLOG_ROOT() {
-		return Installation.installation().externalCache().getPath() + "\\direct\\logs";
+	public static String getLOG_ROOT() {
+//		if (Installation.installation().externalCache().getPath() != null){
+//			return File.separator + "direct-logs";
+//		} 
+		//return Installation.installation().externalCache().getPath() + File.separator + "direct + " + File.separator + "logs";
+		return File.separator + "direct" + File.separator + "logs";
 	}
 	
 	
@@ -157,19 +161,19 @@ public class LogPathsSingleton {
 	 * @return
 	 */
 	private String getFullPath(String transactionType, String messageType, String username, String messageId){
-		String defaultPath = LOG_ROOT + "\\" + username + DIRECT_RECEIVE_FOLDER + "\\" + messageId + DIRECT_MESSAGE_FOLDER;
+		String defaultPath = LOG_ROOT + File.separator + username + DIRECT_RECEIVE_FOLDER + File.separator + messageId + DIRECT_MESSAGE_FOLDER;
 
 		if ((transactionType == "DIRECT_SEND") &&  (messageType == "DIRECT")){	
-			return LOG_ROOT + "\\" + username + DIRECT_SEND_FOLDER + "\\" + messageId + DIRECT_MESSAGE_FOLDER;
+			return LOG_ROOT + File.separator + username + DIRECT_SEND_FOLDER + File.separator + messageId + DIRECT_MESSAGE_FOLDER;
 	}
 		if ((transactionType == "DIRECT_SEND") &&  (messageType == "MDN")){	
-			return LOG_ROOT + "\\" + username + DIRECT_SEND_FOLDER + "\\" + messageId + MDN_MESSAGE_FOLDER;
+			return LOG_ROOT + File.separator + username + DIRECT_SEND_FOLDER + File.separator + messageId + MDN_MESSAGE_FOLDER;
 	}
 		if ((transactionType == "DIRECT_RECEIVE") &&  (messageType == "DIRECT")){	
 			return defaultPath;	}
 		
 		if ((transactionType == "DIRECT_RECEIVE") &&  (messageType == "MDN")){	
-			return LOG_ROOT + "\\" + username + DIRECT_RECEIVE_FOLDER + "\\" + messageId + MDN_MESSAGE_FOLDER;
+			return LOG_ROOT + File.separator + username + DIRECT_RECEIVE_FOLDER + File.separator + messageId + MDN_MESSAGE_FOLDER;
 	}
 		return defaultPath;
 	}
