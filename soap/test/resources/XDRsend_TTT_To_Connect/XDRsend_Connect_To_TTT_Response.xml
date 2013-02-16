@@ -1,0 +1,31 @@
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope">
+	<S:Header>
+		<wsa:Action s:mustUnderstand="1"
+			xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:wsa="http://www.w3.org/2005/08/addressing">urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse</wsa:Action>
+		<wsa:RelatesTo xmlns:wsa="http://www.w3.org/2005/08/addressing">3328cf66-5940-4f61-b4ba-936712eae5cf</wsa:RelatesTo>
+	</S:Header>
+	<S:Body>
+		<fault:Fault xmlns:fault="http://www.w3.org/2003/05/soap-envelope">
+			<fault:Code>
+				<fault:Value>fault:Sender</fault:Value>
+			</fault:Code>
+			<fault:Reason>
+				<fault:Text xml:lang="en">Problem parsing input in validator
+					gov.nist.toolkit.valregmsg.message.SoapMessageValidator[Envelope(),
+					Header(), WS-Addressing(), At least one WS-Addressing SOAP header
+					element must have a soapenv:mustUnderstand attribute
+					soapenv:mustUnderstand with value of logical
+					true(http://www.w3.org/TR/soap12-part0/#L4697), Taken from the
+					above reference:(), In the SOAP 1.2 infoset-based description, the
+					env:mustUnderstand attribute in header elements takes the (logical)
+					value "true" or "false", whereas in SOAP 1.1 they are the literal
+					value "1" or "0" respectively.(), This validation accepts 1 or 0 or
+					any capitalization of true or false(), WS-Addressing Action
+					Header(), Found WS-Action:
+					urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b(), Body(),
+					Checking WS-Action against SOAP Body contents(), Scheduling
+					validation of body based on requested message type()]</fault:Text>
+			</fault:Reason>
+		</fault:Fault>
+	</S:Body>
+</S:Envelope>

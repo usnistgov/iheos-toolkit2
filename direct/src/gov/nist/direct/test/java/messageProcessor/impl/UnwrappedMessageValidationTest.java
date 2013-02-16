@@ -1,14 +1,12 @@
 package gov.nist.direct.test.java.messageProcessor.impl;
 
-import static org.junit.Assert.*;
-import gov.nist.direct.messageParser.MessageParser;
-import gov.nist.direct.messageParser.impl.DirectMimeMessageProcessor;
-import gov.nist.direct.messageParser.impl.MimeMessageParser;
+import static org.junit.Assert.assertTrue;
+import gov.nist.direct.directValidator.impl.ProcessEnvelope;
+import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
+import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.utils.ValidationSummary;
-import gov.nist.direct.validation.impl.ProcessEnvelope;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,8 +15,6 @@ import java.io.IOException;
 import javax.mail.internet.MimeMessage;
 
 import org.junit.Test;
-
-import com.sun.org.apache.bcel.internal.classfile.Field;
 
 public class UnwrappedMessageValidationTest {
 
@@ -39,12 +35,12 @@ public class UnwrappedMessageValidationTest {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(unwrapped);
 			fileInputStream.read(unwrappedMessage);
+			fileInputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, unwrappedMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, unwrappedMessage);
 		
 		ProcessEnvelope proEnv = new ProcessEnvelope();
 		try {
@@ -71,12 +67,12 @@ public class UnwrappedMessageValidationTest {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(unwrapped);
 			fileInputStream.read(unwrappedMessage);
+			fileInputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, unwrappedMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, unwrappedMessage);
 		
 		DirectMimeMessageProcessor processor = new DirectMimeMessageProcessor();
 		try {
@@ -103,12 +99,12 @@ public class UnwrappedMessageValidationTest {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(wrapped);
 			fileInputStream.read(wrappedMessage);
+			fileInputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, wrappedMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, wrappedMessage);
 		
 		ProcessEnvelope proEnv = new ProcessEnvelope();
 		try {
@@ -135,12 +131,13 @@ public class UnwrappedMessageValidationTest {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(wrapped);
 			fileInputStream.read(wrappedMessage);
+			fileInputStream.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, wrappedMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, wrappedMessage);
 		
 		DirectMimeMessageProcessor processor = new DirectMimeMessageProcessor();
 		try {

@@ -142,6 +142,7 @@
 	<property name="tk.src.dir" location="tk/src" />
 	<property name="results.src.dir" location="results/src" />
 	<property name="actorfactory.src.dir" location="actorfactory/src" />
+	<property name="http.src.dir" location="http/src" />
 
 	<!-- antlib is bundled with the 3rd party librairies.
 	Since the lib.dir might not be initialized or could be cleaned-up,
@@ -151,14 +152,20 @@
 			<pathelement location="${shared.lib.dir}/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
-
+	
 	<!-- classpath -->
 	<path id="classpath">
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-
+	
+	<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
+		<classpath refid="classpath" />
+	</taskdef>
+	
+	
+	
     <!-- ================================================= 
           This section downloads, installs and configures ivy.
           It seems the easier and less intrusive way to get ivy in shared-libs.               

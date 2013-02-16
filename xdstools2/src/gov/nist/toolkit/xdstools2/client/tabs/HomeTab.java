@@ -76,9 +76,9 @@ public class HomeTab extends GenericQueryTab {
 
 				);
 		
-		HTML faq = new HTML();
-		faq.setHTML("<a href=\"" + "doc/faq.html" + "\" target=\"_blank\">" +  "[FAQ]" + "</a>");
-		menubar.add(faq);
+//		HTML faq = new HTML();
+//		faq.setHTML("<a href=\"" + "doc/faq.html" + "\" target=\"_blank\">" +  "[FAQ]" + "</a>");
+//		menubar.add(faq);
 
 //		new FeatureManager().addCallback(new MainGridLoader());
 		
@@ -154,7 +154,7 @@ public class HomeTab extends GenericQueryTab {
 		
 		
 		HTML instLink = new HTML();
-		instLink.setHTML("<a href=\"" + "doc/direct-how-to.html" + "\" target=\"_blank\">" +  "How to use the Direct Tools" + "</a>");
+		instLink.setHTML("<a href=\"" + "http://healthcare.nist.gov/ttt.html" + "\" target=\"_blank\">" +  "How to use the Direct Tools" + "</a>");
 		mainGrid.setWidget(row, col, instLink);
 		row++;
 
@@ -169,6 +169,10 @@ public class HomeTab extends GenericQueryTab {
 		String val2 = "Send Direct Message";
 		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val2, new TabLauncher(myContainer, val2)));
 		row++;
+
+//		String val3 = "View Direct Message Status";
+//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val3, new TabLauncher(myContainer, val3)));
+//		row++;
 
 
 		// ***************************************************************************
@@ -187,6 +191,7 @@ public class HomeTab extends GenericQueryTab {
 		TkProps pubcertConfig = tkProps().withPrefixRemoved("direct.pubcert");
 		String cert = "";
 		String trustanchor = "";
+		String invtrustrelanchor = "";
 		try {
 			 cert = pubcertConfig.get("pubcert");
 		} catch (PropertyNotFoundException e) {
@@ -197,6 +202,11 @@ public class HomeTab extends GenericQueryTab {
 		} catch (PropertyNotFoundException e) {
 			new PopupMessage("Configuration parameter direct.pubcert.trustanchor cannot be loaded from tk_props.txt properties file located in the external cache");
 		}
+		try {
+			invtrustrelanchor = pubcertConfig.get("invtrustrelanchor");
+		} catch (PropertyNotFoundException e) {
+			new PopupMessage("Configuration parameter direct.pubcert.invtrustrelanchor cannot be loaded from tk_props.txt properties file located in the external cache");
+		}
 		
 		topPanel.add(new HTML("<hr />"));
 
@@ -206,6 +216,10 @@ public class HomeTab extends GenericQueryTab {
 		topPanel.add(new HTML("<hr />"));
 
 		topPanel.add(new HTML("TTT Trust Anchor can be displayed from <a href=\"pubcert/" + trustanchor + "\">here</a>.  " 
+				));
+		topPanel.add(new HTML("<hr />"));
+
+		topPanel.add(new HTML("TTT Trust Anchor representing an invalid trust relationship can be displayed from <a href=\"pubcert/" + invtrustrelanchor + "\">here</a>.  " 
 				));
 
 		topPanel.add(new HTML("<hr />"));

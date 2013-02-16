@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.dns.DnsLookup;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.DirectConfigManager;
@@ -59,7 +60,18 @@ public class SendDirect extends CommonServiceManager {
 
 			String targetDomain = params.get("$direct_to_domain$").trim();
 			logger.debug("Target domain is " + targetDomain);
-			params.put("$direct_server_name$", "mail." + targetDomain);
+			
+			if (targetDomain == null || targetDomain.equals(""))
+				throw new Exception("No target domain provided by UI");
+			
+			String directServerName = new DnsLookup().getMxRecord(targetDomain);
+			
+			logger.info("Target server hostname is " + directServerName);
+			
+			if (directServerName == null || directServerName.equals(""))
+				throw new Exception("MX record lookup in DNS did not provide a mail handler hostname for domain " + targetDomain);
+			
+			params.put("$direct_server_name$", directServerName);
 
 			if (encryptionCert == null) {
 				// not uploaded - pre-installed for a known domain - go find it

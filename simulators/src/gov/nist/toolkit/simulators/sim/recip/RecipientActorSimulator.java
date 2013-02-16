@@ -39,6 +39,10 @@ public class RecipientActorSimulator extends ActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
+			if (asc.getValidationContext()  != null) {
+				common.vc.addInnerContext(asc.getValidationContext());
+			}
+			
 			if (!common.runInitialValidations())
 				return false;
 			

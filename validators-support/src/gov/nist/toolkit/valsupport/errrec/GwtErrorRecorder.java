@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingCompletionType;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class GwtErrorRecorder implements ErrorRecorder  {
 	
+	ErrorRecorderBuilder errorRecorderBuilder;
 	List<ValidatorErrorItem> errMsgs = new ArrayList<ValidatorErrorItem>();
 	int lastErrCount = 0;
 	
@@ -251,6 +253,12 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	public List<ValidatorErrorItem> getErrMsgs() {
 		return this.errMsgs;
+	}
+
+	@Override
+	public ErrorRecorderBuilder getErrorRecorderBuilder() {
+		// TODO Auto-generated method stub
+		return errorRecorderBuilder;
 	}
 
 
