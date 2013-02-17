@@ -8,6 +8,12 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * For a given collection of Sites, build a transaction offering map. 
+ * This is used to figure out what sites offer a particular transaction.
+ * @author bill
+ *
+ */
 public class TransactionOfferingFactory {
 	Sites sites;
 	TransactionOfferings to;

@@ -17,8 +17,9 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public List<TransactionBean> transactions = new ArrayList<TransactionBean>();
-	public String collectionName;
-	boolean isRepositories = false;
+	public String collectionName;    // never really used
+	boolean isRepositories = false; // a TransactionCollection is either for Repositories
+									// or not
 	
 	public boolean equals(TransactionCollection tc) {
 		if (tc == null)
@@ -130,15 +131,19 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	
 	public TransactionCollection() {} // For GWT
 
+	// instead of the boolean, subtypes should be used
 	public TransactionCollection(boolean isRepositories) {
 		this.isRepositories = isRepositories;
 	}	
 	
+	// Not used
+	@Deprecated
 	TransactionCollection(String collectionName) {
 		transactions = new ArrayList<TransactionBean>();
 		this.collectionName = collectionName;
 	}
 	
+	@Deprecated
 	public void setName(String name) {
 		collectionName = name;
 	}
