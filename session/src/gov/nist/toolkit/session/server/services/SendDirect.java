@@ -69,7 +69,7 @@ public class SendDirect extends CommonServiceManager {
 			logger.info("Target server hostname is " + directServerName);
 			
 			if (directServerName == null || directServerName.equals(""))
-				throw new Exception("MX record lookup in DNS did not provide a mail handler hostname for domain " + targetDomain);
+				throw new NoMXRecordException("MX record lookup in DNS did not provide a mail handler hostname for domain " + targetDomain);
 			
 			params.put("$direct_server_name$", directServerName);
 
