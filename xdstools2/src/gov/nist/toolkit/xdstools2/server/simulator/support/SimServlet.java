@@ -2,7 +2,9 @@ package gov.nist.toolkit.xdstools2.server.simulator.support;
 
 import gov.nist.toolkit.actorfactory.ActorFactory;
 import gov.nist.toolkit.actorfactory.RegistryActorFactory;
-import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.SimCache;
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.NoSimException;
 import gov.nist.toolkit.actorfactory.SimulatorFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -14,7 +16,6 @@ import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.ig.IgActorSimulator;
 import gov.nist.toolkit.simulators.sim.recip.RecipientActorSimulator;
@@ -152,6 +153,8 @@ public class SimServlet  extends HttpServlet {
 				actor = sdb.getActorForSimulator();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (NoSimException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -229,6 +232,8 @@ public class SimServlet  extends HttpServlet {
 				actor = sdb.getActorForSimulator();
 			} catch (IOException e) {
 				e.printStackTrace();
+			} catch (NoSimException e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -276,6 +281,9 @@ public class SimServlet  extends HttpServlet {
 				SimDb sdb = new SimDb(simDbDir, simid, null, null);
 				actor = sdb.getActorForSimulator();
 			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (NoSimException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -405,7 +413,7 @@ public class SimServlet  extends HttpServlet {
 
 			logRequest(request, db, actor, transaction);
 
-			SimulatorConfig asc = new SimulatorFactory(SimManager.get(session.id())).getSimConfig(simDbDir, simid);
+			SimulatorConfig asc = new SimulatorFactory(new SimCache().getSimManagerForSession(session.id())).getSimConfig(simDbDir, simid);
 
 			regIndex = getRegIndex(db, simid);
 			repIndex = getRepIndex(db, simid);
@@ -515,6 +523,10 @@ public class SimServlet  extends HttpServlet {
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
 		} catch (XdsException e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
+		} catch (NoSimException e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;

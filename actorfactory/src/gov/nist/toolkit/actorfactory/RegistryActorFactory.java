@@ -1,9 +1,11 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
@@ -26,11 +28,11 @@ public class RegistryActorFactory extends ActorFactory {
 				TransactionType.UPDATE
 				);
 	
-	public List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	public Simulator buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		return buildNew(simm, null, configureBase);
 	}
 
-	public List<SimulatorConfig> buildNew(SimManager simm, String simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -38,7 +40,7 @@ public class RegistryActorFactory extends ActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		File codesFile = simm.getCodesFile();
+		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
 		addEditableConfig(sc, update_metadata_option, ParamType.BOOLEAN, false);
@@ -48,7 +50,7 @@ public class RegistryActorFactory extends ActorFactory {
 		addEditableEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
 		addEditableEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);		
 
-		return asList(sc);
+		return new Simulator(sc);
 	}
 	 
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) {

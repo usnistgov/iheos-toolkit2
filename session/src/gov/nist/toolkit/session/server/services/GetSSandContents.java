@@ -29,14 +29,14 @@ public class GetSSandContents extends CommonServiceManager {
 				if (session.siteSpec.isRG()) {
 					sections.add("XCA");
 //					params.put("$home$", toolkit.getHome());
-					String home = session.getHome();
+					String home = site.homeId; //session.getHome();
 					if (home != null && !home.equals("")) {
 						params.put("$home$", home);
 					}
 				} 
 				else if (session.siteSpec.isIG()) {
 					sections.add("IG");
-					params.put("$home$", session.getHome());
+					params.put("$home$", site.homeId);  //session.getHome());
 				} 
 				else{
 					sections.add("XDS");

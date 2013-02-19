@@ -59,8 +59,6 @@ public class MessageValidatorTab extends TabbedWindow {
 	boolean enableCertificateUpload = false;
 	VerticalPanel fileUploadPanel = new VerticalPanel();
 
-	final RadioButton fromFileRadioButton = new RadioButton("InputType", "From File");
-	final RadioButton fromEndpointRadioButton = new RadioButton("InputType", "From Endpoint");
 //	List<RadioButton> inputTypeButtons = 
 //			Arrays.asList(
 //					fromFileRadioButton,
@@ -446,8 +444,6 @@ public class MessageValidatorTab extends TabbedWindow {
 		HorizontalPanel inputTypeArea = new HorizontalPanel();
 		//		inputTypeArea.add(fromFileRadioButton);
 		//		inputTypeArea.add(fromEndpointRadioButton);
-		fromFileRadioButton.setValue(true);
-		fromEndpointRadioButton.setValue(false);
 
 		fromWhereArea.add(inputTypeArea);
 		fromWhereArea.add(uploadForm);
@@ -670,10 +666,6 @@ public class MessageValidatorTab extends TabbedWindow {
 		runButtonsPanel.add(runWarning);
 	}
 
-	boolean isFileUpload() {
-		return fromFileRadioButton.getValue();
-	}
-
 	void initiateValidation() {
 		timeAndDate = null;
 		clientIP = null;
@@ -778,11 +770,7 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		System.out.println(vc);
 		
-		if (isFileUpload()) {
-			toolkitService.validateMessage(vc, messageValidationCallback);
-		} else {
-			toolkitService.validateMessage(vc, filename, messageValidationCallback);
-		}
+		toolkitService.validateMessage(vc, messageValidationCallback);
 	}
 
 	final AsyncCallback<List<String>> getSimFileNamesCallback = new AsyncCallback<List<String>>() {
@@ -812,14 +800,9 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		public void onValueChange(ValueChangeEvent<Boolean> event) {
 			new GwtValFormatter().clearResults();
-			if (fromFileRadioButton.getValue()) {
-				chooseFromEndpointArea.setVisible(false);
-				uploadForm.setVisible(true);
-				inspectButton.setEnabled(false);
-			}
-			if (fromEndpointRadioButton.getValue()) {
-				//				toolkitService.getSimFileSpecs(getSimFileNamesCallback);
-			}
+			chooseFromEndpointArea.setVisible(false);
+			uploadForm.setVisible(true);
+			inspectButton.setEnabled(false);
 
 			messageTypeValueChangedHandler.onValueChange(null);
 		}
@@ -956,26 +939,21 @@ public class MessageValidatorTab extends TabbedWindow {
 				refreshFileUploadPanel();
 			}
 
-			// this reaches out to the from file / from endpoint  radio buttons
-			if (fromEndpointRadioButton.getValue()) {
-				if (messageTypeButtonMap.get(ValidationTypeXDM).getValue()) 
-					messageTypeButtonMap.get(ValidationType_guess).setValue(true);
+			if (messageTypeButtonMap.get(ValidationTypeXDM).getValue()) 
+				messageTypeButtonMap.get(ValidationType_guess).setValue(true);
 
-				messageTypeButtonMap.get(ValidationTypeXDM).setEnabled(false);
+			messageTypeButtonMap.get(ValidationTypeXDM).setEnabled(false);
 
-				soapWrapper.setValue(true);
-				samlWrapper.setValue(true);
-				httpWrapper.setValue(true);
-				requestMessage.setValue(true);
+			soapWrapper.setValue(true);
+			samlWrapper.setValue(true);
+			httpWrapper.setValue(true);
+			requestMessage.setValue(true);
 
-				soapWrapper.setEnabled(false);
-				samlWrapper.setEnabled(false);
-				httpWrapper.setEnabled(false);
-				requestMessage.setEnabled(false);
-				responseMessage.setEnabled(false);
-
-			}
-
+			soapWrapper.setEnabled(false);
+			samlWrapper.setEnabled(false);
+			httpWrapper.setEnabled(false);
+			requestMessage.setEnabled(false);
+			responseMessage.setEnabled(false);
 		}
 
 	};

@@ -1,9 +1,9 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.actorfactory.RegistryActorFactory;
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.mu.MuSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;

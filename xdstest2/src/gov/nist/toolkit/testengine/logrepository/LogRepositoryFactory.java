@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.logrepository;
 
-import gov.nist.toolkit.simDb.SimDb;
+import gov.nist.toolkit.actorfactory.SimDb;
 
 import java.io.File;
 import java.io.IOException;

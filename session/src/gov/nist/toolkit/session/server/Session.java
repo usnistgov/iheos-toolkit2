@@ -1,5 +1,8 @@
 package gov.nist.toolkit.session.server;
 
+import gov.nist.toolkit.actorfactory.NoSimException;
+import gov.nist.toolkit.actorfactory.SimCache;
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SimulatorFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
@@ -13,7 +16,6 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
-import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -81,7 +83,8 @@ public class Session implements SecurityParams {
 	public String ipAddr = null;  // also used as default sim db id
 	String serverIP = null;
 	String serverPort = null;
-	List<SimulatorConfig> actorSimulatorConfigs = new ArrayList<SimulatorConfig>();
+//	List<SimulatorConfig> actorSimulatorConfigs = new ArrayList<SimulatorConfig>();
+	SimCache simCache = new SimCache();
 	String sessionId;
 	
 //	File warHome = null;
@@ -127,11 +130,11 @@ public class Session implements SecurityParams {
 		EnvSetting.getEnvSetting(sessionId);
 	}
 	
-	// not to be trusted. Use SimulatorServiceManager instead
-	public List<SimulatorConfig> getSimConfigs() {
-		return actorSimulatorConfigs;
-	}
-	
+//	// not to be trusted. Use SimulatorServiceManager instead
+//	public List<SimulatorConfig> getSimConfigs() {
+//		return actorSimulatorConfigs;
+//	}
+//	
 	public void addSession() {
 		sessionMap.put(sessionId, this);
 	}
@@ -144,11 +147,13 @@ public class Session implements SecurityParams {
 		sessionId = id;
 	}
 	
-	public String getHome() throws Exception {
-		logger.debug(getId() + ": " + "getHome");
-		Site s2 = SimManager.getSites(getId()).getSite(siteSpec.name);
-		return s2.getHome();
-	}
+	// undefined - no possible answer
+//	@Deprecated
+//	public String getHome() throws Exception {
+//		logger.debug(getId() + ": " + "getHome");
+//		Site s2 = SimManager.getSites(getId()).getSite(siteSpec.name);
+//		return s2.getHome();
+//	}
 
 	public void setSiteSpec(SiteSpec siteSpec) {
 		this.siteSpec = siteSpec;
@@ -157,8 +162,10 @@ public class Session implements SecurityParams {
 		
 		if (repUid == null || repUid.equals("")) {
 			// this will not always work and is not always relevant - just try
+			//    WHY?
 			try {
-				Site st = SimManager.getSites(id()).getSite(siteSpec.name);
+				Sites sites = new SimCache().getSimManagerForSession(id()).getSites();
+				Site st = sites.getSite(siteSpec.name);
 				repUid = st.getRepositoryUniqueId();
 			} catch (Exception e) {
 			}
@@ -264,39 +271,27 @@ public class Session implements SecurityParams {
 		return sessionId;
 	}
 	
-	public Sites loadActorSimulatorConfigs(Sites commonSites, List<String> ids) throws Exception {
-		actorSimulatorConfigs = new SimulatorFactory(SimManager.get(sessionId)).loadSimulators(ids);
-		SimManager.get(sessionId).setSimConfigs(actorSimulatorConfigs);
-		return SimManager.getAllSites(sessionId, commonSites);
-	}
-	
-	public void deleteActorSimulator(SimulatorConfig asc) throws IOException {
-		String id = asc.getId();
-		for (SimulatorConfig a : actorSimulatorConfigs) {
-			if (id.equals(a.getId())) {
-				actorSimulatorConfigs.remove(a);
-				break;
-			}
-		}
-		new SimulatorFactory(SimManager.get(sessionId)).deleteSimulator(asc);
-
-	}
-	
-	/**
-	 * 
-	 * @return map from simulator name (private name) to simulator id (global id)
-	 */
-	public Map<String, String> getActorSimulatorNameMap() {
-		Map<String, String> nameMap = new HashMap<String, String>();
+//	public Sites loadActorSimulatorConfigs(Sites commonSites, List<String> ids) throws Exception {
+//		actorSimulatorConfigs = new SimulatorFactory(SimManager.getSimManagerForSession(sessionId)).loadSimulators(ids);
+//		SimManager.getSimManagerForSession(sessionId).setSimConfigs(actorSimulatorConfigs);
+//		return SimManager.getAllSites(sessionId, commonSites);
+//	}
 		
-		for (SimulatorConfig sc : actorSimulatorConfigs) {
-			String name = sc.getDefaultName();
-			String id = sc.getId();
-			nameMap.put(name, id);
-		}
-		
-		return nameMap;
-	}
+//	/**
+//	 * 
+//	 * @return map from simulator name (private name) to simulator id (global id)
+//	 */
+//	public Map<String, String> getActorSimulatorNameMap() {
+//		Map<String, String> nameMap = new HashMap<String, String>();
+//		
+//		for (SimulatorConfig sc : actorSimulatorConfigs) {
+//			String name = sc.getDefaultName();
+//			String id = sc.getId();
+//			nameMap.put(name, id);
+//		}
+//		
+//		return nameMap;
+//	}
 	
 //	public List<String> reloadSites(Sites commonSites) throws Exception {
 //		sites = getAllSites(commonSites);
@@ -323,6 +318,8 @@ public class Session implements SecurityParams {
 			File simdir = simdb.getIpDir(); 
 			Io.delete(simdir);
 		} catch (IOException e) {
+			// doesn't exist - ok
+		} catch (NoSimException e) {
 			// doesn't exist - ok
 		}
 	}

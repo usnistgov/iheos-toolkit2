@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -146,14 +147,14 @@ public class SimulatorControlTab extends GenericQueryTab {
 	SimConfigSuper simConfigSuper = new SimConfigSuper(this, simConfigPanel);
 	
 	void getNewSimulator(String actorTypeName) {
-		toolkitService.getNewSimulator(actorTypeName, new AsyncCallback<List<SimulatorConfig>>() {
+		toolkitService.getNewSimulator(actorTypeName, new AsyncCallback<Simulator>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("Error creating new simulator: " + caught.getMessage());
 			}
 
-			public void onSuccess(List<SimulatorConfig> configs) {
-				for (SimulatorConfig config : configs)
+			public void onSuccess(Simulator sconfigs) {
+				for (SimulatorConfig config : sconfigs.getConfigs())
 					simConfigSuper.add(config);
 				simConfigSuper.reloadSimulators();
 			}

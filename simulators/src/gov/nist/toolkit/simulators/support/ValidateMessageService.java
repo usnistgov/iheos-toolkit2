@@ -1,17 +1,14 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.SimCache;
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.valdirfactory.DirectMessageValidatorFactory;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valregmsg.message.MetadataMessageValidator;
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -84,56 +81,6 @@ public class ValidateMessageService extends CommonServiceManager {
 
 	}
 	
-	/**
-	 * A wrapper for runValidation that starts with the context and the simulator
-	 * input filename
-	 * @param vc validation context
-	 * @param simFileName base filename for the simulator db entry
-	 * @return
-	 */
-	public MessageValidationResults validateMessageFile(ValidationContext vc, String simFileName) {
-		try {
-			SimDb sdb = SimManager.get(session.id()).getSimDb(session.getDefaultSimId());
-			
-			sdb.setFileNameBase(simFileName);
-			
-			if (vc.isMessageTypeKnown())
-				vc.updateable = false;
-
-			MessageValidatorEngine mvc = runValidation(vc, sdb, null);
-						
-			MessageValidator mv = mvc.findMessageValidator("MetadataMessageValidator");
-			if (mv != null) {
-				MetadataMessageValidator mmv = (MetadataMessageValidator) mv;
-				session.setLastMetadata(mmv.getMetadata());
-			}
-
-			MessageValidationResults mvr = getMessageValidationResults(mvc);
-			
-			// Add a summary as if it were the result of its own step
-			mvr.addResult("Validation Summary", buildValidationSummary(vc, mvc));
-
-			return mvr;
-		} catch (RuntimeException e) {
-			MessageValidationResults mvr = new MessageValidationResults();
-			if (e.getMessage() == null) {
-				mvr.addError(XdsErrorCode.Code.NoCode, "Exception", ExceptionUtil.exception_details(e));
-			} else {
-				mvr.addError(XdsErrorCode.Code.NoCode, "Exception", e.getMessage());
-			}
-			return mvr;
-		} catch (IOException e) {
-			MessageValidationResults mvr = new MessageValidationResults();
-			if (e.getMessage() == null) {
-				mvr.addError(XdsErrorCode.Code.NoCode, "Exception", ExceptionUtil.exception_details(e));
-			} else {
-				mvr.addError(XdsErrorCode.Code.NoCode, "Exception", e.getMessage());
-			}
-			return mvr;
-		}
-		
-	}
-
 	public MessageValidationResults validateLastUpload(ValidationContext vc) {
 		byte[] message = session.getlastUpload();
 		byte[] input2 = session.getlastUpload2();

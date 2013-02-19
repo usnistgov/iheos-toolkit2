@@ -1,4 +1,4 @@
-package gov.nist.toolkit.simDb;
+package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
@@ -7,6 +7,7 @@ import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParser;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
@@ -31,17 +32,17 @@ import org.apache.log4j.Logger;
  * configurations are managed through ActorSimulatorConfig class.
  */
 public class SimDb {
-	String ip = null;    // ip is the simulator id
+	String simId = null;    // ip is the simulator id
 	File dbRoot = null;  // base of the simulator db
 	String event = null;
-	File ipDir = null;   // directory within simdb that represents this event
+	File simDir = null;   // directory within simdb that represents this event
 	String actor = null;
 	String transaction = null;
 	File transactionDir = null;  
 	static Logger logger = Logger.getLogger(SimDb.class);
 
 
-	static public SimDb mkSim(File dbRoot, String simid, String actor) throws IOException {
+	static public SimDb mkSim(File dbRoot, String simid, String actor) throws IOException, NoSimException {
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
 
@@ -60,10 +61,15 @@ public class SimDb {
 	public SimDb() {
 
 	}
+	
+	public SimDb(String simulatorId) throws IOException, NoSimException {
+		this(Installation.installation().simDbFile(), simulatorId, null, null);
+	}
+
 
 	// ipAddr aka simid
-	public SimDb(File dbRoot, String ipAddr, String actor, String transaction) throws IOException {
-		ip = ipAddr;
+	public SimDb(File dbRoot, String simId, String actor, String transaction) throws IOException, NoSimException {
+		this.simId = simId;
 		this.actor = actor;
 		this.transaction = transaction;
 		this.dbRoot = dbRoot;
@@ -71,20 +77,20 @@ public class SimDb {
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
 
-		String ipdir = ip.replaceAll("\\.", "_");
-		ipDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
-		if (!ipDir.exists()) {
-			logger.error("Simulator " + ipAddr + " does not exist");
-			throw new IOException("Simulator " + ipAddr + " does not exist");
+		String ipdir = simId.replaceAll("\\.", "_");
+		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
+		if (!simDir.exists()) {
+			logger.error("Simulator " + simId + " does not exist");
+			throw new NoSimException("Simulator " + simId + " does not exist");
 		}
 			
-		ipDir.mkdirs();
+		simDir.mkdirs();
 
-		if (!ipDir.isDirectory())
-			throw new IOException("Cannot create content in Simulator database, creation of " + ipDir.toString() + " failed");
+		if (!simDir.isDirectory())
+			throw new IOException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
 
 		if (actor != null && transaction != null) {
-			String transdir = ipDir + File.separator + actor + File.separator + transaction;
+			String transdir = simDir + File.separator + actor + File.separator + transaction;
 			transactionDir = new File(transdir);
 			transactionDir.mkdirs();
 			if (!transactionDir.isDirectory())
@@ -95,8 +101,12 @@ public class SimDb {
 
 	}
 	
+	public void delete() {
+		delete(simDir);
+	}
+	
 	public String getActorForSimulator() {
-		File[] files = ipDir.listFiles();
+		File[] files = simDir.listFiles();
 		for (File file : files) {
 			if (file.isDirectory())
 				return file.getName();
@@ -134,7 +144,7 @@ public class SimDb {
 	}
 	
 	public File getSimulatorControlFile() {
-		return new File(ipDir.toString() + File.separatorChar + "simctl.ser");
+		return new File(simDir.toString() + File.separatorChar + "simctl.ser");
 	}
 	
 	public static String getTransactionDirName(ATFactory.TransactionType tt)  {
@@ -143,7 +153,7 @@ public class SimDb {
 	
 	public File getTransactionDir(TransactionType tt) {
 		String trans = getTransactionDirName(tt);
-		return new File(ipDir 
+		return new File(simDir 
 				+ File.separator + actor
 				+ File.separator + trans
 		);
@@ -165,11 +175,11 @@ public class SimDb {
 	}
 
 	public List<String> getTransactionNames(String actorType) {
-		File simDir = new File(ipDir.toString() + File.separator + actorType);
+		File transDir = new File(simDir.toString() + File.separator + actorType);
 		List<String> names = new ArrayList<String>();
 
 		try {
-			for (File f : simDir.listFiles()) {
+			for (File f : transDir.listFiles()) {
 				if (f.isDirectory())
 					names.add(f.getName());
 			}
@@ -180,13 +190,13 @@ public class SimDb {
 	
 
 	public File getRegistryIndexFile() {
-		File regDir = new File(ipDir.toString() + File.separator + actor);
+		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "reg_db.ser");
 	}
 
 	public File getRepositoryIndexFile() {
-		File regDir = new File(ipDir.toString() + File.separator + actor);
+		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "rep_db.ser");
 	}
@@ -198,7 +208,7 @@ public class SimDb {
 	//	}
 	
 	public ActorType getSimulatorActorType() {
-		File aDir = new File(ipDir.toString());
+		File aDir = new File(simDir.toString());
 		for (File file : aDir.listFiles()) {
 			if (file.isDirectory()) {
 				String name = file.getName();
@@ -211,7 +221,7 @@ public class SimDb {
 	public List<String> getTransactionsForSimulator() {
 		List<String> trans = new ArrayList<String>();
 		
-		for (File actor : ipDir.listFiles()) {
+		for (File actor : simDir.listFiles()) {
 			if (!actor.isDirectory())
 				continue;
 			for (File tr : actor.listFiles()) {
@@ -259,13 +269,13 @@ public class SimDb {
 	}
 
 	public File getIpDir() {
-		return ipDir;
+		return simDir;
 	}
 
 	public List<String> getTransInstances(String ignored_actor, String trans) {
 		List<String> names = new ArrayList<String>();
 
-		for (File actor : ipDir.listFiles()) {
+		for (File actor : simDir.listFiles()) {
 			if (!actor.isDirectory())
 				continue;
 			for (File tr : actor.listFiles()) {
@@ -294,7 +304,7 @@ public class SimDb {
 	}
 	
 	public File[] getTransInstanceFiles(String actor, String trans) {
-		File dir = new File(ipDir 
+		File dir = new File(simDir 
 				+ File.separator + actor
 				+ File.separator + trans
 		);
@@ -305,7 +315,7 @@ public class SimDb {
 	}
 
 	File getDBFilePrefix(String event) {
-		File f = new File(ipDir 
+		File f = new File(simDir 
 				+ File.separator + actor
 				+ File.separator + transaction
 				+ File.separator + event
@@ -431,7 +441,7 @@ public class SimDb {
 	}
 	
 	File findEventDir(String trans, String event) {
-		for (File actor : ipDir.listFiles()) {
+		for (File actor : simDir.listFiles()) {
 			if (!actor.isDirectory())
 				continue;
 			File eventDir = new File(actor + File.separator + trans + File.separator + event);
@@ -442,7 +452,7 @@ public class SimDb {
 	}
 
 	public File getTransactionEvent(String simid, String actor, String trans, String event) {
-		File dir = new File(ipDir 
+		File dir = new File(simDir 
 				+ File.separator + actor
 				+ File.separator + trans
 				+ File.separator + event

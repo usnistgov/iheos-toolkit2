@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
@@ -13,7 +14,7 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 	RegistryActorFactory registryActorFactory;
 	RepositoryActorFactory repositoryActorFactory;
 
-	protected List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws Exception {
+	protected Simulator buildNew(SimManager simm, boolean configureBase) throws Exception {
 		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -24,16 +25,16 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 		String simId = sc.getId();
 		// This needs to be grouped with a Document Registry
 		registryActorFactory = new RegistryActorFactory();
-		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).get(0);
+		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);
 		
 		// This needs to be grouped with a Document Repository also
 		repositoryActorFactory = new RepositoryActorFactory();
-		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).get(0);
+		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).getConfig(0);
 		
 		sc.add(registryConfig);
 		sc.add(repositoryConfig);
 		
-		return asList(sc);
+		return new Simulator(sc);
 	}
 
 	@Override

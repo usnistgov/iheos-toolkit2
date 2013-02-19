@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  */
 public class SiteServiceManager extends CommonServiceManager {
 	static SiteServiceManager siteServiceManager = null;
-	public Sites sites = null; // these are the common sites. The simulator based
+	public Sites commonSites = null; // these are the common sites. The simulator based
 	// sites are kept in Session.sites.
 
 	static Logger logger = Logger.getLogger(SiteServiceManager.class);
@@ -43,84 +43,87 @@ public class SiteServiceManager extends CommonServiceManager {
 		return siteServiceManager;
 	}
 
-	public Sites getSites() {
-		return sites;
+	public Sites getCommonSites() {
+		return commonSites;
 	}
 
 	public Collection<Site> getAllSites(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getAllSites");
 		List<Site> sits = new ArrayList<Site>();
-		loadSites(sessionId);
-		sits.addAll(sites.getAllSites().asCollection());
+		loadAllSites(sessionId);
+		sits.addAll(commonSites.getAllSites().asCollection());
 		return sits;
 	}
 
 	public List<String> getSiteNamesWithRG(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRG");
 		List<String> ss = new ArrayList<String>();
-		for (Site s : SimManager.getAllSites(sessionId, sites).asCollection()) {
+		for (Site s : new SimCache().getSimManagerForSession(sessionId).getSites().asCollection()) {
 			if (s.hasActor(ActorType.RESPONDING_GATEWAY))
 				ss.add(s.getName());
 		}
 		return ss;
 	}
 
-	public List<String> getSiteNames(String sessionId, boolean reload, boolean simAlso) {
+	public List<String> getSiteNames(String sessionId, boolean reload, boolean returnSimAlso) {
 		logger.debug(sessionId + ": " + "getSiteNames");
+		List<String> names = new ArrayList<String>();
 		if (reload)
-			sites = null;
+			commonSites = null;
 		try {
-			loadSites(sessionId);
+			loadAllSites(sessionId);
 
-			if (simAlso)
-				return new ArrayList<String>(SimManager.getSites(sessionId).getSiteNames());
-			return new ArrayList<String>(getSites().getSiteNames());
+			if (returnSimAlso) {
+				names.addAll(new SimCache().getSimManagerForSession(sessionId).getSites().getSiteNames());
+			} else {
+				return new ArrayList<String>(getCommonSites().getSiteNames());
+			}
+			return names;
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
 			return new ArrayList<String>();
 		}
 	}
 
-	public void loadSites(String sessionId) throws FactoryConfigurationError, Exception {
-			loadExternalSites(sessionId);
+	public void loadAllSites(String sessionId) throws FactoryConfigurationError, Exception {
+			loadCommonSites(sessionId);
 			addSimulatorSites(sessionId);
 	}
 
-	public Sites loadExternalSites(String sessionId) throws FactoryConfigurationError,
+	public Sites loadCommonSites(String sessionId) throws FactoryConfigurationError,
 			Exception {
-		if (sites == null) {
-			if (!useActorsFile(sessionId)) {
+		if (commonSites == null) {
+			if (!useActorsFile()) {
 				File dir = Installation.installation().propertyServiceManager().getActorsDirName();
-				sites = new SeparateSiteLoader().load(dir, sites);
+				commonSites = new SeparateSiteLoader().load(dir, commonSites);
 			} else {
 				File loc = Installation.installation().propertyServiceManager().configuredActorsFile(true);
 				if (loc == null)
 					loc = Installation.installation().propertyServiceManager().internalActorsFile();
-				sites = new CombinedSiteLoader().load(loc, sites);
+				commonSites = new CombinedSiteLoader().load(loc, commonSites);
 			}
 		}
-		return sites;
+		return commonSites;
 	}
 
 	// return common and simulator sites
 	public Sites addSimulatorSites(String sessionId) throws Exception {
 		try {
-			return SimManager.getAllSites(sessionId, sites);
+			return new SimCache().getSimManagerForSession(sessionId, true).getSites();
 		} catch (Exception e) {
 			logger.error("addSimulatorSites", e);
 			throw new Exception(e.getMessage(), e);
 		}
 	}
 
-	boolean useActorsFile(String sessionId) {
-		if (useGazelleConfigFeed(sessionId))
+	boolean useActorsFile() {
+		if (useGazelleConfigFeed())
 			return false;
-		String use = Installation.installation().propertyServiceManager().getPropertyManager()
-				.getUseActorsFile();
-		return "true".compareToIgnoreCase(use) == 0;
+		return Installation.installation().propertyServiceManager().getPropertyManager()
+				.isUseActorsFile();
 	}
 
-	public boolean useGazelleConfigFeed(String sessionId) {
+	public boolean useGazelleConfigFeed() {
 		String c = Installation.installation().propertyServiceManager().getPropertyManager()
 				.getToolkitGazelleConfigURL();
 		return c.trim().length() > 0;
@@ -129,9 +132,9 @@ public class SiteServiceManager extends CommonServiceManager {
 	public List<String> getRegistryNames(String sessionId) {
 		logger.debug(sessionId + ": " + "getRegistryNames");
 		try {
-			loadSites(sessionId);
+			loadAllSites(sessionId);
 
-			return SimManager.getSites(sessionId).getSiteNamesWithActor(
+			return new SimCache().getSimManagerForSession(sessionId).getSites().getSiteNamesWithActor(
 					ActorType.REGISTRY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
@@ -142,9 +145,9 @@ public class SiteServiceManager extends CommonServiceManager {
 	public List<String> getUpdateNames(String sessionId) {
 		logger.debug(sessionId + ": " + "getUpdateNames");
 		try {
-			loadSites(sessionId);
+			loadAllSites(sessionId);
 
-			return SimManager.getSites(sessionId).getSiteNamesWithTransaction(
+			return new SimCache().getSimManagerForSession(sessionId).getSites().getSiteNamesWithTransaction(
 					TransactionType.UPDATE);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
@@ -155,9 +158,9 @@ public class SiteServiceManager extends CommonServiceManager {
 	public List<String> getRepositoryNames(String sessionId) {
 		logger.debug(sessionId + ": " + "getRepositoryNames");
 		try {
-			loadSites(sessionId);
+			loadAllSites(sessionId);
 
-			return SimManager.getSites(sessionId).getSiteNamesWithRepository();
+			return new SimCache().getSimManagerForSession(sessionId).getSites().getSiteNamesWithRepository();
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
 			return new ArrayList<String>();
@@ -167,9 +170,10 @@ public class SiteServiceManager extends CommonServiceManager {
 	public List<String> getRGNames(String sessionId) {
 		logger.debug(sessionId + ": " + "getRGNames");
 		try {
-			loadSites(sessionId);
-			return SimManager.getSites(sessionId).getSiteNamesWithActor(
-					ActorType.RESPONDING_GATEWAY);
+			loadAllSites(sessionId);
+			return new SimCache().getSimManagerForSession(sessionId)
+					.getSites()
+					.getSiteNamesWithActor(ActorType.RESPONDING_GATEWAY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
 			return new ArrayList<String>();
@@ -179,10 +183,10 @@ public class SiteServiceManager extends CommonServiceManager {
 	public List<String> getIGNames(String sessionId) {
 		logger.debug(sessionId + ": " + "getIGNames");
 		try {
-			loadSites(sessionId);
-
-			return SimManager.getSites(sessionId).getSiteNamesWithActor(
-					ActorType.INITIATING_GATEWAY);
+			loadAllSites(sessionId);
+			return new SimCache().getSimManagerForSession(sessionId)
+					.getSites()
+					.getSiteNamesWithActor(ActorType.INITIATING_GATEWAY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
 			return new ArrayList<String>();
@@ -201,8 +205,8 @@ public class SiteServiceManager extends CommonServiceManager {
 	public Site getSite(String sessionId, String siteName) throws Exception {
 		logger.debug(sessionId + ": " + "getSite");
 		try {
-			loadSites(sessionId);
-			return SimManager.getSites(sessionId).getSite(siteName);
+			loadAllSites(sessionId);
+			return new SimCache().getSimManagerForSession(sessionId).getSites().getSite(siteName);
 		} catch (Exception e) {
 			logger.error("getSite", e);
 			throw new Exception(e.getMessage());
@@ -211,16 +215,16 @@ public class SiteServiceManager extends CommonServiceManager {
 
 	public String saveSite(String sessionId, Site site) throws Exception {
 		logger.debug(sessionId + ": " + "saveSite");
-		sites.putSite(site);
+		commonSites.putSite(site);
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
-			if (!useActorsFile(sessionId))
+			if (!useActorsFile())
 				new SeparateSiteLoader().saveToFile(Installation.installation().propertyServiceManager()
 						.getActorsDirName(), site);
 			else {
 				CombinedSiteLoader loader = new CombinedSiteLoader();
 				loader.saveToFile(Installation.installation().propertyServiceManager()
-						.configuredActorsFile(false), loader.toXML(sites));
+						.configuredActorsFile(false), loader.toXML(commonSites));
 			}
 			addSimulatorSites(sessionId);
 		} catch (Exception e) {
@@ -232,15 +236,15 @@ public class SiteServiceManager extends CommonServiceManager {
 
 	public String deleteSite(String sessionId, String siteName) throws Exception {
 		logger.debug(sessionId + ": " + "deleteSite");
-		sites.deleteSite(siteName);
+		commonSites.deleteSite(siteName);
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
-			if (!useActorsFile(sessionId))
+			if (!useActorsFile())
 				new SeparateSiteLoader().delete(Installation.installation().propertyServiceManager()
 						.getActorsDirName(), siteName);
 			else
 				new CombinedSiteLoader().saveToFile(Installation.installation().propertyServiceManager()
-						.configuredActorsFile(false), sites);
+						.configuredActorsFile(false), commonSites);
 			addSimulatorSites(sessionId);
 		} catch (Exception e) {
 			logger.error("deleteSite", e);
@@ -301,17 +305,17 @@ public class SiteServiceManager extends CommonServiceManager {
 	public List<String> reloadExternalSites(String sessionId) throws FactoryConfigurationError,
 			Exception {
 		logger.debug(sessionId + ": " + "reloadExternalSites");
-		sites = null;
-		loadExternalSites(sessionId);
-		return sites.getSiteNames();
+		commonSites = null;
+		loadCommonSites(sessionId);
+		return commonSites.getSiteNames();
 	}
 
 	public TransactionOfferings getTransactionOfferings(String sessionId) throws Exception {
 		logger.debug(sessionId + ": "
 				+ "getTransactionOfferings");
 		try {
-			loadSites(sessionId);
-			Sites sits = SimManager.getAllSites(sessionId, sites);
+			loadAllSites(sessionId);
+			Sites sits = new SimCache().getSimManagerForSession(sessionId).getSites();
 			logger.debug("site Names: " + sits.getSiteNames());
 			TransactionOfferings to = new TransactionOfferingFactory(sits).get();
 //			logger.debug(sessionId + ":\n" + to);

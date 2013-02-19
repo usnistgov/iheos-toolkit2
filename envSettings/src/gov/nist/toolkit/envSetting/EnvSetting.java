@@ -2,6 +2,7 @@ package gov.nist.toolkit.envSetting;
 
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.NoSessionException;
 
 import java.io.File;
 import java.util.HashMap;
@@ -56,6 +57,6 @@ public class EnvSetting {
 			return f;
 		return null;
 	}
-	
+
 
 }

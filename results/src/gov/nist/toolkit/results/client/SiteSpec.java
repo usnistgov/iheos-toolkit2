@@ -4,6 +4,14 @@ import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * Lightweight recording of the selected Site parameters. Does
+ * not interact with the Site class which has full
+ * transaction details. This is used to aim the test engine
+ * for firing at an actor implementation.
+ * @author bill
+ *
+ */
 public class SiteSpec implements IsSerializable {
 
 	public String name = "";

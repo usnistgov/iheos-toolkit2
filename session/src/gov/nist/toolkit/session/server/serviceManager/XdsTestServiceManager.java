@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.server.serviceManager;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -170,16 +171,17 @@ public class XdsTestServiceManager extends CommonServiceManager {
 					session.xt.setTest(testName, sections, areas);
 				}
 
-				if (SiteServiceManager.getSiteServiceManager().sites == null)
-					SiteServiceManager.getSiteServiceManager().loadSites(session.getId());
+				if (SiteServiceManager.getSiteServiceManager().commonSites == null)
+					SiteServiceManager.getSiteServiceManager().loadAllSites(session.getId());
 			} catch (Exception e) {
 				logger.error(ExceptionUtil.exception_details(e));
 				session.res.add(ExceptionUtil.exception_details(e), false);
 				return ResultBuilder.RESULT(testName, session.res, null, null);
 			}
 			try {
-				Sites theSites = SiteServiceManager.getSiteServiceManager().getSites();
-				theSites.add(new Sites(SimManager.getSites(session.getSimConfigs())));
+				Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
+//				Sites theSites = SiteServiceManager.getSiteServiceManager().getCommonSites();
+//				theSites.add(new Sites(getSites(session.getSimConfigs())));
 				//				session.getSimBaseEndpoint();
 				// Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
 				if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
@@ -267,7 +269,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			return ResultBuilder.RESULT(testName, session.res, null, null);
 		}
 	}
-
+	
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession) {
 		logger.debug(session.id() + ": " + "getTestResults() ids=" + testIds + " testSession=" + testSession );
 

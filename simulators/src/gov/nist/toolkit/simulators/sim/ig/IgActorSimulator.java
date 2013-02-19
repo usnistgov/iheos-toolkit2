@@ -1,10 +1,10 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
 
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon;

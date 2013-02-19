@@ -1,8 +1,8 @@
 package gov.nist.toolkit.xdstools2.server.simulator.support;
 
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
-import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 

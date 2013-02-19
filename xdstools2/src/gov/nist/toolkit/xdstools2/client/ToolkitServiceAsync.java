@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsim.client.DirectRegistrationData;
@@ -86,8 +87,6 @@ public interface ToolkitServiceAsync {
 	@Deprecated
 	void getClientIPAddress(AsyncCallback<String> callback);
 
-	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> callback);
-
 	void  getTransInstances(String simid, String actor, String trans, AsyncCallback<List<String>> callback);
   
 	void getLastMetadata(AsyncCallback<List<Result>> callback);
@@ -152,7 +151,7 @@ public interface ToolkitServiceAsync {
 	void reloadPropertyFile(AsyncCallback<Boolean> callback);
 	
 	void  getActorTypeNames(AsyncCallback<List<String>> callback);
-	void  getNewSimulator(String actorTypeName, AsyncCallback<List<SimulatorConfig>> callback);
+	void  getNewSimulator(String actorTypeName, AsyncCallback<Simulator> callback);
 	void getSimConfigs(List<String> ids, AsyncCallback<List<SimulatorConfig>> callback);
 	void putSimConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void deleteConfig(SimulatorConfig config, AsyncCallback<String> callback);

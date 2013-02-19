@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsim.client.DirectRegistrationData;
@@ -58,7 +59,7 @@ public interface ToolkitService extends RemoteService  {
 	
 	/* Simulator Management */
 	public List<String> getActorTypeNames() throws NoServletSessionException ;
-	public List<SimulatorConfig> getNewSimulator(String actorTypeName) throws Exception;
+	public Simulator getNewSimulator(String actorTypeName) throws Exception;
 	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception;
 	public String putSimConfig(SimulatorConfig config) throws Exception;
 	public String deleteConfig(SimulatorConfig config) throws Exception;
@@ -85,7 +86,6 @@ public interface ToolkitService extends RemoteService  {
 	@Deprecated
 	String getClientIPAddress();
 	
-	MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException, EnvironmentNotSelectedClientException;
 	List<String> getTransInstances(String simid, String actor, String trans)  throws Exception;
 	
 	List<Result> getLastMetadata();
