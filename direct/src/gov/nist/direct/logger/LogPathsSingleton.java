@@ -3,6 +3,7 @@ package gov.nist.direct.logger;
 import gov.nist.toolkit.installation.Installation;
 
 import java.io.File;
+import java.sql.Time;
 
 /**
  * Current structure is:
@@ -28,6 +29,10 @@ public class LogPathsSingleton {
 	private final String DECRYPTED_MESSAGE = "\\encrypted-message.txt"; 
 	private final String MESSAGE_STATUS = "\\status.txt";
 	private final String DATE_LOG = "\\date.txt";
+	private final String EXPIRATION_DATE_LOG = "\\expiration-date.txt";
+	
+	
+
 	
 	
 	private static LogPathsSingleton LogStructureSingleton;
@@ -71,7 +76,8 @@ public class LogPathsSingleton {
 //			return File.separator + "direct-logs";
 //		} 
 		//return Installation.installation().externalCache().getPath() + File.separator + "direct + " + File.separator + "logs";
-		return File.separator + "direct" + File.separator + "logs";
+		//return File.separator + "direct" + File.separator + "logs";
+		return "C://Workspace//toolkit//direct-logs";
 	}
 	
 	
@@ -150,6 +156,15 @@ public class LogPathsSingleton {
 		String path = fullPath + DATE_LOG;
 		return path;
 	}
+	
+	
+	public String getDateExpirationLogPath(String transactionType, String messageType, String username, String messageId) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + EXPIRATION_DATE_LOG;
+		return path;
+	}
+	
+	
 	
 	
 	/**

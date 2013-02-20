@@ -247,7 +247,6 @@ public static void writeToFile(String s, String strPath) throws IOException{
 		f.getParentFile().mkdirs();
 			f.createNewFile();
 	}
-	//BufferedWriter out = new BufferedWriter(new FileWriter(f.toString()));
 		
 	FileOutputStream fos = new FileOutputStream(f);
 	fos.write(s.getBytes());

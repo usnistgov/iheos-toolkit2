@@ -18,6 +18,11 @@ public class TimeLogger {
 		Utils.writeToFile(s, dateLogPath); // ask to overwrite? which failsafes?
 		}
 
+	public void logExpirationDate(String s, LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
+		String expiration = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId);
+		Utils.writeToFile(s, expiration); // ask to overwrite? which failsafes?
+		}
+
 	
 	
 

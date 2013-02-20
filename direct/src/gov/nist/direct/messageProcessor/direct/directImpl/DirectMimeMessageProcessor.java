@@ -20,9 +20,13 @@ package gov.nist.direct.messageProcessor.direct.directImpl;
 import gov.nist.direct.directValidator.MessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
+import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.logger.MessageLog;
 import gov.nist.direct.messageProcessor.MessageProcessor;
 import gov.nist.direct.messageProcessor.MessageProcessorInterface;
 import gov.nist.direct.messageProcessor.direct.DirectMessageProcessorInterface;
+import gov.nist.direct.utils.ParseUtils;
+import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationSummary;
 import gov.nist.direct.utils.ValidationSummary.Status;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
@@ -51,7 +55,9 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.sql.Time;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -86,6 +92,8 @@ import org.bouncycastle.mail.smime.SMIMEException;
 import org.bouncycastle.mail.smime.SMIMESigned;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.util.Store;
+
+import com.google.gwt.dev.shell.BrowserChannel.MessageType;
 
 public class DirectMimeMessageProcessor implements DirectMessageProcessorInterface {
 
@@ -143,10 +151,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		MimeMessage mm;
 			mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 			
-
-		
-		
-		
+			
+		// Log Direct Message
+		logDirectMessage((Part)mm);
 		
 		// Check if valid Direct Message
 
@@ -865,6 +872,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			return;
 		}
 		this.processAttachments(er, p);
+		
+		
 	}
 
 
@@ -941,6 +950,44 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 				er.detail("---------------------------");
 			}
 		}
+	}
+	
+	
+	// Write DIRECT log
+	public void logDirectMessage(Part p){
+
+		// Get sender name (username)
+		String username = null;
+		try {
+			username = ((MimeMessage) p).getFrom().toString();
+		} catch (MessagingException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}
+
+		// Get MDN message ID 
+		String _messageID = null;
+		try {
+			_messageID = ((MimeMessage) p).getMessageID();
+		} catch (MessagingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		String messageID = Utils.trimEmailAddress(_messageID);
+	
+		// Get  reception time
+		String date = null;
+		// Logging received system date instead of SUT sender date
+		//date = ((MimeMessage) p).getSentDate().toString();
+		date = "01/01/13"; // ***** NEEDs to be changed *****
+		
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		MessageLog msgLog = null;
+		msgLog = new MessageLog(messageID, ls);
+		msgLog.logDirectMessage(username, date, "DIRECT_RECEIVE", "DIRECT", (MimeMessage)p);
+		
+		System.out.println("Logged direct message.");
+	
 	}
 
 

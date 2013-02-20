@@ -1,11 +1,13 @@
 package gov.nist.direct.logger;
 
+import gov.nist.direct.logger.reader.DirectLogReader;
 import gov.nist.direct.logger.writer.DirectContentLogger;
 import gov.nist.direct.logger.writer.DirectStatusLogger;
 import gov.nist.direct.logger.writer.TimeLogger;
 import gov.nist.direct.logger.writer.messageLoggerImpl.MDNLogger;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.mail.MessagingException;
@@ -73,16 +75,24 @@ public class MessageLog {
 		}
 		
 		// log expiration date
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		ls.getDateExpirationLogPath(transactionType, messageType, username, messageId);
+		 Calendar cal = Calendar.getInstance(); // creates calendar
+		    cal.setTime(new Date()); // sets calendar time/date
+		    cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+		  Date expirationDate =  cal.getTime(); // returns new date object, one hour in the future
+		try {
+			tl.logDate(expirationDate.toString(), ls, transactionType, messageType, username, messageId);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		// Log full Direct Message
-		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		DirectContentLogger dcl = new DirectContentLogger();
 		try {
-			dcl.logMessageContents(directMessage.getContent().toString(), ls, transactionType, messageType, username, messageId);
+			dcl.logMessageContents(directMessage, ls, transactionType, messageType, username, messageId);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

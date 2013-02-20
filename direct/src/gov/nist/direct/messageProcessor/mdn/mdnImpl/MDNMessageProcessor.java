@@ -186,7 +186,7 @@ public class MDNMessageProcessor {
 		String username = ParseUtils.searchHeaderSimple((Part)m, "from");
 		//InternetAddress user_addr = new InternetAddress(username);
 			
-		// Get MDN message ID and compare to existing logs
+		// Get MDN message ID 
 		String _messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
 		String messageID = Utils.trimEmailAddress(_messageID);
 	
