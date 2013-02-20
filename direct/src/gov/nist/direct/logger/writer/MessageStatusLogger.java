@@ -6,21 +6,24 @@ import gov.nist.direct.utils.Utils;
 import java.io.File;
 import java.io.IOException;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 /**
  * Logs status of message validation to MDN and Direct log file structure
  * @author dazais
  *
  */
-public class DirectStatusLogger {
+public class MessageStatusLogger {
 	
-	public DirectStatusLogger(){
+	public MessageStatusLogger(){
 		
 	}
 
 	// Logging a message status
-	public void logMessageStatus(String s, LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
+	public void logMessageStatus(String status, LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String statusLogPath = ls.getMessageStatusLogPath(transactionType, messageType, username, messageId);
-		Utils.writeToFile(s, statusLogPath);
+		Utils.writeToFile(status, statusLogPath);
 		}
 	
 

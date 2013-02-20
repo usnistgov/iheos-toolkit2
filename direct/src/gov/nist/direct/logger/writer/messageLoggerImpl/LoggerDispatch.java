@@ -59,7 +59,7 @@ public class LoggerDispatch implements MessageLoggerInterface {
 			if (o instanceof MimeMultipartReport){
 				MDNLogger mdnLogger = new MDNLogger();
 				try {
-					mdnLogger.log((MimeMultipartReport)o, ls, transactionType, messageType, username, messageId);
+					mdnLogger.log((MimeMessage)o, ls, transactionType, messageType, username, messageId);
 			
 				
 				} catch (FileNotFoundException e) {

@@ -126,37 +126,12 @@ public class MDNMessageProcessor {
 		// Check validation status
 		MDN_STATUS = "NON VALID";
 		if (!er.hasErrors())  MDN_STATUS = "VALID";
-	
-		
-		// Convert to Java type MultipartReport
-		//MultipartReport mmr = new MultipartReport(inputDirectMessage.toString());
-		//System.out.println("MimeMultipartReport");
-		 
+
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
 		checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
-		 System.out.println("checkMdnMessageProperties");
 		 
 		 
 		 // need to delete regularly outdated message logs from the singleton.
-
-
-
-//
-//		 ProcessMDN mdnv = new ProcessMDN();
-//		try {
-//			for (int i=0;i<m.getCount();i++){
-//					try {
-//						m.getBodyPart(i);
-//					} catch (MessagingException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					mdnv.validate(er, (Part)m);
-//			}
-//		} catch (MessagingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 
 	
 	}
@@ -195,7 +170,7 @@ public class MDNMessageProcessor {
 		
 		// Write MDN info to existing Direct log
 		MessageLog msgLog = new MessageLog(messageID, ls);
-		msgLog.logMDN(MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date);
+		msgLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date);
 		
 		// Compares reception time for the MDN to send time for the original Direct message.
 //		try {

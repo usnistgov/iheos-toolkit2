@@ -2,10 +2,11 @@ package gov.nist.direct.logger;
 
 import gov.nist.direct.logger.reader.DirectLogReader;
 import gov.nist.direct.logger.writer.DirectContentLogger;
-import gov.nist.direct.logger.writer.DirectStatusLogger;
+import gov.nist.direct.logger.writer.MessageStatusLogger;
 import gov.nist.direct.logger.writer.TimeLogger;
 import gov.nist.direct.logger.writer.messageLoggerImpl.MDNLogger;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,9 +37,9 @@ public class MessageLog {
 	 * Completes a Direct message log with matching MDN logs
 	 * @param messageId
 	 */
-	public void logMDN(String status, String username, String transactionType, String messageType, String messageId, String receivedDate){
+	public void logMDN(MimeMessage m, String status, String username, String transactionType, String messageType, String messageId, String receivedDate){
 		// Log MDN status
-		DirectStatusLogger dl = new DirectStatusLogger();
+		MessageStatusLogger dl = new MessageStatusLogger();
 		try {
 			dl.logMessageStatus(status, ls, transactionType, messageType, username, messageId);
 		} catch (IOException e) {
@@ -56,8 +57,16 @@ public class MessageLog {
 				}
 		
 		// Log full MDN message
-		//MDNLogger mdnlog = new MDNLogger();
-		//.log(msg, ls, transactionType, messageType, username, messageId);
+		MDNLogger mdnlog = new MDNLogger();
+		try {
+			mdnlog.log(m, ls, transactionType, messageType, username, messageId);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		
