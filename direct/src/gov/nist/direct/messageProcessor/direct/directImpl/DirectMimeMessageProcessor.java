@@ -975,16 +975,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		}
 		String messageID = Utils.trimEmailAddress(_messageID);
 	
-		// Get  reception time
-		String date = null;
-		// Logging received system date instead of SUT sender date
-		//date = ((MimeMessage) p).getSentDate().toString();
-		date = "01/01/13"; // ***** NEEDs to be changed *****
+		// Get  reception time - Logging system date instead of SUT sender date contained in headers
+		Date date = new Date();
 		
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		MessageLog msgLog = null;
 		msgLog = new MessageLog(messageID, ls);
-		msgLog.logDirectMessage(username, date, "DIRECT_RECEIVE", "DIRECT", (MimeMessage)p);
+		msgLog.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", (MimeMessage)p);
 		
 		System.out.println("Logged direct message.");
 	
