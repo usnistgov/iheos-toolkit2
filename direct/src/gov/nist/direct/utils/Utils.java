@@ -297,6 +297,24 @@ return str;
 		Utils.er = er;
 	}
 
+	/**
+	 * TODO This is a duplicate of same function in DirectListener.rawFromHeader, should be reunited and moved to a new Direct Utils package
+	 */
+	/**
+	 * Extracts an email address from a full Address object including name(s) and <, > characters
+	 * @param from
+	 * @return
+	 */
+	public static String rawFromHeader(String from) {
+	if (from.indexOf('<') == -1)
+	return from;
+	int start = from.indexOf('<');
+	int end = from.indexOf('>');
+	if (end > 0 && end < from.length()) {
+		return from.substring(start +1, end);
+	}
+	else return "unrecognized_usernames"; 
+	}
 
 
 

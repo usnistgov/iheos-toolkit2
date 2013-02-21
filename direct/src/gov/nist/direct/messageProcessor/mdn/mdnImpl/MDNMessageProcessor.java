@@ -158,19 +158,20 @@ public class MDNMessageProcessor {
 				
 
 		// Get MDN sender name (username)
-		String username = ParseUtils.searchHeaderSimple((Part)m, "from");
+		String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
 		//InternetAddress user_addr = new InternetAddress(username);
 			
 		// Get MDN message ID 
 		String _messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
-		String messageID = Utils.trimEmailAddress(_messageID);
 	
-		// Get MDN reception time
-		String date = ParseUtils.searchHeaderSimple((Part)m, "date");
+		// Get  reception time - Logging system date instead of SUT sender date contained in headers
+		Date date = new Date();
 		
 		// Write MDN info to existing Direct log
+		String messageID = Utils.rawFromHeader(_messageID);
+		String username = Utils.rawFromHeader(_username);
 		MessageLog msgLog = new MessageLog(messageID, ls);
-		msgLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date);
+		msgLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
 		
 		// Compares reception time for the MDN to send time for the original Direct message.
 //		try {
