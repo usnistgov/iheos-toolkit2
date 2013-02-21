@@ -422,7 +422,6 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		
 		// DTS 133a, Content-Type
 		msgValidator.validateMessageContentTypeA(separate, m.getContentType());
-		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Content-type: "+m.getContentType(), separate.hasErrors(), true);
 		
 		// DTS 201, Content-Type Name
 		msgValidator.validateContentTypeNameOptional(separate, m.getContentType());
@@ -438,11 +437,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		msgValidator.validateContentDispositionOptional(separate, contentDisposition);
 		
 		// DTS 161-194 Validate Content-Disposition Filename
+		separate = new GwtErrorRecorder();
 		if(m.getFileName() != null) {
-			msgValidator.validateContentDispositionFilename(er, m.getFileName());
-			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Content-Disposition: "+m.getDisposition(), er.hasErrors(), true);
-
+			msgValidator.validateContentDispositionFilename(separate, m.getFileName());
+			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Content-Disposition: "+m.getDisposition() +"; filename="+m.getFileName(), separate.hasErrors(), true);
 		}
+		er.concat(separate);
 		
 
 		// Update the summary
@@ -517,9 +517,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("Is not a CDA R2 so no validation attempted");
 		}
 		
-		// Update the summary		summary.put(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", er.getNbErrors());
+		// Update the summary
 		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", Status.PART, true);
-		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", er.hasErrors(), true);
+		//validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", er.hasErrors(), true);
 		partNumber++;
 	}
 
