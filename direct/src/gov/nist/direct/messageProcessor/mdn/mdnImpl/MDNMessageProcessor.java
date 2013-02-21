@@ -126,12 +126,37 @@ public class MDNMessageProcessor {
 		// Check validation status
 		MDN_STATUS = "NON VALID";
 		if (!er.hasErrors())  MDN_STATUS = "VALID";
-
+	
+		
+		// Convert to Java type MultipartReport
+		//MultipartReport mmr = new MultipartReport(inputDirectMessage.toString());
+		//System.out.println("MimeMultipartReport");
+		 
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
 		checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
+		 System.out.println("checkMdnMessageProperties");
 		 
 		 
 		 // need to delete regularly outdated message logs from the singleton.
+
+
+
+//
+//		 ProcessMDN mdnv = new ProcessMDN();
+//		try {
+//			for (int i=0;i<m.getCount();i++){
+//					try {
+//						m.getBodyPart(i);
+//					} catch (MessagingException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					mdnv.validate(er, (Part)m);
+//			}
+//		} catch (MessagingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 	
 	}
@@ -159,19 +184,22 @@ public class MDNMessageProcessor {
 
 		// Get MDN sender name (username)
 		String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
-		//InternetAddress user_addr = new InternetAddress(username);
 			
 		// Get MDN message ID 
 		String _messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
 	
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();
+		// String date = ParseUtils.searchHeaderSimple((Part)m, "date");
 		
 		// Write MDN info to existing Direct log
 		String messageID = Utils.rawFromHeader(_messageID);
 		String username = Utils.rawFromHeader(_username);
 		MessageLog msgLog = new MessageLog(messageID, ls);
 		msgLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
+		
+ 	
+
 		
 		// Compares reception time for the MDN to send time for the original Direct message.
 //		try {
