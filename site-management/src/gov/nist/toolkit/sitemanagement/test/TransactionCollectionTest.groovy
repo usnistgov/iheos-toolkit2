@@ -75,16 +75,6 @@ class TransactionCollectionTest {
 		assertFalse endpoint.startsWith('https')
 	}
 
-	@Test
-	public void testRemoveEmptyEndpoints() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testRemoveEmptyNames() {
-		fail("Not yet implemented");
-	}
-
 	///////////////////////////////////////////////////////////
 	@Test
 	public void testContains() {
@@ -117,17 +107,46 @@ class TransactionCollectionTest {
 
 	@Test
 	public void testHasActor() {
-		fail("Not yet implemented");
+		String origEndpoint = 'http://fooo:40/bar' 
+		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+			RepositoryType.NONE,
+			origEndpoint,
+			true,
+			false)
+		TransactionCollection tc = new TransactionCollection(false)
+		tc.addTransaction(b)
+		assertTrue tc.hasActor(ATFactory.ActorType.REGISTRY)
+		assertFalse tc.hasActor(ATFactory.ActorType.REPOSITORY)
 	}
 
 	@Test
 	public void testHasTransaction() {
-		fail("Not yet implemented");
+		String origEndpoint = 'http://fooo:40/bar' 
+		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+			RepositoryType.NONE,
+			origEndpoint,
+			true,
+			false)
+		TransactionCollection tc = new TransactionCollection(false)
+		tc.addTransaction(b)
+		
+		assertTrue tc.hasTransaction(ATFactory.TransactionType.REGISTER)
+		assertFalse tc.hasTransaction(ATFactory.TransactionType.RETRIEVE)
 	}
 
 	@Test
 	public void testFindTransactionTypeBooleanBoolean() {
-		fail("Not yet implemented");
+		String origEndpoint = 'http://fooo:40/bar' 
+		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+			RepositoryType.NONE,
+			origEndpoint,
+			true,
+			false)
+		TransactionCollection tc = new TransactionCollection(false)
+		tc.addTransaction(b)
+
+		assertTrue null != tc.find(ATFactory.TransactionType.REGISTER, true, false)	
+		assertTrue null == tc.find(ATFactory.TransactionType.REGISTER, false, false)	
 	}
 
 	@Test
@@ -146,22 +165,51 @@ class TransactionCollectionTest {
 
 	@Test
 	public void testFindAll() {
-		fail("Not yet implemented");
+		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+			RepositoryType.NONE,
+			'http://fooo:40/bar',
+			true,
+			false)
+		TransactionCollection tc = new TransactionCollection(false)
+		tc.addTransaction(b)
+
+		List<TransactionBean> tb = tc.findAll("Register", true, false)		
+		assertEquals 1, tb.size()
+		tb = tc.findAll("Stored Query", true, false)
+		assertEquals 0, tb.size()
 	}
 
 	@Test
 	public void testGetTransactionTypeBooleanBoolean() {
-		fail("Not yet implemented");
+		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+			RepositoryType.NONE,
+			'http://fooo:40/bar',
+			true,
+			false)
+		TransactionCollection tc = new TransactionCollection(false)
+		tc.addTransaction(b)
+
+		assertEquals 'http://fooo:40/bar', tc.get(ATFactory.TransactionType.REGISTER, true, false)
 	}
 
 	@Test
 	public void testGetStringBooleanBoolean() {
-		fail("Not yet implemented");
+		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+			RepositoryType.NONE,
+			'http://fooo:40/bar',
+			true,
+			false)
+		TransactionCollection tc = new TransactionCollection(false)
+		tc.addTransaction(b)
+
+		assertEquals 'http://fooo:40/bar', tc.get("Register", true, false)
 	}
 
 	@Test
 	public void testAdd() {
-		fail("Not yet implemented");
+		TransactionCollection tc = new TransactionCollection(false)
+		tc.add("Register", 'http://fooo:40/bar', true, false)
+		assertEquals 'http://fooo:40/bar', tc.get("Register", true, false)
 	}
 
 }

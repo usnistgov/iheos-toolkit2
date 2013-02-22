@@ -13,6 +13,10 @@ public class Simulator  implements Serializable, IsSerializable  {
 	private static final long serialVersionUID = 8914156242225793229L;
 	final List<SimulatorConfig> configs;
 	
+	public Simulator() {
+		configs = new ArrayList<SimulatorConfig>();
+	}
+	
 	public Simulator(List<SimulatorConfig> configs) {
 		this.configs = configs;
 	}

@@ -3,12 +3,9 @@ package gov.nist.toolkit.actorfactory;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.NoSessionException;
+import gov.nist.toolkit.sitemanagement.client.Site;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,12 +32,25 @@ public class SimManager {
 //		}
 //		return m;
 //	}
-		
-//	static public Site getSite(SimulatorConfig config) throws Exception {
-//		ActorFactory af = getActorFactory(config);
-//		return af.getActorSite(config, null);
-//	}
-	
+
+//*****************************************
+//  These methods would normally belong in class SimulatorConfig but that
+//  class is compiled for the client and some of these classes (ActorFactory)
+//	do not belong on the client side.
+//*****************************************
+	static public Site getSite(SimulatorConfig config) throws Exception {
+		ActorFactory af = getActorFactory(config);
+		return af.getActorSite(config, null);
+	}
+
+	static public ActorFactory getActorFactory(SimulatorConfig config) throws Exception {
+		String simtype = config.getType();
+		ActorType at = ActorType.findActor(simtype);
+		ActorFactory af = ActorFactory.getActorFactory(at);
+		return af;
+	}
+//*****************************************
+
 //	static public List<Site> getSites(Collection<SimulatorConfig> configs) throws Exception {
 //		List<Site> sites = new ArrayList<Site>();
 //		for (SimulatorConfig sc : configs) {
@@ -58,12 +68,6 @@ public class SimManager {
 //		return sites;
 //	}
 
-//	static public ActorFactory getActorFactory(SimulatorConfig config) throws Exception {
-//		String simtype = config.getType();
-//		ActorType at = ActorType.findActor(simtype);
-//		ActorFactory af = ActorFactory.getActorFactory(at);
-//		return af;
-//	}
 	
 	public String sessionId() {
 		return sessionId;
@@ -153,7 +157,7 @@ public class SimManager {
 		
 		for (SimulatorConfig asc : simConfigs) {
 			if (!asc.isExpired())
-				sites.putSite(asc.getSite());
+				sites.putSite(getSite(asc));
 		}
 		
 		sites.buildRepositoriesSite();
