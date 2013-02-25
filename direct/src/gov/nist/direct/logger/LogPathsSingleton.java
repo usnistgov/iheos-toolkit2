@@ -18,18 +18,18 @@ public class LogPathsSingleton {
 	
 	private String LOG_ROOT;
 	
-	private final String DIRECT_RECEIVE_FOLDER = "\\directReceive";
-	private final String DIRECT_SEND_FOLDER = "\\directSend";
+	private final String DIRECT_RECEIVE_FOLDER = File.separator + "directReceive";
+	private final String DIRECT_SEND_FOLDER = File.separator + "directSend";
 	
-	private final String DIRECT_MESSAGE_FOLDER = "\\direct";
-	private final String MDN_MESSAGE_FOLDER = "\\mdn";
+	private final String DIRECT_MESSAGE_FOLDER = File.separator + "direct";
+	private final String MDN_MESSAGE_FOLDER = File.separator + "mdn";
 	 
-	private final String MDN_MESSAGE_CONTENTS = "\\mdn-contents.txt";
-	private final String DIRECT_MESSAGE_CONTENTS = "\\direct-contents.txt"; // needs part number + ".txt" ext.
-	private final String DECRYPTED_MESSAGE = "\\encrypted-message.txt"; 
-	private final String MESSAGE_STATUS = "\\status.txt";
-	private final String DATE_LOG = "\\date.txt";
-	private final String EXPIRATION_DATE_LOG = "\\expiration-date.txt";
+	private final String MDN_MESSAGE_CONTENTS = File.separator + "mdn-contents.txt";
+	private final String DIRECT_MESSAGE_CONTENTS = File.separator + "direct-contents.txt"; // needs part number + ".txt" ext.
+	private final String DECRYPTED_MESSAGE = File.separator + "encrypted-message.txt"; 
+	private final String MESSAGE_STATUS = File.separator + "status.txt";
+	private final String DATE_LOG = File.separator + "date.txt";
+	private final String EXPIRATION_DATE_LOG = File.separator + "expiration-date.txt";
 	
 	
 
@@ -76,8 +76,8 @@ public class LogPathsSingleton {
 //			return File.separator + "direct-logs";
 //		} 
 		//return Installation.installation().externalCache().getPath() + File.separator + "direct + " + File.separator + "logs";
-		//return File.separator + "direct" + File.separator + "logs";
-		return "C://Workspace//toolkit//direct-logs";
+		return File.separator + "home" + File.separator + "ubuntu" + File.separator + "tttdir" + File.separator + "direct-logs";
+		// return "C://Workspace//toolkit//direct-logs";
 	}
 	
 	
