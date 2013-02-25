@@ -156,6 +156,7 @@ public class DirectSignatureValidator implements SignatureValidator {
 			digestAlgo = digestAlgo.replaceAll("-", "");
 			micalg = micalg.replaceAll("-", "");
 			micalg = micalg.replaceAll("\"", "");
+			micalg.toLowerCase();
 			if(digestAlgo.equals(micalg)) {
 				er.detail("     Success:  DTS 165 - Digest Algorithm is valid");
 			} else {

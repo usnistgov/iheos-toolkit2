@@ -51,7 +51,7 @@ public class TestMDN {
 
 		MDNMessageProcessor processor = new MDNMessageProcessor();
 		ErrorRecorder er = new GwtErrorRecorder();
-		byte[] mdnMessage = Utils.getByteFile("MDNFile.txt");
+		byte[] mdnMessage = Utils.getByteFile("MDN.txt");
 		processor.processMDNMessage(er, mdnMessage, signCert, password, new ValidationContext());
 
 		System.out.println(er);

@@ -153,8 +153,9 @@ public class ProcessEnvelope {
 		separate = new GwtErrorRecorder();
 		
 		// DTS 121, Validate Message-Id
-		msgValidator.validateMessageId(separate, searchHeaderSimple(m, "message-id"), wrapped);
-		validationSummary.recordKey(shift + "Message-Id: "+searchHeaderSimple(m, "message-id"), separate.hasErrors(), true);
+		String messageID = searchHeaderSimple(m, "message-id");
+		msgValidator.validateMessageId(separate, messageID, wrapped);
+		validationSummary.recordKey(shift + "Message-Id: "+messageID, separate.hasErrors(), true);
 		
 		er.concat(separate);
 		separate = new GwtErrorRecorder();
@@ -392,6 +393,7 @@ public class ProcessEnvelope {
 			content_split_right = contentType_split[1];
 			temp = content_split_right.split(";", -2);
 			contentTypeMicalg = temp[0];
+			contentTypeMicalg.toLowerCase();
 		}
 		msgValidator.validateContentTypeMicalg(er, contentTypeMicalg);
 		
@@ -462,6 +464,15 @@ public class ProcessEnvelope {
 			head = hed.getValue();
 		}
 		return head;
+	}
+	
+	public String removeHtmlEntities(String header) {
+		String res = header;
+		if(header.contains("<") && header.contains(">")) {
+			res = res.replace("<", "");
+			res = res.replace(">", "");
+		}
+		return res;
 	}
 
 }

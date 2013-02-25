@@ -1,6 +1,15 @@
 package gov.nist.direct.mdn.validate;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
+import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.util.SharedByteArrayInputStream;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.mailet.base.mail.MimeMultipartReport;
 
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.mdn.MDNValidator;
@@ -37,6 +46,26 @@ public class ProcessMDN {
 		String error = procEnv.searchHeaderSimple(p, "error");
 		String warning = procEnv.searchHeaderSimple(p, "warning");
 		String extension = procEnv.searchHeaderSimple(p, "extension");
+		
+		SharedByteArrayInputStream test = null;
+		try {
+			test = (SharedByteArrayInputStream) p.getContent();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy(test, writer, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String theString = writer.toString();
+		System.out.println("Reporting-UA: " + getMDNHeader(theString, "reporting-ua"));
 		
 		// DTS 452, Disposition-Notification-To, Required
 		validator.validateMDNRequestHeader(er, dispNotifTo);
@@ -76,6 +105,25 @@ public class ProcessMDN {
 		
 		// DTS 466, extension-field, Required
 		validator.validateExtensionField(er, extension);		
+	}
+	
+	public String getMDNHeader(String part, String header) {
+		String res = "";
+		if(checkPresent(part, header)) {
+			String[] partSplit = part.split(header + ": ");
+			String[] partSplitRight = partSplit[1].split("\n");
+			res = partSplitRight[0];
+			return res;
+		}
+		return res;
+	}
+	
+	public boolean checkPresent(String part, String header) {
+		if(part.contains(header)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
