@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
 
+import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 
 import java.io.IOException;
