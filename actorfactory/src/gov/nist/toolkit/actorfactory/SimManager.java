@@ -12,9 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
- * Manage simulators for a session
+/**
+ * Maintains the list of loaded SimulatorConfig objects for a
+ * single session.
+ * @author bill
+ *
  */
+
 public class SimManager {
 //	static Map<String, SimManager> mgrs = new HashMap<String, SimManager>(); // SimManager for a sessionId
 	List<SimulatorConfig> simConfigs = new ArrayList<SimulatorConfig>();  // for this session

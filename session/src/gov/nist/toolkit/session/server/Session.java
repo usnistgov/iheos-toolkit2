@@ -311,19 +311,6 @@ public class Session implements SecurityParams {
 		
 	}
 	
-	public void deleteSim(String simulatorId) {
-		try {
-			logger.info("Delete sim " + simulatorId);
-			SimDb simdb = new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);
-			File simdir = simdb.getIpDir(); 
-			Io.delete(simdir);
-		} catch (IOException e) {
-			// doesn't exist - ok
-		} catch (NoSimException e) {
-			// doesn't exist - ok
-		}
-	}
-	
 	String translateIPAddr(String ip) {
 		if ("0:0:0:0:0:0:0:1%0".equals(ip)) {
 			// value returned when in GWT hosted mode
@@ -557,5 +544,19 @@ public class Session implements SecurityParams {
 //		return new PidGenerator(assigningAuthority).get();
 		return "x";
 	}
+
+	public void deleteSim(String simulatorId) {
+		try {
+			logger.info("Delete sim " + simulatorId);
+			SimDb simdb = new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);
+			File simdir = simdb.getIpDir(); 
+			Io.delete(simdir);
+		} catch (IOException e) {
+			// doesn't exist - ok
+		} catch (NoSimException e) {
+			// doesn't exist - ok
+		}
+	}
+	
 
 }

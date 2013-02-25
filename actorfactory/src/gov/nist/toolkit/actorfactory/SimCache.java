@@ -10,9 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Cache of all simulators. This is maintained globally since one session
+ * Cache of loaded simulators. This is maintained globally (covering all sessions) since one session
  * deleting a common simulator affects other sessions and should
- * be reflected immediately.
+ * be reflected immediately. Simulators are managed by sessionId keeping
+ * a Map sessionId => SimManager.
  * @author bill
  *
  */

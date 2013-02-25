@@ -142,6 +142,9 @@ public abstract class ActorFactory {
 	public Simulator buildNewSimulator(SimManager simm, String simtype, boolean save) throws Exception {
 
 		ActorType at = ActorType.findActor(simtype);
+		
+		if (at == null)
+			throw new NoSimException("Simulator type [" + simtype + "] does not exist");
 
 		ActorFactory af = factories.get(at.getName());
 

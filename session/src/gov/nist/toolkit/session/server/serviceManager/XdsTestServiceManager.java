@@ -171,8 +171,8 @@ public class XdsTestServiceManager extends CommonServiceManager {
 					session.xt.setTest(testName, sections, areas);
 				}
 
-				if (SiteServiceManager.getSiteServiceManager().commonSites == null)
-					SiteServiceManager.getSiteServiceManager().loadAllSites(session.getId());
+				// force loading of site definitions
+				SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
 			} catch (Exception e) {
 				logger.error(ExceptionUtil.exception_details(e));
 				session.res.add(ExceptionUtil.exception_details(e), false);

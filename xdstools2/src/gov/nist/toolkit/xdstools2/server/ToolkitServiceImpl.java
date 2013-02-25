@@ -130,7 +130,7 @@ ToolkitService {
 //	public String getHome() throws Exception { return session().getHome(); }
 	public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
 	public TransactionOfferings getTransactionOfferings() throws Exception { return siteServiceManager.getTransactionOfferings(session().getId()); }
-	public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return siteServiceManager.reloadExternalSites(session().getId()); }
+	public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return siteServiceManager.reloadCommonSites(); }
 	public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
 	public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId()); }
 	public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId()); }
