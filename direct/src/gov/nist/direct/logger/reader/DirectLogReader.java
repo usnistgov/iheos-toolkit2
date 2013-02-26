@@ -1,16 +1,13 @@
 package gov.nist.direct.logger.reader;
 
+import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.utils.Utils;
+import gov.nist.direct.utils.ValidationUtils;
+
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-
-import gov.nist.direct.logger.LogPathsSingleton;
-import gov.nist.direct.logger.UserLog;
-
-import gov.nist.direct.utils.Utils;
-import gov.nist.direct.utils.ValidationUtils;
-import gov.nist.direct.logger.LoggerUtils;
 
 import javax.mail.internet.MimeMessage;
 
@@ -23,20 +20,10 @@ public class DirectLogReader {
 	 * @param userID
 	 * @return
 	 */
-//	public ArrayList<UserLog> getAllLogs(LogPathsSingleton ls){
-//		ArrayList<UserLog> allUserLogs = new ArrayList<UserLog>();
-//		
-//		// parse all users
-//		String userspath =	ls.getLOG_ROOT();
-//		ArrayList<String> users = LoggerUtils.listFilesForFolder(userspath);
-//		while(users.iterator().hasNext()){
-//			UserLog log = UserLog.readUserLogs(users.iterator().next());
-//		}
-//		
-//		
-//		return null;
-//		
-//	}
+	public DirectLogReader(){
+		
+	}
+
 
 
 	public MimeMessage readDirectMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
@@ -75,9 +62,24 @@ public String readMessageStatus (LogPathsSingleton ls, String transactionType, S
 }
 
 
-public Date readLogDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+public Date readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
 	String str = Utils.readFile(mdnLogPath);
+	
+	try {
+		return ValidationUtils.parseDate(str);
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return null;
+		
+}
+
+
+public Date readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId);
+	String str = Utils.readFile(expDatePath);
 	
 	try {
 		return ValidationUtils.parseDate(str);

@@ -12,8 +12,13 @@ import java.io.IOException;
  *
  */
 public class TimeLogger {
+	LogPathsSingleton ls;
+	
+	public TimeLogger(){
+		ls = LogPathsSingleton.getLogStructureSingleton();
+	}
 
-	public void logDate(String s, LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) throws IOException {
+	public void logDate(String s, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String dateLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
 		Utils.writeToFile(s, dateLogPath); // ask to overwrite? which failsafes?
 		}
