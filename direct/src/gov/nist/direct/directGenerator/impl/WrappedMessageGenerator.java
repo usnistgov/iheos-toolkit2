@@ -69,6 +69,7 @@ import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.util.Store;
 
 import gov.nist.direct.directGenerator.DirectMessageGenerator;
+import gov.nist.direct.directGenerator.MessageGeneratorUtils;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.direct.messageProcessor.cert.PublicCertLoader;
 import gov.nist.direct.x509.X509CertificateEx;
@@ -95,27 +96,11 @@ public class WrappedMessageGenerator implements DirectMessageGenerator {
         //
         // create the base for our message
         //
-        MimeBodyPart    msg1 = new MimeBodyPart();
-        
-        msg1.setText(textMessage);
-        
-        //File contentFile = new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/CCDA_CCD_b1_Ambulatory.xml");
-
-        byte[] fileContent = FileUtils.readFileToByteArray(attachmentContentFile);
-        byte[] content = Base64.encodeBase64(fileContent);
-
-
-        InternetHeaders partHeaders = new InternetHeaders();
-        partHeaders.addHeader("Content-Type", "text/xml; name="+attachmentContentFile.getName());
-        partHeaders.addHeader("Content-Transfer-Encoding", "base64");
-        partHeaders.addHeader("Content-Disposition", "attachment; filename="+attachmentContentFile.getName());
-
-        MimeBodyPart ccda = new MimeBodyPart(partHeaders, content);
 
         MimeMultipart mp = new MimeMultipart();
         
-        mp.addBodyPart(msg1);
-        mp.addBodyPart(ccda);
+        mp.addBodyPart(MessageGeneratorUtils.addText(textMessage));
+        mp.addBodyPart(MessageGeneratorUtils.addAttachement(attachmentContentFile));
 
         Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
         Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
