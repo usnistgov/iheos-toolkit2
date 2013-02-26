@@ -9,11 +9,13 @@ modified freely provided that any derivative works bear some notice that they ar
 modified versions bear some notice that they have been modified.
 
 Project: NWHIN-DIRECT
-Authors: Frederic de Vaulx
-		Diane Azais
-		Julien Perugini
+Authors: William Majurski
+		 Frederic de Vaulx
+		 Diane Azais
+		 Julien Perugini
+		 Antoine Gerardin
+		
  */
-
 
 package gov.nist.direct.directValidator;
 
