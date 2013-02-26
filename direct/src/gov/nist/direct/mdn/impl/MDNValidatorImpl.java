@@ -131,8 +131,8 @@ public class MDNValidatorImpl implements MDNValidator{
 		if(reportingUA.equals("")) {
 			er.warning("457", "Reporting-UA Field is not present", "", "DTS 457");
 		} else {
-			final String uaName = "[0-9a-zA-Z_.-]*";
-			final String uaProduct = "[0-9a-zA-Z_.-]*";
+			final String uaName = "[0-9,a-z,A-Z,_,.,\\-,\\s]*";
+			final String uaProduct = "[0-9,a-z,A-Z,_,.,\\-,\\s]*";
 			final String uaReportingPattern =  uaName + "(;" + uaProduct + ")?";
 			Pattern pattern = Pattern.compile(uaReportingPattern, Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(reportingUA);
@@ -181,10 +181,27 @@ public class MDNValidatorImpl implements MDNValidator{
 		if(finalRecipient.equals("")) {
 			er.warning("460", "Final-Recipient Field is not present", "", "DTS 460");
 		} else {
-			if(MDNUtils.validateAtomTextField(finalRecipient)) {
-				er.detail("Success:  DTS 460 - Final-Recipient field is valid");
+			String[] buf;
+			boolean result = true;
+			if(finalRecipient.contains(";")) {
+				buf = finalRecipient.split(";");
+				final String stringPattern =  MDNUtils.getAtom();
+				Pattern pattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE);
+				Matcher matcher = pattern.matcher(buf[0]);
+				if(!matcher.matches()) {
+					result = false;
+					er.err("460", "Final-Recipient address type is not valid", "", "", "DTS 460");
+				}
+				if(!ValidationUtils.validateEmail(buf[1])) {
+					result = false;
+					er.err("460", "Final-Recipient generic address is not valid", "", "", "DTS 460");
+				}
 			} else {
-				er.err("460", "Final-Recipient is not valid", "", "", "DTS 460");
+				result = false;
+			}
+			
+			if(result) {
+				er.detail("Success:  DTS 460 - Final-Recipient field is valid");
 			}
 		}
 	}
