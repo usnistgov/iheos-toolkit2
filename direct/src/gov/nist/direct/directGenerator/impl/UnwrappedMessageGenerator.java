@@ -1,20 +1,30 @@
+/**
+ This software was developed at the National Institute of Standards and Technology by employees
+of the Federal Government in the course of their official duties. Pursuant to title 17 Section 105 of the
+United States Code this software is not subject to copyright protection and is in the public domain.
+This is an experimental system. NIST assumes no responsibility whatsoever for its use by other parties,
+and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.
+We would appreciate acknowledgement if the software is used. This software can be redistributed and/or
+modified freely provided that any derivative works bear some notice that they are derived from it, and any
+modified versions bear some notice that they have been modified.
+
+Project: NWHIN-DIRECT
+Authors: William Majurski
+		 Frederic de Vaulx
+		 Diane Azais
+		 Julien Perugini
+		 Antoine Gerardin
+		
+ */
+
 package gov.nist.direct.directGenerator.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.SecureRandom;
 import java.security.Security;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.mail.Address;
@@ -26,34 +36,18 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.bouncycastle.asn1.ASN1EncodableVector;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.cms.IssuerAndSerialNumber;
-import org.bouncycastle.asn1.smime.SMIMECapabilitiesAttribute;
-import org.bouncycastle.asn1.smime.SMIMECapability;
-import org.bouncycastle.asn1.smime.SMIMECapabilityVector;
-import org.bouncycastle.asn1.smime.SMIMEEncryptionKeyPreferenceAttribute;
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSAlgorithm;
-import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.mail.smime.SMIMEEnvelopedGenerator;
 import org.bouncycastle.mail.smime.SMIMESignedGenerator;
-import org.bouncycastle.util.Store;
-
 import gov.nist.direct.directGenerator.DirectMessageGenerator;
+import gov.nist.direct.directGenerator.MessageGeneratorUtils;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.direct.messageProcessor.cert.PublicCertLoader;
-import gov.nist.direct.x509.X509CertificateEx;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;
-import gov.nist.toolkit.utilities.io.Io;
 
 public class UnwrappedMessageGenerator implements DirectMessageGenerator {
 
@@ -77,25 +71,10 @@ public class UnwrappedMessageGenerator implements DirectMessageGenerator {
 			//
 			MimeBodyPart    msg1 = new MimeBodyPart();
 
-			msg1.setText(textMessage);
-
-			//File contentFile = new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/CCDA_CCD_b1_Ambulatory.xml");
-
-			byte[] fileContent = FileUtils.readFileToByteArray(attachmentContentFile);
-			byte[] content = Base64.encodeBase64(fileContent);
-
-
-			InternetHeaders partHeaders = new InternetHeaders();
-			partHeaders.addHeader("Content-Type", "text/xml; name="+attachmentContentFile.getName());
-			partHeaders.addHeader("Content-Transfer-Encoding", "base64");
-			partHeaders.addHeader("Content-Disposition", "attachment; filename="+attachmentContentFile.getName());
-
-			MimeBodyPart ccda = new MimeBodyPart(partHeaders, content);
-
 			MimeMultipart mp = new MimeMultipart();
 
-			mp.addBodyPart(msg1);
-			mp.addBodyPart(ccda);
+			mp.addBodyPart(MessageGeneratorUtils.addText(textMessage));
+	        mp.addBodyPart(MessageGeneratorUtils.addAttachement(attachmentContentFile));
 
 			MimeBodyPart m = new MimeBodyPart();
 			m.setContent(mp);

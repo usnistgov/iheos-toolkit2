@@ -160,7 +160,7 @@ class doComms implements Runnable {
 		int start = from.indexOf('<');
 		int end = from.indexOf('>');
 		if (end > 0 && end < from.length())
-			return from.substring(start, end);
+			return from.substring(start+1, end);
 		return ""; // don't understand
 	}
 }
