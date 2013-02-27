@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
 
+import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsim.client.DirectRegistrationData;
@@ -174,4 +175,5 @@ public interface ToolkitService extends RemoteService  {
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
 	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
+	List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException;
 }

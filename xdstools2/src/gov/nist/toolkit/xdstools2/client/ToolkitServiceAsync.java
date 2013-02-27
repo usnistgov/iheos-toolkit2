@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsim.client.DirectRegistrationData;
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ToolkitServiceAsync {
 	
+	void getAvailableDirectSigningCerts(AsyncCallback<List<SigningCertType>> callback);
 	void directRegistration(DirectRegistrationData reg, AsyncCallback<DirectRegistrationData> callback);
 	void contactRegistration(ContactRegistrationData reg, AsyncCallback<ContactRegistrationData> callback);
 	void loadDirectRegistration(String contact, AsyncCallback<ContactRegistrationData> callback);	

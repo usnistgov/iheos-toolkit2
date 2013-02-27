@@ -1,10 +1,11 @@
 package gov.nist.toolkit.session.server.services;
 
+import gov.nist.direct.client.config.SigningCertType;
+import gov.nist.direct.config.DirectConfigManager;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.dns.DnsLookup;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.session.server.DirectConfigManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.utilities.io.Io;
@@ -37,13 +38,7 @@ public class SendDirect extends CommonServiceManager {
 
 	public List<Result> run() {
 		try {
-//			String user = session.getMesaSessionName();
-//			if (user == null || user.equals(""))
-//				throw new Exception("TestSession must be selected.");
-			String user = "DefaultDirectUser";
-			
-			
-//			session.transactionSettings.assignPatientId = false;
+			String user = "DefaultDirectUser";			
 			List<String> sections = null;
 
 			String[] areas = new String[1];
@@ -51,10 +46,14 @@ public class SendDirect extends CommonServiceManager {
 			
 			Map<String, Object> params2 = new HashMap<String, Object>();
 			
-			// Use configured values instead of GUI
+			// GUI selects which signing cert to use
+			String signingCertName = params.get("$signing_cert$");
+			if (signingCertName == null || signingCertName.equals(""))
+				throw new Exception("No signing cert selected");
+			SigningCertType signingCertType = SigningCertType.valueOf(signingCertName);
 			DirectConfigManager directConfig = new DirectConfigManager(Installation.installation().externalCache());
-			signingCert = directConfig.getSigningCert();
-			signingPassword = directConfig.getSigningCertPassword();
+			signingCert = directConfig.getSigningCert(signingCertType);
+			signingPassword = directConfig.getSigningCertPassword(signingCertType);
 			params2.put("signingCert", signingCert);
 			params.put("signingCertPassword", signingPassword);
 

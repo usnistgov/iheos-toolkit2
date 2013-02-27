@@ -49,7 +49,7 @@ public class Installation {
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
-			logger.error("Cannot load tk_props.txt file from External Cache", e);
+			logger.warn("Cannot load tk_props.txt file from External Cache");
 			tkProps = new TkProps();
 		}
 

@@ -1,5 +1,7 @@
 	package gov.nist.toolkit.xdstools2.server;
 
+import gov.nist.direct.client.config.SigningCertType;
+import gov.nist.direct.config.DirectConfigManager;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -18,7 +20,6 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.client.XdstestLogId;
-import gov.nist.toolkit.session.server.DirectConfigManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -90,30 +91,49 @@ ToolkitService {
 	// Direct Services
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
+	@Override
 	public DirectRegistrationData directRegistration(DirectRegistrationData reg) throws NoServletSessionException, Exception { 
 		new DirectServiceManager().directRegistration(session(), reg); 
 		return reg;
 		}
+	@Override
 	public ContactRegistrationData contactRegistration(ContactRegistrationData reg) throws NoServletSessionException, Exception { 
 		new DirectUserManager().contactRegistration(reg); 
 		return reg;
 		}
+	@Override
 	public ContactRegistrationData saveCertFromUpload(ContactRegistrationData reg, String directAddr)  throws NoServletSessionException, Exception {
 		byte[] cert = session().getlastUpload();
 		new DirectUserManager().saveCertFromUpload(reg, directAddr, cert); 
 		return reg;
 	}
+	@Override
 	public ContactRegistrationData loadDirectRegistration(String contact) throws Exception {
 		return new DirectUserManager().load(contact);
 	}
+	@Override
 	public ContactRegistrationData deleteDirect(ContactRegistrationData contact, DirectRegistrationData direct) throws NoServletSessionException, Exception {
 		return new DirectUserManager().deleteDirect(contact, direct);
 	}
+	@Override
 	public String toolkitPubCert()  throws NoServletSessionException { return new DirectServiceManager(session()).toolkitPubCert(); }
+	@Override
 	public List<Result> directSend(Map<String, String> parms) throws NoServletSessionException { return new DirectServiceManager(session()).directSend(parms); }
+	@Override
 	public List<String> getEncryptionCertDomains() { return new DirectConfigManager(Installation.installation().externalCache()).getEncryptionCertDomains(); }
+	@Override
 	public List<String> getDirectMsgIds(String user) { return new LogAccessMock().getMsgIds(user); }
+	@Override
 	public List<SmtpMessageStatus> getDirectOutgoingMsgStatus(String user, List<String> msg_ids) { return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids); }
+	@Override
+	public List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException {
+		logger.debug(session().id() + ": " + 
+				"getAvailableDirectSigningCerts");
+		
+		List<SigningCertType> certs = new DirectConfigManager().getSigningCertTypesAvailable();
+		logger.debug(session().id() + ": " + "getAvailableDirectSigningCerts => " + certs);
+		return certs;
+	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -458,5 +478,6 @@ ToolkitService {
 	public String getClientIPAddress() {
 		return getSession().ipAddr;
 	}
+
 
 }
