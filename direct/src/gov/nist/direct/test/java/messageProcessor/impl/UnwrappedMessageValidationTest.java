@@ -19,15 +19,13 @@ Authors: William Majurski
 
 package gov.nist.direct.test.java.messageProcessor.impl;
 
-import static org.junit.Assert.*;
-import gov.nist.direct.messageParser.MessageParser;
-import gov.nist.direct.messageParser.impl.DirectMimeMessageProcessor;
-import gov.nist.direct.messageParser.impl.MimeMessageParser;
+import static org.junit.Assert.assertTrue;
+import gov.nist.direct.directValidator.impl.ProcessEnvelope;
+import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
+import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.utils.ValidationSummary;
-import gov.nist.direct.validation.impl.ProcessEnvelope;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,8 +34,6 @@ import java.io.IOException;
 import javax.mail.internet.MimeMessage;
 
 import org.junit.Test;
-
-import com.sun.org.apache.bcel.internal.classfile.Field;
 
 public class UnwrappedMessageValidationTest {
 
@@ -55,15 +51,19 @@ public class UnwrappedMessageValidationTest {
 		
 		File unwrapped = new File(unwrappedDirectMessage);
 		byte[] unwrappedMessage = new byte[(int) unwrapped.length()];
+		FileInputStream fileInputStream = null;
 		try {
-			FileInputStream fileInputStream = new FileInputStream(unwrapped);
+			 fileInputStream = new FileInputStream(unwrapped);
 			fileInputStream.read(unwrappedMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally{
+			try {
+			fileInputStream.close();
+			} catch (IOException e) {}
 		}
 		
-		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, unwrappedMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, unwrappedMessage);
 		
 		ProcessEnvelope proEnv = new ProcessEnvelope();
 		try {
@@ -87,15 +87,19 @@ public class UnwrappedMessageValidationTest {
 		
 		File unwrapped = new File(decrypted_unwrappedDirectMessage);
 		byte[] unwrappedMessage = new byte[(int) unwrapped.length()];
+		FileInputStream fileInputStream = null;
 		try {
-			FileInputStream fileInputStream = new FileInputStream(unwrapped);
+			fileInputStream = new FileInputStream(unwrapped);
 			fileInputStream.read(unwrappedMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				fileInputStream.close();
+			} catch (IOException e) {}
 		}
 		
-		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, unwrappedMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, unwrappedMessage);
 		
 		DirectMimeMessageProcessor processor = new DirectMimeMessageProcessor();
 		try {
@@ -119,15 +123,19 @@ public class UnwrappedMessageValidationTest {
 		
 		File wrapped = new File(wrappedDirectMessage);
 		byte[] wrappedMessage = new byte[(int) wrapped.length()];
+		FileInputStream fileInputStream = null;
 		try {
-			FileInputStream fileInputStream = new FileInputStream(wrapped);
+			fileInputStream = new FileInputStream(wrapped);
 			fileInputStream.read(wrappedMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				fileInputStream.close();
+			} catch (IOException e) {}
 		}
 		
-		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, wrappedMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, wrappedMessage);
 		
 		ProcessEnvelope proEnv = new ProcessEnvelope();
 		try {
@@ -151,15 +159,19 @@ public class UnwrappedMessageValidationTest {
 		
 		File wrapped = new File(decrypted_wrappedDirectMessage);
 		byte[] wrappedMessage = new byte[(int) wrapped.length()];
+		FileInputStream fileInputStream = null;
 		try {
-			FileInputStream fileInputStream = new FileInputStream(wrapped);
+			fileInputStream = new FileInputStream(wrapped);
 			fileInputStream.read(wrappedMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				fileInputStream.close();
+			} catch (IOException e) {}
 		}
 		
-		MessageParser<MimeMessage> parser = new MimeMessageParser();
-		MimeMessage mm = parser.parseMessage(er, wrappedMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, wrappedMessage);
 		
 		DirectMimeMessageProcessor processor = new DirectMimeMessageProcessor();
 		try {

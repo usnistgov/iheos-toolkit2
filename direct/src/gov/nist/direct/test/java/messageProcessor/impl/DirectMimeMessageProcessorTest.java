@@ -20,8 +20,7 @@ Authors: William Majurski
 package gov.nist.direct.test.java.messageProcessor.impl;
 
 import static org.junit.Assert.fail;
-import gov.nist.direct.messageParser.DirectMessageProcessor;
-import gov.nist.direct.messageParser.impl.DirectMimeMessageProcessor;
+import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
 import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -47,7 +46,7 @@ public class DirectMimeMessageProcessorTest {
 		messageUnderTest = Utils.getMessage(messageUnderTestPath);
 		certificate = Utils.getMessage(certificatePath);
 		
-		DirectMessageProcessor messageValidator = new DirectMimeMessageProcessor();
+		DirectMimeMessageProcessor messageValidator = new DirectMimeMessageProcessor();
 		messageValidator.processAndValidateDirectMessage(er, messageUnderTest, certificate, certificatePassword, new ValidationContext());
 		
 		er.detail("\n#############################");
