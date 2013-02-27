@@ -477,7 +477,7 @@ public class ValidationUtils {
 	}
 	
 	public static String getAddrSpecPattern() {
-		return "<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">";
+		return "<[0-9,a-z,_,\\-,.]+@[0-9,a-z,_,\\-,.]+>" + "(\\s)*";
 	}
 	
 	public static boolean validateAddrSpec(String addrSpec) {

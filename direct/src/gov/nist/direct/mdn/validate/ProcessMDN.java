@@ -1,6 +1,17 @@
 package gov.nist.direct.mdn.validate;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+
+import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.util.SharedByteArrayInputStream;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.mailet.base.mail.MimeMultipartReport;
 
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.mdn.MDNValidator;
@@ -20,24 +31,42 @@ public class ProcessMDN {
 	}
 	
 	public void validate(ErrorRecorder er, Part p){
-		
+
 		MDNValidator validator = new MDNValidatorImpl();
+
+		InputStream mdnStream = null;
 		
-		// Process envelope for header searching function
-		ProcessEnvelope procEnv = new ProcessEnvelope();
+		try {
+			mdnStream = (InputStream) p.getContent();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy(mdnStream, writer, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String mdnPart = writer.toString();
+		mdnPart = mdnPart.toLowerCase();
 		
-		String dispNotifTo = procEnv.searchHeaderSimple(p, "disposition-notification-to");
-		String originalRecipient = procEnv.searchHeaderSimple(p, "original-recipient");
-		String reportingUA = procEnv.searchHeaderSimple(p, "reporting-ua");
-		String mdnGateway = procEnv.searchHeaderSimple(p, "mdn-gateway");
-		String finalRecipient = procEnv.searchHeaderSimple(p, "final-recipient");
-		String originalMessageID = procEnv.searchHeaderSimple(p, "original-message-id");
-		String disposition = procEnv.searchHeaderSimple(p, "disposition");
-		String failure = procEnv.searchHeaderSimple(p, "failure");
-		String error = procEnv.searchHeaderSimple(p, "error");
-		String warning = procEnv.searchHeaderSimple(p, "warning");
-		String extension = procEnv.searchHeaderSimple(p, "extension");
-		
+		String dispNotifTo = getMDNHeader(mdnPart, "disposition-notification-to");
+		String originalRecipient = getMDNHeader(mdnPart, "original-recipient");
+		String reportingUA = getMDNHeader(mdnPart, "reporting-ua");
+		String mdnGateway = getMDNHeader(mdnPart, "mdn-gateway");
+		String finalRecipient = getMDNHeader(mdnPart, "final-recipient");
+		String originalMessageID = getMDNHeader(mdnPart, "original-message-id");
+		String disposition = getMDNHeader(mdnPart, "disposition");
+		String failure = getMDNHeader(mdnPart, "failure");
+		String error = getMDNHeader(mdnPart, "error");
+		String warning = getMDNHeader(mdnPart, "warning");
+		String extension = getMDNHeader(mdnPart, "extension");
+
 		// DTS 452, Disposition-Notification-To, Required
 		validator.validateMDNRequestHeader(er, dispNotifTo);
 		
@@ -76,6 +105,25 @@ public class ProcessMDN {
 		
 		// DTS 466, extension-field, Required
 		validator.validateExtensionField(er, extension);		
+	}
+	
+	public String getMDNHeader(String part, String header) {
+		String res = "";
+		if(checkPresent(part, header)) {
+			String[] partSplit = part.split(header + ": ");
+			String[] partSplitRight = partSplit[1].split("\r\n");
+			res = partSplitRight[0];
+			return res;
+		}
+		return res;
+	}
+	
+	public boolean checkPresent(String part, String header) {
+		if(part.contains(header)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

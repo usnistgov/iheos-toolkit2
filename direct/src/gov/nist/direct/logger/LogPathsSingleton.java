@@ -1,8 +1,28 @@
+/**
+ This software was developed at the National Institute of Standards and Technology by employees
+of the Federal Government in the course of their official duties. Pursuant to title 17 Section 105 of the
+United States Code this software is not subject to copyright protection and is in the public domain.
+This is an experimental system. NIST assumes no responsibility whatsoever for its use by other parties,
+and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.
+We would appreciate acknowledgement if the software is used. This software can be redistributed and/or
+modified freely provided that any derivative works bear some notice that they are derived from it, and any
+modified versions bear some notice that they have been modified.
+
+Project: NWHIN-DIRECT
+Authors: William Majurski
+		 Frederic de Vaulx
+		 Diane Azais
+		 Julien Perugini
+		 Antoine Gerardin
+		
+ */
+
 package gov.nist.direct.logger;
 
 import gov.nist.toolkit.installation.Installation;
 
 import java.io.File;
+import java.sql.Time;
 
 /**
  * Current structure is:
@@ -17,17 +37,21 @@ public class LogPathsSingleton {
 	
 	private String LOG_ROOT;
 	
-	private final String DIRECT_RECEIVE_FOLDER = "\\directReceive";
-	private final String DIRECT_SEND_FOLDER = "\\directSend";
+	private final String DIRECT_RECEIVE_FOLDER = File.separator + "directReceive";
+	private final String DIRECT_SEND_FOLDER = File.separator + "directSend";
 	
-	private final String DIRECT_MESSAGE_FOLDER = "\\direct";
-	private final String MDN_MESSAGE_FOLDER = "\\mdn";
+	private final String DIRECT_MESSAGE_FOLDER = File.separator + "direct";
+	private final String MDN_MESSAGE_FOLDER = File.separator + "mdn";
 	 
-	private final String MDN_MESSAGE_CONTENTS = "\\mdn-contents.txt";
-	private final String DIRECT_MESSAGE_CONTENTS = "\\direct-contents.txt"; // needs part number + ".txt" ext.
-	private final String DECRYPTED_MESSAGE = "\\encrypted-message.txt"; 
-	private final String MESSAGE_STATUS = "\\status.txt";
-	private final String DATE_LOG = "\\date.txt";
+	private final String MDN_MESSAGE_CONTENTS = File.separator + "mdn-contents.txt";
+	private final String DIRECT_MESSAGE_CONTENTS = File.separator + "direct-contents.txt"; // needs part number + ".txt" ext.
+	private final String DECRYPTED_MESSAGE = File.separator + "encrypted-message.txt"; 
+	private final String MESSAGE_STATUS = File.separator + "status.txt";
+	private final String DATE_LOG = File.separator + "date.txt";
+	private final String EXPIRATION_DATE_LOG = File.separator + "expiration-date.txt";
+	
+	
+
 	
 	
 	private static LogPathsSingleton LogStructureSingleton;
@@ -71,7 +95,8 @@ public class LogPathsSingleton {
 //			return File.separator + "direct-logs";
 //		} 
 		//return Installation.installation().externalCache().getPath() + File.separator + "direct + " + File.separator + "logs";
-		return File.separator + "direct" + File.separator + "logs";
+		return File.separator + "home" + File.separator + "ubuntu" + File.separator + "tttdir" + File.separator + "direct-logs";
+		// return "C://Workspace//toolkit//direct-logs";
 	}
 	
 	
@@ -150,6 +175,15 @@ public class LogPathsSingleton {
 		String path = fullPath + DATE_LOG;
 		return path;
 	}
+	
+	
+	public String getDateExpirationLogPath(String transactionType, String messageType, String username, String messageId) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + EXPIRATION_DATE_LOG;
+		return path;
+	}
+	
+	
 	
 	
 	/**

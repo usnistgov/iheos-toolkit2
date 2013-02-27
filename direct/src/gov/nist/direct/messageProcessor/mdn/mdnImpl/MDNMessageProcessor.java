@@ -1,8 +1,25 @@
+/**
+ This software was developed at the National Institute of Standards and Technology by employees
+of the Federal Government in the course of their official duties. Pursuant to title 17 Section 105 of the
+United States Code this software is not subject to copyright protection and is in the public domain.
+This is an experimental system. NIST assumes no responsibility whatsoever for its use by other parties,
+and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.
+We would appreciate acknowledgement if the software is used. This software can be redistributed and/or
+modified freely provided that any derivative works bear some notice that they are derived from it, and any
+modified versions bear some notice that they have been modified.
+
+Project: NWHIN-DIRECT
+Authors: William Majurski
+		 Frederic de Vaulx
+		 Diane Azais
+		 Julien Perugini
+		 Antoine Gerardin
+		
+ */
+
+
 package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
-import gov.nist.direct.directValidator.MessageValidatorFacade;
-import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
-import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.MessageLog;
 import gov.nist.direct.mdn.MDNValidator;
@@ -11,15 +28,10 @@ import gov.nist.direct.mdn.validate.ProcessMDN;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
 import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
-import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.messageProcessor.direct.directImpl.WrappedMessageProcessor;
 import gov.nist.direct.utils.ParseUtils;
 import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationSummary;
-import gov.nist.direct.utils.ValidationUtils;
-import gov.nist.timer.SendHistorySingleton;
-import gov.nist.timer.TimerUtils;
-import gov.nist.timer.impl.DirectMessageTimestamp;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
@@ -33,23 +45,18 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import org.apache.log4j.Logger;
-import org.apache.mailet.base.mail.MimeMultipartReport;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cms.CMSException;
@@ -88,7 +95,7 @@ public class MDNMessageProcessor {
 	boolean encrypted;
 	boolean signed;
 	LogPathsSingleton ls;
-	
+
 	private String MDN_STATUS;
 
 	public MDNMessageProcessor(){
@@ -105,12 +112,12 @@ public class MDNMessageProcessor {
 		directCertificate = _directCertificate;
 		password = _password;
 		this.vc = vc;
-		
+
 		this.encrypted = false;
 		this.signed = false;
 
-		
-		 // --------- Validate MDN and encryption ---------
+
+		// --------- Validate MDN and encryption ---------
 		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 
 		try {
@@ -122,43 +129,20 @@ public class MDNMessageProcessor {
 
 		MDNValidator mdnv = new MDNValidatorImpl();
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
-		
+
 		// Check validation status
 		MDN_STATUS = "NON VALID";
 		if (!er.hasErrors())  MDN_STATUS = "VALID";
-	
-		
-		// Convert to Java type MultipartReport
-		//MultipartReport mmr = new MultipartReport(inputDirectMessage.toString());
-		//System.out.println("MimeMultipartReport");
-		 
+
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
 		checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
-		 System.out.println("checkMdnMessageProperties");
-		 
-		 
-		 // need to delete regularly outdated message logs from the singleton.
+		System.out.println("checkMdnMessageProperties");
+
+
+		// need to delete regularly outdated message logs from the singleton.
 
 
 
-//
-//		 ProcessMDN mdnv = new ProcessMDN();
-//		try {
-//			for (int i=0;i<m.getCount();i++){
-//					try {
-//						m.getBodyPart(i);
-//					} catch (MessagingException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					mdnv.validate(er, (Part)m);
-//			}
-//		} catch (MessagingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-	
 	}
 
 
@@ -180,48 +164,51 @@ public class MDNMessageProcessor {
 		logger.debug("ValidationContext is " + vc.toString());
 
 		MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
-				
+
 
 		// Get MDN sender name (username)
-		String username = ParseUtils.searchHeaderSimple((Part)m, "from");
-		//InternetAddress user_addr = new InternetAddress(username);
-			
-		// Get MDN message ID and compare to existing logs
+		String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
+
+		// Get MDN message ID 
 		String _messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
-		String messageID = Utils.trimEmailAddress(_messageID);
-	
-		// Get MDN reception time
-		String date = ParseUtils.searchHeaderSimple((Part)m, "date");
-		
+
+		// Get  reception time - Logging system date instead of SUT sender date contained in headers
+		Date date = new Date();
+		// String date = ParseUtils.searchHeaderSimple((Part)m, "date");
+
 		// Write MDN info to existing Direct log
-		MessageLog msgLog = new MessageLog(messageID, ls);
-		msgLog.logMDN(MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date);
-		
+		String messageID = Utils.rawFromHeader(_messageID);
+		String username = Utils.rawFromHeader(_username);
+		MessageLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
+
+
+
+
 		// Compares reception time for the MDN to send time for the original Direct message.
-//		try {
-//			receiveDate = ValidationUtils.parseDate(date);
-//
-//			SendHistorySingleton sendHistory = SendHistorySingleton.getSendHistory();
-//			Date sendDate = sendHistory.getMessageSendTime(messageID);
-//
-//			int timeOffset = TimerUtils.getTimeDifference(receiveDate, sendDate);
-//			if (timeOffset <= TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
-//			} else {
-//				// message that an mdn was received but delay was too long
-//				//er.err(null, "MDN processing", "The MDN was received after the authorized delay had expired. The delay is "+ TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION(),  timeOffset);
-//			}
-//
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		//		try {
+		//			receiveDate = ValidationUtils.parseDate(date);
+		//
+		//			SendHistorySingleton sendHistory = SendHistorySingleton.getSendHistory();
+		//			Date sendDate = sendHistory.getMessageSendTime(messageID);
+		//
+		//			int timeOffset = TimerUtils.getTimeDifference(receiveDate, sendDate);
+		//			if (timeOffset <= TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
+		//			} else {
+		//				// message that an mdn was received but delay was too long
+		//				//er.err(null, "MDN processing", "The MDN was received after the authorized delay had expired. The delay is "+ TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION(),  timeOffset);
+		//			}
+		//
+		//		} catch (ParseException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
 		System.out.println("Done.");
 
 	}
 
-	
-	
-	
+
+
+
 	public void processPart(ErrorRecorder er, Part p) throws Exception {
 
 		if (p == null)
@@ -345,12 +332,12 @@ public class MDNMessageProcessor {
 		} catch (Exception e1) {
 			er.err("0", "Error with the certificate: Unable to decrypt message maybe it is the wrong certificate", "", "", "Certificate file");
 		}
-		
+
 		this.encrypted = true;
 
 		return res;
 	}
-	
+
 	/**
 	 * verify the signature (assuming the cert is contained in the message)
 	 */
@@ -382,7 +369,7 @@ public class MDNMessageProcessor {
 			} catch (Exception e) {
 				break;
 			}
-			
+
 			this.signed = true; 
 
 		}

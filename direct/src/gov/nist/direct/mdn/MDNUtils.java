@@ -1,5 +1,7 @@
 package gov.nist.direct.mdn;
 
+import gov.nist.direct.utils.ValidationUtils;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,8 +11,8 @@ public class MDNUtils {
 	final static String text = "[0-9a-zA-Z_.-]*";
 	final static String whitespace = "\\s";
 	final static String actionMode = "(normal-action|automatic-action)";
-	final static String sendingMode = "(MDN-sent-manually|MDN-sent-automatically)";
-	final static String dispositionType = "(displayed|deleted)";
+	final static String sendingMode = "(mdn-sent-manually|mdn-sent-automatically)";
+	final static String dispositionType = "(displayed|processed|deleted)";
 	final static String dispositionModifier = "(error|" + atom + ")";
 	
 	
@@ -27,8 +29,8 @@ public class MDNUtils {
 	}
 	
 	public static boolean validateDisposition(String disposition) {
-		String dispositionPattern = "(" + actionMode + "|" + sendingMode + ")" + ";" + dispositionType;
-		dispositionPattern += "(/" + dispositionModifier + ", (" + dispositionModifier + ")*)?";
+		String dispositionPattern = "(" + actionMode + "/" + sendingMode + ")" + ";" +"(\\s)?" + dispositionType;
+		dispositionPattern += "(/" + dispositionModifier + "(,\\s" + dispositionModifier + ")*)?";
 		Pattern pattern = Pattern.compile(dispositionPattern, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(disposition);
 		if(matcher.matches()) {
@@ -46,6 +48,10 @@ public class MDNUtils {
 		} else {
 			return false;
 		}
+	}
+	
+	public static String getAtom() {
+		return atom;
 	}
 
 }
