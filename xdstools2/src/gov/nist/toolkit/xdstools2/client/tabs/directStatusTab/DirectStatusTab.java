@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.directStatusTab;
 
+import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.logger.UserLog;
 import gov.nist.toolkit.xdstools2.client.SmtpMessageStatus;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
@@ -39,10 +41,16 @@ public class DirectStatusTab  extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		display = new MessageStatusView(topPanel, this);
-		List<String> msg_ids = new ArrayList<String>();
-		msg_ids.add("msg1");
-		msg_ids.add("msg2");
-		toolkitService.getDirectOutgoingMsgStatus("bill", msg_ids, new StatusLoadCallback(display));
+		//msg_ids.add("msg1");
+		//msg_ids.add("msg2");
+		
+		String user = "bill"; // this needs to be changed to current user
+		
+		//toolkitService.getDirectOutgoingMsgStatus(username, UserLog.readUserLogs(username), new StatusLoadCallback(display));
+		// what is the StatusLoadCallback(display) used for?
+		UserLog.readUserLogs(user);
+		
+		
 		container.addTab(topPanel, "DirectStatus", select);
 		addCloseButton(container,topPanel, null);
 		addActorReloader();
@@ -69,10 +77,14 @@ public class DirectStatusTab  extends GenericQueryTab {
 	}
 
 	void reloadStatus() {
-		List<String> msg_ids = new ArrayList<String>();
-		msg_ids.add("msg1");
-		msg_ids.add("msg2");
-		toolkitService.getDirectOutgoingMsgStatus("bill", msg_ids, new StatusLoadCallback(display));
+		//List<String> msg_ids = new ArrayList<String>();
+		//msg_ids.add("msg1");
+		//msg_ids.add("msg2");
+		//toolkitService.getDirectOutgoingMsgStatus("bill", msg_ids, new StatusLoadCallback(display));
+		
+		String user = "bill"; // this needs to be changed to current user
+		UserLog.readUserLogs(user);
+	
 	}
 	
 	@Override
