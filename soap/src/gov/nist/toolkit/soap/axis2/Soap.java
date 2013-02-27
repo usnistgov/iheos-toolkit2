@@ -221,16 +221,6 @@ public class Soap implements SoapInterface {
 			
 			 securityHeader = WSSESecurityHeaderUtil.getWSSecOMElement(securityParams);
 			 getSoapHeader().addChild(securityHeader);
-			 
-			 /*
-			  * FIX: When deployed under tomcat, the behavior of the axiom library differs.
-			  * When the security header is added to the soap header, the security header is "detached"
-			  * from its original parent, with the side-effect of removing the
-			  * http://www.w3.org/2001/XMLSchema namespace declaration.
-			  * Thus we need to redeclare the prefix we use in the assertion in the soap header itself
-			  */
-			 
-			 getSoapHeader().declareNamespace("http://www.w3.org/2001/XMLSchema", "xs");
 			/*
 			try {
 				Element header = WsseToolkitAdapter.buildHeader();

@@ -170,13 +170,7 @@ public class WSSESecurityHeaderUtil {
 	 */
 	public static Document getConstructingSoapEnvelopAsDoc() throws Exception	
 	{	
-		String soapStr = "<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\"" +
-				" xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\" xmlns:exc14n=\"http://www.w3.org/2001/10/xml-exc-c14n#\" " +
-				"xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"" +
-				" xmlns:wsse11=\"http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd\" " +
-				"xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\"" +
-				" xmlns:ttt=\"http://www.w3.org/2001/XMLSchema\" "+
-				" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">"+
+		String soapStr = "<soapenv:Envelope xmlns:soapenv=\"http://www.w3.org/2003/05/soap-envelope\" xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\" xmlns:exc14n=\"http://www.w3.org/2001/10/xml-exc-c14n#\" xmlns:saml=\"urn:oasis:names:tc:SAML:1.0:assertion\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" xmlns:wsse11=\"http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd\" xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">"+
 						  "<soapenv:Header></soapenv:Header>"+
 						  "<soapenv:Body/>"+
 						  "</soapenv:Envelope>";
