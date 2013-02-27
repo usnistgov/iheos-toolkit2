@@ -143,7 +143,8 @@
 	<property name="results.src.dir" location="results/src" />
 	<property name="actorfactory.src.dir" location="actorfactory/src" />
 	<property name="http.src.dir" location="http/src" />
-
+	<property name="direct.src.dir" location="direct/src" />
+	
 	<!-- antlib is bundled with the 3rd party librairies.
 	Since the lib.dir might not be initialized or could be cleaned-up,
 	we get the definition of antlib from the shared.lib.dir -->
