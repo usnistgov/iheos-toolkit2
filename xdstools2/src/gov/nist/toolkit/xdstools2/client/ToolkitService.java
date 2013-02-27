@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
 
+import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
@@ -19,7 +20,6 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 
 import java.util.Collection;
 import java.util.List;
@@ -93,6 +93,7 @@ public interface ToolkitService extends RemoteService  {
 	String getTimeAndDate();
 	
 	MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException;
+//	MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException, EnvironmentNotSelectedClientException;
 	
 	List<String> getSiteNames(boolean reload, boolean simAlso) throws NoServletSessionException ;
 	List<String> getRegistryNames() throws Exception;
@@ -174,4 +175,5 @@ public interface ToolkitService extends RemoteService  {
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
 	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
+	List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException;
 }

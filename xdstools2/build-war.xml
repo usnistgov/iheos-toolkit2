@@ -59,6 +59,7 @@
 				<pathelement location="${tk.src.dir}" />
 				<pathelement location="${results.src.dir}" />
 				<pathelement location="${actorfactory.src.dir}" />
+				<pathelement location="${direct.src.dir}" />
 				<path refid="classpath" />
 			</classpath>
 			<jvmarg value="-Xmx256M" />

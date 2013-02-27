@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ToolkitServiceAsync {
 	
+	void getAvailableDirectSigningCerts(AsyncCallback<List<SigningCertType>> callback);
 	void directRegistration(DirectRegistrationData reg, AsyncCallback<DirectRegistrationData> callback);
 	void contactRegistration(ContactRegistrationData reg, AsyncCallback<ContactRegistrationData> callback);
 	void loadDirectRegistration(String contact, AsyncCallback<ContactRegistrationData> callback);	
@@ -86,6 +88,8 @@ public interface ToolkitServiceAsync {
 	void getSelectedMessageResponse(String simFilename, AsyncCallback<List<Result>> callback);
 	@Deprecated
 	void getClientIPAddress(AsyncCallback<String> callback);
+
+//	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> callback);
 
 	void  getTransInstances(String simid, String actor, String trans, AsyncCallback<List<String>> callback);
   

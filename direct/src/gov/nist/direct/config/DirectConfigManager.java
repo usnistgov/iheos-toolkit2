@@ -1,5 +1,7 @@
-package gov.nist.toolkit.session.server;
+package gov.nist.direct.config;
 
+import gov.nist.direct.client.config.SigningCertType;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
 
 import java.io.File;
@@ -20,6 +22,12 @@ public class DirectConfigManager {
 	public DirectConfigManager(File externalCache) {
 		this.externalCache = externalCache + sep;
 	}
+	
+	public DirectConfigManager() {
+		externalCache = Installation.installation().externalCache().toString();
+		if (!externalCache.endsWith(sep))
+			externalCache = externalCache + sep;
+	}
 
 	public String pathToDirectConfigArea() {
 		return externalCache + "direct";
@@ -29,34 +37,84 @@ public class DirectConfigManager {
 		return pathToDirectConfigArea() +
 				File.separator + "contact" + sep;
 	}
-
-	public String pathToSigningCertDir() {
-		return pathToDirectConfigArea() + File.separator + "signing_cert";
-	}
 	
 	public String pathToEncryptionCertsDir() {
 		return pathToDirectConfigArea() + File.separator + "encrypt_certs";
 	}
 	
-	/**
-	 * File must have .p12 suffix
-	 * @return
-	 */
-	public File getSigningCertFile() {
-		File certDir = new File(pathToSigningCertDir());
+	
+	//**********************************************************
+	// Signing Certs
+	//**********************************************************
+	public List<SigningCertType> getSigningCertTypesAvailable()  {
+		List<SigningCertType> types = new ArrayList<SigningCertType>();
+		
+		for (SigningCertType type : SigningCertType.values()) {
+			File file = getSigningCertFile(type, ".p12");
+			if (file == null)
+				continue;
+			types.add(type);
+		}
+		
+		return types; 
+	}
+	
+	public byte[] getSigningCert(SigningCertType type) {
+		File file = getSigningCertFile(type, ".p12");
+		if (file == null)
+			return null;
+		try {
+			return Io.bytesFromFile(file);
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	public String getSigningCertPassword(SigningCertType type) {
+		File file = getSigningCertFile(type, "password.txt");
+		if (file == null)
+			return null;
+		try {
+			return Io.stringFromFile(file);
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	public File getSigningCertFile(SigningCertType type, String filenameSuffix) {
+		final String suffix = filenameSuffix;
+		String subdir = type.getSubdir();
+		File certDir = new File(pathToDirectConfigArea() + File.separator + subdir);
 		if (!certDir.exists() || !certDir.isDirectory())
 			return null;
 		String[] files = certDir.list(new FilenameFilter() {
 			@Override
 			public boolean accept(File arg0, String arg1) {
-				return arg1.endsWith(".p12");
+				return arg1.endsWith(suffix);
 			}
 		});
-		if (files.length == 1)
+		if (files != null && files.length == 1)
 			return new File(certDir + sep + files[0]);
 		return null;
 	}
+		
+//	boolean dirHasFileOfType(File dir, String type) {
+//		final String fileType = type;
+//		if (!dir.exists() || !dir.isDirectory())
+//			return false;
+//		String[] files = dir.list(new FilenameFilter() {
+//			@Override
+//			public boolean accept(File arg0, String arg1) {
+//				return arg1.endsWith(fileType);
+//			}
+//		});
+//		return files != null && files.length > 0;
+//	}
 	
+	//**********************************************************
+	// Encryption Certs
+	//**********************************************************
+
 	public File getEncryptionCertFile(String domain) {
 		final String theDomain = domain;
 		File certDir = new File(pathToEncryptionCertsDir());
@@ -77,37 +135,6 @@ public class DirectConfigManager {
 		logger.info("... found " + fileL);
 		if (files.length == 1)
 			return new File(certDir + sep + files[0]);
-		return null;
-	}
-	
-	public byte[] getSigningCert() {
-		File file = getSigningCertFile();
-		if (file == null)
-			return null;
-		try {
-			return Io.bytesFromFile(file);
-		} catch (IOException e) {
-			return null;
-		}
-	}
-
-	public String getSigningCertPassword() {
-		File certDir = new File(pathToSigningCertDir());
-		if (!certDir.exists() || !certDir.isDirectory())
-			return null;
-		String[] files = certDir.list(new FilenameFilter() {
-			@Override
-			public boolean accept(File arg0, String arg1) {
-				return arg1.equals("password.txt");
-			}
-		});
-		if (files.length == 1) {
-			try {
-				return Io.stringFromFile(new File(certDir + sep + files[0])).trim();
-			} catch (Exception e) {
-				return null;
-			}
-		}
 		return null;
 	}
 	
@@ -138,4 +165,8 @@ public class DirectConfigManager {
 		
 		return domains;
 	}
+	
+	//**********************************************************
+	//**********************************************************
+
 }
