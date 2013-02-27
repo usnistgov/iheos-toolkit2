@@ -50,11 +50,11 @@ public class SimulatorServiceManagerConfigsTest {
 	
 	@Test
 	public void simInSimConfigsTest() throws Exception {
-		int beforeSimsSize = sm.getSites().size();
+		int beforeSimsSize = sm.getAllSites().size();
 		Assert.assertEquals(0, beforeSimsSize);
 		createNewRegistry();
-		Assert.assertEquals(1, sm.getSites().size());
-		Assert.assertEquals(beforeSimsSize + 1, sm.getSites().size());
+		Assert.assertEquals(1, sm.getAllSites().size());
+		Assert.assertEquals(beforeSimsSize + 1, sm.getAllSites().size());
 	}
 
 }

@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,6 +26,31 @@ public class SimCache {
 		mgrs.put(sessionId, sim);
 	}
 
+	/**
+	 * Make sure this SimulatorConfig is present in the cache. 
+	 * @param sessionId
+	 * @param sc
+	 */
+	public void update(String sessionId, SimulatorConfig sc) {
+		SimManager sm = mgrs.get(sessionId);
+		if (sm == null) {
+			sm = new SimManager(sessionId);
+			mgrs.put(sessionId, sm);
+		}
+		String simId = sc.getId();
+		SimulatorConfig sc1 = sm.getSimulatorConfig(simId);
+		if (sc1 == null) {
+			sm.addSimConfig(sc);
+		}
+	}
+
+	public void update(String sessionId, List<SimulatorConfig> configs) {
+		for (SimulatorConfig config : configs) {
+			update(sessionId, config);
+		}
+		
+	}
+	
 	public SimManager getSimManagerForSession(String sessionId) {
 		return getSimManagerForSession(sessionId, false);
 	}

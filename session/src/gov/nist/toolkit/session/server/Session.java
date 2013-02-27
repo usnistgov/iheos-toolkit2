@@ -164,7 +164,7 @@ public class Session implements SecurityParams {
 			// this will not always work and is not always relevant - just try
 			//    WHY?
 			try {
-				Sites sites = new SimCache().getSimManagerForSession(id()).getSites();
+				Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites();
 				Site st = sites.getSite(siteSpec.name);
 				repUid = st.getRepositoryUniqueId();
 			} catch (Exception e) {

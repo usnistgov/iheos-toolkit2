@@ -256,7 +256,8 @@ public class SimulatorServiceManager extends CommonServiceManager {
 	}
 
 	/**
-	 * Return SimualtorConfigs that are not expired.
+	 * Return SimualtorConfigs that are not expired. Configs may not have been
+	 * created in this session so make sure they are present in SimCache
 	 * @param ids
 	 * @return
 	 * @throws Exception
@@ -267,6 +268,10 @@ public class SimulatorServiceManager extends CommonServiceManager {
 		SimulatorFactory simFact = new SimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
 		List<SimulatorConfig> configs = simFact.loadSimulators(ids);
 		configs = simFact.checkExpiration(configs);
+		
+		// update cache
+		new SimCache().update(session.id(), configs);
+		
 		return configs;
 
 //		// Carefully now, some simulators may have expired, return only those that still exist

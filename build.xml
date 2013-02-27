@@ -84,7 +84,8 @@
 		simulators,
 		direct-sim,
 		direct-listener,
-		xdstools2
+		xdstools2,
+        globalTests
 	" />
 
 	<!-- Outside dependencies -->

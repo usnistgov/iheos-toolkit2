@@ -32,7 +32,7 @@ public class SimManagerTest {
 		
 		try {
 			beforeSites = new SimCache().getSimManagerForSession(session.getId())
-					.getSites();
+					.getAllSites();
 		} catch (Exception e) {
 			Assert.fail(ExceptionUtil.exception_details(e));
 		}
@@ -51,7 +51,7 @@ public class SimManagerTest {
 		createNewRegistry();
 		try {
 			afterSites = new SimCache().getSimManagerForSession(session.getId())
-					.getSites();
+					.getAllSites();
 		} catch (Exception e) {
 			Assert.fail(ExceptionUtil.exception_details(e));
 		}

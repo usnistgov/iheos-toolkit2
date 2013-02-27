@@ -222,7 +222,7 @@ public abstract class ActorFactory {
 			// must load up XCQ and XCR endpoints for simulator to use
 			config.remoteSites = new ArrayList<Site>();
 
-			Sites sites = simManager.getSites();
+			Sites sites = simManager.getAllSites();
 			for (String remote : config.remoteSiteNames) {
 				Site site = sites.getSite(remote);
 				config.remoteSites.add(site);

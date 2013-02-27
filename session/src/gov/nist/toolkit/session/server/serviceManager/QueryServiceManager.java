@@ -402,7 +402,7 @@ public class QueryServiceManager extends CommonServiceManager {
 			if (id.repositoryUniqueId == null) {
 				if (s2 == null) {
 					try {
-						s2 = new SimCache().getSimManagerForSession(s.id()).getSites().getSite(s.siteSpec.name);
+						s2 = new SimCache().getSimManagerForSession(s.id()).getAllSites().getSite(s.siteSpec.name);
 					} catch (Throwable e) {}
 				}
 				if (s2 != null && s2.hasRepositoryB()) {

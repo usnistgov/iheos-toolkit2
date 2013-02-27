@@ -20,7 +20,6 @@ import java.util.Map;
  */
 
 public class SimManager {
-//	static Map<String, SimManager> mgrs = new HashMap<String, SimManager>(); // SimManager for a sessionId
 	List<SimulatorConfig> simConfigs = new ArrayList<SimulatorConfig>();  // for this session
 	String sessionId;
 
@@ -28,15 +27,6 @@ public class SimManager {
 		this.sessionId = sessionId;
 	}
 	
-//	static public SimManager get(String sessionId) {
-//		SimManager m = mgrs.get(sessionId);
-//		if (m == null) {
-//			m = new SimManager(sessionId);
-//			mgrs.put(sessionId, m);
-//		}
-//		return m;
-//	}
-
 //*****************************************
 //  These methods would normally belong in class SimulatorConfig but that
 //  class is compiled for the client and some of these classes (ActorFactory)
@@ -55,46 +45,11 @@ public class SimManager {
 	}
 //*****************************************
 
-//	static public List<Site> getSites(Collection<SimulatorConfig> configs) throws Exception {
-//		List<Site> sites = new ArrayList<Site>();
-//		for (SimulatorConfig sc : configs) {
-//			sites.add(SimManager.getSite(sc));
-//		}
-//		return sites;
-//	}
-
-//	static public List<Site> getSites(Sites inSites, Collection<SimulatorConfig> configs) throws Exception {
-//		List<Site> sites = new ArrayList<Site>();
-//		sites.addAll(inSites.asCollection());
-//		for (SimulatorConfig sc : configs) {
-//			sites.add(SimManager.getSite(sc));
-//		}
-//		return sites;
-//	}
 
 	
 	public String sessionId() {
 		return sessionId;
 	}
-	
-//	public File getCodesFile() throws EnvironmentNotSelectedException, NoSessionException {
-//		EnvSetting setting  = EnvSetting.getEnvSetting(sessionId);
-//		return setting.getCodesFile();
-//	}
-	
-//	public SimDb getSimDb(String simulatorId) throws IOException {
-//		return new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);
-//	}
-	
-	// Return sims specific to this session
-//	public List<SimulatorConfig> simConfigs() throws IOException {
-//		if (actorSimulatorConfigs == null) {
-//			actorSimulatorConfigs = new ArrayList<SimulatorConfig>();
-//		} else {
-//			purgeDeletedSims();
-//		}
-//		return actorSimulatorConfigs;
-//	}
 	
 	// Be careful, this may no longer be relevant??????
 	@Deprecated
@@ -121,20 +76,15 @@ public class SimManager {
 		simConfigs.addAll(s.getConfigs());
 	}
 	
-//	public void addSimConfig(SimulatorConfig sc) throws IOException {
-//		simConfigs().add(sc);
-//	}
-	
-//	public void addSimConfigs(List<SimulatorConfig> scs) throws IOException {
-//		for (SimulatorConfig sc : scs)
-//			simConfigs().add(sc);
-//	}
+	public void addSimConfig(SimulatorConfig config) {
+		simConfigs.add(config);
+	}
 	
 	public void setSimConfigs(List<SimulatorConfig> configs) {
 		simConfigs = configs;
 	}
 	
-	public SimulatorConfig getSimulatorConfig(String simId) throws IOException {
+	public SimulatorConfig getSimulatorConfig(String simId) {
 		for (SimulatorConfig config : simConfigs) {
 			if (simId.equals(config.getId()) && !config.isExpired())
 				return config;
@@ -147,7 +97,7 @@ public class SimManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public Sites getSites() throws Exception {
+	public Sites getAllSites() throws Exception {
 		return getAllSites(SiteServiceManager.getSiteServiceManager().getCommonSites());
 	}
 	
