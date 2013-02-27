@@ -75,7 +75,6 @@
 		sim-common,
 		results,
 		direct-support,
-		simDb,
 		xdstest2-logging,
 		actorfactory,
 		xdstest2,
@@ -228,7 +227,7 @@
          ================================================= -->
 	
 	<target name="clean">
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true" failonerror="false">
 			<fileset dir="${build.dir}" includes="**/*"/>
 			<fileset dir="${test.dir}" includes="**/*"/>
 		</delete>
