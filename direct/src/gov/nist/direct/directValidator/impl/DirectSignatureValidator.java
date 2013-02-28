@@ -342,7 +342,6 @@ public class DirectSignatureValidator implements SignatureValidator {
 
 	@Override
 	public void validateSignature(ErrorRecorder er, X509Certificate cert, SignerInformation signer, String BC) {
-		System.out.println(cert);
 		try {
 			if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider(BC).build(cert)))
 			{
