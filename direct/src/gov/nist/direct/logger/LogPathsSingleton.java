@@ -35,6 +35,8 @@ import java.sql.Time;
  */
 public class LogPathsSingleton {
 	
+	
+
 	private String LOG_ROOT;
 	
 	private final String DIRECT_RECEIVE_FOLDER = File.separator + "directReceive";
@@ -49,6 +51,7 @@ public class LogPathsSingleton {
 	private final String MESSAGE_STATUS = File.separator + "status.txt";
 	private final String DATE_LOG = File.separator + "date.txt";
 	private final String EXPIRATION_DATE_LOG = File.separator + "expiration-date.txt";
+	private final String LABEL_LOG = File.separator + "label.txt";
 	
 	
 
@@ -183,6 +186,14 @@ public class LogPathsSingleton {
 		return path;
 	}
 	
+
+	public String getLabelLogPath(String transactionType, String messageType,
+			String username, String messageId) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + LABEL_LOG;
+		return path;
+	}
+
 	
 	
 	
@@ -211,6 +222,7 @@ public class LogPathsSingleton {
 	}
 		return defaultPath;
 	}
+
 
 
 	

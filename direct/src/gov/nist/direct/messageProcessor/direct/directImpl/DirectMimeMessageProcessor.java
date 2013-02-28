@@ -23,6 +23,7 @@ import gov.nist.direct.directValidator.MessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.logger.UserLog;
 import gov.nist.direct.messageProcessor.direct.DirectMessageProcessorInterface;
 import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationSummary;
@@ -53,6 +54,7 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
@@ -969,8 +971,14 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();
 
-		MessageLog.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p);
-
+		// Get label
+		String label = "label";
+		
+		MessageLog.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
+		ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
+		System.out.println(readLog.toString());
+		
+		
 		System.out.println("Logged direct message.");
 
 	}
