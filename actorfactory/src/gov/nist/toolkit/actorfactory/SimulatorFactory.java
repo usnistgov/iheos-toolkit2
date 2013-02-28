@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -23,13 +24,13 @@ public class SimulatorFactory extends ActorFactory {
 		super(simManager);
 	}
 
-	public List<SimulatorConfig> buildNewSimulator(SimManager simm, String simtype) throws Exception {
+	public Simulator buildNewSimulator(SimManager simm, String simtype) throws Exception {
 		return buildNewSimulator(simm, simtype, true);
 	}
 
 	
 	@Override
-	protected List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws Exception {
+	protected Simulator buildNew(SimManager simm, boolean configureBase) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -52,5 +53,6 @@ public class SimulatorFactory extends ActorFactory {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 
 }

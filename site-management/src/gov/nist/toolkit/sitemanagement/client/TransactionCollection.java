@@ -17,8 +17,9 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public List<TransactionBean> transactions = new ArrayList<TransactionBean>();
-	public String collectionName;
-	boolean isRepositories = false;
+	public String collectionName;    // never really used
+	boolean isRepositories = false; // a TransactionCollection is either for Repositories
+									// or not
 	
 	public boolean equals(TransactionCollection tc) {
 		if (tc == null)
@@ -67,15 +68,15 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	}
 	
 	
-	public void removeEmptyEndpoints() {
-		List<TransactionBean> removable = new ArrayList<TransactionBean>();
-		
-		for (TransactionBean transbean : transactions) {
-			if (transbean.endpoint == null || transbean.endpoint.trim().equals(""))
-				removable.add(transbean);
-		}
-		transactions.removeAll(removable);
-	}
+//	public void removeEmptyEndpoints() {
+//		List<TransactionBean> removable = new ArrayList<TransactionBean>();
+//		
+//		for (TransactionBean transbean : transactions) {
+//			if (transbean.endpoint == null || transbean.endpoint.trim().equals(""))
+//				removable.add(transbean);
+//		}
+//		transactions.removeAll(removable);
+//	}
 	
 	public void removeEmptyNames() {
 		List<TransactionBean> removable = new ArrayList<TransactionBean>();
@@ -130,15 +131,19 @@ public class TransactionCollection implements IsSerializable, Serializable {
 	
 	public TransactionCollection() {} // For GWT
 
+	// instead of the boolean, subtypes should be used
 	public TransactionCollection(boolean isRepositories) {
 		this.isRepositories = isRepositories;
 	}	
 	
+	// Not used
+	@Deprecated
 	TransactionCollection(String collectionName) {
 		transactions = new ArrayList<TransactionBean>();
 		this.collectionName = collectionName;
 	}
 	
+	@Deprecated
 	public void setName(String name) {
 		collectionName = name;
 	}
@@ -183,12 +188,12 @@ public class TransactionCollection implements IsSerializable, Serializable {
 		return null;
 	}
 
-	public List<TransactionBean> findAll(String name, boolean isSecure, boolean isAsync) {
+	public List<TransactionBean> findAll(String transactionName, boolean isSecure, boolean isAsync) {
 		List<TransactionBean> tbs = new ArrayList<TransactionBean>();
-		if (name == null)
+		if (transactionName == null)
 			return null;
 		for (TransactionBean t : transactions) {
-			if (t.hasName(name) &&
+			if (t.hasName(transactionName) &&
 					isSecure == t.isSecure &&
 					isAsync == t.isAsync)
 				tbs.add(t);
@@ -210,14 +215,14 @@ public class TransactionCollection implements IsSerializable, Serializable {
 		return t.endpoint;
 	}
 
-	public void add(String name, String endpoint, boolean isSecure, boolean isAsync) throws Exception {
-		TransactionBean t = find(name, isSecure, isAsync);
+	public void add(String transactionName, String endpoint, boolean isSecure, boolean isAsync) throws Exception {
+		TransactionBean t = find(transactionName, isSecure, isAsync);
 		if (t != null)
 			return;
 //			throw new Exception("Actors.xml configuration problem: site " + collectionName + 
 //					" defines transaction " + t.toString() + " multiple times\n Relevant part of Site definition is:\n" + toString());
 		transactions.add(new TransactionBean(
-				name, 	
+				transactionName, 	
 				isRepositories ? RepositoryType.REPOSITORY : RepositoryType.NONE, 
 				endpoint, 
 				isSecure, 

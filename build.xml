@@ -75,16 +75,16 @@
 		sim-common,
 		results,
 		direct-support,
-		simDb,
 		xdstest2-logging,
-		xdstest2,
 		actorfactory,
+		xdstest2,
 		session,
 		xdstest-gui,
 		simulators,
 		direct-sim,
 		direct-listener,
-		xdstools2
+		xdstools2,
+        globalTests
 	" />
 
 	<!-- Outside dependencies -->
@@ -118,6 +118,9 @@
 	<!-- all compiled sources are placed there -->
 	<property name="build.dir" location="build" />
 	
+	<!-- all test result are placed there -->
+	<property name="test.dir" location="test" />
+	
 	<!-- target repository where artifacts are put-->
 	<property name="target.dir" location="." />
 
@@ -143,7 +146,8 @@
 	<property name="results.src.dir" location="results/src" />
 	<property name="actorfactory.src.dir" location="actorfactory/src" />
 	<property name="http.src.dir" location="http/src" />
-
+	<property name="direct.src.dir" location="direct/src" />
+	
 	<!-- antlib is bundled with the 3rd party librairies.
 	Since the lib.dir might not be initialized or could be cleaned-up,
 	we get the definition of antlib from the shared.lib.dir -->
@@ -160,6 +164,16 @@
 		</fileset>
 	</path>
 	
+	<!-- classpath for test execution -->	
+	<path id="test.classpath">
+		<fileset dir="${build.dir}">
+			<include name="**/*.class" />
+		</fileset>
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
 	<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
 		<classpath refid="classpath" />
 	</taskdef>
@@ -213,9 +227,9 @@
          ================================================= -->
 	
 	<target name="clean">
-		<delete includeemptydirs="true">
-			<fileset dir="${build.dir}" includes="**/*">
-			</fileset>
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${build.dir}" includes="**/*"/>
+			<fileset dir="${test.dir}" includes="**/*"/>
 		</delete>
 		<ant antfile="${staging.area}/build-war.xml" target="clean" />
 	</target>
@@ -317,6 +331,44 @@
 	<!-- generate documentation -->
 	<target name="compile-direct-faq">
 		<ant dir="direct-faq" target="compile" />
+	</target>
+	
+    <!-- ================================= 
+                 target: test            
+         ================================= -->
+	<!-- run unit tests 
+	<target name="test">
+		<ant dir="site-management" target="test" useNativeBasedir="false" inheritAll="true" inheritRefs="true"/>
+	</target>
+	-->
+	<target name="test" depends="compile">
+		<mkdir dir="${test.dir}"/>
+		<path id="test.classpath">
+    	    <fileset dir="${build.dir}">
+    	        <include name="**/*.class" />
+    	    </fileset>
+			
+    		<fileset dir="${lib.dir}">
+    			<include name="**/*.jar" />
+    		</fileset>
+    		
+		</path>
+	    <junit printsummary="on">
+	        <classpath>
+	        	<fileset dir="${toolkit.home}/xdstools2" includes="log4j.properties"/>
+	    		<fileset dir="${lib.dir}">
+	    			<include name="**/*.jar" />
+	    		</fileset>
+				<pathelement location="${build.dir}"/>	        	
+	        </classpath>
+	        <formatter type="brief"/>
+	    	<batchtest fork="yes" todir="${test.dir}">
+	    	    <fileset dir="${build.dir}">
+	    	    	<include name="**/test/**/*Test*"/>
+	    	    	<exclude name="**/*$*"/>
+	    	    </fileset>
+	    	</batchtest>	    
+	    </junit>
 	</target>
 
 </project>

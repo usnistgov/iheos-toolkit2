@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Sites {
-	HashMap<String, Site> siteMap = new HashMap<String, Site>();
+	HashMap<String, Site> siteMap = new HashMap<String, Site>();   // siteName -> Site
 	String defaultSiteName;
 	static String all = "allRepositories";
 	

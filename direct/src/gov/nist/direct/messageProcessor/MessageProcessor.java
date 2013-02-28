@@ -9,9 +9,12 @@ modified freely provided that any derivative works bear some notice that they ar
 modified versions bear some notice that they have been modified.
 
 Project: NWHIN-DIRECT
-Authors: Frederic de Vaulx
-		Diane Azais
-		Julien Perugini
+Authors: William Majurski
+		 Frederic de Vaulx
+		 Diane Azais
+		 Julien Perugini
+		 Antoine Gerardin
+		
  */
 
 package gov.nist.direct.messageProcessor;
@@ -51,41 +54,46 @@ public class MessageProcessor implements MessageProcessorInterface {
 	/**
 	 * Facade handler to process all types of messages
 	 */
-	public void processMessage(ErrorRecorder er, byte[] message, byte[] _directCertificate, String _password, ValidationContext vc) {
+	public void processMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc) {
 
 		// Parse the message
-		MimeMessage mm = MimeMessageParser.parseMessage(er, message);
+		MimeMessage mm = MimeMessageParser.parseMessage(er, inputDirectMessage);
 		
 		
 		// determine message type
 		// ------ MDN -------
 		try {
-			if (MessageDispatchUtils.isMDN(er, mm)){
-				 messageType = mdnMessageType;
-				 
-				 // Display Message type
-				 er.detail("The file was recognized as an MDN message.");
-				 
-				 // Process message
-				 MDNMessageProcessor mdnProc = new MDNMessageProcessor();
-				 try {
-					mdnProc.processMDNMessage(er, message, _directCertificate, _password, vc);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-								 
+			if (MessageDispatchUtils.isMDN(er, inputDirectMessage, _directCertificate, _password)){ // using mimemessage parser instead of MDNparser, might not work
+				messageType = mdnMessageType;
+
+				// Display Message type
+				System.out.println("The file was recognized as an MDN message.");
+				er.detail("The file was recognized as an MDN message.");
+
+				// Process message
+				MDNMessageProcessor mdnProc = new MDNMessageProcessor();
+				mdnProc.processMDNMessage(er, inputDirectMessage, _directCertificate, _password, vc);
+				System.out.println("MDN message was processed.");
 			}
-			
-			
+
+
 		// ------ DIRECT -------
-		if (MessageDispatchUtils.isDIRECT(er, mm)){
+			else if (MessageDispatchUtils.isDIRECT(er, mm)){
 			 messageType = directMessageType;
 			 
 			 // Display Message type
 			 er.detail("The file was recognized as a DIRECT message.");
+			 System.out.println("The file was recognized as a DIRECT message.");
+			 
+			 // Process message
+			 DirectMimeMessageProcessor directProc = new DirectMimeMessageProcessor();
+			 directProc.processAndValidateDirectMessage(er, inputDirectMessage, _directCertificate, _password, vc);
+			 System.out.println("Direct message was processed.");
 			}
 			
+		
+		
+		// ----- Unknown type  -----
 			else {
 				er.err("Message File", "The file is neither a DIRECT message nor an MDN.", "", "", "Message File");
 			}

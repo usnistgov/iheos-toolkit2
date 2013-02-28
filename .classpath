@@ -29,7 +29,6 @@
 	<classpathentry kind="src" path="simulators/src"/>
 	<classpathentry kind="src" path="site-management/src"/>
 	<classpathentry kind="src" path="session/src"/>
-	<classpathentry kind="src" path="simDb/src"/>
 	<classpathentry kind="src" path="soap/src"/>
 	<classpathentry kind="src" path="testkit-utilities/src"/>
 	<classpathentry kind="src" path="tk/src"/>
@@ -49,7 +48,9 @@
 	<classpathentry kind="src" path="message-dispatch/src"/>
 	<classpathentry kind="src" path="timer/src"/>
 	<classpathentry kind="src" path="rest/src"/>
+	<classpathentry kind="src" path="dns/src"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
 	<classpathentry kind="lib" path="lib/apache-mailet-base-1.1.jar"/>
@@ -76,6 +77,7 @@
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/dnsjava-2.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/ebxmlrr-common.jar"/>
 	<classpathentry kind="lib" path="lib/edireader-4.7.3.jar"/>
 	<classpathentry kind="lib" path="lib/groovy-all-1.7.6.jar"/>
@@ -83,6 +85,9 @@
 	<classpathentry kind="lib" path="lib/gwt-servlet.jar"/>
 	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.0.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-annotations-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-databind-2.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jargs-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-api-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-impl-2.1.7.jar"/>
@@ -105,14 +110,14 @@
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.ocl_1.3.0.v200905271400.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.ocl.ecore_1.3.0.v200905271400.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.emf.runtime_1.0.0.201212211415.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda_1.2.0.201212211415.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.consol_1.2.0.201212211418.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.mu2consol_1.2.0.201212211608.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.emf.runtime_1.0.0.201302071746.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda_1.2.0.201302071746.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.consol_1.2.0.201302071746.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.mu2consol_1.2.0.201302071746.jar"/>
 	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.resources_1.2.0.201212211415.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.datatypes_1.2.0.201212211415.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.rim_1.2.0.201212211415.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.vocab_1.2.0.201212211415.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.datatypes_1.2.0.201302071746.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.rim_1.2.0.201302071746.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.vocab_1.2.0.201302071746.jar"/>
 	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.term.models_1.1.0.201210151242.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql.jar"/>
 	<classpathentry kind="lib" path="lib/resolver-2.9.1.jar"/>
@@ -152,6 +157,5 @@
 	<classpathentry kind="lib" path="lib/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/xmlsec-1.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/xmltooling-1.2.0.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>

@@ -28,6 +28,7 @@
   <inherits name="gov.nist.toolkit.results.results"/>
   <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
   <inherits name="gov.nist.toolkit.http.http"/>
+  <inherits name="gov.nist.direct.direct"/>
   
   <!-- Specify the app entry point class.                         -->
   <entry-point class='gov.nist.toolkit.xdstools2.client.Xdstools2'/>

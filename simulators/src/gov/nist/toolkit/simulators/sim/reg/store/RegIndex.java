@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.simDb.SimDb;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 import java.io.FileInputStream;

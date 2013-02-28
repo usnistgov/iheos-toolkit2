@@ -49,6 +49,15 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public boolean isExpired() { return isExpired; }
 	public void isExpired(boolean is) { isExpired = is; }
 	
+	public boolean checkExpiration() {
+		Date now = new Date();
+		if (now.after(expires))
+			isExpired = true;
+		else
+			isExpired = false;
+		return isExpired;
+	}
+	
 	// not sure what to do with the other attributes, leave alone for now
 	public void add(SimulatorConfig asc) {
 		for (SimulatorConfigElement ele : asc.elements) {
@@ -213,5 +222,12 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public void setValidationContext(ValidationContext vc) {
 		this.vc = vc;
 	}
+
+//	public ActorFactory getActorFactory() throws Exception {
+//		String simtype = getType();
+//		ActorType at = ActorType.findActor(simtype);
+//		ActorFactory af = ActorFactory.getActorFactory(at);
+//		return af;
+//	}
 
 }

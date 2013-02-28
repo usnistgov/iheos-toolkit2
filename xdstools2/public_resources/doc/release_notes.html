@@ -10,6 +10,27 @@
 
 <p>Release note are listed for each build number
 
+<h4>161   (released     1 Mar 2013  )      </h4>
+
+<h5>New Features</h5>
+
+<ul>
+<li>Added ability to use alternate signing certs from GUI
+<li>Added MDN support 
+</ul>
+
+<h5>Bug Fixes</h5>
+
+<ul>
+<li>Improve error reporting on DNS/MX record lookup
+<li>Built with share-lib version 161
+<li>Fixed MDN validation bug, the MDN headers were not correctly processed.
+<li>Fixed the error/warning messages displayed for MDN validation.
+<li>Direct Message validation: tool was throwing an error because there was a blank at the end of the message ID.
+<li>Direct Message validation: tool was not able to match the upper case micalg algorithm.
+<li>Direct Message validation: content type of the XDM documents sent by the DirectSender (Send Direct Message) portion of the Tool was set to text/xml instead of application/zip.
+</ul>
+
 <h4>160   (released February 15, 2013)       </h4>
 
 <h5>New Features</h5>
@@ -18,15 +39,73 @@
 CCDA are placed into the validation report.
 <li>The following new formats are recognized by the Message Validator
    <ul>
-   <li>CCDA wrapped in XDM
+   <li>CCDA wrapped in XDM (CCDA validated along with XDM format)
+   <li>CCDA sent in XDR (CCDA validated along with XDR format)
    </ul>
 </li>
 </ul>
 
 <h5>Bug Fixes</h5>
 <ul>
+<li>Upgrade MDHT to 02_15_2013 release:<br />
+Defects fixed in this release:
+  <ul>
+	<li>Allow Referrals to be documented as part of “Plan of Care Section” or “Assessment and Plan section” or
+“Reason for Referral” section.
+		<ul>
+			<li>Previously the validation was over constrained and only Reason for Referral section was being
+allowed.
+		</ul>
+	</li>
+	<li>Allow Vital Signs to use sections with entries required or section with entries optional.
+		<ul>
+			<li>Previously the validation was over constrained and only Vital Signs section with entries required
+template was being allowed.
+		</ul>
+	</li>
+	<li>Allow CareTeam Members to be documented as part of either “EncompassingEncounter/responsibleParty”
+or “EncompassingEncounter/encounterParticipant” or “documentationOf/ServiceEvent/Performer”.
+		<ul>
+			<li>Previously the validation was looking for all three of them to exist and declaring an error
+incorrectly on valid samples.
+		</ul>
+	</li>
+	<li>Cognitive Status Problem Observation Entry was modeled with incorrect cardinality resulting in an error.
+		<ul>
+			<li>Previously the Problem Observation Entry was modeled with a cardinality of 1..* instead of 0..*
+which was resulting in an error.
+		</ul>
+	</li>
+	<li>Fixed a memory leak that was causing heap exhaustion in about 4 hours.
+	<li>Pregnancy Observation was modeled with incorrect cardinality resulting in an error.
+		<ul>
+			<li>Previously Pregnancy Observation was modeled with a cardinality of 1..1 instead of 0..1 which
+caused a validation error for valid samples.
+		</ul>
+	</li>
+	<li>EncounterActivities\Code vocabulary constraints were modeled incorrectly resulting in an error.
+		<ul>
+			<li>Previously Encounter Activities \ Code was being validated to have a code system of SNOMED-
+CT or ICD-10 incorrectly. This has now been corrected.
+		</ul>
+	</li>
+  </ul>
+</li>
+Known issues in this release that impact users:<br />
+	<ul>
+		<li>No known issues
+	</ul>
 <li>XDM decoder was detecting directories incorrectly.  This frequently resulted 
 in the message <i>Directory IHE_XDM not found</i> even when it was present.
+<li>Built with shared-lib version 160
+</ul>
+
+<h5>Known problems</h5>
+<ul>
+	<li>When an XDR message is received containing a CCDA, the CCDA is validated before the response message
+	is sent.  This allows the validation errors to be included in the response. Since the CCDA validation
+	can take a very long time to run (sometimes over a minute) the sender (Document Source actor) can 
+	timeout waiting for the SOAP response.  When using toolkit as the Document Source, it does timeout.
 </ul>
 
 <h4>159   (released February 7, 2013)       </h4>

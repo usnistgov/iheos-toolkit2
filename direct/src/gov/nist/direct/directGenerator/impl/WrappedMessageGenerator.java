@@ -1,3 +1,22 @@
+/**
+ This software was developed at the National Institute of Standards and Technology by employees
+of the Federal Government in the course of their official duties. Pursuant to title 17 Section 105 of the
+United States Code this software is not subject to copyright protection and is in the public domain.
+This is an experimental system. NIST assumes no responsibility whatsoever for its use by other parties,
+and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.
+We would appreciate acknowledgement if the software is used. This software can be redistributed and/or
+modified freely provided that any derivative works bear some notice that they are derived from it, and any
+modified versions bear some notice that they have been modified.
+
+Project: NWHIN-DIRECT
+Authors: William Majurski
+		 Frederic de Vaulx
+		 Diane Azais
+		 Julien Perugini
+		 Antoine Gerardin
+		
+ */
+
 package gov.nist.direct.directGenerator.impl;
 
 import java.io.ByteArrayInputStream;
@@ -50,6 +69,9 @@ import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.util.Store;
 
 import gov.nist.direct.directGenerator.DirectMessageGenerator;
+import gov.nist.direct.directGenerator.MessageGeneratorUtils;
+import gov.nist.direct.messageProcessor.cert.CertificateLoader;
+import gov.nist.direct.messageProcessor.cert.PublicCertLoader;
 import gov.nist.direct.x509.X509CertificateEx;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;
 import gov.nist.toolkit.utilities.io.Io;
@@ -66,142 +88,19 @@ public class WrappedMessageGenerator implements DirectMessageGenerator {
 		Security.addProvider(new BouncyCastleProvider());
 
 		try {
-		//
-		// set up our certs
-		//
-		KeyPairGenerator    kpg  = KeyPairGenerator.getInstance("RSA", "BC");
-
-		kpg.initialize(1024, new SecureRandom());
-
-		//List                certList = new ArrayList();
-
-		//
-        // Open the key store
-        //
-        KeyStore    ks = KeyStore.getInstance("PKCS12", "BC");           
-
-        try {
-        	ks.load(Io.bytesToInputStream(signingCert), signingCertPw.toCharArray());
-        } catch (Throwable e) {
-        	throw new Exception("Signing private key may be in wrong format, PKCS12 expected", e);
-        }
-
-        Enumeration e = ks.aliases();
-        String      keyAlias = null;
-
-        while (e.hasMoreElements())
-        {
-            String  alias = (String)e.nextElement();
-
-            if (ks.isKeyEntry(alias))
-            {
-                keyAlias = alias;
-            }
-        }
-
-        if (keyAlias == null)
-        {
-            System.err.println("can't find a private key!");
-            System.exit(0);
-        }
-
-        Certificate[]   chain = ks.getCertificateChain(keyAlias);
-		
-        //
-		// cert that issued the signing certificate
-		//
-        String              signDN = ((X509Certificate) chain[0]).getIssuerDN().toString();
-		
-		//certList.add(chain[0]);
-        
-
-		//
-		// be careful about setting extra headers here. Some mail clients
-		// ignore the To and From fields (for example) in the body part
-		// that contains the multipart. The result of this will be that the
-		// signature fails to verify... Outlook Express is an example of
-		// a client that exhibits this behaviour.
-		//
-
-        Collection<X509Certificate> signingCertificates = new ArrayList<X509Certificate>();
-        X509CertificateEx signCert = X509CertificateEx.fromX509Certificate((X509Certificate) chain[0], (PrivateKey)ks.getKey(keyAlias, "".toCharArray()));
-        
-        //System.out.println(signCert);
-        
-        signingCertificates.add(signCert);
-
-		//
-		// create a CertStore containing the certificates we want carried
-		// in the signature
-		//
-		Store certs = new JcaCertStore(signingCertificates);
-
-		//
-		// create some smime capabilities in case someone wants to respond
-		//
-		ASN1EncodableVector         signedAttrs = new ASN1EncodableVector();
-		SMIMECapabilityVector       caps = new SMIMECapabilityVector();
-
-		caps.addCapability(SMIMECapability.dES_EDE3_CBC);
-		caps.addCapability(SMIMECapability.rC2_CBC, 128);
-		caps.addCapability(SMIMECapability.dES_CBC);
-		caps.addCapability(new ASN1ObjectIdentifier("1.2.840.113549.1.7.1"));
-		caps.addCapability(new ASN1ObjectIdentifier("1.2.840.113549.1.9.22.1"));
-
-		signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
-		
-		//logger.debug("Signing Cert is \n = " + signCert.toString());
-		//
-		// add an encryption key preference for encrypted responses -
-		// normally this would be different from the signing certificate...
-		//
-		IssuerAndSerialNumber   issAndSer = new IssuerAndSerialNumber(
-				new X500Name(signDN), signCert.getSerialNumber());
-
-		signedAttrs.add(new SMIMEEncryptionKeyPreferenceAttribute(issAndSer));
-
-		//
-		// create the generator for creating an smime/signed message
-		//
-		SMIMESignedGenerator gen = new SMIMESignedGenerator();
-
-		//
-		// add a signer to the generator - this specifies we are using SHA1 and
-		// adding the smime attributes above to the signed attributes that
-		// will be generated as part of the signature. The encryption algorithm
-		// used is taken from the key - in this RSA with PKCS1Padding
-		//
-		gen.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider("BC").setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build("SHA1withRSA", signCert.getPrivateKey(), signCert));
-
-		//
-		// add our pool of certs and cerls (if any) to go with the signature
-		//
-		gen.addCertificates(certs);
+			ByteArrayInputStream signatureCert = new ByteArrayInputStream(signingCert);
+			CertificateLoader loader = new CertificateLoader(signatureCert, signingCertPw);
+			
+			SMIMESignedGenerator gen = loader.getSMIMESignedGenerator();
 		
         //
         // create the base for our message
         //
-        MimeBodyPart    msg1 = new MimeBodyPart();
-        
-        msg1.setText(textMessage);
-        
-        //File contentFile = new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/CCDA_CCD_b1_Ambulatory.xml");
-
-        byte[] fileContent = FileUtils.readFileToByteArray(attachmentContentFile);
-        byte[] content = Base64.encodeBase64(fileContent);
-
-
-        InternetHeaders partHeaders = new InternetHeaders();
-        partHeaders.addHeader("Content-Type", "text/xml; name="+attachmentContentFile.getName());
-        partHeaders.addHeader("Content-Transfer-Encoding", "base64");
-        partHeaders.addHeader("Content-Disposition", "attachment; filename="+attachmentContentFile.getName());
-
-        MimeBodyPart ccda = new MimeBodyPart(partHeaders, content);
 
         MimeMultipart mp = new MimeMultipart();
         
-        mp.addBodyPart(msg1);
-        mp.addBodyPart(ccda);
+        mp.addBodyPart(MessageGeneratorUtils.addText(textMessage));
+        mp.addBodyPart(MessageGeneratorUtils.addAttachement(attachmentContentFile));
 
         Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
         Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
@@ -296,18 +195,10 @@ public class WrappedMessageGenerator implements DirectMessageGenerator {
 
 		Certificate[]   chain = ks.getCertificateChain(keyAlias);
 		*/
-		
-        // Encryption cert
-        X509Certificate encCert = null;
 
-        ByteArrayInputStream is;
-        try {
-        	is = new ByteArrayInputStream(encryptionCertBA);
-        	CertificateFactory x509CertFact = CertificateFactory.getInstance("X.509");
-        	encCert = (X509Certificate)x509CertFact.generateCertificate(is);
-        } catch (Exception e1) {
-        	throw new Exception("Error loading X.509 encryption cert - probably wrong format", e1);
-        }
+        // Encryption cert
+        PublicCertLoader publicLoader = new PublicCertLoader(encryptionCertBA);
+        X509Certificate encCert = publicLoader.getCertificate();
 
         //System.out.println(encCert);
 

@@ -8,6 +8,16 @@ import java.io.Serializable;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * Configuration of a single instance of a transaction. Transactions are
+ * split into two major types: Retrieve and All Others. The isRetrieve()
+ * determines which kind this is.  In theory a transaction must belong to an
+ * Actor definition.  Toolkit is a bit looser and transactions belong
+ * to TransactionOfferings which can be thought of as a lightweight
+ * definition of an Actor.  
+ * @author bill
+ *
+ */
 public class TransactionBean implements IsSerializable, Serializable {
 	/**
 	 * 
@@ -15,7 +25,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public boolean isSecure = false;
 	public boolean isAsync = false;
-	public String endpoint = "";
+	public String endpoint = "";   // make private
 	
 	String name = "";   // can be transaction name or repository uid
 						// when a transaction name, it is related to transType
@@ -30,6 +40,8 @@ public class TransactionBean implements IsSerializable, Serializable {
 	};
 	
 	public RepositoryType repositoryType;
+	
+	public String getEndpoint() { return endpoint; }
 	
 	public boolean hasSameIndex(TransactionBean b) {
 		return 
@@ -106,9 +118,11 @@ public class TransactionBean implements IsSerializable, Serializable {
 		
 	}
 
-	
+	// Used by simulator factories, ActorConfigTab and the Gazelle interface
 	public TransactionBean(String name, RepositoryType repositoryType, String endpoint, boolean isSecure, boolean isAsync) {
-		this.name = name;
+		this.name = name;  // comes from TransactionType.XXX.getCode()
+							// param should be TransactionType
+							// This constructor should be retired in favor of the next one which depends on TransactionType
 		
 		// name can be trans name or repository uid
 		transType = ATFactory.TransactionType.find(name);
@@ -118,6 +132,8 @@ public class TransactionBean implements IsSerializable, Serializable {
 		this.isAsync = isAsync;
 	}
 	
+	// Used only by ActorConfigTab
+	@Deprecated
 	public TransactionBean(ATFactory.TransactionType transType, RepositoryType repositoryType, String endpoint, boolean isSecure, boolean isAsync) {
 		this.transType = transType;
 		this.name = transType.getName();
@@ -127,6 +143,8 @@ public class TransactionBean implements IsSerializable, Serializable {
 		this.isAsync = isAsync;
 	}
 
+	// Used only by Gazelle interface
+	@Deprecated
 	public TransactionBean(ATFactory.TransactionType transType, RepositoryType repositoryType, ActorType actorType, String endpoint, boolean isSecure, boolean isAsync) {
 		this.transType = transType;
 		this.name = transType.getName();

@@ -197,6 +197,10 @@ public class Io {
 		return new ByteArrayInputStream(in.getBytes()); 
 	}
 	
+	/**
+	 * Delete file, recursively if file represents a directory.
+	 * @param f
+	 */
 	static public void delete(File f) {
 		if (!f.exists())
 			return;

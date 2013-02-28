@@ -59,6 +59,7 @@
 				<pathelement location="${tk.src.dir}" />
 				<pathelement location="${results.src.dir}" />
 				<pathelement location="${actorfactory.src.dir}" />
+				<pathelement location="${direct.src.dir}" />
 				<path refid="classpath" />
 			</classpath>
 			<jvmarg value="-Xmx256M" />
@@ -202,6 +203,7 @@
 		<mkdir dir="${war.dir}/pubcert" />
 		<copy file="${resources.dir}/cert/mycert" tofile="${war.dir}/pubcert/ttt_pem.txt" overwrite="yes" />
 		<copy file="${resources.dir}/cert/hit-testing.nist.gov.der" tofile="${war.dir}/pubcert/hit-testing.nist.gov.der" overwrite="yes" />
+		<copy file="${resources.dir}/cert/invtrustrel.der" tofile="${war.dir}/pubcert/invtrustrel.der" overwrite="yes" />
 		<mkdir dir="${war.dir}/WEB-INF/privcert" />
 		<copy file="${resources.dir}/cert/mykeystore.p12" todir="${war.dir}/WEB-INF/privcert" overwrite="yes" />
 	</target>

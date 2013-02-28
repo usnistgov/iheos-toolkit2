@@ -89,8 +89,7 @@ public class GazelleServiceManager extends CommonServiceManager {
 
 			// force reload of all actor definitions
 			if (!unitTest) {
-				SiteServiceManager.getSiteServiceManager().sites = null;
-				SiteServiceManager.getSiteServiceManager().loadExternalSites(session.id());
+				SiteServiceManager.getSiteServiceManager().reloadCommonSites();
 			}
 //		} catch (Exception e) {
 //			logger.error(ExceptionUtil.exception_details(e));

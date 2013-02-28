@@ -10,7 +10,7 @@ public class DnsLookup {
 	public String getMxRecord(String domainname) throws TextParseException {
 		Lookup dnsLookup = new Lookup(domainname, Type.MX);
 		Record[] records = dnsLookup.run();
-		if (records.length == 0)
+		if (records == null || records.length == 0)
 			return null;
 		String[] d = records[0].rdataToString().split(" ");
 		if (d.length < 2)

@@ -17,10 +17,10 @@ public class EnvSetting {
 	
 	static Logger logger = Logger.getLogger(EnvSetting.class);
 
-	static public EnvSetting getEnvSetting(String sessionId) throws NoSessionException {
+	static public EnvSetting getEnvSetting(String sessionId) throws EnvironmentNotSelectedException {
 		EnvSetting s = settings.get(sessionId);
 		if (s == null)
-			throw new NoSessionException("");
+			throw new EnvironmentNotSelectedException("");
 		return s;
 	}
 
@@ -57,6 +57,6 @@ public class EnvSetting {
 			return f;
 		return null;
 	}
-	
+
 
 }

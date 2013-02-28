@@ -1,9 +1,11 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
@@ -21,7 +23,7 @@ public class RecipientActorFactory  extends ActorFactory {
 		Arrays.asList(TransactionType.PROVIDE_AND_REGISTER);
 
 
-	protected List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	protected Simulator buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.DOCUMENT_RECIPIENT;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -32,13 +34,14 @@ public class RecipientActorFactory  extends ActorFactory {
 			sc.setValidationContext(new ValidationContext());
 		
 
-		File codesFile = simm.getCodesFile();
+		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 		
 		addEditableEndpoint(sc, pnrEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, false);
 		addEditableEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, true);
 
-		return asList(sc);
+		return new Simulator(sc);
 	}
 
 	protected void verifyActorConfigurationOptions(SimulatorConfig sc) {

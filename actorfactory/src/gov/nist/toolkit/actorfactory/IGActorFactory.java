@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
@@ -17,7 +18,7 @@ public class IGActorFactory extends ActorFactory {
 				TransactionType.STORED_QUERY, 
 				TransactionType.RETRIEVE);
 
-	protected List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) {
+	protected Simulator buildNew(SimManager simm, boolean configureBase) {
 		ActorType actorType = ActorType.INITIATING_GATEWAY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -32,7 +33,7 @@ public class IGActorFactory extends ActorFactory {
 
 		sc.setRemoteSitesNecessary(true, "RGs");
 		
-		return asList(sc);
+		return new Simulator(sc);
 	}
 
 

@@ -9,16 +9,17 @@ modified freely provided that any derivative works bear some notice that they ar
 modified versions bear some notice that they have been modified.
 
 Project: NWHIN-DIRECT
-Authors: Frederic de Vaulx
-		Diane Azais
-		Julien Perugini
+Authors: William Majurski
+		 Frederic de Vaulx
+		 Diane Azais
+		 Julien Perugini
+		 Antoine Gerardin
+		
  */
-
 
 package gov.nist.direct.test.java.messageProcessor.impl;
 
 import static org.junit.Assert.fail;
-import gov.nist.direct.messageProcessor.direct.DirectMessageProcessorInterface;
 import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
 import gov.nist.direct.utils.TextErrorRecorderModif;
 import gov.nist.direct.utils.Utils;
@@ -45,7 +46,7 @@ public class DirectMimeMessageProcessorTest {
 		messageUnderTest = Utils.getMessage(messageUnderTestPath);
 		certificate = Utils.getMessage(certificatePath);
 		
-		DirectMessageProcessorInterface messageValidator = new DirectMimeMessageProcessor();
+		DirectMimeMessageProcessor messageValidator = new DirectMimeMessageProcessor();
 		messageValidator.processAndValidateDirectMessage(er, messageUnderTest, certificate, certificatePassword, new ValidationContext());
 		
 		er.detail("\n#############################");

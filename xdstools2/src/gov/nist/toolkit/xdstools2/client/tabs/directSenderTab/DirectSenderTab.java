@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.directSenderTab;
 
+import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.tk.client.PropertyNotFoundException;
@@ -46,6 +47,8 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 	    HasClickHandlers getKnownCertSubmitButton();
 		void setEncryptionCertAvailable(String domain, boolean avail);
 		boolean isWrapped();
+		void setAvailableSigningCerts(List<SigningCertType> signingCertTypes);
+		SigningCertType getSigningCertType();
 	}
 	
 	Display display;
@@ -120,6 +123,24 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 
 		new LoadTestdataList(toolkitService, "direct-messages", display).run();
 		
+		loadAvailableSigningCerts();
+		
+	}
+	
+	void loadAvailableSigningCerts() {
+		toolkitService.getAvailableDirectSigningCerts(new AsyncCallback<List<SigningCertType>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				new PopupMessage("Error loading available signing certs: " + caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(List<SigningCertType> result) {
+				display.setAvailableSigningCerts(result);
+			}
+			
+		});
 	}
 
 	@Override
@@ -155,6 +176,9 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 		parms.put("$direct_to_domain$", getDomain(display.getToAddress()));
 		parms.put("$ccda_attachment_file$", display.getSelectedMessageName());
 		parms.put("$send_wrapped$", (display.isWrapped()) ? "True" : "False");
+		parms.put("$signing_cert$", display.getSigningCertType().name());
+		
+		new PopupMessage("signing cert chosen: " + parms.get("$signing_cert$"));
 
 		toolkitService.directSend(parms, new AsyncCallback<List<Result>> () {
 			public void onFailure(Throwable caught) {

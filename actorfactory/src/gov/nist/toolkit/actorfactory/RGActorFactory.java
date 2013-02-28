@@ -1,9 +1,11 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
@@ -36,7 +38,7 @@ public class RGActorFactory extends ActorFactory {
 //	RegistryActorFactory registryActorFactory;
 //	RepositoryActorFactory repositoryActorFactory;
 
-	protected List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	protected Simulator buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.RESPONDING_GATEWAY;
 		SimulatorConfig sc; 
 		if (configureBase)
@@ -46,7 +48,7 @@ public class RGActorFactory extends ActorFactory {
 
 		String simId = sc.getId();
 
-		File codesFile = simm.getCodesFile();
+		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 		addEditableConfig(sc, homeCommunityId, ParamType.TEXT, getNewHomeCommunityId());
 
@@ -59,18 +61,18 @@ public class RGActorFactory extends ActorFactory {
 
 		// This needs to be grouped with a Document Registry
 //		registryActorFactory = new RegistryActorFactory();
-		SimulatorConfig registryConfig = new RegistryActorFactory().buildNew(simm, simId, true).get(0);   // was false
+		SimulatorConfig registryConfig = new RegistryActorFactory().buildNew(simm, simId, true).getConfig(0);   // was false
 
 		// This needs to be grouped with a Document Repository also
 //		repositoryActorFactory = new RepositoryActorFactory();
-		SimulatorConfig repositoryConfig = new RepositoryActorFactory().buildNew(simm, simId, true).get(0);    //was false
+		SimulatorConfig repositoryConfig = new RepositoryActorFactory().buildNew(simm, simId, true).getConfig(0);    //was false
 
 		sc.add(registryConfig); // this adds the individual SimulatorConfigElements to the RG SimulatorConfig
 		// their identity as belonging to the Registry or Repository is lost
 		// which means the SimServlet cannot find them when a message comes in
 		sc.add(repositoryConfig);
 
-		return asList(sc);
+		return new Simulator(sc);
 	}
 
 	protected void verifyActorConfigurationOptions(SimulatorConfig sc) {

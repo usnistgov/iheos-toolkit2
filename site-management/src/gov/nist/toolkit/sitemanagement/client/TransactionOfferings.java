@@ -8,6 +8,13 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * This is as close as toolkit comes to managing Actor configurations. ATFactory
+ * defines the linkage between Transactions and Actors, this holds the 
+ * transaction configurations (actual endpoints).
+ * @author bill
+ *
+ */
 public class TransactionOfferings implements IsSerializable {
 	// regular and tls
 	public Map<TransactionType, List<Site>> map = new HashMap<TransactionType, List<Site>>();

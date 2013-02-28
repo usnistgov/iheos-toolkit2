@@ -1,9 +1,9 @@
 package gov.nist.toolkit.directsim;
 
+import gov.nist.direct.config.DirectConfigManager;
 import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsim.client.DirectRegistrationData;
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.session.server.DirectConfigManager;
 
 import java.io.File;
 import java.io.FileInputStream;

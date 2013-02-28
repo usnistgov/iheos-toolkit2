@@ -100,9 +100,12 @@ public class PropertyManager {
 		return cache;
 	}
 	
-	public String getUseActorsFile() {
+	public boolean isUseActorsFile() {
 		loadProperties();
-		return (String) toolkitProperties.get("Use_Actors_File");
+		String use = (String) toolkitProperties.get("Use_Actors_File");
+		if (use == null)
+			return true;
+		return "true".compareToIgnoreCase(use) == 0;
 	}
 	
 	public String getDefaultAssigningAuthority() {

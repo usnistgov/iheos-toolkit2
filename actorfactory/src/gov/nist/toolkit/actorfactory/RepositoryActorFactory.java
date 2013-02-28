@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
@@ -21,11 +22,11 @@ public class RepositoryActorFactory extends ActorFactory {
 				TransactionType.PROVIDE_AND_REGISTER,
 				TransactionType.RETRIEVE);
 
-	public List<SimulatorConfig> buildNew(SimManager simm, boolean configureBase) {
+	public Simulator buildNew(SimManager simm, boolean configureBase) {
 		return buildNew(simm, null, configureBase);
 	}
 
-	public List<SimulatorConfig> buildNew(SimManager simm, String simId, boolean configureBase) {
+	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) {
 		ActorType actorType = ActorType.REPOSITORY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -41,7 +42,7 @@ public class RepositoryActorFactory extends ActorFactory {
 		addEditableEndpoint(sc, registerEndpoint, actorType, TransactionType.REGISTER, false);
 		addEditableEndpoint(sc, registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
 		
-		return asList(sc);
+		return new Simulator(sc);
 	}
 	
 	static String getNewRepositoryUniqueId() {
