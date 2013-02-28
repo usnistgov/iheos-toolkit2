@@ -34,6 +34,8 @@ public class UserLog {
 	 * @return
 	 */
 	public static ArrayList<MessageLog> readUserLogs(String username){
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		
 		String transactionType;
 		ArrayList<MessageLog> userLogs_Receive = new ArrayList<MessageLog>();
 		ArrayList<MessageLog> userLogs_Send = new ArrayList<MessageLog>();
