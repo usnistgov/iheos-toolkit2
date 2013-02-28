@@ -1,5 +1,7 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
+import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.logger.UserLog;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
@@ -570,7 +572,6 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			testDetails.addTestPlanLog(section, ll);
 		}
 
-
 		// Save the created logs in the SessionCache
 		XdstestLogId logid = newTestLogId();
 		session.transactionSettings.logRepository.logOut(logid, lm);
@@ -580,6 +581,21 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 		return asList(result);
 	}
+	
+	
+	/**
+	 * 
+	 * @param sessionName the username for the current session?
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MessageLog> getDirectLogs(String sessionName) throws Exception {
+		logger.debug(session.id() + ": " + "getLogContent()"); 
+		ArrayList<MessageLog> logs = UserLog.readUserLogs(sessionName);
+
+		return (List<MessageLog>)logs;
+	}
+	
 
 	public LogMap buildLogMap(File testDir, String testName) throws Exception {
 		LogMap lm = new LogMap();

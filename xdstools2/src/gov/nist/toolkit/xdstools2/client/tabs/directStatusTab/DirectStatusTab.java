@@ -44,11 +44,12 @@ public class DirectStatusTab  extends GenericQueryTab {
 		//msg_ids.add("msg1");
 		//msg_ids.add("msg2");
 		
-		String user = "bill"; // this needs to be changed to current user
+		//String user = "bill"; // this needs to be changed to current user
 		
 		//toolkitService.getDirectOutgoingMsgStatus(username, UserLog.readUserLogs(username), new StatusLoadCallback(display));
 		// what is the StatusLoadCallback(display) used for?
-		UserLog.readUserLogs(user);
+		
+		//UserLog.readUserLogs(user);
 		
 		
 		container.addTab(topPanel, "DirectStatus", select);
