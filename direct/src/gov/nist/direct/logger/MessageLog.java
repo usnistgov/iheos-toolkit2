@@ -21,6 +21,7 @@ package gov.nist.direct.logger;
 
 import gov.nist.direct.logger.reader.DirectLogReader;
 import gov.nist.direct.logger.writer.DirectContentLogger;
+import gov.nist.direct.logger.writer.LabelLogger;
 import gov.nist.direct.logger.writer.MessageStatusLogger;
 import gov.nist.direct.logger.writer.TimeLogger;
 import gov.nist.direct.logger.writer.messageLoggerImpl.MDNLogger;
@@ -47,6 +48,7 @@ public class MessageLog {
 	private Date mdnReceivedDate;
 	private String status;
 	private LogPathsSingleton ls;
+	private String label;
 
 	/**
 	 * Stores a single message log
@@ -57,9 +59,10 @@ public class MessageLog {
 	 * @param _expirationDate
 	 * @param _mdnReceivedDate
 	 * @param _status
+	 * @param _label 
 	 * @param _ls
 	 */
-	public MessageLog(String _testReference, String _transactionType, String _messageType, String _messageId, Date _expirationDate, Date _mdnReceivedDate, String _status){
+	public MessageLog(String _testReference, String _transactionType, String _messageType, String _messageId, Date _expirationDate, Date _mdnReceivedDate, String _status, String _label){
 		testReference = _testReference;
 		transactionType = _transactionType;
 		messageType = _messageType;
@@ -67,6 +70,7 @@ public class MessageLog {
 		expirationDate = _expirationDate;
 		mdnReceivedDate = _mdnReceivedDate;
 		status = _status;
+		label = _label;
 
 	}
 
@@ -109,7 +113,7 @@ public class MessageLog {
 
 	}
 
-	public static void logDirectMessage(String username, String directMsgDateSent, String transactionType, String messageType, String messageId, MimeMessage directMessage){
+	public static void logDirectMessage(String username, String directMsgDateSent, String transactionType, String messageType, String messageId, MimeMessage directMessage, String label){
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
 		try {
@@ -137,6 +141,15 @@ public class MessageLog {
 		DirectContentLogger dcl = new DirectContentLogger();
 		try {
 			dcl.logMessageContents(directMessage, ls, transactionType, messageType, username, messageId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Log Label
+		LabelLogger ll = new LabelLogger();
+		try {
+			ll.logLabel(label, transactionType, messageType, username, messageId);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -169,6 +182,9 @@ public class MessageLog {
 		// read message status
 		String status = reader.readMessageStatus(ls, transactionType,  messageType, username, messageId);
 
+		// read label
+		String label = reader.readLabel(ls, transactionType,  messageType, username, messageId);
+		
 		// read expiration date
 		Date expirationDate = reader.readMDNExpirationDate(ls, transactionType, messageType, username, messageId);
 
@@ -179,11 +195,8 @@ public class MessageLog {
 		// read MDN actual receive date
 		Date mdnReceivedDate = reader.readMDNReceivedDate(ls, transactionType, messageType, username, messageId);
 
-
-
-
-		// misses Test Reference for now
-		return new MessageLog("", transactionType, messageType, messageId, expirationDate, mdnReceivedDate, status);	
+		
+		return new MessageLog("", transactionType, messageType, messageId, expirationDate, mdnReceivedDate, status, label);	
 	}
 
 

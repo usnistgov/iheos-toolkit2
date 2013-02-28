@@ -110,6 +110,16 @@ public Date readMDNExpirationDate (LogPathsSingleton ls, String transactionType,
 		
 }
 
+
+
+public String readLabel(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String labelLogPath = ls.getLabelLogPath(transactionType, messageType, username, messageId);
+	ArrayList<String> read = Utils.readFile(new File(labelLogPath));
+	
+	// ignore 2nd and later lines of the file, only the first one contains status
+	return read.get(0).trim();
+}
+
 //
 //private ArrayList<Date> readMessageLogDates (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
 //	String dateLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
