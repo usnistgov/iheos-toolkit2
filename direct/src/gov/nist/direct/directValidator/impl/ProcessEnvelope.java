@@ -412,7 +412,7 @@ public class ProcessEnvelope {
 			content_split_right = contentType_split[1];
 			temp = content_split_right.split(";", -2);
 			contentTypeMicalg = temp[0];
-			contentTypeMicalg.toLowerCase();
+			contentTypeMicalg = contentTypeMicalg.toLowerCase();
 		}
 		msgValidator.validateContentTypeMicalg(er, contentTypeMicalg);
 		

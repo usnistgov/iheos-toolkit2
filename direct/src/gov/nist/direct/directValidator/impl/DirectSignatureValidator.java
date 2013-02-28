@@ -158,7 +158,7 @@ public class DirectSignatureValidator implements SignatureValidator {
 			digestAlgo = digestAlgo.replaceAll("-", "");
 			micalg = micalg.replaceAll("-", "");
 			micalg = micalg.replaceAll("\"", "");
-			micalg.toLowerCase();
+			micalg = micalg.toLowerCase();
 			if(digestAlgo.equals(micalg)) {
 				er.detail("     Success:  DTS 165 - Digest Algorithm is valid");
 			} else {
@@ -342,6 +342,7 @@ public class DirectSignatureValidator implements SignatureValidator {
 
 	@Override
 	public void validateSignature(ErrorRecorder er, X509Certificate cert, SignerInformation signer, String BC) {
+		System.out.println(cert);
 		try {
 			if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider(BC).build(cert)))
 			{
