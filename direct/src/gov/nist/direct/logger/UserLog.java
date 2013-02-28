@@ -20,7 +20,6 @@ Authors: William Majurski
 package gov.nist.direct.logger;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class UserLog {
 	private static LogPathsSingleton ls;
