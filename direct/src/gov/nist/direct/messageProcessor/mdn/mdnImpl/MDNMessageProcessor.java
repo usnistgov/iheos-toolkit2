@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -180,8 +181,9 @@ public class MDNMessageProcessor {
 		String messageID = Utils.rawFromHeader(_messageID);
 		String username = Utils.rawFromHeader(_username);
 		MessageLogManager.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
-
-
+		//Address[] addr = ((MimeMessage) p).getFrom();
+		//username = (addr[0]).toString();
+		//MessageLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
 
 
 		// Compares reception time for the MDN to send time for the original Direct message.

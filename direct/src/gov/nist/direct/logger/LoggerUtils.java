@@ -30,11 +30,13 @@ public class LoggerUtils {
 		File f = new File(s);
 		ArrayList<String> list = new ArrayList<String>();
 		try {
+			// if(f.listFiles() != null) {
 			for (final File fileEntry : f.listFiles()) {
 				if (fileEntry.isDirectory()) {
 					list.add(fileEntry.getName());
 					// if the element is not a folder, ignore it.
 				}
+	    	}	    	
 			}
 		} catch (Throwable e) {}
 		return list;

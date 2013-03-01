@@ -35,22 +35,23 @@ import java.util.Date;
 import javax.mail.internet.MimeMessage;
 
 public class MessageLogManager {
-//	// general attributes
-//	private String testReference;
-//	private String transactionType; // DirectSend or DirectReceive
-//	private String messageType; // Direct or MDN
-//
-//	// attributes relevant to the Direct message sent
-//	private String messageId;
-//	private Date expirationDate; // delay after which MDN is considered as arriving too late
-//
-//
-//	// MDN message, received
-//	private Date mdnReceivedDate;
-//	private String status;
-//	private String label;
-	
+	// general attributes
+	private String label;
+
 	MessageLog msgLog;
+	private String transactionType; // DirectSend or DirectReceive
+	private String messageType; // Direct or MDN
+
+	// attributes relevant to the Direct message sent
+	private String messageId;
+	private Date expirationDate; // delay after which MDN is considered as arriving too late
+
+
+	// MDN message, received
+	private Date mdnReceivedDate;
+	private String status;
+	private LogPathsSingleton ls;
+	
 
 	/**
 	 * Stores a single message log
@@ -66,6 +67,14 @@ public class MessageLogManager {
 	 */
 	public MessageLogManager(MessageLog msgLog){
 		this.msgLog = msgLog;
+//		transactionType = _transactionType;
+//		messageType = _messageType;
+//		messageId = _messageId;
+//		expirationDate = _expirationDate;
+//		mdnReceivedDate = _mdnReceivedDate;
+//		status = _status;
+//		label = _label;
+//
 	}
 
 	/**
@@ -125,7 +134,7 @@ public class MessageLogManager {
 		cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
 		Date expirationDate =  cal.getTime(); // returns new date object, one hour in the future
 		try {
-			tl.logDate(expirationDate.toString(), transactionType, messageType, username, messageId);
+			tl.logExpirationDate(expirationDate.toString(), transactionType, messageType, username, messageId);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -190,9 +199,20 @@ public class MessageLogManager {
 		Date mdnReceivedDate = reader.readMDNReceivedDate(ls, transactionType, messageType, username, messageId);
 
 		
-		return new MessageLog("", transactionType, messageType, messageId, expirationDate, mdnReceivedDate, status, label);	
+		return new MessageLog(transactionType, messageType, messageId, expirationDate, mdnReceivedDate, status, label);	
 	}
 
-
+	public String toString(){
+		String str = "label" + this.label + "/n" +
+	"messageId" + this.messageId + "/n" +
+	"transactionType" + this.transactionType + "/n" +	
+	"messageType" + this.messageType + "/n" +
+	"expiration date" + this.expirationDate + "/n" +
+	"mdnReceivedDate " + this.mdnReceivedDate + "/n"+
+	"status" + this.status + "/n";
+	
+		return str;
+		
+	}
 
 }
