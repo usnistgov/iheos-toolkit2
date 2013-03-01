@@ -1,7 +1,9 @@
 	package gov.nist.toolkit.xdstools2.server;
 
+import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.direct.config.DirectConfigManager;
+import gov.nist.direct.logger.UserLog;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -125,7 +127,10 @@ ToolkitService {
 	@Override
 	public List<String> getDirectMsgIds(String user) { return new LogAccessMock().getMsgIds(user); }
 	@Override
-	public List<SmtpMessageStatus> getDirectOutgoingMsgStatus(String user, List<String> msg_ids) { return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids); }
+	public List<MessageLog> getDirectOutgoingMsgStatus(String user) { 
+		//return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids);
+		return new UserLog().readUserLogs(user);
+	}
 	@Override
 	public List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException {
 		logger.debug(session().id() + ": " + 

@@ -19,6 +19,7 @@ Authors: William Majurski
 
 package gov.nist.direct.logger;
 
+import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.logger.reader.DirectLogReader;
 import gov.nist.direct.logger.writer.DirectContentLogger;
 import gov.nist.direct.logger.writer.LabelLogger;
@@ -33,22 +34,23 @@ import java.util.Date;
 
 import javax.mail.internet.MimeMessage;
 
-public class MessageLog {
-	// general attributes
-	private String testReference;
-	private String transactionType; // DirectSend or DirectReceive
-	private String messageType; // Direct or MDN
-
-	// attributes relevant to the Direct message sent
-	private String messageId;
-	private Date expirationDate; // delay after which MDN is considered as arriving too late
-
-
-	// MDN message, received
-	private Date mdnReceivedDate;
-	private String status;
-	private LogPathsSingleton ls;
-	private String label;
+public class MessageLogManager {
+//	// general attributes
+//	private String testReference;
+//	private String transactionType; // DirectSend or DirectReceive
+//	private String messageType; // Direct or MDN
+//
+//	// attributes relevant to the Direct message sent
+//	private String messageId;
+//	private Date expirationDate; // delay after which MDN is considered as arriving too late
+//
+//
+//	// MDN message, received
+//	private Date mdnReceivedDate;
+//	private String status;
+//	private String label;
+	
+	MessageLog msgLog;
 
 	/**
 	 * Stores a single message log
@@ -62,16 +64,8 @@ public class MessageLog {
 	 * @param _label 
 	 * @param _ls
 	 */
-	public MessageLog(String _testReference, String _transactionType, String _messageType, String _messageId, Date _expirationDate, Date _mdnReceivedDate, String _status, String _label){
-		testReference = _testReference;
-		transactionType = _transactionType;
-		messageType = _messageType;
-		messageId = _messageId;
-		expirationDate = _expirationDate;
-		mdnReceivedDate = _mdnReceivedDate;
-		status = _status;
-		label = _label;
-
+	public MessageLogManager(MessageLog msgLog){
+		this.msgLog = msgLog;
 	}
 
 	/**
@@ -167,7 +161,7 @@ public class MessageLog {
 	 * @return
 	 */
 	public static MessageLog readLog(String username, String transactionType, String messageId){
-		MessageLog log;
+		MessageLogManager log;
 		String messageType;
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 

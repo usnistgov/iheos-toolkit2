@@ -1,14 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.directStatusTab;
 
-import gov.nist.direct.logger.MessageLog;
-import gov.nist.direct.logger.UserLog;
-import gov.nist.toolkit.xdstools2.client.SmtpMessageStatus;
+import gov.nist.direct.client.MessageLog;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -18,10 +15,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DirectStatusTab  extends GenericQueryTab {
 	MessageStatusView display;
+	String user = "bill"; // this needs to be changed to current user
 	
 	public interface IMessageStatusView {
-		public void build(List<SmtpMessageStatus> statuss);
-		public void addRow(SmtpMessageStatus status);
+		public void build(List<MessageLog> statuss);
+		public void addRow(MessageLog status);
 	}
 
 	public DirectStatusTab(BaseSiteActorManager siteActorManager) {
@@ -44,12 +42,11 @@ public class DirectStatusTab  extends GenericQueryTab {
 		//msg_ids.add("msg1");
 		//msg_ids.add("msg2");
 		
-		String user = "bill"; // this needs to be changed to current user
 		
 		//toolkitService.getDirectOutgoingMsgStatus(username, UserLog.readUserLogs(username), new StatusLoadCallback(display));
 		// what is the StatusLoadCallback(display) used for?
-		UserLog.readUserLogs(user);
-		
+		//UserLog.readUserLogs(user);
+		new MessageLoader(toolkitService, display).run(user);
 		
 		container.addTab(topPanel, "DirectStatus", select);
 		addCloseButton(container,topPanel, null);
@@ -82,8 +79,7 @@ public class DirectStatusTab  extends GenericQueryTab {
 		//msg_ids.add("msg2");
 		//toolkitService.getDirectOutgoingMsgStatus("bill", msg_ids, new StatusLoadCallback(display));
 		
-		String user = "bill"; // this needs to be changed to current user
-		UserLog.readUserLogs(user);
+		new MessageLoader(toolkitService, display).run(user);
 	
 	}
 	

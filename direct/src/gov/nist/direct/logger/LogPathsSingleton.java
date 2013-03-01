@@ -94,14 +94,8 @@ public class LogPathsSingleton {
   * @return
   */
 	public static String getLOG_ROOT() {
-//		if (Installation.installation().externalCache().getPath() != null){
-//			return File.separator + "direct-logs";
-//		} 
-		//return Installation.installation().externalCache().getPath() + File.separator + "direct + " + File.separator + "logs";
-		return File.separator + "home" + File.separator + "ubuntu" + File.separator + "tttdir" + File.separator + "direct-logs";
-		// return "C://Workspace//toolkit//direct-logs";
+		return Installation.installation().directLogs().toString();
 	}
-	
 	
 	public String getDirectMessageLogPath(String transactionType, String messageType, String username, String messageId) {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);

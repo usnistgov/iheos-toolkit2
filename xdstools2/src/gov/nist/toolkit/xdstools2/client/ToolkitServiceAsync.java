@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -38,7 +39,7 @@ public interface ToolkitServiceAsync {
 	void directSend(Map<String, String> parms, AsyncCallback<List<Result>> callback);
 	void getEncryptionCertDomains(AsyncCallback<List<String>> asyncCallback);
 	void getDirectMsgIds(String user, AsyncCallback<List<String>> callback);
-	void getDirectOutgoingMsgStatus(String user, List<String> msg_ids, AsyncCallback<List<SmtpMessageStatus>> callback);
+	void getDirectOutgoingMsgStatus(String user, AsyncCallback<List<MessageLog>> callback);
 
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);

@@ -91,6 +91,14 @@ public class Installation {
 		return new File(externalCache + sep + "direct" + sep + "sendlog");
 	}
 
+	public File directLogFile(String userName) {
+		return new File(externalCache + sep + "direct" + sep + "direct-logs" + sep + userName);
+	}
+
+	public File directLogs() {
+		return new File(externalCache + sep + "direct" + sep + "direct-logs");
+	}
+
 	public File sessionLogFile(String sessionId) {
 		return new File(warHome + sep + "SessionCache" + sep + sessionId);
 	}

@@ -63,7 +63,7 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 	public DirectSenderTab() {
 		super(new NullSiteActorManager());
 		disableEnvMgr();
-		disableTestSesMgr();
+		//disableTestSesMgr();
 	}
 
 	@Override

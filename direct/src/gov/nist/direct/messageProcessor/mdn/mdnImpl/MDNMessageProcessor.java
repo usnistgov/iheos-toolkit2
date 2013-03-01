@@ -21,7 +21,7 @@ Authors: William Majurski
 package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
-import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.logger.MessageLogManager;
 import gov.nist.direct.mdn.MDNValidator;
 import gov.nist.direct.mdn.impl.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -179,7 +179,7 @@ public class MDNMessageProcessor {
 		// Write MDN info to existing Direct log
 		String messageID = Utils.rawFromHeader(_messageID);
 		String username = Utils.rawFromHeader(_username);
-		MessageLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
+		MessageLogManager.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
 
 
 

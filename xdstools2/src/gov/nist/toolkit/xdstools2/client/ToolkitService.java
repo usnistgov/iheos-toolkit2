@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
 
+import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -42,7 +43,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> directSend(Map<String, String> parms) throws NoServletSessionException;
 	List<String> getEncryptionCertDomains();
 	List<String> getDirectMsgIds(String user);
-	List<SmtpMessageStatus> getDirectOutgoingMsgStatus(String user, List<String> msg_ids);
+	List<MessageLog> getDirectOutgoingMsgStatus(String user);
 
 	public TkProps getTkProps() throws NoServletSessionException;
 	

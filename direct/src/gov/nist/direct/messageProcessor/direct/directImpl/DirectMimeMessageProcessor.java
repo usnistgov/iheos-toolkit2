@@ -19,10 +19,11 @@ Authors: William Majurski
 
 package gov.nist.direct.messageProcessor.direct.directImpl;
 
+import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.directValidator.MessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
-import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.logger.MessageLogManager;
 import gov.nist.direct.logger.UserLog;
 import gov.nist.direct.messageProcessor.direct.DirectMessageProcessorInterface;
 import gov.nist.direct.utils.Utils;
@@ -54,11 +55,11 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
@@ -974,8 +975,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Get label
 		String label = "label";
 		
-		MessageLog.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
-		ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
+		MessageLogManager.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
+		List<MessageLog> readLog = new UserLog().readUserLogs(username);
 		System.out.println(readLog.toString());
 		
 		
