@@ -76,7 +76,10 @@ public String readMessageStatus (LogPathsSingleton ls, String transactionType, S
 	ArrayList<String> read = Utils.readFile(new File(statusLogPath));
 	
 	// ignore 2nd and later lines of the file, only the first one contains status
-	return read.get(0).trim();
+	if (read.size() > 0)
+		return read.get(0).trim();
+	else
+		return "";
 	
 }
 
@@ -85,14 +88,7 @@ public Date readMDNReceivedDate (LogPathsSingleton ls, String transactionType, S
 	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
 	String str = Utils.readFile(mdnLogPath);
 	
-	try {
-		return ValidationUtils.parseDate(str);
-	} catch (ParseException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	return null;
-		
+		return new Date(str);
 }
 
 
@@ -100,14 +96,21 @@ public Date readMDNExpirationDate (LogPathsSingleton ls, String transactionType,
 	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId);
 	String str = Utils.readFile(expDatePath);
 	
-	try {
-		return ValidationUtils.parseDate(str);
-	} catch (ParseException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	return null;
+	return new Date(str);
 		
+}
+
+
+
+public String readLabel(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String labelLogPath = ls.getLabelLogPath(transactionType, messageType, username, messageId);
+	ArrayList<String> read = Utils.readFile(new File(labelLogPath));
+	
+	// ignore 2nd and later lines of the file, only the first one contains status
+	if (read.size() > 0)
+		return read.get(0).trim();
+	else
+		return "";
 }
 
 //

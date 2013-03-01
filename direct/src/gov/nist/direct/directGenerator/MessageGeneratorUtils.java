@@ -20,9 +20,6 @@ Authors: William Majurski
 package gov.nist.direct.directGenerator;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.mail.MessagingException;
 import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeBodyPart;
 

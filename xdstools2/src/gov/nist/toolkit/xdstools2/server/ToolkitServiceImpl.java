@@ -1,7 +1,9 @@
 	package gov.nist.toolkit.xdstools2.server;
 
+import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.direct.config.DirectConfigManager;
+import gov.nist.direct.logger.UserLog;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -119,13 +121,17 @@ ToolkitService {
 	@Override
 	public String toolkitPubCert()  throws NoServletSessionException { return new DirectServiceManager(session()).toolkitPubCert(); }
 	@Override
-	public List<Result> directSend(Map<String, String> parms) throws NoServletSessionException { return new DirectServiceManager(session()).directSend(parms); }
+	public List<Result> directSend(Map<String, String> parms) throws NoServletSessionException, Exception { return new DirectServiceManager(session()).directSend(parms); }
 	@Override
 	public List<String> getEncryptionCertDomains() { return new DirectConfigManager(Installation.installation().externalCache()).getEncryptionCertDomains(); }
 	@Override
 	public List<String> getDirectMsgIds(String user) { return new LogAccessMock().getMsgIds(user); }
 	@Override
-	public List<SmtpMessageStatus> getDirectOutgoingMsgStatus(String user, List<String> msg_ids) { return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids); }
+	public List<MessageLog> getDirectOutgoingMsgStatus(String user) { 
+		//return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids);
+		List<MessageLog> logs = new UserLog().readUserLogs(user);
+		return logs;
+	}
 	@Override
 	public List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException {
 		logger.debug(session().id() + ": " + 

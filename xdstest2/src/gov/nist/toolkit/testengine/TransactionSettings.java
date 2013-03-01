@@ -16,6 +16,7 @@ public class TransactionSettings {
 	public boolean writeLogs = false;
 	public SiteSpec siteSpec;
 	public AssertionResults res = null;
+	public String user = null;
 	
 	public SecurityParams securityParams = null;
 	

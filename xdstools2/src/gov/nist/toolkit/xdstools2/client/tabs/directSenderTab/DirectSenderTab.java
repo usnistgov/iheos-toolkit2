@@ -63,7 +63,7 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 	public DirectSenderTab() {
 		super(new NullSiteActorManager());
 		disableEnvMgr();
-		disableTestSesMgr();
+		//disableTestSesMgr();
 	}
 
 	@Override
@@ -178,8 +178,6 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 		parms.put("$send_wrapped$", (display.isWrapped()) ? "True" : "False");
 		parms.put("$signing_cert$", display.getSigningCertType().name());
 		
-		new PopupMessage("signing cert chosen: " + parms.get("$signing_cert$"));
-
 		toolkitService.directSend(parms, new AsyncCallback<List<Result>> () {
 			public void onFailure(Throwable caught) {
 				display.clearResultPanel();

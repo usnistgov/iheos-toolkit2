@@ -21,7 +21,7 @@ Authors: William Majurski
 package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
-import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.logger.MessageLogManager;
 import gov.nist.direct.mdn.MDNValidator;
 import gov.nist.direct.mdn.impl.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -170,18 +171,19 @@ public class MDNMessageProcessor {
 		String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
 
 		// Get MDN message ID 
-		String _messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
+		String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
 
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();
 		// String date = ParseUtils.searchHeaderSimple((Part)m, "date");
 
 		// Write MDN info to existing Direct log
-		String messageID = Utils.rawFromHeader(_messageID);
+		String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
 		String username = Utils.rawFromHeader(_username);
-		MessageLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
-
-
+		MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date.toString());
+		//Address[] addr = ((MimeMessage) p).getFrom();
+		//username = (addr[0]).toString();
+		//MessageLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
 
 
 		// Compares reception time for the MDN to send time for the original Direct message.

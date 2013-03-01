@@ -178,9 +178,9 @@ public class HomeTab extends GenericQueryTab {
 		// ***************************************************************************
 
 		//		topPanel.add(mainGrid);
-		//
+		
 		//		toolkitService.getAdminPassword(getPasswordCallback);
-		//
+		
 		//		loadVersion();
 
 

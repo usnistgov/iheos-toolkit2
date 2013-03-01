@@ -4,7 +4,7 @@ of the Federal Government in the course of their official duties. Pursuant to ti
 United States Code this software is not subject to copyright protection and is in the public domain.
 This is an experimental system. NIST assumes no responsibility whatsoever for its use by other parties,
 and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.
-We would appreciate acknowledgement if the software is used. This software can be redistributed and/or
+We would appreciate acknowledgment if the software is used. This software can be redistributed and/or
 modified freely provided that any derivative works bear some notice that they are derived from it, and any
 modified versions bear some notice that they have been modified.
 
@@ -19,10 +19,12 @@ Authors: William Majurski
 
 package gov.nist.direct.messageProcessor.direct.directImpl;
 
+import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.directValidator.MessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
-import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.logger.MessageLogManager;
+import gov.nist.direct.logger.UserLog;
 import gov.nist.direct.messageProcessor.direct.DirectMessageProcessorInterface;
 import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationSummary;
@@ -57,9 +59,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
+import javax.mail.Address;
 import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -949,8 +953,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		// Get sender name (username)
 		String username = null;
+		String _username = null;
 		try {
-			username = ((MimeMessage) p).getFrom().toString();
+			Address[] addr = ((MimeMessage) p).getFrom();
+			_username = (addr[0]).toString();
+			username = Utils.rawFromHeader(_username);
 		} catch (MessagingException e3) {
 			// TODO Auto-generated catch block
 			e3.printStackTrace();
@@ -969,7 +976,22 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();
 
-		MessageLog.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p);
+		// Get label
+		String label = "label";
+		
+		MessageLogManager.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
+		List<MessageLog> readLog = new UserLog().readUserLogs(username);
+		
+		// test display
+		System.out.println("Testing display");
+		System.out.println(readLog.toString());
+		
+	//	ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
+	//	MessageLog temp;
+	//	while (readLog.iterator().hasNext()){
+	//		temp = readLog.iterator().next();
+	//		System.out.println(temp.toString());
+	//	}
 
 		System.out.println("Logged direct message.");
 
