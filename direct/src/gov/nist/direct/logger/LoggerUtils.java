@@ -37,7 +37,6 @@ public class LoggerUtils {
 					// if the element is not a folder, ignore it.
 				}
 	    	}	    	
-			}
 		} catch (Throwable e) {}
 		return list;
 	}
