@@ -134,7 +134,7 @@ public class MessageLogManager {
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		
 		String logRoot = LogPathsSingleton.getLOG_ROOT();
-		List<String> usernames = LoggerUtils.listFilesForFolder(logRoot);
+		List<String> usernames = LoggerUtils.listFilesForFolder("");
 		
 		String name = "";
 		String msgIdFolder = logRoot + name + ls.getDIRECT_SEND_FOLDER() + origMsgId;

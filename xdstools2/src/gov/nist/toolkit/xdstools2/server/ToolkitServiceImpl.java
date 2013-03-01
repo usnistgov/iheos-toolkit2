@@ -129,7 +129,8 @@ ToolkitService {
 	@Override
 	public List<MessageLog> getDirectOutgoingMsgStatus(String user) { 
 		//return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids);
-		return new UserLog().readUserLogs(user);
+		List<MessageLog> logs = new UserLog().readUserLogs(user);
+		return logs;
 	}
 	@Override
 	public List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException {
