@@ -63,10 +63,12 @@ import java.util.List;
 
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
+import javax.mail.Address;
 import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -952,8 +954,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		// Get sender name (username)
 		String username = null;
+		String _username = null;
 		try {
-			username = ((MimeMessage) p).getFrom().toString();
+			Address[] addr = ((MimeMessage) p).getFrom();
+			_username = (addr[0]).toString();
+			username = Utils.rawFromHeader(_username);
 		} catch (MessagingException e3) {
 			// TODO Auto-generated catch block
 			e3.printStackTrace();
