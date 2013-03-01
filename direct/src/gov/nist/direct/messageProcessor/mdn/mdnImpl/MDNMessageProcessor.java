@@ -21,7 +21,7 @@ Authors: William Majurski
 package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
-import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.logger.MessageLogManager;
 import gov.nist.direct.mdn.MDNValidator;
 import gov.nist.direct.mdn.impl.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -49,7 +49,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -182,7 +181,7 @@ public class MDNMessageProcessor {
 		String username = Utils.rawFromHeader(_username);
 		//Address[] addr = ((MimeMessage) p).getFrom();
 		//username = (addr[0]).toString();
-		MessageLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
+		MessageLogManager.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
 
 
 

@@ -1,11 +1,9 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.direct.logger.MessageLog;
+import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.logger.UserLog;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -37,7 +35,6 @@ import gov.nist.toolkit.testengine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.TransactionSettings;
 import gov.nist.toolkit.testengine.Xdstest2;
 import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
-import gov.nist.toolkit.testengine.logrepository.SessionRepository;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
@@ -593,7 +590,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	 */
 	public List<MessageLog> getDirectLogs(String sessionName) throws Exception {
 		logger.debug(session.id() + ": " + "getLogContent()"); 
-		ArrayList<MessageLog> logs = UserLog.readUserLogs(sessionName);
+		List<MessageLog> logs = new UserLog().readUserLogs(sessionName);
 
 		return (List<MessageLog>)logs;
 	}

@@ -22,6 +22,7 @@ package gov.nist.direct.logger;
 import gov.nist.direct.client.MessageLog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserLog {
 	private LogPathsSingleton ls;
