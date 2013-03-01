@@ -4,6 +4,7 @@ import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.direct.config.DirectConfigManager;
 import gov.nist.direct.logger.UserLog;
+import gov.nist.direct.logger.MessageLog;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -238,7 +239,8 @@ ToolkitService {
 	public List<String> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-
+	public List<MessageLog> getDirectLogs(String sessionName) throws Exception { return session().xdsTestServiceManager().getDirectLogs(sessionName); }
+	
 	
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
