@@ -25,7 +25,9 @@ import java.util.ArrayList;
 public class LoggerUtils {
 
 	public static ArrayList<String> listFilesForFolder(final String folder) {
-		File f = new File(folder);
+		String s = LogPathsSingleton.getLOG_ROOT() + folder;
+		System.out.println("main logs path: " + s);
+		File f = new File(s);
 		ArrayList<String> list = new ArrayList<String>();
 		try {
 			for (final File fileEntry : f.listFiles()) {
