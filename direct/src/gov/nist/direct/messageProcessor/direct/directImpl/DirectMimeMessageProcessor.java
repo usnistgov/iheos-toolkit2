@@ -980,8 +980,15 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		String label = "label";
 		
 		MessageLog.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
+		
+		// test display
+		System.out.println("Testing display");
 		ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
-		System.out.println(readLog.toString());
+		MessageLog temp;
+		while (readLog.iterator().hasNext()){
+			temp = readLog.iterator().next();
+			System.out.println(temp.toString());
+		}
 		
 		
 		System.out.println("Logged direct message.");

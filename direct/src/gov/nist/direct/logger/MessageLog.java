@@ -35,7 +35,7 @@ import javax.mail.internet.MimeMessage;
 
 public class MessageLog {
 	// general attributes
-	private String testReference;
+	private String label;
 	private String transactionType; // DirectSend or DirectReceive
 	private String messageType; // Direct or MDN
 
@@ -48,7 +48,7 @@ public class MessageLog {
 	private Date mdnReceivedDate;
 	private String status;
 	private LogPathsSingleton ls;
-	private String label;
+	
 
 	/**
 	 * Stores a single message log
@@ -62,8 +62,7 @@ public class MessageLog {
 	 * @param _label 
 	 * @param _ls
 	 */
-	public MessageLog(String _testReference, String _transactionType, String _messageType, String _messageId, Date _expirationDate, Date _mdnReceivedDate, String _status, String _label){
-		testReference = _testReference;
+	public MessageLog(String _transactionType, String _messageType, String _messageId, Date _expirationDate, Date _mdnReceivedDate, String _status, String _label){
 		transactionType = _transactionType;
 		messageType = _messageType;
 		messageId = _messageId;
@@ -131,7 +130,7 @@ public class MessageLog {
 		cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
 		Date expirationDate =  cal.getTime(); // returns new date object, one hour in the future
 		try {
-			tl.logDate(expirationDate.toString(), transactionType, messageType, username, messageId);
+			tl.logExpirationDate(expirationDate.toString(), transactionType, messageType, username, messageId);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -196,9 +195,20 @@ public class MessageLog {
 		Date mdnReceivedDate = reader.readMDNReceivedDate(ls, transactionType, messageType, username, messageId);
 
 		
-		return new MessageLog("", transactionType, messageType, messageId, expirationDate, mdnReceivedDate, status, label);	
+		return new MessageLog(transactionType, messageType, messageId, expirationDate, mdnReceivedDate, status, label);	
 	}
 
-
+	public String toString(){
+		String str = "label" + this.label + "/n" +
+	"messageId" + this.messageId + "/n" +
+	"transactionType" + this.transactionType + "/n" +	
+	"messageType" + this.messageType + "/n" +
+	"expiration date" + this.expirationDate + "/n" +
+	"mdnReceivedDate " + this.mdnReceivedDate + "/n"+
+	"status" + this.status + "/n";
+	
+		return str;
+		
+	}
 
 }
