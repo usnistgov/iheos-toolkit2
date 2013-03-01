@@ -93,6 +93,7 @@ public class SendDirect extends CommonServiceManager {
 			
 			session.transactionSettings.logRepository = //new DirectRepository().getNewLogRepository(user);
 			new LogRepositoryFactory().getRepository(Installation.installation().directSendLogs(), user, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+			session.transactionSettings.user = session.getMesaSessionName();
 			
 			Result r = session.xdsTestServiceManager().xdstest("DirectSendTemplate", sections, params, params2, areas, true);
 			return asList(r);

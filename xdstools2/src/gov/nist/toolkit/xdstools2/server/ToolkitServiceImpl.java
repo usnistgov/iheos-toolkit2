@@ -121,7 +121,7 @@ ToolkitService {
 	@Override
 	public String toolkitPubCert()  throws NoServletSessionException { return new DirectServiceManager(session()).toolkitPubCert(); }
 	@Override
-	public List<Result> directSend(Map<String, String> parms) throws NoServletSessionException { return new DirectServiceManager(session()).directSend(parms); }
+	public List<Result> directSend(Map<String, String> parms) throws NoServletSessionException, Exception { return new DirectServiceManager(session()).directSend(parms); }
 	@Override
 	public List<String> getEncryptionCertDomains() { return new DirectConfigManager(Installation.installation().externalCache()).getEncryptionCertDomains(); }
 	@Override

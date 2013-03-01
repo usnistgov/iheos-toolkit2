@@ -2,6 +2,8 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.direct.directGenerator.impl.UnwrappedMessageGenerator;
 import gov.nist.direct.directGenerator.impl.WrappedMessageGenerator;
+import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.logger.MessageLogManager;
 import gov.nist.direct.x509.X509CertificateEx;
 import gov.nist.toolkit.directsupport.SMTPException;
 import gov.nist.toolkit.dns.DnsLookup;
@@ -116,6 +118,8 @@ public class DirectTransaction extends BasicTransaction {
 		Properties props = System.getProperties();
 		Session session = Session.getDefaultInstance(props, null);
 		MimeMessage msg = new MimeMessage(session);
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		MessageLogManager.logDirectMessage(transactionSettings.user, new Date().toString(), ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), msg.getMessageID(), msg, "");
 		
 		if (sendWrapped) {
 			msg = createWrapedSendMail(toAddress, fromAddress);

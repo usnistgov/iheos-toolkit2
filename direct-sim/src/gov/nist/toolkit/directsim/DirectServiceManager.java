@@ -40,9 +40,15 @@ public class DirectServiceManager  extends CommonServiceManager {
 		}
 	}
 	
-	public List<Result> directSend(Map<String, String> parms) {
+	public List<Result> directSend(Map<String, String> parms) throws Exception {
 		String messageName = parms.get("$ccda_attachment_file$") + ".";  // . makes sure we are only searching for extension
 		File toolkitxFile = session.getToolkitFile();
+		String user = session.getMesaSessionName();
+		
+		if (user == null || user.equals("")) {
+			// without a defined user, the logs cannot be updated 
+			throw new Exception("User (TestSession) must be selected to allow logging");
+		}
 
 		File dMsgDir = new File(toolkitxFile + File.separator + "testkit" + File.separator + 
 				"direct-messages");
