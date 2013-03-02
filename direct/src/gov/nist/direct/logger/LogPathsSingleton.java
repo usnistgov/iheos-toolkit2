@@ -90,7 +90,6 @@ public class LogPathsSingleton {
 	
 	
  /**
-  * Todo needs to be changed to tk_props
   * @return
   */
 	public static String getLOG_ROOT() {

@@ -4,7 +4,7 @@ of the Federal Government in the course of their official duties. Pursuant to ti
 United States Code this software is not subject to copyright protection and is in the public domain.
 This is an experimental system. NIST assumes no responsibility whatsoever for its use by other parties,
 and makes no guarantees, expressed or implied, about its quality, reliability, or any other characteristic.
-We would appreciate acknowledgement if the software is used. This software can be redistributed and/or
+We would appreciate acknowledgment if the software is used. This software can be redistributed and/or
 modified freely provided that any derivative works bear some notice that they are derived from it, and any
 modified versions bear some notice that they have been modified.
 
@@ -982,9 +982,18 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		
 		MessageLogManager.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
 		List<MessageLog> readLog = new UserLog().readUserLogs(username);
+		
+		// test display
+		System.out.println("Testing display");
 		System.out.println(readLog.toString());
 		
-		
+	//	ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
+	//	MessageLog temp;
+	//	while (readLog.iterator().hasNext()){
+	//		temp = readLog.iterator().next();
+	//		System.out.println(temp.toString());
+	//	}
+
 		System.out.println("Logged direct message.");
 
 	}

@@ -227,7 +227,7 @@ public class ValidationUtils {
 	 */
 	public static Date parseDate(String dateString) throws ParseException {
 	
-		for (int i = 0 ; i<ValidationUtils.acceptedSdfs.length ;){
+		for (int i = 0 ; i<ValidationUtils.acceptedSdfs.length ;i++){
 			SimpleDateFormat sdf = ValidationUtils.acceptedSdfs[i];
 			try{
 				return sdf.parse(dateString);

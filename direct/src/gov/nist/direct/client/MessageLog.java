@@ -19,8 +19,7 @@ public class MessageLog  implements IsSerializable {
 	public String status;
 	public String label;
 
-	public MessageLog(String _testReference, String _transactionType, String _messageType, String _messageId, Date _expirationDate, Date _mdnReceivedDate, String _status, String _label){
-		testReference = _testReference;
+	public MessageLog( String _transactionType, String _messageType, String _messageId, Date _expirationDate, Date _mdnReceivedDate, String _status, String _label){
 		transactionType = _transactionType;
 		messageType = _messageType;
 		messageId = _messageId;

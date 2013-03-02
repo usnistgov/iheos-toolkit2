@@ -21,6 +21,7 @@ package gov.nist.direct.logger;
 
 import gov.nist.direct.client.MessageLog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class UserLog {
 	 * @return
 	 */
 	public List<MessageLog> readUserLogs(String username){
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		
 		String transactionType;
 		List<MessageLog> userLogs_Receive = new ArrayList<MessageLog>();
 		List<MessageLog> userLogs_Send = new ArrayList<MessageLog>();
@@ -64,7 +67,7 @@ public class UserLog {
 	 */
 	private  List<MessageLog> parseTransactionFolders(String username, String transactionType) {
 		List<MessageLog> userLog = new ArrayList<MessageLog>();
-		List<String> messageIds = LoggerUtils.listFilesForFolder(transactionType);
+		List<String> messageIds = LoggerUtils.listFilesForFolder(File.separator + username +  transactionType);
 		String id;
 		MessageLog singleMsgLog;
 

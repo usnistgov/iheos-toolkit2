@@ -11,7 +11,7 @@ lib/**
 
 
 # folders created by gwt
-.gwt
+.gwt/**
 xdstools2/.gwt
 xdstools2/gwt-unitCache/
 .gwt-tmp

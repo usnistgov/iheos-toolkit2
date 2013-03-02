@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -152,39 +153,37 @@ public class MDNMessageProcessor {
 	 * Checks MDN message properties and coherence compared to the initial Direct Message
 	 * (Date received, Sender, compare to original Direct message)
 	 */
-	public void checkMdnMessageProperties(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc){
+        public void checkMdnMessageProperties(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc){
 
 
-		// Set the part number to 1
-		partNumber = 1;
+            // Set the part number to 1
+            partNumber = 1;
 
-		// Parse the message to see if it is wrapped
-		wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
+            // Parse the message to see if it is wrapped
+            wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
 
-		logger.debug("ValidationContext is " + vc.toString());
+            logger.debug("ValidationContext is " + vc.toString());
 
-		MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
-
-
-		// Get MDN sender name (username)
-		String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
-
-		// Get MDN message ID 
-		String _messageID = ParseUtils.searchHeaderSimple((Part)m, "message-id");
-
-		// Get  reception time - Logging system date instead of SUT sender date contained in headers
-		Date date = new Date();
-		// String date = ParseUtils.searchHeaderSimple((Part)m, "date");
-
-		// Write MDN info to existing Direct log
-		String messageID = Utils.rawFromHeader(_messageID);
-		String username = Utils.rawFromHeader(_username);
-		//Address[] addr = ((MimeMessage) p).getFrom();
-		//username = (addr[0]).toString();
-		MessageLogManager.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
+            MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 
 
+            // Get MDN sender name (username)
+            String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
 
+            // Get MDN message ID 
+            String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
+
+            // Get  reception time - Logging system date instead of SUT sender date contained in headers
+            Date date = new Date();
+            // String date = ParseUtils.searchHeaderSimple((Part)m, "date");
+
+            // Write MDN info to existing Direct log
+            String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
+            String username = Utils.rawFromHeader(_username);
+
+ 
+
+            MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date.toString());
 
 		// Compares reception time for the MDN to send time for the original Direct message.
 		//		try {
