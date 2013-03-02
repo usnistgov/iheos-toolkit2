@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DirectStatusTab  extends GenericQueryTab {
 	MessageStatusView display;
-	String user = "bill"; // this needs to be changed to current user
+	String user = "mhunter@5amsolutions.com"; // this needs to be changed to current user
 	
 	public interface IMessageStatusView {
 		public void build(List<MessageLog> statuss);
