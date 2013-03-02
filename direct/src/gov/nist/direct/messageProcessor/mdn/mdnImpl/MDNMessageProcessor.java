@@ -183,7 +183,7 @@ public class MDNMessageProcessor {
 
  
 
-            MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date.toString());
+            MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date);
 
 		// Compares reception time for the MDN to send time for the original Direct message.
 		//		try {

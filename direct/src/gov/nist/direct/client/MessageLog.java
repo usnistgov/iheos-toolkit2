@@ -12,19 +12,19 @@ public class MessageLog  implements IsSerializable {
 
 	// attributes relevant to the Direct message sent
 	public String messageId;
-	public Date expirationDate; // delay after which MDN is considered as arriving too late
+	public String expirationDate; // delay after which MDN is considered as arriving too late
 
 	// MDN message, received
-	public Date mdnReceivedDate;
+	public String mdnReceivedDate;
 	public String status;
 	public String label;
 
-	public MessageLog( String _transactionType, String _messageType, String _messageId, Date _expirationDate, Date _mdnReceivedDate, String _status, String _label){
+	public MessageLog( String _transactionType, String _messageType, String _messageId, String expirationDate2, String mdnReceivedDate2, String _status, String _label){
 		transactionType = _transactionType;
 		messageType = _messageType;
 		messageId = _messageId;
-		expirationDate = _expirationDate;
-		mdnReceivedDate = _mdnReceivedDate;
+		expirationDate = expirationDate2;
+		mdnReceivedDate = mdnReceivedDate2;
 		status = _status;
 		label = _label;
 

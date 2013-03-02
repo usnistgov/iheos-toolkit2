@@ -22,8 +22,11 @@ package gov.nist.direct.logger.writer;
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.utils.Utils;
 
-import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Logs dates to MDN and Direct log file structure.
@@ -37,17 +40,23 @@ public class TimeLogger {
 		ls = LogPathsSingleton.getLogStructureSingleton();
 	}
 
-	public void logDate(String s, String transactionType, String messageType, String username, String messageId) throws IOException {
+	public void logDate(Date d, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String dateLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
-		Utils.writeToFile(s, dateLogPath); // ask to overwrite? which failsafes?
+		Utils.writeToFile(formatDateForLogging(d), dateLogPath); // ask to overwrite? which failsafes?
 		}
 
-	public void logExpirationDate(String s, String transactionType, String messageType, String username, String messageId) throws IOException {
+	public void logExpirationDate(Date d, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String expiration = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId);
-		Utils.writeToFile(s, expiration); // ask to overwrite? which failsafes?
+		Utils.writeToFile(formatDateForLogging(d), expiration); // ask to overwrite? which failsafes?
 		}
 
 	
+	String formatDateForLogging(Date d){
+        DateFormat sdf = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
+        //sdf.setLenient(true);
+        //DateFormat sdf = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
+		return sdf.format(d);
+	}
 	
 
 }
