@@ -28,6 +28,7 @@ public class TestLogger {
 	
 	@Test
 	public void testWriteDirectLog(){
+		
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		
 		UnwrappedMessageValidationTest testClass = new UnwrappedMessageValidationTest();
