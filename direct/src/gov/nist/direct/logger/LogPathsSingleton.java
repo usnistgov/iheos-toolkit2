@@ -93,7 +93,8 @@ public class LogPathsSingleton {
   * @return
   */
 	public static String getLOG_ROOT() {
-		return Installation.installation().directLogs().toString();
+		return "C:\\direct-logs";
+		//return Installation.installation().directLogs().toString();
 	}
 	
 	public String getDirectMessageLogPath(String transactionType, String messageType, String username, String messageId) {
