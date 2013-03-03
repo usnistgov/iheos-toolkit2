@@ -73,8 +73,8 @@ public class UserLog {
 		String id;
 		MessageLog singleMsgLog;
 
-		while (messageIds.iterator().hasNext()){
-			id = messageIds.iterator().next();
+		for (int i=0; i< messageIds.size();i++){
+			id = messageIds.get(i);
 			singleMsgLog = MessageLogManager.readLog(username, transactionType, id);
 			userLog.add(singleMsgLog);
 		}

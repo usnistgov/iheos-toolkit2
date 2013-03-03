@@ -191,6 +191,16 @@ public class MessageLogManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		// Log temporary status "MDN not received yet"
+		String status =  "Waiting for MDN";
+				MessageStatusLogger dl = new MessageStatusLogger();
+				try {
+					dl.logMessageStatus( "Waiting for MDN", transactionType, messageType, username, messageId);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	}
 
 
@@ -203,7 +213,7 @@ public class MessageLogManager {
 	 * @param messageId
 	 * @return
 	 */
-	public static MessageLog readLog(String username, String transactionType, String messageId){
+	public static MessageLog readLog(String username, String _transactionType, String messageId){
 		MessageLogManager log;
 		String messageType;
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
@@ -217,36 +227,47 @@ public class MessageLogManager {
 		//MimeMessage directContents = reader.readDirectMessage(ls, transactionType,  messageType, username, messageId);
 
 		// read message status
-		String status = reader.readMessageStatus(ls, transactionType,  messageType, username, messageId);
+		String status = reader.readMessageStatus(ls, _transactionType,  messageType, username, messageId);
 
 		// read label
-		String label = reader.readLabel(ls, transactionType,  messageType, username, messageId);
+		String label = reader.readLabel(ls, _transactionType,  messageType, username, messageId);
 		
-		// read expiration date
-		String expirationDate = reader.readMDNExpirationDate(ls, transactionType, messageType, username, messageId);
+		// read projected expiration date
+		String expirationDate = reader.readMDNExpirationDate(ls, _transactionType, messageType, username, messageId);
 
 
 		// **** parse folder MDN ****
 		messageType =	ls.getMDN_MESSAGE_FOLDER();
 
 		// read MDN actual receive date
-		String mdnReceivedDate = reader.readMDNReceivedDate(ls, transactionType, messageType, username, messageId);
+		String mdnReceivedDate = reader.readMDNReceivedDate(ls, _transactionType, messageType, username, messageId);
 
 		
-		return new MessageLog(transactionType, messageType, messageId, expirationDate, mdnReceivedDate, status, label);	
+		// Get Transaction Type name as a String suitable for display
+		String transactionLabel = "";
+		if (_transactionType == ls.getDIRECT_SEND_FOLDER()) {
+			transactionLabel = ls.getDIRECT_SEND_LABEL_FOR_DISPLAY();
+		} 
+		else if  (_transactionType == ls.getDIRECT_RECEIVE_FOLDER()) {
+			transactionLabel = ls.getDIRECT_RECEIVE_LABEL_FOR_DISPLAY();
+		} else {
+			System.out.println("Transaction name unknown.");
+		}
+		
+		// Get the Message Type as a String suitable for display
+		String messageTypeLabel = "";
+		if (messageType == ls.getDIRECT_MESSAGE_FOLDER()) {
+			messageTypeLabel = ls.getDIRECT_MESSAGE_LABEL();
+		} 
+		else if  (messageType == ls.getMDN_MESSAGE_FOLDER()) {
+			messageTypeLabel = ls.getMDN_MESSAGE_LABEL();
+		} else {
+			System.out.println("Message type unknown.");
+		}
+		
+		return new MessageLog(transactionLabel, messageTypeLabel, messageId, expirationDate, mdnReceivedDate, status, label);	
 	}
 
-	public String toString(){
-		String str = "label" + this.label + "/n" +
-	"messageId" + this.messageId + "/n" +
-	"transactionType" + this.transactionType + "/n" +	
-	"messageType" + this.messageType + "/n" +
-	"expiration date" + this.expirationDate + "/n" +
-	"mdnReceivedDate " + this.mdnReceivedDate + "/n"+
-	"status" + this.status + "/n";
-	
-		return str;
-		
-	}
+
 
 }

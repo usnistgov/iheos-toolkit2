@@ -1,29 +1,25 @@
 package gov.nist.direct.test.java.logger;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import gov.nist.direct.client.MessageLog;
+import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.logger.UserLog;
+import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
+import gov.nist.direct.test.java.messageProcessor.impl.UnwrappedMessageValidationTest;
+import gov.nist.direct.utils.Utils;
 
 import java.io.File;
 import java.util.List;
 
 import javax.mail.Address;
 import javax.mail.MessagingException;
-import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
-import javax.validation.constraints.AssertFalse;
-
-import gov.nist.direct.client.MessageLog;
-import gov.nist.direct.logger.LogPathsSingleton;
-import gov.nist.direct.logger.MessageLogManager;
-import gov.nist.direct.logger.UserLog;
-import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
-import gov.nist.direct.test.java.messageGenerator.DirectMimeMessageGeneratorTest;
-import gov.nist.direct.test.java.messageProcessor.impl.UnwrappedMessageValidationTest;
-import gov.nist.direct.utils.Utils;
 
 import org.junit.Test;
 
 public class TestLogger {
-
+	MimeMessage msg;
 
 	
 	@Test
@@ -32,22 +28,22 @@ public class TestLogger {
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		
 		UnwrappedMessageValidationTest testClass = new UnwrappedMessageValidationTest();
-		MimeMessage msg = testClass.createTestMimeMessage();
-		System.out.println("TEST: created MIME message.");
+		 msg = testClass.createTestMimeMessage();
+		System.out.println("TEST: created DIRECT message.");
 		
 		DirectMimeMessageProcessor mp = new DirectMimeMessageProcessor();
 		mp.logDirectMessage(msg);
-		System.out.println("TEST: logged MIME message.");
+		System.out.println("TEST: logged DIRECT message.");
 		
 		
 		Address[] addr = null;
 		String logPath = "";
 		try {
-			addr = ((MimeMessage) msg).getFrom();
-			String _username = (addr[0]).toString();
-			String username = Utils.rawFromHeader(_username);
-			logPath = ls.getDirectMessageLogPath(ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), username, msg.getMessageID());
-			
+			String username = getUsername(msg);
+			String _msgId = msg.getMessageID();
+			String msgId = Utils.rawFromHeader(_msgId);
+			logPath = ls.getDirectMessageLogPath(ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), username, msgId);
+			System.out.println("logPath" +logPath);
 			
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
@@ -65,15 +61,41 @@ public class TestLogger {
 	
 	@Test
 	public void testReadLog() {
-		UserLog ul = new UserLog();
-		List<MessageLog> list = ul.readUserLogs("mhunter@5amsolutions.com");
+//	List<MessageLog> readLog = new UserLog().readUserLogs(username);
+//		
+//		// test display
+//		System.out.println("Testing display");
+//		System.out.println(readLog.toString());
 		
-		System.out.println("Writing log reader results");
+		UnwrappedMessageValidationTest testClass = new UnwrappedMessageValidationTest();
+		 msg = testClass.createTestMimeMessage();
+		System.out.println("TEST: created DIRECT message.");
+		String username = getUsername(msg);
+		
+		System.out.println("TEST: reading DIRECT logs.");
+		UserLog ul = new UserLog();
+		List<MessageLog> list = ul.readUserLogs(username);
+		
+		System.out.println("TEST: Writing log reader results");
 		// display on console
-		while (list.iterator().hasNext()){
-			list.iterator().next().toString();
+		for (int i=0; i<list.size();i++){
+		//	list.get(i).toString(); - doesnt work
+			System.out.println(list.get(i).toString());
 		}
 		assertFalse(list.isEmpty());
+	}
+	
+	private String getUsername(MimeMessage msg){
+		Address[] addr = null;
+		try {
+			addr = ((MimeMessage) msg).getFrom();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String _username = (addr[0]).toString();
+		 return Utils.rawFromHeader(_username);
+		
 	}
 
 }

@@ -22,17 +22,9 @@ package gov.nist.direct.logger.reader;
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.LoggerUtils;
 import gov.nist.direct.utils.Utils;
-import gov.nist.direct.utils.ValidationUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.mail.internet.MimeMessage;
 

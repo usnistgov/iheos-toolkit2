@@ -977,15 +977,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();
 
-		// Get label
-		String label = "label";
+		// Get label - TODO
+		String label = "";
 		
 		MessageLogManager.logDirectMessage(username, date, "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
-		List<MessageLog> readLog = new UserLog().readUserLogs(username);
-		
-		// test display
-		System.out.println("Testing display");
-		System.out.println(readLog.toString());
+	
 		
 	//	ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
 	//	MessageLog temp;

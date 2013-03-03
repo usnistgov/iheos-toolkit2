@@ -19,10 +19,7 @@ Authors: William Majurski
 
 package gov.nist.direct.logger;
 
-import gov.nist.toolkit.installation.Installation;
-
 import java.io.File;
-import java.sql.Time;
 
 /**
  * Current structure is:
@@ -35,7 +32,28 @@ import java.sql.Time;
  */
 public class LogPathsSingleton {
 	
+
 	
+	/**
+	 * Display-only fields
+	 */
+	private final String DIRECT_RECEIVE_LABEL_FOR_DISPLAY = "Direct Receive";
+	private final String DIRECT_SEND_LABEL_FOR_DISPLAY = "Direct Send";
+	private final String DIRECT_MESSAGE_LABEL = "Direct";
+	private final String MDN_MESSAGE_LABEL = "MDN";
+	
+
+	public String getDIRECT_MESSAGE_LABEL() {
+		return DIRECT_MESSAGE_LABEL;
+	}
+
+
+	public String getMDN_MESSAGE_LABEL() {
+		return MDN_MESSAGE_LABEL;
+	}
+
+
+
 
 	private String LOG_ROOT;
 	
@@ -129,6 +147,16 @@ public class LogPathsSingleton {
 
 	public String getDIRECT_SEND_FOLDER() {
 		return DIRECT_SEND_FOLDER;
+	}
+
+
+	public String getDIRECT_RECEIVE_LABEL_FOR_DISPLAY() {
+		return DIRECT_RECEIVE_LABEL_FOR_DISPLAY;
+	}
+
+
+	public String getDIRECT_SEND_LABEL_FOR_DISPLAY() {
+		return DIRECT_SEND_LABEL_FOR_DISPLAY;
 	}
 
 

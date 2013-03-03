@@ -26,7 +26,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -40,15 +39,17 @@ public class LoggerUtils {
         ArrayList<String> list = new ArrayList<String>();
  
         try {
-
+        	File[] listOfFiles = f.listFiles();
             // if(f.listFiles() != null) {
-            for (final File fileEntry : f.listFiles()) {
+            for (File fileEntry : listOfFiles) {
                 if (fileEntry.isDirectory()) {
-                    list.add(fileEntry.getName());
+                	String temp = fileEntry.getName();
+                    list.add(temp);
                     // if the element is not a folder, ignore it.
                 }
-            }            
-        } catch (Throwable e) {}
+            }   
+        } 
+        catch (Throwable e) {}
         return list;
 }
 
@@ -99,8 +100,7 @@ public class LoggerUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-      	System.out.println("read date" + str);
-		return path;
+      	return str;
         }
         
     }

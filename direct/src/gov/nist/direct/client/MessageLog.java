@@ -1,7 +1,5 @@
 package gov.nist.direct.client;
 
-import java.util.Date;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MessageLog  implements IsSerializable {
@@ -32,4 +30,64 @@ public class MessageLog  implements IsSerializable {
 	
 	public MessageLog() {}
 
+	@Override
+	public String toString(){
+		String str = "label" + " " + this.label + "\n" +
+	"messageId" + " " +  this.messageId + "\n" +
+	"transactionType" + " " + this.transactionType + "\n" +	
+	"messageType" + " " +  this.messageType + "\n"+
+	"expiration date" + " " + this.expirationDate + "\n" +
+	"mdnReceivedDate " + " " + this.mdnReceivedDate + "\n"+
+	"status" + " " + this.status + "\n";
+	
+		return str;
+		
+	}
+//	
+//	public static String toString(MessageLog log){
+//		String str = "label" + log.getLabel() + "/n" +
+//	"messageId" + log.getMessageId() + "/n" +
+//	"transactionType" + log.getTransactionType() + "/n" +	
+//	"messageType" + log.getMessageType() + "/n" +
+//	"expiration date" + log.getExpirationDate() + "/n" +
+//	"mdnReceivedDate " + log.getMdnReceivedDate() + "/n"+
+//	"status" + log.getStatus() + "/n";
+//	
+//		return str;
+//		
+//	}
+
+	public String getTestReference() {
+		return testReference;
+	}
+
+	public String getTransactionType() {
+		return transactionType;
+	}
+
+	public String getMessageType() {
+		return messageType;
+	}
+
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public String getExpirationDate() {
+		return expirationDate;
+	}
+
+	public String getMdnReceivedDate() {
+		return mdnReceivedDate;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+	
+	
 }
