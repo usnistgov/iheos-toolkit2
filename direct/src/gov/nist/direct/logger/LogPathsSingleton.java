@@ -19,6 +19,8 @@ Authors: William Majurski
 
 package gov.nist.direct.logger;
 
+import gov.nist.toolkit.installation.Installation;
+
 import java.io.File;
 
 /**
@@ -111,8 +113,8 @@ public class LogPathsSingleton {
   * @return
   */
 	public static String getLOG_ROOT() {
-		return "C:\\direct-logs";
-		//return Installation.installation().directLogs().toString();
+		//return "C:\\direct-logs";
+		return Installation.installation().directLogs().toString();
 	}
 	
 	public String getDirectMessageLogPath(String transactionType, String messageType, String username, String messageId) {
