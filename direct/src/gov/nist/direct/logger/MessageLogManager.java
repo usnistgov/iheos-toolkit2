@@ -83,7 +83,7 @@ public class MessageLogManager {
 	 * Completes a Direct message log with matching MDN logs
 	 * @param messageId
 	 */
-	public static void logMDN(MimeMessage m, String status, String transactionType, String messageType, String origMessageId, String receivedDate){
+	public static void logMDN(MimeMessage m, String status, String transactionType, String messageType, String origMessageId, Date receivedDate){
 		// find out the username that matches the original message ID
 		String username = "";
 		if (findUsername(origMessageId) != ""){
@@ -150,7 +150,7 @@ public class MessageLogManager {
 	}
 
 
-	public static void logDirectMessage(String username, String directMsgDateSent, String transactionType, String messageType, String messageId, MimeMessage directMessage, String label){
+	public static void logDirectMessage(String username, Date directMsgDateSent, String transactionType, String messageType, String messageId, MimeMessage directMessage, String label){
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
 		try {
@@ -168,7 +168,7 @@ public class MessageLogManager {
 		cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
 		Date expirationDate =  cal.getTime(); // returns new date object, one hour in the future
 		try {
-			tl.logExpirationDate(expirationDate.toString(), transactionType, messageType, username, messageId);
+			tl.logExpirationDate(expirationDate, transactionType, messageType, username, messageId);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -223,14 +223,14 @@ public class MessageLogManager {
 		String label = reader.readLabel(ls, transactionType,  messageType, username, messageId);
 		
 		// read expiration date
-		Date expirationDate = reader.readMDNExpirationDate(ls, transactionType, messageType, username, messageId);
+		String expirationDate = reader.readMDNExpirationDate(ls, transactionType, messageType, username, messageId);
 
 
 		// **** parse folder MDN ****
 		messageType =	ls.getMDN_MESSAGE_FOLDER();
 
 		// read MDN actual receive date
-		Date mdnReceivedDate = reader.readMDNReceivedDate(ls, transactionType, messageType, username, messageId);
+		String mdnReceivedDate = reader.readMDNReceivedDate(ls, transactionType, messageType, username, messageId);
 
 		
 		return new MessageLog(transactionType, messageType, messageId, expirationDate, mdnReceivedDate, status, label);	

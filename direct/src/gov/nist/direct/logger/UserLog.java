@@ -47,10 +47,12 @@ public class UserLog {
 
 
 		// parse folder Direct Send
+		System.out.println("parse folder Direct Send");
 		transactionType =	ls.getDIRECT_SEND_FOLDER();
 		userLogs_Send = parseTransactionFolders(username, transactionType);
 
 		// parse folder Direct Receive
+		System.out.println("parse folder Direct Receive");
 		transactionType =	ls.getDIRECT_RECEIVE_FOLDER();
 		userLogs_Receive = parseTransactionFolders(username, transactionType);
 

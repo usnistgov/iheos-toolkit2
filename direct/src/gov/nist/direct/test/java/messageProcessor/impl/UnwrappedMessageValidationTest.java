@@ -36,35 +36,24 @@ import javax.mail.internet.MimeMessage;
 import org.junit.Test;
 
 public class UnwrappedMessageValidationTest {
+	ErrorRecorder er;
 
 	String unwrappedDirectMessage = "direct/src/gov/nist/direct/test/java/messageProcessor/impl/UnwrappedDirectMessage.txt";
 	String wrappedDirectMessage = "direct/src/gov/nist/direct/test/java/messageProcessor/impl/WrappedDirectMessage.txt";
 	String decrypted_unwrappedDirectMessage = "direct/src/gov/nist/direct/test/java/messageProcessor/impl/decrypted_UnwrappedDirectMessage.txt";
 	String decrypted_wrappedDirectMessage = "direct/src/gov/nist/direct/test/java/messageProcessor/impl/decrypted_UnwrappedDirectMessage.txt";
 	
+	public UnwrappedMessageValidationTest(){
+		er = new TextErrorRecorderModif();
+	}
+	
+	
 	@Test
 	/**
 	 * Check the validation method
 	 */
 	public void testValidationEncryptedUnwrappedDirectMessage(){
-		ErrorRecorder er = new TextErrorRecorderModif();
-		
-		File unwrapped = new File(unwrappedDirectMessage);
-		byte[] unwrappedMessage = new byte[(int) unwrapped.length()];
-		FileInputStream fileInputStream = null;
-		try {
-			 fileInputStream = new FileInputStream(unwrapped);
-			fileInputStream.read(unwrappedMessage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally{
-			try {
-			fileInputStream.close();
-			} catch (IOException e) {}
-		}
-		
-		MimeMessage mm = MimeMessageParser.parseMessage(er, unwrappedMessage);
-		
+		MimeMessage mm = createTestMimeMessage();
 		ProcessEnvelope proEnv = new ProcessEnvelope();
 		try {
 			proEnv.validateMimeEntity(er, mm, new ValidationSummary(), 0);
@@ -184,6 +173,26 @@ public class UnwrappedMessageValidationTest {
 		
 		
 		
+	}
+	
+	
+	public MimeMessage createTestMimeMessage(){
+		File unwrapped = new File(unwrappedDirectMessage);
+		byte[] unwrappedMessage = new byte[(int) unwrapped.length()];
+		FileInputStream fileInputStream = null;
+		try {
+			 fileInputStream = new FileInputStream(unwrapped);
+			fileInputStream.read(unwrappedMessage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally{
+			try {
+			fileInputStream.close();
+			} catch (IOException e) {}
+		}
+		
+		MimeMessage mm = MimeMessageParser.parseMessage(er, unwrappedMessage);
+		return mm;
 	}
 	
 	

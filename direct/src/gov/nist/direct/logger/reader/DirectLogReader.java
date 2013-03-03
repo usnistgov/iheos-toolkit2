@@ -20,11 +20,17 @@ Authors: William Majurski
 package gov.nist.direct.logger.reader;
 
 import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.logger.LoggerUtils;
 import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -84,22 +90,30 @@ public String readMessageStatus (LogPathsSingleton ls, String transactionType, S
 }
 
 
-public Date readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+public String readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
-	String str = Utils.readFile(mdnLogPath);
-	
-		return new Date(str);
+	return LoggerUtils.readTextFileFirstLine(mdnLogPath);
 }
 
 
-public Date readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId);
-	String str = Utils.readFile(expDatePath);
-	
-	return new Date(str);
-		
+public String readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId); 
+	return LoggerUtils.readTextFileFirstLine(expDatePath);
 }
 
+
+//public Date readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+//	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
+//	String str = LoggerUtils.readTextFileFirstLine(mdnLogPath);
+//	return LoggerUtils.parseLoggedDate(str);
+//}
+//
+//
+//public Date readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+//	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId);
+//	String str = LoggerUtils.readTextFileFirstLine(expDatePath);
+//	return LoggerUtils.parseLoggedDate(str);
+//}
 
 
 public String readLabel(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {

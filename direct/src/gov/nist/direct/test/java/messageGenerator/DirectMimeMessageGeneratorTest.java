@@ -69,177 +69,182 @@ public class DirectMimeMessageGeneratorTest {
 	String outputDecryptedFile = "C://workspace_toolkit_test/toolkit/direct/src/gov/nist/direct/test/output/outputDecryptedMimeMsg.txt";
 	*/
 	
-
-	@Test
-	/**
-	 * Creates a signed unwrapped encrypted multipart (S/MIME) message using classes derived from the Bouncycastle library
-	 */
-	public void testCreateUnwrappedDirectMessage(){
+	public DirectMimeMessageGeneratorTest(){
 		
-		UnwrappedMessageGenerator gen = new UnwrappedMessageGenerator();
-		byte[] signingCert = null;
-		byte[] encryptionCertBA = null;
-		
-		try {
-			InputStream is;
-			is = new FileInputStream(new File("hit-testing.nist.gov.p12"));
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			
-			int nRead;
-			byte[] data = new byte[16384];
-			
-			while ((nRead = is.read(data, 0, data.length)) != -1) {
-				buffer.write(data, 0, nRead);
-			}
-			
-			buffer.flush();
-			signingCert = buffer.toByteArray();
-			
-			InputStream is2 = new FileInputStream(new File("hit-testing.nist.gov.der"));
-			ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
-			
-			int nRead2;
-			byte[] data2 = new byte[16384];
-			
-			while ((nRead2 = is2.read(data2, 0, data2.length)) != -1) {
-				buffer2.write(data2, 0, nRead2);
-			}
-			
-			buffer2.flush();
-			encryptionCertBA = buffer2.toByteArray();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		MimeMessage msg = null;
-		msg = gen.generateMessage(signingCert, "", "Test Unwrapped Message", "Test Unwrapped Message", new File("CCDA_CCD_b1_Ambulatory.xml"), "testFrom@test.com", "testTo@test.com", encryptionCertBA);
-		try {
-			msg.writeTo(new FileOutputStream("UnwrappedDirectMessage.txt"));
-		} catch (FileNotFoundException e) {
-			er.err("", "", "", "", "");
-			e.printStackTrace();
-		} catch (IOException e) {
-			er.err("", "", "", "", "");
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			er.err("", "", "", "", "");
-			e.printStackTrace();
-		}
-		
-		assertFalse(er.hasErrors());
 	}
 	
-	@Test
-	/**
-	 * Creates a signed unwrapped encrypted multipart (S/MIME) message using classes derived from the Bouncycastle library
-	 */
-	public void testCreateWrappedDirectMessage(){
-		
-		WrappedMessageGenerator gen = new WrappedMessageGenerator();
-		byte[] signingCert = null;
-		byte[] encryptionCertBA = null;
-		
-		try {
-			InputStream is;
-			is = new FileInputStream(new File("hit-testing.nist.gov.p12"));
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-			
-			int nRead;
-			byte[] data = new byte[16384];
-			
-			while ((nRead = is.read(data, 0, data.length)) != -1) {
-				buffer.write(data, 0, nRead);
-			}
-			
-			buffer.flush();
-			signingCert = buffer.toByteArray();
-			
-			InputStream is2 = new FileInputStream(new File("hit-testing.nist.gov.der"));
-			ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
-			
-			int nRead2;
-			byte[] data2 = new byte[16384];
-			
-			while ((nRead2 = is2.read(data2, 0, data2.length)) != -1) {
-				buffer2.write(data2, 0, nRead2);
-			}
-			
-			buffer2.flush();
-			encryptionCertBA = buffer2.toByteArray();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		MimeMessage msg = null;
-		msg = gen.generateMessage(signingCert, "", "Test Wrapped Message", "Test Wrapped Message", new File("CCDA_CCD_b1_Ambulatory.xml"), "testFrom@test.com", "testTo@test.com", encryptionCertBA);
-		try {
-			msg.writeTo(new FileOutputStream("WrappedDirectMessage.txt"));
-		} catch (FileNotFoundException e) {
-			er.err("", "", "", "", "");
-			e.printStackTrace();
-		} catch (IOException e) {
-			er.err("", "", "", "", "");
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			er.err("", "", "", "", "");
-			e.printStackTrace();
-		}
-		
-		assertFalse(er.hasErrors());
-	}
-	
-
+//
 //	@Test
-	/**
-	 * Creates a signed encrypted multipart (S/MIME) message using classes derived from the Bouncycastle library
-	 */
-/*	public void testCannotCreateDirectMessageFromCER(){
-		
-				CreateEncryptedMail createmail = new CreateEncryptedMail( certFilenameCER,  "",  outputFile2);
-				
-				try {
-					createmail.createEncryptedMail();
-				} catch (Exception e) {
-					er.err("", "Problem when generating a Direct Message", "", "", "");
-					e.printStackTrace();
-				}
-				assertTrue(er.hasErrors());
-	}
-	
-*/
+//	/**
+//	 * Creates a signed unwrapped encrypted multipart (S/MIME) message using classes derived from the Bouncycastle library
+//	 */
+//	public MimeMessage testCreateUnwrappedDirectMessage(){
+//		
+//		UnwrappedMessageGenerator gen = new UnwrappedMessageGenerator();
+//		byte[] signingCert = null;
+//		byte[] encryptionCertBA = null;
+//		
+//		try {
+//			InputStream is;
+//			is = new FileInputStream(new File("hit-testing.nist.gov.p12"));
+//			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//			
+//			int nRead;
+//			byte[] data = new byte[16384];
+//			
+//			while ((nRead = is.read(data, 0, data.length)) != -1) {
+//				buffer.write(data, 0, nRead);
+//			}
+//			
+//			buffer.flush();
+//			signingCert = buffer.toByteArray();
+//			
+//			InputStream is2 = new FileInputStream(new File("hit-testing.nist.gov.der"));
+//			ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
+//			
+//			int nRead2;
+//			byte[] data2 = new byte[16384];
+//			
+//			while ((nRead2 = is2.read(data2, 0, data2.length)) != -1) {
+//				buffer2.write(data2, 0, nRead2);
+//			}
+//			
+//			buffer2.flush();
+//			encryptionCertBA = buffer2.toByteArray();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		MimeMessage msg = null;
+//		msg = gen.generateMessage(signingCert, "", "Test Unwrapped Message", "Test Unwrapped Message", new File("CCDA_CCD_b1_Ambulatory.xml"), "testFrom@test.com", "testTo@test.com", encryptionCertBA);
+//		try {
+//			msg.writeTo(new FileOutputStream("UnwrappedDirectMessage.txt"));
+//		} catch (FileNotFoundException e) {
+//			er.err("", "", "", "", "");
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			er.err("", "", "", "", "");
+//			e.printStackTrace();
+//		} catch (MessagingException e) {
+//			er.err("", "", "", "", "");
+//			e.printStackTrace();
+//		}
+//		
+//		assertFalse(er.hasErrors());
+//		return msg;
+//	}
+//	
 //	@Test
-	/**
-	 * Reads a signed encrypted message using classes derived from the Bouncycastle library
-	 */
-/*	public void testReadDirectMessage() {
-		String MIMEinput = outputFile;
-		
-		ReadLargeEncryptedMail readmail = new ReadLargeEncryptedMail(MIMEinput,  certFilename,  password,  outputDecryptedFile);
-		
-		try {
-			readmail.readLargeEncryptedMail();
-		} catch (Exception e) {
-			er.err("", "Problem when reading a Direct Message", "", "", "");
-			e.printStackTrace();
-		}
-		assertFalse(er.hasErrors());
-		
-}
-*/	
-	
-//	@Test
-	/**
-	 * Tests that the resulting message, once decrypted, is equivalent to the one that was initially encrypted
-	 */
-/*	public void testGenerateReadCycle() {
-		byte[] input = Utils.getMessage(inputFile);
-		byte[] output = Utils.getMessage(outputDecryptedFile);
-		assertTrue(Arrays.equals(input, output));
-		
-}*/
-	
+//	/**
+//	 * Creates a signed unwrapped encrypted multipart (S/MIME) message using classes derived from the Bouncycastle library
+//	 */
+//	public void testCreateWrappedDirectMessage(){
+//		
+//		WrappedMessageGenerator gen = new WrappedMessageGenerator();
+//		byte[] signingCert = null;
+//		byte[] encryptionCertBA = null;
+//		
+//		try {
+//			InputStream is;
+//			is = new FileInputStream(new File("hit-testing.nist.gov.p12"));
+//			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+//			
+//			int nRead;
+//			byte[] data = new byte[16384];
+//			
+//			while ((nRead = is.read(data, 0, data.length)) != -1) {
+//				buffer.write(data, 0, nRead);
+//			}
+//			
+//			buffer.flush();
+//			signingCert = buffer.toByteArray();
+//			
+//			InputStream is2 = new FileInputStream(new File("hit-testing.nist.gov.der"));
+//			ByteArrayOutputStream buffer2 = new ByteArrayOutputStream();
+//			
+//			int nRead2;
+//			byte[] data2 = new byte[16384];
+//			
+//			while ((nRead2 = is2.read(data2, 0, data2.length)) != -1) {
+//				buffer2.write(data2, 0, nRead2);
+//			}
+//			
+//			buffer2.flush();
+//			encryptionCertBA = buffer2.toByteArray();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		MimeMessage msg = null;
+//		msg = gen.generateMessage(signingCert, "", "Test Wrapped Message", "Test Wrapped Message", new File("CCDA_CCD_b1_Ambulatory.xml"), "testFrom@test.com", "testTo@test.com", encryptionCertBA);
+//		try {
+//			msg.writeTo(new FileOutputStream("WrappedDirectMessage.txt"));
+//		} catch (FileNotFoundException e) {
+//			er.err("", "", "", "", "");
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			er.err("", "", "", "", "");
+//			e.printStackTrace();
+//		} catch (MessagingException e) {
+//			er.err("", "", "", "", "");
+//			e.printStackTrace();
+//		}
+//		
+//		assertFalse(er.hasErrors());
+//	}
+//	
+//
+////	@Test
+//	/**
+//	 * Creates a signed encrypted multipart (S/MIME) message using classes derived from the Bouncycastle library
+//	 */
+///*	public void testCannotCreateDirectMessageFromCER(){
+//		
+//				CreateEncryptedMail createmail = new CreateEncryptedMail( certFilenameCER,  "",  outputFile2);
+//				
+//				try {
+//					createmail.createEncryptedMail();
+//				} catch (Exception e) {
+//					er.err("", "Problem when generating a Direct Message", "", "", "");
+//					e.printStackTrace();
+//				}
+//				assertTrue(er.hasErrors());
+//	}
+//	
+//*/
+////	@Test
+//	/**
+//	 * Reads a signed encrypted message using classes derived from the Bouncycastle library
+//	 */
+///*	public void testReadDirectMessage() {
+//		String MIMEinput = outputFile;
+//		
+//		ReadLargeEncryptedMail readmail = new ReadLargeEncryptedMail(MIMEinput,  certFilename,  password,  outputDecryptedFile);
+//		
+//		try {
+//			readmail.readLargeEncryptedMail();
+//		} catch (Exception e) {
+//			er.err("", "Problem when reading a Direct Message", "", "", "");
+//			e.printStackTrace();
+//		}
+//		assertFalse(er.hasErrors());
+//		
+//}
+//*/	
+//	
+////	@Test
+//	/**
+//	 * Tests that the resulting message, once decrypted, is equivalent to the one that was initially encrypted
+//	 */
+///*	public void testGenerateReadCycle() {
+//		byte[] input = Utils.getMessage(inputFile);
+//		byte[] output = Utils.getMessage(outputDecryptedFile);
+//		assertTrue(Arrays.equals(input, output));
+//		
+//}*/
+//	
 
 	
 	

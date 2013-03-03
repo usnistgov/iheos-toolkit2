@@ -19,31 +19,88 @@ Authors: William Majurski
 
 package gov.nist.direct.logger;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
-    public class LoggerUtils {
-        
-        public static ArrayList<String> listFilesForFolder(String folder) {
-            String s = LogPathsSingleton.getLOG_ROOT() + folder;
-            System.out.println("main logs path: " + s);
-            File f = new File(s);
-            ArrayList<String> list = new ArrayList<String>();
-
+public class LoggerUtils {
+    
+    public static ArrayList<String> listFilesForFolder(String folder) {
+        String s = LogPathsSingleton.getLOG_ROOT() + folder;
+        System.out.println("main logs path: " + s);
+        File f = new File(s);
+        ArrayList<String> list = new ArrayList<String>();
  
+        try {
 
-            try {
+            // if(f.listFiles() != null) {
+            for (final File fileEntry : f.listFiles()) {
+                if (fileEntry.isDirectory()) {
+                    list.add(fileEntry.getName());
+                    // if the element is not a folder, ignore it.
+                }
+            }            
+        } catch (Throwable e) {}
+        return list;
+}
 
-                // if(f.listFiles() != null) {
-                for (final File fileEntry : f.listFiles()) {
-                    if (fileEntry.isDirectory()) {
-                        list.add(fileEntry.getName());
-                        // if the element is not a folder, ignore it.
-                    }
-                }            
-            } catch (Throwable e) {}
-            return list;
-    }
-
+   
+        
+        /**
+         * Not working probably because of JDK bug.
+         * @param str
+         * @return
+         */
+        public static Date parseLoggedDate(String str){
+        	System.out.println(str);
+        DateFormat sdf = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.US);
+        sdf.setLenient(true);
+        //	DateFormat  sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US);
+      //  String dateStr = sdf.format(str);
+        
+        Date d = null;
+    	//System.out.println(dateStr);
+    	try {
+    		d = sdf.parse(str);
+    	} catch (ParseException e) {
+    		e.printStackTrace();
+    	}
+    	return d;
+        }
+        
+        
+        
+        public static String readTextFileFirstLine(String path){
+        	BufferedReader br = null;
+        	String str = null;
+      	  try {
+      		 br = new BufferedReader(new FileReader(path));
+      	} catch (FileNotFoundException e) {
+      		// TODO Auto-generated catch block
+      		e.printStackTrace();
+      	}
+      	try {
+      		str =  br.readLine();
+      	} catch (IOException e) {
+      		// TODO Auto-generated catch block
+      		e.printStackTrace();
+      	}
+      	try {
+			br.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+      	System.out.println("read date" + str);
+		return path;
+        }
         
     }
