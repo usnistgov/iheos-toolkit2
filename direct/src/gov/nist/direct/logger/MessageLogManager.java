@@ -23,6 +23,7 @@ import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.logger.reader.DirectLogReader;
 import gov.nist.direct.logger.writer.DirectContentLogger;
 import gov.nist.direct.logger.writer.LabelLogger;
+import gov.nist.direct.logger.writer.MessageIDLogger;
 import gov.nist.direct.logger.writer.MessageStatusLogger;
 import gov.nist.direct.logger.writer.TimeLogger;
 import gov.nist.direct.logger.writer.messageLoggerImpl.MDNLogger;
@@ -83,12 +84,21 @@ public class MessageLogManager {
 	 * Completes a Direct message log with matching MDN logs
 	 * @param messageId
 	 */
-	public static void logMDN(MimeMessage m, String status, String transactionType, String messageType, String origMessageId, Date receivedDate){
+	public static void logMDN(MimeMessage m, String status, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId){
 		// find out the username that matches the original message ID
 		String username = "";
 		if (findUsername(origMessageId) != ""){
 			  username = findUsername(origMessageId);
 			  System.out.println("When logging an MDN, username should not be empty.");
+		}
+		
+		// Log MDN message-ID
+		MessageIDLogger idl = new MessageIDLogger();
+		try {
+			idl.logMessageId(mdnMessageId, transactionType, messageType, username, origMessageId);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
 		// Log MDN status
@@ -99,6 +109,9 @@ public class MessageLogManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+
+
 
 		// Log received date
 		TimeLogger tl = new TimeLogger();
@@ -232,9 +245,13 @@ public class MessageLogManager {
 		// read label
 		String label = reader.readLabel(ls, _transactionType,  messageType, username, messageId);
 		
+		// read sent date
+		String directSendDate = reader.readDirectSendDate(ls, _transactionType, messageType, username, messageId);
+		
 		// read projected expiration date
 		String expirationDate = reader.readMDNExpirationDate(ls, _transactionType, messageType, username, messageId);
 
+		
 
 		// **** parse folder MDN ****
 		messageType =	ls.getMDN_MESSAGE_FOLDER();
@@ -242,6 +259,8 @@ public class MessageLogManager {
 		// read MDN actual receive date
 		String mdnReceivedDate = reader.readMDNReceivedDate(ls, _transactionType, messageType, username, messageId);
 
+		// read MDN message-ID
+		String mdnMessageID = reader.readMDNMessageID(ls, _transactionType, messageType, username, messageId);
 		
 		// Get Transaction Type name as a String suitable for display
 		String transactionLabel = "";
@@ -265,7 +284,7 @@ public class MessageLogManager {
 			System.out.println("Message type unknown.");
 		}
 		
-		return new MessageLog(transactionLabel, messageTypeLabel, messageId, expirationDate, mdnReceivedDate, status, label);	
+		return new MessageLog(transactionLabel, messageTypeLabel, messageId, directSendDate, expirationDate, mdnReceivedDate, mdnMessageID, status, label);	
 	}
 
 

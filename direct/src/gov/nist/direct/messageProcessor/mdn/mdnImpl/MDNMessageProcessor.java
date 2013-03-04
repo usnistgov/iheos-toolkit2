@@ -181,28 +181,20 @@ public class MDNMessageProcessor {
             String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
             String username = Utils.rawFromHeader(_username);
 
- 
+            // Get MDN messageID (different from the Direct message-if that is used as reference for logging)
+            String mdnMessageID = "";
+			try {
+				if (m.getMessageID() != null){
+					mdnMessageID = m.getMessageID();
+				}
+			} catch (MessagingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-            MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date);
+            MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageID);
 
-		// Compares reception time for the MDN to send time for the original Direct message.
-		//		try {
-		//			receiveDate = ValidationUtils.parseDate(date);
-		//
-		//			SendHistorySingleton sendHistory = SendHistorySingleton.getSendHistory();
-		//			Date sendDate = sendHistory.getMessageSendTime(messageID);
-		//
-		//			int timeOffset = TimerUtils.getTimeDifference(receiveDate, sendDate);
-		//			if (timeOffset <= TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
-		//			} else {
-		//				// message that an mdn was received but delay was too long
-		//				//er.err(null, "MDN processing", "The MDN was received after the authorized delay had expired. The delay is "+ TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION(),  timeOffset);
-		//			}
-		//
-		//		} catch (ParseException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
+	
 		System.out.println("Done.");
 
 	}

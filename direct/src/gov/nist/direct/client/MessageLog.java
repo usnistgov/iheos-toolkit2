@@ -11,18 +11,22 @@ public class MessageLog  implements IsSerializable {
 	// attributes relevant to the Direct message sent
 	public String messageId;
 	public String expirationDate; // delay after which MDN is considered as arriving too late
-
+	public String directSendDate;
+	
 	// MDN message, received
 	public String mdnReceivedDate;
+	public String mdnMessageID;
 	public String status;
 	public String label;
 
-	public MessageLog( String _transactionType, String _messageType, String _messageId, String expirationDate2, String mdnReceivedDate2, String _status, String _label){
+	public MessageLog( String _transactionType, String _messageType, String _messageId, String _directSendDate, String expirationDate2, String mdnReceivedDate2, String _mdnMessageID, String _status, String _label){
 		transactionType = _transactionType;
 		messageType = _messageType;
 		messageId = _messageId;
+		directSendDate = _directSendDate;
 		expirationDate = expirationDate2;
 		mdnReceivedDate = mdnReceivedDate2;
+		mdnMessageID = _mdnMessageID;
 		status = _status;
 		label = _label;
 
@@ -34,8 +38,10 @@ public class MessageLog  implements IsSerializable {
 	public String toString(){
 		String str = "label" + " " + this.label + "\n" +
 	"messageId" + " " +  this.messageId + "\n" +
-	"transactionType" + " " + this.transactionType + "\n" +	
+	"transactionType" + " " + this.transactionType  + "\n" +	
 	"messageType" + " " +  this.messageType + "\n"+
+	"directSendDate" + " " + this.directSendDate + "\n" +
+	"mdnMessageID" + " " + this.mdnMessageID + "\n" +
 	"expiration date" + " " + this.expirationDate + "\n" +
 	"mdnReceivedDate " + " " + this.mdnReceivedDate + "\n"+
 	"status" + " " + this.status + "\n";

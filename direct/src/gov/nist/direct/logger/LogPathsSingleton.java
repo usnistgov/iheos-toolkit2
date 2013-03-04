@@ -36,6 +36,7 @@ public class LogPathsSingleton {
 	
 
 	
+
 	/**
 	 * Display-only fields
 	 */
@@ -72,7 +73,7 @@ public class LogPathsSingleton {
 	private final String DATE_LOG = File.separator + "date.txt";
 	private final String EXPIRATION_DATE_LOG = File.separator + "expiration-date.txt";
 	private final String LABEL_LOG = File.separator + "label.txt";
-	
+	private static final String MESSAGE_ID_LOG = "message-id.txt";
 	
 
 	
@@ -246,6 +247,17 @@ public class LogPathsSingleton {
 	}
 		return defaultPath;
 	}
+
+
+	public String getMessageIdLogPath(String transactionType,
+			String messageType, String username, String messageId) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + MESSAGE_ID_LOG;
+		return path;
+	}
+
+
+
 
 
 

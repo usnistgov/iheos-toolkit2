@@ -18,6 +18,10 @@ import javax.mail.internet.MimeMessage;
 
 import org.junit.Test;
 
+/**
+ * @author dazais
+ *
+ */
 public class TestLogger {
 	MimeMessage msg;
 
