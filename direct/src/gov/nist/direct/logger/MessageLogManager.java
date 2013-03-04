@@ -91,6 +91,7 @@ public class MessageLogManager {
 			  username = findUsername(origMessageId);
 			  System.out.println("When logging an MDN, username should not be empty.");
 		}
+		System.out.println("mdn username " + username);
 		
 		// Log MDN message-ID
 		MessageIDLogger idl = new MessageIDLogger();
@@ -110,13 +111,10 @@ public class MessageLogManager {
 			e.printStackTrace();
 		}
 		
-
-
-
-		// Log received date
+		// Log MDN received date
 		TimeLogger tl = new TimeLogger();
 		try {
-			tl.logDate(receivedDate, transactionType, messageType, username, origMessageId);
+			tl.logMDNReceivedDate(receivedDate, transactionType, messageType, username, origMessageId);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -152,8 +150,9 @@ public class MessageLogManager {
 		String name = "";
 		String msgIdFolder = logRoot + name + ls.getDIRECT_SEND_FOLDER() + origMsgId;
 		File f;
-		while (usernames.iterator().hasNext()){
-			name = usernames.iterator().next();
+		for (int i = 0; i < usernames.size() ; i++){
+			name = usernames.get(i);
+			System.out.println("msgidfolder " + msgIdFolder);
 			f = new File(msgIdFolder);
 			if (f.exists()) return name;
 		}
@@ -167,7 +166,7 @@ public class MessageLogManager {
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
 		try {
-			tl.logDate(directMsgDateSent, transactionType, messageType, username, messageId);
+			tl.logDirectReceivedDate(directMsgDateSent, transactionType, messageType, username, messageId);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -90,7 +90,7 @@ public String readDirectSendDate (LogPathsSingleton ls, String transactionType, 
 
 
 public String readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
+	String mdnLogPath = ls.getMDNReceivedDateLogPath(transactionType, messageType, username, messageId);
 	if (!new File(mdnLogPath).canRead())
 		return "";
 	return LoggerUtils.readTextFileFirstLine(mdnLogPath);

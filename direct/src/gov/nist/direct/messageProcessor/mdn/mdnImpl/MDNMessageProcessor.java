@@ -104,6 +104,7 @@ public class MDNMessageProcessor {
 		// New ErrorRecorder for the MDN validation summary
 		mainEr = new GwtErrorRecorder();
 		ls = LogPathsSingleton.getLogStructureSingleton();
+		MDN_STATUS = "";
 
 
 	}
@@ -140,7 +141,7 @@ public class MDNMessageProcessor {
 		System.out.println("checkMdnMessageProperties");
 
 
-		// need to delete regularly outdated message logs from the singleton.
+		// need to delete regularly outdated message logs
 
 
 
@@ -166,41 +167,43 @@ public class MDNMessageProcessor {
 
             MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 
-
-            // Get MDN sender name (username)
-            String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
-
-            // Get MDN message ID 
-            String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
-
-            // Get  reception time - Logging system date instead of SUT sender date contained in headers
-            Date date = new Date();
-            // String date = ParseUtils.searchHeaderSimple((Part)m, "date");
-
-            // Write MDN info to existing Direct log
-            String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
-            String username = Utils.rawFromHeader(_username);
-
-            // Get MDN messageID (different from the Direct message-if that is used as reference for logging)
-            String mdnMessageID = "";
-			try {
-				if (m.getMessageID() != null){
-					mdnMessageID = m.getMessageID();
-				}
-			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-            MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageID);
-
-	
-		System.out.println("Done.");
-
+            logMDNMessage(m);
 	}
 
 
 
+
+	public void logMDNMessage(MimeMessage m) {
+
+        // Get MDN sender name (username)
+        String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
+
+        // Get MDN message ID 
+        String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
+
+        // Get  reception time - Logging system date instead of SUT sender date contained in headers
+        Date date = new Date();
+        // String date = ParseUtils.searchHeaderSimple((Part)m, "date");
+
+        // Write MDN info to existing Direct log
+        String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
+       // String username = Utils.rawFromHeader(_username);
+
+        // Get MDN messageID (different from the Direct message-if that is used as reference for logging)
+        String mdnMessageID = "";
+		try {
+			if (m.getMessageID() != null){
+				mdnMessageID = m.getMessageID();
+			}
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageID);
+
+		
+	}
 
 	public void processPart(ErrorRecorder er, Part p) throws Exception {
 
