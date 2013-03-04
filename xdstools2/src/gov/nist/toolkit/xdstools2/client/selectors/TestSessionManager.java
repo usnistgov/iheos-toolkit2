@@ -69,7 +69,6 @@ public class TestSessionManager {
 		
 	}
 	
-
 	public void close() {
 		testSessionState.deleteManager(this);
 	}
@@ -125,6 +124,13 @@ public class TestSessionManager {
 			}
 		}
 		return false;
+	}
+	
+	public String getCurrentSelection() {
+		int selectedIndex = testSessionListBox.getSelectedIndex();
+		if (selectedIndex == -1)
+			return "";
+		return testSessionListBox.getItemText(selectedIndex);
 	}
 
 	

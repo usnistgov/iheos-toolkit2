@@ -84,12 +84,16 @@ public String readMessageStatus (LogPathsSingleton ls, String transactionType, S
 
 public String readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
+	if (!new File(mdnLogPath).canRead())
+		return "";
 	return LoggerUtils.readTextFileFirstLine(mdnLogPath);
 }
 
 
 public String readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId); 
+	if (!new File(expDatePath).canRead())
+		return "";
 	return LoggerUtils.readTextFileFirstLine(expDatePath);
 }
 

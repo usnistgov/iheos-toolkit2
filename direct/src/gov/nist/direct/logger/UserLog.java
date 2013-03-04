@@ -38,6 +38,7 @@ public class UserLog {
 	 * @return
 	 */
 	public List<MessageLog> readUserLogs(String username){
+		System.out.println("User is " + username);
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		
 		String transactionType;

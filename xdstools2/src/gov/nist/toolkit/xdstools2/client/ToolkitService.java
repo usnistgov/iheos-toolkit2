@@ -43,7 +43,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> directSend(Map<String, String> parms) throws NoServletSessionException, Exception;
 	List<String> getEncryptionCertDomains();
 	List<String> getDirectMsgIds(String user);
-	List<MessageLog> getDirectOutgoingMsgStatus(String user);
+	List<MessageLog> getDirectOutgoingMsgStatus(String user) throws NoServletSessionException;
 
 	public TkProps getTkProps() throws NoServletSessionException;
 	

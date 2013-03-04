@@ -45,6 +45,7 @@ import gov.nist.toolkit.xdstools2.server.smtptools.LogAccessMock;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -126,8 +127,11 @@ ToolkitService {
 	@Override
 	public List<String> getDirectMsgIds(String user) { return new LogAccessMock().getMsgIds(user); }
 	@Override
-	public List<MessageLog> getDirectOutgoingMsgStatus(String user) { 
+	public List<MessageLog> getDirectOutgoingMsgStatus(String user) throws NoServletSessionException { 
 		//return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids);
+		if (user == null || user.equals("null") || user.equals(""))
+			return new ArrayList<MessageLog>();
+		session().setMesaSessionName(user);
 		List<MessageLog> logs = new UserLog().readUserLogs(user);
 		return logs;
 	}
