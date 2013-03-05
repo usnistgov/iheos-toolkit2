@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.server.services;
 import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.direct.config.DirectConfigManager;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.common.coder.Base64Coder;
 import gov.nist.toolkit.dns.DnsLookup;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
@@ -27,6 +28,19 @@ public class SendDirect extends CommonServiceManager {
 	
 	static final Logger logger = Logger.getLogger(SendDirect.class);
 
+	/**
+	 * Send a Direct message.  Encryption cert comes from one of 3 sources:
+	 * 1) Uploaded via UI so it arrives here in the encryptionCert param
+	 * 2) Configured in toolkit for the target domain
+	 * 3) From DNS
+	 * These three locations are checked in this order.
+	 * @param session
+	 * @param params
+	 * @param signingCert
+	 * @param encryptionCert
+	 * @param signingCertPassword
+	 * @param unused
+	 */
 	public SendDirect(Session session, Map<String, String> params, byte[] signingCert, byte[] encryptionCert, String signingCertPassword, String unused)  {
 		this.session = session;
 		this.params = params;
@@ -38,17 +52,25 @@ public class SendDirect extends CommonServiceManager {
 
 	public List<Result> run() {
 		try {
-			String user = "DefaultDirectUser";			
+			String user = "DefaultDirectUser";	
+			String directToAddr = params.get("$direct_to_address$");
 			List<String> sections = null;
+			String encCertSource = "";
 
 			String[] areas = new String[1];
 			areas[0] = "utilities";
 			
 			Map<String, Object> params2 = new HashMap<String, Object>();
 			
+			//***********************************************
+			//
+			// Signing Cert (sign with my private key)
+			//
+			//***********************************************
+			
 			// GUI selects which signing cert to use
 			String signingCertName = params.get("$signing_cert$");
-			if (signingCertName == null || signingCertName.equals(""))
+			if (signingCertName == null || signingCertName.equals("")) 
 				throw new Exception("No signing cert selected");
 			SigningCertType signingCertType = SigningCertType.valueOf(signingCertName);
 			DirectConfigManager directConfig = new DirectConfigManager(Installation.installation().externalCache());
@@ -57,28 +79,67 @@ public class SendDirect extends CommonServiceManager {
 			params2.put("signingCert", signingCert);
 			params.put("signingCertPassword", signingPassword);
 
-			String targetDomain = params.get("$direct_to_domain$").trim();
-			logger.debug("Target domain is " + targetDomain);
+			//***********************************************
+			//
+			// Encryption Cert  (encrypt with target's public key)
+			//
+			//***********************************************
 			
-			if (targetDomain == null || targetDomain.equals(""))
+			String targetDomain = params.get("$direct_to_domain$").trim();
+			logger.info("Sending Direct msg to " + directToAddr);
+			logger.info("    target domain is " + targetDomain);
+			
+			if (targetDomain == null || targetDomain.equals("")) {
+				logger.error("    target domain is empty, not provided by UI");
 				throw new Exception("No target domain provided by UI");
+			}
 			
 			String directServerName = new DnsLookup().getMxRecord(targetDomain);
+			logger.info("    with mail server at " + directServerName);
 			
-			logger.info("Target server hostname is " + directServerName);
-			
-			if (directServerName == null || directServerName.equals(""))
+			if (directServerName == null || directServerName.equals("")) {
+				logger.error("    MX record lookup in DNS did not provide a mail handler hostname for domain " + targetDomain);
 				throw new NoMXRecordException("MX record lookup in DNS did not provide a mail handler hostname for domain " + targetDomain);
+			}
 			
 			params.put("$direct_server_name$", directServerName);
+			
+			if (!isEmpty(encryptionCert)) {
+				logger.info("    Encryption cert provided by UI");
+				encCertSource = "User Interface";
+			}
 
-			if (encryptionCert == null) {
+			if (isEmpty(encryptionCert) ) {
 				// not uploaded - pre-installed for a known domain - go find it
 				// it is required to be in .der format 
 				File certFile = directConfig.getEncryptionCertFile(targetDomain);
-				if (certFile == null)
-					throw new Exception("Cannot load pre-installed cert for domain " + targetDomain);
-				encryptionCert = Io.bytesFromFile(certFile);
+//				if (certFile == null)
+//					throw new Exception("Cannot load pre-installed cert for domain " + targetDomain);
+				if (certFile != null)
+					encryptionCert = Io.bytesFromFile(certFile);
+				
+				if (!isEmpty(encryptionCert)) {
+					logger.info("    Encryption cert found installed in toolkit");
+					encCertSource = "Installed in toolkit";
+				}
+			} 
+			
+			if (isEmpty(encryptionCert)) {
+				// not uploaded or pre-installed for the target domain.  Try fetching
+				// from DNS.
+				String encCertString = new DnsLookup().getCertRecord(targetDomain);
+				if (encCertString != null && encCertString.startsWith("MIID"))
+					encryptionCert = Base64Coder.decode(encCertString);
+				if (!isEmpty(encryptionCert)) {
+					logger.info("    Encryption cert pulled from DNS");
+					encCertSource = "DNS";
+				}
+				
+			}
+			if (isEmpty(encryptionCert)) {
+				logger.error("    Encryption cert for domain [" + targetDomain + "] not available from UI, toolkit configuration, or DNS");
+				return asList(new Result().simpleError("Encryption cert for domain [" + targetDomain + "] not available from UI, toolkit configuration, or DNS"));
+//				throw new Exception("Encryption cert for domain <" + targetDomain + "> not available from UI, toolkit configuration, or DNS");
 			}
 			params2.put("encryptionCert", encryptionCert);
 			
@@ -96,12 +157,20 @@ public class SendDirect extends CommonServiceManager {
 			session.transactionSettings.user = session.getMesaSessionName();
 			
 			Result r = session.xdsTestServiceManager().xdstest("DirectSendTemplate", sections, params, params2, areas, true);
-			return asList(r);
+			Result rSrc = new Result().simpleStatus("Source of encryption cert was " + encCertSource);
+			return asList(rSrc, r);
 		} catch (Throwable e) {
 			return buildExtendedResultList(e);
 		} finally {
 			session.clear();
 		}
+	}
+	
+	// this only applies to certificates in byte[] format
+	boolean isEmpty(byte[] b) {
+		if (b == null) return true;
+		if (b.length < 10) return true;
+		return false;
 	}
 	
 	void escapeWindowsBackslashes(Map<String, String> parms) {

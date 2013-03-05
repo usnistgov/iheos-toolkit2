@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class Result  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public String testName;   // test can be a single test or a test collection
-	public AssertionResults assertions;
+	public AssertionResults assertions = null;
 	public String timestamp;
 	public XdstestLogId logId;
 	public List<StepResult> stepResults;
@@ -19,6 +19,16 @@ public class Result  implements IsSerializable, Serializable {
 	
 	public Result() {
 		
+	}
+	
+	public Result simpleError(String err) {
+		addAssertion(err, false);
+		return this;
+	}
+
+	public Result simpleStatus(String status) {
+		addAssertion(status, true);
+		return this;
 	}
 
 	public Result(String timestamp) {
@@ -68,6 +78,9 @@ public class Result  implements IsSerializable, Serializable {
 	}
 	
 	public void addAssertion(String text, boolean ok) {
+		if (assertions == null)
+			assertions = new AssertionResults();
+
 		assertions.add(text, ok);
 		if (!ok)
 			pass = false;

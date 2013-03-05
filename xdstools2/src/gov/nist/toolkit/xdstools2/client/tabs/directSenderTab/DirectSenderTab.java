@@ -194,7 +194,9 @@ implements FormPanel.SubmitCompleteHandler, FormPanel.SubmitHandler {
 						if (ar.status) {
 							display.addHTMLToResultPanel(assertion);
 						} else {
-							if (assertion.contains("EnvironmentNotSelectedException"))
+							if (assertion == null)
+								display.addHTMLToResultPanel("<font color=\"#FF0000\">" + " Unknown Error " + "</font>");
+							else if (assertion.contains("EnvironmentNotSelectedException"))
 								display.addHTMLToResultPanel("<font color=\"#FF0000\">" + "Environment Not Selected" + "</font>");
 							else
 								display.addHTMLToResultPanel("<font color=\"#FF0000\">" + assertion + "</font>");

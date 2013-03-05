@@ -24,6 +24,13 @@ public class CommonServiceManager {
 		return lst;
 	}
 
+	protected List<Result> asList(Result r1, Result r2) {
+		List<Result> lst = new ArrayList<Result>();
+		lst.add(r1);
+		lst.add(r2);
+		return lst;
+	}
+
 	protected List<Result> buildExtendedResultList(Throwable e) {
 		Result r = ResultBuilder.RESULT("test");
 		r.addAssertion(ExceptionUtil.exception_details(e), false);
