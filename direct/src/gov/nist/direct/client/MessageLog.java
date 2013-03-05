@@ -86,6 +86,10 @@ public class MessageLog  implements IsSerializable {
 	public String getMdnReceivedDate() {
 		return mdnReceivedDate;
 	}
+	
+	public String getDirectSendDate() {
+		return directSendDate;
+	}
 
 	public String getStatus() {
 		return status;

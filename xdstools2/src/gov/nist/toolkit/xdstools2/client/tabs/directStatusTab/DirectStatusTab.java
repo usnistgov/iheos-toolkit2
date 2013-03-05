@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DirectStatusTab  extends GenericQueryTab {
 	MessageStatusView display;
-	String user = "mhunter@5amsolutions.com"; // this needs to be changed to current user
+	String user;
 
 	public interface IMessageStatusView {
 		public void build(List<MessageLog> statuss);
@@ -41,17 +41,10 @@ public class DirectStatusTab  extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		display = new MessageStatusView(topPanel, this);
-		//msg_ids.add("msg1");
-		//msg_ids.add("msg2");
-
 
 		container.addTab(topPanel, "DirectStatus", select);
 		addCloseButton(container,topPanel, null);
 		addActorReloader();
-
-		//toolkitService.getDirectOutgoingMsgStatus(username, UserLog.readUserLogs(username), new StatusLoadCallback(display));
-		// what is the StatusLoadCallback(display) used for?
-		//UserLog.readUserLogs(user);
 
 		Button now = new Button("Load...");
 		now.addClickHandler(nowClick);
