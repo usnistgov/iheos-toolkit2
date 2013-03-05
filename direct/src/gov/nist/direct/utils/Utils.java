@@ -312,6 +312,18 @@ return str;
 	else return "unrecognized_usernames"; 
 	}
 
+	public static void printToFile(MimeMultipartReport mdn, String outputFile) {
+		  try {
+			mdn.writeTo(new FileOutputStream(outputFile));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+
 
 
 }

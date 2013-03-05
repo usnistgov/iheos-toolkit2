@@ -69,11 +69,13 @@ public class LogPathsSingleton {
 	private final String MDN_MESSAGE_CONTENTS = File.separator + "mdn-contents.txt";
 	private final String DIRECT_MESSAGE_CONTENTS = File.separator + "direct-contents.txt"; // needs part number + ".txt" ext.
 	private final String DECRYPTED_MESSAGE = File.separator + "encrypted-message.txt"; 
-	private final String MESSAGE_STATUS = File.separator + "status.txt";
-	private final String DATE_LOG = File.separator + "date.txt";
+	private final String MDN_VALIDATION_STATUS = File.separator + "mdn-validation-status.txt";
+	private final String DIRECT_ORIGINAL_MSG_VALIDATION_STATUS = File.separator + "direct-orig-msg-validation-status.txt";
+	private final String DATE_LOG = File.separator + "direct-received-date.txt";
+	private final String MDN_RECEIVED_DATE_LOG = File.separator + "mdn-received-date.txt";
 	private final String EXPIRATION_DATE_LOG = File.separator + "expiration-date.txt";
 	private final String LABEL_LOG = File.separator + "label.txt";
-	private static final String MESSAGE_ID_LOG = "message-id.txt";
+	private static final String MESSAGE_ID_LOG = File.separator + "message-id.txt";
 	
 
 	
@@ -137,11 +139,18 @@ public class LogPathsSingleton {
 		return path;
 	}
 	
-	public String getMessageStatusLogPath(String transactionType, String messageType, String username, String messageId) {
+	public String getMDNValidationStatusLogPath(String transactionType, String messageType, String username, String messageId) {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);
-		String path = fullPath + MESSAGE_STATUS;
+		String path = fullPath + MDN_VALIDATION_STATUS;
 		return path;
 	}
+	
+	public String getDirectOriginalValidationStatusLogPath(String transactionType, String messageType, String username, String messageId) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + DIRECT_ORIGINAL_MSG_VALIDATION_STATUS;
+		return path;
+	}
+	
 	
 	public String getDIRECT_RECEIVE_FOLDER() {
 		return DIRECT_RECEIVE_FOLDER;
@@ -189,7 +198,7 @@ public class LogPathsSingleton {
 
 
 	public String getMESSAGE_STATUS() {
-		return MESSAGE_STATUS;
+		return MDN_VALIDATION_STATUS;
 	}
 
 
@@ -203,6 +212,13 @@ public class LogPathsSingleton {
 		String path = fullPath + DATE_LOG;
 		return path;
 	}
+	
+	public String getMDNReceivedDateLogPath(String transactionType, String messageType, String username, String messageId) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + MDN_RECEIVED_DATE_LOG;
+		return path;
+	}
+	
 	
 	
 	public String getDateExpirationLogPath(String transactionType, String messageType, String username, String messageId) {

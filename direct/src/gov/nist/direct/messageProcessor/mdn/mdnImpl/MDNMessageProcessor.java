@@ -104,6 +104,7 @@ public class MDNMessageProcessor {
 		// New ErrorRecorder for the MDN validation summary
 		mainEr = new GwtErrorRecorder();
 		ls = LogPathsSingleton.getLogStructureSingleton();
+		MDN_STATUS = "NOT SPECIFIED";
 
 
 	}
@@ -136,11 +137,12 @@ public class MDNMessageProcessor {
 		if (!er.hasErrors())  MDN_STATUS = "VALID";
 
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
+		// This is weird and not sure what it actually does.
 		checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
 		System.out.println("checkMdnMessageProperties");
 
 
-		// need to delete regularly outdated message logs from the singleton.
+		// need to delete regularly outdated message logs
 
 
 
@@ -166,41 +168,61 @@ public class MDNMessageProcessor {
 
             MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 
-
-            // Get MDN sender name (username)
-            String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
-
-            // Get MDN message ID 
-            String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
-
-            // Get  reception time - Logging system date instead of SUT sender date contained in headers
-            Date date = new Date();
-            // String date = ParseUtils.searchHeaderSimple((Part)m, "date");
-
-            // Write MDN info to existing Direct log
-            String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
-            String username = Utils.rawFromHeader(_username);
-
-            // Get MDN messageID (different from the Direct message-if that is used as reference for logging)
-            String mdnMessageID = "";
-			try {
-				if (m.getMessageID() != null){
-					mdnMessageID = m.getMessageID();
-				}
-			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-            MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageID);
-
-	
-		System.out.println("Done.");
-
+            logMDNMessage(m);
 	}
 
 
 
+
+	public void logMDNMessage(MimeMessage m) {
+
+        // Get MDN sender name (username)
+        String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
+
+        // Get MDN message ID 
+        String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
+
+        // Get  reception time - Logging system date instead of SUT sender date contained in headers
+        Date date = new Date();
+        // String date = ParseUtils.searchHeaderSimple((Part)m, "date");
+
+        // Write MDN info to existing Direct log
+        String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
+       // String username = Utils.rawFromHeader(_username);
+
+        // Get MDN messageID (different from the Direct message-if that is used as reference for logging)
+        String mdnMessageID = "";
+		try {
+			if (m.getMessageID() != null){
+				mdnMessageID = m.getMessageID();
+			}
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Get original Direct message validation status as described in MDN
+		String origDirectMsgValidationStatus = "";
+		try {
+			if (m.getDisposition() != null){
+				String disp = m.getDisposition();
+				if (disp.contains("processed")){ // we hope this is code for "a valid Direct message"
+					origDirectMsgValidationStatus = "VALID";
+				} else {
+					origDirectMsgValidationStatus = "NOT VALID";
+				}
+			} else { // Disposition is null - shouldn't happen anyway
+				origDirectMsgValidationStatus = "NOT SPECIFIED";
+			}
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageID);
+
+		
+	}
 
 	public void processPart(ErrorRecorder er, Part p) throws Exception {
 
@@ -367,7 +389,6 @@ public class MDNMessageProcessor {
 
 		}
 	}
-
 
 
 }

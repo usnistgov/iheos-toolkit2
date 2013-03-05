@@ -17,9 +17,10 @@ public class MessageLog  implements IsSerializable {
 	public String mdnReceivedDate;
 	public String mdnMessageID;
 	public String status;
+	public String origDirectMsgStatus;
 	public String label;
 
-	public MessageLog( String _transactionType, String _messageType, String _messageId, String _directSendDate, String expirationDate2, String mdnReceivedDate2, String _mdnMessageID, String _status, String _label){
+	public MessageLog( String _transactionType, String _messageType, String _messageId, String _directSendDate, String expirationDate2, String mdnReceivedDate2, String _mdnMessageID, String _status, String _origDirectMsgStatus, String _label){
 		transactionType = _transactionType;
 		messageType = _messageType;
 		messageId = _messageId;
@@ -28,6 +29,7 @@ public class MessageLog  implements IsSerializable {
 		mdnReceivedDate = mdnReceivedDate2;
 		mdnMessageID = _mdnMessageID;
 		status = _status;
+		origDirectMsgStatus = _origDirectMsgStatus;
 		label = _label;
 
 	}
@@ -44,6 +46,7 @@ public class MessageLog  implements IsSerializable {
 	"mdnMessageID" + " " + this.mdnMessageID + "\n" +
 	"expiration date" + " " + this.expirationDate + "\n" +
 	"mdnReceivedDate " + " " + this.mdnReceivedDate + "\n"+
+	"origDirectMsgStatus" + " " + this.origDirectMsgStatus + "\n" +
 	"status" + " " + this.status + "\n";
 	
 		return str;
@@ -86,11 +89,19 @@ public class MessageLog  implements IsSerializable {
 	public String getMdnReceivedDate() {
 		return mdnReceivedDate;
 	}
+	
+	public String getDirectSendDate() {
+		return directSendDate;
+	}
 
 	public String getStatus() {
 		return status;
 	}
 
+	public String getOriginalDirectMessageStatus(){
+		return origDirectMsgStatus;
+	}
+	
 	public String getLabel() {
 		return label;
 	}

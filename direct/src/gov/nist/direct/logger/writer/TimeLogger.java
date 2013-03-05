@@ -40,8 +40,13 @@ public class TimeLogger {
 		ls = LogPathsSingleton.getLogStructureSingleton();
 	}
 
-	public void logDate(Date d, String transactionType, String messageType, String username, String messageId) throws IOException {
+	public void logDirectReceivedDate(Date d, String transactionType, String messageType, String username, String messageId) throws IOException {
 		String dateLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
+		Utils.writeToFile(formatDateForLogging(d), dateLogPath); // ask to overwrite? which failsafes?
+		}
+	
+	public void logMDNReceivedDate(Date d, String transactionType, String messageType, String username, String messageId) throws IOException {
+		String dateLogPath = ls.getMDNReceivedDateLogPath(transactionType, messageType, username, messageId);
 		Utils.writeToFile(formatDateForLogging(d), dateLogPath); // ask to overwrite? which failsafes?
 		}
 

@@ -41,6 +41,7 @@ public class DirectMessageValidatorFactory implements MessageValidatorFactory2I 
 		if (erBuilder != null) {
 			ErrorRecorder er = report(erBuilder, mvc, "Requested Validation Context");
 			er.detail(vc.toString());
+			er.detail("An issue with the validation display occurred.");
 		}
 
 		String inputString = new String(input).trim();

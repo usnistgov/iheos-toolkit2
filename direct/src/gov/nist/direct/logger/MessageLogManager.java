@@ -70,27 +70,20 @@ public class MessageLogManager {
 	 */
 	public MessageLogManager(MessageLog msgLog){
 		this.msgLog = msgLog;
-//		transactionType = _transactionType;
-//		messageType = _messageType;
-//		messageId = _messageId;
-//		expirationDate = _expirationDate;
-//		mdnReceivedDate = _mdnReceivedDate;
-//		status = _status;
-//		label = _label;
-//
 	}
 	
 	/**
 	 * Completes a Direct message log with matching MDN logs
 	 * @param messageId
 	 */
-	public static void logMDN(MimeMessage m, String status, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId){
+	public static void logMDN(MimeMessage m, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId){
 		// find out the username that matches the original message ID
 		String username = "";
 		if (findUsername(origMessageId) != ""){
 			  username = findUsername(origMessageId);
 			  System.out.println("When logging an MDN, username should not be empty.");
 		}
+		System.out.println("mdn username " + username);
 		
 		// Log MDN message-ID
 		MessageIDLogger idl = new MessageIDLogger();
@@ -101,22 +94,27 @@ public class MessageLogManager {
 			e1.printStackTrace();
 		}
 		
-		// Log MDN status
+		// Log MDN validation status
 		MessageStatusLogger dl = new MessageStatusLogger();
 		try {
-			dl.logMessageStatus(status, transactionType, messageType, username, origMessageId);
+			dl.logMDNValidationStatus(mdnValidationStatus, transactionType, messageType, username, origMessageId);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-
-
-
-		// Log received date
+		// Log validation status of the original Direct message (MDN ack value)
+		try {
+			dl.logDirectOriginalValidationStatus(origDirectMsgValidationStatus, transactionType, messageType, username, origMessageId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Log MDN received date
 		TimeLogger tl = new TimeLogger();
 		try {
-			tl.logDate(receivedDate, transactionType, messageType, username, origMessageId);
+			tl.logMDNReceivedDate(receivedDate, transactionType, messageType, username, origMessageId);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -152,8 +150,9 @@ public class MessageLogManager {
 		String name = "";
 		String msgIdFolder = logRoot + name + ls.getDIRECT_SEND_FOLDER() + origMsgId;
 		File f;
-		while (usernames.iterator().hasNext()){
-			name = usernames.iterator().next();
+		for (int i = 0; i < usernames.size() ; i++){
+			name = usernames.get(i);
+			System.out.println("msgidfolder " + msgIdFolder);
 			f = new File(msgIdFolder);
 			if (f.exists()) return name;
 		}
@@ -167,7 +166,7 @@ public class MessageLogManager {
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
 		try {
-			tl.logDate(directMsgDateSent, transactionType, messageType, username, messageId);
+			tl.logDirectReceivedDate(directMsgDateSent, transactionType, messageType, username, messageId);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -209,7 +208,7 @@ public class MessageLogManager {
 		String status =  "Waiting for MDN";
 				MessageStatusLogger dl = new MessageStatusLogger();
 				try {
-					dl.logMessageStatus( "Waiting for MDN", transactionType, messageType, username, messageId);
+					dl.logMDNValidationStatus( "Waiting for MDN", transactionType, messageType, username, messageId);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -239,9 +238,16 @@ public class MessageLogManager {
 		// read whole message content - should get path only
 		//MimeMessage directContents = reader.readDirectMessage(ls, transactionType,  messageType, username, messageId);
 
-		// read message status
-		String status = reader.readMessageStatus(ls, _transactionType,  messageType, username, messageId);
-
+		// read MDN validation status
+			// reading MDN status first in case it exists
+			//String	status = reader.readMessageStatus(ls, _transactionType,  ls.getMDN_MESSAGE_FOLDER(), username, messageId);
+		//	if (status == null){
+				// then read direct status
+			String	status = reader.readMessageStatus(ls, _transactionType,  messageType, username, messageId);
+			//}
+		System.out.println("status " + status);
+		
+		
 		// read label
 		String label = reader.readLabel(ls, _transactionType,  messageType, username, messageId);
 		
@@ -261,6 +267,11 @@ public class MessageLogManager {
 
 		// read MDN message-ID
 		String mdnMessageID = reader.readMDNMessageID(ls, _transactionType, messageType, username, messageId);
+		
+
+		// read original Direct message status (whether MDN indicates if the Direct msg is valid or not)
+		String origDirectMsgStatus = reader.readOrigDirectMessageStatus(ls, _transactionType, messageType, username, messageId);
+		
 		
 		// Get Transaction Type name as a String suitable for display
 		String transactionLabel = "";
@@ -284,7 +295,7 @@ public class MessageLogManager {
 			System.out.println("Message type unknown.");
 		}
 		
-		return new MessageLog(transactionLabel, messageTypeLabel, messageId, directSendDate, expirationDate, mdnReceivedDate, mdnMessageID, status, label);	
+		return new MessageLog(transactionLabel, messageTypeLabel, messageId, directSendDate, expirationDate, mdnReceivedDate, mdnMessageID, status, origDirectMsgStatus, label);	
 	}
 
 

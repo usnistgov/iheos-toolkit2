@@ -23,7 +23,9 @@ import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.LoggerUtils;
 import gov.nist.direct.utils.Utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 import javax.mail.internet.MimeMessage;
@@ -70,7 +72,7 @@ public MimeMessage readEncryptedDirectMessage (LogPathsSingleton ls, String tran
 }
 
 public String readMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String statusLogPath = ls.getMessageStatusLogPath(transactionType, messageType, username, messageId);
+	String statusLogPath = ls.getMDNValidationStatusLogPath(transactionType, messageType, username, messageId);
 	ArrayList<String> read = Utils.readFile(new File(statusLogPath));
 	
 	// ignore 2nd and later lines of the file, only the first one contains status
@@ -78,8 +80,20 @@ public String readMessageStatus (LogPathsSingleton ls, String transactionType, S
 		return read.get(0).trim();
 	else
 		return "";
-	
 }
+
+
+public String readOrigDirectMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String statusLogPath = ls.getDirectOriginalValidationStatusLogPath(transactionType, messageType, username, messageId);
+	ArrayList<String> read = Utils.readFile(new File(statusLogPath));
+	
+	// ignore 2nd and later lines of the file, only the first one contains status
+	if (read.size() > 0)
+		return read.get(0).trim();
+	else
+		return "";
+}
+
 
 public String readDirectSendDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 	String directLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
@@ -90,7 +104,7 @@ public String readDirectSendDate (LogPathsSingleton ls, String transactionType, 
 
 
 public String readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
+	String mdnLogPath = ls.getMDNReceivedDateLogPath(transactionType, messageType, username, messageId);
 	if (!new File(mdnLogPath).canRead())
 		return "";
 	return LoggerUtils.readTextFileFirstLine(mdnLogPath);
