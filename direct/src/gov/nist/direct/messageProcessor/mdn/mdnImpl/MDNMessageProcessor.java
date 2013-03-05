@@ -22,6 +22,7 @@ package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.MessageLogManager;
+import gov.nist.direct.logger.writer.MessageIDLogger;
 import gov.nist.direct.mdn.MDNValidator;
 import gov.nist.direct.mdn.impl.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -84,6 +85,15 @@ import org.bouncycastle.util.Store;
  */
 public class MDNMessageProcessor {
 	static Logger logger = Logger.getLogger(DirectMimeMessageProcessor.class);
+	
+	private static String NO_ORIGINAL_MSG_ID = "No original msg-id";
+	private static String NO_USERNAME = "No username";
+	private static String NO_MDN_MESSAGE_ID = "No MDN message-id";
+	private static String STATUS_VALID = "Valid";
+	private static String STATUS_NOT_VALID = "Not valid";
+	private static String STATUS_NOT_SPECIFIED = "Status not specified";
+
+	
 
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
@@ -133,8 +143,8 @@ public class MDNMessageProcessor {
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
 
 		// Check validation status
-		MDN_STATUS = "NON VALID";
-		if (!er.hasErrors())  MDN_STATUS = "VALID";
+		MDN_STATUS = STATUS_NOT_VALID;
+		if (!er.hasErrors())  MDN_STATUS = STATUS_VALID;
 
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
 		// This is weird and not sure what it actually does.
@@ -177,49 +187,58 @@ public class MDNMessageProcessor {
 	public void logMDNMessage(MimeMessage m) {
 
         // Get MDN sender name (username)
-        String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
+       // String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
+        // String username = Utils.rawFromHeader(_username);
 
+		
         // Get MDN message ID 
-        String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
-
+        String mdnMessageId = "";
+		try {
+			if (m.getMessageID() == null || m.getMessageID().equals("")){
+				mdnMessageId = m.getMessageID();
+			} else {
+				mdnMessageId = NO_MDN_MESSAGE_ID;
+			}
+		} catch (MessagingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+			
+			
         // Get  reception time - Logging system date instead of SUT sender date contained in headers
         Date date = new Date();
-        // String date = ParseUtils.searchHeaderSimple((Part)m, "date");
 
-        // Write MDN info to existing Direct log
-        String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
-       // String username = Utils.rawFromHeader(_username);
-
-        // Get MDN messageID (different from the Direct message-if that is used as reference for logging)
-        String mdnMessageID = "";
-		try {
-			if (m.getMessageID() != null){
-				mdnMessageID = m.getMessageID();
-			}
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        
+        // Get Original Direct Message-ID from MDN
+        String origMessageID;
+        String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
+        		
+        if (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) {
+        	        origMessageID = NO_ORIGINAL_MSG_ID;
+        		} else {
+        			origMessageID = Utils.rawFromHeader(_inResponseToMessageID);
+        		}
+        
 		
 		// Get original Direct message validation status as described in MDN
 		String origDirectMsgValidationStatus = "";
 		try {
-			if (m.getDisposition() != null){
+			if (m.getDisposition() != null && m.getDisposition() != ""){
 				String disp = m.getDisposition();
 				if (disp.contains("processed")){ // we hope this is code for "a valid Direct message"
-					origDirectMsgValidationStatus = "VALID";
+					origDirectMsgValidationStatus = STATUS_VALID; 
 				} else {
-					origDirectMsgValidationStatus = "NOT VALID";
+					origDirectMsgValidationStatus = STATUS_NOT_VALID; 
 				}
 			} else { // Disposition is null - shouldn't happen anyway
-				origDirectMsgValidationStatus = "NOT SPECIFIED";
+				origDirectMsgValidationStatus = STATUS_NOT_SPECIFIED;
 			}
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-        MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageID);
+        MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageId);
 
 		
 	}

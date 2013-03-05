@@ -38,6 +38,9 @@ import java.util.List;
 import javax.mail.internet.MimeMessage;
 
 public class MessageLogManager {
+	private static String UNKNOWN_USERNAME = "Unknown username";
+
+	
 	// general attributes
 	private String label;
 
@@ -77,13 +80,15 @@ public class MessageLogManager {
 	 * @param messageId
 	 */
 	public static void logMDN(MimeMessage m, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId){
-		// find out the username that matches the original message ID
+		
+		// find the username that matches the original message ID
 		String username = "";
 		if (findUsername(origMessageId) != ""){
 			  username = findUsername(origMessageId);
 			  System.out.println("When logging an MDN, username should not be empty.");
 		}
-		System.out.println("mdn username " + username);
+		System.out.println("mdn username :" + username);
+		
 		
 		// Log MDN message-ID
 		MessageIDLogger idl = new MessageIDLogger();
@@ -93,6 +98,7 @@ public class MessageLogManager {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
 		
 		// Log MDN validation status
 		MessageStatusLogger dl = new MessageStatusLogger();
@@ -157,7 +163,7 @@ public class MessageLogManager {
 			if (f.exists()) return name;
 		}
 	System.out.println("Error: No username matching original message ID "+ origMsgId +" could be found.");
-		return "";
+		return UNKNOWN_USERNAME;
 		
 	}
 
