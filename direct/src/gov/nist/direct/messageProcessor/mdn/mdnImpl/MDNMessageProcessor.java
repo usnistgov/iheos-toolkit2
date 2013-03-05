@@ -104,7 +104,7 @@ public class MDNMessageProcessor {
 		// New ErrorRecorder for the MDN validation summary
 		mainEr = new GwtErrorRecorder();
 		ls = LogPathsSingleton.getLogStructureSingleton();
-		MDN_STATUS = "";
+		MDN_STATUS = "NOT SPECIFIED";
 
 
 	}
@@ -389,7 +389,6 @@ public class MDNMessageProcessor {
 
 		}
 	}
-
 
 
 }
