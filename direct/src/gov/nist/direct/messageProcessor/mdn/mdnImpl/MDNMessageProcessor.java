@@ -137,6 +137,7 @@ public class MDNMessageProcessor {
 		if (!er.hasErrors())  MDN_STATUS = "VALID";
 
 		// Check MDN properties (Date received, Sender, compare to original Direct message)
+		// This is weird and not sure what it actually does.
 		checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
 		System.out.println("checkMdnMessageProperties");
 
@@ -199,8 +200,26 @@ public class MDNMessageProcessor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-        MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageID);
+		
+		// Get original Direct message validation status as described in MDN
+		String origDirectMsgValidationStatus = "";
+		try {
+			if (m.getDisposition() != null){
+				String disp = m.getDisposition();
+				if (disp.contains("processed")){ // we hope this is code for "a valid Direct message"
+					origDirectMsgValidationStatus = "VALID";
+				} else {
+					origDirectMsgValidationStatus = "NOT VALID";
+				}
+			} else { // Disposition is null - shouldn't happen anyway
+				origDirectMsgValidationStatus = "NOT SPECIFIED";
+			}
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageID);
 
 		
 	}

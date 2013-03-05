@@ -28,8 +28,9 @@ public class MessageStatusView implements DirectStatusTab.IMessageStatusView {
 	static final int MDNIDCOL = 3;
 	static final int MDNRECEIVEDDATECOL = 4;
 	static final int MDNEXPIRATIONDATECOL = 5;
-
-	static final int STATUSCOL = 6;
+	static final int MDNSTATUSCOL = 6;
+	
+	static final int ORIGINALDIRECTMSGSTATUSCOL = 7;
 		
 	@Override
 	public void build(List<MessageLog> statuss) {
@@ -42,7 +43,8 @@ public class MessageStatusView implements DirectStatusTab.IMessageStatusView {
 		grid = new FlexTable();
 		topPanel.add(grid);
 		grid.getFlexCellFormatter().setColSpan(0, 0, 3);
-		grid.getFlexCellFormatter().setColSpan(0, 1, 3);
+		grid.getFlexCellFormatter().setColSpan(0, 1, 4);
+		grid.getFlexCellFormatter().setColSpan(0, 2, 1);
 		grid.setBorderWidth(3);
 		grid.setCellSpacing(0);
 		grid.setCellPadding(5);
@@ -55,9 +57,12 @@ public class MessageStatusView implements DirectStatusTab.IMessageStatusView {
 		grid.setHTML(1,MDNIDCOL, HtmlMarkup.bold("Message ID"));
 		grid.setHTML(1,MDNRECEIVEDDATECOL, HtmlMarkup.bold("Time Received"));
 		grid.setHTML(1,MDNEXPIRATIONDATECOL, HtmlMarkup.bold("Expiration time"));
+		grid.setHTML(1,MDNSTATUSCOL, HtmlMarkup.bold("MDN Validation Status"));
 		
-		grid.setHTML(0, 2, HtmlMarkup.bold("Status"));
-		grid.setHTML(1,STATUSCOL, HtmlMarkup.bold(" "));
+		grid.setHTML(0, 2, HtmlMarkup.bold("Original Direct Msg status"));
+		grid.setHTML(1,ORIGINALDIRECTMSGSTATUSCOL, HtmlMarkup.bold(" "));
+		
+		
 	}
 
 
@@ -72,9 +77,9 @@ public class MessageStatusView implements DirectStatusTab.IMessageStatusView {
 		grid.setText(row, MDNIDCOL, status.mdnMessageID);
 		grid.setText(row, MDNRECEIVEDDATECOL, status.mdnReceivedDate);
 		grid.setText(row, MDNEXPIRATIONDATECOL, status.expirationDate);
-
+		grid.setText(row, MDNSTATUSCOL, status.status);
 		
-		grid.setText(row, STATUSCOL, status.status);
+		grid.setText(row, ORIGINALDIRECTMSGSTATUSCOL, status.origDirectMsgStatus);
 		
 		row++;
 	}	

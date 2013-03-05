@@ -55,13 +55,11 @@ public class MessageDispatchUtils {
 	 * false if it is not.
 	 * @throws MessagingException 
 	 */
-	public static boolean isMDN (ErrorRecorder er, byte[] msg, byte[] directCertificate, String password) throws MessagingException{
-		WrappedMessageProcessor processor = new WrappedMessageProcessor();
-		processor.messageParser(er, msg , directCertificate, password);
-		if (processor.getIsMDN()) {
+	public static boolean isMDN (ErrorRecorder er, MimeMessage msg) throws MessagingException{
+		if (msg.getContentType().contains("disposition-notification")){
 			return true;
 		}
-				return false;	
+		return false;
 	}
 		
 	
