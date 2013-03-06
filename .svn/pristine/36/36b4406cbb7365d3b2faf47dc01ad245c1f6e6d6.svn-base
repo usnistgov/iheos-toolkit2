@@ -1,9 +1,0 @@
-<body>
-<h2>Code shared between backend and GWT frontend</h2>
-
-<p>Code in this directory is used by both the server and the GWT-based
-graphical front end.  It must be isolated in its own directory 
-because declarations to the GWT cross-compiler are based on
-directories.  The file common2/common2.gwt.xml is the config
-file that guides the cross-compiler.
-</body>

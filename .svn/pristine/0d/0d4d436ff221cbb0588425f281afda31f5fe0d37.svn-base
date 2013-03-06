@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="compile" name="common-datatypes">
-
-	<import file="../build-common.xml"/>
-
-
-</project>
