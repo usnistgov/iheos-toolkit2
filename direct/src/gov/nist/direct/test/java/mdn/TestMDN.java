@@ -14,7 +14,7 @@ Authors: William Majurski
 		 Diane Azais
 		 Julien Perugini
 		 Antoine Gerardin
-		
+
  */
 
 
@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 
+import gov.nist.direct.directGenerator.impl.UnwrappedMessageGenerator;
 import gov.nist.direct.mdn.generate.MDNGenerator;
 import gov.nist.direct.messageProcessor.mdn.mdnImpl.MDNMessageProcessor;
 import gov.nist.direct.test.java.messageProcessor.impl.UnwrappedMessageValidationTest;
@@ -36,6 +37,7 @@ import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 
 import org.apache.mailet.base.mail.MimeMultipartReport;
 import org.junit.Test;
@@ -43,10 +45,10 @@ import org.junit.Test;
 import com.google.gwt.dev.jjs.ast.JField.Disposition;
 
 public class TestMDN {
-	
+
 	ErrorRecorder er = new TextErrorRecorder();
-	
-		
+
+
 	/**
 	 * Checks that an MDN acknowledgment can be successfully generated and is detected as being an MDN.
 	 */
@@ -62,26 +64,19 @@ public class TestMDN {
 		signCert = Utils.getByteFile(signingCert);
 		encCert = Utils.getByteFile(encryptionCert);
 
-		MimeMultipartReport mdn = null;
-//		mdn = MDNGenerator.createSignedAndEncrypted("ack", "starugh-stateline.com", "NHIN Direct Security Agent", null,
-//				"externUser1@starugh-stateline.com", "<9501051053.aa04167@IETF.CNR I.Reston.VA.US>", 
-//				Disposition.COMPILE_TIME_CONSTANT, "test@test.com", "test2@test.com", "Test MDN", encCert, signCert, password);
-		
-		try {
-			mdn = MDNGenerator.create("test mdn - this is human readable", "starugh-stateline.com", "NHIN Direct Security Agent", "test@test.com", "externUser1@starugh-stateline.com", "<9501051053.aa04167@IETF.CNR I.Reston.VA.US>", Disposition.COMPILE_TIME_CONSTANT);
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-				
-		Properties props = System.getProperties();
-		Session session = Session.getDefaultInstance(props, null);
-		Utils.printToFile(mdn, "MDNFile.txt");
+		String unwrappedMDNMessage = "direct/src/gov/nist/direct/test/resources/mdnMessages/RIexamples/MDNMessage.txt";
+		String mdn = Utils.readFile(unwrappedMDNMessage);
+		byte[] mdnMessage = mdn.getBytes();
+
+		//Properties props = System.getProperties();
+		//Session session = Session.getDefaultInstance(props, null);
+		//Utils.printToFile(mdn, "MDNFile.txt"); -- ok
 
 		MDNMessageProcessor processor = new MDNMessageProcessor();
 		ErrorRecorder er = new GwtErrorRecorder();
-		byte[] mdnMessage = Utils.getByteFile("MDNFile.txt");
+
+		//byte[] mdnMessage  = mdn.toString().getBytes();
+		//byte[] mdnMessage = Utils.getByteFile("MDNFile.txt");
 		processor.processMDNMessage(er, mdnMessage, signCert, password, new ValidationContext());
 
 		System.out.println(er);
@@ -89,42 +84,42 @@ public class TestMDN {
 		assertTrue(!er.hasErrors());
 	}
 
-	
-		
 
-	
+
+
+
 	/**
 	 * Checks that an MDN message know to be correct is successfully validated. No encryption!
 	 */
-//	@Test
-//	public void testMDNValidation(){
-//			UnwrappedMessageValidationTest testClass = new UnwrappedMessageValidationTest();
-//			 MimeMessage mdn = testClass.createTestMDN();
-//			System.out.println("TEST: created MDN message.");
-//			
-//			
-//			
-//			MDNMessageProcessor processor = new MDNMessageProcessor();
-//			ErrorRecorder er = new GwtErrorRecorder();
-//			processor.processMDNMessage(er, mdn, mdn, "", new ValidationContext());
-//	//
-////			System.out.println(er);
-//	//
-////			assertTrue(!er.hasErrors());
-//		
-//	}
-//	
-	
+	//	@Test
+	//	public void testMDNValidation(){
+	//			UnwrappedMessageValidationTest testClass = new UnwrappedMessageValidationTest();
+	//			 MimeMessage mdn = testClass.createTestMDN();
+	//			System.out.println("TEST: created MDN message.");
+	//			
+	//			
+	//			
+	//			MDNMessageProcessor processor = new MDNMessageProcessor();
+	//			ErrorRecorder er = new GwtErrorRecorder();
+	//			processor.processMDNMessage(er, mdn, mdn, "", new ValidationContext());
+	//	//
+	////			System.out.println(er);
+	//	//
+	////			assertTrue(!er.hasErrors());
+	//		
+	//	}
+	//	
+
 	/**
 	 * Checks that an MDN acknowledgment can be successfully generated and validated.
 	 */
 	@Test
 	public void testMDNGenerationValidationCycle(){
-		
+
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 }

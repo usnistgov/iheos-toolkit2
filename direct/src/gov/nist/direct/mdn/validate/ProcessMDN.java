@@ -14,8 +14,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.mailet.base.mail.MimeMultipartReport;
 
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
-import gov.nist.direct.mdn.MDNValidator;
-import gov.nist.direct.mdn.impl.MDNValidatorImpl;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
 /**

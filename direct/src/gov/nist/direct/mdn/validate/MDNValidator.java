@@ -14,7 +14,7 @@ Authors: Frederic de Vaulx
 		Julien Perugini
  */
 
-package gov.nist.direct.mdn;
+package gov.nist.direct.mdn.validate;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 

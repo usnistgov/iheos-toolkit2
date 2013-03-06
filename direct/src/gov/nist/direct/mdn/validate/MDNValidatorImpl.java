@@ -1,10 +1,9 @@
-package gov.nist.direct.mdn.impl;
+package gov.nist.direct.mdn.validate;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import gov.nist.direct.mdn.MDNUtils;
-import gov.nist.direct.mdn.MDNValidator;
 import gov.nist.direct.utils.ValidationUtils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;

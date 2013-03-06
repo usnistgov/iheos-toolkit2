@@ -23,8 +23,8 @@ package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.MessageLogManager;
 import gov.nist.direct.logger.writer.MessageIDLogger;
-import gov.nist.direct.mdn.MDNValidator;
-import gov.nist.direct.mdn.impl.MDNValidatorImpl;
+import gov.nist.direct.mdn.validate.MDNValidator;
+import gov.nist.direct.mdn.validate.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
@@ -39,8 +39,12 @@ import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -94,7 +98,7 @@ public class MDNMessageProcessor {
 	private static String STATUS_NOT_SPECIFIED = "Status not specified";
 
 	
-
+	private String decryptedMdn = ""; // contains the full decrypted message
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
 	private String password;
@@ -110,7 +114,6 @@ public class MDNMessageProcessor {
 	private String MDN_STATUS;
 
 	public MDNMessageProcessor(){
-
 		// New ErrorRecorder for the MDN validation summary
 		mainEr = new GwtErrorRecorder();
 		ls = LogPathsSingleton.getLogStructureSingleton();
@@ -142,44 +145,43 @@ public class MDNMessageProcessor {
 		MDNValidator mdnv = new MDNValidatorImpl();
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
 
+		
 		// Check validation status
 		MDN_STATUS = STATUS_NOT_VALID;
 		if (!er.hasErrors())  MDN_STATUS = STATUS_VALID;
+		System.out.println("mdn validation status: " + MDN_STATUS);
+		
+		// Logs MDN message
+		System.out.println("decryptedMdn " + decryptedMdn);
+	     MimeMessage m = MimeMessageParser.parseMessage(mainEr, decryptedMdn.getBytes());
+//	     try {
+//			m.writeTo(new FileOutputStream("loggedmessagemdn.txt"));
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (MessagingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		logMDNMessage(m);
 
-		// Check MDN properties (Date received, Sender, compare to original Direct message)
-		// This is weird and not sure what it actually does.
-		checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
-		System.out.println("checkMdnMessageProperties");
+        // Set the part number to 1
+        partNumber = 1;
 
+        // Parse the message to see if it is wrapped
+        wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
 
-		// need to delete regularly outdated message logs
+        logger.debug("ValidationContext is " + vc.toString());
 
-
+        // Parses message - what does it do? needed?
+       // MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+       
 
 	}
 
-
-
-
-	/**
-	 * Checks MDN message properties and coherence compared to the initial Direct Message
-	 * (Date received, Sender, compare to original Direct message)
-	 */
-        public void checkMdnMessageProperties(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc){
-
-
-            // Set the part number to 1
-            partNumber = 1;
-
-            // Parse the message to see if it is wrapped
-            wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
-
-            logger.debug("ValidationContext is " + vc.toString());
-
-            MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
-
-            logMDNMessage(m);
-	}
 
 
 
@@ -258,9 +260,12 @@ public class MDNMessageProcessor {
 		 * fetching the actual content data until we need it.
 		 */
 		if (p.isMimeType("text/plain")) {
-			//System.out.println("Text/plain");
+			concat(p.toString());
+			
 
 		} else if (p.isMimeType("text/xml")) {
+			//concat(p.toString());
+
 			//System.out.println("Text/xml");
 
 		} else if (p.isMimeType("message/rfc822")) {
@@ -272,7 +277,7 @@ public class MDNMessageProcessor {
 		} else if (p.isMimeType("application/pkcs7-mime")) {
 			//System.out.println("Encrypted message");
 			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
-
+			
 		} else if (p.isMimeType("application/x-pkcs7-signature")) {
 			//System.out.println("Signature");
 
@@ -286,13 +291,18 @@ public class MDNMessageProcessor {
 			// Validate MDN
 			ProcessMDN mdnv = new ProcessMDN();
 			mdnv.validate(er, p);
+			//concat(p.toString());
+
+			
 
 		} else if (p.isMimeType("application/octet-stream")) {
 			//System.out.println("CCDA Content");
 
 		} else if (p.isMimeType("multipart/signed")) {
+			//System.out.println("multipart");
 
 			SMIMESigned s = new SMIMESigned((MimeMultipart)p.getContent());
+			//concat(s.toString());
 
 			//
 			// verify signature
@@ -369,7 +379,11 @@ public class MDNMessageProcessor {
 
 		this.encrypted = true;
 
-		return res;
+		// Create the decrypted MDN by logging successive body parts
+			concat(res.toString());
+			//System.out.println("Could not log MimeMultipart body parts once the message was decrypted.");
+		
+			return res;
 	}
 
 	/**
@@ -409,5 +423,21 @@ public class MDNMessageProcessor {
 		}
 	}
 
+	
+	/**
+	 * concatenes strings from message Parts once decrypted
+	 * @param str
+	 * @return
+	 */
+	String concat(String str){
+		if (str != null){
+			return decryptedMdn.concat(str);
+		} else {
+			System.out.println("Some of the message parts were empty.");
+			return "";
+		}
+	}
+
+	
 
 }

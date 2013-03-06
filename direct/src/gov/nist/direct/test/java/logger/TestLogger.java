@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.UserLog;
-import gov.nist.direct.mdn.MDNValidator;
-import gov.nist.direct.mdn.impl.MDNValidatorImpl;
+import gov.nist.direct.mdn.validate.MDNValidator;
+import gov.nist.direct.mdn.validate.MDNValidatorImpl;
 import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
 import gov.nist.direct.messageProcessor.mdn.mdnImpl.MDNMessageProcessor;
 import gov.nist.direct.test.java.messageProcessor.impl.UnwrappedMessageValidationTest;
@@ -37,7 +37,7 @@ public class TestLogger {
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		
 		UnwrappedMessageValidationTest testClass = new UnwrappedMessageValidationTest();
-		 msg = testClass.createTestMimeMessage();
+		 msg = testClass.createTestDirectMessage();
 		System.out.println("TEST: created DIRECT message.");
 		
 		DirectMimeMessageProcessor mp = new DirectMimeMessageProcessor();
@@ -119,7 +119,7 @@ public class TestLogger {
 	}
 	
 	@Test
-	public void testReadLog() {
+	public void testReadDirectLog() {
 //	List<MessageLog> readLog = new UserLog().readUserLogs(username);
 //		
 //		// test display
@@ -127,7 +127,7 @@ public class TestLogger {
 //		System.out.println(readLog.toString());
 		
 		UnwrappedMessageValidationTest testClass = new UnwrappedMessageValidationTest();
-		 msg = testClass.createTestMimeMessage();
+		 msg = testClass.createTestDirectMessage();
 		System.out.println("TEST: created DIRECT message.");
 		String username = getUsername(msg);
 		
@@ -143,6 +143,32 @@ public class TestLogger {
 		}
 		assertFalse(list.isEmpty());
 	}
+	
+	
+	@Test
+	public void testReadMdnLog() {
+		
+		UnwrappedMessageValidationTest testClass = new UnwrappedMessageValidationTest();
+		 msg = testClass.createTestMDN();
+		System.out.println("TEST: created MDN message.");
+		String username = getUsername(msg);
+		
+		System.out.println("TEST: reading MDN logs.");
+		UserLog ul = new UserLog();
+		List<MessageLog> list = ul.readUserLogs(username);
+		
+		System.out.println("TEST: Writing log reader results");
+		// display on console
+		for (int i=0; i<list.size();i++){
+		//	list.get(i).toString(); - doesnt work
+			System.out.println(list.get(i).toString());
+		}
+		assertFalse(list.isEmpty());
+	}
+	
+	
+	//------ Service functions -------
+	
 	
 	private String getUsername(MimeMessage msg){
 		Address[] addr = null;
