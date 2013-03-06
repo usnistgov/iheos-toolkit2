@@ -595,9 +595,10 @@ class doComms implements Runnable {
 	}
 
 	String header(List<String> headers, String name) {
-		String prefix = name + ":";
+		String prefix = (name + ":").toLowerCase();
 		for (String h : headers) {
-			if (h.startsWith(prefix))
+			String hl = h.toLowerCase();
+			if (hl.startsWith(prefix))
 				return h;
 		}
 		return "";
