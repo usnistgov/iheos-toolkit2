@@ -63,7 +63,7 @@ public class MessageProcessor implements MessageProcessorInterface {
 		// determine message type
 		// ------ MDN -------
 		try {
-			if (MessageDispatchUtils.isMDN(er, mm)){
+			if (MessageDispatchUtils.isMDN(er, inputDirectMessage, _directCertificate, _password)){
 				messageType = mdnMessageType;
 
 				// Display Message type
