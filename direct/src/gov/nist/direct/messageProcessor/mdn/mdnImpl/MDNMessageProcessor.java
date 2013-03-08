@@ -22,7 +22,6 @@ package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.MessageLogManager;
-import gov.nist.direct.logger.writer.MessageIDLogger;
 import gov.nist.direct.mdn.validate.MDNValidator;
 import gov.nist.direct.mdn.validate.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -32,29 +31,22 @@ import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.messageProcessor.direct.directImpl.WrappedMessageProcessor;
 import gov.nist.direct.utils.ParseUtils;
 import gov.nist.direct.utils.Utils;
-import gov.nist.direct.utils.ValidationSummary;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -91,7 +83,6 @@ public class MDNMessageProcessor {
 	static Logger logger = Logger.getLogger(DirectMimeMessageProcessor.class);
 	
 	private static String NO_ORIGINAL_MSG_ID = "No original msg-id";
-	private static String NO_USERNAME = "No username";
 	private static String NO_MDN_MESSAGE_ID = "No MDN message-id";
 	private static String STATUS_VALID = "Valid";
 	private static String STATUS_NOT_VALID = "Not valid";
@@ -99,13 +90,14 @@ public class MDNMessageProcessor {
 
 	
 	private String decryptedMdn = ""; // contains the full decrypted message
+	private String dispositionField = "";
+	private String msgID = "";
+	private Date mdnDate = null;
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
-	private String password;
+	private String password;;
 	ValidationContext vc = new ValidationContext();
-	private ValidationSummary validationSummary = new ValidationSummary();
 	WrappedMessageProcessor wrappedParser = new WrappedMessageProcessor();
-	private int partNumber;
 	ErrorRecorder mainEr;
 	boolean encrypted;
 	boolean signed;
@@ -137,11 +129,14 @@ public class MDNMessageProcessor {
 
 		try {
 			this.processPart(er, mm);
+			msgID = mm.getMessageID();
+			mdnDate = mm.getSentDate();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			er.err("MDN Processing", "Error Processing MDN", "", "", "MDN Processing");
 			e.printStackTrace();
 		}
-
+		
+		// Validate MDN Signature and Encryption
 		MDNValidator mdnv = new MDNValidatorImpl();
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
 
@@ -153,9 +148,6 @@ public class MDNMessageProcessor {
 		
 		// Logs MDN message - still ENCRYPTED
 		logMDNMessage(mm); // logMDNMessage(mm, disposition);
-
-        // Set the part number to 1
-        partNumber = 1;
 
         // Parse the message to see if it is wrapped
         wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
@@ -275,11 +267,9 @@ public class MDNMessageProcessor {
 
 		}  else if (p.isMimeType("message/disposition-notification")) {
 			// Validate MDN
-			ProcessMDN mdnv = new ProcessMDN();
-			mdnv.validate(er, p);
-			//concat(p.toString());
-
-			
+			ProcessMDN mdnv = new ProcessMDN(p);
+			mdnv.validate(er);
+			dispositionField = mdnv.getDispositionField();
 
 		} else if (p.isMimeType("application/octet-stream")) {
 			//System.out.println("CCDA Content");
@@ -397,9 +387,8 @@ public class MDNMessageProcessor {
 			Collection certCollection = certs.getMatches(signer.getSID());
 
 			Iterator certIt = certCollection.iterator();
-			X509Certificate cert = null;
 			try {
-				cert = new JcaX509CertificateConverter().setProvider(BC).getCertificate((X509CertificateHolder)certIt.next());
+				new JcaX509CertificateConverter().setProvider(BC).getCertificate((X509CertificateHolder)certIt.next());
 			} catch (Exception e) {
 				break;
 			}
