@@ -972,7 +972,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		String messageID = Utils.trimEmailAddress(_messageID);
+		String messageID = Utils.rawFromHeader(_messageID);
 
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();
