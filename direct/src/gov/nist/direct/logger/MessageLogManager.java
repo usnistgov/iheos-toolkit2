@@ -81,9 +81,7 @@ public class MessageLogManager {
 	 * @param messageId
 	 */
 	public static void logMDN(MimeMessage m, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String _origMessageId, Date receivedDate, String _mdnMessageId){
-		// Get trimmed message-id
-				String mdnMessageId = Utils.trim(_mdnMessageId);
-		
+	
 		
 		// find the username that matches the original message ID
 			String origMessageId = Utils.trim(_origMessageId);
@@ -94,6 +92,9 @@ public class MessageLogManager {
 		}
 		System.out.println("mdn username :" + username);
 		
+		
+		// Get trimmed message-id
+		String mdnMessageId = Utils.trim(_mdnMessageId);
 		
 		// Log MDN message-ID
 		MessageIDLogger idl = new MessageIDLogger();

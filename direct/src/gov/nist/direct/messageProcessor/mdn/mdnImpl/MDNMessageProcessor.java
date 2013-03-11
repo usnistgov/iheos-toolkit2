@@ -175,8 +175,7 @@ public class MDNMessageProcessor {
         String mdnMessageId = "";
 		try {
 			if (m.getMessageID() == null || m.getMessageID().equals("")){
-				String _mdnMessageId = m.getMessageID();
-				mdnMessageId = Utils.trim(_mdnMessageId);
+				mdnMessageId = m.getMessageID();
 			} else {
 				mdnMessageId = NO_MDN_MESSAGE_ID;
 			}
