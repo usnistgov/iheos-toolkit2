@@ -19,14 +19,11 @@ Authors: William Majurski
 
 package gov.nist.direct.messageProcessor.direct.directImpl;
 
-import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.directValidator.MessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.logger.MessageLogManager;
-import gov.nist.direct.logger.UserLog;
 import gov.nist.direct.messageProcessor.direct.DirectMessageProcessorInterface;
-import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationSummary;
 import gov.nist.direct.utils.ValidationSummary.Status;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
@@ -59,7 +56,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
@@ -68,7 +64,6 @@ import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -144,8 +139,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		logger.debug("ValidationContext is " + vc.toString());
 
-		MimeMessage mm;
-		mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 
 
 		// Log Direct Message
@@ -954,25 +948,22 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		// Get sender name (username)
 		String username = null;
-		String _username = null;
 		try {
 			Address[] addr = ((MimeMessage) p).getFrom();
-			_username = (addr[0]).toString();
-			username = Utils.rawFromHeader(_username);
+			username = (addr[0]).toString();
 		} catch (MessagingException e3) {
 			// TODO Auto-generated catch block
 			e3.printStackTrace();
 		}
 
 		// Get MDN message ID 
-		String _messageID = null;
+		String messageID = null;
 		try {
-			_messageID = ((MimeMessage) p).getMessageID();
+			messageID = ((MimeMessage) p).getMessageID();
 		} catch (MessagingException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		String messageID = Utils.trimEmailAddress(_messageID);
 
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();

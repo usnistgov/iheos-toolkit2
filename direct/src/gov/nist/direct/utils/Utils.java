@@ -272,20 +272,6 @@ public static String readFile(String path){
 byte[] data = getMessage(path);
 return data.toString();
 }
-
-/**
- * Removes lower than and upper than (< and >) characters that encapsulate an email address
- * @return
- */
-public static String trimEmailAddress(String string){
-	String str = string.trim();
-	String trimmedStr = null;
-if(str.contains("<")) {
-	trimmedStr = str.substring(1, str.lastIndexOf('>'));
-	return trimmedStr;
-}
-return str;
-}
 	
 
 	// Getters and Setters
@@ -301,7 +287,7 @@ return str;
 	 * @param from
 	 * @return
 	 */
-	public static String rawFromHeader(String from) {
+	public static String trim(String from) {
 	if (from.indexOf('<') == -1)
 	return from;
 	int start = from.indexOf('<');

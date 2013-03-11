@@ -50,7 +50,7 @@ public class TestLogger {
 		try {
 			String username = getUsername(msg);
 			String _msgId = msg.getMessageID();
-			String msgId = Utils.rawFromHeader(_msgId);
+			String msgId = Utils.trim(_msgId);
 			logPath = ls.getDirectMessageLogPath(ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), username, msgId);
 			System.out.println("logPath" +logPath);
 			
@@ -179,7 +179,7 @@ public class TestLogger {
 			e.printStackTrace();
 		}
 		String _username = (addr[0]).toString();
-		 return Utils.rawFromHeader(_username);
+		 return Utils.trim(_username);
 		
 	}
 	
@@ -192,7 +192,7 @@ public class TestLogger {
 			e.printStackTrace();
 		}
 		String _username = (addr[0]).toString();
-		 return Utils.rawFromHeader(_username);
+		 return Utils.trim(_username);
 		
 	}
 

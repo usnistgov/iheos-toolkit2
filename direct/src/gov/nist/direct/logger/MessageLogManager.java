@@ -27,6 +27,7 @@ import gov.nist.direct.logger.writer.MessageIDLogger;
 import gov.nist.direct.logger.writer.MessageStatusLogger;
 import gov.nist.direct.logger.writer.TimeLogger;
 import gov.nist.direct.logger.writer.messageLoggerImpl.MDNLogger;
+import gov.nist.direct.utils.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -79,9 +80,13 @@ public class MessageLogManager {
 	 * Completes a Direct message log with matching MDN logs
 	 * @param messageId
 	 */
-	public static void logMDN(MimeMessage m, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId){
+	public static void logMDN(MimeMessage m, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String _origMessageId, Date receivedDate, String _mdnMessageId){
+		// Get trimmed message-id
+				String mdnMessageId = Utils.trim(_mdnMessageId);
+		
 		
 		// find the username that matches the original message ID
+			String origMessageId = Utils.trim(_origMessageId);
 		String username = "";
 		if (findUsername(origMessageId) != ""){
 			  username = findUsername(origMessageId);
@@ -168,7 +173,10 @@ public class MessageLogManager {
 	}
 
 
-	public static void logDirectMessage(String username, Date directMsgDateSent, String transactionType, String messageType, String messageId, MimeMessage directMessage, String label){
+	public static void logDirectMessage(String username, Date directMsgDateSent, String transactionType, String messageType, String _messageId, MimeMessage directMessage, String label){
+		// Get trimmed message-id
+		String messageId = Utils.trim(_messageId);
+		
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
 		try {

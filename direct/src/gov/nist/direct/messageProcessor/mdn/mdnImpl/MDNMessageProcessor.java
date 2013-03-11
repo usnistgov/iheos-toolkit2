@@ -175,7 +175,8 @@ public class MDNMessageProcessor {
         String mdnMessageId = "";
 		try {
 			if (m.getMessageID() == null || m.getMessageID().equals("")){
-				mdnMessageId = m.getMessageID();
+				String _mdnMessageId = m.getMessageID();
+				mdnMessageId = Utils.trim(_mdnMessageId);
 			} else {
 				mdnMessageId = NO_MDN_MESSAGE_ID;
 			}
@@ -196,7 +197,7 @@ public class MDNMessageProcessor {
         if (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) {
         	        origMessageID = NO_ORIGINAL_MSG_ID;
         		} else {
-        			origMessageID = Utils.rawFromHeader(_inResponseToMessageID);
+        			origMessageID = Utils.trim(_inResponseToMessageID);
         		}
         
 		

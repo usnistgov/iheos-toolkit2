@@ -84,7 +84,7 @@ public class ParseUtils {
 		try {
 			Address from = m.getFrom()[0];
 			String res = from.toString();
-			res = Utils.trimEmailAddress(res);
+			res = Utils.trim(res);
 			return res;
 		} catch (MessagingException e) {
 			e.printStackTrace();
