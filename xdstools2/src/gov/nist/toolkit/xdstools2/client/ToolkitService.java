@@ -85,12 +85,12 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> getSelectedMessage(String simFilename) throws NoServletSessionException;
 	List<Result> getSelectedMessageResponse(String simFilename) throws NoServletSessionException;
 	@Deprecated
-	String getClientIPAddress();
+	String getClientIPAddress() throws NoServletSessionException;
 	
 	List<String> getTransInstances(String simid, String actor, String trans)  throws Exception;
 	
 	List<Result> getLastMetadata();
-	String getLastFilename();
+	String getLastFilename() throws NoServletSessionException;
 	String getTimeAndDate();
 	
 	MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException;

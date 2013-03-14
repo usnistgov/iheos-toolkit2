@@ -129,7 +129,7 @@ public class QueryServiceManager extends CommonServiceManager {
 	}
 
 	public List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) {
-		logger.debug(session.id() + ": " + "findDocuments");
+		logger.debug(session.id() + ": " + "findDocuments pid=" + pid);
 		try {
 			return new FindDocuments(session).run(site, pid, onDemand);
 		} catch (XdsException e) {

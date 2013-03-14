@@ -404,7 +404,7 @@ public abstract class BasicTransaction  {
 		ValidationContext vc = getValidationContextFromTransactionName();
 		vc.isResponse = true;
 		try {
-			vc.setCodesFilename(this.s_ctx.getTransactionSettings().securityParams.getCodesFile().toString());
+			vc.setCodesFilename(s_ctx.getTransactionSettings().securityParams.getCodesFile().toString());
 		} catch (Exception e) {}
 		try {
 			rel = RegistryUtility.metadata_validator(MetadataParser.parseNonSubmission(registry_result), vc);

@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -347,7 +348,7 @@ ToolkitService {
 	}
 
 
-	public ServletContext servletContext() {
+	public ServletContext initFromServletContext() {
 		// this gets called from the initialization section of SimServlet
 		// for access to properties.  This code is not expected to work correct.
 		// Just don't throw exceptions that are not helpful
@@ -403,9 +404,11 @@ ToolkitService {
 		return s;
 	}
 	
-
-	public Session getSession() {
+	public Session getSession() throws NoServletSessionException {
 		HttpServletRequest request = this.getThreadLocalRequest();
+		HttpSession hsession = request.getSession();   // this call resets session timeout counter
+		if (hsession == null)
+			throw new NoServletSessionException("");
 		return getSession(request);
 	}
 		
@@ -422,7 +425,7 @@ ToolkitService {
 			s = (Session) hsession.getAttribute(sessionVarName);
 			if (s != null)
 				return s;
-			servletContext();
+			initFromServletContext();
 		}
 		
 		// Force short session timeout for testing
@@ -435,7 +438,7 @@ ToolkitService {
 		//******************************************
 		File warHome = null;
 		if (s == null) {
-			ServletContext sc = servletContext();
+			ServletContext sc = initFromServletContext();
 			warHome = Installation.installation().warHome();
 			if (sc != null && warHome == null) {
 				warHome = new File(sc.getRealPath("/"));
@@ -453,6 +456,7 @@ ToolkitService {
 					s.setSessionId(hsession.getId());
 					s.addSession();
 					hsession.setAttribute(sessionVarName, s);
+//					hsession.setMaxInactiveInterval(15);
 				} else
 					s.setSessionId("mysession");
 			}
@@ -476,7 +480,7 @@ ToolkitService {
 		return s;
 	}
 
-	public String getLastFilename() {
+	public String getLastFilename() throws NoServletSessionException {
 		return getSession().getlastUploadFilename();
 	}
 
@@ -485,7 +489,7 @@ ToolkitService {
 	}
 
 	@Deprecated
-	public String getClientIPAddress() {
+	public String getClientIPAddress() throws NoServletSessionException {
 		return getSession().ipAddr;
 	}
 
