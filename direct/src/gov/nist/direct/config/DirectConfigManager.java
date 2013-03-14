@@ -61,6 +61,7 @@ public class DirectConfigManager {
 	
 	public byte[] getSigningCert(SigningCertType type) {
 		File file = getSigningCertFile(type, ".p12");
+		logger.debug("Signing Cert filename is " + file.toString());
 		if (file == null)
 			return null;
 		try {
@@ -71,7 +72,7 @@ public class DirectConfigManager {
 	}
 
 	public String getSigningCertPassword(SigningCertType type) {
-		File file = getSigningCertFile(type, "password.txt");
+		File file = getSigningCertFile(type, "password.txt");	
 		if (file == null)
 			return null;
 		try {
