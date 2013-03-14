@@ -74,6 +74,7 @@ public class SendDirect extends CommonServiceManager {
 			if (signingCertName == null || signingCertName.equals("")) 
 				throw new Exception("No signing cert selected");
 			SigningCertType signingCertType = SigningCertType.valueOf(signingCertName);
+			logger.info("Signing cert type is " + signingCertType);
 			DirectConfigManager directConfig = new DirectConfigManager(Installation.installation().externalCache());
 			signingCert = directConfig.getSigningCert(signingCertType);
 			signingPassword = directConfig.getSigningCertPassword(signingCertType);
