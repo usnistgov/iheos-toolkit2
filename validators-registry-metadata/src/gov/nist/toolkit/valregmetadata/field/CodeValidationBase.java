@@ -12,6 +12,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdstools2.server.SessionListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +26,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMContainer;
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 public class CodeValidationBase {
 	Metadata m;
@@ -34,7 +36,8 @@ public class CodeValidationBase {
 	HashMap<String, String> ext_map;   // ext => mime
 	Exception startUpError = null;
 	ValidationContext vc = null;
-	
+	static Logger logger = Logger.getLogger(CodeValidationBase.class);
+
 	static String ADConfigError = "ITI TF-3: 4.1.10";
 
 	CodeValidationBase() {}
@@ -51,18 +54,25 @@ public class CodeValidationBase {
 	void loadCodes() throws XdsInternalException {
 		if (codes != null)
 			return;
-		System.out.println("Loading Codes");
+		logger.info("Loading Codes");
 		String fileCodesLocation = null;
 		
 		if (vc != null)
 			fileCodesLocation = vc.getCodesFilename();
-		if (fileCodesLocation == null)
-			fileCodesLocation = System.getenv("XDSCodesFile");
-		if (fileCodesLocation == null)
-			fileCodesLocation = System.getProperty("XDSCodesFile");
+
+		if (fileCodesLocation == null) {
+			logger.error("Cannot load codes: Validation Context missing codesFilename parameter");
+			throw new XdsInternalException("Validation Context: no Affinity Domain code system specified, cannot validate metadata");
+		}
+		logger.info("Codes loaded from " + fileCodesLocation);
 		
-		String localCodesLocation = "http://localhost:9080/xdsref/codes/codes.xml";
-		String globalCodesLocation = "http://ihexds.nist.gov:9080/xdsref/codes/codes.xml";
+//		if (fileCodesLocation == null)
+//			fileCodesLocation = System.getenv("XDSCodesFile");
+//		if (fileCodesLocation == null)
+//			fileCodesLocation = System.getProperty("XDSCodesFile");
+//		
+//		String localCodesLocation = "http://localhost:9080/xdsref/codes/codes.xml";
+//		String globalCodesLocation = "http://ihexds.nist.gov:9080/xdsref/codes/codes.xml";
 		
 		String codes_string = null;
 		String from = null;
@@ -76,28 +86,28 @@ public class CodeValidationBase {
 				throw new XdsInternalException("codes.xml file cannot be loaded from " + fileCodesLocation, e);
 			}
 		}
-		else {
-
-			try {
-				codes_string = HttpClient.httpGet(localCodesLocation);
-				from = localCodesLocation;
-			}
-			catch (Exception e1) {
-				System.out.println("Cannot contact localhost: " + ExceptionUtil.exception_details(e1));
-				try {
-					codes_string = HttpClient.httpGet(globalCodesLocation);
-					from = globalCodesLocation;
-				}
-				catch (Exception e) {
-					throw new XdsInternalException("CodeValidation: Unable to retrieve code configuration file " + globalCodesLocation +
-							"\n" + e.getMessage());
-				}
-			}
-		}
-		if (codes_string == null) 
-			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned NULL from " + from);
-		if (codes_string.equals("")) 
-			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned enpty from " + from);
+//		else {
+//
+//			try {
+//				codes_string = HttpClient.httpGet(localCodesLocation);
+//				from = localCodesLocation;
+//			}
+//			catch (Exception e1) {
+//				System.out.println("Cannot contact localhost: " + ExceptionUtil.exception_details(e1));
+//				try {
+//					codes_string = HttpClient.httpGet(globalCodesLocation);
+//					from = globalCodesLocation;
+//				}
+//				catch (Exception e) {
+//					throw new XdsInternalException("CodeValidation: Unable to retrieve code configuration file " + globalCodesLocation +
+//							"\n" + e.getMessage());
+//				}
+//			}
+//		}
+//		if (codes_string == null) 
+//			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned NULL from " + from);
+//		if (codes_string.equals("")) 
+//			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned enpty from " + from);
 
 		codes = Util.parse_xml(codes_string);
 		if (codes == null)
@@ -106,7 +116,7 @@ public class CodeValidationBase {
 		assigning_authorities = new ArrayList<String>();
 		for (OMElement aa_ele : MetadataSupport.childrenWithLocalName(codes, "AssigningAuthority")) 
 		{
-			this.assigning_authorities.add(aa_ele.getAttributeValue(MetadataSupport.id_qname));
+			assigning_authorities.add(aa_ele.getAttributeValue(MetadataSupport.id_qname));
 		}
 
 		build_mime_map();
