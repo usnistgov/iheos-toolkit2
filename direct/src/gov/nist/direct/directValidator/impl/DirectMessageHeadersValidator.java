@@ -41,6 +41,7 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 
 	// DTS 196, All Headers, Required
 	public void validateAllHeaders(ErrorRecorder er, String[] header, String[] headerContent, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6;http://tools.ietf.org/html/rfc5322#section-3.6;RFC 5321: Section 2.3.1;http://tools.ietf.org/html/rfc5321.html#section-2.3.1";
 		boolean isAscii = true;
 		for(int i=0;i<header.length;i++) {
 			if(!ValidationUtils.isAscii(header[i]) || !ValidationUtils.isAscii(headerContent[i])) {
@@ -48,26 +49,27 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			}
 		}
 		if(isAscii) {
-			er.detail("     Success:  DTS 196 - All headers are valid");
+			er.success("196", "All Headers", "", "Must be ASCII encoding" , rfc, "Success");
 		} else if(!isAscii && wrapped) {
-			er.err("196", "All headers check is invalid.", "", "DTS 196", "");
+			er.error("196", "All Headers", "Some headers are not ASCII encoded", "Must be ASCII encoding", rfc, "Error");
 		} else {
-			er.warning("196", "All headers check is invalid.", "", "DTS 196");			
+			er.warning("196", "All headers", "Some headers are not ASCII encoded", "Must be ASCII encoding", rfc, "Warning");
 		}
 		
 	}
 	
 	// DTS 103-105, Return Path, Conditional
 	public void validateReturnPath(ErrorRecorder er, String returnPath, boolean wrapped) {
+		String rfc = "RFC 5321: Section 4.4;http://tools.ietf.org/html/rfc5321.html#section-4.4;RFC 5322: Section 3.6.7;http://tools.ietf.org/html/rfc5322#section-3.6.7";
 		if(returnPath.equals("")) {
-			er.warning("103-105", "DTS 103-105 - Return Path field is not present", "", "");
+			er.warning("103-105", "Return Path", "Not Present", "Should be present (addr-spec)", "RFC 5321: Section 4.4 - RFC 5322: Section 3.6.7", "Warning");
 			return;
 		}
 		
 		if(ValidationUtils.validateAddrSpec(returnPath)) {
-			er.detail("     Success:  DTS 103-105 - Return Path field is valid");
+			er.success("103-105", "Return Path", returnPath, "addr-spec", rfc, "Success");
 		} else {
-			er.err("103-105", "Return Path field is invalid.", "", "DTS 103-105", "");
+			er.error("103-105", "Return Path", returnPath, "addr-spec", rfc, "Error");
 		}
 		
 	}
@@ -131,10 +133,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			}
 		}
 		
+		String rfc = "RFC 5321: Section 4.4;http://tools.ietf.org/html/rfc5321.html#section-4.4;RFC 5322: Section 3.3;http://tools.ietf.org/html/rfc5322#section-3.3";
 		if(checkFrom && checkBy && checkFor && checkDate) {
-			er.detail("     Success:  DTS 104-106 - Received field is valid");
+			er.success("104-106", "Received", received, "", rfc, "Success");
 		} else {
-			er.warning("104-106", "Received field is invalid.", "", "DTS 104-106");
+			er.warning("104-106", "Received", received, "", rfc, "Error");
 		}
 		
 	}
@@ -270,13 +273,14 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 
 	// DTS 115, From, Required
 	public void validateFrom(ErrorRecorder er, String from, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.2;http://tools.ietf.org/html/rfc5322#section-3.6.2";
 		if(from.equals("") && !wrapped) {
-			er.warning("115", "From field is not present", "", "DTS 115");
+			er.warning("115", "From", "", "mailbox-list", rfc, "Warning");
 		} else {
 			if (ValidationUtils.validateEmail(from)){
-				er.detail("     Success:  DTS 115 - From field is valid");
+				er.success("115", "From", from, "mailbox-list", rfc, "Success");
 			} else {
-				er.err("115", "From field is invalid.", "", "DTS 115", "");
+				er.error("115", "From", from, "mailbox-list", rfc, "Error");
 			}
 		}
 		

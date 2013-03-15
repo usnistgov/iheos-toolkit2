@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -1050,27 +1051,34 @@ public class MessageValidatorTab extends TabbedWindow {
 		public void addCell(String msg, int col) {
 			HTML main = new HTML();
 			main.setHTML(msg);
+			resultsTable.setCellPadding(2);
+			//resultsTable.setBorderWidth(2);
 			resultsTable.setWidget(row, col, main);
+			//resultsTable.getCellFormatter().setHorizontalAlignment(row, col, HasHorizontalAlignment.ALIGN_CENTER);
 		}
 
 		public void hr() {
-			for (int i=0; i<3; i++) {
+			for (int i=0; i<6; i++) {
 				addCell("<hr/>", i);
 			}
 			row++;
 		}
 
 		public void clearResults() {
-			resultsTable.clear();
+			resultsTable.removeAllRows();
 			row=0;
+		}
+		
+		public void setColSpan(int col, int colSpan) {
+			resultsTable.getFlexCellFormatter().setColSpan(row, col, colSpan);
 		}
 
 		public void setDetail(String detail) {
-			addCell(detail, 0);
+			addCell(detail, 2);
 		}
 
 		public void setReference(String ref) {
-			addCell(ref, 2);
+			addCell(ref, 3);
 		}
 
 		public void setStatus(String status) {
@@ -1083,6 +1091,14 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		public String blue(String msg) {
 			return "<font color=\"#0000FF\">" + msg  + "</font>";
+		}
+		
+		public String green(String msg) {
+			return "<font color=\"#66CD00\">" + msg  + "</font>";
+		}
+
+		public String purple(String msg) {
+			return "<font color=\"#551A8B\">" + msg  + "</font>";
 		}
 
 		public String bold(String msg) {
@@ -1103,12 +1119,40 @@ public class MessageValidatorTab extends TabbedWindow {
 			return "<h3>" + msg + "</h3>";
 		}
 
+		@Override
+		public String htm_link(String msg) {
+			String res = "";
+			String[] msgSplit = msg.split(";");
+			for(int i=0 ; i < msgSplit.length ; i=i+2) {
+				res += "<a href=\"" + msgSplit[i+1] + "\" target=\"_blank\">"+ msgSplit[i] + "</a><br>";
+			}
+			if(res.equals("")) {
+				res = msg;
+			}
+			return res;
+		}
+
 		public void incRow() {
 			row++;
 		}
 
 		public int getRow() {
 			return row;
+		}
+
+		@Override
+		public void setName(String name) {
+			addCell(name, 0);
+		}
+
+		@Override
+		public void setExpected(String expected) {
+			addCell(expected, 4);
+		}
+
+		@Override
+		public void setRFC(String rfc) {
+			addCell(rfc, 5);
 		}
 
 	}

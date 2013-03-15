@@ -261,6 +261,80 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		return errorRecorderBuilder;
 	}
 
+	@Override
+	public void success(String dts, String name, String found, String expected, String RFC, String status) {
+		tagLastInfo2();
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		ei.level = ValidatorErrorItem.ReportingLevel.D_SUCCESS;
+		ei.dts = dts;
+		ei.name = name;
+		ei.found = found;
+		ei.expected = expected;
+		ei.rfc = RFC;
+		ei.status = status;
+		errMsgs.add(ei);
+	}
+
+	@Override
+	public void error(String dts, String name, String found, String expected,String RFC, String status) {
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		ei.level = ValidatorErrorItem.ReportingLevel.D_ERROR;
+		ei.dts = dts;
+		ei.name = name;
+		ei.found = found;
+		ei.expected = expected;
+		ei.rfc = RFC;
+		ei.status = status;
+		ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
+		errMsgs.add(ei);
+		lastErrCount++;
+		for (int i=errMsgs.size()-1; i>0; i--) {
+			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
+				break;
+			if (ei.level == ValidatorErrorItem.ReportingLevel.CHALLENGE) {
+				ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
+			}
+		}
+		
+	}
+
+	@Override
+	public void warning(String dts, String name, String found, String expected, String RFC, String status) {
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		ei.level = ValidatorErrorItem.ReportingLevel.D_WARNING;
+		ei.dts = dts;
+		ei.name = name;
+		ei.found = found;
+		ei.expected = expected;
+		ei.rfc = RFC;
+		ei.status = status;
+		ei.completion = ValidatorErrorItem.ReportingCompletionType.WARNING;
+		errMsgs.add(ei);
+		lastErrCount++;
+		for (int i=errMsgs.size()-1; i>0; i--) {
+			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
+				break;
+			if (ei.level == ValidatorErrorItem.ReportingLevel.CHALLENGE) {
+				ei.completion = ValidatorErrorItem.ReportingCompletionType.WARNING;
+			}
+		}
+		
+	}
+	
+	@Override
+	public void info(String dts, String name, String found, String expected, String RFC, String status) {
+		tagLastInfo2();
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		ei.level = ValidatorErrorItem.ReportingLevel.D_INFO;
+		ei.dts = dts;
+		ei.name = name;
+		ei.found = found;
+		ei.expected = expected;
+		ei.rfc = RFC;
+		ei.status = status;
+		errMsgs.add(ei);
+	}
+
 
 
 }

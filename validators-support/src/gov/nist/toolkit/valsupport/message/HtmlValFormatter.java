@@ -6,7 +6,7 @@ import gov.nist.toolkit.valsupport.client.ValFormatter;
 public class HtmlValFormatter implements ValFormatter {
 
 	static int MAXROWS = 3000;
-	String[][] tbl = new String[MAXROWS][3];
+	String[][] tbl = new String[MAXROWS][6];
 	int row = 0;
 	
 	public String toHtml() {
@@ -17,7 +17,7 @@ public class HtmlValFormatter implements ValFormatter {
 		for (int r=0; r<row; r++) {
 			buf.append("<tr>");
 			
-			for (int c=0; c<3; c++) {
+			for (int c=0; c<6; c++) {
 				buf.append("<td>");
 				buf.append(tbl[r][c]);
 				buf.append("</td>");
@@ -39,7 +39,7 @@ public class HtmlValFormatter implements ValFormatter {
 	}
 
 	public void hr() {
-		for (int i=0; i<3; i++) {
+		for (int i=0; i<6; i++) {
 			addCell("<hr/>", i);
 		}
 		row++;
@@ -48,10 +48,11 @@ public class HtmlValFormatter implements ValFormatter {
 	public void clearResults() {
 	}
 
+	// DTS column
 	public void setDetail(String detail) {
 		addCell(detail, 0);
 	}
-
+	
 	public void detail(String detail) {
 		setDetail(detail);
 	}
@@ -69,18 +70,48 @@ public class HtmlValFormatter implements ValFormatter {
 		setDetail(blue(detail));
 	}
 	
+
+	// Reference column
 	public void setReference(String ref) {
-		addCell(ref, 2);
+		addCell(ref, 3);
 	}
 	
 	public void reference(String ref) {
 		setReference(ref);
 	}
 
+	// Name Column
+	public void setName(String name) {
+		addCell(name, 2);
+	}
+	
+	public void name(String name) {
+		setStatus(name);
+	}
+
+	// Expected column
+	public void setExpected(String expected) {
+		addCell(expected, 4);
+	}
+	
+	public void expected(String expected) {
+		setExpected(expected);
+	}
+	
+	// RFC Column
+	public void setRFC(String rfc) {
+		addCell(rfc, 5);
+	}
+	
+	public void rfc(String rfc) {
+		setRFC(rfc);
+	}
+	
+	// Status Column
 	public void setStatus(String status) {
 		addCell(status, 1);
 	}
-	
+
 	public void status(String status) {
 		setStatus(status);
 	}
@@ -100,6 +131,16 @@ public class HtmlValFormatter implements ValFormatter {
 	public String h3(String msg) {
 		return "<h3>" + msg + "</h3>";
 	}
+	
+	@Override
+	public String htm_link(String msg) {
+		String res = msg;
+		String[] msgSplit = msg.split(";");
+		for(int i=0 ; i < msgSplit.length ; i=i+2) {
+			res = "<a href=\"" + msgSplit[i+1] + "\" target=\"_blank\">"+ msgSplit[i] + "</a><br>";
+		}
+		return res;
+	}
 
 	public void incRow() {
 		row++;
@@ -115,6 +156,22 @@ public class HtmlValFormatter implements ValFormatter {
 	@Override
 	public String blue(String msg) {
 		return "<font color=\"#0000FF\">" + msg  + "</font>";
+	}
+
+	@Override
+	public String green(String msg) {
+		return "<font color=\"#66CD00\">" + msg  + "</font>";
+	}
+
+	@Override
+	public String purple(String msg) {
+		return "<font color=\"#551A8B\">" + msg  + "</font>";
+	}
+
+	@Override
+	public void setColSpan(int col, int colSpan) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
