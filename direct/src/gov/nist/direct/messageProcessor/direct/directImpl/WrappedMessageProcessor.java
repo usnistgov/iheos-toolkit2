@@ -27,6 +27,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -41,6 +42,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.RecipientId;
@@ -221,6 +223,25 @@ public class WrappedMessageProcessor {
 		} catch (Exception e1) {
 			er.err("0", "Error with the certificate: Unable to decrypt message maybe it is the wrong certificate", "", "", "Certificate file");
 		}
+		
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy(res.getInputStream(), writer, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String dump = writer.toString();
+		try {
+			logger.debug(res.getContentType());
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.debug(dump);
 
 		return res;
 	}
