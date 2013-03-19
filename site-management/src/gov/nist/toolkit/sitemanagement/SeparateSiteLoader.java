@@ -5,7 +5,6 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.axiom.om.OMElement;
 
@@ -37,10 +36,11 @@ public class SeparateSiteLoader extends SiteLoader {
 		}
 		return sites;
 	}
-
-	public Sites load(String actorsString, Sites sites) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public void saveToFile(File actorsDir, Sites sites) throws Exception {
+		for (Site s : sites.asCollection()) {
+			saveToFile(actorsDir, s);
+		}
 	}
 
 	public void saveToFile(File actorsDir, Site site) throws Exception {

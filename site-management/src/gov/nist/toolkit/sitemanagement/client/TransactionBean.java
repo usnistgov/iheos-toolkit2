@@ -133,7 +133,6 @@ public class TransactionBean implements IsSerializable, Serializable {
 	}
 	
 	// Used only by ActorConfigTab
-	@Deprecated
 	public TransactionBean(ATFactory.TransactionType transType, RepositoryType repositoryType, String endpoint, boolean isSecure, boolean isAsync) {
 		this.transType = transType;
 		this.name = transType.getName();
