@@ -380,7 +380,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("\n===================Unknown Part==========================\n");
 			er.detail("Couldn't figure out the type"+"  Content Name: "+p.getContent().getClass().getName());
 			// Summary
-			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": Unknown part type", Status.PART, true);
+			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": Unknown part type " + p.getContentType(), Status.PART, true);
 			partNumber++;
 
 		}
@@ -550,7 +550,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		Collection c = signers.getSigners();
 		Iterator it = c.iterator();
 
-
+		String digestAlgOID = "";
+		
 		// DTS 167, SignedData.certificates must contain at least one certificate
 		msgValidator.validateSignedDataAtLeastOneCertificate(separate, c);
 
@@ -560,6 +561,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		while (it.hasNext())
 		{
 			SignerInformation   signer = (SignerInformation)it.next();
+			// Get digest Algorihm OID
+			digestAlgOID = signer.getDigestAlgOID();
 			Collection certCollection = certs.getMatches(signer.getSID());
 
 			Iterator certIt = certCollection.iterator();
@@ -572,16 +575,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 				break;
 			}
 
-
-			//System.out.println(cert);
-
 			er.sectionHeading("Validation Signature");
 
 			// DTS 158, Second MIME Part Body
 			msgValidator.validateSecondMIMEPartBody(separate, "");
 
 			// DTS 165, AlgorithmIdentifier.algorithm
-			msgValidator.validateDigestAlgorithmDirectMessage(separate, cert.getSigAlgName().toLowerCase(), contentTypeMicalg);
+			msgValidator.validateDigestAlgorithmDirectMessage(separate, digestAlgOID, contentTypeMicalg);
 
 			// DTS 166, SignedData.encapContentInfo
 			msgValidator.validateSignedDataEncapContentInfo(separate, new String(cert.getSignature()));
