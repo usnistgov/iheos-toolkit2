@@ -57,6 +57,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
@@ -64,6 +65,7 @@ import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -87,9 +89,13 @@ import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.util.Store;
 
 public class DirectMimeMessageProcessor implements DirectMessageProcessorInterface {
+	MimeMessage decryptedMsg = null;
 
+	
+	
 	static Logger logger = Logger.getLogger(DirectMimeMessageProcessor.class);
-
+	
+	
 	static{
 		setDefaultMailcap();
 		Security.addProvider(new BouncyCastleProvider());
@@ -774,6 +780,21 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		validationSummary.recordKey("Decrypted Message", Status.PART, true);
 		validationSummary.updateInfos("Decrypted Message", separate.hasErrors(), true);
 
+		// Create the decrypted MimeMessage to be returned
+		 decryptedMsg = null;
+		try {
+		InputStream inputstream = res.getInputStream();
+		Properties props = System.getProperties();
+		Session session = Session.getDefaultInstance(props, null);
+			decryptedMsg = new MimeMessage(session, inputstream);
+		} catch (MessagingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		return res;
 	}
 
@@ -997,4 +1018,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		}
 		return shiftIndent;
 	}
+	
+	
+
+	@Override
+	public MimeMessage getDecryptedMessage() {
+		return decryptedMsg;
+	}
+	
 }

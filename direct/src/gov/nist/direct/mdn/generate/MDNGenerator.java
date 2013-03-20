@@ -3,20 +3,26 @@ package gov.nist.direct.mdn.generate;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.Security;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Properties;
 
+import gov.nist.direct.directGenerator.impl.UnwrappedMessageGenerator;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.direct.messageProcessor.cert.PublicCertLoader;
+import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;
 
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.InternetHeaders;
@@ -31,6 +37,7 @@ import org.apache.mailet.base.mail.MimeMultipartReport;
 import org.bouncycastle.cms.CMSAlgorithm;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.mail.smime.SMIMEEnvelopedGenerator;
 import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 
@@ -45,7 +52,59 @@ import org.bouncycastle.mail.smime.SMIMESignedGenerator;
  *
  */
 public class MDNGenerator {
+	
 
+	public  static MimeMessage createEncryptedUnwrappedMDN(String humanText,
+			String reporting_UA_name, String reporting_UA_product,
+			String original_recipient, String final_recipient,
+			String original_message_id, String disposition,
+			String from, String to, String subject,
+			byte[] encCert, byte[] signCert, String password){
+		
+		
+		
+		// Create MDN as MimeMultipartReport
+		MimeMultipartReport mdnReport = null;
+		 try {
+			mdnReport = create(humanText, reporting_UA_name, reporting_UA_product,
+					 original_recipient, final_recipient,
+					 original_message_id, disposition);
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 
+		 // Convert MimeMultipartReport to File object
+		try {
+			mdnReport.writeTo(new FileOutputStream("MDNFile.txt"));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println("mdnreport " + mdnString);
+		//byte[] mdnMessage = Utils.getByteFile("MDNFile.txt");
+		File attachmentContentFile = new File("MDNFile.txt");
+		//Utils.getMimeMessage("MDNFile.txt");
+
+		 // encrypt and sign MDN (unwrapped)
+		 UnwrappedMessageGenerator encrypter = new UnwrappedMessageGenerator();
+		MimeMessage mdn =  encrypter.generateMessage(signCert, password, subject, 
+			 humanText, attachmentContentFile, from, to, encCert);
+
+				return mdn;
+		
+	}
+
+
+
+	
+	
 
 	/**
 	 * Answers with a MimeMultipartReport containing a
@@ -67,7 +126,7 @@ public class MDNGenerator {
 			String original_recipient,
 			String final_recipient,
 			String original_message_id,
-			Disposition disposition
+			String disposition
 			) throws MessagingException {
 
 
@@ -125,108 +184,6 @@ public class MDNGenerator {
 		return multiPart;
 	}
 
-	public static MimeMessage createSignedAndEncrypted(String humanText,
-			String reporting_UA_name,
-			String reporting_UA_product,
-			String original_recipient,
-			String final_recipient,
-			String original_message_id,
-			Disposition disposition,
-			String from,
-			String to,
-			String subject,
-			byte[] encCert, 
-			byte[] signCert, 
-			String signCertPassword) {
-
-		try {
-			ByteArrayInputStream signatureCert = new ByteArrayInputStream(signCert);
-			CertificateLoader loader = new CertificateLoader(signatureCert, signCertPassword);
-
-			SMIMESignedGenerator gen = loader.getSMIMESignedGenerator();
-
-			// Sign the message
-			MimeBodyPart m = new MimeBodyPart();
-			m.setContent(create(humanText, reporting_UA_name, reporting_UA_product, original_recipient, final_recipient, original_message_id, disposition));
-
-			//
-			// extract the multipart object from the SMIMESigned object.
-			//
-
-			MimeMultipart mm = gen.generate(m);
-
-			//
-			// Get a Session object and create the mail message
-			//
-			Properties props = System.getProperties();
-			Session session = Session.getDefaultInstance(props, null);
-
-			Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(from));
-			Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(to));
-
-			MimeBodyPart body = new MimeBodyPart();
-			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-			try
-			{
-				mm.writeTo(oStream);
-				oStream.flush();
-				InternetHeaders headers = new InternetHeaders();
-				headers.addHeader("Content-Type", mm.getContentType());
-
-
-
-
-				body = new MimeBodyPart(headers, oStream.toByteArray());
-				IOUtils.closeQuietly(oStream);
-
-			}    
-
-			catch (Exception ex)
-			{
-				throw new RuntimeException(ex);
-			}
-			
-			// TODO Remove the dump
-			body.writeTo(new FileOutputStream("Decrypted_MDN.txt"));
-
-
-			// Encryption cert
-			PublicCertLoader publicLoader = new PublicCertLoader(encCert);
-			X509Certificate encryptCert = publicLoader.getCertificate();
-
-			//System.out.println(encCert);
-
-			/* Create the encrypter */
-			SMIMEEnvelopedGenerator encrypter = new SMIMEEnvelopedGenerator();
-			try {
-				encrypter.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encryptCert).setProvider("BC"));
-			} catch (Exception e1) {
-				throw new Exception("Error loading encryption cert - must be in X.509 format", e1);
-			}
-			
-			/* Encrypt the message */
-			MimeBodyPart encryptedPart = encrypter.generate(body,
-					// RC2_CBC
-					new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC).setProvider("BC").build());
-
-			MimeMessage msg = new MimeMessage(session);
-			msg.setFrom(fromUser);
-			msg.setRecipient(Message.RecipientType.TO, toUser);
-			msg.setSentDate(new Date());
-			msg.setSubject(subject);
-			msg.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
-			msg.setDisposition("attachment");
-			msg.setFileName("smime.p7m");
-			msg.saveChanges();
-
-			return msg;
-
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	
 
 }
