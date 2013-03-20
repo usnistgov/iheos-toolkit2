@@ -166,6 +166,7 @@ public class ValidateMessageService extends CommonServiceManager {
 
 			MessageValidatorEngine mvc;
 			
+			// rolls over to MessageValidatorFactory if necessary
 			DirectMessageValidatorFactory factory = new DirectMessageValidatorFactory();
 			
 			mvc = factory.getValidator(gerb, message, input2, vc, rvi);

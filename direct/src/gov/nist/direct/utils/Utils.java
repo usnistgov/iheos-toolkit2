@@ -25,6 +25,8 @@ import gov.nist.toolkit.utilities.io.Io;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +41,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -78,7 +81,7 @@ public class Utils {
 		return input;
 
 	}
-	
+
 	public static byte[] getByteFile(String path) {
 		File file = new File(path);
 		byte[] byteArray = new byte[(int) file.length()];
@@ -162,18 +165,18 @@ public class Utils {
 		return data;
 	}
 
-
-	public static void printToFile(MimeMessage msg, String outputFile){
-	  try {
-		msg.writeTo(new FileOutputStream(outputFile));
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (MessagingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	}
+	// Doesnt work
+	//	public static void printToFile(MimeMessage msg, String outputFile){
+	//	  try {
+	//		msg.writeTo(new FileOutputStream(outputFile));
+	//	} catch (IOException e) {
+	//		// TODO Auto-generated catch block
+	//		e.printStackTrace();
+	//	} catch (MessagingException e) {
+	//		// TODO Auto-generated catch block
+	//		e.printStackTrace();
+	//	}
+	//	}
 
 
 	public static void printHeader(String dts, String textToValidate){
@@ -203,7 +206,7 @@ public class Utils {
 		br.close();
 		return line;
 	}
-	
+
 	public static InputStream stringArrayToInputStream(String[] str) throws IOException{
 		InputStream is = new ByteArrayInputStream("file content".getBytes());
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -213,84 +216,99 @@ public class Utils {
 			sb.append(line);
 		}
 		return null;
-		
+
 	}
-	
+
 	public static ArrayList<String> byteArrayToStringArrayList(byte[] input) throws IOException{
 		InputStream is = new ByteArrayInputStream(input);
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		StringBuilder sb = new StringBuilder();
 		String line;
 		ArrayList<String> array = new ArrayList<String>();
-		
+
 		while ((line = br.readLine()) != null) {
 			array.add(line);
 		}
-		
+
 		br.close();
 		is.close();
-		
+
 		return array;
-		
+
 	}
-	
+
 	/**
 	 * 
 	 * @param file filepath
 	 * @throws IOException 
 	 */
-public static void writeToFile(String s, String strPath) throws IOException{
-	System.out.println(strPath);
-	File f = new File(strPath);
-	f.setWritable(true);
+	public static void writeToFile(String s, String strPath) throws IOException{
+		System.out.println(strPath);
+		File f = new File(strPath);
+		f.setWritable(true);
 		if(!f.exists()) {
-		f.getParentFile().mkdirs();
+			f.getParentFile().mkdirs();
 			f.createNewFile();
+		}
+
+		FileOutputStream fos = new FileOutputStream(f);
+		fos.write(s.getBytes());
+		fos.flush();
+		fos.close();
+
 	}
-		
-	FileOutputStream fos = new FileOutputStream(f);
-	fos.write(s.getBytes());
-	fos.flush();
-	fos.close();
-
-}
 
 
-public static MimeMessage getMimeMessage(String path){
-	byte[] data = getMessage(path);
-	return MimeMessageParser.parseMessage(er, data); 
-}
+	public static MimeMessage getMimeMessage(String path){
+		byte[] data = getMessage(path);
+		//ArrayList<String> trimmedMsg = null;
 
-/**
- * Not tested
- * @param path
- * @return
- */
-public static MimeMultipartReport getMDN(String path){
-	byte[] data = getMessage(path);
-	String msg = data.toString();
-	return new MimeMultipartReport(msg);
-}
+//		// delete empty lines from byte array
+//		try {
+//			trimmedMsg = Utils.byteArrayToStringArrayList(data);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		for (int i=0;i<trimmedMsg.size();i++) {
+//			if (trimmedMsg.get(i).equals("") || trimmedMsg.get(i) == null) trimmedMsg.remove(i);
+//		}
 
-public static String readFile(String path){
-byte[] data = getMessage(path);
-return data.toString();
-}
 
-/**
- * Removes lower than and upper than (< and >) characters that encapsulate an email address
- * @return
- */
-public static String trimEmailAddress(String string){
-	String str = string.trim();
-	String trimmedStr = null;
-if(str.contains("<")) {
-	trimmedStr = str.substring(1, str.lastIndexOf('>'));
-	return trimmedStr;
-}
-return str;
-}
-	
+		//byte[] msg = Utils.stringArraytoByteArray(trimmedMsg);
+		return MimeMessageParser.parseMessage(er, data); 
+	}
+
+	/**
+	 * Not tested
+	 * @param path
+	 * @return
+	 */
+	public static MimeMultipartReport getMDN(String path){
+		byte[] data = getMessage(path);
+		String msg = data.toString();
+		return new MimeMultipartReport(msg);
+	}
+
+	public static String readFile(String path){
+		byte[] data = getMessage(path);
+		return data.toString();
+	}
+
+	/**
+	 * Removes lower than and upper than (< and >) characters that encapsulate an email address
+	 * @return
+	 */
+	public static String trimEmailAddress(String string){
+		String str = string.trim();
+		String trimmedStr = null;
+		if(str.contains("<")) {
+			trimmedStr = str.substring(1, str.lastIndexOf('>'));
+			return trimmedStr;
+		}
+		return str;
+	}
+
 
 	// Getters and Setters
 	public static void setErrorRecorder(ErrorRecorder er) {
@@ -306,16 +324,36 @@ return str;
 	 * @return
 	 */
 	public static String rawFromHeader(String from) {
-	if (from.indexOf('<') == -1)
-	return from;
-	int start = from.indexOf('<');
-	int end = from.indexOf('>');
-	if (end > 0 && end < from.length()) {
-		return from.substring(start +1, end);
-	}
-	else return "unrecognized_usernames"; 
+		if (from.indexOf('<') == -1)
+			return from;
+		int start = from.indexOf('<');
+		int end = from.indexOf('>');
+		if (end > 0 && end < from.length()) {
+			return from.substring(start +1, end);
+		}
+		else return "unrecognized_usernames"; 
 	}
 
+
+	/**
+	 * Converts a String ArrayList to an array of bytes
+	 * @param trimmedMsg
+	 * @return
+	 */
+	public static byte[] stringArraytoByteArray(ArrayList<String> trimmedMsg){
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+		for (int i =0;i<trimmedMsg.size();i++){
+			try {
+				baos.write(trimmedMsg.get(i).getBytes());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
+		return  baos.toByteArray();
+
+	}
 
 
 }

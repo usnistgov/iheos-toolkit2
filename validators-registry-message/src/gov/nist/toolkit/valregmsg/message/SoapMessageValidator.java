@@ -12,6 +12,7 @@ import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -110,6 +111,15 @@ public class SoapMessageValidator extends MessageValidator {
 				err("Cannot validate SOAP Body - WS-Addressing Action header " + wsaction + " is not understood","ITI TF-2a, 2b, XDR, XCA, MPQ Supplements");
 			}
 		}
+		
+		//ADD SAML VALIDATION IF NEEDED. -@Antoine
+		//TODO check if this is the best place to do so.
+		OMElement security = MetadataSupport.firstChildWithLocalName(header, "Security");
+		if(security != null){
+			vc.hasSaml = true; // setting the flag is not really necessary, for consistency only.
+			mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+		}
+		
 	}
 
 	void parse() {

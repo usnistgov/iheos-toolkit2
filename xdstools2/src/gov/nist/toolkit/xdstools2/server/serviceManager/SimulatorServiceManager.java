@@ -21,6 +21,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.xdstools2.server.simulator.support.ServletSimulator;
 
 import java.io.File;
@@ -320,12 +321,14 @@ public class SimulatorServiceManager extends CommonServiceManager {
 		return Installation.installation().propertyServiceManager().getSimDbDir();
 	}
 
-	public MessageValidationResults validateMessage(ValidationContext vc) {
+	public MessageValidationResults validateMessage(ValidationContext vc) throws EnvironmentNotSelectedClientException {
 		logger.debug(session.id() + ": " + "validateMessage");
 		try {
-			vc.setCodesFilename(session.getCodesFile().toString());
-		} catch (Exception e) {}
-
+			File codesFile = session.getCodesFile();
+			vc.setCodesFilename(codesFile.toString());
+		} catch (EnvironmentNotSelectedException e) {
+			throw new EnvironmentNotSelectedClientException(e.getMessage());
+		}
 		try {
 
 			ValidateMessageService vm = new ValidateMessageService(session, null);
@@ -341,11 +344,13 @@ public class SimulatorServiceManager extends CommonServiceManager {
 	}
 
 	public MessageValidationResults validateMessage(ValidationContext vc,
-			String simFileName) {
+			String simFileName) throws EnvironmentNotSelectedClientException {
 		logger.debug(session.id() + ": " + "validateMessage");
 		try {
 			vc.setCodesFilename(session.getCodesFile().toString());
-		} catch (Exception e) {}
+		} catch (EnvironmentNotSelectedException e) {
+			throw new EnvironmentNotSelectedClientException(e.getMessage());
+		}
 		try {
 			ValidateMessageService vm = new ValidateMessageService(session, null);
 			MessageValidationResults mvr = vm.validateMessageFile(vc,

@@ -1,5 +1,8 @@
 	package gov.nist.toolkit.xdstools2.server;
 
+import gov.nist.direct.client.config.SigningCertType;
+import gov.nist.direct.config.DirectConfigManager;
+import gov.nist.direct.logger.MessageLog;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -18,7 +21,6 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.client.XdstestLogId;
-import gov.nist.toolkit.session.server.DirectConfigManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -29,13 +31,16 @@ import gov.nist.toolkit.utilities.xml.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
+import gov.nist.toolkit.xdstools2.client.SmtpMessageStatus;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
+import gov.nist.toolkit.xdstools2.server.smtptools.LogAccessMock;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,32 +87,60 @@ ToolkitService {
 			}
 	}
 	
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Direct Services
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	@Override
 	public DirectRegistrationData directRegistration(DirectRegistrationData reg) throws NoServletSessionException, Exception { 
 		new DirectServiceManager().directRegistration(session(), reg); 
 		return reg;
 		}
+	@Override
 	public ContactRegistrationData contactRegistration(ContactRegistrationData reg) throws NoServletSessionException, Exception { 
 		new DirectUserManager().contactRegistration(reg); 
 		return reg;
 		}
+	@Override
 	public ContactRegistrationData saveCertFromUpload(ContactRegistrationData reg, String directAddr)  throws NoServletSessionException, Exception {
 		byte[] cert = session().getlastUpload();
 		new DirectUserManager().saveCertFromUpload(reg, directAddr, cert); 
 		return reg;
 	}
+	@Override
 	public ContactRegistrationData loadDirectRegistration(String contact) throws Exception {
 		return new DirectUserManager().load(contact);
 	}
+	@Override
 	public ContactRegistrationData deleteDirect(ContactRegistrationData contact, DirectRegistrationData direct) throws NoServletSessionException, Exception {
 		return new DirectUserManager().deleteDirect(contact, direct);
 	}
+	@Override
 	public String toolkitPubCert()  throws NoServletSessionException { return new DirectServiceManager(session()).toolkitPubCert(); }
+	@Override
 	public List<Result> directSend(Map<String, String> parms) throws NoServletSessionException { return new DirectServiceManager(session()).directSend(parms); }
+	@Override
 	public List<String> getEncryptionCertDomains() { return new DirectConfigManager(Installation.installation().externalCache()).getEncryptionCertDomains(); }
+	@Override
+	public List<String> getDirectMsgIds(String user) { return new LogAccessMock().getMsgIds(user); }
+	@Override
+	public List<SmtpMessageStatus> getDirectOutgoingMsgStatus(String user, List<String> msg_ids) { return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids); }
+	@Override
+	public List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException {
+		logger.debug(session().id() + ": " + 
+				"getAvailableDirectSigningCerts");
+		
+		List<SigningCertType> certs = new DirectConfigManager().getSigningCertTypesAvailable();
+		logger.debug(session().id() + ": " + "getAvailableDirectSigningCerts => " + certs);
+		return certs;
+	}
 
-
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Site Services
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
 	public Collection<Site> getAllSites() throws Exception { return siteServiceManager.getAllSites(session().getId()); }
 	public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
@@ -126,7 +159,11 @@ ToolkitService {
 	public List<String> getSiteNamesWithRG() throws Exception { return siteServiceManager.getSiteNamesWithRG(session().getId()); }
 
 
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Query Services
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public List<Result> registerAndQuery(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().registerAndQuery(site, pid); }
 	public List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().lifecycleValidation(site, pid); }
 	public List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().folderValidation(site, pid); }
@@ -172,7 +209,11 @@ ToolkitService {
 	
 	public List<Result> getLastMetadata() { return queryServiceManager.getLastMetadata(); }
 
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Test Service
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession )  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
 	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
 	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
@@ -192,22 +233,39 @@ ToolkitService {
 	public List<String> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-
+	public List<MessageLog> getDirectLogs(String sessionName) throws Exception { return session().xdsTestServiceManager().getDirectLogs(sessionName); }
 	
+	
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Gazelle Service
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public String reloadSystemFromGazelle(String systemName) throws Exception { return new GazelleServiceManager(session()).reloadSystemFromGazelle(systemName); }
 	
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Environment management
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public List<String> getEnvironmentNames() throws NoServletSessionException { return session().getEnvironmentNames(); }
 	public String setEnvironment(String name) throws NoServletSessionException { session().setEnvironment(name); return name; }
 	public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
 	public String getDefaultEnvironment()  throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getDefaultEnvironment(); }
 
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Session
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
 	
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Property Service
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public TkProps getTkProps() throws NoServletSessionException { return session().tkProps(); }
 	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
 	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
@@ -221,7 +279,11 @@ ToolkitService {
 	public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue); }
 
 	
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Simulator Service
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public String putSimConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).putSimConfig(config); }
 	public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
 	public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
@@ -234,15 +296,19 @@ ToolkitService {
 	public List<Result> getSelectedMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessage(simFileSpec); }
 	public List<Result> getSelectedMessageResponse(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessageResponse(simFileSpec); }
 	public Map<String, String> getActorSimulatorNameMap() throws NoServletSessionException { return new SimulatorServiceManager(session()).getActorSimulatorNameMap(); }
-	public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException { return new SimulatorServiceManager(session()).validateMessage(vc); }
-	public MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException { return new SimulatorServiceManager(session()).validateMessage(vc, simFileName); }
+	public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc); }
+	public MessageValidationResults validateMessage(ValidationContext vc, String simFileName) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc, simFileName); }
 	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception { return new SimulatorServiceManager(session()).getSimConfigs(ids); }
 	public List<SimulatorConfig> getNewSimulator(String actorTypeName) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName); }
 	public void deleteSimFile(String simFileSpec) throws Exception { new SimulatorServiceManager(session()).deleteSimFile(simFileSpec); }
 	public List<String> getTransactionsForSimulator(String simid) throws Exception { return new SimulatorServiceManager(session()).getTransactionsForSimulator(simid); }
 	public String getTransactionLog(String simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionLog(simid, actor, trans, event); }
 
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	// Dashboard Service
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 	public List<RegistryStatus> getDashboardRegistryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRegistryData(); }
 	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRepositoryData(); }
 
@@ -414,5 +480,6 @@ ToolkitService {
 	public String getClientIPAddress() {
 		return getSession().ipAddr;
 	}
+
 
 }

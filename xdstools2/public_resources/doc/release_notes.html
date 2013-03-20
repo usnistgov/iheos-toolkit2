@@ -10,10 +10,181 @@
 
 <p>Release note are listed for each build number
 
-<h4>     (released     ) </h4>
+<h4>161   (released       )      </h4>
+
+<h5>Bug Fixes</h5>
 
 <ul>
-<li>Built with shared-lib version 151
+<li>Improve error reporting on DNS/MX record lookup
+</ul>
+
+<h4>160   (released February 15, 2013)       </h4>
+
+<h5>New Features</h5>
+<ul>
+<li>Direct message sent to TTT for validation: attached documents of type text or
+CCDA are placed into the validation report.
+<li>The following new formats are recognized by the Message Validator
+   <ul>
+   <li>CCDA wrapped in XDM (CCDA validated along with XDM format)
+   <li>CCDA sent in XDR (CCDA validated along with XDR format)
+   </ul>
+</li>
+</ul>
+
+<h5>Bug Fixes</h5>
+<ul>
+<li>Upgrade MDHT to 02_15_2013 release:<br />
+Defects fixed in this release:
+  <ul>
+	<li>Allow Referrals to be documented as part of “Plan of Care Section” or “Assessment and Plan section” or
+“Reason for Referral” section.
+		<ul>
+			<li>Previously the validation was over constrained and only Reason for Referral section was being
+allowed.
+		</ul>
+	</li>
+	<li>Allow Vital Signs to use sections with entries required or section with entries optional.
+		<ul>
+			<li>Previously the validation was over constrained and only Vital Signs section with entries required
+template was being allowed.
+		</ul>
+	</li>
+	<li>Allow CareTeam Members to be documented as part of either “EncompassingEncounter/responsibleParty”
+or “EncompassingEncounter/encounterParticipant” or “documentationOf/ServiceEvent/Performer”.
+		<ul>
+			<li>Previously the validation was looking for all three of them to exist and declaring an error
+incorrectly on valid samples.
+		</ul>
+	</li>
+	<li>Cognitive Status Problem Observation Entry was modeled with incorrect cardinality resulting in an error.
+		<ul>
+			<li>Previously the Problem Observation Entry was modeled with a cardinality of 1..* instead of 0..*
+which was resulting in an error.
+		</ul>
+	</li>
+	<li>Fixed a memory leak that was causing heap exhaustion in about 4 hours.
+	<li>Pregnancy Observation was modeled with incorrect cardinality resulting in an error.
+		<ul>
+			<li>Previously Pregnancy Observation was modeled with a cardinality of 1..1 instead of 0..1 which
+caused a validation error for valid samples.
+		</ul>
+	</li>
+	<li>EncounterActivities\Code vocabulary constraints were modeled incorrectly resulting in an error.
+		<ul>
+			<li>Previously Encounter Activities \ Code was being validated to have a code system of SNOMED-
+CT or ICD-10 incorrectly. This has now been corrected.
+		</ul>
+	</li>
+  </ul>
+</li>
+Known issues in this release that impact users:<br />
+	<ul>
+		<li>No known issues
+	</ul>
+<li>XDM decoder was detecting directories incorrectly.  This frequently resulted 
+in the message <i>Directory IHE_XDM not found</i> even when it was present.
+<li>Built with shared-lib version 160
+</ul>
+
+<h5>Known problems</h5>
+<ul>
+	<li>When an XDR message is received containing a CCDA, the CCDA is validated before the response message
+	is sent.  This allows the validation errors to be included in the response. Since the CCDA validation
+	can take a very long time to run (sometimes over a minute) the sender (Document Source actor) can 
+	timeout waiting for the SOAP response.  When using toolkit as the Document Source, it does timeout.
+</ul>
+
+<h4>159   (released February 7, 2013)       </h4>
+
+This version was used at the North American Connectathon January 28 - February
+1, 2013 in Chicago<br />
+
+<h5>Direct</h5>
+<ul>
+<li>Added plain/txt attachments to validation log
+<li>Add private key validation to startup of listener
+(<a href="http://sourceforge.net/p/iheos/code/ci/1a4476653788e902be699a182ee31ad0f81a433d/"> commit </a>)
+(<a href="http://sourceforge.net/p/iheos/code/ci/fcf717fe5670bf6a3a418bc75c7ed4ea5ae50b4f/"> commit </a>)
+</ul>
+
+<h5>IHE</h5>
+<ul>
+<li>Updated Gazelle interface to match current version of Gazelle 
+(<a href="http://sourceforge.net/p/iheos/code/ci/e22fcc2b8856c9017c38079cc9c736a7b4d74c17/">commit</a>)
+<li>SOAP message validator was updated some time ago to loosen the requirements on the mustUnderstand attribute.
+The values 1, 0, true (ingore case comparison), and false (ignore case comparison) are all acceptable values.
+</ul>
+
+<h4>158 (MDHT updates only (released January 10, 2913)</h4>
+
+<ul>
+<li>MHDT version 12212012 installed:
+<ul>
+<li>Comment Activity Author constraint should be a “MAY” and not a “SHALL” – CONF 9433
+<li>Functional and Cognitive status will not require structured entries because there is no standard
+vocabulary requirement for the data elements.
+<li>CONF 9050 and CONF 15603 constraints were implemented incorrectly.
+<li>Plan of Care section will allow multiple observations. Previously only one observation was being allowed.
+<li>Plan of Care section entries will be optional and not required.
+<li>Null Flavor check on code in the Results section was requiring a LOINC code system which has now been
+corrected.
+<li>Null Flavor on playing Entity within observations for allergies (CONF 7421, 10083, 10084) was not being
+allowed, this has been corrected.
+</ul>
+</ul>
+
+<h4>156  (MU 2 updates only)   (released December 19, 2012 ) </h4>
+<ul>
+<li>Built with shared-lib version 155
+<li>155 had been built with some old modules - corrected
+<li>Updated CCDA examples
+<li>Removed the Environment and TestSession selections from DirectSend and DirectRegistration tab.
+<li>Removed TestSession selection from Message Validation tab. Still needed for metadata containing 
+messages.
+</ul>
+
+<h4>155  (MU 2 updates only)   (released December 14, 2012 ) </h4>
+<ul>
+<li>Built with shared-lib version 155
+<li>SAML tested between TTT and Connect instance
+<li>MDHT (CCDA Validation) (version 12062012)
+   <ul>
+   <li>Multiple race codes in recordTarget section of CCDA header were not allowed due to the sdtc schema extension not being present. This is now fixed.
+   <li>ADDR Type not handling Null Flavor in MDHT when the top level element is null. This has been corrected.
+   <li>NPI forced for RepOrg and AuthoringDevice which is not correct, NPI is only valid for Assigned Person. This is now fixed.
+   </ul>
+</li>
+<li>Alan added this <a href="https://sourceforge.net/p/iheos/wiki/TransportTestingToolConfiguration/">configuration guide</a>
+</ul>
+
+
+<h4>153  (Direct updates only)   (released November 23, 2012 ) </h4>
+
+<ul>
+<li>Built with shared-lib version 153
+<li>Includes update MDHT validator for CCDA (version 11142012)
+<ul>
+<li>Fixed the Allergy Section validations based on Community feedback.
+<li>Fixed Error messages for Race and Ethnicity and preferred language value sets to point to the ONC S&CC 2014 standards instead of CCDA conformance statements.
+</ul>
+<li>The Direct Send panel can now send either wrapped or unwrapped formats.
+<li>The Direct Send panel now uses a pre-configured certificate for signing and can hold multiple encryption certificates keyed by the Direct (To) address
+<li>Fixed the SAML/TLS popups that incorectly occured on the Direct Send panel when a second copy is created.
+<li>Added more documentation to the Registration Page
+<li>Added the support mailing list and a link to the official ONC Regulation FAQ page to the home page
+</ul>
+
+<h4>152     (released November 6, 2012 ) </h4>
+
+<ul>
+<li>Built with shared-lib version 151c
+<li>Direct Send working
+<li>Accepts wrapped and unwrapped formats
+<li>Only sends unwrapped format
+<li>XDR (DIRECT/ONC format) - send works, receive works (simulator) validator not yet implemented
+<li>MDN processing/generation not implemented yet
+<li>SAML not fully tested yet
 </ul>
 
 <h4>145 (released September 20, 2012)</h4>

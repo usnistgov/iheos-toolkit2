@@ -1,0 +1,79 @@
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope">
+	<S:Header />
+	<S:Body>
+		<fault:Fault xmlns:fault="http://www.w3.org/2003/05/soap-envelope">
+			<fault:Code>
+				<fault:Value>fault:Sender</fault:Value>
+			</fault:Code>
+			<fault:Reason>
+				<fault:Text xml:lang="en">Exception thrown:
+					java.lang.NullPointerException
+					No Message
+					java.lang.NullPointerException
+					at
+					gov.nist.toolkit.valsupport.client.ValidationContext.equals(ValidationContext.java:162)
+					at
+					gov.nist.toolkit.valregmsg.message.SoapMessageValidator.verifywsActionCorrectForValidationContext(SoapMessageValidator.java:126)
+					at
+					gov.nist.toolkit.valregmsg.message.SoapMessageValidator.run(SoapMessageValidator.java:99)
+					at
+					gov.nist.toolkit.valsupport.engine.MessageValidatorEngine.run(MessageValidatorEngine.java:191)
+					at
+					gov.nist.toolkit.simulators.support.ValidateMessageService.runValidation(ValidateMessageService.java:62)
+					at
+					gov.nist.toolkit.simulators.support.SimCommon.runInitialValidations(SimCommon.java:172)
+					at
+					gov.nist.toolkit.simulators.sim.rg.RGActorSimulator.run(RGActorSimulator.java:162)
+					at
+					gov.nist.toolkit.xdstools2.server.simulator.support.SimServlet.doPost(SimServlet.java:456)
+					at javax.servlet.http.HttpServlet.service(HttpServlet.java:641)
+					at javax.servlet.http.HttpServlet.service(HttpServlet.java:722)
+					at
+					org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:305)
+					at
+					org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+					at
+					org.apache.catalina.filters.RequestDumperFilter.doFilter(RequestDumperFilter.java:203)
+					at
+					org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+					at
+					org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+					at
+					gov.nist.toolkit.xdstools2.server.simulator.support.SimServletFilter.doFilter(SimServletFilter.java:33)
+					at
+					org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:243)
+					at
+					org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:210)
+					at
+					org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:222)
+					at
+					org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:123)
+					at
+					org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:472)
+					at
+					org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:168)
+					at
+					org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:99)
+					at
+					org.apache.catalina.valves.AccessLogValve.invoke(AccessLogValve.java:929)
+					at
+					org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:118)
+					at
+					org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:407)
+					at
+					org.apache.coyote.http11.AbstractHttp11Processor.process(AbstractHttp11Processor.java:1002)
+					at
+					org.apache.coyote.AbstractProtocol$AbstractConnectionHandler.process(AbstractProtocol.java:585)
+					at
+					org.apache.tomcat.util.net.JIoEndpoint$SocketProcessor.run(JIoEndpoint.java:310)
+					at
+					java.util.concurrent.ThreadPoolExecutor$Worker.runTask(ThreadPoolExecutor.java:886)
+					at
+					java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:908)
+					at java.lang.Thread.run(Thread.java:680)
+					[]
+				</fault:Text>
+			</fault:Reason>
+		</fault:Fault>
+	</S:Body>
+</S:Envelope>

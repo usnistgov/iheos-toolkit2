@@ -133,7 +133,7 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
 			String msg = "Cannot access Test Log Cache [" + testLogCache + "] - either it doesn't exist, isn't a directory or isn't writable";
-			logger.fatal(msg);
+			logger.warn(msg);
 			throw new IOException(msg);
 		}
 

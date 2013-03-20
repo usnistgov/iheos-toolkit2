@@ -59,6 +59,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Properties;
 
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
@@ -68,6 +69,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
 import javax.mail.internet.InternetAddress;
+import javax.mail.Session;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -91,9 +93,13 @@ import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.util.Store;
 
 public class DirectMimeMessageProcessor implements DirectMessageProcessorInterface {
+	MimeMessage decryptedMsg = null;
 
+	
+	
 	static Logger logger = Logger.getLogger(DirectMimeMessageProcessor.class);
-
+	
+	
 	static{
 		setDefaultMailcap();
 		Security.addProvider(new BouncyCastleProvider());
@@ -778,6 +784,21 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		validationSummary.recordKey("Decrypted Message", Status.PART, true);
 		validationSummary.updateInfos("Decrypted Message", separate.hasErrors(), true);
 
+		// Create the decrypted MimeMessage to be returned
+		 decryptedMsg = null;
+		try {
+		InputStream inputstream = res.getInputStream();
+		Properties props = System.getProperties();
+		Session session = Session.getDefaultInstance(props, null);
+			decryptedMsg = new MimeMessage(session, inputstream);
+		} catch (MessagingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		return res;
 	}
 
@@ -952,12 +973,10 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	public void logDirectMessage(Part p){
 
 		// Get sender name (username)
-		String username = null;
-		String _username = null;
+		String username = null;	
+		
 		try {
-			Address[] addr = ((MimeMessage) p).getFrom();
-			_username = (addr[0]).toString();
-			username = Utils.rawFromHeader(_username);
+			username = ((MimeMessage) p).getFrom().toString();
 		} catch (MessagingException e3) {
 			// TODO Auto-generated catch block
 			e3.printStackTrace();
@@ -977,18 +996,18 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		Date date = new Date();
 
 		// Get label
-		String label = "label";
+		//String label = "label";
 		
 		MessageLog.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
 		
 		// test display
-		System.out.println("Testing display");
-		ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
-		MessageLog temp;
-		while (readLog.iterator().hasNext()){
-			temp = readLog.iterator().next();
-			System.out.println(temp.toString());
-		}
+	//	System.out.println("Testing display");
+	//	ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
+	//	MessageLog temp;
+	//	while (readLog.iterator().hasNext()){
+	//		temp = readLog.iterator().next();
+	//		System.out.println(temp.toString());
+	//	}
 		
 		
 		System.out.println("Logged direct message.");
@@ -1017,4 +1036,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		}
 		return shiftIndent;
 	}
+	
+	
+
+	@Override
+	public MimeMessage getDecryptedMessage() {
+		return decryptedMsg;
+	}
+	
 }

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.directSenderTab.view;
 
+import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.directSenderTab.DirectSenderTab;
 
@@ -20,8 +21,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DirectSenderView implements DirectSenderTab.Display {
 	TextBox directFromAddressTextBox = new TextBox();
@@ -35,7 +36,9 @@ public class DirectSenderView implements DirectSenderTab.Display {
 	HTML certAvailableMessage;
 	VerticalPanel vpan = new VerticalPanel();
 	RadioButton wrappedRadio;
-	 
+	List<SigningCertType> signingCertTypes = null;
+	List<RadioButton> signingCertRB = new ArrayList<RadioButton>();
+
 	DirectSenderTab dsTab;
 	String sendingDomain;
 
@@ -101,6 +104,26 @@ public class DirectSenderView implements DirectSenderTab.Display {
 		topPanel.add(formatPanel);
 		topPanel.add(new HTML("<p>If wrapped format is chosen then the following header fields will " + 
 		" be moved from the outer RFC 822 header into the encrypted part of the message: To, From, Subject, Date."));
+		
+		topPanel.add(new HTML("<br /><hr /><br />"));
+		topPanel.add(new HTML("<h3>Signing Certificate</h3>"));
+		topPanel.add(new HTML("Select signing certificate to use. Certificates missing from configuration are disabled<br />"));
+
+		String signingCertRadioButtons = "SigningCert";
+		SigningCertType[] signingCertTypes = SigningCertType.values();
+		VerticalPanel signingCertPanel = new VerticalPanel();
+		topPanel.add(signingCertPanel);
+		for (int i=0; i<signingCertTypes.length; i++) {
+			SigningCertType t = signingCertTypes[i];
+			RadioButton s = new RadioButton(signingCertRadioButtons, t.name());
+			signingCertRB.add(s);
+			s.setEnabled(false);
+			if (t.compareTo(SigningCertType.GOOD_CERT) == 0)
+				s.setValue(true);
+			else
+				s.setValue(false);
+			signingCertPanel.add(s);
+		}
 		
 		topPanel.add(new HTML("<br /><hr /><br />"));
 		topPanel.add(new HTML("<h3>Encyption Certificate</h3>"));
@@ -276,5 +299,36 @@ public class DirectSenderView implements DirectSenderTab.Display {
 	@Override
 	public boolean isWrapped() {
 		return wrappedRadio.getValue();
+	}
+
+	@Override
+	public void setAvailableSigningCerts(List<SigningCertType> signingCertTypes) {
+		this.signingCertTypes = signingCertTypes;
+		for (RadioButton rb : signingCertRB) {
+			rb.setEnabled(false);
+			String label = rb.getText();
+			for (SigningCertType sct : signingCertTypes) {
+				String name = sct.name();
+				if (name.equals(label)) { 
+					rb.setEnabled(true);
+					break;
+				}
+			}
+		}
+	}
+
+	@Override
+	public SigningCertType getSigningCertType() {
+		for (RadioButton rb : signingCertRB) {
+			if (rb.getValue()) {
+				String label = rb.getText();
+				for (SigningCertType sct : signingCertTypes) {
+					String name = sct.name();
+					if (name.equals(label)) 
+						return sct;
+				}
+			}
+		}
+		return null;
 	}
 }

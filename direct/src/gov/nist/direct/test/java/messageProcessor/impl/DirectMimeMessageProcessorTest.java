@@ -43,7 +43,6 @@ public class DirectMimeMessageProcessorTest {
 		
 		String certificatePassword = "mhunter";
 		
-		// Uses either a normal string parser or an http parser.
 		messageUnderTest = Utils.getMessage(messageUnderTestPath);
 		certificate = Utils.getMessage(certificatePath);
 		

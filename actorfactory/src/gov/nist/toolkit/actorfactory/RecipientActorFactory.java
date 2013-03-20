@@ -7,6 +7,7 @@ import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 
@@ -25,8 +26,11 @@ public class RecipientActorFactory  extends ActorFactory {
 		SimulatorConfig sc;
 		if (configureBase)
 			sc = configureBaseElements(actorType);
-		else
+		else 
 			sc = new SimulatorConfig();
+		if (sc.getValidationContext() == null)
+			sc.setValidationContext(new ValidationContext());
+		
 
 		File codesFile = simm.getCodesFile();
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());

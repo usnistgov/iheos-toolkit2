@@ -32,5 +32,6 @@ public interface ErrorRecorder extends ErrorRecorderBuilder {
 	public List<ValidatorErrorItem> getErrMsgs();
 	
 	public ErrorRecorder buildNewErrorRecorder();  // some code only accepts ErrorRecorder.  This gets around this
+	public ErrorRecorderBuilder getErrorRecorderBuilder();
 
 }

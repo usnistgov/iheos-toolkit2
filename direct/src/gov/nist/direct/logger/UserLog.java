@@ -75,5 +75,32 @@ public class UserLog {
 		return userLog;
 
 	}
-
+	
+	/** returns the full user list for display purposes
+	 * 
+	 * @return
+	 */
+	public static ArrayList<String> getUserList(){
+		ArrayList<String> userlist = LoggerUtils.listFilesForFolder(LogPathsSingleton.getLOG_ROOT());
+		return userlist;
+	}
+	
+	
+	public static ArrayList<MessageLog> getAllLogs(){
+	ArrayList<MessageLog> allLogs = new ArrayList<MessageLog>();
+	ArrayList<String> userList = UserLog.getUserList();
+	String user;
+	ArrayList<MessageLog> userLogs;
+	
+	while (userList.iterator().hasNext()){
+		user = userList.iterator().next();
+		userLogs = UserLog.readUserLogs(user);
+		allLogs.addAll(userLogs);
+		}
+	
+	return allLogs;
+	}
+	
+	
+	
 }
