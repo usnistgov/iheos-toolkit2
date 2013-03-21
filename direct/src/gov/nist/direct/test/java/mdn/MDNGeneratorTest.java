@@ -68,55 +68,18 @@ import org.junit.Test;
 
 import com.google.gwt.dev.jjs.ast.JField.Disposition;
 
-public class TestMDN {
+public class MDNGeneratorTest {
 	
 	ErrorRecorder er = new TextErrorRecorderModif();
-	static Logger logger = Logger.getLogger(TestMDN.class);
+	static Logger logger = Logger.getLogger(MDNGeneratorTest.class);
 	String NO_HEADER = "No header";
 	
 		
 	
-@Test
-/**
- * Adapted from Direct RI because it is the only code example publicly available
- * @throws Exception
- */
-    public void testCreate_withGeneralAttributes() throws Exception
-    {
-            final String disp = "automatic-action/MDN-sent-automatically;processed";
-           // final MdnGateway gateway = new MdnGateway("junitGateway");
-            
-            // Creating MDN. Construction:
-            // String humanText, String reporting_UA_name, String reporting_UA_product,
-			// String original_recipient, String final_recipient, String original_message_id,
-			// String disposition
-            MimeMultipartReport report = MDNGenerator.create("test", "junitUA", "junitProduct", "sender@send.com", 
-                            "final@final.com", "12345", disp);
-           
-        	
-            assertNotNull(report);
-            
-            InternetHeaders headers = MDNUtils.getNotificationFieldsAsHeaders(report);
-            logger.debug(headers.getHeader("original-message-id"));
-            logger.info(headers.getHeader("original-message-id"));
-            logger.info(headers.getHeader(MDNStandard.Headers.ReportingAgent, ","));
-            
-            
-            assertTrue(headers.getHeader(MDNStandard.Headers.ReportingAgent, ",").startsWith("junitUA"));
-            assertTrue(headers.getHeader(MDNStandard.Headers.ReportingAgent, ",").endsWith("junitProduct"));
-            assertEquals("rfc822; sender@send.com", headers.getHeader(MDNStandard.Headers.OriginalRecipient, ","));
-            assertEquals("rfc822; final@final.com", headers.getHeader(MDNStandard.Headers.FinalRecipient, ","));
-            assertTrue(headers.getHeader(MDNStandard.Headers.Gateway, ",").endsWith("junitGateway"));
-            assertTrue(headers.getHeader(MDNStandard.Headers.Disposition, ",").endsWith(NotificationType.Processed.toString()));    
-            
-            BodyPart part0 = report.getBodyPart(0);
-            Object obj = part0.getContent();
-            assertEquals("test", obj);
-    }
-	
 	
 	/**
-	 * Checks that an MDN acknowledgment can be successfully generated and is detected as being an MDN.
+	 * Checks that an MDN acknowledgment can be successfully generated in response to
+	 * a Direct message, and is valid.
 	 */
 	@Test
 	public void testMDNGenerationInResponseToDirect(){
@@ -249,28 +212,6 @@ public class TestMDN {
 
 		assertTrue(!er.hasErrors());
 	}
-
-	
-//	
-//	/**
-//	 * Checks that an MDN message know to be correct is successfully validated.
-//	 */
-//	@Test
-//	public void testMDNValidation(){
-//		
-//	}
-//	
-//	
-//	/**
-//	 * Checks that an MDN acknowledgment can be successfully generated and validated.
-//	 */
-//	@Test
-//	public void testMDNGenerationValidationCycle(){
-//		
-//	}
-//	
-	
-	
 
 	
 	

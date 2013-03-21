@@ -996,7 +996,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		Date date = new Date();
 
 		// Get label
-		//String label = "label";
+		String label = "label";
 		
 		MessageLog.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
 		
