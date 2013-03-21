@@ -8,6 +8,8 @@ public interface ValFormatter {
 	void clearResults();
 	void setColSpan(int col, int colSpan);
 	void setDetail(String detail);
+	void setDTS(String dts);
+	void setFound(String found);
 	void setReference(String ref);
 	void setStatus(String status);
 	void setName(String name);

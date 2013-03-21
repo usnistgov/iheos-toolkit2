@@ -48,13 +48,22 @@ public class HtmlValFormatter implements ValFormatter {
 	public void clearResults() {
 	}
 
-	// DTS column
+	// Detail column
 	public void setDetail(String detail) {
 		addCell(detail, 0);
 	}
 	
 	public void detail(String detail) {
 		setDetail(detail);
+	}
+	
+	// DTS column
+	public void setDTS(String dts) {
+		addCell(dts, 2);
+	}
+	
+	public void dts(String dts) {
+		setDTS(dts);
 	}
 	
 	public void detailAsError(String detail) {
@@ -68,21 +77,29 @@ public class HtmlValFormatter implements ValFormatter {
 	
 	public void detailAsWarning(String detail) {
 		setDetail(blue(detail));
-	}
-	
+	}	
 
 	// Reference column
 	public void setReference(String ref) {
-		addCell(ref, 3);
+		addCell(ref, 2);
 	}
 	
 	public void reference(String ref) {
 		setReference(ref);
 	}
 
+	// Found column
+	public void setFound(String found) {
+		addCell(found, 3);
+	}
+	
+	public void found(String found) {
+		setFound(found);
+	}
+	
 	// Name Column
 	public void setName(String name) {
-		addCell(name, 2);
+		addCell(name, 0);
 	}
 	
 	public void name(String name) {

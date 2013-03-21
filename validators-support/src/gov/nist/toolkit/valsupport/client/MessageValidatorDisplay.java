@@ -9,17 +9,17 @@ import java.util.List;
 
 public class MessageValidatorDisplay {
 	ValFormatter f;
-//	int row = 0;
+	//	int row = 0;
 	String timeAndDate = "";
 	String clientIP = "0.0.0.0";
 	String uploadFilename = null;
 	boolean lessdetail = false;
-	
+
 	public void setTimeAndDate(String td) { timeAndDate = td; }
 	public void setClientIP(String ip) { clientIP = ip; }
 	public void setUploadFilename(String fn) { uploadFilename = fn; }
 	public void setLessDetail(boolean less) { lessdetail = less; }
-	
+
 	public MessageValidatorDisplay(ValFormatter f) {
 		this.f = f;
 	}
@@ -46,13 +46,20 @@ public class MessageValidatorDisplay {
 		}
 		f.hr();
 
-		f.setName(f.h2("Name"));
-		f.setStatus(f.h2("Status"));
-		f.setDetail(f.h2("DTS"));
-		f.setReference(f.h2("Found"));
-		f.setExpected(f.h2("Expected"));
-		f.setRFC(f.h2("RFC"));
-		f.incRow();
+		if(isDirectReport(results)) {
+			f.setName(f.h2("Name"));
+			f.setStatus(f.h2("Status"));
+			f.setDetail(f.h2("DTS"));
+			f.setReference(f.h2("Found"));
+			f.setExpected(f.h2("Expected"));
+			f.setRFC(f.h2("RFC"));
+			f.incRow();
+		} else {
+			f.setDetail(f.h2("Detail"));
+			f.setReference(f.h2("Reference"));
+			f.setStatus(f.h2("Status"));
+			f.incRow();
+		}
 
 		for (ValidationStepResult result : results.getResults()) {
 			f.hr();
@@ -65,9 +72,9 @@ public class MessageValidatorDisplay {
 				lessdetail = false;
 				switch (er.level) {
 				case SECTIONHEADING:
-					f.setName(f.bold(er.msg));
-					f.setColSpan(0, 5);
-					lessdetail = true;
+					f.setDetail(f.bold(er.msg));
+					//f.setColSpan(0, 5);
+					//lessdetail = true;
 					break;
 
 				case CHALLENGE:
@@ -82,66 +89,66 @@ public class MessageValidatorDisplay {
 					break;
 
 				case DETAIL:
-					f.setName(er.msg);
-					f.setColSpan(0, 5);
-					f.setDetail(f.green("Success"));
-					lessdetail = true;
+					f.setDetail(er.msg);
+					//f.setColSpan(0, 5);
+					f.setStatus(f.green("Success"));
+					//lessdetail = true;
 					break;
 
 				case ERROR:
-					f.setName(f.red(er.msg));
+					f.setDetail(f.red(er.msg));
 					f.setReference(f.red(er.resource));
 					foundErrors = true;
 					f.setStatus(f.red("Error"));
 					break;
 
 				case WARNING:
-					f.setName(f.blue(er.msg));
+					f.setDetail(f.blue(er.msg));
 					f.setReference(f.blue(er.resource));
 					f.setStatus(f.blue("Warning"));
 					break;
-				
+
 				case D_SUCCESS:
 					f.setName(er.name);
-					f.setDetail(er.dts);
-					f.setReference(er.found);
+					f.setDTS(er.dts);
+					f.setFound(er.found);
 					f.setExpected(er.expected);
 					f.setRFC(f.htm_link(er.rfc));
 					f.setStatus(f.green(er.status));
 					lessdetail = true;
 					break;
-					
+
 				case D_INFO:
 					f.setName(er.name);
-					f.setDetail(er.dts);
-					f.setReference(er.found);
+					f.setDTS(er.dts);
+					f.setFound(er.found);
 					f.setExpected(er.expected);
 					f.setRFC(f.htm_link(er.rfc));
 					f.setStatus(f.purple(er.status));
 					lessdetail = true;
 					break;
-					
+
 				case D_ERROR:
 					f.setName(f.red(er.name));
-					f.setDetail(f.red(er.dts));
-					f.setReference(f.red(er.found));
+					f.setDTS(f.red(er.dts));
+					f.setFound(f.red(er.found));
 					f.setExpected(f.red(er.expected));
 					f.setRFC(f.htm_link(er.rfc));
 					f.setStatus(f.red(er.status));
 					lessdetail = true;
 					break;
-					
-					
+
+
 				case D_WARNING:
 					f.setName(f.blue(er.name));
-					f.setDetail(f.blue(er.dts));
-					f.setReference(f.blue(er.found));
+					f.setDTS(f.blue(er.dts));
+					f.setFound(f.blue(er.found));
 					f.setExpected(f.blue(er.expected));
 					f.setRFC(f.htm_link(er.rfc));
 					f.setStatus(f.blue(er.status));
 					lessdetail = true;
 					break;
-					
+
 				}
 
 				if (!lessdetail) {
@@ -157,12 +164,33 @@ public class MessageValidatorDisplay {
 
 		if (foundErrors) {
 			f.setCell(f.red("Summary: Errors were found"), summaryRow, 0);
-//			resultsTable.setWidget(summaryRow, 0, html(f.red("Summary: Errors were found")));
+			//			resultsTable.setWidget(summaryRow, 0, html(f.red("Summary: Errors were found")));
 		} else {
 			f.setCell("Summary: No errors were found", summaryRow, 0);
-//			resultsTable.setWidget(summaryRow, 0, html("Summary: No error were found"));
+			//			resultsTable.setWidget(summaryRow, 0, html("Summary: No error were found"));
 		}
 
 	}
 
+	public boolean isDirectReport(MessageValidationResults results) {
+		for (ValidationStepResult result : results.getResults()) {
+
+			List<ValidatorErrorItem> ers = result.er;
+			for (ValidatorErrorItem er : ers)  {
+				switch (er.level) {				
+				case D_SUCCESS:
+					return true;
+				case D_INFO:
+					return true;
+				case D_ERROR:
+					return true;
+				case D_WARNING:
+					return true;
+				}
+			}
+
+		}
+		return false;
+
+	}
 }

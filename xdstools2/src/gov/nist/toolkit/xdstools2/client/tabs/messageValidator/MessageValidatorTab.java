@@ -1074,15 +1074,35 @@ public class MessageValidatorTab extends TabbedWindow {
 		}
 
 		public void setDetail(String detail) {
-			addCell(detail, 2);
+			addCell(detail, 0);
+		}
+		
+		public void setDTS(String dts) {
+			addCell(dts, 2);
+		}
+		
+		public void setFound(String found) {
+			addCell(found, 3);
 		}
 
 		public void setReference(String ref) {
-			addCell(ref, 3);
+			addCell(ref, 2);
 		}
 
 		public void setStatus(String status) {
 			addCell(status, 1);
+		}
+		
+		public void setName(String name) {
+			addCell(name, 0);
+		}
+
+		public void setExpected(String expected) {
+			addCell(expected, 4);
+		}
+
+		public void setRFC(String rfc) {
+			addCell(rfc, 5);
 		}
 
 		public String red(String msg) {
@@ -1138,21 +1158,6 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		public int getRow() {
 			return row;
-		}
-
-		@Override
-		public void setName(String name) {
-			addCell(name, 0);
-		}
-
-		@Override
-		public void setExpected(String expected) {
-			addCell(expected, 4);
-		}
-
-		@Override
-		public void setRFC(String rfc) {
-			addCell(rfc, 5);
 		}
 
 	}
