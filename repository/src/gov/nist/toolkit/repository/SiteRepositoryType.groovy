@@ -14,7 +14,7 @@ class SiteRepositoryType extends RepositoryType {
 
 	@Override
 	public String getDefaultLocation() {
-		return 'sites';
+		return 'Sites';
 	}
 
 }

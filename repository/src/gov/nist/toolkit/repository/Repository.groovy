@@ -1,6 +1,7 @@
 package gov.nist.toolkit.repository
 
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.utilities.io.Io
 
 class Repository {
 	RepositoryType type;
@@ -20,66 +21,137 @@ class Repository {
 		this.location = location;
 	}
 	
-	def exists() {	return root.exists()  }
+	private def exists() {	return root.exists()  }
 	
-	File getReqMetaFile() { return new File(root.toString() + File.separator + 'req.meta') }
+	private File getReqMetaFile() { return new File(root.toString() + File.separator + 'req.meta.txt') }
 	
-	def isInitialized() {  return getReqMetaFile().exists() }
+	private def isInitialized() {  return getReqMetaFile().exists() }
 	
-	def initialize() {
+	private def initialize() {
 		if (exists() && isInitialized()) return
 		
 		root.mkdirs()
 		
-		ConfigSlurper config = new ConfigSlurper()
-		config.setBinding(type.getRequiredMetadata())
-		getReqMetaFile().withWriter { writer ->
-			config.writeTo(writer)
-		}
+		def props = mapToProperties(type.getRequiredMetadata())
+		saveProperties(props, getReqMetaFile())
 	}
 	
-	File getItemFile(RepositoryItem item) {
+	private File getItemFile(RepositoryItem item) {
 		initialize()
 		def ext = item.props.format1
-		return new File(root + File.separator + item.name + '.' + ext)
+		return new File(root, item.name + '.' + ext)
 	}
 	
-	File getPropsFile(RepositoryItem item) {
+	private File getPropsFile(RepositoryItem item) {
 		initialize()
-		return new File(root + File.separator + item.name + '.prop')
+		return new File(root, item.name + '.prop.txt')
 	}
 	
-	def add(RepositoryItem item) {
+	private File getPropsFile(String name) {
 		initialize()
-		getPropsFile(item).withWriter { writer ->
-			item.props.writeTo(writer)
+		return new File(root, name + '.prop.txt')
+	}
+	
+	def addItem(RepositoryItem item) {
+		initialize()
+		saveProperties(item.props, getPropsFile(item))
+
+		def fos = null
+		try {
+			fos = new FileOutputStream(getItemFile(item))
+			fos.write(item.content)
+		} finally {
+			fos?.close()
 		}
-		getItemFile(item).withWriter { writer ->
-			item.content.writeTo(writer)
+	}
+	
+	RepositoryItem getItem(String name) {
+		initialize()
+		def item = new RepositoryItem(name)
+		
+		item.props = loadProperties(getPropsFile(item))
+		
+		def fis = null
+		try {
+			fis = new FileInputStream(getItemFile(item))
+			item.content = Io.getBytesFromInputStream(fis)
+		} finally {
+			fis?.close()
 		}
+		
+		return item
 	}
 	
 	/**
 	 * Return list item names in this repository
 	 * @return
 	 */
-	def getItemNames() {
+	List<String> getItemNames() {
 		def names = []
 		if (!isInitialized()) return names
-		root.eachFileMatch(~/.*.prop/) { file ->
+		root.eachFileMatch(~/.*.prop.txt/) { file ->
 			def name = getSimpleName(file)
 			names.add(name)
 		}
 		return names
 	}
 	
-	def getSimpleName(File f) {
+	List<String> getItemNamesWithProperty(String propName, String value) {
+		def allItemNames = getItemNames()
+		def namesWithProp = []
+		allItemNames.each { name ->
+			Properties props = loadProperties(getPropsFile(name))
+			def propValue = props.getProperty(propName)
+			if (propValue == value) namesWithProp << name
+		}
+		return namesWithProp
+	}
+	
+	/*
+	 * Return simple name of file. File names are formatted as
+	 * /usr/dir/simpleName.a.b.c  etc.  Remove the /usr/dir/  
+	 * and .a.b.c parts and return just simpleName
+	 */
+	private static String getSimpleName(File f) {
+		// remove directory elements leaving just the file name
+		def dirs = f.name.split(File.separator)
+		def name = dirs.size() > 1 ? (dirs[-1]) : dirs[0]
 		// remove extension
-		def names = f.name.split("\\.")
-		def name = names.size() > 1 ? (names - names[-1]).join('.') : names[0]
-		// remove directory elements leaving just simple file name
-		def dirs = name.split(File.separator)
-		def simpleName = dirs.size() > 1 ? (dirs[-1]) : dirs[0]
+		def names = name.split("\\.")
+		def simpleName = names.size() > 1 ? names[0] : name
 		return simpleName
 	}
+	
+	private static void saveProperties(Properties props, File file) {
+		file.withWriter{ writer ->
+			props.store(writer,'')
+		}
+	}
+	
+	private static Properties loadProperties(File file) {
+		Properties props = new Properties()
+		file.withReader { rdr ->
+			props.load(rdr)
+		}
+		return props
+	}
+
+	private static Properties mapToProperties(Map map) {
+		Properties p = new Properties()
+		map.entrySet().each { entry ->
+			p.put(entry.getKey(), entry.getValue())
+		}
+		return p
+	}	
+	
+	private static Map<String, String> propertiesToMap(Properties p) {
+		def map = [:]
+		Enumeration e = p.keys()
+		while(e.hasMoreElements()) {
+			def key = e.nextElement()
+			map.put(key, p.getProperty(key))
+		}
+		return map
+	}
+	
 }
