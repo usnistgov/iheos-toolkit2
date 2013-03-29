@@ -49,8 +49,8 @@ public class MessageValidatorDisplay {
 		if(isDirectReport(results)) {
 			f.setName(f.h2("Name"));
 			f.setStatus(f.h2("Status"));
-			f.setDetail(f.h2("DTS"));
-			f.setReference(f.h2("Found"));
+			f.setDTS(f.h2("DTS"));
+			f.setFound(f.h2("Found"));
 			f.setExpected(f.h2("Expected"));
 			f.setRFC(f.h2("RFC"));
 			f.incRow();
@@ -114,7 +114,7 @@ public class MessageValidatorDisplay {
 					f.setFound(er.found);
 					f.setExpected(er.expected);
 					f.setRFC(f.htm_link(er.rfc));
-					f.setStatus(f.green(er.status));
+					f.setStatus(f.green("Success"));
 					lessdetail = true;
 					break;
 
@@ -124,7 +124,7 @@ public class MessageValidatorDisplay {
 					f.setFound(er.found);
 					f.setExpected(er.expected);
 					f.setRFC(f.htm_link(er.rfc));
-					f.setStatus(f.purple(er.status));
+					f.setStatus(f.purple("Info"));
 					lessdetail = true;
 					break;
 
@@ -134,7 +134,7 @@ public class MessageValidatorDisplay {
 					f.setFound(f.red(er.found));
 					f.setExpected(f.red(er.expected));
 					f.setRFC(f.htm_link(er.rfc));
-					f.setStatus(f.red(er.status));
+					f.setStatus(f.red("Error"));
 					lessdetail = true;
 					break;
 
@@ -145,7 +145,7 @@ public class MessageValidatorDisplay {
 					f.setFound(f.blue(er.found));
 					f.setExpected(f.blue(er.expected));
 					f.setRFC(f.htm_link(er.rfc));
-					f.setStatus(f.blue(er.status));
+					f.setStatus(f.blue("Warning"));
 					lessdetail = true;
 					break;
 

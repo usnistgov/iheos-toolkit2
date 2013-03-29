@@ -27,6 +27,8 @@ import javax.mail.Address;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+
 import junit.framework.Assert;
 import gov.nist.direct.directValidator.interfaces.MessageHeadersValidator;
 import gov.nist.direct.utils.ValidationUtils;
@@ -49,11 +51,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			}
 		}
 		if(isAscii) {
-			er.success("196", "All Headers", "", "Must be ASCII encoding" , rfc, "Success");
+			er.success("196", "All Headers", "", "Must be ASCII encoding" , rfc);
 		} else if(!isAscii && wrapped) {
-			er.error("196", "All Headers", "Some headers are not ASCII encoded", "Must be ASCII encoding", rfc, "Error");
+			er.error("196", "All Headers", "Some headers are not ASCII encoded", "Must be ASCII encoding", rfc);
 		} else {
-			er.warning("196", "All headers", "Some headers are not ASCII encoded", "Must be ASCII encoding", rfc, "Warning");
+			er.warning("196", "All headers", "Some headers are not ASCII encoded", "Must be ASCII encoding", rfc);
 		}
 		
 	}
@@ -61,21 +63,24 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	// DTS 103-105, Return Path, Conditional
 	public void validateReturnPath(ErrorRecorder er, String returnPath, boolean wrapped) {
 		String rfc = "RFC 5321: Section 4.4;http://tools.ietf.org/html/rfc5321.html#section-4.4;RFC 5322: Section 3.6.7;http://tools.ietf.org/html/rfc5322#section-3.6.7";
+		String txtReturnPath = SafeHtmlUtils.htmlEscape(returnPath);
 		if(returnPath.equals("")) {
-			er.warning("103-105", "Return Path", "Not Present", "Should be present (addr-spec)", "RFC 5321: Section 4.4 - RFC 5322: Section 3.6.7", "Warning");
+			er.warning("103-105", "Return Path", "Not Present", "Should be present (addr-spec)", "RFC 5321: Section 4.4 - RFC 5322: Section 3.6.7");
 			return;
 		}
 		
 		if(ValidationUtils.validateAddrSpec(returnPath)) {
-			er.success("103-105", "Return Path", returnPath, "addr-spec", rfc, "Success");
+			er.success("103-105", "Return Path", txtReturnPath, "addr-spec", rfc);
 		} else {
-			er.error("103-105", "Return Path", returnPath, "addr-spec", rfc, "Error");
+			er.error("103-105", "Return Path", txtReturnPath, "addr-spec", rfc);
 		}
 		
 	}
 	
 	// DTS 104-106, Received, Conditional
 	public void validateReceived(ErrorRecorder er, String received, boolean wrapped) {
+		String txtReceived = received;
+		received = received.replaceAll("\\s", "");
 		String[] content_split = null;
 		String content_split_right = "";
 		String content_split_left = "";
@@ -135,15 +140,16 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		
 		String rfc = "RFC 5321: Section 4.4;http://tools.ietf.org/html/rfc5321.html#section-4.4;RFC 5322: Section 3.3;http://tools.ietf.org/html/rfc5322#section-3.3";
 		if(checkFrom && checkBy && checkFor && checkDate) {
-			er.success("104-106", "Received", received, "", rfc, "Success");
+			er.success("104-106", "Received", txtReceived, "from clause by clause for clause; date", rfc);
 		} else {
-			er.warning("104-106", "Received", received, "", rfc, "Error");
+			er.warning("104-106", "Received", txtReceived, "from clause by clause for clause; date", rfc);
 		}
 		
 	}
 
 	// DTS 197, Resent Fields, Required
 	public void validateResentFields(ErrorRecorder er, String[] resentField, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		int i = 0;
 		boolean present = false;
 		while(i<resentField.length && !resentField[i].contains("resent")) {
@@ -156,117 +162,125 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		boolean grouped = true;
 		for(int k=i;k<resentField.length;k++) {
 			if(resentField[k].contains("resent")) {
-				er.err("197", "Resent fields are not grouped together", "", "DTS 197", "");
+				er.error("197", "Resent fields", "", "Should be grouped together", rfc);
 				grouped = false;
 				break;
 			}
 		}
 		
 		if(grouped && present) {
-			er.detail("     Success:  DTS 197 - Resent field are grouped together");
+			er.success("197", "Resent fields", "Grouped and present", "Should be grouped together", rfc);
 		} else if(grouped && !present) {
-			er.detail("     Info:  DTS 197 - Resent-fields are not used");
+			er.info("197", "Resent fields", "Not present", "Should be grouped together", rfc);
 		}
 		
 	}
 	
 	// DTS 107, Resent-Date, Conditional
 	public void validateResentDate(ErrorRecorder er, String resentDate, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateDate(resentDate)) {
-			er.detail("     Success:  DTS 107 - Resent-Date is valid");
+			er.success("107", "Resent-Date", resentDate, "date-time", rfc);
 		} else if (resentDate.equals("")) { 
-			er.detail("     Info:  DTS 107 - Resent-Date is not present");
+			er.info("107", "Resent-Date", "Not present", "date-time", rfc);
 		} else{
-			er.err("107", "Resent-Date is invalid.", "", "DTS 107", "");
+			er.error("107", "Resent-Date", resentDate, "date-time", rfc);
 		}
 
 	}
 
 	// DTS 108, Resent-From, Conditional
 	public void validateResentFrom(ErrorRecorder er, String resentFrom, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateEmail(resentFrom)) {
-			er.detail("     Success:  DTS 108 - Resent-From field is valid");
+			er.success("107", "Resent-From", resentFrom, "mailbox-list", rfc);
 		} else if (resentFrom.equals("")) { 
-			er.detail("     Info:  DTS 108 - Resent-From is not present");
+			er.info("107", "Resent-From", "Not Present", "mailbox-list", rfc);
 		} else {
-			er.err("108", "Resent-From field is invalid.", "", "DTS 108", "");
+			er.error("107", "Resent-From", resentFrom, "mailbox-list", rfc);
 		}
 		
 	}
 	
 	// DTS 109, Resent-Sender, Conditional
 	public void validateResentSender(ErrorRecorder er, String resentSender, String resentFrom, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateEmail(resentSender) && !resentSender.equals(resentFrom)) {
-			er.detail("     Success:  DTS 109 - Resent-Sender field is valid");
+			er.success("107", "Resent-Sender", resentSender, "mailbox-list", rfc);
 		} else if (resentFrom.equals("")) { 
-			er.detail("     Info:  DTS 109 - Resent-Sender is not present");
+			er.info("107", "Resent-Sender", "Not present", "mailbox-list", rfc);
 		} else if(resentSender.equals(resentFrom)) {
-			er.err("109", "Resent-From field is equal to Resent-Sender field", "", "DTS 108", "");
+			er.error("109", "Resent-Sender", resentSender, "Resent-Sender should not be equal to Resent-From", rfc);
 		} else {
-			er.err("109", "Resent-Sender field is invalid.", "", "DTS 108", "");
+			er.error("109", "Resent-Sender", resentSender, "mailbox-list", rfc);
 		}
 		
 	}
 
 	// DTS 110, Resent-to, Optional
 	public void validateResentTo(ErrorRecorder er, String resentTo, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateEmail(resentTo)) {
-			er.detail("     Success:  DTS 110 - Resent-To field is valid");
+			er.success("107", "Resent-To", resentTo, "address-list", rfc);
 		} else if (resentTo.equals("")) { 
-			er.detail("     Info:  DTS 110 - Resent-To is not present");
+			er.info("107", "Resent-To", "Not present", "address-list", rfc);
 		} else {
-			er.err("110", "Resent-To field is invalid.", "", "DTS 110", "");
+			er.error("107", "Resent-To", resentTo, "address-list", rfc);
 		}
 		
 	}
 
 	// DTS 111, Resent-cc, Optional
 	public void validateResentCc(ErrorRecorder er, String resentCc, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateEmail(resentCc)) {
-			er.detail("     Success:  DTS 111 - Resent-Cc field is valid");
+			er.success("111", "Resent-Cc", resentCc, "address-list", rfc);
 		} else if (resentCc.equals("")) { 
-			er.detail("     Info:  DTS 111 - Resent-Cc is not present");
+			er.info("111", "Resent-Cc", "Not present", "address-list", rfc);
 		} else {
-			er.err("111", "Resent-Cc field is invalid.", "", "DTS 111", "");
+			er.error("111", "Resent-Cc", resentCc, "address-list", rfc);
 		}
 		
 	}
 
 	// DTS 112, Resent-bcc, Optional
 	public void validateResentBcc(ErrorRecorder er, String resentBcc, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateEmail(resentBcc)) {
-			er.detail("     Success:  DTS 112 - Resent-Bcc field is valid");
+			er.success("112", "Resent-Bcc", resentBcc, "address-list", rfc);
 		} else if (resentBcc.equals("")) { 
-			er.detail("     Info:  DTS 112 - Resent-Bcc is not present");
+			er.info("112", "Resent-Bcc", "Not present", "address-list", rfc);
 		} else {
-			er.err("112", "Resent-Bcc field is invalid.", "", "DTS 112", "");
+			er.error("112", "Resent-Bcc", resentBcc, "address-list", rfc);
 		}
 		
 	}
 
 	// DTS 113, Resent-Msg-Id, Conditional
 	public void validateResentMsgId(ErrorRecorder er, String resentMsgId, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateAddrSpec(resentMsgId)) {
-			er.detail("     Success:  DTS 113 - Resent-Msg-Id field is valid");
+			er.success("113", "Resent-Msg-Id", resentMsgId, "msg-id", rfc);
 		} else if (resentMsgId.equals("")) { 
-			er.detail("     Info:  DTS 113 - Resent-Msg-Id is not present");
+			er.info("113", "Resent-Msg-Id", "Not present", "msg-id", rfc);
 		} else {
-			er.err("113", "Resent-Msg-Id field is invalid.", "", "DTS 113", "");
+			er.error("113", "Resent-Msg-Id", resentMsgId, "msg-id", rfc);
 		}
 		
 	}
 	
 	// DTS 114, Orig-Date, Required
 	public void validateOrigDate(ErrorRecorder er, String origDate, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.1;http://tools.ietf.org/html/rfc5322#section-3.6.1";
 		if(origDate.equals("") && !wrapped) {
-			er.detail("Info:  DTS - 114  - Wrapped Message: Date is not present on the outer (encrypted) message");
+			er.info("114", "Orig-Date", "Not present", "Wrapped Message: Orig-Date is not present on the outer (encrypted) message", rfc);
 		} else if(origDate.equals("") && wrapped) {
-			er.err("114", "Date is not present", "", "", "DTS 114");
+			er.error("114", "Orig-Date", "Not present", "Unwrapped Message: Orig-Date should be present", rfc);
 		} else {
 			if(ValidationUtils.validateDate(origDate)) {
-				er.detail("     Success:  DTS 114 - Orig Date is valid");
+				er.success("114", "Orig-Date", origDate, "[ day-of-week \",\" ] date time", rfc);
 			} else {
-				er.err("114", "Orig Date is invalid.", "", "DTS 114", "");
+				er.error("114", "Orig-Date", origDate, "[ day-of-week \",\" ] date time", rfc);
 			}
 		}
 	}
@@ -275,12 +289,14 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	public void validateFrom(ErrorRecorder er, String from, boolean wrapped) {
 		String rfc = "RFC 5322: Section 3.6.2;http://tools.ietf.org/html/rfc5322#section-3.6.2";
 		if(from.equals("") && !wrapped) {
-			er.warning("115", "From", "", "mailbox-list", rfc, "Warning");
+			er.info("115", "From", "Not present", "Wrapped Message: From is not present on the outer (encrypted) message", rfc);
+		}  else if(from.equals("") && wrapped) {
+			er.error("115", "From", "Not present", "Unwrapped Message: From should be present", rfc);
 		} else {
 			if (ValidationUtils.validateEmail(from)){
-				er.success("115", "From", from, "mailbox-list", rfc, "Success");
+				er.success("115", "From", from, "mailbox-list", rfc);
 			} else {
-				er.error("115", "From", from, "mailbox-list", rfc, "Error");
+				er.error("115", "From", from, "mailbox-list", rfc);
 			}
 		}
 		
@@ -288,17 +304,18 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 116, Sender, Conditional
 	public void validateSender(ErrorRecorder er, String sender, Address[] from, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.2;http://tools.ietf.org/html/rfc5322#section-3.6.2";
 		if(from.length>1) {
 			if(ValidationUtils.validateEmail(sender)) {
-				er.detail("     Success:  DTS 116 - Sender field is valid");
+				er.success("116", "Sender", sender, "mailbox", rfc);
 			} else {
-				er.err("116", "Sender field is invalid.", "", "DTS 116", "");
+				er.error("116", "Sender", sender, "mailbox", rfc);
 			}
 		} else {
 			if(sender.equals("")) {
-				er.detail("     Success:  DTS 116 - Sender field is not present because From field contains only one mailbox");
+				er.success("116", "Sender", "Not present", "Sender field not used if from address contains only one mailbox", rfc);
 			} else {
-				er.err("116", "Sender field shouldn't be present", "", "DTS 116", "");
+				er.error("116", "Sender", sender, "Sender field should not be present, from address contains only one mailbox", rfc);
 			}
 		}
 		
@@ -306,15 +323,16 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 117, Reply-To, Optional
 	public void validateReplyTo(ErrorRecorder er, String replyTo, boolean wrapped) {
-		if(replyTo.equals("")) {
-			er.warning("117", "Reply-To field is not present", "", "DTS 117");
+		String rfc = "RFC 5322: Section 3.6.2;http://tools.ietf.org/html/rfc5322#section-3.6.2";
+		if(replyTo.equals("") && !wrapped) {
+			er.info("117", "Reply-To", "Not present", "Wrapped Message: Reply-To is not present on the outer (encrypted) message", rfc);
+		} else if(replyTo.equals("") && wrapped) {
+			er.warning("117", "Reply-To", "Not present", "Unwrapped Message: Reply-To should be present", rfc);
 		} else {
 			if(ValidationUtils.validateEmail(replyTo)) {
-				er.detail("     Success:  DTS 117 - Reply-To field is valid");
-			} else if(replyTo.equals("")) {
-				er.detail("     Info:  DTS 117 - Reply-To field is not present");
+				er.success("117", "Reply-To", replyTo, "address-list", rfc);
 			} else {
-				er.err("117", "Reply-To field is invalid.", "", "DTS 117", "");
+				er.error("117", "Reply-To", replyTo, "address-list", rfc);
 			}
 		}
 		
@@ -322,13 +340,16 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 
 	// DTS 118, To, Required
 	public void validateTo(ErrorRecorder er, String to, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.3;http://tools.ietf.org/html/rfc5322#section-3.6.3";
 		if(to.equals("") && !wrapped) {
-			er.warning("118", "To field is not present", "", "DTS 118");
+			er.info("118", "To", "Not present", "Wrapped Message: To is not present on the outer (encrypted) message", rfc);
+		} else if(to.equals("") && wrapped) {
+			er.error("118", "To", "Not present", "Unwrapped Message: To must be present", rfc);
 		} else {			
 			if(ValidationUtils.validateEmail(to)) {
-				er.detail("     Success:  DTS 118 - To field is valid");
+				er.success("118", "To", to, "mailbox-list", rfc);
 			} else {
-				er.err("118", "To field is invalid.", "", "DTS 118", "");
+				er.error("118", "To", to, "mailbox-list", rfc);
 			}
 		}
 		
@@ -336,13 +357,14 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 119, cc, Optional
 	public void validateCc(ErrorRecorder er, String cc, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.3;http://tools.ietf.org/html/rfc5322#section-3.6.3";
 		if(cc.equals("")) {
-			er.detail("     Info:  DTS 119 - Cc is not present");
+			er.info("119", "Cc", "Not present", "address-list", rfc);
 		} else {
 			if(ValidationUtils.validateEmail(cc)) {
-				er.detail("     Success:  DTS 119 - Cc field is valid");
+				er.success("119", "Cc", cc, "address-list", rfc);
 			} else {
-				er.err("119", "Cc field is invalid.", "", "DTS 119", "");
+				er.error("119", "Cc", cc, "address-list", rfc);
 			}
 		}
 
@@ -350,13 +372,14 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 120, Bcc, Optional
 	public void validateBcc(ErrorRecorder er, String bcc, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.3;http://tools.ietf.org/html/rfc5322#section-3.6.3";
 		if(bcc.equals("")) {
-			er.detail("     Info:  DTS 120 - Bcc is not present");
+			er.success("120", "Bcc", "Not present", "Should not be present", rfc);
 		} else {
 			if(ValidationUtils.validateEmail(bcc)) {
-				er.detail("     Success:  DTS 120 - Bcc field is valid");
+				er.success("120", "Bcc", bcc, "address-list", rfc);
 			} else {
-				er.err("120", "Bcc field is invalid.", "", "DTS 120", "");
+				er.error("120", "Bcc", bcc, "address-list", rfc);
 			}
 		}
 		
@@ -364,26 +387,30 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 
 	// DTS 121, Message-Id, Required
 	public void validateMessageId(ErrorRecorder er, String messageId, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.4;http://tools.ietf.org/html/rfc5322#section-3.6.4";
 		if(messageId.equals("") && !wrapped) {
-			er.warning("121", "Message-Id field is not present", "", "DTS 121");
+			er.warning("121", "Message-Id", "Not present", "Wrapped Message: Message-Id is not present on the outer (encrypted) message", rfc);
+		} else if(messageId.equals("") && wrapped) {
+			er.error("121", "Message-Id", "Not present", "Unwrapped Message: Message-Id must be present", rfc);
 		} else {
 			if(ValidationUtils.validateAddrSpec(messageId)) {
-				er.detail("     Success:  DTS 121 - Message Id is valid");
+				er.success("121", "Message-Id", messageId, "<string with no spaces\"@\"string with no spaces>", rfc);
 			} else {
-				er.err("121", "Message Id field is invalid.", "", "DTS 121", "");
+				er.error("121", "Message-Id", messageId, "<string with no spaces\"@\"string with no spaces>", rfc);
 			}
 		}
 	}
 
 	// DTS 122, In-reply-to, Optional
 	public void validateInReplyTo(ErrorRecorder er, String inReplyTo, String date, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.4;http://tools.ietf.org/html/rfc5322#section-3.6.4";
 		// Check 1: Must be formatted as one or more <randomstringwithoutspaces@randomstringwithoutspaces>
 		if(ValidationUtils.validateAddrSpec(inReplyTo)) {
-			er.detail("     Success:  DTS 122 - In-Reply-To field is valid");
+			er.success("122", "In-reply-to", inReplyTo, "<string with no spaces\"@\"string with no spaces>", rfc);
 		} else if(inReplyTo.equals("")) {
-			er.detail("     Info:  DTS 122 - In-Reply-To is not present");
+			er.info("122", "In-reply-to", "Not present", "<string with no spaces\"@\"string with no spaces>", rfc);
 		} else {
-			er.err("122", "In-Reply-To field is invalid", "", "DTS 122", "");
+			er.error("122", "In-reply-to", inReplyTo, "<string with no spaces\"@\"string with no spaces>", rfc);
 		}
 		
 	}

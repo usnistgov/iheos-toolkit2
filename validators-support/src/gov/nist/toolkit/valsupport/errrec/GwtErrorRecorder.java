@@ -262,7 +262,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	}
 
 	@Override
-	public void success(String dts, String name, String found, String expected, String RFC, String status) {
+	public void success(String dts, String name, String found, String expected, String RFC) {
 		tagLastInfo2();
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.D_SUCCESS;
@@ -271,12 +271,12 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.found = found;
 		ei.expected = expected;
 		ei.rfc = RFC;
-		ei.status = status;
+		ei.status = "Success";
 		errMsgs.add(ei);
 	}
 
 	@Override
-	public void error(String dts, String name, String found, String expected,String RFC, String status) {
+	public void error(String dts, String name, String found, String expected,String RFC) {
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.D_ERROR;
 		ei.dts = dts;
@@ -284,7 +284,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.found = found;
 		ei.expected = expected;
 		ei.rfc = RFC;
-		ei.status = status;
+		ei.status = "Error";
 		ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
 		errMsgs.add(ei);
 		lastErrCount++;
@@ -299,7 +299,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	}
 
 	@Override
-	public void warning(String dts, String name, String found, String expected, String RFC, String status) {
+	public void warning(String dts, String name, String found, String expected, String RFC) {
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.D_WARNING;
 		ei.dts = dts;
@@ -307,7 +307,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.found = found;
 		ei.expected = expected;
 		ei.rfc = RFC;
-		ei.status = status;
+		ei.status = "Warning";
 		ei.completion = ValidatorErrorItem.ReportingCompletionType.WARNING;
 		errMsgs.add(ei);
 		lastErrCount++;
@@ -322,7 +322,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	}
 	
 	@Override
-	public void info(String dts, String name, String found, String expected, String RFC, String status) {
+	public void info(String dts, String name, String found, String expected, String RFC) {
 		tagLastInfo2();
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.D_INFO;
@@ -331,7 +331,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.found = found;
 		ei.expected = expected;
 		ei.rfc = RFC;
-		ei.status = status;
+		ei.status = "Info";
 		errMsgs.add(ei);
 	}
 

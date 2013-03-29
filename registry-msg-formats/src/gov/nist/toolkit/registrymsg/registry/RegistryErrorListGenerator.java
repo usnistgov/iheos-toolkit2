@@ -510,29 +510,25 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	}
 
 	@Override
-	public void success(String dts, String name, String found, String expected,
-			String RFC, String status) {
+	public void success(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void error(String dts, String name, String found, String expected,
-			String RFC, String status) {
+	public void error(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void warning(String dts, String name, String found, String expected,
-			String RFC, String status) {
+	public void warning(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void info(String dts, String name, String found, String expected,
-			String RFC, String status) {
+	public void info(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
 		
 	}

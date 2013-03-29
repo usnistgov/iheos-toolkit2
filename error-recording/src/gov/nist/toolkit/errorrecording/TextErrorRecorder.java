@@ -231,22 +231,22 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public void success(String dts, String name, String found, String expected, String RFC, String status) {
+	public void success(String dts, String name, String found, String expected, String RFC) {
 		detail(dts + ": " + name + " " + found);		
 	}
 
 	@Override
-	public void error(String dts, String name, String found, String expected, String RFC, String status) {
+	public void error(String dts, String name, String found, String expected, String RFC) {
 		err(dts, name, "", "", dts);
 	}
 
 	@Override
-	public void warning(String dts, String name, String found, String expected, String RFC, String status) {
+	public void warning(String dts, String name, String found, String expected, String RFC) {
 		warning(dts, name, "", dts);
 	}
 
 	@Override
-	public void info(String dts, String name, String found, String expected, String RFC, String status) {
+	public void info(String dts, String name, String found, String expected, String RFC) {
 		detail(dts + ": " + name + " " + found);
 	}
 	

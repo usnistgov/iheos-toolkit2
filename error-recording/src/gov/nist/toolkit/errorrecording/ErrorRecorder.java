@@ -24,10 +24,10 @@ public interface ErrorRecorder extends ErrorRecorderBuilder {
 	public void challenge(String msg); // statement of challenge
 	public void externalChallenge(String msg); // statement of challenge that requires registry query
 	public void detail(String msg); // detail findings
-	public void success(String dts, String name, String found, String expected, String RFC, String status);
-	public void error(String dts, String name, String found, String expected, String RFC, String status);
-	public void warning(String dts, String name, String found, String expected, String RFC, String status);
-	public void info(String dts, String name, String found, String expected, String RFC, String status);
+	public void success(String dts, String name, String found, String expected, String RFC);
+	public void error(String dts, String name, String found, String expected, String RFC);
+	public void warning(String dts, String name, String found, String expected, String RFC);
+	public void info(String dts, String name, String found, String expected, String RFC);
 	public void finish();
 	public void showErrorInfo();
 	public boolean hasErrors();

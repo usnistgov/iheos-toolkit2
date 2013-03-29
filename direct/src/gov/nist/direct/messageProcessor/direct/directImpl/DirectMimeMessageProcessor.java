@@ -492,7 +492,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
 		er.detail(html_formatted_ccda);
 		er.detail("####################################################");
-		logger.info(p.getContent().toString());
+		//logger.info(p.getContent().toString());
 
 
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
