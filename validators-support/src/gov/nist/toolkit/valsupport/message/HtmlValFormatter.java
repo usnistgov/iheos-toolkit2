@@ -150,13 +150,24 @@ public class HtmlValFormatter implements ValFormatter {
 	}
 	
 	@Override
-	public String htm_link(String msg) {
-		String res = msg;
-		String[] msgSplit = msg.split(";");
-		for(int i=0 ; i < msgSplit.length ; i=i+2) {
-			res = "<a href=\"" + msgSplit[i+1] + "\" target=\"_blank\">"+ msgSplit[i] + "</a><br>";
+	public String rfc_link(String msg) {
+		String res = "";
+		if(msg.contains(";")) {
+			String[] msgSplit = msg.split(";");
+			for(int i=0 ; i < msgSplit.length ; i=i+2) {
+				res += html_link(msgSplit[i], msgSplit[i+1]);
+			}
+			if(res.equals("")) {
+				res = msg;
+			}
+		} else {
+			res = msg;
 		}
 		return res;
+	}
+	
+	public String html_link(String msg, String url) {
+		return "<a href=\"" + url + "\" target=\"_blank\">"+ msg + "</a><br>";
 	}
 
 	public void incRow() {

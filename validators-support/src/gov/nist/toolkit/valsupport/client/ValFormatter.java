@@ -22,7 +22,8 @@ public interface ValFormatter {
 	String bold(String msg);
 	String h2(String msg);
 	String h3(String msg);
-	String htm_link(String msg);
+	String rfc_link(String msg);
+	String html_link(String msg, String url);
 	void incRow();
 	int getRow();
 }

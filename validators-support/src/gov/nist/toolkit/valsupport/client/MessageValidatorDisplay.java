@@ -113,7 +113,7 @@ public class MessageValidatorDisplay {
 					f.setDTS(er.dts);
 					f.setFound(er.found);
 					f.setExpected(er.expected);
-					f.setRFC(f.htm_link(er.rfc));
+					f.setRFC(f.rfc_link(er.rfc));
 					f.setStatus(f.green("Success"));
 					lessdetail = true;
 					break;
@@ -123,7 +123,7 @@ public class MessageValidatorDisplay {
 					f.setDTS(er.dts);
 					f.setFound(er.found);
 					f.setExpected(er.expected);
-					f.setRFC(f.htm_link(er.rfc));
+					f.setRFC(f.rfc_link(er.rfc));
 					f.setStatus(f.purple("Info"));
 					lessdetail = true;
 					break;
@@ -133,7 +133,7 @@ public class MessageValidatorDisplay {
 					f.setDTS(f.red(er.dts));
 					f.setFound(f.red(er.found));
 					f.setExpected(f.red(er.expected));
-					f.setRFC(f.htm_link(er.rfc));
+					f.setRFC(f.rfc_link(er.rfc));
 					f.setStatus(f.red("Error"));
 					lessdetail = true;
 					break;
@@ -144,7 +144,7 @@ public class MessageValidatorDisplay {
 					f.setDTS(f.blue(er.dts));
 					f.setFound(f.blue(er.found));
 					f.setExpected(f.blue(er.expected));
-					f.setRFC(f.htm_link(er.rfc));
+					f.setRFC(f.rfc_link(er.rfc));
 					f.setStatus(f.blue("Warning"));
 					lessdetail = true;
 					break;

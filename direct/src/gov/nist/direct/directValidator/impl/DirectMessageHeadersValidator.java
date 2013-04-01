@@ -193,11 +193,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	public void validateResentFrom(ErrorRecorder er, String resentFrom, boolean wrapped) {
 		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateEmail(resentFrom)) {
-			er.success("107", "Resent-From", resentFrom, "mailbox-list", rfc);
+			er.success("108", "Resent-From", resentFrom, "mailbox-list", rfc);
 		} else if (resentFrom.equals("")) { 
-			er.info("107", "Resent-From", "Not Present", "mailbox-list", rfc);
+			er.info("108", "Resent-From", "Not Present", "mailbox-list", rfc);
 		} else {
-			er.error("107", "Resent-From", resentFrom, "mailbox-list", rfc);
+			er.error("108", "Resent-From", resentFrom, "mailbox-list", rfc);
 		}
 		
 	}
@@ -206,9 +206,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	public void validateResentSender(ErrorRecorder er, String resentSender, String resentFrom, boolean wrapped) {
 		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateEmail(resentSender) && !resentSender.equals(resentFrom)) {
-			er.success("107", "Resent-Sender", resentSender, "mailbox-list", rfc);
+			er.success("109", "Resent-Sender", resentSender, "mailbox-list", rfc);
 		} else if (resentFrom.equals("")) { 
-			er.info("107", "Resent-Sender", "Not present", "mailbox-list", rfc);
+			er.info("109", "Resent-Sender", "Not present", "mailbox-list", rfc);
 		} else if(resentSender.equals(resentFrom)) {
 			er.error("109", "Resent-Sender", resentSender, "Resent-Sender should not be equal to Resent-From", rfc);
 		} else {
@@ -221,11 +221,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	public void validateResentTo(ErrorRecorder er, String resentTo, boolean wrapped) {
 		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateEmail(resentTo)) {
-			er.success("107", "Resent-To", resentTo, "address-list", rfc);
+			er.success("110", "Resent-To", resentTo, "address-list", rfc);
 		} else if (resentTo.equals("")) { 
-			er.info("107", "Resent-To", "Not present", "address-list", rfc);
+			er.info("110", "Resent-To", "Not present", "address-list", rfc);
 		} else {
-			er.error("107", "Resent-To", resentTo, "address-list", rfc);
+			er.error("110", "Resent-To", resentTo, "address-list", rfc);
 		}
 		
 	}
@@ -417,31 +417,31 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 123, References, Optional
 	public void validateReferences(ErrorRecorder er, String references, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.4;http://tools.ietf.org/html/rfc5322#section-3.6.4";
 		if(ValidationUtils.validateAddrSpec(references)) {
-			er.detail("     Success:  DTS 123 - Reference field is valid");
+			er.success("123", "References", references, "<string with no spaces\"@\"string with no spaces>", rfc);
 		} else if(references.equals("")) {
-			er.detail("     Info:  DTS 123 - Reference is not present");
+			er.info("123", "References", "Not present", "<string with no spaces\"@\"string with no spaces>", rfc);
 		} else {
-			er.err("123", "Reference field is invalid", "", "DTS 123", "");
+			er.error("123", "References", references, "<string with no spaces\"@\"string with no spaces>", rfc);
 		}
 		
 	}
 	
 	// DTS 124, Subject, Optional
 	public void validateSubject(ErrorRecorder er, String subject, String filename, boolean wrapped) {
-		if(filename.contains("zip")) {
-			if(subject == null) {
-				er.warning("124", "Subject field is not present", "", "DTS 124");
-			} else if(subject.contains("XDM/1.0/DDM")) {
-				er.detail("     Success:  DTS 124 - Subject field is valid");
+		String rfc = "RFC 5322: Section 3.6.5;http://tools.ietf.org/html/rfc5322#section-3.6.5";
+		if(subject == null && !wrapped) {
+			er.warning("124", "Subject", "Not present", "Wrapped Message: Subject is not present on the outer (encrypted) message", rfc);
+		} else if(subject == null && !wrapped) {
+			er.error("124", "Subject", "Not present", "Unwrapped Message: Subject must be present", rfc);
+		}
+		
+		if(filename.contains("zip")) {	
+			if(subject.contains("XDM/1.0/DDM")) {
+				er.success("124", "Subject", subject, "Filename is ZIP: Subject must contain XDM/1.0/DDM", rfc);
 			} else {
-				er.err("124", "Subject field is invalid", "", "DTS 124", "");
-			} 
-		} else {
-			if(subject != null) {
-				er.detail("     Success:  DTS 124 - Subject field is valid");
-			} else {
-				er.warning("124", "Subject field is not present", "", "DTS 124");
+				er.err("124", "Subject", subject, "Filename is ZIP: Subject must contain XDM/1.0/DDM", rfc);
 			}
 		}
 		
@@ -449,43 +449,47 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 125, Comments, Optional
 	public void validateComments(ErrorRecorder er, String comments, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.5;http://tools.ietf.org/html/rfc5322#section-3.6.5";
 		if(comments.equals("")) {
-			er.detail("     Info:  DTS 125 - Comments is not present");
+			er.info("125", "Comments", "Not present", "May not be present", rfc);
 		} else {
-			er.detail("     Success:  DTS 125 - Comments field is valid");
+			er.success("125", "Comments", comments, "Unstructured CRLF", rfc);
 		}
 		
 	}
 	
 	// DTS 126, Keywords, Optional
 	public void validateKeywords(ErrorRecorder er, String keyword, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.5;http://tools.ietf.org/html/rfc5322#section-3.6.5";
 		if(keyword.equals("")) {
-			er.detail("     Info:  DTS 126 - Keywords is not present");
+			er.info("126", "Keywords", "Not present", "May not be present", rfc);
 		} else {
-			er.detail("     Success:  DTS 126 - Keywords field is valid");
+			er.success("126", "Keywords", keyword, "Unstructured CRLF", rfc);
 		}
 		
 	}
 	
 	// DTS 127, Optional-field, Optional
 	public void validateOptionalField(ErrorRecorder er, String optionalField, boolean wrapped) {
+		String rfc = "RFC 5322: Section 3.6.8;http://tools.ietf.org/html/rfc5322#section-3.6.8";
 		if(optionalField.equals("")) {
-			er.detail("     Info:  DTS 127 - Optional-field is not present");
+			er.info("127", "Optional-field", "Not present", "May not be present", rfc);
 		} else {
-			er.detail("     Success:  DTS 127 - Optional-field field is valid"); 
+			er.success("127", "Optional-field", optionalField, "text", rfc);
 		}
 		
 	}
 	
 	// DTS 128, Disposition-Notification-To, Optional
 	public void validateDispositionNotificationTo(ErrorRecorder er, String dispositionNotificationTo, boolean wrapped) {
+		String rfc = "IHE Vol2b: Section 3.32.4.1.3";
 		if(dispositionNotificationTo.equals("")) {
-			er.detail("     Info:  DTS 128 - Disposition-Notification-To field is not present");
+			er.info("128", "Disposition-Notification-To", "Not present", "May not be present", rfc);
 		} else {
 			if(ValidationUtils.validateEmail(dispositionNotificationTo)) {
-				er.detail("     Success:  DTS 128 - Disposition-Notification-To field is valid");
+				er.success("128", "Disposition-Notification-To", dispositionNotificationTo, "Email address", rfc);
 			} else {
-				er.err("128", "Disposition-Notification-To field is invalid.", "", "DTS 128", "");
+				er.error("128", "Disposition-Notification-To", dispositionNotificationTo, "Email address", rfc);
 			}
 		}
 		
@@ -493,16 +497,19 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 102b, MIME-Version, Required
 	public void validateMIMEVersion(ErrorRecorder er, String MIMEVersion, boolean wrapped) {
+		String rfc = "RFC 2045: Section 4;http://tools.ietf.org/html/rfc2045#section-4";
 		if(MIMEVersion.equals("") && !wrapped) {
-			er.warning("102b", "MIME-Version field is not present", "", "DTS 102b");
+			er.warning("102b", "MIME-Version", "Not present", "Wrapped Message: MIME-Version is not present on the outer (encrypted) message", rfc);
+		} else if(MIMEVersion.equals("") && wrapped) {
+			er.error("102b", "MIME-Version", "Not present", "Unwrapped Message: MIME-Version must be present", rfc);
 		} else {
 			final String mimeFormat = "[0-9]\\.[0-9].*";
 			Pattern pattern = Pattern.compile(mimeFormat);
 			Matcher matcher = pattern.matcher(MIMEVersion);
 			if(matcher.matches()) {
-				er.detail("     Success:  DTS 102b - MIME Version is valid");
+				er.success("102b", "MIME-Version", MIMEVersion, "1*DIGIT \".\" 1*DIGIT", rfc);
 			} else {
-				er.err("102b", "MIME Version is invalid.", "", "DTS 102b", "");
+				er.err("102b", "MIME-Version", MIMEVersion, "1*DIGIT \".\" 1*DIGIT", rfc);
 			}
 		}
 		
