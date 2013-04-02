@@ -5,7 +5,7 @@ import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.direct.config.DirectConfigManager;
 import gov.nist.direct.logger.UserLog;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.directsim.DirectServiceManager;
@@ -24,6 +24,7 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.client.XdstestLogId;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.server.serviceManager.AuthManager;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -73,7 +74,7 @@ ToolkitService {
 	
 	// ServiceManagers for execution
 	public QueryServiceManager queryServiceManager; 
-	public SiteServiceManager siteServiceManager;
+	public PubSiteServiceManager pubSiteServiceManager;
 	public DashboardServiceManager dashboardServiceManager;
 	public GazelleServiceManager gazelleServiceManager;
 
@@ -82,7 +83,7 @@ ToolkitService {
 	// reference in the build tree
 	
 	public ToolkitServiceImpl() {
-			siteServiceManager = SiteServiceManager.getSiteServiceManager();   // One copy shared between sessions
+			pubSiteServiceManager = PubSiteServiceManager.getSiteServiceManager();   // One copy shared between sessions
 			System.out.println("MessageValidatorFactory()");
 			if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
 				MessageValidatorFactoryFactory.messageValidatorFactory2I = new MessageValidatorFactory("a");
@@ -150,22 +151,22 @@ ToolkitService {
 	// Site Services
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
-	public Collection<Site> getAllSites() throws Exception { return siteServiceManager.getAllSites(session().getId()); }
-	public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
-	public Site getSite(String siteName) throws Exception { return siteServiceManager.getSite(session().getId(), siteName); }
-	public String saveSite(Site site) throws Exception { return siteServiceManager.saveSite(session().getId(), site); }
-	public String deleteSite(String siteName) throws Exception { return siteServiceManager.deleteSite(session().getId(), siteName); }
+	public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return pubSiteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
+	public Collection<Site> getAllSites() throws Exception { return pubSiteServiceManager.getAllSites(session().getId()); }
+	public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return pubSiteServiceManager.reloadSites(session().getId(), simAlso); }
+	public Site getSite(String siteName) throws Exception { return pubSiteServiceManager.getSite(session().getId(), siteName); }
+	public String saveSite(Site site) throws Exception { return pubSiteServiceManager.saveSite(session().getId(), site); }
+	public String deleteSite(String siteName) throws Exception { return pubSiteServiceManager.deleteSite(session().getId(), siteName); }
 //	public String getHome() throws Exception { return session().getHome(); }
-	public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
-	public TransactionOfferings getTransactionOfferings() throws Exception { return siteServiceManager.getTransactionOfferings(session().getId()); }
-	public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return siteServiceManager.reloadCommonSites(); }
-	public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
-	public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId()); }
-	public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId()); }
-	public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
-	public List<String> getActorTypeNames()  throws NoServletSessionException { return siteServiceManager.getActorTypeNames(session().getId()); }
-	public List<String> getSiteNamesWithRG() throws Exception { return siteServiceManager.getSiteNamesWithRG(session().getId()); }
+	public List<String> getUpdateNames()  throws NoServletSessionException { return pubSiteServiceManager.getUpdateNames(session().getId()); }
+	public TransactionOfferings getTransactionOfferings() throws Exception { return pubSiteServiceManager.getTransactionOfferings(session().getId()); }
+	public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return pubSiteServiceManager.reloadCommonSites(); }
+	public List<String> getRegistryNames()  throws NoServletSessionException { return pubSiteServiceManager.getRegistryNames(session().getId()); }
+	public List<String> getRepositoryNames()  throws NoServletSessionException { return pubSiteServiceManager.getRepositoryNames(session().getId()); }
+	public List<String> getRGNames()  throws NoServletSessionException { return pubSiteServiceManager.getRGNames(session().getId()); }
+	public List<String> getIGNames()  throws NoServletSessionException { return pubSiteServiceManager.getIGNames(session().getId()); }
+	public List<String> getActorTypeNames()  throws NoServletSessionException { return pubSiteServiceManager.getActorTypeNames(session().getId()); }
+	public List<String> getSiteNamesWithRG() throws Exception { return pubSiteServiceManager.getSiteNamesWithRG(session().getId()); }
 
 
 	//------------------------------------------------------------------------
@@ -269,7 +270,21 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
-	
+	@Override
+	public boolean signin(String user, String passwd) throws NoServletSessionException {
+		logger.debug(session().id() + ": " + "signin(" + user + ", " + passwd + ")" );
+		boolean authenticated = new AuthManager().authenticate(user, passwd);
+		session().setAuthticatedUser((authenticated) ? user : null);
+		logger.debug(session().id() + ": " + "signin() returned " + authenticated );
+		return authenticated;
+	}
+	@Override
+	public void signout() throws NoServletSessionException {
+		logger.debug(session().id() + ": " + "signout()" );
+		session().setAuthticatedUser(null);
+	}
+
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Property Service
@@ -279,7 +294,7 @@ ToolkitService {
 	public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
 	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
 	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }
-	public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException  { return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(); }
+	public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException  { return PubSiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(); }
 //	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
 	public String setToolkitProperties(Map<String, String> props) throws Exception { return setToolkitPropertiesImpl(props); }
 	public String getAdminPassword() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getAdminPassword(); }
@@ -448,7 +463,7 @@ ToolkitService {
 				System.setProperty("warHome", warHome.toString());
 
 			if (warHome != null) {
-				s = new Session(warHome, siteServiceManager, getSessionId());
+				s = new Session(warHome, pubSiteServiceManager, getSessionId());
 				if (hsession != null) {
 					s.setSessionId(hsession.getId());
 					s.addSession();

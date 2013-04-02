@@ -8,6 +8,9 @@ http://ihe.wustl.edu/gazelle-na/systemConfigurations.seam?testingSessionId=23
 Each season it may be necessary to ask Eric for a new value.  The EU-CAT
 part and testingSessionId are probably the only things that change.
 
+CAT2013
+http://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=25&configurationType=WebServiceConfiguration
+
 To build an actors config for Connectathon:
 
 1) Go to the OID Management page in Gazelle.  At the bottom left is a link 'Export as Excel file'.

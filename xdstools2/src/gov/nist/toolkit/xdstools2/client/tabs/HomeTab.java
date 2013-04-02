@@ -14,11 +14,16 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class HomeTab extends GenericQueryTab {
@@ -40,10 +45,11 @@ public class HomeTab extends GenericQueryTab {
 		select = true;
 		myContainer.addTab(topPanel, "Home", select );
 
+		topPanel.add(getSignonPanel());
+
 		HTML title = new HTML();
 		title.setHTML("<h2>Home</h2>");
 		topPanel.add(title);
-
 
 		HTML docLink = new HTML();
 		docLink.setHTML("<a href=\"" + "doc/home.html" + "\" target=\"_blank\">" +  "[help]" + "</a>");
@@ -52,17 +58,17 @@ public class HomeTab extends GenericQueryTab {
 		HTML about = new HTML();
 		about.setHTML("<a href=\"" + "doc/about.html" + "\" target=\"_blank\">" +  "[about]" + "</a>");
 		//		topPanel.add(docLink);
-		
-		Hyperlink h = HyperlinkFactory.link("&nbsp;&nbsp;[about version]&nbsp;&nbsp;", new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				new PopupMessage(aboutMessage);
-			}
-
-		});
 
 		menubar.add(docLink);
-		menubar.add(h);
+		if (isDirect()) {
+			Hyperlink h = HyperlinkFactory.link("&nbsp;&nbsp;[about version]&nbsp;&nbsp;", new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					new PopupMessage(aboutMessage);
+				}
+			});
+			menubar.add(h);
+		}
+
 		menubar.add(about);
 
 		HTML instLink = new HTML();
@@ -75,37 +81,149 @@ public class HomeTab extends GenericQueryTab {
 				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + TabLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new TabLauncher(myContainer, TabLauncher.toolConfigTabLabel))
 
 				);
-		
-//		HTML faq = new HTML();
-//		faq.setHTML("<a href=\"" + "doc/faq.html" + "\" target=\"_blank\">" +  "[FAQ]" + "</a>");
-//		menubar.add(faq);
 
-//		new FeatureManager().addCallback(new MainGridLoader());
-		
+
+		//		HTML faq = new HTML();
+		//		faq.setHTML("<a href=\"" + "doc/faq.html" + "\" target=\"_blank\">" +  "[FAQ]" + "</a>");
+		//		menubar.add(faq);
+
+		//		new FeatureManager().addCallback(new MainGridLoader());
+
 		new MainGridLoader().featuresLoadedCallback();
 	}
+
+	Label userNameDisplay = new Label("");
+	TextBox userNameBox;
+	boolean userSignedIn = false;
+	HorizontalPanel signInPanel;
+	HorizontalPanel signoutPanel;
+	TextBox passwdBox;
+
+	VerticalPanel getSignonPanel() {
+		signInPanel = new HorizontalPanel();
+		Label userNameLabel = new Label("User: ");
+		Label passwdLabel = new Label("Password: ");
+		userNameBox = new TextBox();
+		userNameBox.setWidth("8em");
+		passwdBox = new PasswordTextBox();
+		passwdBox.setWidth("8em");
+		Button signInButton = new Button("Sign-in");
+
+		signoutPanel = new HorizontalPanel();
+		Button signOutButton = new Button("Sign-out");
+		signoutPanel.add(userNameDisplay);
+		signoutPanel.add(signOutButton);
+
+		signInPanel.add(userNameLabel);
+		signInPanel.add(userNameBox);
+		signInPanel.add(passwdLabel);
+		signInPanel.add(passwdBox);
+		signInPanel.add(signInButton);
+
+		userNameDisplay.setWidth("20em");
+		HorizontalPanel hpan2 = new HorizontalPanel();
+		hpan2.add(userNameDisplay);
+		hpan2.add(signoutPanel);
+
+		signoutPanel.setVisible(false);
+		signInButton.addClickHandler(signInClickHandler);
+
+		VerticalPanel vpan = new VerticalPanel();
+		vpan.add(hpan2);
+		vpan.add(signInPanel);
+		vpan.add(new HTML("<hr />"));
+
+		signOutButton.addClickHandler(signOutClickHandler);
+
+		return vpan;
+	}
+
+	ClickHandler signInClickHandler = new ClickHandler() {
+		@Override
+		public void onClick(ClickEvent arg0) {
+			toolkitService.signin(userNameBox.getText().trim(), passwdBox.getText().trim(), signinCallback); 
+		}
+	};
+
+	AsyncCallback<Boolean> signinCallback = new AsyncCallback<Boolean> () {
+
+		@Override
+		public void onFailure(Throwable arg0) {
+			new PopupMessage("Signin: " + arg0.getMessage());
+		}
+
+		@Override
+		public void onSuccess(Boolean success) {
+			if (success) {
+				userNameDisplay.setText("Hi " + userNameBox.getText());
+				userSignedIn = true;
+				signoutPanel.setVisible(true);
+				signInPanel.setVisible(false);
+			} else {
+				new PopupMessage("Sign-in failed");
+			}
+		}
+	};
+
+	ClickHandler signOutClickHandler = new ClickHandler() {
+		@Override
+		public void onClick(ClickEvent arg0) {
+			toolkitService.signout(signoutCallback); 
+		}
+	};
+
+	AsyncCallback<Boolean> signoutCallback = new AsyncCallback<Boolean> () {
+
+		@Override
+		public void onFailure(Throwable arg0) {
+			userNameDisplay.setText("");
+			signInPanel.setVisible(true);
+			signoutPanel.setVisible(false);
+			userSignedIn = false;
+			new PopupMessage("Signout: " + arg0.getMessage());
+		}
+
+		@Override
+		public void onSuccess(Boolean arg0) {
+			userNameDisplay.setText("");
+			signInPanel.setVisible(true);
+			signoutPanel.setVisible(false);
+			userSignedIn = false;
+		}
+	};
 
 	boolean forDirect = false;
 	boolean forIHE = false;
 	boolean forNwHIN = false;
 
+	boolean isDirect() {
+		String th = "";
+
+		try {
+			th = Xdstools2.tkProps().get("toolkit.home","");
+			if ("direct".equals(th))
+				return true;
+		} catch (Throwable t) {  }
+		return false;
+	}
+
 	class MainGridLoader {
 
 		//@Override
 		public void featuresLoadedCallback() {
-			String th = "";
-			
-			try {
-				th = Xdstools2.tkProps().get("toolkit.home","");
-			} catch (Throwable t) {
-				
-			}
+			//			String th = "";
+			//			
+			//			try {
+			//				th = Xdstools2.tkProps().get("toolkit.home","");
+			//			} catch (Throwable t) {
+			//				
+			//			}
 
 			mainGrid = new FlexTable();
 			mainGrid.setCellSpacing(20);
 
 			try {
-				if ("direct".equals(th)) {
+				if (isDirect()) {
 					forDirect = true;
 				}
 				else {
@@ -126,7 +244,7 @@ public class HomeTab extends GenericQueryTab {
 				toolkitService.getAdminPassword(getPasswordCallback);
 				loadVersion();
 
-				if ("direct".equals(th)) {
+				if (isDirect()) {
 					displayDirectHome();
 				}
 
@@ -151,8 +269,8 @@ public class HomeTab extends GenericQueryTab {
 
 		mainGrid.setWidget(row, col, addHTML("<h2>Direct</h2>"));
 		row++;		
-		
-		
+
+
 		HTML instLink = new HTML();
 		instLink.setHTML("<a href=\"" + "http://healthcare.nist.gov/ttt.html" + "\" target=\"_blank\">" +  "How to use the Direct Tools" + "</a>");
 		mainGrid.setWidget(row, col, instLink);
@@ -178,9 +296,9 @@ public class HomeTab extends GenericQueryTab {
 		// ***************************************************************************
 
 		//		topPanel.add(mainGrid);
-		
+
 		//		toolkitService.getAdminPassword(getPasswordCallback);
-		
+
 		//		loadVersion();
 
 
@@ -193,7 +311,7 @@ public class HomeTab extends GenericQueryTab {
 		String trustanchor = "";
 		String invtrustrelanchor = "";
 		try {
-			 cert = pubcertConfig.get("pubcert");
+			cert = pubcertConfig.get("pubcert");
 		} catch (PropertyNotFoundException e) {
 			new PopupMessage("Configuration parameter direct.pubcert.pubcert cannot be loaded from tk_props.txt properties file located in the external cache");
 		}
@@ -207,7 +325,7 @@ public class HomeTab extends GenericQueryTab {
 		} catch (PropertyNotFoundException e) {
 			new PopupMessage("Configuration parameter direct.pubcert.invtrustrelanchor cannot be loaded from tk_props.txt properties file located in the external cache");
 		}
-		
+
 		topPanel.add(new HTML("<hr />"));
 
 		topPanel.add(new HTML("TTT Public Cert can be displayed from <a href=\"pubcert/" + cert + "\">here</a>.  " +
@@ -231,13 +349,13 @@ public class HomeTab extends GenericQueryTab {
 
 		topPanel.add(new HTML("<h3>Support</h3>"));
 		topPanel.add(new HTML("The support mailing list for this tool is: <a href=\"mailto:transport-testing-tool@googlegroups.com\">transport-testing-tool@googlegroups.com</a>"));
-		
+
 		topPanel.add(new HTML("...which can be browsed from <a href=\"https://groups.google.com/forum/?fromgroups#!forum/transport-testing-tool\">https://groups.google.com/forum/?fromgroups#!forum/transport-testing-tool</a>"));
 		topPanel.add(new HTML("<br />"));
-		
+
 		topPanel.add(new HTML("Frequently asked questions (FAQ) (warning - PDF) can be found at: <a href=\"http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf\">http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf</a>"));
 		topPanel.add(new HTML("<hr />"));
-		
+
 	}
 
 	void loadCCDAGrid() {

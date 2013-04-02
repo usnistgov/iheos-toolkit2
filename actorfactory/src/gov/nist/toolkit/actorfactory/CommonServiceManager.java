@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class CommonServiceManager {
 	PropertyServiceManager propertyServiceMgr = null;
-	SiteServiceManager siteServiceMgr = null;
+	PubSiteServiceManager siteServiceMgr = null;
 	
 	public CommonServiceManager() {
 	

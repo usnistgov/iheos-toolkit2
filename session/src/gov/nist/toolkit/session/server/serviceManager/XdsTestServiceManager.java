@@ -3,7 +3,7 @@ package gov.nist.toolkit.session.server.serviceManager;
 import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.logger.UserLog;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -171,14 +171,14 @@ public class XdsTestServiceManager extends CommonServiceManager {
 				}
 
 				// force loading of site definitions
-				SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
+				PubSiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
 			} catch (Exception e) {
 				logger.error(ExceptionUtil.exception_details(e));
 				session.res.add(ExceptionUtil.exception_details(e), false);
 				return ResultBuilder.RESULT(testName, session.res, null, null);
 			}
 			try {
-				Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
+				Sites theSites = new Sites(PubSiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
 //				Sites theSites = SiteServiceManager.getSiteServiceManager().getCommonSites();
 //				theSites.add(new Sites(getSites(session.getSimConfigs())));
 				//				session.getSimBaseEndpoint();

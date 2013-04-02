@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.server.test.java.simulatorServiceManager;
 
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
@@ -20,7 +20,7 @@ import org.junit.Test;
 public class SimulatorServiceManagerConfigsTest {
 	static File warHome = new File("/home/bill/Documents/sf/toolkit/xdstools2/war");
 	String sessionId = "sessionId1";
-	Session session = new Session(warHome, SiteServiceManager.getSiteServiceManager(), sessionId);
+	Session session = new Session(warHome, PubSiteServiceManager.getSiteServiceManager(), sessionId);
 	SimulatorServiceManager ssm = new SimulatorServiceManager(session);
 	Simulator sim = null;
 	SimManager sm = new SimCache().getSimManagerForSession(session.getId());

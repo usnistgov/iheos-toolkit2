@@ -98,7 +98,7 @@ public class SimManager {
 	 * @throws Exception
 	 */
 	public Sites getAllSites() throws Exception {
-		return getAllSites(SiteServiceManager.getSiteServiceManager().getCommonSites());
+		return getAllSites(PubSiteServiceManager.getSiteServiceManager().getCommonSites());
 	}
 	
 	public Sites getAllSites(Sites commonSites)  throws Exception{
