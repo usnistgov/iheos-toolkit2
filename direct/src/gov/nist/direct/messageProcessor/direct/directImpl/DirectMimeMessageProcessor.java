@@ -46,6 +46,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -72,6 +73,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 import org.apache.log4j.Logger;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -90,6 +92,9 @@ import org.bouncycastle.mail.smime.SMIMEException;
 import org.bouncycastle.mail.smime.SMIMESigned;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.util.Store;
+
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.sun.mail.util.QPEncoderStream;
 
 public class DirectMimeMessageProcessor implements DirectMessageProcessorInterface {
 
@@ -123,6 +128,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	private int shiftNumber;
 	private ValidationSummary validationSummary = new ValidationSummary();
 	WrappedMessageProcessor wrappedParser = new WrappedMessageProcessor();
+	private boolean qpEncoded;
 
 
 
@@ -180,9 +186,22 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * 
 	 *  Validates a part of the message*/
 	public void processPart(ErrorRecorder er, Part p) throws Exception{
-
+				
 		if (p == null)
 			return;
+		
+		// Decode if quoted printable
+		String encoding = "";
+		ProcessEnvelope procEnv = new ProcessEnvelope();
+		encoding = procEnv.searchHeaderSimple(p, "content-transfer-encoding");
+		if(encoding.equals("quoted-printable")) {
+			p = decodeQP(p.getInputStream());
+			qpEncoded = true;
+		} else {
+			qpEncoded = false;
+		}
+		
+		
 		//er.detail("Processing Part");
 		// If the Part is a Message then first validate the Envelope
 		if (p instanceof Message){
@@ -197,7 +216,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		 * Using isMimeType to determine the content type avoids
 		 * fetching the actual content data until we need it.
 		 */
-		if (p.isMimeType("text/plain")) {
+		if (p.isMimeType("text/plain")) {			
 			//er.detail("This is plain text"+"  Content Name: "+p.getContent().getClass().getName());
 			this.processText(er, p);
 
@@ -469,7 +488,14 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		//this.processAttachments(er, p);
 
 		er.detail("#####################plain/text message######################");
-		er.detail(p.getContent().toString());
+		String textContent = p.getContent().toString();
+		System.out.println(textContent);
+		// Decode if QP encoded
+		if(qpEncoded) {
+			textContent = decodeQPText(textContent);
+		}
+		er.detail(SafeHtmlUtils.htmlEscape(textContent));
+		System.out.println(SafeHtmlUtils.htmlEscape(textContent));
 		er.detail("##########################################################");
 
 		// Update the summary
@@ -1009,4 +1035,15 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		}
 		return shiftIndent;
 	}
+	
+	public MimeBodyPart decodeQP(InputStream encodedQP) throws MessagingException {
+		InputStream res = MimeUtility.decode(encodedQP, "quoted-printable");
+		return new MimeBodyPart(res);
+	}
+	
+	public String decodeQPText(String text) throws UnsupportedEncodingException {
+		return MimeUtility.decodeText(text);
+	}
+	
+	
 }

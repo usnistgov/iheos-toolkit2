@@ -253,7 +253,7 @@
 	</target>
 
 	<target name="ttt" depends="war-prep, listener, ttt-config">
-		<move file="war.war" tofile="ttt.war" />
+		<move file="${war.name}" tofile="ttt.war" />
 	</target>
 
 	<target name="ihe-config">
