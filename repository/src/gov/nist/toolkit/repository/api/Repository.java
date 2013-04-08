@@ -647,8 +647,7 @@ public interface Repository extends java.io.Serializable {
 
     /**
      * Create a copy of an Asset.  The Id, AssetType, and Repository for the
-     * new Asset is set by the implementation.  All Records are similarly
-     * copied.
+     * new Asset is set by the implementation.  
      *
      * @param asset
      *
