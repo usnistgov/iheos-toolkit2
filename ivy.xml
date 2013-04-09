@@ -1,6 +1,8 @@
 <ivy-module version="2.0">
     <info organisation="gov.nist.test-toolkit" module="toolkit"/>
     <dependencies>
-        <dependency org="gov.nist.toolkit" name="wsseToolkit" rev="0.3"/>
+        <dependency org="gov.nist.toolkit" name="wsseToolkit" rev="latest.integration"/>
+        <dependency org="xalan" name="xalan" rev="2.7.1"/>
+        <dependency org="xerces" name="xercesImpl" rev="2.10.0"/>     
     </dependencies>
 </ivy-module>

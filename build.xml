@@ -208,18 +208,13 @@
         </path>
     	<taskdef resource="org/apache/ivy/ant/antlib.xml"
     	                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
-    	
-	<!-- we use a custom ivysettings file -->
-    		<property name="ivy.settings.dir" location="." />
-    		<ivy:settings file="${ivy.settings.dir}/ivysettings.xml" />
-    	
     </target>
 
 
 	
     <target name="resolve" description="--> retrieve dependencies with ivy" depends="init-ivy">
     	<ivy:cleancache />
-        <ivy:retrieve pattern="${lib.dir}/[conf]/[artifact].[ext]"  />
+        <ivy:retrieve/>
     </target>
 	
     <!-- ================================================= 

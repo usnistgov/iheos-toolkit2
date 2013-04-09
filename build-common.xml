@@ -15,7 +15,7 @@
 		<groovyc destdir="${build.dir}">
 			<classpath refid="classpath" />
 			<src path="src" />
-			<javac debug="on" source="${source}" target="${target}" excludes="${compile.excludes}" includeantruntime="false">
+			<javac debug="on" source="${source}" target="${target}">
 			</javac>
 		</groovyc>
 	</target>

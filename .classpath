@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=toolkit&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="src" path="actorfactory/src"/>
 	<classpathentry kind="src" path="validators-direct-factory/src"/>
 	<classpathentry kind="src" path="security-common/src"/>
@@ -69,7 +70,6 @@
 	<classpathentry kind="lib" path="lib/backport-util-concurrent-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/bcmail-jdk15on-147.jar"/>
 	<classpathentry kind="lib" path="lib/bcpkix-jdk15on-147.jar"/>
-	<classpathentry kind="lib" path="lib/bcprov-jdk15on-147.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-fileupload-1.2.jar"/>
@@ -103,8 +103,6 @@
 	<classpathentry kind="lib" path="lib/neethi-2.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/net.sourceforge.lpg.lpgjavaruntime_1.1.0.v200803061910.jar"/>
 	<classpathentry kind="lib" path="lib/not-yet-commons-ssl-0.3.9.jar"/>
-	<classpathentry kind="lib" path="lib/opensaml-2.2.3.jar"/>
-	<classpathentry kind="lib" path="lib/openws-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi_2.5.0.v200906151043.jar"/>
@@ -145,17 +143,12 @@
 	<classpathentry kind="lib" path="lib/wsdl4j-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/wss4j-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.4.jar"/>
-	<classpathentry kind="lib" path="lib/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/xbean_xpath.jar"/>
 	<classpathentry kind="lib" path="lib/xbean.jar"/>
 	<classpathentry kind="lib" path="lib/xdsLog.jar"/>
-	<classpathentry kind="lib" path="lib/xercesImpl-2.9.1.jar"/>
-	<classpathentry kind="lib" path="lib/xml-apis-2.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-qname.jar"/>
 	<classpathentry kind="lib" path="lib/xmlpublic.jar"/>
-	<classpathentry kind="lib" path="lib/xmlresolver-sunjaxp.jar"/>
 	<classpathentry kind="lib" path="lib/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/xmlsec-1.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/xmltooling-1.2.0.jar"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>

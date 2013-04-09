@@ -5,10 +5,8 @@ import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.saml.builder.WSSESecurityHeaderUtil;
 import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseToolkitAdapter;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.wsseToolkit.util.MyXmlUtils;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
@@ -46,7 +44,6 @@ import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.protocol.Protocol;
-import org.w3c.dom.Element;
 
 //vbeera: The below imports should be used in case of the potential 2nd fix for MustUnderstand Check Exception.
 /*
