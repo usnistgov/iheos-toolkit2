@@ -44,6 +44,8 @@ public class Installation {
 		this.warHome = warHome; 
 		}
 	public File externalCache() { return externalCache; }
+	public File getExternalCache() { return externalCache; }
+	public void setExternalCache(File externalCache) { externalCache(externalCache); }
 	public void externalCache(File externalCache) { 
 		this.externalCache = externalCache;
 		try {

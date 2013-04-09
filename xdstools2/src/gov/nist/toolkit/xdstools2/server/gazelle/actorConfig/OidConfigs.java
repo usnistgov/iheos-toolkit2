@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
 public class OidConfigs extends CSVTable {
 
-	static final int System = 1;
+	static final int Systm = 1;
 	static final int Type = 2;
 	static final int Value = 3;
 	
@@ -16,6 +16,24 @@ public class OidConfigs extends CSVTable {
 	public OidEntry get(int i) {
 		return (OidEntry) super.get(i);
 	}
+	
+	public void printAll() {
+		System.out.println("OidConfigs:");
+		for (int i=0; i<size(); i++) {
+			System.out.println("OID: " +
+								getSystem(i) + " " +
+								getType(i) + " " + getValue(i));
+		}
+	}
+	
+	String getType(int i) {
+		if (isSourceId(i)) return "SourceID";
+		if (isRepositoryUniqueId(i)) return "RepositoryUniqueID";
+		if (isHomeCommunityId(i)) return "HomeCommunityID";
+		return "Unknown";
+	}
+	
+
 	
 	public String getRepUid(String system) {
 		for (int i=0; i<this.size(); i++) {

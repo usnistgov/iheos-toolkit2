@@ -5,7 +5,7 @@ import gov.nist.toolkit.actorfactory.RegistryActorFactory;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimulatorFactory;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
@@ -81,7 +81,7 @@ public class SimServlet  extends HttpServlet {
 		this.config = config;
 		
 		warHome = new File(config.getServletContext().getRealPath("/"));
-		session = new Session(warHome, SiteServiceManager.getSiteServiceManager());
+		session = new Session(warHome, PubSiteServiceManager.getSiteServiceManager());
 		simDbDir = Installation.installation().propertyServiceManager().getSimDbDir();
 
 		

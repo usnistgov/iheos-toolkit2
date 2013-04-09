@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
@@ -89,7 +89,7 @@ public class GazelleServiceManager extends CommonServiceManager {
 
 			// force reload of all actor definitions
 			if (!unitTest) {
-				SiteServiceManager.getSiteServiceManager().reloadCommonSites();
+				PubSiteServiceManager.getSiteServiceManager().reloadCommonSites();
 			}
 //		} catch (Exception e) {
 //			logger.error(ExceptionUtil.exception_details(e));

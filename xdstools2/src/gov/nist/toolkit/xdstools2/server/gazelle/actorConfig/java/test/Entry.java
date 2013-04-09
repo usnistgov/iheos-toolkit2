@@ -11,6 +11,7 @@ public class Entry {
 	public void simple() {
 		String data="1,2,3,4,5";
 		CSVEntry entry = new CSVEntry(data);
+		entry.build();
 		assertTrue("1".equals(entry.get(0)));
 		assertTrue("2".equals(entry.get(1)));
 		assertTrue("3".equals(entry.get(2)));
@@ -23,6 +24,7 @@ public class Entry {
 	public void spaced() {
 		String data="1 ,2 ,3,  4, 5";
 		CSVEntry entry = new CSVEntry(data);
+		entry.build();
 		assertTrue("1".equals(entry.get(0)));
 		assertTrue("2".equals(entry.get(1)));
 		assertTrue("3".equals(entry.get(2)));
@@ -35,6 +37,7 @@ public class Entry {
 	public void empty() {
 		String data="1 ,,3,  4, 5";
 		CSVEntry entry = new CSVEntry(data);
+		entry.build();
 		assertTrue("1".equals(entry.get(0)));
 		assertTrue("".equals(entry.get(1)));
 		assertTrue("3".equals(entry.get(2)));
@@ -47,6 +50,7 @@ public class Entry {
 	public void begin() {
 		String data=", ,,3,  4, 5";
 		CSVEntry entry = new CSVEntry(data);
+		entry.build();
 		assertTrue("".equals(entry.get(0)));
 		assertTrue("".equals(entry.get(1)));
 		assertTrue("".equals(entry.get(2)));

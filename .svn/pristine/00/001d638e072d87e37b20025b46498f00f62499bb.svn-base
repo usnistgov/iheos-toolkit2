@@ -1,4 +1,0 @@
-# These properties must be manually edited.
-
-# Lifespan of an Actor Simulator in days
-gov.nist.toolkit.simcommon.client.config.SimulatorConfig.expiration=30

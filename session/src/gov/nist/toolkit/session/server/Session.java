@@ -2,8 +2,11 @@ package gov.nist.toolkit.session.server;
 
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.SimulatorFactory;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -28,14 +31,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.servlet.http.HttpSession;
-
-import org.apache.catalina.session.StandardSession;
 import org.apache.log4j.Logger;
 
 /**
@@ -76,6 +75,7 @@ public class Session implements SecurityParams {
 	String lastUploadFilename2 = null;
 	String password1 = null;
 	String password2 = null;
+	String authenticatedUser = null;
 	
 //	File tomcatSessionCache = null;   // one for this Tomcat session (corresponds to this Session object)
 	File mesaSessionCache = null;     // changes each time new mesaSessionName changes
@@ -102,6 +102,9 @@ public class Session implements SecurityParams {
 	QueryServiceManager queryServiceMgr = null;
 	static Map<String, Session> sessionMap = new HashMap<String, Session>();
 	static final Logger logger = Logger.getLogger(Session.class);
+	
+	public String getAuthenticatedUser() { return authenticatedUser; }
+	public void setAuthticatedUser(String user) { authenticatedUser = user; }
 	
 	public boolean isTls() {
 		return siteSpec.isTls;
@@ -187,14 +190,14 @@ public class Session implements SecurityParams {
 		return serverPort;
 	}
 	
-	public Session(File warHome, SiteServiceManager siteServiceManager, String sessionId) {
+	public Session(File warHome, PubSiteServiceManager siteServiceManager, String sessionId) {
 		this(warHome, siteServiceManager);
 		this.sessionId = sessionId;
 
 //		tomcatSessionCache = new File(warHome + File.separator + "SessionCache" + File.separator + sessionId); 		
 	}
 	
-	public Session(File warHome, SiteServiceManager siteServiceManager) {
+	public Session(File warHome, PubSiteServiceManager siteServiceManager) {
 		Installation.installation().warHome(warHome);
 //		this.siteServiceManager = siteServiceManager;
 		ExtendedPropertyManager.load(warHome);

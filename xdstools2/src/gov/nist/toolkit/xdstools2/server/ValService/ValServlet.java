@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.server.ValService;
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.support.ValidateMessageService;
 import gov.nist.toolkit.utilities.io.Io;
@@ -38,7 +38,7 @@ public class ValServlet extends HttpServlet {
 		this.config = config;
 		
 		warHome = new File(config.getServletContext().getRealPath("/"));
-		session = new Session(warHome, SiteServiceManager.getSiteServiceManager());
+		session = new Session(warHome, PubSiteServiceManager.getSiteServiceManager());
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

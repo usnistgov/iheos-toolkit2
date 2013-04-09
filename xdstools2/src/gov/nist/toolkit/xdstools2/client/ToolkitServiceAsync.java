@@ -148,7 +148,9 @@ public interface ToolkitServiceAsync {
 	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> callback);
 	
 	void getAdminPassword(AsyncCallback<String> callback);
-	
+	void signin(String user, String passwd, AsyncCallback<Boolean> callback);
+	void signout(AsyncCallback callback);
+
 	void getImplementationVersion(AsyncCallback<String> callback);
 	 
 	void setToolkitProperties(Map<String, String> props, AsyncCallback<String> callback);

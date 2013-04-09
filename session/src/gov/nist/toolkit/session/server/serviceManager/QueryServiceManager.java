@@ -3,7 +3,7 @@ package gov.nist.toolkit.session.server.serviceManager;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.client.AnyId;
@@ -423,13 +423,13 @@ public class QueryServiceManager extends CommonServiceManager {
 					String homeName = s.siteSpec.homeName;
 					if (homeName == null || homeName.equals(""))
 						throw new Exception("Cross Community request through IG " + s.siteSpec.name + ". No RG specified");
-					Site rg = SiteServiceManager.getSiteServiceManager().getCommonSites().getSite(homeName);
+					Site rg = PubSiteServiceManager.getSiteServiceManager().getCommonSites().getSite(homeName);
 					if (rg.getHome() == null || rg.getHome().equals(""))
 						throw new Exception("Cross Community request but RG " + homeName + " has no homeCommunityId configured");
 					id.home = rg.home;
 				} else {
 					if (s2 == null) {
-						SiteServiceManager ssm = SiteServiceManager.getSiteServiceManager();
+						PubSiteServiceManager ssm = PubSiteServiceManager.getSiteServiceManager();
 						s2 = ssm.getSite(ssm.getAllSites(session.id()), s.siteSpec.name);
 					}
 					if (s2.getHome() == null || s2.getHome().equals(""))
@@ -443,7 +443,7 @@ public class QueryServiceManager extends CommonServiceManager {
 
 	Uids fillInHome(Uids uids) throws Exception {
 		Session s = session;
-		Site s2 = SiteServiceManager.getSiteServiceManager().getCommonSites().getSite(s.siteSpec.name);
+		Site s2 = PubSiteServiceManager.getSiteServiceManager().getCommonSites().getSite(s.siteSpec.name);
 		for (Uid uid : uids.uids) {
 			if (uid.repositoryUniqueId == null)
 				uid.repositoryUniqueId = s2.getRepositoryUniqueId();

@@ -19,8 +19,8 @@ import org.apache.axiom.om.OMElement;
 
 public class ConfigToXml {
 
-	static final int ReposSystemName = 0;
-	static final int ReposRepUid = 1;
+//	static final int ReposSystemName = 0;
+//	static final int ReposRepUid = 1;
 
 
 	Map<String, List<GazelleEntry>> gMap = new HashMap<String, List<GazelleEntry>>();
@@ -155,37 +155,37 @@ public class ConfigToXml {
 	}
 
 
-	public static void main(String[] args) {
-		File actorsDir = new File("/Users/bill/tmp/na2013/actors");
-		String systemName = "ALL";   // "ALL";
-		GazelleConfigs gConfigs = null; 
-		OidConfigs oConfigs = null;
-
-		try {
-			oConfigs = new OidConfigs();
-			new CSVParser(new File(actorsDir + File.separator + "oidSummary.csv"), oConfigs, new OidEntryFactory());
-
-
-			if (systemName.equals("ALL")) {
-				//			new ConfigPull(gazelleUrl, actorsDir).pull();
-
-				gConfigs = new GazelleConfigs();
-				new CSVParser(new File(actorsDir + File.separator + "all.csv"), gConfigs, new GazelleEntryFactory());
-
-				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
-			}
-			else {
-				//			new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
-
-				gConfigs = new GazelleConfigs();
-				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), gConfigs, new GazelleEntryFactory());
-
-				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
-			}
-		} catch (Exception e) {
-			System.out.println(ExceptionUtil.exception_details(e));
-		}
-
-	}
+//	public static void main(String[] args) {
+//		File actorsDir = new File("/Users/bill/tmp/na2013/actors");
+//		String systemName = "ALL";   // "ALL";
+//		GazelleConfigs gConfigs = null; 
+//		OidConfigs oConfigs = null;
+//
+//		try {
+//			oConfigs = new OidConfigs();
+//			new CSVParser(new File(actorsDir + File.separator + "oidSummary.csv"), oConfigs, new OidEntryFactory());
+//
+//
+//			if (systemName.equals("ALL")) {
+//				//			new ConfigPull(gazelleUrl, actorsDir).pull();
+//
+//				gConfigs = new GazelleConfigs();
+//				new CSVParser(new File(actorsDir + File.separator + "all.csv"), gConfigs, new GazelleEntryFactory());
+//
+//				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
+//			}
+//			else {
+//				//			new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
+//
+//				gConfigs = new GazelleConfigs();
+//				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), gConfigs, new GazelleEntryFactory());
+//
+//				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
+//			}
+//		} catch (Exception e) {
+//			System.out.println(ExceptionUtil.exception_details(e));
+//		}
+//
+//	}
 
 }

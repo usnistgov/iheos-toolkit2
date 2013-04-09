@@ -1,4 +1,0 @@
-<rs:RegistryResponse status="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure"
-    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
-    
-</rs:RegistryResponse>

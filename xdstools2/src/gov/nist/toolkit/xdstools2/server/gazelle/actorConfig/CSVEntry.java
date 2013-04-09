@@ -5,14 +5,17 @@ import java.util.List;
 
 public class CSVEntry {
 	List<String> items = new ArrayList<String>();
-	public String line;
-
+	String line;
+	
 	public List<String> getItems() {
 		return items;
 	}
 		
 	public CSVEntry(String line) {
 		this.line = line;
+	}
+	
+	public void build() {
 		int stringStart = -1;
 
 		for (int cursor=0; cursor < line.length(); cursor++) {
@@ -44,7 +47,14 @@ public class CSVEntry {
 		if (stringStart != -1) {
 			add(line.substring(stringStart, line.length()).trim());
 		}
-		
+	}
+	
+	public String rmParenthetical(String in) {
+		int openI = in.indexOf('(');
+		if (openI == -1) return in;
+		int closeI = in.lastIndexOf(')');
+		if (closeI == -1) return in;
+		return in.substring(0, openI) + in.substring(closeI+1);
 	}
 	
 	boolean isWhite(char c) { return c == ' ' || c == '\t'; }
@@ -65,7 +75,7 @@ public class CSVEntry {
 	}
 
 	void add(String item) {
-		items.add(item);
+		items.add(rmParenthetical(item).trim());
 	}
 	
 }

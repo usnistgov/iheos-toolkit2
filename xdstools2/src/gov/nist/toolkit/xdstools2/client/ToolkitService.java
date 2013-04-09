@@ -177,4 +177,6 @@ public interface ToolkitService extends RemoteService  {
 	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
 	List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException;
+	boolean signin(String user, String passwd) throws NoServletSessionException;
+	void signout() throws NoServletSessionException;
 }

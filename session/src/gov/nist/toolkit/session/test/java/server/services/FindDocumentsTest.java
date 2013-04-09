@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.test.java.server.services;
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class FindDocumentsTest {
 	static File warHome = new File("/home/bill/Documents/sf/toolkit/xdstools2/war");
-	Session session = new Session(warHome, SiteServiceManager.getSiteServiceManager(), "sessionId1");
+	Session session = new Session(warHome, PubSiteServiceManager.getSiteServiceManager(), "sessionId1");
 	FindDocuments fd;
 	SiteSpec siteSpec;
 	String pid = "1.2.3^^^1.2.3@ISO";

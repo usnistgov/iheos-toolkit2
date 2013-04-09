@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.test.java;
 
 import static org.junit.Assert.*;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.directsim.DirectServiceManager;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;
@@ -21,7 +21,7 @@ public class SendDirectTest {
 	@Test
 	public void Test1() {
 		String warHome = tk + File.separator + "xdstools2" + File.separator + "war";
-		Session session = new Session(new File(warHome), SiteServiceManager.getSiteServiceManager());
+		Session session = new Session(new File(warHome), PubSiteServiceManager.getSiteServiceManager());
 		try {
 			session.setLastUpload(
 					"filename",

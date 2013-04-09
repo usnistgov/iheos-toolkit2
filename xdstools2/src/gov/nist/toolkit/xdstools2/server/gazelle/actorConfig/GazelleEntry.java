@@ -40,8 +40,13 @@ public class GazelleEntry extends CSVEntry {
 
 	public GazelleEntry(String line) {
 		super(line);
+		build();
 		
-		System.out.println("System: " + getSystem());
+		System.out.println("System: " + getSystem() + 
+				" Actor: " + getActor() + 
+				" Trans: " + getTransId()  + 
+				" URL: " + getURL() + 
+				( (getURL().indexOf("your_url") == -1) ? "" : "     XXXXXXXXXXX"  ));
 	}
 	
 	public String toString() {

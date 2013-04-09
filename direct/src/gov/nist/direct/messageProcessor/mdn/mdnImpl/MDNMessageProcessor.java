@@ -151,22 +151,8 @@ public class MDNMessageProcessor {
 		if (!er.hasErrors())  MDN_STATUS = STATUS_VALID;
 		System.out.println("mdn validation status: " + MDN_STATUS);
 		
-		// Logs MDN message
-		System.out.println("decryptedMdn " + decryptedMdn);
-	     MimeMessage m = MimeMessageParser.parseMessage(mainEr, decryptedMdn.getBytes());
-//	     try {
-//			m.writeTo(new FileOutputStream("loggedmessagemdn.txt"));
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (MessagingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		logMDNMessage(m);
+		// Logs MDN message - still ENCRYPTED
+		logMDNMessage(mm); // logMDNMessage(mm, disposition);
 
         // Set the part number to 1
         partNumber = 1;
@@ -380,7 +366,7 @@ public class MDNMessageProcessor {
 		this.encrypted = true;
 
 		// Create the decrypted MDN by logging successive body parts
-			concat(res.toString());
+		//	concat(res.toString());
 			//System.out.println("Could not log MimeMultipart body parts once the message was decrypted.");
 		
 			return res;

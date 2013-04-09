@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
@@ -34,7 +34,7 @@ public class ProvideAndRetrieve extends CommonServiceManager {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$patientid$", pid);
 
-			Site si = SiteServiceManager.getSiteServiceManager().getSite(session.id(), session.siteSpec.name);
+			Site si = PubSiteServiceManager.getSiteServiceManager().getSite(session.id(), session.siteSpec.name);
 //			Site si = session.siteServiceManager().getSites().getSite(session.siteSpec.name);
 			String repuid = si.getRepositoryUniqueId();
 			if (repuid == null) {

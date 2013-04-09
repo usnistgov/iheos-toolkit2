@@ -10,6 +10,29 @@
 
 <p>Release note are listed for each build number
 
+<h4>161a  (released     20 Mar 2013)       </h4>
+
+This is a minor release containing only a few bug fixes.
+
+<h5>Bug fixes</h5>
+
+<ul>
+<li>Selection of wrapped/unwrapped format on the Direct Send tab
+does not change format of output, always generates wrapped.
+<li>Some of the XDM sample data does not conform to the XDM format. 
+</ul>
+
+<h5>Known bugs being worked on</h5>
+
+<ul>
+<li>When an MDN is received, the original-message-id field is not
+properly extracted so the system under test is not credited with having
+returned a proper MDN. As a result, the MDN status tab does not show 
+the updated status. MDN status can still be monitored by following the 
+Listener log.
+<li>Fix TTT to accept "sha-1", "sha-256" and historical parameter (per ONC) "sha1"
+</ul>
+
 <h4>161   (released     1 Mar 2013  )      </h4>
 
 <h5>New Features</h5>

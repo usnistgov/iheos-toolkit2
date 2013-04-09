@@ -83,7 +83,6 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		wrapper.setCellWidth(left, "1%");
 		wrapper.setCellWidth(right, "1%");
 
-
 		tabPanel.add(wrapper, title);
 
 		if (select)

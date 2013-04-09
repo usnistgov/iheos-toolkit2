@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.scripts;
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.PubSiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -59,7 +59,7 @@ public class DashboardDaemon {
 		this.warHome = warHome;
 		this.externalCache = externalCache;
 //		toolkit.setWarHome(warHome);
-		s = new Session(new File(warHome), SiteServiceManager.getSiteServiceManager());//		toolkit.setStandAloneSession(s);
+		s = new Session(new File(warHome), PubSiteServiceManager.getSiteServiceManager());//		toolkit.setStandAloneSession(s);
 		try {
 			s.setEnvironment(environmentName, externalCache);
 		} catch (Exception e) {
