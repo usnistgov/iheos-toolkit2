@@ -4,5 +4,6 @@
         <dependency org="gov.nist.toolkit" name="wsseToolkit" rev="latest.integration"/>
         <dependency org="xalan" name="xalan" rev="2.7.1"/>
         <dependency org="xerces" name="xercesImpl" rev="2.10.0"/>     
+        <dependency org="com.google.gwt" name="gwt-servlet" rev="2.5.1"/>
     </dependencies>
 </ivy-module>

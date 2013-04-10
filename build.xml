@@ -173,10 +173,6 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-
-	<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
-		<classpath refid="classpath" />
-	</taskdef>
 	
 	
 	
@@ -251,6 +247,10 @@
 		<copy todir="${lib.dir}">
 			<fileset dir="${shared.mar.dir}" />
 		</copy>
+		
+		<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
+			<classpath refid="classpath" />
+		</taskdef>
 	</target>
 
     <!-- ================================================= 

@@ -50,7 +50,6 @@
 	<classpathentry kind="src" path="timer/src"/>
 	<classpathentry kind="src" path="rest/src"/>
 	<classpathentry kind="src" path="dns/src"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
@@ -70,6 +69,7 @@
 	<classpathentry kind="lib" path="lib/backport-util-concurrent-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/bcmail-jdk15on-147.jar"/>
 	<classpathentry kind="lib" path="lib/bcpkix-jdk15on-147.jar"/>
+	<classpathentry kind="lib" path="lib/bcprov-jdk15on-147.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-fileupload-1.2.jar"/>
@@ -80,10 +80,6 @@
 	<classpathentry kind="lib" path="lib/dnsjava-2.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/ebxmlrr-common.jar"/>
 	<classpathentry kind="lib" path="lib/edireader-4.7.3.jar"/>
-	<classpathentry kind="lib" path="lib/groovy-all-1.7.6.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-servlet.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-annotations-2.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-2.1.1.jar"/>
@@ -146,9 +142,18 @@
 	<classpathentry kind="lib" path="lib/xbean_xpath.jar"/>
 	<classpathentry kind="lib" path="lib/xbean.jar"/>
 	<classpathentry kind="lib" path="lib/xdsLog.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-2.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-qname.jar"/>
 	<classpathentry kind="lib" path="lib/xmlpublic.jar"/>
+	<classpathentry kind="lib" path="lib/xmlresolver-sunjaxp.jar"/>
 	<classpathentry kind="lib" path="lib/XmlSchema-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/xmlsec-1.4.2.jar"/>
+	<classpathentry kind="lib" path="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA.jar" sourcepath="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/gerardin/Softwares/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201208080120-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/gerardin/Softwares/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201208080120-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA.jar" sourcepath="/Users/gerardin/Softwares/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201208080120-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-servlet.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>
