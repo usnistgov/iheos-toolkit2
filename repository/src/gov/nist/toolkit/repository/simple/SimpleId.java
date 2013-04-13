@@ -1,7 +1,7 @@
 package gov.nist.toolkit.repository.simple;
 
 import gov.nist.toolkit.repository.api.Id;
-import gov.nist.toolkit.repository.api.SharedException;
+import gov.nist.toolkit.repository.api.RepositoryException;
 
 public class SimpleId implements Id {
 	String guid;
@@ -9,14 +9,18 @@ public class SimpleId implements Id {
 	 * 
 	 */
 	private static final long serialVersionUID = 8299302965195505251L;
+	
+	protected SimpleId(String id) {
+		this.guid = id;
+	}
 
 	@Override
-	public String getIdString() throws SharedException {
+	public String getIdString() throws RepositoryException {
 		return guid;
 	}
 
 	@Override
-	public boolean isEqual(Id id) throws SharedException {
+	public boolean isEqual(Id id) throws RepositoryException {
 		return id != null && id.getIdString().equals(guid);
 	}
 

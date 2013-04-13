@@ -1,13 +1,12 @@
 package gov.nist.toolkit.globaltests;
 
-import static org.junit.Assert.*;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
+import static org.junit.Assert.*
+import gov.nist.toolkit.actorfactory.client.Simulator
+import gov.nist.toolkit.actortransaction.client.ATFactory
+import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager
 
 import org.junit.Test
 

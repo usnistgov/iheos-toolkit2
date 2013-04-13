@@ -32,7 +32,7 @@ public interface Id extends java.io.Serializable {
      *         CONFIGURATION_ERROR}, {@link
      *         org.osid.shared.SharedException#UNIMPLEMENTED UNIMPLEMENTED}
      */
-    String getIdString() throws gov.nist.toolkit.repository.api.SharedException;
+    String getIdString() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Tests if an unique Id equals this unique Id.

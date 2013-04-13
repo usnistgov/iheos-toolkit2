@@ -1,5 +1,7 @@
 package gov.nist.toolkit.repository.api;
 
+import java.util.Properties;
+
 
 /**
  * Repository manages Assets of various Types and information about the Assets.
@@ -287,7 +289,7 @@ public interface Repository extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.RepositoryException#UNKNOWN_TYPE
      *         UNKNOWN_TYPE}
      */
-    gov.nist.toolkit.repository.api.Properties getPropertiesByType(
+    Properties getPropertiesByType(
         gov.nist.toolkit.repository.api.Type propertiesType)
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
@@ -642,7 +644,7 @@ public interface Repository extends java.io.Serializable {
      */
     public AssetIterator getAssetsBySearch(
         java.io.Serializable searchCriteria, gov.nist.toolkit.repository.api.Type searchType,
-        gov.nist.toolkit.repository.api.Properties searchProperties)
+        Properties searchProperties)
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**

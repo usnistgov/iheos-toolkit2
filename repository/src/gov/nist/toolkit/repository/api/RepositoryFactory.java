@@ -21,7 +21,18 @@ public class RepositoryFactory {
 	 * @throws RepositoryException 
 	 */
 	public Repository getRepositoryHandle(RepositoryType type) throws RepositoryException {
-		return new SimpleRepository(getRoot(type));
+		return new SimpleRepository(getRoot(type), SimpleRepository.CreateType.OPEN);
+	}
+	
+	public Repository createRepository(RepositoryType repType, String displayName, String description, Type type) 
+			throws RepositoryException {
+		File root = new File(ec.toString() + File.separator + repType.toString());
+		SimpleRepository rep = new SimpleRepository(root, SimpleRepository.CreateType.CREATE);
+		rep.setPostponeFlush(true);
+		rep.updateDescription(description);
+		rep.updateDisplayName(displayName);
+		rep.flush();
+		return rep;
 	}
 
 	File getRoot(RepositoryType type) throws RepositoryException {

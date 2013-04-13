@@ -9,8 +9,14 @@ import gov.nist.toolkit.repository.api.RepositoryException;
 import gov.nist.toolkit.repository.api.Type;
 
 public class SimpleAsset implements Asset {
-	Type asset;
+	Type type;
 	String displayName;
+	long effectiveDate;
+	long expirationDate;
+	String description;
+	Id id;
+	String classNameForSerializable;
+	
 	/**
 	 * 
 	 */
