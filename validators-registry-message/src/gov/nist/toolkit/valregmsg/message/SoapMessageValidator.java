@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -18,6 +19,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
+import org.apache.axis2.util.XMLUtils;
+import org.w3c.dom.Element;
 
 /**
  * Validate a SOAP wrapper according to ITI Appendix V and launch new
@@ -117,7 +120,14 @@ public class SoapMessageValidator extends MessageValidator {
 		OMElement security = MetadataSupport.firstChildWithLocalName(header, "Security");
 		if(security != null){
 			vc.hasSaml = true; // setting the flag is not really necessary, for consistency only.
-			mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+			// mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+			Element wsseHeader;
+			try {
+				wsseHeader = XMLUtils.toDOM(header);
+				mvc.addMessageValidator("SAML Validator", new WsseHeaderValidatorAdapter(vc, wsseHeader), erBuilder.buildNewErrorRecorder());
+			} catch (Exception e) {
+				er.err(XdsErrorCode.Code.NoCode, e);
+			}
 		}
 		
 	}
