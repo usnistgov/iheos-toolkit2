@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=toolkit&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="src" path="actorfactory/src"/>
+	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="validators-direct-factory/src"/>
 	<classpathentry kind="src" path="security-common/src"/>
 	<classpathentry kind="src" path="soap/test/resources"/>
@@ -127,8 +128,6 @@
 	<classpathentry kind="lib" path="lib/schematronValidator.jar"/>
 	<classpathentry kind="lib" path="lib/serializer-2.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.5.6.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-jdk14-1.5.6.jar"/>
 	<classpathentry kind="lib" path="lib/smtp.jar"/>
 	<classpathentry kind="lib" path="lib/soap.jar"/>
 	<classpathentry kind="lib" path="lib/standard.jar"/>
@@ -147,7 +146,6 @@
 	<classpathentry kind="lib" path="lib/xmlpublic.jar"/>
 	<classpathentry kind="lib" path="lib/xmlresolver-sunjaxp.jar"/>
 	<classpathentry kind="lib" path="lib/XmlSchema-1.4.3.jar"/>
-	<classpathentry kind="lib" path="lib/xmlsec-1.4.2.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA-sources.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA.jar" sourcepath="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA-sources.jar"/>
 	<classpathentry kind="lib" path="/Users/gerardin/Softwares/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201208080120-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar"/>

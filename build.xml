@@ -237,6 +237,7 @@
 		<mkdir dir="${lib.dir}" />
 		<mkdir dir="${war.dir}" />
 
+		<echo>copy libraries from ${shared.lib.dir}</echo>
 		<copy todir="${lib.dir}">
 			<fileset dir="${shared.lib.dir}">
 				<exclude name="antlib.jar" />

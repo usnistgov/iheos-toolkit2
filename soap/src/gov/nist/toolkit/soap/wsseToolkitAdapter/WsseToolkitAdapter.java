@@ -3,7 +3,6 @@ package gov.nist.toolkit.soap.wsseToolkitAdapter;
 import gov.nist.toolkit.wsseToolkit.generation.GenerationException;
 import gov.nist.toolkit.wsseToolkit.generation.opensaml.OpenSamlWsseSecurityGenerator;
 import gov.nist.toolkit.wsseToolkit.keystore.KeystoreAccess;
-import gov.nist.toolkit.wsseToolkit.util.MyXmlUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
