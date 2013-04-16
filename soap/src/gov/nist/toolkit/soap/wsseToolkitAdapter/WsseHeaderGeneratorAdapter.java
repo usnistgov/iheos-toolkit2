@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 
 
 
-public class WsseToolkitAdapter {
+public class WsseHeaderGeneratorAdapter {
 	
 	
 	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException, GeneralSecurityException, MarshalException, XMLSignatureException, URISyntaxException, GenerationException {

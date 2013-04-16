@@ -5,7 +5,7 @@ import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.saml.builder.WSSESecurityHeaderUtil;
 import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseToolkitAdapter;
+import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.wsseToolkit.util.MyXmlUtils;
@@ -243,7 +243,7 @@ public class Soap implements SoapInterface {
 				
 				System.out.println(keystore);
 				
-				org.w3c.dom.Element header = WsseToolkitAdapter.buildHeader(keystore, kpass, alias, sPass);
+				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter.buildHeader(keystore, kpass, alias, sPass);
 				
 				System.out.println("********the one in soap*************");
 				MyXmlUtils.DomToStream(header, System.out);
