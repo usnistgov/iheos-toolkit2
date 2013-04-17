@@ -65,14 +65,14 @@ public class GazelleServiceManager extends CommonServiceManager {
 			OidConfigs oConfigs = null;
 
 			oConfigs = new OidConfigs();
-			new CSVParser(new File(actorsDir + File.separator + "oidSummary.csv"), oConfigs, new OidEntryFactory());
+			new CSVParser(new File(actorsDir + File.separator + "oidSummary.csv"), oConfigs, new OidEntryFactory()).run();
 
 
 			if (systemName.equals("ALL")) {
 				new ConfigPull(gazelleUrl, actorsDir).pull();
 
 				gConfigs = new GazelleConfigs();
-				new CSVParser(new File(actorsDir + File.separator + "all.csv"), gConfigs, new GazelleEntryFactory());
+				new CSVParser(new File(actorsDir + File.separator + "all.csv"), gConfigs, new GazelleEntryFactory()).run();
 
 				conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
 			}
@@ -80,7 +80,7 @@ public class GazelleServiceManager extends CommonServiceManager {
 				new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
 
 				gConfigs = new GazelleConfigs();
-				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), gConfigs, new GazelleEntryFactory());
+				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), gConfigs, new GazelleEntryFactory()).run();
 
 				conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
 			}
