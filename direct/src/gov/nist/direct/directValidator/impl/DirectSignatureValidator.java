@@ -50,44 +50,48 @@ public class DirectSignatureValidator implements SignatureValidator {
 
 	// DTS 166, SignedData.encapContentInfo, Required
 	public void validateSignedDataEncapContentInfo(ErrorRecorder er, String SignedDataEncapContentInfo) {
+		String rfc = "RFC 5652: 5.1, 5.2;http://tools.ietf.org/html/rfc5652#section-5.1";
 		if(!SignedDataEncapContentInfo.equals("")) {
-			er.detail("     Success:  DTS 166 - The field SignedData.encapContentInfo (signed content + content type identifier) is present");
+			er.success("166", "SignedData.encapContentInfo", SignedDataEncapContentInfo, "SignedData.encapContentInfo (signed content + content type identifier) must be present" , rfc);
 		} else {
-			er.err("166", "The field SignedData.encapContentInfo (signed content + content type identifier) is missing.", "", "DTS 166", "");
+			er.error("166", "SignedData.encapContentInfo", SignedDataEncapContentInfo, "SignedData.encapContentInfo (signed content + content type identifier) must be present" , rfc);
 		}
 		
 	}
 
 	// DTS 222, tbsCertificate.signature.algorithm, Required
 	public void validateTbsCertificateSA(ErrorRecorder er, String tbsCertSA) {
+		String rfc = "RFC 5280: 4.1.2.3;http://tools.ietf.org/html/rfc5280#section-4.1.2.3";
 		if(!tbsCertSA.equals("")) {
-			er.detail("     Success:  DTS 222 - The field tbsCertificate.signature.algorithm (name of the algorithm) is present");
+			er.success("222", "tbsCertificate.signature.algorithm", tbsCertSA,  "tbsCertificate.signature.algorithm (name of the algorithm) must be present", rfc);
 		} else {
-			er.err("222", "The field tbsCertificate.signature.algorithm (name of the algorithm) is missing.", "", "DTS 222", "");
+			er.error("222", "tbsCertificate.signature.algorithm", tbsCertSA,  "tbsCertificate.signature.algorithm (name of the algorithm) must be present", rfc);
 		}
 		
 	}
 
 	// DTS 225, tbsCertificate.subject, Required
 	public void validateTbsCertificateSubject(ErrorRecorder er, String tbsCertSubject) {
+		String rfc = "RFC 5280: 4.1.2.6, 4.1.2.4;http://tools.ietf.org/html/rfc5280#section-4.1.2.4";
 		if(!tbsCertSubject.equals("")) {
-			er.detail("     Success:  DTS 225 - The field tbsCertificate.subject (subject name) is present.");
+			er.success("225", "tbsCertificate.subject", tbsCertSubject,  "tbsCertificate.subject (subject name) must be present", rfc);
 		} else {
-			er.err("225", "The field tbsCertificate.subject (subject name) is missing.", "", "DTS 225", "");
+			er.error("225", "tbsCertificate.subject", tbsCertSubject,  "tbsCertificate.subject (subject name) must be present", rfc);
 		}
 	}
 	
 	// DTS 240, Extensions.subjectAltName, Conditional
 	public void validateExtensionsSubjectAltName(ErrorRecorder er, Collection<List<?>> ExtensionSubjectAltName) {
+		String rfc = "RFC 5280: 4.1.2.6;http://tools.ietf.org/html/rfc5280#section-4.1.2.6";
 		//System.out.println(ExtensionSubjectAltName);
 		if(ExtensionSubjectAltName != null) {
 			Iterator it = null;
 			
 			if (!ExtensionSubjectAltName.isEmpty()){
 				it = ExtensionSubjectAltName.iterator();
-				er.detail("     Success:  DTS 240 - The field Extensions.subjectAltName is present. Detected " + ExtensionSubjectAltName.size() + " subjectAltName extension(s).");
+				er.success("240", "Extensions.subjectAltName", ExtensionSubjectAltName.toString(),  "Must be present", rfc);
 			} else {
-				er.err("240", "The field Extensions.subjectAltName is missing.", "", "DTS 240", "");
+				er.error("240", "Extensions.subjectAltName", ExtensionSubjectAltName.toString(),  "Must be present", rfc);
 			}
 			
 			
@@ -107,31 +111,31 @@ public class DirectSignatureValidator implements SignatureValidator {
 				if (currentNameType == 1){   // integer type for rfc822Name
 					
 					if (ValidationUtils.validateEmailAddressFormatRFC822((String)currentAltName.get(1))){	
-						er.detail("     Success:  C-4 - The field cert/subjectAltName " + currentAltName.get(1) + " is correct.");
+						er.success("C4", "Extensions.subjectAltName", currentAltName.get(1).toString(),  "cert/subjectAltName must be an email address", rfc);
 						
 						
 						// C-5 cert/subjectAltName/rfc822Name must be an email address (if present)
 						
-						er.detail("     Success:  C-5 - The field cert/subjectAltName/rfc822Name is an email address.");
+						er.success("C5", "Extensions.subjectAltName", currentAltName.get(1).toString(),  "cert/subjectAltName/rfc822Name must be an email address", rfc);
 					} else {
-						er.err("C-4", "The field cert/subjectAltName " + currentAltName.get(1) + " is not valid.", "", "C-4", "");
-						er.err("C-5", "The field cert/subjectAltName/rfc822Name, if present, must be an email address.", "", "C-5", "");
+						er.error("C4", "Extensions.subjectAltName", currentAltName.get(1).toString(),  "cert/subjectAltName must be an email address", rfc);
+						er.error("C5", "Extensions.subjectAltName", currentAltName.get(1).toString(),  "cert/subjectAltName/rfc822Name must be an email address", rfc);
 					}
 					
 				} else if (currentNameType == 2){   // integer type for dnsName.
 					String dnsName = (String)currentAltName.get(1);
 					
 					if (ValidationUtils.isAscii(dnsName)){
-						er.detail("     Success:  C-4 - The field cert/subjectAltName " + currentAltName.get(1) + " is correct.");
+						er.success("C4", "Extensions.subjectAltName", currentAltName.get(1).toString(),  "cert/subjectAltName must be ASCII", rfc);
 					
 						// C-7 - check 1 - cert/subjectAltName/dnsName must contain domain name (if present)
 						Pattern pattern = Pattern.compile(ValidationUtils.domainNameFormat, Pattern.CASE_INSENSITIVE);
 						Matcher matcher = pattern.matcher(dnsName);
 						
 						if (matcher.matches()){
-							er.detail("     Success:  C-7 - The field cert/subjectAltName/dnsName contains a domain name.");
+							er.success("C7", "Extensions.subjectAltName", dnsName,  "cert/subjectAltName/dnsName must contain a domain name. (example: test.validation.com)", rfc);
 						} else {
-							er.err("C-7", "The field cert/subjectAltName/dnsName, if present: " + dnsName + ", must contain a domain name. (example: test.validation.com)", "", "C-7", "");
+							er.error("C7", "Extensions.subjectAltName", dnsName,  "cert/subjectAltName/dnsName must contain a domain name. (example: test.validation.com)", rfc);
 						}
 						
 						// C-7 - check 3 - cert/subjectAltName/dnsName domain name must match the domain name from cert/subject/emailAddr (if present)
@@ -139,7 +143,7 @@ public class DirectSignatureValidator implements SignatureValidator {
 						
 						
 					} else {
-						er.err("C-4", "The field cert/subjectAltName " + currentAltName.get(1) + " is not valid.", "", "C-4", "");
+						er.error("C4", "Extensions.subjectAltName", currentAltName.get(1).toString(),  "cert/subjectAltName must be an email address", rfc);
 					}
 					}
 				}
@@ -153,6 +157,7 @@ public class DirectSignatureValidator implements SignatureValidator {
 
 	// DTS-165	DigestAlgorithm	Direct Message	Required
 	public void validateDigestAlgorithmDirectMessage(ErrorRecorder er, String digestAlgo, String micalg) {
+		String rfc = "RFC 5280: 4.1.1.2;http://tools.ietf.org/html/rfc5280#section-4.1.1.2";
 		if(digestAlgo.contains("sha1") || digestAlgo.contains("sha256")) {
 			digestAlgo = digestAlgo.split("with")[0];
 			digestAlgo = digestAlgo.replaceAll("-", "");
@@ -160,12 +165,12 @@ public class DirectSignatureValidator implements SignatureValidator {
 			micalg = micalg.replaceAll("\"", "");
 			micalg = micalg.toLowerCase();
 			if(digestAlgo.equals(micalg)) {
-				er.detail("     Success:  DTS 165 - Digest Algorithm is valid");
+				er.success("165", "DigestAlgorithm", "Digest: " + digestAlgo + ", micalg: "+ micalg,  "Digest algorithm must match micalg value", rfc);
 			} else {
-				er.err("165", "Digest Algorithm does not equal the S/MIME content-type micalg value.", "", "", "DTS 165");
+				er.error("165", "DigestAlgorithm", "Digest: " + digestAlgo + ", micalg: "+ micalg,  "Digest algorithm must match micalg value", rfc);
 			}
 		} else {
-			er.err("165", "Digest Algorithm is not valid. It MUST contain either value \"sha1\" or \"sha256\".", "", "", "DTS 165");
+			er.error("165", "DigestAlgorithm", "Digest: " + digestAlgo + ", micalg: "+ micalg,  "Digest algorithm must contain either value \"sha1\" or \"sha256\"", rfc);
 		}
 		
 	}
@@ -202,11 +207,12 @@ public class DirectSignatureValidator implements SignatureValidator {
 	 */
 	@Override
 	public void validateSignedData(ErrorRecorder er, CMSProcessable cmsProcessable){
-			if(cmsProcessable.getContent() != null) {
-				er.detail("     Success:  DTS 164 - Signed data is present.");
-			} else {
-				er.err("164", "There is no signed data in the message.", "", "DTS 164", "");
-			}
+		String rfc = "RFC 5652: 5.1;http://tools.ietf.org/html/rfc5652#section-5.1";	
+		if(cmsProcessable.getContent() != null) {
+			er.success("164", "Signed Data", cmsProcessable.toString(),  "Must be present", rfc);
+		} else {
+			er.error("164", "Signed Data", "Not present",  "Must be present", rfc);
+		}
 	}
 
 	
@@ -330,34 +336,35 @@ public class DirectSignatureValidator implements SignatureValidator {
 	}
 
 	@Override
-	public void validateSignedDataAtLeastOneCertificate(ErrorRecorder er,
-			Collection c) {
+	public void validateSignedDataAtLeastOneCertificate(ErrorRecorder er, Collection c) {
+		String rfc = "RFC 5652: 5.1, 10.2.3;http://tools.ietf.org/html/rfc5652#section-5.1";
 		if(!c.isEmpty()) {
-			er.detail("     Success:  DTS 167 - The message is signed with at least one certificate.");
+			er.success("167", "Signed Data", c.toString(),  "Must be present, Message with at least one certificate", rfc);
 		} else {
-			er.err("167", "The signature does not contain at least one signing certificate.", "", "DTS 167", "");
+			er.error("167", "Signed Data", "No signed data",  "Must be present, Message with at least one certificate", rfc);
 		}
 		
 	}
 
 	@Override
 	public void validateSignature(ErrorRecorder er, X509Certificate cert, SignerInformation signer, String BC) {
+		String rfc = "RFC 5652: 5.1, 10.2.3;http://tools.ietf.org/html/rfc5652#section-5.1";
 		try {
 			if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider(BC).build(cert)))
 			{
 				// C-1 - Certificate has not expired - Required
-				er.detail("     Success:  C-1 - The certificate has not expired.");
-				er.detail("Signature Verified");
+				er.success("C1", "Signature", "The certificate has not expired",  "The certificate must not be expired", rfc);
+				er.success("C1", "Signature", "Signature verified",  "", rfc);
 			}
 			else
 			{
-				er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
+				er.error("C1", "Signature", "The certificate has expired",  "The certificate must not be expired", rfc);
 			}
 		} catch (OperatorCreationException e) {
-			er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
+			er.error("C1", "Signature", "The certificate has not expired",  "The certificate must not be expired", rfc);
 			e.printStackTrace();
 		} catch (CMSException e) {
-			er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
+			er.err("C1", "Signature", "The certificate has not expired",  "The certificate must not be expired", rfc);
 			e.printStackTrace();
 		}
 		
