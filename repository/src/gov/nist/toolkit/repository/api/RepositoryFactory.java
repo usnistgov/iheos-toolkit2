@@ -7,7 +7,7 @@ import java.io.File;
 
 public class RepositoryFactory {
 
-	enum RepositoryType { SITE };
+	enum RepositoryType { SIMPLE, SITE };
 	File ec;
 	
 	public RepositoryFactory() {
@@ -29,8 +29,8 @@ public class RepositoryFactory {
 		File root = new File(ec.toString() + File.separator + repType.toString());
 		SimpleRepository rep = new SimpleRepository(root, SimpleRepository.CreateType.CREATE);
 		rep.setPostponeFlush(true);
-		rep.updateDescription(description);
-		rep.updateDisplayName(displayName);
+		rep.setDescription(description);
+		rep.setDisplayName(displayName);
 		rep.flush();
 		return rep;
 	}

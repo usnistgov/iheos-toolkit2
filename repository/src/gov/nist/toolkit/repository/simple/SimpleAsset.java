@@ -1,7 +1,5 @@
 package gov.nist.toolkit.repository.simple;
 
-import java.io.Serializable;
-
 import gov.nist.toolkit.repository.api.Asset;
 import gov.nist.toolkit.repository.api.AssetIterator;
 import gov.nist.toolkit.repository.api.Id;
@@ -17,11 +15,6 @@ public class SimpleAsset implements Asset {
 	Id id;
 	String classNameForSerializable;
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5388152847325921264L;
-
 	@Override
 	public void updateDisplayName(String displayName)
 			throws RepositoryException {
@@ -82,12 +75,12 @@ public class SimpleAsset implements Asset {
 	}
 
 	@Override
-	public Serializable getContent() throws RepositoryException {
+	public byte[] getContent() throws RepositoryException {
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
-	public void updateContent(Serializable content) throws RepositoryException {
+	public void updateContent(byte[] content) throws RepositoryException {
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 

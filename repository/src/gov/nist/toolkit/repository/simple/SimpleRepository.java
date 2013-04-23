@@ -92,7 +92,7 @@ public class SimpleRepository implements Repository {
 	}
 
 	@Override
-	public void updateDisplayName(String displayName)
+	public void setDisplayName(String displayName)
 			throws RepositoryException {
 		properties.setProperty("DisplayName", displayName);
 		if (!postponeFlush)
@@ -126,7 +126,7 @@ public class SimpleRepository implements Repository {
 	}
 
 	@Override
-	public void updateDescription(String description)
+	public void setDescription(String description)
 			throws RepositoryException {
 		properties.setProperty("description", description);
 		if (!postponeFlush)

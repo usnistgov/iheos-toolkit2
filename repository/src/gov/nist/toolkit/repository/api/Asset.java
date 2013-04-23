@@ -14,7 +14,7 @@ package gov.nist.toolkit.repository.api;
  * O.K.I&#46; OSID Definition License}.
  * </p>
  */
-public interface Asset extends java.io.Serializable {
+public interface Asset {
     /**
      * Update the display name for this Asset.
      *
@@ -266,7 +266,7 @@ public interface Asset extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
      *         UNIMPLEMENTED}
      */
-    public java.io.Serializable getContent()
+    public byte[] getContent()
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
@@ -288,7 +288,7 @@ public interface Asset extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
      *         NULL_ARGUMENT}
      */
-    public void updateContent(java.io.Serializable content)
+    public void updateContent(byte[] content)
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**

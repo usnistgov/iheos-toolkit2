@@ -46,7 +46,7 @@ public interface Repository extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
      *         NULL_ARGUMENT}
      */
-    void updateDisplayName(String displayName)
+    void setDisplayName(String displayName)
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
@@ -147,7 +147,7 @@ public interface Repository extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
      *         NULL_ARGUMENT}
      */
-    public void updateDescription(String description)
+    public void setDescription(String description)
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
