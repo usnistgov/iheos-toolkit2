@@ -361,10 +361,10 @@ public class DirectSignatureValidator implements SignatureValidator {
 				er.error("C1", "Signature", "The certificate has expired",  "The certificate must not be expired", rfc);
 			}
 		} catch (OperatorCreationException e) {
-			er.error("C1", "Signature", "The certificate has not expired",  "The certificate must not be expired", rfc);
+			er.error("C1", "Signature", e.getMessage(),  "The certificate must not be expired", rfc);
 			e.printStackTrace();
 		} catch (CMSException e) {
-			er.err("C1", "Signature", "The certificate has not expired",  "The certificate must not be expired", rfc);
+			er.error("C1", "Signature", e.getMessage(),  "The certificate must not be expired", rfc);
 			e.printStackTrace();
 		}
 		
