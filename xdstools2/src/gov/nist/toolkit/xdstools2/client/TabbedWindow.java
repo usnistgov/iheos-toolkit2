@@ -53,9 +53,13 @@ public abstract class TabbedWindow {
 		if (Xdstools2.showEnvironment) {
 			if (envMgrEnabled)
 				environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
-			if (testSesMgrEnabled)
+			if (testSesMgrEnabled && testSessionManager == null)
 				testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
 		}
+	}
+	
+	public void loadTestSessionManagerEarly() {
+		testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
 	}
 
 	public TkProps tkProps() {

@@ -57,11 +57,12 @@ public class MessageDispatchUtils {
 	 */
 	public static boolean isMDN (ErrorRecorder er, byte[] msg, byte[] directCertificate, String password) throws MessagingException{
 		WrappedMessageProcessor processor = new WrappedMessageProcessor();
-		processor.messageParser(er, msg , directCertificate, password);
-		if (processor.getIsMDN()) {
+		processor.messageParser(er, msg, directCertificate, password);
+		if (processor.getIsMDN()){
 			return true;
 		}
-				return false;	
+		
+		return false;
 	}
 		
 	

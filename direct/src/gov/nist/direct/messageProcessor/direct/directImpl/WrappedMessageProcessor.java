@@ -20,21 +20,20 @@ Authors: William Majurski
 
 package gov.nist.direct.messageProcessor.direct.directImpl;
 
+import gov.nist.direct.messageProcessor.cert.CertificateLoader;
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.security.Security;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Enumeration;
+
+import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -42,13 +41,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import gov.nist.direct.directValidator.MessageValidatorFacade;
-import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
-import gov.nist.direct.messageProcessor.MessageProcessorInterface;
-import gov.nist.direct.messageProcessor.cert.CertificateLoader;
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-
+import org.apache.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.RecipientId;
 import org.bouncycastle.cms.RecipientInformation;
@@ -70,6 +63,8 @@ public class WrappedMessageProcessor {
 	private byte[] directCertificate;
 	private String password;
 	
+	static Logger logger = Logger.getLogger(WrappedMessageProcessor.class);
+
 	public WrappedMessageProcessor() {
 		wrapped = false;
 		isMDN = false;
@@ -93,13 +88,21 @@ public class WrappedMessageProcessor {
 	
 	public void processPart(ErrorRecorder er, Part p) throws Exception {
 		
-		if (p == null)
+		if (p == null) {
+			logger.debug("Null part");
 			return;
+		}
 		//er.detail("Processing Part");
 		// If the Part is a Message then first validate the Envelope
 		if (p instanceof Message){
 			System.out.println("Message");
 		}
+		
+		for (Enumeration<Header> en=p.getAllHeaders(); en.hasMoreElements(); ) {
+			Header hdr = en.nextElement();
+			logger.debug("HDR:" + hdr.getName() + " -> " + hdr.getValue());
+		}
+		logger.info("mimeType=" + p.getContentType());
 
 		/*
 		 * Using isMimeType to determine the content type avoids
@@ -112,8 +115,13 @@ public class WrappedMessageProcessor {
 			//System.out.println("Text/xml");
 
 		} else if (p.isMimeType("message/rfc822")) {
-			//System.out.println("Message/rfc822");
+			System.out.println("Message/rfc822");
 			this.wrapped = true;
+			Object o = p.getContent();
+			if (o instanceof Part) {
+				logger.debug("rfc822 contains part");
+				processPart(er, (Part) o);
+			}
 
 		} else if (p.isMimeType("application/pkcs7-signature"+"  Content Name: "+p.getContent().getClass().getName())) {
 			//System.out.println("Signature");

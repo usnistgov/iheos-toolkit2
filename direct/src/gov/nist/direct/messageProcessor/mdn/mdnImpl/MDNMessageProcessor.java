@@ -22,8 +22,9 @@ package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.MessageLogManager;
-import gov.nist.direct.mdn.MDNValidator;
-import gov.nist.direct.mdn.impl.MDNValidatorImpl;
+import gov.nist.direct.logger.writer.MessageIDLogger;
+import gov.nist.direct.mdn.validate.MDNValidator;
+import gov.nist.direct.mdn.validate.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
@@ -38,8 +39,12 @@ import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -84,7 +89,16 @@ import org.bouncycastle.util.Store;
  */
 public class MDNMessageProcessor {
 	static Logger logger = Logger.getLogger(DirectMimeMessageProcessor.class);
+	
+	private static String NO_ORIGINAL_MSG_ID = "No original msg-id";
+	private static String NO_USERNAME = "No username";
+	private static String NO_MDN_MESSAGE_ID = "No MDN message-id";
+	private static String STATUS_VALID = "Valid";
+	private static String STATUS_NOT_VALID = "Not valid";
+	private static String STATUS_NOT_SPECIFIED = "Status not specified";
 
+	
+	private String decryptedMdn = ""; // contains the full decrypted message
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
 	private String password;
@@ -100,10 +114,10 @@ public class MDNMessageProcessor {
 	private String MDN_STATUS;
 
 	public MDNMessageProcessor(){
-
 		// New ErrorRecorder for the MDN validation summary
 		mainEr = new GwtErrorRecorder();
 		ls = LogPathsSingleton.getLogStructureSingleton();
+		MDN_STATUS = "NOT SPECIFIED";
 
 
 	}
@@ -131,85 +145,91 @@ public class MDNMessageProcessor {
 		MDNValidator mdnv = new MDNValidatorImpl();
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
 
+		
 		// Check validation status
-		MDN_STATUS = "NON VALID";
-		if (!er.hasErrors())  MDN_STATUS = "VALID";
+		MDN_STATUS = STATUS_NOT_VALID;
+		if (!er.hasErrors())  MDN_STATUS = STATUS_VALID;
+		System.out.println("mdn validation status: " + MDN_STATUS);
+		
+		// Logs MDN message - still ENCRYPTED
+		logMDNMessage(mm); // logMDNMessage(mm, disposition);
 
-		// Check MDN properties (Date received, Sender, compare to original Direct message)
-		checkMdnMessageProperties(er, inputDirectMessage, _directCertificate, _password, vc);
-		System.out.println("checkMdnMessageProperties");
+        // Set the part number to 1
+        partNumber = 1;
 
+        // Parse the message to see if it is wrapped
+        wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
 
-		// need to delete regularly outdated message logs from the singleton.
+        logger.debug("ValidationContext is " + vc.toString());
 
-
-
-	}
-
-
-
-
-	/**
-	 * Checks MDN message properties and coherence compared to the initial Direct Message
-	 * (Date received, Sender, compare to original Direct message)
-	 */
-	public void checkMdnMessageProperties(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password, ValidationContext vc){
-
-
-		// Set the part number to 1
-		partNumber = 1;
-
-		// Parse the message to see if it is wrapped
-		wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
-
-		logger.debug("ValidationContext is " + vc.toString());
-
-		MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
-
-
-		// Get MDN sender name (username)
-		String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
-
-		// Get MDN message ID 
-		String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
-
-		// Get  reception time - Logging system date instead of SUT sender date contained in headers
-		Date date = new Date();
-		// String date = ParseUtils.searchHeaderSimple((Part)m, "date");
-
-		// Write MDN info to existing Direct log
-		String origMessageID = (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) ? "NoOriginalMessageId" : Utils.rawFromHeader(_inResponseToMessageID);
-		String username = Utils.rawFromHeader(_username);
-		MessageLogManager.logMDN(m, MDN_STATUS, "DIRECT_SEND", "MDN", origMessageID, date.toString());
-		//Address[] addr = ((MimeMessage) p).getFrom();
-		//username = (addr[0]).toString();
-		//MessageLog.logMDN(m, MDN_STATUS, username, "DIRECT_SEND", "MDN", messageID, date.toString());
-
-
-		// Compares reception time for the MDN to send time for the original Direct message.
-		//		try {
-		//			receiveDate = ValidationUtils.parseDate(date);
-		//
-		//			SendHistorySingleton sendHistory = SendHistorySingleton.getSendHistory();
-		//			Date sendDate = sendHistory.getMessageSendTime(messageID);
-		//
-		//			int timeOffset = TimerUtils.getTimeDifference(receiveDate, sendDate);
-		//			if (timeOffset <= TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION()){
-		//			} else {
-		//				// message that an mdn was received but delay was too long
-		//				//er.err(null, "MDN processing", "The MDN was received after the authorized delay had expired. The delay is "+ TimerUtils.getACCEPTED_DELAY_FOR_MDN_RECEPTION(),  timeOffset);
-		//			}
-		//
-		//		} catch (ParseException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
-		System.out.println("Done.");
+        // Parses message - what does it do? needed?
+       // MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
+       
 
 	}
 
 
 
+
+
+	public void logMDNMessage(MimeMessage m) {
+
+        // Get MDN sender name (username)
+       // String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
+        // String username = Utils.rawFromHeader(_username);
+
+		
+        // Get MDN message ID 
+        String mdnMessageId = "";
+		try {
+			if (m.getMessageID() == null || m.getMessageID().equals("")){
+				mdnMessageId = m.getMessageID();
+			} else {
+				mdnMessageId = NO_MDN_MESSAGE_ID;
+			}
+		} catch (MessagingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+			
+			
+        // Get  reception time - Logging system date instead of SUT sender date contained in headers
+        Date date = new Date();
+
+        
+        // Get Original Direct Message-ID from MDN
+        String origMessageID;
+        String _inResponseToMessageID = ParseUtils.searchHeaderSimple((Part)m, "original-message-id");
+        		
+        if (_inResponseToMessageID == null || _inResponseToMessageID.equals("")) {
+        	        origMessageID = NO_ORIGINAL_MSG_ID;
+        		} else {
+        			origMessageID = Utils.rawFromHeader(_inResponseToMessageID);
+        		}
+        
+		
+		// Get original Direct message validation status as described in MDN
+		String origDirectMsgValidationStatus = "";
+		try {
+			if (m.getDisposition() != null && m.getDisposition() != ""){
+				String disp = m.getDisposition();
+				if (disp.contains("processed")){ // we hope this is code for "a valid Direct message"
+					origDirectMsgValidationStatus = STATUS_VALID; 
+				} else {
+					origDirectMsgValidationStatus = STATUS_NOT_VALID; 
+				}
+			} else { // Disposition is null - shouldn't happen anyway
+				origDirectMsgValidationStatus = STATUS_NOT_SPECIFIED;
+			}
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageId);
+
+		
+	}
 
 	public void processPart(ErrorRecorder er, Part p) throws Exception {
 
@@ -226,9 +246,12 @@ public class MDNMessageProcessor {
 		 * fetching the actual content data until we need it.
 		 */
 		if (p.isMimeType("text/plain")) {
-			//System.out.println("Text/plain");
+			concat(p.toString());
+			
 
 		} else if (p.isMimeType("text/xml")) {
+			//concat(p.toString());
+
 			//System.out.println("Text/xml");
 
 		} else if (p.isMimeType("message/rfc822")) {
@@ -240,7 +263,7 @@ public class MDNMessageProcessor {
 		} else if (p.isMimeType("application/pkcs7-mime")) {
 			//System.out.println("Encrypted message");
 			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
-
+			
 		} else if (p.isMimeType("application/x-pkcs7-signature")) {
 			//System.out.println("Signature");
 
@@ -254,13 +277,18 @@ public class MDNMessageProcessor {
 			// Validate MDN
 			ProcessMDN mdnv = new ProcessMDN();
 			mdnv.validate(er, p);
+			//concat(p.toString());
+
+			
 
 		} else if (p.isMimeType("application/octet-stream")) {
 			//System.out.println("CCDA Content");
 
 		} else if (p.isMimeType("multipart/signed")) {
+			//System.out.println("multipart");
 
 			SMIMESigned s = new SMIMESigned((MimeMultipart)p.getContent());
+			//concat(s.toString());
 
 			//
 			// verify signature
@@ -337,7 +365,11 @@ public class MDNMessageProcessor {
 
 		this.encrypted = true;
 
-		return res;
+		// Create the decrypted MDN by logging successive body parts
+		//	concat(res.toString());
+			//System.out.println("Could not log MimeMultipart body parts once the message was decrypted.");
+		
+			return res;
 	}
 
 	/**
@@ -377,6 +409,21 @@ public class MDNMessageProcessor {
 		}
 	}
 
+	
+	/**
+	 * concatenes strings from message Parts once decrypted
+	 * @param str
+	 * @return
+	 */
+	String concat(String str){
+		if (str != null){
+			return decryptedMdn.concat(str);
+		} else {
+			System.out.println("Some of the message parts were empty.");
+			return "";
+		}
+	}
 
+	
 
 }

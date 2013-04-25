@@ -128,7 +128,7 @@ public class DirectTransaction extends BasicTransaction {
 		
 		logger.info("MessageId="+ msg.getMessageID());
 
-		MessageLogManager.logDirectMessage(transactionSettings.user, new Date().toString(), ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), msg.getMessageID(), msg, "");
+		MessageLogManager.logDirectMessage(transactionSettings.user, new Date(), ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), msg.getMessageID(), msg, "");
 
 		/*InputStream is2 = new FileInputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));
 		msg = new MimeMessage(session, is2);*/
@@ -412,7 +412,8 @@ public class DirectTransaction extends BasicTransaction {
 		return "Direct";
 	}
 	
-	public MimeMessage createSendMail(String toAddress, String fromAddress) {
+	public MimeMessage createSendMail(String toAddress, String fromAddress) throws Exception {
+		logger.info("Generating unwrapped format");
 		// Get the signing certificate
 		Map<String, Object> extra2 = planContext.getExtraLinkage2();
 		byte[] signingCert = (byte[]) extra2.get("signingCert");
@@ -430,7 +431,8 @@ public class DirectTransaction extends BasicTransaction {
 		return gen.generateMessage(signingCert, signingCertPw, textMessage, subject, attachmentContentFile, fromAddress, toAddress, encryptionCertBA);
 	}
 	
-	public MimeMessage createWrapedSendMail(String toAddress, String fromAddress) {
+	public MimeMessage createWrapedSendMail(String toAddress, String fromAddress) throws Exception {
+		logger.info("Generating wrapped format");
 		// Get the signing certificate
 		Map<String, Object> extra2 = planContext.getExtraLinkage2();
 		byte[] signingCert = (byte[]) extra2.get("signingCert");

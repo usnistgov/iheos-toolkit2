@@ -20,13 +20,13 @@ Authors: William Majurski
 package gov.nist.direct.logger.reader;
 
 import gov.nist.direct.logger.LogPathsSingleton;
+import gov.nist.direct.logger.LoggerUtils;
 import gov.nist.direct.utils.Utils;
-import gov.nist.direct.utils.ValidationUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.text.ParseException;
+import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.mail.internet.MimeMessage;
 
@@ -72,7 +72,7 @@ public MimeMessage readEncryptedDirectMessage (LogPathsSingleton ls, String tran
 }
 
 public String readMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String statusLogPath = ls.getMessageStatusLogPath(transactionType, messageType, username, messageId);
+	String statusLogPath = ls.getMDNValidationStatusLogPath(transactionType, messageType, username, messageId);
 	ArrayList<String> read = Utils.readFile(new File(statusLogPath));
 	
 	// ignore 2nd and later lines of the file, only the first one contains status
@@ -80,26 +80,43 @@ public String readMessageStatus (LogPathsSingleton ls, String transactionType, S
 		return read.get(0).trim();
 	else
 		return "";
-	
 }
 
 
-public Date readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String mdnLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
-	String str = Utils.readFile(mdnLogPath);
+public String readOrigDirectMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String statusLogPath = ls.getDirectOriginalValidationStatusLogPath(transactionType, messageType, username, messageId);
+	ArrayList<String> read = Utils.readFile(new File(statusLogPath));
 	
-		return new Date(str);
+	// ignore 2nd and later lines of the file, only the first one contains status
+	if (read.size() > 0)
+		return read.get(0).trim();
+	else
+		return "";
 }
 
 
-public Date readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId);
-	String str = Utils.readFile(expDatePath);
-	
-	return new Date(str);
-		
+public String readDirectSendDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String directLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
+	if (!new File(directLogPath).canRead())
+		return "";
+	return LoggerUtils.readTextFileFirstLine(directLogPath);
 }
 
+
+public String readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String mdnLogPath = ls.getMDNReceivedDateLogPath(transactionType, messageType, username, messageId);
+	if (!new File(mdnLogPath).canRead())
+		return "";
+	return LoggerUtils.readTextFileFirstLine(mdnLogPath);
+}
+
+
+public String readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId); 
+	if (!new File(expDatePath).canRead())
+		return "";
+	return LoggerUtils.readTextFileFirstLine(expDatePath);
+}
 
 
 public String readLabel(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
@@ -113,25 +130,15 @@ public String readLabel(LogPathsSingleton ls, String transactionType, String mes
 		return "";
 }
 
-//
-//private ArrayList<Date> readMessageLogDates (LogStructureSingleton ls, String transactionType, String messageType, String username, String messageId) {
-//	String dateLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
-//	ArrayList<String> array = Utils.readFile(new File(dateLogPath));
-//	ArrayList<Date> arrayDate = new ArrayList<Date>();
-//	int index = 0;
-//while (array.iterator().hasNext()) {
-//	String next = array.iterator().next();
-//	try {
-//		arrayDate.add(index,ValidationUtils.parseDate(next));
-//	} catch (ParseException e) {
-//		// TODO Auto-generated catch block
-//		e.printStackTrace();
-//	}
-//	index++;
-//	
-//}
-//return arrayDate;
-//}
+
+
+public String readMDNMessageID(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+	String mdnMsgID = ls.getMessageIdLogPath(transactionType, messageType, username, messageId);
+	if (!new File(mdnMsgID).canRead())
+		return "";
+	return LoggerUtils.readTextFileFirstLine(mdnMsgID);
+}
+
 
 
 	

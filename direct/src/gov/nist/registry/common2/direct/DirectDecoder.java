@@ -82,7 +82,7 @@ public class DirectDecoder extends MessageValidator {
 			e.printStackTrace();
 		}*/
 		
-		MDNGenerator mdnGenerator = new MDNGenerator();
+		//MDNGenerator mdnGenerator = new MDNGenerator();
 		//MimeMessage mdn = mdnGenerator.createSignedAndEncrypted("ack", "starugh-stateline.com", "NHIN Direct Security Agent", null,
 		//"externUser1@starugh-stateline.com", messageID, 
 		//Disposition.COMPILE_TIME_CONSTANT, from, to, subject, encCert, signCert, password);

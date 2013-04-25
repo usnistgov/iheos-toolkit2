@@ -36,6 +36,10 @@ xdstools2/listener.jar
 *~
 *.orig
 
+# VIM swap files
+*.swp
+*.swo
+
 
 deploy.sh
 

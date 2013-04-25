@@ -37,7 +37,6 @@ import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.SmtpMessageStatus;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
@@ -46,6 +45,7 @@ import gov.nist.toolkit.xdstools2.server.smtptools.LogAccessMock;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -127,8 +127,11 @@ ToolkitService {
 	@Override
 	public List<String> getDirectMsgIds(String user) { return new LogAccessMock().getMsgIds(user); }
 	@Override
-	public List<MessageLog> getDirectOutgoingMsgStatus(String user) { 
+	public List<MessageLog> getDirectOutgoingMsgStatus(String user) throws NoServletSessionException { 
 		//return new LogAccessMock().getOutgoingMsgStatus(user, msg_ids);
+		if (user == null || user.equals("null") || user.equals(""))
+			return new ArrayList<MessageLog>();
+		session().setMesaSessionName(user);
 		List<MessageLog> logs = new UserLog().readUserLogs(user);
 		return logs;
 	}
@@ -239,7 +242,8 @@ ToolkitService {
 	public List<String> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-
+	public List<MessageLog> getDirectLogs(String sessionName) throws Exception { return session().xdsTestServiceManager().getDirectLogs(sessionName); }
+	
 	
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

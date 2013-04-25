@@ -38,6 +38,7 @@ public class UserLog {
 	 * @return
 	 */
 	public List<MessageLog> readUserLogs(String username){
+		System.out.println("User is " + username);
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		
 		String transactionType;
@@ -47,12 +48,14 @@ public class UserLog {
 
 
 		// parse folder Direct Send
+		System.out.println("parse folder Direct Send");
 		transactionType =	ls.getDIRECT_SEND_FOLDER();
-		userLogs_Send = parseTransactionFolders(username, transactionType);
+		userLogs_Send = parseTransactionFoldersAndReadLogs(username, transactionType);
 
 		// parse folder Direct Receive
+		System.out.println("parse folder Direct Receive");
 		transactionType =	ls.getDIRECT_RECEIVE_FOLDER();
-		userLogs_Receive = parseTransactionFolders(username, transactionType);
+		userLogs_Receive = parseTransactionFoldersAndReadLogs(username, transactionType);
 
 		allUserLogs.addAll(userLogs_Send);
 		allUserLogs.addAll(userLogs_Receive);
@@ -65,14 +68,14 @@ public class UserLog {
 	 * Parses all folders for one Transaction Type (Direct send or receive)
 	 * in order to read all existing message IDs.
 	 */
-	private  List<MessageLog> parseTransactionFolders(String username, String transactionType) {
+	private  List<MessageLog> parseTransactionFoldersAndReadLogs(String username, String transactionType) {
 		List<MessageLog> userLog = new ArrayList<MessageLog>();
 		List<String> messageIds = LoggerUtils.listFilesForFolder(File.separator + username +  transactionType);
 		String id;
 		MessageLog singleMsgLog;
 
-		while (messageIds.iterator().hasNext()){
-			id = messageIds.iterator().next();
+		for (int i=0; i< messageIds.size();i++){
+			id = messageIds.get(i);
 			singleMsgLog = MessageLogManager.readLog(username, transactionType, id);
 			userLog.add(singleMsgLog);
 		}

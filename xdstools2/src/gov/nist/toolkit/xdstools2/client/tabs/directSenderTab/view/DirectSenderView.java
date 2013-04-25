@@ -130,7 +130,8 @@ public class DirectSenderView implements DirectSenderTab.Display {
 
 		addCertUpload(true, 
 				"Encryption Cert", 
-				"This cert is the public key of the receiver that will be used to encrypt the message. It must be in DER format.", 
+				"This cert is the public key of the receiver that will be used to encrypt the message. It must be in DER format." +
+				" If no cert is uploaded then DNS will be queried to find a cert for the target domain.", 
 				"2", 
 				false);
 		

@@ -23,20 +23,16 @@ import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.utilities.io.Io;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -315,6 +311,18 @@ return str;
 	}
 	else return "unrecognized_usernames"; 
 	}
+
+	public static void printToFile(MimeMultipartReport mdn, String outputFile) {
+		  try {
+			mdn.writeTo(new FileOutputStream(outputFile));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
 
 
 

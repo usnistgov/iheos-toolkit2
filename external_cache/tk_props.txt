@@ -1,0 +1,136 @@
+# Select the home page displayed. If commented out, everything
+# will be shown.  To show just the Direct project then code
+# toolkit.home: direct
+toolkit.home: direct
+
+direct.reporting.privKeyPassword: 
+
+##############################################################
+# REPORT MAILER CONFIG
+# Mailer definition for for service used to send announcements
+# of reports that are available
+# to Contact email addresses
+# This section must be LOCALLY CONFIGURED to use the local mailer or an external mailer such
+# as gmail
+######################################################
+direct.reporting.mail.host: smtp.gmail.com
+direct.reporting.mail.from: directtesting@gmail.com
+direct.reporting.mail.smtp.user: directtesting@gmail.com
+direct.reporting.mail.smtp.password: 4direct54
+direct.reporting.mail.smtp.port: 465
+direct.reporting.mail.smtp.auth: true
+direct.reporting.mail.smtp.starttls: true
+direct.reporting.mail.debug: true
+direct.reporting.mail.gmail.style : true
+
+# smtp or smtps
+direct.reporting.mail.transport: smtp
+
+# Send announcement email? - this can be disabled for some types of testing
+direct.reporting.announce:true
+
+#############################################################
+# VALIDATION REPORT CACHE
+# Where the reports are stored.
+# This address is code in two ways:
+#   1) as viewed through the local filesystem
+#   2) as viewed from the web
+# Obviously they must resolve to the same directory
+# This directory must exist and be writable by account owning the Listener
+############################
+direct.reporting.directory: /var/lib/tomcat7/webapps/ROOT/direct/
+direct.reporting.baseurl: http://ttt.transparenthealth.org/direct/
+
+##############################################################
+# ANNOUNCEMENT MESSAGE CONTENT/FORMAT
+# The text in this section will be used as the body of the validation
+# announcement email.
+# Each line of the announcement is configured as a single line in this section.
+# The string %validation.url% will be replaced with the URL of the generated
+# report before it is sent out.
+# The formatting is plain text (not HTML) so no fancy formatting is possible.
+##############################################################
+direct.reporting.validation.template: Validation report available from
+direct.reporting.validation.template: %validation.url%
+direct.reporting.validation.template: Through later
+
+#############################################################
+# Mapping from Direct (To) address and CCDA Document Type
+#    type       must align with the toolkit software
+#    display    is not processed, only displayed on the UI
+#    directTo   is recognized by the Listener.  A match tells the validation
+#               software which MU2 type of CCDA validation is requested
+#               So, sending to direct-clinical-summary@yourdomain will
+#               trigger the Clinical Office Visit Summary validation type in MDHT
+# Entries with all 3 params present will be displayed on the TTT home  page
+# Entries with type and display present will be displayed on the Message Validator page
+# The entries will be displayed in the order indicated (*n)
+#############################################################
+direct.reporting.ccdatype.type1: Clinical Office Visit Summary
+direct.reporting.ccdatype.display1: MU2 170.314(e)(2) - Clinical Summary
+direct.reporting.ccdatype.directTo1: direct-clinical-summary@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type2: Transitions Of Care Ambulatory Summary
+direct.reporting.ccdatype.display2: MU2 170.314(b)(2) Transition of Care/Referral Summary - For Ambulatory Care
+direct.reporting.ccdatype.directTo2: direct-ambulatory@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type3: Transitions Of Care Ambulatory Summary
+direct.reporting.ccdatype.display3: MU2 170.314(b)(7) Data Portability - For Ambulatory Care
+direct.reporting.ccdatype.directTo3: direct-ambulatory@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type4: Transitions Of Care Ambulatory Summary
+direct.reporting.ccdatype.display4: MU 2 170.314(b)(1) Transition of Care Receive – For Ambulatory Care
+direct.reporting.ccdatype.directTo4: direct-ambulatory@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type5: Transitions Of Care Inpatient Summary
+direct.reporting.ccdatype.display5: MU2 170.314(b)(2) Transition of Care/Referral Summary - For Inpatient Care
+direct.reporting.ccdatype.directTo5: direct-inpatient@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type6: Transitions Of Care Inpatient Summary
+direct.reporting.ccdatype.display6: MU2 170.314(b)(7) Data Portability - For Inpatient Care
+direct.reporting.ccdatype.directTo6: direct-inpatient@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type7: Transitions Of Care Inpatient Summary
+direct.reporting.ccdatype.display7: MU 2 170.314(b)(1) Transition of Care Receive – For Inpatient Care
+direct.reporting.ccdatype.directTo7: direct-inpatient@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type8: VDT Ambulatory Summary
+direct.reporting.ccdatype.display8: MU2 170.314 (e)(1) Ambulatory Summary
+direct.reporting.ccdatype.directTo8: direct-vdt-ambulatory@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type9: VDT Inpatient Summary
+direct.reporting.ccdatype.display9: MU2 170.314 (e)(1) Inpatient Summary
+direct.reporting.ccdatype.directTo9: direct-vdt-inpatient@ttt.transparenthealth.org
+
+direct.reporting.ccdatype.type10: 
+direct.reporting.ccdatype.display10: Non-specific CCDA
+direct.reporting.ccdatype.directTo10: ccda@ttt.transparenthealth.org
+
+#############################################################
+# Names of public certs configured into TTT
+# These files reside in the WAR file in the directory pubcert.
+# Obviously, these must match the DNS domain the tool is installed within.
+# The default values come from the configuration for hit-testing.nist.gov.
+# They must be in DER format.
+#############################################################
+direct.pubcert.pubcert:      ttt.transparenthealth.org.der
+direct.pubcert.trustanchor:  transparenthealth.org.der
+direct.pubcert.invtrustrelanchor:  invalid-trust-relationship.der
+
+#############################################################
+# domain of From (Direct) address
+# This is used by the Send Direct Message page as part of the Direct (From) Address
+direct.toolkit.dns.domain: ttt.transparenthealth.org
+
+#############################################################
+# Identity of SMTP record.  Usually just smtp.<yourdomain>
+#############################################################
+direct.toolkit.smtp.domain: smtp.ttt.transparenthealth.org
+
+#############################################################
+# Servlet context name - ttt or xdstools2. For creating
+# simulator endpoints
+#############################################################
+toolkit.servlet.context: ttt
+
+

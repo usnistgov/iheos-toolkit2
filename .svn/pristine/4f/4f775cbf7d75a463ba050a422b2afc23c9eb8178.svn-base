@@ -1,6 +1,0 @@
-100=Warning: The MAIL FROM SMTP field should match the 'from' header.
-121=Error: The "message-id" field must be in the format of "<""string with no spaces"@"string with no spaces"">".
-133-1=Error: In the "content-type" header, the "protocol" parameter value must be, if present, "application/pkcs7-signature".
-133-2=Error: In the "content-type" header, the "micalg" parameter must be present.
-133-3=Error: The content-type "micalg" parameter value is incorrect.
-133-4=Error: The content-type "boundary" parameter value is incorrect.

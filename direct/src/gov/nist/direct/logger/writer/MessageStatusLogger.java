@@ -14,7 +14,7 @@ Authors: William Majurski
 		 Diane Azais
 		 Julien Perugini
 		 Antoine Gerardin
-		
+
  */
 
 package gov.nist.direct.logger.writer;
@@ -24,24 +24,35 @@ import gov.nist.direct.utils.Utils;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 /**
  * Logs status of message validation to MDN and Direct log file structure
  * @author dazais
  *
  */
 public class MessageStatusLogger {
-	 LogPathsSingleton ls;
-	
+	LogPathsSingleton ls;
+	static Logger logger = Logger.getLogger(MessageStatusLogger.class);
+
 	public MessageStatusLogger(){
-		 ls = LogPathsSingleton.getLogStructureSingleton();
+		ls = LogPathsSingleton.getLogStructureSingleton();
 	}
 
-	// Logging a message status
-	public void logMessageStatus(String status, String transactionType, String messageType, String username, String messageId) throws IOException {
-		String statusLogPath = ls.getMessageStatusLogPath(transactionType, messageType, username, messageId);
+	// Logging an MDN validation status
+	public void logMDNValidationStatus(String status, String transactionType, String messageType, String username, String messageId) throws IOException {
+		logger.info("Message " + messageId + " has MDN status of " + status);
+		String statusLogPath = ls.getMDNValidationStatusLogPath(transactionType, messageType, username, messageId);
 		Utils.writeToFile(status, statusLogPath);
-		}
-	
+	}
+
+	// Logging the status of the original Direct message
+	public void logDirectOriginalValidationStatus(String status, String transactionType, String messageType, String username, String messageId) throws IOException {
+		logger.info("Message " + messageId + " has Original status of " + status);
+		String statusLogPath = ls.getDirectOriginalValidationStatusLogPath(transactionType, messageType, username, messageId);
+		Utils.writeToFile(status, statusLogPath);
+	}
+
 
 
 }

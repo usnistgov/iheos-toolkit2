@@ -1,0 +1,17 @@
+to: User1@Cerner.com
+content-type: multipart/report; report-type=disposition-notification; boundary="----=_Part_5_31697654.1295630438108"
+message-id: 0c796d0e-4c76-43e8-be40-2cd5e30c1005
+subject: Processed: I-D ACTION:draft-ietf-mailext-pipeline-01.txt
+From: externUser1@starugh-stateline.com
+
+------=_Part_5_31697654.1295630438108
+
+This is a CDATA subject
+------=_Part_5_31697654.1295630438108
+Content-Type: message/disposition-notification
+
+Disposition: automatic-action/MDN-sent-automatically;processed
+Reporting-UA: starugh-stateline.com;NHIN Direct Security Agent
+Final-Recipient: externUser1@starugh-stateline.com
+Original-Message-ID: <9501051053.aa04167@IETF.CNR I.Reston.VA.US>
+

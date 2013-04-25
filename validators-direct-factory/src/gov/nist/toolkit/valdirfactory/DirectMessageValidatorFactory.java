@@ -31,7 +31,7 @@ public class DirectMessageValidatorFactory implements MessageValidatorFactory2I 
 			ErrorRecorder er = reportError(erBuilder, mvc, "Direct Validator", "No Certificate");
 			return mvc;
 		}
-		mvc.addMessageValidator("DIRECT Validator", new DirectDecoder(vc, erBuilder, Io.bytesToInputStream(input), Io.bytesToInputStream(certificate)), erBuilder.buildNewErrorRecorder());
+		mvc.addMessageValidator("Message Validator", new DirectDecoder(vc, erBuilder, Io.bytesToInputStream(input), Io.bytesToInputStream(certificate)), erBuilder.buildNewErrorRecorder());
 		return mvc;
 	}
 
@@ -41,6 +41,7 @@ public class DirectMessageValidatorFactory implements MessageValidatorFactory2I 
 		if (erBuilder != null) {
 			ErrorRecorder er = report(erBuilder, mvc, "Requested Validation Context");
 			er.detail(vc.toString());
+			er.detail("An issue with the validation display occurred.");
 		}
 
 		String inputString = new String(input).trim();

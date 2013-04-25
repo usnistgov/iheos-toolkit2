@@ -68,6 +68,7 @@ import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -976,22 +977,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();
 
-		// Get label
-		String label = "label";
+		// Get label - TODO
+		String label = "";
 		
-		MessageLogManager.logDirectMessage(username, date.toString(), "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
-		List<MessageLog> readLog = new UserLog().readUserLogs(username);
-		
-		// test display
-		System.out.println("Testing display");
-		System.out.println(readLog.toString());
-		
-	//	ArrayList<MessageLog> readLog = UserLog.readUserLogs(username);
-	//	MessageLog temp;
-	//	while (readLog.iterator().hasNext()){
-	//		temp = readLog.iterator().next();
-	//		System.out.println(temp.toString());
-	//	}
+		MessageLogManager.logDirectMessage(username, date, "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
+
 
 		System.out.println("Logged direct message.");
 

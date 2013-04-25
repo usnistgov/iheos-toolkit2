@@ -57,10 +57,10 @@ public class UnwrappedMessageGenerator implements DirectMessageGenerator {
 
 	@Override
 	public MimeMessage generateMessage(byte[] signingCert, String signingCertPw, String subject, 
-			String textMessage, File attachmentContentFile, String fromAddress, String toAddress, byte[] encryptionCertBA) {
+			String textMessage, File attachmentContentFile, String fromAddress, String toAddress, byte[] encryptionCertBA) throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 
-		try{
+//		try{
 			ByteArrayInputStream signatureCert = new ByteArrayInputStream(signingCert);
 			CertificateLoader loader = new CertificateLoader(signatureCert, signingCertPw);
 			
@@ -161,10 +161,10 @@ public class UnwrappedMessageGenerator implements DirectMessageGenerator {
 
 			return msg;
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		return null;
 	}
 
 }
