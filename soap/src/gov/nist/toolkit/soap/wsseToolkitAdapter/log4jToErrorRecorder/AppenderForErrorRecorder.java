@@ -26,6 +26,9 @@ public/* static */class AppenderForErrorRecorder extends AppenderSkeleton {
 		if (event.getLevel() == Level.ERROR) {
 			er.err(XdsErrorCode.Code.NoCode,event.getRenderedMessage(),event.getLevel().toString(),event.getLoggerName());
 		}
+		if (event.getLevel() == Level.INFO) {
+			er.detail(event.getRenderedMessage());
+		}
 	}
 
 	public void close() {
