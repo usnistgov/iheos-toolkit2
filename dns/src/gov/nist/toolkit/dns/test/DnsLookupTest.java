@@ -1,15 +1,16 @@
 package gov.nist.toolkit.dns.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import gov.nist.toolkit.dns.DnsLookup;
 
 import org.junit.Test;
 import org.xbill.DNS.TextParseException;
 
-import static org.junit.Assert.*;
-
 public class DnsLookupTest {
 
-	@Test
+	
 	public void testMX() {
 		try {
 			assertEquals( new DnsLookup().getMxRecord("ttt.transparenthealth.org"), "23.21.244.250");
@@ -21,8 +22,10 @@ public class DnsLookupTest {
 
 	@Test
 	public void testCERT() {
+		DnsLookup dl = new DnsLookup();
 		try {
-			assertEquals( new DnsLookup().getCertRecord("ttt.transparenthealth.org").substring(0,  4), "MIID");
+			String cert = dl.getCertRecord("glacecentral.com");
+			assertNotNull(cert);
 		} catch (TextParseException e) {
 			e.printStackTrace();
 			fail();

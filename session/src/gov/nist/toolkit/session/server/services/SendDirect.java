@@ -132,8 +132,9 @@ public class SendDirect extends CommonServiceManager {
 			if (isEmpty(encryptionCert)) {
 				// not uploaded or pre-installed for the target domain.  Try fetching
 				// from DNS.
-				String encCertString = new DnsLookup().getCertRecord(targetDomain);
-				if (encCertString != null && encCertString.startsWith("MIID"))
+				DnsLookup dl = new DnsLookup();
+				String encCertString = dl.getCertRecord(targetDomain);
+				if (encCertString != null)
 					encryptionCert = Base64Coder.decode(encCertString);
 				if (!isEmpty(encryptionCert)) {
 					logger.info("    Encryption cert pulled from DNS");

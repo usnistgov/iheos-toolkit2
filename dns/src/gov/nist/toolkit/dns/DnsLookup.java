@@ -6,6 +6,10 @@ import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
 public class DnsLookup {
+	Record[] certRecord = null;
+	String type = "";
+	String cert = "";
+	String algo = "";
 
 	public String getMxRecord(String domainname) throws TextParseException {
 		Lookup dnsLookup = new Lookup(domainname, Type.MX);
@@ -23,14 +27,15 @@ public class DnsLookup {
 	
 	public String getCertRecord(String domainname) throws TextParseException {
 		Lookup dnsLookup = new Lookup(domainname, Type.CERT);
-		Record[] records = dnsLookup.run();
-		if (records.length == 0)
+		certRecord = dnsLookup.run();
+		if (dnsLookup.getResult() != Lookup.SUCCESSFUL)
 			return null;
-		String[] d = records[0].rdataToString().split(" ");
+		if (certRecord == null || certRecord.length == 0)
+			return null;
+		String[] d = certRecord[0].rdataToString().split(" ");
 		if (d.length < 4)
 			return null;
-		String value = d[3];
-		return value;
+		return d[3];
 	}
-
+	
 }
