@@ -39,7 +39,13 @@ public class MessageDispatchUtils {
 
 	
 	
-	public static boolean isDIRECT(ErrorRecorder er, MimeMessage msg) throws MessagingException{
+	public static boolean isDIRECT(ErrorRecorder er, byte[] msg, byte[] directCertificate, String password) throws MessagingException{
+		WrappedMessageProcessor processor = new WrappedMessageProcessor();
+		processor.messageParser(er, msg, directCertificate, password);
+		return processor.getIsDirect();
+	}
+	
+	public static boolean isEncrypted(ErrorRecorder er, MimeMessage msg) throws MessagingException{
 		//if(!msg.isMimeType("application/pkcs7-mime")) {
 		if (msg.getContentType().contains("application/pkcs7-mime")){
 			return true;
