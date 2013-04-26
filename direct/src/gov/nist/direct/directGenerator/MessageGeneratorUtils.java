@@ -19,9 +19,13 @@ Authors: William Majurski
 
 package gov.nist.direct.directGenerator;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
+
 import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeUtility;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
@@ -36,8 +40,13 @@ public class MessageGeneratorUtils {
 	
 	public static MimeBodyPart addAttachement(File attachmentContentFile) throws Exception {
 		byte[] fileContent = FileUtils.readFileToByteArray(attachmentContentFile);
-        byte[] content = Base64.encodeBase64(fileContent);
+        //byte[] content = Base64.encodeBase64(fileContent);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        OutputStream base64OutputStream = MimeUtility.encode(baos, "base64");
+        base64OutputStream.write(fileContent);
+        base64OutputStream.close();
         
+        byte[] content = baos.toByteArray();
         
         InternetHeaders partHeaders = new InternetHeaders();
         if(attachmentContentFile.getName().contains(".xml")) {

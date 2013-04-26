@@ -63,6 +63,12 @@ public class MessageProcessor implements MessageProcessorInterface {
 		// determine message type
 		// ------ MDN -------
 		try {
+			// Check if encrypted message
+			if(!MessageDispatchUtils.isEncrypted(er, mm)) {
+				er.err("Message File", "The file is not an encrypted message", "", "", "Message File");
+			}
+			
+			// ------ MDN -------
 			if (MessageDispatchUtils.isMDN(er, inputDirectMessage, _directCertificate, _password)){
 				messageType = mdnMessageType;
 
@@ -78,7 +84,7 @@ public class MessageProcessor implements MessageProcessorInterface {
 
 
 		// ------ DIRECT -------
-			else if (MessageDispatchUtils.isDIRECT(er, mm)){
+			else if (MessageDispatchUtils.isDIRECT(er, inputDirectMessage, _directCertificate, _password) && MessageDispatchUtils.isEncrypted(er, mm)){
 			 messageType = directMessageType;
 			 
 			 // Display Message type
@@ -94,7 +100,7 @@ public class MessageProcessor implements MessageProcessorInterface {
 		
 		
 		// ----- Unknown type  -----
-			else {
+			else if(!MessageDispatchUtils.isEncrypted(er, mm) && !MessageDispatchUtils.isDIRECT(er, inputDirectMessage, _directCertificate, _password)) {
 				er.err("Message File", "The file is neither a DIRECT message nor an MDN.", "", "", "Message File");
 			}
 		} catch (MessagingException e) {

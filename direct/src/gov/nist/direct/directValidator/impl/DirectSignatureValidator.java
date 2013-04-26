@@ -153,14 +153,20 @@ public class DirectSignatureValidator implements SignatureValidator {
 
 	// DTS-165	DigestAlgorithm	Direct Message	Required
 	public void validateDigestAlgorithmDirectMessage(ErrorRecorder er, String digestAlgo, String micalg) {
-		if(digestAlgo.contains("sha1") || digestAlgo.contains("sha256")) {
-			digestAlgo = digestAlgo.split("with")[0];
-			digestAlgo = digestAlgo.replaceAll("-", "");
+		String textDigestAlgo = "";
+		// Convert the digest algorithm OID into a string
+		if(digestAlgo.equals("1.3.14.3.2.26")) {
+			textDigestAlgo = "sha1";
+		} else if(digestAlgo.equals("2.16.840.1.101.3.4.2.1")) {
+			textDigestAlgo = "sha256";
+		}
+		
+		if(textDigestAlgo.contains("sha1") || textDigestAlgo.contains("sha256")) {
 			micalg = micalg.replaceAll("-", "");
 			micalg = micalg.replaceAll("\"", "");
 			micalg = micalg.toLowerCase();
-			if(digestAlgo.equals(micalg)) {
-				er.detail("     Success:  DTS 165 - Digest Algorithm is valid");
+			if(textDigestAlgo.equals(micalg)) {
+				er.detail("     Success:  DTS 165 - Digest Algorithm is valid; Digest Algorithm OID Found: " + digestAlgo);
 			} else {
 				er.err("165", "Digest Algorithm does not equal the S/MIME content-type micalg value.", "", "", "DTS 165");
 			}
@@ -354,10 +360,10 @@ public class DirectSignatureValidator implements SignatureValidator {
 				er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
 			}
 		} catch (OperatorCreationException e) {
-			er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
+			er.err("C1", "Signature Failed! " + e.getMessage(), "", "C1", "C1");
 			e.printStackTrace();
 		} catch (CMSException e) {
-			er.err("C1", "Signature Failed! The certificate has expired.", "", "C1", "C1");
+			er.err("C1", "Signature Failed! " + e.getMessage(), "", "C1", "C1");
 			e.printStackTrace();
 		}
 		
