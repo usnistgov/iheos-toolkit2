@@ -296,13 +296,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			try {
 				this.processZip(er, p);
 			}  catch(IOException e) {
-				logger.error("The content is not a valid XDM conent\n" + ExceptionUtil.exception_details(e));
-				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM conent", Status.ERROR, false);
-				er.err("0", "The content is not a valid XDM conent", "", "", "XDM Content");
+				logger.error("The content is not a valid XDM content\n" + ExceptionUtil.exception_details(e));
+				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM content", Status.ERROR, false);
+				er.err("0", "The content is not a valid XDM content", "", "", "XDM Content");
 			} catch(XDMException e) {
-				logger.error("The content is not a valid XDM conent\n" + ExceptionUtil.exception_details(e));
-				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM conent", Status.ERROR, false);
-				er.err("0", "The content is not a valid XDM conent", "", "", "XDM Content");
+				logger.error("The content is not a valid XDM content\n" + ExceptionUtil.exception_details(e));
+				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM content", Status.ERROR, false);
+				er.err("0", "The content is not a valid XDM content", "", "", "XDM Content");
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -312,13 +312,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			try {
 				this.processZip(er, p);
 			}  catch(IOException e) {
-				logger.error("The content is not a valid XDM conent\n" + ExceptionUtil.exception_details(e));
-				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM conent", Status.ERROR, false);
-				er.err("0", "The content is not a valid XDM conent", "", "", "XDM Content");
+				logger.error("The content is not a valid XDM content\n" + ExceptionUtil.exception_details(e));
+				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM content", Status.ERROR, false);
+				er.err("0", "The content is not a valid XDM content", "", "", "XDM Content");
 			} catch(XDMException e) {
-				logger.error("The content is not a valid XDM conent\n" + ExceptionUtil.exception_details(e));
-				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM conent", Status.ERROR, false);
-				er.err("0", "The content is not a valid XDM conent", "", "", "XDM Content");
+				logger.error("The content is not a valid XDM content\n" + ExceptionUtil.exception_details(e));
+				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM content", Status.ERROR, false);
+				er.err("0", "The content is not a valid XDM content", "", "", "XDM Content");
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
