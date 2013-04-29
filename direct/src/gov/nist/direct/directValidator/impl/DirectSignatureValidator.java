@@ -158,13 +158,18 @@ public class DirectSignatureValidator implements SignatureValidator {
 	// DTS-165	DigestAlgorithm	Direct Message	Required
 	public void validateDigestAlgorithmDirectMessage(ErrorRecorder er, String digestAlgo, String micalg) {
 		String rfc = "RFC 5280: 4.1.1.2;http://tools.ietf.org/html/rfc5280#section-4.1.1.2";
-		if(digestAlgo.contains("sha1") || digestAlgo.contains("sha256")) {
-			digestAlgo = digestAlgo.split("with")[0];
-			digestAlgo = digestAlgo.replaceAll("-", "");
+		// Convert the digest algorithm OID into a string
+		if(digestAlgo.equals("1.3.14.3.2.26")) {
+			textDigestAlgo = "sha1";
+		} else if(digestAlgo.equals("2.16.840.1.101.3.4.2.1")) {
+			textDigestAlgo = "sha256";
+		}
+		
+		if(textDigestAlgo.contains("sha1") || textDigestAlgo.contains("sha256")) {
 			micalg = micalg.replaceAll("-", "");
 			micalg = micalg.replaceAll("\"", "");
 			micalg = micalg.toLowerCase();
-			if(digestAlgo.equals(micalg)) {
+			if(textDigestAlgo.equals(micalg)) {
 				er.success("165", "DigestAlgorithm", "Digest: " + digestAlgo + ", micalg: "+ micalg,  "Digest algorithm must match micalg value", rfc);
 			} else {
 				er.error("165", "DigestAlgorithm", "Digest: " + digestAlgo + ", micalg: "+ micalg,  "Digest algorithm must match micalg value", rfc);

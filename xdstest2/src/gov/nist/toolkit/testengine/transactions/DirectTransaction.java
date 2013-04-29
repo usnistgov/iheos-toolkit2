@@ -378,6 +378,7 @@ public class DirectTransaction extends BasicTransaction {
 	}
 	
 	public MimeMessage createSendMail(String toAddress, String fromAddress) throws Exception {
+		logger.info("Generating unwrapped format");
 		// Get the signing certificate
 		Map<String, Object> extra2 = planContext.getExtraLinkage2();
 		byte[] signingCert = (byte[]) extra2.get("signingCert");
@@ -396,6 +397,7 @@ public class DirectTransaction extends BasicTransaction {
 	}
 	
 	public MimeMessage createWrapedSendMail(String toAddress, String fromAddress) throws Exception {
+		logger.info("Generating wrapped format");
 		// Get the signing certificate
 		Map<String, Object> extra2 = planContext.getExtraLinkage2();
 		byte[] signingCert = (byte[]) extra2.get("signingCert");

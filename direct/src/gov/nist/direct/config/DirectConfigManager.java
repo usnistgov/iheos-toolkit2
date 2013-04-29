@@ -50,7 +50,7 @@ public class DirectConfigManager {
 		List<SigningCertType> types = new ArrayList<SigningCertType>();
 		
 		for (SigningCertType type : SigningCertType.values()) {
-			File file = getSigningCertFile(type, ".p12");
+			File file = getSigningCertFile(type);
 			if (file == null)
 				continue;
 			types.add(type);
@@ -60,7 +60,7 @@ public class DirectConfigManager {
 	}
 	
 	public byte[] getSigningCert(SigningCertType type) {
-		File file = getSigningCertFile(type, ".p12");
+		File file = getSigningCertFile(type);
 		if (file == null)
 			return null;
 		try {
@@ -79,6 +79,10 @@ public class DirectConfigManager {
 		} catch (IOException e) {
 			return null;
 		}
+	}
+
+	public File getSigningCertFile(SigningCertType type) {
+		return getSigningCertFile(type, type.getSuffix());
 	}
 	
 	public File getSigningCertFile(SigningCertType type, String filenameSuffix) {

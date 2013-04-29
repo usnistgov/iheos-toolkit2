@@ -20,6 +20,7 @@ Authors: William Majurski
 
 package gov.nist.direct.messageProcessor.direct.directImpl;
 
+import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -27,6 +28,7 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -40,7 +42,9 @@ import javax.mail.Part;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.RecipientId;
@@ -58,6 +62,7 @@ public class WrappedMessageProcessor {
 	
 	private boolean wrapped;
 	private boolean isMDN;
+	private boolean isDirect;
 	
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
@@ -68,6 +73,7 @@ public class WrappedMessageProcessor {
 	public WrappedMessageProcessor() {
 		wrapped = false;
 		isMDN = false;
+		isDirect = false;
 	}
 	
 	public void messageParser(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password) {
@@ -92,18 +98,27 @@ public class WrappedMessageProcessor {
 			logger.debug("Null part");
 			return;
 		}
+		
+		// Decode if quoted printable
+		String encoding = "";
+		ProcessEnvelope procEnv = new ProcessEnvelope();
+		encoding = procEnv.searchHeaderSimple(p, "content-transfer-encoding");
+		if(encoding.equals("quoted-printable")) {
+			p = decodeQP(p.getInputStream());
+		}
+		
 		//er.detail("Processing Part");
 		// If the Part is a Message then first validate the Envelope
 		if (p instanceof Message){
 			System.out.println("Message");
-		}
 		
 		for (Enumeration<Header> en=p.getAllHeaders(); en.hasMoreElements(); ) {
 			Header hdr = en.nextElement();
 			logger.debug("HDR:" + hdr.getName() + " -> " + hdr.getValue());
 		}
 		logger.info("mimeType=" + p.getContentType());
-
+		
+		}
 		/*
 		 * Using isMimeType to determine the content type avoids
 		 * fetching the actual content data until we need it.
@@ -117,6 +132,7 @@ public class WrappedMessageProcessor {
 		} else if (p.isMimeType("message/rfc822")) {
 			System.out.println("Message/rfc822");
 			this.wrapped = true;
+			this.isDirect = true;
 			Object o = p.getContent();
 			if (o instanceof Part) {
 				logger.debug("rfc822 contains part");
@@ -146,6 +162,7 @@ public class WrappedMessageProcessor {
 			//System.out.println("CCDA Content");
 
 		} else if (p.isMimeType("multipart/signed")) {
+			this.isDirect = true;
 			
 			SMIMESigned s = new SMIMESigned((MimeMultipart)p.getContent());
 
@@ -221,6 +238,25 @@ public class WrappedMessageProcessor {
 		} catch (Exception e1) {
 			er.error("No DTS", "Certificate File", "Probably wrong format file or wrong certificate", e1.getMessage(), "-");
 		}
+		
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy(res.getInputStream(), writer, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String dump = writer.toString();
+		try {
+			logger.debug(res.getContentType());
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.debug(dump);
 
 		return res;
 	}
@@ -231,6 +267,15 @@ public class WrappedMessageProcessor {
 	
 	public boolean getIsMDN() {
 		return this.isMDN;
+	}
+	
+	public boolean getIsDirect() {
+		return this.isDirect;
+	}
+	
+	public MimeBodyPart decodeQP(InputStream encodedQP) throws MessagingException {
+		InputStream res = MimeUtility.decode(encodedQP, "quoted-printable");
+		return new MimeBodyPart(res);
 	}
 	
 }

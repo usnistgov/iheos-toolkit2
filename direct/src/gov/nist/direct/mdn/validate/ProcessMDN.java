@@ -49,6 +49,12 @@ public class ProcessMDN {
 			e.printStackTrace();
 		}
 		String mdnPart = writer.toString();
+		er.detail("-------------------- MDN Headers -------------------");
+		String[] mdnHeaderSplit = mdnPart.split("\n");
+		for(int i=0;i<mdnHeaderSplit.length;i++) {
+			er.detail(mdnHeaderSplit[i]);
+		}
+		er.detail("-----------------------------------------------------------");
 		mdnPart = mdnPart.toLowerCase();
 
 		dispNotifTo = getMDNHeader(mdnPart, "disposition-notification-to");

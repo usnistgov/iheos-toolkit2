@@ -225,7 +225,7 @@ public class MDNMessageProcessor {
 	}
 
 	public void processPart(ErrorRecorder er, Part p) throws Exception {
-
+		
 		if (p == null)
 			return;
 
@@ -248,7 +248,7 @@ public class MDNMessageProcessor {
 			//System.out.println("Text/xml");
 
 		} else if (p.isMimeType("message/rfc822")) {
-			//System.out.println("Message/rfc822");
+			this.processPart(er, (Part)p.getContent());
 
 		} else if (p.isMimeType("application/pkcs7-signature"+"  Content Name: "+p.getContent().getClass().getName())) {
 			//System.out.println("Signature");
@@ -266,7 +266,7 @@ public class MDNMessageProcessor {
 		} else if (p.isMimeType("application/zip")) {
 			//System.out.println("XDM Content");
 
-		}  else if (p.isMimeType("message/disposition-notification")) {
+		}  else if (p.isMimeType("message/disposition-notification")) {			
 			// Validate MDN
 			ProcessMDN mdnv = new ProcessMDN(p);
 			mdnv.validate(er);
@@ -391,6 +391,7 @@ public class MDNMessageProcessor {
 			try {
 				new JcaX509CertificateConverter().setProvider(BC).getCertificate((X509CertificateHolder)certIt.next());
 			} catch (Exception e) {
+				System.out.println("PROBLEMMMMM");
 				break;
 			}
 
