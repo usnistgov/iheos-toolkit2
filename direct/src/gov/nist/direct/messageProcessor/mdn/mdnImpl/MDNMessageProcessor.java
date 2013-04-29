@@ -268,7 +268,7 @@ public class MDNMessageProcessor {
 
 		}  else if (p.isMimeType("message/disposition-notification")) {			
 			// Validate MDN
-			ProcessMDN mdnv = new ProcessMDN(p);
+			ProcessMDN mdnv = new ProcessMDN(er, p);
 			mdnv.validate(er);
 			dispositionField = mdnv.getDispositionField();
 

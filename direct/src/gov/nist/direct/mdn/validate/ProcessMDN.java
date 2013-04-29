@@ -29,7 +29,7 @@ public class ProcessMDN {
 	private String warning;
 	private String extension;
 	
-	public ProcessMDN(Part p){
+	public ProcessMDN(ErrorRecorder er, Part p){
 		InputStream mdnStream = null;
 
 		try {
@@ -118,7 +118,7 @@ public class ProcessMDN {
 		String res = "";
 		if(checkPresent(part, header)) {
 			String[] partSplit = part.split(header + ": ");
-			String[] partSplitRight = partSplit[1].split("\r\n");
+			String[] partSplitRight = partSplit[1].split("\n");
 			res = partSplitRight[0];
 			return res;
 		}

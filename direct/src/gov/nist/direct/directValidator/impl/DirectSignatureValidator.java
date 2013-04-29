@@ -158,6 +158,7 @@ public class DirectSignatureValidator implements SignatureValidator {
 	// DTS-165	DigestAlgorithm	Direct Message	Required
 	public void validateDigestAlgorithmDirectMessage(ErrorRecorder er, String digestAlgo, String micalg) {
 		String rfc = "RFC 5280: 4.1.1.2;http://tools.ietf.org/html/rfc5280#section-4.1.1.2";
+		String textDigestAlgo = "";
 		// Convert the digest algorithm OID into a string
 		if(digestAlgo.equals("1.3.14.3.2.26")) {
 			textDigestAlgo = "sha1";
