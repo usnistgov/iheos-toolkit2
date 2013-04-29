@@ -28,6 +28,7 @@ public interface ErrorRecorder extends ErrorRecorderBuilder {
 	public void error(String dts, String name, String found, String expected, String RFC);
 	public void warning(String dts, String name, String found, String expected, String RFC);
 	public void info(String dts, String name, String found, String expected, String RFC);
+	public void summary(String msg, boolean success, boolean part);
 	public void finish();
 	public void showErrorInfo();
 	public boolean hasErrors();

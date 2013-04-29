@@ -610,7 +610,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			msgValidator.validateSignature(separate, cert, signer, BC);
 
 			// Update summary
-			validationSummary.updateSignatureStatus(!separate.hasErrors());
+			validationSummary.updateSignatureStatus(separate.hasErrors());
 			er.concat(separate);
 
 		}

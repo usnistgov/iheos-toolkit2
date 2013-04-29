@@ -533,4 +533,10 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 		
 	}
 
+	@Override
+	public void summary(String msg, boolean success, boolean part) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

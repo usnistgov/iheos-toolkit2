@@ -37,8 +37,8 @@ public class MessageValidatorDisplay {
 		f.setName("Time of validation: " + timeAndDate);
 		f.incRow();
 
-		f.setName("Client IP Address: " + clientIP);
-		f.incRow();
+		//f.setName("Client IP Address: " + clientIP);
+		//f.incRow();
 
 		if (uploadFilename != null) {
 			f.setName("File validated: " + uploadFilename);
@@ -73,8 +73,8 @@ public class MessageValidatorDisplay {
 				switch (er.level) {
 				case SECTIONHEADING:
 					f.setDetail(f.bold(er.msg));
-					//f.setColSpan(0, 5);
-					//lessdetail = true;
+					f.setColSpan(0, 5);
+					lessdetail = true;
 					break;
 
 				case CHALLENGE:
@@ -93,6 +93,8 @@ public class MessageValidatorDisplay {
 					//f.setColSpan(0, 5);
 					f.setStatus(f.green("Success"));
 					//lessdetail = true;
+					f.setColSpan(0, 5);
+					lessdetail = true;
 					break;
 
 				case ERROR:

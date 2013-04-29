@@ -18,6 +18,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class MessageValidationResults implements IsSerializable {
 	
 	List<ValidationStepResult> results = new ArrayList<ValidationStepResult>();
+	List<ValidationStepResult> summary = new ArrayList<ValidationStepResult>();
 	
 	public MessageValidationResults() {} // For GWT
 	
@@ -33,8 +34,19 @@ public class MessageValidationResults implements IsSerializable {
 		results.add(result);
 	}
 	
+	public void addSummary(String stepName, List<ValidatorErrorItem> er) {
+		ValidationStepResult result = new ValidationStepResult();
+		result.stepName = stepName;
+		result.er = er;
+		summary.add(result);
+	}
+	
 	public List<ValidationStepResult> getResults() {
 		return results;
+	}
+	
+	public List<ValidationStepResult> getSummaryResults() {
+		return summary;
 	}
 	
 	public String toString() {

@@ -249,6 +249,12 @@ public class TextErrorRecorder implements ErrorRecorder {
 	public void info(String dts, String name, String found, String expected, String RFC) {
 		detail(dts + ": " + name + " " + found);
 	}
+
+	@Override
+	public void summary(String msg, boolean success, boolean part) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

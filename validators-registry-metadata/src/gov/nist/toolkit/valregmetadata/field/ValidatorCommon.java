@@ -358,6 +358,12 @@ public class ValidatorCommon implements ErrorRecorder {
 		
 	}
 
+	@Override
+	public void summary(String msg, boolean success, boolean part) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

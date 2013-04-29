@@ -350,14 +350,11 @@ public class DirectSignatureValidator implements SignatureValidator {
 	public void validateSignature(ErrorRecorder er, X509Certificate cert, SignerInformation signer, String BC) {
 		String rfc = "RFC 5652: 5.1, 10.2.3;http://tools.ietf.org/html/rfc5652#section-5.1";
 		try {
-			if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider(BC).build(cert)))
-			{
+			if (signer.verify(new JcaSimpleSignerInfoVerifierBuilder().setProvider(BC).build(cert))) {
 				// C-1 - Certificate has not expired - Required
 				er.success("C1", "Signature", "The certificate has not expired",  "The certificate must not be expired", rfc);
 				er.success("C1", "Signature", "Signature verified",  "", rfc);
-			}
-			else
-			{
+			} else {
 				er.error("C1", "Signature", "The certificate has expired",  "The certificate must not be expired", rfc);
 			}
 		} catch (OperatorCreationException e) {
@@ -367,7 +364,7 @@ public class DirectSignatureValidator implements SignatureValidator {
 			er.error("C1", "Signature", e.getMessage(),  "The certificate must not be expired", rfc);
 			e.printStackTrace();
 		}
-		
+
 	}
 	
 	// C2 - Key size <=2048
