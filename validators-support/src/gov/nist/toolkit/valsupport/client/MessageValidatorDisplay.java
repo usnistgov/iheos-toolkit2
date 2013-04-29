@@ -9,17 +9,17 @@ import java.util.List;
 
 public class MessageValidatorDisplay {
 	ValFormatter f;
-//	int row = 0;
+	//	int row = 0;
 	String timeAndDate = "";
 	String clientIP = "0.0.0.0";
 	String uploadFilename = null;
 	boolean lessdetail = false;
-	
+
 	public void setTimeAndDate(String td) { timeAndDate = td; }
 	public void setClientIP(String ip) { clientIP = ip; }
 	public void setUploadFilename(String fn) { uploadFilename = fn; }
 	public void setLessDetail(boolean less) { lessdetail = less; }
-	
+
 	public MessageValidatorDisplay(ValFormatter f) {
 		this.f = f;
 	}
@@ -31,25 +31,35 @@ public class MessageValidatorDisplay {
 
 		// leave as summary row (plus a blank for separation)
 		summaryRow = f.getRow();
-		f.setDetail("   ");
+		f.setName("   ");
 		f.incRow();
 
-		f.setDetail("Time of validation: " + timeAndDate);
+		f.setName("Time of validation: " + timeAndDate);
 		f.incRow();
 
-		f.setDetail("Client IP Address: " + clientIP);
-		f.incRow();
+		//f.setName("Client IP Address: " + clientIP);
+		//f.incRow();
 
 		if (uploadFilename != null) {
-			f.setDetail("File validated: " + uploadFilename);
+			f.setName("File validated: " + uploadFilename);
 			f.incRow();
 		}
 		f.hr();
 
-		f.setDetail(f.h2("Detail"));
-		f.setReference(f.h2("Reference"));
-		f.setStatus(f.h2("Status"));
-		f.incRow();
+		if(isDirectReport(results)) {
+			f.setName(f.h2("Name"));
+			f.setStatus(f.h2("Status"));
+			f.setDTS(f.h2("DTS"));
+			f.setFound(f.h2("Found"));
+			f.setExpected(f.h2("Expected"));
+			f.setRFC(f.h2("RFC"));
+			f.incRow();
+		} else {
+			f.setDetail(f.h2("Detail"));
+			f.setReference(f.h2("Reference"));
+			f.setStatus(f.h2("Status"));
+			f.incRow();
+		}
 
 		for (ValidationStepResult result : results.getResults()) {
 			f.hr();
@@ -59,38 +69,88 @@ public class MessageValidatorDisplay {
 			List<ValidatorErrorItem> ers = result.er;
 			for (ValidatorErrorItem er : ers)  {
 				boolean row_advance = true;
+				lessdetail = false;
 				switch (er.level) {
 				case SECTIONHEADING:
 					f.setDetail(f.bold(er.msg));
+					f.setColSpan(0, 5);
+					lessdetail = true;
 					break;
 
 				case CHALLENGE:
 					if (!lessdetail) 
-						f.setDetail(er.msg);
+						f.setName(er.msg);
 					else
 						row_advance = false;
 					break;
 
 				case EXTERNALCHALLENGE:
-					f.setDetail(er.msg);
+					f.setName(er.msg);
 					break;
 
 				case DETAIL:
 					f.setDetail(er.msg);
+					//f.setColSpan(0, 5);
+					f.setStatus(f.green("Success"));
+					//lessdetail = true;
+					f.setColSpan(0, 5);
+					lessdetail = true;
 					break;
 
 				case ERROR:
 					f.setDetail(f.red(er.msg));
 					f.setReference(f.red(er.resource));
 					foundErrors = true;
-					f.setStatus(f.red("error"));
+					f.setStatus(f.red("Error"));
 					break;
 
 				case WARNING:
 					f.setDetail(f.blue(er.msg));
-					f.setReference(f.red(er.resource));
-					f.setStatus(f.blue("warning"));
+					f.setReference(f.blue(er.resource));
+					f.setStatus(f.blue("Warning"));
 					break;
+
+				case D_SUCCESS:
+					f.setName(er.name);
+					f.setDTS(er.dts);
+					f.setFound(er.found);
+					f.setExpected(er.expected);
+					f.setRFC(f.rfc_link(er.rfc));
+					f.setStatus(f.green("Success"));
+					lessdetail = true;
+					break;
+
+				case D_INFO:
+					f.setName(er.name);
+					f.setDTS(er.dts);
+					f.setFound(er.found);
+					f.setExpected(er.expected);
+					f.setRFC(f.rfc_link(er.rfc));
+					f.setStatus(f.purple("Info"));
+					lessdetail = true;
+					break;
+
+				case D_ERROR:
+					f.setName(f.red(er.name));
+					f.setDTS(f.red(er.dts));
+					f.setFound(f.red(er.found));
+					f.setExpected(f.red(er.expected));
+					f.setRFC(f.rfc_link(er.rfc));
+					f.setStatus(f.red("Error"));
+					lessdetail = true;
+					break;
+
+
+				case D_WARNING:
+					f.setName(f.blue(er.name));
+					f.setDTS(f.blue(er.dts));
+					f.setFound(f.blue(er.found));
+					f.setExpected(f.blue(er.expected));
+					f.setRFC(f.rfc_link(er.rfc));
+					f.setStatus(f.blue("Warning"));
+					lessdetail = true;
+					break;
+
 				}
 
 				if (!lessdetail) {
@@ -106,12 +166,33 @@ public class MessageValidatorDisplay {
 
 		if (foundErrors) {
 			f.setCell(f.red("Summary: Errors were found"), summaryRow, 0);
-//			resultsTable.setWidget(summaryRow, 0, html(f.red("Summary: Errors were found")));
+			//			resultsTable.setWidget(summaryRow, 0, html(f.red("Summary: Errors were found")));
 		} else {
 			f.setCell("Summary: No errors were found", summaryRow, 0);
-//			resultsTable.setWidget(summaryRow, 0, html("Summary: No error were found"));
+			//			resultsTable.setWidget(summaryRow, 0, html("Summary: No error were found"));
 		}
 
 	}
 
+	public boolean isDirectReport(MessageValidationResults results) {
+		for (ValidationStepResult result : results.getResults()) {
+
+			List<ValidatorErrorItem> ers = result.er;
+			for (ValidatorErrorItem er : ers)  {
+				switch (er.level) {				
+				case D_SUCCESS:
+					return true;
+				case D_INFO:
+					return true;
+				case D_ERROR:
+					return true;
+				case D_WARNING:
+					return true;
+				}
+			}
+
+		}
+		return false;
+
+	}
 }

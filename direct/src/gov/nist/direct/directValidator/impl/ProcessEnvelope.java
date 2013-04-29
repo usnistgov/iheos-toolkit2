@@ -206,7 +206,6 @@ public class ProcessEnvelope {
 		String received = "";
 		for(int i=0;i<searchRes.size();i++) {
 			received = searchRes.get(i);
-			received = received.replaceAll("\\s", "");
 			msgValidator.validateReceived(separate, received, wrapped);
 		}
 		validationSummary.recordKey(shift + "Received: "+received, separate.hasErrors(), true);

@@ -229,6 +229,32 @@ public class TextErrorRecorder implements ErrorRecorder {
 	public ErrorRecorderBuilder getErrorRecorderBuilder() {
 		return errorRecorderBuilder;
 	}
+
+	@Override
+	public void success(String dts, String name, String found, String expected, String RFC) {
+		detail(dts + ": " + name + " " + found);		
+	}
+
+	@Override
+	public void error(String dts, String name, String found, String expected, String RFC) {
+		err(dts, name, "", "", dts);
+	}
+
+	@Override
+	public void warning(String dts, String name, String found, String expected, String RFC) {
+		warning(dts, name, "", dts);
+	}
+
+	@Override
+	public void info(String dts, String name, String found, String expected, String RFC) {
+		detail(dts + ": " + name + " " + found);
+	}
+
+	@Override
+	public void summary(String msg, boolean success, boolean part) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

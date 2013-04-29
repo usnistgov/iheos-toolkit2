@@ -14,7 +14,7 @@ Authors: William Majurski
 		 Diane Azais
 		 Julien Perugini
 		 Antoine Gerardin
-		
+
  */
 
 package gov.nist.direct.directValidator.impl;
@@ -28,81 +28,86 @@ public class DirectMessageValidator implements MessageContentValidator {
 	// ************************************************
 	// *********** Message headers checks *************
 	// ************************************************
-	
-	
+
+
 	// xxxxxxxxxxxxxxx SMTP Commands  xxxxxxxxxxxxxxx
-	
+
 	// DTS 198, ?, Required
 	public void validateDTS198(ErrorRecorder er, String dts198) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 100, MAIL FROM SMTP, Required
 	public void validateMailFromSMTP(ErrorRecorder er, String mailFromSmtp) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 101, RCPT TO, Required
 	public void validateRcptTo(ErrorRecorder er, String RcptTo) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
-	
+
+
 	// xxxxxxxxxxxxxxx Outer Enveloped Message  xxxxxxxxxxxxxxx
-	
-	
+
+
 	// DTS 199, Non-MIME Message Headers, Required
 	public void validateNonMIMEMessageHeaders(ErrorRecorder er, String nonMIMEHeader) {
+		String rfc = "-";
 		if(!er.hasErrors()) {
-			er.detail("     Success:  DTS 199 - All Non-MIME Message Headers are valid");
+			er.success("199", "Non-MIME Message Headers", "All Message Headers are valid", "All Non-MIME Message Headers must be valid", rfc);
 		} else {
-			er.err("199", "Some MIME Message Headers are not valid", "", "DTS 199", "");
+			er.error("199", "Non-MIME Message Headers", "Some Message Headers are not valid", "All Non-MIME Message Headers must be valid", rfc);
 		}
-		
+
 	}
 
 	// DTS 200, MIME Entity, Required
 	public void validateMIMEEntity(ErrorRecorder er, String MIMEEntity) {
+		String rfc = "-";
 		if(!er.hasErrors()) {
-			er.detail("     Success:  DTS 200 - MIME Entity Headers are valid");
+			er.success("200", "MIME Entity", "All MIME Entity Headers are valid", "All MIME Entity Headers must be valid", rfc);
 		} else {
-			er.err("200", "Some MIME Entity Headers are not valid", "", "DTS 200", "");
+			er.error("200", "MIME Entity", "Some MIME Entity Headers are not valid", "All MIME Entity Headers must be valid", rfc);
 		}
-		
+
 	}
 
 	// DTS 133a, Content-Type, Required
 	public void validateMessageContentTypeA(ErrorRecorder er, String messageContentTypeA) {
+		String rfc = "RFC 5751: 3.2;http://tools.ietf.org/html/rfc5751#section-3.2";
 		messageContentTypeA = messageContentTypeA.split(";")[0];
 		if (messageContentTypeA.equals("application/pkcs7-mime")){
-			er.detail("     Success:  DTS 133a - Content-Type is valid. Value = 'application/pkcs7-mime'");
+			er.success("133a", "Content-Type", messageContentTypeA, "Must be application/pkcs7-mime", rfc);
 		} else {
-			er.err("133a", "Content-Type is invalid.", "", "DTS 133a", "");
+			er.error("133a", "Content-Type", messageContentTypeA, "Must be application/pkcs7-mime", rfc);
 		}
-		
+
 	}
 
 	// DTS 201, Content-Type Name, Optional
 	public void validateContentTypeNameOptional(ErrorRecorder er, String contentTypeName) {
+		String rfc = "RFC 5751: Section 3.2.1;http://tools.ietf.org/html/rfc5751#section-3.2.1";
 		if(contentTypeName.contains("name")) {
 			contentTypeName = contentTypeName.split("name=")[1];
 			contentTypeName = contentTypeName.split(";")[0];
 			if (contentTypeName.equals("smime.p7m")) {
-				er.detail("     Success:  DTS 201 - The parameter name is correct, equals 'smime.p7m'");
+				er.success("201", "Content-Type Name", contentTypeName, "Should be smime.p7m", rfc);
 			} else {
-				er.warning("201", "Warning: the parameter 'name' is present but its value should be 'smime.p7m'", "", "DTS 201");
+				er.warning("201", "Content-Type Name", contentTypeName, "Should be smime.p7m", rfc);
 			}
 		} else {
-			er.err("201", "The parameter 'name' is not present", "", "DTS 201", "");
+			er.error("201", "Content-Type Name", "Not present", "Should be present", rfc);
 		} 
-		
+
 	}
-	
+
 	// DTS 202, Content-Type S/MIME-Type, Optional
 	public void validateContentTypeSMIMETypeOptional(ErrorRecorder er, String contentTypeSMIME) {
+		String rfc = "RFC 5751: 3.2;http://tools.ietf.org/html/rfc5751#section-3.2;RFC 5751: 3.3;http://tools.ietf.org/html/rfc5751#section-3.3";
 		if(contentTypeSMIME.contains("smime-type")) {
 			contentTypeSMIME = contentTypeSMIME.split("smime-type=")[1];
 		}
@@ -110,298 +115,311 @@ public class DirectMessageValidator implements MessageContentValidator {
 			contentTypeSMIME = contentTypeSMIME.split(";")[0];
 		}
 		if (contentTypeSMIME.equals("enveloped-data")) {
-			er.detail("     Success:  DTS 202 - The parameter S/MIME Type is correct, equals 'enveloped-data'");
+			er.success("201", "Content-Type S/MIME Type", contentTypeSMIME, "Should be enveloped-data", rfc);
 		} else {
-			er.err("202", "The parameter S/MIME Type is not correct", "", "DTS 202", "");
+			er.err("201", "Content-Type S/MIME Type", contentTypeSMIME, "Should be enveloped-data", rfc);
 		}
-		
+
 	}
-	
+
 	// DTS 203, Content Disposition, Optional
 	public void validateContentDispositionOptional(ErrorRecorder er, String contentDisposition) {
+		String rfc = "RFC 5751: Section 3.2.1;http://tools.ietf.org/html/rfc5751#section-3.2.1";
 		if(!contentDisposition.equals("")) {
 			if (contentDisposition.contains("smime.p7m")) {
-				er.detail("     Success:  DTS 203 - The parameter Content-Disposition is correct, equals 'smime.p7m'");
+				er.success("203", "ContentDisposition", contentDisposition, "Should have filename smime.p7m", rfc);
 			} else {
-				er.warning("203", "Warning: the parameter Content-Disposition is present but its value should be 'smime.p7m'", "", "DTS 203");
+				er.warning("203", "ContentDisposition", contentDisposition, "Should have filename smime.p7m", rfc);
 			}
 		} else {
-			er.err("203", "The parameter Content Disposition is not present", "", "DTS 203", "");
+			er.error("203", "ContentDisposition", "Not present", "Should have filename smime.p7m", rfc);
 		}
-		
+
 	}
-	
+
 	// DTS 129, Message Body, Required
 	public void validateMessageBody(ErrorRecorder er, boolean decrypted) {
+		String rfc = "-";
 		if(decrypted) {
-			er.detail("     Success:  DTS 129 - Message Body has been decrypted");
+			er.success("129", "Message Body", "Message has been decrypted", "Must be encrypted", rfc);
 		} else {
-			er.err("129", "Message Body has not been decrypted", "", "DTS 129", "");
+			er.error("129", "Message Body", "Message has not been decrypted", "Must be encrypted", rfc);
 		}
-		
+
 	}
-	
-	
+
+
 	// xxxxxxxxxxxxxxx Inner Decrypted Message  xxxxxxxxxxxxxxx
 
-	
+
 	// DTS 204, MIME Entity, Required
 	public void validateMIMEEntity2(ErrorRecorder er, boolean mimeEntity) {
+		String rfc = "-";
 		if(mimeEntity) {
-			er.detail("     Success:  DTS 204 - MIME Entity verified");
+			er.success("204", "MIME Entity", "All MIME Entity are valid", "All MIME Entity must be valid", rfc);
 		} else {
-			er.err("204", "MIME Entity not verified", "", "DTS 204", "");
+			er.error("204", "MIME Entity", "Some MIME Entity are not valid", "All MIME Entity must be valid", rfc);
 		}
-		
+
 	}
-	
+
 	// DTS 133b, Content-Type, Required
 	public void validateMessageContentTypeB(ErrorRecorder er, String messageContentTypeB) {
+		String rfc = "RFC 2045: Section 5;http://tools.ietf.org/html/rfc2045#section-5;RFC 5751: Section 3.4.3.2;http://tools.ietf.org/html/rfc5751#section-3.4.3.2";
 		if (messageContentTypeB.contains("multipart/signed")){
-			er.detail("     Success:  DTS 133b - Content-Type is valid. Value = 'multipart/signed'");
+			er.success("133b", "Content-Type", messageContentTypeB, "Must be multipart/signed", rfc);
 		} else {
-			er.err("133b", "Content-Type is invalid.", "", "DTS 133b", "");
+			er.error("133b", "Content-Type", messageContentTypeB, "Must be multipart/signed", rfc);
 		}
-		
+
 	}
 
 	// DTS 160, Content-Type micalg, Required
 	public void validateContentTypeMicalg(ErrorRecorder er, String contentTypeMicalg) {
+		String rfc = "RFC 5751: Section 2.2;http://tools.ietf.org/html/rfc5751#section-2.2;RFC 5751: Section 3.4.3.2;http://tools.ietf.org/html/rfc5751#section-3.4.3.2";
 		if (contentTypeMicalg.equals("")) {
-			er.err("160", "Content-Type Micalg is not present", "", "DTS 160", "");
+			er.error("160", "Content-Type micalg", "Not present", "Must be present", rfc);
 		} else {
 			// Validates the "micalg" parameter value
 			if ((contentTypeMicalg.contains("sha")) && (contentTypeMicalg.contains("1") || contentTypeMicalg.contains("256"))) {
-				er.detail("     Success:  DTS 160 - The content-type micalg parameter value is correct");
+				er.success("160", "Content-Type micalg", contentTypeMicalg, "Must be sha-1, sha-256 or sha1", rfc);
 			} else {
 				// error code 133-3
-				er.err("160", "The content-type micalg parameter value is incorrect.", "", "DTS 160", "");
+				er.error("160", "Content-Type micalg", contentTypeMicalg, "Must be sha-1, sha-256 or sha1", rfc);
 			}
 		}
-		
+
 	}
 
 	// DTS 205, Content-Type protocol, Required
 	public void validateContentTypeProtocol(ErrorRecorder er, String contentTypeProtocol) {
+		String rfc = "RFC 5751: Section 3.4.3.2;http://tools.ietf.org/html/rfc5751#section-3.4.3.2";
 		if (contentTypeProtocol.equals("\"application/pkcs7-signature\"")){
-			er.detail("     Success:  DTS 205 - Content-Type Protocol is valid. Value = \"application/pkcs7-signature\"");
+			er.success("205", "Content-Type protocol", contentTypeProtocol, "Must be application/pkcs7-signature", rfc);
 		} else {
-			er.err("205", "Content-Type Protocol is invalid.", "", "DTS 205", "");
+			er.error("205", "Content-Type protocol", contentTypeProtocol, "Must be application/pkcs7-signature", rfc);
 		}
-		
+
 	}
 
 	// DTS 206, Content-Transfer-Encoding, Required
 	public void validateContentTransferEncoding(ErrorRecorder er, String contentTransfertEncoding) {
+		String rfc = "RFC 5751: Section 3.1.3;http://tools.ietf.org/html/rfc5751#section-3.1.3";
 		if (contentTransfertEncoding.equals("quoted-printable") || contentTransfertEncoding.equals("base64") || contentTransfertEncoding.equals("7-bit")){
-			er.detail("     Success:  DTS 206 - Content-Transfer-Encoding is valid. Value = " + contentTransfertEncoding);
+			er.success("206", "Content-Transfer-Encoding", contentTransfertEncoding, "Must be quoted-printable, base64 or 7-bit", rfc);
 		} else if(contentTransfertEncoding.equals("")) {
-			er.detail("     Info:  DTS 206 - Content-Transfer-Encoding is not present");
+			er.warning("206", "Content-Transfer-Encoding", "Not present", "Must be quoted-printable, base64 or 7-bit", rfc);
 		} else {
-			er.err("206", "Content-Tranfer-Encoding is invalid.", "", "DTS 206", "");
+			er.error("206", "Content-Transfer-Encoding", contentTransfertEncoding, "Must be quoted-printable, base64 or 7-bit", rfc);
 		}
-		
+
 	}
 
-	// DTS ?, MIME Entity Body, Required
+	// DTS 207, MIME Entity Body, Required
 	public void validateMIMEEntityBody(ErrorRecorder er, int nbBody) {
+		String rfc = "-";
 		if (nbBody != 2){
-        	er.err("???", "Mime Entity body is not valid. Once decrypted, the message should have exactly two MIME parts.", "", "DTS ???", "");
-        } else {
-        	er.detail("     Success:  DTS ??? - Mime Entity body is valid (has exactly two MIME parts).");
-        }
-		
+			er.error("207", "MIME Entity Body", "Number of part: " + nbBody, "Must have 2 parts", rfc);
+		} else {
+			er.success("207", "MIME Entity Body", "Number of part: " + nbBody, "Must have 2 parts", rfc);
+		}
+
 	}
-	
-	
+
+
 	// xxxxxxxxxxxxxxx Health Content Container  xxxxxxxxxxxxxxx
-	
+
 
 	// DTS 139, First MIME Part, Required
 	public void validateFirstMIMEPart(ErrorRecorder er, boolean firstMIMEPart) {
+		String rfc = "-";
 		if(firstMIMEPart) {
-			er.detail("     Success:  DTS 139 - First MIME Part verified");
+			er.success("139", "First MIME Part", "MIME Entity are valid", "MIME Entity of Health Container", rfc);
 		} else {
-			er.err("139", "First MIME Part not verified", "", "DTS 139", "");
+			er.error("139", "First MIME Part", "MIME Entity are not valid", "MIME Entity of Health Container", rfc);
 		}
-		
+
 	}
-	
+
 	// DTS 151, First MIME Part Body, Required
 	public void validateFirstMIMEPartBody(ErrorRecorder er, boolean firstMIMEPartBody) {
+		String rfc = "RFC 2046: Section 4.1.1;http://tools.ietf.org/html/rfc2046#section-4.1.1";
 		if(firstMIMEPartBody) {
-			er.detail("     Success:  DTS 151 - First MIME Part Body verified");
+			er.success("151", "First MIME Part Body", "Valid First Part Body", "", rfc);
 		} else {
-			er.err("151", "First MIME Part Body not verified", "", "DTS 151", "");
+			er.error("151", "First MIME Part Body", "Invalid First Part Body", "", rfc);
 		}
 	}
-	
-	
+
+
 	// xxxxxxxxxxxxxxx Signature  xxxxxxxxxxxxxxx
-	
-	
+
+
 	// DTS 152, Second MIME Part, Required
 	public void validateSecondMIMEPart(ErrorRecorder er, boolean secondMIMEPart) {
+		String rfc = "-";
 		if(secondMIMEPart) {
-			er.detail("     Success:  DTS 152 - Second MIME Part verified");
+			er.success("152", "Second MIME Part", "MIME Entity are valid", "MIME Entity of Second Part", rfc);
 		} else {
-			er.err("152", "Second MIME Part not verified", "", "DTS 152", "");
+			er.error("152", "Second MIME Part", "MIME Entity are not valid", "MIME Entity of Second Part", rfc);
 		}
-	
+
 	}
-	
-	// DTS ?, All Non-MIME Message Headers
+
+	// DTS 208, All Non-MIME Message Headers
 	public void validateAllNonMIMEMessageHeaders(ErrorRecorder er, String nonMIMEHeader) {
+		String rfc = "-";
 		if(er.hasErrors()) {
-			er.err("?", "Some Non MIME Message Headers are not valid", "", "DTS ?", "");
+			er.error("152", "All Non-MIME Message Headers", "Some Non-MIME Headers are not valid", "All Non-MIME Headers must be valid", rfc);
 		} else {
-			er.detail("All Non MIME Message Headers are valids");
+			er.success("152", "All Non-MIME Message Headers", "All Non-MIME Headers are valid", "All Non-MIME Headers must be valid", rfc);
 		}
-		
+
 	}
-	
+
 	// DTS 155, Content-Type, Required
 	public void validateContentType2(ErrorRecorder er, String contentType) {
+		String rfc = "RFC 5751: Section 3.2.1;http://tools.ietf.org/html/rfc5751#section-3.2.1;RFC 5751: Section 5.1.1;http://tools.ietf.org/html/rfc5751#section-5.1.1;RFC 5751: 3.4.3.2;http://tools.ietf.org/html/rfc5751#section-3.4.3.2";
 		if(contentType.contains("multipart/signed")) {
-			er.detail("     Success:  DTS 155 - Content-Type verified");
+			er.success("155", "Content-Type", contentType, "Must be application/pkcs7-signature", rfc);
 		} else {
-			er.err("155", "Content-Type is not equal to multipart/signed", "", "DTS 151", "");
+			er.error("155", "Content-Type", contentType, "Must be application/pkcs7-signature", rfc);
 		}
-	
+
 	}
-	
+
 	// DTS 158, Second MIME Part Body, Required
 	public void validateSecondMIMEPartBody(ErrorRecorder er, String secondMIMEPartBody) {
-		er.detail("     Success:  DTS 158 - Second MIME part Body verified");
-	
+		String rfc = "RFC 5751: Section 3.4.3.2;http://tools.ietf.org/html/rfc5751#section-3.4.3.2";
+		er.success("155", "Second MIME Part Body", "Second MIME Part Body is base64 encoded", "Must be base64 encoded", rfc);
+
 	}
-	
+
 	// DTS 163, ?, Required
 	public void validateDTS163(ErrorRecorder er, String dts163) {
 		Assert.fail("Not Yet Implemented");
-	
+
 	}
 
-	
+
 	// DTS 165, DigestAlgorithm, Required
 	public void validateDigestAlgorithm(ErrorRecorder er, String digestAlgorithm) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
 
 	// DTS 166, EncapsuledContentInfo, Required
 	public void validateEncapsuledInfo(ErrorRecorder er, String encapsulatedInfo) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
 
 	// DTS 182, EncapsuledContentInfo.eContentInfo, Required
 	public void validateEncapsuledInfo2(ErrorRecorder er, String encapsulatedInfo) {
+		String rfc = "RFC 5652: 5.2;http://tools.ietf.org/html/rfc5652#section-5.2";
 		if(encapsulatedInfo.equals("")) {
-			er.detail("Success:  DTS 182 - EncapsulatedContentInfo is not present");
+			er.success("182", "EncapsuledContentInfo.eContentInfo", "Not present", "Must be not be present", rfc);
 		} else {
-			er.err("182", "EncapsulatedContentInfo must be absent", "", "DTS 182", "");
+			er.error("182", "EncapsuledContentInfo.eContentInfo", encapsulatedInfo, "Must be not be present", rfc);
 		}
-		
+
 	}
-	
+
 	// DTS 183, EncapsuledContentInfo.eContent, Optional
 	public void validateEncapsuledInfo3(ErrorRecorder er, String encapsulatedInfo) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 167, Certificates
 	public void validateCertificates(ErrorRecorder er, String certificates) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 168, Crls
 	public void validateCrls(ErrorRecorder er, String crls) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 169, SignerInfos, Optional
 	public void validateSignerInfos(ErrorRecorder er, String signerInfos) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 173, SignerInfos.sid, Optional
 	public void validateSignerInfosSid(ErrorRecorder er, String signerInfosSid) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
 
 	// DTS 174, SignerInfos.signerIdentifier, Required
 	public void validateSignerIdentifier(ErrorRecorder er, String signerIdentifier) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
 
 	// DTS 175, SignerInfos.signerIdentifier.issuerAndSerialNumber, Conditional
 	public void validateSignerIdentifierIssueAndSerialNumber(ErrorRecorder er, String signerInfos) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 176, SignerInfos.signerIdentifier.subjectKeyIdentifier, Condtional
 	public void validateSignerIdentifierSubjectKeyIdentifier(ErrorRecorder er, String signerInfos) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 177, SignerInfos.digestAlgorithm, Required
 	public void validateSignerInfosDigestAlgorithm(ErrorRecorder er, String signerInfosDigestAlgorithm) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
 
 	// DTS 178, SignerInfos.signedAttrs, Conditional
 	public void validateSignedAttrs(ErrorRecorder er, String signerInfos) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 179, SignerInfos.signedAttrs.messageDigest, Conditional
 	public void validateSignedAttrsMessageDigest(ErrorRecorder er, String signerInfos) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 180, SignerInfos.signedAttrs.contentType, Conditional
 	public void validateSignedAttrsContentType(ErrorRecorder er, String signerInfos) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 170, SignerInfos.SignatureAlgorithm, Required
 	public void validateSignerInfosSignatureAlgorithm(ErrorRecorder er, String signerInfosSignatureAlgorithm) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
 
 	// DTS 171, SignerInfos.Signature, Required
 	public void validateSignerInfosSignature(ErrorRecorder er, String signerInfosSignature) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
 
 	// DTS 181, SignerInfos.unsignedAttrs, Optional
 	public void validateSignerInfosUnsignedAttrs(ErrorRecorder er,
 			String signerInfosUnsignedAttrs) {
 		Assert.fail("Not Yet Implemented");
-		
+
 	}
-	
+
 	// DTS 172, Boundary, Required
 	public void validateBoundary(ErrorRecorder er, String boundary) {
 		Assert.fail("Not Yet Implemented");
-		
-	}
-	
 
-	
+	}
+
 }

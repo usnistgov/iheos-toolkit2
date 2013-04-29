@@ -42,24 +42,25 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 	
 	// DTS 190, All Mime Header Fields, Required
 	public void validateAllMimeHeaderFields(ErrorRecorder er, String header) {
+		String rfc = "RFC 2045: Section 1, 3, 5;http://tools.ietf.org/html/rfc2045;RFC 5322: Section 2.2, 3.2.2;http://tools.ietf.org/html/rfc5322";
 		if(header.contains("\"")) {
 			String[] splitHeader = null;
 			splitHeader = header.split("\"");
 			if(splitHeader.length==1) {
 				if(splitHeader[0].contains("(")) {
-					er.err("190", "Mime Header Fields is valid: Content-Disposition contains comment", "", "", "DTS 190");
+					er.error("190", "All MIME Headers", header, "Content-Disposition must not contain comment", rfc);
 				} else {
-					er.detail("Success:  DTS 190 - Mime Header Fields is valid");
+					er.success("190", "All MIME Headers", header, "Content-Disposition must not contain comment", rfc);
 				}
 			} else if(splitHeader.length>2) {
 				if(splitHeader[2].contains("(")) {
-					er.err("190", "Mime Header Fields is valid: Content-Disposition contains comment", "", "", "DTS 190");
+					er.error("190", "All MIME Headers", header, "Content-Disposition must not contain comment", rfc);
 				} else {
-					er.detail("Success:  DTS 190 - Mime Header Fields is valid");
+					er.success("190", "All MIME Headers", header, "Content-Disposition must not contain comment", rfc);
 				}
 			}
 		} else {
-			er.detail("Success:  DTS 190 - Mime Header Fields is valid");	
+			er.success("190", "All MIME Headers", header, "Content-Disposition must not contain comment", rfc);	
 		}
 	}
 	
@@ -71,16 +72,17 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 
 	// DTS 133-145-146, Content-Type, Required
 	public void validateContentType(ErrorRecorder er, String contentType) {
+		String rfc = "RFC 2045: Section 5, 5.2;http://tools.ietf.org/html/rfc2045#section-5;RFC 5751: Section 3.2, 3.2.1;http://tools.ietf.org/html/rfc5751#section-3.2";
 		final String xContentType =  "^X-.*";
 		Pattern pattern = Pattern.compile(xContentType, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(contentType);
 		if(matcher.matches()) {
-			er.detail("     Info:  DTS 133-145-146 - Content-Type begin by X- and do not need to be verified");
+			er.success("133-145-146", "Content-Type", contentType, "Content-Type begin by X- and do not need to be verified", rfc);
 		} else {
 			if(contentType.contains("/")) {
-				er.detail("     Success:  DTS 133-145-146 - Content-Type contains a subtype");
+				er.success("133-145-146", "Content-Type", contentType, "Content-Type must contain a subtype", rfc);
 			} else {
-				er.err("133-145-146", "Content-Type does not contain a subtype", "", "DTS 133-145-146", "");
+				er.error("133-145-146", "Content-Type", contentType, "Content-Type must contain a subtype", rfc);
 			}
 		}
 		
@@ -88,75 +90,81 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 
 	// DTS 191, Content-Type Subtype, Required
 	public void validateContentTypeSubtype(ErrorRecorder er, String subtype) {
+		String rfc = "RFC 2045: Section 1;http://tools.ietf.org/html/rfc2045#section-1";
 		String[] typeAndSubtype = subtype.split("/"); // first one is the type (ex. "text"), second one is the subtype (ex. "plain").
 		if (typeAndSubtype[1] != "") {
-			er.detail("     Success:  DTS 191 - Content Type Subtype is present");
+			er.success("191", "Content-Type Subtype", subtype, "Content Type Subtype must be present", rfc);
 		} else {
-			er.err("191", "Content Type SubType is not present", "", "DTS 191", "");
+			er.error("191", "Content-Type Subtype", "Not present", "Content Type Subtype must be present", rfc);
 		}
 	}
 
 	// DTS 192, Content-Type name, Conditional
 	public void validateContentTypeName(ErrorRecorder er, String contentTypeName) {
+		String rfc = "RFC 5751: Section 3.2.1;http://tools.ietf.org/html/rfc5751#section-3.2.1";
 		if(contentTypeName == null) {
-			er.err("192", "The conditional parameter 'name' is missing", "", "DTS 192", "");
+			er.error("192", "Content-Type Name", contentTypeName, "Content Type Name must be present", rfc);
 		} else {
-			er.detail("     Success:  DTS 192 - The conditional parameter 'name' is present");
+			er.success("192", "Content-Type Name", contentTypeName, "Content Type Name must be present", rfc);
 		}
 	}
 
 	// DTS 193, Content-Type S/MIME-Type, Conditional
 	public void validateContentTypeSMIMEType(ErrorRecorder er, String contentTypeSMIMEType) {
+		String rfc = "RFC 5751: Section 3.2.1;http://tools.ietf.org/html/rfc5751#section-3.2.1;RFC 5751: 3.2.2;http://tools.ietf.org/html/rfc5751#section-3.2.2";
 		if(contentTypeSMIMEType == null) {
-			 er.err("193", "The parameter 'smime-type' is missing", "", "DTS 193", "");
+			er.error("192", "Content-Type S/MIME-Type", contentTypeSMIMEType, "Content Type S/MIME-Type must be present", rfc);
 		} else {
-			er.detail("     Success:  DTS 193 - Info: the parameter 'smime-type' is present");
+			er.success("192", "Content-Type S/MIME-Type", contentTypeSMIMEType, "Content Type S/MIME-Type must be present", rfc);
 		}
 	}
 
 	// DTS 137-140, Content-Type Boundary, Conditional
 	public void validateContentTypeBoundary(ErrorRecorder er, String contentTypeBoundary) {
+		String rfc = "RFC 2046: Section 5.1.1;http://tools.ietf.org/html/rfc2046#section-5.1.1;RFC 2045: Section 5;http://tools.ietf.org/html/rfc2045#section-5";
 		// MUST be encapsulated by "" if it contains a colon (:)
 		if (contentTypeBoundary.contains(":")) {
 			if (!(contentTypeBoundary.charAt(0) == '"') || !(contentTypeBoundary.charAt(contentTypeBoundary.length()-1) == '"')) {
-				er.err("137-140", "Invalid format: the MIME boundary includes a colon (':') and should start with quotes ('\"').", "", "DTS 137-140", "");
+				er.error("137-140", "Content-Type Boundary", contentTypeBoundary, "MIME boundary must not include a colon (':') and should start with quotes ('\"')", rfc);
 			}
 		}
 		
 		// MUST be no longer than 70 characters, not counting the two leading hyphens
 		else if (contentTypeBoundary.length() > 70) {
-			er.err("137-140", "Invalid format: the MIME boundary should not be longer than 70 characters.", "", "DTS 137-140", "");
+			er.error("137-140", "Content-Type Boundary", contentTypeBoundary, "MIME boundary should not be longer than 70 characters", rfc);
 		}
 		
 		// MUST be represented as US-ASCII
 		else if (!ValidationUtils.isAscii(contentTypeBoundary)) {
-			er.err("137-140", "The boundary MUST be represented as US-ASCII", "", "DTS 137-140", "");
+			er.error("137-140", "Content-Type Boundary", contentTypeBoundary, "MIME boundary must be represented as US-ASCII", rfc);
 		}
 		
 		else {
-			er.detail("     Success:  DTS 137-140 - Boundary detected");
+			er.success("137-140", "Content-Type Boundary", contentTypeBoundary, "MIME Boundary is valid (US-ASCII, less than 70 characters)", rfc);
 		}
 		
 	}
 
 	// DTS 156, Content-type Disposition, Conditional
 	public void validateContentTypeDisposition(ErrorRecorder er, String contentTypeDisposition, String contentType) {
+		String rfc = "RFC 5751: Section 3.2.1;http://tools.ietf.org/html/rfc5751#section-3.2.1";
 		if (contentType.contains("application/pkcs7-mime")) {
 			if (contentTypeDisposition == null) {
-				er.err("156", "DTS 156 Content Type Disposition SHOULD be present", "", "DTS 156", "");
+				er.error("156", "Content-Type Disposition", "Not present", "Content-Type Disposition should be present", rfc);
 			} else if(!contentTypeDisposition.equals("")) {
-				er.detail("     Success:  DTS 156 - Content Type Disposition is present");
+				er.success("156", "Content-Type Disposition", contentTypeDisposition, "Content-Type Disposition should be present", rfc);
 			} else {
-				er.err("156", "DTS 156 Content Type Disposition SHOULD be present", "", "DTS 156", "");
+				er.error("156", "Content-Type Disposition", "Not present", "Content-Type Disposition should be present", rfc);
 			}
 		} else {
-			er.detail("     Success:  DTS 156 - Content Type is not equal to application/pkcs7-mime");
+			er.success("156", "Content-Type Disposition", contentTypeDisposition, "Content Type is not equal to application/pkcs7-mime", rfc);
 		}
 		
 	}
 	
 	// DTS 161-194, Content-Disposition filename, Optional
 	public void validateContentDispositionFilename(ErrorRecorder er, String content) {
+		String rfc = "RFC 5751: Section 3.2.1;http://tools.ietf.org/html/rfc5751#section-3.2.1";
 		final String extension =  ".*\\.p7c$|.*\\.p7z$|.*\\.p7s$|.*\\.p7m$";
 		Pattern pattern = Pattern.compile(extension, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(content);
@@ -168,34 +176,35 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 				pattern = Pattern.compile(smime, Pattern.CASE_INSENSITIVE);
 				matcher = pattern.matcher(content);
 				if(matcher.matches()) {
-					er.detail("     Success:  DTS 161-194 - Filename is smime, has the good extension and is less than 8 characters");
+					er.success("161-194", "Content-Disposition filename", content, "Filename is smime, has the good extension and is less than 8 characters", rfc);
 				} else {
-					er.warning("161-194", "Content Type Disposition filename SHOULD be smime", "", "DTS 161-194");
+					er.warning("161-194", "Content-Disposition filename", content, "Content Type Disposition filename SHOULD be smime", rfc);
 				}
 			} else {
-				er.warning("161-194", "Content Type Disposition filename SHOULD be less than 8 characters", "", "DTS 161-194");				
+				er.warning("161-194", "Content-Disposition filename", content, "Content Type Disposition filename SHOULD be less than 8 characters", rfc);				
 			}
 		} else if(content.equals("")) {
-			er.warning("161-194", "Content Type Disposition filename SHOULD be present", "", "DTS 161-194");
+			er.warning("161-194", "Content-Disposition filename", "Not present", "Content Type Disposition filename SHOULD be present", rfc);
 		} else {
-			er.warning("161-194", "Content Type Disposition filename SHOULD have an extension in .p7c, .p7z or .p7s", "", "DTS 161-194");
+			er.warning("161-194", "Content-Disposition filename", content, "Content Type Disposition filename SHOULD have an extension in .p7c, .p7z or .p7s", rfc);
 		}
 		
 	}
 	
 	// DTS 134-143, Content-Id, Optional
 	public void validateContentId(ErrorRecorder er, String content) {
+		String rfc = "RFC 2045: Section 4;http://tools.ietf.org/html/rfc2045#section-4;RFC 2045: Section 7;http://tools.ietf.org/html/rfc2045#section-7";
 		if(content.equals("")) {
-			er.detail("Info: DTS 134-143 - Content-Id field is not present");
+			er.info("134-143", "Content-Id", "Not present", "Content-Id should be present", rfc);
 		} else {
 			//handle display		
 			Pattern pattern = Pattern.compile("<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">", Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(content);
 			//er.detail(matcher.matches());
 			if(matcher.matches()) {
-				er.detail("     Success:  DTS 134-143 - Content-Id is valid");
+				er.success("134-143", "Content-Id", content, "Must be syntactically identical to the Message-ID", rfc);
 			} else {
-				er.err("134-143", "Content-Id field is invalid.", "", "DTS 134-143", "");
+				er.error("134-143", "Content-Id", content, "Must be syntactically identical to the Message-ID", rfc);
 			}
 		}
 		
@@ -203,29 +212,31 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 	
 	// DTS 135-142-144, Content-Description, Optional
 	public void validateContentDescription(ErrorRecorder er, String content) {
+		String rfc = "RFC 2045: Section 4;http://tools.ietf.org/html/rfc2045#section-4;RFC 2045: Section 8;http://tools.ietf.org/html/rfc2045#section-8";
 		if(content.equals("")) {
-			er.detail("Info: DTS 135-142-144 - Content-Description field is not present");
+			er.info("135-142-144", "Content-Description", "Not present", "", rfc);
 		} else {
-			er.detail("Success: DTS 135-142-144 - Content-Description field is valid");
+			er.success("135-142-144", "Content-Description", content, "No check needed", rfc);
 		}
 		
 	}
 	
 	// DTS 136-148-157, Content-Transfer-Encoding, Optional
 	public void validateContentTransferEncodingOptional(ErrorRecorder er, String contentTransfertEncoding, String contentType) {
+		String rfc = "RFC 2045: Section 6, 6.1, 6.4, 6.7, 6.8;http://tools.ietf.org/html/rfc2045#section-6;RFC 5751: Section 3.1.2, 3.1.3;http://tools.ietf.org/html/rfc5751#section-3.2.1";
 		if(contentType.contains("multipart") || contentType.contains("message")) {
 			if(contentTransfertEncoding.contains("7bit") || contentTransfertEncoding.contains("8bit") || contentTransfertEncoding.contains("binary")) {
-				er.detail("Success: DTS 136-148-157 - Content-Transfer-Encoding is valid");
+				er.success("136-148-157", "Content-Transfer-Encoding", contentTransfertEncoding, "Content-Transfer-Encoding must be either 7bit, 8bit or binary", rfc);
 			} else {
-				er.err("136-148-157", "Content-Transfer-Encoding is not valid", "", "DTS 136-148-157", "");
+				er.error("136-148-157", "Content-Transfer-Encoding", contentTransfertEncoding, "Content-Transfer-Encoding must be either 7bit, 8bit or binary", rfc);
 			}
 		} else {
 			if(contentTransfertEncoding.contains("quoted-printable") || contentTransfertEncoding.contains("base-64") || contentTransfertEncoding.contains("7-bit")) {
-				er.detail("Success: DTS 136-148-157 - Content-Transfer-Encoding is valid");
+				er.success("136-148-157", "Content-Transfer-Encoding", contentTransfertEncoding, "Content-Transfer-Encoding must be either quoted-printable, base64 or 7-bit", rfc);
 			} else if(contentTransfertEncoding.startsWith("X-")) {
-				er.detail("Info: DTS 136-148-157 - Content-Transfer-Encoding start with X- and do not need to be checked");
+				er.success("136-148-157", "Content-Transfer-Encoding", contentTransfertEncoding, "Content-Transfer-Encoding start with X- and do not need to be checked", rfc);
 			} else {
-				er.err("136-148-157", "Content-Transfer-Encoding is not valid", "", "DTS 136-148-157", "");
+				er.error("136-148-157", "Content-Transfer-Encoding", contentTransfertEncoding, "Content-Transfer-Encoding must be either quoted-printable, base64 or 7-bit", rfc);
 			}
 		}
 		
@@ -233,10 +244,11 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 	
 	// DTS 138-149, Content-*, Optional
 	public void validateContentAll(ErrorRecorder er, String content) {
+		String rfc = "RFC 2045: Section 9;http://tools.ietf.org/html/rfc2045#section-9";
 		if(content.startsWith("content-")) {
-			er.detail("Success: DTS 138-149 - Content-* is valid");
+			er.success("138-149", "Content-*", content, "Should begin by content-*", rfc);
 		} else {
-			er.err("138-149", "Content-* is not valid", "", "DTS 138-149", "");
+			er.error("138-149", "Content-*", content, "Should begin by content-*", rfc);
 		}
 		
 	}
@@ -245,6 +257,7 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 	
 	// DTS 195, Body, Required
 	public void validateBody(ErrorRecorder er, Part p, String body) {
+		String rfc = "RFC 2046: Section 5.1.1;http://tools.ietf.org/html/rfc2046#section-5.1.1";
 		if(ValidationUtils.isAscii(body) && ValidationUtils.isOnlyCRLF(body)) {
 			String[] tab = {"Content-Transfer-Encoding"};
 			String head = "";
@@ -268,27 +281,27 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 						Pattern pattern = Pattern.compile(extension, Pattern.CASE_INSENSITIVE);
 						Matcher matcher = pattern.matcher(body);
 						if(matcher.matches()) {
-							er.detail("     Success:  DTS 195 - Body is valid");
+							er.success("195", "Body", body, "Body does not contain illegal character", rfc);
 						} else {
-							er.err("195", "DTS 195 Body, \"=\" followed by a character that is neither a hexadecimal digit (including \"abcdef\") nor the CR character of a CRLF pair is illegal", "", "DTS 195", "");
+							er.error("195", "Body", body, "\"=\" followed by a character that is neither a hexadecimal digit (including \"abcdef\") nor the CR character of a CRLF pair is illegal", rfc);
 						}
 					} else {
-						er.detail("     Success:  DTS 195 - Body is valid");
+						er.success("195", "Body", body, "Body does not contain illegal character", rfc);
 					}
 				} else {
-					er.err("195", "DTS 195 Body, Content-Transfer-Encoding = \"quoted-printable\", control characters other than TAB, or CR and LF as parts of CRLF pairs, MUST NOT appear", "", "DTS 195", "");
+					er.error("195", "Body", body, "Content-Transfer-Encoding = \"quoted-printable\", control characters other than TAB, or CR and LF as parts of CRLF pairs, MUST NOT appear", rfc);
 				}
 			} else if(head.contains("base64")) {
 				if(ValidationUtils.isOnlyCRLF(body)) {
-					er.detail("     Success:  DTS 195 - Body is valid");
+					er.success("195", "Body", body, "Any linebreak must be represented as a CRLF", rfc);
 				} else {
-					er.err("195", "DTS 195 Body, Any linebreak MUST be represented as a CRLF", "", "DTS 195", "");
+					er.error("195", "Body", body, "Any linebreak must be represented as a CRLF", rfc);
 				}
 			} else {
-				er.detail("     Success:  DTS 195 - Body is valid");
+				er.success("195", "Body", body, "Any linebreak must be represented as a CRLF", rfc);
 			}
 		} else {
-			er.err("195", "DTS 195 Body, Any linebreak MUST be represented as a CRLF", "", "DTS 195", "");
+			er.error("195", "Body", body, "Any linebreak must be represented as a CRLF", rfc);
 		}
 		
 	}

@@ -199,17 +199,17 @@ public class WrappedMessageProcessor {
 			certLoader = new CertificateLoader(certificate, password);
 			recId = new JceKeyTransRecipientId(certLoader.getX509Certificate());
 		} catch (KeyStoreException e1) {
-			er.err("0", "Error in keystore creation", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation KeyStoreException", e1.getMessage(), "-");
 		} catch (NoSuchProviderException e1) {
-			er.err("0", "Error in keystore creation NoSuchProviderException", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation NoSuchProviderException", e1.getMessage(), "-");
 		} catch (NoSuchAlgorithmException e1) {
-			er.err("0", "Error in loading certificate NoSuchAlgorithmException", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation NoSuchAlgorithmException", e1.getMessage(), "-");
 		} catch (CertificateException e1) {
-			er.err("0", "Error in loading certificate CertificateException", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation CertificateException", e1.getMessage(), "-");
 		} catch (IOException e1) {
-			er.err("0", "Error in loading certificate IOException (decryption)", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation IOException", e1.getMessage(), "-");
 		} catch (Exception e1) {
-			er.err("0", "Cannot load the certificate (decryption). Probably wrong format certificate file", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Probably wrong format file or wrong password", e1.getMessage(), "-");
 		}
 
 
@@ -231,12 +231,12 @@ public class WrappedMessageProcessor {
 			res = SMIMEUtil.toMimeBodyPart(recipient.getContent(new JceKeyTransEnvelopedRecipient(certLoader.getPrivateKey()).setProvider("BC")));
 		} catch (SMIMEException e1) {
 			e1.printStackTrace();
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error un-enveloping message body SMIMEException", e1.getMessage(), "-");
 		} catch (CMSException e1) {
 			e1.printStackTrace();
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error un-enveloping message body CMSException", e1.getMessage(), "-");
 		} catch (Exception e1) {
-			er.err("0", "Error with the certificate: Unable to decrypt message maybe it is the wrong certificate", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Probably wrong format file or wrong certificate", e1.getMessage(), "-");
 		}
 		
 		StringWriter writer = new StringWriter();

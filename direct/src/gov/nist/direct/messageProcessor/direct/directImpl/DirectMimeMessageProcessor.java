@@ -177,7 +177,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			er.err("0", e.toString(), "", "", "Error");
+			er.error("No DTS", "Unexpected Error", e.toString(), "", "-");
 		}				
 
 	}
@@ -298,11 +298,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			}  catch(IOException e) {
 				logger.error("The content is not a valid XDM content\n" + ExceptionUtil.exception_details(e));
 				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM content", Status.ERROR, false);
-				er.err("0", "The content is not a valid XDM content", "", "", "XDM Content");
+				er.error("No DTS", "XDM Error", "The content is not a valid XDM content", "", "-");
 			} catch(XDMException e) {
 				logger.error("The content is not a valid XDM content\n" + ExceptionUtil.exception_details(e));
 				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM content", Status.ERROR, false);
-				er.err("0", "The content is not a valid XDM content", "", "", "XDM Content");
+				er.error("No DTS", "XDM Error", "The content is not a valid XDM content", "", "-");
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -314,11 +314,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			}  catch(IOException e) {
 				logger.error("The content is not a valid XDM content\n" + ExceptionUtil.exception_details(e));
 				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM content", Status.ERROR, false);
-				er.err("0", "The content is not a valid XDM content", "", "", "XDM Content");
+				er.error("No DTS", "XDM Error", "The content is not a valid XDM content", "", "-");
 			} catch(XDMException e) {
 				logger.error("The content is not a valid XDM content\n" + ExceptionUtil.exception_details(e));
 				validationSummary.recordKey(getShiftIndent(shiftNumber+1) + "The content is not a valid XDM content", Status.ERROR, false);
-				er.err("0", "The content is not a valid XDM content", "", "", "XDM Content");
+				er.error("No DTS", "XDM Error", "The content is not a valid XDM content", "", "-");
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -518,7 +518,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
 		er.detail(html_formatted_ccda);
 		er.detail("####################################################");
-		logger.info(p.getContent().toString());
+		//logger.info(p.getContent().toString());
 
 
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
@@ -596,7 +596,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			try {
 				cert = new JcaX509CertificateConverter().setProvider(BC).getCertificate((X509CertificateHolder)certIt.next());
 			} catch (Exception e) {
-				separate.err("", "Cannot extract the signing certificate", "", "", "");
+				separate.error("No DTS", "Certificate File", "Cannot extract the signing certificate", "", "-");
 				er.concat(separate);
 				break;
 			}
@@ -636,7 +636,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			msgValidator.validateSignature(separate, cert, signer, BC);
 
 			// Update summary
-			validationSummary.updateSignatureStatus(!separate.hasErrors());
+			validationSummary.updateSignatureStatus(separate.hasErrors());
 			er.concat(separate);
 
 		}
@@ -656,11 +656,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			ks = KeyStore.getInstance("PKCS12", "BC");
 			logger.info("Created empty keystore");
 		} catch (KeyStoreException e1) {
-			er.err("0", "Error in keystore creation", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error in keystore creation", e1.getMessage(), "-");
 			logger.error("Error creating keystore of type PKCS12: " + ExceptionUtil.exception_details(e1));
 		} catch (NoSuchProviderException e1) {
 			logger.error("Error creating keystore of type PKCS12: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error in keystore creation", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error in keystore creation", e1.getMessage(), "-");
 		}
 
 		// Message Validator
@@ -674,16 +674,16 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			logger.info("Loaded certificate for decryption");
 		} catch (NoSuchAlgorithmException e1) {
 			logger.error("Error loading certificate (decryption): " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error in loading certificate", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error in loading certificate", e1.getMessage(), "-");
 		} catch (CertificateException e1) {
 			logger.error("Error loading certificate (decryption): " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error in loading certificate", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error in loading certificate", e1.getMessage(), "-");
 		} catch (IOException e1) {
 			logger.error("Error loading certificate (decryption): " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error in loading certificate (decryption)", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error in loading certificate", e1.getMessage(), "-");
 		} catch (Exception e1) {
 			logger.error("Error loading certificate (decryption): " + ExceptionUtil.exception_details(e1) + e1.toString());
-			er.err("0", "Error in loading certificate (decryption)", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error in loading certificate", e1.getMessage(), "-");
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -692,7 +692,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			e = ks.aliases();
 		} catch (KeyStoreException e1) {
 			logger.error("Error loading certificate aliases: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error in loading certificate", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error in loading certificate", e1.getMessage(), "-");
 		}
 		String      keyAlias = null;
 
@@ -708,7 +708,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 					}
 				} catch (KeyStoreException e1) {
 					logger.error("Error extracting certificate alias: " + ExceptionUtil.exception_details(e1));
-					er.err("0", "Error in loading certificate", "", "", "Certificate file");
+					er.error("No DTS", "Certificate file", "Error in loading certificate", e1.getMessage(), "-");
 				}
 			}
 		}
@@ -716,7 +716,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		if (keyAlias == null)
 		{
 			logger.error("Can't find a private key in encryption keystore.");
-			er.err("0", "Can't find a private key in encryption keystore.", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error in loading certificate", "", "-");
 
 			// DTS 129, Message Body
 			msgValidator.validateMessageBody(er, false);
@@ -735,7 +735,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			cert = (X509Certificate)ks.getCertificate(keyAlias);
 		} catch (KeyStoreException e1) {
 			logger.error("Error extracting private key: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error extracting private key: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting private key", e1.getMessage(), "-");
 		}
 		RecipientId     recId = new JceKeyTransRecipientId(cert);
 
@@ -744,10 +744,10 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			m = new SMIMEEnveloped((MimeMessage)p);
 		} catch (MessagingException e1) {
 			logger.error("Error un-enveloping message body: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting private key", e1.getMessage(), "-");
 		} catch (CMSException e1) {
 			logger.error("Error un-enveloping message body: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting private key", e1.getMessage(), "-");
 		}
 		RecipientInformationStore   recipients = m.getRecipientInfos();
 		RecipientInformation        recipient = recipients.get(recId);
@@ -758,21 +758,21 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			res = SMIMEUtil.toMimeBodyPart(recipient.getContent(new JceKeyTransEnvelopedRecipient(pkey).setProvider("BC")));
 		} catch (UnrecoverableKeyException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting MIME body part", e1.getMessage(), "-");
 		} catch (KeyStoreException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting MIME body part", e1.getMessage(), "-");
 		} catch (NoSuchAlgorithmException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting MIME body part", e1.getMessage(), "-");
 		} catch (SMIMEException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting MIME body part", e1.getMessage(), "-");
 		} catch (CMSException e1) {
 			logger.error("Error extracting MIME body part: " + ExceptionUtil.exception_details(e1));
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting MIME body part", e1.getMessage(), "-");
 		}  catch (Exception e1) {
-			er.err("0", "Error with the certificate: Unable to decrypt message maybe it is the wrong certificate", "", "", "Certificate file");
+			er.error("No DTS", "Certificate file", "Error extracting MIME body part", e1.getMessage(), "-");
 		}
 
 
@@ -998,7 +998,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		String messageID = Utils.trimEmailAddress(_messageID);
+		String messageID = Utils.rawFromHeader(_messageID);
 
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
 		Date date = new Date();
