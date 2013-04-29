@@ -14,6 +14,8 @@ public class MessageValidatorDisplay {
 	String clientIP = "0.0.0.0";
 	String uploadFilename = null;
 	boolean lessdetail = false;
+	boolean isDirect = false;
+	boolean isSummry = false;
 
 	public void setTimeAndDate(String td) { timeAndDate = td; }
 	public void setClientIP(String ip) { clientIP = ip; }
@@ -28,13 +30,20 @@ public class MessageValidatorDisplay {
 		int summaryRow;
 		boolean foundErrors = false;
 
-
+		if(isDirectReport(results)) {
+			isDirect = true;
+		}
+		
 		// leave as summary row (plus a blank for separation)
 		summaryRow = f.getRow();
 		f.setName("   ");
+		if(isDirect)
+			f.setColSpan(0, 5);
 		f.incRow();
 
 		f.setName("Time of validation: " + timeAndDate);
+		if(isDirect)
+			f.setColSpan(0, 5);
 		f.incRow();
 
 		//f.setName("Client IP Address: " + clientIP);
@@ -42,6 +51,8 @@ public class MessageValidatorDisplay {
 
 		if (uploadFilename != null) {
 			f.setName("File validated: " + uploadFilename);
+			if(isDirect)
+				f.setColSpan(0, 5);
 			f.incRow();
 		}
 		f.hr();
@@ -68,12 +79,22 @@ public class MessageValidatorDisplay {
 
 			List<ValidatorErrorItem> ers = result.er;
 			for (ValidatorErrorItem er : ers)  {
+				
+				// Summary Detection
+				//TODO Need to change that
+				if(er.msg.contains("Message Content Summary")) {
+					isSummry = true;
+				} else if(er.msg.contains("Detailed Validation")) {
+					isSummry = false;
+				}
+				
 				boolean row_advance = true;
 				lessdetail = false;
 				switch (er.level) {
 				case SECTIONHEADING:
 					f.setDetail(f.bold(er.msg));
-					f.setColSpan(0, 5);
+					if(isDirect)
+						f.setColSpan(0, 5);
 					lessdetail = true;
 					break;
 
@@ -89,19 +110,32 @@ public class MessageValidatorDisplay {
 					break;
 
 				case DETAIL:
-					f.setDetail(er.msg);
-					//f.setColSpan(0, 5);
-					f.setStatus(f.green("Success"));
-					//lessdetail = true;
-					f.setColSpan(0, 5);
-					lessdetail = true;
+					if(isDirect) {
+						f.setColSpan(0, 5);
+						if(isSummry) {
+							f.setDetail(er.msg);
+							f.setStatus(f.green("Success"));
+						} else {
+							f.setDetail(f.purple(er.msg));
+						}
+							
+						lessdetail = true;
+					} else {
+						f.setDetail(er.msg);
+					}
 					break;
 
 				case ERROR:
-					f.setDetail(f.red(er.msg));
-					f.setReference(f.red(er.resource));
-					foundErrors = true;
-					f.setStatus(f.red("Error"));
+					if(isDirect) {
+						f.setDetail(f.red(er.msg));
+						f.setStatus(f.red("Error"));
+						f.setColSpan(0, 5);
+					} else {
+						f.setDetail(f.red(er.msg));
+						f.setReference(f.red(er.resource));
+						foundErrors = true;
+						f.setStatus(f.red("Error"));
+					}
 					break;
 
 				case WARNING:
