@@ -74,6 +74,7 @@ public class ValidateMessageService extends CommonServiceManager {
 				GwtErrorRecorder ger = (GwtErrorRecorder) vs.getErrorRecorder();
 				List<ValidatorErrorItem> errs = ger.getValidatorErrorInfo();
 				mvr.addResult(vs.getStepName(), errs);
+				mvr.addSummary(vs.getStepName(), ger.getSummaryErrorInfo());
 			} catch (Exception e) {}
 		}
 
@@ -131,6 +132,7 @@ public class ValidateMessageService extends CommonServiceManager {
 				GwtErrorRecorder ger = (GwtErrorRecorder) vs.getErrorRecorder();
 				List<ValidatorErrorItem> errs = ger.getValidatorErrorInfo();
 				mvr.addResult(vs.getStepName(), errs);
+				mvr.addSummary(vs.getStepName(), ger.getSummaryErrorInfo());
 			}
 			
 			mvr.addResult("Validation Summary", buildValidationSummary(vc, mvc));

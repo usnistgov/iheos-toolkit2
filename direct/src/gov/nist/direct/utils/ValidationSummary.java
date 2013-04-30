@@ -96,7 +96,7 @@ public class ValidationSummary {
 	}
 	
 	public void updateSignatureStatus(boolean status) {
-		if(!status) {
+		if(status) {
 			signatureStatus.value = Status.ERROR;
 		}
 	}

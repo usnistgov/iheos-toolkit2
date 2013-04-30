@@ -334,6 +334,36 @@ public class ValidatorCommon implements ErrorRecorder {
 		return null;
 	}
 
+	@Override
+	public void success(String dts, String name, String found, String expected, String RFC) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void error(String dts, String name, String found, String expected, String RFC) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void warning(String dts, String name, String found, String expected, String RFC) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void info(String dts, String name, String found, String expected, String RFC) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void summary(String msg, boolean success, boolean part) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

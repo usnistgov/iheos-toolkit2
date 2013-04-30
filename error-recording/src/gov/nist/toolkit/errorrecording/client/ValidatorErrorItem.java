@@ -10,13 +10,20 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 public class ValidatorErrorItem implements IsSerializable {
-	public enum ReportingLevel implements IsSerializable { SECTIONHEADING, CHALLENGE, EXTERNALCHALLENGE, DETAIL, ERROR, WARNING };
+	public enum ReportingLevel implements IsSerializable { SECTIONHEADING, CHALLENGE, EXTERNALCHALLENGE, DETAIL, ERROR, WARNING, D_SUCCESS, D_INFO, D_ERROR, D_WARNING};
 	public enum ReportingCompletionType implements IsSerializable { ERROR, WARNING, OK };
 
 	public ReportingLevel level;
+	public boolean summaryPart = false;
 	public String msg = "";
 	public String resource = "";
 	public String location = "";
+	public String dts = "";
+	public String name = "";
+	public String found = "";
+	public String expected = "";
+	public String rfc = "";
+	public String status = "";
 	XdsErrorCode.Code code = XdsErrorCode.Code.NoCode;
 	String codeString = null;
 	public ReportingCompletionType completion = ReportingCompletionType.OK;

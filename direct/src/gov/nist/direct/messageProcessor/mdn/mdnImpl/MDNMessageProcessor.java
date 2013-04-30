@@ -22,7 +22,6 @@ package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.MessageLogManager;
-import gov.nist.direct.logger.writer.MessageIDLogger;
 import gov.nist.direct.mdn.validate.MDNValidator;
 import gov.nist.direct.mdn.validate.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -32,29 +31,22 @@ import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
 import gov.nist.direct.messageProcessor.direct.directImpl.WrappedMessageProcessor;
 import gov.nist.direct.utils.ParseUtils;
 import gov.nist.direct.utils.Utils;
-import gov.nist.direct.utils.ValidationSummary;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
@@ -91,7 +83,6 @@ public class MDNMessageProcessor {
 	static Logger logger = Logger.getLogger(DirectMimeMessageProcessor.class);
 	
 	private static String NO_ORIGINAL_MSG_ID = "No original msg-id";
-	private static String NO_USERNAME = "No username";
 	private static String NO_MDN_MESSAGE_ID = "No MDN message-id";
 	private static String STATUS_VALID = "Valid";
 	private static String STATUS_NOT_VALID = "Not valid";
@@ -99,13 +90,14 @@ public class MDNMessageProcessor {
 
 	
 	private String decryptedMdn = ""; // contains the full decrypted message
+	private String dispositionField = "";
+	private String msgID = "";
+	private Date mdnDate = null;
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
-	private String password;
+	private String password;;
 	ValidationContext vc = new ValidationContext();
-	private ValidationSummary validationSummary = new ValidationSummary();
 	WrappedMessageProcessor wrappedParser = new WrappedMessageProcessor();
-	private int partNumber;
 	ErrorRecorder mainEr;
 	boolean encrypted;
 	boolean signed;
@@ -137,11 +129,14 @@ public class MDNMessageProcessor {
 
 		try {
 			this.processPart(er, mm);
+			msgID = mm.getMessageID();
+			mdnDate = mm.getSentDate();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			er.error("No DTS", "MDN Processing", "Error Processing MDN", "", "-");
 			e.printStackTrace();
 		}
-
+		
+		// Validate MDN Signature and Encryption
 		MDNValidator mdnv = new MDNValidatorImpl();
 		mdnv.validateMDNSignatureAndEncryption(er, signed, encrypted);
 
@@ -153,9 +148,6 @@ public class MDNMessageProcessor {
 		
 		// Logs MDN message - still ENCRYPTED
 		logMDNMessage(mm); // logMDNMessage(mm, disposition);
-
-        // Set the part number to 1
-        partNumber = 1;
 
         // Parse the message to see if it is wrapped
         wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
@@ -183,7 +175,8 @@ public class MDNMessageProcessor {
         String mdnMessageId = "";
 		try {
 			if (m.getMessageID() == null || m.getMessageID().equals("")){
-				mdnMessageId = m.getMessageID();
+				String _mdnMessageId = m.getMessageID();
+				mdnMessageId = Utils.rawFromHeader(_mdnMessageId);
 			} else {
 				mdnMessageId = NO_MDN_MESSAGE_ID;
 			}
@@ -275,9 +268,9 @@ public class MDNMessageProcessor {
 
 		}  else if (p.isMimeType("message/disposition-notification")) {			
 			// Validate MDN
-			ProcessMDN mdnv = new ProcessMDN();
-			mdnv.validate(er, p);
-			//concat(p.toString());
+			ProcessMDN mdnv = new ProcessMDN(er, p);
+			mdnv.validate(er);
+			dispositionField = mdnv.getDispositionField();
 
 		} else if (p.isMimeType("application/octet-stream")) {
 			//System.out.println("CCDA Content");
@@ -321,17 +314,17 @@ public class MDNMessageProcessor {
 			certLoader = new CertificateLoader(certificate, password);
 			recId = new JceKeyTransRecipientId(certLoader.getX509Certificate());
 		} catch (KeyStoreException e1) {
-			er.err("0", "Error in keystore creation", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation", e1.getMessage(), "-");
 		} catch (NoSuchProviderException e1) {
-			er.err("0", "Error in keystore creation NoSuchProviderException", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation", e1.getMessage(), "-");
 		} catch (NoSuchAlgorithmException e1) {
-			er.err("0", "Error in loading certificate NoSuchAlgorithmException", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation", e1.getMessage(), "-");
 		} catch (CertificateException e1) {
-			er.err("0", "Error in loading certificate CertificateException", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation", e1.getMessage(), "-");
 		} catch (IOException e1) {
-			er.err("0", "Error in loading certificate IOException (decryption)", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation", e1.getMessage(), "-");
 		} catch (Exception e1) {
-			er.err("0", "Cannot load the certificate (decryption). Probably wrong format certificate file", "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error in keystore creation", e1.getMessage(), "-");
 		}
 
 
@@ -353,12 +346,12 @@ public class MDNMessageProcessor {
 			res = SMIMEUtil.toMimeBodyPart(recipient.getContent(new JceKeyTransEnvelopedRecipient(certLoader.getPrivateKey()).setProvider("BC")));
 		} catch (SMIMEException e1) {
 			e1.printStackTrace();
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.error("No DTS", "Certificate File", "Error un-enveloping message body", e1.getMessage(), "-");
 		} catch (CMSException e1) {
 			e1.printStackTrace();
-			er.err("0", "Error un-enveloping message body: " + ExceptionUtil.exception_details(e1), "", "", "Certificate file");
+			er.err("No DTS", "Certificate File", "Error un-enveloping message body", e1.getMessage(), "-");
 		} catch (Exception e1) {
-			er.err("0", "Error with the certificate: Unable to decrypt message maybe it is the wrong certificate", "", "", "Certificate file");
+			er.err("No DTS", "Certificate File", "Error un-enveloping message body", e1.getMessage(), "-");
 		}
 
 		this.encrypted = true;
@@ -395,9 +388,8 @@ public class MDNMessageProcessor {
 			Collection certCollection = certs.getMatches(signer.getSID());
 
 			Iterator certIt = certCollection.iterator();
-			X509Certificate cert = null;
 			try {
-				cert = new JcaX509CertificateConverter().setProvider(BC).getCertificate((X509CertificateHolder)certIt.next());
+				new JcaX509CertificateConverter().setProvider(BC).getCertificate((X509CertificateHolder)certIt.next());
 			} catch (Exception e) {
 				System.out.println("PROBLEMMMMM");
 				break;

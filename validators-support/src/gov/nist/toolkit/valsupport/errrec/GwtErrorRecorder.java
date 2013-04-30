@@ -15,6 +15,7 @@ import java.util.List;
 public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	ErrorRecorderBuilder errorRecorderBuilder;
+	List<ValidatorErrorItem> summary = new ArrayList<ValidatorErrorItem>();
 	List<ValidatorErrorItem> errMsgs = new ArrayList<ValidatorErrorItem>();
 	int lastErrCount = 0;
 	
@@ -67,9 +68,13 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		return errMsgs;
 	}
 	
+	public List<ValidatorErrorItem> getSummaryErrorInfo() {
+		return summary;
+	}
+	
 	public boolean hasErrors() {
 		for (ValidatorErrorItem vei : errMsgs) {
-			if (vei.level == ValidatorErrorItem.ReportingLevel.ERROR)
+			if ((vei.level == ValidatorErrorItem.ReportingLevel.ERROR) || (vei.level == ValidatorErrorItem.ReportingLevel.D_ERROR))
 				return true;
 		}
 		return false;
@@ -240,7 +245,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	public int getNbErrors() {
 		int nbErrors = 0;
 		for (ValidatorErrorItem vei : errMsgs) {
-			if (vei.level == ValidatorErrorItem.ReportingLevel.ERROR)
+			if ((vei.level == ValidatorErrorItem.ReportingLevel.ERROR) || (vei.level == ValidatorErrorItem.ReportingLevel.D_ERROR))
 				nbErrors++;
 		}
 		return nbErrors;
@@ -259,6 +264,95 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	public ErrorRecorderBuilder getErrorRecorderBuilder() {
 		// TODO Auto-generated method stub
 		return errorRecorderBuilder;
+	}
+
+	@Override
+	public void success(String dts, String name, String found, String expected, String RFC) {
+		tagLastInfo2();
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		ei.level = ValidatorErrorItem.ReportingLevel.D_SUCCESS;
+		ei.dts = dts;
+		ei.name = name;
+		ei.found = found;
+		ei.expected = expected;
+		ei.rfc = RFC;
+		ei.status = "Success";
+		errMsgs.add(ei);
+	}
+
+	@Override
+	public void error(String dts, String name, String found, String expected,String RFC) {
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		ei.level = ValidatorErrorItem.ReportingLevel.D_ERROR;
+		ei.dts = dts;
+		ei.name = name;
+		ei.found = found;
+		ei.expected = expected;
+		ei.rfc = RFC;
+		ei.status = "Error";
+		ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
+		errMsgs.add(ei);
+		lastErrCount++;
+		for (int i=errMsgs.size()-1; i>0; i--) {
+			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
+				break;
+			if (ei.level == ValidatorErrorItem.ReportingLevel.CHALLENGE) {
+				ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
+			}
+		}
+		
+	}
+
+	@Override
+	public void warning(String dts, String name, String found, String expected, String RFC) {
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		ei.level = ValidatorErrorItem.ReportingLevel.D_WARNING;
+		ei.dts = dts;
+		ei.name = name;
+		ei.found = found;
+		ei.expected = expected;
+		ei.rfc = RFC;
+		ei.status = "Warning";
+		ei.completion = ValidatorErrorItem.ReportingCompletionType.WARNING;
+		errMsgs.add(ei);
+		lastErrCount++;
+		for (int i=errMsgs.size()-1; i>0; i--) {
+			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
+				break;
+			if (ei.level == ValidatorErrorItem.ReportingLevel.CHALLENGE) {
+				ei.completion = ValidatorErrorItem.ReportingCompletionType.WARNING;
+			}
+		}
+		
+	}
+	
+	@Override
+	public void info(String dts, String name, String found, String expected, String RFC) {
+		tagLastInfo2();
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		ei.level = ValidatorErrorItem.ReportingLevel.D_INFO;
+		ei.dts = dts;
+		ei.name = name;
+		ei.found = found;
+		ei.expected = expected;
+		ei.rfc = RFC;
+		ei.status = "Info";
+		errMsgs.add(ei);
+	}
+
+	@Override
+	public void summary(String msg, boolean success, boolean part) {
+		ValidatorErrorItem ei = new ValidatorErrorItem();
+		if(success) {
+			ei.level = ValidatorErrorItem.ReportingLevel.D_SUCCESS;
+			ei.status = "Success";
+		} else {
+			ei.level = ValidatorErrorItem.ReportingLevel.D_ERROR;
+			ei.status = "Error";
+		}
+		ei.summaryPart = part;
+		ei.msg = msg;
+		summary.add(ei);
 	}
 
 

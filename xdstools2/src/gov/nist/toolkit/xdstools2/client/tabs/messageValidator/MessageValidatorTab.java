@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -1050,23 +1051,38 @@ public class MessageValidatorTab extends TabbedWindow {
 		public void addCell(String msg, int col) {
 			HTML main = new HTML();
 			main.setHTML(msg);
+			resultsTable.setCellPadding(2);
+			//resultsTable.setBorderWidth(2);
 			resultsTable.setWidget(row, col, main);
+			//resultsTable.getCellFormatter().setHorizontalAlignment(row, col, HasHorizontalAlignment.ALIGN_CENTER);
 		}
 
 		public void hr() {
-			for (int i=0; i<3; i++) {
+			for (int i=0; i<6; i++) {
 				addCell("<hr/>", i);
 			}
 			row++;
 		}
 
 		public void clearResults() {
-			resultsTable.clear();
+			resultsTable.removeAllRows();
 			row=0;
+		}
+		
+		public void setColSpan(int col, int colSpan) {
+			resultsTable.getFlexCellFormatter().setColSpan(row, col, colSpan);
 		}
 
 		public void setDetail(String detail) {
 			addCell(detail, 0);
+		}
+		
+		public void setDTS(String dts) {
+			addCell(dts, 2);
+		}
+		
+		public void setFound(String found) {
+			addCell(found, 3);
 		}
 
 		public void setReference(String ref) {
@@ -1076,6 +1092,18 @@ public class MessageValidatorTab extends TabbedWindow {
 		public void setStatus(String status) {
 			addCell(status, 1);
 		}
+		
+		public void setName(String name) {
+			addCell(name, 0);
+		}
+
+		public void setExpected(String expected) {
+			addCell(expected, 4);
+		}
+
+		public void setRFC(String rfc) {
+			addCell(rfc, 5);
+		}
 
 		public String red(String msg) {
 			return "<font color=\"#FF0000\">" + msg  + "</font>";
@@ -1083,6 +1111,14 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		public String blue(String msg) {
 			return "<font color=\"#0000FF\">" + msg  + "</font>";
+		}
+		
+		public String green(String msg) {
+			return "<font color=\"#66CD00\">" + msg  + "</font>";
+		}
+
+		public String purple(String msg) {
+			return "<font color=\"#551A8B\">" + msg  + "</font>";
 		}
 
 		public String bold(String msg) {
@@ -1101,6 +1137,30 @@ public class MessageValidatorTab extends TabbedWindow {
 
 		public String h3(String msg) {
 			return "<h3>" + msg + "</h3>";
+		}
+
+		@Override
+		public String rfc_link(String msg) {
+			String res = "";
+			if(msg.contains(";")) {
+				String[] msgSplit = msg.split(";");
+				for(int i=0 ; i < msgSplit.length ; i=i+2) {
+					if(i+1 >= msgSplit.length) {
+						break;
+					}
+					res += html_link(msgSplit[i], msgSplit[i+1]);
+				}
+				if(res.equals("")) {
+					res = msg;
+				}
+			} else {
+				res = msg;
+			}
+			return res;
+		}
+		
+		public String html_link(String msg, String url) {
+			return "<a href=\"" + url + "\" target=\"_blank\">"+ msg + "</a><br>";
 		}
 
 		public void incRow() {

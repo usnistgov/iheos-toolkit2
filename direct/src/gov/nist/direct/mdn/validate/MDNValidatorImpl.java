@@ -18,14 +18,15 @@ public class MDNValidatorImpl implements MDNValidator{
 	 * @param dts450
 	 */
 	public void validateMDNSignatureAndEncryption(ErrorRecorder er, boolean signed, boolean encrypted) {
+		String rfc = "-";
 		if(signed && encrypted) {
-			er.detail("Success:  DTS 450 - MDN is signed and encrypted");
+			er.success("450", "Signature", "Signed and Encrypted" , "Must be signed and encrypted", rfc);
 		} else if(signed && !encrypted) {
-			er.err("450", "MDN is not encrypted", "", "", "DTS 450");
+			er.error("450", "Signature", "Not Encrypted" , "Must be signed and encrypted", rfc);
 		} else if(!signed && encrypted) {
-			er.err("450", "MDN is not signed", "", "", "DTS 450");
+			er.error("450", "Signature", "Not Signed" , "Must be signed and encrypted", rfc);
 		} else {
-			er.err("450", "MDN is not encrypted and not signed", "", "", "DTS 450");
+			er.error("450", "Signature", "Not Signed and Not Encrypted" , "Must be signed and encrypted", rfc);
 		}
 	}
 
@@ -48,10 +49,11 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 452, Disposition-Notification-To, Required
 	 */
 	public void validateMDNRequestHeader(ErrorRecorder er, String dispositionNotificationTo) {
+		String rfc = "RFC 3798: Section 2.1;http://tools.ietf.org/html/rfc3798#section-2.1";
 		if(dispositionNotificationTo.equals("")) {
-			er.detail("Success:  DTS 452 - Disposition-Notification-To is valid");
+			er.success("452", "Disposition-Notification-To", "Disposition-Notification-To is not present", "Must NOT be present", rfc);
 		} else {
-			er.err("452", "Disposition-Notification-To is invalid must not be present", "", "", "DTS 452");
+			er.error("452", "Disposition-Notification-To", "Disposition-Notification-To is present", "Must NOT be present", rfc);
 		}
 	}
 		
@@ -67,19 +69,20 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 454, Original-Recipient-Header, warning
 	 */
 	public void validateOriginalRecipientHeader(ErrorRecorder er, String originalRecipient) {
+		String rfc = "RFC 3798: Section 2.3;http://tools.ietf.org/html/rfc3798#section-2.3";
 		if(originalRecipient.equals("")) {
-			er.warning("454", "Original-Recipient Field is not present", "", "DTS 454");
+			er.warning("454", "Original-Recipient", "Not present", "Should be present", rfc);
 		} else {
 			if(!originalRecipient.contains("rfc822;")) {
-				er.warning("454", "Original-Recipient header should normaly contain \"rfc822\"", "", "DTS 454");
+				er.warning("454", "Original-Recipient", originalRecipient, "Should normaly contain \"rfc822\"", rfc);
 			}
 			String[] splitHeader = null;
 			splitHeader = originalRecipient.split(";");
 			String email = splitHeader[1];
 			if(ValidationUtils.validateEmail(email)) {
-				er.detail("Success:  DTS 454 - Original-Recipient header is valid");
+				er.success("454", "Original-Recipient", originalRecipient, "Should be email address", rfc);
 			} else {
-				er.err("454", "Original-Recipient header is not valid", "", "", "DTS 454");
+				er.error("454", "Original-Recipient", originalRecipient, "Should normaly contain \"rfc822\"", rfc);
 			}
 		}
 	}
@@ -104,6 +107,7 @@ public class MDNValidatorImpl implements MDNValidator{
 			String finalRecipient, String originalMessageID, String disposition, 
 			String failure, String error, String warning, String extension) {
 		
+		String rfc = "RFC 3798: Section 3.1;http://tools.ietf.org/html/rfc3798#section-3.1";
 		ErrorRecorder separate = new GwtErrorRecorder();
 		validateReportingUAField(separate, reportingUA);
 		validateMDNGatewayField(separate, mdnGateway);
@@ -117,9 +121,9 @@ public class MDNValidatorImpl implements MDNValidator{
 		validateExtensionField(separate, extension);
 		
 		if(separate.hasErrors()) {
-			er.err("456", "Disposition-Notification-Content is not valid", "", "", "DTS 456");
+			er.error("456", "Disposition-Notification-Content", "Disposition-Notification-Content is not valid", "", rfc);
 		} else {
-			er.detail("Success:  DTS 456 - Disposition-Notification-Content field is valid");
+			er.success("456", "Disposition-Notification-Content", "Disposition-Notification-Content is not valid", "", rfc);
 		}
 	}
 	
@@ -127,8 +131,9 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 457, Reporting-UA-Field, warning
 	 */
 	public void validateReportingUAField(ErrorRecorder er, String reportingUA) {
+		String rfc = "RFC 3798: Section 3.2.1;http://tools.ietf.org/html/rfc3798#section-3.2.1";
 		if(reportingUA.equals("")) {
-			er.warning("457", "Reporting-UA Field is not present", "", "DTS 457");
+			er.warning("457", "Reporting-UA Field", "Not present", "Should be present", rfc);
 		} else {
 			final String uaName = "[0-9,a-z,A-Z,_,.,\\-,\\s]*";
 			final String uaProduct = "[0-9,a-z,A-Z,_,.,\\-,\\s]*";
@@ -136,9 +141,9 @@ public class MDNValidatorImpl implements MDNValidator{
 			Pattern pattern = Pattern.compile(uaReportingPattern, Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(reportingUA);
 			if(matcher.matches()) {
-				er.detail("Success:  DTS 457 - Reporting-UA field is valid");
+				er.success("457", "Reporting-UA Field", reportingUA, "ua-name [ \";\" ua-product ]", rfc);
 			} else {
-				er.err("457", "Reporting-UA field is not valid", "", "", "DTS 457");
+				er.error("457", "Reporting-UA Field", reportingUA, "ua-name [ \";\" ua-product ]", rfc);
 			}
 		}
 	}
@@ -147,13 +152,14 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 458, mdn-gateway-field, Required
 	 */
 	public void validateMDNGatewayField(ErrorRecorder er, String mdnGateway) {
+		String rfc = "RFC 3798: Section 3.2.2;http://tools.ietf.org/html/rfc3798#section-3.2.2";
 		if(mdnGateway.equals("")) {
-			er.warning("458", "MDN-Gateway Field is not present", "", "DTS 458");
+			er.warning("458", "MDN-Gateway", "Not present", "Should be present", rfc);
 		} else {
 			if(MDNUtils.validateAtomTextField(mdnGateway)) {
-				er.detail("Success:  DTS 458 - MDN-Gateway field is valid");
+				er.success("458", "MDN-Gateway", mdnGateway, "mta-name-type \";\" mta-name", rfc);
 			} else {
-				er.err("458", "MDN-Gateway is not valid", "", "", "DTS 458");
+				er.error("458", "MDN-Gateway", mdnGateway, "mta-name-type \";\" mta-name", rfc);
 			}
 		}
 	}
@@ -162,13 +168,14 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 459, original-recipient-field, Required
 	 */
 	public void validateOriginalRecipientField(ErrorRecorder er, String originalRecipient) {
+		String rfc = "RFC 3798: Section 3.2.3;http://tools.ietf.org/html/rfc3798#section-3.2.3";
 		if(originalRecipient.equals("")) {
-			er.warning("459", "Original-Recipient Field is not present", "", "DTS 459");
+			er.warning("459", "Original-Recipient", "Not present", "Should be present", rfc);
 		} else {
 			if(MDNUtils.validateAtomTextField(originalRecipient)) {
-				er.detail("Success:  DTS 459 - Original-Recipient field is valid");
+				er.success("459", "Original-Recipient", originalRecipient, "address-type \";\" generic-address", rfc);
 			} else {
-				er.err("459", "Original-Recipient is not valid", "", "", "DTS 459");
+				er.error("459", "Original-Recipient", originalRecipient, "address-type \";\" generic-address", rfc);
 			}
 		}
 	}
@@ -177,8 +184,9 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 460, final-recipient-field, Required
 	 */
 	public void validateFinalRecipientField(ErrorRecorder er, String finalRecipient) {
+		String rfc = "RFC 3798: Section 3.2.4;http://tools.ietf.org/html/rfc3798#section-3.2.4";
 		if(finalRecipient.equals("")) {
-			er.warning("460", "Final-Recipient Field is not present", "", "DTS 460");
+			er.warning("460", "Final-Recipient", "Not present", "Should be present", rfc);
 		} else {
 			String[] buf;
 			boolean result = true;
@@ -189,18 +197,18 @@ public class MDNValidatorImpl implements MDNValidator{
 				Matcher matcher = pattern.matcher(buf[0]);
 				if(!matcher.matches()) {
 					result = false;
-					er.err("460", "Final-Recipient address type is not valid", "", "", "DTS 460");
+					er.error("460", "Final-Recipient", finalRecipient, "address-type \";\" generic-address", rfc);
 				}
 				if(!ValidationUtils.validateEmail(buf[1])) {
 					result = false;
-					er.err("460", "Final-Recipient generic address is not valid", "", "", "DTS 460");
+					er.error("460", "Final-Recipient", finalRecipient, "address-type \";\" generic-address", rfc);
 				}
 			} else {
 				result = false;
 			}
 			
 			if(result) {
-				er.detail("Success:  DTS 460 - Final-Recipient field is valid");
+				er.success("460", "Final-Recipient", finalRecipient, "address-type \";\" generic-address", rfc);
 			}
 		}
 	}
@@ -209,13 +217,14 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 461, original-message-id-field, Required
 	 */
 	public void validateOriginalMessageIdField(ErrorRecorder er, String originalMessageId) {
+		String rfc = "RFC 3798: Section 3.2.5;http://tools.ietf.org/html/rfc3798#section-3.2.5";
 		if(originalMessageId.equals("")) {
-			er.warning("461", "Origianl-Message-ID Field is not present", "", "DTS 461");
+			er.warning("461", "Origianl-Message-ID", "Not present", "Should be present", rfc);
 		} else {
 			if(ValidationUtils.validateAddrSpec(originalMessageId)) {
-				er.detail("Success:  DTS 461 - Original-Message-Id field is valid");
+				er.success("461", "Origianl-Message-ID", originalMessageId, "\"<\" id-left \"@\" id-right \">\"", rfc);
 			} else {
-				er.err("461", "Original-Message-Id is not valid", "", "", "DTS 461");
+				er.error("461", "Origianl-Message-ID", originalMessageId, "\"<\" id-left \"@\" id-right \">\"", rfc);
 			}
 		}
 	}
@@ -224,13 +233,14 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 462, disposition-field, Required
 	 */
 	public void validateDispositionField(ErrorRecorder er, String disposition) {
+		String rfc = "RFC 3798: Section 3.2.6;http://tools.ietf.org/html/rfc3798#section-3.2.6";
 		if(disposition.equals("")) {
-			er.warning("462", "Disposition Field is not present", "", "DTS 462");
+			er.warning("462", "Disposition Field", "Not present", "Should be present", rfc);
 		} else {
 			if(MDNUtils.validateDisposition(disposition)) {
-				er.detail("Success:  DTS 462 - Disposition field is valid");
+				er.success("462", "Disposition Field", "Not present", "disposition-mode \";\" disposition-type", rfc);
 			} else {
-				er.err("462", "Disposition field is not valid", "", "", "DTS 462");
+				er.error("462", "Disposition Field", "Not present", "disposition-mode \";\" disposition-type", rfc);
 			}
 		}
 	}
@@ -239,13 +249,14 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 463, failure-field, Required
 	 */
 	public void validateFailureField(ErrorRecorder er, String failure) {
+		String rfc = "RFC 3798: Section 3.2.7;http://tools.ietf.org/html/rfc3798#section-3.2.7";
 		if(failure.equals("")) {
-			er.warning("463", "Failure Field is not present", "", "DTS 463");
+			er.info("463", "Failure Field", "Not present", "", rfc);
 		} else {
 			if(MDNUtils.validateTextField(failure)) {
-				er.detail("Success:  DTS 463 - Failure field is valid");
+				er.success("463", "Failure Field", failure, "*text", rfc);
 			} else {
-				er.err("463", "Failure field is not valid", "", "", "DTS 463");
+				er.error("463", "Failure Field", failure, "*text", rfc);
 			}
 		}
 	}
@@ -254,13 +265,14 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 464, error-field, Required
 	 */
 	public void validateErrorField(ErrorRecorder er, String error) {
+		String rfc = "RFC 3798: Section 3.2.7;http://tools.ietf.org/html/rfc3798#section-3.2.7";
 		if(error.equals("")) {
-			er.warning("464", "Failure Field is not present", "", "DTS 464");
+			er.info("464", "Error Field", "Not present", "", rfc);
 		} else {
 			if(MDNUtils.validateTextField(error)) {
-				er.detail("Success:  DTS 464 - Error field is valid");
+				er.success("464", "Error Field", error, "*text", rfc);
 			} else {
-				er.err("464", "Error field is not valid", "", "", "DTS 464");
+				er.error("464", "Error Field", error, "*text", rfc);
 			}
 		}
 	}
@@ -269,13 +281,14 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 465, warning-field, Required
 	 */
 	public void validateWarningField(ErrorRecorder er, String warning) {
+		String rfc = "RFC 3798: Section 3.2.7;http://tools.ietf.org/html/rfc3798#section-3.2.7";
 		if(warning.equals("")) {
-			er.warning("465", "Warning Field is not present", "", "DTS 465");
+			er.info("465", "Warning Field", "Not present", "", rfc);
 		} else {
 			if(MDNUtils.validateTextField(warning)) {
-				er.detail("Success:  DTS 465 - Warning field is valid");
+				er.success("465", "Warning Field", warning, "*text", rfc);
 			} else {
-				er.err("465", "Warning field is not valid", "", "", "DTS 465");
+				er.error("465", "Warning Field", warning, "*text", rfc);
 			}
 		}
 	}
@@ -284,13 +297,14 @@ public class MDNValidatorImpl implements MDNValidator{
 	 *  DTS 466, extension-field, Required
 	 */
 	public void validateExtensionField(ErrorRecorder er, String extension) {
+		String rfc = "RFC 3798: Section 3.2.7;http://tools.ietf.org/html/rfc3798#section-3.2.7";
 		if(extension.equals("")) {
-			er.warning("466", "Extension Field is not present", "", "DTS 466");
+			er.info("466", "Extension Field", "Not present", "", rfc);
 		} else {
 			if(MDNUtils.validateTextField(extension)) {
-				er.detail("Success:  DTS 466 - Extension field is valid");
+				er.success("466", "Extension Field", extension, "*text", rfc);
 			} else {
-				er.err("466", "Extension field is not valid", "", "", "DTS 466");
+				er.error("466", "Extension Field", extension, "*text", rfc);
 			}
 		}
 	}
