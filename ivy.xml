@@ -1,6 +1,11 @@
 <ivy-module version="2.0">
     <info organisation="gov.nist.test-toolkit" module="toolkit"/>
     <dependencies>
-        <dependency org="gov.nist.toolkit" name="wsseToolkit" rev="0.3"/>
+		<dependency org="javax.servlet" name="servlet-api" rev="2.5"/>
+		<dependency org="xalan" name="xalan" rev="2.7.1"/>
+        <dependency org="xerces" name="xercesImpl" rev="2.10.0"/>     
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.7.5"/>
+        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.7.5"/>
+        <dependency org="gov.nist.toolkit" name="wsseToolkit" rev="latest.integration"/>
     </dependencies>
 </ivy-module>

@@ -41,6 +41,8 @@ xdstools2/listener.jar
 *.swo
 
 
+deploy.sh
+
 syntax: regexp
 
 ^\.externalToolBuilders$

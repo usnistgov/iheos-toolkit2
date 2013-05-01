@@ -5,7 +5,7 @@ import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.saml.builder.WSSESecurityHeaderUtil;
 import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseToolkitAdapter;
+import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.wsseToolkit.util.MyXmlUtils;
@@ -46,7 +46,6 @@ import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.protocol.Protocol;
-import org.w3c.dom.Element;
 
 //vbeera: The below imports should be used in case of the potential 2nd fix for MustUnderstand Check Exception.
 /*
@@ -218,10 +217,12 @@ public class Soap implements SoapInterface {
 			// securityHeader =
 			// OMAbstractFactory.getOMFactory().createOMElement("Security", ns);
 
-			
+			/*
 			 securityHeader = WSSESecurityHeaderUtil.getWSSecOMElement(securityParams);
-			 getSoapHeader().addChild(securityHeader);
+		
 			 
+			 getSoapHeader().addChild(securityHeader);
+			 */
 			 
 			 /*
 			  * FIX: When deployed under tomcat, the behavior of the axiom library differs.
@@ -231,11 +232,18 @@ public class Soap implements SoapInterface {
 			  * Thus we need to redeclare the prefix we use in the assertion in the soap header itself
 			  */
 			 
-			 getSoapHeader().declareNamespace("http://www.w3.org/2001/XMLSchema", "xs");
+		//	 getSoapHeader().declareNamespace("http://www.w3.org/2001/XMLSchema", "xs");
 			 
-			/*
+
 			try {
-				Element header = WsseToolkitAdapter.buildHeader();
+				String keystore = securityParams.getKeystore().getAbsolutePath();
+				String kpass = securityParams.getKeystorePassword();
+				String alias = "1";
+				String sPass = "changeit";
+				
+				System.out.println(keystore);
+				
+				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter.buildHeader(keystore, kpass, alias, sPass);
 				
 				System.out.println("********the one in soap*************");
 				MyXmlUtils.DomToStream(header, System.out);
@@ -243,11 +251,12 @@ public class Soap implements SoapInterface {
 				
 				securityHeader = org.apache.axis2.util.XMLUtils.toOM(header);
 			} catch (Exception e) {
+				e.printStackTrace();
 				System.out.println(securityHeader.toString());
 			}
 
 			getSoapHeader().addChild(securityHeader);
-			*/
+		
 		}
 
 		return envelope;
