@@ -70,9 +70,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		}
 		
 		if(ValidationUtils.validateAddrSpec(returnPath)) {
-			er.success("103-105", "Return Path", txtReturnPath, "addr-spec", rfc);
+			er.success("103-105", "Return Path", SafeHtmlUtils.htmlEscape(txtReturnPath), "addr-spec", rfc);
 		} else {
-			er.error("103-105", "Return Path", txtReturnPath, "addr-spec", rfc);
+			er.error("103-105", "Return Path", SafeHtmlUtils.htmlEscape(txtReturnPath), "addr-spec", rfc);
 		}
 		
 	}
@@ -294,9 +294,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			er.error("115", "From", "Not present", "Unwrapped Message: From should be present", rfc);
 		} else {
 			if (ValidationUtils.validateEmail(from)){
-				er.success("115", "From", from, "mailbox-list", rfc);
+				er.success("115", "From", SafeHtmlUtils.htmlEscape(from), "mailbox-list", rfc);
 			} else {
-				er.error("115", "From", from, "mailbox-list", rfc);
+				er.error("115", "From", SafeHtmlUtils.htmlEscape(from), "mailbox-list", rfc);
 			}
 		}
 		
@@ -330,9 +330,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			er.warning("117", "Reply-To", "Not present", "Unwrapped Message: Reply-To should be present", rfc);
 		} else {
 			if(ValidationUtils.validateEmail(replyTo)) {
-				er.success("117", "Reply-To", replyTo, "address-list", rfc);
+				er.success("117", "Reply-To", SafeHtmlUtils.htmlEscape(replyTo), "address-list", rfc);
 			} else {
-				er.error("117", "Reply-To", replyTo, "address-list", rfc);
+				er.error("117", "Reply-To", SafeHtmlUtils.htmlEscape(replyTo), "address-list", rfc);
 			}
 		}
 		
@@ -347,9 +347,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			er.error("118", "To", "Not present", "Unwrapped Message: To must be present", rfc);
 		} else {			
 			if(ValidationUtils.validateEmail(to)) {
-				er.success("118", "To", to, "mailbox-list", rfc);
+				er.success("118", "To", SafeHtmlUtils.htmlEscape(to), "mailbox-list", rfc);
 			} else {
-				er.error("118", "To", to, "mailbox-list", rfc);
+				er.error("118", "To", SafeHtmlUtils.htmlEscape(to), "mailbox-list", rfc);
 			}
 		}
 		
@@ -362,9 +362,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			er.info("119", "Cc", "Not present", "address-list", rfc);
 		} else {
 			if(ValidationUtils.validateEmail(cc)) {
-				er.success("119", "Cc", cc, "address-list", rfc);
+				er.success("119", "Cc", SafeHtmlUtils.htmlEscape(cc), "address-list", rfc);
 			} else {
-				er.error("119", "Cc", cc, "address-list", rfc);
+				er.error("119", "Cc", SafeHtmlUtils.htmlEscape(cc), "address-list", rfc);
 			}
 		}
 
@@ -377,9 +377,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			er.success("120", "Bcc", "Not present", "Should not be present", rfc);
 		} else {
 			if(ValidationUtils.validateEmail(bcc)) {
-				er.success("120", "Bcc", bcc, "address-list", rfc);
+				er.success("120", "Bcc", SafeHtmlUtils.htmlEscape(bcc), "address-list", rfc);
 			} else {
-				er.error("120", "Bcc", bcc, "address-list", rfc);
+				er.error("120", "Bcc", SafeHtmlUtils.htmlEscape(bcc), "address-list", rfc);
 			}
 		}
 		
@@ -406,11 +406,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		String rfc = "RFC 5322: Section 3.6.4;http://tools.ietf.org/html/rfc5322#section-3.6.4";
 		// Check 1: Must be formatted as one or more <randomstringwithoutspaces@randomstringwithoutspaces>
 		if(ValidationUtils.validateAddrSpec(inReplyTo)) {
-			er.success("122", "In-reply-to", inReplyTo, "<string with no spaces\"@\"string with no spaces>", rfc);
+			er.success("122", "In-reply-to", SafeHtmlUtils.htmlEscape(inReplyTo), "<string with no spaces\"@\"string with no spaces>", rfc);
 		} else if(inReplyTo.equals("")) {
 			er.info("122", "In-reply-to", "Not present", "<string with no spaces\"@\"string with no spaces>", rfc);
 		} else {
-			er.error("122", "In-reply-to", inReplyTo, "<string with no spaces\"@\"string with no spaces>", rfc);
+			er.error("122", "In-reply-to", SafeHtmlUtils.htmlEscape(inReplyTo), "<string with no spaces\"@\"string with no spaces>", rfc);
 		}
 		
 	}

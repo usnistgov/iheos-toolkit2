@@ -123,7 +123,7 @@ public class MDNValidatorImpl implements MDNValidator{
 		if(separate.hasErrors()) {
 			er.error("456", "Disposition-Notification-Content", "Disposition-Notification-Content is not valid", "", rfc);
 		} else {
-			er.success("456", "Disposition-Notification-Content", "Disposition-Notification-Content is not valid", "", rfc);
+			er.success("456", "Disposition-Notification-Content", "Disposition-Notification-Content is valid", "", rfc);
 		}
 	}
 	
@@ -238,9 +238,9 @@ public class MDNValidatorImpl implements MDNValidator{
 			er.warning("462", "Disposition Field", "Not present", "Should be present", rfc);
 		} else {
 			if(MDNUtils.validateDisposition(disposition)) {
-				er.success("462", "Disposition Field", "Not present", "disposition-mode \";\" disposition-type", rfc);
+				er.success("462", "Disposition Field", disposition, "disposition-mode \";\" disposition-type", rfc);
 			} else {
-				er.error("462", "Disposition Field", "Not present", "disposition-mode \";\" disposition-type", rfc);
+				er.error("462", "Disposition Field", disposition, "disposition-mode \";\" disposition-type", rfc);
 			}
 		}
 	}
