@@ -105,7 +105,7 @@ public interface Repository extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
      *         UNIMPLEMENTED}
      */
-    gov.nist.toolkit.repository.api.Type getType()
+    Type getType()
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**

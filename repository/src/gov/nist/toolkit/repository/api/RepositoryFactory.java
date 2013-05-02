@@ -1,47 +1,126 @@
 package gov.nist.toolkit.repository.api;
 
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.repository.simple.Configuration;
 import gov.nist.toolkit.repository.simple.SimpleRepository;
+import gov.nist.toolkit.repository.simple.SimpleRepositoryIterator;
+import gov.nist.toolkit.repository.simple.SimpleTypeIterator;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.Properties;
 
-public class RepositoryFactory {
+public class RepositoryFactory implements RepositoryManager {
 
-	enum RepositoryType { SIMPLE, SITE };
-	File ec;
-	
-	public RepositoryFactory() {
-		ec = Installation.installation().externalCache();
-	}
-	
 	/**
-	 * Get a handle for the repository of specified type.
-	 * @param type - the repository type
-	 * @return repository handle
-	 * @throws RepositoryException 
+	 * 
 	 */
-	public Repository getRepositoryHandle(RepositoryType type) throws RepositoryException {
-		return new SimpleRepository(getRoot(type), SimpleRepository.CreateType.OPEN);
-	}
-	
-	public Repository createRepository(RepositoryType repType, String displayName, String description, Type type) 
-			throws RepositoryException {
-		File root = new File(ec.toString() + File.separator + repType.toString());
-		SimpleRepository rep = new SimpleRepository(root, SimpleRepository.CreateType.CREATE);
-		rep.setPostponeFlush(true);
+	private static final long serialVersionUID = -4491794003213633389L;
+
+	@Override
+	public Repository createRepository(String displayName, String description,
+			Type type) throws RepositoryException {
+		SimpleRepository rep = new SimpleRepository();
+		rep.setAutoFlush(false);
+		rep.setType(type);
 		rep.setDescription(description);
 		rep.setDisplayName(displayName);
 		rep.flush();
 		return rep;
 	}
 
-	File getRoot(RepositoryType type) throws RepositoryException {
-		switch (type) {
-		case SITE:
-			return new File(ec + File.separator + "sites");
-		default:
-			throw new RepositoryException(RepositoryException.CONFIGURATION_ERROR);
-		}
+	File getRepositoryRoot(Id id) throws RepositoryException {
+		return new File(Configuration.getRootOfAllRepositories().toString() + File.separator + id);
 	}
-	
+
+	@Override
+	public OsidContext getOsidContext() throws OsidException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void assignOsidContext(OsidContext context) throws OsidException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void assignConfiguration(Properties configuration)
+			throws OsidException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void osidVersion_2_0() throws OsidException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void deleteRepository(Id repositoryId) throws RepositoryException {
+		if (Configuration.repositoryExists(repositoryId))
+			return;
+		SimpleRepository repos = new SimpleRepository(repositoryId);
+		repos.delete();
+	}
+
+	@Override
+	public RepositoryIterator getRepositories() throws RepositoryException {
+		return new SimpleRepositoryIterator();
+	}
+
+	@Override
+	public RepositoryIterator getRepositoriesByType(Type repositoryType)
+			throws RepositoryException {
+		return new SimpleRepositoryIterator(repositoryType);
+	}
+
+	@Override
+	public Repository getRepository(Id id) throws RepositoryException {
+		SimpleRepository repos = new SimpleRepository(id);
+		repos.load();
+		return repos;
+	}
+
+	@Override
+	public Asset getAsset(Id assetId) throws RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Asset getAssetByDate(Id assetId, long date)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LongValueIterator getAssetDates(Id assetId)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AssetIterator getAssetsBySearch(Repository[] repositories,
+			Serializable searchCriteria, Type searchType,
+			gov.nist.toolkit.repository.api.Properties searchProperties)
+					throws RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Id copyAsset(Repository repository, Id assetId)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TypeIterator getRepositoryTypes() throws RepositoryException {
+		return new SimpleTypeIterator();
+	}
 }

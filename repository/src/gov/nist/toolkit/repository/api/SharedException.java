@@ -44,6 +44,10 @@ public class SharedException extends gov.nist.toolkit.repository.api.OsidExcepti
         super(message);
     }
 
+    public SharedException(String message, Exception e) {
+        super(message, e);
+    }
+
     /**
      * <p>
      * MIT O.K.I&#46; SID Definition License.

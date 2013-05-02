@@ -28,6 +28,9 @@ public class OsidException extends java.lang.Throwable {
     /** Null argument */
     public static final String NULL_ARGUMENT = "Null argument";
 
+    /** IO Error */
+    public static final String IO_ERROR = "IO Error";
+
     /** Unimplemented method */
     public static final String UNIMPLEMENTED = "Unimplemented method ";
 
@@ -66,6 +69,10 @@ public class OsidException extends java.lang.Throwable {
 
     public OsidException(String message) {
         super(message);
+    }
+
+    public OsidException(String message, Exception e) {
+        super(message, e);
     }
 
     /**

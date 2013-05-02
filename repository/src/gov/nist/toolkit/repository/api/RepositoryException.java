@@ -37,8 +37,14 @@ public class RepositoryException extends gov.nist.toolkit.repository.api.SharedE
     /** Effective date must precede expiration date */
     public static final String EFFECTIVE_PRECEDE_EXPIRATION = "Effective date must precede expiration date ";
 
+    /** Repository already exists */
+    public static final String REPOSITORY_ALREADY_EXISTS = "Repository cannot be created, it already exists";
     public RepositoryException(String message) {
         super(message);
+    }
+    
+    public RepositoryException(String message, Exception e) {
+    	super(message, e);
     }
 
     /**

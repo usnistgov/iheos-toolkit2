@@ -24,4 +24,8 @@ public class SimpleId implements Id {
 		return id != null && id.getIdString().equals(guid);
 	}
 
+	public String toString() {
+		return guid;
+	}
+	
 }
