@@ -38,8 +38,8 @@ public interface AssetIterator extends java.io.Serializable {
      *         org.osid.repository.RepositoryException#UNIMPLEMENTED
      *         UNIMPLEMENTED}
      */
-    boolean hasNextAsset() throws gov.nist.toolkit.repository.shared.RepositoryException;
-
+    boolean hasNextAsset() throws gov.nist.toolkit.repository.api.RepositoryException;
+    
     /**
      * Return the next Asset.
      *
@@ -59,7 +59,7 @@ public interface AssetIterator extends java.io.Serializable {
      *         org.osid.repository.RepositoryException#NO_MORE_ITERATOR_ELEMENTS
      *         NO_MORE_ITERATOR_ELEMENTS}
      */
-    Asset nextAsset() throws gov.nist.toolkit.repository.shared.RepositoryException;
+    Asset nextAsset() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * <p>

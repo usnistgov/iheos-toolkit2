@@ -36,7 +36,7 @@ public interface PropertiesIterator extends java.io.Serializable {
      *         CONFIGURATION_ERROR}, {@link
      *         gov.nist.toolkit.repository.api.SharedException#UNIMPLEMENTED UNIMPLEMENTED}
      */
-    boolean hasNextProperties() throws gov.nist.toolkit.repository.api.SharedException;
+    boolean hasNextProperties() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Return the next Properties.
@@ -56,7 +56,7 @@ public interface PropertiesIterator extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.SharedException#NO_MORE_ITERATOR_ELEMENTS
      *         NO_MORE_ITERATOR_ELEMENTS}
      */
-    Properties nextProperties() throws gov.nist.toolkit.repository.api.SharedException;
+    Properties nextProperties() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * <p>

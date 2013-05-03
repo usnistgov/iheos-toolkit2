@@ -54,7 +54,7 @@ public interface Id extends java.io.Serializable {
      *         NULL_ARGUMENT}
      */
     boolean isEqual(gov.nist.toolkit.repository.api.Id id)
-        throws gov.nist.toolkit.repository.api.SharedException;
+        throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * <p>

@@ -21,9 +21,77 @@ package gov.nist.toolkit.repository.api;
  * O.K.I&#46; OSID Definition License}.
  * </p>
  */
-public class RepositoryException extends gov.nist.toolkit.repository.api.SharedException {
+public class RepositoryException extends Exception {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3287075237460316637L;
+
+	/** Operation failed */
+    public static final String OPERATION_FAILED = "Operation failed ";
+
+    /** Null argument */
+    public static final String NULL_ARGUMENT = "Null argument";
+
+    /** IO Error */
+    public static final String IO_ERROR = "IO Error";
+
+    /** Unimplemented method */
+    public static final String UNIMPLEMENTED = "Unimplemented method ";
+
+    /** OSID Version mismatch */
+    public static final String VERSION_ERROR = "OSID Version mismatch error ";
+
+    /** Transaction already marked */
+    public static final String ALREADY_MARKED = "Transaction already marked ";
+
+    /** No transaction marked */
+    public static final String NOTHING_MARKED = "No transaction marked ";
+
+    /** Interface not found */
+    public static final String INTERFACE_NOT_FOUND = "Interface not found ";
+
+    /** Manager not OSID implementation */
+    public static final String MANAGER_NOT_OSID_IMPLEMENTATION = "Manager not OSID implementation ";
+
+    /** Manager instantiation error */
+    public static final String MANAGER_INSTANTIATION_ERROR = "Manager instantiation error ";
+
+    /** Error assigning context */
+    public static final String ERROR_ASSIGNING_CONTEXT = "Error assigning context ";
+
+    /** Error assigning configuration */
+    public static final String ERROR_ASSIGNING_CONFIGURATION = "Error assigning configuration ";
+
+    /** Permission denied */
+    public static final String PERMISSION_DENIED = "Permission denied";
+
+    /** Configuration error */
+    public static final String CONFIGURATION_ERROR = "Configuration error";
+
+    /** Unknown Id */
+    public static final String UNKNOWN_ID = "Unknown Id ";
+
+    /** Unknown or unsupported Type */
+    public static final String UNKNOWN_TYPE = "Unknown Type ";
+
+    /** Iterator has no more elements */
+    public static final String NO_MORE_ITERATOR_ELEMENTS = "Iterator has no more elements ";
+
+    /** Object already added */
+    public static final String ALREADY_ADDED = "Object already added ";
+
+    /** Circular operation */
+    public static final String CIRCULAR_OPERATION = "Circular operation not allowed ";
+
+    /** Unknown key */
+    public static final String UNKNOWN_KEY = "Unknown key ";
+
     /** Unknown Repository */
     public static final String UNKNOWN_REPOSITORY = "Unknown Repository ";
+
+    /** Manager not found */
+    public static final String MANAGER_NOT_FOUND = "Manager not found ";
 
     /** No object has this date */
     public static final String NO_OBJECT_WITH_THIS_DATE = "No object has this date ";

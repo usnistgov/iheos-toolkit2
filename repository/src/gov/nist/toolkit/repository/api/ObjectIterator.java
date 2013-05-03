@@ -45,7 +45,7 @@ public interface ObjectIterator extends java.io.Serializable {
      *         CONFIGURATION_ERROR}, {@link
      *         gov.nist.toolkit.repository.api.SharedException#UNIMPLEMENTED UNIMPLEMENTED}
      */
-    boolean hasNextObject() throws gov.nist.toolkit.repository.api.SharedException;
+    boolean hasNextObject() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Return the next Object.
@@ -65,7 +65,7 @@ public interface ObjectIterator extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.SharedException#NO_MORE_ITERATOR_ELEMENTS
      *         NO_MORE_ITERATOR_ELEMENTS}
      */
-    java.io.Serializable nextObject() throws gov.nist.toolkit.repository.api.SharedException;
+    java.io.Serializable nextObject() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * <p>

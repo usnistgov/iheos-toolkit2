@@ -11,6 +11,7 @@ import java.util.Properties;
 
 public class Configuration {
 	public static final String PROPERTIES_FILE_EXT = "props.txt";
+	public static final String CONTENT_FILE_EXT = "bytes";
 	public static final String REPOSITORY_TYPES_DIR = "types";
 	// Do not reference this static variable directly. Use
 	// private accessor getRootOfAllRepositories
@@ -107,4 +108,13 @@ public class Configuration {
 				Configuration.REPOSITORY_TYPES_DIR);
 	}
 
+	public static Id getAssetIdFromFilename(String filename) {
+		File fn = new File(filename);
+		String fullName = fn.getName();
+		String[] parts = fullName.split("\\.");
+		if (parts != null && parts.length > 0)
+			return new SimpleId(parts[0]);
+		else
+			return new SimpleId(fullName);
+	}
 }

@@ -17,22 +17,15 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Properties;
 
-public class SimpleRepository implements Repository {
+public class SimpleRepository implements Repository, Flushable {
 	private static final long serialVersionUID = 7941866267155906518L;
 	static final String REPOSITORY_PROPERTY_FILE = "repository.props.txt";
 
-	File root = null;
+	File root = null;  // directory holding this repository
 	boolean initialized = false;
 	boolean loaded = false;
 	Properties properties = new Properties();
-
-	//  Delegated to properties file	
-	//	String displayName;
-	//	String description;
-	//	Id id;
-
-	//	Type type;  // current unused
-	boolean autoFlush;
+	boolean autoFlush = true;
 
 	boolean isLoaded() {
 		return loaded;
@@ -135,9 +128,28 @@ public class SimpleRepository implements Repository {
 	}
 
 	@Override
-	public Asset createAsset(String displayName, String description,
+	public SimpleAsset createAsset(String displayName, String description,
 			Type assetType) throws RepositoryException {
-		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
+		SimpleAsset a = new SimpleAsset();
+		a.setAutoFlush(false);
+		a.setRepository(getId());
+		a.setType(assetType);
+		a.setId(new IdFactory().getNewId());
+		a.updateDisplayName(displayName);
+		a.updateDescription(description);
+		a.flush();
+		return a;
+	}
+
+	@Override
+	public Asset getAsset(Id assetId) throws RepositoryException {
+		File reposDir = Configuration.getRepositoryLocation(getId());
+		if (!reposDir.exists() || !reposDir.isDirectory())
+			throw new RepositoryException(RepositoryException.UNKNOWN_REPOSITORY + " : " +
+					"directory for repositoryId [" + getId() + "] does not exist");
+		File assetBaseFile = new File(reposDir.toString() + File.separator + assetId.getIdString());
+		SimpleAsset a = new SimpleAsset().load(assetId, assetBaseFile, getId());
+		return a;
 	}
 
 	@Override
@@ -147,7 +159,7 @@ public class SimpleRepository implements Repository {
 
 	@Override
 	public AssetIterator getAssets() throws RepositoryException {
-		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
+		return new SimpleAssetIterator(getId());
 	}
 
 	@Override
@@ -203,11 +215,6 @@ public class SimpleRepository implements Repository {
 	}
 
 	@Override
-	public Asset getAsset(Id assetId) throws RepositoryException {
-		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
-	}
-
-	@Override
 	public Asset getAssetByDate(Id assetId, long date)
 			throws RepositoryException {
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
@@ -246,6 +253,7 @@ public class SimpleRepository implements Repository {
 	}
 
 	public void flush() throws RepositoryException {
+		assert(root != null);
 		autoFlush = true;
 		try {
 			File propFile = getRepositoryPropFile();

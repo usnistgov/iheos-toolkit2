@@ -62,7 +62,7 @@ public interface OsidManager extends java.io.Serializable {
      *
      * @return gov.nist.toolkit.repository.api.OsidContext
      */
-    gov.nist.toolkit.repository.api.OsidContext getOsidContext() throws gov.nist.toolkit.repository.api.OsidException;
+    gov.nist.toolkit.repository.api.OsidContext getOsidContext() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Assign the context of this OsidManager.
@@ -74,7 +74,7 @@ public interface OsidManager extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.OsidException#NULL_ARGUMENT NULL_ARGUMENT}
      */
     void assignOsidContext(gov.nist.toolkit.repository.api.OsidContext context)
-        throws gov.nist.toolkit.repository.api.OsidException;
+        throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Assign the configuration of this OsidManager.
@@ -92,7 +92,7 @@ public interface OsidManager extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.OsidException#NULL_ARGUMENT NULL_ARGUMENT}
      */
     void assignConfiguration(java.util.Properties configuration)
-        throws gov.nist.toolkit.repository.api.OsidException;
+        throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Verify to OsidLoader that it is loading
@@ -102,7 +102,7 @@ public interface OsidManager extends java.io.Serializable {
      * </p>
      * .
      */
-    void osidVersion_2_0() throws gov.nist.toolkit.repository.api.OsidException;
+    void osidVersion_2_0() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * <p>

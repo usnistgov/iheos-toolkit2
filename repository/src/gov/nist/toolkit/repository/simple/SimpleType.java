@@ -24,6 +24,14 @@ public class SimpleType extends Type {
 					"Type keyword cannot be empty");
 	}
 	
+	public SimpleType(String keyword) throws RepositoryException {
+		super("", "", keyword, "");
+		
+		if (keyword == null || keyword.equals(""))
+			throw new RepositoryException(RepositoryException.NULL_ARGUMENT + " : " +
+					"Type keyword cannot be empty");
+	}
+	
 	public String toString() {
 		return getKeyword();
 	}

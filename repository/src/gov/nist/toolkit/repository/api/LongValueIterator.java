@@ -45,7 +45,7 @@ public interface LongValueIterator extends java.io.Serializable {
      *         CONFIGURATION_ERROR}, {@link
      *         gov.nist.toolkit.repository.api.SharedException#UNIMPLEMENTED UNIMPLEMENTED}
      */
-    boolean hasNextLongValue() throws gov.nist.toolkit.repository.api.SharedException;
+    boolean hasNextLongValue() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Return the next long.
@@ -65,7 +65,7 @@ public interface LongValueIterator extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.SharedException#NO_MORE_ITERATOR_ELEMENTS
      *         NO_MORE_ITERATOR_ELEMENTS}
      */
-    long nextLongValue() throws gov.nist.toolkit.repository.api.SharedException;
+    long nextLongValue() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * <p>

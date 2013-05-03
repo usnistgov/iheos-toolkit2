@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.nist.toolkit.repository.api.RepositoryException;
 import gov.nist.toolkit.repository.api.RepositoryFactory;
-import gov.nist.toolkit.repository.api.SharedException;
 import gov.nist.toolkit.repository.api.Type;
 import gov.nist.toolkit.repository.api.TypeIterator;
 import gov.nist.toolkit.repository.simple.Configuration;
@@ -25,7 +24,7 @@ public class SimpleTypeIteratorTest {
 	}
 	
 	@Test
-	public void simpleTypeIteratorTest() throws SharedException {
+	public void simpleTypeIteratorTest() throws RepositoryException {
 		TypeIterator it = new SimpleTypeIterator();
 		assertTrue("initially the iterator should have hasNextType() return true", it.hasNextType());
 		
@@ -39,7 +38,7 @@ public class SimpleTypeIteratorTest {
 	}
 	
 	@Test
-	public void managerIteratorTest() throws SharedException {
+	public void managerIteratorTest() throws RepositoryException {
 		TypeIterator ti = new RepositoryFactory().getRepositoryTypes();
 		assertTrue("initially the iterator should have hasNextType() return true", ti.hasNextType());
 		

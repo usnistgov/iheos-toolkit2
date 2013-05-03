@@ -1,12 +1,11 @@
 package gov.nist.toolkit.repository.simple.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import gov.nist.toolkit.repository.api.Id;
 import gov.nist.toolkit.repository.api.Repository;
 import gov.nist.toolkit.repository.api.RepositoryException;
 import gov.nist.toolkit.repository.api.RepositoryFactory;
 import gov.nist.toolkit.repository.api.RepositoryIterator;
-import gov.nist.toolkit.repository.api.SharedException;
 import gov.nist.toolkit.repository.api.Type;
 import gov.nist.toolkit.repository.simple.Configuration;
 import gov.nist.toolkit.repository.simple.SimpleType;
@@ -41,7 +40,7 @@ public class SimpleRepositoryTest {
 	}
 		
 	@Test 
-	public void repositoryIteratorTest() throws SharedException {
+	public void repositoryIteratorTest() throws RepositoryException {
 		RepositoryFactory fact = new RepositoryFactory();
 		Type simpleType = new SimpleType("simple", "");
 		Repository rep1 = fact.createRepository(

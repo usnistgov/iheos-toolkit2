@@ -1,7 +1,6 @@
 package gov.nist.toolkit.repository.simple;
 
 import gov.nist.toolkit.repository.api.RepositoryException;
-import gov.nist.toolkit.repository.api.SharedException;
 import gov.nist.toolkit.repository.api.Type;
 import gov.nist.toolkit.repository.api.TypeIterator;
 
@@ -27,12 +26,14 @@ public class SimpleTypeIterator implements TypeIterator, FilenameFilter {
 	}
 
 	@Override
-	public boolean hasNextType() throws SharedException {
+	public boolean hasNextType() throws RepositoryException {
 		return typesFileNamesIndex < typesFileNames.length;
 	}
 
 	@Override
-	public Type nextType() throws SharedException {
+	public Type nextType() throws RepositoryException {
+		if (!hasNextType())
+			throw new RepositoryException(RepositoryException.NO_MORE_ITERATOR_ELEMENTS);
 		Properties typeProps = loadProperties(new File(typesDir + File.separator + typesFileNames[typesFileNamesIndex++]));
 		String keyword = typeProps.getProperty("keyword");
 		String description = typeProps.getProperty("description");

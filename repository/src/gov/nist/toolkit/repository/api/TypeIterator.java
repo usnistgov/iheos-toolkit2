@@ -45,7 +45,7 @@ public interface TypeIterator extends java.io.Serializable {
      *         CONFIGURATION_ERROR}, {@link
      *         gov.nist.toolkit.repository.api.SharedException#UNIMPLEMENTED UNIMPLEMENTED}
      */
-    boolean hasNextType() throws gov.nist.toolkit.repository.api.SharedException;
+    boolean hasNextType() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Return the next Type.
@@ -65,7 +65,7 @@ public interface TypeIterator extends java.io.Serializable {
      *         gov.nist.toolkit.repository.api.SharedException#NO_MORE_ITERATOR_ELEMENTS
      *         NO_MORE_ITERATOR_ELEMENTS}
      */
-    Type nextType() throws gov.nist.toolkit.repository.api.SharedException;
+    Type nextType() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * <p>

@@ -54,6 +54,8 @@ public class SimpleRepositoryIterator implements RepositoryIterator, FilenameFil
 	}
 
 	public Repository peekNextRepository() throws RepositoryException {
+		if (!(reposDirsIndex < reposDirNames.length))
+			throw new RepositoryException(RepositoryException.NO_MORE_ITERATOR_ELEMENTS);
 		SimpleId id = new SimpleId(reposDirNames[reposDirsIndex]);
 		return new SimpleRepository(id).load();
 	}

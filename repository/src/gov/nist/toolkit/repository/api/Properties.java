@@ -31,7 +31,7 @@ public interface Properties extends java.io.Serializable {
      *         CONFIGURATION_ERROR}, {@link
      *         gov.nist.toolkit.repository.api.SharedException#UNIMPLEMENTED UNIMPLEMENTED}
      */
-    Type getType() throws gov.nist.toolkit.repository.api.SharedException;
+    Type getType() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Get the Property associated with this key.
@@ -50,7 +50,7 @@ public interface Properties extends java.io.Serializable {
      *         {@link gov.nist.toolkit.repository.api.SharedException#UNKNOWN_KEY UNKNOWN_KEY}
      */
     java.io.Serializable getProperty(java.io.Serializable key)
-        throws gov.nist.toolkit.repository.api.SharedException;
+        throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * Get the Keys associated with these Properties.
@@ -67,7 +67,7 @@ public interface Properties extends java.io.Serializable {
      *         CONFIGURATION_ERROR}, {@link
      *         gov.nist.toolkit.repository.api.SharedException#UNIMPLEMENTED UNIMPLEMENTED}
      */
-    ObjectIterator getKeys() throws gov.nist.toolkit.repository.api.SharedException;
+    ObjectIterator getKeys() throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
      * <p>

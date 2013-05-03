@@ -65,7 +65,11 @@ package gov.nist.toolkit.repository.api;
  * </p>
  */
 public class OsidContext implements java.io.Serializable {
-    private final java.util.Hashtable contextInfo = new java.util.Hashtable();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1753251509301748730L;
+	private final java.util.Hashtable contextInfo = new java.util.Hashtable();
 
     /**
      * Assign the context of the OsidContext. Context is associated with an
@@ -86,7 +90,7 @@ public class OsidContext implements java.io.Serializable {
      *         gov.nist.toolkit.repository.api.OsidException#NULL_ARGUMENT NULL_ARGUMENT}
      */
     public final void assignContext(String key, java.io.Serializable context)
-        throws gov.nist.toolkit.repository.api.OsidException {
+        throws gov.nist.toolkit.repository.api.RepositoryException {
         if ((null != key) && (null != context)) {
             contextInfo.put(key, context);
         } else if ((null != key) && (null == context)) {
@@ -94,7 +98,7 @@ public class OsidContext implements java.io.Serializable {
                 contextInfo.remove(key);
             }
         } else {
-            throw new gov.nist.toolkit.repository.api.OsidException(gov.nist.toolkit.repository.api.OsidException.NULL_ARGUMENT);
+            throw new gov.nist.toolkit.repository.api.RepositoryException(gov.nist.toolkit.repository.api.RepositoryException.NULL_ARGUMENT);
         }
     }
 
@@ -113,7 +117,7 @@ public class OsidContext implements java.io.Serializable {
      *         gov.nist.toolkit.repository.api.OsidException#NULL_ARGUMENT NULL_ARGUMENT}
      */
     public final java.io.Serializable getContext(String key)
-        throws gov.nist.toolkit.repository.api.OsidException {
+        throws gov.nist.toolkit.repository.api.RepositoryException {
         if (null != key) {
             if (contextInfo.containsKey(key)) {
                 return (java.io.Serializable) contextInfo.get(key);
@@ -122,7 +126,7 @@ public class OsidContext implements java.io.Serializable {
             }
         }
 
-        throw new gov.nist.toolkit.repository.api.OsidException(gov.nist.toolkit.repository.api.OsidException.NULL_ARGUMENT);
+        throw new gov.nist.toolkit.repository.api.RepositoryException(gov.nist.toolkit.repository.api.RepositoryException.NULL_ARGUMENT);
     }
 
     /**

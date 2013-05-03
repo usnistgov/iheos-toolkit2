@@ -33,26 +33,26 @@ public class RepositoryFactory implements RepositoryManager {
 	}
 
 	@Override
-	public OsidContext getOsidContext() throws OsidException {
+	public OsidContext getOsidContext() throws RepositoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void assignOsidContext(OsidContext context) throws OsidException {
+	public void assignOsidContext(OsidContext context) throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void assignConfiguration(Properties configuration)
-			throws OsidException {
+			throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void osidVersion_2_0() throws OsidException {
+	public void osidVersion_2_0() throws RepositoryException {
 		// TODO Auto-generated method stub
 
 	}
@@ -122,5 +122,5 @@ public class RepositoryFactory implements RepositoryManager {
 	@Override
 	public TypeIterator getRepositoryTypes() throws RepositoryException {
 		return new SimpleTypeIterator();
-	}
+	}	
 }
