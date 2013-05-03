@@ -9,6 +9,7 @@
     11/26/2011 RWM modified
     08/12/2012 RWM modified
     09/12/2012 BNR(Dragon) modified
+	5/3/2010  NIST (v5)
 
  -->
 <ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:cda="urn:hl7-org:v3" xmlns:gsd="http://aurora.regenstrief.org/GenericXMLSchema" xmlns:sch="http://www.ascc.net/xml/schematron" xmlns:xlink="http://www.w3.org/TR/WD-xlink" xmlns:sdtc="urn:hl7-org:sdtc" xmlns:mif="urn:hl7-org:v3/mif" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3
@@ -910,7 +911,7 @@ IMMUNIZATIONS
 									<templateId root="2.16.840.1.113883.10.20.22.4.54"/>
 									<!--  ********   Immunization Medication Information    ******** -->
 									<manufacturedMaterial>
-										<code code="33" codeSystem="2.16.840.1.113883.6.59" displayName="pneumococcal polysaccharide vaccine, 23 valent" codeSystemName="CVX">
+										<code code="33" codeSystem="2.16.840.1.113883.12.292" displayName="pneumococcal polysaccharide vaccine, 23 valent" codeSystemName="CVX">
 											<originalText>Pnuemococcal polysaccharide vaccine, 23 valent (Pnuemovax)</originalText>
 										</code>
 									</manufacturedMaterial>
@@ -948,9 +949,9 @@ IMMUNIZATIONS
 									<templateId root="2.16.840.1.113883.10.20.22.4.54"/>
 									<!--  ********   Immunization Medication Information    ******** -->
 									<manufacturedMaterial>
-										<code code="88" codeSystem="2.16.840.1.113883.6.59" displayName="Influenza virus vaccine" codeSystemName="CVX">
+										<code code="88" codeSystem="2.16.840.1.113883.12.292" displayName="Influenza virus vaccine" codeSystemName="CVX">
 											<originalText>Influenza virus vaccine</originalText>
-											<translation code="111" displayName="influenza, live, intranasal" codeSystemName="CVX" codeSystem="2.16.840.1.113883.6.59"/>
+											<translation code="111" displayName="influenza, live, intranasal" codeSystemName="CVX" codeSystem="2.16.840.1.113883.12.292"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -987,9 +988,9 @@ IMMUNIZATIONS
 									<templateId root="2.16.840.1.113883.10.20.22.4.54"/>
 									<!--  ********   Immunization Medication Information    ******** -->
 									<manufacturedMaterial>
-										<code code="103" codeSystem="2.16.840.1.113883.6.59" displayName="Tetanus and diphtheria toxoids - preservative free" codeSystemName="CVX">
+										<code code="103" codeSystem="2.16.840.1.113883.12.292" displayName="Tetanus and diphtheria toxoids - preservative free" codeSystemName="CVX">
 											<originalText>Tetanus and diphtheria toxoids - preservative free</originalText>
-											<translation code="09" displayName="Tetanus and diphtheria toxoids - preservative free" codeSystemName="CVX" codeSystem="2.16.840.1.113883.6.59"/>
+											<translation code="09" displayName="Tetanus and diphtheria toxoids - preservative free" codeSystemName="CVX" codeSystem="2.16.840.1.113883.12.292"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -1158,11 +1159,11 @@ MEDICATIONS
 									<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
 									<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
 									<manufacturedMaterial>
-										<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution">
+										<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]">
 											<originalText>
 												<reference value="#Med1"/>
 											</originalText>
-											<translation code="573621" displayName="Proventil 0.09 MG/ACTUAT inhalant solution" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
+											<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -1222,11 +1223,11 @@ MEDICATIONS
 											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
 											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
 											<manufacturedMaterial>
-												<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution">
+												<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]">
 													<originalText>
 														<reference value="#Med1"/>
 													</originalText>
-													<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
+													<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
 												</code>
 											</manufacturedMaterial>
 											<manufacturerOrganization>
@@ -1266,8 +1267,7 @@ MEDICATIONS
 											<templateId root="2.16.840.1.113883.10.20.22.4.20"/>
 											<!-- ** Instructions Template ** -->
 											<code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="instruction"/>
-											<text>
-												<reference value="#FillIns"/>label in spanish</text>
+											<text>label in spanish</text>
 											<statusCode code="completed"/>
 										</act>
 									</entryRelationship>
@@ -1286,11 +1286,11 @@ MEDICATIONS
 											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
 											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
 											<manufacturedMaterial>
-												<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution">
+												<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]">
 													<originalText>
 														<reference value="#Med1"/>
 													</originalText>
-													<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
+													<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
 												</code>
 											</manufacturedMaterial>
 											<manufacturerOrganization>
@@ -2271,7 +2271,7 @@ RESULTS
 									<!-- Result observation template -->
 									<templateId root="2.16.840.1.113883.10.20.22.4.2"/>
 									<id root="107c2dc0-67a5-11db-bd13-0800200c9a66"/>
-									<code xsi:type="CE" code="26515-7" displayName="PLT" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"> </code>
+									<code xsi:type="CE" code="26515-7" displayName="Platelets [#/volume] in Blood" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"> </code>
 									<text>
 										<reference value="#result3"/>
 									</text>
