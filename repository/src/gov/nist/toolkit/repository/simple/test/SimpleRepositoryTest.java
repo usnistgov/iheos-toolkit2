@@ -48,7 +48,10 @@ public class SimpleRepositoryTest {
 				"Description",
 				new SimpleType("simple", ""));
 		Id repId1 = rep1.getId();
+		String repId1S = repId1.getIdString();
 		Type repType1 = rep1.getType();
+		
+		System.out.println("repId1 is " + repId1S);
 		
 		assertTrue("query for type simple should return a repository of type simple - got [" +
 		    repType1.getDomain() + "] instead.", simpleType.isEqual(repType1));
@@ -60,24 +63,32 @@ public class SimpleRepositoryTest {
 		Id repId2 = rep2.getId();
 		Type repType2 = rep2.getType();
 		
+		System.out.println("repId2 is " + repId2.getIdString());
+		System.out.println("");
+		
 		assertTrue("query for type simple should return a repository of type simple - got [" +
 		    repType2.getDomain() + "] instead.", simpleType.isEqual(repType2));
-		
-		
+
 		boolean found = false;
 		for (RepositoryIterator ri=fact.getRepositoriesByType(simpleType); ri.hasNextRepository();) {
 			Repository r = ri.nextRepository();
+			String rIdStr = r.getId().getIdString();
+			System.out.println("rIdStr is " + rIdStr);
 			if (repId1.isEqual(r.getId())) {
+				System.out.println("isEqual");
 				found = true;
 				break;
 			}
 		}
 		assertTrue("repId1 not found", found);
+		System.out.println("");
 		
 		found = false;
 		for (RepositoryIterator ri=fact.getRepositoriesByType(simpleType); ri.hasNextRepository();) {
 			Repository r = ri.nextRepository();
+			System.out.println("rIdStr is " + r.getId().getIdString());
 			if (repId2.isEqual(r.getId())) {
+				System.out.println("isEqual");
 				found = true;
 				break;
 			}
