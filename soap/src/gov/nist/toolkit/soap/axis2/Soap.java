@@ -8,7 +8,7 @@ import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.wsseToolkit.util.MyXmlUtils;
+import gov.nist.toolkit.wsseTool.util.MyXmlUtils;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;

@@ -13,8 +13,8 @@ import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderFor
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
-import gov.nist.toolkit.wsseToolkit.api.WsseHeaderValidator;
-import gov.nist.toolkit.wsseToolkit.generation.GenerationException;
+import gov.nist.toolkit.wsseTool.api.WsseHeaderValidator;
+import gov.nist.toolkit.wsseTool.generation.GenerationException;
 
 /**
  * Temporary adapter between toolkit legacy validation code and the wsse module
@@ -75,7 +75,7 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 		
 		//those are the logs we are interested in
 		org.apache.log4j.Logger logMainVal = org.apache.log4j.Logger.getLogger(WsseHeaderValidator.class);
-		org.apache.log4j.Logger logVal = org.apache.log4j.Logger.getLogger("gov.nist.toolkit.wsseToolkit.validation");
+		org.apache.log4j.Logger logVal = org.apache.log4j.Logger.getLogger("gov.nist.toolkit.wsseTool.validation");
 		logVal.addAppender(wsseLogApp);
 		logMainVal.addAppender(wsseLogApp);
 		

@@ -1,8 +1,8 @@
 package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
-import gov.nist.toolkit.wsseToolkit.generation.GenerationException;
-import gov.nist.toolkit.wsseToolkit.generation.opensaml.OpenSamlWsseSecurityGenerator;
-import gov.nist.toolkit.wsseToolkit.keystore.KeystoreAccess;
+import gov.nist.toolkit.wsseTool.generation.GenerationException;
+import gov.nist.toolkit.wsseTool.generation.opensaml.OpenSamlWsseSecurityGenerator;
+import gov.nist.toolkit.wsseTool.keystore.KeystoreAccess;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
