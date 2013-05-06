@@ -836,10 +836,10 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		InputStream attachmentContents = p.getInputStream();
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
-
+		
 		// Use the XDMDecoder to make sure it is XMD content before running XDM validator
-		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, attachmentContents);
-		decoder.detect(attachmentContents);
+//		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, new ByteArrayInputStream(contents));
+//		decoder.detect(new ByteArrayInputStream(contents));
 
 
 		er.detail("Try validation as XDM");
@@ -882,10 +882,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		InputStream attachmentContents = p.getInputStream();
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
 
+		attachmentContents.reset();
+
 		// Use the XDMDecoder to make sure it is XMD content before running XDM validator
-		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, attachmentContents);
+		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, new ByteArrayInputStream(contents));
 		try {
-			decoder.detect(attachmentContents);
+			decoder.detect(new ByteArrayInputStream(contents));
 		} catch(IOException e) {
 			er.detail("The file is not an XDM content");
 			return;
@@ -893,6 +895,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("The file is not an XDM content");
 			return;
 		}
+		
 		this.processAttachments(er, p);
 
 

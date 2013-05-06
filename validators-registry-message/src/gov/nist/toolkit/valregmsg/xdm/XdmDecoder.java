@@ -1,6 +1,5 @@
 package gov.nist.toolkit.valregmsg.xdm;
 
-import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
@@ -24,10 +23,13 @@ import java.util.List;
 import java.util.zip.ZipException;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 public class XdmDecoder extends MessageValidator {
 	InputStream in;
 	ErrorRecorderBuilder erBuilder;
+	static Logger logger = Logger.getLogger(XdmDecoder.class);
+
 
 	public XdmDecoder(ValidationContext vc, ErrorRecorderBuilder erBuilder, InputStream zipInputStream) {
 		super(vc);
@@ -49,6 +51,9 @@ public class XdmDecoder extends MessageValidator {
 			MessageValidatorEngine mvc = new MessageValidatorEngine();
 
 			XdmDecoder xd = new XdmDecoder(vc, erBuilder, is);
+			xd.er = er;
+			if (!xd.isXDM())
+				System.out.println("XDM type detection failed");
 			xd.showContents = true;
 			xd.run(er, mvc);
 		} catch (FileNotFoundException e) {
@@ -69,22 +74,18 @@ public class XdmDecoder extends MessageValidator {
 	 */
 	public void detect(InputStream is) throws ZipException, IOException, XDMException {
 		contents = new ZipDecoder().parse(is);
-		if (!isXDM())
+		if (!isXDM()) {
+			logger.info("Message does not look like a XDM");
 			throw new XDMException("ZIP does not contain XDM content");
+		}
+		logger.info("Message looks like a XDM");
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 
-		er.challenge("Decoding ZIP");
-		try {
-			contents = new ZipDecoder().parse(in);
-		} 
-		catch (ZipException e) {
-			er.err(Code.NoCode, e);
-			return;
-		}
-		catch (IOException e) {
-			er.err(Code.NoCode, e);
+		logger.debug("running");
+		if (!decode(er)) {
+			logger.info("Did not decode zip properly");
 			return;
 		}
 
@@ -97,16 +98,19 @@ public class XdmDecoder extends MessageValidator {
 		er.challenge("Looking for INDEX.HTM");
 		if (!hasIndexHtm()) {
 			er.err(Code.NoCode, "File INDEX.HTM not found", "","");
+			logger.info("File INDEX.HTM not found");
 		}
 
 		er.challenge("Looking for README.TXT");
 		if (!hasReadmeTxt()) {
 			er.err(Code.NoCode, "File README.TXT not found", "","");
+			logger.info("File README.TXT not found");
 		}
 
 		er.challenge("Looking for directory IHE_XDM");
 		if (!hasIheXdm()) {
 			er.err(Code.NoCode, "Directory IHE_XDM not found", "","");
+			logger.info("Directory IHE_XDM not found");
 			return;
 		}
 
@@ -134,6 +138,7 @@ public class XdmDecoder extends MessageValidator {
 					metadataVc.isRequest = true;
 					metadataVc.xds_b = true;
 					metadataVc.setCodesFilename(vc.getCodesFilename());
+					logger.info("Validating metadata");
 					MessageValidatorFactory.validateBasedOnValidationContext(
 							erBuilder,
 							ele,
@@ -143,7 +148,6 @@ public class XdmDecoder extends MessageValidator {
 							);
 
 					m = new Metadata(ele);
-					System.out.println("Metadata structure is " + m.structure());
 					er.detail("Has " + m.getExtrinsicObjectIds().size() + " ExtrinsicObjects");
 					for (OMElement eo : m.getExtrinsicObjects()) {
 						er.detail("For ExtrinsicObject " + m.getId(eo));
@@ -170,6 +174,7 @@ public class XdmDecoder extends MessageValidator {
 						Path uriPath = new Path(subsetDir + uri);
 						if (!contents.containsKey(uriPath)) {
 							er.err(Code.NoCode, "URI attribute is " + uri + " but file does not exist", subsetDir,"");
+							logger.info("URI attribute is " + uri + " but file does not exist");
 							return;
 						}
 						else
@@ -207,17 +212,36 @@ public class XdmDecoder extends MessageValidator {
 //							mve.run();
 						} else {
 							er.detail("Is not a CDA R2 so no validation attempted");
+							logger.info("Is not a CDA R2 so no validation attempted");
 						}
 
 					}
 				} catch (Exception e) {
 					er.err(Code.NoCode, "Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e), subsetDir,"");
+					logger.info("Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e));
 					return;
 				}
 			}
 		}
-
 		mvc.run();
+	}
+
+	boolean decode(ErrorRecorder er) {
+		if (contents != null)
+			return true;  // already decoded
+		er.challenge("Decoding ZIP");
+		try {
+			contents = new ZipDecoder().parse(in);
+		} 
+		catch (ZipException e) {
+			er.err(Code.NoCode, e);
+			return false;
+		}
+		catch (IOException e) {
+			er.err(Code.NoCode, e);
+			return false;
+		}
+		return true;
 	}
 
 	String simplifyPath(String path) {
@@ -288,11 +312,21 @@ public class XdmDecoder extends MessageValidator {
 	//	}
 
 	public boolean isXDM() {
-		if (!hasIheXdm()) return false;
-		for (Path path: getSubsetDirs()) {
-			if (hasMetadata(path))
-				return true;
+		if (!decode(er)) {
+			logger.info("Cannot unwrap zip format");
+			return false;
 		}
+		if (!hasIheXdm()) {
+			logger.info("IHE_XDM directory not found");
+			return false;
+		}
+		for (Path path: getSubsetDirs()) {
+			if (hasMetadata(path)) {
+				logger.info("Metadata found");
+				return true;
+			}
+		}
+		logger.info("Metadata not found");
 		return false;
 	}
 
