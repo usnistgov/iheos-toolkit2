@@ -11,7 +11,6 @@ import gov.nist.toolkit.repository.api.Repository;
 import gov.nist.toolkit.repository.api.RepositoryException;
 import gov.nist.toolkit.repository.api.RepositoryFactory;
 import gov.nist.toolkit.repository.simple.Configuration;
-import gov.nist.toolkit.repository.simple.SimpleAssetIterator;
 import gov.nist.toolkit.repository.simple.SimpleType;
 
 import java.io.File;
@@ -92,7 +91,7 @@ public class SimpleAssetTest {
 		a2.updateContent("My Content".getBytes());
 		Id assetId2 = a2.getId();
 		
-		a.addAsset(assetId2);  // a is parent of a2
+		a.addAsset(assetId2);  // make a the parent of a2
 		
 		assertFalse(assetId.isEqual(assetId2));
 	}

@@ -8,6 +8,7 @@ import gov.nist.toolkit.repository.api.RepositoryFactory;
 import gov.nist.toolkit.repository.api.RepositoryIterator;
 import gov.nist.toolkit.repository.api.Type;
 import gov.nist.toolkit.repository.simple.Configuration;
+import gov.nist.toolkit.repository.simple.SimpleRepositoryIterator;
 import gov.nist.toolkit.repository.simple.SimpleType;
 
 import java.io.File;
@@ -38,33 +39,38 @@ public class SimpleRepositoryTest {
 		RepositoryFactory repFact = new RepositoryFactory();
 		repFact.getRepository(repId);
 	}
+	
+	@Test
+	public void repositoryIteratorTest1() throws RepositoryException {
+		SimpleRepositoryIterator it = new SimpleRepositoryIterator();
+		
+		assertTrue (it.size() > 0);
+		assertTrue (it.size() == it.remaining());
+		assertTrue(it.hasNextRepository());
+		it.nextRepository();
+		assertTrue(it.size() == it.remaining() + 1);
+	}
 		
 	@Test 
-	public void repositoryIteratorTest() throws RepositoryException {
+	public void repositoryIteratorTest2() throws RepositoryException {
 		RepositoryFactory fact = new RepositoryFactory();
 		Type simpleType = new SimpleType("simple", "");
-		Repository rep1 = fact.createRepository(
+		Repository repos1 = fact.createRepository(
 				"This is my repository",
 				"Description",
-				new SimpleType("simple", ""));
-		Id repId1 = rep1.getId();
-		String repId1S = repId1.getIdString();
-		Type repType1 = rep1.getType();
-		
-		System.out.println("repId1 is " + repId1S);
+				simpleType);
+		Id repId1 = repos1.getId();
+		Type repType1 = repos1.getType();
 		
 		assertTrue("query for type simple should return a repository of type simple - got [" +
 		    repType1.getDomain() + "] instead.", simpleType.isEqual(repType1));
 		
-		Repository rep2 = fact.createRepository(
+		Repository repos2 = fact.createRepository(
 				"This is my repository",
 				"Description",
-				new SimpleType("simple", ""));
-		Id repId2 = rep2.getId();
-		Type repType2 = rep2.getType();
-		
-		System.out.println("repId2 is " + repId2.getIdString());
-		System.out.println("");
+				simpleType);
+		Id repId2 = repos2.getId();
+		Type repType2 = repos2.getType();
 		
 		assertTrue("query for type simple should return a repository of type simple - got [" +
 		    repType2.getDomain() + "] instead.", simpleType.isEqual(repType2));
@@ -72,27 +78,33 @@ public class SimpleRepositoryTest {
 		boolean found = false;
 		for (RepositoryIterator ri=fact.getRepositoriesByType(simpleType); ri.hasNextRepository();) {
 			Repository r = ri.nextRepository();
-			String rIdStr = r.getId().getIdString();
-			System.out.println("rIdStr is " + rIdStr);
 			if (repId1.isEqual(r.getId())) {
-				System.out.println("isEqual");
 				found = true;
 				break;
 			}
 		}
 		assertTrue("repId1 not found", found);
-		System.out.println("");
 		
 		found = false;
 		for (RepositoryIterator ri=fact.getRepositoriesByType(simpleType); ri.hasNextRepository();) {
 			Repository r = ri.nextRepository();
-			System.out.println("rIdStr is " + r.getId().getIdString());
 			if (repId2.isEqual(r.getId())) {
-				System.out.println("isEqual");
 				found = true;
 				break;
 			}
 		}
 		assertTrue("repId2 not found", found);
 	}
+	
+	boolean findRepo(Type type, Id repIdToFind) throws RepositoryException {
+		RepositoryFactory fact = new RepositoryFactory();
+		for (RepositoryIterator ri=fact.getRepositoriesByType(type); ri.hasNextRepository();) {
+			Repository r = ri.nextRepository();
+			if (repIdToFind.isEqual(r.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

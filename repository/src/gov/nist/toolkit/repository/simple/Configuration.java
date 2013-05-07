@@ -13,6 +13,8 @@ public class Configuration {
 	public static final String PROPERTIES_FILE_EXT = "props.txt";
 	public static final String CONTENT_FILE_EXT = "bytes";
 	public static final String REPOSITORY_TYPES_DIR = "types";
+	public static final String REPOSITORY_DATA_DIR = "data";
+	public static final String REPOSITORY_PROP_FILE = "repository" + PROPERTIES_FILE_EXT;
 	// Do not reference this static variable directly. Use
 	// private accessor getRootOfAllRepositories
 	// which verifies it is initialized.
@@ -62,21 +64,29 @@ public class Configuration {
 		return RootOfAllRepositories;
 	}
 	
+	/**
+	 * Get directory holding the contents of the repository
+	 * @param id
+	 * @return
+	 * @throws RepositoryException
+	 */
 	static public File getRepositoryLocation(Id id) throws RepositoryException {
 		assert(id != null);
 		assert(RootOfAllRepositories != null);
-		return new File(RootOfAllRepositories + File.separator + id.getIdString());
+		return new File(getRepositoryDataDir().toString() + File.separator + id.getIdString());
 	}
 
 	static public boolean isConfigured() throws RepositoryException {
 		if (RootOfAllRepositories == null) return false;
 		File typesDir = getRepositoryTypesDir();
-		return typesDir.exists() && typesDir.isDirectory();
+		if (!(typesDir.exists() && typesDir.isDirectory())) return false;
+		File dataDir = getRepositoryDataDir();
+		if (!(dataDir.exists() && dataDir.isDirectory())) return false;
+		return true;
 	}
 
 	static public boolean repositoryExists(Id id) throws RepositoryException {
-		File repositoryRoot = new File(getRootOfAllRepositories().toString() + File.separator +
-				id);
+		File repositoryRoot = getRepositoryLocation(id);
 		return repositoryRoot.exists() && repositoryRoot.isDirectory();
 	}
 
@@ -108,9 +118,16 @@ public class Configuration {
 				Configuration.REPOSITORY_TYPES_DIR);
 	}
 
+	public static File getRepositoryDataDir() throws RepositoryException {
+		return new File(
+				getRootOfAllRepositories() + File.separator + 
+				Configuration.REPOSITORY_DATA_DIR);
+	}
+
 	public static Id getAssetIdFromFilename(String filename) {
 		File fn = new File(filename);
 		String fullName = fn.getName();
+		// extract id from filename
 		String[] parts = fullName.split("\\.");
 		if (parts != null && parts.length > 0)
 			return new SimpleId(parts[0]);

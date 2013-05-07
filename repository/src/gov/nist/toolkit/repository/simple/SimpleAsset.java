@@ -47,6 +47,14 @@ public class SimpleAsset implements Asset, Flushable {
 		return properties.getProperty(key);
 	}
 
+	/**
+	 * Load asset off disk into memory.
+	 * @param assetId
+	 * @param assetBaseFile - path of asset without file extension
+	 * @param repositoryId
+	 * @return
+	 * @throws RepositoryException
+	 */
 	public SimpleAsset load(Id assetId, File assetBaseFile, Id repositoryId) throws RepositoryException {
 		File assetPropFile = new File(assetBaseFile.toString() + "." + Configuration.PROPERTIES_FILE_EXT);
 		File assetContentFile = new File(assetBaseFile.toString() + "." + Configuration.CONTENT_FILE_EXT);
@@ -65,6 +73,18 @@ public class SimpleAsset implements Asset, Flushable {
 			// content may not exist
 		}
 		return this;
+	}
+	
+	File getAssetBaseFile(Id assetId) throws RepositoryException {
+		return new File(Configuration.getRepositoryLocation(getRepository()).toString() + File.separator + assetId.getIdString());
+	}
+	
+	File getPropertyFile(Id assetId) throws RepositoryException {
+		return new File(getAssetBaseFile(assetId).toString() + "." + Configuration.PROPERTIES_FILE_EXT);
+	}
+
+	File getContentFile(Id assetId) throws RepositoryException {
+		return new File(getAssetBaseFile(assetId).toString() + "." + Configuration.CONTENT_FILE_EXT);
 	}
 
 	@Override
@@ -159,16 +179,28 @@ public class SimpleAsset implements Asset, Flushable {
 			throws RepositoryException {
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
+	
+	/**
+	 * Simple delete of this Asset - no recursion. Not part of the API. 
+	 * Supports SimpleRepository.deleteAsset(id)
+	 * @throws RepositoryException
+	 */
+	public void deleteAsset() throws RepositoryException {
+		File assetPropFile = getPropertyFile(getId());
+		File assetContentFile = getContentFile(getId());
+		assetPropFile.delete();
+		assetContentFile.delete();
+	}
 
 	@Override
 	public AssetIterator getAssets() throws RepositoryException {
-		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
+		return new SimpleAssetIterator(getRepository());
 	}
 
 	@Override
 	public AssetIterator getAssetsByType(Type assetType)
 			throws RepositoryException {
-		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
+		return new SimpleAssetIterator(getRepository(), assetType);
 	}
 
 	@Override
@@ -200,7 +232,7 @@ public class SimpleAsset implements Asset, Flushable {
 		return new File(repositoryFile.toString() + File.separator + 
 				assetId.getIdString() + "." + Configuration.CONTENT_FILE_EXT);
 	}
-
+	
 	@Override
 	public void flush() throws RepositoryException {
 		autoFlush = true;

@@ -6,6 +6,8 @@ import gov.nist.toolkit.repository.api.Id;
 import gov.nist.toolkit.repository.api.Repository;
 import gov.nist.toolkit.repository.api.RepositoryException;
 import gov.nist.toolkit.repository.api.RepositoryFactory;
+import gov.nist.toolkit.repository.api.Type;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -23,6 +25,7 @@ public class SimpleAssetIterator implements AssetIterator, FilenameFilter {
 	int assetFileNamesIndex = 0;
 	Id repositoryId = null;
 	boolean[] selections = null;
+	Type type = null;
 	
 	public SimpleAssetIterator(Id repositoryId) throws gov.nist.toolkit.repository.api.RepositoryException {
 		this.repositoryId = repositoryId;
@@ -30,8 +33,11 @@ public class SimpleAssetIterator implements AssetIterator, FilenameFilter {
 		assetFileNames = reposDir.list(this);
 	}
 	
-	SimpleAssetIterator() {
-		
+	public SimpleAssetIterator(Id repositoryId, Type type) throws RepositoryException {
+		this.repositoryId = repositoryId;
+		this.type = type;
+		reposDir = Configuration.getRepositoryLocation(repositoryId);
+		assetFileNames = reposDir.list(this);
 	}
 	
 	@Override
@@ -86,7 +92,22 @@ public class SimpleAssetIterator implements AssetIterator, FilenameFilter {
 
 	@Override
 	public boolean accept(File arg0, String arg1) {
-		return !arg1.startsWith("repository") && arg1.endsWith(Configuration.PROPERTIES_FILE_EXT);
+		if (arg1.startsWith("repository")) return false;  // not an asset
+		if (!arg1.endsWith(Configuration.PROPERTIES_FILE_EXT)) return false;  // not an asset property file
+		// parent restriction?
+		if (type == null) return true;    // no type restriction
+		Id assetId = Configuration.getAssetIdFromFilename(arg1);
+		
+		try {
+			SimpleRepository repos = new SimpleRepository(repositoryId);
+			SimpleAsset a =  repos.getAsset(assetId);
+			String aTypeStr = a.getProperty("type");
+			Type aType = new SimpleType(aTypeStr);
+			return type.isEqual(aType);
+		} catch (RepositoryException e) {
+			System.out.println(ExceptionUtil.exception_details(e));
+		}
+		return false;
 	}
 
 }

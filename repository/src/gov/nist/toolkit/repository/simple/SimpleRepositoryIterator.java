@@ -18,52 +18,70 @@ public class SimpleRepositoryIterator implements RepositoryIterator, FilenameFil
 	String[] reposDirNames;
 	int reposDirsIndex;
 	Type type = null;
-	
+
+	/**
+	 * Iterate across all repositories.
+	 * @throws RepositoryException
+	 */
 	public SimpleRepositoryIterator() throws RepositoryException {
-		reposDir = Configuration.RootOfAllRepositories;
+		reposDir = Configuration.getRepositoryDataDir();
 		reposDirNames = reposDir.list(this);
 		reposDirsIndex = 0;
 	}
 
+	/**
+	 * Iterate across all repositories of specified type.
+	 * @param type
+	 * @throws RepositoryException
+	 */
 	public SimpleRepositoryIterator(Type type) throws RepositoryException {
-		reposDir = Configuration.RootOfAllRepositories;
+		reposDir = Configuration.getRepositoryDataDir();
 		reposDirNames = reposDir.list(this);
 		reposDirsIndex = 0;
 		this.type = type;
 	}
+	
+	public int size() {
+		return reposDirNames.length;
+	}
+	
+	public int remaining() {
+		int r = size() - reposDirsIndex;
+		return r;
+	}
 
 	@Override
 	public boolean hasNextRepository() throws RepositoryException {
-		if (type == null)
-			return reposDirsIndex < reposDirNames.length;
-		else {
-			if (reposDirsIndex < reposDirNames.length) {
-				Repository r = peekNextRepository();
-				if (type.isEqual(r.getType()))
-					return true;
-			} 
-		}
-		return false;
+		return reposDirsIndex < reposDirNames.length;
 	}
 
 	@Override
 	public Repository nextRepository() throws RepositoryException {
-		Repository r = peekNextRepository();
-		reposDirsIndex++;
-		return r;
-	}
-
-	public Repository peekNextRepository() throws RepositoryException {
-		if (!(reposDirsIndex < reposDirNames.length))
+		if (!hasNextRepository())
 			throw new RepositoryException(RepositoryException.NO_MORE_ITERATOR_ELEMENTS);
-		SimpleId id = new SimpleId(reposDirNames[reposDirsIndex]);
+		SimpleId id = new SimpleId(reposDirNames[reposDirsIndex++]);
 		return new SimpleRepository(id).load();
 	}
 
 	@Override
 	public boolean accept(File dir, String name) {
-		return !(name.equals(Configuration.REPOSITORY_TYPES_DIR) 
-				|| name.startsWith("."));
+		String repId = basename(name);
+		try {
+			SimpleRepository sRep = new SimpleRepository(new SimpleId(repId)).load();
+			String typeStr = sRep.getProperty("repositoryType");
+			Type t = new SimpleType(typeStr);
+			if (type == null || type.isEqual(t)) 
+				return true;
+		} catch (RepositoryException e) {
+			return false;
+		}
+		return false;
+	}
+
+	String basename(String filename) {
+		int i = filename.lastIndexOf(".");
+		if (i == -1) return filename;
+		return filename.substring(0, i);
 	}
 
 }

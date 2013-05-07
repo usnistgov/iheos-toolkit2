@@ -26,6 +26,7 @@ public class SimpleRepository implements Repository, Flushable {
 	boolean loaded = false;
 	Properties properties = new Properties();
 	boolean autoFlush = true;
+	boolean isNew;
 
 	boolean isLoaded() {
 		return loaded;
@@ -53,6 +54,7 @@ public class SimpleRepository implements Repository, Flushable {
 	 */
 	public SimpleRepository(Id id) throws RepositoryException {
 		root = Configuration.getRepositoryLocation(id);
+		isNew = false;
 	}
 
 	/**
@@ -60,21 +62,26 @@ public class SimpleRepository implements Repository, Flushable {
 	 * @throws RepositoryException
 	 */
 	public SimpleRepository() throws RepositoryException {
+		isNew = true;
 		Id id = new IdFactory().getNewId();
 		properties.setProperty("id", id.getIdString());
 		root = Configuration.getRepositoryLocation(id);
 	}
 
-	public void setType(Type type) {
+	public void setType(Type type) throws RepositoryException {
+		load();
 		properties.setProperty("repositoryType", type.toString());
 	}
 
 	@Override
 	public Type getType() throws RepositoryException {
+		load();
 		return new SimpleType(properties.getProperty("repositoryType"), "");
 	}
 
 	public SimpleRepository load() throws RepositoryException {
+		if (isNew)
+			return this;
 		if (isLoaded())
 			return this;
 		loaded = true;
@@ -93,6 +100,7 @@ public class SimpleRepository implements Repository, Flushable {
 	@Override
 	public void setDisplayName(String displayName)
 			throws RepositoryException {
+		load();
 		properties.setProperty("DisplayName", displayName);
 		if (autoFlush)
 			flush();
@@ -100,11 +108,13 @@ public class SimpleRepository implements Repository, Flushable {
 
 	@Override
 	public String getDisplayName() throws RepositoryException {
+		load();
 		return properties.getProperty("DisplayName");
 	}
 
 	@Override
 	public Id getId() throws RepositoryException {
+		load();
 		String idString = properties.getProperty("id", "");
 		if (idString.equals("")) {
 			throw new RepositoryException(RepositoryException.UNKNOWN_ID + 
@@ -116,12 +126,14 @@ public class SimpleRepository implements Repository, Flushable {
 
 	@Override
 	public String getDescription() throws RepositoryException {
+		load();
 		return properties.getProperty("description");
 	}
 
 	@Override
 	public void setDescription(String description)
 			throws RepositoryException {
+		load();
 		properties.setProperty("description", description);
 		if (autoFlush)
 			flush();
@@ -130,6 +142,7 @@ public class SimpleRepository implements Repository, Flushable {
 	@Override
 	public SimpleAsset createAsset(String displayName, String description,
 			Type assetType) throws RepositoryException {
+		load();
 		SimpleAsset a = new SimpleAsset();
 		a.setAutoFlush(false);
 		a.setRepository(getId());
@@ -142,7 +155,8 @@ public class SimpleRepository implements Repository, Flushable {
 	}
 
 	@Override
-	public Asset getAsset(Id assetId) throws RepositoryException {
+	public SimpleAsset getAsset(Id assetId) throws RepositoryException {
+		load();
 		File reposDir = Configuration.getRepositoryLocation(getId());
 		if (!reposDir.exists() || !reposDir.isDirectory())
 			throw new RepositoryException(RepositoryException.UNKNOWN_REPOSITORY + " : " +
@@ -154,75 +168,94 @@ public class SimpleRepository implements Repository, Flushable {
 
 	@Override
 	public void deleteAsset(Id assetId) throws RepositoryException {
-		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
+		load();
+//		try {
+			SimpleAsset a = getAsset(assetId);
+			a.deleteAsset();
+//		} catch (Exception e) {
+//
+//		}
 	}
 
 	@Override
 	public AssetIterator getAssets() throws RepositoryException {
+		load();
 		return new SimpleAssetIterator(getId());
 	}
 
 	@Override
 	public AssetIterator getAssetsByType(Type assetType)
 			throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public TypeIterator getAssetTypes() throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public Properties getPropertiesByType(Type propertiesType)
 			throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public TypeIterator getPropertyTypes() throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public PropertiesIterator getProperties() throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public TypeIterator getSearchTypes() throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public TypeIterator getStatusTypes() throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public Type getStatus(Id assetId) throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public boolean validateAsset(Id assetId) throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public void invalidateAsset(Id assetId) throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public Asset getAssetByDate(Id assetId, long date)
 			throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public LongValueIterator getAssetDates(Id assetId)
 			throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
@@ -230,25 +263,30 @@ public class SimpleRepository implements Repository, Flushable {
 	public AssetIterator getAssetsBySearch(Serializable searchCriteria,
 			Type searchType, Properties searchProperties)
 					throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public Id copyAsset(Asset asset) throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public boolean supportsVersioning() throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
 	@Override
 	public boolean supportsUpdate() throws RepositoryException {
+		load();
 		throw new RepositoryException(RepositoryException.UNIMPLEMENTED);
 	}
 
-	File getRepositoryPropFile() {
+	File getRepositoryPropFile() throws RepositoryException {
+		load();
 		return new File(root.toString() + File.separator + REPOSITORY_PROPERTY_FILE);
 	}
 
@@ -263,20 +301,24 @@ public class SimpleRepository implements Repository, Flushable {
 		} catch (IOException e) {
 			throw new RepositoryException(RepositoryException.IO_ERROR, e);
 		}
+		isNew = false;
 	}
-	
-	public boolean isConfigured() {
+
+	public boolean isConfigured() throws RepositoryException {
+		load();
 		File propFile = getRepositoryPropFile();
 		return propFile.exists();
 	}
-	
-	public void delete() {
+
+	public void delete() throws RepositoryException {
+		load();
 		if (!isConfigured()) 
 			return;
 		delete(root);
 	}
-	
-	void delete(File fileToDelete) {
+
+	void delete(File fileToDelete) throws RepositoryException {
+		load();
 		File[] files = fileToDelete.listFiles();
 		if (files != null) {
 			for (int i=0; i<files.length; i++) {
@@ -285,5 +327,10 @@ public class SimpleRepository implements Repository, Flushable {
 			}
 		}
 		fileToDelete.delete();
+	}
+
+	public String getProperty(String name) throws RepositoryException {
+		load();
+		return properties.getProperty(name);
 	}
 }
