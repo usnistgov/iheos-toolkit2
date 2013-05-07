@@ -36,6 +36,37 @@ package gov.nist.toolkit.repository.api;
  */
 public interface RepositoryManager extends gov.nist.toolkit.repository.api.OsidManager {
     /**
+     * Create a new Repository of the specified Type and Name.  The implementation of
+     * this method sets the Id for the new object.
+     *
+     * @param displayName
+     * @param description
+     * @param repositoryType
+     * @param repositoryName
+     *
+     * @return Repository
+     *
+     * @throws gov.nist.toolkit.repository.api.RepositoryException An exception with one of
+     *         the following messages defined in
+     *         gov.nist.toolkit.repository.api.RepositoryException may be thrown: {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#OPERATION_FAILED
+     *         OPERATION_FAILED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#PERMISSION_DENIED
+     *         PERMISSION_DENIED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#CONFIGURATION_ERROR
+     *         CONFIGURATION_ERROR}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
+     *         UNIMPLEMENTED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
+     *         NULL_ARGUMENT}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNKNOWN_TYPE
+     *         UNKNOWN_TYPE}
+     */
+    Repository createNamedRepository(String displayName, String description,
+        gov.nist.toolkit.repository.api.Type repositoryType, String repositoryName)
+        throws gov.nist.toolkit.repository.api.RepositoryException;
+
+    /**
      * Create a new Repository of the specified Type.  The implementation of
      * this method sets the Id for the new object.
      *

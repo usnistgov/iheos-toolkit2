@@ -67,6 +67,18 @@ public class SimpleRepository implements Repository, Flushable {
 		properties.setProperty("id", id.getIdString());
 		root = Configuration.getRepositoryLocation(id);
 	}
+	
+	/**
+	 * Create new named Repository.
+	 * @throws RepositoryException
+	 */
+	public SimpleRepository(String name) throws RepositoryException {
+		isNew = true;
+		Id id = new SimpleId(name);
+		properties.setProperty("id", id.getIdString());
+		root = Configuration.getRepositoryLocation(id);
+	}
+	
 
 	public void setType(Type type) throws RepositoryException {
 		load();
@@ -148,6 +160,25 @@ public class SimpleRepository implements Repository, Flushable {
 		a.setRepository(getId());
 		a.setType(assetType);
 		a.setId(new IdFactory().getNewId());
+		a.updateDisplayName(displayName);
+		a.updateDescription(description);
+		a.flush();
+		return a;
+	}
+
+	@Override
+	public Asset createNamedAsset(String displayName, String description,
+			Type assetType, String name) throws RepositoryException {
+		if (name == null)
+			throw new RepositoryException("null is not a name for an Asset");
+		if (name.equals(Configuration.REPOSITORY_PROP_FILE_BASENAME))
+			throw new RepositoryException(Configuration.REPOSITORY_PROP_FILE_BASENAME + " is an illegal Asset name");
+		load();
+		SimpleAsset a = new SimpleAsset();
+		a.setAutoFlush(false);
+		a.setRepository(getId());
+		a.setType(assetType);
+		a.setId(new SimpleId(name));
 		a.updateDisplayName(displayName);
 		a.updateDescription(description);
 		a.flush();
@@ -333,4 +364,5 @@ public class SimpleRepository implements Repository, Flushable {
 		load();
 		return properties.getProperty(name);
 	}
+
 }

@@ -249,6 +249,13 @@ public interface Asset {
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
+     * Get an Asset's mimeType.
+     * @return
+     * @throws gov.nist.toolkit.repository.api.RepositoryException
+     */
+    public String getMimeType() 
+    		throws gov.nist.toolkit.repository.api.RepositoryException;
+    /**
      * Get an Asset's content.  This method can be a convenience if one is not
      * interested in all the structure of the Records.
      *
@@ -269,6 +276,29 @@ public interface Asset {
     public byte[] getContent()
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
+    /**
+     * Update an Asset's content, saving in the specified mimeType.
+     *
+     * @param content
+     *
+     * @throws gov.nist.toolkit.repository.api.RepositoryException An exception with one of
+     *         the following messages defined in
+     *         gov.nist.toolkit.repository.api.RepositoryException may be thrown: {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#OPERATION_FAILED
+     *         OPERATION_FAILED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#PERMISSION_DENIED
+     *         PERMISSION_DENIED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#CONFIGURATION_ERROR
+     *         CONFIGURATION_ERROR}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
+     *         UNIMPLEMENTED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
+     *         NULL_ARGUMENT}
+     */
+	public void updateContent(String content, String mimeType)
+	        throws gov.nist.toolkit.repository.api.RepositoryException;
+	
+	
     /**
      * Update an Asset's content.
      *

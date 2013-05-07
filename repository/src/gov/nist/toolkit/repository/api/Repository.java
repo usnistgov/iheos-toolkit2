@@ -177,6 +177,32 @@ public interface Repository extends java.io.Serializable {
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
+     * Create a new Asset of this AssetType and Name in this Repository.  The
+     * implementation of this method sets the Id for the new object.
+     *
+     * @return Asset
+     *
+     * @throws gov.nist.toolkit.repository.api.RepositoryException An exception with one of
+     *         the following messages defined in
+     *         gov.nist.toolkit.repository.api.RepositoryException may be thrown: {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#OPERATION_FAILED
+     *         OPERATION_FAILED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#PERMISSION_DENIED
+     *         PERMISSION_DENIED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#CONFIGURATION_ERROR
+     *         CONFIGURATION_ERROR}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
+     *         UNIMPLEMENTED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
+     *         NULL_ARGUMENT}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNKNOWN_TYPE
+     *         UNKNOWN_TYPE}
+     */
+    Asset createNamedAsset(String displayName, String description,
+        gov.nist.toolkit.repository.api.Type assetType, String name)
+        throws gov.nist.toolkit.repository.api.RepositoryException;
+
+    /**
      * Delete an Asset from this Repository.
      *
      * @param assetId

@@ -14,7 +14,8 @@ public class Configuration {
 	public static final String CONTENT_FILE_EXT = "bytes";
 	public static final String REPOSITORY_TYPES_DIR = "types";
 	public static final String REPOSITORY_DATA_DIR = "data";
-	public static final String REPOSITORY_PROP_FILE = "repository" + PROPERTIES_FILE_EXT;
+	public static final String REPOSITORY_PROP_FILE_BASENAME = "repository";
+	public static final String REPOSITORY_PROP_FILE = REPOSITORY_PROP_FILE_BASENAME + PROPERTIES_FILE_EXT;
 	// Do not reference this static variable directly. Use
 	// private accessor getRootOfAllRepositories
 	// which verifies it is initialized.

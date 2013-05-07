@@ -9,6 +9,14 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Properties;
 
+/**
+ * RepositoryManager
+ * ToDo
+ * 	- Create Abstract Repository and refactor simple (in prep for derby based repository)
+ *  - Introduce other data types (xml, txt, serialized objects) instead of just byte[]
+ * @author bmajur
+ *
+ */
 public class RepositoryFactory implements RepositoryManager {
 
 	/**
@@ -18,15 +26,28 @@ public class RepositoryFactory implements RepositoryManager {
 
 	@Override
 	public Repository createRepository(String displayName, String description,
-			Type type) throws RepositoryException {
+			Type repositoryType) throws RepositoryException {
 		SimpleRepository rep = new SimpleRepository();
 		rep.setAutoFlush(false);
-		rep.setType(type);
+		rep.setType(repositoryType);
 		rep.setDescription(description);
 		rep.setDisplayName(displayName);
 		rep.flush();
 		return rep;
 	}
+	
+	@Override
+	public Repository createNamedRepository(String displayName,
+			String description, Type repositoryType, String repositoryName)
+			throws RepositoryException {
+		SimpleRepository rep = new SimpleRepository(repositoryName);
+		rep.setAutoFlush(false);
+		rep.setType(repositoryType);
+		rep.setDescription(description);
+		rep.setDisplayName(displayName);
+		rep.flush();
+		return rep;
+	}	
 
 	File getRepositoryRoot(Id id) throws RepositoryException {
 		return new File(Configuration.getRootOfAllRepositories().toString() + File.separator + id);
@@ -122,5 +143,6 @@ public class RepositoryFactory implements RepositoryManager {
 	@Override
 	public TypeIterator getRepositoryTypes() throws RepositoryException {
 		return new SimpleTypeIterator();
-	}	
+	}
+
 }
