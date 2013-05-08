@@ -57,6 +57,7 @@ public class Listener {
 	private static int port=4444, maxConnections=0;
 	static String externalCache;
 	static String pathToPrivateKey;
+	static String codesXmlUrl;
 
 	static Logger logger = Logger.getLogger(Listener.class);
 
@@ -68,18 +69,21 @@ public class Listener {
 	// Listen for incoming connections and handle them
 	public static void main(String[] args) {
 
-		if (args.length != 3) {
-			System.out.println("Usage: Listener <port> <toolkit-external-cache> <keystore holding private key>");
+		if (args.length != 4) {
+			System.out.println("Usage: Listener <port> <toolkit-external-cache> <keystore holding private key> <codes.xml file>");
 			System.exit(-1);
 		}
 		try {
 			port = Integer.parseInt(args[0]);
 			externalCache = args[1];
 			pathToPrivateKey = args[2];
+			codesXmlUrl = args[3];
 		} catch (Exception e) {
-			System.out.println("Usage: Listener <port> <toolkit-external-cache> <keystore holding private key>: " + e.getMessage());
+			System.out.println("Usage: Listener <port> <toolkit-external-cache> <keystore holding private key> <codes.xml file>: " + e.getMessage());
 			System.exit(-1);
 		}
+		
+		System.setProperty("XDSCodesFile", codesXmlUrl);
 
 		Installation.installation().externalCache(new File(externalCache));
 
