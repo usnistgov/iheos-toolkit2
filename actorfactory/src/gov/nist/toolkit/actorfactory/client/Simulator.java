@@ -6,6 +6,12 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * Simulator data model. Packages a collection of SimulatorConfig
+ * objects.
+ * @author bmajur
+ *
+ */
 public class Simulator  implements Serializable, IsSerializable  {
 	/**
 	 * 

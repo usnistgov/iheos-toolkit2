@@ -21,9 +21,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 public class CommonSiteServiceManager extends CommonServiceManager {
-	Sites commonSites = null; // these are the common sites. The simulator based
-	// sites are kept in Session.sites.
-	// Private sites are kept in PrivSiteServiceManager
+	Sites commonSites = null; 
 	
 	static Logger logger = Logger.getLogger(CommonSiteServiceManager.class);
 

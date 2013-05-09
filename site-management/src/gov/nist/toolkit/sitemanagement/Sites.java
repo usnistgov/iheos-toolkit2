@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * A collection of Site objects which are managed as a group.
+ * @author bmajur
+ *
+ */
 public class Sites {
 	HashMap<String, Site> siteMap = new HashMap<String, Site>();   // siteName -> Site
 	String defaultSiteName;

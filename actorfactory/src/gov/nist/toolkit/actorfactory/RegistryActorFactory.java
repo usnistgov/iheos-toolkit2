@@ -17,6 +17,11 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Builds new Registry simulators.
+ * @author bmajur
+ *
+ */
 public class RegistryActorFactory extends ActorFactory {
 
 	public static final String update_metadata_option = "Update_Metadata_Option";

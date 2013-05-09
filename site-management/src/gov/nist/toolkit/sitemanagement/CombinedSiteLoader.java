@@ -12,7 +12,7 @@ import org.apache.axiom.om.OMElement;
 
 
 
-public class CombinedSiteLoader extends SiteLoader {
+public class CombinedSiteLoader extends AbstractSiteLoader {
 	String defaultSiteName = null;
 	
 	public Sites load(OMElement conf, Sites sites) throws Exception {

@@ -17,7 +17,7 @@ import javax.xml.namespace.QName;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 
-public abstract class SiteLoader {
+public abstract class AbstractSiteLoader {
 	
 	protected HashMap<String, Site> siteMap = new HashMap<String, Site>();
 

@@ -8,7 +8,7 @@ import java.io.File;
 
 import org.apache.axiom.om.OMElement;
 
-public class SeparateSiteLoader extends SiteLoader {
+public class SeparateSiteLoader extends AbstractSiteLoader {
 
 	public Sites load(OMElement conf, Sites sites) throws Exception {
 		parseSite(conf);
