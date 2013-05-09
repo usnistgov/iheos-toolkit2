@@ -37,9 +37,12 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.valccda.CdaDetector;
 import gov.nist.toolkit.valregmsg.xdm.XDMException;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
+import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
+import gov.nist.toolkit.valsupport.message.HtmlValFormatter;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.ByteArrayInputStream;
@@ -178,7 +181,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			er.error("No DTS", "Unexpected Error", e.toString(), "", "-");
-		}				
+		}
 
 	}
 

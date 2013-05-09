@@ -7,7 +7,14 @@ public class HtmlValFormatter implements ValFormatter {
 
 	static int MAXROWS = 3000;
 	String[][] tbl = new String[MAXROWS][6];
+	int[] colspan = new int[MAXROWS];
 	int row = 0;
+	
+	public HtmlValFormatter() {
+		for(int i=0;i<this.colspan.length;i++) {
+			this.colspan[i] = 0;
+		}
+	}
 	
 	public String toHtml() {
 		StringBuffer buf = new StringBuffer();
@@ -16,10 +23,19 @@ public class HtmlValFormatter implements ValFormatter {
 		
 		for (int r=0; r<row; r++) {
 			buf.append("<tr>");
-			
-			for (int c=0; c<6; c++) {
+
+			if(this.colspan[r] == 0) {
+				for (int c=0; c<6; c++) {
+					buf.append("<td>");
+					buf.append(tbl[r][c]);
+					buf.append("</td>");
+				}
+			} else {
+				buf.append("<td colspan=\"" + this.colspan[r] + "\">");
+				buf.append(tbl[r][0]);
+				buf.append("</td>");
 				buf.append("<td>");
-				buf.append(tbl[r][c]);
+				buf.append(tbl[r][1]);
 				buf.append("</td>");
 			}
 			
@@ -43,6 +59,10 @@ public class HtmlValFormatter implements ValFormatter {
 			addCell("<hr/>", i);
 		}
 		row++;
+	}
+	
+	public void setRow(int row) {
+		this.row = row;
 	}
 
 	public void clearResults() {
@@ -198,8 +218,7 @@ public class HtmlValFormatter implements ValFormatter {
 
 	@Override
 	public void setColSpan(int col, int colSpan) {
-		// TODO Auto-generated method stub
-		
+		this.colspan[col] = 5;	
 	}
 
 }

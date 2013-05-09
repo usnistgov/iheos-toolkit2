@@ -70,9 +70,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		}
 		
 		if(ValidationUtils.validateAddrSpec(returnPath)) {
-			er.success("103-105", "Return Path", SafeHtmlUtils.htmlEscape(txtReturnPath), "addr-spec", rfc);
+			er.success("103-105", "Return Path", txtReturnPath, "addr-spec", rfc);
 		} else {
-			er.error("103-105", "Return Path", SafeHtmlUtils.htmlEscape(txtReturnPath), "addr-spec", rfc);
+			er.error("103-105", "Return Path", txtReturnPath, "addr-spec", rfc);
 		}
 		
 	}
