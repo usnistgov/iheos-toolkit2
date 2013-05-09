@@ -418,6 +418,12 @@ public interface Asset {
     public AssetIterator getAssetsByType(gov.nist.toolkit.repository.api.Type assetType)
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
+    public String getProperty(String key)
+            throws gov.nist.toolkit.repository.api.RepositoryException;
+    
+    public void setProperty(String key, String value)
+            throws gov.nist.toolkit.repository.api.RepositoryException;
+
     /**
      * Create a new Asset Record of the specified RecordStructure.   The
      * implementation of this method sets the Id for the new object.
