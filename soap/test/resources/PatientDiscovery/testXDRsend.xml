@@ -1,0 +1,475 @@
+
+--uuid:647829f5-645c-4118-a44e-a005a2926047
+Content-Id:
+<rootpart * f5-645c-4118-a44e-a005a2926047 @
+	example.jaxws.sun.com>
+	Content-Type:
+	application/xop+xml;charset=utf-8;type="application/soap+xml"
+	Content-Transfer-Encoding: binary
+
+<?xml version='1.0' encoding='UTF-8'?>
+	<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope"
+		xmlns:wsse11="http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd"
+		xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+		xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+		xmlns:saml="urn:oasis:names:tc:SAML:1.0:assertion" xmlns:exc14n="http://www.w3.org/2001/10/xml-exc-c14n#">
+		<S:Header>
+			<To xmlns="http://www.w3.org/2005/08/addressing" mustUnderstand="true">https://connect3.clinovations.org:9893/ttt/sim/803dd746-4574-469d-bd84-b58988f98570/rec/xdrpr
+			</To>
+			<Action xmlns="http://www.w3.org/2005/08/addressing"
+				mustUnderstand="true">urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b
+			</Action>
+			<ReplyTo xmlns="http://www.w3.org/2005/08/addressing"
+				mustUnderstand="true">
+				<Address>http://www.w3.org/2005/08/addressing/anonymous</Address>
+			</ReplyTo>
+			<MessageID xmlns="http://www.w3.org/2005/08/addressing"
+				mustUnderstand="true">c8ad8568-a9fc-456f-9346-cc292461303b</MessageID>
+			<wsse:Security S:mustUnderstand="true">
+				<wsu:Timestamp
+					xmlns:ns17="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512"
+					xmlns:ns16="http://schemas.xmlsoap.org/soap/envelope/" wsu:Id="_1">
+					<wsu:Created>2013-05-07T20:48:19Z</wsu:Created>
+					<wsu:Expires>2013-05-07T20:53:19Z</wsu:Expires>
+				</wsu:Timestamp>
+				<saml2:Assertion xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+					xmlns:exc14n="http://www.w3.org/2001/10/xml-exc-c14n#" xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion"
+					xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+					ID="_ec58f728-910e-4f5f-9f47-e6d63468f8cb" IssueInstant="2013-05-07T20:48:19.080Z"
+					Version="2.0">
+					<saml2:Issuer
+						Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">CN=SAML User,OU=SU,O=SAML User,L=Los Angeles,ST=CA,C=US</saml2:Issuer>
+					<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+						<ds:SignedInfo>
+							<ds:CanonicalizationMethod
+								Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+							<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+							<ds:Reference URI="#_ec58f728-910e-4f5f-9f47-e6d63468f8cb">
+								<ds:Transforms>
+									<ds:Transform
+										Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+									<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+								</ds:Transforms>
+								<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+								<ds:DigestValue>3zkMueCaCiRNm8DvzrMmzLh3SLk=</ds:DigestValue>
+							</ds:Reference>
+						</ds:SignedInfo>
+						<ds:SignatureValue>q/U8UfWhQ2fSMuhu8JTkyIJb9RwN1mMyoQ/H3aSJeUSwg0ibiaFX+5CcBglD2D/V7xPKml0DPqBI
+							0ubMA3lbTtWJYoyzcrgrklQHzr4W5kAMIxJyriGIQ6eVpkegPu81PQL6hAidIRRRsSiEskbDmtCh
+							y7IOQFAe9vSI63XD05mq84RV5F0KGBvM9+aFtwiLEB7Tgf7oVd4DQzZF5tGezFUCBJQhRSIIIiiv
+							UEfTIftXtO/dMcKD9cqGCpW1emvh3FKplwXoBhA31ah3bwUnkMm493WvEpoMyMJ7hHtorRokU/Rj
+							OF5C52tUvgBSIrnnIgtF23NT89pX0dBo1c0RaQ==</ds:SignatureValue>
+						<ds:KeyInfo>
+							<ds:KeyValue>
+								<ds:RSAKeyValue>
+									<ds:Modulus>3KE+bVAtDca3mueQF9gTcTZnzbtEppauTE+Zb5hsH/uAbNmV8Xn2SozwSY7KexUIijSAtjam83Mc
+										LhmL5B9VBsidXXF/IpkvLGagj0oh03NVbcCDO3dHCDC60OLAtM8HPdDtlW+0smZvA9BuFaxFEPO8
+										Kr1/D4QVL/x8D4zV+DJYEMH0nUh7JK0nHvj9J/C8BJjkZ7MWCVV5obOfrOkP7Hkk65GdFS/FACGp
+										2iReX1I/IfioW9XfSFjhQFyMqmOvu13cBPR1jjyFIKw9zYp7+bvW+nPa+rITKDVTKUWv7A0HYn57
+										2gf5rrrPdWv+/hPcOYIuQA/tCg94Ov4KTs1jNQ==</ds:Modulus>
+									<ds:Exponent>AQAB</ds:Exponent>
+								</ds:RSAKeyValue>
+							</ds:KeyValue>
+						</ds:KeyInfo>
+					</ds:Signature>
+					<saml2:Subject>
+						<saml2:NameID
+							Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">UID=kskagerb</saml2:NameID>
+						<saml2:SubjectConfirmation
+							Method="urn:oasis:names:tc:SAML:2.0:cm:holder-of-key">
+							<saml2:SubjectConfirmationData>
+								<ds:KeyInfo>
+									<ds:KeyValue>
+										<ds:RSAKeyValue>
+											<ds:Modulus>3KE+bVAtDca3mueQF9gTcTZnzbtEppauTE+Zb5hsH/uAbNmV8Xn2SozwSY7KexUIijSAtjam83McLhmL5B9VBsidXXF/IpkvLGagj0oh03NVbcCDO3dHCDC60OLAtM8HPdDtlW+0smZvA9BuFaxFEPO8Kr1/D4QVL/x8D4zV+DJYEMH0nUh7JK0nHvj9J/C8BJjkZ7MWCVV5obOfrOkP7Hkk65GdFS/FACGp2iReX1I/IfioW9XfSFjhQFyMqmOvu13cBPR1jjyFIKw9zYp7+bvW+nPa+rITKDVTKUWv7A0HYn572gf5rrrPdWv+/hPcOYIuQA/tCg94Ov4KTs1jNQ==</ds:Modulus>
+											<ds:Exponent>AQAB</ds:Exponent>
+										</ds:RSAKeyValue>
+									</ds:KeyValue>
+								</ds:KeyInfo>
+							</saml2:SubjectConfirmationData>
+						</saml2:SubjectConfirmation>
+					</saml2:Subject>
+					<saml2:AuthnStatement AuthnInstant="2009-04-16T13:15:39.000Z"
+						SessionIndex="987">
+						<saml2:SubjectLocality Address="158.147.185.168"
+							DNSName="cs.myharris.net" />
+						<saml2:AuthnContext>
+							<saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:X509</saml2:AuthnContextClassRef>
+						</saml2:AuthnContext>
+					</saml2:AuthnStatement>
+					<saml2:AttributeStatement>
+						<saml2:Attribute Name="urn:oasis:names:tc:xspa:1.0:subject:subject-id">
+							<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance"
+								xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">Karl S
+								Skagerberg</saml2:AttributeValue>
+						</saml2:Attribute>
+						<saml2:Attribute
+							Name="urn:oasis:names:tc:xspa:1.0:subject:organization">
+							<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance"
+								xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">InternalTest2</saml2:AttributeValue>
+						</saml2:Attribute>
+						<saml2:Attribute
+							Name="urn:oasis:names:tc:xspa:1.0:subject:organization-id">
+							<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance"
+								xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">2.2</saml2:AttributeValue>
+						</saml2:Attribute>
+						<saml2:Attribute Name="urn:nhin:names:saml:homeCommunityId">
+							<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance"
+								xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">1.1</saml2:AttributeValue>
+						</saml2:Attribute>
+						<saml2:Attribute Name="urn:oasis:names:tc:xacml:2.0:subject:role">
+							<saml2:AttributeValue>
+								<hl7:Role xmlns:hl7="urn:hl7-org:v3"
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" code="307969004"
+									codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED_CT"
+									displayName="Public Health" xsi:type="hl7:CE" />
+							</saml2:AttributeValue>
+						</saml2:Attribute>
+						<saml2:Attribute
+							Name="urn:oasis:names:tc:xspa:1.0:subject:purposeofuse">
+							<saml2:AttributeValue>
+								<hl7:PurposeOfUse xmlns:hl7="urn:hl7-org:v3"
+									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" code="PUBLICHEALTHKIERAN"
+									codeSystem="2.16.840.1.113883.3.18.7.1" codeSystemName="nhin-purpose"
+									displayName="Use or disclosure of Psychotherapy Notes"
+									xsi:type="hl7:CE" />
+							</saml2:AttributeValue>
+						</saml2:Attribute>
+						<saml2:Attribute
+							Name="urn:oasis:names:tc:xacml:2.0:resource:resource-id">
+							<saml2:AttributeValue xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance"
+								xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">D123401^^^&amp;1.1&amp;ISO</saml2:AttributeValue>
+						</saml2:Attribute>
+					</saml2:AttributeStatement>
+					<saml2:AuthzDecisionStatement
+						Decision="Permit"
+						Resource="https://connect3.clinovations.org:9893/ttt/sim/803dd746-4574-469d-bd84-b58988f98570/rec/xdrpr">
+						<saml2:Action Namespace="urn:oasis:names:tc:SAML:1.0:action:rwedc">Execute</saml2:Action>
+						<saml2:Evidence>
+							<saml2:Assertion ID="40df7c0a-ff3e-4b26-baeb-f2910f6d05a9"
+								IssueInstant="2009-04-16T13:10:39.093Z" Version="2.0">
+								<saml2:Issuer
+									Format="urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName">CN=SAML User,OU=Harris,O=HITS,L=Melbourne,ST=FL,C=US</saml2:Issuer>
+								<saml2:Conditions NotBefore="2009-04-16T13:10:39.093Z"
+									NotOnOrAfter="2009-12-31T12:00:00.000Z" />
+								<saml2:AttributeStatement>
+									<saml2:Attribute Name="AccessConsentPolicy"
+										NameFormat="http://www.hhs.gov/healthit/nhin">
+										<saml2:AttributeValue
+											xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance"
+											xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">Claim-Ref-1234</saml2:AttributeValue>
+									</saml2:Attribute>
+									<saml2:Attribute Name="InstanceAccessConsentPolicy"
+										NameFormat="http://www.hhs.gov/healthit/nhin">
+										<saml2:AttributeValue
+											xmlns:ns6="http://www.w3.org/2001/XMLSchema-instance"
+											xmlns:ns7="http://www.w3.org/2001/XMLSchema" ns6:type="ns7:string">Claim-Instance-1</saml2:AttributeValue>
+									</saml2:Attribute>
+								</saml2:AttributeStatement>
+							</saml2:Assertion>
+						</saml2:Evidence>
+					</saml2:AuthzDecisionStatement>
+				</saml2:Assertion>
+				<ds:Signature
+					xmlns:ns17="http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512"
+					xmlns:ns16="http://schemas.xmlsoap.org/soap/envelope/" Id="_2">
+					<ds:SignedInfo>
+						<ds:CanonicalizationMethod
+							Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+							<exc14n:InclusiveNamespaces
+								PrefixList="wsse S" />
+						</ds:CanonicalizationMethod>
+						<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" />
+						<ds:Reference URI="#_1">
+							<ds:Transforms>
+								<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+									<exc14n:InclusiveNamespaces
+										PrefixList="wsu wsse S" />
+								</ds:Transform>
+							</ds:Transforms>
+							<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+							<ds:DigestValue>8LOirw7Eo7XQHLn23oFthKVGtgU=</ds:DigestValue>
+						</ds:Reference>
+					</ds:SignedInfo>
+					<ds:SignatureValue>N42LpV0S37YiYC8bfJUvp4oN1t0AfgtHJ0HZuANcXHUdLXuVrbBkSFDbrRya9KxT0AMEziDq7Exx
+						YQXyU2XvzX2OjPXUTlggM78tdnCNrk9pZavOlrTLhV5oJOhDj6fSb1tm/y9P9MEU1hFbtDVy2RlT
+						80OfMUyDt1OKv7Pm7HuTv3oOtaz7/F/HURVb82gNVWTkfdGxJZgXXhvWniJKOoKwcAYGtpDJ3Sry
+						4iuTxqbqFdT94SbOUZtRE2joZUr1QLjfnXFpzRn7Y13k1CGWFJMhc+HBh4tjgoHrMmJh31e8kT8G
+						JTrwida97GvoRcWtXL901RYMjzfwIlb2tZ9/dw==</ds:SignatureValue>
+					<ds:KeyInfo>
+						<wsse:SecurityTokenReference
+							wsse11:TokenType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0">
+							<wsse:KeyIdentifier
+								ValueType="http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLID">_ec58f728-910e-4f5f-9f47-e6d63468f8cb</wsse:KeyIdentifier>
+						</wsse:SecurityTokenReference>
+					</ds:KeyInfo>
+				</ds:Signature>
+			</wsse:Security>
+		</S:Header>
+		<S:Body>
+			<ns5:ProvideAndRegisterDocumentSetRequest
+				xmlns:ns2="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" xmlns:ns3="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0"
+				xmlns:ns4="urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0" xmlns:ns5="urn:ihe:iti:xds-b:2007"
+				xmlns:ns6="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" xmlns:ns7="urn:gov:hhs:fha:nhinc:gateway:samltokendata">
+				<ns4:SubmitObjectsRequest id="123" comment="comme">
+					<ns2:RegistryObjectList>
+						<ns2:ExtrinsicObject mimeType="text/xml"
+							objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1" id="Document01">
+							<ns2:Slot name="creationTime">
+								<ns2:ValueList>
+									<ns2:Value>20051224</ns2:Value>
+								</ns2:ValueList>
+							</ns2:Slot>
+							<ns2:Slot name="languageCode">
+								<ns2:ValueList>
+									<ns2:Value>en-us</ns2:Value>
+								</ns2:ValueList>
+							</ns2:Slot>
+							<ns2:Slot name="serviceStartTime">
+								<ns2:ValueList>
+									<ns2:Value>200412230800</ns2:Value>
+								</ns2:ValueList>
+							</ns2:Slot>
+							<ns2:Slot name="serviceStopTime">
+								<ns2:ValueList>
+									<ns2:Value>200412230801</ns2:Value>
+								</ns2:ValueList>
+							</ns2:Slot>
+							<ns2:Slot name="sourcePatientId">
+								<ns2:ValueList>
+									<ns2:Value>ST-1000^^^&amp;1.3.6.1.4.1.21367.2003.3.9&amp;ISO</ns2:Value>
+								</ns2:ValueList>
+							</ns2:Slot>
+							<ns2:Slot name="sourcePatientInfo">
+								<ns2:ValueList>
+									<ns2:Value>PID-3|ST-1000^^^&amp;1.3.6.1.4.1.21367.2003.3.9&amp;ISO</ns2:Value>
+									<ns2:Value>PID-5|Doe^John^^^</ns2:Value>
+									<ns2:Value>PID-7|19560527</ns2:Value>
+									<ns2:Value>PID-8|M</ns2:Value>
+									<ns2:Value>PID-11|100 Main St^^Metropolis^Il^44130^USA</ns2:Value>
+								</ns2:ValueList>
+							</ns2:Slot>
+							<ns2:Name>
+								<ns2:LocalizedString value="Physical" />
+							</ns2:Name>
+							<ns2:Description />
+							<ns2:Classification
+								classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d"
+								classifiedObject="Document01" id="cl01">
+								<ns2:Slot name="authorPerson">
+									<ns2:ValueList>
+										<ns2:Value>Gerald Smitty</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Slot name="authorInstitution">
+									<ns2:ValueList>
+										<ns2:Value>Cleveland Clinic</ns2:Value>
+										<ns2:Value>Parma Community</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Slot name="authorRole">
+									<ns2:ValueList>
+										<ns2:Value>Attending</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Slot name="authorSpecialty">
+									<ns2:ValueList>
+										<ns2:Value>Orthopedic</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+							</ns2:Classification>
+							<ns2:Classification
+								classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"
+								classifiedObject="Document01" nodeRepresentation="History and Physical"
+								id="cl02">
+								<ns2:Slot name="codingScheme">
+									<ns2:ValueList>
+										<ns2:Value>Connect-a-thon classCodes</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Name>
+									<ns2:LocalizedString value="History and Physical" />
+								</ns2:Name>
+							</ns2:Classification>
+							<ns2:Classification
+								classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
+								classifiedObject="Document01" nodeRepresentation="1.3.6.1.4.1.21367.2006.7.101"
+								id="cl03">
+								<ns2:Slot name="codingScheme">
+									<ns2:ValueList>
+										<ns2:Value>Connect-a-thon confidentialityCodes</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Name>
+									<ns2:LocalizedString value="Clinical-Staff" />
+								</ns2:Name>
+							</ns2:Classification>
+							<ns2:Classification
+								classificationScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d"
+								classifiedObject="Document01" nodeRepresentation="CDAR2/IHE 1.0"
+								id="cl04">
+								<ns2:Slot name="codingScheme">
+									<ns2:ValueList>
+										<ns2:Value>Connect-a-thon formatCodes</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Name>
+									<ns2:LocalizedString value="CDAR2/IHE 1.0" />
+								</ns2:Name>
+							</ns2:Classification>
+							<ns2:Classification
+								classificationScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1"
+								classifiedObject="Document01" nodeRepresentation="Outpatient"
+								id="cl05">
+								<ns2:Slot name="codingScheme">
+									<ns2:ValueList>
+										<ns2:Value>Connect-a-thon healthcareFacilityTypeCodes</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Name>
+									<ns2:LocalizedString value="Outpatient" />
+								</ns2:Name>
+							</ns2:Classification>
+							<ns2:Classification
+								classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
+								classifiedObject="Document01" nodeRepresentation="General Medicine"
+								id="cl06">
+								<ns2:Slot name="codingScheme">
+									<ns2:ValueList>
+										<ns2:Value>Connect-a-thon practiceSettingCodes</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Name>
+									<ns2:LocalizedString value="General Medicine" />
+								</ns2:Name>
+							</ns2:Classification>
+							<ns2:Classification
+								classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
+								classifiedObject="Document01" nodeRepresentation="34108-1" id="cl07">
+								<ns2:Slot name="codingScheme">
+									<ns2:ValueList>
+										<ns2:Value>LOINC</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Name>
+									<ns2:LocalizedString value="Outpatient Evaluation And Management" />
+								</ns2:Name>
+							</ns2:Classification>
+							<ns2:ExternalIdentifier registryObject="Document01"
+								identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427"
+								value="SELF-5^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO" id="ei01">
+								<ns2:Name>
+									<ns2:LocalizedString value="XDSDocumentEntry.patientId" />
+								</ns2:Name>
+							</ns2:ExternalIdentifier>
+							<ns2:ExternalIdentifier registryObject="Document01"
+								identificationScheme="urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab"
+								value="1.3.6.1.4.1.21367.2005.3.9999.32" id="ei02">
+								<ns2:Name>
+									<ns2:LocalizedString value="XDSDocumentEntry.uniqueId" />
+								</ns2:Name>
+							</ns2:ExternalIdentifier>
+						</ns2:ExtrinsicObject>
+						<ns2:RegistryPackage id="SubmissionSet01">
+							<ns2:Slot name="submissionTime">
+								<ns2:ValueList>
+									<ns2:Value>20041225235050</ns2:Value>
+								</ns2:ValueList>
+							</ns2:Slot>
+							<ns2:Name>
+								<ns2:LocalizedString value="Physical" />
+							</ns2:Name>
+							<ns2:Description>
+								<ns2:LocalizedString value="Annual physical" />
+							</ns2:Description>
+							<ns2:Classification
+								classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"
+								classifiedObject="SubmissionSet01" id="cl08">
+								<ns2:Slot name="authorPerson">
+									<ns2:ValueList>
+										<ns2:Value>Sherry Dopplemeyer</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Slot name="authorInstitution">
+									<ns2:ValueList>
+										<ns2:Value>Cleveland Clinic</ns2:Value>
+										<ns2:Value>Berea Community</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Slot name="authorRole">
+									<ns2:ValueList>
+										<ns2:Value>Purn4ary Surgon</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Slot name="authorSpecialty">
+									<ns2:ValueList>
+										<ns2:Value>Orthopedic</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+							</ns2:Classification>
+							<ns2:Classification
+								classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500"
+								classifiedObject="SubmissionSet01" nodeRepresentation="History and Physical"
+								id="cl09">
+								<ns2:Slot name="codingScheme">
+									<ns2:ValueList>
+										<ns2:Value>Connect-a-thon contentTypeCodes</ns2:Value>
+									</ns2:ValueList>
+								</ns2:Slot>
+								<ns2:Name>
+									<ns2:LocalizedString value="History and Physical" />
+								</ns2:Name>
+							</ns2:Classification>
+							<ns2:ExternalIdentifier registryObject="SubmissionSet01"
+								identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"
+								value="1.3.6.1.4.1.21367.2005.3.9999.33" id="ei03">
+								<ns2:Name>
+									<ns2:LocalizedString value="XDSSubmissionSet.uniqueId" />
+								</ns2:Name>
+							</ns2:ExternalIdentifier>
+							<ns2:ExternalIdentifier registryObject="SubmissionSet01"
+								identificationScheme="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832"
+								value="3670984664" id="ei04">
+								<ns2:Name>
+									<ns2:LocalizedString value="XDSSubmissionSet.sourceId" />
+								</ns2:Name>
+							</ns2:ExternalIdentifier>
+							<ns2:ExternalIdentifier registryObject="SubmissionSet01"
+								identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446"
+								value="SELF-5^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO" id="ei05">
+								<ns2:Name>
+									<ns2:LocalizedString value="XDSSubmissionSet.patientId" />
+								</ns2:Name>
+							</ns2:ExternalIdentifier>
+						</ns2:RegistryPackage>
+						<ns2:Classification classifiedObject="SubmissionSet01"
+							classificationNode="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"
+							id="cl10" />
+						<ns2:Association associationType="HasMember"
+							sourceObject="SubmissionSet01" targetObject="Document01" id="as01">
+							<ns2:Slot name="SubmissionSetStatus">
+								<ns2:ValueList>
+									<ns2:Value>Original</ns2:Value>
+								</ns2:ValueList>
+							</ns2:Slot>
+						</ns2:Association>
+					</ns2:RegistryObjectList>
+				</ns4:SubmitObjectsRequest>
+				<ns5:Document id="Document01">
+					<xop:Include xmlns:xop="http://www.w3.org/2004/08/xop/include"
+						href="cid:df5ebf7c-34ee-4455-ade9-96ffaf647f61@example.jaxws.sun.com" />
+				</ns5:Document>
+			</ns5:ProvideAndRegisterDocumentSetRequest>
+		</S:Body>
+	</S:Envelope>
+	--uuid:647829f5-645c-4118-a44e-a005a2926047
+	Content-Id:
+	<df5ebf7c-34ee-4455-ade9-96ffaf647f61 @
+		example.jaxws.sun.com>
+		Content-Type: application/octet-stream
+		Content-Transfer-Encoding:
+		binary
+
+		R0lGODlhcgGSALMAAAQCAEMmCZtuMFQxDS8b
+		--uuid:647829f5-645c-4118-a44e-a005a2926047--

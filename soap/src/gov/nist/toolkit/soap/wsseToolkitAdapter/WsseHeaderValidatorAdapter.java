@@ -1,20 +1,23 @@
 package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
-import java.security.KeyStoreException;
-
-import org.apache.soap.providers.com.Log;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderForErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
-import gov.nist.toolkit.wsseToolkit.api.WsseHeaderValidator;
-import gov.nist.toolkit.wsseToolkit.generation.GenerationException;
+import gov.nist.toolkit.wsseTool.api.WsseHeaderValidator;
+import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
+import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
+import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
+import gov.nist.toolkit.wsseTool.api.exceptions.GenerationException;
+import gov.nist.toolkit.wsseTool.api.exceptions.ValidationException;
+
+import java.security.KeyStoreException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 /**
  * Temporary adapter between toolkit legacy validation code and the wsse module
@@ -51,7 +54,10 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 		String sPass = "changeit";
 		String kPass = "changeit";
 		String alias = "hit-testing.nist.gov";
-		Element wsseHeader = WsseHeaderGeneratorAdapter.buildHeader(store, sPass, alias, kPass);
+		KeystoreAccess keystore = new KeystoreAccess(store , sPass, alias, kPass);
+		SecurityContext context = SecurityContextFactory.getInstance();
+		context.setKeystore(keystore);
+		Element wsseHeader = WsseHeaderGeneratorAdapter.buildHeader(context);
 		
 		WsseHeaderValidatorAdapter validator = new WsseHeaderValidatorAdapter(new ValidationContext(), wsseHeader);
 		ErrorRecorder er = new TextErrorRecorder();
@@ -75,11 +81,19 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 		
 		//those are the logs we are interested in
 		org.apache.log4j.Logger logMainVal = org.apache.log4j.Logger.getLogger(WsseHeaderValidator.class);
-		org.apache.log4j.Logger logVal = org.apache.log4j.Logger.getLogger("gov.nist.toolkit.wsseToolkit.validation");
+		org.apache.log4j.Logger logVal = org.apache.log4j.Logger.getLogger("gov.nist.toolkit.wsseTool.validation");
 		logVal.addAppender(wsseLogApp);
 		logMainVal.addAppender(wsseLogApp);
 		
-		val.validate(header);
+		SecurityContext context = SecurityContextFactory.getInstance();
+		//TODO need to check how to get information to put in the context!! patientId, homeCommunityId, endpoint url..
+		
+		try {
+			val.validate(header,context);
+		} catch (ValidationException e) {
+			log.error("error occur but we cannot do anything about it!");
+			e.printStackTrace();
+		}
 		
 		log.info("\n" +
 				 "================================================" +

@@ -3,12 +3,14 @@ package gov.nist.toolkit.soap.axis2;
 import gov.nist.toolkit.docref.WsDocRef;
 import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.saml.builder.WSSESecurityHeaderUtil;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.wsseToolkit.util.MyXmlUtils;
+import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
+import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
+import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
+import gov.nist.toolkit.wsseTool.util.MyXmlUtils;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
@@ -236,14 +238,17 @@ public class Soap implements SoapInterface {
 			 
 
 			try {
-				String keystore = securityParams.getKeystore().getAbsolutePath();
-				String kpass = securityParams.getKeystorePassword();
+				String store = securityParams.getKeystore().getAbsolutePath();
+				String kPass = securityParams.getKeystorePassword();
 				String alias = "1";
 				String sPass = "changeit";
 				
-				System.out.println(keystore);
-				
-				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter.buildHeader(keystore, kpass, alias, sPass);
+				KeystoreAccess keystore = new KeystoreAccess(store , sPass, alias, kPass);
+				SecurityContext context = SecurityContextFactory.getInstance();
+				context.setKeystore(keystore);
+				context.getParams().put("patientId", "TTTD123401^^^&2.2&ISO");
+				context.getParams().put("homeCommunityId", "urn:oid:2.2");
+				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter.buildHeader(context);
 				
 				System.out.println("********the one in soap*************");
 				MyXmlUtils.DomToStream(header, System.out);

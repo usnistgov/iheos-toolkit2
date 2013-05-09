@@ -55,6 +55,7 @@
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
 	<classpathentry kind="lib" path="lib/apache-mailet-base-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/avalon-framework-4.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-api-1.2.10.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-dom-1.2.10.jar"/>
 	<classpathentry kind="lib" path="lib/axiom-impl-1.2.10.jar"/>
@@ -71,17 +72,26 @@
 	<classpathentry kind="lib" path="lib/bcmail-jdk15on-147.jar"/>
 	<classpathentry kind="lib" path="lib/bcpkix-jdk15on-147.jar"/>
 	<classpathentry kind="lib" path="lib/bcprov-jdk15on-147.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-fileupload-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/dnsjava-2.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/ebxmlrr-common.jar"/>
 	<classpathentry kind="lib" path="lib/edireader-4.7.3.jar"/>
+	<classpathentry kind="lib" path="lib/esapi-2.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/groovy-all-2.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-servlet.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.0.jar"/>
+	<classpathentry kind="lib" path="lib/ivy-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-annotations-2.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-2.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind-2.1.1.jar"/>
@@ -92,27 +102,32 @@
 	<classpathentry kind="lib" path="lib/jcip-annotations-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jetty-util-6.1.8.jar"/>
 	<classpathentry kind="lib" path="lib/joda-time-1.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/joda-time-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/jsr173_1.0_api.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/logkit-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/mail-1.4.5.jar"/>
 	<classpathentry kind="lib" path="lib/mailapi.jar"/>
 	<classpathentry kind="lib" path="lib/neethi-2.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/net.sourceforge.lpg.lpgjavaruntime_1.1.0.v200803061910.jar"/>
 	<classpathentry kind="lib" path="lib/not-yet-commons-ssl-0.3.9.jar"/>
+	<classpathentry kind="lib" path="lib/opensaml-2.5.3.jar"/>
+	<classpathentry kind="lib" path="lib/openws-1.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.common_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.emf.ecore.xmi_2.5.0.v200906151043.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.ocl_1.3.0.v200905271400.jar"/>
 	<classpathentry kind="lib" path="lib/org.eclipse.ocl.ecore_1.3.0.v200905271400.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.emf.runtime_1.0.0.201302071746.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda_1.2.0.201302071746.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.consol_1.2.0.201302071746.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.mu2consol_1.2.0.201302071746.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.emf.runtime_1.0.0.201304291647.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda_1.2.0.201304291647.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.consol_1.2.0.201304291647.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.mu2consol_1.2.0.201304291647.jar"/>
 	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.cda.resources_1.2.0.201212211415.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.datatypes_1.2.0.201302071746.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.rim_1.2.0.201302071746.jar"/>
-	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.vocab_1.2.0.201302071746.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.datatypes_1.2.0.201304291647.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.rim_1.2.0.201304291647.jar"/>
+	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.hl7.vocab_1.2.0.201304291647.jar"/>
 	<classpathentry kind="lib" path="lib/org.openhealthtools.mdht.uml.term.models_1.1.0.201210151242.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql.jar"/>
 	<classpathentry kind="lib" path="lib/resolver-2.9.1.jar"/>
@@ -126,8 +141,17 @@
 	<classpathentry kind="lib" path="lib/saxon9-xqj.jar"/>
 	<classpathentry kind="lib" path="lib/saxon9.jar"/>
 	<classpathentry kind="lib" path="lib/schematronValidator.jar"/>
+	<classpathentry kind="lib" path="lib/serializer-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/serializer-2.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api-2.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/servlet-api-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/smtp.jar"/>
 	<classpathentry kind="lib" path="lib/soap.jar"/>
 	<classpathentry kind="lib" path="lib/standard.jar"/>
@@ -138,20 +162,22 @@
 	<classpathentry kind="lib" path="lib/wsdl4j-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/wss4j-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/wstx-asl-3.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/xalan-2.7.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/xbean_xpath.jar"/>
 	<classpathentry kind="lib" path="lib/xbean.jar"/>
 	<classpathentry kind="lib" path="lib/xdsLog.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.10.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.10.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/xercesImpl-2.10.0.jar"/>
+	<classpathentry kind="lib" path="lib/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis-2.9.1.jar"/>
+	<classpathentry kind="lib" path="lib/xml-resolver-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-qname.jar"/>
 	<classpathentry kind="lib" path="lib/xmlpublic.jar"/>
 	<classpathentry kind="lib" path="lib/xmlresolver-sunjaxp.jar"/>
 	<classpathentry kind="lib" path="lib/XmlSchema-1.4.3.jar"/>
-	<classpathentry kind="lib" path="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA.jar" sourcepath="/Users/gerardin/springsource/sts-3.2.0.RELEASE/plugins/com.google.gwt.eclipse.sdkbundle_2.5.1/gwt-2.5.1/validation-api-1.0.0.GA-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/gerardin/Softwares/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201208080120-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar"/>
-	<classpathentry kind="lib" path="/Users/gerardin/Softwares/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201208080120-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA.jar" sourcepath="/Users/gerardin/Softwares/eclipse/plugins/com.google.gwt.eclipse.sdkbundle_2.4.0.v201208080120-rel-r37/gwt-2.4.0/validation-api-1.0.0.GA-sources.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-dev.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-servlet.jar"/>
-	<classpathentry kind="lib" path="lib/gwt-user.jar"/>
+	<classpathentry kind="lib" path="lib/xmlsec-1.4.5.jar"/>
+	<classpathentry kind="lib" path="lib/xmltooling-1.3.4.jar"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>
