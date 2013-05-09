@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMContainer;
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 public class CodeValidationBase {
 	Metadata m;
@@ -36,6 +37,8 @@ public class CodeValidationBase {
 	ValidationContext vc = null;
 	
 	static String ADConfigError = "ITI TF-3: 4.1.10";
+	static Logger logger = Logger.getLogger(CodeValidationBase.class);
+
 
 	CodeValidationBase() {}
 	
@@ -83,7 +86,7 @@ public class CodeValidationBase {
 				from = localCodesLocation;
 			}
 			catch (Exception e1) {
-				System.out.println("Cannot contact localhost: " + ExceptionUtil.exception_details(e1));
+				logger.warn("Cannot contact localhost: " + ExceptionUtil.exception_details(e1));
 				try {
 					codes_string = HttpClient.httpGet(globalCodesLocation);
 					from = globalCodesLocation;
@@ -99,6 +102,8 @@ public class CodeValidationBase {
 		if (codes_string.equals("")) 
 			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned enpty from " + from);
 
+		logger.info("Codes loaded from " + from);
+		
 		codes = Util.parse_xml(codes_string);
 		if (codes == null)
 			throw new XdsInternalException("CodeValidation: cannot parse code configuration file from " + from);
