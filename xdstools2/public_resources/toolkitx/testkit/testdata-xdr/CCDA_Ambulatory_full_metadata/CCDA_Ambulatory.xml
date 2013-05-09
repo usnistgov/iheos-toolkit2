@@ -9,7 +9,6 @@
     11/26/2011 RWM modified
     08/12/2012 RWM modified
     09/12/2012 BNR(Dragon) modified
-	5/3/2010  NIST (v5)
 
  -->
 <ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:cda="urn:hl7-org:v3" xmlns:gsd="http://aurora.regenstrief.org/GenericXMLSchema" xmlns:sch="http://www.ascc.net/xml/schematron" xmlns:xlink="http://www.w3.org/TR/WD-xlink" xmlns:sdtc="urn:hl7-org:sdtc" xmlns:mif="urn:hl7-org:v3/mif" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3
@@ -34,9 +33,9 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 	<!-- CONF 5253 "CCD document" -->
 	<code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="34133-9" displayName="Summarization of Episode Note"/>
 	<!-- CONF 5254 -->
-	<title>Community Health and Hospitals: Health Summary</title>
+	<title>Get Well Clinic: Health Summary</title>
 	<!-- CONF 5256 -->
-	<effectiveTime value="20120912000000-0000"/>
+	<effectiveTime value="20120806"/>
 	<!-- 5259 -->
 	<confidentialityCode code="N" codeSystem="2.16.840.1.113883.5.25"/>
 	<!-- 5372 -->
@@ -49,7 +48,7 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 			<id extension="1" root="2.16.840.1.113883.4.6"/>
 			<!-- Fake ID using HL7 example OID. -->
 			<!-- Patient SSN recorded as an ID -->
-			<id extension="123-101-5230" root="2.16.840.1.113883.4.1"/>
+			<id extension="123-101-5231" root="2.16.840.1.113883.4.1"/>
 			<!-- CONF 5271 -->
 			<addr use="HP">
 				<!-- HP is "primary home" from codeSystem 2.16.840.1.113883.5.1119 -->
@@ -68,7 +67,8 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 				<!-- CONF 5284 -->
 				<name use="L">
 					<!-- L is "Legal" from HL7 EntityNameUse 2.16.840.1.113883.5.45 -->
-					<given>Myra</given>
+					<given>Isabella</given>
+					<given>Isa</given>
 					<!-- CL is "Call me" from HL7 EntityNamePartQualifier 2.16.840.1.113883.5.43 -->
 					<family>Jones</family>
 				</name>
@@ -77,8 +77,8 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 				<maritalStatusCode code="M" displayName="Married" codeSystem="2.16.840.1.113883.5.2" codeSystemName="MaritalStatusCode"/>
 				<religiousAffiliationCode code="1013" displayName="Christian (non-Catholic, non-specific)" codeSystemName="HL7 Religious Affiliation " codeSystem="2.16.840.1.113883.5.1076"/>
 				<!-- Need to Fix the Race Code to be from the OMB Standards -->
-				<raceCode code="2106-3" displayName="White" codeSystem="2.16.840.1.113883.6.238" codeSystemName="Race and Ethnicity - CDC"/>
-				<ethnicGroupCode code="2186-5" displayName="Not Hispanic or Latino" codeSystem="2.16.840.1.113883.6.238" codeSystemName="Race and Ethnicity - CDC"/>
+				<raceCode code="2106-3" displayName="White" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDC - Race and Ethnicity"/>
+				<ethnicGroupCode code="2186-5" displayName="Not Hispanic or Latino" codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDC - Race and Ethnicity"/>
 				<guardian>
 					<code code="GPARNT" displayName="Grandfather" codeSystem="2.16.840.1.113883.5.111" codeSystemName="HL7 Role code"/>
 					<addr use="HP">
@@ -117,7 +117,7 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 			</patient>
 			<providerOrganization>
 				<id root="1.1.1.1.1.1.1.1.4"/>
-				<name>Community Health and Hospitals</name>
+				<name>Get Well Clinic</name>
 				<telecom use="WP" value="tel: 555-555-5000"/>
 				<addr>
 					<streetAddressLine>1002 Healthcare Dr</streetAddressLine>
@@ -130,9 +130,10 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 		</patientRole>
 	</recordTarget>
 	<author>
-		<time value="20050813000000+0500"/>
+		<time value="20050806"/>
 		<assignedAuthor>
 			<id extension="111111" root="2.16.840.1.113883.4.6"/>
+			<code code="200000000X" codeSystem="2.16.840.1.113883.6.101" displayName="Allopathic &amp; Osteopathic Physicians"/>
 			<addr>
 				<streetAddressLine>1002 Healthcare Drive </streetAddressLine>
 				<city>Portland</city>
@@ -143,7 +144,6 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 			<telecom use="WP" value="tel:555-555-1002"/>
 			<assignedPerson>
 				<name>
-					<prefix>Dr</prefix>
 					<given>Henry</given>
 					<family>Seven</family>
 				</name>
@@ -204,7 +204,7 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 		<assignedCustodian>
 			<representedCustodianOrganization>
 				<id extension="99999999" root="2.16.840.1.113883.4.6"/>
-				<name>Community Health and Hospitals</name>
+				<name>Get Well Clinic</name>
 				<telecom value="tel: 555-555-1002" use="WP"/>
 				<addr use="WP">
 					<streetAddressLine>1002 Healthcare Drive </streetAddressLine>
@@ -225,12 +225,12 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 				</name>
 			</informationRecipient>
 			<receivedOrganization>
-				<name>Community Health and Hospitals</name>
+				<name>Get Well Clinic</name>
 			</receivedOrganization>
 		</intendedRecipient>
 	</informationRecipient>
 	<legalAuthenticator>
-		<time value="20120813"/>
+		<time value="20120806"/>
 		<signatureCode code="S"/>
 		<assignedEntity>
 			<id extension="999999999" root="2.16.840.1.113883.4.6"/>
@@ -251,7 +251,7 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 		</assignedEntity>
 	</legalAuthenticator>
 	<authenticator>
-		<time value="20120813"/>
+		<time value="20120806"/>
 		<signatureCode code="S"/>
 		<assignedEntity>
 			<id extension="999999999" root="2.16.840.1.113883.4.6"/>
@@ -319,20 +319,20 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 		<serviceEvent classCode="PCPR">
 			<code code="233604007" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED-CT" displayName="Pnuemonia"/>
 			<effectiveTime>
-				<low value="20120806"/>
-				<high value="20120813"/>
+				<low value="201208060028+0500"/>
+				<high value="201208060058+0500"/>
 			</effectiveTime>
 			<performer typeCode="PRF">
 				<functionCode code="PP" displayName="Primary Care Provider" codeSystem="2.16.840.1.113883.12.443" codeSystemName="Provider Role">
 					<originalText>Primary Care Provider</originalText>
 				</functionCode>
 				<time>
-					<low value="20120806"/>
-					<high value="20120813"/>
+					<low value="201208060028+0500"/>
+					<high value="201208060058+0500"/>
 				</time>
 				<assignedEntity>
 					<id extension="PseudoMD-1" root="2.16.840.1.113883.4.6"/>
-					<code code="208D00000X" displayName="General Practice" codeSystemName="Provider Codes" codeSystem="2.16.840.1.113883.6.101"/>
+					<code code="200000000X" displayName="Allopathic and Osteopathic Physicians" codeSystemName="Provider Codes" codeSystem="2.16.840.1.113883.6.101"/>
 					<addr>
 						<streetAddressLine>1002 Healthcare Dr</streetAddressLine>
 						<city>Portland</city>
@@ -350,48 +350,8 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 					</assignedPerson>
 					<representedOrganization>
 						<id root="2.16.840.1.113883.19.5.9999.1393"/>
-						<name>Community Health and Hospitals</name>
+						<name>Get Well Clinic</name>
 						<telecom value="tel:+1-555-555-5000" use="WP"/>
-						<addr>
-							<streetAddressLine>1002 Healthcare Drive </streetAddressLine>
-							<city>Portland</city>
-							<state>OR</state>
-							<postalCode>97266</postalCode>
-							<country>US</country>
-						</addr>
-					</representedOrganization>
-				</assignedEntity>
-			</performer>
-			<performer typeCode="PRF">
-				<functionCode code="PP" displayName="Primary Care Provider" codeSystem="2.16.840.1.113883.12.443" codeSystemName="Provider Role">
-					<originalText>Primary Care Provider</originalText>
-				</functionCode>
-				<time>
-					<low value="20120806"/>
-					<high value="20120813"/>
-				</time>
-				<assignedEntity>
-					<id extension="PseudoMD-3" root="2.16.840.1.113883.4.6"/>
-					<code code="208D00000X" displayName="General Practice" codeSystemName="Provider Codes" codeSystem="2.16.840.1.113883.6.101"/>
-					<addr>
-						<streetAddressLine>1002 Healthcare Dr</streetAddressLine>
-						<city>Portland</city>
-						<state>OR</state>
-						<postalCode>97266</postalCode>
-						<country>US</country>
-					</addr>
-					<telecom value="tel:+1-555-555-5000" use="HP"/>
-					<assignedPerson>
-						<name>
-							<prefix>Dr.</prefix>
-							<given>Henry</given>
-							<family>Seven</family>
-						</name>
-					</assignedPerson>
-					<representedOrganization>
-						<id root="2.16.840.1.113883.19.5.9999.1393"/>
-						<name>Community Health and Hospitals</name>
-						<telecom value="tel:+1-555-555-5000" use="HP"/>
 						<addr>
 							<streetAddressLine>1002 Healthcare Drive </streetAddressLine>
 							<city>Portland</city>
@@ -409,8 +369,8 @@ CDA_Schema_Files\infrastructure\cda\CDA_SDTC.xsd">
 			<id extension="1" root="2.16.840.1.113883.4.6"/>
 			<code code="233604007" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED-CT" displayName="Pnuemonia"/>
 			<effectiveTime>
-				<low value="20120806"/>
-				<high value="20120813"/>
+				<low value="201208060028+0500"/>
+				<high value="201208060058+0500"/>
 			</effectiveTime>
 			<responsibleParty>
 				<assignedEntity>
@@ -768,7 +728,7 @@ ENCOUNTERS
 									<td>
 										<content ID="Encounter1"/> Pnuemonia</td>
 									<td>Dr Henry Seven</td>
-									<td>Community Health and Hospitals</td>
+									<td>Get Well Clinic</td>
 									<td>20120806</td>
 								</tr>
 							</tbody>
@@ -780,8 +740,8 @@ ENCOUNTERS
 							<!-- Encounter Activities -->
 							<!--  ********  Encounter activity template   ******** -->
 							<id root="2a620155-9d11-439e-92b3-5d9815ff4de8"/>
-							<code code="99222" displayName="InPatient Admission" codeSystemName="CPT" codeSystem="2.16.840.1.113883.6.12" codeSystemVersion="4">
-								<originalText>Mild Fever<reference value="#Encounter1"/>
+							<code code="99212" displayName="Outpatient Visit" codeSystemName="CPT" codeSystem="2.16.840.1.113883.6.12" codeSystemVersion="4">
+								<originalText>Outpatient Visit<reference value="#Encounter1"/>
 								</originalText>
 							</code>
 							<effectiveTime value="20120806"/>
@@ -795,7 +755,7 @@ ENCOUNTERS
 								<participantRole classCode="SDLOC">
 									<templateId root="2.16.840.1.113883.10.20.22.4.32"/>
 									<!-- Service Delivery Location template -->
-									<code code="1160-1" codeSystem="2.16.840.1.113883.6.259" codeSystemName="HealthcareServiceLocation" displayName="Urgent Care Center"/>
+									<code code="1117-1" codeSystem="2.16.840.1.113883.6.259" codeSystemName="HealthcareServiceLocation" displayName="Family Medicine Clinic"/>
 									<addr>
 										<streetAddressLine>1002 Healthcare Dr</streetAddressLine>
 										<city>Portland</city>
@@ -805,7 +765,7 @@ ENCOUNTERS
 									</addr>
 									<telecom nullFlavor="UNK"/>
 									<playingEntity classCode="PLC">
-										<name>Community Health and Hospitals</name>
+										<name>Get Well Clinic</name>
 									</playingEntity>
 								</participantRole>
 							</participant>
@@ -875,12 +835,6 @@ IMMUNIZATIONS
 							<tbody>
 								<tr>
 									<td>
-										<content ID="immun1"/>Pneumococcal (Pneumovax) Vaccine</td>
-									<td>August 2012</td>
-									<td>Completed</td>
-								</tr>
-								<tr>
-									<td>
 										<content ID="immun2"/>Influenza virus vaccine, IM</td>
 									<td>May 2012</td>
 									<td>Completed</td>
@@ -900,44 +854,6 @@ IMMUNIZATIONS
 							<!--  ********   Immunization activity template    ******** -->
 							<id root="e6f1ba43-c0ed-4b9b-9f12-f435d8ad8f92"/>
 							<text>
-								<reference value="#immun1"/>
-							</text>
-							<statusCode code="completed"/>
-							<effectiveTime xsi:type="IVL_TS" value="20120810"/>
-							<routeCode code="C28161" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="National Cancer Institute (NCI) Thesaurus" displayName="Intramuscular injection"/>
-							<doseQuantity value="0.5" unit="ml"/>
-							<consumable>
-								<manufacturedProduct classCode="MANU">
-									<templateId root="2.16.840.1.113883.10.20.22.4.54"/>
-									<!--  ********   Immunization Medication Information    ******** -->
-									<manufacturedMaterial>
-										<code code="33" codeSystem="2.16.840.1.113883.12.292" displayName="pneumococcal polysaccharide vaccine, 23 valent" codeSystemName="CVX">
-											<originalText>Pnuemococcal polysaccharide vaccine, 23 valent (Pnuemovax)</originalText>
-										</code>
-									</manufacturedMaterial>
-									<manufacturerOrganization>
-										<name>Merck Research Laboratories</name>
-									</manufacturerOrganization>
-								</manufacturedProduct>
-							</consumable>
-							<entryRelationship typeCode="SUBJ" inversionInd="true">
-								<act classCode="ACT" moodCode="INT">
-									<templateId root="2.16.840.1.113883.10.20.22.4.20"/>
-									<!-- ** Instructions Template ** -->
-									<code xsi:type="CE" code="171044003" codeSystem="2.16.840.1.113883.6.96" displayName="immunization education"/>
-									<text>
-										<reference value="#immunSect"/>Injection site reactions (e.g., pain, redness, swelling, hard lump), muscle/joint aches, or fever may occur. Ask your doctor whether you should take a fever/pain reducer (e.g., acetaminophen) to help treat these symptoms. Nausea and vomiting may also occur. If any of these effects persist or worsen, tell your doctor or pharmacist promptly.</text>
-									<statusCode code="completed"/>
-								</act>
-							</entryRelationship>
-						</substanceAdministration>
-					</entry>
-					<entry typeCode="DRIV">
-						<substanceAdministration classCode="SBADM" moodCode="EVN" negationInd="false">
-							<templateId root="2.16.840.1.113883.10.20.22.4.52"/>
-							<!--  ********   Immunization activity template    ******** -->
-							<id root="e6f1ba43-c0ed-4b9b-9f12-f435d8ad8f92"/>
-							<text>
 								<reference value="#immun2"/>
 							</text>
 							<statusCode code="completed"/>
@@ -949,9 +865,9 @@ IMMUNIZATIONS
 									<templateId root="2.16.840.1.113883.10.20.22.4.54"/>
 									<!--  ********   Immunization Medication Information    ******** -->
 									<manufacturedMaterial>
-										<code code="88" codeSystem="2.16.840.1.113883.12.292" displayName="Influenza virus vaccine" codeSystemName="CVX">
+										<code code="88" codeSystem="2.16.840.1.113883.6.59" displayName="Influenza virus vaccine" codeSystemName="CVX">
 											<originalText>Influenza virus vaccine</originalText>
-											<translation code="111" displayName="influenza, live, intranasal" codeSystemName="CVX" codeSystem="2.16.840.1.113883.12.292"/>
+											<translation code="111" displayName="influenza, live, intranasal" codeSystemName="CVX" codeSystem="2.16.840.1.113883.6.59"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -988,9 +904,9 @@ IMMUNIZATIONS
 									<templateId root="2.16.840.1.113883.10.20.22.4.54"/>
 									<!--  ********   Immunization Medication Information    ******** -->
 									<manufacturedMaterial>
-										<code code="103" codeSystem="2.16.840.1.113883.12.292" displayName="Tetanus and diphtheria toxoids - preservative free" codeSystemName="CVX">
+										<code code="103" codeSystem="2.16.840.1.113883.6.59" displayName="Tetanus and diphtheria toxoids - preservative free" codeSystemName="CVX">
 											<originalText>Tetanus and diphtheria toxoids - preservative free</originalText>
-											<translation code="09" displayName="Tetanus and diphtheria toxoids - preservative free" codeSystemName="CVX" codeSystem="2.16.840.1.113883.12.292"/>
+											<translation code="09" displayName="Tetanus and diphtheria toxoids - preservative free" codeSystemName="CVX" codeSystem="2.16.840.1.113883.6.59"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -1021,7 +937,7 @@ MEDICATIONS
 				<section>
 					<templateId root="2.16.840.1.113883.10.20.22.2.1.1"/>
 					<code code="10160-0" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HISTORY OF MEDICATION USE"/>
-					<title>MEDICATIONS</title>
+					<title>Medications</title>
 					<text>
 						<table border="1" width="100%">
 							<thead>
@@ -1037,26 +953,14 @@ MEDICATIONS
 							<tbody>
 								<tr>
 									<td>
-										<content ID="Med2">Ciprofloxacin</content>
-									</td>
-									<td>500mg oral tabs, 1 tab by mouth every 12 hours for 3 days</td>
-									<td>20120806</td>
-									<td>Active</td>
-									<td>Pneumonia (233604007 SNOMED CT)</td>
-									<td>
-										<content ID="Fill">Generic Substitition Allowed</content>
-									</td>
-								</tr>
-								<tr>
-									<td>
 										<content ID="Med1">Albuterol 0.09 MG/ACTUAT inhalant solution</content>
 									</td>
-									<td>0.09 MG/ACTUAT inhalant solution, 2 puffs every 6 hours as needed for shortness of breath</td>
+									<td>0.09 MG/ACTUAT inhalant solution, 2 puffs once</td>
 									<td>20120806</td>
 									<td>Active</td>
 									<td>Asthma (195967001 SNOMED CT)</td>
 									<td>
-										<content ID="Filllns">Generic Substitition Allowed</content>
+										<content ID="FillIns">Generic Substitition Allowed</content>
 									</td>
 								</tr>
 							</tbody>
@@ -1068,87 +972,14 @@ MEDICATIONS
 							<!-- ** MEDICATION ACTIVITY -->
 							<id root="cdbd33f0-6cde-11db-9fe1-0800200c9a66"/>
 							<text>
-								<reference value="#Med2"/>Ciprofloxacin</text>
-							<statusCode code="completed"/>
-							<effectiveTime xsi:type="IVL_TS">
-								<low value="20120806"/>
-								<high value="20120809"/>
-							</effectiveTime>
-							<effectiveTime xsi:type="PIVL_TS" institutionSpecified="true" operator="A">
-								<period value="12" unit="h"/>
-							</effectiveTime>
-							<routeCode code="C38288" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="NCI Thesaurus" displayName="ORAL"/>
-							<doseQuantity value="500" unit="mg"/>
-							<administrationUnitCode code="C42744" displayName="ORAL" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="NCI Thesaurus"/>
-							<consumable>
-								<manufacturedProduct classCode="MANU">
-									<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-									<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
-									<manufacturedMaterial>
-										<code code="309309" codeSystem="2.16.840.1.113883.6.88" displayName="Ciprofloxacin 500 MG Oral Tablet">
-											<originalText>
-												<reference value="#Med2"/>
-											</originalText>
-											
-										</code>
-									</manufacturedMaterial>
-									<manufacturerOrganization>
-										<name>Bayer A.G.</name>
-									</manufacturerOrganization>
-								</manufacturedProduct>
-							</consumable>
-							<performer>
-								<assignedEntity>
-									<id nullFlavor="NI"/>
-									<addr nullFlavor="UNK"/>
-									<telecom nullFlavor="UNK"/>
-									<representedOrganization>
-										<id root="2.16.840.1.113883.19.5.9999.1393"/>
-										<name>Community Health and Hospitals</name>
-										<telecom nullFlavor="UNK"/>
-										<addr nullFlavor="UNK"/>
-									</representedOrganization>
-								</assignedEntity>
-							</performer>
-							<participant typeCode="CSM">
-								<participantRole classCode="MANU">
-									<templateId root="2.16.840.1.113883.10.20.22.4.24"/>
-									<code code="412307009" displayName="drug vehicle" codeSystem="2.16.840.1.113883.6.96"/>
-									<playingEntity classCode="MMAT">
-										<code code="10311" displayName="Tablet" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
-										<name>Tablet</name>
-									</playingEntity>
-								</participantRole>
-							</participant>
-							<entryRelationship typeCode="RSON">
-								<observation classCode="OBS" moodCode="EVN">
-									<templateId root="2.16.840.1.113883.10.20.22.4.19"/>
-									<id root="db734647-fc99-424c-a864-7e3cda82e703" extension="45665"/>
-									<code code="404684003" displayName="Finding" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
-									<statusCode code="completed"/>
-									<effectiveTime>
-										<low nullFlavor="UNK"/>
-										<high value="20120813"/>
-									</effectiveTime>
-									<value xsi:type="CD" code="233604007" displayName="Pneumonia" codeSystem="2.16.840.1.113883.6.96"/>
-								</observation>
-							</entryRelationship>
-						</substanceAdministration>
-					</entry>
-					<entry typeCode="DRIV">
-						<substanceAdministration classCode="SBADM" moodCode="EVN">
-							<templateId root="2.16.840.1.113883.10.20.22.4.16"/>
-							<!-- ** MEDICATION ACTIVITY -->
-							<id root="cdbd33f0-6cde-11db-9fe1-0800200c9a66"/>
-							<text>
 								<reference value="#Med1"/>0.09 MG/ACTUAT inhalant solution, 2 puffs </text>
 							<statusCode code="completed"/>
 							<effectiveTime xsi:type="IVL_TS">
-								<low value="20120806"/>
-								<high value="20120813"/>
+								<low nullFlavor="UNK"/>
+								<high value="20120806"/>
 							</effectiveTime>
 							<effectiveTime xsi:type="PIVL_TS" institutionSpecified="true" operator="A">
-								<period value="6" unit="h"/>
+								<period value="12" unit="h"/>
 							</effectiveTime>
 							<routeCode code="C38216" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="NCI Thesaurus" displayName="RESPIRATORY (INHALATION)"/>
 							<doseQuantity value="0.09" unit="mg/actuat"/>
@@ -1159,11 +990,11 @@ MEDICATIONS
 									<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
 									<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
 									<manufacturedMaterial>
-										<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]">
+										<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution">
 											<originalText>
 												<reference value="#Med1"/>
 											</originalText>
-											<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
+											<translation code="573621" displayName="Proventil 0.09 MG/ACTUAT inhalant solution" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -1178,7 +1009,7 @@ MEDICATIONS
 									<telecom nullFlavor="UNK"/>
 									<representedOrganization>
 										<id root="2.16.840.1.113883.19.5.9999.1393"/>
-										<name>Community Health and Hospitals</name>
+										<name>Get Well Clinic</name>
 										<telecom nullFlavor="UNK"/>
 										<addr nullFlavor="UNK"/>
 									</representedOrganization>
@@ -1202,7 +1033,7 @@ MEDICATIONS
 									<statusCode code="completed"/>
 									<effectiveTime>
 										<low nullFlavor="UNK"/>
-										<high value="20120813"/>
+										<high value="20120806"/>
 									</effectiveTime>
 									<value xsi:type="CD" code="195967001" displayName="Asthma" codeSystem="2.16.840.1.113883.6.96"/>
 								</observation>
@@ -1213,8 +1044,8 @@ MEDICATIONS
 									<id nullFlavor="NI"/>
 									<statusCode code="completed"/>
 									<effectiveTime xsi:type="IVL_TS">
-										<low value="20120806"/>
-										<high value="20120813"/>
+										<low nullFlavor="UNK"/>
+										<high value="20120806"/>
 									</effectiveTime>
 									<repeatNumber value="1"/>
 									<quantity value="75"/>
@@ -1223,11 +1054,11 @@ MEDICATIONS
 											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
 											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
 											<manufacturedMaterial>
-												<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]">
+												<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution">
 													<originalText>
 														<reference value="#Med1"/>
 													</originalText>
-													<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
+													<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
 												</code>
 											</manufacturedMaterial>
 											<manufacturerOrganization>
@@ -1267,7 +1098,8 @@ MEDICATIONS
 											<templateId root="2.16.840.1.113883.10.20.22.4.20"/>
 											<!-- ** Instructions Template ** -->
 											<code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="instruction"/>
-											<text>label in spanish</text>
+											<text>
+												<reference value="#FillIns"/>label in spanish</text>
 											<statusCode code="completed"/>
 										</act>
 									</entryRelationship>
@@ -1286,11 +1118,11 @@ MEDICATIONS
 											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
 											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
 											<manufacturedMaterial>
-												<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]">
+												<code code="573621" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution">
 													<originalText>
 														<reference value="#Med1"/>
 													</originalText>
-													<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT [Proventil]" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
+													<translation code="573621" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
 												</code>
 											</manufacturedMaterial>
 											<manufacturerOrganization>
@@ -1319,7 +1151,7 @@ MEDICATIONS
 											</assignedPerson>
 											<representedOrganization>
 												<id root="2.16.840.1.113883.19.5.9999.1393"/>
-												<name>Community Health and Hospitals</name>
+												<name>Get Well Clinic</name>
 												<telecom nullFlavor="UNK"/>
 												<addr nullFlavor="UNK"/>
 											</representedOrganization>
@@ -1359,403 +1191,19 @@ CARE PLAN
 							</thead>
 							<tbody>
 								<tr>
-									<td>Goal: Avoidance of exacerbations and hospitalizations through effective disease management. <br></br>
-Instructions: Asthma education provided at discharge. Follow-up with Dr. Henry Seven on  August 16th and Dr. George Potomac on August 20th.
- </td>
-									<td>20120816</td>
-								</tr>
-							</tbody>
-						</table>
-					</text>
-					<entry>
-						<encounter moodCode="INT" classCode="ENC">
-							<templateId root="2.16.840.1.113883.10.20.22.4.40"/>
-							<!--  ****  Plan of Care Activity Encounter template  **** -->
-							<id root="9a6d1bac-17d3-4195-89a4-1121bc809b4d"/>
-							<code code="99241" displayName="Office consultation - 15 minutes" codeSystemName="CPT" codeSystem="2.16.840.1.113883.6.12"/>
-							<effectiveTime>
-								<center value="20120820"/>
-							</effectiveTime>
-							<entryRelationship typeCode="SUBJ" inversionInd="true">
-								<act classCode="ACT" moodCode="INT">
-									<templateId root="2.16.840.1.113883.10.20.22.4.20"/>
-									<!-- ** Instructions Template ** -->
-									<code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="instruction"/>
-									<text>Follow up with Dr George Potomac for Asthma</text>
-									<statusCode code="completed"/>
-								</act>
-							</entryRelationship>
-						</encounter>
-					</entry>
-					<entry>
-						<procedure moodCode="RQO" classCode="PROC">
-							<templateId root="2.16.840.1.113883.10.20.22.4.41"/>
-							<!-- ** Plan of Care Activity Procedure template ** -->
-							<id root="9a6d1bac-17d3-4195-89c4-1121bc809b5a"/>
-							<code code="168731009" codeSystem="2.16.840.1.113883.6.96" displayName="Chest X-Ray" codeSystemName="SNOMED-CT"/>
-							<statusCode code="new"/>
-							<effectiveTime>
-								<center value="20120826"/>
-							</effectiveTime>
-						</procedure>
-					</entry>
-					<entry typeCode="DRIV">
-						<observation classCode="OBS" moodCode="RQO">
-							<templateId root="2.16.840.1.113883.10.20.22.4.44"/>
-							<!--   Plan of Care Activity Observation template   -->
-							<id root="9a6d1bac-17d3-4195-89a4-1121bc809b4a"/>
-							<code code="624-7" codeSystem="2.16.840.1.113883.6.1" displayName="Sputum Culture"/>
-							<statusCode code="new"/>
-							<effectiveTime>
-								<center value="20120820"/>
-							</effectiveTime>
-						</observation>
-					</entry>
-				</section>
-			</component>
-			<!--
-********************************************************
-HOSPITAL DISCHARGE MEDICATIONS
-********************************************************
-			-->
-			<component>
-				<section>
-					<templateId root="2.16.840.1.113883.10.20.22.2.11.1"/>
-					<!-- Entries Required -->
-					<!-- Hospital Discharge Summary templateId -->
-					<code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="10183-2" displayName=" HOSPITAL DISCHARGE MEDICATIONS "/>
-					<title>HOSPITAL DISCHARGE MEDICATIONS</title>
-					<text>
-						<table border="1" width="100%">
-							<thead>
-								<tr>
-									<th>Medication</th>
-									<th>Directions</th>
-									<th>Start Date</th>
-									<th>Status</th>
-									<th>Indications</th>
-									<th>Fill Instructions</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>
-										<content ID="DM2">Ciprofloxacin</content>
-									</td>
-									<td>500mg oral tabs, 1 tab by mouth every 12 hours for 3 days</td>
+									<td>Goal: Appropriate management of Pneumonia.<br></br><br></br>Instructions: Present to Community Health Hospitals admitting department for planned inpatient admission for further management of Pneumonia.</td>
 									<td>20120806</td>
-									<td>Active</td>
-									<td>Pneumonia (233604007 SNOMED CT)</td>
-									<td>
-										<content ID="Fill_DM">Generic Substitition Allowed</content>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<content ID="DM">120 ACTUAT Fluticasone propionate 0.11 MG/ACTUAT Metered Dose Inhaler</content>
-									</td>
-									<td>
-										<content ID="DM1">0.11 MG/ACTUAT Metered Dose Once Daily</content>
-									</td>
-									<td>20120813</td>
-									<td>Active</td>
-									<td>Asthma (195967001 SNOMED CT)</td>
-									<td>
-										<content ID="FillIns_DM">Generic Substitition Allowed</content>
-									</td>
 								</tr>
 							</tbody>
 						</table>
 					</text>
 					<entry typeCode="DRIV">
-						<substanceAdministration classCode="SBADM" moodCode="EVN">
-							<templateId root="2.16.840.1.113883.10.20.22.4.16"/>
-							<!-- ** MEDICATION ACTIVITY -->
-							<id root="cdbd33f0-6cde-11db-9fe1-0800200c9a66"/>
-							<text>
-								<reference value="#DM2"/>Ciprofloxacin</text>
+						<act classCode="ACT" moodCode="INT">
+							<templateId root="2.16.840.1.113883.10.20.22.4.20"/>
+							<!-- ** Instructions Template ** -->
+							<code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="instruction"/>
+							<text>Goal: Appropriate management of Pneumonia.  Instructions: Present to Community Health Hospitals admitting department for planned inpatient admission for further management of pneumonia</text>
 							<statusCode code="completed"/>
-							<effectiveTime xsi:type="IVL_TS">
-								<low value="20120806"/>
-								<high value="20120809"/>
-							</effectiveTime>
-							<effectiveTime xsi:type="PIVL_TS" institutionSpecified="true" operator="A">
-								<period value="12" unit="h"/>
-							</effectiveTime>
-							<routeCode code="C38288" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="NCI Thesaurus" displayName="ORAL"/>
-							<doseQuantity value="500" unit="mg"/>
-							<administrationUnitCode code="C42744" displayName="ORAL" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="NCI Thesaurus"/>
-							<consumable>
-								<manufacturedProduct classCode="MANU">
-									<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-									<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
-									<manufacturedMaterial>
-										<code code="309309" codeSystem="2.16.840.1.113883.6.88" displayName="Ciprofloxacin 500 MG Oral Tablet">
-											<originalText>
-												<reference value="#DM2"/>
-											</originalText>
-										</code>
-									</manufacturedMaterial>
-									<manufacturerOrganization>
-										<name>Bayer A.G.</name>
-									</manufacturerOrganization>
-								</manufacturedProduct>
-							</consumable>
-							<performer>
-								<assignedEntity>
-									<id nullFlavor="NI"/>
-									<addr nullFlavor="UNK"/>
-									<telecom nullFlavor="UNK"/>
-									<representedOrganization>
-										<id root="2.16.840.1.113883.19.5.9999.1393"/>
-										<name>Community Health and Hospitals</name>
-										<telecom nullFlavor="UNK"/>
-										<addr nullFlavor="UNK"/>
-									</representedOrganization>
-								</assignedEntity>
-							</performer>
-							<participant typeCode="CSM">
-								<participantRole classCode="MANU">
-									<templateId root="2.16.840.1.113883.10.20.22.4.24"/>
-									<code code="412307009" displayName="drug vehicle" codeSystem="2.16.840.1.113883.6.96"/>
-									<playingEntity classCode="MMAT">
-										<code code="10311" displayName="Tablet" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
-										<name>Tablet</name>
-									</playingEntity>
-								</participantRole>
-							</participant>
-							<entryRelationship typeCode="RSON">
-								<observation classCode="OBS" moodCode="EVN">
-									<templateId root="2.16.840.1.113883.10.20.22.4.19"/>
-									<id root="db734647-fc99-424c-a864-7e3cda82e703" extension="45665"/>
-									<code code="404684003" displayName="Finding" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
-									<statusCode code="completed"/>
-									<effectiveTime>
-										<low nullFlavor="UNK"/>
-										<high value="20120813"/>
-									</effectiveTime>
-									<value xsi:type="CD" code="233604007" displayName="Pneumonia" codeSystem="2.16.840.1.113883.6.96"/>
-								</observation>
-							</entryRelationship>
-						</substanceAdministration>
-					</entry>
-					<entry typeCode="DRIV">
-						<act classCode="ACT" moodCode="EVN">
-							<!-- Discharge Medication Entry -->
-							<templateId root="2.16.840.1.113883.10.20.22.4.35"/>
-							<id root="5a784260-6856-4f38-9638-80c751aff2fb"/>
-							<code code="10183-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Discharge medication"/>
-							<statusCode code="active"/>
-							<effectiveTime>
-								<low value="20120813"/>
-								<high value="20120813"/>
-							</effectiveTime>
-							<entryRelationship typeCode="SUBJ">
-								<substanceAdministration classCode="SBADM" moodCode="EVN">
-									<templateId root="2.16.840.1.113883.10.20.22.4.16"/>
-									<!-- ** MEDICATION ACTIVITY -->
-									<id root="cdbd33f0-6cde-11db-9fe1-0800200c9a66"/>
-									<text>
-										<reference value="#DM1"/>0.11 MG/ACTUAT Metered Dose Once Daily </text>
-									<statusCode code="completed"/>
-									<effectiveTime xsi:type="IVL_TS">
-										<low value="20120813"/>
-										<high value="20120813"/>
-									</effectiveTime>
-									<effectiveTime xsi:type="PIVL_TS" institutionSpecified="true" operator="A">
-										<period value="24" unit="h"/>
-									</effectiveTime>
-									<routeCode code="C38216" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="NCI Thesaurus" displayName="RESPIRATORY (INHALATION)"/>
-									<doseQuantity value="1" unit="mg/actuat"/>
-									<rateQuantity value="110" unit="ml/min"/>
-									<maxDoseQuantity nullFlavor="UNK">
-										<numerator nullFlavor="UNK"/>
-										<denominator nullFlavor="UNK"/>
-									</maxDoseQuantity>
-									<administrationUnitCode code="C42944" displayName="INHALANT" codeSystem="2.16.840.1.113883.3.26.1.1" codeSystemName="NCI Thesaurus"/>
-									<consumable>
-										<manufacturedProduct classCode="MANU">
-											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
-											<manufacturedMaterial>
-												<code code="896001" codeSystem="2.16.840.1.113883.6.88" displayName="120 ACTUAT Fluticasone propionate 0.11 MG/ACTUAT Metered Dose Inhaler">
-													<originalText>
-														<reference value="#DM"/>
-													</originalText>
-													<translation code="896001" displayName="120 ACTUAT Fluticasone propionate 0.11 MG/ACTUAT Metered Dose Inhaler" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
-												</code>
-											</manufacturedMaterial>
-											<manufacturerOrganization>
-												<name>Medication Factory Inc.</name>
-											</manufacturerOrganization>
-										</manufacturedProduct>
-									</consumable>
-									<performer>
-										<assignedEntity>
-											<id nullFlavor="NI"/>
-											<addr nullFlavor="UNK"/>
-											<telecom nullFlavor="UNK"/>
-											<representedOrganization>
-												<id root="2.16.840.1.113883.19.5.9999.1395"/>
-												<name>Community Health and Hospitals</name>
-												<telecom nullFlavor="UNK"/>
-												<addr nullFlavor="UNK"/>
-											</representedOrganization>
-										</assignedEntity>
-									</performer>
-									<participant typeCode="CSM">
-										<participantRole classCode="MANU">
-											<templateId root="2.16.840.1.113883.10.20.22.4.24"/>
-											<code code="412307009" displayName="drug vehicle" codeSystem="2.16.840.1.113883.6.96"/>
-											<playingEntity classCode="MMAT">
-												<code code="324049" displayName="Aerosol" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
-												<name>Aerosol</name>
-											</playingEntity>
-										</participantRole>
-									</participant>
-									<entryRelationship typeCode="RSON">
-										<observation classCode="OBS" moodCode="EVN">
-											<templateId root="2.16.840.1.113883.10.20.22.4.19"/>
-											<id root="db734647-fc99-424c-a864-7e3cda82e703" extension="45665"/>
-											<code code="404684003" displayName="Finding" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
-											<statusCode code="completed"/>
-											<effectiveTime>
-												<low value="20110113"/>
-											</effectiveTime>
-											<value xsi:type="CD" code="195967001" displayName="Asthma" codeSystem="2.16.840.1.113883.6.96"/>
-										</observation>
-									</entryRelationship>
-									<entryRelationship typeCode="REFR">
-										<supply classCode="SPLY" moodCode="INT">
-											<templateId root="2.16.840.1.113883.10.20.22.4.17"/>
-											<id nullFlavor="NI"/>
-											<statusCode code="completed"/>
-											<effectiveTime xsi:type="IVL_TS">
-												<low value="20120813"/>
-												<high nullFlavor="UNK"/>
-											</effectiveTime>
-											<repeatNumber value="1"/>
-											<quantity value="75"/>
-											<product>
-												<manufacturedProduct classCode="MANU">
-													<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-													<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
-													<manufacturedMaterial>
-														<code code="896001" codeSystem="2.16.840.1.113883.6.88" displayName="120 ACTUAT Fluticasone propionate 0.11 MG/ACTUAT Metered Dose Inhaler">
-															<originalText>
-																<reference value="#DM"/>
-															</originalText>
-															<translation code="896001" displayName="120 ACTUAT Fluticasone propionate 0.11 MG/ACTUAT Metered Dose Inhaler" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
-														</code>
-													</manufacturedMaterial>
-													<manufacturerOrganization>
-														<name>Medication Factory Inc.</name>
-													</manufacturerOrganization>
-												</manufacturedProduct>
-											</product>
-											<performer>
-												<assignedEntity>
-													<id extension="2981825" root="2.16.840.1.113883.19.5.9999.456"/>
-													<addr>
-														<streetAddressLine>1002 Healthcare Dr</streetAddressLine>
-														<city>Portland</city>
-														<state>OR</state>
-														<postalCode>97266</postalCode>
-														<country>US</country>
-													</addr>
-												</assignedEntity>
-											</performer>
-											<author>
-												<time nullFlavor="UNK"/>
-												<assignedAuthor>
-													<id root="2a620155-9d11-439e-92b3-5d9815fe4de8"/>
-													<addr nullFlavor="UNK"/>
-													<telecom nullFlavor="UNK"/>
-													<assignedPerson>
-														<name>
-															<prefix>Dr.</prefix>
-															<given>Henry</given>
-															<family>Seven</family>
-														</name>
-													</assignedPerson>
-												</assignedAuthor>
-											</author>
-											<entryRelationship typeCode="SUBJ" inversionInd="true">
-												<act classCode="ACT" moodCode="INT">
-													<templateId root="2.16.840.1.113883.10.20.22.4.20"/>
-													<!-- ** Instructions Template ** -->
-													<code xsi:type="CE" code="409073007" codeSystem="2.16.840.1.113883.6.96" displayName="instruction"/>
-													<text>
-														<reference value="#FillIns_DM"/>Generic Substitution Allowed</text>
-													<statusCode code="completed"/>
-												</act>
-											</entryRelationship>
-										</supply>
-									</entryRelationship>
-									<entryRelationship typeCode="REFR">
-										<supply classCode="SPLY" moodCode="EVN">
-											<templateId root="2.16.840.1.113883.10.20.22.4.18"/>
-											<!-- ** Medication Dispense Template ** -->
-											<id root="1.2.3.4.56789.1" extension="cb734647-fc99-424c-a864-7e3cda82e704"/>
-											<statusCode code="completed"/>
-											<effectiveTime value="20120813"/>
-											<repeatNumber value="1"/>
-											<quantity value="75"/>
-											<product>
-												<manufacturedProduct classCode="MANU">
-													<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-													<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"/>
-													<manufacturedMaterial>
-														<code code="896001" codeSystem="2.16.840.1.113883.6.88" displayName="120 ACTUAT Fluticasone propionate 0.11 MG/ACTUAT Metered Dose Inhaler">
-															<originalText>
-																<reference value="#DM"/>
-															</originalText>
-															<translation code="896001" displayName="120 ACTUAT Fluticasone propionate 0.11 MG/ACTUAT Metered Dose Inhaler" codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm"/>
-														</code>
-													</manufacturedMaterial>
-													<manufacturerOrganization>
-														<name>Medication Factory Inc.</name>
-													</manufacturerOrganization>
-												</manufacturedProduct>
-											</product>
-											<performer>
-												<time nullFlavor="UNK"/>
-												<assignedEntity>
-													<id root="2.16.840.1.113883.19.5.9999.456" extension="2981825"/>
-													<addr>
-														<streetAddressLine>1002 Healthcare Dr</streetAddressLine>
-														<city>Portland</city>
-														<state>OR</state>
-														<postalCode>97266</postalCode>
-														<country>US</country>
-													</addr>
-													<telecom nullFlavor="UNK"/>
-													<assignedPerson>
-														<name>
-															<prefix>Dr.</prefix>
-															<given>Henry</given>
-															<family>Seven</family>
-														</name>
-													</assignedPerson>
-													<representedOrganization>
-														<id root="2.16.840.1.113883.19.5.9999.1395"/>
-														<name>Community Health and Hospitals</name>
-														<telecom nullFlavor="UNK"/>
-														<addr nullFlavor="UNK"/>
-													</representedOrganization>
-												</assignedEntity>
-											</performer>
-										</supply>
-									</entryRelationship>
-									<precondition typeCode="PRCN">
-										<templateId root="2.16.840.1.113883.10.20.22.4.25"/>
-										<criterion>
-											<code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>
-											<value xsi:type="CE" code="56018004" codeSystem="2.16.840.1.113883.6.96" displayName="Wheezing"/>
-										</criterion>
-									</precondition>
-								</substanceAdministration>
-							</entryRelationship>
 						</act>
 					</entry>
 				</section>
@@ -1772,7 +1220,7 @@ REASON FOR REFERRAL
 					<code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="42349-1" displayName="REASON FOR REFERRAL"/>
 					<title>REASON FOR REFERRAL</title>
 					<text>
-						<paragraph>Asthma Management</paragraph>
+						<paragraph>Recommended inpatient admission for pneumonia</paragraph>
 					</text>
 				</section>
 			</component>
@@ -1790,7 +1238,7 @@ PROBLEM LIST
 						<content ID="problems"/>
 						<list listType="ordered">
 							<item>
-								<content ID="problem1">Pneumonia : Status - Resolved</content>
+								<content ID="problem1">Pneumonia : Status - Active</content>
 							</item>
 							<item>
 								<content ID="problem2">Asthma : Status - Active</content>
@@ -1803,7 +1251,7 @@ PROBLEM LIST
 							<templateId root="2.16.840.1.113883.10.20.22.4.3"/>
 							<id root="ec8a6ff8-ed4b-4f7e-82c3-e98e58b45de7"/>
 							<code code="CONC" codeSystem="2.16.840.1.113883.5.6" displayName="Concern"/>
-							<statusCode code="completed"/>
+							<statusCode code="active"/>
 							<effectiveTime>
 								<low value="20120806"/>
 								<high value="20120806"/>
@@ -1840,7 +1288,7 @@ PROBLEM LIST
 												<reference value="#problems"/>
 											</text>
 											<statusCode code="completed"/>
-											<value xsi:type="CD" code="162467007" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Symptom Free"/>
+											<value xsi:type="CD" code="271593001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Severly Ill"/>
 										</observation>
 									</entryRelationship>
 									<entryRelationship typeCode="REFR">
@@ -1849,10 +1297,10 @@ PROBLEM LIST
 											<templateId root="2.16.840.1.113883.10.20.22.4.6"/>
 											<code xsi:type="CE" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Status"/>
 											<text>
-												<reference value="#problem2"/>
+												<reference value="#problem1"/>
 											</text>
 											<statusCode code="completed"/>
-											<value xsi:type="CD" code="413322009" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Resolved"/>
+											<value xsi:type="CD" code="55561003" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Active"/>
 										</observation>
 									</entryRelationship>
 								</observation>
@@ -1881,7 +1329,7 @@ PROBLEM LIST
 									</text>
 									<statusCode code="completed"/>
 									<effectiveTime>
-										<low value="20070103"/>
+										<low value="20120806"/>
 									</effectiveTime>
 									<value xsi:type="CD" code="195967001" codeSystem="2.16.840.1.113883.6.96" displayName="Asthma"/>
 									<entryRelationship typeCode="SUBJ" inversionInd="true">
@@ -1890,7 +1338,7 @@ PROBLEM LIST
 											<!--    Age observation template   -->
 											<code code="445518008" codeSystem="2.16.840.1.113883.6.96" displayName="Age At Onset"/>
 											<statusCode code="completed"/>
-											<value xsi:type="PQ" value="65" unit="a"/>
+											<value xsi:type="PQ" value="60" unit="a"/>
 										</observation>
 									</entryRelationship>
 									<entryRelationship typeCode="REFR">
@@ -1899,10 +1347,10 @@ PROBLEM LIST
 											<!-- Health status observation template -->
 											<code xsi:type="CE" code="11323-3" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Health status"/>
 											<text>
-												<reference value="#problems"/>
+												<reference value="#problem2"/>
 											</text>
 											<statusCode code="completed"/>
-											<value xsi:type="CD" code="162467007" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Symptom Free"/>
+											<value xsi:type="CD" code="271593001" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Severly Ill"/>
 										</observation>
 									</entryRelationship>
 									<entryRelationship typeCode="REFR">
@@ -1945,71 +1393,13 @@ PROCEDURES
 							<tbody>
 								<tr>
 									<td>
-										<content ID="Proc1">Oxygen administration by mask</content>
-									</td>
-									<td>8/06/2012</td>
-								</tr>
-								<tr>
-									<td>
 										<content ID="Proc2">Chest X-Ray</content>
 									</td>
-									<td>8/11/2012</td>
+									<td>2012</td>
 								</tr>
 							</tbody>
 						</table>
 					</text>
-					<entry typeCode="DRIV">
-						<procedure classCode="PROC" moodCode="EVN">
-							<templateId root="2.16.840.1.113883.10.20.22.4.14"/>
-							<!-- Procedure Activity Observation -->
-							<id extension="123456789" root="2.16.840.1.113883.19"/>
-							<code code="371908008" codeSystem="2.16.840.1.113883.6.96" displayName="Oxygen administration by mask" codeSystemName="SNOMED-CT">
-								<originalText>
-									<reference value="#Proc1"/>
-								</originalText>
-							</code>
-							<statusCode code="completed"/>
-							<effectiveTime value="20120806"/>
-							<performer>
-								<assignedEntity>
-									<id root="2.16.840.1.113883.19.5" extension="1234"/>
-									<addr>
-										<streetAddressLine>1002 Healthcare Dr</streetAddressLine>
-										<city>Portland</city>
-										<state>OR</state>
-										<postalCode>97266</postalCode>
-										<country>US</country>
-									</addr>
-									<telecom use="WP" value="(555)555-555-1234"/>
-									<representedOrganization>
-										<id root="2.16.840.1.113883.19.5"/>
-										<name>Community Health and Hospitals</name>
-										<telecom nullFlavor="UNK"/>
-										<addr nullFlavor="UNK"/>
-									</representedOrganization>
-								</assignedEntity>
-							</performer>
-							<participant typeCode="LOC">
-								<participantRole classCode="SDLOC">
-									<templateId root="2.16.840.1.113883.10.20.22.4.32"/>
-									<!-- Service Delivery Location template -->
-									<code code="1160-1" codeSystem="2.16.840.1.113883.6.259" codeSystemName="HealthcareServiceLocation" displayName="Urgent Care Center"/>
-									<addr>
-										<streetAddressLine>1002 Healthcare Dr</streetAddressLine>
-										<city>Portland</city>
-										<state>OR</state>
-										<postalCode>97266</postalCode>
-										<country>US</country>
-									</addr>
-									<telecom nullFlavor="UNK"/>
-									<playingEntity classCode="PLC">
-										<name>Community Health and Hospitals</name>
-									</playingEntity>
-								</participantRole>
-							</participant>
-						</procedure>
-					</entry>
-				
 					<entry typeCode="DRIV">
 						<procedure classCode="PROC" moodCode="EVN">
 							<templateId root="2.16.840.1.113883.10.20.22.4.14"/>
@@ -2021,7 +1411,7 @@ PROCEDURES
 								</originalText>
 							</code>
 							<statusCode code="completed"/>
-							<effectiveTime value="20120811"/>
+							<effectiveTime value="20120806"/>
 							<priorityCode code="CR" codeSystem="2.16.840.1.113883.5.7" codeSystemName="ActPriority" displayName="Callback results"/>
 							<methodCode nullFlavor="UNK"/>
 							<targetSiteCode code="82094008" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Lower Respiratory Tract Structure"/>
@@ -2038,7 +1428,7 @@ PROCEDURES
 									<telecom use="WP" value="(555)555-555-1234"/>
 									<representedOrganization>
 										<id root="2.16.840.1.113883.19.5"/>
-										<name>Community Health and Hospitals</name>
+										<name>Get Well Radiology</name>
 										<telecom nullFlavor="UNK"/>
 										<addr nullFlavor="UNK"/>
 									</representedOrganization>
@@ -2058,7 +1448,7 @@ PROCEDURES
 									</addr>
 									<telecom nullFlavor="UNK"/>
 									<playingEntity classCode="PLC">
-										<name>Community Health and Hospitals</name>
+										<name>Get Well Clinic</name>
 									</playingEntity>
 								</participantRole>
 							</participant>
@@ -2115,8 +1505,7 @@ FUNCTIONAL and COGNITIVE STATUS
 							</text>
 							<statusCode code="completed"/>
 							<effectiveTime>
-								<low value="20081101"/>
-								<high nullFlavor="UNK"/>
+								<low value="20120806"/>
 							</effectiveTime>
 							<value xsi:type="CD" code="105504002" codeSystem="2.16.840.1.113883.6.96" displayName="Dependence on Cane"/>
 						</observation>
@@ -2132,8 +1521,7 @@ FUNCTIONAL and COGNITIVE STATUS
 							</text>
 							<statusCode code="completed"/>
 							<effectiveTime>
-								<low value="20081101"/>
-								<high nullFlavor="UNK"/>
+								<low value="20120806"/>
 							</effectiveTime>
 							<value xsi:type="CD" code="386807006" codeSystem="2.16.840.1.113883.6.96" displayName="Memory Impairment"/>
 						</observation>
@@ -2149,8 +1537,7 @@ FUNCTIONAL and COGNITIVE STATUS
 							</text>
 							<statusCode code="completed"/>
 							<effectiveTime>
-								<low value="20081101"/>
-								<high nullFlavor="UNK"/>
+								<low value="20120806"/>
 							</effectiveTime>
 							<value xsi:type="CD" code="48167000" codeSystem="2.16.840.1.113883.6.96" displayName="Amnesia"/>
 						</observation>
@@ -2189,13 +1576,13 @@ RESULTS
 									<td>
 										<content ID="result2">WBC (4.3-10.8 10+3/ul)</content>
 									</td>
-									<td>6.7</td>
+									<td>16.7</td>
 								</tr>
 								<tr>
 									<td>
-										<content ID="result3">PLT (150-400 x 10^9/L)</content>
+										<content ID="result3">PLT (150-450 x 10^9/L)</content>
 									</td>
-									<td>300/L</td>
+									<td>123/L</td>
 								</tr>
 							</tbody>
 						</table>
@@ -2271,7 +1658,7 @@ RESULTS
 									<!-- Result observation template -->
 									<templateId root="2.16.840.1.113883.10.20.22.4.2"/>
 									<id root="107c2dc0-67a5-11db-bd13-0800200c9a66"/>
-									<code xsi:type="CE" code="26515-7" displayName="Platelets [#/volume] in Blood" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"> </code>
+									<code xsi:type="CE" code="26515-7" displayName="PLT" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"> </code>
 									<text>
 										<reference value="#result3"/>
 									</text>
@@ -2366,13 +1753,17 @@ VITAL SIGNS
 						<table border="1" width="100%">
 							<thead>
 								<tr>
-									<th align="left">Date / Time: </th>
-									<th>August 13, 2012</th>
+									<th align="right">Date / Time: </th>
+									<th>Nov 1, 2011</th>
+									<th>August 6, 2012</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<th align="left">Height</th>
+									<td>
+										<content ID="vit1">69 inches</content>
+									</td>
 									<td>
 										<content ID="vit2">69 inches</content>
 									</td>
@@ -2380,13 +1771,19 @@ VITAL SIGNS
 								<tr>
 									<th align="left">Weight</th>
 									<td>
+										<content ID="vit3">189 lbs</content>
+									</td>
+									<td>
 										<content ID="vit4">194 lbs</content>
 									</td>
 								</tr>
 								<tr>
 									<th align="left">Blood Pressure</th>
 									<td>
-										<content ID="vit6">130/82 mmHg</content>
+										<content ID="vit5">132/86 mmHg</content>
+									</td>
+									<td>
+										<content ID="vit6">145/88 mmHg</content>
 									</td>
 								</tr>
 							</tbody>
@@ -2399,7 +1796,7 @@ VITAL SIGNS
 							<id root="c6f88320-67ad-11db-bd13-0800200c9a66"/>
 							<code code="46680005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED -CT" displayName="Vital signs"/>
 							<statusCode code="completed"/>
-							<effectiveTime value="20120813"/>
+							<effectiveTime value="20111101"/>
 							<component>
 								<observation classCode="OBS" moodCode="EVN">
 									<templateId root="2.16.840.1.113883.10.20.22.4.27"/>
@@ -2407,10 +1804,10 @@ VITAL SIGNS
 									<id root="c6f88321-67ad-11db-bd13-0800200c9a66"/>
 									<code code="8302-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Height"/>
 									<text>
-										<reference value="#vit2"/>
+										<reference value="#vit1"/>
 									</text>
 									<statusCode code="completed"/>
-									<effectiveTime value="20120813"/>
+									<effectiveTime value="20081101"/>
 									<value xsi:type="PQ" value="69" unit="in"/>
 									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83"/>
 								</observation>
@@ -2425,7 +1822,62 @@ VITAL SIGNS
 										<reference value="#vit4"/>
 									</text>
 									<statusCode code="completed"/>
-									<effectiveTime value="20120813"/>
+									<effectiveTime value="20111101"/>
+									<value xsi:type="PQ" value="189" unit="lbs"/>
+									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83"/>
+								</observation>
+							</component>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.10.20.22.4.27"/>
+									<!-- Vital Sign Observation template -->
+									<id root="c6f88321-67ad-11db-bd13-0800200c9a66"/>
+									<code code="8480-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Intravascular Systolic"/>
+									<text>
+										<reference value="#vit5"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20111101"/>
+									<value xsi:type="PQ" value="132" unit="mm[Hg]"/>
+									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83"/>
+								</observation>
+							</component>
+						</organizer>
+					</entry>
+					<entry typeCode="DRIV">
+						<organizer classCode="CLUSTER" moodCode="EVN">
+							<templateId root="2.16.840.1.113883.10.20.22.4.26"/>
+							<!-- Vital signs organizer template -->
+							<id root="c6f88320-67ad-11db-bd13-0800200c9a66"/>
+							<code code="46680005" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED -CT" displayName="Vital signs"/>
+							<statusCode code="completed"/>
+							<effectiveTime value="20120806"/>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.10.20.22.4.27"/>
+									<!-- Vital Sign Observation template -->
+									<id root="c6f88321-67ad-11db-bd13-0800200c9a66"/>
+									<code code="8302-2" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Height"/>
+									<text>
+										<reference value="#vit2"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20120806"/>
+									<value xsi:type="PQ" value="69" unit="in"/>
+									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83"/>
+								</observation>
+							</component>
+							<component>
+								<observation classCode="OBS" moodCode="EVN">
+									<templateId root="2.16.840.1.113883.10.20.22.4.27"/>
+									<!-- Vital Sign Observation template -->
+									<id root="c6f88321-67ad-11db-bd13-0800200c9a66"/>
+									<code code="3141-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="Patient Body Weight - Measured"/>
+									<text>
+										<reference value="#vit4"/>
+									</text>
+									<statusCode code="completed"/>
+									<effectiveTime value="20120806"/>
 									<value xsi:type="PQ" value="194" unit="lbs"/>
 									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83"/>
 								</observation>
@@ -2447,38 +1899,6 @@ VITAL SIGNS
 							</component>
 						</organizer>
 					</entry>
-				</section>
-			</component>
-			<!-- 
-************************************
-HOSPITAL DISCHARGE INSTRUCTIONS
-************************************ 
-         -->
-			<component>
-				<section>
-					<templateId root="2.16.840.1.113883.10.20.22.2.41"/>
-					<code code="8653-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayName="HOSPITAL DISCHARGE INSTRUCTIONS"/>
-					<title>HOSPITAL DISCHARGE INSTRUCTIONS</title>
-					<text>
-						<content>
-                     Ms. Jones, you have been seen by Dr. Henry Seven at Local Community Hospital from August 6th until August 13th 2012. You are currently being discharged from Local Community Hospital. Dr. Seven has provided the following instructions to you at this time; should you have any questions please contact a member of your healthcare team prior to discharge. If you have left the hospital and have questions, please contact Dr. Seven at 555-555-1002. 
-                     Instructions:
-                  </content>
-						<list listType="ordered">
-							<item>Take all medications as prescribed.</item>
-							<item>Resume normal activity and previous diet as tolerated</item>
-							<item>Please monitor your peak flows. If your peak flows drop to 50% of normal, notify your primary care provider or return to the Emergency Room.</item>
-							<item>If you experience any of the following symptoms, notify your primary care provider or return to the Emergency Room:
-                        <list listType="ordered">
-									<item>Shortness of Breath</item>
-									<item>Dizziness or Light-headedness</item>
-									<item>Fever, chills, or diffuse body aches</item>
-									<item>Pain or redness at the site of any previous intravenous catheter</item>
-									<item>Any other unusual problem</item>
-								</list>
-							</item>
-						</list>
-					</text>
 				</section>
 			</component>
 		</structuredBody>

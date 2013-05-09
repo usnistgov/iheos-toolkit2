@@ -389,9 +389,9 @@ public class MDNMessageProcessor {
 
 			Iterator certIt = certCollection.iterator();
 			try {
-				new JcaX509CertificateConverter().setProvider(BC).getCertificate((X509CertificateHolder)certIt.next());
+				new JcaX509CertificateConverter().setProvider("BC").getCertificate((X509CertificateHolder)certIt.next());
 			} catch (Exception e) {
-				System.out.println("PROBLEMMMMM");
+				er.error("No DTS", "Signature", "Cannot extract the signing certificate", "", "-");
 				break;
 			}
 

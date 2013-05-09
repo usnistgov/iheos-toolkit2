@@ -460,7 +460,7 @@ public class ValidationUtils {
 				" " +
 				"((19|20)(\\d{2}))";												// years: 1900 to 2099.
 		// handle bissextile years?
-		final String datePattern = dayOfWeek + "," + whitespace + date + whitespace + time + whitespace + timezone + "(" +  whitespace + letterTimezone + ")" + "?";
+		final String datePattern = "(" + dayOfWeek + "," + whitespace + ")?" + date + whitespace + time + whitespace + timezone + "(" +  whitespace + letterTimezone + ")" + "?";
 
 		return datePattern;
 	}

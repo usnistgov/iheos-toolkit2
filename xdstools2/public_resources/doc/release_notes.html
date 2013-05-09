@@ -10,6 +10,62 @@
 
 <p>Release note are listed for each build number
 
+
+<h4>163   (released     3 May 2013  )      </h4>
+
+<h5>Bug Fixes</h5>
+
+<ul>
+<li>Direct:
+<ul>
+<li>Fixed DTS 165: - Signature algorithms now allowed for micalg value: sha-1, sha-256, sha1
+<li>Now checking the OID algorithm number located in the signing certificate					
+<li>Fixed Base64 encoding: - Base64 encoding is now spread in several lines which contains no more than 76 characters	
+<li>Updated XDMDecoder: - Fxed a bug where valid XDM content sometimes failed the validation	
+<li>Fixed quoted-printable encoding: - TTT is now able to decode quoted-printable attachment
+</ul>
+<li>MDN:
+<ul>
+<li>Fixed display bug for unencrypted MDN
+<li>Fixed display bug for DTS 462 (disposition field)
+</ul>	
+<li>Display:
+<ul>
+<li>Improved the display of the validation report including more details and a link to the RFC.
+</ul>
+<li>Release Notes for CCDA Validator Released on 05_03_2013
+<ul>
+<li>Link to the MDHT Release used by the validator on the OHT/MDHT website: 
+<li>Release downloadable from <a href="http://sourceforge.net/projects/oht-modeling/files/Nightly%20Builds/Runtime/org.openhealthtools.mdht.uml.cda.runtime.N-N20130429-201304291641.zip/download">here</a>
+<li>Defects fixed in this release:
+<ul> 
+<li>Added support for SDTC extension attributes which include:
+<li>DischargeDispositioncode, DeceaseInd, Id, DeceasedInd, DeceasedTime, BirthTime and RaceCode.
+<li>Added null flavor checks for Birth Time in the tool.
+<li>Fixed the issue where the tool was (incorrectly) requiring the addr and telecom elements to exist whether or not the representedOrganization element was present within a Procedure Observation.
+<li>The validator was incorrectly checking every performer for the existence of the “assignedEntity/Name , Telecom and Address elements”. It should check to ensure that “at least one of the performer or responsible party or encounter participant” has the provider telecom and address information.
+<li>Added Null Flavor checks to the model where it was missing by using an automated program to detect missing null flavor checks.
+</ul>
+<li>Known Issues in the release that impact users:
+<ul> 
+<li>When representing lab results utilizing value reference ranges using the standard IVL_INT data type (for when high/low contain no decimal and have no units) the validator throws an error incorrectly.
+<li>Validate of Text data elements which contain CDATA elements is sensitive to white spaces.
+<li>When Using Multiple TemplateIds to conformance, the validator is looking at the first one to verify conformance instead of checking the entire list. Community has encountered this issue on the Smoking Status Observation.
+<li>When ID’s are present on the Narrative Text element and reference them in the entries, the validator is incorrectly throwing an error. </ul>
+</ul>
+<li>Fixed bug in DNS CERT lookup - was rejecting and refusing to use good certs
+</ul>
+
+<h4>162   (released     2 May 2013  )      </h4>
+
+<h5>New Features</h5>
+
+<ul>
+<li>Version used in Istanbul for the IHE Connectathon
+<li>The only major update was to realign the actor configuration
+download feature with the current relase of Gazelle
+<li>Built with shared-lib version 161a
+</ul>
 <h4>161   (released     1 Mar 2013  )      </h4>
 
 <h5>New Features</h5>

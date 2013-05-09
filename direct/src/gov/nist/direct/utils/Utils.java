@@ -302,14 +302,17 @@ return str;
 	 * @return
 	 */
 	public static String rawFromHeader(String from) {
-	if (from.indexOf('<') == -1)
-	return from;
-	int start = from.indexOf('<');
-	int end = from.indexOf('>');
-	if (end > 0 && end < from.length()) {
-		return from.substring(start +1, end);
-	}
-	else return "unrecognized_usernames"; 
+		if(from != null) {
+			if (from.indexOf('<') == -1)
+				return from;
+			int start = from.indexOf('<');
+			int end = from.indexOf('>');
+			if (end > 0 && end < from.length()) {
+				return from.substring(start +1, end);
+			} else 
+				return "unrecognized_usernames"; 
+		} else 
+			return "unrecognized_usernames";
 	}
 
 	public static void printToFile(MimeMultipartReport mdn, String outputFile) {

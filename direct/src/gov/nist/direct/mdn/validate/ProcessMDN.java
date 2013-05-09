@@ -3,10 +3,14 @@ package gov.nist.direct.mdn.validate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 import javax.mail.MessagingException;
 import javax.mail.Part;
 import org.apache.commons.io.IOUtils;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
+
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
 /**
@@ -29,7 +33,13 @@ public class ProcessMDN {
 	private String warning;
 	private String extension;
 	
+	private ArrayList<String> headerName;
+	private ArrayList<String> headerField;
+	
 	public ProcessMDN(ErrorRecorder er, Part p){
+		headerName = new ArrayList<String>();
+		headerField = new ArrayList<String>();	
+		
 		InputStream mdnStream = null;
 
 		try {
@@ -53,21 +63,25 @@ public class ProcessMDN {
 		String[] mdnHeaderSplit = mdnPart.split("\n");
 		for(int i=0;i<mdnHeaderSplit.length;i++) {
 			er.detail(mdnHeaderSplit[i]);
+			String[] splitHeader;
+			splitHeader = mdnHeaderSplit[i].split(":\\s");
+			headerName.add(splitHeader[0].toLowerCase());
+			headerField.add(splitHeader[1]);
 		}
 		er.detail("-----------------------------------------------------------");
 		mdnPart = mdnPart.toLowerCase();
 
-		dispNotifTo = getMDNHeader(mdnPart, "disposition-notification-to");
-		originalRecipient = getMDNHeader(mdnPart, "original-recipient");
-		reportingUA = getMDNHeader(mdnPart, "reporting-ua");
-		mdnGateway = getMDNHeader(mdnPart, "mdn-gateway");
-		finalRecipient = getMDNHeader(mdnPart, "final-recipient");
-		originalMessageID = getMDNHeader(mdnPart, "original-message-id");
-		disposition = getMDNHeader(mdnPart, "disposition");
-		failure = getMDNHeader(mdnPart, "failure");
-		error = getMDNHeader(mdnPart, "error");
-		warning = getMDNHeader(mdnPart, "warning");
-		extension = getMDNHeader(mdnPart, "extension");
+		dispNotifTo = getMDNHeader("disposition-notification-to");
+		originalRecipient = getMDNHeader("original-recipient");
+		reportingUA = getMDNHeader("reporting-ua");
+		mdnGateway = getMDNHeader("mdn-gateway");
+		finalRecipient = getMDNHeader("final-recipient");
+		originalMessageID = getMDNHeader("original-message-id");
+		disposition = getMDNHeader("disposition");
+		failure = getMDNHeader("failure");
+		error = getMDNHeader("error");
+		warning = getMDNHeader("warning");
+		extension = getMDNHeader("extension");
 	}
 
 	public void validate(ErrorRecorder er){
@@ -114,24 +128,18 @@ public class ProcessMDN {
 		validator.validateExtensionField(er, extension);		
 	}
 	
-	public String getMDNHeader(String part, String header) {
+	public String getMDNHeader(String header) {
 		String res = "";
-		if(checkPresent(part, header)) {
-			String[] partSplit = part.split(header + ": ");
-			String[] partSplitRight = partSplit[1].split("\n");
-			res = partSplitRight[0];
-			return res;
+		if(!headerName.isEmpty()) {
+			for(int i=0;i<headerName.size();i++) {
+				if(headerName.get(i).equals(header)) {
+					res = headerField.get(i);
+				}
+			}
 		}
 		return res;
 	}
 	
-	public boolean checkPresent(String part, String header) {
-		if(part.contains(header)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 	
 	public String getDispositionField() {
 		return this.disposition;

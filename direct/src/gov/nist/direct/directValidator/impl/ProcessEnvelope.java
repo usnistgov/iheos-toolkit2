@@ -36,6 +36,8 @@ import javax.mail.Part;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+
 public class ProcessEnvelope {
 	
 	private String[] contentType_split = null;
@@ -153,6 +155,7 @@ public class ProcessEnvelope {
 			for(int i=0;i<m.getFrom().length;i++) {
 				from = m.getFrom()[i].toString();
 				msgValidator.validateFrom(separate, from, wrapped);
+				from = SafeHtmlUtils.htmlEscape(from);
 				validationSummary.recordKey(shift + "From: "+ from, separate.hasErrors(), true);
 			}
 		}
@@ -166,6 +169,7 @@ public class ProcessEnvelope {
 			to = m.getRecipients(Message.RecipientType.TO)[0].toString();
 		}
 		msgValidator.validateTo(separate, to, wrapped);
+		to = SafeHtmlUtils.htmlEscape(to);
 		validationSummary.recordKey(shift + "To: "+to, separate.hasErrors(), true);
 			
 		er.concat(separate);
@@ -195,7 +199,7 @@ public class ProcessEnvelope {
 			msgValidator.validateReturnPath(separate, returnPath, wrapped);
 		}
 		if(!returnPath.equals("")) {
-			validationSummary.recordKey(shift + "Return-Path: "+returnPath, separate.hasErrors(), true);
+			validationSummary.recordKey(shift + "Return-Path: "+SafeHtmlUtils.htmlEscape(returnPath), separate.hasErrors(), true);
 		}
 		
 		er.concat(separate);
@@ -264,7 +268,8 @@ public class ProcessEnvelope {
 		if(m.getReplyTo() != null) {
 			msgValidator.validateReplyTo(separate, m.getReplyTo()[0].toString(), wrapped);
 			if(!m.getReplyTo()[0].toString().equals("")) {
-				validationSummary.recordKey(shift + "Reply-To: "+m.getReplyTo()[0].toString(), separate.hasErrors(), true);
+				String replyTo = SafeHtmlUtils.htmlEscape(m.getReplyTo()[0].toString());
+				validationSummary.recordKey(shift + "Reply-To: "+ replyTo, separate.hasErrors(), true);
 			}
 		}
 		
