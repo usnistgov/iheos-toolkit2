@@ -1,8 +1,10 @@
 package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
-import gov.nist.toolkit.wsseTool.generation.GenerationException;
+import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
+import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
+import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
+import gov.nist.toolkit.wsseTool.api.exceptions.GenerationException;
 import gov.nist.toolkit.wsseTool.generation.opensaml.OpenSamlWsseSecurityGenerator;
-import gov.nist.toolkit.wsseTool.keystore.KeystoreAccess;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -28,13 +30,18 @@ public class WsseHeaderGeneratorAdapter {
 		String sPass = "changeit";
 		String kPass = "changeit";
 		String alias = "hit-testing.nist.gov";
-		buildHeader(store, sPass, alias, kPass);
+		KeystoreAccess keystore = new KeystoreAccess(store , sPass, alias, kPass);
+		SecurityContext context = SecurityContextFactory.getInstance();
+		context.setKeystore(keystore);
+		context.getParams().put("patientId", "D123401^^^&1.1&ISO");
+		context.getParams().put("homeCommunityId", "urn:oid:2.2");
+		buildHeader(context);
 	}
 	
 	
-	public static Element buildHeader(String store, String sPass, String alias, String kPass) throws GenerationException, KeyStoreException {
-		KeystoreAccess keystore = new KeystoreAccess(store , sPass, alias, kPass);
-		Document wsseHeader = new OpenSamlWsseSecurityGenerator().generateWsseHeader(keystore);
+	public static Element buildHeader(SecurityContext context) throws GenerationException, KeyStoreException {
+		
+		Document wsseHeader = new OpenSamlWsseSecurityGenerator().generateWsseHeader(context);
 		return wsseHeader.getDocumentElement();
 	}
 
