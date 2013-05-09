@@ -503,6 +503,7 @@ public class Session implements SecurityParams {
 		if (!k.exists() || !k.isDirectory())
 			k = null;
 		currentEnvironmentName = name;
+		System.setProperty("XDSCodesFile", k.toString() + File.separator + "codes.xml");
 		new EnvSetting(sessionId, name, k);
 		logger.debug(getId() + ": " + "Environment set to " + k);
 	}
