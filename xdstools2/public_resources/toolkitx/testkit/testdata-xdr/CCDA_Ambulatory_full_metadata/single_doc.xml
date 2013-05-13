@@ -23,7 +23,7 @@
         <ObjectRef id="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427"/>
         <ObjectRef id="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"/>
         <ObjectRef id="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d"/>
-        <ExtrinsicObject id="Document01" mimeType="text/plain"
+        <ExtrinsicObject id="Document01" mimeType="text/xml"
             objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1">
             <Name>
                 <LocalizedString value="DocA"/>
@@ -219,6 +219,11 @@
             <Description>
                 <LocalizedString value="Annual physical"/>
             </Description>
+            <Slot name="intendedRecipient">
+                <ValueList>
+                    <Value>Some Hospital^^^^^^^^^1.2.3.4.5.6.7.8.9.1789.45|^Wel^Marcus^^^Dr^MD|^^Internet^mwel@healthcare.example.org</Value>
+                </ValueList>
+            </Slot>
             <Slot name="submissionTime">
                 <ValueList>
                     <Value>20041225235050</Value>

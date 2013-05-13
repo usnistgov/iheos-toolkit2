@@ -123,7 +123,7 @@ public class SoapMessageValidator extends MessageValidator {
 			// mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 			Element wsseHeader;
 			try {
-				wsseHeader = XMLUtils.toDOM(header);
+				wsseHeader = XMLUtils.toDOM(security);
 				mvc.addMessageValidator("SAML Validator", new WsseHeaderValidatorAdapter(vc, wsseHeader), erBuilder.buildNewErrorRecorder());
 			} catch (Exception e) {
 				er.err(XdsErrorCode.Code.NoCode, e);
