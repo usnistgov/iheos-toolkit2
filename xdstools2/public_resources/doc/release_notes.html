@@ -11,13 +11,29 @@
 <p>Release note are listed for each build number
 
 
-<h4>163   (released     3 May 2013  )      </h4>
+<h4>163   (released     10 May 2013  )      </h4>
+
+<h5>Known bugs</h5>
+
+<ul>
+<li>The Document Recipient Simulator (XDR) will report a validation error:
+<pre>
+Slot intendedRecipient: 
+Some Hospital^^^^^^^^^1.2.3.4.5.6.7.8.9.1789.45|^Wel^Marcus^^^Dr^MD|^^Internet^mwel@healthcare.example.org 
+: Format is XON|XCN  where either XON or XCN must be present
+</pre>
+when SAML is included. In many cases this error message is incorrect.  This will be fixed soon.
+</ul>
 
 <h5>Bug Fixes</h5>
 
 <ul>
+<li>SAML: Installed new implementation of SAML.  This include SAML header generation an SAML
+header validation. This may cause new errors to be reported because it provides a more comprehensive
+ validation.
 <li>Direct:
-<ul>
+<ul>Fixed Orig-Date validation: Day of the week changed from required to optional 
+Under Direct validation
 <li>Fixed DTS 165: - Signature algorithms now allowed for micalg value: sha-1, sha-256, sha1
 <li>Now checking the OID algorithm number located in the signing certificate					
 <li>Fixed Base64 encoding: - Base64 encoding is now spread in several lines which contains no more than 76 characters	
