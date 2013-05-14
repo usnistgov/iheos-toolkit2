@@ -5,6 +5,7 @@ import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
+import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
@@ -48,6 +49,8 @@ import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.protocol.Protocol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //vbeera: The below imports should be used in case of the potential 2nd fix for MustUnderstand Check Exception.
 /*
@@ -57,6 +60,9 @@ import org.apache.commons.httpclient.protocol.Protocol;
  */
 
 public class Soap implements SoapInterface {
+	
+	private static Logger log = LoggerFactory.getLogger(Soap.class);
+	
 	ServiceClient serviceClient = null;
 	OperationClient operationClient = null;
 	OMElement result = null;
@@ -213,30 +219,6 @@ public class Soap implements SoapInterface {
 
 		setSoapHeader(envelope.getHeader());
 		if (useWSSEC) {
-			// OMNamespace ns =
-			// OMAbstractFactory.getOMFactory().createOMNamespace("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-			// "wsse");
-			// securityHeader =
-			// OMAbstractFactory.getOMFactory().createOMElement("Security", ns);
-
-			/*
-			 securityHeader = WSSESecurityHeaderUtil.getWSSecOMElement(securityParams);
-		
-			 
-			 getSoapHeader().addChild(securityHeader);
-			 */
-			 
-			 /*
-			  * FIX: When deployed under tomcat, the behavior of the axiom library differs.
-			  * When the security header is added to the soap header, the security header is "detached"
-			  * from its original parent, with the side-effect of removing the
-			  * http://www.w3.org/2001/XMLSchema namespace declaration.
-			  * Thus we need to redeclare the prefix we use in the assertion in the soap header itself
-			  */
-			 
-		//	 getSoapHeader().declareNamespace("http://www.w3.org/2001/XMLSchema", "xs");
-			 
-
 			try {
 				String store = securityParams.getKeystore().getAbsolutePath();
 				String kPass = securityParams.getKeystorePassword();
@@ -250,17 +232,12 @@ public class Soap implements SoapInterface {
 				context.getParams().put("homeCommunityId", "urn:oid:2.2");
 				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter.buildHeader(context);
 				
-				System.out.println("********the one in soap*************");
-				MyXmlUtils.DomToStream(header, System.out);
-				System.out.println("********the one in soap*************");
-				
 				securityHeader = org.apache.axis2.util.XMLUtils.toOM(header);
+				getSoapHeader().addChild(securityHeader);
+				
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println(securityHeader.toString());
+				log.error("!! error while trying to generate security header !!",e);
 			}
-
-			getSoapHeader().addChild(securityHeader);
 		
 		}
 
