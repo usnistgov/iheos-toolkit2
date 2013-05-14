@@ -24,7 +24,6 @@
 	<target name="war">
 		<jar destfile="${target.dir}/${war.name}">
 			<fileset dir="war">
-				<exclude name="**/groovy*.jar" />
 				<exclude name="**/rahas*" />
 				<exclude name="**/postgres*.jar" />
 				<exclude name="**/*servlet-api.jar" />
