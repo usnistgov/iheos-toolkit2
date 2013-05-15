@@ -62,11 +62,16 @@ public class ProcessMDN {
 		er.detail("-------------------- MDN Headers -------------------");
 		String[] mdnHeaderSplit = mdnPart.split("\n");
 		for(int i=0;i<mdnHeaderSplit.length;i++) {
+			if(mdnHeaderSplit[i].contains("\r")) {
+				mdnHeaderSplit[i] = mdnHeaderSplit[i].replaceAll("\\r", "");
+			}
 			er.detail(mdnHeaderSplit[i]);
 			String[] splitHeader;
-			splitHeader = mdnHeaderSplit[i].split(":\\s");
-			headerName.add(splitHeader[0].toLowerCase());
-			headerField.add(splitHeader[1]);
+			if(mdnHeaderSplit[i].contains(": ")) {
+				splitHeader = mdnHeaderSplit[i].split(":\\s");
+				headerName.add(splitHeader[0].toLowerCase());
+				headerField.add(splitHeader[1].toLowerCase());
+			}
 		}
 		er.detail("-----------------------------------------------------------");
 		mdnPart = mdnPart.toLowerCase();
