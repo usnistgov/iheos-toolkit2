@@ -14,6 +14,9 @@ import java.util.Properties;
  * ToDo
  * 	- Create Abstract Repository and refactor simple (in prep for derby based repository)
  *  - Introduce other data types (xml, txt, serialized objects) instead of just byte[]
+ *  - Introduce use of type element domain to indicate a type is a repository vs others :
+ *      domain=repository
+ *  - The DisplayName property should be displayName (repository.props)
  * @author bmajur
  *
  */
