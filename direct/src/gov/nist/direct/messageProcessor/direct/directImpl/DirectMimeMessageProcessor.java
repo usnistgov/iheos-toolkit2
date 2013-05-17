@@ -78,6 +78,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
+import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -97,6 +99,7 @@ import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.util.Store;
 
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.sun.mail.util.BASE64DecoderStream;
 import com.sun.mail.util.QPEncoderStream;
 
 public class DirectMimeMessageProcessor implements DirectMessageProcessorInterface {
@@ -329,6 +332,10 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		} else if (p.isMimeType("application/octet-stream")) {
 			//er.detail("This is a binary"+"  Content Name: "+p.getContent().getClass().getName());
 			this.processOctetStream(er, p);
+			
+		} else if (p.isMimeType("application/xml")) {
+			//er.detail("This is a binary"+"  Content Name: "+p.getContent().getClass().getName());
+			this.processApplicationXML(er, p);
 
 		} else if (p.isMimeType("multipart/signed")) {
 			//er.detail("This is a signed multipart"+"  Content Name: "+p.getContent().getClass().getName());
@@ -518,7 +525,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		// Display CCDA Document
 		er.detail("#####################CCDA Content######################");
-		String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
+		//String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
+		String html_formatted_ccda = SafeHtmlUtils.htmlEscape(p.getContent().toString());
 		er.detail(html_formatted_ccda);
 		er.detail("####################################################");
 		//logger.info(p.getContent().toString());
@@ -546,6 +554,32 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", Status.PART, true);
 		//validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", er.hasErrors(), true);
 		partNumber++;
+	}
+	
+	public void processApplicationXML(ErrorRecorder er, Part p) throws Exception {
+		if(p.getFileName() != null) {
+			if(p.getFileName().contains(".xsl")) {
+				er.detail("\n====================Stylesheet found: " + p.getFileName() + "==========================\n");
+				logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
+				validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
+			} else {
+				er.detail("\n====================Application/xml==========================\n");
+				logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
+				validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
+			}
+		} else {
+			er.detail("\n====================Application/xml==========================\n");
+			logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
+			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
+
+		}
+		
+		er.detail("#####################XML Content######################");
+		InputStream xsl = MimeUtility.decode(p.getInputStream(), MimeUtility.getEncoding(p.getDataHandler()));
+		String xslString = IOUtils.toString(xsl, "UTF-8");
+		er.detail(SafeHtmlUtils.htmlEscape(xslString));
+		er.detail("####################################################");
+		
 	}
 
 	/**
