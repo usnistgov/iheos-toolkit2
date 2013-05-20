@@ -217,9 +217,11 @@ public class WrappedMessageProcessor {
 		try {
 			m = new SMIMEEnveloped((MimeMessage)p);
 		} catch (MessagingException e1) {
+			er.error("No DTS", "Certificate File", "Messaging exception", e1.getMessage(), "-");
 			e1.printStackTrace();
 
 		} catch (CMSException e1) {
+			er.error("No DTS", "Certificate File", "CMSException", e1.getMessage(), "-");
 			e1.printStackTrace();
 			
 		}

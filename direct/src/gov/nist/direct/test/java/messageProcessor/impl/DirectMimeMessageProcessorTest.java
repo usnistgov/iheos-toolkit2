@@ -34,13 +34,13 @@ public class DirectMimeMessageProcessorTest {
 	public void testProcessAndValidateDirectMessage() {
 		ErrorRecorder er = new TextErrorRecorderModif();
 
-		String messageUnderTestPath = "target/test-classes/messages/signed-encrypted-xdm.eml";
+		String messageUnderTestPath = "direct/src/gov/nist/direct/test/java/messageProcessor/impl/QP_Mat.txt";
 		byte[] messageUnderTest = null;
 		
-		String certificatePath = "target/test-classes/certificates/mhunter.p12";
+		String certificatePath = "direct/src/gov/nist/direct/test/java/messageProcessor/impl/hit-testing.nist.gov.p12";
 		byte[] certificate = null;
 		
-		String certificatePassword = "mhunter";
+		String certificatePassword = "";
 		
 		// Uses either a normal string parser or an http parser.
 		messageUnderTest = Utils.getMessage(messageUnderTestPath);

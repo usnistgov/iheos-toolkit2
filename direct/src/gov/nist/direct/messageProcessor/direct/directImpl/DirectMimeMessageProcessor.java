@@ -45,10 +45,14 @@ import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import gov.nist.toolkit.valsupport.message.HtmlValFormatter;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -197,11 +201,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			return;
 		
 		// Decode if quoted printable
+		qpEncoded = false;
 		String encoding = "";
 		ProcessEnvelope procEnv = new ProcessEnvelope();
 		encoding = procEnv.searchHeaderSimple(p, "content-transfer-encoding");
 		if(encoding.equals("quoted-printable")) {
-			p = decodeQP(p.getInputStream());
+			//p = decodeQP(p.getInputStream());
 			qpEncoded = true;
 		} else {
 			qpEncoded = false;
@@ -269,7 +274,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 					partNumber=1;
 					MimeMultipart mp = (MimeMultipart)p.getContent();
 					int count = mp.getCount();
+					MimeBodyPart bodyPart;
 					for (int i = 0; i < count; i++){
+						if(qpEncoded) {
+							bodyPart = decodeQP(mp.getBodyPart(i).getInputStream());
+						} else {
+							bodyPart = (MimeBodyPart) mp.getBodyPart(i);
+						}
 						this.processPart(er, mp.getBodyPart(i));
 					}
 				}
@@ -917,9 +928,25 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		partNumber++;
 
 		InputStream attachmentContents = p.getInputStream();
+		if(qpEncoded) {
+			attachmentContents = decodeQPInputStream(attachmentContents);
+		}
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
+		
+		if(attachmentContents.markSupported()) {
+			attachmentContents.reset();
+		}
 
-		attachmentContents.reset();
+		// If it is a XML file
+		if(p.getFileName().contains(".xml")) {
+			er.detail("#######################XML File############################");
+			if(qpEncoded) {
+				er.detail(SafeHtmlUtils.htmlEscape(decodeQPToString(p.getInputStream())));
+			} else {
+				er.detail(SafeHtmlUtils.htmlEscape(new String(contents)));
+			}
+			er.detail("##########################################################");
+		}
 
 		// Use the XDMDecoder to make sure it is XMD content before running XDM validator
 		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, new ByteArrayInputStream(contents));
@@ -932,6 +959,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("The file is not an XDM content");
 			return;
 		}
+		
 		
 		this.processAttachments(er, p);
 
@@ -1078,7 +1106,18 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	
 	public MimeBodyPart decodeQP(InputStream encodedQP) throws MessagingException {
 		InputStream res = MimeUtility.decode(encodedQP, "quoted-printable");
+		MimeBodyPart test = new MimeBodyPart(res);
 		return new MimeBodyPart(res);
+	}
+	
+	public InputStream decodeQPInputStream(InputStream encodedQP) throws MessagingException {
+		InputStream res = MimeUtility.decode(encodedQP, "quoted-printable");
+		return res;
+	}
+	
+	public String decodeQPToString(InputStream encodedQP) throws MessagingException, IOException {
+		InputStream res = MimeUtility.decode(encodedQP, "quoted-printable");
+		return IOUtils.toString(res, "UTF-8");
 	}
 	
 	public String decodeQPText(String text) throws UnsupportedEncodingException {
