@@ -63,6 +63,7 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
@@ -231,6 +232,10 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			//er.detail("This is plain text"+"  Content Name: "+p.getContent().getClass().getName());
 			this.processText(er, p);
 
+		} else if (p.isMimeType("text/html")) {
+			//er.detail("This is plain text xml"+"  Content Name: "+p.getContent().getClass().getName());
+			this.processTextHTML(er, p);
+
 		} else if (p.isMimeType("text/xml")) {
 			//er.detail("This is plain text xml"+"  Content Name: "+p.getContent().getClass().getName());
 			this.processTextXML(er, p);
@@ -241,7 +246,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			// Summary
 			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": message/rfc822 interpreted as a message", Status.PART, true);
 
+			Part messageRFC = p;
 			p = (Part)p.getContent();
+			
 			if (p instanceof Message) {
 				er.detail("Detected an Envelope");
 				er.detail("\n====================Message RFC 822==========================\n");
@@ -268,19 +275,20 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 				validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": message/rfc822 interpreted as a message", separate.hasErrors(), true);
 				partNumber++;
-
+								
+				if(qpEncoded) {
+					p = decodeQP(messageRFC);
+				}
+				
 				if(p.getContent() instanceof MimeMultipart) {
 					shiftNumber++;
 					partNumber=1;
+
 					MimeMultipart mp = (MimeMultipart)p.getContent();
+
 					int count = mp.getCount();
-					MimeBodyPart bodyPart;
 					for (int i = 0; i < count; i++){
-						if(qpEncoded) {
-							bodyPart = decodeQP(mp.getBodyPart(i).getInputStream());
-						} else {
-							bodyPart = (MimeBodyPart) mp.getBodyPart(i);
-						}
+						mp.getBodyPart(i).writeTo(new FileOutputStream(new File("test" + i + ".txt")));
 						this.processPart(er, mp.getBodyPart(i));
 					}
 				}
@@ -409,8 +417,14 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
 			msgValidator.validateFirstMIMEPart(er, true);
 
-
-			MimeMultipart mp = (MimeMultipart)p.getContent();
+			MimeMultipart mp;
+			
+			if(qpEncoded) {
+				p = decodeQP(p);
+				mp = (MimeMultipart) p;
+			} else {
+				mp = (MimeMultipart)p.getContent();
+			}
 			int count = mp.getCount();
 			for (int i = 0; i < count; i++){
 				this.processPart(er, mp.getBodyPart(i));	
@@ -491,12 +505,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * */
 	public void processText(ErrorRecorder er, Part p) throws Exception{
 		//er.detail("Processing Text");
-		System.out.println(p.getContent());
 		er.detail("\n====================Process Text/plain Part==========================\n");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Summary
-		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": plain/text interpreted as a text content", Status.PART, true);
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/plain interpreted as a text content", Status.PART, true);
 
 		// Separate ErrorRecorder
 		ErrorRecorder separate = new GwtErrorRecorder();
@@ -508,7 +521,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		msgValidator.validateBody(er, p, (String)p.getContent());
 		//this.processAttachments(er, p);
 
-		er.detail("#####################plain/text message######################");
+		er.detail("#####################text/plain message######################");
 		String textContent = p.getContent().toString();
 		System.out.println(textContent);
 		// Decode if QP encoded
@@ -516,11 +529,42 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			textContent = decodeQPText(textContent);
 		}
 		er.detail(SafeHtmlUtils.htmlEscape(textContent));
-		System.out.println(SafeHtmlUtils.htmlEscape(textContent));
 		er.detail("##########################################################");
 
 		// Update the summary
-		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": plain/text interpreted as a text content", separate.hasErrors(), true);
+		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/plain interpreted as a text content", separate.hasErrors(), true);
+		partNumber++;
+	}
+	
+	public void processTextHTML(ErrorRecorder er, Part p) throws Exception {
+		er.detail("\n====================Process Text/html Part==========================\n");
+		ProcessEnvelope process = new ProcessEnvelope();
+
+		// Summary
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/html interpreted as a html content", Status.PART, true);
+
+		// Separate ErrorRecorder
+		ErrorRecorder separate = new GwtErrorRecorder();
+		process.validateMimeEntity(separate, p, validationSummary, shiftNumber+1);
+		er.concat(separate);
+
+		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
+		msgValidator.validateFirstMIMEPart(er, true);
+		msgValidator.validateBody(er, p, (String)p.getContent());
+		//this.processAttachments(er, p);
+
+		er.detail("#####################text/html content######################");
+		String textContent = p.getContent().toString();
+		System.out.println(textContent);
+		// Decode if QP encoded
+		if(qpEncoded) {
+			textContent = decodeQPText(textContent);
+		}
+		er.detail(SafeHtmlUtils.htmlEscape(textContent));
+		er.detail("##########################################################");
+
+		// Update the summary
+		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/html interpreted as a text content", separate.hasErrors(), true);
 		partNumber++;
 	}
 
@@ -946,23 +990,22 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 				er.detail(SafeHtmlUtils.htmlEscape(new String(contents)));
 			}
 			er.detail("##########################################################");
-		}
+		} else {
 
-		// Use the XDMDecoder to make sure it is XMD content before running XDM validator
-		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, new ByteArrayInputStream(contents));
-		try {
-			decoder.detect(new ByteArrayInputStream(contents));
-		} catch(IOException e) {
-			er.detail("The file is not an XDM content");
-			return;
-		} catch(XDMException e) {
-			er.detail("The file is not an XDM content");
-			return;
-		}
-		
-		
-		this.processAttachments(er, p);
+			// Use the XDMDecoder to make sure it is XMD content before running XDM validator
+			XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, new ByteArrayInputStream(contents));
+			try {
+				decoder.detect(new ByteArrayInputStream(contents));
+			} catch(IOException e) {
+				er.detail("The file is not an XDM content");
+				return;
+			} catch(XDMException e) {
+				er.detail("The file is not an XDM content");
+				return;
+			}
+			this.processAttachments(er, p);
 
+		}
 
 	}
 
@@ -1104,10 +1147,16 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		return shiftIndent;
 	}
 	
-	public MimeBodyPart decodeQP(InputStream encodedQP) throws MessagingException {
-		InputStream res = MimeUtility.decode(encodedQP, "quoted-printable");
-		MimeBodyPart test = new MimeBodyPart(res);
-		return new MimeBodyPart(res);
+	public MimeBodyPart decodeQP(Part p) throws MessagingException, IOException {
+		InputStream res = MimeUtility.decode(p.getInputStream(), "quoted-printable");
+		MimeBodyPart decodedPart = new MimeBodyPart(res);
+		//Enumeration allHeaders = p.getAllHeaders();
+		//while (allHeaders.hasMoreElements()) {
+		//	Header h = (Header) allHeaders.nextElement();
+		//	decodedPart.addHeader(decodeQPText(h.getName()), decodeQPText(h.getValue()));
+		//}
+		decodedPart.writeTo(new FileOutputStream(new File("test.txt")));
+		return decodedPart;
 	}
 	
 	public InputStream decodeQPInputStream(InputStream encodedQP) throws MessagingException {
