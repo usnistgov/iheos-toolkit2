@@ -275,11 +275,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 				validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": message/rfc822 interpreted as a message", separate.hasErrors(), true);
 				partNumber++;
-								
+
 				if(qpEncoded) {
 					p = decodeQP(messageRFC);
 				}
-				
+
 				if(p.getContent() instanceof MimeMultipart) {
 					shiftNumber++;
 					partNumber=1;
@@ -288,7 +288,6 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 					int count = mp.getCount();
 					for (int i = 0; i < count; i++){
-						mp.getBodyPart(i).writeTo(new FileOutputStream(new File("test" + i + ".txt")));
 						this.processPart(er, mp.getBodyPart(i));
 					}
 				}
@@ -1150,12 +1149,6 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	public MimeBodyPart decodeQP(Part p) throws MessagingException, IOException {
 		InputStream res = MimeUtility.decode(p.getInputStream(), "quoted-printable");
 		MimeBodyPart decodedPart = new MimeBodyPart(res);
-		//Enumeration allHeaders = p.getAllHeaders();
-		//while (allHeaders.hasMoreElements()) {
-		//	Header h = (Header) allHeaders.nextElement();
-		//	decodedPart.addHeader(decodeQPText(h.getName()), decodeQPText(h.getValue()));
-		//}
-		decodedPart.writeTo(new FileOutputStream(new File("test.txt")));
 		return decodedPart;
 	}
 	
