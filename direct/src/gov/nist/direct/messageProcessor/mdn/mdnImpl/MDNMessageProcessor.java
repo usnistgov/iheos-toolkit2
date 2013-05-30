@@ -129,8 +129,12 @@ public class MDNMessageProcessor {
 
 		try {
 			this.processPart(er, mm);
-			msgID = mm.getMessageID();
-			mdnDate = mm.getSentDate();
+			if(mm.getMessageID() != null) {
+				msgID = mm.getMessageID();
+			}
+			if(mm.getSentDate() != null) {
+				mdnDate = mm.getSentDate();
+			}
 		} catch (Exception e) {
 			er.error("No DTS", "MDN Processing", "Error Processing MDN", "", "-");
 			e.printStackTrace();

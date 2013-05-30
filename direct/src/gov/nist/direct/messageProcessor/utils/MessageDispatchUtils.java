@@ -47,7 +47,7 @@ public class MessageDispatchUtils {
 	
 	public static boolean isEncrypted(ErrorRecorder er, MimeMessage msg) throws MessagingException{
 		//if(!msg.isMimeType("application/pkcs7-mime")) {
-		if (msg.getContentType().contains("application/pkcs7-mime")){
+		if (msg.getContentType().contains("application/pkcs7-mime") || msg.getContentType().contains("application/x-pkcs7-mime")){
 			return true;
 		}
 		return false;

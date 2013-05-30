@@ -151,6 +151,7 @@ public class WrappedMessageProcessor {
 
 		} else if (p.isMimeType("application/x-pkcs7-mime")) {
 			//System.out.println("Encrypted");
+			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
 
 		} else if (p.isMimeType("application/zip")) {
 			//System.out.println("XDM Content");

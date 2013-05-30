@@ -311,9 +311,17 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		} else if (p.isMimeType("application/x-pkcs7-signature")) {
 			//er.detail("This is a x signature"+"  Content Name: "+p.getContent().getClass().getName());
+			//er.detail("This is a signature");
+			// DTS 152, Validate Second MIME Part
+			MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
+			msgValidator.validateSecondMIMEPart(er, true);
+
+			// DTS 155, Validate Content-Type
+			msgValidator.validateContentType2(er, p.getContentType());
 
 		} else if (p.isMimeType("application/x-pkcs7-mime")) {
 			//er.detail("This is a x s/mime"+"  Content Name: "+p.getContent().getClass().getName());
+			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
 
 		} else if (p.isMimeType("application/zip")) {
 			//er.detail("This is a zip"+"  Content Name: "+p.getContent().getClass().getName());
