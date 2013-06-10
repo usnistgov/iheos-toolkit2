@@ -140,6 +140,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	private ValidationSummary validationSummary = new ValidationSummary();
 	WrappedMessageProcessor wrappedParser = new WrappedMessageProcessor();
 	private boolean qpEncoded;
+	private boolean wrapped_no_multipart = false;
 
 
 
@@ -216,7 +217,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		
 		//er.detail("Processing Part");
 		// If the Part is a Message then first validate the Envelope
-		if (p instanceof Message){
+		if (p instanceof Message && !wrapped_no_multipart){
 			er.detail("Detected an Envelope");
 			er.detail("\n====================Outer Enveloped Message==========================\n");
 			processEnvelope(er, (Message)p);
@@ -290,6 +291,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 					for (int i = 0; i < count; i++){
 						this.processPart(er, mp.getBodyPart(i));
 					}
+				} else {
+					wrapped_no_multipart = true;
+					this.processPart(er, p);
 				}
 			}
 
