@@ -1,6 +1,7 @@
 package gov.nist.toolkit.repository.simple.test;
 
 import static org.junit.Assert.assertTrue;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.repository.api.Id;
 import gov.nist.toolkit.repository.api.Repository;
 import gov.nist.toolkit.repository.api.RepositoryException;
@@ -12,12 +13,22 @@ import gov.nist.toolkit.repository.simple.SimpleRepositoryIterator;
 import gov.nist.toolkit.repository.simple.SimpleType;
 
 import java.io.File;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Set;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SimpleRepositoryTest {
-	static File RootOfAllRepositories = new File("/Users/bmajur/tmp/repositories");
+	static File RootOfAllRepositories = new File("/temp/repositories");
 	static Id repId = null;
 	
 	// Create temp folder to be the External Cache
@@ -26,6 +37,11 @@ public class SimpleRepositoryTest {
 	
 	@BeforeClass
 	static public void initialize() throws RepositoryException {
+		// skb fix later with EasyMock
+		// ToDO
+		//Installation.installation()
+		//System.out.println (Installation.installation().tkProps.get("toolkit.servlet.context", "xdstools2"));
+		
 		new Configuration(RootOfAllRepositories);
 		Repository rep = new RepositoryFactory().createRepository(
 				"This is my repository",

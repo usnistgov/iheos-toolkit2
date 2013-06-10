@@ -100,7 +100,7 @@ public class SimpleAssetIterator implements AssetIterator, FilenameFilter {
 		
 		try {
 			SimpleRepository repos = new SimpleRepository(repositoryId);
-			SimpleAsset a =  repos.getAsset(assetId);
+			SimpleAsset a =  (SimpleAsset) repos.getAsset(assetId);
 			String aTypeStr = a.getProperty("type");
 			Type aType = new SimpleType(aTypeStr);
 			return type.isEqual(aType);

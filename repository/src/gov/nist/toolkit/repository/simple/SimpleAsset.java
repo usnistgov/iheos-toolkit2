@@ -22,6 +22,7 @@ public class SimpleAsset implements Asset, Flushable {
 	Properties properties = new Properties();
 	byte[] content = null;
 	boolean autoFlush = true;
+	transient boolean indexable = false;
 
 	public void setRepository(Id repositoryId) throws RepositoryException {
 		properties.setProperty("repository", repositoryId.getIdString());
@@ -294,6 +295,20 @@ public class SimpleAsset implements Asset, Flushable {
 	@Override
 	public String getMimeType() throws RepositoryException {
 		return properties.getProperty("mimeType");
+	}
+
+	/**
+	 * @return the indexable
+	 */
+	public boolean isIndexable() {
+		return indexable;
+	}
+
+	/**
+	 * @param indexable the indexable to set
+	 */
+	public void setIndexable(boolean indexable) {
+		this.indexable = indexable;
 	}
 
 }

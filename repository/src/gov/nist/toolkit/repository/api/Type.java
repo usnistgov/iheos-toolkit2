@@ -49,25 +49,39 @@ package gov.nist.toolkit.repository.api;
  * </p>
  */
 public abstract class Type implements java.io.Serializable {
-    private String domain;
+
+	/**
+	 * 
+	 */
+	private String domain;
     private String authority;
     private String keyword;
     private String description;
+    private String index;
 
     public Type(String authority, String domain, String keyword) {
-        this.domain = domain;
-        this.authority = authority;
-        this.keyword = keyword;
-        this.description = "";
+    	setDomain(domain);
+        setAuthority(authority);
+        setKeyword(keyword);
+        setDescription("");
     }
 
     public Type(String authority, String domain, String keyword,
         String description) {
-        this.domain = domain;
-        this.authority = authority;
-        this.keyword = keyword;
-        this.description = description;
+    	setDomain(domain);
+        setAuthority(authority);
+        setKeyword(keyword);
+        setDescription(description);
     }
+    
+    public Type(String authority, String domain, String keyword,
+            String description, String index) {
+	    	setDomain(domain);
+	        setAuthority(authority);
+	        setKeyword(keyword);
+	        setDescription(description);
+            setIndex(index);
+        }    
 
     public final boolean isEqual(Type type2) {
         if ((null != type2) && (null != type2.getDomain()) &&
@@ -81,7 +95,46 @@ public abstract class Type implements java.io.Serializable {
 
         return false;
     }
+    public void setDomain(String domain) {
+    	if (domain!=null) {
+    		this.domain = domain.trim();
+    	} else {
+    		this.domain = domain;
+    	}
+	}
 
+	public void setAuthority(String authority) {
+		if (authority!=null) {
+			this.authority = authority.trim();
+		} else {
+			this.authority = authority;
+		}
+	}
+
+	public void setKeyword(String keyword) {
+		if (keyword!=null) {
+			this.keyword = keyword.trim();
+		} else {
+			this.keyword = keyword;
+		}
+	}
+
+	public void setDescription(String description) {
+		if (description!=null) {
+			this.description = description.trim();
+		} else {
+			this.description = description;
+		}
+	}
+
+	public void setIndex(String index) {
+		if (index!=null) {
+			this.index = index.trim();
+		} else {
+			this.index = index;
+		}
+	}
+	
     public final String getAuthority() {
         return this.authority;
     }
@@ -97,7 +150,11 @@ public abstract class Type implements java.io.Serializable {
     public final String getDescription() {
         return this.description;
     }
-
+    
+    public final String getIndex() {
+        return this.index;
+    }
+    
     /**
      * <p>
      * MIT O.K.I&#46; SID Definition License.

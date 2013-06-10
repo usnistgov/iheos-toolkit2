@@ -4,6 +4,8 @@ import gov.nist.toolkit.repository.simple.Configuration;
 import gov.nist.toolkit.repository.simple.SimpleRepository;
 import gov.nist.toolkit.repository.simple.SimpleRepositoryIterator;
 import gov.nist.toolkit.repository.simple.SimpleTypeIterator;
+import gov.nist.toolkit.repository.simple.index.IndexableRepository;
+import gov.nist.toolkit.repository.simple.index.db.DbIndexContainer;
 
 import java.io.File;
 import java.io.Serializable;
@@ -30,15 +32,39 @@ public class RepositoryFactory implements RepositoryManager {
 	@Override
 	public Repository createRepository(String displayName, String description,
 			Type repositoryType) throws RepositoryException {
-		SimpleRepository rep = new SimpleRepository();
-		rep.setAutoFlush(false);
-		rep.setType(repositoryType);
-		rep.setDescription(description);
-		rep.setDisplayName(displayName);
-		rep.flush();
-		return rep;
+		
+		/*
+		 * Determine if this repository type is indexable
+		 */
+		boolean isIndexable = DbIndexContainer.isRepositoryIndexable(repositoryType);
+		
+		if (isIndexable) {
+			/*
+			 * This is the indexable version of the Simple Repository  
+			 */						
+			IndexableRepository rep = new IndexableRepository();
+			rep.setAutoFlush(false);
+			rep.setType(repositoryType);
+			rep.setDescription(description);
+			rep.setDisplayName(displayName);
+			rep.flush();
+			return rep;
+		} else {
+			/*
+			 * This is the standard Simple Repository (without any indexing features)
+			 */			
+			SimpleRepository rep = new SimpleRepository();
+			rep.setAutoFlush(false);
+			rep.setType(repositoryType);
+			rep.setDescription(description);
+			rep.setDisplayName(displayName);
+			rep.flush();
+			return rep;
+		}
+		
 	}
 	
+
 	@Override
 	public Repository createNamedRepository(String displayName,
 			String description, Type repositoryType, String repositoryName)

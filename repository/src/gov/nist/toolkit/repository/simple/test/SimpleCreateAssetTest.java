@@ -15,7 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SimpleCreateAssetTest {
-	static File RootOfAllRepositories = new File("/Users/bmajur/tmp/repositories");
+	static File RootOfAllRepositories = new File("/temp/repositories");  // /Users/bmajur/tmp/repositories
 	static Repository repos;
 
 	// Create temp folder to be the External Cache

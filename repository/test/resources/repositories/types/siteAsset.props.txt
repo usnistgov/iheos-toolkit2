@@ -1,0 +1,5 @@
+# asset type site
+keyword=siteAsset
+domain=asset
+indexes=patientId, startTime(DTM), description
+description=Site asset

@@ -15,7 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SimpleRemoveAssetTest {
-	static File RootOfAllRepositories = new File("/Users/bmajur/tmp/repositories");
+	static File RootOfAllRepositories = new File("/temp/repositories");
 	static Repository repos;
 	static Asset a;
 

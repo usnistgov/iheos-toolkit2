@@ -10,7 +10,7 @@ public class SimpleId implements Id {
 	 */
 	private static final long serialVersionUID = 8299302965195505251L;
 	
-	protected SimpleId(String id) {
+	public SimpleId(String id) {
 		this.guid = id;
 	}
 

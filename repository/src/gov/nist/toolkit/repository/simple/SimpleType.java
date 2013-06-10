@@ -15,9 +15,28 @@ public class SimpleType extends Type {
 	 * 
 	 */
 	private static final long serialVersionUID = 5856958238533928287L;
+	// Create Domain enum here
+	public static final String Asset = "asset";
+	public static final String Repository = "repository";
 
 	public SimpleType(String keyword, String description) throws RepositoryException {
 		super("", "", keyword, description);
+		
+		if (keyword == null || keyword.equals(""))
+			throw new RepositoryException(RepositoryException.NULL_ARGUMENT + " : " +
+					"Type keyword cannot be empty");
+	}
+	
+	public SimpleType(String domain, String keyword, String description) throws RepositoryException {
+		super("", domain, keyword, description);
+		
+		if (keyword == null || keyword.equals(""))
+			throw new RepositoryException(RepositoryException.NULL_ARGUMENT + " : " +
+					"Type keyword cannot be empty");
+	}
+	
+	public SimpleType(String domain, String keyword, String description, String indexes) throws RepositoryException {
+		super("", domain, keyword, description, indexes);
 		
 		if (keyword == null || keyword.equals(""))
 			throw new RepositoryException(RepositoryException.NULL_ARGUMENT + " : " +

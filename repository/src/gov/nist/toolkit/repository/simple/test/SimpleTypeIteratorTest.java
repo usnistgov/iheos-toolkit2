@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SimpleTypeIteratorTest {
-	static File RootOfAllRepositories = new File("/Users/bmajur/tmp/repositories");
+	static File RootOfAllRepositories = new File("/e/artrep_test_resources/repositories");
 	
 	@BeforeClass
 	static public void initializeConfiguration() throws RepositoryException {
@@ -50,4 +50,6 @@ public class SimpleTypeIteratorTest {
 		
 		assertFalse("Two returned types should not be equal", nextType.isEqual(nextType2));
 	}
+	
+	
 }

@@ -35,6 +35,9 @@ public class RepositoryException extends Exception {
 
     /** IO Error */
     public static final String IO_ERROR = "IO Error";
+    
+    /** Index Error */
+    public static final String INDEX_ERROR = "Index Error";
 
     /** Unimplemented method */
     public static final String UNIMPLEMENTED = "Unimplemented method ";

@@ -60,14 +60,17 @@ public class SimpleRepositoryIterator implements RepositoryIterator, FilenameFil
 		if (!hasNextRepository())
 			throw new RepositoryException(RepositoryException.NO_MORE_ITERATOR_ELEMENTS);
 		SimpleId id = new SimpleId(reposDirNames[reposDirsIndex++]);
-		return new SimpleRepository(id).load();
+		// skb
+		// return new SimpleRepository(id).load();
+		return new SimpleRepository(id);
+
 	}
 
 	@Override
 	public boolean accept(File dir, String name) {
 		String repId = basename(name);
 		try {
-			SimpleRepository sRep = new SimpleRepository(new SimpleId(repId)).load();
+			SimpleRepository sRep = new SimpleRepository(new SimpleId(repId));
 			String typeStr = sRep.getProperty("repositoryType");
 			Type t = new SimpleType(typeStr);
 			if (type == null || type.isEqual(t)) 
