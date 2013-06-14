@@ -586,6 +586,16 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		er.detail("\n====================Processing Text XML==========================\n");
 		logger.info("Processing attachments, Validation context is " + vc.toString());
 
+		// Update the summary
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", Status.PART, true);
+
+		ProcessEnvelope process = new ProcessEnvelope();
+
+		// Separate ErrorRecorder
+		ErrorRecorder separate = new GwtErrorRecorder();
+		process.validateMimeEntity(separate, p, validationSummary, shiftNumber+1);
+		er.concat(separate);
+		
 		// Send to C-CDA validation tool.
 		InputStream attachmentContents = p.getInputStream();
 
@@ -616,9 +626,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("Is not a CDA R2 so no validation attempted");
 		}
 
-		// Update the summary
-		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", Status.PART, true);
-		//validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", er.hasErrors(), true);
+		// Update Summary
+		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", separate.hasErrors(), true);
 		partNumber++;
 	}
 	
