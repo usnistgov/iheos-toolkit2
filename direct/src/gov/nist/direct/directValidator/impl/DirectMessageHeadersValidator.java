@@ -102,11 +102,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		boolean checkFor = true;
 		boolean checkDate = false;
 		
-		final String from = "[0-9a-zA-Z]+([_, \\., \\-]?[0-9a-zA-Z]+)*" + "\\(\\[" + "(?:[0-9]{1,3}\\.){3}[0-9]{1,3}" + "\\]\\)";
-		final String by = "[0-9a-zA-Z]+([_, \\., \\-]?[0-9a-zA-Z]+)*(\\([0-9,a-z,A-Z,\\s]*\\))?";
+		final String from = "[0-9a-zA-Z]+([_, \\., \\-][0-9a-zA-Z]+)*" + "\\(\\[" + "(?:[0-9]{1,3}\\.){3}[0-9]{1,3}" + "\\]\\)";
+		final String by = "[0-9a-zA-Z]+([_, \\., \\-][0-9a-zA-Z]+)*(\\([0-9,a-z,A-Z,\\s]*\\))?";
 		final String via = "[0-9a-zA-Z]*";
-		final String with = "[a-zA-Z]*";
-		final String id = "[0-9a-zA-Z]+([_, \\., \\-]?[0-9a-zA-Z]+)*";
+		final String with = "[a-zA-Z0-9]*";
+		final String id = "[0-9a-zA-Z]+([_, \\., \\-][0-9a-zA-Z]+)*";
 		final String fore =  "<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">;";
 		
 		final String datePattern = ValidationUtils.getDatePattern();
