@@ -11,14 +11,18 @@ import java.util.List;
 
 public class TextErrorRecorder implements ErrorRecorder {
 
-	class ErrorInfo {
-		int indent = 0;
-		String msg = "";
-		String resource = "";
-		boolean isError = true;
+	public class ErrorInfo {
+		public int indent = 0;
+		public String msg = "";
+		public String resource = "";
+		public boolean isError = true;
 	}
 	
 	public List<ErrorInfo> errMsgs = new ArrayList<ErrorInfo>();
+	
+	public List<ErrorInfo> getErrorMsgs() {
+		return errMsgs;
+	}
 	
 	public void err(String msg, String resource) {
 		ErrorInfo ei = new ErrorInfo();
@@ -110,6 +114,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 	public void detail(String msg) {
 		tagLastInfo2();
 		ErrorInfo ei = new ErrorInfo();
+		ei.isError = false;
 		ei.indent = 1;
 		ei.msg = msg;
 		errMsgs.add(ei);
