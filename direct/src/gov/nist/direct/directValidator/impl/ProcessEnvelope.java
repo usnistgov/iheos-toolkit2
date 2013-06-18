@@ -65,7 +65,8 @@ public class ProcessEnvelope {
 		msgValidator.validateContentTypeSubtype(er, m.getContentType());
 		
 		// DTS 195, Validate Body
-		msgValidator.validateBody(er, m, m.getContent().toString());
+		if(m.getContentType().contains("text/plain"))
+			msgValidator.validateBody(er, m, m.getContent().toString());
 		
 		// DTS 192 Validate Content Type Name
 		msgValidator.validateContentTypeName(er, m.getContentType());

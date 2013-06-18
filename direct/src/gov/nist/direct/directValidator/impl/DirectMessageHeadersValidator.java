@@ -19,17 +19,12 @@ Authors: William Majurski
 
 package gov.nist.direct.directValidator.impl;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.Address;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
-import junit.framework.Assert;
 import gov.nist.direct.directValidator.interfaces.MessageHeadersValidator;
 import gov.nist.direct.utils.ValidationUtils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -79,70 +74,73 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	
 	// DTS 104-106, Received, Conditional
 	public void validateReceived(ErrorRecorder er, String received, boolean wrapped) {
-		String txtReceived = received;
-		received = received.replaceAll("\\s", "");
-		String[] content_split = null;
-		String content_split_right = "";
-		String content_split_left = "";
+	
+		// String part variable
+		String fromText = ValidationUtils.getReceivedPart(received, "from ");
+		String byText = ValidationUtils.getReceivedPart(received, " by ");
+		String viaText = ValidationUtils.getReceivedPart(received, " via ");
+		String withText = ValidationUtils.getReceivedPart(received, " with ");
+		String idText = ValidationUtils.getReceivedPart(received, " id ");
+		String forText = ValidationUtils.getReceivedPart(received, " for ");
+		String dateText = "";
+		
+		if(received.contains(";")) {
+			dateText = received.split(";", 2)[1];
+			dateText = dateText.replaceAll("\\r", "");
+			dateText = dateText.replaceAll("\\n", "");
+			while(dateText.startsWith(" ")) {
+				dateText = dateText.substring(1);
+			}
+		}
+		
+		// Boolean validation
 		boolean checkFrom = false;
 		boolean checkBy = false;
-		boolean checkFor = false;
+		boolean checkVia = true;
+		boolean checkWith = true;
+		boolean checkId = true;
+		boolean checkFor = true;
 		boolean checkDate = false;
 		
-		final String from = "from[0-9a-zA-Z]+([_, \\., \\-]?[0-9a-zA-Z]+)*" + "\\(\\[" + "(?:[0-9]{1,3}\\.){3}[0-9]{1,3}" + "\\]\\)";
-		final String by = "by[0-9a-zA-Z]+([_, \\., \\-]?[0-9a-zA-Z]+)*(\\([0-9,a-z,A-Z,\\s]*\\))?with([A-Za-z])*(id|ID)[0-9a-zA-Z]+([_, \\., \\-]?[0-9a-zA-Z]+)*";
-		final String fore =  "for" + "<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">;";
+		final String from = "[0-9a-zA-Z]+([_, \\., \\-][0-9a-zA-Z]+)*" + "\\(\\[" + "(?:[0-9]{1,3}\\.){3}[0-9]{1,3}" + "\\]\\)";
+		final String by = "[0-9a-zA-Z]+([_, \\., \\-][0-9a-zA-Z]+)*(\\([0-9,a-z,A-Z,\\s]*\\))?";
+		final String via = "[0-9a-zA-Z]*";
+		final String with = "[a-zA-Z0-9]*";
+		final String id = "[0-9a-zA-Z]+([_, \\., \\-][0-9a-zA-Z]+)*";
+		final String fore =  "<" + "[0-9,a-z,_,\\-,.]+" + "@" + "[0-9,a-z,_,\\-,.]+" + ">;";
 		
 		final String datePattern = ValidationUtils.getDatePattern();
 		
-		// From field validation
-		if(received.contains("from") && received.contains("by")) {
-			content_split = received.split("by");
-			content_split_left = content_split[0];
-			content_split_right = "by" + content_split[1];
-			Pattern pattern = Pattern.compile(from, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(content_split_left);
-			if(matcher.matches()) {
-				checkFrom = true;
-			}
-		}
+		// From clause validation
+		checkFrom = ValidationUtils.validateReceivedPart(fromText, from, checkFrom);
 		
-		// By field validation
-		if(content_split_right.contains("for")) {
-			content_split = content_split_right.split("for");
-			content_split_left = content_split[0];
-			content_split_right = "for" + content_split[1];
-			Pattern pattern = Pattern.compile(by, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(content_split_left);
-			if(matcher.matches()) {
-				checkBy = true;
-			}
-		}
+		// By clause validation
+		checkBy = ValidationUtils.validateReceivedPart(byText, by, checkBy);
 		
+		// Via clause validation
+		checkVia = ValidationUtils.validateReceivedPart(viaText, via, checkVia);
+
+		// With clause validation
+		checkWith = ValidationUtils.validateReceivedPart(withText, with, checkWith);
+
+		// Id clause validation
+		checkId = ValidationUtils.validateReceivedPart(idText, id, checkId);
+
 		// For field validation
-		if(content_split_right.contains(";")) {
-			content_split = content_split_right.split(";");
-			content_split_left = content_split[0] + ";";
-			content_split_right = content_split[1];
-			Pattern pattern = Pattern.compile(fore, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(content_split_left);
-			if(matcher.matches()) {
-				checkFor = true;
-			}
-			
-			// Date validation
-			pattern = Pattern.compile(datePattern, Pattern.CASE_INSENSITIVE);
-			matcher = pattern.matcher(content_split_right);
-			if(matcher.matches()) {
-				checkDate = true;
-			}
+		checkFor = ValidationUtils.validateReceivedPart(forText, fore, checkFor);
+
+		// Date validation
+		Pattern pattern = Pattern.compile(datePattern, Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(dateText);
+		if(matcher.matches()) {
+			checkDate = true;
 		}
-		
+
 		String rfc = "RFC 5321: Section 4.4;http://tools.ietf.org/html/rfc5321.html#section-4.4;RFC 5322: Section 3.3;http://tools.ietf.org/html/rfc5322#section-3.3";
-		if(checkFrom && checkBy && checkFor && checkDate) {
-			er.success("104-106", "Received", txtReceived, "from clause by clause for clause; date", rfc);
+		if(checkFrom && checkBy && checkVia && checkWith && checkId && checkFor && checkDate) {
+			er.success("104-106", "Received", received, "from clause by clause for clause; date", rfc);
 		} else {
-			er.warning("104-106", "Received", txtReceived, "from clause by clause for clause; date", rfc);
+			er.warning("104-106", "Received", received, "from clause by clause for clause; date", rfc);
 		}
 		
 	}

@@ -140,6 +140,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	private ValidationSummary validationSummary = new ValidationSummary();
 	WrappedMessageProcessor wrappedParser = new WrappedMessageProcessor();
 	private boolean qpEncoded;
+	private boolean wrapped_no_multipart = false;
 
 
 
@@ -216,7 +217,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		
 		//er.detail("Processing Part");
 		// If the Part is a Message then first validate the Envelope
-		if (p instanceof Message){
+		if (p instanceof Message && !wrapped_no_multipart){
 			er.detail("Detected an Envelope");
 			er.detail("\n====================Outer Enveloped Message==========================\n");
 			processEnvelope(er, (Message)p);
@@ -290,6 +291,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 					for (int i = 0; i < count; i++){
 						this.processPart(er, mp.getBodyPart(i));
 					}
+				} else {
+					wrapped_no_multipart = true;
+					this.processPart(er, p);
 				}
 			}
 
@@ -582,6 +586,16 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		er.detail("\n====================Processing Text XML==========================\n");
 		logger.info("Processing attachments, Validation context is " + vc.toString());
 
+		// Update the summary
+		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", Status.PART, true);
+
+		ProcessEnvelope process = new ProcessEnvelope();
+
+		// Separate ErrorRecorder
+		ErrorRecorder separate = new GwtErrorRecorder();
+		process.validateMimeEntity(separate, p, validationSummary, shiftNumber+1);
+		er.concat(separate);
+		
 		// Send to C-CDA validation tool.
 		InputStream attachmentContents = p.getInputStream();
 
@@ -612,9 +626,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("Is not a CDA R2 so no validation attempted");
 		}
 
-		// Update the summary
-		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", Status.PART, true);
-		//validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", er.hasErrors(), true);
+		// Update Summary
+		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", separate.hasErrors(), true);
 		partNumber++;
 	}
 	
