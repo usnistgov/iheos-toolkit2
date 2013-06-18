@@ -276,7 +276,7 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 			if(head.contains("quoted-printable")) {
 				// Check only CRLF and TAB control char
 				if(ValidationUtils.controlCharAreOnlyCRLFAndTAB(body)) {
-					if(body.contains("=")) {
+					/*if(body.contains("=")) {
 						final String extension =  "(.*(=[0-9a-fA-f]\\r\\n)?)*";
 						Pattern pattern = Pattern.compile(extension, Pattern.CASE_INSENSITIVE);
 						Matcher matcher = pattern.matcher(body);
@@ -287,7 +287,7 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 						}
 					} else {
 						er.success("195", "Body", body, "Body does not contain illegal character", rfc);
-					}
+					}*/
 				} else {
 					er.error("195", "Body", body, "Content-Transfer-Encoding = \"quoted-printable\", control characters other than TAB, or CR and LF as parts of CRLF pairs, MUST NOT appear", rfc);
 				}

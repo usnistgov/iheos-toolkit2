@@ -438,7 +438,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			}
 			int count = mp.getCount();
 			for (int i = 0; i < count; i++){
-				this.processPart(er, mp.getBodyPart(i));	
+				this.processPart(er, mp.getBodyPart(i));
 			}
 
 		} else {
