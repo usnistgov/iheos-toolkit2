@@ -2,12 +2,10 @@ package gov.nist.toolkit.directsim;
 
 import gov.nist.messageDispatch.MessageDispatchUtils;
 import gov.nist.toolkit.actorfactory.DirectActorFactory;
-import gov.nist.toolkit.directsim.client.ContactRegistrationData;
 import gov.nist.toolkit.directsupport.SMTPException;
 import gov.nist.toolkit.email.Emailer;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simulators.support.ValidateMessageService;
-import gov.nist.toolkit.testengine.smtp.SMTPAddress;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.TkPropsServer;
 import gov.nist.toolkit.tk.client.PropertyNotFoundException;
@@ -24,6 +22,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -82,7 +81,7 @@ public class Listener {
 			System.out.println("Usage: Listener <port> <toolkit-external-cache> <keystore holding private key> <codes.xml file>: " + e.getMessage());
 			System.exit(-1);
 		}
-		
+
 		System.setProperty("XDSCodesFile", codesXmlUrl);
 
 		Installation.installation().externalCache(new File(externalCache));
@@ -116,8 +115,12 @@ class doComms implements Runnable {
 	Socket server;
 	File externalCache;
 	String pathToPrivateKey;
-	String mailFrom = null;
+	String directFrom = null;    // Direct from address reported in SMTP protocol
+	List<String> directTo = new ArrayList<String>();
 	boolean logInputs = true;
+	TkPropsServer reportingProps = null;
+	StringBuffer message = new StringBuffer();
+	String contactAddr = null;
 
 	static Logger logger = Logger.getLogger(doComms.class);
 
@@ -128,106 +131,47 @@ class doComms implements Runnable {
 	}
 
 	public void run () {
-		StringBuffer message = new StringBuffer();
 
-		InetAddress ia = server.getInetAddress();
-		logger.info("Connection from " + ia.getHostName() + " (" + ia.getHostAddress() + ")");
-
-		File propFile = new File(externalCache + File.separator +  "tk_props.txt");
-		logger.debug("Loading properties from " + propFile);
-		TkPropsServer reportingProps = null;
-		try {
-			reportingProps = TkLoader.LOAD(propFile);
-			logger.debug("Properties are\n" + reportingProps.toString());
-		} 
-		catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
-		try {
-			String m = readIncomingSMTPMessage(server, reportingProps.get("direct.toolkit.smtp.domain"));   //"smtp.hit-testing.nist.gov");
-			message.append(m);
-		} catch (EOFException e) {
-
-		} catch (IOException ioe) {
-			logger.error("IOException on socket listen: " + ioe);
+		if (readSMTPMessage() == false)
 			return;
-		} catch (SMTPException e) {
-			logger.error("SMTPException on socket listen: " + e);
-			return;
-		} catch (PropertyNotFoundException e) {
-			logger.error("tk_props property direct.toolkit.smtp.domain not found: " + e);
-			return;
-		}
-		finally {
-			try {
-				server.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				return;
-			}
-		}
-		
+		logger.info("Processing message from " + directFrom);
+
 		MimeMessage mmsg;
-		boolean isMdn;
 		try {
 			mmsg = new MimeMessage(Session.getDefaultInstance(System.getProperties(), null), Io.bytesToInputStream(message.toString().getBytes()));
-			isMdn = MessageDispatchUtils.isMDN(mmsg);
+			MessageDispatchUtils.isMDN(mmsg);   // if this is going to fail spectacularly, let it do it early
 		} catch (MessagingException e2) {
 			logger.error("Message fails MimeMessage parser");
 			return;
 		}
+		
+		logger.info("Mime Message parsing successful");
 
 		HtmlValFormatter hvf = new HtmlValFormatter();
 
-		logger.info("Processing message from " + mailFrom);
-
-		List<String> headers = headers(message);
-
-		String fromHeader = header(headers, "From");
-		String toHeader = header(headers, "To");
-
-		if (fromHeader.equals("")) {
-			logger.error("No From header found");
-			hvf.addError("No From header found");
-			return;  // do not process
-		}
-		if (toHeader.equals("")) {
-			logger.error("No To header found");
-			hvf.addError("No To header found");
-			return; // do not process
-		}
-
-		String from = null;
-		try {
-			from = new SMTPAddress().parseEmailAddr(fromHeader);
-		} catch (Throwable e) {
-			// no decent fromHeader, cannot even send report back
-			String msg = "From Header:  " + e.getMessage();
-			logger.error(msg);
-			return;
-		}
-
-		if (from.equals("")) {
-			logger.error("From Addr empty or missing");
-			hvf.addError("From Addr empty or missing");
-			return;
-		}
-
-		logger.info("Necessary headers found");
+//		List<String> headers = headers(message);
 
 		// Valid Direct (From) addr?
 		DirectUserManager dum = new DirectUserManager();
-		if (!dum.directUserExists(from)) {
+		if (!dum.directUserExists(directFrom)) {
 			// looks like spam - unregistered direct (from) Addr
-			logger.error("Throw away message from " + from + " not a registered Direct (From) email account name");
+			logger.error("Throw away message from " + directFrom + " not a registered Direct (From) email account name");
 			return;
 		}
 
-		logger.debug("Direct addr (From) " + from + " is good");
+		contactAddr = getContactAddr(hvf, contactAddr);
+		if (contactAddr == null) {
+			logger.error("No contact address listed for Direct (From) address " + directFrom + " - cannot return report - giving up");
+			return;
+		}
+
+		logger.info("Direct addr (From) " + directFrom + " is registered and has contact email of " + contactAddr);
+
+		/****************************************************************************************
+		 * 
+		 * All errors detected after this can be reported back to the user via their Contact Addr.
+		 * 
+		 ****************************************************************************************/
 
 		StringBuffer validationReport = new StringBuffer();
 		validationReport.append("<html><head><title>Validation Results</title></head><body>");
@@ -236,7 +180,6 @@ class doComms implements Runnable {
 
 
 		MessageValidationResults mvr = null;
-		String contactAddr = null;
 
 		// Load only the relevant properties
 		reportingProps = reportingProps.withPrefixRemoved("direct.reporting");
@@ -247,35 +190,23 @@ class doComms implements Runnable {
 		try {
 
 
-			// Get Contact Addr
-			DirectRegistrationManager drm = new DirectRegistrationManager(externalCache);
-			DirectRegistrationDataServer drd = null;
 
-			try {
-				drd = drm.load(from);
-			} catch (Exception e) {
-				hvf.h2("Error");
-				hvf.addError("Internal error loading configuration for Direct address (From) " + from +
-						e.getMessage());
-			}
-			contactAddr = drd.contactAddr;
+			//			ContactRegistrationData crd = dum.contactRegistrationData(contactAddr);
 
-			ContactRegistrationData crd = dum.contactRegistrationData(contactAddr);
-
-			String to = null;
-			try {
-				to = new SMTPAddress().parseEmailAddr(toHeader);
-			} catch (Throwable e) {
-				logger.error("Cannot parse To Header:  " + ExceptionUtil.exception_details(e));
-				hvf.addError("Cannot parse To Header:  " + e.getMessage());
-				throw new ReportException();
-			}
-
-			if (to.equals("")) {
-				logger.error("To Addr empty or missing");
-				hvf.addError("To Addr empty or missing");
-				throw new ReportException();
-			}
+			//			String to = null;
+			//			try {
+			//				to = new SMTPAddress().parseEmailAddr(toHeader);
+			//			} catch (Throwable e) {
+			//				logger.error("Cannot parse To Header:  " + ExceptionUtil.exception_details(e));
+			//				hvf.addError("Cannot parse To Header:  " + e.getMessage());
+			//				throw new ReportException();
+			//			}
+			//
+			//			if (to.equals("")) {
+			//				logger.error("To Addr empty or missing");
+			//				hvf.addError("To Addr empty or missing");
+			//				throw new ReportException();
+			//			}
 
 			//			byte[] privKey = crd.getCert(from);
 			logger.info("Loading private key (decryption) from " + pathToPrivateKey);
@@ -283,25 +214,36 @@ class doComms implements Runnable {
 
 			if (privKey == null) {
 				hvf.h2("Error");
-				//				hvf.addError("Do not have Public Certificate registered for Direct address (From) " + from);
-				hvf.addError("Cannot load private key");
+				hvf.addError("Cannot load private decryption key");
+				logger.error("Cannot load private decryption key");
 			}
 
 
 			TkPropsServer ccdaProps = reportingProps.withPrefixRemoved("ccdatype");
-			String ccdaType = null;
-			for (int i=1; i<50; i++) {
-				String en = Integer.toString(i);
-				String type = ccdaProps.get("type" + en, null);
-				String ccdaTo = ccdaProps.get("directTo" + en, null);
-				if (type == null || ccdaTo == null)
-					break;
-				if (ccdaTo.equals(to)) {
-					ccdaType = type;
-					break;
-				}
-			}
-
+			if (directTo.size() > 1) {
+				String msg = "Multiple TO addresses pulled from SMTP protocol headers - cannot determine which CCDA validator to run - CCDA validation will be skipped"; 
+				logger.warn(msg);
+				hvf.blue(msg);
+			} else if (directTo.size() == 0) {
+					String msg = "No TO addresses pulled from SMTP protocol headers - cannot determine which CCDA validator to run - CCDA validation will be skipped"; 
+					logger.warn(msg);
+					hvf.blue(msg);
+			} 
+//			else {
+//				String to = directTo.get(0);
+//				for (int i=1; i<500; i++) {
+//					String en = Integer.toString(i);
+//					String type = ccdaProps.get("type" + en, null);
+//					String ccdaTo = ccdaProps.get("directTo" + en, null);
+//					if (type == null || ccdaTo == null)
+//						break;
+//					if (ccdaTo.equals(to)) {
+//						ccdaType = type;
+//						break;
+//					}
+//				}
+//			}
+			
 			// ccdaType tells us the document type to validate against
 
 			// Validate
@@ -309,32 +251,36 @@ class doComms implements Runnable {
 			byte[] messageBytes = message.toString().getBytes();
 			GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 			ValidateMessageService vms = new ValidateMessageService(null, null);
-			String simpleToHeader = simpleEmailAddr(toHeader);
-			logger.debug("toHeader is " + toHeader);
-			logger.debug("    which reduces to " + simpleToHeader);
-			
+//			String simpleToHeader = simpleEmailAddr(toHeader);
+//			logger.debug("toHeader is " + toHeader);
+//			logger.debug("    which reduces to " + simpleToHeader);
+
 			ValidationContext vc = new ValidationContext();
 			vc.isDIRECT = true;
 			vc.updateable = true;
-			vc.ccdaType = ccdaValidationType(reportingProps, simpleToHeader);
+			vc.ccdaType = ccdaValidationType(reportingProps, getDirectTo());
 			vc.privKey = privKey;
 			vc.privKeyPassword = reportingProps.get("privKeyPassword", "");
+
+			logger.info("To: " + getDirectTo() + " translates to ccda type of " + vc.ccdaType);
+
+			logger.info("Message Validation Begins");
 			
-			logger.debug("To: " + simpleToHeader + " translates to ccda type of " + vc.ccdaType);
-
 			mvr = vms.runValidation(vc, null, messageBytes, privKey, gerb);
+			
+			logger.info("Message Validation Complete");
 
 		} 
-		catch (DirectParseException e) {
-			logger.error(ExceptionUtil.exception_details(e));
-			hvf.h2("Error");
-			hvf.addError("Error: " + e.getMessage());
-		}
-		catch (ReportException re) {
-			// nothing to actually do here, more of a goto than an error handling situation
-		} 
+//		catch (DirectParseException e) {
+//			logger.error(ExceptionUtil.exception_details(e));
+//			hvf.h2("Error");
+//			hvf.addError("Error: " + e.getMessage());
+//		}
+//		catch (ReportException re) {
+//			// nothing to actually do here, more of a goto than an error handling situation
+//		} 
 		catch (Exception e) {
-			logger.error(ExceptionUtil.exception_details(e));
+			logger.error("Message Validation Error: " + ExceptionUtil.exception_details(e));
 			hvf.h2("Error");
 			hvf.addError("Error: " + e.getMessage());
 		}
@@ -344,6 +290,8 @@ class doComms implements Runnable {
 			mvd.displayResults(mvr);
 
 
+		logger.info("Starting report generation");
+		
 		validationReport.append(hvf.toHtml());
 
 		validationReport.append("</body></html>");
@@ -384,6 +332,9 @@ class doComms implements Runnable {
 
 		logger.debug("Announcement is:\n" + announcement);
 
+		
+		logger.info("Send report");
+		
 		String announceStr = reportingProps.get("announce", "true");
 		boolean announce = (announceStr == null) ? false :  announceStr.compareToIgnoreCase("true") == 0;
 		if (announce) {
@@ -415,6 +366,86 @@ class doComms implements Runnable {
 
 
 	}
+	
+	String getDirectTo() {
+		if (directTo.size() == 0 || directTo.size() > 1)
+			return null;
+		return directTo.get(0);
+	}
+
+	String getContactAddr(HtmlValFormatter hvf, String directFrom) {
+		String contactAddr;
+		// Get Contact Addr
+		DirectRegistrationManager drm = new DirectRegistrationManager(externalCache);
+		DirectRegistrationDataServer drd = null;
+
+		try {
+			drd = drm.load(directFrom);
+		} catch (FileNotFoundException fnf) {
+			logger.warn("Direct (From) address not registered");
+		} catch (Exception e) {
+			hvf.h2("Error");
+			hvf.addError("Internal error loading configuration for Direct address (From) " + directFrom +
+					e.getMessage());
+			logger.error("Internal error loading configuration for Direct address (From) " + directFrom +
+					e.getMessage());
+			return null;
+		}
+		contactAddr = drd.contactAddr;
+		return contactAddr;
+	}
+
+	boolean readSMTPMessage() {
+		InetAddress ia = server.getInetAddress();
+		String stars = "**********************************************************";
+		logger.info(stars + "\n" + "Connection from " + ia.getHostName() + " (" + ia.getHostAddress() + ")");
+
+		File propFile = new File(externalCache + File.separator +  "tk_props.txt");
+		logger.debug("Loading properties from " + propFile);
+		try {
+			reportingProps = TkLoader.LOAD(propFile);
+			logger.debug("Properties are\n" + reportingProps.toString());
+		} 
+		catch (IOException e1) {
+			logger.error("Error loading properties", e1);
+			return false;
+		}
+		catch (Exception e1) {
+			logger.error("Error loading properties", e1);
+			return false;
+		}
+
+		try {
+			// smtpFrom set as a side-effect.  This is the from address from the SMTP protocol elements
+			// replies should go here as well as this addr should be used to lookup contact addr.
+			String m = readIncomingSMTPMessage(server, reportingProps.get("direct.toolkit.smtp.domain"));   //"smtp.hit-testing.nist.gov");
+			message.append(m);
+		} catch (EOFException e) {
+			logger.warn("IOException on socket listen: " + e);
+			return true;
+		} catch (IOException ioe) {
+			logger.error("IOException on socket listen: " + ioe);
+			return false;
+		} catch (SMTPException e) {
+			logger.error("SMTPException on socket listen: " + e);
+			return false;
+		} catch (PropertyNotFoundException e) {
+			logger.error("tk_props property direct.toolkit.smtp.domain not found: " + e);
+			return false;
+		} catch (Exception e) {
+			logger.error("Protocol error on socket listen: " + e);
+			return false;
+		}
+		finally {
+			try {
+				server.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				return true;
+			}
+		}
+		return true;
+	}
 
 	class RSETException extends Exception {
 
@@ -434,7 +465,7 @@ class doComms implements Runnable {
 	static final String CRLF = "\r\n";
 	String domainname = null;
 
-	String readIncomingSMTPMessage(Socket socket, String domainname) throws IOException, SMTPException {
+	String readIncomingSMTPMessage(Socket socket, String domainname) throws IOException, SMTPException, Exception {
 		this.domainname = domainname;
 		String buf = null;
 
@@ -470,18 +501,20 @@ class doComms implements Runnable {
 		out.flush();
 	}
 
-	String rcvStateMachine() throws IOException, RSETException {
+	String rcvStateMachine() throws IOException, RSETException, Exception {
 		return rcvStateMachine(false);
 	}
 
-	String rcvStateMachine(boolean reportError) throws IOException, RSETException {
+	String rcvStateMachine(boolean reportError) throws IOException, RSETException, Exception {
 		StringBuffer buf = new StringBuffer();
-		boolean error = reportError;
 		String msg;
 		while (true) {
 			msg = rcv().trim();
 			msg = msg.toLowerCase();
 			if (msg.startsWith("rcpt to:")) {
+				String to = msg.substring(msg.indexOf(':') + 1);
+				if (to != null && !to.equals(""))
+					directTo.add(to);
 				send("250 OK");
 				continue;
 			}
@@ -509,7 +542,7 @@ class doComms implements Runnable {
 				continue;
 			}
 			if (msg.startsWith("mail from:")) {
-				mailFrom = msg.substring(msg.indexOf(':') + 1);
+				directFrom = msg.substring(msg.indexOf(':') + 1);
 				send("250 OK");
 				continue;
 			}
@@ -532,11 +565,11 @@ class doComms implements Runnable {
 				return buf.toString();
 			}
 			send("503 bad sequence of commands - received " + msg);
-			error = true;
+			throw new Exception("503 bad sequence of commands - received " + msg);
 		}
 	}
 
-	String rcv(String expect) throws IOException, RSETException {
+	String rcv(String expect) throws IOException, RSETException, Exception {
 		String msg = rcv().trim().toLowerCase();
 		expect = expect.toLowerCase();
 		if (expect != null && !msg.startsWith(expect)) {
@@ -554,6 +587,8 @@ class doComms implements Runnable {
 	}
 
 	String ccdaValidationType(TkPropsServer tps, String toAddr) {
+		if (toAddr == null)
+			return null;
 		TkPropsServer props = tps.withPrefixRemoved("ccdatype");
 		for (int i=1; i<50; i++) {
 			String key = "directTo" + String.valueOf(i);
