@@ -97,7 +97,7 @@ public class DoComms implements Runnable {
 			return;
 		}
 
-		contactAddr = getContactAddr(hvf, contactAddr);
+		contactAddr = getContactAddr(hvf, directFrom);
 		if (contactAddr == null) {
 			logger.error("No contact address listed for Direct (From) address " + directFrom + " - cannot return report - giving up");
 			return;
@@ -312,6 +312,7 @@ public class DoComms implements Runnable {
 	}
 
 	public String getContactAddr(HtmlValFormatter hvf, String directFrom) {
+		directFrom = stripBrackets(directFrom);
 		String contactAddr;
 		// Get Contact Addr
 		DirectRegistrationManager drm = new DirectRegistrationManager(externalCache);

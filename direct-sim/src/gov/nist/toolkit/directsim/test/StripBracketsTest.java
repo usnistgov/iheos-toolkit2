@@ -10,7 +10,7 @@ public class StripBracketsTest {
 	
 	@Test
 	public void noWork() {
-		assertEquals("boo@booboo.com", dc.stripBrackets("boo@booboo.com"));
+		assertEquals("julien@direct.microphr.com", dc.stripBrackets("  julien@direct.microphr.com"));
 	}
 	
 	@Test
