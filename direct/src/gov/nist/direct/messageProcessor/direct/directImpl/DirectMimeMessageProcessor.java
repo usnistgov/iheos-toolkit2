@@ -438,7 +438,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			}
 			int count = mp.getCount();
 			for (int i = 0; i < count; i++){
-				this.processPart(er, mp.getBodyPart(i));	
+				this.processPart(er, mp.getBodyPart(i));
 			}
 
 		} else {
@@ -597,12 +597,21 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		er.concat(separate);
 		
 		// Send to C-CDA validation tool.
-		InputStream attachmentContents = p.getInputStream();
+		InputStream attachmentContents;
+		if(qpEncoded) {
+			attachmentContents = decodeQPInputStream(p.getInputStream());
+		} else {
+			attachmentContents = p.getInputStream();
+		}
 
 		// Display CCDA Document
 		er.detail("#####################CCDA Content######################");
 		//String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
-		String html_formatted_ccda = SafeHtmlUtils.htmlEscape(p.getContent().toString());
+		if(qpEncoded) {
+			html_formatted_ccda = SafeHtmlUtils.htmlEscape(decodeQPToString(p.getInputStream()));
+		} else {
+			html_formatted_ccda = SafeHtmlUtils.htmlEscape(p.getContent().toString());
+		}
 		er.detail(html_formatted_ccda);
 		er.detail("####################################################");
 		//logger.info(p.getContent().toString());
@@ -630,30 +639,74 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/xml interpreted as a CCDA content", separate.hasErrors(), true);
 		partNumber++;
 	}
-	
+
 	public void processApplicationXML(ErrorRecorder er, Part p) throws Exception {
-		if(p.getFileName() != null) {
-			if(p.getFileName().contains(".xsl")) {
-				er.detail("\n====================Stylesheet found: " + p.getFileName() + "==========================\n");
-				logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
-				validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
-			} else {
-				er.detail("\n====================Application/xml==========================\n");
-				logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
-				validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
-			}
+		if(p.getFileName() != null && p.getFileName().contains(".xsl")) {
+			er.detail("\n====================Stylesheet found: " + p.getFileName() + "==========================\n");
+			logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
+			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
+			er.detail("#####################XML Content######################");
+			InputStream xsl = MimeUtility.decode(p.getInputStream(), MimeUtility.getEncoding(p.getDataHandler()));
+			String xslString = IOUtils.toString(xsl, "UTF-8");
+			er.detail(SafeHtmlUtils.htmlEscape(xslString));
+			er.detail("####################################################");
+			partNumber++;
 		} else {
 			er.detail("\n====================Application/xml==========================\n");
 			logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
-			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
+			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted xml document", Status.PART, true);
+			ProcessEnvelope process = new ProcessEnvelope();
+
+			// Separate ErrorRecorder
+			ErrorRecorder separate = new GwtErrorRecorder();
+			process.validateMimeEntity(separate, p, validationSummary, shiftNumber+1);
+			er.concat(separate);
+
+			// Send to C-CDA validation tool.
+			InputStream attachmentContents;
+			if(qpEncoded) {
+				attachmentContents = decodeQPInputStream(p.getInputStream());
+			} else {
+				attachmentContents = p.getInputStream();
+			}
+
+			// Display CCDA Document
+			er.detail("#####################XML Content######################");
+			//String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
+			String html_formatted_ccda;
+			if(qpEncoded) {
+				html_formatted_ccda = SafeHtmlUtils.htmlEscape(decodeQPToString(p.getInputStream()));
+			} else {
+				html_formatted_ccda = SafeHtmlUtils.htmlEscape(p.getContent().toString());
+			}
+			er.detail(html_formatted_ccda);
+			er.detail("####################################################");
+			//logger.info(p.getContent().toString());
+
+
+			byte[] contents = Io.getBytesFromInputStream(attachmentContents);
+
+			if (new CdaDetector().isCDA(contents)) {
+				er.detail("Input is CDA R2, try validation as CCDA");
+				ValidationContext docVC = new ValidationContext();
+				docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
+				docVC.isDIRECT = false;
+				docVC.isCCDA = true;
+
+				if(directCertificate!=null) {
+					MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
+					mve.run();
+				}
+
+			} else {
+				er.detail("Is not a CDA R2 so no validation attempted");
+			}
+			
+			// Update Summary
+			validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted xml document", separate.hasErrors(), true);
+			partNumber++;
 
 		}
-		
-		er.detail("#####################XML Content######################");
-		InputStream xsl = MimeUtility.decode(p.getInputStream(), MimeUtility.getEncoding(p.getDataHandler()));
-		String xslString = IOUtils.toString(xsl, "UTF-8");
-		er.detail(SafeHtmlUtils.htmlEscape(xslString));
-		er.detail("####################################################");
 		
 	}
 
