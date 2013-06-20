@@ -10,14 +10,42 @@
 
 <p>Release note are listed for each build number
 
-<h4>XXXX   (released    XXXX  2013  )      </h4>
+<h4>164   (released    20 June  2013  )      </h4>
 
-<h5>Bug Fixes</h5>
+General<br>
 
 <ul>
 <li>Fixed display bug in validator where the summary indicated that errors were found
 but no actual errors were reported.
 </ul>
+Direct Validation changelog:<br>
+<ul>
+  <li>DTS 114 Orig-Date: The day of the week is now optional as
+recommended by the specification.</li>
+  <li>TTT is now able to recognize and display properly a stylesheet
+file.</li>
+  <li>Fixed bug where quoted-printable attachments where not correctly
+displayed.</li>
+  <li>TTT is now able to parse and decrypt application/x-pkcs7-mime
+messages.</li>
+  <li>Fixed bug where wrapped message with singlepart attachment were
+not parsed.</li>
+  <li>Fixed a bug in the validation of received header. The regex
+sometimes couldn't parse the value of the field.</li>
+  <li>Removed regular expression to check quoted-printable content. It
+made the TTT falling to validate some emails and was obsolete.</li>
+  <li>Now checking if application/xml part are CCDA content or
+stylesheet. Decoding QP encoded content as well.</li>
+</ul>
+<br>
+MDN validation changelog:<br>
+<ul>
+  <li>Fixed a bug where MDN headers were not correctly extracted which
+was leading the toolkit to fail validation.</li>
+  <li>Fixed a bug in MDN validation where disposition field was
+sometimes not found.</li>
+</ul>
+
 
 <h4>163a   (released     14 May 2013  )      </h4>
 
