@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
+import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 
 import java.io.BufferedReader;
@@ -60,7 +61,7 @@ public class ServletSimulator  {
 		this.db = db;
 	}
 	
-	public void post() throws HttpParseException, HttpHeaderParseException, IOException {
+	public void post() throws HttpParseException, HttpHeaderParseException, IOException, ParseException {
 		inputMessage = db.getParsedRequest();
 
 		is = new ServletInputStreamImpl(inputMessage.getBody());

@@ -4,8 +4,8 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
-import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParserBa;
+import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -62,7 +62,7 @@ public class SimpleSoapMessageValidator extends MessageValidator {
 			er.detail("Scheduling validation of SOAP wrapper");
 			MessageValidatorFactory.getValidatorContext(erBuilder, bodyBytes, mvc, "Validate SOAP", vc, rvi);
 
-		} catch (HttpHeaderParseException e) {
+		} catch (ParseException e) {
 			err(e);
 //		} catch (UnsupportedEncodingException e) {
 //			err(e);

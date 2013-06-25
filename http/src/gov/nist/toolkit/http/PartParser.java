@@ -8,13 +8,13 @@ import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 public class PartParser extends HttpParser {
 	Part part = new Part();
 	
-	public PartParser(byte[] msg) throws HttpParseException, HttpHeaderParseException {
+	public PartParser(byte[] msg) throws HttpParseException, HttpHeaderParseException, ParseException {
 //		super(msg);
 		init(msg, part, er);
 		initPart();
 	}
 	
-	public PartParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException {
+	public PartParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException {
 //		super(msg,er);
 		this.er = er;
 		this.appendixV = appendixV;
@@ -22,7 +22,7 @@ public class PartParser extends HttpParser {
 		initPart();
 	}
 	
-	void initPart() throws HttpParseException {
+	void initPart() throws HttpParseException, ParseException {
 		String contentIDHeaderString = message.getHeader("content-id");
 		if (appendixV == false && (contentIDHeaderString == null || contentIDHeaderString.equals("")))
 			return;
@@ -40,7 +40,7 @@ public class PartParser extends HttpParser {
 			} else {
 				part.contentID = unWrap(part.contentID);
 			}
-		} catch (HttpHeaderParseException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -6,9 +6,9 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
-import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
+import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -157,7 +157,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			String msg = "Input does not parse as an HTTP stream: " + ExceptionUtil.exception_details(e);
 			reportError(erBuilder, mvc, "HTTP Parser", msg + e.getMessage());
 			return mvc;
-		} catch (HttpHeaderParseException e) {
+		} catch (ParseException e) {
 			mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
 			String msg = "Input does not parse as an HTTP stream: " + ExceptionUtil.exception_details(e);
 			reportError(erBuilder, mvc, "HTTP Parser", msg + e.getMessage());

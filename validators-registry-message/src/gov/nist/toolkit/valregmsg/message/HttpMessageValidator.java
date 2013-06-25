@@ -2,9 +2,9 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
-import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
+import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
@@ -80,7 +80,7 @@ public class HttpMessageValidator extends MessageValidator {
 			}
 		} catch (HttpParseException e) {
 			er.err(vc.getBasicErrorCode(), e);
-		} catch (HttpHeaderParseException e) {
+		} catch (ParseException e) {
 			er.err(vc.getBasicErrorCode(), e);
 		}
 

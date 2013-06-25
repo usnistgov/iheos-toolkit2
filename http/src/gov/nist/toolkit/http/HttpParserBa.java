@@ -96,17 +96,17 @@ public class HttpParserBa {
 		tryMultipart();
 	}
 
-	public HttpParserBa(byte[] msg) throws HttpParseException, HttpHeaderParseException {
+	public HttpParserBa(byte[] msg) throws HttpParseException, ParseException  {
 		er = null;
 		init(msg, null);
 	}
 
-	public HttpParserBa(byte[] msg, ErrorRecorder er) throws HttpParseException, HttpHeaderParseException  {
+	public HttpParserBa(byte[] msg, ErrorRecorder er) throws HttpParseException, ParseException   {
 		this.er = er;
 		init(msg, null);
 	}
 
-	public void init(byte[] msg, HttpMessageBa hmessage) throws HttpParseException, HttpHeaderParseException {
+	public void init(byte[] msg, HttpMessageBa hmessage) throws HttpParseException, ParseException  {
 		input = msg;
 		if (hmessage != null)
 			message = hmessage;
@@ -127,7 +127,7 @@ public class HttpParserBa {
 		}
 	}
 
-	public void parse() throws HttpParseException, HttpHeaderParseException {
+	public void parse() throws HttpParseException, ParseException  {
 		if (parsed)
 			return;
 		parsed = true;
@@ -209,7 +209,7 @@ public class HttpParserBa {
 		return out;
 	}
 	
-	void parseHeadersAndBody() throws HttpParseException, HttpHeaderParseException {
+	void parseHeadersAndBody() throws HttpParseException, ParseException  {
 		try {
 			while (true)
 				nextHeader();
