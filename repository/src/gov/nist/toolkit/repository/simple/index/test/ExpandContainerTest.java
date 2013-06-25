@@ -18,7 +18,7 @@ import org.junit.Test;
 public class ExpandContainerTest {
 
 	/*
-	 * Important: The following developer's system path variables need to verified manually before running the test.
+	 * Important: The following system path variables need to verified manually before running the test.
 	 * 
 	 */
 	static String RootPath = "/e/artrep_test_resources/"; 		// Root Path or the Test resources folder

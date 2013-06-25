@@ -22,7 +22,7 @@ import org.junit.Test;
 public class CreateContainerTest  {
 	
 	/*
-	 * Important: The following developer's system path variables need to verified manually before running the test.
+	 * Important: The following system path variables need to verified manually before running the test.
 	 * 
 	 */
 	static String RootPath = "/e/artrep_test_resources/"; 		// Root Path or the Test resources folder
@@ -155,7 +155,7 @@ public class CreateContainerTest  {
 		
 		try {
 			dbc.expandContainer(new String[] {"x","b","z"}, "siteAsset");
-			System.out.println (dbc.isIndexed("siteAsset", "a"));
+			System.out.println (dbc.isIndexed(dbc.getColumn("siteAsset", "a")));
 		} catch (Exception e) {
 			fail("test expand failed!");
 						

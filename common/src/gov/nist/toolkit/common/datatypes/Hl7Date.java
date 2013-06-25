@@ -6,6 +6,8 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class Hl7Date {
+	public static final String parseFmt = "yyyyMMddkkmmss";
+	
 	public String now() {
 		StringBuilder sb = new StringBuilder();
 		// Send all output to the Appendable object sb
@@ -92,6 +94,20 @@ public class Hl7Date {
 		return sb.toString();
 	}
 
+	public String getDateStr(int year, int month, int dayofmonth, int hourofday, int minute, int second) {
+		StringBuilder sb = new StringBuilder();
+		// Send all output to the Appendable object sb
+		Formatter formatter = new Formatter(sb, Locale.US);
+		
+		formatter.format("%s%02d%02d%02d%02d%02d", 
+				year, 
+				month, 
+				dayofmonth,
+				hourofday,
+				minute,
+				second);
+		return sb.toString();
+	}
 
 
 }

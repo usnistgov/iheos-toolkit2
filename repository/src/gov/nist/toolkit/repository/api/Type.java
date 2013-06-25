@@ -58,8 +58,9 @@ public abstract class Type implements java.io.Serializable {
     private String keyword;
     private String description;
     private String index;
+    private String lifetime;
 
-    public Type(String authority, String domain, String keyword) {
+	public Type(String authority, String domain, String keyword) {
     	setDomain(domain);
         setAuthority(authority);
         setKeyword(keyword);
@@ -147,6 +148,14 @@ public abstract class Type implements java.io.Serializable {
         return this.keyword;
     }
 
+    public String getLifetime() {
+		return lifetime;
+	}
+
+	public void setLifetime(String lifetime) {
+		this.lifetime = lifetime;
+	}
+    
     public final String getDescription() {
         return this.description;
     }

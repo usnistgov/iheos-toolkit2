@@ -23,7 +23,7 @@ import org.junit.Test;
 public class IndexableRepositoryTest {
 	
 	/*
-	 * Important: The following developer's system path variables need to verified manually before running the test.
+	 * Important: The following system path variables need to verified manually before running the test.
 	 * 
 	 */
 	static String RootPath = "/e/artrep_test_resources/"; 		// Root Path or the Test resources folder
@@ -92,7 +92,7 @@ public class IndexableRepositoryTest {
 		
 		// This asset type is indexable but should not be indexed because the parent repos is defined as NOT indexable
 		Asset a = repos.createAsset("My Site", "This is my site", new SimpleType("siteAsset"));
-		
+		a.updateContent("basic string - text stream - content\ntest 1", "text/*");
 		
 		assertFalse(DbIndexContainer.isRepositoryIndexable(repos.getType()));		
 		
@@ -111,7 +111,7 @@ public class IndexableRepositoryTest {
 	public void newIndexableRepositoryTest() throws RepositoryException {
 
 		/*
-		 * documentRepos - This is an indexable repos type
+		 * documentRepos - This is an indexable repos
 		 * 
 		 */
 		
@@ -126,7 +126,7 @@ public class IndexableRepositoryTest {
 		
 		assertNotNull(repos);
 		
-		// This asset type should be indexed because parent repos is defined as indexable
+		// This asset type should be indexed because both the asset and parent repos are defined as indexable
 		Asset a = repos.createAsset("My Site", "This is my site", new SimpleType("siteAsset"));
 		
 		assertTrue(DbIndexContainer.isRepositoryIndexable(repos.getType()));

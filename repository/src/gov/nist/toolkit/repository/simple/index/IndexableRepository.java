@@ -10,6 +10,11 @@ import gov.nist.toolkit.repository.simple.SimpleId;
 import gov.nist.toolkit.repository.simple.SimpleRepository;
 import gov.nist.toolkit.repository.simple.index.db.DbIndexContainer;
 
+/**
+ * 
+ * @author Sunil.Bhaskarla
+ *
+ */
 public class IndexableRepository extends SimpleRepository {
 	private static final long serialVersionUID = 7941866244710221445L;
 

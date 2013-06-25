@@ -46,14 +46,19 @@ public class SimpleTypeIterator implements TypeIterator, FilenameFilter {
 		Properties typeProps = loadProperties(new File(typesDir + File.separator + typesFileNames[typesFileNamesIndex++]));
 		String keyword = typeProps.getProperty("keyword");
 		String description = typeProps.getProperty("description");
-		String domain = typeProps.getProperty("domain");		
+		String domain = typeProps.getProperty("domain");
 
 		SimpleType st = null;
 		if (domain!=null) {
 			String indexes = typeProps.getProperty("indexes");
-			return new SimpleType(domain, keyword, description, indexes);
-		} else		
-			return new SimpleType(domain, keyword, description);
+			st = new SimpleType(domain, keyword, description, indexes);
+		} else {		
+			st = new SimpleType(domain, keyword, description);
+		}
+		
+		st.setLifetime(typeProps.getProperty("lifetime"));
+		
+		return st;
 
 	}
 	

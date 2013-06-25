@@ -1,5 +1,7 @@
 package gov.nist.toolkit.repository.simple.index.db;
 
+import gov.nist.toolkit.repository.api.RepositoryException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,40 +35,96 @@ public class DbContext {
 		this.connection = connection;
 	}
 
-	public boolean executeCmd(String sqlStr) throws SQLException {
-		if (debugMode)
-			System.out.println("IndexContainer SQL: " +sqlStr);
-		if (connection!=null) {
-			Statement statement = connection.createStatement();			
-			if (statement.execute(sqlStr)) { 
-				System.out.println("success!");
+	public int getInt(String sqlStr) throws RepositoryException {
+		int intVal = 0;
+		try {
+			if (connection!=null) {
+				ResultSet rs = executeQuery(sqlStr);
+				while (rs.next()) {
+			          intVal = rs.getInt(1);
+				}
+				close(rs);				
 			}
-				
-		}  else {
-			throw new SQLException("No connection is associated with this context.");
+
+		} catch (SQLException e) {
+			throw new RepositoryException("Error, Sqlstate:" + e.getSQLState() , e);
 		}
-		return true;
+		
+		System.out.println("value: " + intVal);
+		return intVal;
+		
+	}
+
+	public String getString(String sqlStr) throws RepositoryException {
+		String stringVal = "";
+		try {
+			if (connection!=null) {
+				ResultSet rs = executeQuery(sqlStr);
+				while (rs.next()) {
+			          stringVal = rs.getString(1);
+				}
+				close(rs);				
+			}
+
+		} catch (SQLException e) {
+			throw new RepositoryException("Error, Sqlstate:" + e.getSQLState() , e);
+		}
+		
+		System.out.println("value: " + stringVal);
+		return stringVal;
+		
 	}
 	
-	public int executeUpdate(String sqlStr) throws SQLException {
-		int rowsAffected = 0;
-		if (debugMode)
+	/**
+	 * This method should be used for DDL or internal container manipulations only WITHOUT any user-provided parameters
+	 * @param sqlStr
+	 * @return
+	 * @throws SQLException
+	 */
+	public void internalCmd(String sqlStr) throws SQLException {
+		if (isDebugMode()) {
 			System.out.println("IndexContainer SQL: " +sqlStr);
+		}
 		if (connection!=null) {
 			Statement statement = connection.createStatement();
-			
-			rowsAffected=statement.executeUpdate(sqlStr);			
-				
+			statement.execute(sqlStr);			
 		}  else {
-			System.out.println("No connection is associated with this context.");
-			//  It is possible that another Db client is already running outside this scope.
+			throw new SQLException("No connection.");
 		}
-		return rowsAffected;
+
+	}
+	
+
+	
+	/**
+	 * This method should be used for all user-provided values
+	 * All key/value pairs are specified as strings in Java properties
+	 * @param sqlStr
+	 * @param params
+	 * @return
+	 * @throws SQLException
+	 */
+	public int executePrepared(String sqlStr, String[] params) throws SQLException {
+		if (isDebugMode())
+			System.out.println("IndexContainer SQL: " +sqlStr);
+		if (connection!=null) {
+			PreparedStatement statement = connection.prepareStatement(sqlStr);
+			int parameterIndex=1;
+			for (String p : params) {
+				if (isDebugMode()) {
+					System.out.println("Setting param: "+parameterIndex + " to <" + p + ">");			
+				}
+				statement.setString(parameterIndex++, p);
+			}
+			return statement.executeUpdate();
+		}
+		throw new SQLException("No connection.");
 	}
 	
 	public ResultSet executeQuery(String sqlStr) throws SQLException {
-		if (debugMode)
+		if (isDebugMode()) {
 			System.out.println("IndexContainer SQL: "+sqlStr);
+		}
 		
 		PreparedStatement statement = connection.prepareStatement(sqlStr);
 		return  statement.executeQuery();
@@ -91,5 +149,9 @@ public class DbContext {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+	}
+
+	public static boolean isDebugMode() {
+		return debugMode;
 	}
 }

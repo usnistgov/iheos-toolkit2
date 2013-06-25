@@ -118,13 +118,13 @@ public class DbConnection implements IndexDataSource {
 			if (bds!=null) {
 				cnx = bds.getConnection();
 				if (cnx.isClosed())
-					System.out.println("New connection failed because it is already closed.");				
+					System.out.println("Connection failed because it is already closed.");				
 			} else {
 				return null;
 			}
 			
 		} catch (SQLException e) {
-			System.out.println("connect failed");
+			System.out.println("Connect failed");
 			e.printStackTrace();
 		}
 		return cnx;

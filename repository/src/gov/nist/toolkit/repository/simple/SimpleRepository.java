@@ -1,5 +1,6 @@
 package gov.nist.toolkit.repository.simple;
 
+import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.repository.api.Asset;
 import gov.nist.toolkit.repository.api.Id;
 import gov.nist.toolkit.repository.api.RepositoryException;

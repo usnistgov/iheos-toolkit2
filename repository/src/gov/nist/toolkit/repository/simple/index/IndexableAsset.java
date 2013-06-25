@@ -2,8 +2,10 @@ package gov.nist.toolkit.repository.simple.index;
 
 
 
+import gov.nist.toolkit.repository.api.Id;
 import gov.nist.toolkit.repository.api.RepositoryException;
 import gov.nist.toolkit.repository.simple.SimpleAsset;
+import gov.nist.toolkit.repository.simple.index.db.DbContext;
 import gov.nist.toolkit.repository.simple.index.db.DbIndexContainer;
 
 import java.util.ArrayList;
@@ -14,6 +16,11 @@ import java.util.ArrayList;
  *
  */
 public class IndexableAsset extends SimpleAsset {
+
+	public IndexableAsset() throws RepositoryException {
+		super();
+	}
+
 
 	@Override
 	public void flush() throws RepositoryException {
@@ -26,23 +33,27 @@ public class IndexableAsset extends SimpleAsset {
 
 			try {
 				
-				// get indexable proeperties based on type
+				// get indexable properties based on type
 				// get the property value using getProperty
 				
-				ArrayList<String> iap = DbIndexContainer.getIndexableProperties();
+				ArrayList<String> properties = DbIndexContainer.getIndexableProperties();
 				
-				for (String s : iap) {
-					String propertyName = dbc.getDbColumnSuffix(s);
-					String toBeIndexedValue = this.getProperty(propertyName);
+				for (String property : properties) {
+					
+					String toBeIndexedValue = this.getProperty(property);
 						
-					System.out.println("Indexable property: "+ propertyName);
+					if (DbContext.isDebugMode()) {
+						System.out.println("Potential indexable asset property: "+ property);
+					}
 					
 						if (toBeIndexedValue!=null && !"".equals(toBeIndexedValue)) {
 												
 							// Index only if the property is found in the Properties object
-							dbc.updateIndex(this.getRepository().getIdString(), this.getId().getIdString(), this.getAssetType().getKeyword(),propertyName,toBeIndexedValue);							
-						} else { 		
-							System.out.println("not indexable: "+  s+ " - flush indexer value: "+ toBeIndexedValue);
+							String assetType = this.getAssetType().getKeyword();
+							dbc.updateIndex(this.getRepository().getIdString(), this.getId().getIdString(),assetType, DbIndexContainer.getDbIndexedColumn(assetType, property), toBeIndexedValue);							
+						} 
+						else if (DbContext.isDebugMode()) { 		
+							System.out.println("Asset: could not find value - not indexed: "+  property+ " - flush indexer value: "+ toBeIndexedValue);
 						}
 				}
 			} catch (Exception e) {
@@ -52,6 +63,20 @@ public class IndexableAsset extends SimpleAsset {
 		
 
 		
+	}
+
+
+	@Override
+	public void removeAsset(Id assetId, boolean includeChildren)
+			throws RepositoryException {
+		// TODO remove from index
+		super.removeAsset(assetId, includeChildren);
+	}
+
+	@Override
+	public void deleteAsset() throws RepositoryException {
+		// TODO remove from index
+		super.deleteAsset();
 	}
 
 }

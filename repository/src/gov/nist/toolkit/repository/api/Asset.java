@@ -1,5 +1,7 @@
 package gov.nist.toolkit.repository.api;
 
+import java.io.File;
+
 /**
  * Asset manages the Asset itself.  Assets have content as well as Records
  * appropriate to the AssetType and RecordStructures for the Asset.  Assets
@@ -57,9 +59,17 @@ public interface Asset {
      *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
      *         NULL_ARGUMENT}, {@link
      *         gov.nist.toolkit.repository.api.RepositoryException#EFFECTIVE_PRECEDE_EXPIRATION}
-     */
-    void updateEffectiveDate(long effectiveDate)
+     * 
+     *         
+     *         06/24/13 
+     *         Removed 'effectiveDate'.
+     *         
+     *             void updateEffectiveDate(long effectiveDate)
         throws gov.nist.toolkit.repository.api.RepositoryException;
+     *         
+     *              
+     */
+
 
     /**
      * Update the date at which this Asset expires.
@@ -81,10 +91,67 @@ public interface Asset {
      *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
      *         NULL_ARGUMENT}, {@link
      *         gov.nist.toolkit.repository.api.RepositoryException#EFFECTIVE_PRECEDE_EXPIRATION}
-     */
-    void updateExpirationDate(long expirationDate)
-        throws gov.nist.toolkit.repository.api.RepositoryException;
+     *         
 
+    void updateExpirationDate(long expirationDate)
+            throws gov.nist.toolkit.repository.api.RepositoryException;
+     */
+    
+    /**
+     * 
+     * Update the date at which this Asset expires.
+     * 
+     * @param expirationDate in HL7 2.4 format: "YYYY[MM[DD]]"
+     *
+     * @throws gov.nist.toolkit.repository.api.RepositoryException An exception with one of
+     *         the following messages defined in
+     *         gov.nist.toolkit.repository.api.RepositoryException may be thrown: {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#OPERATION_FAILED
+     *         OPERATION_FAILED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#PERMISSION_DENIED
+     *         PERMISSION_DENIED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#CONFIGURATION_ERROR
+     *         CONFIGURATION_ERROR}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
+     *         UNIMPLEMENTED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
+     *         NULL_ARGUMENT}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#EFFECTIVE_PRECEDE_EXPIRATION}
+     *         
+     *         06/24/13 Updated return type.
+     *         
+     */
+    
+    void updateExpirationDate(String expirationDate)
+            throws gov.nist.toolkit.repository.api.RepositoryException;
+
+    /**
+     * 
+     * Update the date when this Asset was created.
+     * 
+     * @param createdDate in HL7 2.4 format: "YYYY[MM[DD]]"
+     *
+     * @throws gov.nist.toolkit.repository.api.RepositoryException An exception with one of
+     *         the following messages defined in
+     *         gov.nist.toolkit.repository.api.RepositoryException may be thrown: {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#OPERATION_FAILED
+     *         OPERATION_FAILED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#PERMISSION_DENIED
+     *         PERMISSION_DENIED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#CONFIGURATION_ERROR
+     *         CONFIGURATION_ERROR}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
+     *         UNIMPLEMENTED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#NULL_ARGUMENT
+     *         NULL_ARGUMENT}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#EFFECTIVE_PRECEDE_EXPIRATION}
+     * 
+     *         (NIST)
+     *         06/24/13 Added method
+     */
+    void setCreatedDate(String createdDate)
+            throws gov.nist.toolkit.repository.api.RepositoryException;
+    
     /**
      * Get the display name for this Asset.
      *
@@ -181,8 +248,13 @@ public interface Asset {
      *         CONFIGURATION_ERROR}, {@link
      *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
      *         UNIMPLEMENTED}
+     *         
+     *         06/24/13 
+     *         Removed 'effectiveDate'.
+		
+	 * 			long getEffectiveDate() throws gov.nist.toolkit.repository.api.RepositoryException;	
      */
-    long getEffectiveDate() throws gov.nist.toolkit.repository.api.RepositoryException;
+
 
     /**
      * Get the date at which this Asset expires.
@@ -201,9 +273,56 @@ public interface Asset {
      *         CONFIGURATION_ERROR}, {@link
      *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
      *         UNIMPLEMENTED}
+     *         
+     *         
+     *             long getExpirationDate() throws gov.nist.toolkit.repository.api.RepositoryException;
      */
-    long getExpirationDate() throws gov.nist.toolkit.repository.api.RepositoryException;
 
+
+    /**
+     * Get the date at which this Asset expires.
+     *
+     * @return String 
+     *
+     * @throws gov.nist.toolkit.repository.api.RepositoryException An exception with one of
+     *         the following messages defined in
+     *         gov.nist.toolkit.repository.api.RepositoryException may be thrown: {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#OPERATION_FAILED
+     *         OPERATION_FAILED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#PERMISSION_DENIED
+     *         PERMISSION_DENIED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#CONFIGURATION_ERROR
+     *         CONFIGURATION_ERROR}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
+     *         UNIMPLEMENTED}
+     *         
+     *         06/24/13 Updated to the String return type.
+     *             
+     */
+    String getExpirationDate() throws gov.nist.toolkit.repository.api.RepositoryException;
+    
+    /**
+     * Get the date when the Asset was created. 
+     *
+     * @return String 
+     *
+     * @throws gov.nist.toolkit.repository.api.RepositoryException An exception with one of
+     *         the following messages defined in
+     *         gov.nist.toolkit.repository.api.RepositoryException may be thrown: {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#OPERATION_FAILED
+     *         OPERATION_FAILED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#PERMISSION_DENIED
+     *         PERMISSION_DENIED}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#CONFIGURATION_ERROR
+     *         CONFIGURATION_ERROR}, {@link
+     *         gov.nist.toolkit.repository.api.RepositoryException#UNIMPLEMENTED
+     *         UNIMPLEMENTED}
+     *         
+     *         06/24/13 Updated to the String return type.
+     *             
+     */
+    String getCreatedDate() throws gov.nist.toolkit.repository.api.RepositoryException;
+    
     /**
      * Update the description for this Asset.
      *
@@ -418,6 +537,9 @@ public interface Asset {
     public AssetIterator getAssetsByType(gov.nist.toolkit.repository.api.Type assetType)
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
+	public File getPropFile() 
+			throws RepositoryException;
+	
     public String getProperty(String key)
             throws gov.nist.toolkit.repository.api.RepositoryException;
     

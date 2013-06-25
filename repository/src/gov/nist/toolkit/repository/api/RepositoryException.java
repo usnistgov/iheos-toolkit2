@@ -38,6 +38,9 @@ public class RepositoryException extends Exception {
     
     /** Index Error */
     public static final String INDEX_ERROR = "Index Error";
+    
+    /** Search Error */
+    public static final String MALFORMED_SEARCHCRITERIA = "Malformed search criteria";
 
     /** Unimplemented method */
     public static final String UNIMPLEMENTED = "Unimplemented method ";

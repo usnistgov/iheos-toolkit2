@@ -1,5 +1,6 @@
 package gov.nist.toolkit.repository.simple;
 
+import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.repository.api.Asset;
 import gov.nist.toolkit.repository.api.AssetIterator;
 import gov.nist.toolkit.repository.api.Id;
@@ -7,6 +8,7 @@ import gov.nist.toolkit.repository.api.Repository;
 import gov.nist.toolkit.repository.api.RepositoryException;
 import gov.nist.toolkit.repository.api.RepositoryFactory;
 import gov.nist.toolkit.repository.api.Type;
+import gov.nist.toolkit.repository.api.TypeIterator;
 import gov.nist.toolkit.utilities.io.Io;
 
 import java.io.File;
@@ -15,6 +17,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Properties;
 
 public class SimpleAsset implements Asset, Flushable {	
@@ -23,6 +28,13 @@ public class SimpleAsset implements Asset, Flushable {
 	byte[] content = null;
 	boolean autoFlush = true;
 	transient boolean indexable = false;
+	
+	
+
+	public SimpleAsset() throws RepositoryException {
+		super();
+		setCreatedDate(new Hl7Date().now());
+	}
 
 	public void setRepository(Id repositoryId) throws RepositoryException {
 		properties.setProperty("repository", repositoryId.getIdString());
@@ -67,17 +79,11 @@ public class SimpleAsset implements Asset, Flushable {
 		if (autoFlush) flush();
 	}
 
-	@Override
-	public void updateEffectiveDate(long effectiveDate)
-			throws RepositoryException {
-		properties.setProperty("effectiveDate", String.valueOf(effectiveDate));
-		if (autoFlush) flush();
-	}
 
 	@Override
-	public void updateExpirationDate(long expirationDate)
+	public void updateExpirationDate(String expirationDate)
 			throws RepositoryException {
-		properties.setProperty("expirationDate", String.valueOf(expirationDate));
+		properties.setProperty("expirationDate", expirationDate);
 		if (autoFlush) flush();
 	}
 
@@ -98,17 +104,35 @@ public class SimpleAsset implements Asset, Flushable {
 
 	@Override
 	public Type getAssetType() throws RepositoryException {
-		return new SimpleType(properties.getProperty("type"));
+		String type = properties.getProperty("type");
+		if (type != null) {
+			return new SimpleType(type);
+		} else
+			return null;
+	}
+
+
+	@Override
+	public String getExpirationDate() throws RepositoryException {
+		return properties.getProperty("expirationDate");
 	}
 
 	@Override
-	public long getEffectiveDate() throws RepositoryException {
-		return new Integer(properties.getProperty("effectiveDate")).longValue();
+	public String getMimeType() throws RepositoryException {
+		return properties.getProperty("mimeType");
+	}
+
+
+	@Override
+	public void setCreatedDate(String createdDate)
+			throws RepositoryException {
+		properties.setProperty("createdDate", createdDate);		
+		
 	}
 
 	@Override
-	public long getExpirationDate() throws RepositoryException {
-		return new Integer(properties.getProperty("expirationDate")).longValue();
+	public String getCreatedDate() throws RepositoryException {
+		return properties.getProperty("createdDate");
 	}
 
 	@Override
@@ -192,8 +216,9 @@ public class SimpleAsset implements Asset, Flushable {
 	public void setAutoFlush(boolean autoFlush) {
 		this.autoFlush = autoFlush;
 	}
-
-	File getPropFile() throws RepositoryException {
+	
+	@Override
+	public File getPropFile() throws RepositoryException {
 		File repositoryFile = Configuration.getRepositoryLocation(getRepository());
 		if (!repositoryFile.exists())
 			throw new RepositoryException(RepositoryException.CONFIGURATION_ERROR + " : " +
@@ -272,6 +297,9 @@ public class SimpleAsset implements Asset, Flushable {
 	public void flush() throws RepositoryException {
 		autoFlush = true;
 		try {
+			properties.setProperty("modifiedDate", new Hl7Date().now());			
+			setExipration();		
+			
 			FileWriter writer = new FileWriter(getPropFile());
 			properties.store(writer, "");
 			writer.close();
@@ -279,7 +307,7 @@ public class SimpleAsset implements Asset, Flushable {
 				String mimeType = properties.getProperty("mimeType");
 				if (mimeType != null && mimeType.startsWith("text/")) {
 					String ext = partTwo(mimeType, "\\/");
-					if (ext.equals("plain")) ext = "txt";
+					if (ext.equals("*")||ext.equals("plain")) ext = "txt";
 					Io.stringToFile(getContentFile(ext), new String(content));
 				} else {
 					OutputStream os = new FileOutputStream(getContentFile());
@@ -292,10 +320,48 @@ public class SimpleAsset implements Asset, Flushable {
 		}
 	}
 
-	@Override
-	public String getMimeType() throws RepositoryException {
-		return properties.getProperty("mimeType");
+	/**
+	 * 
+	 */
+	private void setExipration() {
+		try {
+			if (getCreatedDate()!=null) {
+				SimpleDateFormat sdf = new SimpleDateFormat(Hl7Date.parseFmt);
+				sdf.parse(getCreatedDate());
+				Calendar c = sdf.getCalendar();
+				if (c!=null) {
+					Type t = getAssetType(); 
+					if (t != null) {			
+						TypeIterator it;
+			
+							it = new SimpleTypeIterator(t);
+							if (it.hasNextType()) {				
+								Type assetType = it.nextType();
+								String lifetime = assetType.getLifetime();
+								if (lifetime!=null) {
+										Integer days = Integer.parseInt(lifetime.substring(0,lifetime.indexOf(" days")));
+										if (days!=null) {
+											System.out.println("lf: " + days);
+											if (getExpirationDate()==null) {
+												c.add(Calendar.DATE, days);
+												Date expr = c.getTime();
+												properties.setProperty("expirationDate", sdf.format(expr));
+
+											}
+										}
+											
+								}
+								
+							}
+					}			
+				}
+		
+			}
+		} catch (Exception e) {
+			// Non-critical: Ignore expiration date issues
+		}
 	}
+
 
 	/**
 	 * @return the indexable
@@ -311,4 +377,28 @@ public class SimpleAsset implements Asset, Flushable {
 		this.indexable = indexable;
 	}
 
+	@Override
+	public String toString()  {
+
+		String name = null;
+		try {
+			name = getDisplayName();
+			if (name!=null && !"".equals(name)) {
+				return name;
+			} else {
+				name = getId().getIdString();
+			}
+		} catch (RepositoryException e) {
+			;
+		}
+		return name;
+			
+	
+	}
+	
+	public boolean isText() throws RepositoryException {
+		String mimeType = getMimeType();
+		return (mimeType!=null && mimeType.startsWith("text/"));
+	}
+	
 }
