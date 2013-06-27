@@ -1,7 +1,5 @@
 package gov.nist.toolkit.repository.simple.search;
 
-import gov.nist.toolkit.repository.simple.index.db.DbIndexContainer;
-
 import java.util.ArrayList;
 
 /*
