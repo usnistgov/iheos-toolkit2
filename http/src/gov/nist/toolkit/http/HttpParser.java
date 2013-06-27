@@ -149,23 +149,23 @@ public class HttpParser {
 		er.detail("Message " + ((isMultipart()) ? "is" : "is not" ) + " a multipart");
 	}
 
-	public HttpParser(byte[] msg) throws HttpParseException, HttpHeaderParseException {
+	public HttpParser(byte[] msg) throws HttpParseException, HttpHeaderParseException, ParseException {
 		er = null;
 		init(msg, null, er);
 	}
 
-	public HttpParser(byte[] msg, ErrorRecorder er) throws HttpParseException, HttpHeaderParseException  {
+	public HttpParser(byte[] msg, ErrorRecorder er) throws HttpParseException, HttpHeaderParseException, ParseException  {
 		this.er = er;
 		init(msg, null, er);
 	}
 	
-	public HttpParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException  {
+	public HttpParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException  {
 		this.er = er;
 		this.appendixV = appendixV;
 		init(msg, null, er);
 	}
 	
-	public void init(byte[] msg, HttpMessage hmessage, ErrorRecorder er) throws HttpParseException, HttpHeaderParseException {
+	public void init(byte[] msg, HttpMessage hmessage, ErrorRecorder er) throws ParseException, HttpParseException  {
 		input = msg;
 		if (hmessage != null)
 			message = hmessage;
@@ -211,7 +211,7 @@ public class HttpParser {
 		}
 	}
 
-	public void parse() throws HttpParseException, HttpHeaderParseException {
+	public void parse() throws ParseException, HttpParseException  {
 		if (parsed)
 			return;
 		parsed = true;
@@ -273,6 +273,7 @@ public class HttpParser {
 			header = header.trim();
 			message.addHeader(header);
 			to = findStartOfNextHeader();
+			er.detail("Header: " + header);
 			return header;
 		}
 	}
@@ -295,7 +296,7 @@ public class HttpParser {
 		return "Part (" + cid + "): ";
 	}
 
-	void parseHeadersAndBody() throws HttpParseException, HttpHeaderParseException {
+	void parseHeadersAndBody() throws  ParseException, HttpParseException {
 		try {
 			while (true)
 				nextHeader();

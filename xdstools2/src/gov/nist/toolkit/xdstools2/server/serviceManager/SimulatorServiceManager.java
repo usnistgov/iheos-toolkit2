@@ -5,7 +5,6 @@ import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SimulatorFactory;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -13,6 +12,7 @@ import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
+import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
@@ -157,6 +157,11 @@ public class SimulatorServiceManager extends CommonServiceManager {
 			return mvr;
 		}
 		catch (NoSimException e) {
+			MessageValidationResults mvr = new MessageValidationResults();
+			mvr.addError(XdsErrorCode.Code.NoCode, "Exception",
+					ExceptionUtil.exception_details(e));
+			return mvr;
+		} catch (ParseException e) {
 			MessageValidationResults mvr = new MessageValidationResults();
 			mvr.addError(XdsErrorCode.Code.NoCode, "Exception",
 					ExceptionUtil.exception_details(e));

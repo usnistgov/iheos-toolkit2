@@ -607,6 +607,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Display CCDA Document
 		er.detail("#####################CCDA Content######################");
 		//String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
+		String html_formatted_ccda;
 		if(qpEncoded) {
 			html_formatted_ccda = SafeHtmlUtils.htmlEscape(decodeQPToString(p.getInputStream()));
 		} else {

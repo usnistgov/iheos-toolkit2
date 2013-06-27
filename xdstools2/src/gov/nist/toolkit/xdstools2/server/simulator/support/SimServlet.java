@@ -14,6 +14,7 @@ import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
+import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
@@ -530,6 +531,10 @@ public class SimServlet  extends HttpServlet {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
+		} catch (ParseException e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
 		} 
 		finally {
 			mvc.run();
@@ -684,7 +689,7 @@ public class SimServlet  extends HttpServlet {
 //	
 
 	void logRequest(HttpServletRequest request, SimDb db, String actor, String transaction)
-	throws FileNotFoundException, IOException, HttpHeaderParseException {
+	throws FileNotFoundException, IOException, HttpHeaderParseException, ParseException {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append(request.getMethod() + " " + request.getRequestURI() + " " + request.getProtocol() + "\r\n");

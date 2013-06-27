@@ -118,6 +118,8 @@ public class MultipartParser {
 //			throw new ParseException("Not a Multipart");
 		boolean multi = isMultipart();
 		message.boundary = contentTypeHeader.getParam("boundary");
+		er.detail(contentTypeHeader.asString());
+		er.detail("boundary = " + message.boundary);
 		if (message.boundary == null || message.boundary.equals("")) {
 			message = null;
 			return;
@@ -209,7 +211,7 @@ public class MultipartParser {
 		String name;
 		try {
 			contentTypeHeader = new HttpHeader(hp.message.getHeader("Content-Type"));
-		} catch (HttpHeaderParseException e) {
+		} catch (ParseException e) {
 			return false;
 		}
 		name = contentTypeHeader.getName();

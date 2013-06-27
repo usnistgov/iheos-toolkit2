@@ -17,7 +17,7 @@ public class HttpHeader {
 	boolean parsed;
 	ErrorRecorder er = null;
 
-	public HttpHeader(String line) throws HttpHeaderParseException {
+	public HttpHeader(String line) throws  ParseException {
 		if (line == null)
 			line = "";
 		this.line = line;
@@ -25,7 +25,7 @@ public class HttpHeader {
 		parse();
 	}
 
-	public HttpHeader(String line, ErrorRecorder er) throws HttpHeaderParseException {
+	public HttpHeader(String line, ErrorRecorder er) throws ParseException {
 		if (line == null)
 			line = "";
 		this.line = line;
@@ -34,6 +34,17 @@ public class HttpHeader {
 		if (er != null)
 			er.detail("Parsing HttpHeader: " + line.trim());
 		parse();
+	}
+	
+	public String asString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("Header: ").append("name=").append(name);
+		buf.append("  value=").append(value).append('\n');
+		for (String name : params.keySet()) {
+			String value = params.get(name);
+			buf.append("\t\t").append(name).append("=").append(value).append('\n');
+		}
+		return buf.toString();
 	}
 
 	public String toString() {
@@ -66,8 +77,21 @@ public class HttpHeader {
 		String v = getParam(name);
 		return (v != null && !v.equals(""));
 	}
+	
+	public void parse() throws ParseException {
+		if (parsed)
+			return;
+		parsed = true;
 
-	public void parse() throws HttpHeaderParseException {
+		HttpHeaderParser hp = new HttpHeaderParser(line);
+		hp.parse();
+		name = hp.getName();
+		value = hp.getValue();
+		unnamedParams = hp.getUnnamedParams();
+		params = hp.getParams();
+	}
+
+	public void parseOld()  {
 		if (parsed)
 			return;
 		parsed = true;
