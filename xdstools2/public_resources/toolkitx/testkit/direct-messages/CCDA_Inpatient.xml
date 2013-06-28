@@ -914,7 +914,7 @@ ENCOUNTERS
 								<act classCode="ACT" moodCode="EVN">
 									<!--Encounter diagnosis act -->
 									<templateId root="2.16.840.1.113883.10.20.22.4.80"/>
-									<id root="5a784260-6856-4f38-9638-80c751aff2fb"extension="2002"/>
+									<id root="5a784260-6856-4f38-9638-80c751aff2fb" extension="2002"/>
 									<code xsi:type="CE" code="29308-4"
 										codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"
 										displayName="ENCOUNTER DIAGNOSIS"/>
