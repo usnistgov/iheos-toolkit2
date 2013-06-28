@@ -11,16 +11,19 @@ import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
+
 public class HttpParser {
 	byte[] input;
 	int from;
 	int to = 0;
-	boolean parsed = false;
 	ErrorRecorder er = null;
 	String charset = null;
 	HttpMessage message = new HttpMessage();
 	MultipartParser multiparser;
 	boolean appendixV = true;
+	static final Logger logger = Logger.getLogger(HttpParser.class);
+
 	
 	public MultipartParser getMultipartParser() {
 		return multiparser;
@@ -32,6 +35,10 @@ public class HttpParser {
 	
 	public void setBody(String body) {
 		message.bodyBytes = body.getBytes();
+	}
+	
+	public byte[] getBody() {
+		return message.bodyBytes;
 	}
 
 	public String getRawContentId()  {
@@ -48,15 +55,6 @@ public class HttpParser {
 
 	public String getHeaderValue(String headerName)  {
 		return getHeaderValue(headerName, 0);
-//		String hdrStr = message.getHeader(headerName);
-//		if (hdrStr == null || hdrStr.equals(""))
-//			return null;
-//		try {
-//			HttpHeader hh = new HttpHeader(hdrStr);
-//			return hh.getValue();
-//		} catch (Exception e) {
-//			return null;
-//		}
 	}
 	
 	public String getHeaderValue(String headerName, int i)  {
@@ -73,15 +71,6 @@ public class HttpParser {
 	
 	public HttpHeader getHeader(String headerName) {
 		return getHeader(headerName, 0);
-//		String hdrStr = message.getHeader(headerName);
-//		if (hdrStr == null || hdrStr.equals(""))
-//			return null;
-//		try {
-//			HttpHeader hh = new HttpHeader(hdrStr);
-//			return hh;
-//		} catch (Exception e) {
-//			return null;
-//		}
 	}
 	
 	public HttpHeader getHeader(String headerName, int i) {
@@ -117,15 +106,19 @@ public class HttpParser {
 	}
 
 	public HttpParser(HttpServletRequest request) throws IOException, HttpParseException {
+		// This is the default toString() since it shows an object id (helps understand recursion)
+		logger.debug("new HttpParser(" + this.toString() + ")");
 		init(request);
 	}
 
 	public HttpParser(HttpServletRequest request, boolean appendixV) throws IOException, HttpParseException {
+		logger.debug("new HttpParser(" + this.toString() + ")");
 		this.appendixV = appendixV;
 		init(request);
 	}
 
 	public HttpParser(HttpServletRequest request, ErrorRecorder er) throws IOException, HttpParseException {
+		logger.debug("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		init(request);
 	}
@@ -150,16 +143,19 @@ public class HttpParser {
 	}
 
 	public HttpParser(byte[] msg) throws HttpParseException, HttpHeaderParseException, ParseException {
+		logger.debug("new HttpParser(" + this.toString() + ")");
 		er = null;
 		init(msg, null, er);
 	}
 
 	public HttpParser(byte[] msg, ErrorRecorder er) throws HttpParseException, HttpHeaderParseException, ParseException  {
+		logger.debug("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		init(msg, null, er);
 	}
 	
 	public HttpParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException  {
+		logger.debug("new HttpParser(" + this.toString() + ")");
 		this.er = er;
 		this.appendixV = appendixV;
 		init(msg, null, er);
@@ -193,6 +189,7 @@ public class HttpParser {
 		try {
 			multiparser = new MultipartParser(this, er, appendixV);
 			message.multipart = multiparser.message;
+			logger.debug("HttpParser(" + this.toString() + ") - isMultipart=" + isMultipart() );
 		} catch (ParseException e) {
 			// not a multipart
 			System.out.println(ExceptionUtil.exception_details(e));
@@ -212,9 +209,9 @@ public class HttpParser {
 	}
 
 	public void parse() throws ParseException, HttpParseException  {
-		if (parsed)
-			return;
-		parsed = true;
+//		if (parsed)
+//			return;
+//		parsed = true;
 		parseHeadersAndBody();
 	}
 
@@ -312,6 +309,8 @@ public class HttpParser {
 		}
 
 		String contentTypeString = message.getHeader("content-type");
+		logger.debug("HttpParser(" + this.toString() + ") - content-type=" + contentTypeString);
+
 		HttpHeader contentTypeHeader = new HttpHeader(contentTypeString);
 
 		charset = contentTypeHeader.getParam("charset");

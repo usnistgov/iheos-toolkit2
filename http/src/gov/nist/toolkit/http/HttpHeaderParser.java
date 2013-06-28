@@ -62,6 +62,9 @@ public class HttpHeaderParser {
 		Token token; 
 
 		token = tokenizer.getNextToken();    // header name
+		if (token == null) {
+			return;
+		}
 		if (token.isString())
 			name = token.getValue();
 
