@@ -1,157 +1,144 @@
 package gov.nist.toolkit.repository.simple.index.db;
 
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.repository.api.RepositoryException;
+import gov.nist.toolkit.repository.simple.index.IndexDataSource;
+
+// This is for the Apache Commons DBCP
+//import org.apache.commons.dbcp.BasicDataSource;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 
 /**
- * 
+ * This class provides a JDBC compatible (Derby) database connection.
+ * DbProvider is a singleton class that allows for automatic connection pooling through Tomcat JDBC Pooling.
  * @author Sunil.Bhaskarla
  *
  */
-public class DbContext {
+public class DbConnection implements IndexDataSource {
 
-	private Connection connection = null;
-	private static boolean debugMode = true;
+
+	// See this web page on why Tomcat's own JDBC pooling is preferred to DBCP
+	// http://tomcat.apache.org/tomcat-7.0-doc/jdbc-pool.htm
 	
-	public DbContext(Connection connection) {
-		this.connection = connection;
-	}
+	// This is for the DBCP method	
+	//private static BasicDataSource bds = null;
 	
-	public DbContext() {
-		
-	}
-
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
-
-	public int getInt(String sqlStr) throws RepositoryException {
-		int intVal = 0;
+     private static DataSource bds = null;
+     
+	static DbConnection self = null;
+	
+	private DbConnection()  {		
 		try {
-			if (connection!=null) {
-				ResultSet rs = executeQuery(sqlStr);
-				while (rs.next()) {
-			          intVal = rs.getInt(1);
-				}
-				close(rs);				
-			}
-
-		} catch (SQLException e) {
-			throw new RepositoryException("Error, Sqlstate:" + e.getSQLState() , e);
-		}
-		
-		System.out.println("value: " + intVal);
-		return intVal;
-		
-	}
-
-	public String getString(String sqlStr) throws RepositoryException {
-		String stringVal = "";
-		try {
-			if (connection!=null) {
-				ResultSet rs = executeQuery(sqlStr);
-				while (rs.next()) {
-			          stringVal = rs.getString(1);
-				}
-				close(rs);				
-			}
-
-		} catch (SQLException e) {
-			throw new RepositoryException("Error, Sqlstate:" + e.getSQLState() , e);
-		}
-		
-		System.out.println("value: " + stringVal);
-		return stringVal;
-		
-	}
-	
-	/**
-	 * This method should be used for DDL or internal container manipulations only WITHOUT any user-provided parameters
-	 * @param sqlStr
-	 * @return
-	 * @throws SQLException
-	 */
-	public void internalCmd(String sqlStr) throws SQLException {
-		if (isDebugMode()) {
-			System.out.println("IndexContainer SQL: " +sqlStr);
-		}
-		if (connection!=null) {
-			Statement statement = connection.createStatement();
-			statement.execute(sqlStr);			
-		}  else {
-			throw new SQLException("No connection.");
-		}
-
-	}
-	
-
-	
-	/**
-	 * This method should be used for all user-provided values
-	 * All key/value pairs are specified as strings in Java properties
-	 * @param sqlStr
-	 * @param params
-	 * @return
-	 * @throws SQLException
-	 */
-	public int executePrepared(String sqlStr, String[] params) throws SQLException {
-		if (isDebugMode())
-			System.out.println("IndexContainer SQL: " +sqlStr);
-		if (connection!=null) {
-			PreparedStatement statement = connection.prepareStatement(sqlStr);
-			int parameterIndex=1;
-			for (String p : params) {
-				if (isDebugMode()) {
-					System.out.println("Setting param: "+parameterIndex + " to <" + p + ">");			
-				}
-				statement.setString(parameterIndex++, p);
-			}
-			return statement.executeUpdate();
-		}
-		throw new SQLException("No connection.");
-	}
-	
-	public ResultSet executeQuery(String sqlStr) throws SQLException {
-		if (isDebugMode()) {
-			System.out.println("IndexContainer SQL: "+sqlStr);
-		}
-		
-		PreparedStatement statement = connection.prepareStatement(sqlStr);
-		return  statement.executeQuery();
-		
-	}	
-	
-	public void close(ResultSet rs) {		
-		try {
-			rs.close();
-			this.close();
-		} catch (SQLException e) {
+			setupDataSource();
+		} catch (RepositoryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	static public DbConnection getInstance() {
+		if (self==null) {
+			synchronized (DbConnection.class) {
+				if (self==null) {
+					self = new DbConnection();
+				}
+			}
+		}
+		return self;
+	}
+
+	@Override
+	public void setupDataSource() throws RepositoryException {
+		if (bds==null) {
+
+			String ecDir = null; 
+			try {
+				ecDir = Installation.installation().propertyServiceManager().getToolkitProperties().get("External_Cache");
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				return;
+			}
+			
+			
+			if (ecDir==null) {
+				System.out.println("E100: Could not get External_Cache from Installation setup. Database could not instantiated.");
+				return;
+			}
+			
+			  PoolProperties p = new PoolProperties();
+			 
+	          p.setUrl("jdbc:derby:"+ ecDir +"/db;create=true");
+	          
+	          //local "jdbc:derby:c:\\e\\myderby.db;create=true"
+	          
+	          p.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");
+//	          p.setUsername("root");
+//	          p.setPassword("password");
+//	          p.setJmxEnabled(true);
+//	          p.setTestWhileIdle(false);
+//	          p.setTestOnBorrow(true);
+//	          p.setValidationQuery("SELECT 1");
+//	          p.setTestOnReturn(false);
+//	          p.setValidationInterval(30000);
+	          p.setTimeBetweenEvictionRunsMillis(30000);
+	          p.setMaxActive(500);
+	          p.setInitialSize(10);
+	          p.setMaxWait(10000);
+	          p.setRemoveAbandonedTimeout(60);
+	          p.setMinEvictableIdleTimeMillis(30000);
+	          p.setMinIdle(20);
+	          p.setLogAbandoned(true);
+	          p.setRemoveAbandoned(true);
+//	          p.setJdbcInterceptors(
+//	            "org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"+
+//	            "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+
+			  bds = new DataSource();
+	          bds.setPoolProperties(p);
+	          
+			// DBCP 
+			//bds = new BasicDataSource();	          			
+//			bds.setDriverClassName("org.apache.derby.jdbc.ClientDriver");
+//			bds.setUrl("jdbc:derby:c:\\e\\myderby.db;create=true");			
+		}
+		
 		
 	}
 	
-	public void close() {
-		if (getConnection()!=null)
-			try {
-				getConnection().close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+	@Override
+	public Connection getConnection()  {
+		Connection cnx = null;
+		try {
+			if (bds!=null) {
+				cnx = bds.getConnection();
+				if (cnx.isClosed())
+					System.out.println("Connection failed because it is already closed.");				
+			} else {
+				return null;
 			}
+			
+		} catch (SQLException e) {
+			System.out.println("Connect failed");
+			e.printStackTrace();
+		}
+		return cnx;
 	}
-
-	public static boolean isDebugMode() {
-		return debugMode;
+	
+	/**
+	 * 
+	 */
+	public void printConnectionSummary() {
+		System.out.println("Active " + bds.getActive());
+		System.out.println("Max active "+ bds.getMaxActive());
+		System.out.println("Max idle "+ bds.getMaxIdle());
+		System.out.println("Max wait "+ bds.getMaxWait());
+		System.out.println("------");
 	}
+	
 }
