@@ -41,7 +41,6 @@ public class UploadServlet extends HttpServlet {
 		try {
 			hp = new HttpParser(request, false);
 			byte[] bodybytes = hp.getBody();
-			Io.stringToFile(new File("/Users/bmajur/body.txt"), new String(bodybytes));
 		} catch (HttpParseException e1) {
 			logger.error("HTTPParser parse error: " + e1.getMessage());
 			throw new IOException("Parse Error: " + e1.getMessage());

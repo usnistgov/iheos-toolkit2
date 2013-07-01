@@ -179,7 +179,7 @@ public class ProcessEnvelope {
 		// DTS 121, Validate Message-Id
 		String messageID = searchHeaderSimple(m, "message-id");
 		msgValidator.validateMessageId(separate, messageID, wrapped);
-		validationSummary.recordKey(shift + "Message-Id: "+messageID, separate.hasErrors(), true);
+		validationSummary.recordKey(shift + "Message-Id: "+ SafeHtmlUtils.htmlEscape(messageID), separate.hasErrors(), true);
 		
 		er.concat(separate);
 		separate = new GwtErrorRecorder();

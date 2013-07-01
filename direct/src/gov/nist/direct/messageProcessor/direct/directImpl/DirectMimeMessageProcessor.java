@@ -557,11 +557,11 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Separate ErrorRecorder
 		ErrorRecorder separate = new GwtErrorRecorder();
 		process.validateMimeEntity(separate, p, validationSummary, shiftNumber+1);
-		er.concat(separate);
 
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
-		msgValidator.validateFirstMIMEPart(er, true);
-		msgValidator.validateBody(er, p, (String)p.getContent());
+		msgValidator.validateFirstMIMEPart(separate, true);
+		msgValidator.validateBody(separate, p, (String)p.getContent());
+		er.concat(separate);
 		//this.processAttachments(er, p);
 
 		er.detail("#####################text/html content######################");

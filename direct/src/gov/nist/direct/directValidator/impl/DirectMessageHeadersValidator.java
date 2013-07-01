@@ -258,11 +258,11 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 	public void validateResentMsgId(ErrorRecorder er, String resentMsgId, boolean wrapped) {
 		String rfc = "RFC 5322: Section 3.6.6;http://tools.ietf.org/html/rfc5322#section-3.6.6";
 		if(ValidationUtils.validateAddrSpec(resentMsgId)) {
-			er.success("113", "Resent-Msg-Id", resentMsgId, "msg-id", rfc);
+			er.success("113", "Resent-Msg-Id", SafeHtmlUtils.htmlEscape(resentMsgId), "msg-id", rfc);
 		} else if (resentMsgId.equals("")) { 
 			er.info("113", "Resent-Msg-Id", "Not present", "msg-id", rfc);
 		} else {
-			er.error("113", "Resent-Msg-Id", resentMsgId, "msg-id", rfc);
+			er.error("113", "Resent-Msg-Id", SafeHtmlUtils.htmlEscape(resentMsgId), "msg-id", rfc);
 		}
 		
 	}
@@ -392,9 +392,9 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			er.error("121", "Message-Id", "Not present", "Unwrapped Message: Message-Id must be present", rfc);
 		} else {
 			if(ValidationUtils.validateAddrSpec(messageId)) {
-				er.success("121", "Message-Id", messageId, "<string with no spaces\"@\"string with no spaces>", rfc);
+				er.success("121", "Message-Id", SafeHtmlUtils.htmlEscape(messageId), "<string with no spaces\"@\"string with no spaces>", rfc);
 			} else {
-				er.error("121", "Message-Id", messageId, "<string with no spaces\"@\"string with no spaces>", rfc);
+				er.error("121", "Message-Id", SafeHtmlUtils.htmlEscape(messageId), "<string with no spaces\"@\"string with no spaces>", rfc);
 			}
 		}
 	}
