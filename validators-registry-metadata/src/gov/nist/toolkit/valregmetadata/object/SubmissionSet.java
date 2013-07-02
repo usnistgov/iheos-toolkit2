@@ -255,7 +255,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 		} else {
 			//                    name				   multi	format                                                  resource
 			validateSlot(er, 	"submissionTime", 	   false, 	new DtmFormat(er, "Slot submissionTime",            table416),  table416);
-			validateSlot(er, 	"intendedRecipient",   true, 	new XonXcnFormat(er, "Slot intendedRecipient",      table416),  table416);
+			validateSlot(er, 	"intendedRecipient",   true, 	new XonXcnXtnFormat(er, "Slot intendedRecipient",      table416),  table416);
 		}
 	}
 
