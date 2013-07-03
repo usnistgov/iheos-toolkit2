@@ -10,6 +10,30 @@
 
 <p>Release note are listed for each build number
 
+<h4>166   (released    3 July  2013  )      </h4>
+
+General<br>
+
+<ul>
+<li>XTN has been added as a valid format for intendedRecipient for IHE profiles.</li>
+<li>MU2 metadata_level header was not being generated when SAML was enabled in the test engine (message send).  Minimal metadata XDR would fail metadata validation since metadata_level=minimal header was not present in message</li>
+<li>Fixed parsing for validator message upload.  Was broken in recent multipart parser work.</li>
+</ul>
+
+Direct Validation changelog:<br>
+
+<ul>
+<li>Fixed display bug where message-id was sometimes not properly displayed</li>
+<li>Fixed Message-ID validation bug including special characters !, #, $, %, &, ', *, +, /, =, ?, ^, `, {, }, |, ~</li>
+</ul>
+
+
+C-CDA<br>
+<ul>
+<li>Added new MDHT jars</li>
+<li>Update CCDA_Inpatient test data</li>
+</ul>
+
 <h4>165   (released    25 June  2013  )      </h4>
 
 <ul>
