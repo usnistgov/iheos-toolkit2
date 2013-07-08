@@ -18,6 +18,7 @@ General<br>
 <li>XTN has been added as a valid format for intendedRecipient for IHE profiles.</li>
 <li>MU2 metadata_level header was not being generated when SAML was enabled in the test engine (message send).  Minimal metadata XDR would fail metadata validation since metadata_level=minimal header was not present in message</li>
 <li>Fixed parsing for validator message upload.  Was broken in recent multipart parser work.</li>
+<li>Updated Ambulatory and Inpatient XDM sample data.  The Patient IDs in metadata did not match the Patient IDs in the CCDAs.</li>
 </ul>
 
 Direct Validation changelog:<br>
@@ -30,9 +31,35 @@ Direct Validation changelog:<br>
 
 C-CDA<br>
 <ul>
-<li>Added new MDHT jars</li>
 <li>Update CCDA_Inpatient test data</li>
 </ul>
+
+MDHT<br><br>
+Link to the MDHT Release used by the validator on the OHT/MDHT website: 
+http://sourceforge.net/projects/oht-modeling/files/Nightly%20Builds/Runtime/org.openhealthtools.mdht.uml.cda.runtime.N-N20130617-201306171357.zip/download
+<br><br>
+Defects fixed in this release: 
+<ul>
+<li>When representing lab results utilizing value reference ranges using the standard IVL_INT data type (for when high/low contain no decimal and have no units) the validator throws an error incorrectly. Going forward implementers can use IVL_INT data type.</li>
+<li>Validation of Text data elements of type “ST” which contain CDATA blocks is sensitive to white spaces. Going forward implementers can use white spaces in the ST data type along with CDATA.</li>
+<li>When Using Multiple TemplateIds to conformance, the validator is looking at the first one to verify conformance instead of checking the entire list. Community has encountered this issue on the Smoking Status Observation. Going forward implementers can use multiple template Ids in the Smoking Status observation entry.</li>
+<li>Encounter Diagnoses validation was requiring Assessment and Problem Observation even when other encounter / problem sections and entries are present. This has now been corrected to require the problem observation entry as part of Assessment based on the other sections/entries present in the document.</li>
+<li>Validation of Procedure Activity Procedure template was requiring address and telecom elements even when the represented organization was not present. This is now corrected and the validation only requires the elements when the representedOrganization is present.</li>
+<li>Validation of DocumentationOf/ServiceEvent/Performer was throwing an error when implementers were using a codesystem different from the one prescribed in C-CDA IG which is NUCC Health Care Provider Taxonomy 2.16.840.1.113883.6.101. This was changed to a WARNING as it is supposed to be per the IG.</li>
+<li>Fixed the error where the validator was not allowing multiple languageCommunication elements in a CDA document per the IG.</li>
+<li>Fixed the validator bug where an error was being generated when the comment author information includes an assignedPerson name AND a representedOrganization name.</li>
+<li>Fixed the error where the validator was using the incorrect severity when checking conformance to the confidentialityCode value set. The severity was changed from a “SHALL” to a “SHOULD”.</li>
+<li>C-CDA ERRATA’s incorporated into the release are as follows:</li>
+<ul><li>64, 66, 67, 60,</li></ul>
+</ul>
+Known Issues in the release that impact users:<br> 
+<ul>
+<li>Validation Errors on Payers Section with Multiple Performers, For e.g when a user is attempting to put both a performer (payer) and a performer (guarantor) in the same document the validator is providing an error.</li>
+<li>When ID’s are present on the Narrative Text element and reference them in the entries, the validator is incorrectly throwing an error. </li>
+<li>Validator incorrectly displaying a warning message for authoringDevice when author/assignedAuthor/AssignedPerson is already present which is valid per the C-CDA IG.</li>
+<li>C-CDA validator indicates smoking status observation is missing even when it exists.</li>
+</ul>
+
 
 <h4>165   (released    25 June  2013  )      </h4>
 
