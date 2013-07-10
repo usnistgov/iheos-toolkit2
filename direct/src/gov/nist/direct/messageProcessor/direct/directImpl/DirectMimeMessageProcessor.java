@@ -219,7 +219,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// If the Part is a Message then first validate the Envelope
 		if (p instanceof Message && !wrapped_no_multipart){
 			er.detail("Detected an Envelope");
-			er.detail("\n====================Outer Enveloped Message==========================\n");
+			er.detail("====================Outer Enveloped Message==========================");
 			processEnvelope(er, (Message)p);
 		}
 
@@ -252,7 +252,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			
 			if (p instanceof Message) {
 				er.detail("Detected an Envelope");
-				er.detail("\n====================Message RFC 822==========================\n");
+				er.detail("====================Message RFC 822==========================");
 				ProcessEnvelope process = new ProcessEnvelope();
 
 				// Separate ErrorRecorder
@@ -371,7 +371,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			//er.detail("This is a signed multipart"+"  Content Name: "+p.getContent().getClass().getName());
 
 			// DTS 129, Validate First MIME Part
-			er.detail("\n====================Process Multipart/signed Part==========================\n");
+			er.detail("====================Process Multipart/signed Part==========================");
 			ProcessEnvelope process = new ProcessEnvelope();
 
 			// Separate ErrorRecorder
@@ -414,7 +414,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			//er.detail("This is multipart"+"  Content Name: "+p.getContent().getClass().getName());
 
 			// DTS 129, Validate First MIME Part
-			er.detail("\n====================Process Multipart/mixed Part==========================\n");
+			er.detail("====================Process Multipart/mixed Part==========================");
 			ProcessEnvelope process = new ProcessEnvelope();
 
 			// Separate ErrorRecorder
@@ -442,7 +442,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			}
 
 		} else {
-			er.detail("\n===================Unknown Part==========================\n");
+			er.detail("===================Unknown Part==========================");
 			er.detail("Couldn't figure out the type"+"  Content Name: "+p.getContent().getClass().getName());
 			// Summary
 			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": Unknown part type " + p.getContentType(), Status.PART, true);
@@ -516,7 +516,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * */
 	public void processText(ErrorRecorder er, Part p) throws Exception{
 		//er.detail("Processing Text");
-		er.detail("\n====================Process Text/plain Part==========================\n");
+		er.detail("====================Process Text/plain Part==========================");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Summary
@@ -529,7 +529,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
 		msgValidator.validateFirstMIMEPart(er, true);
-		msgValidator.validateBody(er, p, (String)p.getContent());
+		//msgValidator.validateBody(er, p, (String)p.getContent());
 		//this.processAttachments(er, p);
 
 		er.detail("#####################text/plain message######################");
@@ -548,7 +548,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	}
 	
 	public void processTextHTML(ErrorRecorder er, Part p) throws Exception {
-		er.detail("\n====================Process Text/html Part==========================\n");
+		er.detail("====================Process Text/html Part==========================");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Summary
@@ -583,7 +583,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * 
 	 * */
 	public void processTextXML(ErrorRecorder er, Part p) throws Exception{
-		er.detail("\n====================Processing Text XML==========================\n");
+		er.detail("====================Processing Text XML==========================");
 		logger.info("Processing attachments, Validation context is " + vc.toString());
 
 		// Update the summary
@@ -653,7 +653,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("####################################################");
 			partNumber++;
 		} else {
-			er.detail("\n====================Application/xml==========================\n");
+			er.detail("====================Application/xml==========================");
 			logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
 			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted xml document", Status.PART, true);
 			ProcessEnvelope process = new ProcessEnvelope();
@@ -950,7 +950,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			msgValidator.validateMessageBody(er, true);
 		}
 
-		er.detail("\n====================Inner decrypted Message==========================\n");
+		er.detail("====================Inner decrypted Message==========================");
 
 
 		// Description: the first MIME part is the content of the message and is referred to by Direct as the
@@ -985,7 +985,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/zip interpreted as a XDM Content", Status.PART, true);
 
 		// DTS 129, Validate First MIME Part
-		er.detail("\n====================Process Zip Part==========================\n");
+		er.detail("====================Process Zip Part==========================");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Separate ErrorRecorder
@@ -1030,7 +1030,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": octet/stream", Status.PART, true);
 
 		// DTS 129, Validate First MIME Part
-		er.detail("\n====================Process Octet Stream Part==========================\n");
+		er.detail("====================Process Octet Stream Part==========================");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Separate ErrorRecorder

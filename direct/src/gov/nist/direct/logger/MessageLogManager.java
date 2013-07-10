@@ -209,16 +209,16 @@ public class MessageLogManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// Log temporary status "MDN not received yet"
 		String status =  "Waiting for MDN";
-				MessageStatusLogger dl = new MessageStatusLogger();
-				try {
-					dl.logMDNValidationStatus( "Waiting for MDN", transactionType, messageType, username, messageId);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+		MessageStatusLogger dl = new MessageStatusLogger();
+		try {
+			dl.logMDNValidationStatus( "Waiting for MDN", transactionType, messageType, username, messageId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 

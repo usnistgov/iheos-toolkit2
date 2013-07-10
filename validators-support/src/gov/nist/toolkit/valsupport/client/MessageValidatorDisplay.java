@@ -58,6 +58,7 @@ public class MessageValidatorDisplay {
 		f.hr();
 
 		if(isDirectReport(results)) {
+			
 			f.setName(f.h2("Name"));
 			f.setStatus(f.h2("Status"));
 			f.setDTS(f.h2("DTS"));

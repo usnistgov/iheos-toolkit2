@@ -52,9 +52,9 @@ public class DirectSignatureValidator implements SignatureValidator {
 	public void validateSignedDataEncapContentInfo(ErrorRecorder er, String SignedDataEncapContentInfo) {
 		String rfc = "RFC 5652: 5.1, 5.2;http://tools.ietf.org/html/rfc5652#section-5.1";
 		if(!SignedDataEncapContentInfo.equals("")) {
-			er.success("166", "SignedData.encapContentInfo", SignedDataEncapContentInfo, "SignedData.encapContentInfo (signed content + content type identifier) must be present" , rfc);
+			er.success("166", "SignedData.encapContentInfo", SignedDataEncapContentInfo.substring(0, 50) + "...", "SignedData.encapContentInfo (signed content + content type identifier) must be present" , rfc);
 		} else {
-			er.error("166", "SignedData.encapContentInfo", SignedDataEncapContentInfo, "SignedData.encapContentInfo (signed content + content type identifier) must be present" , rfc);
+			er.error("166", "SignedData.encapContentInfo", SignedDataEncapContentInfo.substring(0, 50) + "...", "SignedData.encapContentInfo (signed content + content type identifier) must be present" , rfc);
 		}
 		
 	}
