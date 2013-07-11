@@ -1,20 +1,23 @@
 package gov.nist.toolkit.errorrecording.client;
 
 
-import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 
 
 public class ErrorRecorderAdapter {
 	
 	ArrayList<SummaryToken> summary = new ArrayList<SummaryToken>();
 	ArrayList<ValidationReportItem> detailed = new ArrayList<ValidationReportItem>();
+	ArrayList<CCDAValidationReportItem> ccda = new ArrayList<CCDAValidationReportItem>();
 	int indexEndSummary = 0;
+	boolean hasCCDA = false;
 	
 	public ErrorRecorderAdapter(ArrayList<ValidatorErrorItem> er) {
 		/*ArrayList<ValidatorErrorItem> er = new ArrayList<ValidatorErrorItem>();
@@ -38,6 +41,9 @@ public class ErrorRecorderAdapter {
 					String content = er.get(i+1).msg;
 					i += 2;
 					detailed.add(new ValidationReportItem(contentName, content));
+				} else if(er.get(i).msg.contains("Input is CDA R2, try validation as CCDA")) {
+					i = getCCDAFromErrorRecorder(er, i);
+					hasCCDA = true;
 				} else {
 					detailed.add(new ValidationReportItem(er.get(i).msg));
 				}
@@ -71,9 +77,19 @@ public class ErrorRecorderAdapter {
 					summary.add(new SummaryToken(er.get(k).msg, num));
 					k++;
 				}
-				this.indexEndSummary = k+1; 
+				this.indexEndSummary = k+1;
 			}
 		}
+	}
+
+	public int getCCDAFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
+		int k = index; 
+		while(!er.get(k).msg.contains("CCDA Validation done")) {
+			ccda.add(new CCDAValidationReportItem(er.get(k).msg, er.get(k).resource, er.get(k).level));
+			k++;
+		}
+		
+		return k++;
 	}
 
 
@@ -97,9 +113,15 @@ public class ErrorRecorderAdapter {
 	}
 
 	public String toHTML() {
-		// Test velocity
+		// velocity
 		String res = "";
 		try {
+			
+			String ccdaString = "";
+			if(hasCCDA) {
+				ccdaString = CcdaToHtml();
+			}
+			
 			//  first, get and initialize an engine  
 			VelocityEngine ve = VelocitySingleton.getVelocityEngine();
 			//  next, get the Template
@@ -112,6 +134,9 @@ public class ErrorRecorderAdapter {
 			// Path for images
 			context.put("path", "/ttt/doc");
 			
+			// CCDA
+			context.put("ccda", ccdaString);
+			
 			// now render the template into a StringWriter
 			StringWriter writer = new StringWriter();
 			t.merge( context, writer );
@@ -121,6 +146,34 @@ public class ErrorRecorderAdapter {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		return res;
+	}
+	
+	public String CcdaToHtml() {
+		String res = "";
+		//  first, get and initialize an engine  
+		try {
+			VelocityEngine ve = VelocitySingleton.getVelocityEngine();
+			Template t2 = ve.getTemplate("CCDAValidationReport.vm");
+			VelocityContext context = new VelocityContext();
+			context.put("validationReport", this.ccda);
+			
+			StringWriter writer = new StringWriter();
+			t2.merge( context, writer );
+			
+			res = writer.toString();
+			
+		} catch (ResourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return res;
 	}
 

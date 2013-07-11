@@ -218,7 +218,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		//er.detail("Processing Part");
 		// If the Part is a Message then first validate the Envelope
 		if (p instanceof Message && !wrapped_no_multipart){
-			er.detail("Detected an Envelope");
+			//er.detail("Detected an Envelope");
 			er.detail("====================Outer Enveloped Message==========================");
 			processEnvelope(er, (Message)p);
 		}
@@ -251,7 +251,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			p = (Part)p.getContent();
 			
 			if (p instanceof Message) {
-				er.detail("Detected an Envelope");
+				//er.detail("Detected an Envelope");
 				er.detail("====================Message RFC 822==========================");
 				ProcessEnvelope process = new ProcessEnvelope();
 
@@ -459,7 +459,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * Validates the envelope of the message
 	 * */
 	public void processEnvelope(ErrorRecorder er, Message m) throws Exception {
-		er.detail("Processing Envelope");
+		//er.detail("Processing Envelope");
 		ProcessEnvelope process = new ProcessEnvelope();
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
 
@@ -631,6 +631,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 				MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
 				mve.run();
 			}
+			
+			er.detail("CCDA Validation done");
 
 		} else {
 			er.detail("Is not a CDA R2 so no validation attempted");
@@ -812,7 +814,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * 
 	 * */
 	public Part processSMIMEEnvelope(ErrorRecorder er, Part p, InputStream certificate, String password) {
-		er.detail("Processing S/MIME");
+		//er.detail("Processing S/MIME");
 		logger.info("Processing SMIME Envelope");
 		//
 		// Open the key store
