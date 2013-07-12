@@ -85,7 +85,7 @@ public class ErrorRecorderAdapter {
 	public int getCCDAFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
 		int k = index; 
 		while(!er.get(k).msg.contains("CCDA Validation done")) {
-			ccda.add(new CCDAValidationReportItem(er.get(k).msg, er.get(k).resource, er.get(k).level));
+			ccda.add(new CCDAValidationReportItem(er.get(k).msg, er.get(k).location, er.get(k).level));
 			k++;
 		}
 		
