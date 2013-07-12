@@ -9,6 +9,8 @@ import gov.nist.toolkit.repository.simple.index.db.DbIndexContainer;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -40,7 +42,7 @@ public class RepositoryFactory implements RepositoryManager {
 		
 		if (isIndexable) {
 			/*
-			 * This is the indexable version of the Simple Repository  
+			 * This is an indexable version of the Simple Repository (interchangeable)  
 			 */						
 			IndexableRepository rep = new IndexableRepository();
 			rep.setAutoFlush(false);
@@ -173,5 +175,6 @@ public class RepositoryFactory implements RepositoryManager {
 	public TypeIterator getRepositoryTypes() throws RepositoryException {
 		return new SimpleTypeIterator();
 	}
+
 
 }

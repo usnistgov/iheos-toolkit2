@@ -1,6 +1,10 @@
-package gov.nist.toolkit.repository.simple.search;
+package gov.nist.toolkit.repository.simple.search.client;
 
+
+import java.io.Serializable;
 import java.util.ArrayList;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /*
 	 All Search criteria constructions are based on bottom-up approach.
@@ -11,13 +15,19 @@ import java.util.ArrayList;
 		 build final criteria based on A and B	 
  */
 
-public class SearchCriteria {
+public class SearchCriteria implements IsSerializable, Serializable {
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3700511838872506571L;
 	private ArrayList<SearchTerm> searchTerms;
 	private Criteria criteria;
 	private ArrayList<SearchCriteria> searchCriteria;
 	private ArrayList<String> properties;
+	private boolean deleted;
+	private int id;
 
 	public static enum Criteria {
 		AND(){
@@ -36,18 +46,22 @@ public class SearchCriteria {
 		};
 	}
 	
+	public SearchCriteria() {}
+	
 	public SearchCriteria(Criteria c) {		
 		this.searchTerms = new ArrayList<SearchTerm>();
 		this.searchCriteria = new ArrayList<SearchCriteria>();
 		setCriteria(c);
-		this.properties = new ArrayList<String>();
+		this.properties = new ArrayList<String>();		
 	}
 
-	public void append(SearchTerm st) {
+	public void append(SearchTerm st) {		
+		// st.setId(this.searchTerms.size());
 		this.searchTerms.add(st);
 	}
 
 	public void append(SearchCriteria sc) {
+		// sc.setId(this.searchCriteria.size());
 		this.searchCriteria.add(sc);
 	}
 	
@@ -115,6 +129,22 @@ public class SearchCriteria {
 			this.toString();
 		}
 		return properties;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	

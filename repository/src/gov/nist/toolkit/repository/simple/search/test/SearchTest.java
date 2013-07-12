@@ -28,11 +28,11 @@ import gov.nist.toolkit.repository.simple.SimpleId;
 import gov.nist.toolkit.repository.simple.SimpleType;
 import gov.nist.toolkit.repository.simple.SimpleTypeIterator;
 import gov.nist.toolkit.repository.simple.index.test.MockServletContext;
-import gov.nist.toolkit.repository.simple.search.SearchCriteria;
-import gov.nist.toolkit.repository.simple.search.SearchCriteria.Criteria;
 import gov.nist.toolkit.repository.simple.search.SearchResultIterator;
-import gov.nist.toolkit.repository.simple.search.SearchTerm.Operator;
-import gov.nist.toolkit.repository.simple.search.SearchTerm;
+import gov.nist.toolkit.repository.simple.search.client.SearchCriteria;
+import gov.nist.toolkit.repository.simple.search.client.SearchTerm;
+import gov.nist.toolkit.repository.simple.search.client.SearchCriteria.Criteria;
+import gov.nist.toolkit.repository.simple.search.client.SearchTerm.Operator;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -44,16 +44,17 @@ public class SearchTest {
 	 * Important: The following developer's system path variables need to verified manually before running the test.
 	 * 
 	 */
+	
 	static String RootPath = "/e/artrep_test_resources/"; 		// Root Path or the Test resources folder
-	static String RepositoriesPath = RootPath + "repositories"; // Repositories folder
+	public static String RepositoriesPath; // = RootPath + "repositories"; // Repositories folder
 	static String InstallationPath = RootPath+"installation";	// Path containing the WEB-INF folder (for External_Cache)
 	
-	static File RootOfAllRepositories = new File(RepositoriesPath);
+	public static File RootOfAllRepositories; // = new File(RepositoriesPath);
 	static Installation inst = null;
 	
 	@BeforeClass
 	static public void initialize() throws RepositoryException {
-		new Configuration(RootOfAllRepositories);
+		
 		
 		// The MockServletContext is used for testing purposes only
 		
@@ -66,6 +67,11 @@ public class SearchTest {
 		System.out.println(externalCache);
 		Installation.installation().setExternalCache(new File(sc.getRealPath(externalCache)));
 		inst = Installation.installation();
+		
+		RepositoriesPath = externalCache + "/repositories";
+		RootOfAllRepositories = new File(RepositoriesPath);
+		
+		new Configuration(RootOfAllRepositories);
 	}
 
 
@@ -177,7 +183,22 @@ public class SearchTest {
 		criteria.append(subCriteriaA);
 		criteria.append(subCriteriaAb);
 		
-		
+		/*
+		 *  
+		 *  o
+		 *  |
+		 *  o--+----o
+		 *     |       codeSystem =  3M 
+		 *     |       ...
+		 *     -or-
+		 *     |
+		 *     +---o  codeSystem = "WHO"
+		 *     
+		 *     
+		 *     o = criteria
+		 *     ...  = search term (leaf nodes) 
+		 * 
+		 */
 		
 		
 		System.out.println(criteria.toString());
@@ -301,7 +322,7 @@ public class SearchTest {
 		}
 	}
 
-	@Test
+	// @Test
 	public void fileTest() {
 		String s = "helo this is a simple string";
 		try {

@@ -7,7 +7,10 @@ import gov.nist.toolkit.repository.api.Type;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Properties;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Configuration {
 	public static final String PROPERTIES_FILE_EXT = "props.txt";

@@ -39,6 +39,7 @@
 -->
 	<!-- TO FIX THIS PROBLEM, WE COULD IVY DEPENDENCY RESOLUTION MECHANISM -->
 
+	
 	<property name="sub-projects" value="
 		dns,
 		docref,
@@ -56,6 +57,7 @@
 		registry-support,
 		testkit-utilities,
 		registry-metadata,
+		repository,
 		site-management,
 		http,
 		security-common,
@@ -86,6 +88,27 @@
 		xdstools2,
         globalTests
 	" />
+	 
+	 
+	 
+	 <!--  skb 
+	     
+    
+    	<property name="sub-projects" value="
+		docref,
+		common-datatypes,
+		error-recording,
+		xds-exceptions,
+		utilities,
+		common,
+		tk,
+		installation,
+		registry-support,
+		registry-metadata,
+		repository
+	" />
+	
+	-->
 
 	<!-- Outside dependencies -->
 	<!-- TO BE CHANGED. We still expect to find the librairies directory one level above  -->
@@ -147,6 +170,7 @@
 	<property name="actorfactory.src.dir" location="actorfactory/src" />
 	<property name="http.src.dir" location="http/src" />
 	<property name="direct.src.dir" location="direct/src" />
+	<property name="repository.src.dir" location="repository/src" />
 	
 	<!-- antlib is bundled with the 3rd party librairies.
 	Since the lib.dir might not be initialized or could be cleaned-up,
@@ -267,19 +291,47 @@
 			<sequential>
 				<echo>   from @{sub-build}</echo>
 				<ant dir="@{sub-build}" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="compile" />
+				
 			</sequential>
-		</for>
+		</for>						
 	</target>
+	
+		
+	<target name="shouldJar">
+		<condition property="jarModule">
+  			<matches string="${basedir}" pattern="\\repository$"/>
+		</condition>    
+	</target>
+	
+	<property name="dist.dir" value="dist"/>
+	<target name="jarIt" depends="compile,shouldJar">
+		<jar destfile="${dist.dir}/repository.jar">
+		    
+	    <fileset  dir="${build.dir}" includes="gov/nist/toolkit/repository/"
+	        excludes="**/*Test*,**/*test*"
+	    />
+	    
+	  </jar>
+	  
+  
+	</target>
+		
+		
+	
+	
 
 	
     <!-- ================================================= 
          target: jar
          ================================================= -->
 	<!-- jar all the .class files and put the jar in ${war.lib.dir}.-->
+	<!-- 
 	<target name="jar">
 		<jar jarfile="${war.lib.dir}/${jar.name}" basedir="${build.dir}/">
 		</jar>
 	</target>
+	 -->
+	 
 
     <!-- ================================================= 
          target: gwt-compile

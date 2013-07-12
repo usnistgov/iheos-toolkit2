@@ -60,6 +60,7 @@
 				<pathelement location="${results.src.dir}" />
 				<pathelement location="${actorfactory.src.dir}" />
 				<pathelement location="${direct.src.dir}" />
+				<pathelement location="${repository.src.dir}" />
 				<path refid="classpath" />
 			</classpath>
 			<jvmarg value="-Xmx256M" />

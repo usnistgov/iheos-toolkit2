@@ -11,6 +11,7 @@ import gov.nist.toolkit.repository.simple.Configuration;
 import gov.nist.toolkit.repository.simple.SimpleAssetIterator;
 import gov.nist.toolkit.repository.simple.SimpleId;
 import gov.nist.toolkit.repository.simple.index.db.DbIndexContainer;
+import gov.nist.toolkit.repository.simple.search.client.SearchCriteria;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
 import java.io.File;

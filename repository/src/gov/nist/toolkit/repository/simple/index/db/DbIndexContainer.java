@@ -32,8 +32,9 @@ import gov.nist.toolkit.repository.simple.SimpleTypeIterator;
 import gov.nist.toolkit.repository.simple.index.Index;
 import gov.nist.toolkit.repository.simple.index.IndexContainer;
 import gov.nist.toolkit.repository.simple.index.db.DbConnection;
-import gov.nist.toolkit.repository.simple.search.SearchCriteria;
-import gov.nist.toolkit.repository.simple.search.SearchTerm;
+import gov.nist.toolkit.repository.simple.search.client.PnIdentifier;
+import gov.nist.toolkit.repository.simple.search.client.SearchCriteria;
+import gov.nist.toolkit.repository.simple.search.client.SearchTerm;
 import gov.nist.toolkit.utilities.io.Hash;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -46,7 +47,6 @@ public class DbIndexContainer implements IndexContainer, Index {
 
 	
 	private static final String repContainerLabel = "repositoryIndex";		
-	public static final boolean uniquePropertyColumn = false; 	/* Use this to create unique property columns. Quoted identifiers must be used if FALSE to avoid SQL reserved name collisions. */
 	private static final int syncedStatus = 1001; 
 	private static final String assetId = "\"id\"";
 	private static final String assetType = "\"type\"";
@@ -319,7 +319,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 		int records=0;
 		try {
 			
-			if (!uniquePropertyColumn) { // Take care of quoted identifiers
+			if (!PnIdentifier.uniquePropertyColumn) { // Take care of quoted identifiers
 				dbCol = dbCol.replace("\"", "");
 			}
 			
@@ -347,7 +347,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 	}
 	
 	public String getColumn(String assetType, String property) throws RepositoryException {
-		if (!uniquePropertyColumn) {
+		if (!PnIdentifier.uniquePropertyColumn) {
 			return property.replace("\"", "");
 		} else 
 			return getDbIndexedColumn(assetType, property);
@@ -362,8 +362,8 @@ public class DbIndexContainer implements IndexContainer, Index {
 	
 	public static String getDbIndexedColumn(String assetType, String property)
 			throws RepositoryException {		
-		if (!uniquePropertyColumn) {			
-			return getQuotedIdentifer(property);
+		if (!PnIdentifier.uniquePropertyColumn) {			
+			return PnIdentifier.getQuotedIdentifer(property);
 		} else {			
 			String dbCol = null;		
 			
@@ -378,13 +378,6 @@ public class DbIndexContainer implements IndexContainer, Index {
 		}
 	}
 	
-	static public String getQuotedIdentifer(String id) {	
-			return "\"" + id + "\"";
-	}
-	
-	static public String stripQuotes(String id) {
-		return id.replaceAll("\"", "");
-	}
 
 	/**
 	 * 
@@ -392,7 +385,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 	 * @return
 	 */
 	private String getDbColumnSuffix(String columnName) {
-		if (!uniquePropertyColumn) {
+		if (!PnIdentifier.uniquePropertyColumn) {
 			return columnName; 
 		} else {
 			if (columnName!=null && columnName.indexOf('_')>-1) {

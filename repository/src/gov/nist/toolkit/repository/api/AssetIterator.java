@@ -26,16 +26,16 @@ public interface AssetIterator extends java.io.Serializable {
      *
      * @return boolean
      *
-     * @throws org.osid.repository.RepositoryException An exception with one of
+     * @throws org.RepositoryConfigException.repository.RepositoryException An exception with one of
      *         the following messages defined in
      *         org.osid.repository.RepositoryException may be thrown: {@link
-     *         org.osid.repository.RepositoryException#OPERATION_FAILED
+     *         org.RepositoryConfigException.repository.RepositoryException#OPERATION_FAILED
      *         OPERATION_FAILED}, {@link
-     *         org.osid.repository.RepositoryException#PERMISSION_DENIED
+     *         org.RepositoryConfigException.repository.RepositoryException#PERMISSION_DENIED
      *         PERMISSION_DENIED}, {@link
-     *         org.osid.repository.RepositoryException#CONFIGURATION_ERROR
+     *         org.RepositoryConfigException.repository.RepositoryException#CONFIGURATION_ERROR
      *         CONFIGURATION_ERROR}, {@link
-     *         org.osid.repository.RepositoryException#UNIMPLEMENTED
+     *         org.RepositoryConfigException.repository.RepositoryException#UNIMPLEMENTED
      *         UNIMPLEMENTED}
      */
     boolean hasNextAsset() throws gov.nist.toolkit.repository.api.RepositoryException;
@@ -45,18 +45,18 @@ public interface AssetIterator extends java.io.Serializable {
      *
      * @return Asset
      *
-     * @throws org.osid.repository.RepositoryException An exception with one of
+     * @throws org.RepositoryConfigException.repository.RepositoryException An exception with one of
      *         the following messages defined in
      *         org.osid.repository.RepositoryException may be thrown: {@link
-     *         org.osid.repository.RepositoryException#OPERATION_FAILED
+     *         org.RepositoryConfigException.repository.RepositoryException#OPERATION_FAILED
      *         OPERATION_FAILED}, {@link
-     *         org.osid.repository.RepositoryException#PERMISSION_DENIED
+     *         org.RepositoryConfigException.repository.RepositoryException#PERMISSION_DENIED
      *         PERMISSION_DENIED}, {@link
-     *         org.osid.repository.RepositoryException#CONFIGURATION_ERROR
+     *         org.RepositoryConfigException.repository.RepositoryException#CONFIGURATION_ERROR
      *         CONFIGURATION_ERROR}, {@link
-     *         org.osid.repository.RepositoryException#UNIMPLEMENTED
+     *         org.RepositoryConfigException.repository.RepositoryException#UNIMPLEMENTED
      *         UNIMPLEMENTED}, {@link
-     *         org.osid.repository.RepositoryException#NO_MORE_ITERATOR_ELEMENTS
+     *         org.RepositoryConfigException.repository.RepositoryException#NO_MORE_ITERATOR_ELEMENTS
      *         NO_MORE_ITERATOR_ELEMENTS}
      */
     Asset nextAsset() throws gov.nist.toolkit.repository.api.RepositoryException;

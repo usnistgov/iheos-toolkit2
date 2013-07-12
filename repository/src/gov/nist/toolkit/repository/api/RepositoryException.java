@@ -21,11 +21,13 @@ package gov.nist.toolkit.repository.api;
  * O.K.I&#46; OSID Definition License}.
  * </p>
  */
-public class RepositoryException extends Exception {
-    /**
+public class RepositoryException extends Exception  {
+
+
+	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3287075237460316637L;
+	private static final long serialVersionUID = -4899096354419980017L;
 
 	/** Operation failed */
     public static final String OPERATION_FAILED = "Operation failed ";
@@ -113,6 +115,9 @@ public class RepositoryException extends Exception {
 
     /** Repository already exists */
     public static final String REPOSITORY_ALREADY_EXISTS = "Repository cannot be created, it already exists";
+    
+    public RepositoryException() {}
+    
     public RepositoryException(String message) {
         super(message);
     }
@@ -120,6 +125,8 @@ public class RepositoryException extends Exception {
     public RepositoryException(String message, Exception e) {
     	super(message, e);
     }
+    
+
 
     /**
      * <p>

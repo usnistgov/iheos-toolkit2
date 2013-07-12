@@ -1,5 +1,8 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import java.util.Map;
+
+import gov.nist.toolkit.repository.simple.Configuration;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
@@ -125,6 +128,9 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 //					new PopupMessage("Load of TkProps failed");
 				if (newHomeTab)
 					onModuleLoad2();
+				
+				// Load repos config only if Installation object has been setup
+				loadRepositoryConfig();
 			}
 
 		});
@@ -199,6 +205,27 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	}
 
 
+	private void loadRepositoryConfig() {
+
+		try {
+			ht.toolkitService.setRepositoryConfig(new AsyncCallback<Boolean>() {
+
+				public void onFailure(Throwable caught) {
+					new PopupMessage("setRepositoryConfig call failed: " + caught.getMessage());
+				}
+
+				@Override
+				public void onSuccess(Boolean arg0) {
+					// new PopupMessage("success repo set!");
+					
+				}
+				
+			});
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 
 }

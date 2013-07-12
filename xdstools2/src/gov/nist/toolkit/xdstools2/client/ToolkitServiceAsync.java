@@ -177,4 +177,9 @@ public interface ToolkitServiceAsync {
 	
 	void getTestplanAsText(String testname, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> callback);
+	
+	/* Artifact Repository Services */
+	void getRepositoryDisplayTags(AsyncCallback<Map<String, String>> callback);
+	void setRepositoryConfig(AsyncCallback callback) throws Exception;
+	
 }

@@ -18,6 +18,11 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
+
+
+
+import gov.nist.toolkit.repository.presentation.PresentationData;
+import gov.nist.toolkit.repository.simple.Configuration;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
@@ -37,6 +42,8 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
+import gov.nist.toolkit.xdstools2.client.RepositoryConfigException;
+
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
@@ -504,5 +511,30 @@ ToolkitService {
 		return getSession().ipAddr;
 	}
 
+	@Override
+	public Map<String, String> getRepositoryDisplayTags()
+			throws NoServletSessionException {
+		return new PresentationData().getRepositoryDisplayTags();
+	}
+
+
+	@Override
+	public Boolean setRepositoryConfig() throws RepositoryConfigException {
+		
+		try {
+			// System.out.println(" +++++ ------- ----- " + Installation.installation().externalCache());
+			
+			new Configuration(new File(Installation.installation().externalCache() + "/repositories"));
+						
+			
+			return new Boolean(Configuration.isConfigured());
+		} catch (Exception e) {			
+			// e.printStackTrace();
+			throw new RepositoryConfigException(e.toString());
+		}
+		
+
+		
+	}
 
 }

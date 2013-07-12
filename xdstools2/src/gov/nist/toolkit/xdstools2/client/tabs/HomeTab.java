@@ -510,6 +510,20 @@ public class HomeTab extends GenericQueryTab {
 		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.simulatorMessageViewTabLabel, new TabLauncher(myContainer, TabLauncher.simulatorMessageViewTabLabel)));
 		row++;
 
+		// ***************************************************************************
+
+		// ***************************************************************************
+		// Artifact Repository
+
+		row=0;
+		col=startingColumn+4;
+
+		mainGrid.setWidget(row, col, addHTML("<b>Artifact Repository</b>"));
+		row++;
+
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.searchTabLabel, new TabLauncher(myContainer, TabLauncher.searchTabLabel)));
+		row++;
+
 
 		// ***************************************************************************
 

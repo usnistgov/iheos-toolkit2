@@ -10,6 +10,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.directSenderTab.DirectSenderTab;
 import gov.nist.toolkit.xdstools2.client.tabs.directStatusTab.DirectStatusTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
+import gov.nist.toolkit.xdstools2.client.tabs.search.SearchTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -59,6 +60,8 @@ public class TabLauncher implements ClickHandler {
 	final static public String testLogLabel = "Test Log Listing";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";	
 	final static public String metadataEditorTabLabel = "Action: Edit";
+	
+	final static public String searchTabLabel = "Search";
 	
 	public void onClick(ClickEvent event) {
 		if (tabType.equals(findDocumentsTabLabel)) 
@@ -136,6 +139,8 @@ public class TabLauncher implements ClickHandler {
 			t.setSiteSpec(siteSpec);
 			t.setRegistryObject(ro);
 			t.onAbstractTabLoad(container, true, null);
+		} else if (tabType.equals(searchTabLabel)) {
+			new SearchTab().onAbstractTabLoad(container, true, null);
 		}
 		
 	}

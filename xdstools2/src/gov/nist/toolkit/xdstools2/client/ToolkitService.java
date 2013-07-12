@@ -11,6 +11,8 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.repository.api.RepositoryIterator;
+
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
@@ -179,4 +181,10 @@ public interface ToolkitService extends RemoteService  {
 	List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException;
 	boolean signin(String user, String passwd) throws NoServletSessionException;
 	void signout() throws NoServletSessionException;
+	
+	
+	/* Artifact Repository Services */
+	public Map<String, String> getRepositoryDisplayTags() throws NoServletSessionException;
+	public Boolean setRepositoryConfig() throws RepositoryConfigException;
+	
 }

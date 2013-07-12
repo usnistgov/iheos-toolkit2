@@ -11,7 +11,10 @@
 -->
 	
 
-	<target name="compile">
+
+	<target name="compile" >
+	    <echo message="${basedir}"/>
+	    
 		<groovyc destdir="${build.dir}">
 			<classpath refid="classpath" />
 			<src path="src" />
@@ -19,5 +22,9 @@
 			</javac>
 		</groovyc>
 	</target>
+	
+
+	
+	
 
 </project>
