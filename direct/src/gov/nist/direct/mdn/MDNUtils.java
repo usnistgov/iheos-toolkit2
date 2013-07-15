@@ -1,7 +1,5 @@
 package gov.nist.direct.mdn;
 
-import gov.nist.direct.utils.ValidationUtils;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

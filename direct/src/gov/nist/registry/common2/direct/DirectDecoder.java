@@ -1,13 +1,8 @@
 package gov.nist.registry.common2.direct;
 
 
-import gov.nist.direct.mdn.generate.MDNGenerator;
 import gov.nist.direct.messageProcessor.MessageProcessor;
 import gov.nist.direct.messageProcessor.MessageProcessorInterface;
-import gov.nist.direct.messageProcessor.direct.DirectMessageProcessorInterface;
-import gov.nist.direct.messageProcessor.direct.directImpl.DirectMimeMessageProcessor;
-import gov.nist.direct.messageProcessor.direct.directImpl.MimeMessageParser;
-import gov.nist.direct.utils.ParseUtils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.utilities.io.Io;
@@ -15,17 +10,11 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import org.apache.log4j.Logger;
 import org.mortbay.util.IO;
-
-import com.google.gwt.dev.jjs.ast.JField.Disposition;
 
 public class DirectDecoder extends MessageValidator {
 	InputStream in, certificate;

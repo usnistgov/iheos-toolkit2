@@ -1259,7 +1259,10 @@ public class MessageValidatorTab extends TabbedWindow {
 		//		else
 		//			resultsTable.setWidget(summaryRow, 0, html("Summary: No error were found"));
 
-		topPanel.add(resultsTable);
+		
+		HTML html = new HTML(results.getHtmlResults());
+		topPanel.add(html);
+		//topPanel.add(resultsTable);
 
 		inspectButton.setEnabled(true);
 	}

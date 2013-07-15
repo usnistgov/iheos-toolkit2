@@ -26,8 +26,6 @@ import gov.nist.direct.messageProcessor.utils.MessageDispatchUtils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
-import java.text.ParseException;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 

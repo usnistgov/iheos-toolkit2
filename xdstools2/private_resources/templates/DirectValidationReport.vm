@@ -160,4 +160,9 @@ table.gridtable td {
 	$ccda
 #end
 
+#if(!$xdm.equals(""))
+	$xdm
+#end
+
+
 

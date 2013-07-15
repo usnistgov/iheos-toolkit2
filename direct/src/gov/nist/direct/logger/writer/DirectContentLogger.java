@@ -20,9 +20,6 @@ Authors: William Majurski
 package gov.nist.direct.logger.writer;
 
 import gov.nist.direct.logger.LogPathsSingleton;
-import gov.nist.direct.utils.Utils;
-
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 

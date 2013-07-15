@@ -23,8 +23,6 @@ import gov.nist.direct.logger.LogPathsSingleton;
 
 import java.io.IOException;
 
-import javax.mail.internet.MimeMessage;
-
 /**
  * Logs full content of messages to the log file structure through LoggerDispatch.
  * @author dazais

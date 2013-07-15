@@ -3,6 +3,7 @@ package gov.nist.toolkit.errorrecording.client;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -16,8 +17,10 @@ public class ErrorRecorderAdapter {
 	ArrayList<SummaryToken> summary = new ArrayList<SummaryToken>();
 	ArrayList<ValidationReportItem> detailed = new ArrayList<ValidationReportItem>();
 	ArrayList<CCDAValidationReportItem> ccda = new ArrayList<CCDAValidationReportItem>();
+	ArrayList<XDMValidationReportItem> xdm = new ArrayList<XDMValidationReportItem>();
 	int indexEndSummary = 0;
 	boolean hasCCDA = false;
+	boolean hasXDM = false;
 	
 	public ErrorRecorderAdapter(ArrayList<ValidatorErrorItem> er) {
 		/*ArrayList<ValidatorErrorItem> er = new ArrayList<ValidatorErrorItem>();
@@ -29,6 +32,16 @@ public class ErrorRecorderAdapter {
 		
 		getSummaryFromErrorRecorder(er);
 		getReportFromErrorRecorder(er);
+		
+	}
+	
+	public ErrorRecorderAdapter(List<ValidatorErrorItem> er) {
+		ArrayList<ValidatorErrorItem> erVal = new ArrayList<ValidatorErrorItem>();
+		for(int i=0;i<er.size();i++) {
+			erVal.add(er.get(i));
+		}
+		getSummaryFromErrorRecorder(erVal);
+		getReportFromErrorRecorder(erVal);
 		
 	}
 	
@@ -44,6 +57,9 @@ public class ErrorRecorderAdapter {
 				} else if(er.get(i).msg.contains("Input is CDA R2, try validation as CCDA")) {
 					i = getCCDAFromErrorRecorder(er, i);
 					hasCCDA = true;
+				} else if(er.get(i).msg.contains("Try validation as XDM")) {
+					i = getXDMFromErrorRecorder(er, i);
+					hasXDM = true;
 				} else {
 					detailed.add(new ValidationReportItem(er.get(i).msg));
 				}
@@ -85,7 +101,17 @@ public class ErrorRecorderAdapter {
 	public int getCCDAFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
 		int k = index; 
 		while(!er.get(k).msg.contains("CCDA Validation done")) {
-			ccda.add(new CCDAValidationReportItem(er.get(k).msg, er.get(k).location, er.get(k).level));
+			ccda.add(new CCDAValidationReportItem(er.get(k).msg, er.get(k).resource, er.get(k).level));
+			k++;
+		}
+		
+		return k++;
+	}
+	
+	public int getXDMFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
+		int k = index; 
+		while(!er.get(k).msg.contains("XDM Validation done")) {
+			xdm.add(new XDMValidationReportItem(er.get(k).msg, er.get(k).level));
 			k++;
 		}
 		
@@ -122,6 +148,11 @@ public class ErrorRecorderAdapter {
 				ccdaString = CcdaToHtml();
 			}
 			
+			String xdmString = "";
+			if(hasXDM) {
+				xdmString = XdmToHtml();
+			}
+			
 			//  first, get and initialize an engine  
 			VelocityEngine ve = VelocitySingleton.getVelocityEngine();
 			//  next, get the Template
@@ -136,6 +167,9 @@ public class ErrorRecorderAdapter {
 			
 			// CCDA
 			context.put("ccda", ccdaString);
+			
+			// XDM
+			context.put("xdm", xdmString);
 			
 			// now render the template into a StringWriter
 			StringWriter writer = new StringWriter();
@@ -157,6 +191,34 @@ public class ErrorRecorderAdapter {
 			Template t2 = ve.getTemplate("CCDAValidationReport.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("validationReport", this.ccda);
+			
+			StringWriter writer = new StringWriter();
+			t2.merge( context, writer );
+			
+			res = writer.toString();
+			
+		} catch (ResourceNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseErrorException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return res;
+	}
+	
+	public String XdmToHtml() {
+		String res = "";
+		//  first, get and initialize an engine  
+		try {
+			VelocityEngine ve = VelocitySingleton.getVelocityEngine();
+			Template t2 = ve.getTemplate("XDMValidationReport.vm");
+			VelocityContext context = new VelocityContext();
+			context.put("validationReport", this.xdm);
 			
 			StringWriter writer = new StringWriter();
 			t2.merge( context, writer );

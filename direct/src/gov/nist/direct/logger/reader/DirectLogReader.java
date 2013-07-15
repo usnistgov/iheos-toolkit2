@@ -23,9 +23,7 @@ import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.LoggerUtils;
 import gov.nist.direct.utils.Utils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 
 import javax.mail.internet.MimeMessage;

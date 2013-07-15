@@ -19,7 +19,6 @@ Authors: William Majurski
 
 package gov.nist.direct.directValidator.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Iterator;
@@ -27,16 +26,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.xml.security.exceptions.Base64DecodingException;
-import org.apache.xml.security.utils.Base64;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessable;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.operator.OperatorCreationException;
 
-import junit.framework.Assert;
-import gov.nist.direct.directValidator.interfaces.MessageContentValidator;
 import gov.nist.direct.directValidator.interfaces.SignatureValidator;
 import gov.nist.direct.utils.ValidationUtils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;

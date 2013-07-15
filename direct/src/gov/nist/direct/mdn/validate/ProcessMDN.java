@@ -9,8 +9,6 @@ import javax.mail.MessagingException;
 import javax.mail.Part;
 import org.apache.commons.io.IOUtils;
 
-import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
 /**
