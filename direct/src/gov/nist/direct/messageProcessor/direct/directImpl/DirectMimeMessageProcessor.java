@@ -141,6 +141,10 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	WrappedMessageProcessor wrappedParser = new WrappedMessageProcessor();
 	private boolean qpEncoded;
 	private boolean wrapped_no_multipart = false;
+	private Date logDate;
+	private String username;
+	private String messageId;
+	private int attachmentNumber;
 
 
 
@@ -148,12 +152,23 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		directCertificate = _directCertificate;
 		password = _password;
 		this.vc = vc;
+		this.attachmentNumber = 0;
 
 		// New ErrorRecorder to put summary first
 		ErrorRecorder mainEr = new GwtErrorRecorder();
 
 		// Parse the message to see if it is wrapped
 		wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
+		this.logDate = wrappedParser.getLogDate();
+		if(this.logDate == null) {
+			this.logDate = new Date();
+		}
+		this.username = wrappedParser.getUsername();
+		this.messageId = wrappedParser.getMessageId();
+		
+		if(this.username.equals("")) {
+			this.username = "Unknown-User";
+		}
 
 		// Set the part number to 1
 		partNumber = 1;
@@ -532,6 +547,16 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		msgValidator.validateBody(er, p, (String)p.getContent());
 		//this.processAttachments(er, p);
 
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".txt";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+		MessageLogManager.logAttachment(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", p.getInputStream(), attachmentFilename);
+		String attachmentLink = MessageLogManager.getAttachmentLink(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", attachmentFilename);
+		
 		er.detail("#####################text/plain message######################");
 		String textContent = p.getContent().toString();
 		System.out.println(textContent);
@@ -540,6 +565,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			textContent = decodeQPText(textContent);
 		}
 		er.detail(SafeHtmlUtils.htmlEscape(textContent));
+		//er.detail("<a href=\"file:///" + attachmentLink + "\">" + attachmentFilename + "</a>");
 		er.detail("##########################################################");
 
 		// Update the summary
@@ -1191,7 +1217,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Get label - TODO
 		String label = "";
 		
-		MessageLogManager.logDirectMessage(username, date, "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
+		MessageLogManager.logDirectMessage(username, logDate, "DIRECT_RECEIVE", "DIRECT", messageID, (MimeMessage)p, label);
 
 
 		System.out.println("Logged direct message.");

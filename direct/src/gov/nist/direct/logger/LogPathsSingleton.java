@@ -263,6 +263,12 @@ public class LogPathsSingleton {
 	}
 		return defaultPath;
 	}
+	
+	public String getAttachmentLogPath(String transactionType, String messageType, String username, String messageId, String attachmentName) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + File.separator + attachmentName;
+		return path;
+	}
 
 
 	public String getMessageIdLogPath(String transactionType,
