@@ -1,4 +1,4 @@
-	package gov.nist.toolkit.xdstools2.server;
+package gov.nist.toolkit.xdstools2.server;
 
 import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.client.config.SigningCertType;
@@ -23,6 +23,8 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 
 import gov.nist.toolkit.repository.presentation.PresentationData;
 import gov.nist.toolkit.repository.simple.Configuration;
+import gov.nist.toolkit.repository.simple.search.client.Asset;
+import gov.nist.toolkit.repository.simple.search.client.SearchCriteria;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
@@ -517,24 +519,30 @@ ToolkitService {
 		return new PresentationData().getRepositoryDisplayTags();
 	}
 
+	@Override
+	public List<String> getIndexablePropertyNames()
+			throws NoServletSessionException {
+		return PresentationData.getIndexablePropertyNames();
+	}
 
 	@Override
 	public Boolean setRepositoryConfig() throws RepositoryConfigException {
 		
 		try {
-			// System.out.println(" +++++ ------- ----- " + Installation.installation().externalCache());
 			
-			new Configuration(new File(Installation.installation().externalCache() + "/repositories"));
-						
-			
+			new Configuration(new File(Installation.installation().externalCache() + "/repositories")); // This folder must exist under the EC_Dir		
 			return new Boolean(Configuration.isConfigured());
+			
 		} catch (Exception e) {			
 			// e.printStackTrace();
 			throw new RepositoryConfigException(e.toString());
 		}
 		
+	}
 
-		
+	@Override
+	public List<Asset> search(String[] repos, SearchCriteria sc) {
+		return PresentationData.search(repos, sc);
 	}
 
 }

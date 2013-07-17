@@ -3,11 +3,13 @@ package gov.nist.toolkit.repository.simple;
 import gov.nist.toolkit.repository.api.Id;
 import gov.nist.toolkit.repository.api.RepositoryException;
 import gov.nist.toolkit.repository.api.Type;
+import gov.nist.toolkit.repository.simple.index.db.DbIndexContainer;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

@@ -454,9 +454,9 @@ public class DbIndexContainer implements IndexContainer, Index {
 	}
 	
 	/**
-	 * ToDo: this needs to be cached  
+	 * 
 	 * Note: The repository Configuration must already be setup prior to this call.
-	 * Indexable properties should be in the format of: "assetType_property" Example: "siteAsset_patientId"
+	 * 
 	 * 
 	 * @return
 	 */
@@ -496,7 +496,9 @@ public class DbIndexContainer implements IndexContainer, Index {
 								} else
 									iap += assetProperty.trim();
 								
-								indexableAssetProperties.add(iap);								
+								if (!indexableAssetProperties.contains(iap)) {
+									indexableAssetProperties.add(iap);			
+								}
 								 
 							} else {
 								if (!indexableAssetProperties.contains(t.getKeyword())) {

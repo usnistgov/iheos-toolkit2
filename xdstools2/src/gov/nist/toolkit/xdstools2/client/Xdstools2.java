@@ -211,7 +211,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 			ht.toolkitService.setRepositoryConfig(new AsyncCallback<Boolean>() {
 
 				public void onFailure(Throwable caught) {
-					new PopupMessage("setRepositoryConfig call failed: " + caught.getMessage());
+					new PopupMessage("Artifact Repository feature not available. setRepositoryConfig call failed: " + caught.getMessage());
 				}
 
 				@Override

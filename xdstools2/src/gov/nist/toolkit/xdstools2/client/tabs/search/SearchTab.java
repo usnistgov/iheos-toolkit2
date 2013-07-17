@@ -1,42 +1,42 @@
 package gov.nist.toolkit.xdstools2.client.tabs.search;
 
 
-import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-
+import gov.nist.toolkit.repository.simple.search.client.Asset;
 import gov.nist.toolkit.repository.simple.search.client.ContextSupplement;
 import gov.nist.toolkit.repository.simple.search.client.SearchCriteria;
-import gov.nist.toolkit.repository.simple.search.client.SearchTerm;
-import gov.nist.toolkit.repository.simple.search.client.SimpleData;
 import gov.nist.toolkit.repository.simple.search.client.SearchCriteria.Criteria;
+import gov.nist.toolkit.repository.simple.search.client.SearchTerm;
+import gov.nist.toolkit.repository.simple.search.client.SearchTerm.Operator;
+import gov.nist.toolkit.repository.simple.search.client.SimpleData;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -44,7 +44,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class SearchTab extends GenericQueryTab {
 	
+	private static final String PROP_VALUE = "propValue";
+	private static final String PROP_NAME = "propName";
+	private static final String OPERATOR = "Operator";
+	private static final String CRITERIA = "Criteria";
 	
+	private static final int NODETAG = 32768;
 	Integer callCt = 0;
 	Label lblTxt = new Label();
 	SimpleData sd = new SimpleData();
@@ -53,22 +58,20 @@ public class SearchTab extends GenericQueryTab {
 	FlexTable msgs = new FlexTable();
 	FlexTable grid = new FlexTable();
 	FlexTable existingGrid = new FlexTable();
-
+	DialogBox db = new DialogBox();
+	
+	
 	String required        = new String("*Required fields");
 
 
-	TextBox addDirectFrom = new TextBox();
-	TextBox cert = new TextBox();
-
-	
 
 	public ListBox reposLeft = new ListBox(true);
 	public Button moveRight = new Button("&rArr;");
 	public Button moveLeft = new Button("&lArr;");
 	public ListBox reposRight = new ListBox(true);
-	public Button moveUp = new Button("Up");
-	public Button moveDown = new Button("Down");
-	
+	public Button moveUp = new Button("Before");
+	public Button moveDown = new Button("After");
+	protected ArrayList<String> propNames = new ArrayList<String>();
 	
 	static String DEFAULTWIDTH = "30em";
 	static String DEFAULTTITLEWIDTH = "15em";
@@ -76,6 +79,11 @@ public class SearchTab extends GenericQueryTab {
 
 	VerticalPanel criteriaPanel = new VerticalPanel();
 	VerticalPanel scPanel = new VerticalPanel();
+	VerticalPanel resultPanel = new VerticalPanel();
+	
+    RadioButton simpleQuery = new RadioButton("queryMode", "Simple");
+    RadioButton advancedQuery = new RadioButton("queryMode", "Advanced");
+
 	
 	public SearchTab(BaseSiteActorManager siteActorManager) {
 		super(new NullSiteActorManager());
@@ -110,30 +118,27 @@ public class SearchTab extends GenericQueryTab {
 		grid.setCellSpacing(20);
 
 		
-		toolkitService.getRepositoryDisplayTags(myCall1);
+		toolkitService.getRepositoryDisplayTags(reposSetup);
+		toolkitService.getIndexablePropertyNames(propsSetup);
 		
 		topPanel.add(reposList());
 		
-		topPanel.add(searchPanel());
-		topPanel.add(scPanel);
 
 	}
 	
 	
-	AsyncCallback<Map<String, String>> myCall1 = new AsyncCallback<Map<String, String>> () {
+	AsyncCallback<Map<String, String>> reposSetup = new AsyncCallback<Map<String, String>> () {
 
 		@Override
 		public void onFailure(Throwable arg0) {
 			new PopupMessage("Repositories could not be loaded: " + arg0.getMessage());
 		}
 
-	
-
 		@Override
 		public void onSuccess(Map<String, String> m) {
 			
 			for (Map.Entry<String, String> entry : m.entrySet()) {				
-				reposLeft.addItem(entry.getKey().substring(24) + " - " + entry.getValue(), entry.getKey() );				
+				reposLeft.addItem(entry.getKey().substring(0,3) + "..." + entry.getKey().substring(24) + " - " + entry.getValue(), entry.getKey() );				
 			}
 			
 			setRepositorySelectorCbs();
@@ -141,8 +146,89 @@ public class SearchTab extends GenericQueryTab {
 		}
 	};
 
-	
+	AsyncCallback<List<String>> propsSetup = new AsyncCallback<List<String>> () {
 
+		@Override
+		public void onFailure(Throwable arg0) {
+			new PopupMessage("No indexeable properties found: It is possible Asset Type's are not configured. propNames could not be loaded: " + arg0.getMessage());
+		}
+
+		@Override
+		public void onSuccess(List<String> props) {
+			propNames.addAll(props);
+
+			topPanel.add(searchPanel());
+			topPanel.add(scPanel);
+			
+		}
+	};
+
+	
+	AsyncCallback<List<Asset>> searchResults = new AsyncCallback<List<Asset>> () {
+
+		@Override
+		public void onFailure(Throwable arg0) {
+			new PopupMessage("propNames could not be loaded: " + arg0.getMessage());
+		}
+
+		@Override
+		public void onSuccess(List<Asset> result) {
+			resultPanel.clear();
+			
+			resultPanel.add(new HTML("&nbsp;"));
+			
+			FlexTable resultFt = new FlexTable();
+			int row = 1;
+			
+				
+				try {
+					
+					if (result!=null && result.size()>0) {
+
+						
+						resultFt.setWidget(0, 0, new HTML("Repository Id"));
+						resultFt.setWidget(0, 1, new HTML("Asset Id"));
+						resultFt.setWidget(0, 2, new HTML("Display Name"));
+						resultFt.setWidget(0, 3, new HTML("Description"));
+						
+	
+						for (Asset a : result) {
+							resultFt.setWidget(row,0,  new HTML(a.getRepId()));
+							resultFt.setWidget(row,1,  new HTML(a.getAssetId()));
+							resultFt.setWidget(row,2,  new HTML(a.getDisplayName()));
+							resultFt.setWidget(row++,3,  new HTML(a.getDescription()));
+						}
+					}	
+					
+				} catch (Exception e) {
+					new PopupMessage(e.toString());
+				}
+				
+				resultFt.setWidget(row, 0, new HTML(""+ result.size() + " record(s) found."));
+				if (result.size()>0) {
+					resultFt.setCellSpacing(3);
+					resultFt.getFlexCellFormatter().setStyleName(0, 0, "searchCriteriaGroup");
+					resultFt.getFlexCellFormatter().setStyleName(0, 1, "searchCriteriaGroup");
+					resultFt.getFlexCellFormatter().setStyleName(0, 2, "searchCriteriaGroup");
+					resultFt.getFlexCellFormatter().setStyleName(0, 3, "searchCriteriaGroup");					
+					
+					resultFt.getFlexCellFormatter().setColSpan(row, 0, 4);
+					
+					resultFt.setWidth(
+							scPanel.getWidget(0).getElement().getStyle().getWidth()
+					);
+					
+				}
+				
+				resultPanel.add(resultFt);
+				topPanel.add(resultPanel);
+				
+//				scPanel.add(new HTML("&nbsp;"));
+//				scPanel.add(resultFt);
+
+
+		}
+	};
 
 	protected void setRepositorySelectorCbs() {
 		
@@ -172,17 +258,17 @@ public class SearchTab extends GenericQueryTab {
 	}
 
 	protected void moveVertical(ListBox l, int order) {
-		int firstIdx = reposRight.getSelectedIndex();
+		int firstIdx = l.getSelectedIndex();
 		int itemCt = l.getItemCount();
 		
-		if (itemCt==1) return;
+		if (itemCt<2) return;
 		if (firstIdx==0 && order==-1) return;
 		if (firstIdx==itemCt-1 && order>1) return;
 
 		int newIdx = firstIdx + order;
 		
 		if (newIdx<=itemCt) {
-			l.insertItem(reposRight.getItemText(firstIdx), reposRight.getValue(firstIdx), newIdx);
+			l.insertItem(l.getItemText(firstIdx), l.getValue(firstIdx), newIdx);
 			
 			if (order>1) {
 				l.setSelectedIndex(newIdx);
@@ -235,9 +321,18 @@ public class SearchTab extends GenericQueryTab {
 		reposRight.setVisibleItemCount(5);
 		reposRight.setWidth(DEFAULTWIDTH);
 		
+		
+		grid.setWidget(row, col++, new HTML("Available Repositories"));
+		grid.setWidget(row, col++, new HTML("&nbsp;"));
+		grid.setWidget(row, col++, new HTML("Selected Repositories"));
+		grid.setWidget(row++, col, new HTML("Search Order"));
+		
+		col=0;
+		
 		grid.setWidget(row, col++, reposLeft);
 		
-		FlexTable miniTable = new FlexTable();
+		FlexTable miniTable = new FlexTable();		
+		
 		miniTable.setWidget(0, 0, moveRight);
 		miniTable.setWidget(1, 0, moveLeft);
 		
@@ -268,9 +363,8 @@ public class SearchTab extends GenericQueryTab {
 	int stGridRow = 0;
 	FlexTable mainTable =  new FlexTable();				
 	FlexTable stGrid = new FlexTable();
-	FlexTable criteriaGrid = new FlexTable();
 	
-	protected SearchCriteria getScByPath(String path, int limit) {		
+	protected SearchCriteria getScByPath(String path, int limit)  {		
 			
 		if (path==null || "".equals(path)) {
 			return sc;
@@ -279,39 +373,124 @@ public class SearchTab extends GenericQueryTab {
 		String ids[] = path.split("\\.");
 		
 		SearchCriteria scObj = sc;
-		if (Math.abs(limit) >= ids.length) {
+		if (Math.abs(limit) > ids.length) {
 			return null;
 		}
 				
 		for (int cx=0; cx< (ids.length + (limit)); cx++) {
-			scObj = scObj.getSearchCriteria().get(Integer.parseInt(ids[cx]));
+			int index = Integer.parseInt(ids[cx]);
+			
+			if (isLeafNode(index)) {
+				return scObj;
+			}
+			
+			scObj = scObj.getSearchCriteria().get(index);
 		}
 		return scObj;
+	}
+
+	/**
+	 * @param index
+	 * @return
+	 */
+	protected boolean isLeafNode(int index) {
+		return (index & NODETAG) == NODETAG;
+	}
+	
+	protected int getLeafId(int index) {
+		return (index ^ NODETAG);
+	}
+	
+	protected String makeLeafNodeId(int index) {
+		return "" + (NODETAG | index);
+	}
+	
+	protected int getLeafNodeId(String path) {
+		String ids[] = path.split("\\.");
+		
+		int leaf = Integer.parseInt(ids[ids.length-1]);
+		if (isLeafNode(leaf)) { 
+			return getLeafId(leaf);
+		} else {
+			new PopupMessage("Error: Not a leaf node " + path);
+		}
+		return -1;
+	}
+	
+	protected void removeLeafNode(String path) {
+		SearchCriteria scObj = getScByPath(path);
+		scObj.getSearchTerms().remove(getLeafNodeId(path));
+		redrawTable();
+	}
+	
+	protected void setOpSelector(int index, String path) {
+		Operator e = Operator.values()[index];
+		getSt(path).setOperator(e);		
+	}
+	
+	protected void setPropNameSelector(int index, String path) {
+		String s = getPropNames().get(index);
+		getSt(path).setPropName(s);		
+	}
+	
+	protected void setStValue(String value, String path) {	
+		getSt(path).setValues(new String[]{value});		
+	}
+	
+	private SearchTerm getSt(String path) {
+		int leafNodeId =  getLeafNodeId(path);
+		SearchCriteria scObj = getScByPath(path);
+		return scObj.getSearchTerms().get(leafNodeId);
+	}
+	
+	protected void setCSelector(int index, String path) {
+		Criteria e = Criteria.values()[index];
+		SearchCriteria scObj = getScByPath(path);
+		scObj.setCriteria(e);		
 	}
 	
 	protected SearchCriteria getScByPath(String path) {
 		return getScByPath(path,0);
 	}
 	
+	
+	
 	protected void addNewSearchTerm(String id) {
-		
-		// Fix assignment
-		// assign by id parse & attach to right obj
+
+		// Assignment
+		// assign by id parse & attach to the right obj
 		
 		SearchCriteria scObj = getScByPath(id);
 		
-		SearchTerm st = new SearchTerm("my prop",SearchTerm.Operator.EQUALTO,callCt.toString());
+		SearchTerm st = new SearchTerm(getPropNames().get(0),SearchTerm.Operator.EQUALTO,"");
 		scObj.append(st);
 
+		redrawTable();
+	}
+
+	/**
+	 * 
+	 */
+	public void redrawTable() {
 		scPanel.clear();
 		printTable(sc, "");
-		topPanel.add(scPanel);
+		// topPanel.add(scPanel);
+	}
+
+	/**
+	 * 
+	 */
+	private void enterFixedBuilderMode() {
+		// resultPanel.clear();
+		simpleQuery.setEnabled(false);
+		advancedQuery.setEnabled(false);
 	}
 	
 	protected void addNewGroup(String id) {
 		
-		// Fix assignment
-		// assign by id parse & attach to right obj
+
+		// Assignment
+		// assign by id parse & attach to the right obj
 		
 		
 		if ("".equals(id)) {
@@ -351,14 +530,14 @@ public class SearchTab extends GenericQueryTab {
 			
 		}
 		
-		scPanel.clear();
-		printTable(sc, "");
-		topPanel.add(scPanel);
+		redrawTable();
 				
 		
 	}
 	
 	protected void appendCriteria(String id) {
+				
+		
 		SearchCriteria scObj = getScByPath(id,-1);
 		
 		if (sc.equals(scObj) && scObj.getSearchCriteria().size()==0) {
@@ -376,15 +555,20 @@ public class SearchTab extends GenericQueryTab {
 				
 		
 
-		scPanel.clear();
-		printTable(sc, "");
-		topPanel.add(scPanel);
+		redrawTable();
 
 	}
 
-
+	/**
+	 * 
+	 */
+	public void debugTxt(Object o) {
+		// lblTxt.setText("setting " + o.toString());
+		// new PopupMessage(o.toString());
+	}
+	
 	protected void printTable(SearchCriteria sc, String ancestorId) {
-		
+	
 		if (sc.getSearchTerms().isEmpty()) {
 			int stRow=0;
 			FlexTable stGroup = new FlexTable();
@@ -395,66 +579,60 @@ public class SearchTab extends GenericQueryTab {
 			
 			Button addNewStBtn = new Button(newSeachTermTxt);
 			Button addNewGroup = new Button(newCriteriaGroupTxt);
-			Button appendCriteria = new Button(appendCriteriaTxt);  
+			Button appendCriteria = new Button(appendCriteriaTxt);
+			Button removeGroupBtn = newRemoveGroupBtn(ancestorId);
 			
-			
-			String groupId = "";
-			
-			if (ancestorId!=null && !"".equals(ancestorId)) {
-				groupId = ancestorId;
+			if (simpleQuery.getValue()) {
+				addNewGroup.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);				
+				appendCriteria.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+				removeGroupBtn.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
 			}
 			
-			addNewStBtn.getElement().setId(newSeachTermTxt + groupId);			
-			addNewStBtn.addClickHandler(new ContextSupplement<String>(groupId) {
+	
+			addNewGroup.addClickHandler(newGroupHandler(ancestorId));				
+			appendCriteria.addClickHandler(appendCriteriaHandler(ancestorId));				
+			addNewStBtn.addClickHandler(newSearchTermHandler(ancestorId));
 			
-				public void onClick(ClickEvent event) {
-						lblTxt.setText("setting" + getParameter());
-						addNewSearchTerm(getParameter());
-				}
-			});
-			
-			addNewGroup.getElement().setId(newCriteriaGroupTxt + groupId);			
-			addNewGroup.addClickHandler(new ContextSupplement<String>(groupId) {
-			
-				public void onClick(ClickEvent event) {
-						lblTxt.setText("setting" + getParameter());
-						addNewGroup(getParameter());
-				}
-			});
-			
-			
-			appendCriteria.getElement().setId(appendCriteriaTxt + groupId);
-			appendCriteria.addClickHandler(new ContextSupplement<String>(groupId) {
-			
-				public void onClick(ClickEvent event) {
-						lblTxt.setText("setting" + getParameter());
-						appendCriteria(getParameter());
-				}
-			});
-			
-			if (sc.getSearchCriteria().size()>1) {
-				// TODO
-				// disable here
-				// search terms can only be added to free-standing sc's
+			// search terms can only be added to free-standing sc's
+			if (sc.getSearchCriteria()!=null && sc.getSearchCriteria().size()>0) {			
+				addNewStBtn.setVisible(false);
+			} else  {
+				addNewStBtn.setVisible(true);
 			}
 			
-			ListBox cSelector = new ListBox();
-			cSelector.addItem("And");
-			cSelector.addItem("Or");
+			if (sc.getSearchCriteria()!=null && sc.getSearchCriteria().size()>0) {				
+				appendCriteria.setVisible(true);
+				appendCriteria.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+			} else  {
+				appendCriteria.setVisible(false);
+				appendCriteria.getElement().getStyle().setDisplay(Style.Display.NONE);
+			}	
 			
-			cmdGroup.setWidget(0, 0, cSelector);
-			cmdGroup.setWidget(0, 1, addNewStBtn);
-			cmdGroup.setWidget(0, 2, addNewGroup);
-			cmdGroup.setWidget(0, 3, appendCriteria);
+			ListBox cSelector = getCSelector();
+			cSelector.setSelectedIndex(sc.getCriteria().ordinal());
+			cSelector.addChangeHandler(new CSelectorChangeHandler(CRITERIA, ancestorId));
+		
+			int col=0;
+			cmdGroup.setWidget(0, col++, cSelector);
+			cmdGroup.setWidget(0, col++, addNewStBtn);
+			cmdGroup.setWidget(0, col++, addNewGroup);
+			
+			if (appendCriteria.isVisible()) {
+				cmdGroup.setWidget(0, col++, appendCriteria);
+			}
+			cmdGroup.setWidget(0, col++, removeGroupBtn);
+					
 			
 			stGroup.getFlexCellFormatter().setColSpan(0, 0, 3); // stGroup is just empty container here
+			
 			stGroup.setWidget(stRow++, 0, cmdGroup);
 									
-			
+			stGroup.addStyleName("searchCriteriaGroup");
 			setGroup(ancestorId, stGroup);
 			
 		
 		} else {
+			
 			FlexTable stGroup = new FlexTable();
 			if (sc.getSearchTerms()!=null && !sc.getSearchTerms().isEmpty()) {
 
@@ -467,32 +645,56 @@ public class SearchTab extends GenericQueryTab {
 				
 				Button addNewStBtn = new Button(newSeachTermTxt);
 				Button addNewGroup = new Button(newCriteriaGroupTxt);
+				Button appendCriteria = new Button(appendCriteriaTxt);
+				Button removeGroupBtn = newRemoveGroupBtn(ancestorId);
 				
-				
-				
-				String groupId = "";
-				
-				if (ancestorId!=null && !"".equals(ancestorId)) {
-					groupId = ancestorId;
+				if (simpleQuery.getValue()) {						
+					addNewGroup.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);				
+					appendCriteria.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+					appendCriteria.getElement().getStyle().setDisplay(Style.Display.NONE);
+					removeGroupBtn.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
+				} else {
+					
+					if (sc.getSearchCriteria()!=null && sc.getSearchCriteria().size()>0) {				
+						appendCriteria.setVisible(true);
+						appendCriteria.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+					} else  {
+						appendCriteria.setVisible(false);
+						appendCriteria.getElement().getStyle().setDisplay(Style.Display.NONE);
+					}					
 				}
+
+
 				
-				addNewStBtn.getElement().setId(groupId);
 				
-				addNewStBtn.addClickHandler(new ContextSupplement<String>(groupId) {
+				addNewGroup.addClickHandler(newGroupHandler(ancestorId));				
+				appendCriteria.addClickHandler(appendCriteriaHandler(ancestorId));				
+				addNewStBtn.addClickHandler(newSearchTermHandler(ancestorId));
 				
-					public void onClick(ClickEvent event) {
-							lblTxt.setText(getParameter());
-							addNewSearchTerm(getParameter());
-					}
-				});
 				
-				ListBox cSelector = new ListBox();
-				cSelector.addItem("And");
-				cSelector.addItem("Or");
+				if (ancestorId!=null && "".equals(ancestorId)) {
+					addNewStBtn.getElement().setId(newSeachTermTxt);
+					addNewGroup.getElement().setId(newCriteriaGroupTxt);
+					appendCriteria.getElement().setId(appendCriteriaTxt);
+				} 
 				
-				cmdGroup.setWidget(0, 0, cSelector);				
-				cmdGroup.setWidget(0, 1, addNewStBtn);
-				cmdGroup.setWidget(0, 2, addNewGroup);
+				
+				ListBox cSelector = getCSelector();
+				cSelector.setSelectedIndex(sc.getCriteria().ordinal());
+				cSelector.addChangeHandler(new CSelectorChangeHandler(CRITERIA, ancestorId));
+
+
+				
+				int col=0;
+				cmdGroup.setWidget(0, col++, cSelector);				
+				cmdGroup.setWidget(0, col++, addNewStBtn);
+				cmdGroup.setWidget(0, col++, addNewGroup);
+				
+				if (appendCriteria.isVisible()) {
+					cmdGroup.setWidget(0, col++, appendCriteria);	
+				}				
+				cmdGroup.setWidget(0, col++, removeGroupBtn);
+						
 				
 				stGroup.getFlexCellFormatter().setColSpan(0, 0, 4);
 				stGroup.setWidget(stRow++, 0, cmdGroup);
@@ -512,23 +714,44 @@ public class SearchTab extends GenericQueryTab {
 					TextBox stTxt = new TextBox();
 					
 					stTxt.setWidth(DEFAULTWIDTH);
-					stPn.addItem("displayName");
-					stPn.addItem("description");
-					stPn.addItem("type");
 					
+					
+					String nodeId = makeLeafNodeId(leafIndex++);
+					
+					if (!"".equals(ancestorId)) {
+						nodeId = ancestorId + "." + nodeId;
+					}
+					
+					stPn.getElement().setId(nodeId); // assign to the delete button
+					int pnIdx = 0;
+					
+					for (int cx=0; cx<getPropNames().size();cx++) {
+						if (getPropNames().get(cx).equals(st.getPropName())) {
+							pnIdx = cx; 
+						}
+						stPn.addItem(getPropNames().get(cx));
+					}					
+					stPn.setSelectedIndex(pnIdx);
+					stPn.addChangeHandler(new CSelectorChangeHandler(PROP_NAME, nodeId));					
 					
 					for (SearchTerm.Operator e : SearchTerm.Operator.values()) {
 						stOp.addItem(e.toString());
+					}					
+					stOp.setSelectedIndex(st.getOperator().ordinal());
+					stOp.addChangeHandler(new CSelectorChangeHandler(OPERATOR, nodeId));
+					
+					if (st.getValues()!=null && st.getValues().length>0) {
+						stTxt.setValue(st.getValues()[0]);
 					}
+					stTxt.addChangeHandler(new CSelectorChangeHandler(PROP_VALUE, nodeId));
 					
-					String nodeId = ancestorId + "." + (32768 | leafIndex++);
-					stPn.getElement().setId(nodeId); // assign to the delete button
 					
-					Button remove = new Button("<font size='2'>Remove</font>");
+					Button remove = new Button("Remove");
 					remove.addClickHandler(new ContextSupplement<String>(nodeId) {
 						
 						public void onClick(ClickEvent event) {
-								lblTxt.setText("remove " + getParameter());								
+							debugTxt("remove " + getParameter());				
+							removeLeafNode(getParameter());
 						}
 					});
 
@@ -547,9 +770,9 @@ public class SearchTab extends GenericQueryTab {
 				// mainTable.setWidget(0, 0, stGroup);
 									
 			  	  
-			 }	
+			}
 
-		}
+	}
 		
 		if (sc.getSearchCriteria()!=null) {
 			Integer rootIndex = new Integer(0);
@@ -565,6 +788,135 @@ public class SearchTab extends GenericQueryTab {
 		
 		
 	
+	}
+
+	/**
+	 * @param cmdGroup
+	 */
+	private Button newRemoveGroupBtn(String path) {
+		
+			Button removeGroupBtn = new Button(removeGroupTxt);			
+			
+			
+			if ("".equals(path)) {
+				removeGroupBtn.getElement().setId(removeGroupTxt);
+			}
+			
+			
+			
+			removeGroupBtn.addClickHandler(new ContextSupplement<String>(path) {
+				
+				public void onClick(ClickEvent event) {
+					HorizontalPanel hpDialog = new HorizontalPanel();
+						
+						FlexTable ft = new FlexTable();
+						Button yesBtn = new Button("Yes");
+						Button noBtn = new Button("No");
+						
+						ft.setWidget(0, 0, yesBtn);
+						ft.setWidget(0, 1, noBtn);
+						
+						hpDialog.add(new HTML("Remove group?"));
+						hpDialog.add(new HTML("&nbsp;"));
+						hpDialog.add(ft);
+						
+						db.clear();
+						db.setWidget(hpDialog);
+						
+						Button src = (Button)event.getSource();
+						db.setPopupPosition(src.getAbsoluteLeft(),src.getAbsoluteTop());
+						db.show();
+						
+						yesBtn.addClickHandler(new ContextSupplement<String>(getParameter()) {
+							
+							public void onClick(ClickEvent event) {
+
+							//	new PopupMessage("" + getParameter());
+								
+								SearchCriteria scPar = getScByPath(getParameter(),-1);
+								SearchCriteria scObj = getScByPath(getParameter());
+								
+								
+								
+								if (!scPar.equals(scObj)) {
+									scPar.getSearchCriteria().remove(scObj);							
+								} else {
+									resetSearchCriteria();
+								}
+								db.hide();
+								redrawTable();
+								
+							}	
+						});
+						
+						noBtn.addClickHandler(new ClickHandler() {
+							public void onClick(ClickEvent event) {
+								db.hide();
+							}
+						});
+					
+						
+				}
+			});
+			
+		return removeGroupBtn;
+	}
+
+	/**
+	 * @param ancestorId
+	 * @return
+	 */
+	protected ContextSupplement<String> newSearchTermHandler(String ancestorId) {
+		return new ContextSupplement<String>(ancestorId) {
+		
+			public void onClick(ClickEvent event) {
+					debugTxt(getParameter());
+					enterFixedBuilderMode();
+					addNewSearchTerm(getParameter());
+			}
+		};
+	}
+
+	/**
+	 * @param ancestorId
+	 * @return
+	 */
+	protected ContextSupplement<String> appendCriteriaHandler(String ancestorId) {
+		return new ContextSupplement<String>(ancestorId) {
+			
+			public void onClick(ClickEvent event) {
+					debugTxt(getParameter());
+					enterFixedBuilderMode();
+					appendCriteria(getParameter());
+			}
+		};
+	}
+
+	/**
+	 * @param ancestorId
+	 * @return
+	 */
+	protected ContextSupplement<String> newGroupHandler(String ancestorId) {
+		return new ContextSupplement<String>(ancestorId) {
+			
+			public void onClick(ClickEvent event) {
+					debugTxt(getParameter());
+					enterFixedBuilderMode();
+					addNewGroup(getParameter());
+			}
+		};
+	}
+
+	/**
+	 * @return
+	 */
+	private ListBox getCSelector() {
+		ListBox cSelector = new ListBox();
+		for (SearchCriteria.Criteria e : SearchCriteria.Criteria.values()) {
+			cSelector.addItem(e.toString());
+		}		
+
+		return cSelector;
 	}
 
 	/**
@@ -586,7 +938,7 @@ public class SearchTab extends GenericQueryTab {
 				stNestedGroup.setCellPadding(10);
 				for (int cx =0; cx< ancestorCt; cx++) {
 					stNestedGroup.setWidget(0, cx, new Hidden("h_" + ancestorId));
-					// stNestedGroup.setWidget(0, cx, new HTML("<font style='left-margin:20px'>&nbsp;&nbsp;&nbsp;&nbsp;</font>"));
+				
 				}
 				stNestedGroup.setWidget(0, ancestorCt, stGroup);
 				scPanel.add(stNestedGroup);
@@ -595,142 +947,149 @@ public class SearchTab extends GenericQueryTab {
 			scPanel.add(stGroup);	
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	public void resetSearchCriteria() {
+		sc = new SearchCriteria(Criteria.AND);
+		
+	
+		SearchTerm st = new SearchTerm(getPropNames().get(0),Operator.EQUALTO,"");
+		sc.append(st);
+//		st = new SearchTerm(getPropNames().get(0),Operator.EQUALTO,"");
+//		sc.append(st);
+		
+
+		
+		
+		
+		simpleQuery.setEnabled(true);
+		advancedQuery.setEnabled(true);
+
+		advancedBuilderOption(advancedQuery.getValue());
+		
+		// Preserve builder mode
+		// simpleQuery.setValue(true);
+		
+		
+		resultPanel.clear();
+		scPanel.clear();
+		printTable(sc, "");
+	}
+
+	/**
+	 * 
+	 */
+	public void advancedBuilderOption(boolean abo) {
+		
+		Style.Visibility v = (abo)?Style.Visibility.VISIBLE:Style.Visibility.HIDDEN;
+		Style.Display d = (abo)?Style.Display.BLOCK:Style.Display.NONE;
+		
+		Element e = Document.get().getElementById(newCriteriaGroupTxt);	
+		e.getStyle().setVisibility(v);
+		e.getStyle().setDisplay(d);
+		
+//		e = Document.get().getElementById(appendCriteriaTxt);
+//		e.getStyle().setVisibility(v);
+//		e.getStyle().setDisplay(d);
+//		
+		e = Document.get().getElementById(removeGroupTxt);
+		e.getStyle().setVisibility(v);
+		e.getStyle().setDisplay(d);
+		
+		
+	}
 
 	
-	String newSeachTermTxt = "Add New Search Term";
-	String newCriteriaGroupTxt = "Add New Criteria Group";
-	String appendCriteriaTxt = "Append New Criteria";
+	String newSeachTermTxt = "New Search Term";
+	String newCriteriaGroupTxt = "Sub-criteria";
+	String appendCriteriaTxt = "Append Criteria";
+	String removeGroupTxt = "Remove Group";
 	Button newSeachTerm = new Button(newSeachTermTxt);
 	Button newCriteriaGroup = new Button(newCriteriaGroupTxt);
-	
+
 
 	protected VerticalPanel searchPanel() {
+		
+		if (getPropNames()==null || (getPropNames()!=null && getPropNames().size()==0)) {			
+			return new VerticalPanel();
+		}
 		
 		criteriaPanel.add(new HTML("<h3>Add Search Criteria</h3>"));
 		criteriaPanel.add(new HTML("  " ));
 		
+		FlexTable queryMode = new FlexTable();
 		
-
-		int row = 0;
-		int col = 0;
-		HTML h;
-
-		
+	    
+	    simpleQuery.addClickHandler(new ClickHandler() {
 			
-			newSeachTerm.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-//					callCt++;
-//					// sd.addItem(callCt.toString());
-//					
-//					
-//					sd.addItem(MetadataTypes.getMetadataTypeName(callCt.intValue()) + " -- " +  callCt.toString());
-//					
-//					// lblTxt.setText(sd.getMyList().get(0));
-//					
-//					SearchTerm st = new SearchTerm("my prop",SearchTerm.Operator.EQUALTO,callCt.toString());
-//					
-//					sc.append(st);
-//					
-//					lblTxt.setText( sc.toString() );
-					
-					SearchTerm st = new SearchTerm("my prop",SearchTerm.Operator.EQUALTO,callCt.toString());
-					sc.append(st);
-					 st = new SearchTerm("my prop",SearchTerm.Operator.EQUALTO,callCt.toString());
-					sc.append(st);
-					 st = new SearchTerm("my prop",SearchTerm.Operator.EQUALTO,callCt.toString());
-					sc.append(st);
-					
-					printTable(sc,"");
-					stGrid.setWidget(++stGridRow, 0, mainTable);
-					
+			public void onClick(ClickEvent event) {
+				
+				advancedBuilderOption(false);
+												
+			}
 
-
-
-					
-					criteriaGrid.setWidget(0, 0, stGrid);
-					criteriaPanel.add(criteriaGrid);
-					
-					topPanel.add(criteriaPanel);
-					
-					
-					//new PopupMessage(DOM.gete);
+		});
+	    
+	    advancedQuery.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+								
+				advancedBuilderOption(true);
+				
+			}
+		});
+	    
+	    Button resetCriteriaBtn = new Button("Reset");
+	    resetCriteriaBtn.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				resetSearchCriteria();
+				
+			}
+		});
+	    
+	    Button searchBtn = new Button("Search");
+	    searchBtn.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				
+				int itemCt = reposRight.getItemCount();
+				
+				if (itemCt==0) {
+					new PopupMessage("Please select at least one repository.");
+					return;
+				} else {
+					String[] selectedRepos = new String[itemCt];
+					for (int cx=0; cx<itemCt; cx++ ) {
+						selectedRepos[cx] = reposRight.getValue(cx);	
+					}
+					 toolkitService.search(selectedRepos, sc, searchResults);
 				}
-			});
-			
-		
-			
-//			FlexTable cmdGroup =  new FlexTable();
-//			
-//				cmdGroup.setWidget(0, 0, newSeachTerm);
-//				cmdGroup.setWidget(0, 1, newCriteriaGroup);
-//				// cmdGroup.setWidget(0, 2, lblTxt);
-//				
-//		criteriaGrid.setWidget(row, col, cmdGroup);		
+				
 
-//	
-//			ListBox st = new ListBox();
-//			st.setVisibleItemCount(1);		
-//			
-//			// Populate the search terms here...
-//			st.addItem("displayName");
-//			st.addItem("description");
-//			st.addItem("type");
-//			
-//	
-//			ListBox op = new ListBox();
-//			st.setVisibleItemCount(1);		
-//			
-//			for (SearchTerm.Operator e : SearchTerm.Operator.values()) {
-//				op.addItem(e.toString());
-//			}
-//			
-//			
-//			TextBox sv = new TextBox();	
-//			sv.setWidth(DEFAULTWIDTH);
-//	
-//			//grid.setWidget(row, col++, st);
-//			//grid.setWidget(row, col++, op);
-//			//grid.setWidget(row, col++, sv);
-//		
-//		
-//			scGroup.setWidget(1, 0, st);
-//			scGroup.setWidget(1, 1, op);
-//			scGroup.setWidget(1, 2, sv);
-//			
-//			
-//		FlexTable scGroup2 = new FlexTable();
-//			ListBox st2 = new ListBox();
-//			ListBox st2op = new ListBox();
-//			TextBox st2txt = new TextBox();
-//			
-//			st2txt.setWidth(DEFAULTWIDTH);
-//			st2.addItem("displayName");
-//			st2.addItem("description");
-//			st2.addItem("type");
-//			for (SearchTerm.Operator e : SearchTerm.Operator.values()) {
-//				st2op.addItem(e.toString());
-//			}
-//			
-//			scGroup2.setWidget(0, 0, st2);
-//			scGroup2.setWidget(0, 1, st2op);
-//			scGroup2.setWidget(0, 2, st2txt);
-//
-//			
-//		
-//			
-//			FlexTable mainTable =  new FlexTable();				
-//				mainTable.setWidget(1, 0, scGroup);
-//				mainTable.setWidget(2, 0, scGroup2);
-//		
-//		
-//		criteriaGrid.setWidget(++row, 0, mainTable);
-//		
-		//Button newSt = new Button("New Search Term");			
-		//grid.setWidget(row, col++, newSt);
+				
+			}
+		});
 		
-		criteriaPanel.add(criteriaGrid);
+	    // simpleQuery.setValue(true);
+	    
+		queryMode.setWidget(0, 0, new HTML("Criteria Builder Mode")); //		
+		queryMode.setWidget(1, 0, simpleQuery);
+		queryMode.setWidget(1, 1, advancedQuery);
+		queryMode.setWidget(1, 2, resetCriteriaBtn);
+		queryMode.setWidget(1, 3, searchBtn);
+		queryMode.getFlexCellFormatter().setColSpan(0, 0, 4);
 		
-		printTable(sc, "");
+				
+		criteriaPanel.add(queryMode);
+		criteriaPanel.add(new HTML("&nbsp;"));				
+		
+		// Start in simple builder mode
+		simpleQuery.setValue(true);
+		
+		resetSearchCriteria();
 		
 		return criteriaPanel;
 
@@ -743,4 +1102,42 @@ public class SearchTab extends GenericQueryTab {
 	public String getWindowShortName() {
 		return "Search";
 	}
+	
+	class CSelectorChangeHandler implements ChangeHandler {
+
+		private String nodePath; 
+		private String propType; 
+		
+		CSelectorChangeHandler(String type, String path) {
+			this.propType = type;
+			this.nodePath = path;
+		}
+
+		@Override
+		public void onChange(ChangeEvent event) {
+			
+			
+			
+			
+			if (CRITERIA.equals(this.propType)) {
+				setCSelector(((ListBox)event.getSource()).getSelectedIndex(),this.nodePath);	
+			} else if (OPERATOR.equals(this.propType)) {
+				setOpSelector(((ListBox)event.getSource()).getSelectedIndex(),this.nodePath);	
+			} else if (PROP_NAME.equals(this.propType)) {
+				setPropNameSelector(((ListBox)event.getSource()).getSelectedIndex(),this.nodePath);
+			} else if (PROP_VALUE.equals(this.propType)) {
+				setStValue(((TextBox)event.getSource()).getValue(),this.nodePath);
+			}							
+			
+		}
+	}
+
+	public ArrayList<String> getPropNames() {
+		return propNames;
+	}
+
+	public void setPropNames(ArrayList<String> propNames) {
+		this.propNames = propNames;
+	}
+
 }

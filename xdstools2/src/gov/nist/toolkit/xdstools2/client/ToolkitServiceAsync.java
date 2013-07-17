@@ -10,6 +10,8 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.repository.simple.search.client.Asset;
+import gov.nist.toolkit.repository.simple.search.client.SearchCriteria;
 import gov.nist.toolkit.results.client.CodesResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
@@ -180,6 +182,8 @@ public interface ToolkitServiceAsync {
 	
 	/* Artifact Repository Services */
 	void getRepositoryDisplayTags(AsyncCallback<Map<String, String>> callback);
+	void getIndexablePropertyNames(AsyncCallback<List<String>> callback);
 	void setRepositoryConfig(AsyncCallback callback) throws Exception;
+	void search(String[] repos, SearchCriteria sc, AsyncCallback<List<Asset>> callback);
 	
 }
