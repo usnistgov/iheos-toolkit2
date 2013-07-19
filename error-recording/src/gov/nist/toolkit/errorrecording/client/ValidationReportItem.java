@@ -55,6 +55,7 @@ public class ValidationReportItem {
 			this.type = 2;
 			this.status = "Content";
 			this.color = "color:black";
+			break;
 			
 		default:
 			this.type = 1;
@@ -81,11 +82,19 @@ public class ValidationReportItem {
 	
 	public ValidationReportItem(String name, String content) {
 		this.name = StringEscapeUtils.escapeHtml(name);
-		this.found = content;
-		//this.found = StringEscapeUtils.escapeHtml(content);
-		this.found = this.found.replace(" ", "&nbsp;");
-		this.found = this.found.replace("\n", "<br />\n");
+		//this.found = content;
+		this.found = StringEscapeUtils.escapeHtml(content);
+		//this.found = this.found.replace(" ", "&nbsp;");
+		//this.found = this.found.replace("\n", "<br />\n");
 		this.type = 2;
+		
+		if(this.found.contains("attachment=") && this.found.contains("filename=")) {
+			this.found = this.found.replace("attachment=", "");
+			this.found = this.found.replace("filename=", "");
+			this.name = this.found.split(";")[0];
+			this.name.replace("/", "\\");
+			this.found = this.found.split(";")[1];
+		}
 		this.status = "Content";
 		this.color = "color:black";
 		this.dts = "";

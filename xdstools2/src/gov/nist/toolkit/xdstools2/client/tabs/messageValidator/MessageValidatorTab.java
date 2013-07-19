@@ -49,6 +49,7 @@ public class MessageValidatorTab extends TabbedWindow {
 	protected TabContainer myContainer;
 	VerticalPanel resultsContainer = new VerticalPanel();
 	FlexTable resultsTable = new FlexTable();
+	HTML htmlReport = new HTML();
 	int row = 0;
 	CheckBox lessdetail;
 	CheckBox crossCommunity;
@@ -1260,8 +1261,9 @@ public class MessageValidatorTab extends TabbedWindow {
 		//			resultsTable.setWidget(summaryRow, 0, html("Summary: No error were found"));
 
 		
-		HTML html = new HTML(results.getHtmlResults());
-		topPanel.add(html);
+		this.htmlReport.removeFromParent();
+		this.htmlReport = new HTML(results.getHtmlResults());
+		topPanel.add(this.htmlReport);
 		//topPanel.add(resultsTable);
 
 		inspectButton.setEnabled(true);

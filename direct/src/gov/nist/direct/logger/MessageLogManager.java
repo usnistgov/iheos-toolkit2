@@ -14,7 +14,7 @@ Authors: William Majurski
 		 Diane Azais
 		 Julien Perugini
 		 Antoine Gerardin
-		
+
  */
 
 package gov.nist.direct.logger;
@@ -30,17 +30,23 @@ import gov.nist.direct.logger.writer.messageLoggerImpl.MDNLogger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+
+import org.apache.commons.io.IOUtils;
 
 public class MessageLogManager {
 	private static String UNKNOWN_USERNAME = "Unknown username";
 
-	
+
 	// general attributes
 	private String label;
 
@@ -57,7 +63,7 @@ public class MessageLogManager {
 	private Date mdnReceivedDate;
 	private String status;
 	private LogPathsSingleton ls;
-		
+
 
 	/**
 	 * Stores a single message log
@@ -74,22 +80,22 @@ public class MessageLogManager {
 	public MessageLogManager(MessageLog msgLog){
 		this.msgLog = msgLog;
 	}
-	
+
 	/**
 	 * Completes a Direct message log with matching MDN logs
 	 * @param messageId
 	 */
 	public static void logMDN(MimeMessage m, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId){
-		
+
 		// find the username that matches the original message ID
 		String username = "";
 		if (findUsername(origMessageId) != ""){
-			  username = findUsername(origMessageId);
-			  System.out.println("When logging an MDN, username should not be empty.");
+			username = findUsername(origMessageId);
+			System.out.println("When logging an MDN, username should not be empty.");
 		}
 		System.out.println("mdn username :" + username);
-		
-		
+
+
 		// Log MDN message-ID
 		MessageIDLogger idl = new MessageIDLogger();
 		try {
@@ -98,8 +104,8 @@ public class MessageLogManager {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
+
+
 		// Log MDN validation status
 		MessageStatusLogger dl = new MessageStatusLogger();
 		try {
@@ -108,7 +114,7 @@ public class MessageLogManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// Log validation status of the original Direct message (MDN ack value)
 		try {
 			dl.logDirectOriginalValidationStatus(origDirectMsgValidationStatus, transactionType, messageType, username, origMessageId);
@@ -116,7 +122,7 @@ public class MessageLogManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// Log MDN received date
 		TimeLogger tl = new TimeLogger();
 		try {
@@ -141,7 +147,7 @@ public class MessageLogManager {
 
 
 	}
-	
+
 	/**
 	 * Finds a username in the logging structure, based on its matching message-id
 	 * @param origMsgId the original message-id (the Direct message=ID) that is extracted from a received MDN
@@ -149,10 +155,10 @@ public class MessageLogManager {
 	 */
 	private static String findUsername(String origMsgId) {
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
-		
+
 		String logRoot = LogPathsSingleton.getLOG_ROOT();
 		List<String> usernames = LoggerUtils.listFilesForFolder("");
-		
+
 		String name = "";
 		String msgIdFolder = logRoot + name + ls.getDIRECT_SEND_FOLDER() + origMsgId;
 		File f;
@@ -162,13 +168,19 @@ public class MessageLogManager {
 			f = new File(msgIdFolder);
 			if (f.exists()) return name;
 		}
-	System.out.println("Error: No username matching original message ID "+ origMsgId +" could be found.");
+		System.out.println("Error: No username matching original message ID "+ origMsgId +" could be found.");
 		return UNKNOWN_USERNAME;
-		
+
 	}
 
 
 	public static void logDirectMessage(String username, Date directMsgDateSent, String transactionType, String messageType, String messageId, MimeMessage directMessage, String label){
+		/*
+		// Replace MessageId by Date
+		SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd-hh'h'mm'min'ss's'");
+		messageId = ft.format(directMsgDateSent);
+		*/
+		
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
 		try {
@@ -194,13 +206,13 @@ public class MessageLogManager {
 
 		// Log full Direct Message
 		DirectContentLogger dcl = new DirectContentLogger();
-		try {
+		try {	
 			dcl.logMessageContents(directMessage, ls, transactionType, messageType, username, messageId);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		
+
 		// Log Label
 		LabelLogger ll = new LabelLogger();
 		try {
@@ -219,6 +231,44 @@ public class MessageLogManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static void logAttachment(String username, Date directMsgDateSent, String messageId, String transactionType, String messageType, InputStream attachment, String attachmentName) {
+		
+		/*
+		// Replace MessageId by Date
+		SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd-hh'h'mm'min'ss's'");
+		messageId = ft.format(directMsgDateSent);
+		*/
+		
+		// Log attachment
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		String contentsLogPath = ls.getAttachmentLogPath(transactionType, messageType, username, messageId, attachmentName);
+		try {
+			IOUtils.copy(attachment,new FileOutputStream(new File(contentsLogPath)));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	public static String getAttachmentLink(String username, Date directMsgDateSent, String messageId, String transactionType, String messageType, String attachmentName) {
+		/*
+		// Replace MessageId by Date
+		SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd-hh'h'mm'min'ss's'");
+		messageId = ft.format(directMsgDateSent);
+		*/
+		
+		// Log attachment
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		String contentsLogPath = ls.getAttachmentLogPath(transactionType, messageType, username, messageId, attachmentName);
+		
+		return contentsLogPath;
+
 	}
 
 
@@ -245,25 +295,25 @@ public class MessageLogManager {
 		//MimeMessage directContents = reader.readDirectMessage(ls, transactionType,  messageType, username, messageId);
 
 		// read MDN validation status
-			// reading MDN status first in case it exists
-			//String	status = reader.readMessageStatus(ls, _transactionType,  ls.getMDN_MESSAGE_FOLDER(), username, messageId);
+		// reading MDN status first in case it exists
+		//String	status = reader.readMessageStatus(ls, _transactionType,  ls.getMDN_MESSAGE_FOLDER(), username, messageId);
 		//	if (status == null){
-				// then read direct status
-			String	status = reader.readMessageStatus(ls, _transactionType,  messageType, username, messageId);
-			//}
+		// then read direct status
+		String	status = reader.readMessageStatus(ls, _transactionType,  messageType, username, messageId);
+		//}
 		System.out.println("status " + status);
-		
-		
+
+
 		// read label
 		String label = reader.readLabel(ls, _transactionType,  messageType, username, messageId);
-		
+
 		// read sent date
 		String directSendDate = reader.readDirectSendDate(ls, _transactionType, messageType, username, messageId);
-		
+
 		// read projected expiration date
 		String expirationDate = reader.readMDNExpirationDate(ls, _transactionType, messageType, username, messageId);
 
-		
+
 
 		// **** parse folder MDN ****
 		messageType =	ls.getMDN_MESSAGE_FOLDER();
@@ -273,12 +323,12 @@ public class MessageLogManager {
 
 		// read MDN message-ID
 		String mdnMessageID = reader.readMDNMessageID(ls, _transactionType, messageType, username, messageId);
-		
+
 
 		// read original Direct message status (whether MDN indicates if the Direct msg is valid or not)
 		String origDirectMsgStatus = reader.readOrigDirectMessageStatus(ls, _transactionType, messageType, username, messageId);
-		
-		
+
+
 		// Get Transaction Type name as a String suitable for display
 		String transactionLabel = "";
 		if (_transactionType == ls.getDIRECT_SEND_FOLDER()) {
@@ -289,7 +339,7 @@ public class MessageLogManager {
 		} else {
 			System.out.println("Transaction name unknown.");
 		}
-		
+
 		// Get the Message Type as a String suitable for display
 		String messageTypeLabel = "";
 		if (messageType == ls.getDIRECT_MESSAGE_FOLDER()) {
@@ -300,7 +350,7 @@ public class MessageLogManager {
 		} else {
 			System.out.println("Message type unknown.");
 		}
-		
+
 		return new MessageLog(transactionLabel, messageTypeLabel, messageId, directSendDate, expirationDate, mdnReceivedDate, mdnMessageID, status, origDirectMsgStatus, label);	
 	}
 

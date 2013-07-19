@@ -1,9 +1,11 @@
 package gov.nist.toolkit.errorrecording.client;
 
 
+import java.io.File;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -21,6 +23,7 @@ public class ErrorRecorderAdapter {
 	int indexEndSummary = 0;
 	boolean hasCCDA = false;
 	boolean hasXDM = false;
+	boolean isOnlyCCDA = false;
 	
 	public ErrorRecorderAdapter(ArrayList<ValidatorErrorItem> er) {
 		/*ArrayList<ValidatorErrorItem> er = new ArrayList<ValidatorErrorItem>();
@@ -55,6 +58,9 @@ public class ErrorRecorderAdapter {
 					i += 2;
 					detailed.add(new ValidationReportItem(contentName, content));
 				} else if(er.get(i).msg.contains("Input is CDA R2, try validation as CCDA")) {
+					if(i == 1) {
+						isOnlyCCDA = true;
+					}
 					i = getCCDAFromErrorRecorder(er, i);
 					hasCCDA = true;
 				} else if(er.get(i).msg.contains("Try validation as XDM")) {
@@ -159,11 +165,21 @@ public class ErrorRecorderAdapter {
 			Template t = ve.getTemplate("DirectValidationReport.vm");
 			//  create a context and add data
 			VelocityContext context = new VelocityContext();
-			context.put("summary", this.getSummary());
-			context.put("validationReport", this.getDetailed());
+
+			if(!isOnlyCCDA) {
+				context.put("summary", this.getSummary());
+				context.put("validationReport", this.getDetailed());
+			} else {
+				context.put("summary", new ArrayList<SummaryToken>());
+				context.put("validationReport", new ArrayList<ValidationReportItem>());
+			}
 			
 			// Path for images
-			context.put("path", "/ttt/doc");
+			String absolutePath = new File(Thread.currentThread().getContextClassLoader().getResource("").getFile()).getParentFile().getParentFile().getPath();//this goes to webapps directory
+			String pattern = Pattern.quote(File.separator);
+			String webappsDir = absolutePath.split(pattern)[absolutePath.split(pattern).length-1];
+			webappsDir = "/" + webappsDir + "/doc";
+			context.put("path", webappsDir);
 			
 			// CCDA
 			context.put("ccda", ccdaString);
@@ -237,6 +253,10 @@ public class ErrorRecorderAdapter {
 		}
 		
 		return res;
+	}
+	
+	public boolean isOnlyCCDA() {
+		return isOnlyCCDA;
 	}
 
 }

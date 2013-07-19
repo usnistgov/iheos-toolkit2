@@ -1,3 +1,32 @@
+<style type="text/css">
+  
+  body {
+  	font-family: verdana,arial,sans-serif;
+  }
+  
+table.gridtable {
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 6px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 6px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+	font-size: 14px;
+}
+</style>
+
 <p>
 <span style="text-decoration: underline;font-size: x-large;color: royalblue;">CCDA Validation </span>
 <br /><br />
@@ -5,7 +34,7 @@
 #set($firstOne = 0)
     	
 #foreach( $reportToken in $validationReport )
-		#if($reportToken.getStatus().equals("Success"))
+		#if($reportToken.getStatus().equals("Information"))
 			#set($color = "green")
 		#elseif($reportToken.getStatus().equals("Warning"))
 			#set($color = "blue")

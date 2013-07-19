@@ -27,7 +27,9 @@ table.gridtable td {
 }
 </style>
 <p>
+	#if(!$summary.isEmpty())
 	<span style="text-decoration: underline;font-size: x-large;color: royalblue;">Message Validation Summary</span>
+	#end
 #set($previousOff = 0)
 #foreach( $summaryToken in $summary )
 	#if($summaryToken.getName() != "")
@@ -68,6 +70,8 @@ table.gridtable td {
 #end
 
 </p>
+
+#if(!$validationReport.isEmpty())
 <p>
 <span style="text-decoration: underline;font-size: x-large;color: royalblue;">Detailed Validation Report</span>
 
@@ -110,7 +114,7 @@ table.gridtable td {
       	<td style="width:30%;"><span style="$reportToken.getColor();">$reportToken.getExpected()</span></td>
       	<td style="width:15%;"><span>
       	#if(!$reportToken.getRfc_link().isEmpty()) 
-      	<a href="$reportToken.getRfc_link()">$reportToken.getRfc_name()</a>
+      	<a href="$reportToken.getRfc_link()" target="_blank">$reportToken.getRfc_name()</a>
       	#else
       	$reportToken.getRfc_name()
       	#end
@@ -123,12 +127,12 @@ table.gridtable td {
 		#end
 		<br />
 		<div>
-		<img src="$path/img/file.png" width="30" height="30" alt="pass">
-		<span style="font-size: medium;">$reportToken.getName()</span>
-		<img src="$path/img/file.png" width="30" height="30" alt="pass">
+		<img src="$path/img/file.png" width="30" height="30" alt="file">
+		<span style="font-size: medium;">File $reportToken.getFound()</span>
+		<img src="$path/img/file.png" width="30" height="30" alt="file">
 		</div>
 		<div style="border: 4px dashed #ccc;">
-		$reportToken.getFound()
+		<a href="$reportToken.getName()" target="_blank">$reportToken.getFound()</a>
 		</div>
 		<br />
 		<table style="text-align: left; width: 100%;empty-cells: show;" class="gridtable">
@@ -155,6 +159,8 @@ table.gridtable td {
 	</table>
 #end
 </p>
+
+#end
 
 #if(!$ccda.equals(""))
 	$ccda

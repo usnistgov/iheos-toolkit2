@@ -26,7 +26,7 @@ public class CCDAValidationReportItem {
 		}
 		switch (level) {
 		case DETAIL:
-			status = "Success";
+			status = "Information";
 			break;
 
 		case WARNING:

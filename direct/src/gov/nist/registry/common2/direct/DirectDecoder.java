@@ -41,7 +41,7 @@ public class DirectDecoder extends MessageValidator {
 			directCertificate = IO.readBytes(certificate);
 			//in.read(directMessage);
 		} catch (IOException e) {
-			er.err("Error loading file", "Can't load the certificate file or message file", "", "", "Loading file");
+			er.error("No DTS", "Error loading file", "Can't load the certificate file or message file", "", "-");
 			e.printStackTrace();
 		}
 		

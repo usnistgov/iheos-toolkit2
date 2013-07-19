@@ -148,6 +148,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		}
 		this.username = wrappedParser.getUsername();
 		this.messageId = wrappedParser.getMessageId();
+		this.messageId = Utils.rawMsgId(this.messageId);
 		
 		if(this.username.equals("")) {
 			this.username = "Unknown-User";
@@ -530,15 +531,15 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		//this.processAttachments(er, p);
 
 		// Log attachment
-		String attachmentFilename = "attachment" + attachmentNumber + ".txt";
+		String attachmentFilename = "attachment" + this.attachmentNumber + ".txt";
 		if(p.getFileName() != null) {
 			attachmentFilename = p.getFileName();
 		} else {
 			attachmentNumber++;
 		}
-		MessageLogManager.logAttachment(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", p.getInputStream(), attachmentFilename);
-		String attachmentLink = MessageLogManager.getAttachmentLink(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", attachmentFilename);
-		
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+
 		er.detail("#####################text/plain message######################");
 		String textContent = p.getContent().toString();
 		System.out.println(textContent);
@@ -546,8 +547,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		if(qpEncoded) {
 			textContent = decodeQPText(textContent);
 		}
-		er.detail(SafeHtmlUtils.htmlEscape(textContent));
-		//er.detail("<a href=\"file:///" + attachmentLink + "\">" + attachmentFilename + "</a>");
+		//er.detail(SafeHtmlUtils.htmlEscape(textContent));
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
 		er.detail("##########################################################");
 
 		// Update the summary
@@ -572,6 +573,21 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		er.concat(separate);
 		//this.processAttachments(er, p);
 
+
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".html";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+		er.detail("#####################HTML attachment######################");
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+		er.detail("##########################################################");
+		
+		/*
 		er.detail("#####################text/html content######################");
 		String textContent = p.getContent().toString();
 		System.out.println(textContent);
@@ -581,6 +597,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		}
 		er.detail(SafeHtmlUtils.htmlEscape(textContent));
 		er.detail("##########################################################");
+		*/
 
 		// Update the summary
 		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/html interpreted as a text content", separate.hasErrors(), true);
@@ -612,6 +629,20 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			attachmentContents = p.getInputStream();
 		}
 
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".xml";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+		er.detail("#####################CCDA attachment######################");
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+		er.detail("##########################################################");
+		
+		/*
 		// Display CCDA Document
 		er.detail("#####################CCDA Content######################");
 		//String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
@@ -624,6 +655,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		er.detail(html_formatted_ccda);
 		er.detail("####################################################");
 		//logger.info(p.getContent().toString());
+		 */
 
 
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
@@ -658,11 +690,28 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("\n====================Stylesheet found: " + p.getFileName() + "==========================\n");
 			logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
 			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
+			
+			// Log attachment
+			String attachmentFilename = "attachment" + attachmentNumber + ".xml";
+			if(p.getFileName() != null) {
+				attachmentFilename = p.getFileName();
+			} else {
+				attachmentNumber++;
+			}
+
+			String attachmentLink = logAttachment(p, attachmentFilename);
+			er.detail("#####################Stylesheet attachment######################");
+			er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+			er.detail("##########################################################");
+			
+			/*
 			er.detail("#####################XML Content######################");
 			InputStream xsl = MimeUtility.decode(p.getInputStream(), MimeUtility.getEncoding(p.getDataHandler()));
 			String xslString = IOUtils.toString(xsl, "UTF-8");
 			er.detail(SafeHtmlUtils.htmlEscape(xslString));
 			er.detail("####################################################");
+			*/
+			
 			partNumber++;
 		} else {
 			er.detail("====================Application/xml==========================");
@@ -683,6 +732,20 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 				attachmentContents = p.getInputStream();
 			}
 
+			// Log attachment
+			String attachmentFilename = "attachment" + attachmentNumber + ".txt";
+			if(p.getFileName() != null) {
+				attachmentFilename = p.getFileName();
+			} else {
+				attachmentNumber++;
+			}
+
+			String attachmentLink = logAttachment(p, attachmentFilename);
+			er.detail("#####################CCDA attachment######################");
+			er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+			er.detail("##########################################################");
+			
+			/*
 			// Display CCDA Document
 			er.detail("#####################XML Content######################");
 			//String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
@@ -695,6 +758,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail(html_formatted_ccda);
 			er.detail("####################################################");
 			//logger.info(p.getContent().toString());
+			 */
 
 
 			byte[] contents = Io.getBytesFromInputStream(attachmentContents);
@@ -1039,6 +1103,20 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		// Warning: Mandatory for validation report
 		er.detail("XDM Validation done");
 
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".zip";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+		er.detail("#####################Zip attachment######################");
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+		er.detail("##########################################################");
+		
+
 	}
 
 	/**
@@ -1076,6 +1154,21 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			attachmentContents.reset();
 		}
 
+		
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".xml";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+		er.detail("#####################XML attachment######################");
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+		er.detail("##########################################################");
+		
+		/*
 		// If it is a XML file
 		if(p.getFileName().contains(".xml")) {
 			er.detail("#######################XML File############################");
@@ -1101,6 +1194,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			this.processAttachments(er, p);
 
 		}
+		*/
 
 	}
 
@@ -1207,7 +1301,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		String messageID = Utils.rawFromHeader(_messageID);
 
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
-		Date date = new Date();
+		//Date date = new Date();
 
 		// Get label - TODO
 		String label = "";
@@ -1261,6 +1355,19 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	
 	public String decodeQPText(String text) throws UnsupportedEncodingException {
 		return MimeUtility.decodeText(text);
+	}
+	
+	public String logAttachment(Part p, String attachmentFilename) {
+		String attachmentLink = "";
+		try {
+			MessageLogManager.logAttachment(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", p.getInputStream(), attachmentFilename);
+			attachmentLink = MessageLogManager.getAttachmentLink(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", attachmentFilename);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		attachmentLink = attachmentLink.replace("\\", "/");
+		
+		return attachmentLink;
 	}
 	
 	
