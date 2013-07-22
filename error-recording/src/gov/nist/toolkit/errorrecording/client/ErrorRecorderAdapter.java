@@ -15,7 +15,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 
 public class ErrorRecorderAdapter {
-	
+
 	ArrayList<SummaryToken> summary = new ArrayList<SummaryToken>();
 	ArrayList<ValidationReportItem> detailed = new ArrayList<ValidationReportItem>();
 	ArrayList<CCDAValidationReportItem> ccda = new ArrayList<CCDAValidationReportItem>();
@@ -24,7 +24,8 @@ public class ErrorRecorderAdapter {
 	boolean hasCCDA = false;
 	boolean hasXDM = false;
 	boolean isOnlyCCDA = false;
-	
+	boolean isDirect = false;
+
 	public ErrorRecorderAdapter(ArrayList<ValidatorErrorItem> er) {
 		/*ArrayList<ValidatorErrorItem> er = new ArrayList<ValidatorErrorItem>();
 		for(int k=0;k<results.getResults().size();k++) {
@@ -32,12 +33,12 @@ public class ErrorRecorderAdapter {
 				er.add(results.getResults().get(l).er.get(l));
 			}
 		}*/
-		
+
 		getSummaryFromErrorRecorder(er);
 		getReportFromErrorRecorder(er);
-		
+
 	}
-	
+
 	public ErrorRecorderAdapter(List<ValidatorErrorItem> er) {
 		ArrayList<ValidatorErrorItem> erVal = new ArrayList<ValidatorErrorItem>();
 		for(int i=0;i<er.size();i++) {
@@ -45,10 +46,10 @@ public class ErrorRecorderAdapter {
 		}
 		getSummaryFromErrorRecorder(erVal);
 		getReportFromErrorRecorder(erVal);
-		
+
 	}
-	
-	
+
+
 	public void getReportFromErrorRecorder(ArrayList<ValidatorErrorItem> er) {
 		for(int i=indexEndSummary;i<er.size();i++) {
 			if(er.get(i).level.equals(ValidatorErrorItem.ReportingLevel.DETAIL)) {
@@ -74,12 +75,13 @@ public class ErrorRecorderAdapter {
 					er.get(i).name = er.get(i).msg;
 				}
 				detailed.add(new ValidationReportItem(er.get(i).level, er.get(i).name,
-					er.get(i).dts, er.get(i).found, er.get(i).expected, er.get(i).rfc));
+						er.get(i).dts, er.get(i).found, er.get(i).expected, er.get(i).rfc));
+				isDirect = true;
 			}
 		}
 	}
-	
-	
+
+
 	public void getSummaryFromErrorRecorder(ArrayList<ValidatorErrorItem> er) {
 		for(int i=0;i<er.size();i++) {
 			if(er.get(i).msg.contains("Message Content Summary")) {
@@ -95,7 +97,7 @@ public class ErrorRecorderAdapter {
 					} else {
 						num = 2;
 					}
-					
+
 					summary.add(new SummaryToken(er.get(k).msg, num));
 					k++;
 				}
@@ -110,17 +112,17 @@ public class ErrorRecorderAdapter {
 			ccda.add(new CCDAValidationReportItem(er.get(k).msg, er.get(k).resource, er.get(k).level));
 			k++;
 		}
-		
+
 		return k++;
 	}
-	
+
 	public int getXDMFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
 		int k = index; 
 		while(!er.get(k).msg.contains("XDM Validation done")) {
 			xdm.add(new XDMValidationReportItem(er.get(k).msg, er.get(k).level));
 			k++;
 		}
-		
+
 		return k++;
 	}
 
@@ -147,58 +149,60 @@ public class ErrorRecorderAdapter {
 	public String toHTML() {
 		// velocity
 		String res = "";
-		try {
-			
-			String ccdaString = "";
-			if(hasCCDA) {
-				ccdaString = CcdaToHtml();
-			}
-			
-			String xdmString = "";
-			if(hasXDM) {
-				xdmString = XdmToHtml();
-			}
-			
-			//  first, get and initialize an engine  
-			VelocityEngine ve = VelocitySingleton.getVelocityEngine();
-			//  next, get the Template
-			Template t = ve.getTemplate("DirectValidationReport.vm");
-			//  create a context and add data
-			VelocityContext context = new VelocityContext();
+		if(isDirect) {
+			try {
 
-			if(!isOnlyCCDA) {
-				context.put("summary", this.getSummary());
-				context.put("validationReport", this.getDetailed());
-			} else {
-				context.put("summary", new ArrayList<SummaryToken>());
-				context.put("validationReport", new ArrayList<ValidationReportItem>());
+				String ccdaString = "";
+				if(hasCCDA) {
+					ccdaString = CcdaToHtml();
+				}
+
+				String xdmString = "";
+				if(hasXDM) {
+					xdmString = XdmToHtml();
+				}
+
+				//  first, get and initialize an engine  
+				VelocityEngine ve = VelocitySingleton.getVelocityEngine();
+				//  next, get the Template
+				Template t = ve.getTemplate("DirectValidationReport.vm");
+				//  create a context and add data
+				VelocityContext context = new VelocityContext();
+
+				if(!isOnlyCCDA) {
+					context.put("summary", this.getSummary());
+					context.put("validationReport", this.getDetailed());
+				} else {
+					context.put("summary", new ArrayList<SummaryToken>());
+					context.put("validationReport", new ArrayList<ValidationReportItem>());
+				}
+
+				// Path for images
+				String absolutePath = new File(Thread.currentThread().getContextClassLoader().getResource("").getFile()).getParentFile().getParentFile().getPath();//this goes to webapps directory
+				String pattern = Pattern.quote(File.separator);
+				String webappsDir = absolutePath.split(pattern)[absolutePath.split(pattern).length-1];
+				webappsDir = "/" + webappsDir + "/doc";
+				context.put("path", webappsDir);
+
+				// CCDA
+				context.put("ccda", ccdaString);
+
+				// XDM
+				context.put("xdm", xdmString);
+
+				// now render the template into a StringWriter
+				StringWriter writer = new StringWriter();
+				t.merge( context, writer );
+				// show the World
+				//System.out.println( writer.toString() );
+				res = writer.toString();
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
-			
-			// Path for images
-			String absolutePath = new File(Thread.currentThread().getContextClassLoader().getResource("").getFile()).getParentFile().getParentFile().getPath();//this goes to webapps directory
-			String pattern = Pattern.quote(File.separator);
-			String webappsDir = absolutePath.split(pattern)[absolutePath.split(pattern).length-1];
-			webappsDir = "/" + webappsDir + "/doc";
-			context.put("path", webappsDir);
-			
-			// CCDA
-			context.put("ccda", ccdaString);
-			
-			// XDM
-			context.put("xdm", xdmString);
-			
-			// now render the template into a StringWriter
-			StringWriter writer = new StringWriter();
-			t.merge( context, writer );
-			// show the World
-			//System.out.println( writer.toString() );
-			res = writer.toString();
-		} catch(Exception e) {
-			e.printStackTrace();
 		}
 		return res;
 	}
-	
+
 	public String CcdaToHtml() {
 		String res = "";
 		//  first, get and initialize an engine  
@@ -207,12 +211,12 @@ public class ErrorRecorderAdapter {
 			Template t2 = ve.getTemplate("CCDAValidationReport.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("validationReport", this.ccda);
-			
+
 			StringWriter writer = new StringWriter();
 			t2.merge( context, writer );
-			
+
 			res = writer.toString();
-			
+
 		} catch (ResourceNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -223,10 +227,10 @@ public class ErrorRecorderAdapter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return res;
 	}
-	
+
 	public String XdmToHtml() {
 		String res = "";
 		//  first, get and initialize an engine  
@@ -235,12 +239,12 @@ public class ErrorRecorderAdapter {
 			Template t2 = ve.getTemplate("XDMValidationReport.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("validationReport", this.xdm);
-			
+
 			StringWriter writer = new StringWriter();
 			t2.merge( context, writer );
-			
+
 			res = writer.toString();
-			
+
 		} catch (ResourceNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -251,10 +255,10 @@ public class ErrorRecorderAdapter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return res;
 	}
-	
+
 	public boolean isOnlyCCDA() {
 		return isOnlyCCDA;
 	}

@@ -7,6 +7,7 @@
 
 #foreach( $reportToken in $validationReport )
 		#set($weight = "normal")
+		#set($color = "black")
 		
 		#if($reportToken.getStatus().equals("Success"))
 			#set($color = "black")

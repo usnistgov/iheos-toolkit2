@@ -35,7 +35,7 @@ table.gridtable td {
     	
 #foreach( $reportToken in $validationReport )
 		#if($reportToken.getStatus().equals("Information"))
-			#set($color = "green")
+			#set($color = "black")
 		#elseif($reportToken.getStatus().equals("Warning"))
 			#set($color = "blue")
 		#elseif($reportToken.getStatus().equals("Error"))
