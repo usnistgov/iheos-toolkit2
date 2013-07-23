@@ -230,7 +230,7 @@ public class DoComms implements Runnable {
 
 		logger.info("Starting report generation");
 		
-		validationReport.append(hvf.toHtml());
+		validationReport.append(hvf.toHtmlTemplate(mvr));
 
 		validationReport.append("</body></html>");
 

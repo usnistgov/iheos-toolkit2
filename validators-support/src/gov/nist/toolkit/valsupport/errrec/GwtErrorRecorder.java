@@ -368,6 +368,10 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.msg = msg;
 		summary.add(ei);
 	}
+	
+	public void addValidatorItem(ValidatorErrorItem e) {
+		errMsgs.add(e);
+	}
 
 
 

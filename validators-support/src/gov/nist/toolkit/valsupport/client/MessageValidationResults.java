@@ -19,6 +19,7 @@ public class MessageValidationResults implements IsSerializable {
 	
 	List<ValidationStepResult> results = new ArrayList<ValidationStepResult>();
 	List<ValidationStepResult> summary = new ArrayList<ValidationStepResult>();
+	String htmlResults = "";
 	
 	public MessageValidationResults() {} // For GWT
 	
@@ -39,6 +40,14 @@ public class MessageValidationResults implements IsSerializable {
 		result.stepName = stepName;
 		result.er = er;
 		summary.add(result);
+	}
+	
+	public void addHtmlResults(String htmlResults) {
+		this.htmlResults = htmlResults;
+	}
+	
+	public String getHtmlResults() {
+		return this.htmlResults;
 	}
 	
 	public List<ValidationStepResult> getResults() {

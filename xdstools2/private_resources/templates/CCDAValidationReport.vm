@@ -1,0 +1,73 @@
+<style type="text/css">
+  
+  body {
+  	font-family: verdana,arial,sans-serif;
+  }
+  
+table.gridtable {
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 6px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 6px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+	font-size: 14px;
+}
+</style>
+
+<p>
+<span style="text-decoration: underline;font-size: x-large;color: royalblue;">CCDA Validation </span>
+<br /><br />
+
+#set($firstOne = 0)
+    	
+#foreach( $reportToken in $validationReport )
+		#if($reportToken.getStatus().equals("Information"))
+			#set($color = "black")
+		#elseif($reportToken.getStatus().equals("Warning"))
+			#set($color = "blue")
+		#elseif($reportToken.getStatus().equals("Error"))
+			#set($color = "red")
+		#end
+		
+		#if(!$reportToken.getDts().equals(""))
+			#if($firstOne == 0)
+				<br /><br />
+				<table style="text-align: left; width: 100%;empty-cells: show;" class="gridtable">
+				<tr>
+			  	<th style="width:5%;"><span style="font-weight: bold;font-size: 18px;">DTS</span></th>
+			  	<th style="width:8%;"><span style="font-weight: bold;font-size: 18px;">Status</span></th>
+			  	<th style="width:57%;"><span style="font-weight: bold;font-size: 18px;">Message</span></th>
+			  	<th style="width:30%;"><span style="font-weight: bold;font-size: 18px;">Resource</span></th>
+				</tr>
+			
+			#set($firstOne = 1)	
+			#end
+		
+		<tr>
+      	<td style="width:5%;"><span style="color:$color;">$reportToken.getDts()</span></td>
+      	<td style="width:8%;"><span style="color:$color;">$reportToken.getStatus()</span></td>
+      	<td style="width:57%;"><span style="color:$color;">$reportToken.getMsg()</span></td>
+      	<td style="width:30%;"><span style="color:$color;">$reportToken.getResource()</span></td>
+    	</tr>
+    	#else
+    	$reportToken.getMsg()
+    	<br />
+    	#end
+
+#end
+
+</table>
+</p>

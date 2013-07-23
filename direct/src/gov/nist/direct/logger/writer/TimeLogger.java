@@ -24,7 +24,6 @@ import gov.nist.direct.utils.Utils;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 

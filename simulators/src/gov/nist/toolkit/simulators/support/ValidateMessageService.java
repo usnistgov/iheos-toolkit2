@@ -3,6 +3,7 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.errorrecording.client.ErrorRecorderAdapter;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.session.server.Session;
@@ -133,6 +134,13 @@ public class ValidateMessageService extends CommonServiceManager {
 				List<ValidatorErrorItem> errs = ger.getValidatorErrorInfo();
 				mvr.addResult(vs.getStepName(), errs);
 				mvr.addSummary(vs.getStepName(), ger.getSummaryErrorInfo());
+				ErrorRecorderAdapter erAd = null;
+				try {
+					erAd = new ErrorRecorderAdapter(ger.getValidatorErrorInfo());
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				mvr.addHtmlResults(erAd.toHTML());
 			}
 			
 			mvr.addResult("Validation Summary", buildValidationSummary(vc, mvc));

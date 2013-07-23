@@ -134,7 +134,7 @@ public class ValServlet extends HttpServlet {
 
 		out.print("<html><head><title>Validation Results</title></head><body><h1>Validation Results</h1>");
 		
-		out.print(hvf.toHtml());
+		out.print(hvf.toHtmlTemplate(mvr));
 		
 		out.print("</body></html>");
 	}

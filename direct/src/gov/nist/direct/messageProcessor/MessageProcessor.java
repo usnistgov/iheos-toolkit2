@@ -26,8 +26,6 @@ import gov.nist.direct.messageProcessor.utils.MessageDispatchUtils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
-import java.text.ParseException;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -65,7 +63,7 @@ public class MessageProcessor implements MessageProcessorInterface {
 		try {
 			// Check if encrypted message
 			if(!MessageDispatchUtils.isEncrypted(er, mm)) {
-				er.err("Message File", "The file is not an encrypted message", "", "", "Message File");
+				er.error("No DTS", "Message File", "The file is not an encrypted message", "Must be encrypted", "-");
 				logger.info("This is not an encrypted message");
 			}
 			
@@ -102,7 +100,7 @@ public class MessageProcessor implements MessageProcessorInterface {
 		
 		// ----- Unknown type  -----
 			else if(!MessageDispatchUtils.isEncrypted(er, mm) && !MessageDispatchUtils.isDIRECT(er, inputDirectMessage, _directCertificate, _password)) {
-				er.err("Message File", "The file is neither a DIRECT message nor an MDN.", "", "", "Message File");
+				er.error("No DTS", "Message File", "The file is neither a DIRECT message nor an MDN.", "", "-");
 				logger.info("The file is neither a DIRECT message nor an MDN.");
 			}
 		} catch (MessagingException e) {

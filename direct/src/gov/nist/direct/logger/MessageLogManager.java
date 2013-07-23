@@ -175,10 +175,11 @@ public class MessageLogManager {
 
 
 	public static void logDirectMessage(String username, Date directMsgDateSent, String transactionType, String messageType, String messageId, MimeMessage directMessage, String label){
+		/*
 		// Replace MessageId by Date
 		SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd-hh'h'mm'min'ss's'");
 		messageId = ft.format(directMsgDateSent);
-
+		*/
 		
 		// Log Direct message sent date
 		TimeLogger tl = new TimeLogger();
@@ -234,15 +235,17 @@ public class MessageLogManager {
 
 	public static void logAttachment(String username, Date directMsgDateSent, String messageId, String transactionType, String messageType, InputStream attachment, String attachmentName) {
 		
+		/*
 		// Replace MessageId by Date
 		SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd-hh'h'mm'min'ss's'");
 		messageId = ft.format(directMsgDateSent);
+		*/
 		
 		// Log attachment
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		String contentsLogPath = ls.getAttachmentLogPath(transactionType, messageType, username, messageId, attachmentName);
 		try {
-			IOUtils.copy(attachment,new FileOutputStream(contentsLogPath));
+			IOUtils.copy(attachment,new FileOutputStream(new File(contentsLogPath)));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -254,10 +257,12 @@ public class MessageLogManager {
 	}
 	
 	public static String getAttachmentLink(String username, Date directMsgDateSent, String messageId, String transactionType, String messageType, String attachmentName) {
+		/*
 		// Replace MessageId by Date
 		SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd-hh'h'mm'min'ss's'");
 		messageId = ft.format(directMsgDateSent);
-
+		*/
+		
 		// Log attachment
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		String contentsLogPath = ls.getAttachmentLogPath(transactionType, messageType, username, messageId, attachmentName);

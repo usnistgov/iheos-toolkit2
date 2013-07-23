@@ -23,8 +23,6 @@ package gov.nist.direct.messageProcessor.direct.directImpl;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

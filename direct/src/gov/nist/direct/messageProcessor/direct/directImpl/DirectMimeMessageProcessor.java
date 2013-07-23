@@ -19,12 +19,10 @@ Authors: William Majurski
 
 package gov.nist.direct.messageProcessor.direct.directImpl;
 
-import gov.nist.direct.client.MessageLog;
 import gov.nist.direct.directValidator.MessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.DirectMimeMessageValidatorFacade;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.logger.MessageLogManager;
-import gov.nist.direct.logger.UserLog;
 import gov.nist.direct.messageProcessor.direct.DirectMessageProcessorInterface;
 import gov.nist.direct.utils.Utils;
 import gov.nist.direct.utils.ValidationSummary;
@@ -33,26 +31,18 @@ import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.valccda.CdaDetector;
 import gov.nist.toolkit.valregmsg.xdm.XDMException;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
-import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
-import gov.nist.toolkit.valsupport.message.HtmlValFormatter;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -63,13 +53,10 @@ import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
-
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
 import javax.mail.Address;
@@ -77,13 +64,11 @@ import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Part;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.cert.X509CertificateHolder;
@@ -104,8 +89,6 @@ import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.util.Store;
 
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.sun.mail.util.BASE64DecoderStream;
-import com.sun.mail.util.QPEncoderStream;
 
 public class DirectMimeMessageProcessor implements DirectMessageProcessorInterface {
 
@@ -165,6 +148,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		}
 		this.username = wrappedParser.getUsername();
 		this.messageId = wrappedParser.getMessageId();
+		this.messageId = Utils.rawMsgId(this.messageId);
 		
 		if(this.username.equals("")) {
 			this.username = "Unknown-User";
@@ -233,8 +217,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		//er.detail("Processing Part");
 		// If the Part is a Message then first validate the Envelope
 		if (p instanceof Message && !wrapped_no_multipart){
-			er.detail("Detected an Envelope");
-			er.detail("\n====================Outer Enveloped Message==========================\n");
+			//er.detail("Detected an Envelope");
+			er.detail("====================Outer Enveloped Message==========================");
 			processEnvelope(er, (Message)p);
 		}
 
@@ -266,8 +250,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			p = (Part)p.getContent();
 			
 			if (p instanceof Message) {
-				er.detail("Detected an Envelope");
-				er.detail("\n====================Message RFC 822==========================\n");
+				//er.detail("Detected an Envelope");
+				er.detail("====================Message RFC 822==========================");
 				ProcessEnvelope process = new ProcessEnvelope();
 
 				// Separate ErrorRecorder
@@ -386,7 +370,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			//er.detail("This is a signed multipart"+"  Content Name: "+p.getContent().getClass().getName());
 
 			// DTS 129, Validate First MIME Part
-			er.detail("\n====================Process Multipart/signed Part==========================\n");
+			er.detail("====================Process Multipart/signed Part==========================");
 			ProcessEnvelope process = new ProcessEnvelope();
 
 			// Separate ErrorRecorder
@@ -407,7 +391,6 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			// DTS 155, Validate Content-Type
 			msgValidator.validateContentType2(er, p.getContentType());
 
-			org.bouncycastle.mail.smime.handlers.multipart_signed dsf;
 			SMIMESigned s = new SMIMESigned((MimeMultipart)p.getContent());
 
 			// Find micalg
@@ -429,7 +412,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			//er.detail("This is multipart"+"  Content Name: "+p.getContent().getClass().getName());
 
 			// DTS 129, Validate First MIME Part
-			er.detail("\n====================Process Multipart/mixed Part==========================\n");
+			er.detail("====================Process Multipart/mixed Part==========================");
 			ProcessEnvelope process = new ProcessEnvelope();
 
 			// Separate ErrorRecorder
@@ -457,7 +440,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			}
 
 		} else {
-			er.detail("\n===================Unknown Part==========================\n");
+			er.detail("===================Unknown Part==========================");
 			er.detail("Couldn't figure out the type"+"  Content Name: "+p.getContent().getClass().getName());
 			// Summary
 			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": Unknown part type " + p.getContentType(), Status.PART, true);
@@ -474,7 +457,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * Validates the envelope of the message
 	 * */
 	public void processEnvelope(ErrorRecorder er, Message m) throws Exception {
-		er.detail("Processing Envelope");
+		//er.detail("Processing Envelope");
 		ProcessEnvelope process = new ProcessEnvelope();
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
 
@@ -531,7 +514,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * */
 	public void processText(ErrorRecorder er, Part p) throws Exception{
 		//er.detail("Processing Text");
-		er.detail("\n====================Process Text/plain Part==========================\n");
+		er.detail("====================Process Text/plain Part==========================");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Summary
@@ -544,19 +527,19 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
 		msgValidator.validateFirstMIMEPart(er, true);
-		msgValidator.validateBody(er, p, (String)p.getContent());
+		//msgValidator.validateBody(er, p, (String)p.getContent());
 		//this.processAttachments(er, p);
 
 		// Log attachment
-		String attachmentFilename = "attachment" + attachmentNumber + ".txt";
+		String attachmentFilename = "attachment" + this.attachmentNumber + ".txt";
 		if(p.getFileName() != null) {
 			attachmentFilename = p.getFileName();
 		} else {
 			attachmentNumber++;
 		}
-		MessageLogManager.logAttachment(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", p.getInputStream(), attachmentFilename);
-		String attachmentLink = MessageLogManager.getAttachmentLink(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", attachmentFilename);
-		
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+
 		er.detail("#####################text/plain message######################");
 		String textContent = p.getContent().toString();
 		System.out.println(textContent);
@@ -564,8 +547,8 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		if(qpEncoded) {
 			textContent = decodeQPText(textContent);
 		}
-		er.detail(SafeHtmlUtils.htmlEscape(textContent));
-		//er.detail("<a href=\"file:///" + attachmentLink + "\">" + attachmentFilename + "</a>");
+		//er.detail(SafeHtmlUtils.htmlEscape(textContent));
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
 		er.detail("##########################################################");
 
 		// Update the summary
@@ -574,7 +557,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	}
 	
 	public void processTextHTML(ErrorRecorder er, Part p) throws Exception {
-		er.detail("\n====================Process Text/html Part==========================\n");
+		er.detail("====================Process Text/html Part==========================");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Summary
@@ -590,6 +573,21 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		er.concat(separate);
 		//this.processAttachments(er, p);
 
+
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".html";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+		er.detail("#####################HTML attachment######################");
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+		er.detail("##########################################################");
+		
+		/*
 		er.detail("#####################text/html content######################");
 		String textContent = p.getContent().toString();
 		System.out.println(textContent);
@@ -599,6 +597,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		}
 		er.detail(SafeHtmlUtils.htmlEscape(textContent));
 		er.detail("##########################################################");
+		*/
 
 		// Update the summary
 		validationSummary.updateInfos(getShiftIndent(shiftNumber) + "Part " + partNumber +": text/html interpreted as a text content", separate.hasErrors(), true);
@@ -609,7 +608,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * 
 	 * */
 	public void processTextXML(ErrorRecorder er, Part p) throws Exception{
-		er.detail("\n====================Processing Text XML==========================\n");
+		er.detail("====================Processing Text XML==========================");
 		logger.info("Processing attachments, Validation context is " + vc.toString());
 
 		// Update the summary
@@ -630,6 +629,20 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			attachmentContents = p.getInputStream();
 		}
 
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".xml";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+		er.detail("#####################CCDA attachment######################");
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+		er.detail("##########################################################");
+		
+		/*
 		// Display CCDA Document
 		er.detail("#####################CCDA Content######################");
 		//String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
@@ -642,11 +655,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		er.detail(html_formatted_ccda);
 		er.detail("####################################################");
 		//logger.info(p.getContent().toString());
+		 */
 
 
 		byte[] contents = Io.getBytesFromInputStream(attachmentContents);
 
 		if (new CdaDetector().isCDA(contents)) {
+			// Warning: Mandatory for validation report
 			er.detail("Input is CDA R2, try validation as CCDA");
 			ValidationContext docVC = new ValidationContext();
 			docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
@@ -657,6 +672,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 				MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
 				mve.run();
 			}
+			
+			// Warning: Mandatory for validation report
+			er.detail("CCDA Validation done");
 
 		} else {
 			er.detail("Is not a CDA R2 so no validation attempted");
@@ -672,14 +690,31 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail("\n====================Stylesheet found: " + p.getFileName() + "==========================\n");
 			logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
 			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted stylesheet document", Status.PART, true);
+			
+			// Log attachment
+			String attachmentFilename = "attachment" + attachmentNumber + ".xml";
+			if(p.getFileName() != null) {
+				attachmentFilename = p.getFileName();
+			} else {
+				attachmentNumber++;
+			}
+
+			String attachmentLink = logAttachment(p, attachmentFilename);
+			er.detail("#####################Stylesheet attachment######################");
+			er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+			er.detail("##########################################################");
+			
+			/*
 			er.detail("#####################XML Content######################");
 			InputStream xsl = MimeUtility.decode(p.getInputStream(), MimeUtility.getEncoding(p.getDataHandler()));
 			String xslString = IOUtils.toString(xsl, "UTF-8");
 			er.detail(SafeHtmlUtils.htmlEscape(xslString));
 			er.detail("####################################################");
+			*/
+			
 			partNumber++;
 		} else {
-			er.detail("\n====================Application/xml==========================\n");
+			er.detail("====================Application/xml==========================");
 			logger.info("Processing attachments application/xml, Validation context is " + vc.toString());
 			validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/xml interpreted xml document", Status.PART, true);
 			ProcessEnvelope process = new ProcessEnvelope();
@@ -697,6 +732,20 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 				attachmentContents = p.getInputStream();
 			}
 
+			// Log attachment
+			String attachmentFilename = "attachment" + attachmentNumber + ".txt";
+			if(p.getFileName() != null) {
+				attachmentFilename = p.getFileName();
+			} else {
+				attachmentNumber++;
+			}
+
+			String attachmentLink = logAttachment(p, attachmentFilename);
+			er.detail("#####################CCDA attachment######################");
+			er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+			er.detail("##########################################################");
+			
+			/*
 			// Display CCDA Document
 			er.detail("#####################XML Content######################");
 			//String html_formatted_ccda = new OMFormatter(p.getContent().toString()).toHtml();
@@ -709,11 +758,13 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			er.detail(html_formatted_ccda);
 			er.detail("####################################################");
 			//logger.info(p.getContent().toString());
+			 */
 
 
 			byte[] contents = Io.getBytesFromInputStream(attachmentContents);
 
 			if (new CdaDetector().isCDA(contents)) {
+				// Warning: Mandatory for validation report
 				er.detail("Input is CDA R2, try validation as CCDA");
 				ValidationContext docVC = new ValidationContext();
 				docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
@@ -724,6 +775,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 					MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
 					mve.run();
 				}
+				
+				// Warning: Mandatory for validation report
+				er.detail("CCDA Validation done");
 
 			} else {
 				er.detail("Is not a CDA R2 so no validation attempted");
@@ -740,6 +794,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	/**
 	 * verify the signature (assuming the cert is contained in the message)
 	 */
+	@SuppressWarnings("rawtypes")
 	private void verifySignature(ErrorRecorder er, SMIMESigned s, String contentTypeMicalg) throws Exception{
 		MessageValidatorFacade msgValidator = new DirectMimeMessageValidatorFacade();
 
@@ -838,7 +893,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	 * 
 	 * */
 	public Part processSMIMEEnvelope(ErrorRecorder er, Part p, InputStream certificate, String password) {
-		er.detail("Processing S/MIME");
+		//er.detail("Processing S/MIME");
 		logger.info("Processing SMIME Envelope");
 		//
 		// Open the key store
@@ -976,7 +1031,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			msgValidator.validateMessageBody(er, true);
 		}
 
-		er.detail("\n====================Inner decrypted Message==========================\n");
+		er.detail("====================Inner decrypted Message==========================");
 
 
 		// Description: the first MIME part is the content of the message and is referred to by Direct as the
@@ -1011,7 +1066,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": application/zip interpreted as a XDM Content", Status.PART, true);
 
 		// DTS 129, Validate First MIME Part
-		er.detail("\n====================Process Zip Part==========================\n");
+		er.detail("====================Process Zip Part==========================");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Separate ErrorRecorder
@@ -1033,8 +1088,9 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 //		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, new ByteArrayInputStream(contents));
 //		decoder.detect(new ByteArrayInputStream(contents));
 
-
+		// Warning: Mandatory for validation report
 		er.detail("Try validation as XDM");
+		
 		ValidationContext docVC = new ValidationContext();
 		docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
 		docVC.isDIRECT = false;
@@ -1043,6 +1099,23 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
 		mve.run();
+		
+		// Warning: Mandatory for validation report
+		er.detail("XDM Validation done");
+
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".zip";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+		er.detail("#####################Zip attachment######################");
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+		er.detail("##########################################################");
+		
 
 	}
 
@@ -1056,7 +1129,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		validationSummary.recordKey(getShiftIndent(shiftNumber) + "Part " + partNumber +": octet/stream", Status.PART, true);
 
 		// DTS 129, Validate First MIME Part
-		er.detail("\n====================Process Octet Stream Part==========================\n");
+		er.detail("====================Process Octet Stream Part==========================");
 		ProcessEnvelope process = new ProcessEnvelope();
 
 		// Separate ErrorRecorder
@@ -1081,6 +1154,21 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			attachmentContents.reset();
 		}
 
+		
+		// Log attachment
+		String attachmentFilename = "attachment" + attachmentNumber + ".xml";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		String attachmentLink = logAttachment(p, attachmentFilename);
+		er.detail("#####################XML attachment######################");
+		er.detail("attachment=" + attachmentLink + ";filename=" + attachmentFilename);
+		er.detail("##########################################################");
+		
+		/*
 		// If it is a XML file
 		if(p.getFileName().contains(".xml")) {
 			er.detail("#######################XML File############################");
@@ -1106,6 +1194,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			this.processAttachments(er, p);
 
 		}
+		*/
 
 	}
 
@@ -1212,7 +1301,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		String messageID = Utils.rawFromHeader(_messageID);
 
 		// Get  reception time - Logging system date instead of SUT sender date contained in headers
-		Date date = new Date();
+		//Date date = new Date();
 
 		// Get label - TODO
 		String label = "";
@@ -1228,6 +1317,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	/**
 	 * 
 	 * */
+	@SuppressWarnings({ "rawtypes", "unused" })
 	public void info(Part p) throws Exception{
 		Enumeration e = p.getAllHeaders();
 		while (e.hasMoreElements()){
@@ -1265,6 +1355,19 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 	
 	public String decodeQPText(String text) throws UnsupportedEncodingException {
 		return MimeUtility.decodeText(text);
+	}
+	
+	public String logAttachment(Part p, String attachmentFilename) {
+		String attachmentLink = "";
+		try {
+			MessageLogManager.logAttachment(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", p.getInputStream(), attachmentFilename);
+			attachmentLink = MessageLogManager.getAttachmentLink(this.username, this.logDate, this.messageId, "DIRECT_RECEIVE", "DIRECT", attachmentFilename);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		attachmentLink = attachmentLink.replace("\\", "/");
+		
+		return attachmentLink;
 	}
 	
 	

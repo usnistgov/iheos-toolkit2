@@ -27,8 +27,6 @@ import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
-
 import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;

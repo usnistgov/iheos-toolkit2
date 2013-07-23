@@ -290,10 +290,8 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 						if(matcher.matches()) {*/
 							er.success("195", "Body", bodyTxt, "Body does not contain illegal character", rfc);
 						/*} else {
-							er.error("195", "Body", body, "\"=\" followed by a character that is neither a hexadecimal digit (including \"abcdef\") nor the CR character of a CRLF pair is illegal", rfc);
 						}
 					} else {
-						er.success("195", "Body", body, "Body does not contain illegal character", rfc);
 					}*/
 				} else {
 					er.error("195", "Body", bodyTxt, "Content-Transfer-Encoding = \"quoted-printable\", control characters other than TAB, or CR and LF as parts of CRLF pairs, MUST NOT appear", rfc);
