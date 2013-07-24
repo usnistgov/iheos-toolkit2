@@ -269,12 +269,14 @@ public class Soap implements SoapInterface {
 					throw new Exception("cannot retrieve params from the planContext in the soap layer");
 				}
 				
-				String hid = pid.split("")[1];
+				String hid = pid.split("&")[1];
 				
 				if(hid == null || pid.equals("")){
 					throw new Exception("cannot parse patient_id to retrieve home_community_id");
 				}
 				
+				log.info("param patientId" + pid + " passed to the saml header generator");
+				log.info("homeCommunityId" + hid + " passed to the saml header generator");
 				context.getParams().put("patientId", pid);
 				context.getParams().put("homeCommunityId", "urn:oid:"+ hid);
 				
