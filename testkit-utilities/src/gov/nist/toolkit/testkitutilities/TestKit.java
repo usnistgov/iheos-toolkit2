@@ -47,7 +47,7 @@ public class TestKit {
 	}
 
 	
-	String[] testkitSections = { "tests", "testdata", "xcpd" };
+	String[] testkitSections = { "tests", "testdata", "xcpd", "examples" };
 	
 	/**
 	 * Get File representing directory containing test definition

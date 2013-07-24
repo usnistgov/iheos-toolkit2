@@ -11,6 +11,8 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 
 public class GwtErrorRecorder implements ErrorRecorder  {
 	
@@ -18,6 +20,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	List<ValidatorErrorItem> summary = new ArrayList<ValidatorErrorItem>();
 	List<ValidatorErrorItem> errMsgs = new ArrayList<ValidatorErrorItem>();
 	int lastErrCount = 0;
+	
+	static Logger logger = Logger.getLogger(GwtErrorRecorder.class);
+
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
@@ -81,6 +86,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	}
 	
 	public void err(Code code, String msg, String location, String resource) {
+		if (msg == null || msg.trim().equals(""))
+			return;
+		logger.debug(ExceptionUtil.here("err - " + msg));
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.ERROR;
 		ei.msg = msg;
@@ -198,6 +206,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	void err1(String code, String msg, String location, String severity,
 			String resource) {
+		if (msg == null || msg.trim().equals(""))
+			return;
+		logger.debug(ExceptionUtil.here("err - " + msg));
 		boolean isWarning = (severity == null) ? false : ((severity.indexOf("Warning") != -1));
 		ReportingCompletionType ctype = (isWarning) ? ValidatorErrorItem.ReportingCompletionType.WARNING : ValidatorErrorItem.ReportingCompletionType.ERROR;
 		ValidatorErrorItem ei = new ValidatorErrorItem();
@@ -282,6 +293,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 
 	@Override
 	public void error(String dts, String name, String found, String expected,String RFC) {
+		if (dts == null || dts.trim().equals(""))
+			return;
+		logger.debug(ExceptionUtil.here("err - " + dts));
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.D_ERROR;
 		ei.dts = dts;
@@ -353,6 +367,10 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.summaryPart = part;
 		ei.msg = msg;
 		summary.add(ei);
+	}
+	
+	public void addValidatorItem(ValidatorErrorItem e) {
+		errMsgs.add(e);
 	}
 
 

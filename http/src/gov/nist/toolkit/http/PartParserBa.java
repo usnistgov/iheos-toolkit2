@@ -8,12 +8,12 @@ public class PartParserBa extends HttpParserBa {
 	ErrorRecorder er = null;
 	PartBa part = new PartBa();
 	
-	public PartParserBa(byte[] msg) throws HttpParseException, HttpHeaderParseException {
+	public PartParserBa(byte[] msg) throws HttpParseException, HttpHeaderParseException, ParseException {
 		init(msg, part);
 		initPart();
 	}
 	
-	public PartParserBa(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException {
+	public PartParserBa(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException {
 		this.appendixV = appendixV;
 		init(msg, part);
 		initPart();
@@ -37,7 +37,7 @@ public class PartParserBa extends HttpParserBa {
 			} else {
 				part.contentID = unWrap(part.contentID);
 			}
-		} catch (HttpHeaderParseException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

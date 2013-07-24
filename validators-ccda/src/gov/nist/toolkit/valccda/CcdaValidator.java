@@ -69,6 +69,7 @@ public class CcdaValidator {
 			}
 		}
 		
+		er.detail("Input is CDA R2, try validation as CCDA");
 		logger.info("Starting CCDA validation, validate as a " + ((validationType == null) ? "Plain CCDA" : validationType));
 		long start_time = System.currentTimeMillis();
 		
@@ -132,5 +133,6 @@ public class CcdaValidator {
 		er.detail("CCDA Validation complete: " + errors + " errors, " + warnings + " warnings, " + details + " details.");
 		er.detail("MHDT run time was " + run_time + " mSec");
 		er.detail("Validation, was a " + ((validationType == null) ? "Plain CCDA" : validationType));
+		er.detail("CCDA Validation done");
 	}
 }

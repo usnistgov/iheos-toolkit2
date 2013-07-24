@@ -14,7 +14,7 @@ Authors: William Majurski
 		 Diane Azais
 		 Julien Perugini
 		 Antoine Gerardin
-		
+
  */
 
 package gov.nist.direct.logger.reader;
@@ -23,9 +23,7 @@ import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.LoggerUtils;
 import gov.nist.direct.utils.Utils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.ArrayList;
 
 import javax.mail.internet.MimeMessage;
@@ -33,14 +31,14 @@ import javax.mail.internet.MimeMessage;
 import org.apache.mailet.base.mail.MimeMultipartReport;
 
 public class DirectLogReader {
-	
+
 	/**
 	 * UserID should probably be the user email address.
 	 * @param userID
 	 * @return
 	 */
 	public DirectLogReader(){
-		
+
 	}
 
 
@@ -49,97 +47,97 @@ public class DirectLogReader {
 		String messageContentsLogPath = ls.getDirectMessageLogPath(transactionType, messageType, username, messageId);
 		return Utils.getMimeMessage(messageContentsLogPath);
 	}
-	
+
 	public byte[] readDirectMessageToByteArray (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
 		String messageContentsLogPath = ls.getDirectMessageLogPath(transactionType, messageType, username, messageId);
 		return Utils.getMessage(messageContentsLogPath);
 	}
-	
-public MimeMultipartReport readMDNMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String mdnLogPath = ls.getMDNLogPath(transactionType, messageType, username, messageId);
-	return Utils.getMDN(mdnLogPath);
+
+	public MimeMultipartReport readMDNMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String mdnLogPath = ls.getMDNLogPath(transactionType, messageType, username, messageId);
+		return Utils.getMDN(mdnLogPath);
 	}
 
-public byte[] readMDNMessageToByteArray (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String mdnLogPath = ls.getMDNLogPath(transactionType, messageType, username, messageId);
-	return Utils.getMessage(mdnLogPath);
+	public byte[] readMDNMessageToByteArray (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String mdnLogPath = ls.getMDNLogPath(transactionType, messageType, username, messageId);
+		return Utils.getMessage(mdnLogPath);
 	}
 
-public MimeMessage readEncryptedDirectMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String encryptedLogPath = ls.getEncryptedMessageLogPath(transactionType, messageType, username, messageId);
-	return Utils.getMimeMessage(encryptedLogPath);
-	
-}
+	public MimeMessage readEncryptedDirectMessage (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String encryptedLogPath = ls.getEncryptedMessageLogPath(transactionType, messageType, username, messageId);
+		return Utils.getMimeMessage(encryptedLogPath);
 
-public String readMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String statusLogPath = ls.getMDNValidationStatusLogPath(transactionType, messageType, username, messageId);
-	ArrayList<String> read = Utils.readFile(new File(statusLogPath));
-	
-	// ignore 2nd and later lines of the file, only the first one contains status
-	if (read.size() > 0)
-		return read.get(0).trim();
-	else
-		return "";
-}
+	}
 
+	public String readMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String statusLogPath = ls.getMDNValidationStatusLogPath(transactionType, messageType, username, messageId);
+		ArrayList<String> read = Utils.readFile(new File(statusLogPath));
 
-public String readOrigDirectMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String statusLogPath = ls.getDirectOriginalValidationStatusLogPath(transactionType, messageType, username, messageId);
-	ArrayList<String> read = Utils.readFile(new File(statusLogPath));
-	
-	// ignore 2nd and later lines of the file, only the first one contains status
-	if (read.size() > 0)
-		return read.get(0).trim();
-	else
-		return "";
-}
+		// ignore 2nd and later lines of the file, only the first one contains status
+		if (read.size() > 0)
+			return read.get(0).trim();
+		else
+			return "";
+	}
 
 
-public String readDirectSendDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String directLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
-	if (!new File(directLogPath).canRead())
-		return "";
-	return LoggerUtils.readTextFileFirstLine(directLogPath);
-}
+	public String readOrigDirectMessageStatus (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String statusLogPath = ls.getDirectOriginalValidationStatusLogPath(transactionType, messageType, username, messageId);
+		ArrayList<String> read = Utils.readFile(new File(statusLogPath));
+
+		// ignore 2nd and later lines of the file, only the first one contains status
+		if (read.size() > 0)
+			return read.get(0).trim();
+		else
+			return "";
+	}
 
 
-public String readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String mdnLogPath = ls.getMDNReceivedDateLogPath(transactionType, messageType, username, messageId);
-	if (!new File(mdnLogPath).canRead())
-		return "";
-	return LoggerUtils.readTextFileFirstLine(mdnLogPath);
-}
+	public String readDirectSendDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String directLogPath = ls.getDateLogPath(transactionType, messageType, username, messageId);
+		if (!new File(directLogPath).canRead())
+			return "";
+		return LoggerUtils.readTextFileFirstLine(directLogPath);
+	}
 
 
-public String readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId); 
-	if (!new File(expDatePath).canRead())
-		return "";
-	return LoggerUtils.readTextFileFirstLine(expDatePath);
-}
+	public String readMDNReceivedDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String mdnLogPath = ls.getMDNReceivedDateLogPath(transactionType, messageType, username, messageId);
+		if (!new File(mdnLogPath).canRead())
+			return "";
+		return LoggerUtils.readTextFileFirstLine(mdnLogPath);
+	}
 
 
-public String readLabel(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String labelLogPath = ls.getLabelLogPath(transactionType, messageType, username, messageId);
-	ArrayList<String> read = Utils.readFile(new File(labelLogPath));
-	
-	// ignore 2nd and later lines of the file, only the first one contains status
-	if (read.size() > 0)
-		return read.get(0).trim();
-	else
-		return "";
-}
+	public String readMDNExpirationDate (LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String expDatePath = ls.getDateExpirationLogPath(transactionType, messageType, username, messageId); 
+		if (!new File(expDatePath).canRead())
+			return "";
+		return LoggerUtils.readTextFileFirstLine(expDatePath);
+	}
 
 
+	public String readLabel(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String labelLogPath = ls.getLabelLogPath(transactionType, messageType, username, messageId);
+		ArrayList<String> read = Utils.readFile(new File(labelLogPath));
 
-public String readMDNMessageID(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
-	String mdnMsgID = ls.getMessageIdLogPath(transactionType, messageType, username, messageId);
-	if (!new File(mdnMsgID).canRead())
-		return "";
-	return LoggerUtils.readTextFileFirstLine(mdnMsgID);
-}
+		// ignore 2nd and later lines of the file, only the first one contains status
+		if (read.size() > 0)
+			return read.get(0).trim();
+		else
+			return "";
+	}
 
 
 
-	
+	public String readMDNMessageID(LogPathsSingleton ls, String transactionType, String messageType, String username, String messageId) {
+		String mdnMsgID = ls.getMessageIdLogPath(transactionType, messageType, username, messageId);
+		if (!new File(mdnMsgID).canRead())
+			return "";
+		return LoggerUtils.readTextFileFirstLine(mdnMsgID);
+	}
+
+
+
+
 }

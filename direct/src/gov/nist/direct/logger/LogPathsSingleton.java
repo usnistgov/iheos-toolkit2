@@ -264,6 +264,30 @@ public class LogPathsSingleton {
 		return defaultPath;
 	}
 
+	public String getAttachmentLogPath(String transactionType, String messageType, String username, String messageId, String attachmentName) {
+		String usernamePath = "direct-logs" + File.separator + username;
+		String fullPath = usernamePath + File.separator + messageId;
+		String path = fullPath + File.separator + attachmentName;
+
+		// check if directory exists
+		File dir = new File(usernamePath);
+		if(!dir.exists()) {
+			dir.mkdirs();
+			dir.setWritable(true);
+			dir.setReadable(true);
+			System.out.println("Created directory "+ usernamePath);
+		}
+		// check if directory exists
+		File dir2 = new File(fullPath);
+		if(!dir2.exists()) {
+			dir2.mkdirs();
+			dir2.setWritable(true);
+			dir2.setReadable(true);
+			System.out.println("Created directory "+ fullPath);
+		}
+		return path;
+	}
+
 
 	public String getMessageIdLogPath(String transactionType,
 			String messageType, String username, String messageId) {

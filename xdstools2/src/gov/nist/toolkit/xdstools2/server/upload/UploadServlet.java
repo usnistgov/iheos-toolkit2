@@ -1,18 +1,16 @@
 package gov.nist.toolkit.xdstools2.server.upload;
 
-import gov.nist.toolkit.http.HttpHeader;
-import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParser;
 import gov.nist.toolkit.http.MultipartMessage;
 import gov.nist.toolkit.http.MultipartParser;
-import gov.nist.toolkit.http.Part;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.testengine.transactions.DirectTransaction;
+import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdstools2.server.ToolkitServiceImpl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -42,6 +40,7 @@ public class UploadServlet extends HttpServlet {
 		HttpParser hp;
 		try {
 			hp = new HttpParser(request, false);
+			byte[] bodybytes = hp.getBody();
 		} catch (HttpParseException e1) {
 			logger.error("HTTPParser parse error: " + e1.getMessage());
 			throw new IOException("Parse Error: " + e1.getMessage());
@@ -57,36 +56,9 @@ public class UploadServlet extends HttpServlet {
 			MultipartMessage mm = mp.getMultipartMessage();
 			
 			contentMap = mm.getContentMap();
-			
-//			System.out.println("Content Map is " + mm.getContentMap());
-//			
-//			System.out.println(mp.getMultipartMessage().toString());
-			
-//			Part part = mp.getPart(0);
-//			body = part.getBodyBytes();
-//			String cdString = part.getHeader("Content-Disposition");
-//			System.out.println("cdstring = " + cdString);
-//			try {
-//				HttpHeader cd_header = new HttpHeader(cdString);
-//				filename = cd_header.getParam("filename");
-//			} catch (HttpHeaderParseException e2) {
-//			}
-//			
-//			if (mp.getPartCount() >= 2) {
-//				Part part2 = mp.getPart(1);
-//				body2 = part2.getBodyBytes();
-//				String cdString2 = part2.getHeader("Content-Disposition");
-//				try {
-//					HttpHeader cd_header = new HttpHeader(cdString2);
-//					filename2 = cd_header.getParam("filename");
-//				} catch (HttpHeaderParseException e2) {
-//				}
-//			}
-//			
-			
 		} else {
 			HttpMessage hm = hp.getHttpMessage();
-			logger.debug(hm.toString());
+//			logger.debug(hm.toString());
 //			String bdy = hm.getBody();
 //			System.out.println("body=" + bdy);
 			logger.error("Cannot parse servlet input - not a multipart");

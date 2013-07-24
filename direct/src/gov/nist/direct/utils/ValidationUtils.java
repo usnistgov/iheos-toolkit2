@@ -477,7 +477,7 @@ public class ValidationUtils {
 	}
 	
 	public static String getAddrSpecPattern() {
-		return "<[0-9,a-z,_,\\-,.]+@[0-9,a-z,_,\\-,.]+>" + "(\\s)*";
+		return "<[0-9,a-z,_,\\-,.,\\!,\\#,\\$,\\%,\\&,\\',\\*,\\+,\\/,\\=,\\?,\\^,\\`,\\{,\\},\\|,\\~]+@[0-9,a-z,_,\\-,.,\\!,\\#,\\$,\\%,\\&,\\',\\*,\\+,\\/,\\=,\\?,\\^,\\`,\\{,\\},\\|,\\~]+>" + "(\\s)*";
 	}
 	
 	public static boolean validateAddrSpec(String addrSpec) {
@@ -502,7 +502,40 @@ public class ValidationUtils {
 		return valid;
 	}
 
+	public static String getReceivedPart(String receivedField, String clause) {
+		String res = "";
+		if(receivedField.contains(clause)) {
+			receivedField = receivedField.split(clause, 2)[1];
+			
+			String[] clauses = {" by ", " via ", " with ", " id ", " for ", ";"};
+			for(String token : clauses) {
+				if(receivedField.contains(token)) {
+					res = receivedField.split(token)[0].replaceAll("\\s", "");
+					return res;
+				}
+			}
+		} else {
+			clause = clause.replaceFirst("\\s", "");
+			if(receivedField.startsWith(clause)) {
+				return getReceivedPart(receivedField, clause);
+			}
+		}
+		return res;
+	}
 	
+	public static boolean validateReceivedPart(String part, String patternTxt, boolean required) {
+		if(!part.equals("")) {
+			Pattern pattern = Pattern.compile(patternTxt, Pattern.CASE_INSENSITIVE);
+			Matcher matcher = pattern.matcher(part);
+			if(matcher.matches()) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return required;
+		}
+	}
 	
 
 }

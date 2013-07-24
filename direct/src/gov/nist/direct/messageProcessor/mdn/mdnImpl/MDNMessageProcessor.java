@@ -34,8 +34,6 @@ import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -129,8 +127,12 @@ public class MDNMessageProcessor {
 
 		try {
 			this.processPart(er, mm);
-			msgID = mm.getMessageID();
-			mdnDate = mm.getSentDate();
+			if(mm.getMessageID() != null) {
+				msgID = mm.getMessageID();
+			}
+			if(mm.getSentDate() != null) {
+				mdnDate = mm.getSentDate();
+			}
 		} catch (Exception e) {
 			er.error("No DTS", "MDN Processing", "Error Processing MDN", "", "-");
 			e.printStackTrace();

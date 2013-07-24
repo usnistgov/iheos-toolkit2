@@ -450,8 +450,8 @@ public class Soap implements SoapInterface {
 			throw new XdsInternalException(
 					"Failed to create request envelope...\n");
 
-		if (!useWSSEC) // vbeera: added
-		{
+//		if (!useWSSEC) // vbeera: added
+//		{
 			if (additionalHeaders != null) {
 				for (OMElement hdr : additionalHeaders) {
 					getSoapHeader().addChild(Util.deep_copy(hdr));
@@ -463,7 +463,7 @@ public class Soap implements SoapInterface {
 					securityHeader.addChild(sign(hdr));
 				}
 			}
-		}
+//			}
 
 		operationClient.addMessageContext(outMsgCtx);
 

@@ -6,19 +6,24 @@ import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class MultipartParser {
 	HttpParser hp;
 	HttpHeader contentTypeHeader;
 	ErrorRecorder er = null;
 	boolean appendixV = true;
 	MultipartMessage message = new MultipartMessage();
+	static final Logger logger = Logger.getLogger(HttpParser.class);
 
 	public MultipartParser(HttpParser hp) throws ParseException, HttpHeaderParseException, HttpParseException {
+		logger.debug("new MultipartParser(" + this.toString() + ")");
 		this.hp = hp;
 		parse();
 	}
 
 	public MultipartParser(HttpParser hp, ErrorRecorder er, boolean appendixV) throws ParseException, HttpHeaderParseException, HttpParseException {
+		logger.debug("new MultipartParser(" + this.toString() + ")");
 		this.hp = hp;
 		this.er = er;
 		this.appendixV = appendixV;
@@ -118,6 +123,9 @@ public class MultipartParser {
 //			throw new ParseException("Not a Multipart");
 		boolean multi = isMultipart();
 		message.boundary = contentTypeHeader.getParam("boundary");
+		logger.debug("MultipartParser(" + this.toString() + ") - boundary = " + message.boundary);
+		er.detail(contentTypeHeader.asString());
+		er.detail("boundary = " + message.boundary);
 		if (message.boundary == null || message.boundary.equals("")) {
 			message = null;
 			return;
@@ -209,7 +217,7 @@ public class MultipartParser {
 		String name;
 		try {
 			contentTypeHeader = new HttpHeader(hp.message.getHeader("Content-Type"));
-		} catch (HttpHeaderParseException e) {
+		} catch (ParseException e) {
 			return false;
 		}
 		name = contentTypeHeader.getName();

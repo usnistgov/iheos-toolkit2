@@ -129,6 +129,11 @@ public class DirectUserManager extends DirectManagers {
 			throw new Exception("Cannot load file " + file, e);
 		} catch (ClassNotFoundException e) {
 			throw new Exception("Cannot create class ContentRegistrationData", e);
+		} finally {
+			if (in != null)
+				in.close();
+			if (fis != null)
+				fis.close();
 		}
 	}
 

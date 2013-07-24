@@ -1,5 +1,7 @@
 package gov.nist.toolkit.http;
 
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
@@ -7,28 +9,32 @@ import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 
 public class PartParser extends HttpParser {
 	Part part = new Part();
+	static final Logger logger = Logger.getLogger(PartParser.class);
 	
-	public PartParser(byte[] msg) throws HttpParseException, HttpHeaderParseException {
+	public PartParser(byte[] msg) throws HttpParseException, HttpHeaderParseException, ParseException {
 //		super(msg);
+		logger.debug("new PartParser(" + this.toString() + ")");
 		init(msg, part, er);
 		initPart();
 	}
 	
-	public PartParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException {
+	public PartParser(byte[] msg, ErrorRecorder er, boolean appendixV) throws HttpParseException, HttpHeaderParseException, ParseException {
 //		super(msg,er);
+		logger.debug("new PartParser(" + this.toString() + ")");
 		this.er = er;
 		this.appendixV = appendixV;
 		init(msg, part, er);
 		initPart();
 	}
 	
-	void initPart() throws HttpParseException {
+	void initPart() throws HttpParseException, ParseException {
 		String contentIDHeaderString = message.getHeader("content-id");
 		if (appendixV == false && (contentIDHeaderString == null || contentIDHeaderString.equals("")))
 			return;
 		try {
 			HttpHeader contentIDHeader = new HttpHeader(contentIDHeaderString, er);
 			part.contentID = contentIDHeader.getValue();
+			logger.debug("new PartParser(" + this.toString() + ") - contentId = " + part.contentID);
 			if (part.contentID == null || part.contentID.equals(""))
 				throw new HttpParseException("Part has no Content-ID header");
 			part.contentID = part.contentID.trim();
@@ -40,7 +46,7 @@ public class PartParser extends HttpParser {
 			} else {
 				part.contentID = unWrap(part.contentID);
 			}
-		} catch (HttpHeaderParseException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

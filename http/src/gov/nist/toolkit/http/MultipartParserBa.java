@@ -139,16 +139,12 @@ public class MultipartParserBa {
 						er.err(XdsErrorCode.Code.NoCode, "Multipart boundary [" + pboundary + "] not found in message body", this, "http://www.w3.org/Protocols/rfc1341/7_2_Multipart.html");
 					break;
 				}
-				//System.out.println("***************\nfrom is:\n" + body.substring(from));
 				from = afterBoundary(body, from);
 				if (from == -1)
 					break;
-				//System.out.println("***************\nfrom2 is:\n" + body.substring(from));
-//				to = body.indexOf(pboundary, from);
 				to = indexOf(body, pboundary.getBytes(), from);
 				if (to == -1)
 					break;
-				//System.out.println("***************\nto is:\n" + body.substring(to));
 
 				PartParserBa pp = new PartParserBa(trim(subarray(body, from, to)), er, appendixV);
 				message.parts.add(pp.part);
@@ -220,7 +216,7 @@ public class MultipartParserBa {
 			String name;
 			try {
 				contentTypeHeader = new HttpHeader(hp.message.getHeader("Content-Type"));
-			} catch (HttpHeaderParseException e) {
+			} catch (ParseException e) {
 				return false;
 			}
 			name = contentTypeHeader.getName();

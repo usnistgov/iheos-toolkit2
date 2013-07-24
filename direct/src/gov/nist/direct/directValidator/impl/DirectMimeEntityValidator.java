@@ -27,6 +27,8 @@ import javax.mail.Header;
 import javax.mail.MessagingException;
 import javax.mail.Part;
 
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+
 import junit.framework.Assert;
 import gov.nist.direct.directValidator.interfaces.MimeEntityValidator;
 import gov.nist.direct.utils.ValidationUtils;
@@ -258,6 +260,11 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 	// DTS 195, Body, Required
 	public void validateBody(ErrorRecorder er, Part p, String body) {
 		String rfc = "RFC 2046: Section 5.1.1;http://tools.ietf.org/html/rfc2046#section-5.1.1";
+		String bodyTxt = SafeHtmlUtils.htmlEscape(body);
+		if(body.length()>50) {
+			bodyTxt = SafeHtmlUtils.htmlEscape(body.substring(0, 50) + "...");
+		}
+		
 		if(ValidationUtils.isAscii(body) && ValidationUtils.isOnlyCRLF(body)) {
 			String[] tab = {"Content-Transfer-Encoding"};
 			String head = "";
@@ -276,32 +283,30 @@ public class DirectMimeEntityValidator implements MimeEntityValidator {
 			if(head.contains("quoted-printable")) {
 				// Check only CRLF and TAB control char
 				if(ValidationUtils.controlCharAreOnlyCRLFAndTAB(body)) {
-					if(body.contains("=")) {
+					/*if(body.contains("=")) {
 						final String extension =  "(.*(=[0-9a-fA-f]\\r\\n)?)*";
 						Pattern pattern = Pattern.compile(extension, Pattern.CASE_INSENSITIVE);
 						Matcher matcher = pattern.matcher(body);
-						if(matcher.matches()) {
-							er.success("195", "Body", body, "Body does not contain illegal character", rfc);
-						} else {
-							er.error("195", "Body", body, "\"=\" followed by a character that is neither a hexadecimal digit (including \"abcdef\") nor the CR character of a CRLF pair is illegal", rfc);
+						if(matcher.matches()) {*/
+							er.success("195", "Body", bodyTxt, "Body does not contain illegal character", rfc);
+						/*} else {
 						}
 					} else {
-						er.success("195", "Body", body, "Body does not contain illegal character", rfc);
-					}
+					}*/
 				} else {
-					er.error("195", "Body", body, "Content-Transfer-Encoding = \"quoted-printable\", control characters other than TAB, or CR and LF as parts of CRLF pairs, MUST NOT appear", rfc);
+					er.error("195", "Body", bodyTxt, "Content-Transfer-Encoding = \"quoted-printable\", control characters other than TAB, or CR and LF as parts of CRLF pairs, MUST NOT appear", rfc);
 				}
 			} else if(head.contains("base64")) {
 				if(ValidationUtils.isOnlyCRLF(body)) {
-					er.success("195", "Body", body, "Any linebreak must be represented as a CRLF", rfc);
+					er.success("195", "Body", bodyTxt, "Any linebreak must be represented as a CRLF", rfc);
 				} else {
-					er.error("195", "Body", body, "Any linebreak must be represented as a CRLF", rfc);
+					er.error("195", "Body", bodyTxt, "Any linebreak must be represented as a CRLF", rfc);
 				}
 			} else {
-				er.success("195", "Body", body, "Any linebreak must be represented as a CRLF", rfc);
+				er.success("195", "Body", bodyTxt, "Any linebreak must be represented as a CRLF", rfc);
 			}
 		} else {
-			er.error("195", "Body", body, "Any linebreak must be represented as a CRLF", rfc);
+			er.error("195", "Body", bodyTxt, "Any linebreak must be represented as a CRLF", rfc);
 		}
 		
 	}

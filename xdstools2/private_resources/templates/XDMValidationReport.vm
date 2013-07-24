@@ -1,0 +1,30 @@
+<p>
+<span style="text-decoration: underline;font-size: x-large;color: royalblue;">XDM Validation </span>
+<br /><br />
+
+<table style="text-align: left; width: 100%; margin: 5px; empty-cells: show;">
+    	
+
+#foreach( $reportToken in $validationReport )
+		#set($weight = "normal")
+		#set($color = "black")
+		
+		#if($reportToken.getStatus().equals("Success"))
+			#set($color = "black")
+		#elseif($reportToken.getStatus().equals("Warning"))
+			#set($color = "blue")
+		#elseif($reportToken.getStatus().equals("Error"))
+			#set($color = "red")
+		#elseif($reportToken.getStatus().equals(""))
+			#set($color = "black")
+			#set($weight = "bold")
+		#end
+		
+		<tr>
+    	<td>$reportToken.getStatus()</td><td style="color: $color; font-weight: $weight;">$reportToken.getMsg()</td>
+    	</tr>
+
+#end
+
+</table>
+</p>

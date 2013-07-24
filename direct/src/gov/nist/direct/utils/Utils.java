@@ -314,6 +314,15 @@ return str;
 		} else 
 			return "unrecognized_usernames";
 	}
+	
+	
+	public static String rawMsgId(String msgId) {
+		if(msgId.contains("<")) {
+			msgId = msgId.replace("<", "");
+			msgId = msgId.replace(">", "");
+		}
+		return msgId;
+	}
 
 	public static void printToFile(MimeMultipartReport mdn, String outputFile) {
 		  try {

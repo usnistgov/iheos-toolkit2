@@ -1,0 +1,14 @@
+
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope">
+   <S:Header/>
+   <S:Body>
+      <fault:Fault xmlns:fault="http://www.w3.org/2003/05/soap-envelope">
+         <fault:Code>
+            <fault:Value>fault:Sender</fault:Value>
+         </fault:Code>
+         <fault:Reason>
+            <fault:Text xml:lang="en">Problem parsing input in validator gov.nist.toolkit.valregmsg.message.HttpMessageValidator[Parsing HTTP message(), Request Message is SIMPLE SOAP but MTOM is required(ITI TF Volumes 2a and 2b), Scheduling SIMPLE SOAP parser()]</fault:Text>
+         </fault:Reason>
+      </fault:Fault>
+   </S:Body>
+</S:Envelope>

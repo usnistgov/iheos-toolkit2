@@ -58,9 +58,11 @@ public class DirectRegistrationManager {
 			in = new ObjectInputStream(fis);
 			DirectRegistrationDataServer c = new DirectRegistrationDataServer();
 			return (DirectRegistrationDataServer) in.readObject();
-		} catch (FileNotFoundException e) {
-			throw new Exception("Cannot find file " + file, e);
-		} catch (InvalidClassException e) {
+		} 
+//		catch (FileNotFoundException e) {
+//			throw new Exception("Cannot find file " + file, e);
+//		} 
+		catch (InvalidClassException e) {
 			System.out.println("InvalidClassException: " + e.getMessage());
 			throw new Exception(e);
 		} catch (OptionalDataException e) {

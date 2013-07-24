@@ -236,6 +236,12 @@ public class HomeTab extends GenericQueryTab {
 		topPanel.add(new HTML("<br />"));
 		
 		topPanel.add(new HTML("Frequently asked questions (FAQ) (warning - PDF) can be found at: <a href=\"http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf\">http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf</a>"));
+		topPanel.add(new HTML("<br />"));
+		
+		topPanel.add(new HTML("Resources available regarding the Direct Protocol Implementation can be found at: <a href=\"http://healthcare.nist.gov/direct.html\">http://healthcare.nist.gov/direct.html</a>"));
+		
+		
+		
 		topPanel.add(new HTML("<hr />"));
 		
 	}

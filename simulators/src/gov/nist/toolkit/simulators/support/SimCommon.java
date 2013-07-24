@@ -706,6 +706,11 @@ public class SimCommon {
 		Io.stringToFile(db.getLogFile(), buf.toString());
 	}
 
+	/**
+	 * Get MessageValidator off validation queue that is an instance of clas.
+	 * @param clas
+	 * @return Matching MessageValidator
+	 */
 	public MessageValidator getMessageValidator(@SuppressWarnings("rawtypes") Class clas) {
 		return mvc.findMessageValidator(clas.getCanonicalName());
 	}

@@ -4,10 +4,11 @@ import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParser;
-import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
+import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
@@ -360,7 +361,7 @@ public class SimDb {
 		return Io.stringFromFile(f);
 	}
 
-	public HttpMessage getParsedRequest() throws HttpParseException, HttpHeaderParseException, IOException {
+	public HttpMessage getParsedRequest() throws HttpParseException, ParseException, IOException, HttpHeaderParseException {
 		HttpParser parser = new HttpParser(getRequestMessageHeader().getBytes());
 
 		HttpMessage msg = parser.getHttpMessage();

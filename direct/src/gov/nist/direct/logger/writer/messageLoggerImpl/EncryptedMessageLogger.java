@@ -20,18 +20,12 @@ Authors: William Majurski
 package gov.nist.direct.logger.writer.messageLoggerImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
-import gov.nist.direct.logger.writer.MessageLoggerInterface;
-import gov.nist.direct.utils.Utils;
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-
-import org.hamcrest.core.IsInstanceOf;
 
 public class EncryptedMessageLogger {
 

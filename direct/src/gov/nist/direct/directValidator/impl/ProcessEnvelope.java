@@ -27,8 +27,6 @@ import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
-
 import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -65,7 +63,8 @@ public class ProcessEnvelope {
 		msgValidator.validateContentTypeSubtype(er, m.getContentType());
 		
 		// DTS 195, Validate Body
-		msgValidator.validateBody(er, m, m.getContent().toString());
+		if(m.getContentType().contains("text/plain"))
+			msgValidator.validateBody(er, m, m.getContent().toString());
 		
 		// DTS 192 Validate Content Type Name
 		msgValidator.validateContentTypeName(er, m.getContentType());
@@ -178,7 +177,7 @@ public class ProcessEnvelope {
 		// DTS 121, Validate Message-Id
 		String messageID = searchHeaderSimple(m, "message-id");
 		msgValidator.validateMessageId(separate, messageID, wrapped);
-		validationSummary.recordKey(shift + "Message-Id: "+messageID, separate.hasErrors(), true);
+		validationSummary.recordKey(shift + "Message-Id: "+ SafeHtmlUtils.htmlEscape(messageID), separate.hasErrors(), true);
 		
 		er.concat(separate);
 		separate = new GwtErrorRecorder();

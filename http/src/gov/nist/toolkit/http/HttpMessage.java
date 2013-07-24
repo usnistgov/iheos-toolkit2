@@ -177,11 +177,11 @@ public class HttpMessage  {
 	public String getHeader(String headerName, int i) {
 		if (headerName == null)
 			return null;
-		String lcHeaderName = headerName.toLowerCase();
+//		String lcHeaderName = headerName.toLowerCase();
 		
 		int which = 0;
 		for (int j=0; j<headers.size(); j++) {
-			if (lcHeaderName.equals(headers.get(j).lcname)) {
+			if (headerName.equalsIgnoreCase(headers.get(j).lcname)) {
 				if (which == i)
 					return headers.get(j).name + ": " + headers.get(j).value;
 				which++;

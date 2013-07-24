@@ -26,8 +26,6 @@ import gov.nist.direct.messageProcessor.utils.MessageDispatchUtils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
-import java.text.ParseException;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -65,7 +63,8 @@ public class MessageProcessor implements MessageProcessorInterface {
 		try {
 			// Check if encrypted message
 			if(!MessageDispatchUtils.isEncrypted(er, mm)) {
-				er.err("Message File", "The file is not an encrypted message", "", "", "Message File");
+				er.error("No DTS", "Message File", "The file is not an encrypted message", "Must be encrypted", "-");
+				logger.info("This is not an encrypted message");
 			}
 			
 			// ------ MDN -------
@@ -73,13 +72,13 @@ public class MessageProcessor implements MessageProcessorInterface {
 				messageType = mdnMessageType;
 
 				// Display Message type
-				System.out.println("The file was recognized as an MDN message.");
+				logger.info("The file was recognized as an MDN message.");
 				er.detail("The file was recognized as an MDN message.");
 
 				// Process message
 				MDNMessageProcessor mdnProc = new MDNMessageProcessor();
 				mdnProc.processMDNMessage(er, inputDirectMessage, _directCertificate, _password, vc);
-				System.out.println("MDN message was processed.");
+				logger.info("MDN message was processed.");
 			}
 
 
@@ -89,19 +88,20 @@ public class MessageProcessor implements MessageProcessorInterface {
 			 
 			 // Display Message type
 			 er.detail("The file was recognized as a DIRECT message.");
-			 System.out.println("The file was recognized as a DIRECT message.");
+			 logger.info("The file was recognized as a DIRECT message.");
 			 
 			 // Process message
 			 DirectMimeMessageProcessor directProc = new DirectMimeMessageProcessor();
 			 directProc.processAndValidateDirectMessage(er, inputDirectMessage, _directCertificate, _password, vc);
-			 System.out.println("Direct message was processed.");
+			 logger.info("Direct message was processed.");
 			}
 			
 		
 		
 		// ----- Unknown type  -----
 			else if(!MessageDispatchUtils.isEncrypted(er, mm) && !MessageDispatchUtils.isDIRECT(er, inputDirectMessage, _directCertificate, _password)) {
-				er.err("Message File", "The file is neither a DIRECT message nor an MDN.", "", "", "Message File");
+				er.error("No DTS", "Message File", "The file is neither a DIRECT message nor an MDN.", "", "-");
+				logger.info("The file is neither a DIRECT message nor an MDN.");
 			}
 		} catch (MessagingException e) {
 			e.printStackTrace();

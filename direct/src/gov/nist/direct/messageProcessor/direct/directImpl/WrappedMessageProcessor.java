@@ -23,8 +23,6 @@ package gov.nist.direct.messageProcessor.direct.directImpl;
 import gov.nist.direct.directValidator.impl.ProcessEnvelope;
 import gov.nist.direct.messageProcessor.cert.CertificateLoader;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +31,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
+import java.util.Date;
 import java.util.Enumeration;
 
+import javax.mail.Address;
 import javax.mail.Header;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -63,6 +63,9 @@ public class WrappedMessageProcessor {
 	private boolean wrapped;
 	private boolean isMDN;
 	private boolean isDirect;
+	private Date logDate;
+	private String username;
+	private String messageID;
 	
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
@@ -74,6 +77,9 @@ public class WrappedMessageProcessor {
 		wrapped = false;
 		isMDN = false;
 		isDirect = false;
+		this.logDate = null;
+		username = "";
+		messageID = "";
 	}
 	
 	public void messageParser(ErrorRecorder er, byte[] inputDirectMessage, byte[] _directCertificate, String _password) {
@@ -106,11 +112,23 @@ public class WrappedMessageProcessor {
 		if(encoding.equals("quoted-printable")) {
 			p = decodeQP(p.getInputStream());
 		}
-		
+
 		//er.detail("Processing Part");
 		// If the Part is a Message then first validate the Envelope
 		if (p instanceof Message){
 			System.out.println("Message");
+
+			// Get logging variables
+			if(((Message) p).getSentDate() != null) {
+				this.logDate = ((Message) p).getSentDate();
+			}
+			if(((MimeMessage) p).getFrom() != null) {
+				Address[] addr = ((MimeMessage) p).getFrom();
+				this.username = (addr[0]).toString();
+			}
+			if(((MimeMessage) p).getMessageID() != null) {
+				this.messageID = ((MimeMessage) p).getMessageID();
+			}
 		
 		for (Enumeration<Header> en=p.getAllHeaders(); en.hasMoreElements(); ) {
 			Header hdr = en.nextElement();
@@ -133,6 +151,20 @@ public class WrappedMessageProcessor {
 			System.out.println("Message/rfc822");
 			this.wrapped = true;
 			this.isDirect = true;
+			
+			// Get logging variables if not present on outer level
+			p = (Part)p.getContent();
+			if(this.logDate == null && ((Message) p).getSentDate() != null) {
+				this.logDate = ((Message) p).getSentDate();
+			}
+			if(this.username.equals("") && ((MimeMessage) p).getFrom() != null) {
+				Address[] addr = ((MimeMessage) p).getFrom();
+				this.username = (addr[0]).toString();
+			}
+			if(this.messageID.equals("") &&((MimeMessage) p).getMessageID() != null) {
+				this.messageID = ((MimeMessage) p).getMessageID();
+			}
+			
 			Object o = p.getContent();
 			if (o instanceof Part) {
 				logger.debug("rfc822 contains part");
@@ -151,6 +183,7 @@ public class WrappedMessageProcessor {
 
 		} else if (p.isMimeType("application/x-pkcs7-mime")) {
 			//System.out.println("Encrypted");
+			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
 
 		} else if (p.isMimeType("application/zip")) {
 			//System.out.println("XDM Content");
@@ -217,9 +250,11 @@ public class WrappedMessageProcessor {
 		try {
 			m = new SMIMEEnveloped((MimeMessage)p);
 		} catch (MessagingException e1) {
+			er.error("No DTS", "Certificate File", "Messaging exception", e1.getMessage(), "-");
 			e1.printStackTrace();
 
 		} catch (CMSException e1) {
+			er.error("No DTS", "Certificate File", "CMSException", e1.getMessage(), "-");
 			e1.printStackTrace();
 			
 		}
@@ -271,6 +306,18 @@ public class WrappedMessageProcessor {
 	
 	public boolean getIsDirect() {
 		return this.isDirect;
+	}
+	
+	public Date getLogDate() {
+		return this.logDate;
+	}
+	
+	public String getUsername() {
+		return this.username;
+	}
+	
+	public String getMessageId() {
+		return this.messageID;
 	}
 	
 	public MimeBodyPart decodeQP(InputStream encodedQP) throws MessagingException {

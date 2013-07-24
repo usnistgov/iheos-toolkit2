@@ -1,0 +1,174 @@
+<style type="text/css">
+  
+  body {
+  	font-family: verdana,arial,sans-serif;
+  }
+  
+table.gridtable {
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+table.gridtable th {
+	border-width: 1px;
+	padding: 6px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+}
+table.gridtable td {
+	border-width: 1px;
+	padding: 6px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+	font-size: 14px;
+}
+</style>
+<p>
+	#if(!$summary.isEmpty())
+	<span style="text-decoration: underline;font-size: x-large;color: royalblue;">Message Validation Summary</span>
+	#end
+#set($previousOff = 0)
+#foreach( $summaryToken in $summary )
+	#if($summaryToken.getName() != "")
+		#set($offsetDif =  $previousOff - $summaryToken.getOffset())
+		#if($offsetDif < 0)
+			#set($offsetDif = 0 - $offsetDif)
+			#set($range = [1..$offsetDif])
+			#foreach($num in $range)
+				<ul>
+			#end
+		#elseif($offsetDif > 0)
+			#set($range = [1..$offsetDif])
+			#foreach($num in $range)
+				</ul>
+			#end		
+		#end
+		
+		#if($summaryToken.getStatus() == 0)
+			<li><img src="$path/img/pass.png" width="15" height="15" alt="pass"><span style="font-size: 15px;">$summaryToken.getName()</span></li>
+		#elseif($summaryToken.getStatus() == 1)
+			<li><img src="$path/img/pass.png" width="15" height="15" alt="pass"><span style="font-size: 15px;font-weight:bold;">$summaryToken.getName()</span></li>
+		#elseif($summaryToken.getStatus() == 2)
+			<li><img src="$path/img/fail.png" width="15" height="15" alt="fail"><span style="font-size: 15px;color: red;">$summaryToken.getName()</span></li>
+		#elseif($summaryToken.getStatus() == 3)
+			<li><img src="$path/img/fail.png" width="15" height="15" alt="fail"><span style="font-size: 15px;color: red;font-weight:bold;">$summaryToken.getName()</span></li>
+		#end
+	
+	
+		#set($previousOff = $summaryToken.getOffset())
+	#end
+#end
+
+#if($previousOff>0)
+	#set($range = [1..$previousOff])
+	#foreach($num in $range)
+		</ul>
+	#end
+#end
+
+</p>
+
+#if(!$validationReport.isEmpty())
+<p>
+<span style="text-decoration: underline;font-size: x-large;color: royalblue;">Detailed Validation Report</span>
+
+#set($isFirstOne = 0)
+
+#foreach( $reportToken in $validationReport )
+	#if($reportToken.getType() == 0)
+		#if($isFirstOne != 0)
+			</table>
+		#end
+		<h4>$reportToken.getName()</h4>
+		<table style="text-align: left; width: 100%;empty-cells: show;" class="gridtable">
+		<tr>
+      	<th style="width:10%;"><span style="font-weight: bold;font-size: 18px;">Name</span></th>
+      	<th style="width:8%;"><span style="font-weight: bold;font-size: 18px;">Status</span></th>
+      	<th style="width:5%;"><span style="font-weight: bold;font-size: 18px;">DTS</span></th>
+      	<th style="width:32%;"><span style="font-weight: bold;font-size: 18px;">Found</span></th>
+      	<th style="width:30%;"><span style="font-weight: bold;font-size: 18px;">Expected</span></th>
+      	<th style="width:15%;"><span style="font-weight: bold;font-size: 18px;">RFC</span></th>
+    	</tr>
+    	#set($isFirstOne = $isFirstOne + 1)
+    #elseif($reportToken.getType() == 1)
+		#if($isFirstOne == 0)
+			<table style="text-align: left; width: 100%;empty-cells: show;" class="gridtable">
+			<tr>
+      		<th style="width:10%;"><span style="font-weight: bold;font-size: 18px;">Name</span></th>
+      		<th style="width:8%;"><span style="font-weight: bold;font-size: 18px;">Status</span></th>
+      		<th style="width:5%;"><span style="font-weight: bold;font-size: 18px;">DTS</span></th>
+      		<th style="width:32%;"><span style="font-weight: bold;font-size: 18px;">Found</span></th>
+      		<th style="width:30%;"><span style="font-weight: bold;font-size: 18px;">Expected</span></th>
+      		<th style="width:15%;"><span style="font-weight: bold;font-size: 18px;">RFC</span></th>
+    		</tr>
+			#set($isFirstOne = $isFirstOne + 1)
+		#end
+		<tr>
+      	<td style="width:10%;"><span style="$reportToken.getColor();">$reportToken.getName()</span></td>
+      	<td style="width:8%;"><span style="$reportToken.getColor();">$reportToken.getStatus()</span></td>
+      	<td style="width:5%;"><span style="$reportToken.getColor();">$reportToken.getDts()</span></td>
+      	<td style="width:32%;"><span style="$reportToken.getColor();">$reportToken.getFound()</span></td>
+      	<td style="width:30%;"><span style="$reportToken.getColor();">$reportToken.getExpected()</span></td>
+      	<td style="width:15%;"><span>
+      	#if(!$reportToken.getRfc_link().isEmpty()) 
+      	<a href="$reportToken.getRfc_link()" target="_blank">$reportToken.getRfc_name()</a>
+      	#else
+      	$reportToken.getRfc_name()
+      	#end
+      	</span></td>
+    	</tr>
+    	
+    #elseif($reportToken.getType() == 2)
+    	#if($isFirstOne != 0)
+			</table>
+		#end
+		<br />
+		<div>
+		<img src="$path/img/file.png" width="30" height="30" alt="file">
+		<span style="font-size: medium;">File $reportToken.getFound()</span>
+		<img src="$path/img/file.png" width="30" height="30" alt="file">
+		</div>
+		<div style="border: 4px dashed #ccc;">
+		<a href="$reportToken.getName()" target="_blank">$reportToken.getFound()</a>
+		</div>
+		<br />
+		<table style="text-align: left; width: 100%;empty-cells: show;" class="gridtable">
+		
+	#elseif($reportToken.getType() == 3)
+    	#if($reportToken.getName() != "")
+	    	#if($isFirstOne != 0)
+				</table>
+			#end
+			<br />
+			<div style="display:inline-block;padding:5px;border: 4px dashed #ccc;">
+			$reportToken.getName()
+			</div>
+			<br />
+			
+			<table style="text-align: left; width: 100%;empty-cells: show;" class="gridtable">
+		#end
+		
+	#end
+
+#end
+
+#if($isFirstOne != 0)
+	</table>
+#end
+</p>
+
+#end
+
+#if(!$ccda.equals(""))
+	$ccda
+#end
+
+#if(!$xdm.equals(""))
+	$xdm
+#end
+
+
+

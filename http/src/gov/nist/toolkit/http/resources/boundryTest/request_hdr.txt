@@ -1,0 +1,9 @@
+POST /ttt/sim/2f736ad2-6bff-4300-867e-cac792379022/rec/xdrpr HTTP/1.1
+mime-version: 1.0
+content-type: multipart/related; type="application/xop+xml";start="<http://tempuri.org/0>";boundary="uuid:898b3ded-c057-48c5-9f07-43a15680b58d+id=5";start-info="application/soap+xml"
+host: ttt.transport-testing.org:8443
+content-length: 110444
+expect: 100-continue
+accept-encoding: gzip, deflate
+connection: Keep-Alive
+
