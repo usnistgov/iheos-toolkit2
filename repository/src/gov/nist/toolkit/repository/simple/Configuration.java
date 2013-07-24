@@ -17,6 +17,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class Configuration {
 	public static final String PROPERTIES_FILE_EXT = "props.txt";
 	public static final String CONTENT_FILE_EXT = "bytes";
+	public static final String CONTENT_TEXT_EXT = "text";
 	public static final String REPOSITORY_TYPES_DIR = "types";
 	public static final String REPOSITORY_DATA_DIR = "data";
 	public static final String REPOSITORY_PROP_FILE_BASENAME = "repository";

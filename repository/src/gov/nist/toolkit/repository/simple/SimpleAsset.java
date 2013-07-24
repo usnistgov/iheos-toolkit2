@@ -26,6 +26,7 @@ public class SimpleAsset implements Asset, Flushable {
 	String classNameForSerializable;
 	Properties properties = new Properties();
 	byte[] content = null;
+	boolean loadContentAttempted = false;
 	boolean autoFlush = true;
 	transient boolean indexable = false;
 	
@@ -149,6 +150,11 @@ public class SimpleAsset implements Asset, Flushable {
 
 	@Override
 	public byte[] getContent() throws RepositoryException {
+		
+		if (!loadContentAttempted) {
+			this.load(this.getId(), new File(getAssetBaseFile(this.getId()).toString()), this.getRepository());
+		}
+		
 		return content;
 	}
 
@@ -160,7 +166,7 @@ public class SimpleAsset implements Asset, Flushable {
 
 	@Override
 	public void updateContent(String content, String mimeType) throws RepositoryException {
-		properties.setProperty("mimeType", mimeType);
+		properties.setProperty("mimeType", mimeType);		
 		this.content = content.getBytes();
 		if (autoFlush) flush();
 	}
@@ -274,23 +280,43 @@ public class SimpleAsset implements Asset, Flushable {
 					"asset [" + assetId.getIdString() + "] in repository [" +
 					repositoryId.getIdString() + "]", e);
 		}
-		String mimeType = properties.getProperty("mimeType");
-		if (mimeType != null && partOne(mimeType, "\\/").equals("text")) {
-			String ext = partTwo(mimeType, "\\/");
-			if (ext.equals("plain")) ext = "txt";
+
+		String[] ext = getContentExtension();
+		if (Configuration.CONTENT_TEXT_EXT.equals(ext[0])) {
 			try {
-				content = Io.stringFromFile(getContentFile(ext)).getBytes();
+				loadContentAttempted = true;
+				content = Io.stringFromFile(getContentFile(ext[2])).getBytes();
 			} catch (IOException e) {
 				// content may not exist
 			}
 		} else {
 			try {
+				loadContentAttempted = true;
 				content = Io.bytesFromFile(assetContentFile);
 			} catch (Exception e) {
 				// content may not exist
 			}
 		}
 		return this;
+	}
+	
+	@Override
+	public String[] getContentExtension() {
+		String[] sPart = new String[]{"","",""};
+		String mimeType = properties.getProperty("mimeType");	
+		if (mimeType != null && mimeType.startsWith("text/")) {
+			sPart[0] = "text";
+			sPart[1] = partTwo(mimeType, "\\/");
+			if (sPart[1].equals("*")||sPart[1].equals("plain")) { 
+				sPart[2] = "txt";
+			} else {
+				sPart[2] = sPart[1];
+			}
+			
+		} else {
+			sPart[2] = Configuration.CONTENT_FILE_EXT;
+		}
+		return sPart;
 	}
 
 	@Override
@@ -304,11 +330,9 @@ public class SimpleAsset implements Asset, Flushable {
 			properties.store(writer, "");
 			writer.close();
 			if (content != null) {
-				String mimeType = properties.getProperty("mimeType");
-				if (mimeType != null && mimeType.startsWith("text/")) {
-					String ext = partTwo(mimeType, "\\/");
-					if (ext.equals("*")||ext.equals("plain")) ext = "txt";
-					Io.stringToFile(getContentFile(ext), new String(content));
+				String[] ext = getContentExtension();
+				if (Configuration.CONTENT_TEXT_EXT.equals(ext[0])) {					
+					Io.stringToFile(getContentFile(ext[2]), new String(content));
 				} else {
 					OutputStream os = new FileOutputStream(getContentFile());
 					os.write(content);

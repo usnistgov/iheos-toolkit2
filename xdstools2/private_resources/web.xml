@@ -107,6 +107,10 @@
 		<servlet-class>gov.nist.toolkit.repository.simple.search.SearchServlet</servlet-class>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>downloadAssetServlet</servlet-name>
+		<servlet-class>gov.nist.toolkit.repository.simple.search.DownloadAssetServlet</servlet-class>
+	</servlet>	
 	
 	<servlet-mapping>
 		<servlet-name>toolkitServlet</servlet-name>
@@ -146,7 +150,12 @@
 	
 	<servlet-mapping>
 		<servlet-name>searchServlet</servlet-name>
-		<url-pattern>/search/search</url-pattern>
+		<url-pattern>/repository/search</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>downloadAssetServlet</servlet-name>
+		<url-pattern>/repository/downloadAsset</url-pattern>
 	</servlet-mapping>
 
 	<!--

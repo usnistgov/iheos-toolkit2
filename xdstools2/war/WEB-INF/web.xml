@@ -102,6 +102,16 @@
 		<servlet-class>gov.nist.toolkit.xdstools2.server.simulator.support.SimServlet</servlet-class>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>searchServlet</servlet-name>
+		<servlet-class>gov.nist.toolkit.repository.simple.search.SearchServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>downloadAssetServlet</servlet-name>
+		<servlet-class>gov.nist.toolkit.repository.simple.search.DownloadAssetServlet</servlet-class>
+	</servlet>	
+	
 	<servlet-mapping>
 		<servlet-name>toolkitServlet</servlet-name>
 		<url-pattern>/xdstools2/toolkit</url-pattern>
@@ -135,6 +145,17 @@
 	<servlet-mapping>
 		<servlet-name>simulatorServlet</servlet-name>
 		<url-pattern>/xdstools2/sim/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet-mapping>
+		<servlet-name>searchServlet</servlet-name>
+		<url-pattern>/repository/search</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>downloadAssetServlet</servlet-name>
+		<url-pattern>/repository/downloadAsset</url-pattern>
 	</servlet-mapping>
 
 	<!--

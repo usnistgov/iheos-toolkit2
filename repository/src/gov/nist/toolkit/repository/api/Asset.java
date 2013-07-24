@@ -396,6 +396,13 @@ public interface Asset {
         throws gov.nist.toolkit.repository.api.RepositoryException;
 
     /**
+     * This method is used to determine the file extension based on the mimeType (if applicable)
+     * API Extension
+     * @return
+     */
+    public String[] getContentExtension();
+    
+    /**
      * Update an Asset's content, saving in the specified mimeType.
      *
      * @param content
