@@ -1,6 +1,12 @@
 package gov.nist.toolkit.soap.http;
 
+/*
+ * This class does not seems to be used anywhere. REMOVE? - Antoine 07/24/2013 
+ */
+
+
 import gov.nist.toolkit.soap.axis2.SoapInterface;
+import gov.nist.toolkit.testengine.PlanContext;
 import gov.nist.toolkit.xdsexception.XdsFormatException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
