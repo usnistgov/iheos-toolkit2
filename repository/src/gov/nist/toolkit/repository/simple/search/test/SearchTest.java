@@ -46,10 +46,10 @@ public class SearchTest {
 	 */
 	
 	static String RootPath = "/e/artrep_test_resources/"; 		// Root Path or the Test resources folder
-	public static String RepositoriesPath; // = RootPath + "repositories"; // Repositories folder
+	public static String RepositoriesPath;  					// Repositories folder
 	static String InstallationPath = RootPath+"installation";	// Path containing the WEB-INF folder (for External_Cache)
 	
-	public static File RootOfAllRepositories; // = new File(RepositoriesPath);
+	public static File RootOfAllRepositories; 
 	static Installation inst = null;
 	
 	@BeforeClass

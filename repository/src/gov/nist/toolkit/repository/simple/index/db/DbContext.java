@@ -17,7 +17,7 @@ import java.sql.Statement;
 public class DbContext {
 
 	private Connection connection = null;
-	private static boolean debugMode = true;
+	private static boolean debugMode = !true;
 	
 	public DbContext(Connection connection) {
 		this.connection = connection;
@@ -35,6 +35,17 @@ public class DbContext {
 		this.connection = connection;
 	}
 
+	/**
+	 * A simple log without access level control
+	 * 
+	 * @param str
+	 */
+	public static void log(String str) {
+		if (debugMode) {
+			System.out.println(str);
+		}
+	}
+	
 	public int getInt(String sqlStr) throws RepositoryException {
 		int intVal = 0;
 		try {
@@ -50,7 +61,7 @@ public class DbContext {
 			throw new RepositoryException("Error, Sqlstate:" + e.getSQLState() , e);
 		}
 		
-		System.out.println("value: " + intVal);
+		log("value: " + intVal);
 		return intVal;
 		
 	}
@@ -70,7 +81,7 @@ public class DbContext {
 			throw new RepositoryException("Error, Sqlstate:" + e.getSQLState() , e);
 		}
 		
-		System.out.println("value: " + stringVal);
+		log("value: " + stringVal);
 		return stringVal;
 		
 	}
@@ -82,9 +93,9 @@ public class DbContext {
 	 * @throws SQLException
 	 */
 	public void internalCmd(String sqlStr) throws SQLException {
-		if (isDebugMode()) {
-			System.out.println("IndexContainer SQL: " +sqlStr);
-		}
+		
+		log("IndexContainer SQL: " +sqlStr);
+		
 		if (connection!=null) {
 			Statement statement = connection.createStatement();
 			statement.execute(sqlStr);			
@@ -105,15 +116,14 @@ public class DbContext {
 	 * @throws SQLException
 	 */
 	public int executePrepared(String sqlStr, String[] params) throws SQLException {
-		if (isDebugMode())
-			System.out.println("IndexContainer SQL: " +sqlStr);
+
+		log("IndexContainer SQL: " +sqlStr);
 		if (connection!=null) {
 			PreparedStatement statement = connection.prepareStatement(sqlStr);
 			int parameterIndex=1;
 			for (String p : params) {
-				if (isDebugMode()) {
-					System.out.println("Setting param: "+parameterIndex + " to <" + p + ">");			
-				}
+				log("Setting param: "+parameterIndex + " to <" + p + ">");			
+
 				statement.setString(parameterIndex++, p);
 			}
 			return statement.executeUpdate();
@@ -122,9 +132,8 @@ public class DbContext {
 	}
 	
 	public ResultSet executeQuery(String sqlStr) throws SQLException {
-		if (isDebugMode()) {
-			System.out.println("IndexContainer SQL: "+sqlStr);
-		}
+
+		log("IndexContainer SQL: "+sqlStr);
 		
 		PreparedStatement statement = connection.prepareStatement(sqlStr);
 		return  statement.executeQuery();

@@ -19,7 +19,7 @@ public class SearchCriteria implements IsSerializable, Serializable {
 	
 
 	/**
-	 * 
+	 * @author Sunil.Bhaskarla
 	 */
 	private static final long serialVersionUID = 3700511838872506571L;
 	private ArrayList<SearchTerm> searchTerms;

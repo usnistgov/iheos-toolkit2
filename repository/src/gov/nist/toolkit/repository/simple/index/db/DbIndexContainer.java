@@ -69,7 +69,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 		String repContainerHead = 
 		"create table " + repContainerLabel;				/* This is the master container for all indexable asset properties */
 	
-		System.out.println("using label " + repContainerLabel);
+		DbContext.log("using label " + repContainerLabel);
 		
 		return repContainerHead + repContainerDefinition;
 		
@@ -129,7 +129,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 					dbc.internalCmd(index);
 					
 				} catch (SQLException e) {
-					System.out.println("index probably exists.");
+					DbContext.log("index probably exists.");
 				}
 
 				dbc.close();				
@@ -202,7 +202,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 						+"= ? and " + DbIndexContainer.assetType +  " = ?  and ("+propCol+" is null or "+propCol+" != ?)";
 				
 				int rowsAffected = dbc.executePrepared(sqlStr, new String[]{value, assetId, repositoryId, assetType, value });				
-				System.out.println("rows affected: " + rowsAffected);
+				DbContext.log("rows affected: " + rowsAffected);
 				dbc.close();
 			}
 		} catch (SQLException e) {
@@ -285,7 +285,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 						sqlStr = "alter table "+ repContainerLabel + " add column " + dbCol + " varchar(64)";					
 						dbc.internalCmd(sqlStr);
 					} else {
-						System.out.println("Column "+ c +" already exists " + ((assetType!=null)?"for assetType: "+assetType:""));
+						DbContext.log("Column "+ c +" already exists " + ((assetType!=null)?"for assetType: "+assetType:""));
 					}
 					
 				}
@@ -297,7 +297,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 					dbc.internalCmd(index);					
 				}
 			} catch (SQLException e) {
-				System.out.println("Index probably exists.");
+				DbContext.log("Index probably exists.");
 			}
 			dbc.close();			
 		} catch (SQLException e) {
@@ -331,7 +331,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 			ResultSet rs = dbc.executeQuery(sqlStr);
 			while (rs.next()) {
 		          records = rs.getInt("ct");
-		          System.out.println("records: " + records);
+		          DbContext.log("records: " + records);
 
 			}
 			dbc.close(rs);			
@@ -448,7 +448,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 			e.printStackTrace();
 			return false;
 		}
-		System.out.println("returning false");
+		DbContext.log("returning false");
 		return false;
 		
 	}
@@ -535,7 +535,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 			ArrayList<String> properties = getIndexableProperties(); 
 		
 			for (String assetType : assets) {
-				System.out.println("found indexable asset type: " + assetType);
+				DbContext.log("found indexable asset type: " + assetType);
 				SimpleRepositoryIterator it = new SimpleRepositoryIterator();
 
 				while (it.hasNextRepository()) {
@@ -551,7 +551,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 			throw new Exception(e);
 		}
 		
-		System.out.println("Full Index Summary\n"
+		DbContext.log("Full Index Summary\n"
 						+  "==================\n"
 						+  "Total Assets Indexed: " + totalAssetsIndexed + "\nRepositories: " + totalRepositoriesInvolved + "\nIndexes up to date.");
 	}
@@ -607,7 +607,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 					try {					
 									
 						String propertyValue = a.getProperty(propertyName);
-						System.out.println("prop-" + propertyName + " -- " + propertyValue);
+						DbContext.log("prop-" + propertyName + " -- " + propertyValue);
 						if (propertyValue!=null && !"".equals(propertyValue)) {
 							updateIndex(reposId, a.getId().getIdString(), a.getAssetType().getKeyword(), getDbIndexedColumn(a.getAssetType().getKeyword(),propertyName), propertyValue);
 							totalAssetsIndexed++;
@@ -655,7 +655,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 			byte[] propContent = FileUtils.readFileToByteArray(f);
 			return new Hash().compute_hash(propContent);
 		} catch (Exception e) {
-			System.out.println("Hash compute error on " + f.toString() + " " + e.toString());
+			DbContext.log("Hash compute error on " + f.toString() + " " + e.toString());
 		}
 		return "";
 	}
@@ -714,7 +714,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 				// Make sure properties exist
 			ArrayList<String> searchProperties = searchCriteria.getProperties();
 			String searchCriteriaWhere = searchCriteria.toString();
-			System.out.println(searchCriteriaWhere);
+			DbContext.log(searchCriteriaWhere);
 			
 			
 			DbContext dbc = new DbContext();
@@ -735,7 +735,7 @@ public class DbIndexContainer implements IndexContainer, Index {
 				try {
 					dbc.internalCmd(sqlString);
 				} catch (SQLException e) {
-					System.out.println( "possible non-existent column in where clause? " + e.toString());
+					DbContext.log( "possible non-existent column in where clause? " + e.toString());
 				}
 			}
 					

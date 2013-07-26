@@ -26,16 +26,16 @@ public class IndexableRepositoryTest {
 	 * Important: The following system path variables need to verified manually before running the test.
 	 * 
 	 */
+
 	static String RootPath = "/e/artrep_test_resources/"; 		// Root Path or the Test resources folder
-	static String RepositoriesPath = RootPath + "repositories"; // Repositories folder
+	public static String RepositoriesPath;  					// Repositories folder
 	static String InstallationPath = RootPath+"installation";	// Path containing the WEB-INF folder (for External_Cache)
 	
-	static File RootOfAllRepositories = new File(RepositoriesPath);
+	public static File RootOfAllRepositories; 
 	static Installation inst = null;
 	
 	@BeforeClass
 	static public void initialize() throws RepositoryException {
-		new Configuration(RootOfAllRepositories);
 		
 		// The MockServletContext is used for testing purposes only
 		
@@ -48,6 +48,12 @@ public class IndexableRepositoryTest {
 		System.out.println(externalCache);
 		Installation.installation().setExternalCache(new File(sc.getRealPath(externalCache)));
 		inst = Installation.installation();
+		
+		RepositoriesPath = externalCache + "/repositories";
+		RootOfAllRepositories = new File(RepositoriesPath);
+		
+		new Configuration(RootOfAllRepositories);
+
 	}
 
 	

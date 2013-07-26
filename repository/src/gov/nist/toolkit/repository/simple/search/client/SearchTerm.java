@@ -8,7 +8,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class SearchTerm implements IsSerializable, Serializable {
 	/**
-	 * 
+	 *
+	 * @author Sunil.Bhaskarla
 	 */
 	private static final long serialVersionUID = -6204673800003937099L;
 	private String assetType;

@@ -22,6 +22,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
+
 public class SimpleAsset implements Asset, Flushable {	
 	String classNameForSerializable;
 	Properties properties = new Properties();
@@ -273,7 +275,9 @@ public class SimpleAsset implements Asset, Flushable {
 		File assetContentFile = new File(assetBaseFile.toString() + "." + Configuration.CONTENT_FILE_EXT);
 		properties = new Properties();
 		try {
-			properties.load(new FileReader(assetPropFile));
+			FileReader fr = new FileReader(assetPropFile);
+			properties.load(fr);
+			fr.close();
 		} catch (Exception e) {
 			throw new RepositoryException(RepositoryException.UNKNOWN_ID + " : " + 
 					"properties cannot be loaded for " +
@@ -285,14 +289,14 @@ public class SimpleAsset implements Asset, Flushable {
 		if (Configuration.CONTENT_TEXT_EXT.equals(ext[0])) {
 			try {
 				loadContentAttempted = true;
-				content = Io.stringFromFile(getContentFile(ext[2])).getBytes();
+				content = FileUtils.readFileToByteArray(getContentFile(ext[2]));
 			} catch (IOException e) {
 				// content may not exist
 			}
 		} else {
 			try {
 				loadContentAttempted = true;
-				content = Io.bytesFromFile(assetContentFile);
+				content = FileUtils.readFileToByteArray(assetContentFile);
 			} catch (Exception e) {
 				// content may not exist
 			}

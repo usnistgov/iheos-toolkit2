@@ -21,6 +21,7 @@ import java.util.Map;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +32,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -69,8 +74,8 @@ public class SearchTab extends GenericQueryTab {
 	public Button moveRight = new Button("&rArr;");
 	public Button moveLeft = new Button("&lArr;");
 	public ListBox reposRight = new ListBox(true);
-	public Button moveUp = new Button("Before");
-	public Button moveDown = new Button("After");
+	public Button moveUp = new Button("Move Up");
+	public Button moveDown = new Button("Move Down");
 	protected ArrayList<String> propNames = new ArrayList<String>();
 	
 	static String DEFAULTWIDTH = "30em";
@@ -83,7 +88,7 @@ public class SearchTab extends GenericQueryTab {
 	
     RadioButton simpleQuery = new RadioButton("queryMode", "Simple");
     RadioButton advancedQuery = new RadioButton("queryMode", "Advanced");
-
+    Button searchBtn = new Button("Search");
 	
 	public SearchTab(BaseSiteActorManager siteActorManager) {
 		super(new NullSiteActorManager());
@@ -91,8 +96,11 @@ public class SearchTab extends GenericQueryTab {
 
 	public SearchTab() {
 		super(new NullSiteActorManager());
-		moveUp.setWidth("4em");
-		moveDown.setWidth("4em");
+		moveUp.setWidth("8em");
+		moveDown.setWidth("8em");
+		// moveUp.setStyleName("smallerText");
+		// moveDown.setStyleName("smallerText");
+		
 	}
 
 
@@ -112,9 +120,6 @@ public class SearchTab extends GenericQueryTab {
 		title.setHTML("<h2>Artifact Repository Search</h2>");
 		topPanel.add(title);
 		
-//		topPanel.add(new HTML("How to use Search feature:"));
-//		topPanel.add(new HTML("<p>" + required));
-
 		grid.setCellSpacing(20);
 
 		
@@ -168,13 +173,15 @@ public class SearchTab extends GenericQueryTab {
 
 		@Override
 		public void onFailure(Throwable arg0) {
+			searchBtn.setEnabled(true);
 			new PopupMessage("propNames could not be loaded: " + arg0.getMessage());
 		}
 
 		@Override
 		public void onSuccess(List<Asset> result) {
-			resultPanel.clear();
+			searchBtn.setEnabled(true);
 			
+			resultPanel.clear();			
 			resultPanel.add(new HTML("&nbsp;"));
 			
 			FlexTable resultFt = new FlexTable();
@@ -325,7 +332,14 @@ public class SearchTab extends GenericQueryTab {
 		grid.setWidget(row, col++, new HTML("Available Repositories"));
 		grid.setWidget(row, col++, new HTML("&nbsp;"));
 		grid.setWidget(row, col++, new HTML("Selected Repositories"));
-		grid.setWidget(row++, col, new HTML("Search Order"));
+		grid.setWidget(row, col, new HTML("Search Order"));
+		
+		
+		HTMLTable.CellFormatter formatter = grid.getCellFormatter();
+		 formatter.setHorizontalAlignment(row, col, HasHorizontalAlignment.ALIGN_CENTER);
+		 formatter.setVerticalAlignment(row, col, HasVerticalAlignment.ALIGN_MIDDLE);
+		 
+		 row++;
 		
 		col=0;
 		
@@ -1050,10 +1064,15 @@ public class SearchTab extends GenericQueryTab {
 			}
 		});
 	    
-	    Button searchBtn = new Button("Search");
+
 	    searchBtn.addClickHandler(new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
+				
+				resultPanel.clear();
+				resultPanel.add(new HTML("&nbsp;"));
+				resultPanel.add(new HTML("Searching..."));
+				topPanel.add(resultPanel);
 				
 				int itemCt = reposRight.getItemCount();
 				
@@ -1061,11 +1080,14 @@ public class SearchTab extends GenericQueryTab {
 					new PopupMessage("Please select at least one repository.");
 					return;
 				} else {
+					searchBtn.setEnabled(false);
+					
 					String[] selectedRepos = new String[itemCt];
 					for (int cx=0; cx<itemCt; cx++ ) {
 						selectedRepos[cx] = reposRight.getValue(cx);	
 					}
 					 toolkitService.search(selectedRepos, sc, searchResults);
+					 ((ListBox)event.getSource()).setEnabled(false);
 				}
 				
 

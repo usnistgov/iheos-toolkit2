@@ -96,7 +96,9 @@ public abstract class RepositoryImpl implements Repository {
 					REPOSITORY_PROPERTY_FILE);
 			properties = new Properties();
 			try {
-				properties.load(new FileReader(typeDescriptorFile));
+				FileReader fr = new FileReader(typeDescriptorFile);
+				properties.load(fr);
+				fr.close(); // This will release the file lock
 			} catch (Exception e) {
 				throw new RepositoryException(RepositoryException.UNKNOWN_REPOSITORY + " : " + root, e);
 			} finally {

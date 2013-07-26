@@ -199,10 +199,10 @@ public class SearchServlet extends HttpServlet {
 			
 			sb.append(  
 					 "Type: " + a.getAssetType().getKeyword() 
-					+ "&nbsp;Created Date: " + a.getCreatedDate()
-					+((a.getExpirationDate()!=null)
-					 ?"&nbsp;Expiration Date: " + a.getExpirationDate():"")
-					+ "&nbsp;Mime Type: " + a.getMimeType());
+					+ ((a.getCreatedDate()!=null)?"&nbsp;Created Date: "+a.getCreatedDate():"")
+					+((a.getExpirationDate()!=null)?"&nbsp;Expiration Date: "+a.getExpirationDate():"")					 
+					+((a.getMimeType()!=null)?"&nbsp;Mime Type: " +a.getMimeType():"")
+					);
 			
 			sb.append("'>");
 		}
@@ -228,8 +228,8 @@ public class SearchServlet extends HttpServlet {
 		sb.append(
 				"<tr bgcolor='" + ((rowCt%2 == 0)?"#E6E6FA":"")   + "'><td>"	+ a.getId().toString() + "</td>"
 				+ "<td>"	+ a.getAssetType().getKeyword() + "</td>"
-				+ "<td>"	+ a.getCreatedDate() + "</td>"
-				+ "<td>"	+ a.getMimeType() + "</td>"
+				+ "<td>"	+ ((a.getCreatedDate()!=null)?a.getCreatedDate():"") + "</td>"
+				+ "<td>"	+ ((a.getMimeType()!=null)?a.getMimeType():"") + "</td>"
 				+"</tr>"
 				);
 		} else {
