@@ -244,6 +244,7 @@ public class Soap implements SoapInterface {
 
 				String pid = this.params.get("$patientid$");
 				parsePid(pid, context);
+				context.getParams().put("endpoint", this.endpoint);
 
 				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter
 						.buildHeader(context);
