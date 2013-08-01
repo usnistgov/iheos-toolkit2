@@ -117,10 +117,10 @@
 
 	<!-- all compiled sources are placed there -->
 	<property name="build.dir" location="build" />
-	
+
 	<!-- all test result are placed there -->
 	<property name="test.dir" location="test" />
-	
+
 	<!-- target repository where artifacts are put-->
 	<property name="target.dir" location="." />
 
@@ -147,7 +147,7 @@
 	<property name="actorfactory.src.dir" location="actorfactory/src" />
 	<property name="http.src.dir" location="http/src" />
 	<property name="direct.src.dir" location="direct/src" />
-	
+
 	<!-- antlib is bundled with the 3rd party librairies.
 	Since the lib.dir might not be initialized or could be cleaned-up,
 	we get the definition of antlib from the shared.lib.dir -->
@@ -156,15 +156,15 @@
 			<pathelement location="${shared.lib.dir}/ant-contrib.jar" />
 		</classpath>
 	</taskdef>
-	
+
 	<!-- classpath -->
 	<path id="classpath">
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-	
-	<!-- classpath for test execution -->	
+
+	<!-- classpath for test execution -->
 	<path id="test.classpath">
 		<fileset dir="${build.dir}">
 			<include name="**/*.class" />
@@ -173,67 +173,65 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-	
-	
-	
-    <!-- ================================================= 
+
+
+
+	<!-- ================================================= 
           This section downloads, installs and configures ivy.
           It seems the easier and less intrusive way to get ivy in shared-libs.               
          ================================================= -->
-	
-	
-    <property name="ivy.install.version" value="2.3.0" />
-    <property name="ivy.jar.dir" location="${shared.lib.dir}" />
-    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.3.0.jar" />
 
-    <target name="download-ivy" unless="offline">
 
-        <mkdir dir="${ivy.jar.dir}"/>
-        <!-- download Ivy from web site so that it can be used even without any special installation -->
-        <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" 
-             dest="${ivy.jar.file}" usetimestamp="true"/>
-    </target>
+	<property name="ivy.install.version" value="2.3.0" />
+	<property name="ivy.jar.dir" location="${shared.lib.dir}" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.3.0.jar" />
 
-    <target name="init-ivy" depends="download-ivy">
-      <!-- try to load ivy here from ivy home, in case the user has not already dropped
+	<target name="download-ivy" unless="offline">
+
+		<mkdir dir="${ivy.jar.dir}" />
+		<!-- download Ivy from web site so that it can be used even without any special installation -->
+		<get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+
+	<target name="init-ivy" depends="download-ivy">
+		<!-- try to load ivy here from ivy home, in case the user has not already dropped
               it into ant's lib dir (note that the latter copy will always take precedence).
               We will not fail as long as local lib dir exists (it may be empty) and
               ivy is in at least one of ant's lib dir or the local lib dir. -->
-        <path id="ivy.lib.path">
-            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
-        </path>
-    	<taskdef resource="org/apache/ivy/ant/antlib.xml"
-    	                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
-    </target>
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path" />
+	</target>
 
 
-	
-    <target name="resolve" description="--> retrieve dependencies with ivy" depends="init-ivy">
-    	<ivy:cleancache />
-        <ivy:retrieve/>
-    </target>
-	
-    <!-- ================================================= 
+
+	<target name="resolve" description="--> retrieve dependencies with ivy" depends="init-ivy">
+		<ivy:cleancache />
+		<ivy:retrieve />
+	</target>
+
+	<!-- ================================================= 
          target: clean        
          ================================================= -->
-	
+
 	<target name="clean">
 		<delete includeemptydirs="true" failonerror="false">
-			<fileset dir="${build.dir}" includes="**/*"/>
-			<fileset dir="${test.dir}" includes="**/*"/>
-			<fileset dir="${lib.dir}" includes="**/*"/>
+			<fileset dir="${build.dir}" includes="**/*" />
+			<fileset dir="${test.dir}" includes="**/*" />
+			<fileset dir="${lib.dir}" includes="**/*" />
 		</delete>
 		<ant antfile="${staging.area}/build-war.xml" target="clean" />
 	</target>
-	
-    <!-- ================================================= 
+
+	<!-- ================================================= 
          target: prepare
          ================================================= -->
 	<!-- Prepare the build. 
 	quick fix, waiting for full ivy dependency management : all shared-libs copied in lib directory. 
 	creates various directories we need.
 	-->
-	<target name="prepare" >
+	<target name="prepare">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${lib.dir}" />
 		<mkdir dir="${war.dir}" />
@@ -249,27 +247,37 @@
 		<copy todir="${lib.dir}">
 			<fileset dir="${shared.mar.dir}" />
 		</copy>
-		
+
 		<taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc">
 			<classpath refid="classpath" />
 		</taskdef>
 	</target>
 
-    <!-- ================================================= 
+	<!-- ================================================= 
          target: compile
          ================================================= -->
 	<!-- each sub-projects build its own sources in the build directory-->
 	<target name="compile" depends="prepare">
+		
+		<groovyc destdir="${build.dir}" srcdir="${basedir}"  excludes="${war.dir},${build.dir}" verbose="true">
+			<classpath refid="classpath" />
+			<javac debug="on" source="${source}" target="${target}">
+			</javac>
+		</groovyc>
+		
+<!--
 		<for param="sub-build" list="${sub-projects}" trim="true">
 			<sequential>
 				<echo>   from @{sub-build}</echo>
 				<ant dir="@{sub-build}" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="compile" />
 			</sequential>
 		</for>
+-->
+	
 	</target>
 
-	
-    <!-- ================================================= 
+
+	<!-- ================================================= 
          target: jar
          ================================================= -->
 	<!-- jar all the .class files and put the jar in ${war.lib.dir}.-->
@@ -278,7 +286,7 @@
 		</jar>
 	</target>
 
-    <!-- ================================================= 
+	<!-- ================================================= 
          target: gwt-compile
          ================================================= -->
 	<!-- invoke the GWT compiler to generate the javascript.
@@ -292,45 +300,45 @@
 	<target name="war-prep" depends="compile">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war-prep" />
 	</target>
-	
+
 	<!-- This target bypasses GWT-compile. Useful to build the war if gui did not change -->
 	<target name="war-no-gwt-compile" depends="compile, war-prep">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>
-	
+
 	<target name="war" depends="compile, gwt-compile, war-prep">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="war" />
 	</target>
 
-	
-	
-	    <!-- ================================================= 
+
+
+	<!-- ================================================= 
 	          convenience methods for different configurations              
 	         ================================================= -->
 
-	    <!-- ================================= 
+	<!-- ================================= 
 	          target: ttt              
 	         ================================= -->
 	<target name="ttt" depends="compile">
 		<ant antfile="${staging.area}/build-war.xml" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ttt" />
 	</target>
-	
-		    <!-- ================================= 
+
+	<!-- ================================= 
 	          target: ihe              
 	         ================================= -->
-		<target name="ihe" depends="compile">
-		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ihe"/>
+	<target name="ihe" depends="compile">
+		<ant dir="xdstools2" useNativeBasedir="true" inheritAll="true" inheritRefs="true" target="ihe" />
 	</target>
 
-		    <!-- ================================= 
+	<!-- ================================= 
 	          target: compile-direct-faq            
 	         ================================= -->
 	<!-- generate documentation -->
 	<target name="compile-direct-faq">
 		<ant dir="direct-faq" target="compile" />
 	</target>
-	
-    <!-- ================================= 
+
+	<!-- ================================= 
                  target: test            
          ================================= -->
 	<!-- run unit tests 
@@ -339,33 +347,33 @@
 	</target>
 	-->
 	<target name="test" depends="compile">
-		<mkdir dir="${test.dir}"/>
+		<mkdir dir="${test.dir}" />
 		<path id="test.classpath">
-    	    <fileset dir="${build.dir}">
-    	        <include name="**/*.class" />
-    	    </fileset>
-			
-    		<fileset dir="${lib.dir}">
-    			<include name="**/*.jar" />
-    		</fileset>
-    		
+			<fileset dir="${build.dir}">
+				<include name="**/*.class" />
+			</fileset>
+
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+			</fileset>
+
 		</path>
-	    <junit printsummary="on">
-	        <classpath>
-	        	<fileset dir="${toolkit.home}/xdstools2" includes="log4j.properties"/>
-	    		<fileset dir="${lib.dir}">
-	    			<include name="**/*.jar" />
-	    		</fileset>
-				<pathelement location="${build.dir}"/>	        	
-	        </classpath>
-	        <formatter type="brief"/>
-	    	<batchtest fork="yes" todir="${test.dir}">
-	    	    <fileset dir="${build.dir}">
-	    	    	<include name="**/test/**/*Test*"/>
-	    	    	<exclude name="**/*$*"/>
-	    	    </fileset>
-	    	</batchtest>	    
-	    </junit>
+		<junit printsummary="on">
+			<classpath>
+				<fileset dir="${toolkit.home}/xdstools2" includes="log4j.properties" />
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar" />
+				</fileset>
+				<pathelement location="${build.dir}" />
+			</classpath>
+			<formatter type="brief" />
+			<batchtest fork="yes" todir="${test.dir}">
+				<fileset dir="${build.dir}">
+					<include name="**/test/**/*Test*" />
+					<exclude name="**/*$*" />
+				</fileset>
+			</batchtest>
+		</junit>
 	</target>
 
 </project>

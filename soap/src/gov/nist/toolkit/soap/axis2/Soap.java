@@ -5,11 +5,14 @@ import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
+import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
+import gov.nist.toolkit.testengine.PlanContext;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
+import gov.nist.toolkit.wsseTool.util.MyXmlUtils;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -58,9 +62,9 @@ import org.slf4j.LoggerFactory;
  */
 
 public class Soap implements SoapInterface {
-	
+
 	private static Logger log = LoggerFactory.getLogger(Soap.class);
-	
+
 	ServiceClient serviceClient = null;
 	OperationClient operationClient = null;
 	OMElement result = null;
@@ -78,6 +82,8 @@ public class Soap implements SoapInterface {
 	String endpoint;
 	String action;
 	OMElement body = null;
+
+	private Map<String, String> params;
 
 	String repositoryLocation = null; // this is axis2 repository - used only
 										// with useSaml / Seems used to store
@@ -163,14 +169,17 @@ public class Soap implements SoapInterface {
 		this.async = async;
 	}
 
-	ConfigurationContext buildConfigurationContext() throws XdsInternalException, AxisFault {
+	ConfigurationContext buildConfigurationContext()
+			throws XdsInternalException, AxisFault {
 		if (repositoryLocation == null)
-			throw new XdsInternalException("Internal Error: Axis2 Repository not configured");
+			throw new XdsInternalException(
+					"Internal Error: Axis2 Repository not configured");
 
 		// TODO remove rl not use anywhere -Antoine
 		File rl = new File(repositoryLocation);
 		if (!rl.exists() || !rl.isDirectory())
-			throw new XdsInternalException("Axis2 repository location, " + repositoryLocation
+			throw new XdsInternalException("Axis2 repository location, "
+					+ repositoryLocation
 					+ ", does not exist or is not a directory");
 		/*
 		 * File ax = new File(repositoryLocation + File.separator + "conf" +
@@ -179,17 +188,22 @@ public class Soap implements SoapInterface {
 		 * " does not exist");
 		 */
 		ConfigurationContext cc = null;
-		System.out.println(" ******** repositoryLocation = [" + repositoryLocation + "]");
+		System.out.println(" ******** repositoryLocation = ["
+				+ repositoryLocation + "]");
 		try {
-			cc = ConfigurationContextFactory.createConfigurationContextFromFileSystem(repositoryLocation);
+			cc = ConfigurationContextFactory
+					.createConfigurationContextFromFileSystem(repositoryLocation);
 		} catch (Exception e) {
 			StringBuffer buf = new StringBuffer();
-			buf.append("Error loading Axis2 Repository: " + e.getMessage() + "\n");
+			buf.append("Error loading Axis2 Repository: " + e.getMessage()
+					+ "\n");
 
 			// TODO REMOVE ?? exact same call = exact same result. I am puzzled
 			// -Antoine
-			cc = ConfigurationContextFactory.createConfigurationContextFromFileSystem(repositoryLocation);
-			Hashtable faultyModules = cc.getAxisConfiguration().getFaultyModules();
+			cc = ConfigurationContextFactory
+					.createConfigurationContextFromFileSystem(repositoryLocation);
+			Hashtable faultyModules = cc.getAxisConfiguration()
+					.getFaultyModules();
 			for (Object keyObj : faultyModules.keySet()) {
 				if (keyObj instanceof String) {
 					String key = (String) keyObj;
@@ -222,24 +236,55 @@ public class Soap implements SoapInterface {
 				String kPass = securityParams.getKeystorePassword();
 				String alias = "1";
 				String sPass = "changeit";
-				
-				KeystoreAccess keystore = new KeystoreAccess(store , sPass, alias, kPass);
+
+				KeystoreAccess keystore = new KeystoreAccess(store, sPass,
+						alias, kPass);
 				SecurityContext context = SecurityContextFactory.getInstance();
 				context.setKeystore(keystore);
-				context.getParams().put("patientId", "TTTD123401^^^&2.2&ISO");
-				context.getParams().put("homeCommunityId", "urn:oid:2.2");
-				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter.buildHeader(context);
-				
+
+				String pid = this.params.get("$patientid$");
+				parsePid(pid, context);
+				context.getParams().put("endpoint", this.endpoint);
+
+				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter
+						.buildHeader(context);
+
 				securityHeader = org.apache.axis2.util.XMLUtils.toOM(header);
 				getSoapHeader().addChild(securityHeader);
-				
+
 			} catch (Exception e) {
-				log.error("!! error while trying to generate security header !!",e);
+				log.error(
+						"!! error while trying to generate security header !!",
+						e);
 			}
-		
+
 		}
 
 		return envelope;
+	}
+
+	private void parsePid(String pid, SecurityContext context) {
+		
+			try {
+				if(pid == null || pid.equals("")){
+					throw new Exception("cannot retrieve params from the planContext in the soap layer");
+				}
+				
+				String hid = pid.split("&")[1];
+				
+				if(hid == null || pid.equals("")){
+					throw new Exception("cannot parse patient_id to retrieve home_community_id");
+				}
+				
+				log.info("param patientId" + pid + " passed to the saml header generator");
+				log.info("homeCommunityId" + hid + " passed to the saml header generator");
+				context.getParams().put("patientId", pid);
+				context.getParams().put("homeCommunityId", "urn:oid:"+ hid);
+				
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
+		
 	}
 
 	// if (additionalHeaders != null && additionalHeaders.size() > 0) {
@@ -292,8 +337,8 @@ public class Soap implements SoapInterface {
 	 * 
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#soapCallWithWSSEC()
 	 */
-	public void soapCallWithWSSEC() throws XdsInternalException, AxisFault, EnvironmentNotSelectedException,
-			LoadKeystoreException {
+	public void soapCallWithWSSEC() throws XdsInternalException, AxisFault,
+			EnvironmentNotSelectedException, LoadKeystoreException {
 		System.out.println("soapCallWithWSSEC() ----- useWSSEC :" + useWSSEC);
 		ConfigurationContext cc = null;
 		if (useWSSEC)
@@ -320,7 +365,8 @@ public class Soap implements SoapInterface {
 			} catch (AxisFault e) {
 				// System.out.println("Bill says Axis Fault was " +
 				// e.getMessage());
-				if (e.getMessage().indexOf("Unable to engage module : addressing") == -1) {
+				if (e.getMessage().indexOf(
+						"Unable to engage module : addressing") == -1) {
 					// hmmm - a real error
 					throw e;
 				}
@@ -347,7 +393,8 @@ public class Soap implements SoapInterface {
 			// TODO CHECK - This should not be necessary. This operation is
 			// already created by the serviceClient constructor! -Antoine
 			// vbeera: This is first fix found for MustUnderstand exception
-			operationClient = serviceClient.createClient(ServiceClient.ANON_ROBUST_OUT_ONLY_OP);
+			operationClient = serviceClient
+					.createClient(ServiceClient.ANON_ROBUST_OUT_ONLY_OP);
 
 			// vbeera: The below 2 lines is the 2nd fix/solution which is a
 			// potential one. Comment the above fix and unComment the below 2
@@ -361,7 +408,8 @@ public class Soap implements SoapInterface {
 		} else {
 			// TODO CHECK - This should not be necessary. This operation is
 			// already created by the serviceClient constructor! -Antoine
-			operationClient = serviceClient.createClient(ServiceClient.ANON_OUT_IN_OP);
+			operationClient = serviceClient
+					.createClient(ServiceClient.ANON_OUT_IN_OP);
 			outMsgCtx = new MessageContext();
 		}
 		// vbeera: modified code -END-
@@ -371,8 +419,10 @@ public class Soap implements SoapInterface {
 		// Boolean.TRUE);
 		// includes setting of endpoint
 		setOptions(options);
-		options.setProperty(AddressingConstants.ADD_MUST_UNDERSTAND_TO_ADDRESSING_HEADERS, Boolean.TRUE);// vbeera:
-																											// modified
+		options.setProperty(
+				AddressingConstants.ADD_MUST_UNDERSTAND_TO_ADDRESSING_HEADERS,
+				Boolean.TRUE);// vbeera:
+								// modified
 
 		// This creates an HTTPClient using the requested keystore and
 		// truststore
@@ -385,11 +435,13 @@ public class Soap implements SoapInterface {
 
 				// TODO REMOVE - I guess this is dead code -Antoine
 				Protocol protocol = getAuthHttpsProtocol();
-				options.setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER, protocol);
+				options.setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
+						protocol);
 
 			} catch (IOException e) {
-				throw new XdsInternalException("Failed to create custom Protocol for TLS\n"
-						+ ExceptionUtil.exception_details(e), e);
+				throw new XdsInternalException(
+						"Failed to create custom Protocol for TLS\n"
+								+ ExceptionUtil.exception_details(e), e);
 			}
 		}
 
@@ -398,7 +450,8 @@ public class Soap implements SoapInterface {
 		if (envelope != null)
 			outMsgCtx.setEnvelope(envelope);
 		else
-			throw new XdsInternalException("Failed to create request envelope...\n");
+			throw new XdsInternalException(
+					"Failed to create request envelope...\n");
 
 //		if (!useWSSEC) // vbeera: added
 //		{
@@ -413,7 +466,7 @@ public class Soap implements SoapInterface {
 					securityHeader.addChild(sign(hdr));
 				}
 			}
-//		}
+//			}
 
 		operationClient.addMessageContext(outMsgCtx);
 
@@ -442,16 +495,19 @@ public class Soap implements SoapInterface {
 		if (async)
 			operationClient.setCallback(callback);
 
-		System.out.println("******************************** BEFORE execute ****************************");
+		System.out
+				.println("******************************** BEFORE execute ****************************");
 		operationClient.execute(block); // execute sync or async
-		System.out.println("******************************** AFTER execute ****************************");
+		System.out
+				.println("******************************** AFTER execute ****************************");
 
 		if (async)
 			waitTillDone();
 
 		MessageContext inMsgCtx = getInputMessageContext();
 
-		System.out.println("Operation is complete: " + operationClient.getOperationContext().isComplete());
+		System.out.println("Operation is complete: "
+				+ operationClient.getOperationContext().isComplete());
 
 		if (async)
 			operationClient.complete(outMsgCtx);
@@ -481,7 +537,8 @@ public class Soap implements SoapInterface {
 	// per-connection basis.
 
 	@SuppressWarnings("deprecation")
-	Protocol getAuthHttpsProtocol() throws MalformedURLException, IOException, EnvironmentNotSelectedException {
+	Protocol getAuthHttpsProtocol() throws MalformedURLException, IOException,
+			EnvironmentNotSelectedException {
 		String keyStoreFile = "file:/Users/bill/tmp/toolkit/environment/EURO2011/keystore/keystore";
 		String keyStorePass = "password";
 		String trustStoreFile = keyStoreFile;
@@ -507,7 +564,8 @@ public class Soap implements SoapInterface {
 		String[] parts = endpoint.split("/");
 		String hostandport = parts[2];
 		if (hostandport == null || hostandport.equals(""))
-			throw new MalformedURLException("Invalid endpoint set in Soap.java: " + endpoint);
+			throw new MalformedURLException(
+					"Invalid endpoint set in Soap.java: " + endpoint);
 		String[] cparts = hostandport.split(":");
 		if (cparts.length != 2)
 			return 443;
@@ -535,7 +593,8 @@ public class Soap implements SoapInterface {
 	 * 
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#soapCall()
 	 */
-	public OMElement soapCall() throws LoadKeystoreException, XdsInternalException, AxisFault, XdsFormatException,
+	public OMElement soapCall() throws LoadKeystoreException,
+			XdsInternalException, AxisFault, XdsFormatException,
 			EnvironmentNotSelectedException {
 
 		soapCallWithWSSEC();
@@ -566,12 +625,16 @@ public class Soap implements SoapInterface {
 		}
 	}
 
-	MessageContext getInputMessageContext() throws XdsInternalException, AxisFault {
+	MessageContext getInputMessageContext() throws XdsInternalException,
+			AxisFault {
 		if (operationClient == null) {
-			Object in = serviceClient.getServiceContext().getLastOperationContext().getMessageContexts().get("In");
+			Object in = serviceClient.getServiceContext()
+					.getLastOperationContext().getMessageContexts().get("In");
 			if (!(in instanceof MessageContext))
-				throw new XdsInternalException("Soap: In MessageContext of type " + in.getClass().getName()
-						+ " instead of MessageContext");
+				throw new XdsInternalException(
+						"Soap: In MessageContext of type "
+								+ in.getClass().getName()
+								+ " instead of MessageContext");
 			MessageContext inMsgCxt = (MessageContext) in;
 			return inMsgCxt;
 		}
@@ -579,15 +642,19 @@ public class Soap implements SoapInterface {
 
 	}
 
-	private void verifyResponseFormat(MessageContext inMsgCxt) throws XdsFormatException, XdsInternalException {
+	private void verifyResponseFormat(MessageContext inMsgCxt)
+			throws XdsFormatException, XdsInternalException {
 		boolean responseMtom = inMsgCxt.isDoingMTOM();
 
 		if (mtom != responseMtom)
 			if (mtom) {
-				throw new XdsFormatException("Request was MTOM format but response was SIMPLE SOAP",
+				throw new XdsFormatException(
+						"Request was MTOM format but response was SIMPLE SOAP",
 						WsDocRef.MTOM_in_MTOM_out);
 			} else {
-				throw new XdsFormatException("Request was SIMPLE SOAP but response was MTOM", WsDocRef.MTOM_in_MTOM_out);
+				throw new XdsFormatException(
+						"Request was SIMPLE SOAP but response was MTOM",
+						WsDocRef.MTOM_in_MTOM_out);
 			}
 
 		// toolkit sometimes depends on Synapse ESB to translate async to sync
@@ -611,14 +678,18 @@ public class Soap implements SoapInterface {
 		if (System.getenv("XDSHTTP10") != null) {
 			System.out.println("Generating HTTP 1.0");
 
-			opts.setProperty(org.apache.axis2.transport.http.HTTPConstants.HTTP_PROTOCOL_VERSION,
+			opts.setProperty(
+					org.apache.axis2.transport.http.HTTPConstants.HTTP_PROTOCOL_VERSION,
 					org.apache.axis2.transport.http.HTTPConstants.HEADER_PROTOCOL_10);
 
-			opts.setProperty(org.apache.axis2.transport.http.HTTPConstants.CHUNKED, Boolean.FALSE);
+			opts.setProperty(
+					org.apache.axis2.transport.http.HTTPConstants.CHUNKED,
+					Boolean.FALSE);
 
 		}
 
-		opts.setProperty(Constants.Configuration.ENABLE_MTOM, ((mtom) ? Constants.VALUE_TRUE : Constants.VALUE_FALSE));
+		opts.setProperty(Constants.Configuration.ENABLE_MTOM,
+				((mtom) ? Constants.VALUE_TRUE : Constants.VALUE_FALSE));
 
 		// TODO CHECK WS-Addressing Action / SOAP Action string - what does this
 		// really mean? -Antoine
@@ -659,30 +730,38 @@ public class Soap implements SoapInterface {
 		return result;
 	}
 
-	void verify_returned_action(String expected_return_action, String alternate_return_action)
-			throws XdsInternalException {
+	void verify_returned_action(String expected_return_action,
+			String alternate_return_action) throws XdsInternalException {
 		if (expected_return_action == null)
 			return;
 
 		OMElement hdr = getInHeader();
 		if (hdr == null && expected_return_action != null)
-			throw new XdsInternalException("No SOAPHeader returned: expected header with action = "
-					+ expected_return_action);
-		OMElement action = MetadataSupport.firstChildWithLocalName(hdr, "Action");
+			throw new XdsInternalException(
+					"No SOAPHeader returned: expected header with action = "
+							+ expected_return_action);
+		OMElement action = MetadataSupport.firstChildWithLocalName(hdr,
+				"Action");
 		if (action == null && expected_return_action != null)
-			throw new XdsInternalException("No action returned in SOAPHeader: expected action = "
-					+ expected_return_action);
+			throw new XdsInternalException(
+					"No action returned in SOAPHeader: expected action = "
+							+ expected_return_action);
 		String action_value = action.getText();
 		if (alternate_return_action == null) {
-			if (action_value == null || !action_value.equals(expected_return_action))
-				throw new XdsInternalException("Wrong action returned in SOAPHeader: expected action = "
-						+ expected_return_action + " returned action = " + action_value);
+			if (action_value == null
+					|| !action_value.equals(expected_return_action))
+				throw new XdsInternalException(
+						"Wrong action returned in SOAPHeader: expected action = "
+								+ expected_return_action
+								+ " returned action = " + action_value);
 		} else {
 			if (action_value == null
 					|| ((!action_value.equals(expected_return_action)) && (!action_value
 							.equals(alternate_return_action))))
-				throw new XdsInternalException("Wrong action returned in SOAPHeader: expected action = "
-						+ expected_return_action + " returned action = " + action_value);
+				throw new XdsInternalException(
+						"Wrong action returned in SOAPHeader: expected action = "
+								+ expected_return_action
+								+ " returned action = " + action_value);
 		}
 	}
 
@@ -694,8 +773,20 @@ public class Soap implements SoapInterface {
 	 * axiom.om.OMElement, java.lang.String, boolean, boolean, boolean,
 	 * java.lang.String, java.lang.String)
 	 */
-	public OMElement soapCall(OMElement body, String endpoint, boolean mtom, boolean addressing, boolean soap12,
-			String action, String expected_return_action) throws XdsInternalException, AxisFault, XdsFormatException,
+	@Override
+	public OMElement soapCall(OMElement body, String endpoint, boolean mtom,
+			boolean addressing, boolean soap12, String action,
+			String expected_return_action) throws XdsInternalException,
+			AxisFault, XdsFormatException, EnvironmentNotSelectedException,
+			LoadKeystoreException {
+		return soapCall(body, expected_return_action, soap12, soap12, soap12,
+				expected_return_action, expected_return_action, null);
+	}
+
+	public OMElement soapCall(OMElement body, String endpoint, boolean mtom,
+			boolean addressing, boolean soap12, String action,
+			String expected_return_action, PlanContext planContext)
+			throws XdsInternalException, AxisFault, XdsFormatException,
 			EnvironmentNotSelectedException, LoadKeystoreException {
 
 		this.expectedReturnAction = expected_return_action;
@@ -705,6 +796,9 @@ public class Soap implements SoapInterface {
 		this.endpoint = endpoint;
 		this.action = action;
 		this.body = body;
+		this.params = planContext.getExtraLinkage();
+		log.info("params in soap : " + params.toString());
+		log.info("pid in soap :" + params.get("$patientid$"));
 
 		return soapCall();
 	}
