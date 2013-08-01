@@ -265,7 +265,7 @@ public class MessageLogManager {
 		
 		// Log attachment
 		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
-		String contentsLogPath = ls.getAttachmentLogPath(transactionType, messageType, username, messageId, attachmentName);
+		String contentsLogPath = ls.getAttachmentLink(transactionType, messageType, username, messageId, attachmentName);
 		
 		return contentsLogPath;
 
