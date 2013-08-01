@@ -92,7 +92,6 @@ public class ValidationReportItem {
 			this.found = this.found.replace("attachment=", "");
 			this.found = this.found.replace("filename=", "");
 			this.name = this.found.split(";")[0];
-			this.name.replace("/", "\\");
 			this.found = this.found.split(";")[1];
 		}
 		this.status = "Content";

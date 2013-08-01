@@ -313,6 +313,19 @@ public class WrappedMessageProcessor {
 	}
 	
 	public String getUsername() {
+		if(this.username.contains("\"")) {
+			String[] splitUsername = this.username.split("\"");
+			if(splitUsername.length>2) {
+				this.username = splitUsername[2];
+			} else {
+				this.username = splitUsername[1];
+			}
+		}
+
+		this.username = this.username.replace(" ", "");
+		this.username = this.username.replace(">", "");
+		this.username = this.username.replace("<", "");
+
 		return this.username;
 	}
 	

@@ -20,6 +20,7 @@ Authors: William Majurski
 package gov.nist.direct.logger;
 
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.PropertyServiceManager;
 
 import java.io.File;
 
@@ -267,16 +268,11 @@ public class LogPathsSingleton {
 	public String getAttachmentLogPath(String transactionType, String messageType, String username, String messageId, String attachmentName) {
 		String usernamePath = "direct-logs" + File.separator + username;
 		String fullPath = usernamePath + File.separator + messageId;
+		fullPath = Installation.installation().warHome() + File.separator + fullPath;
+		
 		String path = fullPath + File.separator + attachmentName;
-
-		// check if directory exists
-		File dir = new File(usernamePath);
-		if(!dir.exists()) {
-			dir.mkdirs();
-			dir.setWritable(true);
-			dir.setReadable(true);
-			System.out.println("Created directory "+ usernamePath);
-		}
+		
+		
 		// check if directory exists
 		File dir2 = new File(fullPath);
 		if(!dir2.exists()) {
@@ -287,6 +283,24 @@ public class LogPathsSingleton {
 		}
 		return path;
 	}
+	
+	public String getAttachmentLink(String transactionType, String messageType, String username, String messageId, String attachmentName) {
+		String usernamePath = "direct-logs" + File.separator + username;
+		String fullPath = usernamePath + File.separator + messageId;
+		
+		String warPath = Installation.installation().warHome().toString();
+		String[] warSplit = warPath.split(File.separator);
+		warPath = warSplit[warSplit.length-1];
+		
+		PropertyServiceManager manager = Installation.installation().propertyServiceManager();
+		
+		String path = warPath + File.separator + fullPath + File.separator + attachmentName;
+		path = "http://" + manager.getToolkitHost() + ":" + manager.getToolkitPort() + "/" + path;
+		
+		
+		
+		return path;
+	}
 
 
 	public String getMessageIdLogPath(String transactionType,
@@ -294,14 +308,6 @@ public class LogPathsSingleton {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);
 		String path = fullPath + MESSAGE_ID_LOG;
 		return path;
-	}
-
-
-
-
-
-
-	
-	
+	}	
 	
 }

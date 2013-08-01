@@ -1365,7 +1365,6 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		attachmentLink = attachmentLink.replace("\\", "/");
 		
 		return attachmentLink;
 	}
