@@ -496,7 +496,9 @@ Allergies, Adverse Reactions, Alerts
 							</thead>
 							<tbody>
 								<tr>
-									<td>Penicillin G benzathine</td>
+									<td>
+										<content ID="product1">Penicillin G benzathine</content>
+									</td>
 									<td>
 										<content ID="reaction1">Hives</content>
 									</td>
@@ -506,7 +508,9 @@ Allergies, Adverse Reactions, Alerts
 									<td>Inactive</td>
 								</tr>
 								<tr>
-									<td>Codeine</td>
+									<td>
+										<content ID="product2">Codeine</content>
+									</td>
 									<td>
 										<content ID="reaction2">Shortness of Breath</content>
 									</td>
@@ -516,7 +520,9 @@ Allergies, Adverse Reactions, Alerts
 									<td>Active</td>
 								</tr>
 								<tr>
-									<td>Aspirin</td>
+									<td>
+										<content ID="product3">Aspirin</content>
+									</td>
 									<td>
 										<content ID="reaction3">Hives</content>
 									</td>
@@ -568,7 +574,7 @@ Allergies, Adverse Reactions, Alerts
 												codeSystem="2.16.840.1.113883.6.88"
 												codeSystemName="RxNorm">
 												<originalText>
-												<reference value="#reaction1"/>
+												<reference value="#product1"/>
 												</originalText>
 												</code>
 											</playingEntity>
@@ -590,7 +596,8 @@ Allergies, Adverse Reactions, Alerts
 										<observation classCode="OBS" moodCode="EVN">
 											<templateId root="2.16.840.1.113883.10.20.22.4.9"/>
 											<!-- Reaction observation template -->
-											<id root="4adc1020-7b14-11db-9fe1-0800200c9a64" extension="1002"/>
+											<id root="4adc1020-7b14-11db-9fe1-0800200c9a64"
+												extension="1002"/>
 											<code nullFlavor="NA"/>
 											<text>
 												<reference value="#reaction1"/>
@@ -664,7 +671,7 @@ Allergies, Adverse Reactions, Alerts
 												codeSystem="2.16.840.1.113883.6.88"
 												codeSystemName="RxNorm">
 												<originalText>
-												<reference value="#reaction2"/>
+												<reference value="#product2"/>
 												</originalText>
 												</code>
 											</playingEntity>
@@ -686,7 +693,8 @@ Allergies, Adverse Reactions, Alerts
 										<observation classCode="OBS" moodCode="EVN">
 											<templateId root="2.16.840.1.113883.10.20.22.4.9"/>
 											<!-- Reaction observation template -->
-											<id root="4adc1020-7b14-11db-9fe1-0800200c9a64" extension="1005"/>
+											<id root="4adc1020-7b14-11db-9fe1-0800200c9a64"
+												extension="1005"/>
 											<code nullFlavor="NA"/>
 											<text>
 												<reference value="#reaction2"/>
@@ -761,7 +769,7 @@ Allergies, Adverse Reactions, Alerts
 												codeSystem="2.16.840.1.113883.6.88"
 												codeSystemName="RxNorm">
 												<originalText>
-												<reference value="#reaction3"/>
+												<reference value="#product3"/>
 												</originalText>
 												</code>
 											</playingEntity>
@@ -783,7 +791,8 @@ Allergies, Adverse Reactions, Alerts
 										<observation classCode="OBS" moodCode="EVN">
 											<templateId root="2.16.840.1.113883.10.20.22.4.9"/>
 											<!-- Reaction observation template -->
-											<id root="4adc1020-7b14-11db-9fe1-0800200c9a64" extension="1008"/>
+											<id root="4adc1020-7b14-11db-9fe1-0800200c9a64"
+												extension="1008"/>
 											<code nullFlavor="NA"/>
 											<text>
 												<reference value="#reaction3"/>
@@ -927,7 +936,8 @@ ENCOUNTERS
 											negationInd="false">
 											<templateId root="2.16.840.1.113883.10.20.22.4.4"/>
 											<!-- Problem Observation -->
-											<id root="ab1791b0-5c71-11db-b0de-0800200c9a66" extension="2003"/>
+											<id root="ab1791b0-5c71-11db-b0de-0800200c9a66"
+												extension="2003"/>
 											<code code="409586006"
 												codeSystem="2.16.840.1.113883.6.96"
 												displayName="Complaint"/>
@@ -1388,7 +1398,8 @@ MEDICATIONS
 									<product>
 										<manufacturedProduct classCode="MANU">
 											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8" extension="4004"/>
+											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"
+												extension="4004"/>
 											<manufacturedMaterial>
 												<code code="573621"
 												codeSystem="2.16.840.1.113883.6.88"
@@ -1424,7 +1435,8 @@ MEDICATIONS
 									<author>
 										<time nullFlavor="UNK"/>
 										<assignedAuthor>
-											<id root="2a620155-9d11-439e-92b3-5d9815fe4de8" extension="4005"/>
+											<id root="2a620155-9d11-439e-92b3-5d9815fe4de8"
+												extension="4005"/>
 											<addr nullFlavor="UNK"/>
 											<telecom nullFlavor="UNK"/>
 											<assignedPerson>
@@ -1461,7 +1473,8 @@ MEDICATIONS
 									<product>
 										<manufacturedProduct classCode="MANU">
 											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8" extension="4006"/>
+											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"
+												extension="4006"/>
 											<manufacturedMaterial>
 												<code code="573621"
 												codeSystem="2.16.840.1.113883.6.88"
@@ -1869,7 +1882,8 @@ HOSPITAL DISCHARGE MEDICATIONS
 											<product>
 												<manufacturedProduct classCode="MANU">
 												<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-													<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8" extension="6010"/>
+												<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"
+												extension="6010"/>
 												<manufacturedMaterial>
 												<code code="896001"
 												codeSystem="2.16.840.1.113883.6.88"
@@ -1945,7 +1959,8 @@ HOSPITAL DISCHARGE MEDICATIONS
 											<product>
 												<manufacturedProduct classCode="MANU">
 												<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-													<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8" extension="6011"/>
+												<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"
+												extension="6011"/>
 												<manufacturedMaterial>
 												<code code="896001"
 												codeSystem="2.16.840.1.113883.6.88"

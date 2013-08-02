@@ -456,7 +456,9 @@ Allergies, Adverse Reactions, Alerts
 							</thead>
 							<tbody>
 								<tr>
-									<td>Penicillin G benzathine</td>
+									<td>
+										<content ID="product1">Penicillin G benzathine</content>
+									</td>
 									<td>
 										<content ID="reaction1">Hives</content>
 									</td>
@@ -466,7 +468,9 @@ Allergies, Adverse Reactions, Alerts
 									<td>Inactive</td>
 								</tr>
 								<tr>
-									<td>Codeine</td>
+									<td>
+										<content ID="product2">Codeine</content>
+									</td>
 									<td>
 										<content ID="reaction2">Shortness of Breath</content>
 									</td>
@@ -476,7 +480,9 @@ Allergies, Adverse Reactions, Alerts
 									<td>Active</td>
 								</tr>
 								<tr>
-									<td>Aspirin</td>
+									<td>
+										<content ID="product3">Aspirin</content>
+									</td>
 									<td>
 										<content ID="reaction3">Hives</content>
 									</td>
@@ -528,7 +534,7 @@ Allergies, Adverse Reactions, Alerts
 												codeSystem="2.16.840.1.113883.6.88"
 												codeSystemName="RxNorm">
 												<originalText>
-												<reference value="#reaction1"/>
+												<reference value="#product1"/>
 												</originalText>
 												</code>
 											</playingEntity>
@@ -625,7 +631,7 @@ Allergies, Adverse Reactions, Alerts
 												codeSystem="2.16.840.1.113883.6.88"
 												codeSystemName="RxNorm">
 												<originalText>
-												<reference value="#reaction2"/>
+												<reference value="#product2"/>
 												</originalText>
 												</code>
 											</playingEntity>
@@ -723,7 +729,7 @@ Allergies, Adverse Reactions, Alerts
 												codeSystem="2.16.840.1.113883.6.88"
 												codeSystemName="RxNorm">
 												<originalText>
-												<reference value="#reaction3"/>
+												<reference value="#product3"/>
 												</originalText>
 												</code>
 											</playingEntity>
@@ -745,7 +751,8 @@ Allergies, Adverse Reactions, Alerts
 										<observation classCode="OBS" moodCode="EVN">
 											<templateId root="2.16.840.1.113883.10.20.22.4.9"/>
 											<!-- Reaction observation template -->
-											<id root="4adc1020-7b14-11db-9fe1-0800200c9a64" extension="1008"/>
+											<id root="4adc1020-7b14-11db-9fe1-0800200c9a64"
+												extension="1008"/>
 											<code nullFlavor="NA"/>
 											<text>
 												<reference value="#reaction3"/>
@@ -888,7 +895,8 @@ ENCOUNTERS
 											negationInd="false">
 											<templateId root="2.16.840.1.113883.10.20.22.4.4"/>
 											<!-- Problem Observation -->
-											<id root="ab1791b0-5c71-11db-b0de-0800200c9a66" extension="1012"/>
+											<id root="ab1791b0-5c71-11db-b0de-0800200c9a66"
+												extension="1012"/>
 											<code code="409586006"
 												codeSystem="2.16.840.1.113883.6.96"
 												displayName="Complaint"/>
@@ -1031,8 +1039,7 @@ IMMUNIZATIONS
 									-->
 									<manufacturedMaterial>
 										<code code="112" codeSystem="2.16.840.1.113883.12.292"
-											displayName="tetanus toxoid, NOS"
-											codeSystemName="CVX">
+											displayName="tetanus toxoid, NOS" codeSystemName="CVX">
 											<originalText>tetanus toxoid, NOS</originalText>
 											<translation code="09"
 												displayName="Tetanus and diphtheria toxoids - preservative free"
@@ -1176,8 +1183,7 @@ MEDICATIONS
 							<entryRelationship typeCode="RSON">
 								<observation classCode="OBS" moodCode="EVN">
 									<templateId root="2.16.840.1.113883.10.20.22.4.19"/>
-									<id root="db734647-fc99-424c-a864-7e3cda82e703"
-										extension="1017"/>
+									<id root="db734647-fc99-424c-a864-7e3cda82e703" extension="1017"/>
 									<code code="404684003" displayName="Finding"
 										codeSystem="2.16.840.1.113883.6.96"
 										codeSystemName="SNOMED CT"/>
@@ -1204,7 +1210,8 @@ MEDICATIONS
 									<product>
 										<manufacturedProduct classCode="MANU">
 											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"  extension="1018"/>
+											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"
+												extension="1018"/>
 											<manufacturedMaterial>
 												<code code="573621"
 												codeSystem="2.16.840.1.113883.6.88"
@@ -1278,7 +1285,8 @@ MEDICATIONS
 									<product>
 										<manufacturedProduct classCode="MANU">
 											<templateId root="2.16.840.1.113883.10.20.22.4.23"/>
-											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"  extension="1020"/>
+											<id root="2a620155-9d11-439e-92b3-5d9815ff4ee8"
+												extension="1020"/>
 											<manufacturedMaterial>
 												<code code="573621"
 												codeSystem="2.16.840.1.113883.6.88"
@@ -1440,7 +1448,7 @@ PROBLEM LIST
 								<observation classCode="OBS" moodCode="EVN">
 									<!-- Problem observation template -->
 									<templateId root="2.16.840.1.113883.10.20.22.4.4"/>
-									<id root="ab1791b0-5c71-11db-b0de-0800200c9a66"  extension="1022"/>
+									<id root="ab1791b0-5c71-11db-b0de-0800200c9a66" extension="1022"/>
 									<code code="409586006" codeSystem="2.16.840.1.113883.6.96"
 										displayName="Complaint"/>
 									<text>
@@ -1515,7 +1523,7 @@ PROBLEM LIST
 								<observation classCode="OBS" moodCode="EVN">
 									<!-- Problem observation template -->
 									<templateId root="2.16.840.1.113883.10.20.22.4.4"/>
-									<id root="ab1791b0-5c71-11db-b0de-0800200c9a66" extension="1023" />
+									<id root="ab1791b0-5c71-11db-b0de-0800200c9a66" extension="1023"/>
 									<code code="409586006" codeSystem="2.16.840.1.113883.6.96"
 										displayName="Complaint"/>
 									<text>
@@ -1814,7 +1822,7 @@ RESULTS
 						<organizer classCode="BATTERY" moodCode="EVN">
 							<!-- Result organizer template -->
 							<templateId root="2.16.840.1.113883.10.20.22.4.1"/>
-							<id root="7d5a02b0-67a4-11db-bd13-0800200c9a66"  extension="1040"/>
+							<id root="7d5a02b0-67a4-11db-bd13-0800200c9a66" extension="1040"/>
 							<code xsi:type="CE" code="43789009" displayName="CBC WO DIFFERENTIAL"
 								codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT"/>
 							<statusCode code="completed"/>
