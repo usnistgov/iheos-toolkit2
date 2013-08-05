@@ -5,8 +5,9 @@ import java.util.regex.Pattern;
 
 public class MDNUtils {
 	
-	final static String atom = "[0-9a-zA-Z]*";
-	final static String text = "[0-9a-zA-Z_.-]*";
+	final static String atom = "[0-9,a-z,A-Z]*";
+	final static String text = "[0-9,a-z,A-Z,_,.,\\-]*";
+	final static String textWithSpace = "[0-9,a-z,A-Z,_,.,\\-,\\s]*";
 	final static String whitespace = "\\s";
 	final static String actionMode = "(normal-action|automatic-action)";
 	final static String sendingMode = "(mdn-sent-manually|mdn-sent-automatically)";
@@ -39,7 +40,7 @@ public class MDNUtils {
 	}
 	
 	public static boolean validateTextField(String textField) {
-		Pattern pattern = Pattern.compile(text, Pattern.CASE_INSENSITIVE);
+		Pattern pattern = Pattern.compile(textWithSpace, Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(textField);
 		if(matcher.matches()) {
 			return true;
