@@ -18,8 +18,8 @@ public class ErrorRecorderAdapter {
 
 	ArrayList<SummaryToken> summary = new ArrayList<SummaryToken>();
 	ArrayList<ValidationReportItem> detailed = new ArrayList<ValidationReportItem>();
-	ArrayList<CCDAValidationReportItem> ccda = new ArrayList<CCDAValidationReportItem>();
-	ArrayList<XDMValidationReportItem> xdm = new ArrayList<XDMValidationReportItem>();
+	ArrayList<ArrayList<CCDAValidationReportItem>> ccda = new ArrayList<ArrayList<CCDAValidationReportItem>>();
+	ArrayList<ArrayList<XDMValidationReportItem>> xdm = new ArrayList<ArrayList<XDMValidationReportItem>>();
 	int indexEndSummary = 0;
 	boolean hasCCDA = false;
 	boolean hasXDM = false;
@@ -108,21 +108,27 @@ public class ErrorRecorderAdapter {
 
 	public int getCCDAFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
 		int k = index; 
+		ArrayList<CCDAValidationReportItem> ccdaList = new ArrayList<CCDAValidationReportItem>();
 		while(!er.get(k).msg.contains("CCDA Validation done")) {
-			ccda.add(new CCDAValidationReportItem(er.get(k).msg, er.get(k).resource, er.get(k).level));
+			ccdaList.add(new CCDAValidationReportItem(er.get(k).msg, er.get(k).resource, er.get(k).level));
 			k++;
 		}
+		
+		ccda.add(ccdaList);
 
 		return k++;
 	}
 
 	public int getXDMFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
 		int k = index; 
+		ArrayList<XDMValidationReportItem> xdmList = new ArrayList<XDMValidationReportItem>();
 		while(!er.get(k).msg.contains("XDM Validation done")) {
-			xdm.add(new XDMValidationReportItem(er.get(k).msg, er.get(k).level));
+			xdmList.add(new XDMValidationReportItem(er.get(k).msg, er.get(k).level));
 			k++;
 		}
 
+		xdm.add(xdmList);
+		
 		return k++;
 	}
 
@@ -154,12 +160,16 @@ public class ErrorRecorderAdapter {
 
 				String ccdaString = "";
 				if(hasCCDA) {
-					ccdaString = CcdaToHtml();
+					for(int e=0;e<this.ccda.size();e++) {
+						ccdaString += CcdaToHtml(this.ccda.get(e));
+					}
 				}
 
 				String xdmString = "";
 				if(hasXDM) {
-					xdmString = XdmToHtml();
+					for(int e=0;e<this.xdm.size();e++) {
+						xdmString += XdmToHtml(this.xdm.get(e));
+					}
 				}
 
 				//  first, get and initialize an engine  
@@ -203,14 +213,14 @@ public class ErrorRecorderAdapter {
 		return res;
 	}
 
-	public String CcdaToHtml() {
+	public String CcdaToHtml(ArrayList<CCDAValidationReportItem> ccdaItem) {
 		String res = "";
 		//  first, get and initialize an engine  
 		try {
 			VelocityEngine ve = VelocitySingleton.getVelocityEngine();
 			Template t2 = ve.getTemplate("CCDAValidationReport.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("validationReport", this.ccda);
+			context.put("validationReport", ccdaItem);
 
 			StringWriter writer = new StringWriter();
 			t2.merge( context, writer );
@@ -231,14 +241,14 @@ public class ErrorRecorderAdapter {
 		return res;
 	}
 
-	public String XdmToHtml() {
+	public String XdmToHtml(ArrayList<XDMValidationReportItem> xdmItem) {
 		String res = "";
 		//  first, get and initialize an engine  
 		try {
 			VelocityEngine ve = VelocitySingleton.getVelocityEngine();
 			Template t2 = ve.getTemplate("XDMValidationReport.vm");
 			VelocityContext context = new VelocityContext();
-			context.put("validationReport", this.xdm);
+			context.put("validationReport", xdmItem);
 
 			StringWriter writer = new StringWriter();
 			t2.merge( context, writer );

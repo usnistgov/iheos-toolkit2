@@ -441,7 +441,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 
 		} else {
 			er.detail("===================Unknown Part==========================");
-			er.detail("Couldn't figure out the type"+"  Content Name: "+p.getContent().getClass().getName());
+			er.detail("Couldn't figure out the type"+"  Content Name: "+p.getContentType());
 
 			// Log attachment
 			String attachmentFilename = "attachment" + this.attachmentNumber + ".txt";
@@ -685,6 +685,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		if (new CdaDetector().isCDA(contents)) {
 			// Warning: Mandatory for validation report
 			er.detail("Input is CDA R2, try validation as CCDA");
+			er.detail("CCDA Validation of " + attachmentFilename);
 			ValidationContext docVC = new ValidationContext();
 			docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
 			docVC.isDIRECT = false;
@@ -788,6 +789,7 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			if (new CdaDetector().isCDA(contents)) {
 				// Warning: Mandatory for validation report
 				er.detail("Input is CDA R2, try validation as CCDA");
+				er.detail("CCDA Validation of " + attachmentFilename);
 				ValidationContext docVC = new ValidationContext();
 				docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
 				docVC.isDIRECT = false;
@@ -1110,8 +1112,17 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		//		XdmDecoder decoder = new XdmDecoder(vc, (ErrorRecorderBuilder)er, new ByteArrayInputStream(contents));
 		//		decoder.detect(new ByteArrayInputStream(contents));
 
+		String attachmentFilename = "attachment" + attachmentNumber + ".zip";
+		if(p.getFileName() != null) {
+			attachmentFilename = p.getFileName();
+		} else {
+			attachmentNumber++;
+		}
+
+		
 		// Warning: Mandatory for validation report
 		er.detail("Try validation as XDM");
+		er.detail("XDM Validation of " + attachmentFilename);
 
 		ValidationContext docVC = new ValidationContext();
 		docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
@@ -1126,12 +1137,6 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		er.detail("XDM Validation done");
 
 		// Log attachment
-		String attachmentFilename = "attachment" + attachmentNumber + ".zip";
-		if(p.getFileName() != null) {
-			attachmentFilename = p.getFileName();
-		} else {
-			attachmentNumber++;
-		}
 
 		String attachmentLink = logAttachment(p, attachmentFilename);
 		er.detail("#####################Zip attachment######################");
