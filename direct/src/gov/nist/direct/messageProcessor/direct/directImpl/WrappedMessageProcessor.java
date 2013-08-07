@@ -205,6 +205,9 @@ public class WrappedMessageProcessor {
 			this.processPart(er, s.getContent());
 
 		} else if (p.isMimeType("multipart/*")) {
+			if (p.isMimeType("multipart/report")) {
+				this.isMDN = true;
+			}
 			//System.out.println("Multipart/mixed");
 
 			MimeMultipart mp = (MimeMultipart)p.getContent();
@@ -213,8 +216,6 @@ public class WrappedMessageProcessor {
 				this.processPart(er, mp.getBodyPart(i));	
 			}
 
-		} else if (p.isMimeType("multipart/report")) {
-			this.isMDN = true;
 		} else if (p.isMimeType("message/disposition-notification")) {
 			this.isMDN = true;
 		} else {
