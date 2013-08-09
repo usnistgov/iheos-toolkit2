@@ -1,12 +1,11 @@
 package gov.nist.toolkit.errorrecording.client;
 
-import org.apache.commons.lang.StringEscapeUtils;
-
 public class SummaryToken {
 
 	private String name;
 	private int status;
 	private int offset;
+	private String link;
 	
 	public SummaryToken(String name, int status) {
 		//this.name = StringEscapeUtils.escapeHtml(name);
@@ -21,6 +20,13 @@ public class SummaryToken {
 				i++;
 				this.name = this.name.substring(1);
 			}
+		}
+		if(name.contains(";link=")) {
+			this.link = name.split(";link=")[1];
+			this.name = name.split(";link=")[0];
+			this.name  = "<a href=\"#" + link + "\">" + this.name + "</a>";
+		} else {
+			this.link = "";
 		}
 		offset = (numberOfHyphens/5)+1;
 	}
@@ -52,4 +58,13 @@ public class SummaryToken {
 	public int getAbsoluteOff(int offset) {
 		return Math.abs(offset);
 	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+	
 }

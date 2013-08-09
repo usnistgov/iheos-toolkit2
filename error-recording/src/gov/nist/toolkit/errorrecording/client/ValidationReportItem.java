@@ -115,6 +115,14 @@ public class ValidationReportItem {
 		this.expected = "";
 		this.rfc_name = "";
 		this.rfc_link = "";
+		
+		if(this.name.contains(";anchor=")) {
+			String anchor = "";
+			anchor = this.name.split(";anchor=")[1];
+			this.name = this.name.split(";anchor=")[0];
+			this.name = "<span id=\"" + anchor + "\">" + this.name + "</div>";
+		}
+		
 	}
 
 	public String getName() {
