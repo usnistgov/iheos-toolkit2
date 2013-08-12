@@ -170,6 +170,18 @@ public class WrappedMessageProcessor {
 				logger.debug("rfc822 contains part");
 				processPart(er, (Part) o);
 			}
+			
+			if(p.getContent() instanceof MimeMultipart) {
+				
+				logger.debug("rfc822 is multipartt");
+
+				MimeMultipart mp = (MimeMultipart)p.getContent();
+
+				int count = mp.getCount();
+				for (int i = 0; i < count; i++){
+					this.processPart(er, mp.getBodyPart(i));
+				}
+			}
 
 		} else if (p.isMimeType("application/pkcs7-signature"+"  Content Name: "+p.getContent().getClass().getName())) {
 			//System.out.println("Signature");
