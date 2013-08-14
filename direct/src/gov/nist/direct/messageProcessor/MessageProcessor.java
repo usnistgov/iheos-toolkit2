@@ -57,6 +57,8 @@ public class MessageProcessor implements MessageProcessorInterface {
 		// Parse the message
 		MimeMessage mm = MimeMessageParser.parseMessage(er, inputDirectMessage);
 		
+		MessageDispatchUtils messageUtils = new MessageDispatchUtils(er, inputDirectMessage, _directCertificate, _password);
+		
 		
 		// determine message type
 		// ------ MDN -------
@@ -68,7 +70,7 @@ public class MessageProcessor implements MessageProcessorInterface {
 			}
 			
 			// ------ MDN -------
-			if (MessageDispatchUtils.isMDN(er, inputDirectMessage, _directCertificate, _password)){
+			if (messageUtils.isMDN()){
 				messageType = mdnMessageType;
 
 				// Display Message type
@@ -83,7 +85,7 @@ public class MessageProcessor implements MessageProcessorInterface {
 
 
 		// ------ DIRECT -------
-			else if (MessageDispatchUtils.isDIRECT(er, inputDirectMessage, _directCertificate, _password) && MessageDispatchUtils.isEncrypted(er, mm)){
+			else if (messageUtils.isDIRECT() && MessageDispatchUtils.isEncrypted(er, mm)){
 			 messageType = directMessageType;
 			 
 			 // Display Message type
@@ -99,10 +101,22 @@ public class MessageProcessor implements MessageProcessorInterface {
 		
 		
 		// ----- Unknown type  -----
-			else if(!MessageDispatchUtils.isEncrypted(er, mm) && !MessageDispatchUtils.isDIRECT(er, inputDirectMessage, _directCertificate, _password)) {
+			else if(!MessageDispatchUtils.isEncrypted(er, mm) && !messageUtils.isDIRECT()) {
 				er.error("No DTS", "Message File", "The file is neither a DIRECT message nor an MDN.", "", "-");
 				logger.info("The file is neither a DIRECT message nor an MDN.");
 			}
+			
+			else if(messageUtils.isEncrypted() && !messageUtils.isSigned()) {
+				er.error("No DTS", "Message File", "The message is not signed.", "", "-");
+				logger.info("The message is not signed.");
+			}
+			
+			else {
+				er.error("No DTS", "Message File", "Error parsing the file.", "", "-");
+				logger.info("Error parsing the file.");
+			}
+			
+			
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}

@@ -63,6 +63,8 @@ public class WrappedMessageProcessor {
 	private boolean wrapped;
 	private boolean isMDN;
 	private boolean isDirect;
+	public boolean isSigned;
+	public boolean isEncrypted;
 	private Date logDate;
 	private String username;
 	private String messageID;
@@ -77,6 +79,8 @@ public class WrappedMessageProcessor {
 		wrapped = false;
 		isMDN = false;
 		isDirect = false;
+		isSigned = false;
+		isEncrypted = false;
 		this.logDate = null;
 		username = "";
 		messageID = "";
@@ -191,9 +195,11 @@ public class WrappedMessageProcessor {
 			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
 
 		} else if (p.isMimeType("application/x-pkcs7-signature")) {
+			this.isSigned = true;
 			//System.out.println("Signature");
 
 		} else if (p.isMimeType("application/x-pkcs7-mime")) {
+			this.isSigned = true;
 			//System.out.println("Encrypted");
 			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
 
@@ -203,12 +209,16 @@ public class WrappedMessageProcessor {
 		}  else if (p.isMimeType("application/x-zip-compressed")) {
 			//System.out.println("XDM Content");
 
+		} else if (p.isMimeType("application/xml")) {
+			//System.out.println("XDM Content");
+
 		} else if (p.isMimeType("application/octet-stream")) {
 			//System.out.println("CCDA Content");
 
 		} else if (p.isMimeType("multipart/signed")) {
 			this.isDirect = true;
-			
+			this.isSigned = true;
+
 			SMIMESigned s = new SMIMESigned((MimeMultipart)p.getContent());
 
 			//
@@ -284,6 +294,7 @@ public class WrappedMessageProcessor {
 			e1.printStackTrace();
 			er.error("No DTS", "Certificate File", "Error un-enveloping message body CMSException", e1.getMessage(), "-");
 		} catch (Exception e1) {
+			e1.printStackTrace();
 			er.error("No DTS", "Certificate File", "Probably wrong format file or wrong certificate", e1.getMessage(), "-");
 		}
 		
@@ -305,6 +316,7 @@ public class WrappedMessageProcessor {
 			e.printStackTrace();
 		}
 		logger.debug(dump);
+		isEncrypted = true;
 
 		return res;
 	}
@@ -319,6 +331,10 @@ public class WrappedMessageProcessor {
 	
 	public boolean getIsDirect() {
 		return this.isDirect;
+	}
+	
+	public boolean getIsEncrypted() {
+		return this.isEncrypted;
 	}
 	
 	public Date getLogDate() {
@@ -344,6 +360,10 @@ public class WrappedMessageProcessor {
 	
 	public String getMessageId() {
 		return this.messageID;
+	}
+	
+	public boolean getIsSigned() {
+		return this.isSigned;
 	}
 	
 	public MimeBodyPart decodeQP(InputStream encodedQP) throws MessagingException {
