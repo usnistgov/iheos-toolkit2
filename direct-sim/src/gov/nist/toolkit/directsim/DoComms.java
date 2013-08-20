@@ -4,6 +4,7 @@ import gov.nist.messageDispatch.MessageDispatchUtils;
 import gov.nist.toolkit.actorfactory.DirectActorFactory;
 import gov.nist.toolkit.directsupport.SMTPException;
 import gov.nist.toolkit.email.Emailer;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simulators.support.ValidateMessageService;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.TkPropsServer;
@@ -344,6 +345,7 @@ public class DoComms implements Runnable {
 		try {
 			reportingProps = TkLoader.LOAD(propFile);
 			logger.debug("Properties are\n" + reportingProps.toString());
+			Installation.installation().warHome(new File(getWarDir()));
 		} 
 		catch (IOException e1) {
 			logger.error("Error loading properties", e1);
@@ -630,6 +632,27 @@ public class DoComms implements Runnable {
 			in = in.substring(0, closeI);
 		
 		return in;
+	}
+	
+	public String getWarDir() {
+		try {
+			String dir = reportingProps.get("direct.reporting.directory");
+			String ttt = reportingProps.get("toolkit.servlet.context");
+			String[] splitDir = dir.split(File.separator);
+			String warDir = "";
+			for(int i=0;i<splitDir.length-2;i++) {
+				warDir += File.separator + splitDir[i];
+			}
+			warDir += File.separator + ttt;
+			return warDir;
+		} catch (PropertyNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+		
+		
 	}
 
 }

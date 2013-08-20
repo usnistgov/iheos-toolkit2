@@ -28,13 +28,17 @@ import javax.mail.internet.MimeMessage;
 
 public class MessageDispatchUtils {
 	
+	WrappedMessageProcessor processor = new WrappedMessageProcessor();
+	
+	public MessageDispatchUtils(ErrorRecorder er, byte[] msg, byte[] directCertificate, String password) {
+		processor.messageParser(er, msg, directCertificate, password);
+	}
+	
 
 	
 	
-	public static boolean isDIRECT(ErrorRecorder er, byte[] msg, byte[] directCertificate, String password) throws MessagingException{
-		WrappedMessageProcessor processor = new WrappedMessageProcessor();
-		processor.messageParser(er, msg, directCertificate, password);
-		return processor.getIsDirect();
+	public boolean isDIRECT() throws MessagingException{
+		return this.processor.getIsDirect();
 	}
 	
 	public static boolean isEncrypted(ErrorRecorder er, MimeMessage msg) throws MessagingException{
@@ -53,17 +57,16 @@ public class MessageDispatchUtils {
 	 * false if it is not.
 	 * @throws MessagingException 
 	 */
-	public static boolean isMDN (ErrorRecorder er, byte[] msg, byte[] directCertificate, String password) throws MessagingException{
-		WrappedMessageProcessor processor = new WrappedMessageProcessor();
-		processor.messageParser(er, msg, directCertificate, password);
-		if (processor.getIsMDN()){
-			return true;
-		}
-		
-		return false;
+	public boolean isMDN() throws MessagingException{
+		return this.processor.getIsMDN();
 	}
 		
+	public boolean isSigned() {
+		return this.processor.getIsSigned();
+	}
 	
-	
+	public boolean isEncrypted() {
+		return this.processor.getIsEncrypted();
+	}
 
 }

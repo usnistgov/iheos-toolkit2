@@ -63,6 +63,8 @@ public class WrappedMessageProcessor {
 	private boolean wrapped;
 	private boolean isMDN;
 	private boolean isDirect;
+	public boolean isSigned;
+	public boolean isEncrypted;
 	private Date logDate;
 	private String username;
 	private String messageID;
@@ -77,6 +79,8 @@ public class WrappedMessageProcessor {
 		wrapped = false;
 		isMDN = false;
 		isDirect = false;
+		isSigned = false;
+		isEncrypted = false;
 		this.logDate = null;
 		username = "";
 		messageID = "";
@@ -170,6 +174,18 @@ public class WrappedMessageProcessor {
 				logger.debug("rfc822 contains part");
 				processPart(er, (Part) o);
 			}
+			
+			if(p.getContent() instanceof MimeMultipart) {
+				
+				logger.debug("rfc822 is multipartt");
+
+				MimeMultipart mp = (MimeMultipart)p.getContent();
+
+				int count = mp.getCount();
+				for (int i = 0; i < count; i++){
+					this.processPart(er, mp.getBodyPart(i));
+				}
+			}
 
 		} else if (p.isMimeType("application/pkcs7-signature"+"  Content Name: "+p.getContent().getClass().getName())) {
 			//System.out.println("Signature");
@@ -179,9 +195,11 @@ public class WrappedMessageProcessor {
 			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
 
 		} else if (p.isMimeType("application/x-pkcs7-signature")) {
+			this.isSigned = true;
 			//System.out.println("Signature");
 
 		} else if (p.isMimeType("application/x-pkcs7-mime")) {
+			this.isSigned = true;
 			//System.out.println("Encrypted");
 			this.processPart(er, processSMIMEEnvelope(er, p, new ByteArrayInputStream(directCertificate), password));
 
@@ -191,12 +209,16 @@ public class WrappedMessageProcessor {
 		}  else if (p.isMimeType("application/x-zip-compressed")) {
 			//System.out.println("XDM Content");
 
+		} else if (p.isMimeType("application/xml")) {
+			//System.out.println("XDM Content");
+
 		} else if (p.isMimeType("application/octet-stream")) {
 			//System.out.println("CCDA Content");
 
 		} else if (p.isMimeType("multipart/signed")) {
 			this.isDirect = true;
-			
+			this.isSigned = true;
+
 			SMIMESigned s = new SMIMESigned((MimeMultipart)p.getContent());
 
 			//
@@ -205,6 +227,9 @@ public class WrappedMessageProcessor {
 			this.processPart(er, s.getContent());
 
 		} else if (p.isMimeType("multipart/*")) {
+			if (p.isMimeType("multipart/report")) {
+				this.isMDN = true;
+			}
 			//System.out.println("Multipart/mixed");
 
 			MimeMultipart mp = (MimeMultipart)p.getContent();
@@ -213,8 +238,6 @@ public class WrappedMessageProcessor {
 				this.processPart(er, mp.getBodyPart(i));	
 			}
 
-		} else if (p.isMimeType("multipart/report")) {
-			this.isMDN = true;
 		} else if (p.isMimeType("message/disposition-notification")) {
 			this.isMDN = true;
 		} else {
@@ -271,6 +294,7 @@ public class WrappedMessageProcessor {
 			e1.printStackTrace();
 			er.error("No DTS", "Certificate File", "Error un-enveloping message body CMSException", e1.getMessage(), "-");
 		} catch (Exception e1) {
+			e1.printStackTrace();
 			er.error("No DTS", "Certificate File", "Probably wrong format file or wrong certificate", e1.getMessage(), "-");
 		}
 		
@@ -292,6 +316,7 @@ public class WrappedMessageProcessor {
 			e.printStackTrace();
 		}
 		logger.debug(dump);
+		isEncrypted = true;
 
 		return res;
 	}
@@ -308,16 +333,37 @@ public class WrappedMessageProcessor {
 		return this.isDirect;
 	}
 	
+	public boolean getIsEncrypted() {
+		return this.isEncrypted;
+	}
+	
 	public Date getLogDate() {
 		return this.logDate;
 	}
 	
 	public String getUsername() {
+		if(this.username.contains("\"")) {
+			String[] splitUsername = this.username.split("\"");
+			if(splitUsername.length>2) {
+				this.username = splitUsername[2];
+			} else {
+				this.username = splitUsername[1];
+			}
+		}
+
+		this.username = this.username.replace(" ", "");
+		this.username = this.username.replace(">", "");
+		this.username = this.username.replace("<", "");
+
 		return this.username;
 	}
 	
 	public String getMessageId() {
 		return this.messageID;
+	}
+	
+	public boolean getIsSigned() {
+		return this.isSigned;
 	}
 	
 	public MimeBodyPart decodeQP(InputStream encodedQP) throws MessagingException {
