@@ -272,7 +272,10 @@ public class SimulatorServiceManager extends CommonServiceManager {
 
 		SimulatorFactory simFact = new SimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
 		List<SimulatorConfig> configs = simFact.loadSimulators(ids);
-		configs = simFact.checkExpiration(configs);
+		
+		// THE INTENT WAS TO PROVIDE SHORT-LIVED SIMLATORS but in most cases
+		//we do not want those to expire -Antoine 08/05/2013
+		// configs = simFact.checkExpiration(configs);
 		
 		// update cache
 		new SimCache().update(session.id(), configs);
