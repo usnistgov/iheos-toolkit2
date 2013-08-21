@@ -71,7 +71,7 @@ public class MDNValidatorImpl implements MDNValidator{
 	public void validateOriginalRecipientHeader(ErrorRecorder er, String originalRecipient) {
 		String rfc = "RFC 3798: Section 2.3;http://tools.ietf.org/html/rfc3798#section-2.3";
 		if(originalRecipient.equals("")) {
-			er.warning("454", "Original-Recipient", "Not present", "Should be present", rfc);
+			er.info("454", "Original-Recipient", "Not present", "Might not be present", rfc);
 		} else {
 			if(!originalRecipient.contains("rfc822;")) {
 				er.warning("454", "Original-Recipient", originalRecipient, "Should normaly contain \"rfc822\"", rfc);
@@ -82,7 +82,7 @@ public class MDNValidatorImpl implements MDNValidator{
 			if(ValidationUtils.validateEmail(email)) {
 				er.success("454", "Original-Recipient", originalRecipient, "Should be email address", rfc);
 			} else {
-				er.error("454", "Original-Recipient", originalRecipient, "Should normaly contain \"rfc822\"", rfc);
+				er.error("454", "Original-Recipient", originalRecipient, "Should be email address", rfc);
 			}
 		}
 	}
@@ -154,7 +154,7 @@ public class MDNValidatorImpl implements MDNValidator{
 	public void validateMDNGatewayField(ErrorRecorder er, String mdnGateway) {
 		String rfc = "RFC 3798: Section 3.2.2;http://tools.ietf.org/html/rfc3798#section-3.2.2";
 		if(mdnGateway.equals("")) {
-			er.warning("458", "MDN-Gateway", "Not present", "Should be present", rfc);
+			er.info("458", "MDN-Gateway", "Not present", "Might not be present", rfc);
 		} else {
 			if(MDNUtils.validateAtomTextField(mdnGateway)) {
 				er.success("458", "MDN-Gateway", mdnGateway, "mta-name-type \";\" mta-name", rfc);
@@ -170,7 +170,7 @@ public class MDNValidatorImpl implements MDNValidator{
 	public void validateOriginalRecipientField(ErrorRecorder er, String originalRecipient) {
 		String rfc = "RFC 3798: Section 3.2.3;http://tools.ietf.org/html/rfc3798#section-3.2.3";
 		if(originalRecipient.equals("")) {
-			er.warning("459", "Original-Recipient", "Not present", "Should be present", rfc);
+			er.info("459", "Original-Recipient", "Not present", "Might not be present", rfc);
 		} else {
 			if(MDNUtils.validateAtomTextField(originalRecipient)) {
 				er.success("459", "Original-Recipient", originalRecipient, "address-type \";\" generic-address", rfc);
