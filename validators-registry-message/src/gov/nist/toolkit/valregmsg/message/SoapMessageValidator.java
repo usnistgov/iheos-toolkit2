@@ -114,7 +114,6 @@ public class SoapMessageValidator extends MessageValidator {
 			}
 		}
 		
-		
 		//ADD SAML VALIDATION IF NEEDED. -@Antoine
 		//TODO check if this is the best place to do so.
 		OMElement security = MetadataSupport.firstChildWithLocalName(header, "Security");
@@ -124,7 +123,7 @@ public class SoapMessageValidator extends MessageValidator {
 			Element wsseHeader;
 			try {
 				wsseHeader = XMLUtils.toDOM(security);
-				mvc.addMessageValidator("SAML Validator", new WsseHeaderValidatorAdapter(vc, wsseHeader), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("SAML Validator", new WsseHeaderValidatorAdapter(vc, wsseHeader,header), erBuilder.buildNewErrorRecorder());
 			} catch (Exception e) {
 				er.err(XdsErrorCode.Code.NoCode, e);
 			}

@@ -2,6 +2,7 @@ package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderForErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -11,10 +12,11 @@ import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
 import gov.nist.toolkit.wsseTool.api.exceptions.GenerationException;
-import gov.nist.toolkit.wsseTool.api.exceptions.ValidationException;
 
 import java.security.KeyStoreException;
+import java.util.List;
 
+import org.apache.axiom.om.OMElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -59,6 +61,7 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 		KeystoreAccess keystore = new KeystoreAccess(store, sPass, alias, kPass);
 		SecurityContext context = SecurityContextFactory.getInstance();
 		context.setKeystore(keystore);
+		context.setParam("To", "http://endpoint1.hostname1.nist.gov" );
 		Element wsseHeader = WsseHeaderGeneratorAdapter.buildHeader(context);
 
 		WsseHeaderValidatorAdapter validator = new WsseHeaderValidatorAdapter(
@@ -70,11 +73,25 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 
 	private WsseHeaderValidator val;
 	private Element header;
+	private SecurityContext context;
 
 	public WsseHeaderValidatorAdapter(ValidationContext vc, Element wsseHeader) {
 		super(vc);
 		val = new WsseHeaderValidator();
 		this.header = wsseHeader;
+		this.context = SecurityContextFactory.getInstance();
+		// TODO need to check how to get information to put in the context!!
+		// patientId, homeCommunityId, endpoint url..
+	}
+	
+	//One quick to passing soap info to the library
+	public WsseHeaderValidatorAdapter(ValidationContext vc, Element wsseHeader,
+			OMElement soapHeader) {
+		this(vc, wsseHeader);
+		
+		List<OMElement> to = MetadataSupport.childrenWithLocalName(soapHeader, "To");
+		
+		context.setParam("To", to.get(0));
 	}
 
 	@Override
@@ -94,9 +111,7 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 			logVal.addAppender(wsseLogApp);
 			logMainVal.addAppender(wsseLogApp);
 
-			SecurityContext context = SecurityContextFactory.getInstance();
-			// TODO need to check how to get information to put in the context!!
-			// patientId, homeCommunityId, endpoint url..
+			
 
 			val.validate(header, context);
 		} catch (Exception e) {

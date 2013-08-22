@@ -256,7 +256,9 @@
 	<!-- ================================================= 
          target: compile
          ================================================= -->
-	<!-- each sub-projects build its own sources in the build directory-->
+	<!-- each sub-projects build its own sources in the build directory
+		UPDATE : now all sources are compiled at once
+	-->
 	<target name="compile" depends="prepare">
 		
 		<groovyc destdir="${build.dir}" srcdir="${basedir}"  excludes="${war.dir},${build.dir}" verbose="true">
