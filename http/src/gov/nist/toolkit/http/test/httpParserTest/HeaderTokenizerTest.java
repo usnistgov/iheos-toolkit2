@@ -1,7 +1,6 @@
 package gov.nist.toolkit.http.test.httpParserTest;
 
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,6 +141,27 @@ public class HeaderTokenizerTest {
 		run(input, answer);
 	}
 	
+	@Test
+	public void boundaryTest2()  {
+		String input = 
+				"content-type: multipart/related; " + 
+				"type=\"application/xop+xml\"; " + 
+						"boundary=--boundary2956.5882352941176471010.352941176470588--; " + 
+				"start=\"<0.A881309A.0B4D.11E3.95A4.DC03258FD368>\"; " + 
+						"start-info=\"application/soap+xml\"; " + 
+				"action=\"urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b\"";
+		String[] a = {
+				"content-type", ":",  "multipart/related", ";", 
+				"type", "=", "application/xop+xml", ";", 
+				"boundary", "=", "--boundary2956.5882352941176471010.352941176470588--", ";", 
+				"start", "=", "<0.A881309A.0B4D.11E3.95A4.DC03258FD368>", ";", 
+				"start-info", "=", "application/soap+xml", ";",
+				"action", "=", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b"};
+		List<String> answer = Arrays.asList(a);
+
+		run(input, answer);
+	}
+	
 	List<Token> getTokenList(List<String> str) {
 		List<Token> ts = new ArrayList<Token>();
 		
@@ -158,10 +178,13 @@ public class HeaderTokenizerTest {
 			List<Token> tokens = ht.getTokens();
 			System.out.println(tokens);
 			
-			assertTrue(answer.size() == tokens.size());
+//			assertEquals((long)answer.size(), (long)tokens.size());
 			List<Token> al = getTokenList(answer); 
-			for (int i=0; i< al.size(); i++)
-				assertTrue(al.get(i).equals(tokens.get(i)));
+			for (int i=0; i< al.size(); i++) {
+				String answerString = al.get(i).toString();
+				String tokenString = tokens.get(i).toString();
+				assertEquals(answerString, tokenString);
+			}
 		} catch (gov.nist.toolkit.http.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

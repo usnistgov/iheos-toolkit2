@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 public class HeaderTokenizer {
 	String inputString;
 	List<Token> tokens = null;
@@ -102,6 +104,10 @@ public class HeaderTokenizer {
 				addToken(parseQuotedString()); 
 				continue; 
 			}
+			if ( '"' != current() && '=' == previous()) {
+				addToken(parseUnquotedValue());
+				continue;
+			}
 			if (isSpecial(current())) { 
 				addToken(current()); 
 				next(); 
@@ -147,23 +153,36 @@ public class HeaderTokenizer {
 	
 	// start references open double-quote
 	String parseQuotedString() throws ParseException {
-		char cur;
 		next();  // past open double-quote
-		cur = current();
 		int start = cursor;
 		while(ok()) {
-			cur = current();
 			if (current() == '"' && previous() != '\\') {
 				String val = inputString.substring(start, cursor);
 				next();  // past close double-quote
-				cur = current();
 				skipWhiteSpace();
-				cur = current();
 				return val;
 			}
 			next();
 		}
 		throw new ParseException("Invalid quoted value - no terminating double-quote found");
+	}
+	
+	Character[] xseparators = { '(', ')', '<', '>', '@' , ',', ';', ':', '\\', '"', '/', '[',
+			']', '?', '=', '{', '}'};
+	@SuppressWarnings("unchecked")
+	List<Character> separators = Arrays.asList(xseparators);
+	
+	String parseUnquotedValue() {
+		StringBuffer value = new StringBuffer();
+		while(ok()) {
+			if (separators.contains(current())) {
+				return value.toString();
+			} else {
+				value.append(current());
+			}
+			next();
+		}
+		return value.toString();
 	}
 	
 	// start is beginning of string
@@ -184,7 +203,11 @@ public class HeaderTokenizer {
 		return '\0'; 
 	}
 	
-	char previous() { return inputString.charAt(cursor - 1); }
+	char previous() {
+		if ((cursor - 1) < 0)
+			return '\0';
+		return inputString.charAt(cursor - 1); 
+	}
 	
 	void next() { 
 		cursor++;
