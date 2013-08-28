@@ -29,6 +29,27 @@ MDN<br>
 <li>Fixed bug where wrapped MDNs were not identified as such.</li>
 </ul>
 
+MDHT<br>
+
+Defects fixed in this release: 
+The MDHT Release for August contains the following fixes based on previously identified defects: 
+<ul>
+<li>Validation Errors on Payers Section with Multiple Performers, For e.g when a user is attempting to put both a performer (payer) and a performer (guarantor) in the same document the validator is providing an error. This issue is now corrected.</li>
+<li>When Content IDs are present on the Narrative Text element and reference them in the entries, the validator is incorrectly throwing an error. This issue is now corrected.</li>
+<li>Validator is incorrectly displaying a warning message for authoringDevice when author/assignedAuthor/AssignedPerson is already present which is valid per the C-CDA IG. This issue is now corrected.</li>
+<li>C-CDA validator indicates smoking status observation is missing even when it exists. This issue is now corrected.</li>
+<li>Corrected the Clinical Office Visit Summary validation to allow Medication Administered element to be represented by Medications.</li>
+<li>Corrected the Medication Activity entry validation to represent the logical ÒORÓ concept properly when representing doseQuantity or RateQuantity.</li>
+<li>For Result observations within Cognitive Status section, the validator was updated to use either SNOMED or LOINC according to C-CDA IG instead of limiting it to just LOINC.</li>
+<li>Incorporated the following ERRATA</li>
+	<ul><li>72, 73, 74, 79, 76, 278, 63, 80, 81, 85, 86, 87, 88, 89, 90, 95, 96, 97, 100, 106, 156, 169, and 229</li></ul>
+</ul>
+Known Issues in the release that impact users: 
+<ul>
+<li>No known defects that affect the Vendor community for MU2 certification.</li>
+</ul>
+
+
 <h4>167   (released    2 August  2013  )      </h4>
 
 General<br>
