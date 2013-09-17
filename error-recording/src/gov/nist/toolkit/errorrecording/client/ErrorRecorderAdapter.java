@@ -62,7 +62,7 @@ public class ErrorRecorderAdapter {
 					if(i == 1) {
 						isOnlyCCDA = true;
 					}
-					i = getCCDAFromErrorRecorder(er, i);
+					i = getCCDAFromErrorRecorder(er, i+1);
 					hasCCDA = true;
 				} else if(er.get(i).msg.contains("Try validation as XDM")) {
 					i = getXDMFromErrorRecorder(er, i);
