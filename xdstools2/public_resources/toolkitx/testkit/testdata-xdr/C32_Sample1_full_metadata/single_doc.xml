@@ -233,6 +233,11 @@
                         <Value>Orthopedic</Value>
                     </ValueList>
                 </Slot>
+                <Slot name="authorTelecommunication">
+                    <ValueList>
+                        <Value>^^Internet^john.doe@healthcare.example.org</Value>
+                    </ValueList>
+                </Slot>
             </Classification>
             <Classification classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500"
                 classifiedObject="SubmissionSet01" nodeRepresentation="History and Physical">

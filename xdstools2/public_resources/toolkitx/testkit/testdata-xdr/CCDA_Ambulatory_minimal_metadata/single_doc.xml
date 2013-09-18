@@ -33,6 +33,14 @@
 					</ValueList>
 				</Slot>
             </Classification>
+            <Classification classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"
+                classifiedObject="SubmissionSet01" nodeRepresentation="">
+				<Slot name="authorTelecommunication">
+	               <ValueList>
+						<Value>^^Internet^john.doe@healthcare.example.org</Value>
+                   </ValueList>
+                </Slot>
+            </Classification>
             <ExternalIdentifier identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8"
                 value="1.43.456.45889.23451.1.2.234.1">
                 <Name>

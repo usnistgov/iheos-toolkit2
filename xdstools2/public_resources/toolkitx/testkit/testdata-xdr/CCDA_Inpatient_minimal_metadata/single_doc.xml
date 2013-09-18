@@ -27,7 +27,6 @@
             <Classification classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"
                 classifiedObject="SubmissionSet01" nodeRepresentation="">
 				<Slot name="authorTelecommunication">
-					<!-- shall be single valued -->
 					<ValueList>
 						<Value>^^Internet^john.doe@healthcare.example.org</Value>
 					</ValueList>
