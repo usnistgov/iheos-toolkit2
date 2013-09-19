@@ -374,14 +374,11 @@ public class Xdstest2 {
 					res.add("Section: " + testLog.getTestAttribute() + " Step: " + stepLog.getName());
 					res.add("Endpoint: " + stepLog.getEndpoint());
 
-					/*
 					StepGoals stepGoals = stepLog.getGoals();
 					res.add("Goals:", true);
 					for (String goal : stepGoals.goals) {
 						res.add(formatGoal(goal), true);
 					}
-					*/
-
 
 					List<String> faults = stepLog.getSoapFaults();
 					for (String fault : faults) 
