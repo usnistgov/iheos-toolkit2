@@ -10,6 +10,60 @@
 
 <p>Release note are listed for each build number
 
+<h4>169   (released    19 September  2013  )      </h4>
+
+MDHT<br>
+
+<ul>
+<li>When testing a document against MU2 requirements which contains valid Heavy or Light tobacco smoker codes, the validator was firing an error which was incorrect and has been rectified now.</li>
+<li>Incorporated the following ERRATA</li>
+	<ul>
+	<li>102,107,143,144,198,145,146,147,157</li>
+	<li>ERRATA 102:</li>
+		<ul>
+		<li>In Procedure Activity Act (2.16.840.1.113883.10.20.22.4.12), in narrative constraint 8294, correct the phrase ‘procedure activity observation’ to ‘procedure activity act’.</li>
+		</ul>
+	<li>ERRATA 107:</li>
+		<ul>
+		<li>Correction to Health Status Observation value set was incorporated into sample test data files used by MDHT</li>
+		</ul> 
+	<li>ERRATA 143:</li>
+		<ul>
+		<li>In Procedure Activity Act, Procedure Activity Observation, and Procedure Activity Procedure, allow more than one entryRelationship/substanceAdministration.</li>
+		<li>CONFs 8329, 8279, and 7886 were updated from “MAY contain zero or one [0..1] entryRelationship”, to “MAY contain zero or more [0..*] entryRelationship.” And CONF:8330/15602 were added for ProcedureActivityAct/medicationActivity.</li>
+		</ul>
+	<li>ERRATA 144:</li>
+		<ul>
+		<li>Correct ICD9/ICD10 OIDs and names associated with CONF:16750, CONF:19207, CONF:19202, and CVX 2.16.840.1.113883.12.292.</li>
+		</ul>
+	<li>ERRATA 198:</li>
+		<ul>
+		<li>Vaccines administered (CVX) valueSet had an OID of 2.16.840.1.114222.4.11.934 instead of 2.16.840.1.113883.3.88.12.80.22 and was corrected.</li>
+		</ul>
+	<li>ERRATA 145:</li>
+		<ul>
+		<li>No changes to the validator.</li>
+		</ul>
+	<li>ERRATA 146:</li>
+		<ul>
+		<li>The unit attribute should not be constrained to the literal value "1", since the rest of the statement constrains it to the AgePQ_UCUM value set</li>
+		</ul>
+	<li>ERRATA 147:</li>
+		<ul>
+		<li>No changes to the validator.</li>
+		</ul>
+	<li>ERRATA 157:</li>
+		<ul>
+		<li>No changes to the validator.</li>
+		</ul>
+	</ul>
+</ul>
+
+Known Issues in the release that impact users: 
+<ul>
+	<li>No known defects that affect the Vendor community for MU2 certification.</li>
+</ul>
+
 <h4>168   (released    16 August  2013  )      </h4>
 
 Direct<br>
