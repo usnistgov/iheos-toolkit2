@@ -18,6 +18,7 @@ public class Main implements SecurityParams {
 	String testName = null;
 	File testDir = null;
 	File testKit = null;
+	static File toolkit = null;
 
 	static public void main(String[] arguments) {
 		List<String> args = new ArrayList<String>();
@@ -28,7 +29,7 @@ public class Main implements SecurityParams {
 		me.parseParameters(args);
 
 		try {
-			engine = new Xdstest2(me.config, me);
+			engine = new Xdstest2(toolkit, me);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,8 +53,8 @@ public class Main implements SecurityParams {
 
 	boolean parameterCheck() {
 		boolean ok = true;
-		if (config == null) 
-			fatal("-config parameter missing");
+//		if (config == null) 
+//			fatal("-config parameter missing");
 		if (testName == null)
 			ok = ok & err("-t parameter missing");
 		return ok;
@@ -93,7 +94,8 @@ public class Main implements SecurityParams {
 	void usage() {
 		System.out.println("Usage: ttk [parameters]\n" +
 				"Where the legal parameters are:\n" 
-				+ "\t-config <configuration directory>\n"
+				+ "\t-tk <testkit directory>\n"
+				+ "\t-log <log directory>\n"
 				+ "\t-t <test name>"
 				);
 		System.exit(-1);

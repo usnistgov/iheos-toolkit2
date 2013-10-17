@@ -115,9 +115,9 @@ public class BasicContext  {
 	}
 
 	void error(OMElement test_step_output, String msg) throws XdsInternalException {
-		testLog.add_name_value(test_step_output, "Error", msg);
+		testLog.add_name_value(test_step_output, "Error: stepId=" + get("step_id"), msg);
 		error(msg);
-		throw new XdsInternalException(msg);
+		throw new XdsInternalException("Error" + msg);
 	}
 
 	void fault(OMElement test_step_output, String code, String msg) throws XdsInternalException {

@@ -795,9 +795,9 @@ public class Soap implements SoapInterface {
 		this.endpoint = endpoint;
 		this.action = action;
 		this.body = body;
-		this.params = planContext.getExtraLinkage();
-		log.info("params in soap : " + params.toString());
-		log.info("pid in soap :" + params.get("$patientid$"));
+		this.params = (planContext == null) ? new HashMap<String, String>() : planContext.getExtraLinkage();
+//		log.info("params in soap : " + params.toString());
+//		log.info("pid in soap :" + params.get("$patientid$"));
 
 		return soapCall();
 	}

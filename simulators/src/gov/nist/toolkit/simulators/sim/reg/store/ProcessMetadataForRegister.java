@@ -191,13 +191,26 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 			AssocType atype = RegIndex.getAssocType(m, assocEle);
 			if (atype == AssocType.RPLC || atype == AssocType.RPLC_XFRM) {
 				String targetId = m.getAssocTarget(assocEle);
-				Ro ro = mc.docEntryCollection.getRo(targetId);
-				if (ro == null) {
-					er.err(Code.XDSRegistryError, "RPLC failed, replaced DocumentEntry [ " + targetId + "] does not exist in registry", this, null);
-				} else {
-					delta.changeAvailabilityStatus(targetId, ro.getAvailabilityStatus(), RegIndex.StatusValue.DEPRECATED);
-					delta.mkDirty();
-				}
+				deprecateDoc(targetId);
+			}
+		}
+	}
+	
+	public void deprecateDoc(String docId) {
+		Ro ro = mc.docEntryCollection.getRo(docId);
+		if (ro == null) {
+			er.err(Code.XDSRegistryError, "RPLC failed, replaced DocumentEntry [ " + docId + "] does not exist in registry", this, null);
+		} else {
+			// Deprecate
+			delta.changeAvailabilityStatus(docId, ro.getAvailabilityStatus(), RegIndex.StatusValue.DEPRECATED);
+			delta.mkDirty();
+			// Find all XFRMs and APNDs and deprecate - recurse
+			
+			List<Assoc> assocs = mc.assocCollection.getBySourceDestAndType(null, docId, AssocType.XFRM);
+			assocs.addAll(mc.assocCollection.getBySourceDestAndType(null, docId, AssocType.APND));
+			for (Assoc assoc : assocs) {
+				String id = assoc.from;
+				deprecateDoc(id);
 			}
 		}
 	}

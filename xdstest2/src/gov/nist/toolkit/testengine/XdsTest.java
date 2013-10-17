@@ -107,7 +107,7 @@ public class XdsTest {
 	public static void main(String[] args) {
 		logger.info("xdstest started");
 		XdsTest xt = new XdsTest(false);
-//		String[] a = {"-Dsite=dev", "-DXDSTOOLKIT=/Users/bill/dev/xdstoolkit", "-DXDSTESTLOGDIR=/Users/bill/dev/xdstoolkit/logs", "-DXDSTESTKIT=/Users/bill/dev/xdstoolkit/testkit","-t", "12318", "-err"};
+//		String[] a = {"-Dsite=dev", "-DXDSTOOLKIT=/Users/bill/tmp/toolkitc", "-DXDSTESTLOGDIR=/Users/bill/dev/xdstoolkit/logs", "-DXDSTESTKIT=/Users/bill/tmp/toolkitc/testkit","-t", "12318", "-err"};
 		xt.run(args);
 	}
 

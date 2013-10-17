@@ -14,6 +14,11 @@ rplc
 	step rplc - submit 1 doc, Document01 which is RPLC to doc01 in submit
 
 eval
-	original_deprecated
-	apnd_xfrm_deprecated
+	step original_deprecated - Issues a GetSubmissionSetAndContents query with the
+		SubmissionSet.entryUUID of the submission in section submit, step submit.
+		The key test is that Doc1 is deprecated since it was replaced.
+	apnd_xfrm_deprecated  - Issues a GetSubmissionSetAndContents query with the
+		SubmissionSet.entryUUID of the submission in section apnd.
+		The key test is that Doc1 was deprecated to all APND and XFRM documents
+		hanging off it must be also deprecated.
 	replacement_approved

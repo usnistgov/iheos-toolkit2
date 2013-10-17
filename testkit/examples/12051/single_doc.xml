@@ -36,7 +36,7 @@
             </Slot>
             <Slot name="repositoryUniqueId">
                 <ValueList>
-                    <Value>urn:4a8afe2</Value>
+                    <Value>1.2.3.4</Value>
                 </ValueList>
             </Slot>
             <Slot name="languageCode">
