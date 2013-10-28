@@ -68,7 +68,7 @@ public class ProcessMDN {
 			if(mdnHeaderSplit[i].contains(": ")) {
 				splitHeader = mdnHeaderSplit[i].split(":\\s");
 				headerName.add(splitHeader[0].toLowerCase());
-				headerField.add(splitHeader[1].toLowerCase());
+				headerField.add(splitHeader[1]);
 			}
 		}
 		er.detail("-----------------------------------------------------------");
@@ -146,6 +146,10 @@ public class ProcessMDN {
 	
 	public String getDispositionField() {
 		return this.disposition;
+	}
+	
+	public String getOriginalMessageId() {
+		return this.originalMessageID;
 	}
 
 }

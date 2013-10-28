@@ -91,9 +91,12 @@ public class DirectTransaction extends BasicTransaction {
 		
 		logger.info("MessageId="+ msg.getMessageID());
 		
-		String messageID = Utils.rawFromHeader(msg.getMessageID());
+		String messageID = Utils.rawMsgId(msg.getMessageID());
 
 		MessageLogManager.logDirectMessage(transactionSettings.user, new Date(), ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), messageID, msg, "");
+		
+		// Second log under the To email folder
+		MessageLogManager.logDirectSendMessage(toAddress, new Date(), ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), messageID, msg, "", transactionSettings.user);
 
 		/*InputStream is2 = new FileInputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));
 		msg = new MimeMessage(session, is2);*/

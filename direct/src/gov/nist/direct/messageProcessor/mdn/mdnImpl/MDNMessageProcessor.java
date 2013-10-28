@@ -70,6 +70,8 @@ import org.bouncycastle.mail.smime.SMIMESigned;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.util.Store;
 
+import bsh.util.Util;
+
 /**
  * Parses an MDN message for a message ID. It looks up the ID in the list of timestamps and calculates the time offset between sending and reception.
  * If the offset is less than a predetermined limit AND the MDN is valid (send it to the MDNvalidator), then the test is successful.
@@ -90,6 +92,8 @@ public class MDNMessageProcessor {
 	private String decryptedMdn = ""; // contains the full decrypted message
 	private String dispositionField = "";
 	private String msgID = "";
+	private String originialMessageId = "";
+	private String username = "";
 	private Date mdnDate = null;
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
@@ -125,6 +129,14 @@ public class MDNMessageProcessor {
 		// --------- Validate MDN and encryption ---------
 		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 
+		// Parse the message to see if it is wrapped
+		wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
+		
+		this.username = wrappedParser.getUsername();
+		if(this.username.equals("")) {
+			this.username = "Unknown-User";
+		}
+
 		try {
 			this.processPart(er, mm);
 			if(mm.getMessageID() != null) {
@@ -151,13 +163,7 @@ public class MDNMessageProcessor {
 		// Logs MDN message - still ENCRYPTED
 		logMDNMessage(mm); // logMDNMessage(mm, disposition);
 
-        // Parse the message to see if it is wrapped
-        wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
-
         logger.debug("ValidationContext is " + vc.toString());
-
-        // Parses message - what does it do? needed?
-       // MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
        
 
 	}
@@ -168,13 +174,13 @@ public class MDNMessageProcessor {
 
 	public void logMDNMessage(MimeMessage m) {
 
-        // Get MDN sender name (username)
-       // String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
-        // String username = Utils.rawFromHeader(_username);
+		// Get MDN sender name (username)
+		// String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
+		// String username = Utils.rawFromHeader(_username);
 
-		
-        // Get MDN message ID 
-        String mdnMessageId = "";
+
+		// Get MDN message ID 
+		String mdnMessageId = "";
 		try {
 			if (m.getMessageID() == null || m.getMessageID().equals("")){
 				String _mdnMessageId = m.getMessageID();
@@ -221,7 +227,10 @@ public class MDNMessageProcessor {
 			e.printStackTrace();
 		}
 		
-        MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageId);
+        MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", mdnMessageId, date, mdnMessageId, this.username);
+        
+        // Log mdn validation status
+        MessageLogManager.logMDNValidationStatus(this.username, "MDN Received", origDirectMsgValidationStatus, "DIRECT_RECEIVE", "DIRECT", this.originialMessageId, this.mdnDate, mdnMessageId);
 
 		
 	}
@@ -273,6 +282,7 @@ public class MDNMessageProcessor {
 			ProcessMDN mdnv = new ProcessMDN(er, p);
 			mdnv.validate(er);
 			dispositionField = mdnv.getDispositionField();
+			originialMessageId = Utils.rawMsgId(mdnv.getOriginalMessageId());
 
 		} else if (p.isMimeType("application/octet-stream")) {
 			//System.out.println("CCDA Content");

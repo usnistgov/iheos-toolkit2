@@ -23,6 +23,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 /**
  * Current structure is:
@@ -68,6 +69,7 @@ public class LogPathsSingleton {
 	private final String MDN_MESSAGE_FOLDER = File.separator + "mdn";
 	 
 	private final String MDN_MESSAGE_CONTENTS = File.separator + "mdn-contents.txt";
+	private final String TEST_SESSION = File.separator + "test-session.txt";
 	private final String DIRECT_MESSAGE_CONTENTS = File.separator + "direct-contents.txt"; // needs part number + ".txt" ext.
 	private final String DECRYPTED_MESSAGE = File.separator + "encrypted-message.txt"; 
 	private final String MDN_VALIDATION_STATUS = File.separator + "mdn-validation-status.txt";
@@ -133,6 +135,11 @@ public class LogPathsSingleton {
 		return path;
 	}
 	
+	public String getTestSessionLogPath(String transactionType, String messageType, String username, String messageId) {
+		String fullPath = getFullPath(transactionType, messageType, username, messageId);
+		String path = fullPath + TEST_SESSION;
+		return path;
+	}
 	
 	public String getEncryptedMessageLogPath(String transactionType, String messageType, String username, String messageId) {
 		String fullPath = getFullPath(transactionType, messageType, username, messageId);
@@ -285,16 +292,17 @@ public class LogPathsSingleton {
 	}
 	
 	public String getAttachmentLink(String transactionType, String messageType, String username, String messageId, String attachmentName) {
-		String usernamePath = "direct-logs" + File.separator + username;
-		String fullPath = usernamePath + File.separator + messageId;
+		String usernamePath = "direct-logs/" + username;
+		String fullPath = usernamePath + "/" + messageId;
 		
 		String warPath = Installation.installation().warHome().toString();
-		String[] warSplit = warPath.split(File.separator);
+		String separatorPattern = Pattern.quote(File.separator);
+		String[] warSplit = warPath.split(separatorPattern);
 		warPath = warSplit[warSplit.length-1];
 		
 		PropertyServiceManager manager = Installation.installation().propertyServiceManager();
 		
-		String path = warPath + File.separator + fullPath + File.separator + attachmentName;
+		String path = warPath + "/" + fullPath + "/" + attachmentName;
 		path = "http://" + manager.getToolkitHost() + ":" + manager.getToolkitPort() + "/" + path;
 		
 		
