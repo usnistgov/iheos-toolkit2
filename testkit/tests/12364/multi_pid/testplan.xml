@@ -38,9 +38,9 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../../testdata/12361" id="SubmissionSet01" step="single_doc"
+            <UseId testdir="../12361" id="SubmissionSet01" step="single_doc"
                 section="AssignedPatientId" symbol="$patient_id1$"/>
-            <UseId testdir="../../../testdata/12361" id="SubmissionSet01" step="multi_doc"
+            <UseId testdir="../12361" id="SubmissionSet01" step="multi_doc"
                 section="AssignedPatientId" symbol="$patient_id2$"/>
             <ExpectedContents>
                 <ObjectRefs count="2"/>

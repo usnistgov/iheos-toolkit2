@@ -41,6 +41,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 	String expectedErrorMessage = "";
 	String expected_error_code = "";
 	String stepId;
+	boolean useAltPatientId = false;
 	TestConfig testConfig;
 	TransactionSettings transactionSettings = null;
 	
@@ -54,6 +55,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 	
 	public void setTestConfig(TestConfig config) {
 		testConfig = config;
+	}
+	
+	public boolean useAltPatientId() {
+		return useAltPatientId;
 	}
 	
 	public String getId() {
@@ -215,6 +220,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			} 
 			else if (instruction_name.equals("AltPatientId"))  
 			{
+				useAltPatientId = true;
 				// Doesn't work in gui
 //				PatientIdAllocator pia = new PatientIdAllocator(testConfig);
 //				String pid = pia.useNewAlternatePatientId(); // allocate a new patient id

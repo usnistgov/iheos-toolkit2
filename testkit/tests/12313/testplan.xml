@@ -20,8 +20,8 @@
             <UseReport test="12311"  step="getdocs" reportName="$requestHome$" useAs="$home$"/>   
             <UseReport test="12311"  step="getdocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>   
             <ExpectedMimeType>text/plain</ExpectedMimeType>
-            <ReferenceDocument uid="$docuid1$">../../testdata/12318/my_document.txt</ReferenceDocument>
-            <ReferenceDocument uid="$docuid2$">../../testdata/12318/my_document2.txt</ReferenceDocument>
+            <ReferenceDocument uid="$docuid1$">../12318/my_document.txt</ReferenceDocument>
+            <ReferenceDocument uid="$docuid2$">../12318/my_document2.txt</ReferenceDocument>
             <Metadata>
 <RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

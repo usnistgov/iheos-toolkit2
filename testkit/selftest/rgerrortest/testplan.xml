@@ -2,7 +2,7 @@
 <TestPlan>
    <Test>rgerrortest</Test>
     <TestStep id="SqMissingHome">
-        <RegistryEndpoint>http://localhost:9080/tf6/services/rgregmissinghome</RegistryEndpoint>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/rgregmissinghome</RegistryEndpoint>
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorCode>XDSMissingHomeCommunity</ExpectedErrorCode>
         <XCQTransaction>
@@ -31,7 +31,7 @@
         </XCQTransaction>
     </TestStep>
     <TestStep id="RetMissingHome">
-        <RegistryEndpoint>http://localhost:9080/tf6/services/rgrepmissinghome</RegistryEndpoint>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/rgrepmissinghome</RegistryEndpoint>
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorCode>XDSMissingHomeCommunity</ExpectedErrorCode>
         <XCRTransaction>
@@ -48,7 +48,7 @@
         </XCRTransaction>
     </TestStep>
     <TestStep id="SqUnavailable">
-        <RegistryEndpoint>http://localhost:9080/tf6/services/rgregunavailable</RegistryEndpoint>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/rgregunavailable</RegistryEndpoint>
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorCode>XDSUnavailableCommunity</ExpectedErrorCode>
         <XCQTransaction>
@@ -77,7 +77,7 @@
         </XCQTransaction>
     </TestStep>
     <TestStep id="RetUnavailable">
-        <RegistryEndpoint>http://localhost:9080/tf6/services/rgrepunavailable</RegistryEndpoint>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/rgrepunavailable</RegistryEndpoint>
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorCode>XDSUnavailableCommunity</ExpectedErrorCode>
         <XCRTransaction>
@@ -94,7 +94,7 @@
         </XCRTransaction>
     </TestStep>
     <TestStep id="SqUnknownComm">
-        <RegistryEndpoint>http://localhost:9080/tf6/services/rgregbadcommunity</RegistryEndpoint>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/rgregbadcommunity</RegistryEndpoint>
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorCode>XDSUnknownCommunity</ExpectedErrorCode>
         <XCQTransaction>
@@ -123,7 +123,7 @@
         </XCQTransaction>
     </TestStep>
     <TestStep id="RetUnknownComm">
-        <RegistryEndpoint>http://localhost:9080/tf6/services/rgrepbadcommunity</RegistryEndpoint>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/rgrepbadcommunity</RegistryEndpoint>
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorCode>XDSUnknownCommunity</ExpectedErrorCode>
         <XCRTransaction>

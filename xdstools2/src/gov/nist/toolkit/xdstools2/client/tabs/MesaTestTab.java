@@ -47,6 +47,7 @@ public class MesaTestTab extends GenericQueryTab {
 	Button selectSectionViewButton = new Button("View this section's testplan");
 	ScrollPanel readmeBox = new ScrollPanel();
 	TextBox patientIdBox = new TextBox();
+	TextBox altPatientIdBox = new TextBox();
 	Map<String, String> actorCollectionMap;  // name => description
 	String selectedActor;
 	String selectedTest;
@@ -129,6 +130,17 @@ public class MesaTestTab extends GenericQueryTab {
 
 		patientIdBox.setWidth("400px");
 		patientIdPanel.add(patientIdBox);
+	
+		// Alt Patient ID
+		HorizontalPanel altPatientIdPanel = new HorizontalPanel();
+//		topPanel.add(altPatientIdPanel);
+		
+		HTML altPatientIdLabel = new HTML();
+		altPatientIdLabel.setText("Alternate Patient ID");
+		altPatientIdPanel.add(altPatientIdLabel);
+
+		altPatientIdBox.setWidth("400px");
+		altPatientIdPanel.add(altPatientIdBox);
 	
 		mainGrid = new FlexTable();
 		
@@ -371,7 +383,13 @@ public class MesaTestTab extends GenericQueryTab {
 				pid = pid.trim();
 				parms.put("$patientid$", pid);
 			}
-			
+
+			String altPid = altPatientIdBox.getText();
+			if (altPid != null && !altPid.equals("")) { 
+				altPid = altPid.trim();
+				parms.put("$altpatientid$", altPid);
+			}
+
 			toolkitService.runMesaTest(myContainer.getTestSessionState().getTestSessionName(), siteSpec, selectedTest, selectedSections, parms, true, queryCallback);
 			
 		}

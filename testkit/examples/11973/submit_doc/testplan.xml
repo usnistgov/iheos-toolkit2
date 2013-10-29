@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
    <Test>11973/submit_doc</Test>
-    <RegistryEndpoint>http://localhost:9080/tf6/services/repositoryBonedoc</RegistryEndpoint>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/repositoryBonedoc</RegistryEndpoint>
     <TestStep id="good">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>

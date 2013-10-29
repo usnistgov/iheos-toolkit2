@@ -136,6 +136,8 @@ public abstract class BasicTransaction  {
 			async = transactionSettings.siteSpec.isAsync;   
 		if (transactionSettings.patientId != null)
 			planContext.setPatientId(transactionSettings.patientId);
+		if (transactionSettings.altPatientId != null)
+			planContext.setAltPatientId(transactionSettings.altPatientId);
 	}
 
 	public void setTestConfig(TestConfig config) {
@@ -779,6 +781,9 @@ public abstract class BasicTransaction  {
 			if ( assign_patient_id ) {
 				// get and insert PatientId
 				String forced_patient_id = s_ctx.get("PatientId");
+				if (s_ctx.useAltPatientId()) {
+					forced_patient_id = s_ctx.get("AltPatientId");
+				}
 				HashMap<String, String> patient_map;
 				patient_map = tm.assignPatientId(metadata, forced_patient_id);
 				testLog.add_name_value(instruction_output, generate_xml("AssignedPatientId", patient_map));

@@ -25,7 +25,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="Document01" step="submit_doc"
+            <UseId testdir="../12346" id="Document01" step="submit_doc"
                 section="AssignedUuids" symbol="$uuid$"/>
             <ExpectedContents>
                 <Associations count="1"/>
@@ -56,7 +56,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="Document01" step="submit_doc_w_fol"
+            <UseId testdir="../12346" id="Document01" step="submit_doc_w_fol"
                 section="AssignedUuids" symbol="$uuid$"/>
             <ExpectedContents>
                 <Associations count="2"/>
@@ -87,7 +87,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc_w_fol"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc_w_fol"
                 section="AssignedUuids" symbol="$uuid$"/>
             <ExpectedContents>
                 <Associations count="3"/>
@@ -118,9 +118,9 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc_w_fol"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc_w_fol"
                 section="AssignedUuids" symbol="$uuid1$"/>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedUuids" symbol="$uuid2$"/>
             <ExpectedContents>
                 <Associations count="4"/>

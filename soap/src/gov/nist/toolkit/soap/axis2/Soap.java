@@ -778,8 +778,8 @@ public class Soap implements SoapInterface {
 			String expected_return_action) throws XdsInternalException,
 			AxisFault, XdsFormatException, EnvironmentNotSelectedException,
 			LoadKeystoreException {
-		return soapCall(body, expected_return_action, soap12, soap12, soap12,
-				expected_return_action, expected_return_action, null);
+		return soapCall(body, endpoint, mtom, addressing, soap12,
+				action, expected_return_action, null);
 	}
 
 	public OMElement soapCall(OMElement body, String endpoint, boolean mtom,

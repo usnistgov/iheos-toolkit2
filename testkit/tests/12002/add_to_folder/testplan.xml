@@ -4,9 +4,7 @@
     <TestStep id="add">
         <ExpectedStatus>Failure</ExpectedStatus>
         <ExpectedErrorMessage>XDSPatientIdDoesNotMatch</ExpectedErrorMessage>
-        <AltPatientId/>
         <RegisterTransaction>
-            <NoPatientId/>
             <XDSb/>
             <MetadataFile>single_doc.xml</MetadataFile>
             <UseId testdir="../create_folder" 

@@ -14,6 +14,10 @@ public class LogRepository  {
 	// Create through LogRepositoryFactory only
 	LogRepository() {}
 	
+	public String toString() {
+		return logDir.toString();
+	}
+	
 	public void logOut(XdstestLogId id, LogMap log)
 			throws XdsException {
 		logger.logOut(id, log, logDir);
