@@ -1,5 +1,9 @@
 package gov.nist.toolkit.soap.axis2;
 
+import gov.nist.hit.ds.wsseTool.api.config.Context;
+import gov.nist.hit.ds.wsseTool.api.config.ContextFactory;
+import gov.nist.hit.ds.wsseTool.api.config.GenContext;
+import gov.nist.hit.ds.wsseTool.api.config.KeystoreAccess;
 import gov.nist.toolkit.docref.WsDocRef;
 import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
@@ -8,10 +12,6 @@ import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
 import gov.nist.toolkit.testengine.PlanContext;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
-
-import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
-import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
-import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
@@ -238,7 +238,7 @@ public class Soap implements SoapInterface {
 
 				KeystoreAccess keystore = new KeystoreAccess(store, sPass,
 						alias, kPass);
-				SecurityContext context = SecurityContextFactory.getInstance();
+				GenContext context = ContextFactory.getInstance();
 				context.setKeystore(keystore);
 
 				String pid = this.params.get("$patientid$");
@@ -262,7 +262,7 @@ public class Soap implements SoapInterface {
 		return envelope;
 	}
 
-	private void parsePid(String pid, SecurityContext context) {
+	private void parsePid(String pid, Context context) {
 		
 			try {
 				if(pid == null || pid.equals("")){

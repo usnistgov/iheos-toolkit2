@@ -1,5 +1,10 @@
 package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
+import gov.nist.hit.ds.wsseTool.api.config.ContextFactory;
+import gov.nist.hit.ds.wsseTool.api.config.GenContext;
+import gov.nist.hit.ds.wsseTool.api.config.KeystoreAccess;
+import gov.nist.hit.ds.wsseTool.api.exceptions.GenerationException;
+import gov.nist.hit.ds.wsseTool.validation.WsseHeaderValidator;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
@@ -7,11 +12,6 @@ import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderFor
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
-import gov.nist.toolkit.wsseTool.api.WsseHeaderValidator;
-import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
-import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
-import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
-import gov.nist.toolkit.wsseTool.api.exceptions.GenerationException;
 
 import java.security.KeyStoreException;
 import java.util.List;
@@ -54,12 +54,12 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 	 */
 	public static void main(String[] args) throws KeyStoreException,
 			GenerationException {
-		String store = "/Users/gerardin/IHE-Testing/xdstools2_environment/environment/AEGIS_env/keystore/keystore";
+		String store = System.getProperty("user.dir") + "/soap/test/resources/keystore/keystore";
 		String sPass = "changeit";
 		String kPass = "changeit";
-		String alias = "hit-testing.nist.gov";
+		String alias = "1";
 		KeystoreAccess keystore = new KeystoreAccess(store, sPass, alias, kPass);
-		SecurityContext context = SecurityContextFactory.getInstance();
+		GenContext context = ContextFactory.getInstance();
 		context.setKeystore(keystore);
 		context.setParam("To", "http://endpoint1.hostname1.nist.gov" );
 		Element wsseHeader = WsseHeaderGeneratorAdapter.buildHeader(context);
@@ -73,15 +73,13 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 
 	private WsseHeaderValidator val;
 	private Element header;
-	private SecurityContext context;
+	private GenContext context;
 
 	public WsseHeaderValidatorAdapter(ValidationContext vc, Element wsseHeader) {
 		super(vc);
 		val = new WsseHeaderValidator();
 		this.header = wsseHeader;
-		this.context = SecurityContextFactory.getInstance();
-		// TODO need to check how to get information to put in the context!!
-		// patientId, homeCommunityId, endpoint url..
+		this.context = ContextFactory.getInstance();
 	}
 	
 	//One quick to passing soap info to the library
