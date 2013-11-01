@@ -231,10 +231,11 @@ public class Soap implements SoapInterface {
 		setSoapHeader(envelope.getHeader());
 		if (useWSSEC) {
 			try {
+				//TODO replace by parameters found in security params!
 				String store = securityParams.getKeystore().getAbsolutePath();
 				String kPass = securityParams.getKeystorePassword();
-				String alias = "1";
-				String sPass = "changeit";
+				String alias = securityParams.getKeystoreAlias();
+				String sPass = kPass;
 
 				KeystoreAccess keystore = new KeystoreAccess(store, sPass,
 						alias, kPass);

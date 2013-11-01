@@ -158,4 +158,10 @@ public class Main implements SecurityParams {
 	public File getKeystoreDir() throws EnvironmentNotSelectedException {
 		return new File(config + File.separator );
 	}
+
+	@Override
+	public String getKeystoreAlias() throws IOException, EnvironmentNotSelectedException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

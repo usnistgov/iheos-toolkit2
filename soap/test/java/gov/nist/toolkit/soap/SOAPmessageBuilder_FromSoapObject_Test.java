@@ -1,7 +1,6 @@
 package gov.nist.toolkit.soap; 
 
 import static org.junit.Assert.*;
-
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
@@ -84,6 +83,9 @@ public class SOAPmessageBuilder_FromSoapObject_Test {
 		
 	}
 
+	/*
+	 * DO NOT USE. BROKEN
+	 */
 	private SecurityParams configureSecurityParams( final String envDir) {
 		SecurityParams secParams = new SecurityParams() {
 			
@@ -116,6 +118,12 @@ public class SOAPmessageBuilder_FromSoapObject_Test {
 			@Override
 			public File getCodesFile() {
 					return new File(envDir + File.separator + "codes.xml");
+			}
+
+			@Override
+			public String getKeystoreAlias() throws IOException, EnvironmentNotSelectedException {
+				// TODO Auto-generated method stub
+				return null;
 			}
 		};
 		
