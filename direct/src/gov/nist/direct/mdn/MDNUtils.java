@@ -9,7 +9,7 @@ public class MDNUtils {
 	final static String text = "[0-9,a-z,A-Z,_,.,\\-]*";
 	final static String textWithSpace = "[0-9,a-z,A-Z,_,.,\\-,\\s]*";
 	final static String whitespace = "\\s";
-	final static String actionMode = "(normal-action|automatic-action)";
+	final static String actionMode = "(manual-action|automatic-action)";
 	final static String sendingMode = "(mdn-sent-manually|mdn-sent-automatically)";
 	final static String dispositionType = "(displayed|processed|deleted)";
 	final static String dispositionModifier = "(error|" + atom + ")";

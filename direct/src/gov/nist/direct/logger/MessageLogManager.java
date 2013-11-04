@@ -25,10 +25,12 @@ import gov.nist.direct.logger.writer.DirectContentLogger;
 import gov.nist.direct.logger.writer.LabelLogger;
 import gov.nist.direct.logger.writer.MessageIDLogger;
 import gov.nist.direct.logger.writer.MessageStatusLogger;
+import gov.nist.direct.logger.writer.TestSessionLogger;
 import gov.nist.direct.logger.writer.TimeLogger;
 import gov.nist.direct.logger.writer.messageLoggerImpl.MDNLogger;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -85,15 +87,15 @@ public class MessageLogManager {
 	 * Completes a Direct message log with matching MDN logs
 	 * @param messageId
 	 */
-	public static void logMDN(MimeMessage m, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId){
+	public static void logMDN(MimeMessage m, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId, String username){
 
 		// find the username that matches the original message ID
-		String username = "";
+		/*String username = "";
 		if (findUsername(origMessageId) != ""){
 			username = findUsername(origMessageId);
 			System.out.println("When logging an MDN, username should not be empty.");
 		}
-		System.out.println("mdn username :" + username);
+		System.out.println("mdn username :" + username);*/
 
 
 		// Log MDN message-ID
@@ -144,6 +146,40 @@ public class MessageLogManager {
 			e.printStackTrace();
 		}
 
+
+	}
+	
+	// Update mdn validation status
+	public static void logMDNValidationStatus(String username, String mdnValidationStatus, String origDirectMsgValidationStatus, String transactionType, String messageType, String origMessageId, Date receivedDate, String mdnMessageId){
+		// Get test session name
+		LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		String testSessionPath = ls.getTestSessionLogPath(transactionType, messageType, username, origMessageId);
+		System.out.println("Path to session file: " + testSessionPath);
+		File testSessionFile = new File(testSessionPath);
+		
+		String testSessionName = "";
+		if(testSessionFile.exists()) {
+			try {
+				testSessionName = IOUtils.toString(new FileInputStream(testSessionFile));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("No Test Session name found");
+		}
+
+		// Update mdn validation status
+		MessageStatusLogger dl = new MessageStatusLogger();
+		try {
+			dl.logMDNValidationStatus(mdnValidationStatus, transactionType, messageType, testSessionName, origMessageId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 
 	}
@@ -232,7 +268,23 @@ public class MessageLogManager {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public static void logDirectSendMessage(String username, Date directMsgDateSent, String transactionType, String messageType, String messageId, MimeMessage directMessage, String label, String testSession){
+		
+		logDirectMessage(username, directMsgDateSent, transactionType, messageType, messageId, directMessage, label);
 
+		// Log test session name used to send the message
+		TestSessionLogger tl = new TestSessionLogger();
+		try {
+			tl.logTestSession(testSession, transactionType, messageType, username, messageId);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public static void logAttachment(String username, Date directMsgDateSent, String messageId, String transactionType, String messageType, InputStream attachment, String attachmentName) {
 		
 		/*
