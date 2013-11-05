@@ -51,6 +51,7 @@
 	<classpathentry kind="src" path="timer/src"/>
 	<classpathentry kind="src" path="rest/src"/>
 	<classpathentry kind="src" path="dns/src"/>
+	<classpathentry kind="src" path="dst/src"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
 	<classpathentry kind="lib" path="lib/apache-mailet-base-1.1.jar"/>
@@ -104,7 +105,6 @@
 	<classpathentry kind="lib" path="lib/joda-time-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/jsr173_1.0_api.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/logkit-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/mail-1.4.5.jar"/>
@@ -142,14 +142,11 @@
 	<classpathentry kind="lib" path="lib/schematronValidator.jar"/>
 	<classpathentry kind="lib" path="lib/serializer-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/serializer-2.9.1.jar"/>
-	<classpathentry kind="lib" path="lib/servlet-api-2.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5-javadoc.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5-sources.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/smtp.jar"/>
 	<classpathentry kind="lib" path="lib/soap.jar"/>
@@ -179,5 +176,8 @@
 	<classpathentry kind="lib" path="lib/xmlsec-1.4.5.jar"/>
 	<classpathentry kind="lib" path="lib/xmltooling-1.3.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 6 (MacOS X Default)"/>
+	<classpathentry kind="lib" path="lib/wsseTool-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/ant-contrib.jar"/>
+	<classpathentry kind="lib" path="lib/ant-junit.jar"/>
 	<classpathentry kind="output" path="xdstools2/war/WEB-INF/classes"/>
 </classpath>
