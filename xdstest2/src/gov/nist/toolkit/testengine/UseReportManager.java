@@ -141,7 +141,7 @@ public class UseReportManager  {
 		for (UseReport ur : useReports) {
 			LogFileContent log = previousLogs.get(ur.section);
 			if (log == null) 
-				log = this.priorTests.get(ur.section);
+				log = priorTests.get(ur.section);
 			if (log == null)
 				throw new XdsInternalException("UseReportManager#resolve: cannot find log for section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
 			TestStepLogContent stepLog = log.getStepLog(ur.step);

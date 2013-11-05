@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <Test>11979/eval</Test>
-    <RegistryEndpoint>http://localhost:9080/axis2/services/xdsregistryb</RegistryEndpoint>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/axis2/services/xdsregistryb</RegistryEndpoint>
     <TestStep id="storedquery">
         <ExpectedStatus>Success</ExpectedStatus>
         <StoredQueryTransaction>

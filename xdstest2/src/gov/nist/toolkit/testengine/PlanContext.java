@@ -94,6 +94,7 @@ public class PlanContext extends BasicContext {
 	String default_patient_id = null;
 	String registry_endpoint = null;
 	String patient_id = null;
+	String alt_patient_id = null;
 	boolean status = true;
 	String test_num = "0";
 	short xds_version = BasicTransaction.xds_none;
@@ -126,6 +127,11 @@ public class PlanContext extends BasicContext {
 	public void setPatientId(String patient_id) {
 		this.patient_id = patient_id;
 		set("PatientId", patient_id);
+	}
+
+	public void setAltPatientId(String patient_id) {
+		this.alt_patient_id = patient_id;
+		set("AltPatientId", patient_id);
 	}
 
 	public OMElement getResultsDocument() {

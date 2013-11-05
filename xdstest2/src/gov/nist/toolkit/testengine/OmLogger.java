@@ -87,6 +87,7 @@ public class OmLogger implements ILogger {
 	 */
 	@Override
 	public OMElement add_name_value(OMElement parent, String name, String value) {
+		name = name.replaceAll(":", " ");
 		System.out.println(name + ": " + value);
 		OMElement ele = MetadataSupport.om_factory.createOMElement(name, null);
 		ele.addChild(MetadataSupport.om_factory.createOMText(encodeLT(value)));
@@ -102,6 +103,7 @@ public class OmLogger implements ILogger {
 		if (name == null) name = "";
 		if (id == null) id = "";
 		if (value == null) value = "";
+		name = name.replaceAll(":", " ");
 		OMElement ele = MetadataSupport.om_factory.createOMElement(name, null);
 		ele.addAttribute("id", id, null);
 		ele.addChild(MetadataSupport.om_factory.createOMText(encodeLT(value)));
@@ -115,6 +117,7 @@ public class OmLogger implements ILogger {
 	@Override
 	public OMElement add_name_value(OMElement parent, String name, OMElement value) {
 		OMNode val = value;
+		name = name.replaceAll(":", "");
 		OMElement ele = MetadataSupport.om_factory.createOMElement(name, null);
 		if (val == null)
 			val = MetadataSupport.om_factory.createOMElement("None", null);
@@ -142,6 +145,7 @@ public class OmLogger implements ILogger {
 	 */
 	@Override
 	public OMElement add_name_value(OMElement parent, String name, OMElement value1, OMElement value2) {
+		name = name.replaceAll(":", " ");
 		OMElement ele = MetadataSupport.om_factory.createOMElement(name, null);
 		OMNode val1 = value1;
 		if (val1 == null)
@@ -160,6 +164,7 @@ public class OmLogger implements ILogger {
 	 */
 	@Override
 	public OMElement add_name_value(OMElement parent, String name, OMElement value1, OMElement value2, OMElement value3) {
+		name = name.replaceAll(":", " ");
 		OMElement ele = MetadataSupport.om_factory.createOMElement(name, null);
 		OMNode val1 = value1;
 		if (val1 == null)
@@ -182,6 +187,7 @@ public class OmLogger implements ILogger {
 	 */
 	@Override
 	public OMElement create_name_value(String name, OMElement value) {
+		name = name.replaceAll(":", " ");
 		OMNode val = value;
 		OMElement ele = MetadataSupport.om_factory.createOMElement(name, null);
 		if (val == null)
@@ -195,6 +201,7 @@ public class OmLogger implements ILogger {
 	 */
 	@Override
 	public OMElement create_name_value(String name, String value) {
+		name = name.replaceAll(":", " ");
 		OMElement ele = MetadataSupport.om_factory.createOMElement(name, null);
 		ele.addChild(MetadataSupport.om_factory.createOMText(value));
 		return ele;

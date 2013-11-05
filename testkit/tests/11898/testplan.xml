@@ -30,7 +30,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="5"/>
@@ -71,7 +71,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="5"/>
@@ -113,7 +113,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="0"/>
@@ -159,7 +159,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="5"/>
@@ -205,7 +205,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="0"/>
@@ -246,7 +246,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="5"/>
@@ -287,7 +287,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="5"/>
@@ -328,7 +328,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="5"/>
@@ -369,7 +369,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="0"/>
@@ -410,7 +410,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="5"/>
@@ -451,7 +451,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedPatientId" symbol="$patient_id$"/>
             <ExpectedContents>
                 <SubmissionSets count="0"/>

@@ -2,7 +2,7 @@
 <TestPlan>
    <Test>11973/existing_doc_to_fol</Test>
     <Rule>Add Existing Document to Existing Folder</Rule>
-    <RegistryEndpoint>http://localhost:9080/tf6/services/test11973</RegistryEndpoint>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/test11973</RegistryEndpoint>
     <TestStep id="good">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>

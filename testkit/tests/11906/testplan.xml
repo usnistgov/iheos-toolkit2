@@ -26,7 +26,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedUids" symbol="$uniqueid$"/>
             <ExpectedContents>
                 <SubmissionSets count="1"/>
@@ -59,7 +59,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_2doc_w_fol"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_2doc_w_fol"
                 section="AssignedUids" symbol="$uniqueid$"/>
             <ExpectedContents>
                 <SSwithTwoDocOneFol/>
@@ -90,7 +90,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedUuids" symbol="$uuid$"/>
             <ExpectedContents>
                 <SubmissionSets count="1"/>
@@ -128,7 +128,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_2doc_w_fol"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_2doc_w_fol"
                 section="AssignedUids" symbol="$uniqueid$"/>
             <ExpectedContents>
                 <SSwithOneDocOneFol/>
@@ -164,7 +164,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_2doc_w_fol"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_2doc_w_fol"
                 section="AssignedUids" symbol="$uniqueid$"/>
             <ExpectedContents>
                 <SSwithOneDocOneFol/>
@@ -195,7 +195,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../testdata/12346" id="SubmissionSet01" step="submit_doc"
+            <UseId testdir="../12346" id="SubmissionSet01" step="submit_doc"
                 section="AssignedUids" symbol="$uniqueid$"/>
             <ExpectedContents>
                 <ObjectRefs count="3"/>

@@ -2,6 +2,7 @@
 <TestPlan>
    <Test>12004/submit</Test>
     <TestStep id="submit">
+        <Goal>Submit single DocumentEntry</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <RegisterTransaction>
             <XDSb/>
@@ -9,6 +10,7 @@
         </RegisterTransaction>
     </TestStep>
     <TestStep id="resubmit_doc">
+        <Goal>Resubmit same DocumentEntry with same uniqueId.  Must be successful.</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <RegisterTransaction>
             <XDSb/>
@@ -20,6 +22,8 @@
     </TestStep>
     <TestStep id="resubmit_doc_diff_hash">
         <ExpectedStatus>Failure</ExpectedStatus>
+        <Goal>Resubmit same DocumentEntry with same uniqueId but different hash.  
+            Must fail with XDSDuplicateUniqueIdInRegistry error</Goal>
         <ExpectedErrorMessage>XDSNonIdenticalHash</ExpectedErrorMessage>
         <RegisterTransaction>
             <XDSb/>

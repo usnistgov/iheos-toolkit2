@@ -10,7 +10,7 @@
             <SQ>FindDocuments</SQ>
             <Assertion>Basic ObjectRef return</Assertion>
         </Rule>
-        <RegistryEndpoint>http://localhost:9080/tf5/services/xdsregistryb</RegistryEndpoint>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf5/services/xdsregistryb</RegistryEndpoint>
         <StoredQueryTransaction>
             <XDSb/>
             <Metadata>

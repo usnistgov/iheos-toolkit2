@@ -47,7 +47,7 @@ public class TestConfig {
 	
 	 public boolean endpointOverride = false;
 	
-	 public boolean verbose  = false;
+	 public boolean verbose  = true;
 	
 	 public boolean trace = false;
 	

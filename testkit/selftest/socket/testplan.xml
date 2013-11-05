@@ -3,7 +3,7 @@
    <Test>socket</Test>
     <TestStep id="submit">
         <ExpectedStatus>Success</ExpectedStatus>
-        <RegistryEndpoint>http://localhost:5000/tf5/services/xdsrepositoryb</RegistryEndpoint>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf5/services/xdsrepositoryb</RegistryEndpoint>
         <SocketTransaction>
             <InputFile>request.txt</InputFile>
         </SocketTransaction>

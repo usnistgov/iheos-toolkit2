@@ -5,7 +5,7 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <RetrieveTransaction>
             <XDSa/>
-            <URI>https://localhost:9443/Repository/129.6.58.91.11305.txt</URI>
+            <URI>http://ihexds.nist.gov:12080/Repository/129.6.58.91.11305.txt</URI>
             <ExpectedMimeType>text/plain</ExpectedMimeType>
         </RetrieveTransaction>
     </TestStep>

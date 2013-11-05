@@ -27,9 +27,9 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../../../testdata/12346" id="Folder" step="submit_doc_w_fol"
+            <UseId testdir="../../12346" id="Folder" step="submit_doc_w_fol"
                 section="AssignedUuids" symbol="$uuid1$"/>
-            <UseId testdir="../../../testdata/12374" id="Folder" step="submit_doc_w_fol"
+            <UseId testdir="../../12374" id="Folder" step="submit_doc_w_fol"
                 section="AssignedUuids" symbol="$uuid2$"/>
             <ExpectedContents>
                 <Documents count="0"/>
