@@ -5,6 +5,7 @@ package gov.nist.toolkit.testengine;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 
 import java.io.File;
+import java.util.regex.Matcher;
 
 public class TestKitLog {
 	File testLog;
@@ -31,7 +32,7 @@ public class TestKitLog {
 		// or
 		//  tests/testname
 
-		String[] parts = relativePath.split(File.separator);
+		String[] parts = relativePath.split(Matcher.quoteReplacement(File.separator));
 
 		File path;
 

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.zip.ZipException;
 
 import org.apache.axiom.om.OMElement;
@@ -245,7 +246,7 @@ public class XdmDecoder extends MessageValidator {
 	}
 
 	String simplifyPath(String path) {
-		String[] parts = path.split(File.separator);
+		String[] parts = path.split(Matcher.quoteReplacement(File.separator));
 		rerun:
 			for (int i=0; i<parts.length; i++) {
 				if (parts[i].equals("..")) {

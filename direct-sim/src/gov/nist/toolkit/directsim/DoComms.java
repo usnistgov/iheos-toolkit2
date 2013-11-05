@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -638,7 +639,7 @@ public class DoComms implements Runnable {
 		try {
 			String dir = reportingProps.get("direct.reporting.directory");
 			String ttt = reportingProps.get("toolkit.servlet.context");
-			String[] splitDir = dir.split(File.separator);
+			String[] splitDir = dir.split(Matcher.quoteReplacement(File.separator));
 			String warDir = "";
 			for(int i=0;i<splitDir.length-2;i++) {
 				warDir += File.separator + splitDir[i];
