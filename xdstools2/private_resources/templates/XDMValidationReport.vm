@@ -1,5 +1,9 @@
 <p>
+#if($metadata)
+<span style="text-decoration: underline;font-size: x-large;color: royalblue;">Metadata Validation </span>
+#else
 <span style="text-decoration: underline;font-size: x-large;color: royalblue;">XDM Validation </span>
+#end
 <br /><br />
 
 <table style="text-align: left; width: 100%; margin: 5px; empty-cells: show;">
