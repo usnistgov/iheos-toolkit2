@@ -941,10 +941,10 @@ public class MessageValidatorTab extends TabbedWindow {
 				refreshFileUploadPanel();
 			}
 
-			if (messageTypeButtonMap.get(ValidationTypeXDM).getValue()) 
-				messageTypeButtonMap.get(ValidationType_guess).setValue(true);
+			//if (messageTypeButtonMap.get(ValidationTypeXDM).getValue()) 
+				//messageTypeButtonMap.get(ValidationType_guess).setValue(true);
 
-			messageTypeButtonMap.get(ValidationTypeXDM).setEnabled(false);
+			//messageTypeButtonMap.get(ValidationTypeXDM).setEnabled(false);
 
 			soapWrapper.setValue(true);
 			samlWrapper.setValue(true);
