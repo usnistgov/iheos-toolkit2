@@ -63,7 +63,7 @@ public class RegisterTransaction extends BasicTransaction {
 
 		} 
 		catch (Exception e) {
-			fail(e.getMessage());
+			fail(ExceptionUtil.exception_details(e));
 			System.out.println(ExceptionUtil.exception_details(e));
 		}
 
