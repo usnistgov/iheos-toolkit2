@@ -232,6 +232,8 @@ public class MessageValidatorTab extends TabbedWindow {
 					enableContentType = true;
 				} else if (isDocumentValidationType(type) && requiresCCDA(type)) {
 					enableContentType = true;
+				} else if(type.equals(ValidationType_direct)) {
+					enableContentType = true;
 				}
 				break;
 			}
