@@ -11,7 +11,7 @@
 	<code code="34133-9" displayName="Summarization of episode note" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
 	<title>Patient Summary - Ambulatory</title>
 	<effectiveTime value="20100405130945-0500"/>
-	<confidentialityCode>
+	<confidentialityCode code="N" displayName="Normal" codeSystem="2.16.840.1.113883.5.25">
 		<originalText>Test Data Only</originalText>
 	</confidentialityCode>
 	<languageCode code="en-US"/>

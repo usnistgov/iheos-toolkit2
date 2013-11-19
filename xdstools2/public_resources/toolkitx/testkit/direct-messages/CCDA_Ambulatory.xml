@@ -1087,6 +1087,7 @@ MEDICATIONS
 									<th>Medication</th>
 									<th>Directions</th>
 									<th>Start Date</th>
+									<th>End Date</th>
 									<th>Status</th>
 									<th>Indications</th>
 									<th>Fill Instructions</th>
@@ -1099,8 +1100,9 @@ MEDICATIONS
 											[Proventil]</content>
 									</td>
 									<td>0.09 MG/ACTUAT inhalant solution, 2 puffs once</td>
+									<td>Unknown</td>
 									<td>20120806</td>
-									<td>Active</td>
+									<td>Completed</td>
 									<td>Asthma (195967001 SNOMED CT)</td>
 									<td>
 										<content ID="FillIns">Generic Substitition Allowed</content>
