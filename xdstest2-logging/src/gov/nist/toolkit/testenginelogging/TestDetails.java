@@ -318,7 +318,7 @@ public class TestDetails  {
 				continue;
 			if (upToSection != null && dir.equals(upToSection))
 				return logs;
-			File path = new File(logdir + File.separator + area + File.separator + testNum + File.separatorChar + dir + File.separatorChar + "log.xml");
+			File path = new File(logdir + File.separator + dir + File.separatorChar + "log.xml");
 			if ( ! path.exists() )
 				throw new Exception("TestSpec " + toString() + " references the section " + dir + 
 						" - no log file exists ( file " + path.toString() + " does not exist");
