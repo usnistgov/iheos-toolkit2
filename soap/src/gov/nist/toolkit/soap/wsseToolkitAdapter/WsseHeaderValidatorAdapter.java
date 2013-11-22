@@ -104,9 +104,6 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 			// those are the logs we are interested in
 			org.apache.log4j.Logger logMainVal = org.apache.log4j.Logger
 					.getLogger(WsseHeaderValidator.class);
-			org.apache.log4j.Logger logVal = org.apache.log4j.Logger
-					.getLogger("gov.nist.toolkit.wsseTool.validation");
-			logVal.addAppender(wsseLogApp);
 			logMainVal.addAppender(wsseLogApp);
 
 			
