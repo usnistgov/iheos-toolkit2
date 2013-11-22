@@ -694,11 +694,11 @@ public class SimCommon {
 		Enumeration<ValidationStep> steps = mvc.getValidationStepEnumeration();
 		while (steps.hasMoreElements()) {
 			ValidationStep step = steps.nextElement();
-			buf.append(step).append("\n");
+			buf.append(step.simLogHtmlToString()).append("\n");
 			ErrorRecorder er = step.getErrorRecorder();
 			if (er instanceof GwtErrorRecorder) {
 				GwtErrorRecorder ger = (GwtErrorRecorder) er;
-				buf.append(ger);
+				buf.append(ger.simLogToHtmlString());
 			}
 		}
 

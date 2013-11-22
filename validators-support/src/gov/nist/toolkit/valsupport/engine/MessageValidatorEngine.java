@@ -40,25 +40,49 @@ public class MessageValidatorEngine {
 			} catch (Exception e) {
 				className = "Unknown";
 			}
-			
+
 
 			buf
-//			.append("Step ")
-//			.append(stepName)
-//			.append(" type ")
+			//			.append("Step ")
+			//			.append(stepName)
+			//			.append(" type ")
 			.append(className).append(" - ").append(stepName)
 			.append(validator.toString());
+
+			return buf.toString();
+		}
+
+		public String simLogHtmlToString() {
+			StringBuffer buf = new StringBuffer();
+			
+			String className = validator.getClass().getName();
+			try {
+				className = className.substring(className.lastIndexOf(".") + 1);
+			} catch (Exception e) {
+				className = "Unknown";
+			}
+			
+			
+			buf
+			//		.append("Step ")
+			//		.append(stepName)
+			//		.append(" type ")
+			.append("<br /><br /><u>")
+			.append(className).append(" - ").append(stepName).append("</u><br />")
+			.append("<span style=\"margin-left: 20px\">").append(validator.toString()).append("</span>");
 			
 			return buf.toString();
 		}
+		
 	}
-	
+
+
 	public MessageValidatorEngine() {}
-	
+
 	public class ValidationStepEnumeration implements Enumeration<ValidationStep> {
 		List<ValidationStep> steps;
 		int i = 0;
-		
+
 		ValidationStepEnumeration(List<ValidationStep> steps) {
 			this.steps = steps;
 		}
@@ -72,11 +96,11 @@ public class MessageValidatorEngine {
 			i++;
 			return v;
 		}
-		
+
 	}
 
 	List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
-	
+
 	public boolean hasErrors() {
 		boolean error = false;
 		for (ValidationStep vs : validationSteps) {
@@ -91,7 +115,7 @@ public class MessageValidatorEngine {
 		for (ValidationStep vs : validationSteps) {
 			if (vs.hasErrors())
 				if (vs.er.hasErrors())
-				cnt++;
+					cnt++;
 		}
 		return cnt;
 	}
@@ -103,11 +127,11 @@ public class MessageValidatorEngine {
 		return validationSteps.get(n-1);
 	}
 
-	
+
 	public Enumeration<ValidationStep> getValidationStepEnumeration() {
 		return new ValidationStepEnumeration(validationSteps);
 	}
-	
+
 	public MessageValidator findMessageValidator(String className) {
 		for (ValidationStep vs : validationSteps) {
 			MessageValidator mv = vs.validator;
@@ -163,7 +187,7 @@ public class MessageValidatorEngine {
 		logger.debug("MVC: Adding: " + v.getClass().getSimpleName());
 		return step;
 	}
-	
+
 	/**
 	 * Short cut way to add an ErrorRecorder to the output stream without performing any validation.
 	 * @param stepName name of the validation step
@@ -173,7 +197,7 @@ public class MessageValidatorEngine {
 		ValidationStep step = addMessageValidator(stepName, new NullMessageValidator(new ValidationContext()), er);
 		step.ran = true;
 	}
-	
+
 	/**
 	 * Execute all validators that are queued up but never run.
 	 */
@@ -185,12 +209,12 @@ public class MessageValidatorEngine {
 			ValidationStep step = validationSteps.get(i);
 			if (step.ran)
 				continue;
-//			System.out.println("printf: MVC: Running: " + step.validator.getClass().getSimpleName());
+			//			System.out.println("printf: MVC: Running: " + step.validator.getClass().getSimpleName());
 			logger.debug("MVC: Running: " + step.validator.getClass().getSimpleName());
 			step.ran = true;
 			step.validator.run(step.er, this);
 		}
-		
+
 	}
 
 	public int getValidationStepCount() {
