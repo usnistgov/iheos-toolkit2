@@ -219,12 +219,12 @@ public class MDNValidatorImpl implements MDNValidator{
 	public void validateOriginalMessageIdField(ErrorRecorder er, String originalMessageId) {
 		String rfc = "RFC 3798: Section 3.2.5;http://tools.ietf.org/html/rfc3798#section-3.2.5";
 		if(originalMessageId.equals("")) {
-			er.warning("461", "Origianl-Message-ID", "Not present", "Should be present", rfc);
+			er.warning("461", "Original-Message-ID", "Not present", "Should be present", rfc);
 		} else {
 			if(ValidationUtils.validateAddrSpec(originalMessageId)) {
-				er.success("461", "Origianl-Message-ID", originalMessageId, "\"<\" id-left \"@\" id-right \">\"", rfc);
+				er.success("461", "Original-Message-ID", originalMessageId, "\"<\" id-left \"@\" id-right \">\"", rfc);
 			} else {
-				er.error("461", "Origianl-Message-ID", originalMessageId, "\"<\" id-left \"@\" id-right \">\"", rfc);
+				er.error("461", "Original-Message-ID", originalMessageId, "\"<\" id-left \"@\" id-right \">\"", rfc);
 			}
 		}
 	}
