@@ -43,7 +43,11 @@ public class MessageValidationResults implements IsSerializable {
 	}
 	
 	public void addHtmlResults(String htmlResults) {
-		this.htmlResults = htmlResults;
+		if(this.htmlResults.equals("")) {
+			this.htmlResults = htmlResults;
+		} else {
+			this.htmlResults += htmlResults;
+		}
 	}
 	
 	public String getHtmlResults() {

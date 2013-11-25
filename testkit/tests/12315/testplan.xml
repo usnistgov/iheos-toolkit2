@@ -12,7 +12,7 @@
                 /TestResults/TestStep[@id='getdocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/@home
             </UseXPath>
             <ExpectedMimeType>text/plain</ExpectedMimeType>
-            <ReferenceDocument uid="$docuid$">../../testdata/12318/my_document.txt</ReferenceDocument>
+            <ReferenceDocument uid="$docuid$">../12318/my_document.txt</ReferenceDocument>
             <Metadata>
                 <RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -36,7 +36,7 @@
                 /TestResults/TestStep[@id='getdocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][2]/@home
             </UseXPath>
             <ExpectedMimeType>text/xml</ExpectedMimeType>
-            <ReferenceDocument uid="$docuid$">../../testdata/12318/summary.xml</ReferenceDocument>
+            <ReferenceDocument uid="$docuid$">../12318/summary.xml</ReferenceDocument>
             <Metadata>
                 <RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

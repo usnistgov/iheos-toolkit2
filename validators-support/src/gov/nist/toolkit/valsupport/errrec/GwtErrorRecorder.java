@@ -15,68 +15,92 @@ import org.apache.log4j.Logger;
 
 
 public class GwtErrorRecorder implements ErrorRecorder  {
-	
+
 	ErrorRecorderBuilder errorRecorderBuilder;
 	List<ValidatorErrorItem> summary = new ArrayList<ValidatorErrorItem>();
 	List<ValidatorErrorItem> errMsgs = new ArrayList<ValidatorErrorItem>();
 	int lastErrCount = 0;
-	
+
 	static Logger logger = Logger.getLogger(GwtErrorRecorder.class);
 
-	
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		
+
 		for (ValidatorErrorItem info : errMsgs) {
 			buf.append(info).append("\n");
 		}
-		
+
 		return buf.toString();
 	}
-	
-	public String errToString() {
+
+	public String simLogToHtmlString() {
 		StringBuffer buf = new StringBuffer();
 		
+		// Improved output
+
+		for (ValidatorErrorItem info : errMsgs) {
+			if(info.level == ValidatorErrorItem.ReportingLevel.ERROR) {
+				buf.append("<span style=\"color: red;\">").append(info).append("</span>").append("<br />").append("\n");
+			} else if(info.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING) {
+				buf.append("<h3>").append(info).append("</h3>").append("\n");
+			} else {
+				if(info.msg.contains(" - ") &&  info.msg.contains(": ")) {
+					String[] split = info.msg.split(": ", 1);
+					info.msg = "<u>" + split[0] + "</u>: " + split[1]; 
+				}
+				buf.append(info).append("<br />").append("\n");
+			}
+			
+			
+		}
+
+		return buf.toString();
+	}
+
+	public String errToString() {
+		StringBuffer buf = new StringBuffer();
+
 		for (ValidatorErrorItem info : errMsgs) {
 			if (info.level == ValidatorErrorItem.ReportingLevel.ERROR)
 				buf.append(info.getCodeString() + ": " + info.msg).append("\n");
 		}
-		
+
 		return buf.toString();
 	}
-	
+
 	public List<String> getErrorMessages() {
 		List<String> msgs = new ArrayList<String>();
-		
+
 		for (ValidatorErrorItem info : errMsgs) {
 			if (info.level != ReportingLevel.ERROR)
 				continue;
 			msgs.add(info.msg);
 		}
-		
+
 		return msgs;
 	}
-	
+
 	public List<String> getErrorCodes() {
 		List<String> codes = new ArrayList<String>();
-		
+
 		for (ValidatorErrorItem info : errMsgs) {
 			if (info.level != ReportingLevel.ERROR)
 				continue;
 			codes.add(info.getCodeString());
 		}
-		
+
 		return codes;
 	}
-		
+
 	public List<ValidatorErrorItem> getValidatorErrorInfo() {
 		return errMsgs;
 	}
-	
+
 	public List<ValidatorErrorItem> getSummaryErrorInfo() {
 		return summary;
 	}
-	
+
 	public boolean hasErrors() {
 		for (ValidatorErrorItem vei : errMsgs) {
 			if ((vei.level == ValidatorErrorItem.ReportingLevel.ERROR) || (vei.level == ValidatorErrorItem.ReportingLevel.D_ERROR))
@@ -84,7 +108,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		}
 		return false;
 	}
-	
+
 	public void err(Code code, String msg, String location, String resource) {
 		if (msg == null || msg.trim().equals(""))
 			return;
@@ -123,7 +147,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		}
 		return cnt - lastErrCount;
 	}
-	
+
 	void tagLastInfo2() {
 		if (errMsgs.size() == 0)
 			return;
@@ -131,9 +155,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 			lastErrCount = 0;
 			return;
 		}
-		
+
 	}
-	
+
 	public void sectionHeading(String msg) {
 		tagLastInfo2();
 		ValidatorErrorItem ei = new ValidatorErrorItem();
@@ -141,7 +165,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.msg = msg;
 		errMsgs.add(ei);
 	}
-	
+
 	public void sectionHeadingError(String msg) {
 		tagLastInfo2();
 		ValidatorErrorItem ei = new ValidatorErrorItem();
@@ -182,10 +206,10 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	// call here.  This, the err1 stuff to disambiguate.
 	public void err(Code code, String msg, String location, String resource,
 			Object log_message) {
-//		if (log_message != null && log_message instanceof String)
-//			err1(code, msg, location, resource, log_message);
-//		else
-			err(code, msg, location, resource);
+		//		if (log_message != null && log_message instanceof String)
+		//			err1(code, msg, location, resource, log_message);
+		//		else
+		err(code, msg, location, resource);
 	}
 
 	public void err(String code, String msg, String location, String severity, String resource) {
@@ -199,11 +223,11 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		err(code, msg, loc, resource);
 	}
 
-//	public void err(String code, String msg, String location, String severity,
-//			String resource) {
-//		err1(code, msg, location, severity, resource);
-//	}
-	
+	//	public void err(String code, String msg, String location, String severity,
+	//			String resource) {
+	//		err1(code, msg, location, severity, resource);
+	//	}
+
 	void err1(String code, String msg, String location, String severity,
 			String resource) {
 		if (msg == null || msg.trim().equals(""))
@@ -227,7 +251,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 				ei.completion = ctype;
 			}
 		}
-		
+
 	}
 
 	public void err(Code code, String msg, String location, String severity,
@@ -244,7 +268,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	@Override
 	public void warning(Code code, String msg, String location, String resource) {
 		err1(code.toString(), msg, location, "Warning", resource);
-		
+
 	}
 
 	@Override
@@ -266,7 +290,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	public void concat(ErrorRecorder er) {
 		this.errMsgs.addAll(er.getErrMsgs());
 	}
-	
+
 	public List<ValidatorErrorItem> getErrMsgs() {
 		return this.errMsgs;
 	}
@@ -314,7 +338,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 				ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -337,9 +361,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 				ei.completion = ValidatorErrorItem.ReportingCompletionType.WARNING;
 			}
 		}
-		
+
 	}
-	
+
 	@Override
 	public void info(String dts, String name, String found, String expected, String RFC) {
 		tagLastInfo2();
@@ -368,7 +392,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.msg = msg;
 		summary.add(ei);
 	}
-	
+
 	public void addValidatorItem(ValidatorErrorItem e) {
 		errMsgs.add(e);
 	}

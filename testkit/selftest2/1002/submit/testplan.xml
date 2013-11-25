@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
    <Test>1002/submit</Test>
-   <RegistryEndpoint>http://localhost:9080/axis2/services/test11827a</RegistryEndpoint> 
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/axis2/services/test11827a</RegistryEndpoint> 
     <TestStep id="submit">
         <ExpectedStatus>Success</ExpectedStatus>
         <ProvideAndRegisterTransaction>

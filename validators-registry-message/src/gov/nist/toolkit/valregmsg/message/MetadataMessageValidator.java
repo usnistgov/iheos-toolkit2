@@ -69,6 +69,7 @@ public class MetadataMessageValidator extends MessageValidator {
 	}
 	
 	static public void contentSummary(ErrorRecorder er, Metadata m) {
+		er.detail("**Metadata Validation**");
 		er.sectionHeading("Content Summary");
 		er.detail(m.getSubmissionSetIds().size() + " SubmissionSets");
 		er.detail(m.getExtrinsicObjectIds().size() + " DocumentEntries");

@@ -183,7 +183,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 				//			minMeta == v.minMeta &&
 				leafClassWithDocumentOk == v.leafClassWithDocumentOk &&
 				isNcpdp == v.isNcpdp &&
-				(ccdaType == null) ?  v.ccdaType == null   :  ccdaType.equals(v.ccdaType)   
+				((ccdaType == null) ?  v.ccdaType == null   :  ccdaType.equals(v.ccdaType))   
 				;
 	}
 

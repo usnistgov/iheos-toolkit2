@@ -52,6 +52,7 @@ public class XdmDecoder extends MessageValidator {
 
 			XdmDecoder xd = new XdmDecoder(vc, erBuilder, is);
 			xd.er = er;
+			er.detail("Try validation as XDM");
 			if (!xd.isXDM())
 				System.out.println("XDM type detection failed");
 			xd.showContents = true;
@@ -210,6 +211,10 @@ public class XdmDecoder extends MessageValidator {
 							MessageValidatorFactory.getValidatorForCCDA(erBuilder, contents, mvc, docVC);
 //							MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, null, docVC, null);
 //							mve.run();
+							
+							// MANDATORY for validation report
+							er.detail("XDM Validation done");
+							
 						} else {
 							er.detail("Is not a CDA R2 so no validation attempted");
 							logger.info("Is not a CDA R2 so no validation attempted");
@@ -227,6 +232,7 @@ public class XdmDecoder extends MessageValidator {
 	}
 
 	boolean decode(ErrorRecorder er) {
+		er.detail("Try validation as XDM");
 		if (contents != null)
 			return true;  // already decoded
 		er.challenge("Decoding ZIP");

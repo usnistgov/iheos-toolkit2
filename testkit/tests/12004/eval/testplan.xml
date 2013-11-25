@@ -2,6 +2,9 @@
 <TestPlan>
     <Test>12004/eval</Test>
     <TestStep id="submit_eval">
+        <Goal>Original and first resubmission must be returned 
+            (resubmission of same document with same uniqueId). 
+        Third DocumentEntry is not returned (not saved in registry).</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <StoredQueryTransaction>
 	    <XDSb/>

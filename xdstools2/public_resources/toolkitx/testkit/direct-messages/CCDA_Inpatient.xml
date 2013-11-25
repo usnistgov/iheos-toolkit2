@@ -1175,6 +1175,7 @@ MEDICATIONS
 									<th>Medication</th>
 									<th>Directions</th>
 									<th>Start Date</th>
+									<th>End Date</th>
 									<th>Status</th>
 									<th>Indications</th>
 									<th>Fill Instructions</th>
@@ -1188,7 +1189,8 @@ MEDICATIONS
 									<td>500mg oral tabs, 1 tab by mouth every 12 hours for 3
 										days</td>
 									<td>20120806</td>
-									<td>Active</td>
+									<td>20120809</td>
+									<td>Completed</td>
 									<td>Pneumonia (233604007 SNOMED CT)</td>
 									<td>
 										<content ID="Fill">Generic Substitition Allowed</content>
@@ -1202,7 +1204,8 @@ MEDICATIONS
 									<td>0.09 MG/ACTUAT inhalant solution, 2 puffs every 6 hours as
 										needed for shortness of breath</td>
 									<td>20120806</td>
-									<td>Active</td>
+									<td>20120813</td>
+									<td>Completed</td>
 									<td>Asthma (195967001 SNOMED CT)</td>
 									<td>
 										<content ID="Filllns">Generic Substitition Allowed</content>

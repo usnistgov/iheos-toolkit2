@@ -24,6 +24,7 @@ public class ErrorRecorderAdapter {
 	boolean hasCCDA = false;
 	boolean hasXDM = false;
 	boolean isOnlyCCDA = false;
+	boolean isOnlyXDM = false;
 	boolean isDirect = false;
 
 	public ErrorRecorderAdapter(ArrayList<ValidatorErrorItem> er) {
@@ -65,6 +66,17 @@ public class ErrorRecorderAdapter {
 					i = getCCDAFromErrorRecorder(er, i+1);
 					hasCCDA = true;
 				} else if(er.get(i).msg.contains("Try validation as XDM")) {
+					if(i == 0) {
+						isDirect = true;
+						isOnlyXDM = true;
+					}
+					i = getXDMFromErrorRecorder(er, i);
+					hasXDM = true;
+				} else if(er.get(i).msg.contains("**Metadata Validation**")) {
+					if(i == 0) {
+						isDirect = true;
+						isOnlyXDM = true;
+					}
 					i = getXDMFromErrorRecorder(er, i);
 					hasXDM = true;
 				} else {
@@ -122,7 +134,7 @@ public class ErrorRecorderAdapter {
 	public int getXDMFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
 		int k = index; 
 		ArrayList<XDMValidationReportItem> xdmList = new ArrayList<XDMValidationReportItem>();
-		while(!er.get(k).msg.contains("XDM Validation done")) {
+		while(k < er.size() && !er.get(k).msg.contains("XDM Validation done")) {
 			xdmList.add(new XDMValidationReportItem(er.get(k).msg, er.get(k).level));
 			k++;
 		}
@@ -179,12 +191,12 @@ public class ErrorRecorderAdapter {
 				//  create a context and add data
 				VelocityContext context = new VelocityContext();
 
-				if(!isOnlyCCDA) {
-					context.put("summary", this.getSummary());
-					context.put("validationReport", this.getDetailed());
-				} else {
+				if(isOnlyCCDA || isOnlyXDM) {
 					context.put("summary", new ArrayList<SummaryToken>());
 					context.put("validationReport", new ArrayList<ValidationReportItem>());
+				} else {
+					context.put("summary", this.getSummary());
+					context.put("validationReport", this.getDetailed());
 				}
 
 				// Path for images
@@ -249,6 +261,14 @@ public class ErrorRecorderAdapter {
 			Template t2 = ve.getTemplate("XDMValidationReport.vm");
 			VelocityContext context = new VelocityContext();
 			context.put("validationReport", xdmItem);
+			
+			boolean metadata = false;
+			if(xdmItem.get(0).getMsg().contains("Metadata")) {
+				xdmItem.remove(0);
+				metadata = true;
+			}
+			
+			context.put("metadata", metadata);
 
 			StringWriter writer = new StringWriter();
 			t2.merge( context, writer );

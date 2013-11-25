@@ -91,43 +91,6 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 		return runUtilityTest(params, params2, sections, testName, areas,
 				stopOnFirstFailure);
-
-		//		if ("true".equals(Installation.installation().propertyServiceManager().getToolkitEnableAllCiphers()) && allCiphersEnabled == false) {
-		//			Xdstest2.enableAllCiphers();
-		//			allCiphersEnabled = true;
-		//		}
-		//		else if ("false".equals(Installation.installation().propertyServiceManager().getToolkitEnableAllCiphers()) && allCiphersEnabled == true) {
-		//			Xdstest2.enableNormalCiphers();
-		//			allCiphersEnabled = false;
-		//		}
-		//
-		//		session.res = new AssertionResults();
-		//
-		//		cleanupParams(params);
-		//
-		//		Result result = null;
-		//
-		//		if (session.res == null)
-		//			session.res = new AssertionResults();
-		//		
-		//		AssertionResults res = session.res;
-		//		try {
-		//			session.xt = getNewXt();
-		//			// This sets the result.logId so it looks like a utility test (cached within the session).
-		//			// This needs to be overwritten so the logs can later be loaded from the 
-		//			// external_cache
-		//			// It also saves the results within the SessionCache
-		//			result = runUtilityTest(params, params2, sections, testName, areas,
-		//					stopOnFirstFailure);
-		//			result.testName = testName;
-		//			return result;
-		//		} catch (EnvironmentNotSelectedException e) {
-		//			return Result.RESULT(testName, res, new AssertionResult("Must select Environment to use TLS", "", false), null);
-		//		} catch (Exception e) {
-		//			logger.error(ExceptionUtil.exception_details(e));
-		//			return Result.RESULT(testName, res, null, e);
-		//		} 
-
 	}
 
 	/**
@@ -179,9 +142,6 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			}
 			try {
 				Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
-//				Sites theSites = SiteServiceManager.getSiteServiceManager().getCommonSites();
-//				theSites.add(new Sites(getSites(session.getSimConfigs())));
-				//				session.getSimBaseEndpoint();
 				// Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
 				if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
 					Site site = theSites.getSite(session.siteSpec.name);
@@ -338,51 +298,14 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	}
 
 	LogMap findRawLogs(XdstestLogId logId) {
-//		RawLogCache cache;
-
-		// look in tomcat session first, then mesa session		
-
-//		cache = new RawLogCache(session.getTomcatSessionCache());
 		try {
 			return session.transactionSettings.logRepository.logIn(logId);
-//			return cache.getLog(logId);
 		} catch (Exception e) {}
-
-//		cache = new RawLogCache(session.getMesaSessionCache());
-//		try {
-//			return cache.getLog(logId);
-//		} catch (Exception e) {}
-
 		return null;
-
 	}
 
 	TestLogs getRawLogs(LogMap logMap) throws Exception {
 		return TestLogsBuilder.build(logMap);
-
-		//		for (LogMapItem item : logMap.items) {
-		//			LogFileContent logFile = item.log;
-		//			for (TestStepLogContent stepLog : logFile.getStepLogs()) {
-		//				TestLog testLog = new TestLog();
-		//				String stepName = stepLog.getName();
-		//				if (testLogs.logs == null)
-		//					testLogs.logs = new ArrayList<TestLog>();
-		//				testLogs.logs.add(testLog);
-		//
-		//				testLog.stepName = stepName;
-		//				testLog.endpoint = stepLog.getEndpoint();
-		//				testLog.inHeader = stepLog.getInHeader();
-		//				testLog.inputMetadata = stepLog.getInputMetadata();
-		//				testLog.outHeader = stepLog.getOutHeader();
-		//				testLog.result = stepLog.getResult();
-		//				testLog.status = stepLog.getStatus();
-		//				testLog.errors = listAsString(stepLog.getErrors());
-		//
-		//				testLog.log = stepLog.getRoot();
-		//			}
-		//		}
-
-		//		return testLogs;
 	}
 
 	TestKit getTestKit() {
@@ -430,7 +353,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections, 
 			Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
-		logger.debug(session.id() + ": " + "runMesaTest" + " " + mesaTestSession + " " + testName + " " + sections + " " + siteSpec + " " + params + " " + stopOnFirstFailure);
+		logger.info(session.id() + ": " + "runMesaTest" + " " + mesaTestSession + " " + testName + " " + sections + " " + siteSpec + " " + params + " " + stopOnFirstFailure);
 		try {
 
 			if (session.getEnvironment() == null)
@@ -442,7 +365,12 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			
 			if (session.transactionSettings.logRepository == null) {
 				session.transactionSettings.logRepository = new LogRepositoryFactory().
-						getRepository(Installation.installation().testLogFile(), mesaTestSession, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.SPECIFIC_ID, testName); 
+						getRepository(
+								Installation.installation().testLogFile(), 
+								mesaTestSession, 
+								LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, 
+								LogRepositoryFactory.Id_type.SPECIFIC_ID, 
+								testName); 
 				session.transactionSettings.writeLogs = true;
 			}
 
@@ -452,6 +380,14 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			if (pid != null && !pid.equals("")) {
 				session.transactionSettings.patientId = pid;
 			}
+			
+			String altPid = params.get("$altpatientid$");
+			if (altPid != null && !altPid.equals("")) {
+				session.transactionSettings.altPatientId = altPid;
+			} else
+				session.transactionSettings.altPatientId = null;
+			
+				
 
 			// This sets result.logId so it looks like a session-based utility usage
 			// of the test engine.  Need to re-label it so the logs can later

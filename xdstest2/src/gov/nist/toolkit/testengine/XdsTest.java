@@ -104,11 +104,11 @@ public class XdsTest {
 		operationOptionList = Arrays.asList(operationOptions);
 	}
 
-	public static void main(String[] args) {
+	public static boolean main(String[] args) {
 		logger.info("xdstest started");
 		XdsTest xt = new XdsTest(false);
 //		String[] a = {"-Dsite=dev", "-DXDSTOOLKIT=/Users/bill/tmp/toolkitc", "-DXDSTESTLOGDIR=/Users/bill/dev/xdstoolkit/logs", "-DXDSTESTKIT=/Users/bill/tmp/toolkitc/testkit","-t", "12318", "-err"};
-		xt.run(args);
+		return xt.run(args);
 	}
 
 	public XdsTest() {
@@ -189,9 +189,16 @@ public class XdsTest {
 
 		if (testkitdir != null)
 			testkit = new File(testkitdir);
-		if (logdirstr != null)
-			logRepository = //new TestLogRepository(null).getNewLogRepository();  //new File(logdirstr);
-		new LogRepositoryFactory().getRepository(Installation.installation().testLogFile(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+		if (logdirstr != null) {
+			File testLogCache = Installation.installation().testLogFile();
+			logRepository = new LogRepositoryFactory().
+					getRepository(
+							testLogCache,   // location
+							null,           // user
+							LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,   // IO format
+							LogRepositoryFactory.Id_type.TIME_ID,                // ID type
+							null);            // ID
+		}
 		if (toolkitstr != null)
 			toolkit = new File(toolkitstr);
 
@@ -216,14 +223,15 @@ public class XdsTest {
 		} catch (Exception e) {}
 	}
 
-	public void run(String[] in_args)  {
+	public boolean run(String[] in_args)  {
 		List<String> args = new ArrayList<String>();
 		for (int i=0; i<in_args.length; i++) args.add(in_args[i]);
 
 		try {
-			run(args);
+			return run(args);
 		} catch (Exception e) {
 			showException(e);
+			return false;
 		}
 	}
 
@@ -684,6 +692,7 @@ public class XdsTest {
 					logDirectory = ts.logRepository.logDir();
 
 				if (writeLogFiles) {
+					// This is the log.xml file
 					testConfig.logFile = new TestKitLog(logDirectory, testkit).getLogFile(testPlanFile);
 					logFiles.add(testConfig.logFile);
 				}

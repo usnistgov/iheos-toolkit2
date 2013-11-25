@@ -11,6 +11,7 @@ public class TransactionSettings {
 	 */
 	public Boolean assignPatientId = null;   // allows for null (unknown)
 	public String patientId = null;
+	public String altPatientId = null;
 //	public File logDir = null;
 	public LogRepository logRepository = null;
 	public boolean writeLogs = false;

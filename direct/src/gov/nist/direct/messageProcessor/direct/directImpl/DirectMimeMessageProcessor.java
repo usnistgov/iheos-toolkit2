@@ -695,6 +695,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 			docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
 			docVC.isDIRECT = false;
 			docVC.isCCDA = true;
+			if(vc.ccdaType == null) {
+				if(vc.getInnerContextCount() > 0)
+					docVC.ccdaType = vc.getInnerContext(0).ccdaType;
+				else
+					docVC.ccdaType =  "- Non-specific CCDA";
+			}
 
 			if(directCertificate!=null) {
 				MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
@@ -801,6 +807,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 				docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
 				docVC.isDIRECT = false;
 				docVC.isCCDA = true;
+				if(vc.ccdaType == null) {
+					if(vc.getInnerContextCount() > 0)
+						docVC.ccdaType = vc.getInnerContext(0).ccdaType;
+					else
+						docVC.ccdaType =  "- Non-specific CCDA";
+				}
 
 				if(directCertificate!=null) {
 					MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
@@ -1138,6 +1150,12 @@ public class DirectMimeMessageProcessor implements DirectMessageProcessorInterfa
 		docVC.isDIRECT = false;
 		docVC.isCCDA = false;
 		docVC.isXDM = true;
+		if(vc.ccdaType == null) {
+			if(vc.getInnerContextCount() > 0)
+				docVC.ccdaType = vc.getInnerContext(0).ccdaType;
+			else
+				docVC.ccdaType =  "- Non-specific CCDA";
+		}
 
 		MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, directCertificate, docVC, null);
 		mve.run();

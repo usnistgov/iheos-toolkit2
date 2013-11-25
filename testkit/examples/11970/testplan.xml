@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <Test>11970</Test>
-    <RegistryEndpoint>http://localhost:9080/tf6/services/test11970</RegistryEndpoint>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/test11970</RegistryEndpoint>
     <TestStep id="submit_doc_w_fol">
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>

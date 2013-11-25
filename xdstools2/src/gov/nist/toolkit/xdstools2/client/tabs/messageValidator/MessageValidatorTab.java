@@ -232,6 +232,8 @@ public class MessageValidatorTab extends TabbedWindow {
 					enableContentType = true;
 				} else if (isDocumentValidationType(type) && requiresCCDA(type)) {
 					enableContentType = true;
+				} else if(type.equals(ValidationType_direct)) {
+					enableContentType = true;
 				}
 				break;
 			}
@@ -941,10 +943,10 @@ public class MessageValidatorTab extends TabbedWindow {
 				refreshFileUploadPanel();
 			}
 
-			if (messageTypeButtonMap.get(ValidationTypeXDM).getValue()) 
-				messageTypeButtonMap.get(ValidationType_guess).setValue(true);
+			//if (messageTypeButtonMap.get(ValidationTypeXDM).getValue()) 
+				//messageTypeButtonMap.get(ValidationType_guess).setValue(true);
 
-			messageTypeButtonMap.get(ValidationTypeXDM).setEnabled(false);
+			//messageTypeButtonMap.get(ValidationTypeXDM).setEnabled(false);
 
 			soapWrapper.setValue(true);
 			samlWrapper.setValue(true);

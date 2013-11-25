@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <Test>11973/rplc</Test>
-    <RegistryEndpoint>http://localhost:9080/tf6/services/test11974</RegistryEndpoint>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/test11974</RegistryEndpoint>
     <TestStep id="rplc">
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>

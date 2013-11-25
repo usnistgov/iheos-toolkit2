@@ -289,11 +289,11 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		HTML h = new HTML(
 				"<b>" + header + "</b><br /><br />" +
 
-				in.replaceAll("<", "&lt;")
+				in/*.replaceAll("<", "&lt;")
 				.replaceAll("\n\n", "\n")
 				.replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
 				.replaceAll(" ", "&nbsp;")
-				.replaceAll("\n", "<br />")
+				.replaceAll("\n", "<br />")*/
 		);
 		return h;
 	}
