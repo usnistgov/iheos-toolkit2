@@ -21,6 +21,9 @@ xdstools2/war/**
 #the war produced
 *.war
 
+#any patch files being maintained locally
+patch*
+
 #the listener jar
 xdstools2/listener.jar
 
