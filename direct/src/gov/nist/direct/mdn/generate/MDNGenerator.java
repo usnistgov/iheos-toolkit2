@@ -21,8 +21,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import com.google.gwt.dev.jjs.ast.JField.Disposition;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.mailet.base.mail.MimeMultipartReport;
 import org.bouncycastle.cms.CMSAlgorithm;
@@ -64,7 +62,7 @@ public class MDNGenerator {
 			String original_recipient,
 			String final_recipient,
 			String original_message_id,
-			Disposition disposition
+			String disposition
 			) throws MessagingException {
 
 
@@ -128,7 +126,7 @@ public class MDNGenerator {
 			String original_recipient,
 			String final_recipient,
 			String original_message_id,
-			Disposition disposition,
+			String disposition,
 			String from,
 			String to,
 			String subject,

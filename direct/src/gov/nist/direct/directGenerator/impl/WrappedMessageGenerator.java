@@ -50,6 +50,8 @@ import gov.nist.direct.messageProcessor.cert.PublicCertLoader;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;
 
 public class WrappedMessageGenerator implements DirectMessageGenerator {
+	
+	private String messageId = "";
 
 	public WrappedMessageGenerator() {
 		// TODO Auto-generated constructor stub
@@ -95,6 +97,8 @@ public class WrappedMessageGenerator implements DirectMessageGenerator {
 
 			MimeBodyPart m = new MimeBodyPart();
 			m.setContent(message2, "message/rfc822");
+			
+			this.messageId = message2.getMessageID();
 
 			//
 			// extract the multipart object from the SMIMESigned object.
@@ -191,10 +195,11 @@ public class WrappedMessageGenerator implements DirectMessageGenerator {
 			msg.setFrom(fromUser);
 			msg.setRecipient(Message.RecipientType.TO, toUser);
 			msg.setSentDate(new Date());
+			msg.setHeader("Message-Id", this.messageId);
 			msg.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
 			msg.setDisposition("attachment");
 			msg.setFileName("smime.p7m");
-			msg.saveChanges();
+			//msg.saveChanges();
 
 			/*
 		OutputStream ostmp1 = new FileOutputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));

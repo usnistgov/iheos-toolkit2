@@ -4,8 +4,10 @@ import gov.nist.direct.directGenerator.impl.UnwrappedMessageGenerator;
 import gov.nist.direct.directGenerator.impl.WrappedMessageGenerator;
 import gov.nist.direct.logger.LogPathsSingleton;
 import gov.nist.direct.logger.MessageLogManager;
+import gov.nist.direct.mdn.generate.MDNGenerator;
 import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.directsupport.SMTPException;
+import gov.nist.toolkit.testengine.PlanContext;
 import gov.nist.toolkit.testengine.StepContext;
 import gov.nist.toolkit.testengine.smtp.SMTPAddress;
 import gov.nist.toolkit.utilities.io.Io;
@@ -24,6 +26,7 @@ import java.net.UnknownHostException;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -32,7 +35,20 @@ import javax.mail.Address;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMContainer;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMException;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.axiom.om.OMNode;
+import org.apache.axiom.om.OMOutputFormat;
+import org.apache.axiom.om.OMXMLParserWrapper;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -44,6 +60,9 @@ public class DirectTransaction extends BasicTransaction {
 	String fromAddress = null;
 	String toAddress = null;
 	String mdnAddress = null;
+	String originalMsgId = "";
+	byte[] encCert = null;
+	byte[] signCert = null;
 	String subject = null;
 	File attachmentContentFile = null;
 	String mailerHostname = null;
@@ -63,6 +82,18 @@ public class DirectTransaction extends BasicTransaction {
 			OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
 		// TODO Auto-generated constructor stub
+	}
+	
+	public DirectTransaction(byte[] signCert, String certFilePassword, String from, String to, String subject, String mailerHostname, String originalMsgId, byte[] encCert) {
+		super(null, null, null);
+		this.signCert = signCert;
+		this.certFilePassword = certFilePassword;
+		this.fromAddress = from;
+		this.toAddress = to;
+		this.subject = subject;
+		this.mailerHostname = mailerHostname;
+		this.originalMsgId = originalMsgId;
+		this.encCert = encCert;
 	}
 
 	@Override
@@ -132,6 +163,75 @@ public class DirectTransaction extends BasicTransaction {
 			if (useSMTPProtocol) {
 				// fromUser.toString() does the parsing for me so I don't need my code. 
 				smtpProtocol(socket, msg, "hit-testing.nist.gov", fromUser.toString(), toUser.toString());
+			} else {
+				OutputStream os;
+				os = socket.getOutputStream();
+				msg.writeTo(os);
+				os.flush();
+			}
+		} catch (Exception ex) {
+			System.out.println("Exception: " + ex.getMessage());
+		} finally {
+			socket.close();
+		}
+	}
+	
+	protected void runMDN() throws Exception {
+		
+		Properties props = System.getProperties();
+		Session session = Session.getDefaultInstance(props, null);
+		MimeMessage msg = new MimeMessage(session);
+		//LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
+		
+		msg = MDNGenerator.createSignedAndEncrypted("Automatic MDN", "ttt.transparenthealth.org", "Security Agent", this.toAddress, this.fromAddress, 
+				"original_message_id", "automatic-action/MDN-sent-automatically;processed", this.fromAddress, this.toAddress, 
+				"Automatic MDN", this.encCert, this.signCert, this.certFilePassword);
+		
+		logger.info("MessageId="+ msg.getMessageID());
+		
+		//String messageID = Utils.rawMsgId(msg.getMessageID());
+
+		//MessageLogManager.logDirectMessage(transactionSettings.user, new Date(), ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), messageID, msg, "");
+		
+		// Second log under the To email folder
+		//MessageLogManager.logDirectSendMessage(toAddress, new Date(), ls.getDIRECT_SEND_FOLDER(), ls.getDIRECT_MESSAGE_FOLDER(), messageID, msg, "", transactionSettings.user);
+
+		/*InputStream is2 = new FileInputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));
+		msg = new MimeMessage(session, is2);*/
+		
+        //OutputStream ostmp1 = new FileOutputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted_before_sending.txt"));
+        //msg.writeTo(ostmp1);
+
+		// For test purpose NEED to be removed
+		// TODO        
+		//msg.writeTo(new FileOutputStream("encrypted.txt"));
+
+		logger.debug("Opening socket to Direct system on " + mailerHostname + ":" + mailerPort + "...");
+		Socket socket;
+		try {
+			socket = new Socket(mailerHostname, mailerPort);
+		} catch (UnknownHostException e) {
+			//s_ctx.set_error("Error connecting to " + mailerHostname + ":" + mailerPort + " - " + e.getMessage());
+			e.printStackTrace();
+			return;
+		} catch (IOException e) {
+			//s_ctx.set_error("Error connecting to " + mailerHostname + ":" + mailerPort + " - " + e.getMessage());
+			e.printStackTrace();
+			return;
+		}
+		logger.debug("\t...Success");
+
+		// org.bouncycastle.cms.CMSException: exception wrapping content key: 
+		//      cannot create cipher: No such algorithm: 1.2.840.10040.4.1
+
+		//1.2.840.10040.4.1 is the OID for DSA, but as it says there is no Cipher 
+		//for it. This is because DSA can only be used for signing - you cannot 
+		//use it to encrypt with. 
+
+		try {
+			if (useSMTPProtocol) {
+				// fromUser.toString() does the parsing for me so I don't need my code. 
+				smtpProtocol(socket, msg, "hit-testing.nist.gov", this.fromAddress, this.toAddress);
 			} else {
 				OutputStream os;
 				os = socket.getOutputStream();
