@@ -60,89 +60,89 @@ public class WrappedMessageGenerator implements DirectMessageGenerator {
 			String textMessage, File attachmentContentFile, String fromAddress, String toAddress, byte[] encryptionCertBA) throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 
-//		try {
-			ByteArrayInputStream signatureCert = new ByteArrayInputStream(signingCert);
-			CertificateLoader loader = new CertificateLoader(signatureCert, signingCertPw);
+		//		try {
+		ByteArrayInputStream signatureCert = new ByteArrayInputStream(signingCert);
+		CertificateLoader loader = new CertificateLoader(signatureCert, signingCertPw);
 
-			SMIMESignedGenerator gen = loader.getSMIMESignedGenerator();
+		SMIMESignedGenerator gen = loader.getSMIMESignedGenerator();
 
-			//
-			// create the base for our message
-			//
+		//
+		// create the base for our message
+		//
 
-			MimeMultipart mp = new MimeMultipart();
+		MimeMultipart mp = new MimeMultipart();
 
-			mp.addBodyPart(MessageGeneratorUtils.addText(textMessage));
-			mp.addBodyPart(MessageGeneratorUtils.addAttachement(attachmentContentFile));
+		mp.addBodyPart(MessageGeneratorUtils.addText(textMessage));
+		mp.addBodyPart(MessageGeneratorUtils.addAttachement(attachmentContentFile));
 
-			Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
-			Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
+		Address fromUser = new InternetAddress(new SMTPAddress().properEmailAddr(fromAddress));
+		Address toUser = new InternetAddress(new SMTPAddress().properEmailAddr(toAddress));
 
-			InternetHeaders rfc822Headers = new InternetHeaders();
-			rfc822Headers.addHeaderLine("Content-Type: message/rfc822");
-			rfc822Headers.addHeader("To", toUser.toString());
-			rfc822Headers.addHeader("From", fromUser.toString());
-			rfc822Headers.addHeader("Subject", subject);
-			rfc822Headers.addHeader("Date", new Date().toString());
+		InternetHeaders rfc822Headers = new InternetHeaders();
+		rfc822Headers.addHeaderLine("Content-Type: message/rfc822");
+		rfc822Headers.addHeader("To", toUser.toString());
+		rfc822Headers.addHeader("From", fromUser.toString());
+		rfc822Headers.addHeader("Subject", subject);
+		rfc822Headers.addHeader("Date", new Date().toString());
 
-			MimeMessage message2 = new MimeMessage(Session.getDefaultInstance(new Properties()));
-			message2.setFrom(fromUser);
-			message2.setRecipient(Message.RecipientType.TO, toUser);
-			message2.setSentDate(new Date());
-			message2.setSubject(textMessage);
-			message2.setContent(mp, mp.getContentType());
-			message2.saveChanges();
+		MimeMessage message2 = new MimeMessage(Session.getDefaultInstance(new Properties()));
+		message2.setFrom(fromUser);
+		message2.setRecipient(Message.RecipientType.TO, toUser);
+		message2.setSentDate(new Date());
+		message2.setSubject(textMessage);
+		message2.setContent(mp, mp.getContentType());
+		message2.saveChanges();
 
-			MimeBodyPart m = new MimeBodyPart();
-			m.setContent(message2, "message/rfc822");
+		MimeBodyPart m = new MimeBodyPart();
+		m.setContent(message2, "message/rfc822");
 
-			//
-			// extract the multipart object from the SMIMESigned object.
-			//
+		//
+		// extract the multipart object from the SMIMESigned object.
+		//
 
-			MimeMultipart mm = gen.generate(m);
+		MimeMultipart mm = gen.generate(m);
 
 
-			/*OutputStream ostmp = new FileOutputStream(new File("/Users/bill/tmp/direct.send.txt"));
+		/*OutputStream ostmp = new FileOutputStream(new File("/Users/bill/tmp/direct.send.txt"));
         String ctype = mm.getContentType();
         ostmp.write(ctype.getBytes());
         ostmp.write(new String("\r\n\r\n").getBytes());
         mm.writeTo(ostmp);*/
 
-			//
-			// Get a Session object and create the mail message
-			//
-			Properties props = System.getProperties();
-			Session session = Session.getDefaultInstance(props, null);
+		//
+		// Get a Session object and create the mail message
+		//
+		Properties props = System.getProperties();
+		Session session = Session.getDefaultInstance(props, null);
 
 
-			MimeBodyPart body = new MimeBodyPart();
-			ByteArrayOutputStream oStream = new ByteArrayOutputStream();
-			try
-			{
-				mm.writeTo(oStream);
-				oStream.flush();
-				InternetHeaders headers = new InternetHeaders();
-				headers.addHeader("Content-Type", mm.getContentType());
+		MimeBodyPart body = new MimeBodyPart();
+		ByteArrayOutputStream oStream = new ByteArrayOutputStream();
+		try
+		{
+			mm.writeTo(oStream);
+			oStream.flush();
+			InternetHeaders headers = new InternetHeaders();
+			headers.addHeader("Content-Type", mm.getContentType());
 
 
 
 
-				body = new MimeBodyPart(headers, oStream.toByteArray());
-				IOUtils.closeQuietly(oStream);
+			body = new MimeBodyPart(headers, oStream.toByteArray());
+			IOUtils.closeQuietly(oStream);
 
-			}    
+		}    
 
-			catch (Exception ex)
-			{
-				throw new RuntimeException(ex);
-			}
+		catch (Exception ex)
+		{
+			throw new RuntimeException(ex);
+		}
 
 
-			//
-			// Open the key store
-			//
-			/*
+		//
+		// Open the key store
+		//
+		/*
 		KeyStore    ks = KeyStore.getInstance("PKCS12", "BC");
 
 		ks.load(new FileInputStream(certFile.toString()), certFilePassword.toCharArray());
@@ -167,48 +167,49 @@ public class WrappedMessageGenerator implements DirectMessageGenerator {
 		}
 
 		Certificate[]   chain = ks.getCertificateChain(keyAlias);
-			 */
+		 */
 
-			// Encryption cert
-			PublicCertLoader publicLoader = new PublicCertLoader(encryptionCertBA);
-			X509Certificate encCert = publicLoader.getCertificate();
+		// Encryption cert
+		PublicCertLoader publicLoader = new PublicCertLoader(encryptionCertBA);
+		X509Certificate encCert = publicLoader.getCertificate();
 
-			//System.out.println(encCert);
+		//System.out.println(encCert);
 
-			/* Create the encrypter */
-			SMIMEEnvelopedGenerator encrypter = new SMIMEEnvelopedGenerator();
-			try {
-				encrypter.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encCert).setProvider("BC"));
-			} catch (Exception e1) {
-				throw new Exception("Error loading encryption cert - must be in X.509 format", e1);
-			}
-			/* Encrypt the message */
-			MimeBodyPart encryptedPart = encrypter.generate(body,
-					// RC2_CBC
-					new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC).setProvider("BC").build());
+		/* Create the encrypter */
+		SMIMEEnvelopedGenerator encrypter = new SMIMEEnvelopedGenerator();
+		try {
+			encrypter.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(encCert).setProvider("BC"));
+		} catch (Exception e1) {
+			throw new Exception("Error loading encryption cert - must be in X.509 format", e1);
+		}
+		/* Encrypt the message */
+		MimeBodyPart encryptedPart = encrypter.generate(body,
+				// RC2_CBC
+				new JceCMSContentEncryptorBuilder(CMSAlgorithm.AES128_CBC).setProvider("BC").build());
 
-			MimeMessage msg = new MimeMessage(session);
-			msg.setFrom(fromUser);
-			msg.setRecipient(Message.RecipientType.TO, toUser);
-			msg.setSentDate(new Date());
-			msg.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
-			msg.setDisposition("attachment");
-			msg.setFileName("smime.p7m");
-			msg.saveChanges();
+		MimeMessage msg = new MimeMessage(session);
+		msg.setFrom(fromUser);
+		msg.setRecipient(Message.RecipientType.TO, toUser);
+		msg.setSentDate(new Date());
+		msg.setContent(encryptedPart.getContent(), encryptedPart.getContentType());
+		msg.setDisposition("attachment");
+		msg.setFileName("smime.p7m");
+		msg.saveChanges();
+		msg.setHeader("Message-ID", message2.getMessageID());
 
-			/*
+		/*
 		OutputStream ostmp1 = new FileOutputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3.txt"));
         msg.writeTo(ostmp1);
         OutputStream ostmp2 = new FileOutputStream(new File("/var/lib/tomcat_ttt/webapps/ttt/pubcert/encrypted3_body.txt"));
         body.writeTo(ostmp2);
-			 */
+		 */
 
-			return msg;
+		return msg;
 
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		return null;
+		//		} catch (Exception e) {
+		//			e.printStackTrace();
+		//		}
+		//		return null;
 	}
 
 }
