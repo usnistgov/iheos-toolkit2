@@ -176,7 +176,7 @@ public class DirectTransaction extends BasicTransaction {
 		}
 	}
 	
-	protected void runMDN() throws Exception {
+	public void runMDN() throws Exception {
 		
 		Properties props = System.getProperties();
 		Session session = Session.getDefaultInstance(props, null);
