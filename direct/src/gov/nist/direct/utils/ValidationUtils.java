@@ -18,6 +18,7 @@ Authors: Frederic de Vaulx
 package gov.nist.direct.utils;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
@@ -35,6 +36,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
@@ -162,6 +164,29 @@ public class ValidationUtils {
 		return res;
 	}
 
+	
+	// Get the headers and contents of the specified body part of the MimeMessage
+	public static InternetHeaders getHeadersAndContent(BodyPart body) {
+		Enumeration<Header> headers = null;
+		InternetHeaders retVal = new InternetHeaders();
+		try {
+			headers = body.getAllHeaders();
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		
+
+	    while (headers.hasMoreElements()) {
+	    	Header h = (Header) headers.nextElement();
+	    	System.out.println(h.getName() + " " + h.getValue());
+	    	retVal.setHeader(h.getName(), h.getValue());
+	    }
+
+		return retVal;
+	}
+
+	
+	
 	// Get the body part
 	public static BodyPart getBodyPart(MimeMessage msg, int i) {
 		try {

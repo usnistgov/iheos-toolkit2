@@ -17,7 +17,7 @@ Authors: William Majurski
 		
  */
 
-package gov.nist.direct.test.java.utils;
+package gov.nist.direct.test.java;
 
 
 import gov.nist.toolkit.utilities.io.Io;
@@ -25,7 +25,18 @@ import gov.nist.toolkit.utilities.io.Io;
 import java.io.File;
 
 public class Utils4Test {
+	
+	// ------=== Collections of test data ===-------
+	
+	// Set #1 of Direct Message + certs + password
+	public final static String DIRECT_MESSAGE_PATH_1 = "direct/src/gov/nist/direct/test/resources/directMessages/signed-encrypted-xdm.eml";
+	public final static String SIGNING_CERT_PATH_1 = "direct/src/gov/nist/direct/test/resources/certificates/mhunter.p12";
+	public final static String ENCRYPTION_CERT_PATH_1 = "direct/src/gov/nist/direct/test/resources/certificates/mhunter.cer";
+	public final static String PASSWORD_1 = "mhunter";
 
+	// ---------------------------------------------
+	
+	
 
 
 	/**
@@ -47,6 +58,35 @@ public class Utils4Test {
 
 	}
 
+
+
+
+	public static String getDIRECT_MESSAGE_PATH_1() {
+		return DIRECT_MESSAGE_PATH_1;
+	}
+
+
+
+
+	public static String getSIGNING_CERT_PATH_1() {
+		return SIGNING_CERT_PATH_1;
+	}
+
+
+
+
+	public static String getENCRYPTION_CERT_PATH_1() {
+		return ENCRYPTION_CERT_PATH_1;
+	}
+
+
+
+
+	public static String getPASSWORD_1() {
+		return PASSWORD_1;
+	}
+
+	
 
 	
 }

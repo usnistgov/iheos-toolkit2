@@ -20,6 +20,7 @@ Authors: William Majurski
 
 package gov.nist.direct.messageProcessor.direct.directImpl;
 
+import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 
 import java.io.ByteArrayInputStream;
@@ -34,8 +35,10 @@ import javax.mail.internet.MimeMessage;
 
 public class MimeMessageParser {
 
+
 	public static MimeMessage parseMessage(ErrorRecorder er, byte[] message){
 
+		
 		//
 		// Get a Session object with the default properties.
 		//         
@@ -44,6 +47,8 @@ public class MimeMessageParser {
 		Session session = Session.getDefaultInstance(props, null);
 
 		MimeMessage msg = null;
+		
+	
 
 		if (message != null){
 			// Convert byte[] into InputStream and create MimeMessage
@@ -55,7 +60,15 @@ public class MimeMessageParser {
 					e.printStackTrace();
 				}
 		}
+		
 		return msg;
+	}
+	
+	
+	
+	public static MimeMessage parseMessageBytes(ErrorRecorder er, String path){
+		byte[] data = Utils.getMessage(path);
+		return parseMessage(er, data);
 	}
 
 }
