@@ -27,6 +27,8 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		transactionTypes.add(TransactionType.PROVIDE_AND_REGISTER);
 	}
 	
+	// Coupled transaction semantics not relevant to this tool. To see how it is used
+	// look in FindDocuments tab.
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 
@@ -41,6 +43,9 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 	}
 	
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
+		
+		// Create top level VerticalPanel that defines this tab and link it into the
+		// tab system.  Also add Close button.
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		
@@ -48,6 +53,8 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		container.addTab(topPanel, "RepositoryTestdata", select);
 		addCloseButton(container,topPanel, help);
 
+		
+		// Build UI content of tab
 		HTML title = new HTML();
 		title.setHTML("<h2>Submit Repository Testdata</h2>");
 		topPanel.add(title);
@@ -74,12 +81,15 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, testlistBox);
 		row++;
 
-		testlistBox.setVisibleItemCount(1);
+		// build drop down box for selecting data set to send. Initiate call to 
+		// back end to load this list.
+		testlistBox.setVisibleItemCount(1); 
 		toolkitService.getTestdataSetListing("testdata-repository", loadRepositoryTestListCallback);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings);
 	}
 	
+	// Callback for data set listing.  Add it to the screen.
 	protected AsyncCallback<List<String>> loadRepositoryTestListCallback = new AsyncCallback<List<String>>() {
 
 		public void onFailure(Throwable caught) {
@@ -96,21 +106,25 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 	};
 
 
-	
+	// Run button triggers the onClick method of this class
 	class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
+			// get selected site
 			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
 			if (siteSpec == null)
 				return;
 
+			// get entered Patient ID
 			if (pid.getValue() == null || pid.getValue().equals("")) {
 				new PopupMessage("You must enter a Patient ID first");
 				return;
 			}
 			
+			
+			// get selected data set
 			int selected = testlistBox.getSelectedIndex();
 			if (selected < 1 || selected >= testlistBox.getItemCount()) {
 				new PopupMessage("You must select Test Data Set first");
@@ -120,6 +134,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 			
 			String testdataSetName = testlistBox.getItemText(selected);	
 			
+			// disable the Run and Inspect buttons until the transaction completes
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
@@ -127,6 +142,9 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 //			siteSpec.isTls = doTLS;
 //			siteSpec.isSaml = doSAML;
 //			siteSpec.isAsync = doASYNC;
+			
+			// Initiate the transaction
+			// queryCallback comes out of GenericQueryTab, the super class of the main class of this tab.
 			toolkitService.submitRepositoryTestdata(siteSpec, testdataSetName, pid.getValue().trim(), queryCallback);
 		}
 		
