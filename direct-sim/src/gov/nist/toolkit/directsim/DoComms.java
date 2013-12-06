@@ -309,7 +309,7 @@ public class DoComms implements Runnable {
 
 		logger.info("Done");
 		
-		
+		System.out.println("SENDING MDNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
 		sendMDN(directFrom, directTo.get(0), mvr);
 
 
