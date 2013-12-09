@@ -121,8 +121,8 @@ public class Validator {
 	}
 
 	public boolean hasObjectRefs(int count) throws XdsInternalException {
-		if (m.getOriginal().size() != count) {
-			err("Found " + m.getOriginal().size() + " ObjectRefs instead of " + count);
+		if (m.getObjectRefs().size() != count) {
+			err("Found " + m.getObjectRefs().size() + " ObjectRefs instead of " + count);
 			return false;
 		}
 		return true;
