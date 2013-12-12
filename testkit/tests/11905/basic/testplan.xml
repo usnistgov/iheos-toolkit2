@@ -26,7 +26,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../12346" id="Document01" step="submit_doc"
+            <UseId testdir="../../12346" id="Document01" step="submit_doc"
                 section="AssignedUuids" symbol="$uuid$"/>
             <ExpectedContents>
                 <SubmissionSets count="1"/>
@@ -58,9 +58,9 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../12346" id="Document01" step="submit_doc"
+            <UseId testdir="../../12346" id="Document01" step="submit_doc"
                 section="AssignedUuids" symbol="$uuid1$"/>
-            <UseId testdir="../12346" id="Document01" step="submit_doc_w_fol"
+            <UseId testdir="../../12346" id="Document01" step="submit_doc_w_fol"
                 section="AssignedUuids" symbol="$uuid2$"/>
             <ExpectedContents>
                 <SubmissionSets count="2"/>
@@ -93,9 +93,9 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../12346" id="Document01" step="submit_2doc_w_fol"
+            <UseId testdir="../../12346" id="Document01" step="submit_2doc_w_fol"
                 section="AssignedUuids" symbol="$uuid1$"/>
-            <UseId testdir="../12346" id="Document02" step="submit_2doc_w_fol"
+            <UseId testdir="../../12346" id="Document02" step="submit_2doc_w_fol"
                 section="AssignedUuids" symbol="$uuid2$"/>
             <ExpectedContents>
                 <SubmissionSets count="1"/>
@@ -128,7 +128,7 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../12346" id="Folder" step="submit_doc_w_fol"
+            <UseId testdir="../../12346" id="Folder" step="submit_doc_w_fol"
                 section="AssignedUuids" symbol="$uuid$"/>
             <ExpectedContents>
                 <SubmissionSets count="1"/>
@@ -160,9 +160,9 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-            <UseId testdir="../12346" id="Document01" step="submit_doc"
+            <UseId testdir="../../12346" id="Document01" step="submit_doc"
                 section="AssignedUuids" symbol="$uuid1$"/>
-            <UseId testdir="../12346" id="Folder" step="submit_doc_w_fol"
+            <UseId testdir="../../12346" id="Folder" step="submit_doc_w_fol"
                 section="AssignedUuids" symbol="$uuid2$"/>
             <ExpectedContents>
                 <SubmissionSets count="2"/>

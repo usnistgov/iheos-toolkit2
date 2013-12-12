@@ -355,9 +355,9 @@ public class TestDetails  {
 			return null;
 		
 		if (section != null && !section.equals("") && !section.equals("None"))
-			path = new File(logdir + File.separator + area + File.separator + testNum + File.separatorChar + section + File.separatorChar + "log.xml");
+			path = new File(logdir + File.separator + ".." + File.separator + testNum + File.separatorChar + section + File.separatorChar + "log.xml");
 		else
-			path = new File(logdir + File.separator + area + File.separator + testNum + File.separatorChar  + "log.xml");
+			path = new File(logdir + File.separator + ".." + File.separator + testNum + File.separatorChar  + "log.xml");
 		return path;
 	}
 
