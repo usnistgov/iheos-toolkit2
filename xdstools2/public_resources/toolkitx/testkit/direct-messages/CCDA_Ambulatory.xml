@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="CDA.xsl"?>
+<?xml-stylesheet type="text/xsl" href="../stylesheet/CDA.xsl"?>
 <!--
 	Title: US_Realm_Header_Template
 
@@ -10,7 +10,7 @@
     08/12/2012 RWM modified
     09/12/2012 BNR(Dragon) modified
     05/03/2013 NIST Update (v5)
-
+    12/10/2013 NIST Update (multiple)
  -->
 <ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:cda="urn:hl7-org:v3"
 	xmlns:gsd="http://aurora.regenstrief.org/GenericXMLSchema"
@@ -35,7 +35,7 @@
 	<!-- conforms to the document specific requirements  -->
 	<templateId root="2.16.840.1.113883.10.20.22.1.2"/>
 	<!-- CONF 5363 -->
-	<id extension="Test CCDA" root="1.1.1.1.1.1.1.1.1"/>
+	<id extension="7a5312a7-3578-4b5f-af5b-a7d411f3208c" root="2.16.840.1.113883.3.72"/>
 	<!-- CONF 5253 "CCD document" -->
 	<code codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" code="34133-9"
 		displayName="Summarization of Episode Note"/>
@@ -1714,6 +1714,13 @@ FUNCTIONAL and COGNITIVE STATUS
 									<td>2008</td>
 									<td>Active</td>
 								</tr>
+								<tr>
+									<td>
+										<content ID="fs3">Amnesia</content>
+									</td>
+									<td>2008</td>
+									<td>Active</td>
+								</tr>								
 							</tbody>
 						</table>
 					</text>
@@ -1730,6 +1737,7 @@ FUNCTIONAL and COGNITIVE STATUS
 							<statusCode code="completed"/>
 							<effectiveTime>
 								<low value="20120806"/>
+								<high nullFlavor="UNK"/>
 							</effectiveTime>
 							<value xsi:type="CD" code="105504002"
 								codeSystem="2.16.840.1.113883.6.96" displayName="Dependence on Cane"
@@ -1749,6 +1757,7 @@ FUNCTIONAL and COGNITIVE STATUS
 							<statusCode code="completed"/>
 							<effectiveTime>
 								<low value="20120806"/>
+								<high nullFlavor="UNK"/>
 							</effectiveTime>
 							<value xsi:type="CD" code="386807006"
 								codeSystem="2.16.840.1.113883.6.96" displayName="Memory Impairment"
@@ -1763,11 +1772,12 @@ FUNCTIONAL and COGNITIVE STATUS
 							<code xsi:type="CE" code="373930000" codeSystem="2.16.840.1.113883.6.96"
 								displayName="Cognitive Function Finding"/>
 							<text>
-								<reference value="#fs2"/>
+								<reference value="#fs3"/>
 							</text>
 							<statusCode code="completed"/>
 							<effectiveTime>
 								<low value="20120806"/>
+								<high nullFlavor="UNK"/>
 							</effectiveTime>
 							<value xsi:type="CD" code="48167000" codeSystem="2.16.840.1.113883.6.96"
 								displayName="Amnesia"/>

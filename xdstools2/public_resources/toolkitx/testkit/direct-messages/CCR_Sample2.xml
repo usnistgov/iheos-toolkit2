@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="../stylesheet/CCR.xsl"?>
 <!-- edited with XMLSpy v2010 rel. 2 (http://www.altova.com) by Len Gallagher (NIST) -->
 <ccr:ContinuityOfCareRecord xsi:schemaLocation="urn:astm-org:CCR CCRV1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ccr="urn:astm-org:CCR">
-	<ccr:CCRDocumentObjectID>CCR_AMBv11_DS01</ccr:CCRDocumentObjectID>
+	<ccr:CCRDocumentObjectID>CCR_AMBv11_DS02</ccr:CCRDocumentObjectID>
 	<ccr:Language>
 		<ccr:Text>US English</ccr:Text>
 		<ccr:Code>

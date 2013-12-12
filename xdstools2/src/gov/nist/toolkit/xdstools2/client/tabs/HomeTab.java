@@ -223,6 +223,11 @@ public class HomeTab extends GenericQueryTab {
 				));
 
 		topPanel.add(new HTML("<hr />"));
+		
+		topPanel.add(new HTML("Human readable CDA/CCR data can be displayed from <a href=\"samples/samples.htm\">here</a>.  " 
+				));
+
+		topPanel.add(new HTML("<hr />"));
 
 		DirectRegistrationContentValidationTable drcvTbl = new DirectRegistrationContentValidationTable();
 		topPanel.add(drcvTbl.contentValidation());
