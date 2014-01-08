@@ -17,6 +17,7 @@ import gov.nist.toolkit.testengine.transactions.ProvideAndRegisterTransaction;
 import gov.nist.toolkit.testengine.transactions.RegisterTransaction;
 import gov.nist.toolkit.testengine.transactions.RetrieveTransaction;
 import gov.nist.toolkit.testengine.transactions.SimpleTransaction;
+import gov.nist.toolkit.testengine.transactions.SocketTransaction;
 import gov.nist.toolkit.testengine.transactions.SqlQueryTransaction;
 import gov.nist.toolkit.testengine.transactions.StoredQueryTransaction;
 import gov.nist.toolkit.testengine.transactions.XCQTransaction;
@@ -339,6 +340,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				else if (instruction_name.equals("DirectTransaction")) 
 				{
 					transaction = new DirectTransaction(this, instruction, instruction_output);
+				} 
+				else if (instruction_name.equals("SocketTransaction")) 
+				{
+					transaction = new SocketTransaction(this, instruction, instruction_output);
 				} 
 				else 
 				{
