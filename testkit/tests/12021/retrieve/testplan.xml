@@ -4,32 +4,29 @@
     <TestStep id="retrieve_double">
         <ExpectedStatus>Success</ExpectedStatus>
         <RetrieveTransaction>
-            <UseId testdir="../submit" id="Document01" step="submit"
-                section="AssignedUids" symbol="$docuid1$"/>
-            <UseId testdir="../submit" id="Document02" step="submit"
-                section="AssignedUids" symbol="$docuid2$"/>
+            <UseId testdir="submit" id="Document01" step="submit" section="AssignedUids"
+                symbol="$docuid1$"/>
+            <UseId testdir="submit" id="Document02" step="submit" section="AssignedUids"
+                symbol="$docuid2$"/>
             <UseReport section="query" step="by_uid" reportName="repuid" useAs="$repuid$"/>
             <UseReport section="submit" step="submit" reportName="Document01_uid" useAs="$docuid1$"/>
             <UseReport section="submit" step="submit" reportName="Document02_uid" useAs="$docuid2$"/>
             <ReferenceMetadata testdir="../query" step="by_uid"/>
             <Metadata>
-<RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="urn:ihe:iti:xds-b:2007 file:/Users/bill/ihe/Frameworks/ITI-4/XDS.b/schema/IHE/XDS.b_DocumentRepository.xsd">
-    <DocumentRequest>
-        <RepositoryUniqueId>$repuid$</RepositoryUniqueId>
-        <DocumentUniqueId>$docuid1$</DocumentUniqueId>
-    </DocumentRequest>
-    <DocumentRequest>
-        <RepositoryUniqueId>$repuid$</RepositoryUniqueId>
-        <DocumentUniqueId>$docuid2$</DocumentUniqueId>
-    </DocumentRequest>
-</RetrieveDocumentSetRequest>
+                <RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007">
+                    <DocumentRequest>
+                        <RepositoryUniqueId>$repuid$</RepositoryUniqueId>
+                        <DocumentUniqueId>$docuid1$</DocumentUniqueId>
+                    </DocumentRequest>
+                    <DocumentRequest>
+                        <RepositoryUniqueId>$repuid$</RepositoryUniqueId>
+                        <DocumentUniqueId>$docuid2$</DocumentUniqueId>
+                    </DocumentRequest>
+                </RetrieveDocumentSetRequest>
             </Metadata>
-            <ExpectedContents>
-            </ExpectedContents>
-            <ReferenceDocument uid="$docuid1$">../submit/my_document.txt</ReferenceDocument>
-            <ReferenceDocument uid="$docuid2$">../submit/my_document2.txt</ReferenceDocument>
+            <ExpectedContents> </ExpectedContents>
+            <ReferenceDocument uid="$docuid1$">submit/my_document.txt</ReferenceDocument>
+            <ReferenceDocument uid="$docuid2$">submit/my_document2.txt</ReferenceDocument>
             <XDSb/>
         </RetrieveTransaction>
     </TestStep>

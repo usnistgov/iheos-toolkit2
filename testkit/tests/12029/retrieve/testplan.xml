@@ -19,7 +19,7 @@
             </Metadata>
             <ExpectedContents>
             </ExpectedContents>
-            <ReferenceDocument uid="$docuid1$">../submit/my_document.pdf</ReferenceDocument>
+            <ReferenceDocument uid="$docuid1$">submit/my_document.pdf</ReferenceDocument>
         </RetrieveTransaction>
     </TestStep>
 </TestPlan>   
