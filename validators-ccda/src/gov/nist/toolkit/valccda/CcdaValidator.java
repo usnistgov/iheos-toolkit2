@@ -99,9 +99,6 @@ public class CcdaValidator {
             }	 
 		}
 		 
-		} catch (Exception e) {
-			er.err("FATAL ERROR in Loading the document for MDHT validation, check to ensure document format is XML, MESSAGE FROM INTERNAL EXCEPTION = " + e.getMessage(), "", "","", "");
-		}
 		
 		long end_time = System.currentTimeMillis();
 		long run_time = end_time - start_time;
@@ -133,6 +130,11 @@ public class CcdaValidator {
 		er.detail("CCDA Validation complete: " + errors + " errors, " + warnings + " warnings, " + details + " details.");
 		er.detail("MHDT run time was " + run_time + " mSec");
 		er.detail("Validation, was a " + ((validationType == null) ? "Plain CCDA" : validationType));
+
+		} catch (Exception e) {
+			er.err("", "FATAL ERROR in Loading the document for MDHT validation, check to ensure document format is XML, MESSAGE FROM INTERNAL EXCEPTION = " + e.getMessage(), "","", "");
+		}
+		
 		er.detail("CCDA Validation done");
 	}
 }
