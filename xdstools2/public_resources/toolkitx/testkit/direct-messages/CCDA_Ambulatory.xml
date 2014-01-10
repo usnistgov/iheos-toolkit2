@@ -11,6 +11,8 @@
     09/12/2012 BNR(Dragon) modified
     05/03/2013 NIST Update (v5)
     12/10/2013 NIST Update (multiple)
+    01/07/2014 NIST Update (multiple)
+    01/09/2014 NIST Update (vital signs mismatch)
  -->
 <ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:cda="urn:hl7-org:v3"
 	xmlns:gsd="http://aurora.regenstrief.org/GenericXMLSchema"
@@ -55,7 +57,7 @@
 			<id extension="1" root="2.16.840.1.113883.4.6"/>
 			<!-- Fake ID using HL7 example OID. -->
 			<!-- Patient SSN recorded as an ID -->
-			<id extension="123-101-5231" root="2.16.840.1.113883.4.1"/>
+			<id extension="000-10-5231" root="2.16.840.1.113883.4.1"/>
 			<!-- CONF 5271 -->
 			<addr use="HP">
 				<!-- HP is "primary home" from codeSystem 2.16.840.1.113883.5.1119 -->
@@ -1813,13 +1815,13 @@ RESULTS
 										<content ID="result1">HGB (M 13-18 g/dl; F 12-16
 											g/dl)</content>
 									</td>
-									<td>13.2</td>
+									<td>10.2</td>
 								</tr>
 								<tr>
 									<td>
 										<content ID="result2">WBC (4.3-10.8 10+3/ul)</content>
 									</td>
-									<td>16.7</td>
+									<td>12.3</td>
 								</tr>
 								<tr>
 									<td>
@@ -2075,7 +2077,7 @@ VITAL SIGNS
 										codeSystemName="LOINC"
 										displayName="Patient Body Weight - Measured"/>
 									<text>
-										<reference value="#vit4"/>
+										<reference value="#vit3"/>
 									</text>
 									<statusCode code="completed"/>
 									<effectiveTime value="20111101"/>
