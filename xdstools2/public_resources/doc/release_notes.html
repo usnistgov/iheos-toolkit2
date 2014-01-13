@@ -10,6 +10,301 @@
 
 <p>Release note are listed for each build number
 
+<h4>174   (released    13 December  2013  )      </h4>
+
+CDA<br>
+
+<ul>
+<li>Updated CDA samples.</li>
+<li>Added link on the main page to display human readable CDA samples</li>
+</ul>
+
+MDHT<br>
+
+<p>
+    The MDHT Release for December contains the following fixes based on previously identified defects:
+</p>
+<ul>
+    <li>
+        Made language codes to be case-insensitive.
+    </li>
+    <li>
+        Incorporated the following ERRATA
+    </li>
+    
+    <ul>
+	<li>
+		<strong> 152, 162, 165, 166, 170, 177, 180, 181, 188, 196,
+			197, 199, 200, 203, 204, 206, 207, 209,217,221, 227, 228, 230, 235,
+			240, 254, 255, 263, 266, 267, 268, 269, 275, 277, 314, 339 and 340. </strong>
+	</li>
+
+	<li>ERRATA 152:</li>
+	<ul>
+	<li>Modify Validator behavior to check for [1..1] addr instead of [1..*] per CONF: 5559 requirement.</li>
+	</ul>
+	
+<li>
+    ERRATA 162:
+</li>
+<ul>
+<li>
+    In encounter activities, Adding missing constraint for @root on template ID ending with 10.20.22.4.49.
+</li>
+</ul>
+<li>
+    ERRATA 165:
+</li>
+<ul>
+<li>
+    In Policy Activity, CONF:8931 was removed and CONF:8932 received a new annotation.
+</li>
+</ul>
+<li>
+    ERRATA 227:
+</li>
+<ul>
+<li>
+    CONF:16786 was preventing certain allied health professionals who are not required to have an NPI from using the C­CDA to record a progress note.
+    CONF:5449 stated a required severity and NPI change as wel.
+</li>
+</ul>
+<li>
+    ERRATA 228:
+</li>
+<ul>
+<li>
+    CONF:5326 vocabulary constraints for Guardian are too strict and need to allow the Responsible Party value set.
+</li>
+</ul>
+<li>
+    ERRATA 275:
+</li>
+<ul>
+<li>
+    Conformance statements 5322 and 7263 need to be clarified regarding how to model multiple race codes. Specifically, what rule applies when there is an
+    sdtc:raceCode and no raceCode.
+</li>
+</ul>
+<li>
+    ERRATA 296:
+</li>
+<ul>
+<li>
+    Conformance statements 9961 and 16341 are out of sync and need to be adjusted (severity and/or cardinality).
+</li>
+</ul>
+<li>
+    ERRATA 339:
+</li>
+<ul>
+<li>
+    The Severity Observation template’s interpretationCode was using a value set (2.16.840.1.113883.1.11.78) which was not applicable to severity. The
+    conformance requirements (9117 and 16038) needed to be dropped..
+</li>
+</ul>
+<li>
+    ERRATA 180 and 314:
+</li>
+<ul>
+<li>
+    The severities for CONFs:15604 were changed from SHOULD to MAY. The annotation (guidance) was updated to explain how to record an unresolved problem
+    properly.
+</li>
+</ul>
+<li>
+    ERRATA 166 and 263:
+</li>
+<ul>
+<li>
+    Family History Organizer, template 2.16.840.1.113883.10.20.22.4.45, in relatedSubject/subject, sdtc:id (CONF:15249) should be located before
+    administrativeGenderCode (CONF:15974)
+</li>
+</ul>
+<li>
+    ERRATA 181 and 200:
+</li>
+<ul>
+<li>
+    For CONF:14229, participant in Caregiver Characteristics Observation, the constraint had incorrectly specified @classCode="IND" on the participantRole
+    element.The template should instead specify @typeCode="IND" on participant, and @classCode="CAREGIVER" on participantRole
+</li>
+</ul>
+<li>
+    ERRATA 203:
+</li>
+<ul>
+<li>
+    Declaring the 'ANY' datatype violates CONF:8559 and CONF:9231.
+</li>
+</ul>
+<li>
+    ERRATA 177:
+</li>
+<ul>
+<li>
+    The IG does not specify the data type for CONF 14599. It should specify xsi:type="CD".
+</li>
+</ul>
+<li>
+    ERRATA 206 and 207:
+</li>
+<ul>
+<li>
+    CONF:9190 in Fetus Subject Context/code does not require the datatype of CD. It correctly requires CE
+</li>
+</ul>
+<li>
+    ERRATA 196:
+</li>
+<ul>
+<li>
+    No changes to MDHT.
+</li>
+</ul>
+<li>
+    ERRATA 209:
+</li>
+<ul>
+<li>
+    No changes to MDHT.
+</li>
+</ul>
+<li>
+    ERRATA 230:
+</li>
+<ul>
+<li>
+    Participant (Support)Described in the US Realm header should be identified as a branch set of requirements so that all generic participants are not
+    required to have a scopingOrganization or associatedPerson
+</li>
+</ul>
+<li>
+    ERRATA 255:
+</li>
+<ul>
+<li>
+    USRH ­ informant. The implementation of erratum 13 omitted to make <a
+		href="conf:8001">CONF:8001</a> a branch constraint ("such that it").
+</li>
+</ul>
+<li>
+    ERRATA 269:
+</li>
+<ul>
+<li>
+    No changes to MDHT.
+</li>
+</ul>
+<li>
+    ERRATA 268:
+</li>
+<ul>
+<li>
+    No changes to MDHT.
+</li>
+</ul>
+<li>
+    ERRATA 240:
+</li>
+<ul>
+<li>
+    dischargeDispositionCode (CONF:8476) can now be selected from either ValueSet NUBC UB­04 FL17­Patient Status or CodeSystem HL7 Discharge Disposition
+    while retaining individual severities for terminology (Warning for the valueSet and Info message for the codeSystem).
+</li>
+</ul>
+<li>
+    ERRATA 204:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 340:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 277:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 170:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 199:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 217:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 221:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 235:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 266:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+<li>
+    ERRATA 267:
+</li>
+<ul>
+<li>
+    No changes to MDHT
+</li>
+</ul>
+
+</ul>
+</ul>
+
+<strong>Known Issues in the release that impact users: </strong>
+<ul>
+<li>
+No known defects that affect the Vendor community for MU2 certification.
+</li>
+</ul>
+
+
 <h4>173   (released    4 December  2013  )      </h4>
 
 Direct<br>

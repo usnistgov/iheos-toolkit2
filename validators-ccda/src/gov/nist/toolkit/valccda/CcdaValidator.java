@@ -78,30 +78,27 @@ public class CcdaValidator {
 			CDAUtil.load(is);
 		
 		    // Save the CCDA document for future reference.
-			String outputFileName = "CCDA_" + start_time + ".xml";
+			/*String outputFileName = "CCDA_" + start_time + ".xml";
 			FileOutputStream os = new FileOutputStream(outputFileName);
 			byte[] buf = new byte[1024];
 		      int len;
 		      while ((len = is.read(buf)) > 0) {
 		         os.write(buf, 0, len);
-		      }
+		      }*/
 		}
 		else {
 			CDAUtil.loadAs(is, type, result);
 			
 			// Save the CCDA document for future reference.
-			String outputFileName = "CCDA_" + start_time + ".xml";
+			/*String outputFileName = "CCDA_" + start_time + ".xml";
 			FileOutputStream os = new FileOutputStream(outputFileName);
 			byte[] buf = new byte[1024];
 			int len;
 			while ((len = is.read(buf)) > 0) {
 			  os.write(buf, 0, len);
-            }	 
+            }	 */
 		}
 		 
-		} catch (Exception e) {
-			er.err("FATAL ERROR in Loading the document for MDHT validation, check to ensure document format is XML, MESSAGE FROM INTERNAL EXCEPTION = " + e.getMessage(), "", "","", "");
-		}
 		
 		long end_time = System.currentTimeMillis();
 		long run_time = end_time - start_time;
@@ -133,6 +130,12 @@ public class CcdaValidator {
 		er.detail("CCDA Validation complete: " + errors + " errors, " + warnings + " warnings, " + details + " details.");
 		er.detail("MHDT run time was " + run_time + " mSec");
 		er.detail("Validation, was a " + ((validationType == null) ? "Plain CCDA" : validationType));
+
+		} catch (Exception e) {
+			er.err("", "FATAL ERROR in Loading the document for MDHT validation, check to ensure document format is XML, MESSAGE FROM INTERNAL EXCEPTION = " + e.getMessage(), "","", "");
+			e.printStackTrace();
+		}
+		
 		er.detail("CCDA Validation done");
 	}
 }
