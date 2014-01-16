@@ -125,8 +125,8 @@
 	<property name="target.dir" location="." />
 
 	<!-- properties used by the compiler -->
-	<property name="source" value="1.7" />
-	<property name="target" value="1.7" />
+	<property name="source" value="1.6" />
+	<property name="target" value="1.6" />
 	<property name="compile.excludes" value="" />
 
 	<!-- those are all the directories containing GWT sources -->

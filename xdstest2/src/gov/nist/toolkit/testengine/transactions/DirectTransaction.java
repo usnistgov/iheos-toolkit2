@@ -49,6 +49,7 @@ import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.OMOutputFormat;
 import org.apache.axiom.om.OMXMLParserWrapper;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -145,9 +146,11 @@ public class DirectTransaction extends BasicTransaction {
 			socket = new Socket(mailerHostname, mailerPort);
 		} catch (UnknownHostException e) {
 			s_ctx.set_error("Error connecting to " + mailerHostname + ":" + mailerPort + " - " + e.getMessage());
+			logger.error(e.getMessage());
 			return;
 		} catch (IOException e) {
 			s_ctx.set_error("Error connecting to " + mailerHostname + ":" + mailerPort + " - " + e.getMessage());
+			logger.error(e.getMessage());
 			return;
 		}
 		logger.debug("\t...Success");
@@ -176,15 +179,15 @@ public class DirectTransaction extends BasicTransaction {
 		}
 	}
 	
-	public void runMDN() throws Exception {
+	public void runMDN(String messageId) throws Exception {
 		
 		Properties props = System.getProperties();
 		Session session = Session.getDefaultInstance(props, null);
 		MimeMessage msg = new MimeMessage(session);
 		//LogPathsSingleton ls = LogPathsSingleton.getLogStructureSingleton();
 		
-		msg = MDNGenerator.createSignedAndEncrypted("Automatic MDN", "ttt.transparenthealth.org", "Security Agent", this.toAddress, this.fromAddress, 
-				"original_message_id", "automatic-action/MDN-sent-automatically;processed", this.fromAddress, this.toAddress, 
+		msg = MDNGenerator.createSignedAndEncrypted("Automatic MDN", "ttt.transparenthealth.org", "Security Agent", null, this.fromAddress, 
+				messageId, "automatic-action/MDN-sent-automatically;processed", this.fromAddress, this.toAddress, 
 				"Automatic MDN", this.encCert, this.signCert, this.certFilePassword);
 		
 		logger.info("MessageId="+ msg.getMessageID());

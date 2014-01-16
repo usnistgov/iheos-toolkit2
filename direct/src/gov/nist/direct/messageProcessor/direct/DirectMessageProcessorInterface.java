@@ -19,9 +19,6 @@ Authors: William Majurski
 
 package gov.nist.direct.messageProcessor.direct;
 
-import javax.mail.Part;
-import javax.mail.internet.MimeMessage;
-
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
@@ -29,6 +26,4 @@ public interface DirectMessageProcessorInterface {
 
 	public void processAndValidateDirectMessage(ErrorRecorder er, byte[] inputDirectMessage, byte[] directCertificate, String password, ValidationContext validationContext);
 	
-	
-	public Part getDecryptedMessage();
 }

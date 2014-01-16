@@ -87,15 +87,14 @@ public class MDNGenerator {
 		mdnReport.append((reporting_UA_product == null ? "" : reporting_UA_product));
 		mdnReport.append("\r\n");
 		// 2) original-recipient-field - optional
-		if (null != original_recipient)
-		{
+		if (null != original_recipient){
 			mdnReport.append("Original-Recipient: ");
 			mdnReport.append("rfc822; ");
 			mdnReport.append(original_recipient);
 			mdnReport.append("\r\n");
 		}
 		// 3) final-recipient-field
-		mdnReport.append("Final-Recepient: ");
+		mdnReport.append("Final-Recipient: ");
 		mdnReport.append("rfc822; ");
 		mdnReport.append((final_recipient == null ? "" : final_recipient));
 		mdnReport.append("\r\n");

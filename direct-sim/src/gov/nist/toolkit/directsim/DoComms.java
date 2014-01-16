@@ -309,8 +309,8 @@ public class DoComms implements Runnable {
 
 		logger.info("Done");
 		
-		System.out.println("SENDING MDNNNNNNNNNNNNNNNNNNNNNNNNNNNN");
-		sendMDN(directFrom, directTo.get(0), mvr);
+		// Send MDN
+		sendMDN(directTo.get(0), directFrom, mvr);
 
 
 	}
@@ -674,8 +674,13 @@ public class DoComms implements Runnable {
 			}
 		}
 
-		messageId.replace("<", "");
-		messageId.replace(">", "");
+		//messageId.replace("<", "");
+		messageId = messageId.replace("&#60;", "<");
+		messageId = messageId.replace("&lt;" , "<");
+		//messageId.replace(">", "");
+		messageId = messageId.replace("&#62;", ">");
+		messageId = messageId.replace("&gt;" , ">");
+		
 
 		// Get encryption certificate
 		String targetDomain = "";
@@ -732,9 +737,9 @@ public class DoComms implements Runnable {
 		}
 		
 		// Create the Direct transaction
-		DirectTransaction transaction = new DirectTransaction(signingCert, signingPassword, from, to, "MDN", "hit-testing.nist.gov", messageId, encryptionCert);
+		DirectTransaction transaction = new DirectTransaction(signingCert, signingPassword, from, to, "MDN", targetDomain, messageId, encryptionCert);
 		try {
-			transaction.runMDN();
+			transaction.runMDN(messageId);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

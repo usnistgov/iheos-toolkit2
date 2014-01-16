@@ -17,7 +17,7 @@ Authors: William Majurski
 		
  */
 
-package gov.nist.direct.test.java;
+package gov.nist.direct.test.java.utils;
 
 
 import gov.nist.toolkit.utilities.io.Io;
