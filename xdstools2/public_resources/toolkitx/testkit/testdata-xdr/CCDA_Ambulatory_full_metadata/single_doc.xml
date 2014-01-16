@@ -254,7 +254,7 @@
                 </Slot>
 				<Slot name="authorTelecommunication">
 	               <ValueList>
-						<Value>^^Internet^john.doe@healthcare.example.org</rim:Value>
+						<Value>^^Internet^john.doe@healthcare.example.org</Value>
                    </ValueList>
                 </Slot>
             </Classification>
