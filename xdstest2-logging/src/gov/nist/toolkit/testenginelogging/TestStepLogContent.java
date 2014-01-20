@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.apache.axiom.om.OMElement;
@@ -35,6 +36,7 @@ public class TestStepLogContent  implements Serializable {
 	String endpoint;
 	List<String> errors;
 	List<String> details;
+	List<String> reports;
 	String inputMetadata;
 	String result;
 	String inHeader = null;
@@ -92,6 +94,7 @@ public class TestStepLogContent  implements Serializable {
 		parseInputMetadata();
 		parseRoot();
 		parseDetails();
+		parseReports();
 	}
 
 	public StepGoals getGoals() {
@@ -214,6 +217,23 @@ public class TestStepLogContent  implements Serializable {
 			details.add(detail);
 		}
 	}
+
+	private static final QName nameQname = new QName("name");
+
+	private void parseReports() {
+		reports = new ArrayList<String>();
+		
+		for (OMElement ele : MetadataSupport.decendentsWithLocalName(root, "Report")) {
+			String name = ele.getAttributeValue(nameQname);
+			String value = ele.getText();
+			reports.add(name + " = " + value);
+		}
+		
+	}
+	
+	public List<String> getReports() {
+		return reports;
+	}
 	
 	public List<String> getDetails() {
 		return details;
@@ -238,7 +258,7 @@ public class TestStepLogContent  implements Serializable {
 		return MetadataParser.parseNonSubmission(getRawInputMetadata());
 	}
 
-	public OMElement getReports() {
+	public OMElement getRawReports() {
 		try {
 			return MetadataSupport.firstDecendentWithLocalName(root, "Reports");
 		} catch (Exception e) {

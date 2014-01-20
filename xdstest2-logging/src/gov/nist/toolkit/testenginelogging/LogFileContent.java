@@ -145,7 +145,7 @@ public class LogFileContent implements Serializable {
 				err.name = "Error getting report from step " + i;
 				reports.add(err);
 			}
-			OMElement sectionReportsEle = log.getReports();
+			OMElement sectionReportsEle = log.getRawReports();
 			if (sectionReportsEle != null) {
 				try {
 					List<Report> sectionReports = Report.parseReports(sectionReportsEle);

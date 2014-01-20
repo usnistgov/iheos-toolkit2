@@ -397,6 +397,10 @@ public class Xdstest2 {
 						res.add("Detail: " + detail);
 					}
 
+					for (String report : stepLog.getReports()) {
+						res.add("Report: " + report);
+					}
+
 					try {
 						Metadata m;
 						m = stepLog.getParsedInputMetadata();

@@ -24,6 +24,9 @@
 			<arg value="25" />
 			<arg value="${toolkit.home}/simdb/direct" />
 		</java>
+		<copy todir="${war.testkit.dir}/collections">
+			<fileset dir="${testkit.dir}/static.collections"/>
+		</copy>
 	</target>
 
 </project>

@@ -26,6 +26,9 @@
 	<Report name="mimetype" section="Result">
 //*[local-name()='ExtrinsicObject']/@mimeType
 	</Report>
+	<Report name="SourceId" section="Result">
+//*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832']/@value
+	</Report>
 	    <XDSb/>
 	    <CleanParams/>
 	    <Metadata>

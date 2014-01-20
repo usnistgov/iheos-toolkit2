@@ -67,7 +67,7 @@
 		</java>
 	</target>
 
-	<target name="war-prep" depends="make-dir, include-jars-in-war, include-classes, copy-resources, assemble-from-testkit, install-cert, doc">
+	<target name="war-prep" depends="make-dir, include-jars-in-war, include-classes, copy-resources, assemble-from-testkit, install-cert, doc, update-collections">
 	</target>
 
 	<target name="make-dir">
@@ -125,6 +125,12 @@
 		<!-- copy public resources that seems needed -->
 		<copy todir="${war.dir}" overwrite="yes">
 			<fileset dir="${resources.dir}/public_resources/">
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+		<copy todir="${war.dir}/icons" overwrite="yes">
+			<fileset dir="icons">
 				<exclude name="**/.svn" />
 			</fileset>
 		</copy>
