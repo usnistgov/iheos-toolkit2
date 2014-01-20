@@ -21,6 +21,7 @@ public class TabLauncher implements ClickHandler {
 	RegistryObject ro = null;
 	
 	final static public String findDocumentsTabLabel = "FindDocuments";
+	final static public String findDocumentsByRefIdTabLabel = "FindDocumentsByRefId";
 	final static public String findPatientTabLabel = "XCPD-FindPatient";
 	final static public String findFoldersTabLabel = "FindFolders";
 	final static public String getDocumentsTabLabel = "GetDocuments";
@@ -63,6 +64,8 @@ public class TabLauncher implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		if (tabType.equals(findDocumentsTabLabel)) 
 			new FindDocumentsTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(findDocumentsByRefIdTabLabel)) 
+			new FindDocumentsByRefIdTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(findPatientTabLabel)) 
 			new FindPatientTab().onAbstractTabLoad(container, true, null);		
 		else if (tabType.equals(findFoldersTabLabel)) 

@@ -120,6 +120,7 @@ public interface ToolkitServiceAsync {
 	void getSSandContents(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
 	void srcStoresDocVal(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
 	void findDocuments(SiteSpec site, String pid, boolean onDemand, AsyncCallback<List<Result>> callback);
+	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;
 	void findFolders(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void findPatient(SiteSpec site, String firstName, String secondName, String lastName, String suffix, 
 			String gender, String dob, String ssn, String pid,

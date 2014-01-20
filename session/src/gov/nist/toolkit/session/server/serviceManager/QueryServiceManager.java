@@ -2,7 +2,6 @@ package gov.nist.toolkit.session.server.serviceManager;
 
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -21,6 +20,7 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.FindDocuments;
+import gov.nist.toolkit.session.server.services.FindDocumentsByRefId;
 import gov.nist.toolkit.session.server.services.FindFolders;
 import gov.nist.toolkit.session.server.services.FindPatient;
 import gov.nist.toolkit.session.server.services.FolderValidation;
@@ -132,6 +132,15 @@ public class QueryServiceManager extends CommonServiceManager {
 		logger.debug(session.id() + ": " + "findDocuments");
 		try {
 			return new FindDocuments(session).run(site, pid, onDemand);
+		} catch (XdsException e) {
+			return buildResultList(e);
+		}
+	}
+
+	public List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) {
+		logger.debug(session.id() + ": " + "findDocumentsByRefId");
+		try {
+			return new FindDocumentsByRefId(session).run(site, pid, refIds);
 		} catch (XdsException e) {
 			return buildResultList(e);
 		}

@@ -291,6 +291,9 @@ public class HomeTab extends GenericQueryTab {
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsTabLabel)));
 			row++;
+
+			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findDocumentsByRefIdTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsByRefIdTabLabel)));
+			row++;
 		}
 
 		if (forIHE) {

@@ -115,6 +115,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> getSSandContents(SiteSpec site, String ssuid) throws NoServletSessionException ;
 	List<Result> srcStoresDocVal(SiteSpec site, String ssuid) throws NoServletSessionException ;
 	List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException ;
+	List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException ;
 	List<Result> findFolders(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> findPatient(SiteSpec site, String firstName,
 			String secondName, String lastName, String suffix, String gender,

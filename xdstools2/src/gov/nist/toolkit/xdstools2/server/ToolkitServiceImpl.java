@@ -181,6 +181,7 @@ ToolkitService {
 	public List<Result> submitXDRTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitXDRTestdata(site, datasetName, pid); }
 	public List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().provideAndRetrieve(site, pid); }
 	public List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException  { return session().queryServiceManager().findDocuments(site, pid, onDemand); }
+	public List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException  { return session().queryServiceManager().findDocumentsByRefId(site, pid, refIds); }
 	public List<Result> getDocuments(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getDocuments(site, aids); }
 	public List<Result> findFolders(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().findFolders(site, pid); }
 	public List<Result> getFolders(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getFolders(site, aids); }
