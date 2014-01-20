@@ -76,10 +76,10 @@ class SysConfig {
 		oddsRepUid = configToXml.oConfigs.getODDSRepUid(sysName);
 		home = configToXml.oConfigs.getHome(sysName);
 		
-//		if (sysName.indexOf("SER") != -1) {
-//			System.out.println(entry.line);
-//			System.out.println(this);
-//		}
+		if (sysName.indexOf("EHR_GMT_2014") != -1) {
+			System.out.println(entry.line);
+			System.out.println(this);
+		}
 	}
 	
 	public String toString() {

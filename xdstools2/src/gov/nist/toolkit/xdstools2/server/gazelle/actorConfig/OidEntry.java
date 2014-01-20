@@ -2,9 +2,9 @@ package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
 public class OidEntry  extends CSVEntry {
 
-	static final int System = 1;
-	static final int Type = 2;
-	static final int Value = 3;
+	static final int System = 0;
+	static final int Type = 1;
+	static final int Value = 2;
 	
 	public String getSystem() { return get(System); }
 	public boolean isSourceId() { return get(Type).startsWith("sourceID"); }

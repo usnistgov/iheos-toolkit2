@@ -2,9 +2,9 @@ package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
 public class OidConfigs extends CSVTable {
 
-	static final int System = 1;
-	static final int Type = 2;
-	static final int Value = 3;
+	static final int System = 0;
+	static final int Type = 1;
+	static final int Value = 2;
 	
 	public String getSystem(int entry) { return ((OidEntry)get(entry)).getSystem(); }
 	public boolean isSourceId(int entry) { return get(entry, Type).startsWith("sourceID"); }
@@ -19,7 +19,10 @@ public class OidConfigs extends CSVTable {
 	
 	public String getRepUid(String system) {
 		for (int i=0; i<this.size(); i++) {
-			if (system.equals(getSystem(i)) && isRepositoryUniqueId(i)) {
+			String sys = getSystem(i);
+			if (!system.equals(sys))
+					continue;
+			if (isRepositoryUniqueId(i)) {
 				return getValue(i);
 			}
 		}

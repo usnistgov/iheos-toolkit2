@@ -65,24 +65,24 @@ public class GazelleServiceManager extends CommonServiceManager {
 			OidConfigs oConfigs = null;
 
 			oConfigs = new OidConfigs();
-			new CSVParser(new File(actorsDir + File.separator + "oidSummary.csv"), oConfigs, new OidEntryFactory());
+			new CSVParser(new File(actorsDir + File.separator + "listOfOIDsForSession.csv"), new OidEntryFactory()).parse(oConfigs);
 
 
 			if (systemName.equals("ALL")) {
 				new ConfigPull(gazelleUrl, actorsDir).pull();
 
 				gConfigs = new GazelleConfigs();
-				new CSVParser(new File(actorsDir + File.separator + "all.csv"), gConfigs, new GazelleEntryFactory());
+				new CSVParser(new File(actorsDir + File.separator + "all.csv"), new GazelleEntryFactory()).parse(gConfigs);
 
-				conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
+				conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).process();
 			}
 			else {
 				new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
 
 				gConfigs = new GazelleConfigs();
-				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), gConfigs, new GazelleEntryFactory());
+				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), new GazelleEntryFactory()).parse(gConfigs);
 
-				conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
+				conflicts = new ConfigToXml(gConfigs, oConfigs, actorsDir).process();
 			}
 
 			System.err.println("Conflicts:\n" + conflicts);

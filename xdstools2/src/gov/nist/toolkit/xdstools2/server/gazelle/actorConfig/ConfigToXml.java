@@ -39,7 +39,7 @@ public class ConfigToXml {
 		this.actorsDir = actorsDir;
 	}
 
-	public String run() throws IOException {
+	public String process() throws IOException {
 		StringBuffer conflictBuffer = new StringBuffer();
 		int siteCount = 0;
 		int ignoredSiteCount = 0;
@@ -156,31 +156,53 @@ public class ConfigToXml {
 
 
 	public static void main(String[] args) {
-		File actorsDir = new File("/Users/bill/tmp/na2013/actors");
+		File actorsDir = new File("/Users/bmajur/tmp/NA2014/actors");
 		String systemName = "ALL";   // "ALL";
 		GazelleConfigs gConfigs = null; 
 		OidConfigs oConfigs = null;
 
 		try {
+			//
+			// Load OIDs table
+			//
 			oConfigs = new OidConfigs();
-			new CSVParser(new File(actorsDir + File.separator + "oidSummary.csv"), oConfigs, new OidEntryFactory());
+			new CSVParser(
+					new File(actorsDir + File.separator + "listOfOIDsForSession.csv"), 
+					new OidEntryFactory())
+			.parse(oConfigs);
 
 
 			if (systemName.equals("ALL")) {
-				//			new ConfigPull(gazelleUrl, actorsDir).pull();
-
+				// 
+				// Parse all entries in Gazelle configuration - downloaded as a single file
+				//
 				gConfigs = new GazelleConfigs();
-				new CSVParser(new File(actorsDir + File.separator + "all.csv"), gConfigs, new GazelleEntryFactory());
+				new CSVParser(
+						new File(actorsDir + File.separator + "WebServiceConfiguration.csv"), 
+						new GazelleEntryFactory())
+				.parse(gConfigs);
 
-				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
+				//
+				// Generate actor files
+				new ConfigToXml(
+						gConfigs, 
+						oConfigs, 
+						actorsDir)
+				.process();
 			}
 			else {
-				//			new ConfigPull(gazelleUrl, actorsDir).pull(systemName);
-
+				//
+				// Parse single entry identified as systemName.  The raw CSV has already been downloaded
+				//
 				gConfigs = new GazelleConfigs();
-				new CSVParser(new File(actorsDir + File.separator + systemName + ".csv"), gConfigs, new GazelleEntryFactory());
+				new CSVParser(
+						new File(actorsDir + File.separator + systemName + ".csv"), 
+						new GazelleEntryFactory())
+				.parse(gConfigs);
 
-				new ConfigToXml(gConfigs, oConfigs, actorsDir).run();
+				//
+				// Generate actor files
+				new ConfigToXml(gConfigs, oConfigs, actorsDir).process();
 			}
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e));
