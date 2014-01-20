@@ -1,0 +1,30 @@
+<TestPlan>
+    <Test>11906</Test>
+        <Rule>GetSubmissionSetAndContents - Query based on uniqueId. Submission Set includes multiple documents and a folder.</Rule>
+    <TestStep id="folder_and_docs">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <StoredQueryTransaction>
+	    <XDSb/>
+            <Metadata>
+                <query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+                    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+                    <AdhocQuery id="urn:uuid:e8e3cb2c-e39c-46b9-99e4-c12f57260b83">
+                        <Slot name="$XDSSubmissionSetUniqueId">
+                            <ValueList>
+                                <Value>'$uniqueid$'</Value>
+                            </ValueList>
+                        </Slot>
+                    </AdhocQuery>
+                </query:AdhocQueryRequest>
+            </Metadata>
+            <UseId testdir="../../12346" id="SubmissionSet01" step="submit_2doc_w_fol"
+                section="AssignedUids" symbol="$uniqueid$"/>
+            <ExpectedContents>
+                <SSwithTwoDocOneFol/>
+            </ExpectedContents>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>
