@@ -111,8 +111,8 @@ public class ConfigToXml {
 			if (sysConfig.isAsync)
 				continue;
 			
-//			if (!sysConfig.isApproved)
-//				continue;
+			if (!sysConfig.isApproved)
+				continue;
 
 			configs.add(sysConfig);
 
