@@ -52,3 +52,10 @@ syntax: regexp
 ^xdstools2/\.project$
 syntax: regexp
 ^\.gwt
+syntax: glob
+xdstools2/toolkit-doc/war/xdstools2/xdstools2.nocache.js
+xdstools2/toolkit-doc/war/
+velocity.log
+reportTest.html
+null/
+direct/src/gov/nist/direct/test/java/messageProcessor/impl/

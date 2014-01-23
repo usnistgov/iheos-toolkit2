@@ -21,8 +21,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import com.google.gwt.dev.jjs.ast.JField.Disposition;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.mailet.base.mail.MimeMultipartReport;
 import org.bouncycastle.cms.CMSAlgorithm;
@@ -64,7 +62,7 @@ public class MDNGenerator {
 			String original_recipient,
 			String final_recipient,
 			String original_message_id,
-			Disposition disposition
+			String disposition
 			) throws MessagingException {
 
 
@@ -89,15 +87,14 @@ public class MDNGenerator {
 		mdnReport.append((reporting_UA_product == null ? "" : reporting_UA_product));
 		mdnReport.append("\r\n");
 		// 2) original-recipient-field - optional
-		if (null != original_recipient)
-		{
+		if (null != original_recipient){
 			mdnReport.append("Original-Recipient: ");
 			mdnReport.append("rfc822; ");
 			mdnReport.append(original_recipient);
 			mdnReport.append("\r\n");
 		}
 		// 3) final-recipient-field
-		mdnReport.append("Final-Recepient: ");
+		mdnReport.append("Final-Recipient: ");
 		mdnReport.append("rfc822; ");
 		mdnReport.append((final_recipient == null ? "" : final_recipient));
 		mdnReport.append("\r\n");
@@ -128,7 +125,7 @@ public class MDNGenerator {
 			String original_recipient,
 			String final_recipient,
 			String original_message_id,
-			Disposition disposition,
+			String disposition,
 			String from,
 			String to,
 			String subject,

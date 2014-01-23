@@ -80,16 +80,13 @@ public class ParseUtils {
 		return false;
 	}
 	
-	public static String getFromAddress(MimeMessage m) {
-		try {
-			Address from = m.getFrom()[0];
+	public static String getFromAddress(MimeMessage m) throws MessagingException {
+			Address[] froms = m.getFrom();
+			System.out.println(froms[0]);
+			Address from = froms[0];
 			String res = from.toString();
-			res = Utils.trimEmailAddress(res);
+			//res = Utils.trimEmailAddress(res);
 			return res;
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-		return "";
 	}
 	
 	

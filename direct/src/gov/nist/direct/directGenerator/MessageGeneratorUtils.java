@@ -29,6 +29,7 @@ import javax.mail.internet.MimeUtility;
 
 import org.apache.commons.io.FileUtils;
 
+
 public class MessageGeneratorUtils {
 
 	public static MimeBodyPart addText(String textMessage) throws Exception {

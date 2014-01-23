@@ -172,10 +172,28 @@ public class MDNValidatorImpl implements MDNValidator{
 		if(originalRecipient.equals("")) {
 			er.info("459", "Original-Recipient", "Not present", "Might not be present", rfc);
 		} else {
-			if(MDNUtils.validateAtomTextField(originalRecipient)) {
-				er.success("459", "Original-Recipient", originalRecipient, "address-type \";\" generic-address", rfc);
+			String[] buf;
+			boolean result = true;
+			if(originalRecipient.contains(";")) {
+				buf = originalRecipient.split(";");
+				final String stringPattern =  MDNUtils.getAtom();
+				Pattern pattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE);
+				Matcher matcher = pattern.matcher(buf[0]);
+				if(!matcher.matches()) {
+					result = false;
+					er.error("459", "Original-Recipient", originalRecipient, "address-type \";\" generic-address", rfc);
+				}
+				if(!ValidationUtils.validateEmail(buf[1])) {
+					result = false;
+					er.error("459", "Original-Recipient", originalRecipient, "address-type \";\" generic-address", rfc);
+				}
 			} else {
+				result = false;
 				er.error("459", "Original-Recipient", originalRecipient, "address-type \";\" generic-address", rfc);
+			}
+			
+			if(result) {
+				er.success("459", "Original-Recipient", originalRecipient, "address-type \";\" generic-address", rfc);
 			}
 		}
 	}
@@ -205,6 +223,7 @@ public class MDNValidatorImpl implements MDNValidator{
 				}
 			} else {
 				result = false;
+				er.error("460", "Final-Recipient", finalRecipient, "address-type \";\" generic-address", rfc);
 			}
 			
 			if(result) {

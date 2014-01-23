@@ -1,11 +1,16 @@
 package gov.nist.toolkit.directsim;
 
+import gov.nist.direct.client.config.SigningCertType;
+import gov.nist.direct.config.DirectConfigManager;
 import gov.nist.messageDispatch.MessageDispatchUtils;
 import gov.nist.toolkit.actorfactory.DirectActorFactory;
+import gov.nist.toolkit.common.coder.Base64Coder;
 import gov.nist.toolkit.directsupport.SMTPException;
+import gov.nist.toolkit.dns.DnsLookup;
 import gov.nist.toolkit.email.Emailer;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simulators.support.ValidateMessageService;
+import gov.nist.toolkit.testengine.transactions.DirectTransaction;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.TkPropsServer;
 import gov.nist.toolkit.tk.client.PropertyNotFoundException;
@@ -38,6 +43,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.apache.log4j.Logger;
 import org.mortbay.log.Log;
+import org.xbill.DNS.TextParseException;
 
 public class DoComms implements Runnable {
 	Socket server;
@@ -57,7 +63,7 @@ public class DoComms implements Runnable {
 		this.externalCache = externalCache;
 		this.pathToPrivateKey = pathToPrivateKey;
 	}
-	
+
 	/**
 	 * For unit testing only
 	 */
@@ -83,12 +89,12 @@ public class DoComms implements Runnable {
 			logger.error("Message fails MimeMessage parser");
 			return;
 		}
-		
+
 		logger.info("Mime Message parsing successful");
 
 		HtmlValFormatter hvf = new HtmlValFormatter();
 
-//		List<String> headers = headers(message);
+		//		List<String> headers = headers(message);
 
 		// Valid Direct (From) addr?
 		DirectUserManager dum = new DirectUserManager();
@@ -164,25 +170,25 @@ public class DoComms implements Runnable {
 				logger.warn(msg);
 				hvf.blue(msg);
 			} else if (directTo.size() == 0) {
-					String msg = "No TO addresses pulled from SMTP protocol headers - cannot determine which CCDA validator to run - CCDA validation will be skipped"; 
-					logger.warn(msg);
-					hvf.blue(msg);
+				String msg = "No TO addresses pulled from SMTP protocol headers - cannot determine which CCDA validator to run - CCDA validation will be skipped"; 
+				logger.warn(msg);
+				hvf.blue(msg);
 			} 
-//			else {
-//				String to = directTo.get(0);
-//				for (int i=1; i<500; i++) {
-//					String en = Integer.toString(i);
-//					String type = ccdaProps.get("type" + en, null);
-//					String ccdaTo = ccdaProps.get("directTo" + en, null);
-//					if (type == null || ccdaTo == null)
-//						break;
-//					if (ccdaTo.equals(to)) {
-//						ccdaType = type;
-//						break;
-//					}
-//				}
-//			}
-			
+			//			else {
+			//				String to = directTo.get(0);
+			//				for (int i=1; i<500; i++) {
+			//					String en = Integer.toString(i);
+			//					String type = ccdaProps.get("type" + en, null);
+			//					String ccdaTo = ccdaProps.get("directTo" + en, null);
+			//					if (type == null || ccdaTo == null)
+			//						break;
+			//					if (ccdaTo.equals(to)) {
+			//						ccdaType = type;
+			//						break;
+			//					}
+			//				}
+			//			}
+
 			// ccdaType tells us the document type to validate against
 
 			// Validate
@@ -190,9 +196,9 @@ public class DoComms implements Runnable {
 			byte[] messageBytes = message.toString().getBytes();
 			GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 			ValidateMessageService vms = new ValidateMessageService(null, null);
-//			String simpleToHeader = simpleEmailAddr(toHeader);
-//			logger.debug("toHeader is " + toHeader);
-//			logger.debug("    which reduces to " + simpleToHeader);
+			//			String simpleToHeader = simpleEmailAddr(toHeader);
+			//			logger.debug("toHeader is " + toHeader);
+			//			logger.debug("    which reduces to " + simpleToHeader);
 
 			ValidationContext vc = new ValidationContext();
 			vc.isDIRECT = true;
@@ -204,20 +210,20 @@ public class DoComms implements Runnable {
 			logger.info("To: " + getDirectTo() + " translates to ccda type of " + vc.ccdaType);
 
 			logger.info("Message Validation Begins");
-			
+
 			mvr = vms.runValidation(vc, null, messageBytes, privKey, gerb);
-			
+
 			logger.info("Message Validation Complete");
 
 		} 
-//		catch (DirectParseException e) {
-//			logger.error(ExceptionUtil.exception_details(e));
-//			hvf.h2("Error");
-//			hvf.addError("Error: " + e.getMessage());
-//		}
-//		catch (ReportException re) {
-//			// nothing to actually do here, more of a goto than an error handling situation
-//		} 
+		//		catch (DirectParseException e) {
+		//			logger.error(ExceptionUtil.exception_details(e));
+		//			hvf.h2("Error");
+		//			hvf.addError("Error: " + e.getMessage());
+		//		}
+		//		catch (ReportException re) {
+		//			// nothing to actually do here, more of a goto than an error handling situation
+		//		} 
 		catch (Exception e) {
 			logger.error("Message Validation Error: " + ExceptionUtil.exception_details(e));
 			hvf.h2("Error");
@@ -230,7 +236,7 @@ public class DoComms implements Runnable {
 
 
 		logger.info("Starting report generation");
-		
+
 		validationReport.append(hvf.toHtmlTemplate(mvr));
 
 		validationReport.append("</body></html>");
@@ -271,9 +277,9 @@ public class DoComms implements Runnable {
 
 		logger.debug("Announcement is:\n" + announcement);
 
-		
+
 		logger.info("Send report");
-		
+
 		String announceStr = reportingProps.get("announce", "true");
 		boolean announce = (announceStr == null) ? false :  announceStr.compareToIgnoreCase("true") == 0;
 		if (announce) {
@@ -302,10 +308,13 @@ public class DoComms implements Runnable {
 		}
 
 		logger.info("Done");
+		
+		// Send MDN
+		sendMDN(directTo.get(0), directFrom, mvr);
 
 
 	}
-	
+
 	String getDirectTo() {
 		if (directTo.size() == 0 || directTo.size() > 1)
 			return null;
@@ -608,7 +617,7 @@ public class DoComms implements Runnable {
 
 		return headers;
 	}
-	
+
 	/**
 	 * Strip surrounding <    >  brackets if present
 	 * @param in
@@ -623,17 +632,17 @@ public class DoComms implements Runnable {
 			in = in.substring(1);
 			openI = in.indexOf('<');
 		}
-		
+
 		if (in.length() == 0)
 			return in;
-		
+
 		int closeI = in.indexOf('>');
 		if (closeI > 0) 
 			in = in.substring(0, closeI);
-		
+
 		return in;
 	}
-	
+
 	public String getWarDir() {
 		try {
 			String dir = reportingProps.get("direct.reporting.directory");
@@ -650,9 +659,115 @@ public class DoComms implements Runnable {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public void sendMDN(String from, String to, MessageValidationResults mvr) {
+		// Get Message-Id
+		String messageId = "";
+		for(int i=0 ; i<mvr.getResults().size() ; i++) {
+			if(mvr.getResults().get(i).stepName.equals("Message Validator")) {
+				for(int k=0 ; k<mvr.getResults().get(i).er.size() ; k++) {
+					if(mvr.getResults().get(i).er.get(k).name.contains("Message-Id")) {
+						messageId = mvr.getResults().get(i).er.get(k).found;
+					}
+				}
+			}
+		}
+
+		//messageId.replace("<", "");
+		messageId = messageId.replace("&#60;", "<");
+		messageId = messageId.replace("&lt;" , "<");
+		//messageId.replace(">", "");
+		messageId = messageId.replace("&#62;", ">");
+		messageId = messageId.replace("&gt;" , ">");
 		
+
+		// Get encryption certificate
+		String targetDomain = "";
+		if(to.contains("@")) {
+			targetDomain = to.split("@", 2)[1];
+		}
+
+		byte[] encryptionCert = null;
+		byte[] signingCert;
+		String signingPassword;
+		DirectConfigManager directConfig = new DirectConfigManager(Installation.installation().externalCache());
+		signingCert = directConfig.getSigningCert(SigningCertType.GOOD_CERT);
+		signingPassword = directConfig.getSigningCertPassword(SigningCertType.GOOD_CERT);
+		String encCertSource = "";
+
+		if (isEmpty(encryptionCert) ) {
+			// not uploaded - pre-installed for a known domain - go find it
+			// it is required to be in .der format 
+			File certFile = directConfig.getEncryptionCertFile(targetDomain);
+			//				if (certFile == null)
+			//					throw new Exception("Cannot load pre-installed cert for domain " + targetDomain);
+			if (certFile != null)
+				try {
+					encryptionCert = Io.bytesFromFile(certFile);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			if (!isEmpty(encryptionCert)) {
+				logger.info("    Encryption cert found installed in toolkit");
+				encCertSource = "Installed in toolkit";
+			}
+		} 
+
+		if (isEmpty(encryptionCert)) {
+			// not uploaded or pre-installed for the target domain.  Try fetching
+			// from DNS.
+			DnsLookup dl = new DnsLookup();
+			String encCertString = null;
+			try {
+				encCertString = dl.getCertRecord(targetDomain);
+			} catch (TextParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (encCertString != null)
+				encryptionCert = Base64Coder.decode(encCertString);
+			if (!isEmpty(encryptionCert)) {
+				logger.info("    Encryption cert pulled from DNS");
+				encCertSource = "DNS";
+			}
+
+		}
 		
-		
+		// Create the Direct transaction
+		DirectTransaction transaction = new DirectTransaction(signingCert, signingPassword, from, to, "MDN", targetDomain, messageId, encryptionCert);
+		try {
+			transaction.runMDN(messageId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// this only applies to certificates in byte[] format
+	boolean isEmpty(byte[] b) {
+		if (b == null) return true;
+		if (b.length < 10) return true;
+		return false;
+	}
+
+	String getDirectServerName(String domainName) {
+		String directServerName = null;
+		try {
+			directServerName = new DnsLookup().getMxRecord(domainName);
+		} catch (TextParseException e) {
+			logger.error("    Error parsing MX record from DNS - for domain " + domainName);
+		}
+
+		if (directServerName != null && !directServerName.equals(""))
+			return directServerName;
+
+		logger.error("    MX record lookup in DNS did not provide a mail handler hostname for domain " + domainName);
+		directServerName = "smtp." + domainName;
+		logger.error( "    Guessing at mail server name - " + directServerName);
+		return directServerName;
 	}
 
 }
