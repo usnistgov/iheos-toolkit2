@@ -89,7 +89,7 @@ public class UpdateCodesTest {
 	
 	@Test
 	public void runTest() throws XdsInternalException, IOException, FactoryConfigurationError {
-		File testDataDir = new File("/Users/bmajur/tmp/NA2014/testdata");
+		File testDataDir = new File("/Users/bmajur/workspace/toolkit/xdstools2/public_resources/toolkitx/testkit/testdata-repository");
 		CodeUpdater engine = new CodeUpdater();
 		engine.walkTestData(testDataDir, codesFile);
 	}
