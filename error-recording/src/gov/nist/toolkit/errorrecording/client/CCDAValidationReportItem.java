@@ -43,7 +43,7 @@ public class CCDAValidationReportItem {
 			break;
 
 		default:
-			status = "Error";
+			status = "Information";
 			break;
 		}
 	}
