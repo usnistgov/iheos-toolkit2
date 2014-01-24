@@ -2,7 +2,7 @@ package gov.nist.toolkit.directsim;
 
 import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.direct.config.DirectConfigManager;
-import gov.nist.messageDispatch.MessageDispatchUtils;
+import gov.nist.direct.messageProcessor.utils.MessageDispatchUtils;
 import gov.nist.toolkit.actorfactory.DirectActorFactory;
 import gov.nist.toolkit.common.coder.Base64Coder;
 import gov.nist.toolkit.directsupport.SMTPException;
@@ -18,6 +18,7 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.valsupport.message.HtmlValFormatter;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -80,15 +81,9 @@ public class DoComms implements Runnable {
 		if (readSMTPMessage() == false)
 			return;
 		logger.info("Processing message from " + directFrom);
-
-		MimeMessage mmsg;
-		try {
-			mmsg = new MimeMessage(Session.getDefaultInstance(System.getProperties(), null), Io.bytesToInputStream(message.toString().getBytes()));
-			MessageDispatchUtils.isMDN(mmsg);   // if this is going to fail spectacularly, let it do it early
-		} catch (MessagingException e2) {
-			logger.error("Message fails MimeMessage parser");
-			return;
-		}
+		
+		// Need to know if it is a MDN or not so we know if we have to send MDN back
+		boolean isMDN = false;
 
 		logger.info("Mime Message parsing successful");
 
@@ -214,7 +209,20 @@ public class DoComms implements Runnable {
 			mvr = vms.runValidation(vc, null, messageBytes, privKey, gerb);
 
 			logger.info("Message Validation Complete");
-
+			
+			
+			try {
+				//MimeMessage mmsg = new MimeMessage(Session.getDefaultInstance(System.getProperties(), null), Io.bytesToInputStream(message.toString().getBytes()));
+				MessageDispatchUtils messageUtils = new MessageDispatchUtils(new GwtErrorRecorder(), messageBytes, privKey, vc.privKeyPassword);
+				if(messageUtils.isMDN()) {
+					isMDN = true;
+				}
+			} catch (MessagingException e2) {
+				logger.error("Message fails MimeMessage parser");
+				return;
+			}
+		
+		
 		} 
 		//		catch (DirectParseException e) {
 		//			logger.error(ExceptionUtil.exception_details(e));
@@ -309,8 +317,12 @@ public class DoComms implements Runnable {
 
 		logger.info("Done");
 		
-		// Send MDN
-		sendMDN(directTo.get(0), directFrom, mvr);
+
+		
+		// Send MDN if it is Direct Message
+		if(!isMDN) {
+			sendMDN(directTo.get(0), directFrom, mvr);
+		}
 
 
 	}
