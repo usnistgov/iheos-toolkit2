@@ -44,21 +44,6 @@
                     <Value>en-us</Value>
                 </ValueList>
             </Slot>
-            <Slot name="size">
-                <ValueList>
-                    <Value>4</Value>
-                </ValueList>
-            </Slot>
-            <Slot name="hash">
-                <ValueList>
-                    <Value>e543712c0e10501972de13a5bfcbe826c49feb75</Value>
-                </ValueList>
-            </Slot>
-            <Slot name="URI">
-                <ValueList>
-                    <Value>http://</Value>
-                </ValueList>
-            </Slot>
             <Slot name="serviceStartTime">
                 <ValueList>
                     <Value>200712230800</Value>
