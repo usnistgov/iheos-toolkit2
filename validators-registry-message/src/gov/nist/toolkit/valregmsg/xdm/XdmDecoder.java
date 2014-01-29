@@ -195,27 +195,33 @@ public class XdmDecoder extends MessageValidator {
 						// Attempt validation of document but only if it is a CDA R2 (and hopefully a CCDA)
 						byte[] contents = doc.ba;
 
-						if (new CdaDetector().isCDA(contents)) {
-							er.detail("Input is CDA R2, try validation as CCDA");
-							ValidationContext docVC;
-							if (vc.getInnerContextCount() > 0) {
-								docVC = vc.getInnerContext(0);
-							} else {
-								docVC = new ValidationContext();
-								docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
-								docVC.isDIRECT = false;
-							}
-							docVC.isCCDA = true;
-							er.detail("Scheduling validation as type " + docVC.ccdaType);
+						try{
+							if (new CdaDetector().isCDA(contents)) {
+								er.detail("Input is CDA R2, try validation as CCDA");
+								ValidationContext docVC;
+								if (vc.getInnerContextCount() > 0) {
+									docVC = vc.getInnerContext(0);
+								} else {
+									docVC = new ValidationContext();
+									docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
+									docVC.isDIRECT = false;
+								}
+								docVC.isCCDA = true;
+								er.detail("Scheduling validation as type " + docVC.ccdaType);
 
-							MessageValidatorFactory.getValidatorForCCDA(erBuilder, contents, mvc, docVC);
-//							MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, null, docVC, null);
-//							mve.run();
+								MessageValidatorFactory.getValidatorForCCDA(erBuilder, contents, mvc, docVC);
+								//							MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, null, docVC, null);
+								//							mve.run();
+
+								// MANDATORY for validation report
+								er.detail("XDM Validation done");
+
+							} else {
+								er.detail("Is not a CDA R2 so no validation attempted");
+								logger.info("Is not a CDA R2 so no validation attempted");
+							}
 							
-							// MANDATORY for validation report
-							er.detail("XDM Validation done");
-							
-						} else {
+						} catch(Exception e) {
 							er.detail("Is not a CDA R2 so no validation attempted");
 							logger.info("Is not a CDA R2 so no validation attempted");
 						}
