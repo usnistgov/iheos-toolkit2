@@ -7,7 +7,7 @@
         <RegisterTransaction>
             <NoPatientId/>
             <XDSb/>
-            <MetadataFile>single_doc.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
         </RegisterTransaction>
     </TestStep>
     <TestStep id="query">

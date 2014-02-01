@@ -11,7 +11,7 @@
                 symbol="$apnd_doc_uuid$"/>
                 -->
             <UseReport section="submit" step="submit" reportName="docid" useAs="$apnd_doc_uuid$"/>
-            <MetadataFile>apnd.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <Report name="ssuid" section="InputMetadata">
                 //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
             </Report>
@@ -28,7 +28,7 @@
                 symbol="$apnd_doc_uuid$"/>
                 -->
             <UseReport section="submit" step="submit_copy" reportName="docid" useAs="$apnd_doc_uuid$"/>
-            <MetadataFile>apnd.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <Report name="ssuid" section="InputMetadata">
                 //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
             </Report>

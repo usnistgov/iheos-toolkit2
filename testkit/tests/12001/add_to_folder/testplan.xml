@@ -7,7 +7,7 @@
         <RegisterTransaction>
             <XDSb/>
             <UseReport section="create_folder" step="submit_fol" reportName="folid" useAs="$Folder$"/>   
-            <MetadataFile>single_doc.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <!--
             <UseId testdir="../create_folder" 
                    id="Folder" 

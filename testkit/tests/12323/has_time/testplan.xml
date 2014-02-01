@@ -7,7 +7,7 @@
         <RegisterTransaction>
             <XDSb/>
             <AssignUuids/>
-            <MetadataFile>fol_has_time.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <Report name="folid" section="InputMetadata">
                 //*[local-name()='RegistryPackage' and descendant::*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a']]/@id           
             </Report>

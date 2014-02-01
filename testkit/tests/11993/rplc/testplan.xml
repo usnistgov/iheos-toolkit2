@@ -15,7 +15,7 @@
                 symbol="$rplc_doc_uuid$"/>
                 -->
             <UseReport section="submit" step="submit_copy" reportName="docid" useAs="$rplc_doc_uuid$"/>
-            <MetadataFile>rplc.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <Report name="ssuid" section="InputMetadata">
                 //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
             </Report>

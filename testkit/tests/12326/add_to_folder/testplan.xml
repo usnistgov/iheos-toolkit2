@@ -7,7 +7,7 @@
             <XDSb/>
             <UseReport section="create_folder" step="submit_fol" reportName="folid" useAs="$Folder$"/>   
             <UseReport section="create_folder" step="submit_fol" reportName="docid" useAs="$Document$"/>   
-            <MetadataFile>add.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <!--
             <UseId testdir="../create_folder" 
                    id="Folder" 

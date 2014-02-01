@@ -15,7 +15,7 @@
                 symbol="$xfrm_doc_uuid$"/>
                 -->
             <UseReport section="submit" step="submit" reportName="docid" useAs="$xfrm_doc_uuid$"/>
-            <MetadataFile>xfrm.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <Report name="ssuid" section="InputMetadata">
                 //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
             </Report>
@@ -36,7 +36,7 @@
                 symbol="$xfrm_doc_uuid$"/>
                 -->
             <UseReport section="submit" step="submit_copy" reportName="docid" useAs="$xfrm_doc_uuid$"/>
-            <MetadataFile>xfrm.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <Report name="ssuid" section="InputMetadata">
                 //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
             </Report>

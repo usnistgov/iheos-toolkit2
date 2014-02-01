@@ -13,7 +13,7 @@
             <UseId testdir="../add_to_folder" id="Document01" step="add_to_folder" section="AssignedUuids"
                 symbol="$rplc_doc_uuid$"/>
                 -->
-            <MetadataFile>rplc.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
         </RegisterTransaction>
     </TestStep>
 </TestPlan>

@@ -21,9 +21,9 @@
                         </Slot>
                         <Slot name="$XDSDocumentEntryReferenceIdList">
                             <ValueList>
-                                <Value>'$refId0$'</Value>
-                                <Value>'$refId1$'</Value>
-                                <Value>'$refId2$'</Value>
+                                <Value>('$refId0$')</Value>
+                                <Value>('$refId1$')</Value>
+                                <Value>('$refId2$')</Value>
                             </ValueList>
                         </Slot>
                         <Slot name="$XDSDocumentEntryStatus">

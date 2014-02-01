@@ -7,7 +7,7 @@
         <ProvideAndRegisterTransaction>
             <XDSb/>
             <NoPatientId/>
-            <MetadataFile>single_doc.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <Document id="Document01">my_document.pdf</Document>
         </ProvideAndRegisterTransaction>
     </TestStep>

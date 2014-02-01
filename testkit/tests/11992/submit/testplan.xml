@@ -7,7 +7,7 @@
         <RegisterTransaction>
             <XDSb/>
             <AssignUuids/>
-            <MetadataFile>single_doc.xml</MetadataFile>
+            <MetadataFile>metadata.xml</MetadataFile>
             <Report name="docid" section="InputMetadata">
                 //*[local-name()='ExtrinsicObject']/@id
             </Report>
