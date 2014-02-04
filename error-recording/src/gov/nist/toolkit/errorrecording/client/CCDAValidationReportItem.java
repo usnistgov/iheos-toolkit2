@@ -29,6 +29,19 @@ public class CCDAValidationReportItem {
 			this.xpath = "";
 			this.resource = resource;
 		}
+		
+		// Get Conformance
+		if(this.msg.contains("(CONF:")) {
+			String[] conf = this.msg.split("\\(CONF:", 2);
+			String[] confNumber = conf[1].split("\\)", 2);
+			if(confNumber[0].contains(",")) {
+				confNumber[0] = confNumber[0].replace(", CONF:", "<br />");
+			}
+			this.dts = confNumber[0];
+		} else if(!this.dts.equals("")) {
+			this.dts = "-";
+		}
+		
 		switch (level) {
 		case DETAIL:
 			status = "Information";

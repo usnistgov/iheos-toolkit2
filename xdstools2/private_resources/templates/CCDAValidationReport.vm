@@ -47,7 +47,7 @@ table.gridtable td {
 				<br /><br />
 				<table style="text-align: left; width: 100%;empty-cells: show;" class="gridtable">
 				<tr>
-			  	<th style="width:5%;"><span style="font-weight: bold;font-size: 18px;">DTS</span></th>
+			  	<th style="width:5%;"><span style="font-weight: bold;font-size: 18px;">CONF</span></th>
 			  	<th style="width:8%;"><span style="font-weight: bold;font-size: 18px;">Status</span></th>
 			  	<th style="width:57%;"><span style="font-weight: bold;font-size: 18px;">Message</span></th>
 			  	<th style="width:30%;"><span style="font-weight: bold;font-size: 18px;">Resource</span></th>
