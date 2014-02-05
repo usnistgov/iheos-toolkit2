@@ -32,12 +32,17 @@ public class CCDAValidationReportItem {
 		
 		// Get Conformance
 		if(this.msg.contains("(CONF:")) {
-			String[] conf = this.msg.split("\\(CONF:", 2);
-			String[] confNumber = conf[1].split("\\)", 2);
-			if(confNumber[0].contains(",")) {
-				confNumber[0] = confNumber[0].replace(", CONF:", "<br />");
+			String confNumber = "";
+			String[] conf = this.msg.split("CONF:");
+			for(int i=1 ; i < conf.length ; i++) {
+				if(conf[i].endsWith(", ")) {
+					confNumber += conf[i].replace(", ", "<br />");
+				} else {
+					confNumber += conf[i].split("\\)", 2)[0];
+					confNumber += "<br />";
+				}
+				this.dts = confNumber;
 			}
-			this.dts = confNumber[0];
 		} else if(!this.dts.equals("")) {
 			this.dts = "-";
 		}
