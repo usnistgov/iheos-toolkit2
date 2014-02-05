@@ -84,6 +84,7 @@ public class DoComms implements Runnable {
 		
 		// Need to know if it is a MDN or not so we know if we have to send MDN back
 		boolean isMDN = false;
+		boolean isDirect = false;
 
 		logger.info("Mime Message parsing successful");
 
@@ -217,6 +218,9 @@ public class DoComms implements Runnable {
 				if(messageUtils.isMDN()) {
 					isMDN = true;
 				}
+				if(messageUtils.isDIRECT()) {
+					isDirect = true;
+				}
 			} catch (MessagingException e2) {
 				logger.error("Message fails MimeMessage parser");
 				return;
@@ -320,7 +324,7 @@ public class DoComms implements Runnable {
 
 		
 		// Send MDN if it is Direct Message
-		if(!isMDN) {
+		if(!isMDN && isDirect) {
 			sendMDN(directTo.get(0), directFrom, mvr);
 		}
 
