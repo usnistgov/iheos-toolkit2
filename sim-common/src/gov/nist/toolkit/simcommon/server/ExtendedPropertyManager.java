@@ -21,7 +21,7 @@ public class ExtendedPropertyManager {
 		try {
 			properties.load(new FileInputStream(propFile));
 		} catch (Exception e) {
-			logger.error("Cannot load extended.properties", e);
+			logger.info("Cannot load extended.properties", e);
 		}
 	}
 	
