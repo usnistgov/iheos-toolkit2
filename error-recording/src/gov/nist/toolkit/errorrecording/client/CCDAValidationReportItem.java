@@ -8,7 +8,7 @@ public class CCDAValidationReportItem {
 	private String status;
 	private String xpath;
 
-	public CCDAValidationReportItem(String entire_msg, String resource, ValidatorErrorItem.ReportingLevel level) {
+	public CCDAValidationReportItem(String entire_msg, String resource, String xpath, ValidatorErrorItem.ReportingLevel level) {
 		this.resource = "";
 		this.xpath = "";
 		if(entire_msg.contains("|")) {
@@ -22,11 +22,12 @@ public class CCDAValidationReportItem {
 				this.msg += " | " + split_msg[2];
 			} else {
 				this.resource = resource;
+				this.xpath = xpath;
 			}
 		} else {
 			this.dts = "";
 			this.msg = entire_msg;
-			this.xpath = "";
+			this.xpath = xpath;
 			this.resource = resource;
 		}
 		

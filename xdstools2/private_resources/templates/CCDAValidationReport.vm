@@ -59,7 +59,7 @@ table.gridtable td {
 		<tr>
       	<td style="width:5%;"><span style="color:$color;">$reportToken.getDts()</span></td>
       	<td style="width:8%;"><span style="color:$color;">$reportToken.getStatus()</span></td>
-      	<td style="width:67%;"><span style="color:$color;">$reportToken.getMsg()</span><br /><span style="font-weight:bold;">$reportToken.getXpath()</span></td>
+      	<td style="width:67%;"><span style="color:$color;">$reportToken.getMsg()</span><br /><span style="font-weight:bold;color:$color;">$reportToken.getXpath()</span></td>
       	<td style="width:20%;"><span style="color:$color;">$reportToken.getResource()</span></td>
     	</tr>
     	#else
