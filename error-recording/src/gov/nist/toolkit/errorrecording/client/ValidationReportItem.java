@@ -1,6 +1,8 @@
 package gov.nist.toolkit.errorrecording.client;
 
 
+import java.util.ArrayList;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
 public class ValidationReportItem {
@@ -10,10 +12,10 @@ public class ValidationReportItem {
 	private String dts;
 	private String found;
 	private String expected;
-	private String rfc_name;
+	private ArrayList<String> rfc_name = new ArrayList<String>();
 	private String color;
 	private int type;
-	private String rfc_link;
+	private ArrayList<String> rfc_link = new ArrayList<String>();
 	
 	//public enum ReportingLevel { SECTIONHEADING, SUCCESS, ERROR, WARNING,  INFO, CONTENT};
 	
@@ -71,11 +73,14 @@ public class ValidationReportItem {
 		rfc = StringEscapeUtils.escapeHtml(rfc);
 		if(rfc.contains(";")) {
 			String[] rfcSplit = rfc.split(";");
-			this.rfc_name = rfcSplit[0];
-			this.rfc_link = rfcSplit[1];
+			if(rfcSplit.length % 2 == 0) {
+				for(int i=0;i<rfcSplit.length-1;i=i+2) {
+					this.rfc_name.add(rfcSplit[i]);
+					this.rfc_link.add(rfcSplit[i]);
+				}
+			}
 		} else {
-			this.rfc_name = rfc;
-			this.rfc_link = "";
+			this.rfc_name.add(rfc);
 		}
 
 	}
@@ -98,8 +103,7 @@ public class ValidationReportItem {
 		this.color = "color:black";
 		this.dts = "";
 		this.expected = "";
-		this.rfc_name = "";
-		this.rfc_link = "";
+		this.rfc_name.add("-");
 	}
 	
 	public ValidationReportItem(String name) {
@@ -113,8 +117,7 @@ public class ValidationReportItem {
 		this.dts = "";
 		this.found = "";
 		this.expected = "";
-		this.rfc_name = "";
-		this.rfc_link = "";
+		this.rfc_name.add("-");
 		
 		if(this.name.contains(";anchor=")) {
 			String anchor = "";
@@ -165,11 +168,11 @@ public class ValidationReportItem {
 		this.expected = expected;
 	}
 
-	public String getRfc_name() {
+	public ArrayList<String> getRfc_name() {
 		return rfc_name;
 	}
 
-	public void setRfc_name(String rfc_name) {
+	public void setRfc_name(ArrayList<String> rfc_name) {
 		this.rfc_name = rfc_name;
 	}
 
@@ -189,11 +192,11 @@ public class ValidationReportItem {
 		this.type = type;
 	}
 
-	public String getRfc_link() {
+	public ArrayList<String> getRfc_link() {
 		return rfc_link;
 	}
 
-	public void setRfc_link(String rfc_link) {
+	public void setRfc_link(ArrayList<String> rfc_link) {
 		this.rfc_link = rfc_link;
 	}
 

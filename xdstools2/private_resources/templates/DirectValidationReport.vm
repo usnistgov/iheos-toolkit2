@@ -113,13 +113,20 @@ table.gridtable td {
       	<td style="width:32%;"><span style="$reportToken.getColor();">$reportToken.getFound()</span></td>
       	<td style="width:30%;"><span style="$reportToken.getColor();">$reportToken.getExpected()</span></td>
       	<td style="width:15%;"><span>
-      	#if(!$reportToken.getRfc_link().isEmpty()) 
-      	<a href="$reportToken.getRfc_link()" target="_blank">$reportToken.getRfc_name()</a>
-      	#else
-      	$reportToken.getRfc_name()
-      	#end
-      	</span></td>
-    	</tr>
+      	
+      	#if(!$reportToken.getRfc_link().isEmpty())
+      	 
+      	#set($count = 0)
+      	#foreach( $name in $reportToken.getRfc_name() )
+	      	<a href="$reportToken.getRfc_link().get($count)" target="_blank">$name</a><br />
+	      	#set($count = $count + 1)
+	    #end
+	    
+	    #else
+			$reportToken.getRfc_name().get(0)
+	    #end
+	      	</span></td>
+	    	</tr>
     	
     #elseif($reportToken.getType() == 2)
     	#if($isFirstOne != 0)

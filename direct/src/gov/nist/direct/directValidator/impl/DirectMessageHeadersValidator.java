@@ -60,14 +60,14 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 		String rfc = "RFC 5321: Section 4.4;http://tools.ietf.org/html/rfc5321.html#section-4.4;RFC 5322: Section 3.6.7;http://tools.ietf.org/html/rfc5322#section-3.6.7";
 		String txtReturnPath = SafeHtmlUtils.htmlEscape(returnPath);
 		if(returnPath.equals("")) {
-			er.warning("103-105", "Return Path", "Not present", "Should be present (addr-spec)", "RFC 5321: Section 4.4 - RFC 5322: Section 3.6.7");
+			er.warning("103-105", "Return Path", "Not present", "Should be present (< addr-spec >)", "RFC 5321: Section 4.4 - RFC 5322: Section 3.6.7");
 			return;
 		}
 		
 		if(ValidationUtils.validateAddrSpec(returnPath)) {
-			er.success("103-105", "Return Path", txtReturnPath, "addr-spec", rfc);
+			er.success("103-105", "Return Path", txtReturnPath, "< addr-spec >", rfc);
 		} else {
-			er.error("103-105", "Return Path", txtReturnPath, "addr-spec", rfc);
+			er.error("103-105", "Return Path", txtReturnPath, "< addr-spec >", rfc);
 		}
 		
 	}
