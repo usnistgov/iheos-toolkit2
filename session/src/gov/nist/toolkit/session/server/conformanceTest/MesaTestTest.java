@@ -37,7 +37,7 @@ public class MesaTestTest {
 
 	@Before
 	public void before() {
-		System.setProperty("XDSCodesFile", "/Users/bmajur/tmp/toolkit2/environment/NA2013/codes.xml");
+		System.setProperty("XDSCodesFile", "/Users/bmajur/tmp/toolkit2/environment/NA2014/codes.xml");
 	}
 
 	//	@Test
@@ -86,21 +86,66 @@ public class MesaTestTest {
 		if (!pass) System.out.println(testName + ": failed");
 	}
 
+	class TestResult { 
+		String testNum; 
+		List<AssertionResult> msgs = new ArrayList<AssertionResult>();
+		boolean passed = true;
+
+		TestResult(String testnum) { testNum = testnum; } 
+	}
+
+
 	// non-tls register transaction tests
 	@Test
 	public void registerTests() {
 		ParamBuilder pbuilder = new ParamBuilder();
 		pbuilder.withParam("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
-		String[] testsx = { "11992" };
-		String[] tests = { "12346", "11901", "11966",
-				"11990", "11991", "11992", "11993", "11994", "11995", "11996",
-				"11997", "11998", "11999", "12000", "12001", "12004", "12084", 
-				"12323", "12326", "12327", "12370" };
+		String[] testsx = { 
+				"11990",
+				"11991",
+				"11992",
+		};
+		String[] rb_tests = { 
+				"11990",
+				"11991",
+				"11992",
+				"11993",
+				"11994",
+				"11995",
+				"11996",
+				"11997",
+				"11998",
+				"11999",
+				"12000",
+				"12001",
+				"12002",
+				"12004",
+				"12022",
+				"12084",
+				"12323",
+				"12326",
+				"12327",
+				"12329",
+				"12370",
+				"12379",
+		"12051" };
+
+		/*
+		 * Errors:
+		 * 
+11996: Invalid Patient ID test
+Error Did not find expected string in error messages: XDSUnknownPatientId
+11998: Reject Submission, Patient ID on Replacement Document does not match Original
+Validator: ExtrinsicObject urn:uuid:7c2c3752-a95b-4608-b728-aa5f4a7b15db has status Deprecated instead of 'Approved'
+12002: Reject Add Document to Folder - Patient ID does not match
+Error Did not find expected string in error messages: XDSPatientIdDoesNotMatch
+12379: Extra Metadata
+Error Expected errorCode of XDSExtraMetadataNotSaved
+		 */
 		int failures = 0;
 		int ran = 0;
-		class TestResult { String testNum; List<AssertionResult> msgs = new ArrayList<AssertionResult>(); TestResult(String testnum) { testNum = testnum; } }
 		List<TestResult> testResults = new ArrayList<TestResult>();
-		for (String testName : tests) {
+		for (String testName : rb_tests) {
 			TestResult testResult = new TestResult(testName);
 			List<Result> results = new XdsTestServiceManager(session).runMesaTest(
 					mesaTestSession, 
@@ -127,7 +172,28 @@ public class MesaTestTest {
 		}
 		System.out.println("\n========================\n");
 	}
-	
+
+	List<TestResult> runtest(String testName, ParamBuilder pbuilder) {
+		List<TestResult> testResults = new ArrayList<TestResult>();
+		TestResult testResult = new TestResult(testName);
+		List<Result> results = new XdsTestServiceManager(session).runMesaTest(
+				mesaTestSession, 
+				siteSpec(), 
+				testName, 
+				sections, 
+				pbuilder.getSParms(), 
+				pbuilder.getOParms(), 
+				stopOnFirstFailure);
+		for (Result result : results) {
+			if (!result.passed()) {
+				testResult.passed = false;
+				testResult.msgs.addAll(result.getFailedAssertions());
+				testResults.add(testResult);
+			}
+		}
+		return testResults;
+	}
+
 	// This parses the wierd results from the test engine  so that only the error message shows
 	String lines(String content, int numberOfLines) {
 		if (content == null) return content;

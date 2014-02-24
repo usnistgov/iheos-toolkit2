@@ -7,9 +7,10 @@ import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -22,41 +23,90 @@ public class CodeUpdater {
 	private static final QName nodeRepresentationQName = new QName("nodeRepresentation");
 	private static final QName valueQName = new QName("value");
 
-	// Each submission directory contains:
-	//  testplan.xml
-	//  metadata.xml
-	// This loop creates a backup of metadata.xml in metadata.bak
-	// metadata.xml becomes the new, cleaned up metadata file
-	void walkTestData(File testDataDir, File codesFile) throws IOException, XdsInternalException, FactoryConfigurationError {
+	// walk the file tree looking for testplan.xml files 
+	// when one is found, edit all referenced metadata files updating their codes
+	// all metadata files are backed up by creating .bak file in same directory
+	void walkTestData(File testDataDir, File codesFile) {
 		init(codesFile);
-		File[] submissions = testDataDir.listFiles();
-		if (submissions == null) return;
-		for (File submission : submissions) {
-			File orig = new File(submission, "metadata.xml");
-			File bak = new File(submission, "metadata.bak");
-			if (!bak.exists()) {				
-				// might be first time running - back up data
-				if (!orig.exists()) {
-					// not a valid submission - skip
-					continue;
-				}
-				FileUtils.copyFile(orig, bak);
-			}
-
-			// now for processing read backup file and write original
-			System.out.println(bak);
-			OMElement bakEle = Util.parse_xml(bak);
-			List<OMElement> badCodes = nonConformingCodes(bakEle);
-			System.out.println(badCodes.size() + " bad codes");
-			for (OMElement b : badCodes) {
-				Code c = code(b);
-				System.out.println("\t" + c);
-			}
-			updateCodes(badCodes);
-			List<OMElement> badCodes2 = nonConformingCodes(bakEle);
-			System.out.println("after repair, " + badCodes2.size() + " bad codes remain");
-			Io.stringToFile(orig, new OMFormatter(bakEle).toString());
+		walkTestData2(testDataDir);
+	}
+	
+	void walkTestData2(File dir) {
+//		System.out.println("walking " + dir);
+		if (!dir.isDirectory()) return;
+//		System.out.println(dir + "  is a directory");
+		if (isSection(dir)) {
+			processSection(dir);
+			return;
 		}
+		System.out.println(dir);
+		File[] files = dir.listFiles();
+		if (files == null) return;
+		for (File file : files) {
+			walkTestData2(file);
+		}
+	}
+
+	void processSection(File section) {
+		System.out.println("Section: " + section);
+		try {
+			if (!isSection(section)) return;
+			Map<String, File> perStepMetadataFiles = metadataFileMap(section);
+//			System.out.println("Section has steps: " + perStepMetadataFiles.keySet());
+			for (String stepName : perStepMetadataFiles.keySet()) {
+				File stepMetadataFile = perStepMetadataFiles.get(stepName);
+				File stepMetadataBackupFile = new File(stepMetadataFile.toString() + ".bak");
+				if (!stepMetadataBackupFile.exists()) {				
+					// might be first time running - back up data
+					FileUtils.copyFile(stepMetadataFile, stepMetadataBackupFile);
+				}
+				// now for processing  - read backup file and write original
+				OMElement bakEle = Util.parse_xml(stepMetadataBackupFile);
+				List<OMElement> badCodes = nonConformingCodes(bakEle);
+//				System.out.println(badCodes.size() + " bad codes");
+				for (OMElement b : badCodes) {
+					Code c = code(b);
+//					System.out.println("\t" + c);
+				}
+				updateCodes(badCodes);
+				List<OMElement> badCodes2 = nonConformingCodes(bakEle);
+//				System.out.println("after repair, " + badCodes2.size() + " bad codes remain");
+				Io.stringToFile(stepMetadataFile, new OMFormatter(bakEle).toString());
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+
+	boolean isSection(File here) {
+		if (!here.isDirectory()) return false;
+		if (!(new File(here, "testplan.xml").exists())) return false;
+		return true;
+	}
+
+	// returns stepName ==> metadata file name
+	Map<String, File> metadataFileMap(File section) {
+		Map<String, File> fileMap = new HashMap<String, File>();
+
+		OMElement testplanEle;
+		try {
+			testplanEle = Util.parse_xml(new File(section, "testplan.xml"));
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+		List<OMElement> testSteps = MetadataSupport.decendentsWithLocalName(testplanEle, "TestStep");
+		for (OMElement testStep : testSteps) {
+			String stepName = testStep.getAttributeValue(MetadataSupport.id_qname);
+			OMElement metadataFileEle = MetadataSupport.firstDecendentWithLocalName(testStep, "MetadataFile");
+			if (metadataFileEle == null) continue;
+			String metadataFileName = metadataFileEle.getText();
+			if (metadataFileName == null || metadataFileName.equals("")) continue;
+			File metadataFile = new File(section, metadataFileName);
+			if (!(metadataFile.exists())) continue;
+			fileMap.put(stepName, metadataFile);
+		}
+
+		return fileMap;
 	}
 
 	AllCodes allCodes = null;
