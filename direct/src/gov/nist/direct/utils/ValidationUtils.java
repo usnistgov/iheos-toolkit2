@@ -53,6 +53,20 @@ public class ValidationUtils {
 	final static SimpleDateFormat[] acceptedSdfs = {dateFormat1, dateFormat2};
 	public static boolean multipart = false;
 	public static final String domainNameFormat = "[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4}";
+	
+	// Dates patterns
+	final static String dayOfWeek = "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
+	final static String time = "([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}";
+	final static String timezone = "[-+]((0[0-9]|1[0-3])([03]0|45)|1400)";
+	final static String letterTimezone = "\\([A-Z]*\\)";
+	final static String whitespace = "\\s";
+	final static String unlimitedWhiteSpace = "(" + whitespace + ")*";
+	final static String datePattern = "(31 (Jan|Mar|May|Jul|Aug|Oct|Dec)" +    			// 31th of each month
+			"|30 (Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)" +      		// 30th of each month except Feb
+			"|[0-2]?\\d (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +  // days: 01-29th or 1-29th for each month
+			" " +
+			"((19|20)(\\d{2}))";												// years: 1900 to 2099.
+
 
 	/**
 	 * Computes the length of an email domain
@@ -395,9 +409,7 @@ public class ValidationUtils {
 		splitHeaders.add(headerNames);
 		splitHeaders.add(headerContents);
 		return splitHeaders;
-	}
-	
-	
+	}	
 
 	public static boolean isAscii(String str){
 		boolean isAscii = true;
@@ -473,25 +485,32 @@ public class ValidationUtils {
 		return bool;
 	}
 	
-	public static String getDatePattern() {
-		final String dayOfWeek = "(Mon|Tue|Wed|Thu|Fri|Sat|Sun)";
-		final String time = "([01]?[0-9]|2[0-3])(:[0-5][0-9]){1,2}";
-		final String timezone = "[-+]((0[0-9]|1[0-3])([03]0|45)|1400)";
-		final String letterTimezone = "\\([A-Z]*\\)";
-		final String whitespace = "\\s";
-		final String date = "(31 (Jan|Mar|May|Jul|Aug|Oct|Dec)" +    			// 31th of each month
-				"|30 (Jan|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)" +      		// 30th of each month except Feb
-				"|[0-2]?\\d (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))" +  // days: 01-29th or 1-29th for each month
-				" " +
-				"((19|20)(\\d{2}))";												// years: 1900 to 2099.
-		// handle bissextile years?
-		final String datePattern = "(" + dayOfWeek + "," + whitespace + ")?" + date + whitespace + time + whitespace + timezone + "(" +  whitespace + letterTimezone + ")" + "?";
-
-		return datePattern;
+	public static String getDatePatternWithSpace() {
+		// Pattern with more than one space
+		final String datePatternMoreSpace = "(" + dayOfWeek + "," + unlimitedWhiteSpace + ")?" + datePattern + unlimitedWhiteSpace + time + unlimitedWhiteSpace + timezone + "(" +  unlimitedWhiteSpace + letterTimezone + ")" + "?";
+		return datePatternMoreSpace;
 	}
+	
+	public static String getDatePattern() {		
+		final String pattern = "(" + dayOfWeek + "," + whitespace + ")?" + datePattern + whitespace + time + whitespace + timezone + "(" +  whitespace + letterTimezone + ")" + "?";
+		return pattern;
+	}
+		
+
 	
 	public static boolean validateDate(String origDate) {
 		Pattern pattern = Pattern.compile(getDatePattern(), Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(origDate);
+		
+		if(matcher.matches()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static boolean validateDateWithMoreSpace(String origDate) {
+		Pattern pattern = Pattern.compile(getDatePatternWithSpace(), Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(origDate);
 		
 		if(matcher.matches()) {

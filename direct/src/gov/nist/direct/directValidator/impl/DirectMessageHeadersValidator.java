@@ -278,7 +278,12 @@ public class DirectMessageHeadersValidator implements MessageHeadersValidator {
 			if(ValidationUtils.validateDate(origDate)) {
 				er.success("114", "Orig-Date", origDate, "[ day-of-week \",\" ] date time", rfc);
 			} else {
-				er.error("114", "Orig-Date", origDate, "[ day-of-week \",\" ] date time", rfc);
+				// Check if there are more than one space between different elements
+				if(ValidationUtils.validateDateWithMoreSpace(origDate)) {
+					er.warning("114", "Orig-Date", origDate, "[ day-of-week \",\" ] date time (your date might contain extra white space)", rfc);
+				} else {
+					er.error("114", "Orig-Date", origDate, "[ day-of-week \",\" ] date time", rfc);					
+				}
 			}
 		}
 	}
