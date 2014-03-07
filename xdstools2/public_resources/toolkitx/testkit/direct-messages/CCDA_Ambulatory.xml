@@ -13,6 +13,7 @@
     12/10/2013 NIST Update (multiple)
     01/07/2014 NIST Update (multiple)
     01/09/2014 NIST Update (vital signs mismatch)
+    03/06/2014 NIST Update (multiple - documentation available)
  -->
 <ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:cda="urn:hl7-org:v3"
 	xmlns:gsd="http://aurora.regenstrief.org/GenericXMLSchema"
@@ -95,26 +96,6 @@
 					codeSystemName="CDC - Race and Ethnicity"/>
 				<ethnicGroupCode code="2186-5" displayName="Not Hispanic or Latino"
 					codeSystem="2.16.840.1.113883.6.238" codeSystemName="CDC - Race and Ethnicity"/>
-				<guardian>
-					<code code="GPARNT" displayName="Grandfather"
-						codeSystem="2.16.840.1.113883.5.111" codeSystemName="HL7 Role code"/>
-					<addr use="HP">
-						<!-- HP is "primary home" from codeSystem 2.16.840.1.113883.5.1119 -->
-						<streetAddressLine>1357 Amber Drive</streetAddressLine>
-						<city>Beaverton</city>
-						<state>OR</state>
-						<postalCode>97006</postalCode>
-						<country>US</country>
-						<!-- US is "United States" from ISO 3166-1 Country Codes: 1.0.3166.1 -->
-					</addr>
-					<telecom value="tel:(816)276-6909" use="HP"/>
-					<guardianPerson>
-						<name>
-							<given>Ralph</given>
-							<family>Jones</family>
-						</name>
-					</guardianPerson>
-				</guardian>
 				<birthplace>
 					<place>
 						<addr>
@@ -389,46 +370,7 @@
 			</performer>
 		</serviceEvent>
 	</documentationOf>
-	<componentOf>
-		<encompassingEncounter>
-			<id extension="1" root="2.16.840.1.113883.4.6"/>
-			<code code="233604007" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED-CT"
-				displayName="Pnuemonia"/>
-			<effectiveTime>
-				<low value="201208060028+0500"/>
-				<high value="201208060058+0500"/>
-			</effectiveTime>
-			<responsibleParty>
-				<assignedEntity>
-					<id root="2.16.840.1.113883.4.6"/>
-					<assignedPerson>
-						<name>
-							<prefix>Dr</prefix>
-							<given>Henry</given>
-							<family>Seven</family>
-						</name>
-					</assignedPerson>
-				</assignedEntity>
-			</responsibleParty>
-			<encounterParticipant typeCode="ATND">
-				<assignedEntity>
-					<id root="2.16.840.1.113883.4.6"/>
-					<assignedPerson>
-						<name>
-							<prefix>Dr</prefix>
-							<given>Henry</given>
-							<family>Seven</family>
-						</name>
-					</assignedPerson>
-				</assignedEntity>
-			</encounterParticipant>
-			<location>
-				<healthCareFacility>
-					<id root="2.16.840.1.113883.4.6"/>
-				</healthCareFacility>
-			</location>
-		</encompassingEncounter>
-	</componentOf>
+
 	<!-- ********************************************************
      CDA Body
      ******************************************************** -->
@@ -505,7 +447,7 @@ Allergies, Adverse Reactions, Alerts
 								codeSystemName="LOINC"
 								displayName="Allergies, adverse reactions, alerts"/>
 							<statusCode code="completed"/>
-							<effectiveTime value="20070501">
+							<effectiveTime>
 								<low value="20070501"/>
 								<high value="20120806"/>
 							</effectiveTime>
@@ -603,10 +545,9 @@ Allergies, Adverse Reactions, Alerts
 							<code code="48765-2" codeSystem="2.16.840.1.113883.6.1"
 								codeSystemName="LOINC"
 								displayName="Allergies, adverse reactions, alerts"/>
-							<statusCode code="completed"/>
-							<effectiveTime value="20060501">
-								<low value="20060501"/>
-								<high value="20120806"/>
+							<statusCode code="active"/>
+							<effectiveTime>
+								<low value="20060501"/>	
 							</effectiveTime>
 							<entryRelationship typeCode="SUBJ">
 								<observation classCode="OBS" moodCode="EVN">
@@ -678,7 +619,7 @@ Allergies, Adverse Reactions, Alerts
 												displayName="Severity Observation"
 												codeSystem="2.16.840.1.113883.5.4"
 												codeSystemName="ActCode"/>
-											<text>
+											<text>medication
 												<reference value="#severity2"/>
 											</text>
 											<statusCode code="completed"/>
@@ -700,10 +641,9 @@ Allergies, Adverse Reactions, Alerts
 							<code code="48765-2" codeSystem="2.16.840.1.113883.6.1"
 								codeSystemName="LOINC"
 								displayName="Allergies, adverse reactions, alerts"/>
-							<statusCode code="completed"/>
-							<effectiveTime value="20080501">
+							<statusCode code="active"/>
+							<effectiveTime>
 								<low value="20080501"/>
-								<high value="20120806"/>
 							</effectiveTime>
 							<entryRelationship typeCode="SUBJ">
 								<observation classCode="OBS" moodCode="EVN">
@@ -967,9 +907,6 @@ IMMUNIZATIONS
 							</text>
 							<statusCode code="completed"/>
 							<effectiveTime xsi:type="IVL_TS" value="20120510"/>
-							<routeCode code="C28161" codeSystem="2.16.840.1.113883.3.26.1.1"
-								codeSystemName="National Cancer Institute (NCI) Thesaurus"
-								displayName="Intramuscular injection"/>
 							<doseQuantity value="50" unit="mcg"/>
 							<consumable>
 								<manufacturedProduct classCode="MANU">
@@ -980,10 +917,6 @@ IMMUNIZATIONS
 											displayName="Influenza virus vaccine"
 											codeSystemName="CVX">
 											<originalText>Influenza virus vaccine</originalText>
-											<translation code="111"
-												displayName="influenza, live, intranasal"
-												codeSystemName="CVX"
-												codeSystem="2.16.840.1.113883.12.292"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -1017,36 +950,15 @@ IMMUNIZATIONS
 							</text>
 							<statusCode code="completed"/>
 							<effectiveTime xsi:type="IVL_TS" value="20120401"/>
-							<routeCode code="C28161" codeSystem="2.16.840.1.113883.3.26.1.1"
-								codeSystemName="National Cancer Institute (NCI) Thesaurus"
-								displayName="Intramuscular injection"/>
 							<doseQuantity value="50" unit="mcg"/>
 							<consumable>
 								<manufacturedProduct classCode="MANU">
 									<templateId root="2.16.840.1.113883.10.20.22.4.54"/>
 									<!--  ********   Immunization Medication Information    ******** -->
-									<!--
-									<manufacturedMaterial>
-										<code code="103" codeSystem="2.16.840.1.113883.6.59"
-											displayName="Tetanus and diphtheria toxoids - preservative free"
-											codeSystemName="CVX">
-											<originalText>Tetanus and diphtheria toxoids -
-												preservative free</originalText>
-											<translation code="09"
-												displayName="Tetanus and diphtheria toxoids - preservative free"
-												codeSystemName="CVX"
-												codeSystem="2.16.840.1.113883.6.59"/>
-										</code>
-									</manufacturedMaterial>
-									-->
 									<manufacturedMaterial>
 										<code code="112" codeSystem="2.16.840.1.113883.12.292"
 											displayName="tetanus toxoid, NOS" codeSystemName="CVX">
 											<originalText>tetanus toxoid, NOS</originalText>
-											<translation code="09"
-												displayName="Tetanus and diphtheria toxoids - preservative free"
-												codeSystemName="CVX"
-												codeSystem="2.16.840.1.113883.6.59"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -1107,7 +1019,11 @@ MEDICATIONS
 									<td>Completed</td>
 									<td>Asthma (195967001 SNOMED CT)</td>
 									<td>
-										<content ID="FillIns">Generic Substitition Allowed</content>
+										<content ID="FillIns" />
+										<list listType="unordered">
+											<item>Generic Substitition Allowed</item>
+											<item>Label In Spanish</item>
+										</list>
 									</td>
 								</tr>
 							</tbody>
@@ -1147,10 +1063,6 @@ MEDICATIONS
 											<originalText>
 												<reference value="#Med1"/>
 											</originalText>
-											<translation code="573621"
-												displayName="Albuterol 0.09 MG/ACTUAT [Proventil]"
-												codeSystem="2.16.840.1.113883.6.88"
-												codeSystemName="RxNorm"/>
 										</code>
 									</manufacturedMaterial>
 									<manufacturerOrganization>
@@ -1223,11 +1135,7 @@ MEDICATIONS
 												<originalText>
 												<reference value="#Med1"/>
 												</originalText>
-												<translation code="573621"
-												displayName="Albuterol 0.09 MG/ACTUAT [Proventil]"
-												codeSystem="2.16.840.1.113883.6.88"
-												codeSystemName="RxNorm"/>
-												</code>
+												</code>												
 											</manufacturedMaterial>
 											<manufacturerOrganization>
 												<name>Medication Factory Inc.</name>
@@ -1298,10 +1206,6 @@ MEDICATIONS
 												<originalText>
 												<reference value="#Med1"/>
 												</originalText>
-												<translation code="573621"
-												displayName="Albuterol 0.09 MG/ACTUAT [Proventil]"
-												codeSystem="2.16.840.1.113883.6.88"
-												codeSystemName="RxNorm"/>
 												</code>
 											</manufacturedMaterial>
 											<manufacturerOrganization>
@@ -1410,7 +1314,10 @@ REASON FOR REFERRAL
 						displayName="REASON FOR REFERRAL"/>
 					<title>REASON FOR REFERRAL</title>
 					<text>
-						<paragraph>Recommended inpatient admission for pneumonia</paragraph>
+						<paragraph>	
+							Patient with pneumonia-like symptoms.<br />
+							Patient presented to with acute onset shortness of breath with fevers, chills, and cough productive of greenish sputum for the past 2 days.	
+						</paragraph>
 					</text>
 				</section>
 			</component>
@@ -1429,10 +1336,15 @@ PROBLEM LIST
 						<content ID="problems"/>
 						<list listType="ordered">
 							<item>
-								<content ID="problem1">Pneumonia : Status - Active</content>
+								<content ID="problem1">Pneumonia (age at onset 65): Status - Active
+								<br />
+						        Health status: Moribund
+								</content>
 							</item>
 							<item>
-								<content ID="problem2">Asthma : Status - Active</content>
+								<content ID="problem2">Asthma (age at onset 60): Status - Active
+						        <br />
+							    Health status: Severly Ill</content>
 							</item>
 						</list>
 					</text>
@@ -1446,7 +1358,6 @@ PROBLEM LIST
 							<statusCode code="active"/>
 							<effectiveTime>
 								<low value="20120806"/>
-								<high value="20120806"/>
 							</effectiveTime>
 							<entryRelationship typeCode="SUBJ">
 								<observation classCode="OBS" moodCode="EVN">
@@ -1521,7 +1432,6 @@ PROBLEM LIST
 							<statusCode code="active"/>
 							<effectiveTime>
 								<low value="20070103"/>
-								<high value="20120806"/>
 							</effectiveTime>
 							<entryRelationship typeCode="SUBJ">
 								<observation classCode="OBS" moodCode="EVN">
@@ -1806,28 +1716,27 @@ RESULTS
 									<th colspan="2">LABORATORY INFORMATION</th>
 								</tr>
 								<tr>
-									<th colspan="2">Chemistries and drug levels</th>
+									<th colspan="2">Blood chemistry</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 									<td>
-										<content ID="result1">HGB (M 13-18 g/dl; F 12-16
-											g/dl)</content>
+										<content ID="result1">HGB 12-16	g/dl</content>
 									</td>
-									<td>10.2</td>
+									<td>10.2 on 2012-08-10</td>
 								</tr>
 								<tr>
 									<td>
 										<content ID="result2">WBC (4.3-10.8 10+3/ul)</content>
 									</td>
-									<td>12.3</td>
+									<td>12.3 -- HIGH on 2012-08-10</td>
 								</tr>
 								<tr>
 									<td>
-										<content ID="result3">PLT (150-450 x 10^9/L)</content>
+										<content ID="result3">PLT (150-350 x 10+3/ul)</content>
 									</td>
-									<td>123/L</td>
+									<td>123 -- LOW on 2012-08-10</td>
 								</tr>
 							</tbody>
 						</table>
@@ -1856,15 +1765,9 @@ RESULTS
 									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83"/>
 									<methodCode/>
 									<targetSiteCode/>
-									<author>
-										<time/>
-										<assignedAuthor>
-											<id root="2a620155-9d11-439e-92b3-5d9816ff4de8"/>
-										</assignedAuthor>
-									</author>
 									<referenceRange>
 										<observationRange>
-											<text>M 13-18 g/dl; F 12-16 g/dl</text>
+											<text>12-16 g/dl</text>
 										</observationRange>
 									</referenceRange>
 								</observation>
@@ -1882,15 +1785,9 @@ RESULTS
 									<statusCode code="completed"/>
 									<effectiveTime value="20120810"/>
 									<value xsi:type="PQ" value="12.3" unit="10+3/ul"/>
-									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83"/>
+									<interpretationCode code="H" codeSystem="2.16.840.1.113883.5.83"/>
 									<methodCode/>
 									<targetSiteCode/>
-									<author>
-										<time/>
-										<assignedAuthor>
-											<id root="2a620154-9d11-439e-92b3-5d9815ff4de8"/>
-										</assignedAuthor>
-									</author>
 									<referenceRange>
 										<observationRange>
 											<value xsi:type="IVL_PQ">
@@ -1918,12 +1815,6 @@ RESULTS
 									<interpretationCode code="L" codeSystem="2.16.840.1.113883.5.83"/>
 									<methodCode/>
 									<targetSiteCode/>
-									<author>
-										<time/>
-										<assignedAuthor>
-											<id root="2a620155-9d11-439e-92b3-5d9815ff4de8"/>
-										</assignedAuthor>
-									</author>
 									<referenceRange>
 										<observationRange>
 											<value xsi:type="IVL_PQ">
@@ -1965,7 +1856,7 @@ SOCIAL HISTORY
 									<td>
 										<content ID="soc1"/> smoking</td>
 									<td>Former Smoker - Smoked 1 pack per day from 2005 to 2011</td>
-									<td>20050501 to 20110227</td>
+									<td>May 1st, 2005 to Feb 27th, 2011</td>
 								</tr>
 							</tbody>
 						</table>
@@ -2086,23 +1977,47 @@ VITAL SIGNS
 									/>
 								</observation>
 							</component>
+							
 							<component>
-								<observation classCode="OBS" moodCode="EVN">
-									<templateId root="2.16.840.1.113883.10.20.22.4.27"/>
-									<!-- Vital Sign Observation template -->
-									<id root="c6f88321-67ad-11db-bd13-0800200c9a66" extension="2003"/>
-									<code code="8480-6" codeSystem="2.16.840.1.113883.6.1"
-										codeSystemName="LOINC" displayName="Intravascular Systolic"/>
-									<text>
-										<reference value="#vit5"/>
-									</text>
-									<statusCode code="completed"/>
-									<effectiveTime value="20111101"/>
-									<value xsi:type="PQ" value="132" unit="mm[Hg]"/>
-									<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83"
-									/>
-								</observation>
+							<observation classCode="OBS" moodCode="EVN">
+								<!--
+								<templateId root="2.16.840.1.113883.10.20.22.4.27"/>
+								-->
+								<!-- Vital Sign Observation template -->
+								<id root="c6f88321-67ad-11db-bd13-0800200c9a66" extension="2003"/>
+								<code code="8480-6" codeSystem="2.16.840.1.113883.6.1"
+									codeSystemName="LOINC" displayName="Intravascular Systolic"/>
+								<text>
+									<reference value="#vit5"/>
+								</text>
+								<statusCode code="completed"/>
+								<effectiveTime value="20111101"/>								
+								<interpretationCode code="N" codeSystem="2.16.840.1.113883.5.83" />								
+								<entryRelationship typeCode="COMP">
+									<observation classCode="OBS" moodCode="EVN">
+										<templateId root="2.16.840.1.113883.10.20.22.4.27"/>
+										<id root="c6f88321-67ad-11db-bd13-0800200c9a66" extension="12003"/>
+										<code code="271649006" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Systolic BP"/>
+										<statusCode code="completed"/>
+										<effectiveTime value="20111101"/>
+										<value xsi:type="PQ" value="132" unit="mm[Hg]"/>
+									</observation>
+								</entryRelationship>
+								<entryRelationship typeCode="COMP">
+									<observation classCode="OBS" moodCode="EVN">										
+										<templateId root="2.16.840.1.113883.10.20.22.4.27"/>
+										<id root="c6f88321-67ad-11db-bd13-0800200c9a66" extension="22003"/>
+										<code code="271650006" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayName="Diastolic BP"/>
+										<statusCode code="completed"/>
+										<effectiveTime value="20111101"/>
+										<value xsi:type="PQ" value="86" unit="mm[Hg]"/>
+									</observation>
+								</entryRelationship>
+								
+								
+							</observation>
 							</component>
+							
 						</organizer>
 					</entry>
 					<entry typeCode="DRIV">
