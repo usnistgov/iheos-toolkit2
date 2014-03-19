@@ -18,7 +18,7 @@ public class LoadContactHandler implements ClickHandler, ChangeHandler {
 
 	@Override
 	public void onClick(ClickEvent arg0) {
-		String contact = tab.contactEmail.getText();
+		String contact = tab.contactEmail.getText().trim();
 		if (contact != null && !contact.equals("")) {
 			tab.toolkitService.loadDirectRegistration(contact, initialLookupCallback);
 		}

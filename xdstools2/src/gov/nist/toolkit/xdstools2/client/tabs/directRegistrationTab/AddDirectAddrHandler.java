@@ -21,7 +21,7 @@ public class AddDirectAddrHandler implements ChangeHandler, ClickHandler {
 	
 	@Override
 	public void onChange(ChangeEvent arg0) {
-		String direct = tab.addDirectFrom.getText();
+		String direct = tab.addDirectFrom.getText().trim();
 		byte[] cert = tab.cert.getText().getBytes();
 		if (direct != null && !direct.equals("")) {
 			tab.currentRegistration.directToCertMap.put(direct, cert);
