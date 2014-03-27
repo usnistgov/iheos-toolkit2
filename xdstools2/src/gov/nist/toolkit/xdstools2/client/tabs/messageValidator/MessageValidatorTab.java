@@ -128,6 +128,17 @@ public class MessageValidatorTab extends TabbedWindow {
 					ValidationType_direct
 					);
 	
+	static List<String> iheInOut = 
+			Arrays.asList(
+					ValidationType_PnR_b,
+					ValidationTypeR_b,
+					ValidationTypeXDR,
+					ValidationTypeDirectXDR,
+					ValidationType_SQ,
+					ValidationType_Ret,
+					ValidationType_guess
+					);
+	
 	boolean requiresCCDA(String type) {
 		return ccdaRequiredValidationTypes.contains(type);
 	}
@@ -235,6 +246,7 @@ public class MessageValidatorTab extends TabbedWindow {
 				} else if(type.equals(ValidationType_direct)) {
 					enableContentType = true;
 				}
+				
 				break;
 			}
 		}
@@ -271,6 +283,15 @@ public class MessageValidatorTab extends TabbedWindow {
 		//		requestMessage.setValue(true);
 		panel.add(requestMessage);
 		panel.add(responseMessage);
+	}
+	
+	void enableInOut(boolean enable) {
+		requestMessage.setEnabled(enable);
+		responseMessage.setEnabled(enable);
+	}
+	
+	void enableMessageStructure(boolean enable) {
+		
 	}
 	
 
@@ -389,7 +410,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		addValidationTypesRadioGroup(messageTypeArea, true);
 
 		// InOut radio Buttons
-		addInOutTypesRadioGroup(inOutTypeArea, false);
+		addInOutTypesRadioGroup(inOutTypeArea, true);
 
 		// Validation Check Boxes
 		validationCheckBoxes.add(HtmlMarkup.html("<hr />"));
@@ -932,6 +953,14 @@ public class MessageValidatorTab extends TabbedWindow {
 						samlWrapper.setEnabled(false);
 						httpWrapper.setEnabled(false);	
 					}
+
+					// In/Out radio buttons
+					if(iheInOut.contains(msgType)) {
+						enableInOut(true);
+						crossCommunity.setEnabled(true);
+					} else {
+						enableInOut(false);
+					}
 				}
 			}
 
@@ -953,11 +982,12 @@ public class MessageValidatorTab extends TabbedWindow {
 			httpWrapper.setValue(true);
 			requestMessage.setValue(true);
 
-			soapWrapper.setEnabled(false);
-			samlWrapper.setEnabled(false);
-			httpWrapper.setEnabled(false);
-			requestMessage.setEnabled(false);
-			responseMessage.setEnabled(false);
+			//soapWrapper.setEnabled(false);
+			//samlWrapper.setEnabled(false);
+			//httpWrapper.setEnabled(false);
+			//requestMessage.setEnabled(false);
+			//responseMessage.setEnabled(false);
+			
 		}
 
 	};
