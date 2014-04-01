@@ -212,8 +212,8 @@ ToolkitService {
 	}
 	public List<Result> mpqFindDocuments(SiteSpec site, String pid,
 			List<String> classCodes, List<String> hcftCodes,
-			List<String> eventCodes) {
-		return queryServiceManager.mpqFindDocuments(site, pid, classCodes, hcftCodes,
+			List<String> eventCodes) throws NoServletSessionException {
+		return session().queryServiceManager().mpqFindDocuments(site, pid, classCodes, hcftCodes,
 				eventCodes);
 	}
 	

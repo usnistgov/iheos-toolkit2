@@ -92,11 +92,13 @@ public class MesaTestTest {
 		boolean passed = true;
 
 		TestResult(String testnum) { testNum = testnum; } 
+		
+		public String toString() { return testNum + ": " + lines(msgs.get(0).assertion, 1); }
 	}
 
 
 	// non-tls register transaction tests
-	@Test
+//	@Test
 	public void registerTests() {
 		ParamBuilder pbuilder = new ParamBuilder();
 		pbuilder.withParam("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
@@ -168,9 +170,25 @@ Error Expected errorCode of XDSExtraMetadataNotSaved
 		}
 		System.out.println("\n========================\ntests: " + ran + " ran " + failures + " failed\n\n");
 		for (TestResult tr : testResults) {
+			System.out.println(tr);
+		}
+		System.out.println("\n========================\n");
+	}
+	
+	void prTestResults(List<TestResult> testResults) {
+		System.out.println("\n========================\n");
+		for (TestResult tr : testResults) {
 			System.out.println(tr.testNum + ": " + lines(tr.msgs.get(0).assertion, 1));
 		}
 		System.out.println("\n========================\n");
+	}
+	
+	@Test
+	public void goodRegisterTests() {
+		ParamBuilder pbuilder = new ParamBuilder();
+		pbuilder.withParam("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
+		List<TestResult> testResults = runtest("tc:R-good", pbuilder);
+		prTestResults(testResults);
 	}
 
 	List<TestResult> runtest(String testName, ParamBuilder pbuilder) {

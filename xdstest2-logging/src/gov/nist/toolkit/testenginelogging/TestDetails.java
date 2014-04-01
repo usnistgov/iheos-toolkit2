@@ -27,7 +27,7 @@ public class TestDetails  {
 
 	
 	public static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
-		"selftest", "development", "utilities", "xcpd"};
+		"selftest", "development", "utilities", "xcpd", "collection", "static.collections"};
 	static final String testPlanFileName = "testplan.xml";
 
 	public String toString() { return "[TestSpec: testkit=" + testkit + " area=" + area +
