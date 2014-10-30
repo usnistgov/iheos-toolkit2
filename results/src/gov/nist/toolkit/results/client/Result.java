@@ -102,9 +102,4 @@ public class Result  implements IsSerializable, Serializable {
 		return text;
 	}
 	
-	public List<AssertionResult> getFailedAssertions() {
-		if (assertions == null)
-			return new ArrayList<AssertionResult>();
-		return assertions.getFailedAssertions();
-	}
 }

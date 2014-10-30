@@ -1,0 +1,19 @@
+<AdhocQueryRequest
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:2.1"
+    xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:2.1"
+    xmlns:q = "urn:oasis:names:tc:ebxml-regrep:query:xsd:2.1"
+    xmlns="urn:oasis:names:tc:ebxml-regrep:query:xsd:2.1"
+>
+    <ResponseOption returnType = "LeafClass" returnComposedObjects="true"/>
+    <SQLQuery>
+
+SELECT DISTINCT rp.id FROM RegistryPackage rp, ExternalIdentifier patId
+WHERE
+  rp.status IN $XDSFolderStatus AND
+  patId.registryObject = rp.id AND
+  patId.identificationScheme = 'urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a' AND
+  patId.value = $patientId
+
+</SQLQuery>
+</AdhocQueryRequest>

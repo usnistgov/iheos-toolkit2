@@ -41,7 +41,7 @@ public class GazelleEntry extends CSVEntry {
 	public GazelleEntry(String line) {
 		super(line);
 		
-		System.out.println("System: " + getSystem());
+//		System.out.println("System: " + getSystem());
 	}
 	
 	public String toString() {

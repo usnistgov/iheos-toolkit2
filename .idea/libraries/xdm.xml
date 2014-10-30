@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="xdm">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/common/data/xdm/xdm.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

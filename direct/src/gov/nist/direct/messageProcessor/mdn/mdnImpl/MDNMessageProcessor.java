@@ -21,7 +21,6 @@ Authors: William Majurski
 package gov.nist.direct.messageProcessor.mdn.mdnImpl;
 
 import gov.nist.direct.logger.LogPathsSingleton;
-import gov.nist.direct.logger.MessageLogManager;
 import gov.nist.direct.mdn.validate.MDNValidator;
 import gov.nist.direct.mdn.validate.MDNValidatorImpl;
 import gov.nist.direct.mdn.validate.ProcessMDN;
@@ -34,6 +33,25 @@ import gov.nist.direct.utils.Utils;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
+import org.apache.log4j.Logger;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cms.*;
+import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
+import org.bouncycastle.cms.jcajce.JceKeyTransRecipientId;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.mail.smime.SMIMEEnveloped;
+import org.bouncycastle.mail.smime.SMIMEException;
+import org.bouncycastle.mail.smime.SMIMESigned;
+import org.bouncycastle.mail.smime.SMIMEUtil;
+import org.bouncycastle.util.Store;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Part;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,33 +62,6 @@ import java.security.cert.CertificateException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Part;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
-import org.apache.log4j.Logger;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.RecipientId;
-import org.bouncycastle.cms.RecipientInformation;
-import org.bouncycastle.cms.RecipientInformationStore;
-import org.bouncycastle.cms.SignerInformation;
-import org.bouncycastle.cms.SignerInformationStore;
-import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
-import org.bouncycastle.cms.jcajce.JceKeyTransRecipientId;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.mail.smime.SMIMEEnveloped;
-import org.bouncycastle.mail.smime.SMIMEException;
-import org.bouncycastle.mail.smime.SMIMESigned;
-import org.bouncycastle.mail.smime.SMIMEUtil;
-import org.bouncycastle.util.Store;
-
-import bsh.util.Util;
 
 /**
  * Parses an MDN message for a message ID. It looks up the ID in the list of timestamps and calculates the time offset between sending and reception.
@@ -92,8 +83,6 @@ public class MDNMessageProcessor {
 	private String decryptedMdn = ""; // contains the full decrypted message
 	private String dispositionField = "";
 	private String msgID = "";
-	private String originialMessageId = "";
-	private String username = "";
 	private Date mdnDate = null;
 	private final String BC = BouncyCastleProvider.PROVIDER_NAME;
 	private byte[] directCertificate;
@@ -129,22 +118,10 @@ public class MDNMessageProcessor {
 		// --------- Validate MDN and encryption ---------
 		MimeMessage mm = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
 
-		// Parse the message to see if it is wrapped
-		wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
-		
-		this.username = wrappedParser.getUsername();
-		if(this.username.equals("")) {
-			this.username = "Unknown-User";
-		}
-
 		try {
 			this.processPart(er, mm);
-			if(mm.getMessageID() != null) {
-				msgID = mm.getMessageID();
-			}
-			if(mm.getSentDate() != null) {
-				mdnDate = mm.getSentDate();
-			}
+			msgID = mm.getMessageID();
+			mdnDate = mm.getSentDate();
 		} catch (Exception e) {
 			er.error("No DTS", "MDN Processing", "Error Processing MDN", "", "-");
 			e.printStackTrace();
@@ -163,7 +140,13 @@ public class MDNMessageProcessor {
 		// Logs MDN message - still ENCRYPTED
 		logMDNMessage(mm); // logMDNMessage(mm, disposition);
 
+        // Parse the message to see if it is wrapped
+        wrappedParser.messageParser(er, inputDirectMessage, _directCertificate, _password);
+
         logger.debug("ValidationContext is " + vc.toString());
+
+        // Parses message - what does it do? needed?
+       // MimeMessage m = MimeMessageParser.parseMessage(mainEr, inputDirectMessage);
        
 
 	}
@@ -174,13 +157,13 @@ public class MDNMessageProcessor {
 
 	public void logMDNMessage(MimeMessage m) {
 
-		// Get MDN sender name (username)
-		// String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
-		// String username = Utils.rawFromHeader(_username);
+        // Get MDN sender name (username)
+       // String _username = ParseUtils.searchHeaderSimple((Part)m, "from");
+        // String username = Utils.rawFromHeader(_username);
 
-
-		// Get MDN message ID 
-		String mdnMessageId = "";
+		
+        // Get MDN message ID 
+        String mdnMessageId = "";
 		try {
 			if (m.getMessageID() == null || m.getMessageID().equals("")){
 				String _mdnMessageId = m.getMessageID();
@@ -227,10 +210,7 @@ public class MDNMessageProcessor {
 			e.printStackTrace();
 		}
 		
-        MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", mdnMessageId, date, mdnMessageId, this.username);
-        
-        // Log mdn validation status
-        MessageLogManager.logMDNValidationStatus(this.username, "MDN Received", origDirectMsgValidationStatus, "DIRECT_RECEIVE", "DIRECT", this.originialMessageId, this.mdnDate, mdnMessageId);
+        //MessageLogManager.logMDN(m, MDN_STATUS, origDirectMsgValidationStatus, "DIRECT_SEND", "MDN", origMessageID, date, mdnMessageId);
 
 		
 	}
@@ -282,7 +262,6 @@ public class MDNMessageProcessor {
 			ProcessMDN mdnv = new ProcessMDN(er, p);
 			mdnv.validate(er);
 			dispositionField = mdnv.getDispositionField();
-			originialMessageId = Utils.rawMsgId(mdnv.getOriginalMessageId());
 
 		} else if (p.isMimeType("application/octet-stream")) {
 			//System.out.println("CCDA Content");

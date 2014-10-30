@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/java" isTestSource="true" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="module" module-name="xdstest2" />
+    <orderEntry type="module" module-name="utilities" />
+    <orderEntry type="module" module-name="soap" />
+    <orderEntry type="module" module-name="installation" />
+    <orderEntry type="module" module-name="site-management" />
+    <orderEntry type="module" module-name="security-common" />
+    <orderEntry type="module" module-name="xds-exceptions" />
+    <orderEntry type="module" module-name="xdstools2" />
+  </component>
+</module>
+

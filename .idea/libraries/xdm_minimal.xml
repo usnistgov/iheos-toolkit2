@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="xdm_minimal">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/common/data/xdm_minimal/xdm_minimal.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

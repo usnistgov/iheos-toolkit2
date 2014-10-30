@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>11973/create_fol</Test>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/test11969</RegistryEndpoint>
+    <TestStep id="submit_fol">
+        <Rule>
+            <Transaction>PnR</Transaction>
+            <Assertion>Submit a folder</Assertion>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <MetadataFile>fol.xml</MetadataFile>
+            <AssignUuids/>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

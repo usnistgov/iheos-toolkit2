@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12323/verify_no_submission_time</Test>
+    <TestStep id="getFolder">
+        <Goal>Get Folder</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <StoredQueryTransaction>
+            <XDSb/>
+            <UseReport section="no_time" step="no_time" reportName="folid" useAs="$uuid1$"/>
+            <Metadata>
+                <query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+                    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+                    <AdhocQuery id="urn:uuid:5737b14c-8a1a-4539-b659-e03a34a5e1e4">
+                        <Slot name="$XDSFolderEntryUUID">
+                            <ValueList>
+                                <Value>('$uuid1$')</Value>
+                            </ValueList>
+                        </Slot>
+                    </AdhocQuery>
+                </query:AdhocQueryRequest>
+            </Metadata>
+            <!--
+            <UseId testdir="../no_time" id="Folder" step="no_time" section="AssignedUuids" symbol="$uuid1$"/>
+            -->
+            <Report name="lastUpdateTime" section="Result">
+                //*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='lastUpdateTime']/*[local-name()='ValueList']/*[local-name()='Value'] </Report>
+            <ExpectedContents>
+                <SubmissionSets count="0"/>
+                <Associations count="0"/>
+                <Documents count="0"/>
+                <Folders count="1"/>
+            </ExpectedContents>
+        </StoredQueryTransaction>
+    </TestStep>
+    <TestStep id="verify_has_todays_date">
+        <Goal>Verify folder submitted has today's date</Goal>
+        <NullTransaction>
+            <UseReport section="THIS" step="getFolder" reportName="lastUpdateTime"
+                useAs="updateTime"/>
+            <Assertions>
+                <Assert id="todaysDate"> substring("updateTime",1,8) = "$DATE$" </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

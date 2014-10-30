@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>11973/rplc</Test>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/test11974</RegistryEndpoint>
+    <TestStep id="rplc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>R</Transaction>
+            <Assertion>Issue RPLC</Assertion>
+        </Rule>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <UseId testdir="../submit_doc" id="Document01" step="good" section="AssignedUuids"
+                symbol="$rplc_doc_uuid$"/>
+            <MetadataFile>rplc.xml</MetadataFile>
+            <Document id="Document01">my_document.txt</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

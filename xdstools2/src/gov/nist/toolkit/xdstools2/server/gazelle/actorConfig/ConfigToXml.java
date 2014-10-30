@@ -103,6 +103,7 @@ public class ConfigToXml {
 		for (GazelleEntry entry : entries) {
 			System.out.println(entry);
 			SysConfig sysConfig = new SysConfig(this, entry);
+			System.out.println(sysConfig);
 			TransactionType trans = sysConfig.trans;
 			
 //			if (!sysConfig.sysName.equals("XDSb_REG_SER_HealthCare"))
@@ -111,8 +112,8 @@ public class ConfigToXml {
 			if (sysConfig.isAsync)
 				continue;
 			
-			if (!sysConfig.isApproved)
-				continue;
+//			if (!sysConfig.isApproved)
+//				continue;
 
 			configs.add(sysConfig);
 
@@ -156,7 +157,7 @@ public class ConfigToXml {
 
 
 	public static void main(String[] args) {
-		File actorsDir = new File("/Users/bmajur/tmp/NA2014/actors");
+		File actorsDir = new File("/Users/bmajur/tmp/toolkit2/actors");
 		String systemName = "ALL";   // "ALL";
 		GazelleConfigs gConfigs = null; 
 		OidConfigs oConfigs = null;
@@ -178,7 +179,7 @@ public class ConfigToXml {
 				//
 				gConfigs = new GazelleConfigs();
 				new CSVParser(
-						new File(actorsDir + File.separator + "WebServiceConfiguration.csv"), 
+						new File(actorsDir + File.separator + "all.csv"), 
 						new GazelleEntryFactory())
 				.parse(gConfigs);
 

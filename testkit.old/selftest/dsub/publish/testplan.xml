@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>dsub/publish</Test>
+   <Rule>Send publish to broker</Rule>
+    <TestStep id="notify_broker">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <PublishTransaction>
+            <MetadataFile>single_doc.xml</MetadataFile>
+        </PublishTransaction>
+    </TestStep>
+</TestPlan>

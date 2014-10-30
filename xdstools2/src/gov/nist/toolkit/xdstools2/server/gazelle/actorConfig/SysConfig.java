@@ -83,7 +83,13 @@ class SysConfig {
 	}
 	
 	public String toString() {
-		return "[SysConfig: sysName=" + sysName + " actor=" + actor + " secure=" + isSecure + " approved=" + isApproved + " url=" + entry.getURL() + " transId=" + transId + "]";
+		return "[SysConfig: sysName=" + sysName + " actor=" + actor + " secure=" + isSecure + 
+				" approved=" + isApproved + " " + 
+				" repUid=" + repUid +
+				" home=" + home + 
+				"url=" + entry.getURL() + 
+				" transId=" + transId + 
+				"]";
 	}
 
 	public boolean equals(SysConfig c) {

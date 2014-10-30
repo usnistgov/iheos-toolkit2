@@ -89,13 +89,4 @@ public class AssertionResults implements IsSerializable, Serializable {
 		return false;
 	}
 	
-	public List<AssertionResult> getFailedAssertions() {
-		List<AssertionResult> ars = new ArrayList<AssertionResult>();
-		
-		for (AssertionResult ar : assertions)
-			if (!ar.status)
-				ars.add(ar);
-		
-		return ars;
-	}
 }

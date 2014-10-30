@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12364/multi_pid</Test>
+    <Rule>FindDocumentsForMultiplePatients</Rule>
+    <TestStep id="object_refs">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>MPQ</Transaction>
+            <SQ>FindDocumentsForMultiplePatients</SQ>
+            <Assertion>Select on ClassCode</Assertion>
+        </Rule>
+        <!-- Test data comes from 12361 -->
+        <MPQTransaction>
+            <XDSb/>
+            <Metadata>
+                <query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+                    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+                    <!-- FindDocumentsForMultiplePatients -->
+                    <AdhocQuery id="urn:uuid:3d1bdb10-39a2-11de-89c2-2f44d94eaa9f">
+                        <Slot name="$XDSDocumentEntryPatientId">
+                            <ValueList>
+                                <Value>('$patient_id1$', '$patient_id2$')</Value>
+                            </ValueList>
+                        </Slot>
+                        <Slot name="$XDSDocumentEntryEventCodeList">
+                            <ValueList>
+                                <Value>('MPQ-eventcode-1^^MPQ Testing')</Value>
+                            </ValueList>
+                        </Slot>
+                        <Slot name="$XDSDocumentEntryStatus">
+                            <ValueList>
+                                <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</Value>
+                            </ValueList>
+                        </Slot>
+                    </AdhocQuery>
+                </query:AdhocQueryRequest>
+            </Metadata>
+            <UseId testdir="../12361" id="SubmissionSet01" step="single_doc"
+                section="AssignedPatientId" symbol="$patient_id1$"/>
+            <UseId testdir="../12361" id="SubmissionSet01" step="multi_doc"
+                section="AssignedPatientId" symbol="$patient_id2$"/>
+            <ExpectedContents>
+                <ObjectRefs count="2"/>
+            </ExpectedContents>
+        </MPQTransaction>
+    </TestStep>
+</TestPlan>

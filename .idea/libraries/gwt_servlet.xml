@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="gwt-servlet">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/xdstools2/war/WEB-INF/lib/gwt-servlet.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

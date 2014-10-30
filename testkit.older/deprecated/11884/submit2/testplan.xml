@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>11884/submit2</Test>
+    <PatientId>6933e78e9c1e4ba^^^&amp;1.3.6.1.4.1.21367.2008.2.1&amp;ISO</PatientId>
+    <!-- Submit document in submission set    -->
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>single_doc.xml</MetadataFile>
+            <AssignUuids/>
+        </RegisterTransaction>
+    </TestStep>
+    <PatientId>073367b6c1084f2^^^&amp;1.3.6.1.4.1.21367.2008.2.1&amp;ISO</PatientId>
+    <!--  Submit document in submission set that adds itself to first submission set  -->
+    <TestStep id="submit_ref">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>ref.xml</MetadataFile>
+            <UseId id="SubmissionSet01" step="submit" section="AssignedUuids" symbol="$orig_ss_uuid$"/>
+        </RegisterTransaction>
+    </TestStep>
+    <!--  Submit document in submission set that attempts to add itself to non-existant submission set, 
+        must fail  -->
+    <TestStep id="submit_bad_ref">
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>bad_ref.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

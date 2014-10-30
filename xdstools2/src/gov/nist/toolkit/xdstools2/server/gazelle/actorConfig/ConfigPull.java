@@ -65,8 +65,8 @@ public class ConfigPull {
 	
 	public static void main(String[] args) {
 		ConfigPull pa = new ConfigPull(
-				"http://gazelle-orange.wustl.edu/NA2012/systemConfigurations.seam?testingSessionId=21&configurationType=WebServiceConfiguration", 
-				new File("/Users/bill/tmp/toolkit/actors"));
+				"http://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=29&configurationType=WebServiceConfiguration", 
+				new File("/Users/bmajur/tmp/toolkit2/actors"));
 		try {
 			pa.pull();
 		} catch (MalformedURLException e) {

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12346</Test>
+    <Rule>Submit data to XDS.b registry to support SQ testing</Rule>
+    <TestStep id="allocate_patient_id">
+        <NewPatientId/>
+    </TestStep>  
+    
+    <TestStep id="submit_2doc">
+        <Rule>
+            <Transaction>R</Transaction>
+            <Assertion>Two documents</Assertion>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <MetadataFile>two_doc.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+    
+    
+    
+</TestPlan>
