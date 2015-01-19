@@ -283,9 +283,13 @@
          target: jar
          ================================================= -->
 	<!-- jar all the .class files and put the jar in ${war.lib.dir}.-->
-	<target name="jar">
+	<target name="jar" depends="compile">
 		<jar jarfile="${war.lib.dir}/${jar.name}" basedir="${build.dir}/">
 		</jar>
+	</target>
+	
+	<target name="installjar" depends="jar">
+		<copy file="${war.lib.dir}/${jar.name}" todir="${user.home}/.groovy/lib" overwrite="true"/>
 	</target>
 
 	<!-- ================================================= 

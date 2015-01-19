@@ -15,19 +15,12 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsParameterException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.apache.log4j.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.log4j.Logger;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 
 public class XdsTest {
@@ -671,8 +664,14 @@ public class XdsTest {
 		initTestConfig();
 
 		//resetTestSpecLogs();
-		
-		testConfig.allRepositoriesSite = (sites == null) ? null : sites.getAllRepositoriesSite();
+
+        if (testConfig.site == null) {
+            String siteName = System.getProperty("site");
+            if (siteName != null)
+                testConfig.site = loadSites().getSite(siteName);
+        }
+
+        testConfig.allRepositoriesSite = (sites == null) ? null : sites.getAllRepositoriesSite();
 
 		if (testSpecs == null)
 			throw new Exception("XdsTest#runAndReturnLogs: testSpecs is null");

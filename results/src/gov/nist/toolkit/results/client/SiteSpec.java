@@ -27,7 +27,7 @@ public class SiteSpec implements IsSerializable {
 		this.actorType = actorType;
 		
 		if (toClone == null) {
-			isTls = true;
+			isTls = false;
 			isSaml = false;
 			isAsync = false;
 		} else {

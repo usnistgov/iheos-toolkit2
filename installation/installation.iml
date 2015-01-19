@@ -8,9 +8,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="lib1" level="project" />
+    <orderEntry type="module" module-name="xds-exceptions" />
     <orderEntry type="module" module-name="utilities" />
     <orderEntry type="module" module-name="tk" />
-    <orderEntry type="module" module-name="xds-exceptions" />
   </component>
 </module>
 

@@ -7,10 +7,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="http" />
     <orderEntry type="module" module-name="utilities" />
     <orderEntry type="module" module-name="timer" />
     <orderEntry type="module" module-name="direct-sim" />
-    <orderEntry type="module" module-name="http" />
   </component>
 </module>
 

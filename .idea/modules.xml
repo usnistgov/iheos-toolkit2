@@ -40,6 +40,7 @@
       <module fileurl="file://$PROJECT_DIR$/testkit-utilities/testkit-utilities.iml" filepath="$PROJECT_DIR$/testkit-utilities/testkit-utilities.iml" />
       <module fileurl="file://$PROJECT_DIR$/timer/timer.iml" filepath="$PROJECT_DIR$/timer/timer.iml" />
       <module fileurl="file://$PROJECT_DIR$/tk/tk.iml" filepath="$PROJECT_DIR$/tk/tk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/toolkit.iml" filepath="$PROJECT_DIR$/toolkit.iml" />
       <module fileurl="file://$PROJECT_DIR$/utilities/utilities.iml" filepath="$PROJECT_DIR$/utilities/utilities.iml" />
       <module fileurl="file://$PROJECT_DIR$/validators-ccda/validators-ccda.iml" filepath="$PROJECT_DIR$/validators-ccda/validators-ccda.iml" />
       <module fileurl="file://$PROJECT_DIR$/validators-direct-factory/validators-direct-factory.iml" filepath="$PROJECT_DIR$/validators-direct-factory/validators-direct-factory.iml" />

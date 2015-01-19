@@ -13,11 +13,12 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="gwt-servlet" level="project" />
-    <orderEntry type="module" module-name="utilities" />
-    <orderEntry type="module" module-name="registry-metadata" />
+    <orderEntry type="library" name="lib1" level="project" />
     <orderEntry type="module" module-name="xds-exceptions" />
     <orderEntry type="module" module-name="registry-support" />
+    <orderEntry type="module" module-name="utilities" />
+    <orderEntry type="module" module-name="registry-metadata" />
+    <orderEntry type="module" module-name="actor-transaction" />
   </component>
 </module>
 

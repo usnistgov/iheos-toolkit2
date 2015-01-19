@@ -33,32 +33,32 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="gwt-servlet" level="project" />
-    <orderEntry type="module" module-name="actorfactory" />
-    <orderEntry type="module" module-name="direct-sim" />
-    <orderEntry type="module" module-name="simulators" />
-    <orderEntry type="module" module-name="site-management" />
-    <orderEntry type="module" module-name="registry-metadata" />
-    <orderEntry type="module" module-name="sim-common" />
-    <orderEntry type="module" module-name="common" />
+    <orderEntry type="library" name="lib1" level="project" />
+    <orderEntry type="module" module-name="session" />
     <orderEntry type="module" module-name="validators-support" />
     <orderEntry type="module" module-name="tk" />
     <orderEntry type="module" module-name="validators-registry-message" />
-    <orderEntry type="module" module-name="direct" />
-    <orderEntry type="module" module-name="session" />
-    <orderEntry type="module" module-name="xds-exceptions" />
-    <orderEntry type="module" module-name="http" />
-    <orderEntry type="module" module-name="error-recording" />
-    <orderEntry type="module" module-name="actor-transaction" />
     <orderEntry type="module" module-name="registry-support" />
-    <orderEntry type="module" module-name="xdstest2" />
-    <orderEntry type="module" module-name="message-validator-factory2" />
-    <orderEntry type="module" module-name="results" />
-    <orderEntry type="module" module-name="utilities" />
-    <orderEntry type="module" module-name="soap" />
-    <orderEntry type="module" module-name="installation" />
+    <orderEntry type="module" module-name="http" />
     <orderEntry type="module" module-name="validators-registry-metadata" />
+    <orderEntry type="module" module-name="soap" />
+    <orderEntry type="module" module-name="registry-metadata" />
+    <orderEntry type="module" module-name="xdstest2" />
+    <orderEntry type="module" module-name="xds-exceptions" />
+    <orderEntry type="module" module-name="site-management" />
+    <orderEntry type="module" module-name="message-validator-factory2" />
+    <orderEntry type="module" module-name="direct" />
+    <orderEntry type="module" module-name="error-recording" />
+    <orderEntry type="module" module-name="common" />
+    <orderEntry type="module" module-name="actor-transaction" />
+    <orderEntry type="module" module-name="sim-common" />
+    <orderEntry type="module" module-name="utilities" />
     <orderEntry type="module" module-name="xdstest2-logging" />
+    <orderEntry type="module" module-name="results" />
+    <orderEntry type="module" module-name="installation" />
+    <orderEntry type="module" module-name="direct-sim" />
+    <orderEntry type="module" module-name="actorfactory" />
+    <orderEntry type="module" module-name="simulators" />
   </component>
 </module>
 

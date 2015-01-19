@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="schematron02">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/xdstools2/war/toolkitx/schematron/xcpd/files/schematron/IHE_PixPdq/legacy/schematron02.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

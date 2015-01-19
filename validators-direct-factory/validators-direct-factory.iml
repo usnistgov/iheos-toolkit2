@@ -9,10 +9,10 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="validators-support" />
     <orderEntry type="module" module-name="utilities" />
-    <orderEntry type="module" module-name="validators-registry-message" />
-    <orderEntry type="module" module-name="direct" />
     <orderEntry type="module" module-name="message-validator-factory2" />
+    <orderEntry type="module" module-name="validators-registry-message" />
     <orderEntry type="module" module-name="error-recording" />
+    <orderEntry type="module" module-name="direct" />
   </component>
 </module>
 

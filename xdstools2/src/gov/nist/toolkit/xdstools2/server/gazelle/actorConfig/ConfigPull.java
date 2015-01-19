@@ -2,12 +2,11 @@ package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
 import gov.nist.toolkit.http.httpclient.HttpClient;
 import gov.nist.toolkit.utilities.io.Io;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-import org.apache.log4j.Logger;
 
 public class ConfigPull {
 	static Logger logger = Logger.getLogger(ConfigPull.class);
@@ -65,7 +64,7 @@ public class ConfigPull {
 	
 	public static void main(String[] args) {
 		ConfigPull pa = new ConfigPull(
-				"http://gazelle.ihe.net/EU-CAT/systemConfigurations.seam?testingSessionId=29&configurationType=WebServiceConfiguration", 
+				"http://http://ihe.wustl.edu/gazelle-na/systemConfigurations.seam?testingSessionId=39&configurationType=WebServiceConfiguration",
 				new File("/Users/bmajur/tmp/toolkit2/actors"));
 		try {
 			pa.pull();

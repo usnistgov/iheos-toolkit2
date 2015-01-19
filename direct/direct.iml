@@ -13,15 +13,15 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="gwt-servlet" level="project" />
-    <orderEntry type="module" module-name="validators-support" />
-    <orderEntry type="module" module-name="utilities" />
-    <orderEntry type="module" module-name="validators-registry-message" />
-    <orderEntry type="module" module-name="installation" />
-    <orderEntry type="module" module-name="message-validator-factory2" />
-    <orderEntry type="module" module-name="validators-ccda" />
-    <orderEntry type="module" module-name="error-recording" />
+    <orderEntry type="library" name="lib1" level="project" />
     <orderEntry type="module" module-name="xds-exceptions" />
+    <orderEntry type="module" module-name="validators-support" />
+    <orderEntry type="module" module-name="validators-ccda" />
+    <orderEntry type="module" module-name="utilities" />
+    <orderEntry type="module" module-name="message-validator-factory2" />
+    <orderEntry type="module" module-name="installation" />
+    <orderEntry type="module" module-name="validators-registry-message" />
+    <orderEntry type="module" module-name="error-recording" />
   </component>
 </module>
 

@@ -2,11 +2,8 @@ package gov.nist.toolkit.session.server;
 
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.SimulatorFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -25,17 +22,12 @@ import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.log4j.Logger;
+import java.util.*;
 
 /**
  * The session object is used in one of four ways depending on the context:
@@ -200,6 +192,7 @@ public class Session implements SecurityParams {
 		System.out.print("warHome[Session]: " + warHome + "\n");
 
 		File externalCache = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
+        System.out.println("External Cache set to " + externalCache.toString());
 		Installation.installation().externalCache(externalCache);
 		if (externalCache == null || !externalCache.exists() || !externalCache.isDirectory())
 			externalCache = null;

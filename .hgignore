@@ -43,6 +43,8 @@ xdstools2/listener.jar
 *.swp
 *.swo
 
+# intellij work area
+out
 
 deploy.sh
 

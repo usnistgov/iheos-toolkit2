@@ -3,12 +3,10 @@ package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
-
-import java.io.File;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
-
-import org.apache.log4j.Logger;
+import java.io.File;
 
 public class Installation {
 	File warHome = null;
@@ -46,6 +44,7 @@ public class Installation {
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) { 
 		this.externalCache = externalCache;
+        logger.info("External Cache set to " + externalCache);
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {

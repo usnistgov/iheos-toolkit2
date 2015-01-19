@@ -8,26 +8,26 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="gwt-servlet" level="project" />
-    <orderEntry type="module" module-name="xdstest2" />
-    <orderEntry type="module" module-name="validators-direct-factory" />
-    <orderEntry type="module" module-name="actorfactory" />
-    <orderEntry type="module" module-name="site-management" />
-    <orderEntry type="module" module-name="registry-metadata" />
-    <orderEntry type="module" module-name="sim-common" />
-    <orderEntry type="module" module-name="common" />
-    <orderEntry type="module" module-name="validators-support" />
-    <orderEntry type="module" module-name="utilities" />
-    <orderEntry type="module" module-name="soap" />
-    <orderEntry type="module" module-name="validators-registry-message" />
-    <orderEntry type="module" module-name="session" />
-    <orderEntry type="module" module-name="validators-registry-metadata" />
-    <orderEntry type="module" module-name="docref" />
+    <orderEntry type="library" name="lib1" level="project" />
     <orderEntry type="module" module-name="xds-exceptions" />
+    <orderEntry type="module" module-name="session" />
+    <orderEntry type="module" module-name="docref" />
+    <orderEntry type="module" module-name="validators-direct-factory" />
+    <orderEntry type="module" module-name="validators-support" />
+    <orderEntry type="module" module-name="site-management" />
+    <orderEntry type="module" module-name="validators-registry-message" />
+    <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="error-recording" />
-    <orderEntry type="module" module-name="actor-transaction" />
     <orderEntry type="module" module-name="registry-msg-formats" />
     <orderEntry type="module" module-name="registry-support" />
+    <orderEntry type="module" module-name="actor-transaction" />
+    <orderEntry type="module" module-name="sim-common" />
+    <orderEntry type="module" module-name="utilities" />
+    <orderEntry type="module" module-name="validators-registry-metadata" />
+    <orderEntry type="module" module-name="registry-metadata" />
+    <orderEntry type="module" module-name="soap" />
+    <orderEntry type="module" module-name="xdstest2" />
+    <orderEntry type="module" module-name="actorfactory" />
   </component>
 </module>
 

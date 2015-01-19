@@ -8,9 +8,10 @@ public class GazelleEntry extends CSVEntry {
 	static final int GazelleConfigIsSecure = 5;
 	static final int GazelleConfigIsApproved = 6;
 	static final int GazelleConfigUrl = 8;
-	static final int GazelleConfigPort = 12;
-	static final int GazelleConfigPortSecured = 11;
-	static final int GazelleConfigDetail = 10;
+    static final int GazelleConfigDetail = 10;    // ws-type
+    static final int GazelleConfigPort = 11;
+    static final int GazelleConfigPortProxy = 12;
+    static final int GazelleConfigPortSecured = 13;
 
 	public String getSystem() { return get(GazelleConfigSystem); }
 	public String getHost() { return get(GazelleConfigHost); }
