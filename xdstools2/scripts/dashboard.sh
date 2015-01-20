@@ -7,20 +7,20 @@
 # #######################################
 
 # value approved for use at NA Connectathon
-pid='911^^^&1.3.6.1.4.1.21367.13.20.1000&ISO'
+pid='911^^^IHERED&1.3.6.1.4.1.21367.13.20.1000&ISO'
 
-environment="NA2014"
+environment="NA2015"
 
 # Development machine
 #home=/Users/bill
-#externalCache=$home/tmp/na2013
+#externalCache=$home/tmp/toolkit2
 #war=..
 #servlet_jar=/Users/bill/tomcat1/common/lib/servlet-api.jar
 
 # Deploy on nistred
-home=/home/user
+home=/home/bill
 war=$home/tomcat1/webapps/xdstools2
-externalCache=$home/tmp/NA2014
+externalCache=$home/tmp/toolkit2
 servlet_jar=$home/tomcat1/common/lib/servlet-api.jar
 
 # Location for classes and libraries

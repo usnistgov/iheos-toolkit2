@@ -52,6 +52,7 @@
     <orderEntry type="module" module-name="common" />
     <orderEntry type="module" module-name="actor-transaction" />
     <orderEntry type="module" module-name="sim-common" />
+    <orderEntry type="module" module-name="security-common" />
     <orderEntry type="module" module-name="utilities" />
     <orderEntry type="module" module-name="xdstest2-logging" />
     <orderEntry type="module" module-name="results" />

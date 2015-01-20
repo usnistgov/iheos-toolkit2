@@ -27,6 +27,7 @@
     <orderEntry type="module" module-name="registry-metadata" />
     <orderEntry type="module" module-name="xdstest2" />
     <orderEntry type="module" module-name="actorfactory" />
+    <orderEntry type="module" module-name="actor-transaction" />
   </component>
 </module>
 

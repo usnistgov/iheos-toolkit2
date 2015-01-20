@@ -27,4 +27,8 @@ public class CSVTable {
 		}
 		return "";
 	}
+
+    public void add(CSVEntry entry) {
+        entries.add(entry);
+    }
 }

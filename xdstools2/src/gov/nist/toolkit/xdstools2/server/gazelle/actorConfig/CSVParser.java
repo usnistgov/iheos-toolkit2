@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class CSVParser {
 	String csv;
-	String[] lines;
+
 	CSVTable csvTable;
 	IEntryFactory entryFactory;
 
@@ -27,7 +27,7 @@ public class CSVParser {
 	
 	public CSVTable parse(CSVTable tab) {
 		this.csvTable = tab;
-		mkLines();
+        String[] lines = mkLines(csv);
 		// first line is header - skip
 		for (int i=1; i<lines.length; i++) {
 			csvTable.entries().add(entryFactory.mkEntry(lines[i]));
@@ -43,11 +43,11 @@ public class CSVParser {
 		return csvTable.size();
 	}
 	
-	void mkLines() {
+	String[] mkLines(String csv) {
 		String splitOn = "\n";
 		if (csv.indexOf("\r") > 0)
 			splitOn = "\r";
-		lines = csv.split(splitOn);
+		return csv.split(splitOn);
 	}
 	
 }

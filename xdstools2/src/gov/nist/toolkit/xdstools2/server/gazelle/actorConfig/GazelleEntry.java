@@ -19,6 +19,7 @@ public class GazelleEntry extends CSVEntry {
 	public boolean getIsSecure() { return "true".equals(get(GazelleConfigIsSecure).trim()); }
 	public boolean getIsApproved() { return "true".equals(get(GazelleConfigIsApproved).trim()); }
 	public String getURL() { return get(GazelleConfigUrl); }
+    public String getProxyPort() { return get(GazelleConfigPortProxy); }
 	public String getPort() { return get(GazelleConfigPort); }
 	public String getPortSecured() { return get(GazelleConfigPortSecured); }
 	public String getDetail() { return get(GazelleConfigDetail); }

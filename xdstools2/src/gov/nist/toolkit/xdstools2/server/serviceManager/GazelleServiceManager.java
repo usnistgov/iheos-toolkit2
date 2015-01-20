@@ -5,17 +5,10 @@ import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.CSVParser;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.ConfigPull;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.ConfigToXml;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.GazelleConfigs;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.GazelleEntryFactory;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.OidConfigs;
-import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.OidEntryFactory;
+import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.*;
+import org.apache.log4j.Logger;
 
 import java.io.File;
-
-import org.apache.log4j.Logger;
 
 public class GazelleServiceManager extends CommonServiceManager {
 	
@@ -65,7 +58,7 @@ public class GazelleServiceManager extends CommonServiceManager {
 			OidConfigs oConfigs = null;
 
 			oConfigs = new OidConfigs();
-			new CSVParser(new File(actorsDir + File.separator + "listOfOIDsForSession.csv"), new OidEntryFactory()).parse(oConfigs);
+			new CSVParser(new File(actorsDir + File.separator + "listOID.csv"), new OidEntryFactory()).parse(oConfigs);
 
 
 			if (systemName.equals("ALL")) {

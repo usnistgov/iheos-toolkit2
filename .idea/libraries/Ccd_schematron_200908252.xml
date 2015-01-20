@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="Ccd-schematron-20090825">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/xdstools2/war/toolkitx/schematron/xcpd/files/schematron/MU_HITSP_C32/ccd/Ccd-schematron-20090825.zip!/" />
+      <root url="jar://$PROJECT_DIR$/xdstools2/public_resources/toolkitx/schematron/xcpd/files/schematron/MU_HITSP_C32/ccd/Ccd-schematron-20090825.zip!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

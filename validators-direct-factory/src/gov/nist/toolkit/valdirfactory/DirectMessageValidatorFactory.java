@@ -4,7 +4,6 @@ package gov.nist.toolkit.valdirfactory;
 import gov.nist.registry.common2.direct.DirectDecoder;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactory2I;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
@@ -12,6 +11,8 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.NullMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
+
+import static gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code.XDSRegistryError;
 
 public class DirectMessageValidatorFactory implements MessageValidatorFactory2I {
 	
@@ -85,7 +86,7 @@ public class DirectMessageValidatorFactory implements MessageValidatorFactory2I 
 	 */
 	static ErrorRecorder reportError(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String error) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
-		er.err(XdsErrorCode.Code.XDSRegistryError, error, "MessageValidatorFactory", "");
+		er.err(XDSRegistryError, error, "MessageValidatorFactory", "");
 		mvc.addMessageValidator(title, new NullMessageValidator(new ValidationContext()), er);
 		return er;
 	}

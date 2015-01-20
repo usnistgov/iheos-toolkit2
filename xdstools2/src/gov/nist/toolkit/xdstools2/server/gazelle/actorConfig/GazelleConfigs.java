@@ -8,6 +8,7 @@ public class GazelleConfigs extends CSVTable {
 	public boolean getIsSecure(int entry) { return "true".equals(((GazelleEntry)get(entry)).getIsSecure()); }
 	public boolean getIsApproved(int entry) { return "true".equals(((GazelleEntry)get(entry)).getIsApproved()); }
 	public String getURL(int entry) { return ((GazelleEntry)get(entry)).getURL(); }
+    public String getProxyPort(int entry) { return ((GazelleEntry)get(entry)).getProxyPort(); }
 	public String getPort(int entry) { return ((GazelleEntry)get(entry)).getPort(); }
 	public String getPortSecured(int entry) { return ((GazelleEntry)get(entry)).getPortSecured(); }
 	public String getDetail(int entry) { return ((GazelleEntry)get(entry)).getDetail(); }

@@ -7,6 +7,7 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.axiom.om.OMElement;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.axiom.om.OMElement;
 
 public class ConfigToXml {
 
@@ -168,10 +167,9 @@ public class ConfigToXml {
 			//
 			oConfigs = new OidConfigs();
 			new CSVParser(
-					new File(actorsDir + File.separator + "listOfOIDsForSession.csv"), 
+					new File(actorsDir + File.separator + "ListOID.csv"),
 					new OidEntryFactory())
 			.parse(oConfigs);
-
 
 			if (systemName.equals("ALL")) {
 				// 

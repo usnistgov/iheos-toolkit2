@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="direct-messages">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/testkit/direct-messages/CCDA_Ambulatory_in_XDM.zip!/" />
-      <root url="jar://$PROJECT_DIR$/testkit/direct-messages/CCDA_Inpatient_in_XDM.zip!/" />
-      <root url="jar://$PROJECT_DIR$/testkit/direct-messages/C32_Sample1_in_XDM.zip!/" />
-      <root url="jar://$PROJECT_DIR$/testkit/direct-messages/CCR_Sample1_in_XDM.zip!/" />
-      <root url="jar://$PROJECT_DIR$/testkit/direct-messages/C32_Sample2_in_XDM.zip!/" />
-      <root url="jar://$PROJECT_DIR$/testkit/direct-messages/CCR_Sample2_in_XDM.zip!/" />
+      <root url="jar://$PROJECT_DIR$/xdstools2/public_resources/toolkitx/testkit/direct-messages/CCR_Sample1_in_XDM.zip!/" />
+      <root url="jar://$PROJECT_DIR$/xdstools2/public_resources/toolkitx/testkit/direct-messages/C32_Sample1_in_XDM.zip!/" />
+      <root url="jar://$PROJECT_DIR$/xdstools2/public_resources/toolkitx/testkit/direct-messages/CCDA_Inpatient_in_XDM.zip!/" />
+      <root url="jar://$PROJECT_DIR$/xdstools2/public_resources/toolkitx/testkit/direct-messages/CCDA_Ambulatory_in_XDM.zip!/" />
+      <root url="jar://$PROJECT_DIR$/xdstools2/public_resources/toolkitx/testkit/direct-messages/CCR_Sample2_in_XDM.zip!/" />
+      <root url="jar://$PROJECT_DIR$/xdstools2/public_resources/toolkitx/testkit/direct-messages/C32_Sample2_in_XDM.zip!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

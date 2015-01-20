@@ -64,7 +64,7 @@ public class ConfigPull {
 	
 	public static void main(String[] args) {
 		ConfigPull pa = new ConfigPull(
-				"http://http://ihe.wustl.edu/gazelle-na/systemConfigurations.seam?testingSessionId=39&configurationType=WebServiceConfiguration",
+				"http://ihe.wustl.edu/gazelle-na/systemConfigurations.seam?testingSessionId=39&configurationType=WebServiceConfiguration",
 				new File("/Users/bmajur/tmp/toolkit2/actors"));
 		try {
 			pa.pull();
