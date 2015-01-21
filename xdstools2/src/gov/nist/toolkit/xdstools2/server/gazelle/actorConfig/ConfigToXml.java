@@ -166,20 +166,16 @@ public class ConfigToXml {
 			// Load OIDs table
 			//
 			oConfigs = new OidConfigs();
-			new CSVParser(
-					new File(actorsDir + File.separator + "ListOID.csv"),
-					new OidEntryFactory())
-			.parse(oConfigs);
+			new CSVParser(new OidEntryFactory())
+			.parse(oConfigs, Io.stringFromFile(new File(actorsDir + File.separator + "ListOID.csv")));
 
 			if (systemName.equals("ALL")) {
 				// 
 				// Parse all entries in Gazelle configuration - downloaded as a single file
 				//
 				gConfigs = new GazelleConfigs();
-				new CSVParser(
-						new File(actorsDir + File.separator + "all.csv"), 
-						new GazelleEntryFactory())
-				.parse(gConfigs);
+				new CSVParser(new GazelleEntryFactory())
+				.parse(gConfigs, Io.stringFromFile(new File(actorsDir + File.separator + "all.csv")));
 
 				//
 				// Generate actor files
@@ -194,10 +190,8 @@ public class ConfigToXml {
 				// Parse single entry identified as systemName.  The raw CSV has already been downloaded
 				//
 				gConfigs = new GazelleConfigs();
-				new CSVParser(
-						new File(actorsDir + File.separator + systemName + ".csv"), 
-						new GazelleEntryFactory())
-				.parse(gConfigs);
+				new CSVParser(new GazelleEntryFactory())
+				.parse(gConfigs, Io.stringFromFile(new File(actorsDir + File.separator + systemName + ".csv")));
 
 				//
 				// Generate actor files

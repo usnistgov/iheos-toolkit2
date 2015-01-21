@@ -1,31 +1,28 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
-import gov.nist.toolkit.utilities.io.Io;
-
-import java.io.File;
-import java.io.IOException;
-
-
-
-
 public class CSVParser {
-	String csv;
+//	String csv;
 
 	CSVTable csvTable;
 	IEntryFactory entryFactory;
 
-	public CSVParser(File csvFile, IEntryFactory entryFactory) throws IOException {
-		this(Io.stringFromFile(csvFile), entryFactory);
-	}
+//	public CSVParser(File csvFile, IEntryFactory entryFactory) throws IOException {
+//		this(Io.stringFromFile(csvFile), entryFactory);
+//	}
 	
-	private CSVParser(String csv, IEntryFactory entryFactory) {
+	public CSVParser(IEntryFactory entryFactory) {
 		this.entryFactory = entryFactory;
-		this.csv = csv;
 	}
-	
-	public CSVTable getTable() { return csvTable; }
-	
-	public CSVTable parse(CSVTable tab) {
+
+//    public CSVParser(String csv, IEntryFactory entryFactory) {
+//        this.entryFactory = entryFactory;
+//        this.csv = csv;
+//    }
+
+    public CSVTable getTable() { return csvTable; }
+
+    // update CSVTable with content of csv string
+	public CSVTable parse(CSVTable tab, String csv) {
 		this.csvTable = tab;
         String[] lines = mkLines(csv);
 		// first line is header - skip

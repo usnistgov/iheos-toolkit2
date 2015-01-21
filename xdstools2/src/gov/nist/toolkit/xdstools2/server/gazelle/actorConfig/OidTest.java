@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
+import gov.nist.toolkit.utilities.io.Io;
 import org.junit.Test;
 
 import java.io.File;
@@ -13,7 +14,8 @@ public class OidTest {
 	@Test
 	public void getOidTest() throws IOException {
 		OidConfigs oConfigs = new OidConfigs();
-		new CSVParser(new File(actorsDir + File.separator + "listOID.csv"), new OidEntryFactory()).parse(oConfigs);
+		new CSVParser(new OidEntryFactory()).parse(oConfigs,
+                Io.stringFromFile(new File(actorsDir + File.separator + "listOID.csv")));
 
 		String repUid = oConfigs.getRepUid("EHR_ECW_1");
 		assertFalse(repUid.equals(""));
