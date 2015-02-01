@@ -36,7 +36,7 @@ public class GazelleServiceManager extends CommonServiceManager {
     // Execution of this delayed. Not everything is initialized when constructor is called
     void init() {
         if (unitTest) {
-            gazelleUrl = "http://ihe.wustl.edu/gazelle-na/systemConfigurations.seam?testingSessionId=39&configurationType=WebServiceConfiguration";
+            gazelleUrl = "http://10.242.100.100/gazelle-na/systemConfigurations.seam?testingSessionId=39&configurationType=WebServiceConfiguration";
             actorsDir = new File("/Users/bmajur/tmp/toolkit2/actors");
             externalCacheFile = new File("/Users/bmajur/tmp/toolkit2");
         } else {
@@ -44,6 +44,8 @@ public class GazelleServiceManager extends CommonServiceManager {
             actorsDir = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "actors");
             externalCacheFile = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
         }
+
+        System.out.println("Pull config from " + gazelleUrl);
     }
 
     public String reloadSystemFromGazelle(String systemName) throws Exception {
@@ -142,7 +144,8 @@ public class GazelleServiceManager extends CommonServiceManager {
     public static void main(String[] args) {
         try {
             GazelleServiceManager gsm = new GazelleServiceManager();
-            gsm.reloadSystemFromGazelle("ALL");
+//            gsm.reloadSystemFromGazelle("ALL");
+            gsm.reloadSystemFromGazelle("OTHER_NIST_RED_2015");
 
         } catch (Exception e) {
             // TODO Auto-generated catch block

@@ -32,11 +32,6 @@
                <Value>20110224</Value>
             </ValueList>
          </Slot>
-         <Slot name="repositoryUniqueId">
-            <ValueList>
-               <Value>1.19.6.24.109.42.1</Value>
-            </ValueList>
-         </Slot>
          <Slot name="languageCode">
             <ValueList>
                <Value>en-us</Value>
@@ -45,6 +40,11 @@
          <Slot name="size">
             <ValueList>
                <Value>4</Value>
+            </ValueList>
+         </Slot>
+         <Slot name="repositoryUniqueId">
+            <ValueList>
+               <Value>1.19.6.24.109.42.1</Value>
             </ValueList>
          </Slot>
          <Slot name="hash">
