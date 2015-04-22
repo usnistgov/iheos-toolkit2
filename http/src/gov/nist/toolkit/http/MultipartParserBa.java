@@ -101,7 +101,7 @@ public class MultipartParserBa {
 		}
 		
 		boolean isWhite(byte b) {
-			return (b == '\n' || b == '\t' || b == ' ');
+			return (b == '\n' || b == '\t' || b == ' ' || b == '\r');
 		}
 		
 		byte[] trim(byte[] in) {
