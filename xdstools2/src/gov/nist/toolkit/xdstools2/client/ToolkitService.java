@@ -1,12 +1,8 @@
 package gov.nist.toolkit.xdstools2.client;
 
 
-import gov.nist.direct.client.MessageLog;
-import gov.nist.direct.client.config.SigningCertType;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.directsim.client.ContactRegistrationData;
-import gov.nist.toolkit.directsim.client.DirectRegistrationData;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
@@ -33,17 +29,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("toolkit")
 public interface ToolkitService extends RemoteService  {
 	
-	// Direct services
-	DirectRegistrationData directRegistration(DirectRegistrationData reg ) throws NoServletSessionException, Exception ;
-	ContactRegistrationData contactRegistration(ContactRegistrationData reg) throws NoServletSessionException, Exception;
-	ContactRegistrationData loadDirectRegistration(String contact) throws Exception;
-	ContactRegistrationData deleteDirect(ContactRegistrationData contact, DirectRegistrationData direct) throws NoServletSessionException, Exception;
-	String toolkitPubCert()throws NoServletSessionException;
-	ContactRegistrationData saveCertFromUpload(ContactRegistrationData reg, String directAddr)  throws NoServletSessionException, Exception;
-	List<Result> directSend(Map<String, String> parms) throws NoServletSessionException, Exception;
-	List<String> getEncryptionCertDomains();
-	List<String> getDirectMsgIds(String user);
-	List<MessageLog> getDirectOutgoingMsgStatus(String user) throws NoServletSessionException;
 
 	public TkProps getTkProps() throws NoServletSessionException;
 	
@@ -177,5 +162,4 @@ public interface ToolkitService extends RemoteService  {
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
 	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
-	List<SigningCertType> getAvailableDirectSigningCerts() throws NoServletSessionException;
 }

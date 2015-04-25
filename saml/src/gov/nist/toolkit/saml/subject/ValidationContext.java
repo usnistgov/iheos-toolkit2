@@ -3,8 +3,6 @@ package gov.nist.toolkit.saml.subject;
 import java.util.Collections;
 import java.util.Map;
 	
-import net.jcip.annotations.NotThreadSafe;
-	
 import org.opensaml.xml.util.DatatypeHelper;
 import org.opensaml.xml.util.LazyMap;
 public class ValidationContext {

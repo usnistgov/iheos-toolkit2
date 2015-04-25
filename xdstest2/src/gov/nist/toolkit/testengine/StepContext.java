@@ -1,7 +1,6 @@
 package gov.nist.toolkit.testengine;
 
 import gov.nist.toolkit.testengine.transactions.BasicTransaction;
-import gov.nist.toolkit.testengine.transactions.DirectTransaction;
 import gov.nist.toolkit.testengine.transactions.DsubPublishTransaction;
 import gov.nist.toolkit.testengine.transactions.DsubSubscribeTransaction;
 import gov.nist.toolkit.testengine.transactions.EchoV2Transaction;
@@ -336,10 +335,6 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				else if (instruction_name.equals("XcpdTransaction")) 
 				{
 					transaction = new XcpdTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("DirectTransaction")) 
-				{
-					transaction = new DirectTransaction(this, instruction, instruction_output);
 				} 
 				else if (instruction_name.equals("SocketTransaction")) 
 				{

@@ -30,11 +30,6 @@ public class CcdaMessageValidator extends MessageValidator {
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		er.challenge("Validating the CCDA against CCDA type &lt;" + ccdaType + ">");
 
-		try {
-			CcdaValidator.validateCDA(in, ccdaType, er);
-		} catch (Exception e) {
-			er.err(null, e);
-		}
 	}
 
 }

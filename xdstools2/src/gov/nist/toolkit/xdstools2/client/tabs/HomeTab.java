@@ -8,7 +8,6 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
-import gov.nist.toolkit.xdstools2.client.tabs.directRegistrationTab.DirectRegistrationContentValidationTable;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -105,18 +104,7 @@ public class HomeTab extends GenericQueryTab {
 			mainGrid.setCellSpacing(20);
 
 			try {
-				if ("direct".equals(th)) {
-					forDirect = true;
-				}
-				else {
 					forIHE = true;
-				}
-
-				if(forDirect) {
-					loadDirectGrid(0);
-					loadNwHINGrid(1);
-					loadIHEGrid(2);
-				}
 
 				if (forIHE) {
 					loadIHEGrid(0);
@@ -126,124 +114,11 @@ public class HomeTab extends GenericQueryTab {
 				toolkitService.getAdminPassword(getPasswordCallback);
 				loadVersion();
 
-				if ("direct".equals(th)) {
-					displayDirectHome();
-				}
-
 			} catch (Exception e) {
 				new PopupMessage(e.getClass().getName() + ": " + e.getMessage());
 			}
 		}
 
-	}
-
-	void loadDirectGrid(int startingColumn) {
-		mainGrid = new FlexTable();
-		mainGrid.setCellSpacing(20);
-
-
-		int row = 0;
-		int col = startingColumn;
-
-
-		// ***************************************************************************
-		// Direct
-
-		mainGrid.setWidget(row, col, addHTML("<h2>Direct</h2>"));
-		row++;		
-		
-		
-		HTML instLink = new HTML();
-		instLink.setHTML("<a href=\"" + "http://healthcare.nist.gov/ttt.html" + "\" target=\"_blank\">" +  "How to use the Direct Tools" + "</a>");
-		mainGrid.setWidget(row, col, instLink);
-		row++;
-
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.directRegistrationTabLabel, new TabLauncher(myContainer, TabLauncher.directRegistrationTabLabel)));
-		row++;
-
-		String val = "Message and CCDA document validators";
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val, new TabLauncher(myContainer, val)));
-		row++;
-
-
-		String val2 = "Send Direct Message";
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val2, new TabLauncher(myContainer, val2)));
-		row++;
-
-		String val3 = "View Direct Message Status";
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val3, new TabLauncher(myContainer, val3)));
-		row++;
-
-
-		// ***************************************************************************
-
-		//		topPanel.add(mainGrid);
-		
-		//		toolkitService.getAdminPassword(getPasswordCallback);
-		
-		//		loadVersion();
-
-
-	}
-
-
-	private void displayDirectHome() {
-		TkProps pubcertConfig = tkProps().withPrefixRemoved("direct.pubcert");
-		String cert = "";
-		String trustanchor = "";
-		String invtrustrelanchor = "";
-		try {
-			 cert = pubcertConfig.get("pubcert");
-		} catch (PropertyNotFoundException e) {
-			new PopupMessage("Configuration parameter direct.pubcert.pubcert cannot be loaded from tk_props.txt properties file located in the external cache");
-		}
-		try {
-			trustanchor = pubcertConfig.get("trustanchor");
-		} catch (PropertyNotFoundException e) {
-			new PopupMessage("Configuration parameter direct.pubcert.trustanchor cannot be loaded from tk_props.txt properties file located in the external cache");
-		}
-		try {
-			invtrustrelanchor = pubcertConfig.get("invtrustrelanchor");
-		} catch (PropertyNotFoundException e) {
-			new PopupMessage("Configuration parameter direct.pubcert.invtrustrelanchor cannot be loaded from tk_props.txt properties file located in the external cache");
-		}
-		
-		topPanel.add(new HTML("<hr />"));
-
-		topPanel.add(new HTML("TTT Public Cert can be displayed from <a href=\"pubcert/" + cert + "\">here</a>.  " +
-				"The Mime Body of the Direct message must be encrypted with this self-signed Public Cert."));
-
-		topPanel.add(new HTML("<hr />"));
-
-		topPanel.add(new HTML("TTT Trust Anchor can be displayed from <a href=\"pubcert/" + trustanchor + "\">here</a>.  " 
-				));
-		topPanel.add(new HTML("<hr />"));
-
-		topPanel.add(new HTML("TTT Trust Anchor representing an invalid trust relationship can be displayed from <a href=\"pubcert/" + invtrustrelanchor + "\">here</a>.  " 
-				));
-
-		topPanel.add(new HTML("<hr />"));
-
-		DirectRegistrationContentValidationTable drcvTbl = new DirectRegistrationContentValidationTable();
-		topPanel.add(drcvTbl.contentValidation());
-
-		topPanel.add(new HTML("<hr />"));
-
-		topPanel.add(new HTML("<h3>Support</h3>"));
-		topPanel.add(new HTML("The support mailing list for this tool is: <a href=\"mailto:transport-testing-tool@googlegroups.com\">transport-testing-tool@googlegroups.com</a>"));
-		
-		topPanel.add(new HTML("...which can be browsed from <a href=\"https://groups.google.com/forum/?fromgroups#!forum/transport-testing-tool\">https://groups.google.com/forum/?fromgroups#!forum/transport-testing-tool</a>"));
-		topPanel.add(new HTML("<br />"));
-		
-		topPanel.add(new HTML("Frequently asked questions (FAQ) (warning - PDF) can be found at: <a href=\"http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf\">http://www.healthit.gov/sites/default/files/regulation_faqs_11-7-12_0.pdf</a>"));
-		topPanel.add(new HTML("<br />"));
-		
-		topPanel.add(new HTML("Resources available regarding the Direct Protocol Implementation can be found at: <a href=\"http://healthcare.nist.gov/direct.html\">http://healthcare.nist.gov/direct.html</a>"));
-		
-		
-		
-		topPanel.add(new HTML("<hr />"));
-		
 	}
 
 	void loadCCDAGrid() {
@@ -406,24 +281,6 @@ public class HomeTab extends GenericQueryTab {
 
 
 	}
-
-
-	//	private void loadDirectGrid(int startingColumn) {
-	//		int row;
-	//		int col;
-	//		// ***************************************************************************
-	//		// Direct
-	//
-	//		row=0;
-	//		col=startingColumn+5;
-	//
-	//		mainGrid.setWidget(row, col, addHTML("<b>Direct</b>"));
-	//		row++;		
-	//
-	//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.directRegistrationTabLabel, new TabLauncher(myContainer, TabLauncher.directRegistrationTabLabel)));
-	//		row++;
-	//	}
-
 
 	private void loadNwHINGrid(int startingColumn) {
 		int row;

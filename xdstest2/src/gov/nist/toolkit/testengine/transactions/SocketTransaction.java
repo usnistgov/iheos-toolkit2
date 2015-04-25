@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import gov.nist.toolkit.directsupport.SMTPException;
 import gov.nist.toolkit.testengine.StepContext;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;

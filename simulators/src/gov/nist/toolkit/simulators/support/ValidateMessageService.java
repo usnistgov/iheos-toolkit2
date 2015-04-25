@@ -7,7 +7,6 @@ import gov.nist.toolkit.errorrecording.client.ErrorRecorderAdapter;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.valdirfactory.DirectMessageValidatorFactory;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valregmsg.message.MetadataMessageValidator;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -115,12 +114,8 @@ public class ValidateMessageService extends CommonServiceManager {
 
 			MessageValidatorEngine mvc;
 			
-			// rolls over to MessageValidatorFactory if necessary
-			DirectMessageValidatorFactory factory = new DirectMessageValidatorFactory();
 			
-			mvc = factory.getValidator(gerb, message, input2, vc, rvi);
-			mvc.run();
-			
+		/*	
 			MessageValidator mv = mvc.findMessageValidator("MetadataMessageValidator");
 			if (mv != null) {
 				MetadataMessageValidator mmv = (MetadataMessageValidator) mv;
@@ -144,7 +139,7 @@ public class ValidateMessageService extends CommonServiceManager {
 			}
 			
 			mvr.addResult("Validation Summary", buildValidationSummary(vc, mvc));
-
+*/
 			return mvr;
 		} catch (RuntimeException e) {
 			MessageValidationResults mvr = new MessageValidationResults();
