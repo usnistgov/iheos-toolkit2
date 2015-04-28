@@ -10,6 +10,17 @@
 
 <p>Release note are listed for each build number
 
+<h4>201a (released 28 April 2015)</h4>
+
+<ul>
+<li>Bug fix - Added \r to list of whitespace chars in multipart parser used by simulators
+<li><a href="https://bitbucket.org/bmajur/toolkit2/issue/1/bugs-in-test-11898-and-11897">Bug</a> fix - Test 11898/other_sourceid states it tests a stored query request by unknown source id other_sourceid Adds selection on non-existant sourceId -> this test script doesn't use an non-existant source id, but an invalid source id (3670984664a); it is invalid because it's not an OID. 
+<li><a href="https://bitbucket.org/bmajur/toolkit2/issue/1/bugs-in-test-11898-and-11897">Bug</a> fix - 
+Test 11897/no_matching_classcode states it tests a store query request with an unknown code.
+The description states: no_matching_classcode: queries for class code not contained in test data must return: none -> This test script doesn't use a code that is not contained in test data, but instead uses an invalid code with only a coding scheme '^^blah'.
+</ul>
+
+
 <h4>200 (released 1 November 2014)</h4>
 
 <ul>

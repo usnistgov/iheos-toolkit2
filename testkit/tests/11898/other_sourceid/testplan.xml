@@ -25,7 +25,7 @@
             </tag0:Slot>
             <tag0:Slot name="$XDSSubmissionSetSourceId">
               <tag0:ValueList>
-                <tag0:Value>('3670984664a')</tag0:Value>
+                <tag0:Value>('1.2.669847365.352.1')</tag0:Value>
               </tag0:ValueList>
             </tag0:Slot>
           </tag0:AdhocQuery>
