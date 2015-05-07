@@ -13,7 +13,7 @@
 
   <!-- Other module inherits          -->                            
   <inherits name="gov.nist.toolkit.simcommon.simCommon"/>
-  <inherits name="gov.nist.toolkit.xdstestgui.xdstestGui"/>
+  <!--<inherits name="gov.nist.toolkit.xdstestgui.xdstestGui"/>-->
   <inherits name="gov.nist.toolkit.testengine.testengine"/>
  
   <inherits name="gov.nist.toolkit.sitemanagement.siteManagement"/>
@@ -27,7 +27,9 @@
   <inherits name="gov.nist.toolkit.results.results"/>
   <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
   <inherits name="gov.nist.toolkit.http.http"/>
-  
+
+  <!--<add-linker name="xsiframe"/>-->
+  <!--<set-configuration-property name="devModeRedirectEnabled" value="true"/>-->
   <!-- Specify the app entry point class.                         -->
   <entry-point class='gov.nist.toolkit.xdstools2.client.Xdstools2'/>
 </module>

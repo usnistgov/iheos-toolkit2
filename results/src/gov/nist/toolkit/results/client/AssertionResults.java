@@ -1,11 +1,11 @@
 package gov.nist.toolkit.results.client;
 
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class AssertionResults implements IsSerializable, Serializable {
 
@@ -20,7 +20,13 @@ public class AssertionResults implements IsSerializable, Serializable {
 		assertions = new ArrayList<AssertionResult>();
 		assertions.add(new AssertionResult(assertion, status));
 	}
-	
+
+	public AssertionResults clone() {
+		AssertionResults ar = new AssertionResults();
+		for (AssertionResult x : assertions) ar.add(x);
+		return ar;
+	}
+
 	public void add(AssertionResults ars) {
 		for (AssertionResult ar : ars.assertions)
 			assertions.add(ar);

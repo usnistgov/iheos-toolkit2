@@ -1,5 +1,6 @@
 package gov.nist.toolkit.results.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
@@ -8,8 +9,6 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class StepResult implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -27,6 +26,21 @@ public class StepResult implements IsSerializable, Serializable {
 		toBeRetrieved = new ArrayList<ObjectRef>();
 		status = true;
 	}
+
+	public StepResult clone() {
+		StepResult r = new StepResult();
+		r.status = status;
+		r.section = section;
+		r.stepName = stepName;
+		r.metadata = metadata;
+		r.documents = new ArrayList<Document>();
+		for (Document d : documents) r.documents.add(d);
+		r.toBeRetrieved = new ArrayList<ObjectRef>();
+		for (ObjectRef o : toBeRetrieved) r.toBeRetrieved.add(o);
+		r.testLog = testLog;
+		r.haveLogs = haveLogs;
+		return r;
+	}
 	
 	public boolean hasContent() {
 		if (metadata == null) 
@@ -36,6 +50,10 @@ public class StepResult implements IsSerializable, Serializable {
 	
 	public void setMetadata(MetadataCollection mc) {
 		metadata = mc;
+		resetToBeRetrieved();
+	}
+
+	public void resetToBeRetrieved() {
 		toBeRetrieved = new ArrayList<ObjectRef>();
 		toBeRetrieved.addAll(metadata.objectRefs);
 	}

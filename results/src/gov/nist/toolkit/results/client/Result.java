@@ -1,10 +1,10 @@
 package gov.nist.toolkit.results.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class Result  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -19,6 +19,20 @@ public class Result  implements IsSerializable, Serializable {
 	
 	public Result() {
 		
+	}
+
+	public Result clone() {
+		Result r = new Result();
+		r.testName = testName;
+		r.assertions = assertions.clone();
+		r.timestamp = timestamp;
+		r.logId = logId;
+		r.stepResults = new ArrayList<StepResult>();
+		for (StepResult sr : stepResults) r.stepResults.add(sr.clone());
+		r.text = text;
+		r.pass = pass;
+		r.includesMetadata = includesMetadata;
+		return r;
 	}
 	
 	public Result simpleError(String err) {

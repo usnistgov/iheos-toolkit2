@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="xdm1">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/common/data/lynn-xdm/xdm.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
