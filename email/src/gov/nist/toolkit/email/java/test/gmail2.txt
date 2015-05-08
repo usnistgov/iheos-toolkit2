@@ -1,9 +1,0 @@
-smtp.starttls : true
-host : smtp.gmail.com
-from : directtesting@gmail.com
-smtp.user : directtesting@gmail.com
-smtp.password : removed
-smtp.port : 465
-smtp.auth : true
-debug : true
-gmail.style : true
