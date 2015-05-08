@@ -28,8 +28,8 @@
   <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
   <inherits name="gov.nist.toolkit.http.http"/>
 
-  <!--<add-linker name="xsiframe"/>-->
-  <!--<set-configuration-property name="devModeRedirectEnabled" value="true"/>-->
+  <add-linker name="xsiframe"/>
+  <set-configuration-property name="devModeRedirectEnabled" value="true"/>
   <!-- Specify the app entry point class.                         -->
   <entry-point class='gov.nist.toolkit.xdstools2.client.Xdstools2'/>
 </module>
