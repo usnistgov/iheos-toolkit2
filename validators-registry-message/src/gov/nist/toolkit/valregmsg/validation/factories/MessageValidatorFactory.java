@@ -12,7 +12,6 @@ import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.valccda.CcdaMessageValidator;
 import gov.nist.toolkit.valregmsg.message.DocumentAttachmentMapper;
 import gov.nist.toolkit.valregmsg.message.DocumentElementValidator;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
@@ -123,8 +122,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			mvc = getValidatorForXDM(erBuilder, input, mvc, vc, rvi);
 		} else if (vc.isNcpdp) {
 			mvc = getValidatorForNcpdp(erBuilder, inputString, mvc, vc, rvi);
-		} else if (vc.isCCDA) {
-			mvc = getValidatorForCCDA(erBuilder, input, mvc, vc);
+//		} else if (vc.isCCDA) {
+//			mvc = getValidatorForCCDA(erBuilder, input, mvc, vc);
 		} else if (vc.hasHttp) {
 			mvc = getValidatorForHttp(erBuilder, inputString, mvc, vc, rvi);
 		} else {
@@ -220,16 +219,16 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	}
 
 
-	static public MessageValidatorEngine getValidatorForCCDA(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, ValidationContext vc) {
-		mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-		if (vc != null && vc.ccdaType != null && !vc.ccdaType.equals("")) {
-			// The value "Non-CCDA content" is hard coded in
-			// gov/nist/toolkit/xdstools2/client/tabs/messageValidator/CcdaTypeSelection.java
-			if (!vc.ccdaType.contains("Non-CCDA content"))
-				mvc.addMessageValidator("CCDA Validator", new CcdaMessageValidator(vc, erBuilder, Io.bytesToInputStream(input)), erBuilder.buildNewErrorRecorder());
-		}
-		return mvc;
-	}
+//	static public MessageValidatorEngine getValidatorForCCDA(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, ValidationContext vc) {
+//		mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
+//		if (vc != null && vc.ccdaType != null && !vc.ccdaType.equals("")) {
+//			// The value "Non-CCDA content" is hard coded in
+//			// gov/nist/toolkit/xdstools2/client/tabs/messageValidator/CcdaTypeSelection.java
+//			if (!vc.ccdaType.contains("Non-CCDA content"))
+//				mvc.addMessageValidator("CCDA Validator", new CcdaMessageValidator(vc, erBuilder, Io.bytesToInputStream(input)), erBuilder.buildNewErrorRecorder());
+//		}
+//		return mvc;
+//	}
 
 	/**
 	 * Start a new validation where input is known to be XML.  Actually a duplicate of the previous method.  Some day

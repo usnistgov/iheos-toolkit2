@@ -7,7 +7,6 @@ import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.valccda.CdaDetector;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -192,30 +191,30 @@ public class XdmDecoder extends MessageValidator {
 						else
 							er.detail("hash matches");
 
-						// Attempt validation of document but only if it is a CDA R2 (and hopefully a CCDA)
-						byte[] contents = doc.ba;
-
-						if (new CdaDetector().isCDA(contents)) {
-							er.detail("Input is CDA R2, try validation as CCDA");
-							ValidationContext docVC;
-							if (vc.getInnerContextCount() > 0) {
-								docVC = vc.getInnerContext(0);
-							} else {
-								docVC = new ValidationContext();
-								docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
-								docVC.isDIRECT = false;
-							}
-							docVC.isCCDA = true;
-							er.detail("Scheduling validation as type " + docVC.ccdaType);
-
-							MessageValidatorFactory.getValidatorForCCDA(erBuilder, contents, mvc, docVC);
-//							MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, null, docVC, null);
-//							mve.run();
-						} else {
-							er.detail("Is not a CDA R2 so no validation attempted");
-							logger.info("Is not a CDA R2 so no validation attempted");
-						}
-
+//						// Attempt validation of document but only if it is a CDA R2 (and hopefully a CCDA)
+//						byte[] contents = doc.ba;
+//
+//						if (new CdaDetector().isCDA(contents)) {
+//							er.detail("Input is CDA R2, try validation as CCDA");
+//							ValidationContext docVC;
+//							if (vc.getInnerContextCount() > 0) {
+//								docVC = vc.getInnerContext(0);
+//							} else {
+//								docVC = new ValidationContext();
+//								docVC.clone(vc);  // this leaves ccdaType in place since that is what is setting the expectations
+//								docVC.isDIRECT = false;
+//							}
+//							docVC.isCCDA = true;
+//							er.detail("Scheduling validation as type " + docVC.ccdaType);
+//
+//							MessageValidatorFactory.getValidatorForCCDA(erBuilder, contents, mvc, docVC);
+////							MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, null, docVC, null);
+////							mve.run();
+//						} else {
+//							er.detail("Is not a CDA R2 so no validation attempted");
+//							logger.info("Is not a CDA R2 so no validation attempted");
+//						}
+//
 					}
 				} catch (Exception e) {
 					er.err(Code.NoCode, "Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e), subsetDir,"");
