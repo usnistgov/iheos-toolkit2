@@ -11,6 +11,18 @@
     <artifactId>registry-support</artifactId>
 
     <dependencies>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>utilities</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>xds-exceptions</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ws.commons.axiom</groupId>
+                <artifactId>axiom-api</artifactId>
+            </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

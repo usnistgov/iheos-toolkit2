@@ -23,6 +23,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>tk</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
     </dependencies>
 
 <build>

@@ -42,7 +42,7 @@
         <module>validators-support</module>
         <module>registry-metadata</module>
         <module>common-datatypes</module>
-        <module>dns</module>
+<!--        <module>dns</module>   -->
         <module>envSettings</module>
         <module>testkit-utilities</module>
         <module>simDb</module>

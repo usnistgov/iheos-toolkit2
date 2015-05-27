@@ -11,6 +11,10 @@
     <artifactId>envSettings</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>installation</artifactId>
+        </dependency>
     </dependencies>
 
 <build>

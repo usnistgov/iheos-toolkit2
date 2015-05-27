@@ -14,7 +14,6 @@
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>xds-exceptions</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -1,5 +1,10 @@
 package gov.nist.toolkit.errorrecording.client;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -7,17 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
-
 
 public class ErrorRecorderAdapter {
 
-	ArrayList<SummaryToken> summary = new ArrayList<SummaryToken>();
-	ArrayList<ValidationReportItem> detailed = new ArrayList<ValidationReportItem>();
+	ArrayList<gov.nist.toolkit.errorrecording.client.SummaryToken> summary = new ArrayList<gov.nist.toolkit.errorrecording.client.SummaryToken>();
+	ArrayList<gov.nist.toolkit.errorrecording.client.ValidationReportItem> detailed = new ArrayList<gov.nist.toolkit.errorrecording.client.ValidationReportItem>();
 	ArrayList<ArrayList<CCDAValidationReportItem>> ccda = new ArrayList<ArrayList<CCDAValidationReportItem>>();
 	ArrayList<ArrayList<XDMValidationReportItem>> xdm = new ArrayList<ArrayList<XDMValidationReportItem>>();
 	int indexEndSummary = 0;

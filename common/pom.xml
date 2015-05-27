@@ -26,6 +26,10 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+            <dependency>
+                <groupId>com.sun.ebxml</groupId>
+                <artifactId>ebxmlrr-common</artifactId>
+            </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>

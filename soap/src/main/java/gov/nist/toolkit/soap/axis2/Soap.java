@@ -5,30 +5,12 @@ import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
-import gov.nist.toolkit.testengine.PlanContext;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
-
 import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.LoadKeystoreException;
-import gov.nist.toolkit.xdsexception.XdsFormatException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
+import gov.nist.toolkit.xdsexception.*;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAP11Constants;
@@ -52,6 +34,13 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 //vbeera: The below imports should be used in case of the potential 2nd fix for MustUnderstand Check Exception.
 /*
@@ -784,7 +773,7 @@ public class Soap implements SoapInterface {
 
 	public OMElement soapCall(OMElement body, String endpoint, boolean mtom,
 			boolean addressing, boolean soap12, String action,
-			String expected_return_action, PlanContext planContext)
+			String expected_return_action, Map<String, String> linkage)
 			throws XdsInternalException, AxisFault, XdsFormatException,
 			EnvironmentNotSelectedException, LoadKeystoreException {
 
@@ -795,7 +784,7 @@ public class Soap implements SoapInterface {
 		this.endpoint = endpoint;
 		this.action = action;
 		this.body = body;
-		this.params = (planContext == null) ? new HashMap<String, String>() : planContext.getExtraLinkage();
+		this.params = (linkage == null) ? new HashMap<String, String>() : linkage;
 //		log.info("params in soap : " + params.toString());
 //		log.info("pid in soap :" + params.get("$patientid$"));
 

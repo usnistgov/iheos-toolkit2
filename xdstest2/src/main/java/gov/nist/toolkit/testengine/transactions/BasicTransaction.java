@@ -1168,7 +1168,7 @@ public abstract class BasicTransaction  {
 					useAddressing,  // WS-Addressing
 					soap_1_2,  // SOAP 1.2
 					getRequestAction(),
-					getResponseAction(), this.planContext
+					getResponseAction(), this.planContext.getExtraLinkage()
 			);
 		}
 		catch (AxisFault e) {

@@ -23,6 +23,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>security-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>xml-security</groupId>
+            <artifactId>xmlsec</artifactId>
+        </dependency>
     </dependencies>
 
 <build>

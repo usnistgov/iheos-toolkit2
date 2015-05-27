@@ -171,6 +171,11 @@
             <artifactId>http</artifactId>
 	   <version>3.0.0-SNAPSHOT</version>
         </dependency>
+            <dependency>
+                <groupId>xml-security</groupId>
+                <artifactId>xmlsec</artifactId>
+                <version>1.3.0</version>
+            </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>results</artifactId>
@@ -236,8 +241,25 @@
             <artifactId>actor-transaction</artifactId>
 	   <version>3.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>wsseTool</artifactId>
+	   <version>1.3.1</version>
+        </dependency>
 
 <!-- External -->
+	<dependency>
+		<groupId>org.opensaml</groupId>
+		<artifactId>opensaml</artifactId>
+		<version>2.5.3</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.axis2</groupId>
+		<artifactId>axis2-transport-http</artifactId>
+		<version>1.5.4</version>
+	</dependency>
+
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -278,6 +300,11 @@
                 <groupId>javax.mail</groupId>
                 <artifactId>mailapi</artifactId>
                 <version>1.4.3</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>mail</artifactId>
+                <version>1.4</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -327,12 +354,12 @@
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-api</artifactId>
-                <version>1.2.14</version>
+                <version>1.2.10</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-impl</artifactId>
-                <version>1.2.14</version>
+                <version>1.2.10</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
@@ -401,6 +428,17 @@
                 <version>1.5.4</version>
                 <!--<version>1.6.2</version> -->
             </dependency>
+	<dependency>
+		<groupId>xerces</groupId>
+		<artifactId>xercesImpl</artifactId>
+		<version>2.9.1</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.xmlbeans</groupId>
+		<artifactId>xmlbeans</artifactId>
+		<version>2.4.0</version>
+	</dependency>
+
             <dependency>
                 <groupId>org.apache.commons.io</groupId>
                 <artifactId>commons-io</artifactId>
@@ -439,6 +477,11 @@
 	<groupId>com.fasterxml</groupId>
 	<artifactId>jackson-xml-databind</artifactId>
 	<version>0.6.2</version>
+</dependency>
+<dependency>
+	<groupId>net.jcip</groupId>
+	<artifactId>jcip-annotations</artifactId>
+	<version>1.0</version>
 </dependency>
 
         </dependencies>

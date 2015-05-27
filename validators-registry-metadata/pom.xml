@@ -47,6 +47,10 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
         </dependency>
+            <dependency>
+                <groupId>org.apache.commons.io</groupId>
+                <artifactId>commons-io</artifactId>
+            </dependency>
     </dependencies>
 
 <build>

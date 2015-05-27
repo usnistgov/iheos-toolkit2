@@ -11,6 +11,14 @@
     <artifactId>testkit-utilities</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>registry-support</artifactId>
+        </dependency>
     </dependencies>
 
 <build>

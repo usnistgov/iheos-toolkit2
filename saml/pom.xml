@@ -27,6 +27,22 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>security-common</artifactId>
         </dependency>
+	<dependency>
+		<groupId>org.opensaml</groupId>
+		<artifactId>opensaml</artifactId>
+	</dependency>
+            <dependency>
+                <groupId>backport-util-concurrent</groupId>
+                <artifactId>backport-util-concurrent</artifactId>
+            </dependency>
+	<dependency>
+		<groupId>net.jcip</groupId>
+		<artifactId>jcip-annotations</artifactId>
+	</dependency>
+            <dependency>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-kernel</artifactId>
+            </dependency>
     </dependencies>
 
 <build>
