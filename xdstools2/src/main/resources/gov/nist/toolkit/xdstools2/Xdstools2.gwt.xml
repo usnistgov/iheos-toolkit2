@@ -28,10 +28,17 @@
   <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
   <inherits name="gov.nist.toolkit.http.http"/>
 
+  <!-- Use Super Dev Mode -->
   <add-linker name="xsiframe"/>
   <set-configuration-property name="devModeRedirectEnabled" value="true"/>
+  <set-property name="compiler.useSourceMaps" value="true"/>
+
   <!-- Specify the app entry point class.                         -->
   <entry-point class='gov.nist.toolkit.xdstools2.client.Xdstools2'/>
+
+  <!-- Only build for one browser - safari setting includes chrome -->
+  <set-property name="user.agent" value="safari" />
+
 </module>
 
 

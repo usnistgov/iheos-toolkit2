@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>xdstest2</artifactId>
+            <artifactId>test-engine</artifactId>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>

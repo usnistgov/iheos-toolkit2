@@ -46,7 +46,7 @@ StaticMifToXsd.xsl version 2.0</xs:documentation>
 	<xs:include schemaLocation="../../processable/coreschemas/datatypes.xsd"/>
 	<xs:include schemaLocation="../../processable/coreschemas/voc.xsd"/>
 	<xs:include schemaLocation="../../processable/coreschemas/NarrativeBlock.xsd"/>
-	<xs:import namespace="urn:hl7-org:sdtc" schemaLocation="./SDTC_Extension.xsd" />
+	<xs:import namespace="urn:hl7-org:sdtc" schemaLocation="SDTC_Extension.xsd" />
 	
 	<xs:complexType name="POCD_MT000040.InfrastructureRoot.typeId">
 		<xs:complexContent>

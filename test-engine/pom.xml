@@ -8,7 +8,7 @@
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
-    <artifactId>xdstest2</artifactId>
+    <artifactId>test-engine</artifactId>
 
     <dependencies>
         <dependency>
