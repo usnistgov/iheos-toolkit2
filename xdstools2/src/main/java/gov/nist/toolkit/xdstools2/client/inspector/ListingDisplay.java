@@ -82,8 +82,9 @@ public class ListingDisplay {
 
 		TreeItem orItem = null;
 		if (data.combinedMetadata.objectRefs.size() > 0) {
-			orItem = new TreeItem(Integer.toString(data.combinedMetadata.objectRefs.size()) + " ObjectRefs");
-			root.addItem(orItem);
+			TreeItem ti = new TreeItem();
+			ti.setHTML(Integer.toString(data.combinedMetadata.objectRefs.size()) + " ObjectRefs");
+			root.addItem(ti);
 
 			for (ObjectRef o : data.combinedMetadata.objectRefs) {
 				TreeItem item = new TreeItem(HyperlinkFactory.link(tab, o));

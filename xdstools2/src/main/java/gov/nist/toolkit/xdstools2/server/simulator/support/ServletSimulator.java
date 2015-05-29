@@ -18,6 +18,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.List;
 
 /**
  * This servlet implementation is a desperate attempt to capture the entire
@@ -195,6 +196,8 @@ public class ServletSimulator  {
 	
 	class HttpServletRequestImpl implements HttpServletRequest {
 
+		public void logout() {}
+
 		public Object getAttribute(String arg0) {
 			return requestAtts.get(arg0);
 		}
@@ -236,6 +239,41 @@ public class ServletSimulator  {
 		public int getLocalPort() {
 			// TODO Auto-generated method stub
 			return 0;
+		}
+
+		@Override
+		public ServletContext getServletContext() {
+			return null;
+		}
+
+		@Override
+		public AsyncContext startAsync() throws IllegalStateException {
+			return null;
+		}
+
+		@Override
+		public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
+			return null;
+		}
+
+		@Override
+		public boolean isAsyncStarted() {
+			return false;
+		}
+
+		@Override
+		public boolean isAsyncSupported() {
+			return false;
+		}
+
+		@Override
+		public AsyncContext getAsyncContext() {
+			return null;
+		}
+
+		@Override
+		public DispatcherType getDispatcherType() {
+			return null;
 		}
 
 		public Locale getLocale() {
@@ -446,6 +484,16 @@ public class ServletSimulator  {
 			return false;
 		}
 
+		@Override
+		public boolean authenticate(HttpServletResponse httpServletResponse) throws IOException, ServletException {
+			return false;
+		}
+
+		@Override
+		public void login(String s, String s1) throws ServletException {
+
+		}
+
 		public boolean isRequestedSessionIdValid() {
 			// TODO Auto-generated method stub
 			return false;
@@ -455,10 +503,15 @@ public class ServletSimulator  {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		
+
+		public Part getPart(String x) { return null; }
+		public List<Part> getParts() { return null; }
 	}
 	
 	class HttpServletResponseImpl implements HttpServletResponse {
+
+				public List<String> getHeaderNames() { return null; }
+		public List<String> getHeaders(String name) { return null; }
 
 		public void flushBuffer() throws IOException {
 			// TODO Auto-generated method stub
@@ -617,7 +670,16 @@ public class ServletSimulator  {
 			// TODO Auto-generated method stub
 			
 		}
-		
+
+		@Override
+		public int getStatus() {
+			return 0;
+		}
+
+		@Override
+		public String getHeader(String s) {
+			return null;
+		}
 	}
 	
 	class ServletOutputStreamImpl extends ServletOutputStream {

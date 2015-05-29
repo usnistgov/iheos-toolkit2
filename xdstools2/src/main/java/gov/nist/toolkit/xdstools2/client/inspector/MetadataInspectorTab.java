@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
@@ -13,6 +14,8 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.TabbedWindow;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
+import java.lang.Override;
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -350,12 +353,16 @@ public class MetadataInspectorTab extends TabbedWindow {
 	}
 
 	void buildLogMenu(StepResult stepResult, TreeItem stepTreeItem) {
-		TreeItem logsItem = new TreeItem("logs");
+		TreeItem ti;
+		TreeItem logsItem = new TreeItem();
+		logsItem.setText("logs");
 		stepTreeItem.addItem(logsItem);
 
 		TestLog stepLog = stepResult.getTestLog();
 
-		logsItem.addItem(new TreeItem("status : " + ((stepLog.status) ? "pass" : "<font color=\"#FF0000\">fail</font>")));
+		ti = new TreeItem();
+		ti.setHTML("status : " + ((stepLog.status) ? "pass" : "<font color=\"#FF0000\">fail</font>"));
+		logsItem.addItem(ti);
 		logsItem.addItem(new TreeItem(HyperlinkFactory.link("endpoint", new TextDisplay(this, stepLog.endpoint))));
 		logsItem.addItem(new TreeItem(HyperlinkFactory.link("request", new TextDisplay(this, stepLog.inputMetadata))));
 		logsItem.addItem(new TreeItem(HyperlinkFactory.link("response", new TextDisplay(this, stepLog.result))));
@@ -367,12 +374,17 @@ public class MetadataInspectorTab extends TabbedWindow {
 	}
 
 	void expandLogMenu(StepResult stepResult, TreeItem loadLogsTreeItem) {
-		TreeItem logsItem = new TreeItem("logs");
+		TreeItem logsItem = new TreeItem();
+		logsItem.setText("logs");
 		//		stepTreeItem.addItem(logsItem);
 
 		TestLog stepLog = stepResult.getTestLog();
 
-		logsItem.addItem(new TreeItem("status : " + ((stepLog.status) ? "pass" : "<font color=\"#FF0000\">fail</font>")));
+		TreeItem ti;
+		ti = new TreeItem();
+		ti.setHTML("status : " + ((stepLog.status) ? "pass" : "<font color=\"#FF0000\">fail</font>"));
+		logsItem.addItem(ti);
+
 		logsItem.addItem(new TreeItem(HyperlinkFactory.link("endpoint", new TextDisplay(this, stepLog.endpoint))));
 		logsItem.addItem(new TreeItem(HyperlinkFactory.link("request", new TextDisplay(this, stepLog.inputMetadata))));
 		logsItem.addItem(new TreeItem(HyperlinkFactory.link("response", new TextDisplay(this, stepLog.result))));

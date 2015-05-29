@@ -16,7 +16,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.7</jdk.version>
         <junit.version>4.11</junit.version>
-        <!-- Would like to upgrade this to 2.6.1 or 2.7.0 but some of my GWT code isn't compatible -->
         <gwtVersion>2.7.0</gwtVersion>
         <mavenCompilerPluginVersion>3.1</mavenCompilerPluginVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -260,7 +259,11 @@
 		<artifactId>axis2-transport-http</artifactId>
 		<version>1.5.4</version>
 	</dependency>
-
+            <dependency>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-transport-local</artifactId>
+                <version>1.6.2</version>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -423,12 +426,6 @@
                 <artifactId>xmlunit</artifactId>
                 <version>1.4</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.axis2</groupId>
-                <artifactId>axis2-kernel</artifactId>
-                <version>1.5.4</version>
-                <!--<version>1.6.2</version> -->
-            </dependency>
 	<dependency>
 		<groupId>xerces</groupId>
 		<artifactId>xercesImpl</artifactId>
@@ -484,7 +481,16 @@
 	<artifactId>jcip-annotations</artifactId>
 	<version>1.0</version>
 </dependency>
-
+            <dependency>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-adb</artifactId>
+                <version>1.5.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-kernel</artifactId>
+                <version>1.5.4</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
