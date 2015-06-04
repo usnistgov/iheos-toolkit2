@@ -1,34 +1,20 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.results.client.AssertionResult;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestLog;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.TabbedWindow;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
-import java.lang.Override;
-import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MetadataInspectorTab extends TabbedWindow {
 
@@ -43,6 +29,7 @@ public class MetadataInspectorTab extends TabbedWindow {
 	RadioButton selectDiff = null;
 	
 	DataModel data;
+	Logger logger = Logger.getLogger("");
 
 	public void addToHistory(List<Result> results) {
 		for (Result result : results)
@@ -71,7 +58,9 @@ public class MetadataInspectorTab extends TabbedWindow {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		this.container = container;
-		
+
+		logger.log(Level.INFO, "Inspector started");
+
 		data = new DataModel();
 		
 		data.siteSpec = siteSpec;
