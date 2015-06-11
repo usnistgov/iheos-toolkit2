@@ -12,14 +12,15 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 public class BuildCollections {
-	File testkit;
+	File testkitIn;
+	File testkitOut;
 
 	String sections[] = { "testdata", "tests", "examples", "selftest" };
 	Map<String, List<String>> collections = new HashMap<String, List<String>>();
 	boolean error;
 	
 	void write() {
-		File collectionsDir = new File(testkit + File.separator + "collections");
+		File collectionsDir = new File(testkitOut + File.separator + "collections");
 		
 		collectionsDir.mkdir();  // create if doesn't exist
 		
@@ -81,12 +82,13 @@ public class BuildCollections {
 		for (int i=0; i<sections.length; i++) {
 			String section = sections[i];
 
-			File sectionFile = new File(testkit + File.separator + section);
+			File sectionFile = new File(testkitIn + File.separator + section);
 			File testDirs[] = sectionFile.listFiles();
 
 			if (testDirs == null) {
-				System.out.println("No tests defined in " + section);
+				System.out.println("No tests defined in " + section + " (" + sectionFile + ")");
 				error = true;
+				continue;
 			}
 
 			for (int t=0; t<testDirs.length; t++) {
@@ -108,7 +110,7 @@ public class BuildCollections {
 	}
 	
 	void delete() {
-		File collectionsDir = new File(testkit + File.separator + "collections");
+		File collectionsDir = new File(testkitOut + File.separator + "collections");
 		String[] contents = collectionsDir.list();
 		if (contents == null)
 			return;
@@ -121,10 +123,12 @@ public class BuildCollections {
 	
 	public static void main(String[] args) {
 		BuildCollections bc = new BuildCollections();
-		bc.testkit = new File(args[0]);
-		System.out.println("Collections will be written to " + bc.testkit);
+		bc.testkitIn = new File(args[0]);
+		bc.testkitOut = new File(args[1]);
+		System.out.println("Testkit being scanned: " + bc.testkitIn);
+		System.out.println("Collections will be written to " + bc.testkitOut);
 		bc.scan();
-		bc.delete();
+//		bc.delete();
 		bc.write();
 	}
 

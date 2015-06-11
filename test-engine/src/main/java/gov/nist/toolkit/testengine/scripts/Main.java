@@ -79,7 +79,7 @@ public class Main implements SecurityParams {
 				}
 				logDir = new File(config + File.separator + "logs");
 				logDir.mkdir();
-				testKit = new File(config + File.separator + "testkit");
+				testKit = new File(config + File.separator + "testkitIn");
 			}
 			else if (name.equals("-t")) {
 				testName = value;
@@ -94,7 +94,7 @@ public class Main implements SecurityParams {
 	void usage() {
 		System.out.println("Usage: ttk [parameters]\n" +
 				"Where the legal parameters are:\n" 
-				+ "\t-tk <testkit directory>\n"
+				+ "\t-tk <testkitIn directory>\n"
 				+ "\t-log <log directory>\n"
 				+ "\t-t <test name>"
 				);
