@@ -12,11 +12,12 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TreeItem;
 
+
 public class ListingDisplay {
 	MetadataInspectorTab tab;
 	DataModel data;
 	TreeThing root;
-	
+
 	public ListingDisplay(MetadataInspectorTab tab, DataModel data, TreeThing root) {
 		this.tab = tab;
 		this.data = data;
@@ -80,7 +81,6 @@ public class ListingDisplay {
 			root.addItem(item);
 		}
 
-		TreeItem orItem = null;
 		if (data.combinedMetadata.objectRefs.size() > 0) {
 			TreeItem ti = new TreeItem();
 			ti.setHTML(Integer.toString(data.combinedMetadata.objectRefs.size()) + " ObjectRefs");
@@ -88,7 +88,7 @@ public class ListingDisplay {
 
 			for (ObjectRef o : data.combinedMetadata.objectRefs) {
 				TreeItem item = new TreeItem(HyperlinkFactory.link(tab, o));
-				orItem.addItem(item);
+				ti.addItem(item);
 			}
 		}
 
