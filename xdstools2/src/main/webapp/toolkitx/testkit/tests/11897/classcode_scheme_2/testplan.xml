@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11897/classcode_scheme_2</Test>
+  <TestStep id="classcode_scheme_2">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+      <Assertion>Classcode query specifying both code and scheme</Assertion>
+    </Rule>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
+            <tag0:Slot name="$XDSDocumentEntryPatientId">
+              <tag0:ValueList>
+                <tag0:Value>'$patient_id$'</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+            <tag0:Slot name="$XDSDocumentEntryStatus">
+              <tag0:ValueList>
+                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+            <tag0:Slot name="$XDSDocumentEntryClassCode">
+              <tag0:ValueList>
+                <tag0:Value>('DEMO-Lab^^1.3.6.1.4.1.21367.100.1', '51851-4^^2.16.840.1.113883.6.1')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../../12346" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <ObjectRefs count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>
