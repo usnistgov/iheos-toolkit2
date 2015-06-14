@@ -8,6 +8,18 @@
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
+    <name>XDS Toolkit</name>
+    <description>Collection of tools for testing IHE Document Sharing profiles</description>
+    <mailingLists>
+        <mailingList>
+            <name>XDS Implementers</name>
+        </mailingList>
+    </mailingLists>
+    <organization>
+        <name>National Institute of Standards and Technology</name>
+        <url>http://nist.gov</url>
+    </organization>
+
     <artifactId>xdstools2</artifactId>
     <version>${project.version}</version>
     <packaging>war</packaging>
@@ -250,9 +262,32 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <port>8181</port>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.5</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
+
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
         </plugins>
 </build>
-
   <scm>
     <tag>v3.0.2a</tag>
   </scm>
