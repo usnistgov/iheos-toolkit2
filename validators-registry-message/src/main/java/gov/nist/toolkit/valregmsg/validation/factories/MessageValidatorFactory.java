@@ -31,6 +31,7 @@ import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine.ValidationStep;
+import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.NullMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -429,7 +430,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			if (vc.isXDR) {
 				if (vc.isRequest) {
 					validateToplevelElement(erBuilder, mvc, "ProvideAndRegisterDocumentSetRequest", rootElementName);
-					mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+					mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 					return mvc;
 				} else {
 					validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
@@ -439,7 +440,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			} else {
 				if (vc.isRequest) {
 					validateToplevelElement(erBuilder, mvc, "ProvideAndRegisterDocumentSetRequest", rootElementName);
-					mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+					mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 					mvc.addMessageValidator("DocumentElementValidator", new DocumentElementValidator(vc, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
 					return mvc;
 				} else {
@@ -451,7 +452,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		} else if (vc.isR) {
 			if (vc.isRequest) {
 				validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
-				mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 				return mvc;
 			} else {
 				validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
@@ -461,7 +462,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		} else if (vc.isMU) {
 			if (vc.isRequest) {
 				validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
-				mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 				return mvc;
 			} else {
 				validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
@@ -487,12 +488,12 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 				validateToplevelElement(erBuilder, mvc, "AdhocQueryResponse", rootElementName);
 				mvc.addMessageValidator("AdhocQueryResponse", new QueryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 				mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-				mvc.addMessageValidator("Contained Metadata", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Contained Metadata", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 				return mvc;
 			}
 		} else if (vc.isXDM) {
 			validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
-			mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 			return mvc;
 		} else if (vc.isXcpd || vc.isNwHINxcpd) {
 			if (vc.isRequest) {
@@ -583,7 +584,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("DocumentContentsExtraction", new DocumentAttachmentMapper(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-			mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 			return mvc;
 		} else if (rootElementName.equals("SubmitObjectsRequest")) {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Register request");
@@ -591,7 +592,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			vc.isRequest = true;
 			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-			mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 			return mvc;
 		} else if (rootElementName.equals("RegistryResponse")) {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a RegistryResponse");
@@ -617,7 +618,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			// need to inspect WSAction to know if it is XC
-			mvc.addMessageValidator("Contained Metadata", new MetadataMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Contained Metadata", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 			return mvc;
 		} else if (rootElementName.equals("RetrieveDocumentSetRequest")) {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Retrieve Document Set request");

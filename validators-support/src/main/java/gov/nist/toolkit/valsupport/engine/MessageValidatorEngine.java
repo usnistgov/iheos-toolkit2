@@ -160,7 +160,7 @@ public class MessageValidatorEngine {
 		step.validator = v;
 		step.er = er;
 		validationSteps.add(step);
-		logger.debug("MVC: Adding: " + v.getClass().getSimpleName());
+//		logger.debug("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
 		return step;
 	}
 	
@@ -185,8 +185,7 @@ public class MessageValidatorEngine {
 			ValidationStep step = validationSteps.get(i);
 			if (step.ran)
 				continue;
-//			System.out.println("printf: MVC: Running: " + step.validator.getClass().getSimpleName());
-			logger.debug("MVC: Running: " + step.validator.getClass().getSimpleName());
+			logger.debug("ENGINE: RUN: " + step.stepName + ": " + step.validator.getClass().getSimpleName());
 			step.ran = true;
 			step.validator.run(step.er, this);
 		}

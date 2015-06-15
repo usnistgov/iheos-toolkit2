@@ -8,17 +8,19 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 import org.apache.axiom.om.OMElement;
 
 public class MetadataMessageValidator extends MessageValidator {
-	OMElement xml;
+//	OMElement xml;
 	Metadata m = null;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
+	MessageBody messageBody;
 
 	public Metadata getMetadata() { return m; }
 
@@ -27,18 +29,18 @@ public class MetadataMessageValidator extends MessageValidator {
 //		this.xml = xml;
 //	}
 	
-	public MetadataMessageValidator(ValidationContext vc, OMElement xml, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public MetadataMessageValidator(ValidationContext vc, MessageBody messageBody, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
-		this.xml = xml;
+		this.messageBody = messageBody;
 		this.rvi = rvi;
 	}
 	
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 		
-		if (xml == null) {
+		if (messageBody == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "MetadataMessageValidator: top element null", this, "");
 			return;
 		}
@@ -46,7 +48,7 @@ public class MetadataMessageValidator extends MessageValidator {
 		
 
 		try {
-			m = MetadataParser.parseNonSubmission(xml);
+			m = MetadataParser.parseNonSubmission(messageBody.getBody());
 			
 			// save on validation stack so others can find it if they need it
 			mvc.addMessageValidator("MetadataContainer", new MetadataContainer(vc, m), erBuilder.buildNewErrorRecorder());
