@@ -28,9 +28,9 @@ public class RegistryActorFactory extends ActorFactory {
 				TransactionType.UPDATE
 				);
 	
-	public Simulator buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
-		return buildNew(simm, null, configureBase);
-	}
+//	public Simulator buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+//		return buildNew(simm, null, configureBase);
+//	}
 
 	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.REGISTRY;

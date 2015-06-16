@@ -82,7 +82,7 @@ public class SimServlet  extends HttpServlet {
 		this.config = config;
 		
 		warHome = new File(config.getServletContext().getRealPath("/"));
-		session = new Session(warHome, SiteServiceManager.getSiteServiceManager());
+		session = new Session(warHome);
 		simDbDir = Installation.installation().propertyServiceManager().getSimDbDir();
 
 		

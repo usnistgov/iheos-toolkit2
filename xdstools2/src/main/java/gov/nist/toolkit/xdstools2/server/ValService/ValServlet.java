@@ -38,7 +38,7 @@ public class ValServlet extends HttpServlet {
 		this.config = config;
 		
 		warHome = new File(config.getServletContext().getRealPath("/"));
-		session = new Session(warHome, SiteServiceManager.getSiteServiceManager());
+		session = new Session(warHome);
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

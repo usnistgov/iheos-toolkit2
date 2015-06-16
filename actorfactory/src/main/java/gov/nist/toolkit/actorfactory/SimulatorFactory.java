@@ -15,7 +15,7 @@ import java.util.List;
  *
  */
 public class SimulatorFactory extends ActorFactory {
-	
+	String newID = null;
 	@SuppressWarnings("unused")
 	private SimulatorFactory() {
 	}
@@ -24,13 +24,14 @@ public class SimulatorFactory extends ActorFactory {
 		super(simManager);
 	}
 
-	public Simulator buildNewSimulator(SimManager simm, String simtype) throws Exception {
-		return buildNewSimulator(simm, simtype, true);
+	public Simulator buildNewSimulator(SimManager simm, String simtype, String simID) throws Exception {
+		return buildNewSimulator(simm, simtype, simID, true);
 	}
 
 	
 	@Override
-	protected Simulator buildNew(SimManager simm, boolean configureBase) throws Exception {
+	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws Exception {
+		this.newID = newID;
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -40,4 +40,12 @@ public class Simulator  implements Serializable, IsSerializable  {
 			ids.add(c.id);
 		return ids;
 	}
+
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+
+		for (SimulatorConfig conf : configs) buf.append(conf.toString()).append('\n');
+
+		return buf.toString();
+	}
 }

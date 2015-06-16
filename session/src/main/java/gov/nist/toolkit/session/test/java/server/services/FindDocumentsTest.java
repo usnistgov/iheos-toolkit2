@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class FindDocumentsTest {
 	static File warHome = new File("/home/bill/Documents/sf/toolkit/xdstools2/war");
-	Session session = new Session(warHome, SiteServiceManager.getSiteServiceManager(), "sessionId1");
+	Session session = new Session(warHome, "sessionId1");
 	FindDocuments fd;
 	SiteSpec siteSpec;
 	String pid = "1.2.3^^^1.2.3@ISO";

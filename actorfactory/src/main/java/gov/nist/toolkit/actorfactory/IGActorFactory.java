@@ -12,17 +12,20 @@ import java.util.Arrays;
 import java.util.List;
 
 public class IGActorFactory extends ActorFactory {
+	String newID = null;
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(
 				TransactionType.STORED_QUERY, 
 				TransactionType.RETRIEVE);
 
-	protected Simulator buildNew(SimManager simm, boolean configureBase) {
+	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) {
+		this.newID = newID;
+
 		ActorType actorType = ActorType.INITIATING_GATEWAY;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType);
+			sc = configureBaseElements(actorType, newID);
 		else
 			sc = new SimulatorConfig();
 

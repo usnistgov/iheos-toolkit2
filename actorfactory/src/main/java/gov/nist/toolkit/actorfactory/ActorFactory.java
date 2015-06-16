@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public abstract class ActorFactory {
 
-	protected abstract Simulator buildNew(SimManager simm, boolean configureBase) throws Exception;
+	protected abstract Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws Exception;
 	//	protected abstract List<SimulatorConfig> buildNew(Session session, SimulatorConfig asc) throws Exception;
 	protected abstract void verifyActorConfigurationOptions(SimulatorConfig config);
 	public abstract Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
@@ -140,7 +140,7 @@ public abstract class ActorFactory {
 	}
 
 	// Returns list since multiple simulators could be built as a grouping/cluster
-	public Simulator buildNewSimulator(SimManager simm, String simtype, boolean save) throws Exception {
+	public Simulator buildNewSimulator(SimManager simm, String simtype, String simID, boolean save) throws Exception {
 
 		ActorType at = ActorType.findActor(simtype);
 		
@@ -151,7 +151,7 @@ public abstract class ActorFactory {
 
 		af.setSimManager(simManager);
 
-		Simulator simulator = af.buildNew(simm, true);
+		Simulator simulator = af.buildNew(simm, simID, true);
 
 		if (save) {
 			for (SimulatorConfig conf : simulator.getConfigs())

@@ -8,6 +8,7 @@ import gov.nist.toolkit.utilities.xml.Parse;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.File;
@@ -197,6 +198,8 @@ public class Linkage extends BasicLinkage {
 
 	public String getLogFileName(String test_dir) {
 		//return TestConfig.logFile.toString();
+		if (testConfig == null) throw new ToolkitRuntimeException("testConfig not initialized");
+		if (testConfig.logFile == null) throw new ToolkitRuntimeException("testConfig.logFile not initialized");
 		return testConfig.logFile.getParent() + File.separator + test_dir + File.separator + "log.xml";
 	}
 

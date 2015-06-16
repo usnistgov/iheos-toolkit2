@@ -18,16 +18,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RecipientActorFactory  extends ActorFactory {
+	String newID = null;
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(TransactionType.PROVIDE_AND_REGISTER);
 
 
-	protected Simulator buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+		this.newID = newID;
+
 		ActorType actorType = ActorType.DOCUMENT_RECIPIENT;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType);
+			sc = configureBaseElements(actorType, newID);
 		else 
 			sc = new SimulatorConfig();
 		if (sc.getValidationContext() == null)

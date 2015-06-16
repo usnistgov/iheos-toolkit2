@@ -68,6 +68,10 @@ public class SimDb {
 		this(Installation.installation().simDbFile(), simulatorId, null, null);
 	}
 
+	public boolean exists(String simId) {
+		return new File(Installation.installation().simDbFile(), simId).exists();
+	}
+
 
 	// ipAddr aka simid
 	public SimDb(File dbRoot, String simId, String actor, String transaction) throws IOException, NoSimException {

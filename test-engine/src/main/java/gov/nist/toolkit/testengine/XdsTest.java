@@ -61,6 +61,7 @@ public class XdsTest {
 	boolean recursive;
 	Site site;
 	Sites sites;
+	boolean status;
 	String testPath;
 	TestConfig testConfig;
 	final static Logger logger = Logger.getLogger(XdsTest.class);
@@ -707,6 +708,7 @@ public class XdsTest {
 				plan.setTransactionSettings(ts);
 
 				boolean status =  plan.run(testPlanFile);
+				this.status = status;
 				testSpec.addTestPlanLog(section, new LogFileContent(plan.results_document));
 
 				if (status) 

@@ -44,7 +44,7 @@ public class Installation {
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) { 
 		this.externalCache = externalCache;
-        logger.info("External Cache set to " + externalCache);
+        logger.info("In Installation: External Cache set to " + externalCache);
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
@@ -73,6 +73,7 @@ public class Installation {
 	public File toolkitxFile() {
 		return new File(Installation.installation().warHome() + sep + "toolkitx");
 	}
+	public File testkitFile() { return new File(toolkitxFile(), "testkit"); }
 	
 	public File environmentFile(String envName) {
 		return new File(externalCache + sep + "environment" + sep + envName);

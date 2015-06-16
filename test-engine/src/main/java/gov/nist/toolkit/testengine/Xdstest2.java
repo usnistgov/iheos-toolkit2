@@ -46,7 +46,7 @@ public class Xdstest2 {
 	File testkit;
 	String testnum;
 	Site site;
-	File toolkitDir;
+	File toolkitDir;   // never referenced
 	List<String> sections;
 	List<TestDetails> testDetails;
 	SecurityParams tki;
@@ -56,7 +56,7 @@ public class Xdstest2 {
 
 	/**
 	 * Connect to toolkit.
-	 * @param toolkitDir - location of toolkit instance to use
+	 * @param toolkitDir
 	 * @throws Exception 
 	 * @throws FileNotFoundException 
 	 */
@@ -303,12 +303,13 @@ public class Xdstest2 {
 	 * Patient ID as coded in the testplan should be used. 
 	 * @throws Exception - Something went seriously wrong
 	 */
-	public void run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
+	public boolean run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
 		logger.debug("Running " + testnum);
 		testDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
 		if (testDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");
+		return xt.status;
 	}
 
 	String formatGoal(String goal) {

@@ -20,7 +20,7 @@ import org.junit.Test;
 public class SimulatorServiceManagerConfigsTest {
 	static File warHome = new File("/home/bill/Documents/sf/toolkit/xdstools2/war");
 	String sessionId = "sessionId1";
-	Session session = new Session(warHome, SiteServiceManager.getSiteServiceManager(), sessionId);
+	Session session = new Session(warHome, sessionId);
 	SimulatorServiceManager ssm = new SimulatorServiceManager(session);
 	Simulator sim = null;
 	SimManager sm = new SimCache().getSimManagerForSession(session.getId());
@@ -42,7 +42,7 @@ public class SimulatorServiceManagerConfigsTest {
 	
 	public void createNewRegistry() {
 		try {
-			sim = ssm.getNewSimulator(ATFactory.ActorType.REGISTRY.getName());
+			sim = ssm.getNewSimulator(ATFactory.ActorType.REGISTRY.getName(), null);
 		} catch (Exception e) {
 			Assert.fail(ExceptionUtil.exception_details(e));
 		}

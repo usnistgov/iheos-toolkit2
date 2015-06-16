@@ -243,7 +243,7 @@ ToolkitService {
 	public Map<String, String> getActorSimulatorNameMap() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorNameMap(); }
 	public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc); }
 	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception { return new SimulatorServiceManager(session()).getSimConfigs(ids); }
-	public Simulator getNewSimulator(String actorTypeName) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName); }
+	public Simulator getNewSimulator(String actorTypeName) throws Exception { return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName, null); }
 	public void deleteSimFile(String simFileSpec) throws Exception { new SimulatorServiceManager(session()).deleteSimFile(simFileSpec); }
 	public List<String> getTransactionsForSimulator(String simid) throws Exception { return new SimulatorServiceManager(session()).getTransactionsForSimulator(simid); }
 	public String getTransactionLog(String simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionLog(simid, actor, trans, event); }
@@ -384,7 +384,7 @@ ToolkitService {
 				System.setProperty("warHome", warHome.toString());
 
 			if (warHome != null) {
-				s = new Session(warHome, siteServiceManager, getSessionId());
+				s = new Session(warHome, getSessionId());
 				if (hsession != null) {
 					s.setSessionId(hsession.getId());
 					s.addSession();

@@ -22,9 +22,9 @@ public class RepositoryActorFactory extends ActorFactory {
 				TransactionType.PROVIDE_AND_REGISTER,
 				TransactionType.RETRIEVE);
 
-	public Simulator buildNew(SimManager simm, boolean configureBase) {
-		return buildNew(simm, null, configureBase);
-	}
+//	public Simulator buildNew(SimManager simm, boolean configureBase) {
+//		return buildNew(simm, null, configureBase);
+//	}
 
 	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) {
 		ActorType actorType = ActorType.REPOSITORY;

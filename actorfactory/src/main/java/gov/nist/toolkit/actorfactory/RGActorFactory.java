@@ -21,6 +21,7 @@ import java.util.List;
 
 
 public class RGActorFactory extends ActorFactory {
+	String newID = null;
 
 	static final String homeCommunityIdBase = "urn:oid:1.1.4567334.1.";
 	static int homeCommunityIdIncr = 1;
@@ -38,11 +39,12 @@ public class RGActorFactory extends ActorFactory {
 //	RegistryActorFactory registryActorFactory;
 //	RepositoryActorFactory repositoryActorFactory;
 
-	protected Simulator buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+		this.newID = newID;
 		ActorType actorType = ActorType.RESPONDING_GATEWAY;
 		SimulatorConfig sc; 
 		if (configureBase)
-			sc = configureBaseElements(actorType);
+			sc = configureBaseElements(actorType, newID);
 		else
 			sc = new SimulatorConfig();
 

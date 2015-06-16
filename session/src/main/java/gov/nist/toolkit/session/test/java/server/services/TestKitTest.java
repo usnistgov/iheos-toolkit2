@@ -19,7 +19,7 @@ public class TestKitTest {
 	@Test
 	public void simpleTest() {
 		File warHome = new File("/Users/bmajur/workspace/toolkit/xdstools2/war");
-		Session session = new Session(warHome, SiteServiceManager.getSiteServiceManager(), "sessionId1");
+		Session session = new Session(warHome, "sessionId1");
 		SiteSpec siteSpec;
 		String pid = "ba500592af78499^^^&1.19.6.24.109.42.1.3&ISO";
 		String altpid = "8f06bfbc354c413^^^&1.3.6.1.4.1.21367.2005.3.7&ISO";

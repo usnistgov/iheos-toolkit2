@@ -241,19 +241,19 @@ public class SimulatorServiceManager extends CommonServiceManager {
 		}
 	}
 
-	public Simulator getNewSimulator(String actorTypeName) throws Exception  {
+	public Simulator getNewSimulator(String actorTypeName, String simID) throws Exception  {
 		logger.debug(session.id() + ": " + "getNewSimulator(type=" + actorTypeName + ")");
 		try {
 			SimCache simCache = new SimCache();
 			SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
 			
-			Simulator scl = new SimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName);
+			Simulator scl = new SimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
 			simMgr.addSimConfigs(scl);
 			logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + scl.getIds());
 			return scl;
 		} catch (EnvironmentNotSelectedException e) {
 			logger.error("Environment Not Selected");
-			throw new Exception("Environment Not Selected");
+			throw new Exception("Environment Not Selected", e);
 		} catch (Exception e) {
 			logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
 			throw new Exception(e.getClass().getName() + ": " + e.getMessage());

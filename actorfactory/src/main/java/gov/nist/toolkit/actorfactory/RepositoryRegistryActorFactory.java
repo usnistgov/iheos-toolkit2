@@ -10,15 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryRegistryActorFactory extends ActorFactory {
+	String newID = null;
 
 	RegistryActorFactory registryActorFactory;
 	RepositoryActorFactory repositoryActorFactory;
 
-	protected Simulator buildNew(SimManager simm, boolean configureBase) throws Exception {
+	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws Exception {
+		this.newID = newID;
 		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
-			sc = configureBaseElements(actorType);
+			sc = configureBaseElements(actorType, newID);
 		else
 			sc = new SimulatorConfig();
 

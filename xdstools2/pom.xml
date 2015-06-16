@@ -135,38 +135,76 @@
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-transport-local</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
             <artifactId>axis2-transport-http</artifactId>
+            <scope>runtime</scope>
         </dependency>
-    <dependency>
-        <groupId>org.apache.axis2</groupId>
-        <artifactId>axis2-adb</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.axis2</groupId>
-        <artifactId>axis2-kernel</artifactId>
-    </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-adb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-kernel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>0.7-groovy-2.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-<build>
-    <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+    <build>
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
         <plugins>
-	    <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-source-plugin</artifactId>-->
-                <!--<version>${maven-source-plugin.version}</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>attach-sources</id>-->
-                        <!--<goals>-->
-                            <!--<goal>jar</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
+                <version>3.1</version>
+                <configuration>
+                    <compilerId>groovy-eclipse-compiler</compilerId>
+                    <!-- set verbose to be true if you want lots of uninteresting messages -->
+                    <!-- <verbose>true</verbose> -->
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-compiler</artifactId>
+                        <version>2.8.0-01</version>
+                    </dependency>
+                    <!-- for 2.8.0-01 and later you must have an explicit dependency on groovy-eclipse-batch -->
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-batch</artifactId>
+                        <version>2.1.8-01</version>
+                        <!-- or choose a different compiler version -->
+                        <!-- <version>1.8.6-01</version> -->
+                        <!-- <version>1.7.10-06</version> -->
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-source-plugin</artifactId>-->
+            <!--<version>${maven-source-plugin.version}</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>attach-sources</id>-->
+            <!--<goals>-->
+            <!--<goal>jar</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
             <!--</plugin>-->
 
             <!-- GWT Maven Plugin -->
@@ -287,8 +325,8 @@
                 </configuration>
             </plugin>
         </plugins>
-</build>
-  <scm>
-    <tag>v3.0.2a</tag>
-  </scm>
+    </build>
+    <scm>
+        <tag>v3.0.2a</tag>
+    </scm>
 </project>

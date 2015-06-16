@@ -59,7 +59,7 @@ public class DashboardDaemon {
 		this.warHome = warHome;
 		this.externalCache = externalCache;
 //		toolkit.setWarHome(warHome);
-		s = new Session(new File(warHome), SiteServiceManager.getSiteServiceManager());//		toolkit.setStandAloneSession(s);
+		s = new Session(new File(warHome));
 		try {
 			s.setEnvironment(environmentName, externalCache);
 		} catch (Exception e) {

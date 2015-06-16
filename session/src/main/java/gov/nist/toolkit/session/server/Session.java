@@ -22,6 +22,7 @@ import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -178,27 +179,35 @@ public class Session implements SecurityParams {
 		return serverPort;
 	}
 	
-	public Session(File warHome, SiteServiceManager siteServiceManager, String sessionId) {
-		this(warHome, siteServiceManager);
+	public Session(File warHome, String sessionId) {
+		this(warHome);
 		this.sessionId = sessionId;
 
 //		tomcatSessionCache = new File(warHome + File.separator + "SessionCache" + File.separator + sessionId); 		
 	}
 	
-	public Session(File warHome, SiteServiceManager siteServiceManager) {
+	public Session(File warHome) {
 		Installation.installation().warHome(warHome);
-//		this.siteServiceManager = siteServiceManager;
 		ExtendedPropertyManager.load(warHome);
 		System.out.print("warHome[Session]: " + warHome + "\n");
 
 		File externalCache = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
-        System.out.println("External Cache set to " + externalCache.toString());
+        System.out.println("External Cache from WAR set to " + externalCache.toString());
 		Installation.installation().externalCache(externalCache);
 		if (externalCache == null || !externalCache.exists() || !externalCache.isDirectory())
 			externalCache = null;
 		Installation.installation().externalCache(externalCache);
 	}
-	
+
+	public Session(File warHome, File externalCache) {
+		Installation.installation().warHome(warHome);
+		ExtendedPropertyManager.load(warHome);
+		System.out.print("warHome[Session]: " + warHome + "\n");
+
+		System.out.println("External Cache set to " + externalCache.toString());
+		Installation.installation().externalCache(externalCache);
+	}
+
 	public QueryServiceManager queryServiceManager() {
 		if (queryServiceMgr == null)
 			queryServiceMgr = new QueryServiceManager(this);
