@@ -25,18 +25,15 @@ public class ClientApi implements SecurityParams {
         this.testkitFile = Installation.installation().testkitFile();
     }
 
-    public boolean run(String testname, Site site, boolean tls) throws Exception {
+    public boolean run(String testname, Site site, boolean tls, Map<String, String> parms) throws Exception {
         Xdstest2 engine = new Xdstest2(Installation.installation().toolkitxFile(), this);
         engine.setTestkitLocation(testkitFile);
         engine.setTest(testname);
         engine.setSite(site);
-        Map<String, String> parms  = new HashMap<String, String>();
-        parms.put("$patientid$", "123^^^&1.2.343&ISO");
         TransactionSettings ts = new TransactionSettings();
         ts.writeLogs = true;
-        ts.patientId = "123^^^&1.2.343&ISO";
-        boolean status = engine.run(parms, null, true, ts);
-        return status;
+        ts.patientId = parms.get("$patientid$");
+        return engine.run(parms, null, true, ts);
     }
 
 

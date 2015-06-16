@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.server.api
 
 import gov.nist.toolkit.actorfactory.SimManager
-import gov.nist.toolkit.actorfactory.SiteServiceManager
 import gov.nist.toolkit.actorfactory.client.Simulator
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.client.Site
@@ -12,7 +11,8 @@ import spock.lang.Specification
  */
 class ClientApiIT extends Specification {
     Session session
-    String simId = 'myreg'
+    String regSimId = 'myreg'
+    String repSimId = 'myrec'
     boolean tls = false
 
     def setup() {
@@ -23,7 +23,7 @@ class ClientApiIT extends Specification {
         setup:
         // Build Registry sim as target of submission
         SimulatorApi simApi = new SimulatorApi(session)
-        Simulator sim = simApi.create('reg', simId)
+        Simulator sim = simApi.create('reg', regSimId)
 
         when: 'Create site for simulator'
         Site site = SimManager.getSite(sim.configs.get(0))
@@ -35,7 +35,36 @@ class ClientApiIT extends Specification {
         ClientApi client = new ClientApi(session)
 
         and: 'Send transaction'
-        boolean status = client.run('11990', site, tls)
+        Map<String, String> parms  = new HashMap<String, String>();
+        parms.put('$patientid$', '123^^^&1.2.343&ISO');
+
+        boolean status = client.run('11990', site, tls, parms)
+
+        then:
+        status
+    }
+
+
+    def 'Run Provide and Register Transaction'() {
+        setup:
+        // Build Recipient sim as target of submission
+        SimulatorApi simApi = new SimulatorApi(session)
+        Simulator sim = simApi.create('rec', repSimId)
+
+        when: 'Create site for simulator'
+        Site site = SimManager.getSite(sim.configs.get(0))
+
+        then: 'site exists'
+        site
+
+        when: 'Build test client to ack as Repository to send submission'
+        ClientApi client = new ClientApi(session)
+
+        and: 'Send transaction'
+        Map<String, String> parms  = new HashMap<String, String>();
+        parms.put('$patientid$', '123^^^&1.2.343&ISO');
+
+        boolean status = client.run('12371', site, tls, parms)
 
         then:
         status
