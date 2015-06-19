@@ -1,7 +1,20 @@
-# Tests suppored by toolkit #
+# XDS Toolkit #
 
+[System Requirements](systemRequirements.html)
 
-[Document Registry](tests/registry/index.html)
+[System Components](systemComponents.html)
 
+Installation
 
-[Document Repository](tests/repository/index.html)
+Capabilities
+
+Test Architecture
+
+Testkit
+
+Build from Sources
+
+Licencing
+
+Release Notes
+

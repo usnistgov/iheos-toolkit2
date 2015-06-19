@@ -40,7 +40,7 @@ public class HttpHeaderParser {
 	
 	// will return value or <value> or null if something else found or end of input
 	String getValueString(HeaderTokenizer tokenizer) throws ParseException {
-		boolean debug = true;
+		boolean debug = false;
 		Token token = tokenizer.getNextToken(debug);
 		if (token == null) return null;
 		if (token.isToken()) {

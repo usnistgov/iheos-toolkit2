@@ -32,7 +32,7 @@ abstract public class MessageValidator {
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
-		buf.append("\n\tValidationContext: ").append(vc.toString());
+		buf.append("\tVC: ").append(vc.toString());
 		
 		return buf.toString();
 	}

@@ -68,6 +68,12 @@
             <id>apache-central</id>
             <url>http://repo.maven.apache.org/maven2</url>
         </repository>
+            <repository>
+                <id>gazelle-3rd-party</id>
+                <name>gazelle nexus</name>
+                <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
+            </repository>
+
         <!--<repository>-->
             <!--<id>codehaus1</id>-->
             <!--<url>http://repository.codehaus.org/org/codehaus</url>-->

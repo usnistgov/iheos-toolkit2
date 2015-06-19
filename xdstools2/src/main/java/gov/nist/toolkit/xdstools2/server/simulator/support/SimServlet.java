@@ -327,8 +327,9 @@ public class SimServlet  extends HttpServlet {
 //			dbPath = tk.propertyServiceManager.getSimDbDir().toString();
 //		}
 		String uri  = request.getRequestURI().toLowerCase();
-		logger.debug("uri is " + uri);
-		logger.debug("warHome is " + warHome);
+		logger.info("+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ");
+		logger.info("uri is " + uri);
+		logger.info("warHome is " + warHome);
 		RegIndex regIndex = null;
 		RepIndex repIndex = null;
 		ServletContext servletContext = config.getServletContext(); 
@@ -405,7 +406,6 @@ public class SimServlet  extends HttpServlet {
 		boolean transactionOk = true;
 
 		MessageValidatorEngine mvc = new MessageValidatorEngine();
-//		Session session = new Session(warHome);
 		try {
 
 			// DB space for this simulator
@@ -434,7 +434,7 @@ public class SimServlet  extends HttpServlet {
 			ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 			er.sectionHeading("Endpoint");
 			er.detail("Endpoint is " + uri);
-			mvc.addErrorRecorder("Web Service", er);
+			mvc.addErrorRecorder("**** Web Service: " + uri, er);
 
 			/////////////////////////////////////////////////////////////
 			//
