@@ -9,8 +9,8 @@ import org.apache.axiom.om.OMElement;
 public class MetadataOrderValidator extends OrderValidator {
 
 
-	public MetadataOrderValidator(ValidationContext vc, OMElement xml) {
-		super(vc, xml);
+	public MetadataOrderValidator(ValidationContext vc) {
+		super(vc);
 		init("ebRIM 3.0 Schema");
 	}
 
@@ -22,13 +22,6 @@ public class MetadataOrderValidator extends OrderValidator {
 		elementOrder.add("Classification");
 		elementOrder.add("ExternalIdentifier");
 	}
-
-	@Override
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 
 }

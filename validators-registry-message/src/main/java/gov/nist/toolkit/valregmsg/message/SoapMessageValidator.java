@@ -61,9 +61,8 @@ public class SoapMessageValidator extends MessageValidator {
 
 
 
-	public SoapMessageValidator(ValidationContext vc, OMElement xml, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public SoapMessageValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
-		this.envelope = xml;
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
 		this.rvi = rvi;
@@ -82,10 +81,13 @@ public class SoapMessageValidator extends MessageValidator {
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
 
+		SoapMessageParser smp = (SoapMessageParser) mvc.findMessageValidator("SoapMessageParser");
+		envelope = smp.getEnvelope();
+		header = smp.getHeader();
+		body = smp.getBody();
 
-		parse();
-		envelope();
-		header();
+		validateEnvelope();
+		validateHeader();
 		parseWSAddressing();
 
 		if (wsaction != null) {
@@ -131,10 +133,6 @@ public class SoapMessageValidator extends MessageValidator {
 		
 	}
 
-	void parse() {
-		header = MetadataSupport.firstChildWithLocalName(envelope, "Header");
-		body = MetadataSupport.firstChildWithLocalName(envelope, "Body");
-	}
 
 	void verifywsActionCorrectForValidationContext(String wsaction) {
 		ValidationContext v = new ValidationContext();
@@ -402,7 +400,7 @@ public class SoapMessageValidator extends MessageValidator {
 
 	static String soapEnvelopeNamespace = "http://www.w3.org/2003/05/soap-envelope";
 
-	void header() {
+	void validateHeader() {
 		er.challenge("Header");
 		if (header == null) {
 			err("Header must be present","ITI TF-2x: V.3.2.2 and SOAP Version 1.2 Section 4");
@@ -467,7 +465,7 @@ public class SoapMessageValidator extends MessageValidator {
 		return body.getFirstElement();
 	}
 
-	void envelope() {
+	void validateEnvelope() {
 		er.challenge("Envelope");
 		OMNamespace ns = envelope.getNamespace();
 		if (ns == null) 

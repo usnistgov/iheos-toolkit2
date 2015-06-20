@@ -20,7 +20,7 @@ import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
  * @author bill
  *
  */
-public class SimpleSoapMessageValidator extends MessageValidator {
+public class SimpleSoapHttpHeaderValidator extends MessageValidator {
 	HttpParserBa hparser;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
@@ -28,7 +28,7 @@ public class SimpleSoapMessageValidator extends MessageValidator {
 	String charset = null;
 	RegistryValidationInterface rvi;
 
-	public SimpleSoapMessageValidator(ValidationContext vc, HttpParserBa hparser, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
+	public SimpleSoapHttpHeaderValidator(ValidationContext vc, HttpParserBa hparser, byte[] body, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, RegistryValidationInterface rvi) {
 		super(vc);
 		this.hparser = hparser;
 		this.erBuilder = erBuilder;

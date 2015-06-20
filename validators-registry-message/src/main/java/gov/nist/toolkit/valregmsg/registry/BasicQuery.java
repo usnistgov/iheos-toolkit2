@@ -8,11 +8,11 @@ import org.apache.log4j.Logger;
 
 public class BasicQuery {
 	protected final static Logger logger = Logger.getLogger(BasicQuery.class);
-	static Properties properties = null;
+//	static Properties properties = null;
 	
-	static {
-		properties = Properties.loader();
-	}
+//	static {
+//		properties = Properties.loader();
+//	}
 	
 
 	public void secure_URI(Metadata metadata) throws MetadataException {

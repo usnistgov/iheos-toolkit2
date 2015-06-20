@@ -85,7 +85,7 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 			}
 
 			// Get body of SQ
-			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidator(SoapMessageValidator.class);
+			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			OMElement ahqr = smv.getMessageBody();
 
 			request = new AdhocQueryRequestParser(ahqr).getAdhocQueryRequest();

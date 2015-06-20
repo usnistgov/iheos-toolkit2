@@ -6,6 +6,7 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 
 import java.util.List;
@@ -22,16 +23,17 @@ public class RetrieveRequestValidator  extends MessageValidator {
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 
-	public RetrieveRequestValidator(ValidationContext vc, OMElement xml, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc) {
+	public RetrieveRequestValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc) {
 		super(vc);
-		this.xml = xml;
 		this.erBuilder = erBuilder;
 		this.mvc = mvc;
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		
+		MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
+		xml = cont.getBody();
+
 		if (xml == null) {
 			er.err(XdsErrorCode.Code.XDSRepositoryError, "RetrieveDocumentSetRequest: top element null", this, "");
 			return;
@@ -40,7 +42,9 @@ public class RetrieveRequestValidator  extends MessageValidator {
 
 		List<OMElement> documentRequests = MetadataSupport.childrenWithLocalName(xml, "DocumentRequest");
 		for (OMElement dr : documentRequests) {
-			mvc.addMessageValidator("DocumentRequest element ordering", new RetrieveOrderValidator(vc, dr), erBuilder.buildNewErrorRecorder());
+			RetrieveOrderValidator rov = new RetrieveOrderValidator(vc);
+			rov.setBody(dr);
+			mvc.addMessageValidator("DocumentRequest element ordering", rov, erBuilder.buildNewErrorRecorder());
 			if (vc.isXC) {
 				OMElement homeElement = MetadataSupport.firstChildWithLocalName(dr, "HomeCommunityId");
 				if (homeElement == null) {

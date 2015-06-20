@@ -6,6 +6,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.utilities.xml.SchemaValidation;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -29,10 +30,8 @@ public class WrapperValidator extends MessageValidator {
 	Map<String, List<String>> wrapperList = new HashMap<String, List<String>>();
 	List<String> elementOrder = new ArrayList<String>();
 
-	public WrapperValidator(ValidationContext vc, OMElement xml) {
+	public WrapperValidator(ValidationContext vc) {
 		super(vc);
-		this.xml = xml;
-		init();
 	}
 	
 	void err(String msg, String ref) {
@@ -41,6 +40,9 @@ public class WrapperValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
+		xml = cont.getBody();
+		init();
 		String transaction = vc.getTransactionName();
 		List<String> expectedWrappers = wrapperList.get(transaction);
 

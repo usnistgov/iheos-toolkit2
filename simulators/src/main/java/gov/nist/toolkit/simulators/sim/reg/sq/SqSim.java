@@ -65,7 +65,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 		
 		// run stored query
 		try {
-			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidator(SoapMessageValidator.class);
+			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			OMElement ahqr = smv.getMessageBody();
 			
 			StoredQueryFactory fact = null;

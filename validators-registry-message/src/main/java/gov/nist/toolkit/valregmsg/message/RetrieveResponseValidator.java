@@ -46,7 +46,9 @@ public class RetrieveResponseValidator extends MessageValidator {
 
 		List<OMElement> documentRequests = MetadataSupport.childrenWithLocalName(xml, "DocumentResponse");
 		for (OMElement dr : documentRequests) {
-			mvc.addMessageValidator("DocumentResponse element ordering", new RetrieveResponseOrderValidator(vc, dr), erBuilder.buildNewErrorRecorder());
+			RetrieveResponseOrderValidator rov = new RetrieveResponseOrderValidator(vc);
+			rov.setBody(dr);
+			mvc.addMessageValidator("DocumentResponse element ordering", rov, erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("DocumentResponse Validator", new DocumentResponseValidator(vc, dr), erBuilder.buildNewErrorRecorder());
 		}
 

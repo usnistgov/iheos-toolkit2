@@ -12,27 +12,14 @@ import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.valregmsg.message.DocumentAttachmentMapper;
-import gov.nist.toolkit.valregmsg.message.DocumentElementValidator;
-import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
-import gov.nist.toolkit.valregmsg.message.MetadataMessageValidator;
-import gov.nist.toolkit.valregmsg.message.MetadataOrderValidator;
-import gov.nist.toolkit.valregmsg.message.QueryRequestMessageValidator;
-import gov.nist.toolkit.valregmsg.message.QueryResponseValidator;
-import gov.nist.toolkit.valregmsg.message.RegistryResponseValidator;
-import gov.nist.toolkit.valregmsg.message.RetrieveRequestValidator;
-import gov.nist.toolkit.valregmsg.message.RetrieveResponseValidator;
-import gov.nist.toolkit.valregmsg.message.SAMLMessageValidator;
-import gov.nist.toolkit.valregmsg.message.SchemaValidator;
-import gov.nist.toolkit.valregmsg.message.SchematronValidator;
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
-import gov.nist.toolkit.valregmsg.message.WrapperValidator;
+import gov.nist.toolkit.valregmsg.message.*;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.MessageBody;
-import gov.nist.toolkit.valsupport.message.NullMessageValidator;
+import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
+import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
@@ -346,7 +333,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			// SOAP parser will find body and schedule its validation based on 
 			// requested validation
 			if (vc.hasSoap || vc.hasSaml) {
-				mvc.addMessageValidator("SOAP Message", new SoapMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("SOAP Message Parser", new SoapMessageParser(vc, xml), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 				return mvc;
 			}  else {
 				return validateBasedOnValidationContext(erBuilder, xml, mvc, vc, rvi);
@@ -412,8 +400,9 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		if (!vc.isXcpd && !vc.isC32 && !vc.isNcpdp ) {
 
 			if (vc.hasMetadata()) {
-				mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-				mvc.addMessageValidator("Validate Metadata Element Ordering", new MetadataOrderValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Validate Metadata Element Ordering", new MetadataOrderValidator(vc), erBuilder.buildNewErrorRecorder());
 			}
 
 			if (vc.containsDocuments()) {
@@ -471,8 +460,9 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			}
 		} else if (vc.isRet) {
 			if (vc.isRequest) {
+				mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
 				validateToplevelElement(erBuilder, mvc, "RetrieveDocumentSetRequest", rootElementName);
-				mvc.addMessageValidator("RetrieveDocumentSetRequest", new RetrieveRequestValidator(vc, xml, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("RetrieveDocumentSetRequest", new RetrieveRequestValidator(vc, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
 				return mvc;
 			} else {
 				validateToplevelElement(erBuilder, mvc, "RetrieveDocumentSetResponse", rootElementName);
@@ -581,7 +571,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Provide and Register request");
 			vc.isPnR = true;
 			vc.isRequest = true;
-			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("DocumentContentsExtraction", new DocumentAttachmentMapper(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
@@ -590,7 +581,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Register request");
 			vc.isR = true;
 			vc.isRequest = true;
-			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 			return mvc;
@@ -598,7 +590,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a RegistryResponse");
 			vc.isR = true; // could also be PnR or XDR - doesn't matter
 			vc.isResponse = true;
-			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			return mvc;
@@ -614,8 +607,9 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			vc.isSQ = true;
 			vc.isRequest = false;
 			vc.isResponse = true;
+			mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("AdhocQueryResponse", new QueryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			// need to inspect WSAction to know if it is XC
 			mvc.addMessageValidator("Contained Metadata", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
@@ -624,9 +618,10 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Retrieve Document Set request");
 			vc.isRet = true;
 			vc.isRequest = true;
-			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-			mvc.addMessageValidator("RetrieveDocumentSetRequest", new RetrieveRequestValidator(vc, xml, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("RetrieveDocumentSetRequest", new RetrieveRequestValidator(vc, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
 			return mvc;
 		} else if (rootElementName.equals("RetrieveDocumentSetResponse")) {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Retrieve Document Set response");
@@ -642,7 +637,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			// schema validation of SOAP envelope is useless
 			//			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
 			// don't know what ValidationContext to set - let this validator choose
-			mvc.addMessageValidator("SOAP Wrapper", new SoapMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("SOAP Message Parser", new SoapMessageParser(vc, xml), erBuilder.buildNewErrorRecorder());
+			mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 			return mvc;
 		}else if (rootElementName.equals("Assertion")) {
 			// schema validation of SOAP envelope is useless
@@ -729,7 +725,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	static ErrorRecorder reportError(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String error) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		er.err(XdsErrorCode.Code.XDSRegistryError, error, "MessageValidatorFactory", "");
-		mvc.addMessageValidator(title, new NullMessageValidator(new ValidationContext()), er);
+		mvc.addMessageValidator(title, new ServiceRequestContainer(new ValidationContext()), er);
 		return er;
 	}
 
@@ -742,7 +738,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 */
 	static ErrorRecorder report(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
-		mvc.addMessageValidator(title, new NullMessageValidator(new ValidationContext()), er);
+		mvc.addMessageValidator(title, new ServiceRequestContainer(new ValidationContext()), er);
 		return er;
 	}
 
@@ -756,7 +752,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	static void reportParseDecision(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String text) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		//		er.info1(text);
-		mvc.addMessageValidator(title + " - " + text, new NullMessageValidator(new ValidationContext()), er);
+		mvc.addMessageValidator(title + " - " + text, new ServiceRequestContainer(new ValidationContext()), er);
 	}
 
 	public static void main(String[] args) {

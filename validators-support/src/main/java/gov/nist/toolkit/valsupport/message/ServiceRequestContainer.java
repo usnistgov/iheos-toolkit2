@@ -5,20 +5,21 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 
 /**
- * A validator with and empty run method.  Used as a place to hang
- * an isolated ErrorRecorder.
+ * This defines a new, usually external, service request.  It holds
+ * the top-level ValidationContext and ErrorRecorder. It
+ * does no validation.  It is used by subsequent steps to get
+ * access to these two objects.
  * @author bill
  *
  */
-public class NullMessageValidator extends MessageValidator {
+public class ServiceRequestContainer extends MessageValidator {
 	
-	public NullMessageValidator(ValidationContext vc) {
+	public ServiceRequestContainer(ValidationContext vc) {
 		super(vc);
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		
 	}
 
 }

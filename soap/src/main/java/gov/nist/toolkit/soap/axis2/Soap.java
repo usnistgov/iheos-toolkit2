@@ -32,8 +32,7 @@ import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.httpclient.protocol.Protocol;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -51,7 +50,7 @@ import java.util.*;
 
 public class Soap implements SoapInterface {
 
-	private static Logger log = LoggerFactory.getLogger(Soap.class);
+	private static Logger log = Logger.getLogger(Soap.class);
 
 	ServiceClient serviceClient = null;
 	OperationClient operationClient = null;

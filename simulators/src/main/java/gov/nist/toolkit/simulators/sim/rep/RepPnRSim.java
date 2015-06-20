@@ -54,11 +54,11 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 
 		try {
 
-			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidator(MetadataContainer.class);
+			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidatorIfAvailable(MetadataContainer.class);
 			m = metaCon.getMetadata();
 
-			DocumentAttachmentMapper dam = (DocumentAttachmentMapper) common.getMessageValidator(DocumentAttachmentMapper.class);
-			MultipartContainer mc = (MultipartContainer) common.getMessageValidator(MultipartContainer.class);
+			DocumentAttachmentMapper dam = (DocumentAttachmentMapper) common.getMessageValidatorIfAvailable(DocumentAttachmentMapper.class);
+			MultipartContainer mc = (MultipartContainer) common.getMessageValidatorIfAvailable(MultipartContainer.class);
 
 			Map<String, StoredDocument> sdMap = new HashMap<String, StoredDocument>();
 

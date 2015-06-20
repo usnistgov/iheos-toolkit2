@@ -17,8 +17,8 @@ import java.security.KeyStoreException;
 import java.util.List;
 
 import org.apache.axiom.om.OMElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -46,8 +46,7 @@ import org.w3c.dom.Element;
 
 public class WsseHeaderValidatorAdapter extends MessageValidator {
 
-	private static Logger log = LoggerFactory
-			.getLogger(WsseHeaderValidatorAdapter.class);
+	private static Logger log = Logger.getLogger(WsseHeaderValidatorAdapter.class);
 
 	/**
 	 * Validate our own generated message!

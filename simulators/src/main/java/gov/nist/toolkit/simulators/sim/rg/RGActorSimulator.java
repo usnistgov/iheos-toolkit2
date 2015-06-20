@@ -71,7 +71,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 
 			// extract retrieve request 
-			MessageValidator mv = common.getMessageValidator(SoapMessageValidator.class);
+			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
 				returnRetrieveError();
@@ -168,7 +168,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 
 			// extract query 
-			MessageValidator mv = common.getMessageValidator(SoapMessageValidator.class);
+			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
 				common.sendErrorsInRegistryResponse(er);
@@ -223,7 +223,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			// extract retrieve request 
 			// We do not do anything with retrieve request for now ...  later we will need the parameters to create response.
 			/*
-			MessageValidator mv = common.getMessageValidator(SoapMessageValidator.class);
+			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
 				return false;

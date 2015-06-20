@@ -3,12 +3,13 @@ package gov.nist.toolkit.valsupport.engine;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
-import gov.nist.toolkit.valsupport.message.NullMessageValidator;
+import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 /**
@@ -108,7 +109,7 @@ public class MessageValidatorEngine {
 		return new ValidationStepEnumeration(validationSteps);
 	}
 	
-	public MessageValidator findMessageValidator(String className) {
+	public MessageValidator findMessageValidatorIfAvailable(String className) {
 		for (ValidationStep vs : validationSteps) {
 			MessageValidator mv = vs.validator;
 			if (mv == null)
@@ -118,6 +119,12 @@ public class MessageValidatorEngine {
 				return mv;
 		}
 		return null;
+	}
+
+	public MessageValidator findMessageValidator(String className) {
+		MessageValidator mv = findMessageValidatorIfAvailable(className);
+		if (mv == null) throw new ToolkitRuntimeException("Message Validator named " + className + " does not exist");
+		return mv;
 	}
 
 	public List<String> getValidatorNames() {
@@ -170,7 +177,7 @@ public class MessageValidatorEngine {
 	 * @param er its private ErrorRecorder
 	 */
 	public void addErrorRecorder(String stepName, ErrorRecorder er) {
-		ValidationStep step = addMessageValidator(stepName, new NullMessageValidator(new ValidationContext()), er);
+		ValidationStep step = addMessageValidator(stepName, new ServiceRequestContainer(new ValidationContext()), er);
 		step.ran = true;
 		logger.info("ENGINE: RUN: " + step.toString());
 	}
@@ -187,7 +194,7 @@ public class MessageValidatorEngine {
 			if (step.ran)
 				continue;
 //			logger.debug("ENGINE: RUN: " + step.stepName + ": " + step.validator.getClass().getSimpleName());
-			logger.debug("ENGINE: RUN: " + step);
+			logger.info("ENGINE: RUN: " + step);
 			step.ran = true;
 			step.validator.run(step.er, this);
 		}

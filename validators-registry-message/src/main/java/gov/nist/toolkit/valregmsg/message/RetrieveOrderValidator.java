@@ -8,8 +8,8 @@ import org.apache.axiom.om.OMElement;
 
 public class RetrieveOrderValidator extends OrderValidator {
 
-	public RetrieveOrderValidator(ValidationContext vc, OMElement xml) {
-		super(vc, xml);
+	public RetrieveOrderValidator(ValidationContext vc) {
+		super(vc);
 		init("Schema");
 	}
 
@@ -17,12 +17,6 @@ public class RetrieveOrderValidator extends OrderValidator {
 		elementOrder.add("HomeCommunityId");
 		elementOrder.add("RepositoryUniqueId");
 		elementOrder.add("DocumentUniqueId");
-	}
-
-	@Override
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

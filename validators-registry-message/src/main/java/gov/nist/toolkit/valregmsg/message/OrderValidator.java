@@ -4,6 +4,8 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 
 import java.util.ArrayList;
@@ -20,26 +22,40 @@ import org.apache.axiom.om.OMNode;
  *
  */
 public abstract class OrderValidator extends MessageValidator {
-	OMElement xml;
+	OMElement xml = null;
 	protected List<String> elementOrder = new ArrayList<String>();
 	String reference;
 
 	abstract protected void initElementOrder();
 
-	public OrderValidator(ValidationContext vc, OMElement xml) {
+	public OrderValidator(ValidationContext vc) {
 		super(vc);
-		this.xml = xml;
 	}
 
-	public void run(ErrorRecorder er) {
+	/**
+	 * Normally this pulls the message body off the validation stack.  But in some cases it
+	 * needs to be manually injected through the setBody method.
+	 * @param er
+	 * @param mvc
+	 */
+	@Override
+	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		
+		if (xml == null) {
+			MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
+			xml = cont.getBody();
+		}
+
 		if (xml == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "No content present", this, "");
 			return;
 		}
 
 		checkElementOrder(xml);
+	}
+
+	public void setBody(OMElement xml) {
+		this.xml = xml;
 	}
 
 	void init(String reference) {

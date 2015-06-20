@@ -20,7 +20,7 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valregmsg.message.MtomMessageValidator;
-import gov.nist.toolkit.valregmsg.message.SimpleSoapMessageValidator;
+import gov.nist.toolkit.valregmsg.message.SimpleSoapHttpHeaderValidator;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
@@ -30,7 +30,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine.ValidationStep;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
 import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
-import gov.nist.toolkit.valsupport.message.NullMessageValidator;
+import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
@@ -194,7 +194,7 @@ public class SimCommon {
 	public ErrorRecorder getCommonErrorRecorder() {
 		if (er == null) {
 			er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
-			NullMessageValidator val = new NullMessageValidator(vc);
+			ServiceRequestContainer val = new ServiceRequestContainer(vc);
 			mvc.addMessageValidator("Default ErrorRecorder", val, er);
 		}
 
@@ -232,7 +232,7 @@ public class SimCommon {
 	 * @return
 	 */
 	SoapFault getSoapErrors() {
-		//		smv = (SoapMessageValidator) getMessageValidator(SoapMessageValidator.class);
+		//		smv = (SoapMessageValidator) getMessageValidatorIfAvailable(SoapMessageValidator.class);
 		//
 		//		if (smv == null) {
 		//			SoapFault fault = new SoapFault(SoapFault.FaultCodes.Receiver, "InternalError: Simulator: Did not find SoapMessageValidator on validator stack");
@@ -258,7 +258,7 @@ public class SimCommon {
 		sf = getFaultFromMessageValidator(SoapMessageValidator.class);
 		if (sf != null) return sf;
 
-		sf = getFaultFromMessageValidator(SimpleSoapMessageValidator.class);
+		sf = getFaultFromMessageValidator(SimpleSoapHttpHeaderValidator.class);
 		if (sf != null) return sf;
 
 		sf = getFaultFromMessageValidator(MtomMessageValidator.class);
@@ -275,8 +275,8 @@ public class SimCommon {
 	 * @return SoapFault instance
 	 */
 	SoapFault getFaultFromMessageValidator(Class clas) {
-		MessageValidator mv = getMessageValidator(clas);
-		//		SoapMessageValidator smv = (SoapMessageValidator) getMessageValidator(SoapMessageValidator.class);
+		MessageValidator mv = getMessageValidatorIfAvailable(clas);
+		//		SoapMessageValidator smv = (SoapMessageValidator) getMessageValidatorIfAvailable(SoapMessageValidator.class);
 
 
 		if (mv == null) {
@@ -325,7 +325,7 @@ public class SimCommon {
 		SoapMessageValidator smv = null;
 
 		try {
-			smv = (SoapMessageValidator) getMessageValidator(SoapMessageValidator.class);
+			smv = (SoapMessageValidator) getMessageValidatorIfAvailable(SoapMessageValidator.class);
 		} catch (Exception e) {
 
 		}
@@ -711,8 +711,8 @@ public class SimCommon {
 	 * @param clas
 	 * @return Matching MessageValidator
 	 */
-	public MessageValidator getMessageValidator(@SuppressWarnings("rawtypes") Class clas) {
-		return mvc.findMessageValidator(clas.getCanonicalName());
+	public MessageValidator getMessageValidatorIfAvailable(@SuppressWarnings("rawtypes") Class clas) {
+		return mvc.findMessageValidatorIfAvailable(clas.getCanonicalName());
 	}
 
 	public List<String> getValidatorNames() {

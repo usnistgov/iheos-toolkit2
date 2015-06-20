@@ -11,7 +11,7 @@ import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 /**
- * Validate HTTP message.  Launches either MtomMessageValidator or SimpleSoapMessageValidator as appropriate.
+ * Validate HTTP message.  Launches either MtomMessageValidator or SimpleSoapHttpHeaderValidator as appropriate.
  * @author bill
  *   
  */
@@ -74,8 +74,8 @@ public class HttpMessageValidator extends MessageValidator {
 				else
 					er.detail("Request Message is SIMPLE SOAP format");
 				er.detail("Scheduling SIMPLE SOAP parser");
-				mvc.addMessageValidator("Validate SIMPLE SOAP", new SimpleSoapMessageValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
-//				SimpleSoapMessageValidator val = new SimpleSoapMessageValidator(vc, hparser, body, erBuilder, mvc);
+				mvc.addMessageValidator("SIMPLE SOAP parser", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+//				SimpleSoapHttpHeaderValidator val = new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc);
 //				val.run(er);
 			}
 		} catch (HttpParseException e) {

@@ -90,7 +90,7 @@ public class RepositoryActorSimulator extends ActorSimulator {
 				return false;
 			}
 
-			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidator(SoapMessageValidator.class);
+			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (smv == null) {
 				er.err(Code.XDSRepositoryError, "Internal Error: cannot find SoapMessageValidator.class", "RepositoryActorSimulator.java", null);
 				return false;

@@ -77,7 +77,7 @@ public class RegRSim extends TransactionSimulator   {
 	// on the entire metadata collection in both transactions.
 	protected void setup() {
 		try {
-			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidator(MetadataContainer.class);
+			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidatorIfAvailable(MetadataContainer.class);
 			m = metaCon.getMetadata();
 			if (m == null) throw new Exception("");
 		} catch (Exception e) {

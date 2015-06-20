@@ -14,8 +14,8 @@ import org.apache.axiom.om.OMElement;
  */
 public class RetrieveResponseOrderValidator extends OrderValidator {
 
-	public RetrieveResponseOrderValidator(ValidationContext vc, OMElement xml) {
-		super(vc, xml);
+	public RetrieveResponseOrderValidator(ValidationContext vc) {
+		super(vc);
 		init("Schema");	}
 
 	protected void initElementOrder() {
@@ -26,10 +26,5 @@ public class RetrieveResponseOrderValidator extends OrderValidator {
 		elementOrder.add("Document");
 	}
 
-	@Override
-	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
