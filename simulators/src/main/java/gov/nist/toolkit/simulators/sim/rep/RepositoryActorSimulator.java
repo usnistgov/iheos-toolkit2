@@ -13,7 +13,7 @@ import gov.nist.toolkit.simulators.support.ActorSimulator;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;

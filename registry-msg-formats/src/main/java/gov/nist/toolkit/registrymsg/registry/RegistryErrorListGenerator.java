@@ -11,7 +11,7 @@ import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XDSMissingDocumentException;
 import gov.nist.toolkit.xdsexception.XDSRepositoryMetadataException;

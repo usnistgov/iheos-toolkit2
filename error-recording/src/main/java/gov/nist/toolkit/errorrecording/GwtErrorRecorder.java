@@ -1,6 +1,5 @@
-package gov.nist.toolkit.valsupport.errrec;
+package gov.nist.toolkit.errorrecording;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingCompletionType;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
@@ -17,8 +16,9 @@ import org.apache.log4j.Logger;
 public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	ErrorRecorderBuilder errorRecorderBuilder;
-	List<ValidatorErrorItem> summary = new ArrayList<ValidatorErrorItem>();
-	List<ValidatorErrorItem> errMsgs = new ArrayList<ValidatorErrorItem>();
+	List<ErrorRecorder> children = new ArrayList<>();
+	List<ValidatorErrorItem> summary = new ArrayList<>();
+	List<ValidatorErrorItem> errMsgs = new ArrayList<>();
 	int lastErrCount = 0;
 	
 	static Logger logger = Logger.getLogger(GwtErrorRecorder.class);
@@ -244,15 +244,21 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	@Override
 	public void warning(Code code, String msg, String location, String resource) {
 		err1(code.toString(), msg, location, "Warning", resource);
-		
 	}
 
 	@Override
 	public ErrorRecorder buildNewErrorRecorder() {
-		return this;
+		return errorRecorderBuilder.buildNewErrorRecorder(this);
+		//return this;
 	}
 
-	@Override
+    @Override
+    public ErrorRecorder buildNewErrorRecorder(ErrorRecorder er) {
+        return errorRecorderBuilder.buildNewErrorRecorder(er);
+        //return this;
+    }
+
+    @Override
 	public int getNbErrors() {
 		int nbErrors = 0;
 		for (ValidatorErrorItem vei : errMsgs) {
@@ -275,6 +281,11 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	public ErrorRecorderBuilder getErrorRecorderBuilder() {
 		// TODO Auto-generated method stub
 		return errorRecorderBuilder;
+	}
+
+	@Override
+	public List<ErrorRecorder> getChildren() {
+		return children;
 	}
 
 	@Override
@@ -373,6 +384,16 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		errMsgs.add(e);
 	}
 
+	public int depth() {
+		int depth = 1;
 
+		int maxChildDepth = 0;
+		for (ErrorRecorder er : children) {
+			int childDepth = er.depth();
+			if (childDepth > maxChildDepth) maxChildDepth = childDepth;
+		}
+
+		return depth + maxChildDepth;
+	}
 
 }

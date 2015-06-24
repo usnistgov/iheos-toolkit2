@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TextErrorRecorder implements ErrorRecorder {
+	List<ErrorRecorder> children = new ArrayList<>();
 
 	public class ErrorInfo {
 		public int indent = 0;
@@ -214,6 +215,11 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
+	public ErrorRecorder buildNewErrorRecorder(ErrorRecorder parent) {
+		return null;
+	}
+
+	@Override
 	public int getNbErrors() {
 		return errMsgs.size();
 	}
@@ -260,6 +266,23 @@ public class TextErrorRecorder implements ErrorRecorder {
 		// TODO Auto-generated method stub
 		
 	}
-	
+
+	@Override
+	public List<ErrorRecorder> getChildren() {
+		return children;
+	}
+
+	public int depth() {
+		int depth = 1;
+
+		int maxChildDepth = 0;
+		for (ErrorRecorder er : children) {
+			int childDepth = er.depth();
+			if (childDepth > maxChildDepth) maxChildDepth = childDepth;
+		}
+
+		return depth + maxChildDepth;
+	}
+
 
 }

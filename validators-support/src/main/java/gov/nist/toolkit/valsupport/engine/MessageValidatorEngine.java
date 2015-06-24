@@ -22,38 +22,8 @@ import org.apache.log4j.Logger;
 public class MessageValidatorEngine {
 	static Logger logger = Logger.getLogger(MessageValidatorEngine.class);
 
-	public class ValidationStep {
-		String stepName;
-		MessageValidator validator;
-		ErrorRecorder er;
-		boolean ran = false;
+	List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
 
-		public String getStepName() { return stepName; }
-		public ErrorRecorder getErrorRecorder() { return er; }
-		public boolean hasErrors() { return er.hasErrors(); }
-
-		public String toString() {
-			StringBuffer buf = new StringBuffer();
-
-			String className = validator.getClass().getName();
-			try {
-				className = className.substring(className.lastIndexOf(".") + 1);
-			} catch (Exception e) {
-				className = "Unknown";
-			}
-			
-
-			buf
-			.append(stepName)
-			.append(" [")
-			.append(className)
-					.append("] ")
-					.append(validator.toString());
-			
-			return buf.toString();
-		}
-	}
-	
 	public MessageValidatorEngine() {}
 	
 	public class ValidationStepEnumeration implements Enumeration<ValidationStep> {
@@ -76,8 +46,6 @@ public class MessageValidatorEngine {
 		
 	}
 
-	List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
-	
 	public boolean hasErrors() {
 		boolean error = false;
 		for (ValidationStep vs : validationSteps) {
@@ -162,10 +130,7 @@ public class MessageValidatorEngine {
 	 * @return the ValidationStep structure which is used internally to the engine
 	 */
 	public ValidationStep addMessageValidator(String stepName, MessageValidator v, ErrorRecorder er) {
-		ValidationStep step = new ValidationStep();
-		step.stepName = stepName;
-		step.validator = v;
-		step.er = er;
+		ValidationStep step = new ValidationStep(stepName, v, er);
 		validationSteps.add(step);
 //		logger.debug("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
 		return step;
@@ -185,18 +150,20 @@ public class MessageValidatorEngine {
 	/**
 	 * Execute all validators that are queued up but never run.
 	 */
+	ValidationStep currentStep = null;
+
 	public void run() {
 		// this iteration is tricky since a step can add
 		// new steps. This causes ConcurrentModificationException
 		// if typical iterator is used.
 		for (int i=0; i<validationSteps.size(); i++ ) {
-			ValidationStep step = validationSteps.get(i);
-			if (step.ran)
+			currentStep = validationSteps.get(i);
+			if (currentStep.ran)
 				continue;
 //			logger.debug("ENGINE: RUN: " + step.stepName + ": " + step.validator.getClass().getSimpleName());
-			logger.info("ENGINE: RUN: " + step);
-			step.ran = true;
-			step.validator.run(step.er, this);
+			logger.info("ENGINE: RUN: " + currentStep);
+			currentStep.ran = true;
+			currentStep.validator.run(currentStep.er, this);
 		}
 
 	}

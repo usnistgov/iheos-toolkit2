@@ -8,7 +8,7 @@ import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.support.ActorSimulator;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 
 import java.io.IOException;
 

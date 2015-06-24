@@ -4,7 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.errrec.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 
 import java.io.IOException;
 

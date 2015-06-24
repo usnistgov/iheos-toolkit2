@@ -10,4 +10,5 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 public interface ErrorRecorderBuilder {
 
 	public ErrorRecorder buildNewErrorRecorder();
+	public ErrorRecorder buildNewErrorRecorder(ErrorRecorder parent);
 }
