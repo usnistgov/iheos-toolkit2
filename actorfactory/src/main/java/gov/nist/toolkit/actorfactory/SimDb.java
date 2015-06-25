@@ -61,7 +61,7 @@ public class SimDb {
 	}
 	
 	public SimDb() {
-
+		dbRoot = Installation.installation().simDbFile();
 	}
 	
 	public SimDb(String simulatorId) throws IOException, NoSimException {

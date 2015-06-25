@@ -1,11 +1,13 @@
 package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
@@ -26,9 +28,9 @@ import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine.ValidationStep;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -36,6 +38,7 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -56,6 +59,9 @@ import org.apache.log4j.Logger;
  * @author bill
  *
  */
+
+// TODO: This should be limited to suporting functions for all simulators.
+    // References to Regindex, RepIndex, RegistryErrorListGenerator, documentsToAttach should be refactored out
 public class SimCommon {
 	public SimDb db = null;
 	boolean tls = false;
@@ -129,7 +135,7 @@ public class SimCommon {
 			regIndex.mc.vc = vc;
 		}
 
-		vms = new ValidateMessageService(null, regIndex);
+		vms = new ValidateMessageService(regIndex);
 
 	}
 
@@ -736,6 +742,19 @@ public class SimCommon {
 		}
 
 		return er;
+	}
+
+	static public void deleteSim(String simulatorId) {
+		try {
+			logger.info("Delete sim " + simulatorId);
+			SimDb simdb = new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);
+			File simdir = simdb.getIpDir();
+			Io.delete(simdir);
+		} catch (IOException e) {
+			// doesn't exist - ok
+		} catch (NoSimException e) {
+			// doesn't exist - ok
+		}
 	}
 
 

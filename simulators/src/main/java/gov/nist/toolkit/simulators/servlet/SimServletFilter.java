@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.simulator.support;
+package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.http.HttpMessage;

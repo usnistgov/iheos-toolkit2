@@ -9,6 +9,7 @@ import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
@@ -25,7 +26,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.xdstools2.server.simulator.support.ServletSimulator;
+import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 
 import java.io.File;
 import java.io.IOException;
@@ -356,7 +357,7 @@ public class SimulatorServiceManager extends CommonServiceManager {
 	public int removeOldSimulators() {
 		logger.debug(session.id() + ": " + "removeOldSimulators");
 		try {
-			return new SimInstanceTerminator(session).run();
+			return new SimInstanceTerminator().run();
 		} catch (Exception e) {
 			logger.error("removeOldSimulators failed", e);
 			return 0;
@@ -377,8 +378,9 @@ public class SimulatorServiceManager extends CommonServiceManager {
 		}
 		try {
 
-			ValidateMessageService vm = new ValidateMessageService(session, null);
-			MessageValidationResults mvr = vm.validateLastUpload(vc);
+//			ValidateMessageService vm = new ValidateMessageService(session, null);
+//			MessageValidationResults mvr = vm.validateLastUpload(vc);
+			MessageValidationResults mvr = validateLastUpload(vc);
 			return mvr;
 		} 
 		catch (RuntimeException e) {
@@ -387,6 +389,19 @@ public class SimulatorServiceManager extends CommonServiceManager {
 					ExceptionUtil.exception_details(e));
 			return mvr;
 		}
+	}
+
+	public MessageValidationResults validateLastUpload(ValidationContext vc) {
+		byte[] message = session.getlastUpload();
+		byte[] input2 = session.getlastUpload2();
+		vc.privKeyPassword = session.getPassword2();
+		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
+		if (input2 != null && input2.length <= 2) {
+			// input looks like empty file name
+			input2 = null;
+		}
+		ValidateMessageService vm = new ValidateMessageService(null);
+		return vm.runValidation(vc, message, input2, gerb);
 	}
 
 }

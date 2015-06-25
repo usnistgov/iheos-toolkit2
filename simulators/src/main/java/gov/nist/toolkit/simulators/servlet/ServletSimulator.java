@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.simulator.support;
+package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
@@ -241,40 +241,6 @@ public class ServletSimulator  {
 			return 0;
 		}
 
-		@Override
-		public ServletContext getServletContext() {
-			return null;
-		}
-
-		@Override
-		public AsyncContext startAsync() throws IllegalStateException {
-			return null;
-		}
-
-		@Override
-		public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse) throws IllegalStateException {
-			return null;
-		}
-
-		@Override
-		public boolean isAsyncStarted() {
-			return false;
-		}
-
-		@Override
-		public boolean isAsyncSupported() {
-			return false;
-		}
-
-		@Override
-		public AsyncContext getAsyncContext() {
-			return null;
-		}
-
-		@Override
-		public DispatcherType getDispatcherType() {
-			return null;
-		}
 
 		public Locale getLocale() {
 			// TODO Auto-generated method stub
@@ -484,12 +450,10 @@ public class ServletSimulator  {
 			return false;
 		}
 
-		@Override
 		public boolean authenticate(HttpServletResponse httpServletResponse) throws IOException, ServletException {
 			return false;
 		}
 
-		@Override
 		public void login(String s, String s1) throws ServletException {
 
 		}
@@ -671,12 +635,10 @@ public class ServletSimulator  {
 			
 		}
 
-		@Override
 		public int getStatus() {
 			return 0;
 		}
 
-		@Override
 		public String getHeader(String s) {
 			return null;
 		}

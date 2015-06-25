@@ -49,7 +49,9 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	boolean verbose = true;
 	boolean log;
 	boolean isXCA = false;
-	
+	List<ErrorRecorder> children = new ArrayList<>();
+
+
 	public void setIsXCA() { isXCA = true; }
 	
 	public void setVerbose(boolean verbose) {
@@ -486,6 +488,11 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	}
 
 	@Override
+	public ErrorRecorder buildNewErrorRecorder(ErrorRecorder parent) {
+		return null;
+	}
+
+	@Override
 	public int getNbErrors() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -507,6 +514,24 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public ErrorRecorderBuilder getErrorRecorderBuilder() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<ErrorRecorder> getChildren() {
+		return children;
+	}
+
+	@Override
+	public int depth() {
+		int depth = 1;
+
+		int maxChildDepth = 0;
+		for (ErrorRecorder er : children) {
+			int childDepth = er.depth();
+			if (childDepth > maxChildDepth) maxChildDepth = childDepth;
+		}
+
+		return depth + maxChildDepth;
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
@@ -62,7 +63,7 @@ public class SimManagerTest {
 	public void tearDown() {
 		if (sim != null) {
 			for (SimulatorConfig sc : sim.getConfigs()) {
-				session.deleteSim(sc.getId());
+				SimCommon.deleteSim(sc.getId());
 			}
 			sim = null;
 		}

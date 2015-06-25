@@ -16,7 +16,7 @@ import gov.nist.toolkit.valregmsg.message.*;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine.ValidationStep;
+import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;

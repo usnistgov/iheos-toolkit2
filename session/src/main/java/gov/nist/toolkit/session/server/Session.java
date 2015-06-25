@@ -182,8 +182,6 @@ public class Session implements SecurityParams {
 	public Session(File warHome, String sessionId) {
 		this(warHome);
 		this.sessionId = sessionId;
-
-//		tomcatSessionCache = new File(warHome + File.separator + "SessionCache" + File.separator + sessionId); 		
 	}
 	
 	public Session(File warHome) {
@@ -548,18 +546,6 @@ public class Session implements SecurityParams {
 		return "x";
 	}
 
-	public void deleteSim(String simulatorId) {
-		try {
-			logger.info("Delete sim " + simulatorId);
-			SimDb simdb = new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);
-			File simdir = simdb.getIpDir(); 
-			Io.delete(simdir);
-		} catch (IOException e) {
-			// doesn't exist - ok
-		} catch (NoSimException e) {
-			// doesn't exist - ok
-		}
-	}
-	
+
 
 }

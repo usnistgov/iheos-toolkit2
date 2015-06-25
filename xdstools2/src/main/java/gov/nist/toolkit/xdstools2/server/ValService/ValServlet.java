@@ -120,9 +120,9 @@ public class ValServlet extends HttpServlet {
 			ValidationContext vc, byte[] msgBytes)
 			throws IOException, XdsException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-		ValidateMessageService vms = new ValidateMessageService(session, null);
+		ValidateMessageService vms = new ValidateMessageService(null);
 		
-		MessageValidationResults mvr = vms.runValidation(vc, null, msgBytes, null, gerb);
+		MessageValidationResults mvr = vms.runValidation(vc, msgBytes, null, gerb);
 		
 		HtmlValFormatter hvf = new HtmlValFormatter();
 		

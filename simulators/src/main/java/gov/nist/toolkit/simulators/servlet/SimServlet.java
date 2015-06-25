@@ -1,8 +1,7 @@
-package gov.nist.toolkit.xdstools2.server.simulator.support;
+package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.ActorFactory;
 import gov.nist.toolkit.actorfactory.RegistryActorFactory;
-import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimulatorFactory;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
@@ -11,11 +10,11 @@ import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.ig.IgActorSimulator;
 import gov.nist.toolkit.simulators.sim.recip.RecipientActorSimulator;
@@ -31,20 +30,10 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -52,9 +41,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.*;
 
 public class SimServlet  extends HttpServlet {
 	static Logger logger = Logger.getLogger(SimServlet.class);
@@ -71,7 +61,7 @@ public class SimServlet  extends HttpServlet {
 	File simDbDir;  // = "/Users/bill/tmp/xdstools2/simdb";
 	MessageValidationResults mvr;
 	File warHome;
-	Session session;
+//	Session session;
 
 //	enum SimType { RECIPIENT, REGISTRY};
 
@@ -81,7 +71,7 @@ public class SimServlet  extends HttpServlet {
 		this.config = config;
 		
 		warHome = new File(config.getServletContext().getRealPath("/"));
-		session = new Session(warHome);
+//		session = new Session(warHome);
 		simDbDir = Installation.installation().propertyServiceManager().getSimDbDir();
 
 		
@@ -413,7 +403,8 @@ public class SimServlet  extends HttpServlet {
 
 			logRequest(request, db, actor, transaction);
 
-			SimulatorConfig asc = new SimulatorFactory(new SimCache().getSimManagerForSession(session.id())).getSimConfig(simDbDir, simid);
+//			SimulatorConfig asc = new SimulatorFactory(new SimCache().getSimManagerForSession(session.id())).getSimConfig(simDbDir, simid);
+			SimulatorConfig asc = SimulatorFactory.getSimConfig(simDbDir, simid);
 
 			regIndex = getRegIndex(db, simid);
 			repIndex = getRepIndex(db, simid);

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.simulator.support;
+package gov.nist.toolkit.simulators.servlet;
 
 import java.util.HashMap;
 import java.util.Map;

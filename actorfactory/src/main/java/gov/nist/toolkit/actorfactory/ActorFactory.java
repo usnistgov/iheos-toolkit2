@@ -302,7 +302,7 @@ public abstract class ActorFactory {
 		return configs;
 	}
 
-	SimulatorConfig restoreSimulator(String filename) throws IOException, ClassNotFoundException {
+	static SimulatorConfig restoreSimulator(String filename) throws IOException, ClassNotFoundException {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		SimulatorConfig config;
@@ -321,7 +321,7 @@ public abstract class ActorFactory {
 		return config;
 	}	
 
-	public SimulatorConfig getSimConfig(File simDbFile, String simulatorId) throws IOException, ClassNotFoundException, NoSimException {
+	static public SimulatorConfig getSimConfig(File simDbFile, String simulatorId) throws IOException, ClassNotFoundException, NoSimException {
 		SimDb simdb = new SimDb(simDbFile, simulatorId, null, null);
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfig config = restoreSimulator(simCntlFile.toString());

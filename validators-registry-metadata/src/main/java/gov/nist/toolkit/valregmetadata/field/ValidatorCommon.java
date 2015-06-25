@@ -10,6 +10,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +20,8 @@ public class ValidatorCommon implements ErrorRecorder {
 	Metadata m;
 	RegistryErrorListGenerator rel;
 	ValidationContext valCtx = new ValidationContext();
-	
+	List<ErrorRecorder> children = new ArrayList<>();
+
 	public static String NeedReference = "Need Reference";
 	
 	public ValidatorCommon(Metadata m) {
@@ -311,6 +313,11 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	@Override
+	public ErrorRecorder buildNewErrorRecorder(ErrorRecorder parent) {
+		return null;
+	}
+
+	@Override
 	public int getNbErrors() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -332,6 +339,24 @@ public class ValidatorCommon implements ErrorRecorder {
 	public ErrorRecorderBuilder getErrorRecorderBuilder() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<ErrorRecorder> getChildren() {
+		return children;
+	}
+
+	@Override
+	public int depth() {
+		int depth = 1;
+
+		int maxChildDepth = 0;
+		for (ErrorRecorder er : children) {
+			int childDepth = er.depth();
+			if (childDepth > maxChildDepth) maxChildDepth = childDepth;
+		}
+
+		return depth + maxChildDepth;
 	}
 
 	@Override

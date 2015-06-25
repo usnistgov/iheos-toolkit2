@@ -4,14 +4,13 @@ import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine.ValidationStep;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
@@ -26,11 +25,9 @@ import java.util.List;
  */
 public class ValidateMessageService extends CommonServiceManager {
 	RegistryValidationInterface rvi;
-	Session session;
-	
-	public ValidateMessageService(Session session, RegistryValidationInterface rvi) {
-		this.session = session;
-		this.rvi = rvi;
+
+	public ValidateMessageService(RegistryValidationInterface rvi) {
+	this.rvi = rvi;
 	}
 	
 	/**
@@ -78,20 +75,8 @@ public class ValidateMessageService extends CommonServiceManager {
 
 	}
 	
-	public MessageValidationResults validateLastUpload(ValidationContext vc) {
-		byte[] message = session.getlastUpload();
-		byte[] input2 = session.getlastUpload2();
-		vc.privKeyPassword = session.getPassword2();
-		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-		if (input2 != null && input2.length <= 2) {
-			// input looks like empty file name
-			input2 = null;
-		}
-		return runValidation(vc, session, message, input2, gerb);
-	}
-
 	public MessageValidationResults runValidation(ValidationContext vc,
-			Session session, byte[] message, byte[] input2, GwtErrorRecorderBuilder gerb) {
+			byte[] message, byte[] input2, GwtErrorRecorderBuilder gerb) {
 		try {
 			MessageValidationResults mvr = new MessageValidationResults();
 			
@@ -99,43 +84,11 @@ public class ValidateMessageService extends CommonServiceManager {
 				mvr.addError(XdsErrorCode.Code.NoCode, "Upload", "Upload is null");
 				return mvr;
 			}
-			// This validation moved to MessageValidatorFactory#getValidatorForDirect
-//			if (input2 == null) {
-//				mvr.addError(XdsErrorCode.Code.NoCode, "Upload", "Second upload is null");
-//				return mvr;
-//			}
 
 			if (vc.isMessageTypeKnown())
 				vc.updateable = false;
 
 			MessageValidatorEngine mvc;
-			
-			
-		/*	
-			MessageValidator mv = mvc.findMessageValidator("MetadataMessageValidator");
-			if (mv != null) {
-				MetadataMessageValidator mmv = (MetadataMessageValidator) mv;
-				if (session != null)
-					session.setLastMetadata(mmv.getMetadata());
-			}
-
-			for (int step=0; step<mvc.getValidationStepCount(); step++) {
-				ValidationStep vs = mvc.getValidationStep(step);
-				GwtErrorRecorder ger = (GwtErrorRecorder) vs.getErrorRecorder();
-				List<ValidatorErrorItem> errs = ger.getValidatorErrorInfo();
-				mvr.addResult(vs.getStepName(), errs);
-				mvr.addSummary(vs.getStepName(), ger.getSummaryErrorInfo());
-				ErrorRecorderAdapter erAd = null;
-				try {
-					erAd = new ErrorRecorderAdapter(ger.getValidatorErrorInfo());
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-				mvr.addHtmlResults(erAd.toHTML());
-			}
-			
-			mvr.addResult("Validation Summary", buildValidationSummary(vc, mvc));
-*/
 			return mvr;
 		} catch (RuntimeException e) {
 			MessageValidationResults mvr = new MessageValidationResults();
