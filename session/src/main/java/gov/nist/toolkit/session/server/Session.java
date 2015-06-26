@@ -53,8 +53,6 @@ public class Session implements SecurityParams {
 	public Xdstest2 xt;
 	public SiteSpec siteSpec = new SiteSpec();
 	public String repUid;
-//	public boolean isTls;
-//	public boolean isSaml;
 	public AssertionResults res;
 	public TransactionSettings transactionSettings = new TransactionSettings();
 	public boolean isAdmin = false;
@@ -69,22 +67,17 @@ public class Session implements SecurityParams {
 	String password1 = null;
 	String password2 = null;
 	
-//	File tomcatSessionCache = null;   // one for this Tomcat session (corresponds to this Session object)
 	File mesaSessionCache = null;     // changes each time new mesaSessionName changes
 	
 	Metadata lastMetadata = null;
 	public String ipAddr = null;  // also used as default sim db id
 	String serverIP = null;
 	String serverPort = null;
-//	List<SimulatorConfig> actorSimulatorConfigs = new ArrayList<SimulatorConfig>();
 	SimCache simCache = new SimCache();
 	String sessionId;
 	
-//	File warHome = null;
-//	File externalCache = null;
 	File toolkit = null;
 	
-//	File currentEnvironmentDir = null;
 	String currentEnvironmentName = null;
 	
 	String mesaSessionName = null;
@@ -123,11 +116,6 @@ public class Session implements SecurityParams {
 		EnvSetting.getEnvSetting(sessionId);
 	}
 	
-//	// not to be trusted. Use SimulatorServiceManager instead
-//	public List<SimulatorConfig> getSimConfigs() {
-//		return actorSimulatorConfigs;
-//	}
-//	
 	public void addSession() {
 		sessionMap.put(sessionId, this);
 	}
@@ -139,14 +127,6 @@ public class Session implements SecurityParams {
 	public void setSessionId(String id) {
 		sessionId = id;
 	}
-	
-	// undefined - no possible answer
-//	@Deprecated
-//	public String getHome() throws Exception {
-//		logger.debug(getId() + ": " + "getHome");
-//		Site s2 = SimManager.getSites(getId()).getSite(siteSpec.name);
-//		return s2.getHome();
-//	}
 
 	public void setSiteSpec(SiteSpec siteSpec) {
 		this.siteSpec = siteSpec;
@@ -165,12 +145,7 @@ public class Session implements SecurityParams {
 		}
 
 	}
-	
-	public File getTomcatSessionCache() { 
-		return new File(Installation.installation().warHome() + File.separator + "SessionCache" + File.separator + sessionId); 
-		}
-	public File getMesaSessionCache() { return mesaSessionCache; }
-	
+
 	public String getServerIP() {
 		return serverIP;
 	}
@@ -218,10 +193,6 @@ public class Session implements SecurityParams {
 		return xdsTestServiceManager;
 	}
 	
-//	public SiteServiceManager siteServiceManager() {
-//		return siteServiceManager;
-//	}
-	
 	public void setMesaSessionName(String name) {
 		mesaSessionName = name;
 
@@ -234,20 +205,6 @@ public class Session implements SecurityParams {
 		
 		mesaSessionCache = new File(testLogCache + File.separator + mesaSessionName);
 		mesaSessionCache.mkdirs();
-	}
-	
-	boolean mesaSessionExists() {
-		return mesaSessionCache != null;
-	}
-	
-	public String getMesaSessionName() { return mesaSessionName; }
-	
-	void setSessionProperty(String name, String value) {
-		SessionPropertyManager props = getSessionProperties();
-		if (props == null)
-			return;
-		props.set(name, value);
-		props.save();
 	}
 
 	public void setSessionProperties(Map<String, String> m) {
@@ -270,35 +227,6 @@ public class Session implements SecurityParams {
 	public String id() {
 		return sessionId;
 	}
-	
-//	public Sites loadActorSimulatorConfigs(Sites commonSites, List<String> ids) throws Exception {
-//		actorSimulatorConfigs = new SimulatorFactory(SimManager.getSimManagerForSession(sessionId)).loadSimulators(ids);
-//		SimManager.getSimManagerForSession(sessionId).setSimConfigs(actorSimulatorConfigs);
-//		return SimManager.getAllSites(sessionId, commonSites);
-//	}
-		
-//	/**
-//	 * 
-//	 * @return map from simulator name (private name) to simulator id (global id)
-//	 */
-//	public Map<String, String> getActorSimulatorNameMap() {
-//		Map<String, String> nameMap = new HashMap<String, String>();
-//		
-//		for (SimulatorConfig sc : actorSimulatorConfigs) {
-//			String name = sc.getDefaultName();
-//			String id = sc.getId();
-//			nameMap.put(name, id);
-//		}
-//		
-//		return nameMap;
-//	}
-	
-//	public List<String> reloadSites(Sites commonSites) throws Exception {
-//		sites = getAllSites(commonSites);
-//		List<String> names = sites.getSiteNames();
-//		logger.debug("reloadSites: " + names);
-//		return names;
-//	}
 	
 	public String getSimBaseEndpoint() {
 		// the last piece must agree with simulatorServlet in web.xml
@@ -395,21 +323,8 @@ public class Session implements SecurityParams {
 	public void clear() {
 		xt = null;
 		res = null;
-//		transactionSettings = null;
 	}
-	
-	boolean lessThan(String a, String b) {
-		return a.compareTo(b) == -1;
-	}
-		
-//	public void saveLogMapInSessionCache(LogMap log, XdstestLogId id) throws XdsException {
-//		new RawLogCache(getTomcatSessionCache()).logOut(id, log);
-//		
-//		if (mesaSessionExists()) {
-//			new RawLogCache(mesaSessionCache).logOut(id, log);
-//		}
-//	}
-	
+
 	public Metadata getLastMetadata() {
 		return lastMetadata;
 	}
@@ -537,7 +452,7 @@ public class Session implements SecurityParams {
 
 	public File getToolkitFile() {
 		if (toolkit == null)
-			toolkit = Installation.installation().toolkitxFile();    //new File(Installation.installation().warHome() + File.separator + "toolkitx");
+			toolkit = Installation.installation().toolkitxFile();
 		return toolkit;
 	}
 

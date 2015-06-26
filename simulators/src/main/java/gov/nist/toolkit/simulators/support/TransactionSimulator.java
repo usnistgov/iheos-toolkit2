@@ -13,6 +13,5 @@ public abstract class TransactionSimulator extends MessageValidator {
 		this.common = common;
 	}
 
-	abstract public void run(ErrorRecorder er, MessageValidatorEngine mvc);
-
+	public SimCommon getCommon() { return common; }
 }

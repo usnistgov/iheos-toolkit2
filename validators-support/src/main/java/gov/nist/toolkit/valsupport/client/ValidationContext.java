@@ -153,6 +153,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean containsDocuments() {
+		if (!hasHttp) return false;
 		if (isPnR && isRequest) return true;
 		if (isXDR && isRequest) return true;
 		if (isRet && isResponse) return true;

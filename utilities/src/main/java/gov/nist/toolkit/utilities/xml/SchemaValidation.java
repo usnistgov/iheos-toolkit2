@@ -5,6 +5,7 @@
 package gov.nist.toolkit.utilities.xml;
 
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.ByteArrayOutputStream;
@@ -12,12 +13,14 @@ import java.io.PrintStream;
 import java.io.StringReader;
 
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 import org.apache.xerces.parsers.DOMParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class SchemaValidation extends MetadataTypes {
-	
+	static Logger logger = Logger.getLogger(SchemaValidation.class);
+
 	static public String toolkitSchemaLocation = null;
 
 	public static String validate(OMElement ele, int metadataType)  throws XdsInternalException {
@@ -38,13 +41,7 @@ public class SchemaValidation extends MetadataTypes {
 		
 		// This should cover all use cases except xdstest2 running on a users desktop
 		msg = SchemaValidation.run(ele.toString(), metadataType, "localhost", "9080");
-		if (msg.indexOf("Failed to read schema document") == -1) 
-			return msg;
-		
-		// Xdstest2 needs to reference the public register server
-		// port 80 makes it easier when strict firewalls are in place
-		msg = SchemaValidation.run(ele.toString(), metadataType, "129.6.24.109", "80");
-		return msg;
+        return msg;
 	}
 
 
@@ -179,6 +176,7 @@ public class SchemaValidation extends MetadataTypes {
 			localSchema + 	"/wsn/t-1.xsd");
 		}
 
+		logger.info("DOM parse input");
 		// build parse to do schema validation
 		try {
 			p=new DOMParser();
@@ -209,6 +207,7 @@ public class SchemaValidation extends MetadataTypes {
 					exception_details(e));
 		}
 		String errs = errors.getErrors();
+		logger.info("schema run done");
 //		if (errs.length() != 0) {
 //		errs = errs + "\n" + metadata.substring(1,500);
 //		}

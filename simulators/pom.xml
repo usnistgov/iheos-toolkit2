@@ -42,10 +42,6 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>session</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
             <artifactId>common</artifactId>
         </dependency>
         <dependency>

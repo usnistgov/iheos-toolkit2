@@ -59,13 +59,13 @@ public class CodeValidationBase {
 		
 		if (vc != null)
 			fileCodesLocation = vc.getCodesFilename();
-		if (fileCodesLocation == null)
-			fileCodesLocation = System.getenv("XDSCodesFile");
-		if (fileCodesLocation == null)
-			fileCodesLocation = System.getProperty("XDSCodesFile");
-		
-		String localCodesLocation = "http://localhost:9080/xdsref/codes/codes.xml";
-		String globalCodesLocation = "http://ihexds.nist.gov:9080/xdsref/codes/codes.xml";
+//		if (fileCodesLocation == null)
+//			fileCodesLocation = System.getenv("XDSCodesFile");
+//		if (fileCodesLocation == null)
+//			fileCodesLocation = System.getProperty("XDSCodesFile");
+//
+//		String localCodesLocation = "http://localhost:9080/xdsref/codes/codes.xml";
+//		String globalCodesLocation = "http://ihexds.nist.gov:9080/xdsref/codes/codes.xml";
 		
 		String codes_string = null;
 		String from = null;
@@ -78,25 +78,27 @@ public class CodeValidationBase {
 			catch (Exception e) {
 				throw new XdsInternalException("codes.xml file cannot be loaded from " + fileCodesLocation, e);
 			}
+		} else {
+			throw new XdsInternalException("Codes location not specified in ValidationContext");
 		}
-		else {
-
-			try {
-				codes_string = HttpClient.httpGet(localCodesLocation);
-				from = localCodesLocation;
-			}
-			catch (Exception e1) {
-				logger.warn("Cannot contact localhost: " + ExceptionUtil.exception_details(e1));
-				try {
-					codes_string = HttpClient.httpGet(globalCodesLocation);
-					from = globalCodesLocation;
-				}
-				catch (Exception e) {
-					throw new XdsInternalException("CodeValidation: Unable to retrieve code configuration file " + globalCodesLocation +
-							"\n" + e.getMessage());
-				}
-			}
-		}
+//		else {
+//
+//			try {
+//				codes_string = HttpClient.httpGet(localCodesLocation);
+//				from = localCodesLocation;
+//			}
+//			catch (Exception e1) {
+//				logger.warn("Cannot contact localhost: " + ExceptionUtil.exception_details(e1));
+//				try {
+//					codes_string = HttpClient.httpGet(globalCodesLocation);
+//					from = globalCodesLocation;
+//				}
+//				catch (Exception e) {
+//					throw new XdsInternalException("CodeValidation: Unable to retrieve code configuration file " + globalCodesLocation +
+//							"\n" + e.getMessage());
+//				}
+//			}
+//		}
 		if (codes_string == null) 
 			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned NULL from " + from);
 		if (codes_string.equals("")) 

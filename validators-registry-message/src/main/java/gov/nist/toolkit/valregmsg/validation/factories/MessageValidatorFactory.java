@@ -430,7 +430,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 				if (vc.isRequest) {
 					validateToplevelElement(erBuilder, mvc, "ProvideAndRegisterDocumentSetRequest", rootElementName);
 					mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
-					mvc.addMessageValidator("DocumentElementValidator", new DocumentElementValidator(vc, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
+					if (vc.hasHttp)
+						mvc.addMessageValidator("DocumentElementValidator", new DocumentElementValidator(vc, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
 					return mvc;
 				} else {
 					validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);

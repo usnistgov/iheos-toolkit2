@@ -132,7 +132,7 @@ public class MessageValidatorEngine {
 	public ValidationStep addMessageValidator(String stepName, MessageValidator v, ErrorRecorder er) {
 		ValidationStep step = new ValidationStep(stepName, v, er);
 		validationSteps.add(step);
-//		logger.debug("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
+		logger.info("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
 		return step;
 	}
 	
@@ -144,7 +144,7 @@ public class MessageValidatorEngine {
 	public void addErrorRecorder(String stepName, ErrorRecorder er) {
 		ValidationStep step = addMessageValidator(stepName, new ServiceRequestContainer(new ValidationContext()), er);
 		step.ran = true;
-		logger.info("ENGINE: RUN: " + step.toString());
+		logger.info("ENGINE: preRUN: " + step.toString());
 	}
 	
 	/**
@@ -160,12 +160,10 @@ public class MessageValidatorEngine {
 			currentStep = validationSteps.get(i);
 			if (currentStep.ran)
 				continue;
-//			logger.debug("ENGINE: RUN: " + step.stepName + ": " + step.validator.getClass().getSimpleName());
 			logger.info("ENGINE: RUN: " + currentStep);
 			currentStep.ran = true;
 			currentStep.validator.run(currentStep.er, this);
 		}
-
 	}
 
 	public int getValidationStepCount() {
@@ -175,4 +173,6 @@ public class MessageValidatorEngine {
 	public ValidationStep getValidationStep(int i) {
 		return validationSteps.get(i);
 	}
+
+	public ValidationStep getRootValidationStep() { return getValidationStep(0); }
 }

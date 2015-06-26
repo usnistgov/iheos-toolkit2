@@ -71,8 +71,6 @@ public class RegRSim extends TransactionSimulator   {
 
 	}
 
-	public SimCommon getCommon() { return common; }
-
 	// These steps are common to Registry and Update.  They operate
 	// on the entire metadata collection in both transactions.
 	protected void setup() {

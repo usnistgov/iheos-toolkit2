@@ -1,6 +1,7 @@
 package gov.nist.toolkit.errorrecording.factories
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
+import gov.nist.toolkit.errorrecording.ErrorRecorderUtil
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import spock.lang.Specification
 
@@ -25,6 +26,12 @@ class ErrorRecorderTest extends Specification {
 
         then: 'And they are different'
         er != er2
+
+        when: 'Collect into list'
+        List<ErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(er)
+
+        then:
+        erl.size() == 2
     }
 
     def 'Parent Child linkage'() {
@@ -51,5 +58,39 @@ class ErrorRecorderTest extends Specification {
         then: 'Parent depth should be 2'
         erParent.depth() == 2
         erChild.depth() == 1
+
+        when: 'Collect into list'
+        List<ErrorRecorder> erl = ErrorRecorderUtil.errorRecorderChainAsList(erParent)
+
+        then:
+        erl.size() == 2
+    }
+
+    def 'List of three'() {
+        setup:
+        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+
+        when: 'Build chain of 3 ER'
+        ErrorRecorder erParent = builder.buildNewErrorRecorder()
+        ErrorRecorder erChild = erParent.buildNewErrorRecorder()
+        ErrorRecorder erGChild = erChild.buildNewErrorRecorder()
+
+        then:
+        erParent.depth() == 3
+        ErrorRecorderUtil.errorRecorderChainAsList(erParent).size() == 3
+    }
+
+    def 'Family tree'() {
+        setup:
+        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+
+        when: 'Build chain of 3 ER plus second grandkid'
+        ErrorRecorder erParent = builder.buildNewErrorRecorder()
+        ErrorRecorder erChild = erParent.buildNewErrorRecorder()
+        ErrorRecorder erGChild1 = erChild.buildNewErrorRecorder()
+        ErrorRecorder erGChild2 = erChild.buildNewErrorRecorder()
+
+        then:
+        ErrorRecorderUtil.errorRecorderChainAsList(erParent).size() == 4
     }
 }
