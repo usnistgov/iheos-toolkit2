@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.registrymetadata.MetadataUtil;
 import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -93,7 +94,7 @@ public class UpdateRequestValidator extends MessageValidator {
 		for (OMElement e : m.getAllObjects()) {
 			String id = m.getId(e);
 			if (id == null || id.equals(""))
-				err(formatObjectIdentity(e) + " does not have a id attribute", "ITI TF-2b: 3.57.4.1.3.1 Rule 9");
+				err(MetadataUtil.formatObjectIdentity(e) + " does not have a id attribute", "ITI TF-2b: 3.57.4.1.3.1 Rule 9");
 		}
 	}
 
@@ -106,7 +107,7 @@ public class UpdateRequestValidator extends MessageValidator {
 				lid = "";
 			
 			if (lid.equals("") || lid.equals(id)) 
-				err(formatObjectIdentity(deEle) + " is an initial version (id == lid or lid == null", "ITI TF-2b: 3.57.4.1.3.1 Rule 2");
+				err(MetadataUtil.formatObjectIdentity(deEle) + " is an initial version (id == lid or lid == null", "ITI TF-2b: 3.57.4.1.3.1 Rule 2");
 		}
 	}
 
@@ -119,7 +120,7 @@ public class UpdateRequestValidator extends MessageValidator {
 				lid = "";
 			
 			if (lid.equals("") || lid.equals(id)) 
-				err(formatObjectIdentity(folEle) + " is an initial version (id == lid or lid == null", "ITI TF-2b: 3.57.4.1.3.1 Rule 2");
+				err(MetadataUtil.formatObjectIdentity(folEle) + " is an initial version (id == lid or lid == null", "ITI TF-2b: 3.57.4.1.3.1 Rule 2");
 		}
 	}
 
@@ -132,7 +133,7 @@ public class UpdateRequestValidator extends MessageValidator {
 				lid = "";
 			
 			if (!lid.equals("") && !lid.equals(id)) 
-				err(formatObjectIdentity(aEle) + " Associations cannot be updated (lid != null and id != lid", "ITI TF-2b: 3.57.4.1.3.1 Rule 6");
+				err(MetadataUtil.formatObjectIdentity(aEle) + " Associations cannot be updated (lid != null and id != lid", "ITI TF-2b: 3.57.4.1.3.1 Rule 6");
 		}
 	}
 

@@ -16,10 +16,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>xds-exceptions</artifactId>
         </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>registry-metadata</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nist.toolkit</groupId>-->
+            <!--<artifactId>registry-metadata</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>common-datatypes</artifactId>
@@ -27,6 +27,10 @@
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>error-recording</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
