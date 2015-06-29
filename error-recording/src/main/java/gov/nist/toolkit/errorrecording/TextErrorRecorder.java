@@ -215,11 +215,6 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(ErrorRecorder parent) {
-		return null;
-	}
-
-	@Override
 	public int getNbErrors() {
 		return errMsgs.size();
 	}
@@ -234,11 +229,6 @@ public class TextErrorRecorder implements ErrorRecorder {
 	public List<ValidatorErrorItem> getErrMsgs() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public ErrorRecorderBuilder getErrorRecorderBuilder() {
-		return errorRecorderBuilder;
 	}
 
 	@Override

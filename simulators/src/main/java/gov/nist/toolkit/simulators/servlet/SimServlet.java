@@ -73,7 +73,7 @@ public class SimServlet  extends HttpServlet {
 		warHome = new File(config.getServletContext().getRealPath("/"));
 //		session = new Session(warHome);
 		simDbDir = Installation.installation().propertyServiceManager().getSimDbDir();
-
+		logger.info("simdb = " + simDbDir);
 		
 //		// this is being done for ToolkitServiceImpl - initialize the
 //		// session caches by deleting the old ones (previous launch)

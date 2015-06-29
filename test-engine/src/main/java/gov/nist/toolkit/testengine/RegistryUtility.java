@@ -2,11 +2,10 @@ package gov.nist.toolkit.testengine;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
-import gov.nist.toolkit.utilities.xml.SchemaValidation;
+import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.SchemaValidationException;
-import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.ByteArrayOutputStream;
@@ -21,7 +20,7 @@ public class RegistryUtility {
 	throws XdsInternalException, SchemaValidationException {
 		String schema_messages = null;
 		try {
-			schema_messages = SchemaValidation.validate_local(ahqr, metadata_type);
+			schema_messages = SchemaValidation.validate(ahqr, metadata_type);
 		} catch (Exception e) {
 			throw new XdsInternalException("Schema Validation threw internal error: " + e.getMessage());
 		}

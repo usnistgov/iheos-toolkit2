@@ -19,6 +19,17 @@ public class Installation {
 
 	static Installation me = null;
 
+    static {
+        // This works for unit tests if warhome.txt is installed
+        String warhomeTxt = null;
+        try {
+            warhomeTxt = installation().getClass().getResource("/warhome/warhome.txt").getFile();
+        } catch (Throwable t) {}
+        if (warhomeTxt != null) {
+            installation().warHome = new File(warhomeTxt).getParentFile();
+        }
+    }
+
 	static public Installation installation() {
 		if (me == null)
 			me = new Installation();
@@ -71,7 +82,10 @@ public class Installation {
 	}
 	
 	public File toolkitxFile() {
-		return new File(Installation.installation().warHome() + sep + "toolkitx");
+		return new File(warHome(), "toolkitx");
+	}
+	public File schemaFile() {
+		return new File(toolkitxFile(), "schema");
 	}
 	public File testkitFile() { return new File(toolkitxFile(), "testkit"); }
 	

@@ -74,7 +74,7 @@ public class HttpMessageValidator extends MessageValidator {
 				else
 					er.detail("Request Message is SIMPLE SOAP format");
 				er.detail("Scheduling SIMPLE SOAP parser");
-				mvc.addMessageValidator("SIMPLE SOAP parser", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+				mvc.addMessageValidator("Parse SIMPLE SOAP message", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 //				SimpleSoapHttpHeaderValidator val = new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc);
 //				val.run(er);
 			}

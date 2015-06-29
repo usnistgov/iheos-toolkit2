@@ -2,10 +2,11 @@
  * SchemaValidation.java
  */
 
-package gov.nist.toolkit.utilities.xml;
+package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.utilities.xml.MyErrorHandler;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.ByteArrayOutputStream;
@@ -24,41 +25,18 @@ public class SchemaValidation extends MetadataTypes {
 	static public String toolkitSchemaLocation = null;
 
 	public static String validate(OMElement ele, int metadataType)  throws XdsInternalException {
-		return validate_local(ele, metadataType);
+		return validate(ele.toString(), metadataType);
 	}
-
-	// The only known use case for localhost validation failing is when this is called from
-	// xdstest2 in which case it is trying to call home to reference the schema files.
-	// What is really needed is a configuration parm that points the reference to the local filesystem
-	// and include the schema files in the xdstest2tool environment.
-
-	// port 80 does not exist for requests on-machine (on the server). only requests coming in from
-	// off-machine go through the firewall where the port translation happens.
-
-	// even though this says validate_local, it is used by all requests
-	public static String validate_local(OMElement ele, int metadataType)  throws XdsInternalException {
-		String msg;
-		
-		// This should cover all use cases except xdstest2 running on a users desktop
-		msg = SchemaValidation.run(ele.toString(), metadataType, "localhost", "9080");
-        return msg;
-	}
-
 
 	// empty string as result means no errors
-	static private String run(String metadata, int metadataType, String host, String portString) throws XdsInternalException {
-
+	static private String validate(String metadata, int metadataType) throws XdsInternalException {
+        String localSchema = Installation.installation().schemaFile().toString();
 		MyErrorHandler errors = null;
 		DOMParser p = null;
-		//String portString = "9080";
-		String localSchema = System.getenv("XDSSchemaDir");
-		if (localSchema == null)
-			localSchema = System.getProperty("XDSSchemaDir");
-		if (localSchema == null)
-			localSchema = SchemaValidation.toolkitSchemaLocation;
-		
-		System.out.println("Local Schema to be found at " + localSchema);
-		
+
+		logger.debug("Local Schema to be found at " + localSchema);
+		String host = "";
+        String portString = "";
 		boolean noRim = false;
 		
 		// Decode schema location
@@ -111,18 +89,7 @@ public class SchemaValidation extends MetadataTypes {
 			schemaLocation = "urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0 " + 
 			((localSchema == null) ?
 			"http://" + host + ":" + portString + "/xdsref/schema/epsos/query.xsd " : 
-			localSchema + "/epsos/query.xsd "  ) 
-			
-//			"urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0 " + 
-//			((localSchema == null) ?
-//			"http://" + host + ":" + portString + "/xdsref/schema/epsos/rs.xsd " :
-//			localSchema + "/epsos/rs.xsd " ) 
-
-			
-//			+ 
-//			((localSchema == null) ?
-//					"http://" + host + ":" + portString + "/xdsref/schema/epsos/rimext.xsd " :
-//					localSchema + "/epsos/rimext.xsd " ) 
+			localSchema + "/epsos/query.xsd "  )
 			;
 			
 			noRim = true;
@@ -176,7 +143,6 @@ public class SchemaValidation extends MetadataTypes {
 			localSchema + 	"/wsn/t-1.xsd");
 		}
 
-		logger.info("DOM parse input");
 		// build parse to do schema validation
 		try {
 			p=new DOMParser();
@@ -207,10 +173,6 @@ public class SchemaValidation extends MetadataTypes {
 					exception_details(e));
 		}
 		String errs = errors.getErrors();
-		logger.info("schema run done");
-//		if (errs.length() != 0) {
-//		errs = errs + "\n" + metadata.substring(1,500);
-//		}
 		return errs;
 
 	}

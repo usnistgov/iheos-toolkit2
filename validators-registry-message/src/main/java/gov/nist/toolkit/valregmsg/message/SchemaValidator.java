@@ -2,7 +2,6 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.utilities.xml.SchemaValidation;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
@@ -40,10 +39,10 @@ public class SchemaValidator extends MessageValidator {
 	}
 	
 	void schema_validate_local(OMElement ahqr, int metadata_type)
-	throws XdsInternalException, SchemaValidationException {
+	throws XdsInternalException {
 		String schema_messages = null;
 		try {
-			schema_messages = SchemaValidation.validate_local(ahqr, metadata_type);
+			schema_messages = SchemaValidation.validate(ahqr, metadata_type);
 		} catch (Exception e) {
 			throw new XdsInternalException("Schema Validation threw internal error: " + e.getMessage());
 		}

@@ -70,6 +70,10 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>installation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>wsseTool</artifactId>
         </dependency>
 	<dependency>

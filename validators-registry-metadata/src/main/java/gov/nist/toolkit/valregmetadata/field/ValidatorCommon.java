@@ -313,11 +313,6 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(ErrorRecorder parent) {
-		return null;
-	}
-
-	@Override
 	public int getNbErrors() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -331,12 +326,6 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	@Override
 	public List<ValidatorErrorItem> getErrMsgs() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ErrorRecorderBuilder getErrorRecorderBuilder() {
 		// TODO Auto-generated method stub
 		return null;
 	}

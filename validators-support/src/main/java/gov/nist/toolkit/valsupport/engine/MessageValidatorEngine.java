@@ -132,7 +132,7 @@ public class MessageValidatorEngine {
 	public ValidationStep addMessageValidator(String stepName, MessageValidator v, ErrorRecorder er) {
 		ValidationStep step = new ValidationStep(stepName, v, er);
 		validationSteps.add(step);
-		logger.info("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
+		logger.debug("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
 		return step;
 	}
 	

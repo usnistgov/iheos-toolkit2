@@ -248,15 +248,10 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 
 	@Override
 	public ErrorRecorder buildNewErrorRecorder() {
-		return errorRecorderBuilder.buildNewErrorRecorder(this);
-		//return this;
+		ErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
+        children.add(er);
+        return er;
 	}
-
-    @Override
-    public ErrorRecorder buildNewErrorRecorder(ErrorRecorder er) {
-        return errorRecorderBuilder.buildNewErrorRecorder(er);
-        //return this;
-    }
 
     @Override
 	public int getNbErrors() {
@@ -275,12 +270,6 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	public List<ValidatorErrorItem> getErrMsgs() {
 		return this.errMsgs;
-	}
-
-	@Override
-	public ErrorRecorderBuilder getErrorRecorderBuilder() {
-		// TODO Auto-generated method stub
-		return errorRecorderBuilder;
 	}
 
 	@Override
