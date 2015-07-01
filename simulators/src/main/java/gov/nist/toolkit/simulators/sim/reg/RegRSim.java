@@ -56,8 +56,10 @@ public class RegRSim extends TransactionSimulator   {
 		setup();
 		
 		// Check whether Extra Metadata is present, is allowed, and is legal
+		// TODO - split into validation (as validator) and remover
 		extraMetadataCheck(m);
 
+		// TODO - some of the checks here can be done independent of the registry - move to validator
 		processMetadata(m, new ProcessMetadataForRegister(er, mc, delta));
 
 		// if errors then don't commit registry update

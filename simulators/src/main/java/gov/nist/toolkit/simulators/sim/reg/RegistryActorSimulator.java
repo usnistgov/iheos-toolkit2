@@ -56,7 +56,7 @@ public class RegistryActorSimulator extends ActorSimulator {
 
 			
 			RegRSim rsim = new RegRSim(common, asc);
-			mvc.addMessageValidator("RegistryActor", rsim, er);
+			mvc.addMessageValidator("Register Transaction", rsim, er);
 
 			registryResponseGenerator = new RegistryResponseGeneratorSim(common);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
