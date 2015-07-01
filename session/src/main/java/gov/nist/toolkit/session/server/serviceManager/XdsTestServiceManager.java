@@ -126,9 +126,9 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			try {
 				if (testName.startsWith("tc:")) {
 					String collectionName = testName.split(":")[1];
-					session.xt.setTestCollection(collectionName);
+					session.xt.addTestCollection(collectionName);
 				} else {
-					session.xt.setTest(testName, sections, areas);
+					session.xt.addTest(testName, sections, areas);
 				}
 
 				// force loading of site definitions
@@ -422,7 +422,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 		sections.add(section);
 
 		Xdstest2 xt2 = getNewXt();
-		xt2.setTest(testname, sections, null, false);
+		xt2.addTest(testname, sections, null, false);
 		TestDetails ts = xt2.getTestSpec(testname);
 
 		File tsFile;

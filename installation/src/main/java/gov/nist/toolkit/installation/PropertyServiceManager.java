@@ -73,8 +73,8 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	// This now pulls from Installation so that external cache location can be overridden
 	public File getSimDbDir() {
 		logger.debug(": " + "getSimDbDir");
-//		File f = new File(getPropertyManager().getExternalCache() + File.separator + "simdb");
-		File f = new File(Installation.installation().externalCache() + File.separator + "simdb");
+		File f = new File(getPropertyManager().getExternalCache() + File.separator + "simdb");
+//		File f = new File(Installation.installation().externalCache() + File.separator + "simdb");
 		f.mkdirs();
 		return f;
 	}

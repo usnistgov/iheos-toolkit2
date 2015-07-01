@@ -6,7 +6,7 @@ public class Xdstest2test {
 	
 	static public void t1() throws Exception {
 		Xdstest2 x = new Xdstest2(new File("/Users/bill/dev/xdstoolkit"), null);
-		x.setTest("11990");
+		x.addTest("11990");
 //		x.setSite("dev");
 //		boolean ok = x.run();
 //		System.out.println("ok is " + ok);

@@ -9,6 +9,7 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
@@ -380,6 +381,8 @@ public abstract class BasicTransaction  {
 		ValidationContext vc = getValidationContextFromTransactionName();
 		vc.isResponse = true;
 		try {
+            SecurityParams sp = s_ctx.getTransactionSettings().securityParams;
+			logger.info("Codes file is " + sp.getCodesFile());
 			vc.setCodesFilename(this.s_ctx.getTransactionSettings().securityParams.getCodesFile().toString());
 		} catch (Exception e) {}
 		try {

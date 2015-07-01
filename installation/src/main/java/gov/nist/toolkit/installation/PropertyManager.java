@@ -151,6 +151,7 @@ public class PropertyManager {
 			return;
 		toolkitProperties = new Properties();
 		try {
+			logger.info("Loading toolkit properties from " + propFile);
 			toolkitProperties.load(new FileInputStream(propFile));
 
 		} catch (FileNotFoundException e) {

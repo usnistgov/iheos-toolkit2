@@ -23,6 +23,7 @@ import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -74,7 +75,7 @@ public class Session implements SecurityParams {
 	String serverIP = null;
 	String serverPort = null;
 	SimCache simCache = new SimCache();
-	String sessionId;
+	String sessionId = Installation.installation().defaultSessionName();
 	
 	File toolkit = null;
 	
@@ -416,7 +417,7 @@ public class Session implements SecurityParams {
 	public void setEnvironment(String name, String externalCache) {
 		File k = Installation.installation().environmentFile(name);
 		if (!k.exists() || !k.isDirectory())
-			k = null;
+			throw new ToolkitRuntimeException("Environment " + name + " does not exist");
 		currentEnvironmentName = name;
 		System.setProperty("XDSCodesFile", k.toString() + File.separator + "codes.xml");
 		new EnvSetting(sessionId, name, k);

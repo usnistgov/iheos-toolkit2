@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.scripts;
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -135,7 +134,7 @@ public class DashboardDaemon {
 			List<String> sections = new ArrayList<String>();
 			sections.add("XDS");
 			try {
-				xdstest.setTest("GetDocuments", sections, areas);
+				xdstest.addTest("GetDocuments", sections, areas);
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = e1.getMessage();
@@ -268,7 +267,7 @@ public class DashboardDaemon {
 			xdstest.setSecure(true);
 			String[] areas = {"testdata-repository"};
 			try {
-				xdstest.setTest("SingleDocument", null, areas);
+				xdstest.addTest("SingleDocument", null, areas);
 			} catch (Exception e1) {
 				rstatus.status = false;
 				rstatus.fatalError = e1.getMessage();

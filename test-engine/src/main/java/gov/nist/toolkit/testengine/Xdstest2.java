@@ -6,7 +6,6 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.errormgr.AssertionResults;
 import gov.nist.toolkit.testengine.logrepository.LogRepository;
-import gov.nist.toolkit.testengine.logrepository.LogRepository1;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.StepGoals;
 import gov.nist.toolkit.testenginelogging.TestDetails;
@@ -182,14 +181,14 @@ public class Xdstest2 {
 
 	/**
 	 * Select test to be run. All steps of all sections of this test will be
-	 * run. Overrides earlier calls to setTest* methods.
+	 * run. Overrides earlier calls to addTest* methods.
 	 * 
 	 * @param testname - corresponds to name of a directory of TESTKIT/area/testname
 	 * where area comes from a default list and does not need to be specified.  All sections
 	 * of the test are executed in the default order.
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
-	public void setTest(String testname) throws Exception {
+	public void addTest(String testname) throws Exception {
 		testnum = testname;
 		xt.addTestSpec(new TestDetails(xt.getTestkit(), testname));
 
@@ -197,7 +196,7 @@ public class Xdstest2 {
 
 	/**
 	 * Select test to be run. All steps of this section will be run. Overrides
-	 * earlier calls to setTest* methods.
+	 * earlier calls to addTest* methods.
 	 * 
 	 * @param testname - corresponds to name of a directory of TESTKIT/area/testname
 	 * @param sections - list of sections of the test to execute. The ordering in this list
@@ -205,7 +204,7 @@ public class Xdstest2 {
 	 * @param areas - controls which areas of the testkit should be searched
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
-	public void setTest(String testname, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
+	public void addTest(String testname, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
 		testnum = testname;
 		this.sections = sections;
 		TestDetails ts;
@@ -222,7 +221,7 @@ public class Xdstest2 {
 		xt.addTestSpec(ts);
 	}
 	
-	public void setTest(String testName, File testDir) throws Exception {
+	public void addTest(String testName, File testDir) throws Exception {
 		testnum = testName;
 		TestDetails ts = new TestDetails(testDir);
 		if (logRepository != null)
@@ -230,8 +229,8 @@ public class Xdstest2 {
 		xt.addTestSpec(ts);
 	}
 
-	public void setTest(String testname, List<String> sections, String[] areas) throws Exception {
-		setTest(testname, sections, areas, true);
+	public void addTest(String testname, List<String> sections, String[] areas) throws Exception {
+		addTest(testname, sections, areas, true);
 	}
 	
 	public TestDetails getTestSpec(String testname) throws Exception {
@@ -239,7 +238,7 @@ public class Xdstest2 {
 	}
 
 	/**
-	 * Select test collection to be run. Overrides earlier calls to setTest*
+	 * Select test collection to be run. Overrides earlier calls to addTest*
 	 * methods. A test collection is a list of tests which are executed in the
 	 * order of the list.  This is useful for creating regression tests where you
 	 * might collect all Stored Query tests to completely exercise the Stored Query 
@@ -249,7 +248,7 @@ public class Xdstest2 {
 	 * of the testkit.
 	 * @throws Exception - If the collection does not exist.
 	 */
-	public void setTestCollection(String collection) throws Exception {
+	public void addTestCollection(String collection) throws Exception {
 		xt.addTestCollection(collection);
 	}
 

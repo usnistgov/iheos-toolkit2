@@ -69,11 +69,13 @@ public class SimServlet  extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		this.config = config;
-		
+		logger.info("Initializing toolkit");
 		warHome = new File(config.getServletContext().getRealPath("/"));
+		logger.info("...warHome is " + warHome);
+		Installation.installation().warHome(warHome);
 //		session = new Session(warHome);
 		simDbDir = Installation.installation().propertyServiceManager().getSimDbDir();
-		logger.info("simdb = " + simDbDir);
+		logger.info("...simdb = " + simDbDir);
 		
 //		// this is being done for ToolkitServiceImpl - initialize the
 //		// session caches by deleting the old ones (previous launch)

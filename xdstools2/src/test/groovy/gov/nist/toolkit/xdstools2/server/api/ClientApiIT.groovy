@@ -39,7 +39,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', '123^^^&1.2.343&ISO');
 
-        boolean status = client.run('11990', site, tls, parms)
+        boolean status = client.runTest('11990', site, tls, parms)
 
         then:
         status
@@ -91,7 +91,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', '123^^^&1.2.343&ISO');
 
-        boolean status = client.run('11966', site, tls, parms)
+        boolean status = client.runTest('11966', site, tls, parms)
 
         then:
         status
@@ -116,7 +116,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', '123^^^&1.2.343&ISO');
 
-        boolean status = client.run('12029', site, tls, parms)
+        boolean status = client.runTest('12029', site, tls, parms)
 
         then:
         status

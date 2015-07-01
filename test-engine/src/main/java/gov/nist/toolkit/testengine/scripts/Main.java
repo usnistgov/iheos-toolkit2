@@ -43,7 +43,7 @@ public class Main implements SecurityParams {
 		parameterCheck();
 		TransactionSettings ts = new TransactionSettings();
 		try {
-			engine.setTest(testName);
+			engine.addTest(testName);
 			engine.run(null, null, true, ts);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -88,6 +88,8 @@ public class Installation {
 		return new File(toolkitxFile(), "schema");
 	}
 	public File testkitFile() { return new File(toolkitxFile(), "testkit"); }
+
+    public String defaultEnvironmentName() { return propertyServiceManager().getDefaultEnvironment(); }
 	
 	public File environmentFile(String envName) {
 		return new File(externalCache + sep + "environment" + sep + envName);
@@ -124,5 +126,7 @@ public class Installation {
 	public File testLogFile() {
 		return new File(externalCache + sep + "TestLogCache");
 	}
+
+	public String defaultSessionName() { return "STANDALONE"; }
 
 }
