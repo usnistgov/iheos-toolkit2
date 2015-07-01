@@ -48,6 +48,7 @@ public class ClientApi implements SecurityParams {
         TransactionSettings ts = new TransactionSettings();
         ts.writeLogs = true;
         ts.patientId = parms.get("$patientid$");
+        ts.securityParams = this;
         return engine.run(parms, null, true, ts);
     }
 

@@ -121,4 +121,29 @@ class ClientApiIT extends Specification {
         then:
         status
     }
+
+    def 'Run Repository test collection'() {
+        setup:
+        // Build RR sim as target of submission
+        SimulatorApi simApi = new SimulatorApi(session)
+        Simulator sim = simApi.create('rr', rrSimId)
+
+        when: 'Create site for simulator'
+        Site site = SimManager.getSite(sim.configs.get(0))
+
+        then: 'site exists'
+        site
+
+        when: 'Build test client to ack as Repository to send submission'
+        ClientApi client = new ClientApi(session)
+
+        and: 'Send transaction'
+        Map<String, String> parms  = new HashMap<String, String>();
+        parms.put('$patientid$', '123^^^&1.2.343&ISO');
+
+        boolean status = client.runTestCollection('PR.b', site, tls, parms)
+
+        then:
+        status
+    }
 }

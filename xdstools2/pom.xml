@@ -29,7 +29,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <testkitOut>${project.basedir}/target/${project.build.finalName}/toolkitx/testkit</testkitOut>
-        <testkitIn>${project.basedir}/src/main/webapp/toolkitx/testkit</testkitIn>
+        <!--<testkitIn>${project.basedir}/src/main/webapp/toolkitx/testkit</testkitIn>-->
+        <testkitIn>${project.basedir}/../testkit/src/main/resources</testkitIn>
     </properties>
 
     <dependencies>
