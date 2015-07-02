@@ -59,7 +59,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			common.vc.hasHttp = true;
 		
 			// this validates through soap wrapper
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;    // SOAP Fault generated
 
 			if (mvc.hasErrors()) {
@@ -156,7 +156,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			// run validations on message
 			er.challenge("Scheduling initial validations");
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;   // if SOAP Fault generated
 			
 			if (mvc.hasErrors()) {
@@ -209,7 +209,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			common.vc.hasHttp = true;
 			
 			// this validates through soap wrapper
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;    // SOAP Fault generated
 
 			if (mvc.hasErrors()) {

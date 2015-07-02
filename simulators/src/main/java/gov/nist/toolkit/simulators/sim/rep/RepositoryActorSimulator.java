@@ -51,7 +51,7 @@ public class RepositoryActorSimulator extends DsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
 			if (mvc.hasErrors()) {
@@ -83,7 +83,7 @@ public class RepositoryActorSimulator extends DsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
 			if (mvc.hasErrors()) {

@@ -45,7 +45,7 @@ public class RecipientActorSimulator extends DsActorSimulator {
 				common.vc.addInnerContext(asc.getValidationContext());
 			}
 			
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
 			if (mvc.hasErrors()) {

@@ -86,4 +86,8 @@ public class HttpMessageValidator extends MessageValidator {
 
 	}
 
+    @Override
+	public boolean isSystemValidator() { return true; }
+
+
 }

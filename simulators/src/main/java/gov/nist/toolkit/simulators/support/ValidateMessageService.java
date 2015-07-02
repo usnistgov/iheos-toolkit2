@@ -42,16 +42,18 @@ public class ValidateMessageService extends CommonServiceManager {
 	 * @throws IOException
 	 */
 	public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc) throws IOException {
-		String httpMsgHdr = db.getRequestMessageHeader(); 
-		byte[] httpMsgBody = db.getRequestMessageBody();
+		return runValidation(vc, db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc);
+	}
+
+	public MessageValidatorEngine runValidation(ValidationContext vc, String httpMsgHdr, byte[] httpMsgBody, MessageValidatorEngine mvc) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-		
+
 		if (mvc == null)
 			mvc = new MessageValidatorEngine();
 		HttpMessageValidator val = new HttpMessageValidator(vc, httpMsgHdr, httpMsgBody, gerb, mvc, rvi);
 		mvc.addMessageValidator("Parse HTTP Message", val, gerb.buildNewErrorRecorder());
 		mvc.run();
-		
+
 		return mvc;
 	}
 

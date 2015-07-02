@@ -486,4 +486,8 @@ public class SoapMessageValidator extends MessageValidator {
 					+ eleName,"http://www.w3.org/TR/soap12-part1/#soapenvelope");
 	}
 
+    @Override
+	public boolean isSystemValidator() { return true; }
+
+
 }

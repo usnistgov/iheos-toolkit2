@@ -16,8 +16,11 @@ abstract public class MessageValidator {
 	protected ValidationContext vc; 
 	public ErrorRecorder er;
 	
-	
 	abstract public void run(ErrorRecorder er, MessageValidatorEngine mvc);
+
+	// System level validators, those that trigger soap faults, should
+	// override this method and return true
+	public boolean isSystemValidator() { return false; }
 
 	public MessageValidator(ValidationContext vc) {
 		this.vc = vc;

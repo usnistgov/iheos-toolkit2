@@ -74,7 +74,12 @@ public class DsSimCommon {
      * @return true if successful and false if fault sent
      * @throws IOException
      */
-    public boolean runInitialValidations() throws IOException {
+    public boolean runInitialValidationsAndFaultIfNecessary() throws IOException {
+        runInitialValidations();
+        return !returnFaultIfNeeded();
+    }
+
+    public void runInitialValidations() throws IOException {
         simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc);
         simCommon.mvc.run();
         simCommon.buildMVR();
@@ -88,11 +93,6 @@ public class DsSimCommon {
         } else {
             logger.debug("no steps with errors");
         }
-
-        boolean sent = returnFaultIfNeeded();
-        if (sent)
-            simCommon.faultReturned = true;
-        return !sent;
     }
 
     public void sendErrorsInRegistryResponse(ErrorRecorder er) {
@@ -400,12 +400,19 @@ public class DsSimCommon {
      * @throws IOException
      */
     public boolean returnFaultIfNeeded() throws IOException {
+        if (simCommon.faultReturned) return false;
         SoapFault fault = getSoapErrors();
         if (fault != null) {
             sendFault(fault);
+            simCommon.faultReturned = true;
             return true;
         }
         return false;
+    }
+
+    public boolean isFaultNeeded() {
+        SoapFault fault = getSoapErrors();
+        return fault != null;
     }
 
     /**

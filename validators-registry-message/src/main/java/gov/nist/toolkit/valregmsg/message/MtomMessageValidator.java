@@ -90,4 +90,7 @@ public class MtomMessageValidator extends MessageValidator {
 
 	}
 
+	@Override
+	public boolean isSystemValidator() { return true; }
+
 }

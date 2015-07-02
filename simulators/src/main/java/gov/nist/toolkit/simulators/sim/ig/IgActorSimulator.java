@@ -48,7 +48,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 
 
 			
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
 			if (mvc.hasErrors()) {

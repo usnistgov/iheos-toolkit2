@@ -47,7 +47,7 @@ public class RegistryActorSimulator extends DsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
 			
 			if (mvc.hasErrors()) {
@@ -87,7 +87,7 @@ public class RegistryActorSimulator extends DsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
 			if (mvc.hasErrors()) {
@@ -120,7 +120,7 @@ public class RegistryActorSimulator extends DsActorSimulator {
 			common.vc.isMU = true;
 			common.vc.isRequest = true;
 
-			if (!dsSimCommon.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 
 			if (mvc.hasErrors()) {

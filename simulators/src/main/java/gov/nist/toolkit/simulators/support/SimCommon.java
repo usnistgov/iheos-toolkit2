@@ -3,55 +3,26 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
-import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
-import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
-import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
-import gov.nist.toolkit.simulators.sim.rep.RepIndex;
-import gov.nist.toolkit.soap.http.SoapFault;
-import gov.nist.toolkit.soap.http.SoapUtil;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
-import gov.nist.toolkit.valregmsg.message.MtomMessageValidator;
-import gov.nist.toolkit.valregmsg.message.SimpleSoapHttpHeaderValidator;
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
-import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.log4j.Logger;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 /**
  * All simulators are passed an instance of this class in the constructor giving

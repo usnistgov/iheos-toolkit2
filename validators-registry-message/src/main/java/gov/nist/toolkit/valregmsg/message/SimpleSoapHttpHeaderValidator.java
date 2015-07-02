@@ -78,6 +78,8 @@ public class SimpleSoapHttpHeaderValidator extends MessageValidator {
 		er.err(XdsErrorCode.Code.NoCode, e);
 	}
 
+	@Override
+	public boolean isSystemValidator() { return false; }
 
 
 }
