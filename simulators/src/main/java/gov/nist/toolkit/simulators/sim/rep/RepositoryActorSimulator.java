@@ -9,7 +9,8 @@ import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.ActorSimulator;
+import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -23,15 +24,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.axiom.om.OMElement;
 
-public class RepositoryActorSimulator extends ActorSimulator {
+public class RepositoryActorSimulator extends DsActorSimulator {
 	RepIndex repIndex;
 	SimDb db;
 	HttpServletResponse response;
 	String repositoryUniqueId;
 	SimulatorConfig asc;
 	
-	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, SimDb db, SimulatorConfig asc, HttpServletResponse response, String repositoryUniqueId) {
-		super(common);
+	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc, HttpServletResponse response, String repositoryUniqueId) {
+		super(common, dsSimCommon);
 		this.repIndex = repIndex;
 		this.db = db;
 		this.response = response;
@@ -50,24 +51,24 @@ public class RepositoryActorSimulator extends ActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 			
-			RepPnRSim pnrSim = new RepPnRSim(common, asc);
+			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, asc);
 			mvc.addMessageValidator("PnR", pnrSim, gerb.buildNewErrorRecorder());
 			
-			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common);
+			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			
 			mvc.addMessageValidator("Attach Errors", rrg, gerb.buildNewErrorRecorder());
 						
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, rrg), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), gerb.buildNewErrorRecorder());
 			
 			mvc.run();
 			
@@ -82,11 +83,11 @@ public class RepositoryActorSimulator extends ActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
@@ -103,7 +104,7 @@ public class RepositoryActorSimulator extends ActorSimulator {
 				docUids.add(uid);
 			}
 			
-			DocumentResponseSim dms = new DocumentResponseSim(common.vc, docUids, common, repositoryUniqueId);
+			DocumentResponseSim dms = new DocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
 			mvc.addMessageValidator("Generate DocumentResponse", dms, gerb.buildNewErrorRecorder());
 			
 			mvc.run();
@@ -112,13 +113,13 @@ public class RepositoryActorSimulator extends ActorSimulator {
 			Response resp = dms.getResponse();
 			// add in any errors collected
 			try {
-				RegistryErrorListGenerator relg = common.getRegistryErrorList(); 
+				RegistryErrorListGenerator relg = dsSimCommon.getRegistryErrorList();
 				resp.add(relg, null);
 			} catch (Exception e) {}
 
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dms), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), gerb.buildNewErrorRecorder());
 			
 			mvc.run();
 			
@@ -127,7 +128,7 @@ public class RepositoryActorSimulator extends ActorSimulator {
 			return true;
 		}
 		else {
-			common.sendFault("Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return false;
 		} 
 

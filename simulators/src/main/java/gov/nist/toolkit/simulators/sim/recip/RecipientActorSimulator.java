@@ -5,7 +5,8 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.ActorSimulator;
+import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -14,13 +15,14 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-public class RecipientActorSimulator extends ActorSimulator {
+public class RecipientActorSimulator extends DsActorSimulator {
+	DsSimCommon dsSimCommon;
 	SimDb db;
 	HttpServletResponse response;
 	SimulatorConfig asc;
 	
-	public RecipientActorSimulator(SimCommon common, SimDb db, SimulatorConfig asc, HttpServletResponse response) {
-		super(common);
+	public RecipientActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc, HttpServletResponse response) {
+		super(common, dsSimCommon);
 		this.db = db;
 		this.response = response;
 		this.asc = asc;
@@ -43,21 +45,21 @@ public class RecipientActorSimulator extends ActorSimulator {
 				common.vc.addInnerContext(asc.getValidationContext());
 			}
 			
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+                dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 			
-			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common);
+			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			
 			mvc.addMessageValidator("Attach Errors", rrg, gerb.buildNewErrorRecorder());
 						
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, rrg), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), gerb.buildNewErrorRecorder());
 			
 			mvc.run();
 			
@@ -65,7 +67,7 @@ public class RecipientActorSimulator extends ActorSimulator {
 			
 		}
 		else {
-			common.sendFault("Don't understand transaction " + transactionType, null);
+            dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return false;
 		} 
 

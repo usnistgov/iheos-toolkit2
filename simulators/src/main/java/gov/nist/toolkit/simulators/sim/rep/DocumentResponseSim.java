@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
@@ -19,15 +20,17 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 
 public class DocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
+	DsSimCommon dsSimCommon;
 	List<String> documentUids;
 	RetrieveMultipleResponse response;
 	RepIndex repIndex;
 	String repositoryUniqueId;
 
-	public DocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, String repositoryUniqueId) {
+	public DocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
 		super(common);
+		this.dsSimCommon = dsSimCommon;
 		this.documentUids = documentUids;
-		this.repIndex = common.repIndex;
+		this.repIndex = dsSimCommon.repIndex;
 		this.repositoryUniqueId = repositoryUniqueId;
 	}
 
@@ -35,9 +38,9 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 		try {
 			response = new RetrieveMultipleResponse();
 
-			common.addDocumentAttachments(documentUids, er);
+			dsSimCommon.addDocumentAttachments(documentUids, er);
 
-			Collection<StoredDocument> documents = common.getAttachments();
+			Collection<StoredDocument> documents = dsSimCommon.getAttachments();
 
 			OMElement root = response.getRoot();
 

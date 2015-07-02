@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.simulators.sim.reg.RegRSim;
 import gov.nist.toolkit.simulators.sim.rep.RepPnRSim;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -17,13 +18,15 @@ import gov.nist.toolkit.valsupport.message.MessageValidator;
  *
  */
 public class RecipientPnRSim extends MessageValidator {
+	DsSimCommon dsSimCommon;
 	SimCommon common;
 	Exception startUpException = null;
 	SimulatorConfig asc;
 
-	public RecipientPnRSim(SimCommon common, SimulatorConfig asc) {
+	public RecipientPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
 		super(common.vc);
 		this.common = common;
+        this.dsSimCommon = dsSimCommon;
 		this.asc = asc;
 
 		vc.hasSoap = true;
@@ -47,9 +50,9 @@ public class RecipientPnRSim extends MessageValidator {
 		
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-		common.mvc.addMessageValidator("RepPnrSim", new RepPnRSim(common, asc), gerb.buildNewErrorRecorder());
+		common.mvc.addMessageValidator("RepPnrSim", new RepPnRSim(common, dsSimCommon, asc), gerb.buildNewErrorRecorder());
 
-		common.mvc.addMessageValidator("RegRSim", new RegRSim(common, asc), gerb.buildNewErrorRecorder());
+		common.mvc.addMessageValidator("RegRSim", new RegRSim(common, dsSimCommon, asc), gerb.buildNewErrorRecorder());
 		
 		common.mvc.run();
 		

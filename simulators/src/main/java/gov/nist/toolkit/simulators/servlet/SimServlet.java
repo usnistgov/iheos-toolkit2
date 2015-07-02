@@ -24,6 +24,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rg.RGActorSimulator;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.utilities.io.Io;
@@ -421,7 +422,8 @@ public class SimServlet  extends HttpServlet {
 			
 			
 			
-			SimCommon common= new SimCommon(db, uri.startsWith("https"), vc, mvc, regIndex, repIndex, response);
+			SimCommon common= new SimCommon(db, uri.startsWith("https"), vc, mvc, response);
+            DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex);
 			
 			ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 			er.sectionHeading("Endpoint");
@@ -445,22 +447,22 @@ public class SimServlet  extends HttpServlet {
 				
 				response.setContentType("application/soap+xml");
 
-				common.regIndex = regIndex;
-				RegistryActorSimulator reg = new RegistryActorSimulator(common, db, asc);
+                dsSimCommon.regIndex = regIndex;
+				RegistryActorSimulator reg = new RegistryActorSimulator(common, dsSimCommon, db, asc);
 				transactionOk = reg.run(transactionType, mvc, validation);
 				
 			}
 			else if (ActorType.RESPONDING_GATEWAY.getShortName().equals(actor)) {
 				response.setContentType("application/soap+xml");
 
-				RGActorSimulator rg = new RGActorSimulator(common, db, asc);
+				RGActorSimulator rg = new RGActorSimulator(common, dsSimCommon, db, asc);
 				transactionOk = rg.run(transactionType, mvc, validation);
 				
 			}
 			else if (ActorType.INITIATING_GATEWAY.getShortName().equals(actor)) {
 				response.setContentType("application/soap+xml");
 
-				IgActorSimulator ig = new IgActorSimulator(common, db, asc);
+				IgActorSimulator ig = new IgActorSimulator(common, dsSimCommon, db, asc);
 				transactionOk = ig.run(transactionType, mvc, validation);
 				
 			}
@@ -475,13 +477,13 @@ public class SimServlet  extends HttpServlet {
 					repositoryUniqueId = configEle.asString();
 				}
 
-				RepositoryActorSimulator rg = new RepositoryActorSimulator(repIndex, common, db, asc, response, repositoryUniqueId);
+				RepositoryActorSimulator rg = new RepositoryActorSimulator(repIndex, common, dsSimCommon, db, asc, response, repositoryUniqueId);
 				transactionOk = rg.run(transactionType, mvc, validation);
 				
 			}
 			else if (ActorType.DOCUMENT_RECIPIENT.getShortName().equals(actor)) {
 				
-				RecipientActorSimulator rg = new RecipientActorSimulator(common, db, asc, response);
+				RecipientActorSimulator rg = new RecipientActorSimulator(common, dsSimCommon, db, asc, response);
 				transactionOk = rg.run(transactionType, mvc, validation);
 				
 			}
@@ -651,34 +653,18 @@ public class SimServlet  extends HttpServlet {
 	}
 
 
-	void sendSoapFault(HttpServletResponse response, String message) {
+	private void sendSoapFault(HttpServletResponse response, String message) {
 		try {
 			SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
 			SimCommon c = new SimCommon(response);
+            DsSimCommon dsSimCommon = new DsSimCommon(c);
 			OMElement faultEle = sf.getXML();
-			OMElement soapEnv = c.wrapResponseInSoapEnvelope(faultEle);
-			c.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
+			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);
+            dsSimCommon.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
 		} catch (Exception e) {
 			logger.error(ExceptionUtil.exception_details(e));
 		}
 	}
-
-//	Session getSession(HttpServletRequest request) {
-//		HttpSession hsession = request.getSession();
-//		Session session = (Session) hsession.getAttribute(ToolkitServiceImpl.sessionVarName);
-//		if (session == null) {
-//
-//			session = new Session(getServletContext(), null, hsession.getId());
-//			hsession.setAttribute(ToolkitServiceImpl.sessionVarName, session);
-//		}
-//
-//		if (session.getIpAddr() == null) {
-//			session.setIpAddr(request.getRemoteHost());
-//		}
-//
-//		return session;
-//	}
-//	
 
 	void logRequest(HttpServletRequest request, SimDb db, String actor, String transaction)
 	throws FileNotFoundException, IOException, HttpHeaderParseException, ParseException {

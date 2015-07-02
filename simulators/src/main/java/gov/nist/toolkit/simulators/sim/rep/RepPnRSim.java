@@ -7,10 +7,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
-import gov.nist.toolkit.simulators.support.SimCommon;
-import gov.nist.toolkit.simulators.support.StoredDocument;
-import gov.nist.toolkit.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.simulators.support.*;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.utilities.io.Hash;
 import gov.nist.toolkit.utilities.io.Io;
@@ -31,12 +28,14 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 public class RepPnRSim extends TransactionSimulator implements MetadataGeneratingSim {
+	DsSimCommon dsSimCommon;
 	Metadata m = null;
 	SimulatorConfig asc;
 	static Logger logger = Logger.getLogger(RepPnRSim.class);
 
-	public RepPnRSim(SimCommon common, SimulatorConfig asc) {
+	public RepPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
 		super(common);
+        this.dsSimCommon = dsSimCommon;
 		this.asc = asc;
 	}
 
@@ -164,7 +163,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 			// flush documents to repository
 			for (String uid : sdMap.keySet()) {
 				StoredDocument sd = sdMap.get(uid);
-				common.repIndex.getDocumentCollection().add(sd);
+                dsSimCommon.repIndex.getDocumentCollection().add(sd);
 				byte[] content = sdMap.get(uid).content;
 				Io.bytesToFile(sd.getPathToDocument(), content);
 				byte[] content2 = Io.bytesFromFile(sd.getPathToDocument());
@@ -190,7 +189,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 			Soap soap = new Soap();
 			try {
 				OMElement result = soap.soapCall(m.getV3SubmitObjectsRequest(), endpoint, false, true, true, SoapActionFactory.r_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.r_b_action));
-				ErrorRecorder rrEr = common.registryResponseAsErrorRecorder(result);
+				ErrorRecorder rrEr = dsSimCommon.registryResponseAsErrorRecorder(result);
 				mvc.addErrorRecorder("RegistryResponse", rrEr);
 			} catch (Exception e) {
 				er.err(Code.XDSRepositoryError, e);

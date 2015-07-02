@@ -15,10 +15,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon;
-import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
-import gov.nist.toolkit.simulators.support.SimCommon;
-import gov.nist.toolkit.simulators.support.StoredDocumentMap;
+import gov.nist.toolkit.simulators.support.*;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.RetInfo;
 import gov.nist.toolkit.testengine.RetrieveB;
@@ -42,8 +39,8 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 	Metadata m;
 	MessageValidatorEngine mvc;
 
-	public RGActorSimulator(SimCommon common, SimDb db, SimulatorConfig asc) {
-		super(common);
+	public RGActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc) {
+		super(common, dsSimCommon);
 		this.db = db;
 		this.asc = asc;
 	}
@@ -62,7 +59,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			common.vc.hasHttp = true;
 		
 			// this validates through soap wrapper
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;    // SOAP Fault generated
 
 			if (mvc.hasErrors()) {
@@ -138,10 +135,10 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 			
 			StoredDocumentMap stdocmap = new StoredDocumentMap(docMap);
-			common.intallDocumentsToAttach(stdocmap);
+			dsSimCommon.intallDocumentsToAttach(stdocmap);
 
 			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, result), er);
+			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, result), er);
 
 			mvc.run();
 
@@ -159,11 +156,11 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			// run validations on message
 			er.challenge("Scheduling initial validations");
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;   // if SOAP Fault generated
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
@@ -171,14 +168,14 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
 			SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
 			
-			RemoteSqSim rss = new RemoteSqSim(common, this, asc, query);
+			RemoteSqSim rss = new RemoteSqSim(common, dsSimCommon, this, asc, query);
 			
 			mvc.addMessageValidator("Forward query to local Registry", rss, newER());
 
@@ -193,13 +190,13 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			mvc.addMessageValidator("Attach homeCommunityId", xc, newER());
 			
 			// Add in errors
-			AdhocQueryResponseGenerator queryResponseGenerator = new AdhocQueryResponseGenerator(common, rss);
+			AdhocQueryResponseGenerator queryResponseGenerator = new AdhocQueryResponseGenerator(common, dsSimCommon, rss);
 			mvc.addMessageValidator("Attach Errors", queryResponseGenerator, newER());
 			
 			mvc.run();
 
 			// wrap response in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, rss), newER());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rss), newER());
 
 			mvc.run();
 
@@ -212,7 +209,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			common.vc.hasHttp = true;
 			
 			// this validates through soap wrapper
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;    // SOAP Fault generated
 
 			if (mvc.hasErrors()) {
@@ -244,14 +241,14 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			// wrap response in soap wrapper and http wrapper
 			//mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperXCPDResponseSim(common, result), newER());
 			//mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperXCPDResponseSim(common, result), er);
-			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, result), er);
+			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, result), er);
 
 			//
 			mvc.run();
 			
 			return true;
 		} else {
-			common.sendFault("Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return true;
 		}
 
@@ -261,12 +258,12 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 		mvc.run();
 		Response response = null;
 		try {
-			response = common.getRegistryResponse();
+			response = dsSimCommon.getRegistryResponse();
 			er.detail("Wrapping response in RetrieveDocumentSetResponse and then SOAP Message");
-			OMElement rdsr = common.wrapResponseInRetrieveDocumentSetResponse(response.getResponse());
-			OMElement env = common.wrapResponseInSoapEnvelope(rdsr);
+			OMElement rdsr = dsSimCommon.wrapResponseInRetrieveDocumentSetResponse(response.getResponse());
+			OMElement env = dsSimCommon.wrapResponseInSoapEnvelope(rdsr);
 
-			common.sendHttpResponse(env, er);  
+			dsSimCommon.sendHttpResponse(env, er);
 
 		} catch (Exception e) {
 			

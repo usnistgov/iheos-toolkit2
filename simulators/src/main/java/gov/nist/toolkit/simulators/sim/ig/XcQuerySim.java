@@ -15,6 +15,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -36,6 +37,7 @@ import org.apache.log4j.Logger;
 
 public class XcQuerySim extends MessageValidator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
 	SimCommon common;
+	DsSimCommon dsSimCommon;
 	AdhocQueryResponse response;
 	Metadata m = new Metadata();
 	Exception startUpException = null;
@@ -47,9 +49,10 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 	SimulatorConfig asc;
 	XcQueryMockSoap mockSoap = null;  // for unit testing only
 
-	public XcQuerySim(SimCommon common, SimulatorConfig asc) {
+	public XcQuerySim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
 		super(common.vc);
 		this.common = common;
+		this.dsSimCommon = dsSimCommon;
 		this.asc = asc;
 		isSecure = common.isTls();
 		isAsync = false;
@@ -80,7 +83,7 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 		try {
 			// if request didn't validate, return so errors can be reported
 			if (common.hasErrors()) {
-				response.add(common.getRegistryErrorList(), null);
+				response.add(dsSimCommon.getRegistryErrorList(), null);
 				return;
 			}
 

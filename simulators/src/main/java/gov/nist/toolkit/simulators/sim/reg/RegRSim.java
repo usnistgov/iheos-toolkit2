@@ -14,6 +14,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataForRegister;
 import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataInterface;
 import gov.nist.toolkit.simulators.sim.reg.store.RegistryFactory;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
@@ -34,12 +35,14 @@ public class RegRSim extends TransactionSimulator   {
 	public MetadataCollection delta;
 	protected SimulatorConfig asc;
 	protected MessageValidatorEngine mvc;
+    protected DsSimCommon dsSimCommon;
 
 	static Logger log = Logger.getLogger(RegRSim.class);
 
 
-	public RegRSim(SimCommon common, SimulatorConfig asc) {
+	public RegRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
 		super(common);
+        this.dsSimCommon = dsSimCommon;
 		this.asc = asc;
 	}
 
@@ -84,7 +87,7 @@ public class RegRSim extends TransactionSimulator   {
 			er.err(Code.XDSRegistryError, "Internal Error: cannot access input metadata", this, null);
 		}
 
-		mc = common.regIndex.mc;
+		mc = dsSimCommon.regIndex.mc;
 
 		// this will hold our updates - transaction style
 		delta = mc.mkDelta();

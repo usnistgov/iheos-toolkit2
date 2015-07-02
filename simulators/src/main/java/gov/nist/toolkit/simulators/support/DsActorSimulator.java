@@ -14,8 +14,9 @@ import java.io.IOException;
  * @author bill
  *
  */
-public abstract class ActorSimulator  {
+public abstract class DsActorSimulator {
 	protected SimCommon common;
+	protected DsSimCommon dsSimCommon;
 	protected ErrorRecorder er;
 
 //	protected GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
@@ -32,9 +33,10 @@ public abstract class ActorSimulator  {
 	 */
 	abstract public boolean run(ATFactory.TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
 	
-	public ActorSimulator(SimCommon common) {
+	public DsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
 //		super(common.getValidationContext());
 		this.common = common;
+		this.dsSimCommon = dsSimCommon;
 		er = common.getCommonErrorRecorder();
 	}
 	

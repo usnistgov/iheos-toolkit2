@@ -23,6 +23,7 @@ import java.util.List;
  * @author bill
  *
  */
+// TODO - rename to DsValidationMessageService
 public class ValidateMessageService extends CommonServiceManager {
 	RegistryValidationInterface rvi;
 

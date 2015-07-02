@@ -9,7 +9,8 @@ import gov.nist.toolkit.simulators.sim.reg.mu.MuSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;
 import gov.nist.toolkit.simulators.sim.reg.store.Committer;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.simulators.support.ActorSimulator;
+import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 
@@ -17,14 +18,14 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-public class RegistryActorSimulator extends ActorSimulator {
+public class RegistryActorSimulator extends DsActorSimulator {
 	SimDb db;
 	SimulatorConfig asc;
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
 
-	public RegistryActorSimulator(SimCommon common, SimDb db, SimulatorConfig asc) {
-		super(common);
+	public RegistryActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc) {
+		super(common, dsSimCommon);
 		this.db = db;
 		this.asc = asc;
 		SimulatorConfigElement updateConfig = asc.get(RegistryActorFactory.update_metadata_option);
@@ -46,26 +47,26 @@ public class RegistryActorSimulator extends ActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;  // returns if SOAP Fault was generated
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
 			
-			RegRSim rsim = new RegRSim(common, asc);
+			RegRSim rsim = new RegRSim(common, dsSimCommon, asc);
 			mvc.addMessageValidator("Register Transaction", rsim, er);
 
-			registryResponseGenerator = new RegistryResponseGeneratorSim(common);
+			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
 
 			mvc.run();
 
 			// wrap in soap wrapper and http wrapper
 			mvc.addMessageValidator("ResponseInSoapWrapper", 
-					new SoapWrapperRegistryResponseSim(common, registryResponseGenerator), 
+					new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator),
 					er);
 
 			// catch up on validators to be run so we can judge whether to commit or not
@@ -86,27 +87,27 @@ public class RegistryActorSimulator extends ActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
 
-			SqSim sqsim = new SqSim(common);
+			SqSim sqsim = new SqSim(common, dsSimCommon);
 			mvc.addMessageValidator("SqSim", sqsim, er);
 
 			mvc.run();
 
 			// Add in errors
-			queryResponseGenerator = new AdhocQueryResponseGenerator(common, sqsim);
+			queryResponseGenerator = new AdhocQueryResponseGenerator(common, dsSimCommon, sqsim);
 			mvc.addMessageValidator("Attach Errors", queryResponseGenerator, er);
 			mvc.run();
 
 			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, queryResponseGenerator), er);
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, queryResponseGenerator), er);
 
 			// this will only run the new validators
 			mvc.run();
@@ -119,15 +120,15 @@ public class RegistryActorSimulator extends ActorSimulator {
 			common.vc.isMU = true;
 			common.vc.isRequest = true;
 
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidations())
 				return false;
 
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
-			MuSim musim = new MuSim(common, asc);
+			MuSim musim = new MuSim(common, dsSimCommon, asc);
 			mvc.addMessageValidator("MuSim", musim, er);
 			
 			mvc.run();
@@ -138,13 +139,13 @@ public class RegistryActorSimulator extends ActorSimulator {
 			mvc.run();
 			
 
-			registryResponseGenerator = new RegistryResponseGeneratorSim(common);
+			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
 
 			mvc.run();
 
 			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, registryResponseGenerator), er);
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator), er);
 
 			// run all the queued up validators so we can check for errors
 			mvc.run();
@@ -157,7 +158,7 @@ public class RegistryActorSimulator extends ActorSimulator {
 
 		}
 		else {
-			common.sendFault("Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return false;
 		}
 
@@ -178,7 +179,7 @@ public class RegistryActorSimulator extends ActorSimulator {
 
 		delta.mkDirty();
 
-		synchronized(common.regIndex) {
+		synchronized(dsSimCommon.regIndex) {
 			Committer com = new Committer(common, delta);
 
 			mvc.addMessageValidator("Commit", com, er);
@@ -186,7 +187,7 @@ public class RegistryActorSimulator extends ActorSimulator {
 			mvc.run();
 
 			if (!common.hasErrors()) {
-				common.regIndex.save();
+				dsSimCommon.regIndex.save();
 			}
 		}
 	}

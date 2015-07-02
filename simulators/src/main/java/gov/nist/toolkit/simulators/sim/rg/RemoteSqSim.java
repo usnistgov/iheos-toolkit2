@@ -13,10 +13,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;
-import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon;
-import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
-import gov.nist.toolkit.simulators.support.SimCommon;
-import gov.nist.toolkit.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.simulators.support.*;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
@@ -31,6 +28,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 public class RemoteSqSim  extends TransactionSimulator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
+	DsSimCommon dsSimCommon;
 	AdhocQueryResponse response;
 	SimulatorConfig asc;
 	GatewaySimulatorCommon gatewayCommon;
@@ -39,8 +37,9 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 	OMElement query;
 	Logger logger = Logger.getLogger(SqSim.class);
 
-	public RemoteSqSim(SimCommon common, GatewaySimulatorCommon gatewayCommon, SimulatorConfig asc, OMElement query) {
+	public RemoteSqSim(SimCommon common, DsSimCommon dsSimCommon, GatewaySimulatorCommon gatewayCommon, SimulatorConfig asc, OMElement query) {
 		super(common);
+        this.dsSimCommon = dsSimCommon;
 		this.gatewayCommon = gatewayCommon;
 		this.asc = asc;
 		this.query = query;
@@ -63,7 +62,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 		// if request didn't validate, return so errors can be reported
 		if (common.hasErrors()) {
 			try {
-				response.add(common.getRegistryErrorList(), null);
+				response.add(dsSimCommon.getRegistryErrorList(), null);
 			} catch (XdsInternalException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryError, e);
 			}
@@ -125,8 +124,8 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 		if (!aqr.isSuccess()) {
 			RegistryErrorListGenerator relg = new RegistryErrorListGenerator();
 			relg.addRegistryErrorList(aqr.getRegistryErrorListEle(), null);
-			common.setRegistryErrorListGenerator(relg);
-			mvc.addMessageValidator("Send RegistryResponse with errors", new RegistryResponseSendingSim(common), er);
+            dsSimCommon.setRegistryErrorListGenerator(relg);
+			mvc.addMessageValidator("Send RegistryResponse with errors", new RegistryResponseSendingSim(common, dsSimCommon), er);
 			
 			mvc.run();
 

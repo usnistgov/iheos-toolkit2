@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
@@ -24,14 +25,15 @@ import org.apache.log4j.Logger;
 
 
 public class SqSim  extends TransactionSimulator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
+	DsSimCommon dsSimCommon;
 	AdhocQueryResponse response;
 	Metadata m = new Metadata();
 	Exception startUpException = null;
 	Logger logger = Logger.getLogger(SqSim.class);
 
-	public SqSim(SimCommon common) {
-
+	public SqSim(SimCommon common, DsSimCommon dsSimCommon) {
 		super(common);
+		this.dsSimCommon = dsSimCommon;
 		
 		vc.hasSoap = true;
 		vc.isSQ = true;
@@ -56,7 +58,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 		// if request didn't validate, return so errors can be reported
 		if (common.hasErrors()) {
 			try {
-				response.add(common.getRegistryErrorList(), null);
+				response.add(dsSimCommon.getRegistryErrorList(), null);
 			} catch (XdsInternalException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryError, e);
 			}
@@ -100,40 +102,40 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 	void linkSqToRegIndex(StoredQuery sq) throws XdsInternalException {
 		if (sq instanceof FindDocumentsSim) {
 			FindDocumentsSim sim = (FindDocumentsSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof FindSubmissionSetsSim) {
 				FindSubmissionSetsSim sim = (FindSubmissionSetsSim) sq;
-				sim.setRegIndex(common.regIndex);
+				sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof FindFoldersSim) {
 			FindFoldersSim sim = (FindFoldersSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetDocumentsSim) {
 			GetDocumentsSim sim = (GetDocumentsSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetRelatedDocumentsSim) {
 			GetRelatedDocumentsSim sim = (GetRelatedDocumentsSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetSubmissionSetsSim) {
 			GetSubmissionSetsSim sim = (GetSubmissionSetsSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetAssociationsSim) {
 			GetAssociationsSim sim = (GetAssociationsSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetDocumentsAndAssociationsSim) {
 			GetDocumentsAndAssociationsSim sim = (GetDocumentsAndAssociationsSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetFoldersSim) {
 			GetFoldersSim sim = (GetFoldersSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetFoldersForDocumentSim) {
 			GetFoldersForDocumentSim sim = (GetFoldersForDocumentSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetSubmissionSetAndContentsSim) {
 			GetSubmissionSetAndContentsSim sim = (GetSubmissionSetAndContentsSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetFolderAndContentsSim) {
 			GetFolderAndContentsSim sim = (GetFolderAndContentsSim) sq;
-			sim.setRegIndex(common.regIndex);
+			sim.setRegIndex(dsSimCommon.regIndex);
 		} else {
 			throw new XdsInternalException("Internal Error: " + sq.getClass().getCanonicalName() + " is not linked to Registry Index");
 		}
