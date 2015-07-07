@@ -19,7 +19,7 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
-import gov.nist.toolkit.simulators.support.ValidateMessageService;
+import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;

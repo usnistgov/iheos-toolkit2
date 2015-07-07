@@ -1,9 +1,10 @@
-package gov.nist.toolkit.simulators.support;
+package gov.nist.toolkit.valregmsg.validation.engine;
 
 import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -23,7 +24,7 @@ import java.util.List;
  * @author bill
  *
  */
-// TODO - rename to DsValidationMessageService
+
 public class ValidateMessageService extends CommonServiceManager {
 	RegistryValidationInterface rvi;
 
@@ -41,12 +42,11 @@ public class ValidateMessageService extends CommonServiceManager {
 	 * @return
 	 * @throws IOException
 	 */
-	public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc) throws IOException {
-		return runValidation(vc, db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc);
+	public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
+		return runValidation(vc, db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
 	}
 
-	public MessageValidatorEngine runValidation(ValidationContext vc, String httpMsgHdr, byte[] httpMsgBody, MessageValidatorEngine mvc) throws IOException {
-		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
+	public MessageValidatorEngine runValidation(ValidationContext vc, String httpMsgHdr, byte[] httpMsgBody, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
 
 		if (mvc == null)
 			mvc = new MessageValidatorEngine();

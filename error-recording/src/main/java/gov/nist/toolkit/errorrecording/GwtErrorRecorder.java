@@ -88,7 +88,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	public void err(Code code, String msg, String location, String resource) {
 		if (msg == null || msg.trim().equals(""))
 			return;
-		logger.debug(ExceptionUtil.here("err - " + msg));
+//		logger.debug(ExceptionUtil.here("err - " + msg));
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.ERROR;
 		ei.msg = msg;
@@ -253,7 +253,12 @@ public class GwtErrorRecorder implements ErrorRecorder  {
         return er;
 	}
 
-    @Override
+	@Override
+	public ErrorRecorder buildNewErrorRecorder(Object o) {
+		return null;
+	}
+
+	@Override
 	public int getNbErrors() {
 		int nbErrors = 0;
 		for (ValidatorErrorItem vei : errMsgs) {

@@ -12,6 +12,11 @@ public class GwtErrorRecorderBuilder implements ErrorRecorderBuilder {
 		return rec;
 	}
 
+	@Override
+	public ErrorRecorder buildNewErrorRecorder(Object o) {
+		return null;
+	}
+
 //    @Override
 //	public GwtErrorRecorder buildNewErrorRecorder(ErrorRecorder parent) {
 //		GwtErrorRecorder rec =  new GwtErrorRecorder();

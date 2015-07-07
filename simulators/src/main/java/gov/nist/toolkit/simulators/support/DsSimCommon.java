@@ -23,6 +23,7 @@ import gov.nist.toolkit.valregmsg.message.MtomMessageValidator;
 import gov.nist.toolkit.valregmsg.message.SimpleSoapHttpHeaderValidator;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
+import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -80,7 +81,9 @@ public class DsSimCommon {
     }
 
     public void runInitialValidations() throws IOException {
-        simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc);
+        GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
+
+        simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
         simCommon.mvc.run();
         simCommon.buildMVR();
 

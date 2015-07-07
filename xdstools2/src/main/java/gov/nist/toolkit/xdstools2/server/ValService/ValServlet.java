@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.ValService;
 
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.simulators.support.ValidateMessageService;
+import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;

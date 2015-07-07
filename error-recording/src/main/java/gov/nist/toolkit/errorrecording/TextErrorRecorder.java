@@ -215,6 +215,11 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
+	public ErrorRecorder buildNewErrorRecorder(Object o) {
+		return null;
+	}
+
+	@Override
 	public int getNbErrors() {
 		return errMsgs.size();
 	}

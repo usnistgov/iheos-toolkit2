@@ -214,8 +214,9 @@ public class HttpParserBa {
 			while (true)
 				nextHeader();
 		} catch (EoIException e) {
-			System.out.println(ExceptionUtil.exception_details(e));
+//			System.out.println(ExceptionUtil.exception_details(e));
 			// end of input - no body
+			System.out.println("Parsing HTTP - End of input - no body found");
 			message.setBody(new byte[0]);
 		} catch (LastHeaderException e) {
 			message.body = subarray(input, to); //input.substring(to);
