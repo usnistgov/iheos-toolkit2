@@ -64,6 +64,10 @@ public class Installation {
 		}
 
 	}
+
+	public File getDefaultEnvironmentFile() {
+		return new File(toolkitxFile(), "environment");
+	}
 	
 	public File getTkPropsFile() {
 		return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");

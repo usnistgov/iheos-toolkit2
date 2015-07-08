@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.valregmetadata.object.DocumentEntry
 import gov.nist.toolkit.valsupport.client.ValidationContext
-
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory
 import org.apache.axiom.om.OMElement
 import org.junit.Test
 import static org.junit.Assert.*
@@ -34,7 +34,7 @@ class DocumentEntryTest {
 		OMElement o = m.getExtrinsicObject(0)
 		assertFalse (o == null)
 		DocumentEntry de = new DocumentEntry(m, o)
-		ValidationContext vc = new ValidationContext()
+		ValidationContext vc = DefaultValidationContextFactory.validationContext()
 		vc.isXDRMinimal = true
 		ErrorRecorder er = new TextErrorRecorder();
 		er.sectionHeading("testValid()")

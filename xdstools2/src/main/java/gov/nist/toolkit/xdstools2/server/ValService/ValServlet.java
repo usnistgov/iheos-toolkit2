@@ -7,6 +7,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.message.HtmlValFormatter;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -103,7 +104,7 @@ public class ValServlet extends HttpServlet {
 		boolean hasHttp = http.equals("withhttp");
 		boolean hasSoap = soap.equals("withsoap");
 		
-		ValidationContext vc = new ValidationContext();
+		ValidationContext vc = DefaultValidationContextFactory.validationContext();
 		vc.hasHttp = hasHttp;
 		vc.hasSoap = hasSoap;
 		vc.isAsync = false;
@@ -139,7 +140,7 @@ public class ValServlet extends HttpServlet {
 	}
 	
 	void doXDM(HttpServletRequest request, HttpServletResponse response, String[] uriParts) throws ServletException, IOException {
-		ValidationContext vc = new ValidationContext();
+		ValidationContext vc = DefaultValidationContextFactory.validationContext();
 		vc.isXDM = true;
 		
 		byte[] msgBytes = Io.getBytesFromInputStream(request.getInputStream());

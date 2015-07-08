@@ -5,10 +5,10 @@ import gov.nist.toolkit.errorrecording.ErrorRecorderUtil
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
-import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.utilities.xml.Util
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory
 import gov.nist.toolkit.valsupport.engine.ValidationStep
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface
 import org.apache.axiom.om.OMElement
@@ -29,7 +29,7 @@ class MessageValidatorFactoryTest extends Specification {
         MessageValidatorEngine mvc = new MessageValidatorEngine()
         RegistryValidationInterface rvi = null
 
-        ValidationContext vc = new ValidationContext()
+        ValidationContext vc = DefaultValidationContextFactory.validationContext()
         vc.isPnR = true
         vc.isRequest = true
         vc.hasHttp = false

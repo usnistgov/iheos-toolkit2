@@ -6,6 +6,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderForErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.wsseTool.api.WsseHeaderValidator;
 import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
@@ -18,7 +19,6 @@ import java.util.List;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -64,7 +64,7 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 		Element wsseHeader = WsseHeaderGeneratorAdapter.buildHeader(context);
 
 		WsseHeaderValidatorAdapter validator = new WsseHeaderValidatorAdapter(
-				new ValidationContext(), wsseHeader);
+				DefaultValidationContextFactory.validationContext(), wsseHeader);
 		ErrorRecorder er = new TextErrorRecorder();
 		MessageValidatorEngine mvc = new MessageValidatorEngine();
 		validator.run(er, mvc);

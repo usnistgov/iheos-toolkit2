@@ -20,6 +20,7 @@ import org.xml.sax.SAXParseException;
 public class MyErrorHandler implements ErrorHandler {
     StringBuffer errors;
     String schemaFile = "";
+    boolean firstError = true;
     
     /** Creates a new instance of ErrorHandler */
     public MyErrorHandler() {
@@ -34,16 +35,21 @@ public class MyErrorHandler implements ErrorHandler {
         return errors.toString();
     }
     
-    public void error(SAXParseException exception) {
-        errors.append("\nError: " + exception.getMessage() + "\n" +
-		      "Schema location is " + schemaFile);
-    }
-    
+    public void error(SAXParseException exception) { addError(exception.getMessage()); }
+
     public void fatalError(SAXParseException exception) {
-        errors.append("\nFatal Error: " + exception.getMessage());
+        addError("Fatal Error: " + exception.getMessage());
     }
     
     public void warning(SAXParseException exception) {
-        errors.append("\nWarning: " + exception.getMessage());
+        addError("Warning: " + exception.getMessage());
+    }
+
+    void addError(String msg) {
+        if (firstError) {
+            errors.append("Schema location is " + schemaFile + "\n");
+            firstError = false;
+        }
+        errors.append(msg + "\n");
     }
 }

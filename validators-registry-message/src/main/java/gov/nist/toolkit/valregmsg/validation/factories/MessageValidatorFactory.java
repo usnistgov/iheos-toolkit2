@@ -16,6 +16,7 @@ import gov.nist.toolkit.valregmsg.message.*;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
@@ -316,7 +317,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	static public MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, OMElement xml, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
 		String rootElementName = xml.getLocalName();
 		if (vc == null)
-			vc = new ValidationContext();
+			vc = DefaultValidationContextFactory.validationContext();
 
 		if (mvc == null) 
 			mvc = new MessageValidatorEngine();
@@ -726,7 +727,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	static ErrorRecorder reportError(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String error) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		er.err(XdsErrorCode.Code.XDSRegistryError, error, "MessageValidatorFactory", "");
-		mvc.addMessageValidator(title, new ServiceRequestContainer(new ValidationContext()), er);
+		mvc.addMessageValidator(title, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 		return er;
 	}
 
@@ -739,7 +740,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 */
 	static ErrorRecorder report(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
-		mvc.addMessageValidator(title, new ServiceRequestContainer(new ValidationContext()), er);
+		mvc.addMessageValidator(title, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 		return er;
 	}
 
@@ -753,7 +754,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	static void reportParseDecision(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String text) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		//		er.info1(text);
-		mvc.addMessageValidator(title + " - " + text, new ServiceRequestContainer(new ValidationContext()), er);
+		mvc.addMessageValidator(title + " - " + text, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 	}
 
 	public static void main(String[] args) {

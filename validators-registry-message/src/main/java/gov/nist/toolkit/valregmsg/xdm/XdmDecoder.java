@@ -10,6 +10,7 @@ import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
@@ -44,7 +45,7 @@ public class XdmDecoder extends MessageValidator {
 	public static void main(String[] args) {
 		try {
 			InputStream is = Io.getInputStreamFromFile(new File(args[0]));
-			ValidationContext vc = new ValidationContext();
+			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			vc.isXDM = true;
 			ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
 			ErrorRecorder er = erBuilder.buildNewErrorRecorder();
@@ -128,7 +129,7 @@ public class XdmDecoder extends MessageValidator {
 					ByteArray ba = contents.get(metadataFilename);
 					OMElement ele = Util.parse_xml(ba.getInputStream());
 
-					ValidationContext metadataVc = new ValidationContext();
+					ValidationContext metadataVc = DefaultValidationContextFactory.validationContext();
 					metadataVc.hasHttp = false;
 					metadataVc.hasSaml = false;
 					metadataVc.hasSoap = false;

@@ -11,7 +11,9 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 public class EnvSetting {
+	// SessionID ==> Environment Setting
 	static Map<String, EnvSetting> settings = new HashMap<String, EnvSetting>();
+    static public final String DEFAULTSESSIONID = "DEFAULT";
 	String envName;
 	File envDir;
 	
@@ -19,10 +21,21 @@ public class EnvSetting {
 
 	static public EnvSetting getEnvSetting(String sessionId) throws EnvironmentNotSelectedException {
 		EnvSetting s = settings.get(sessionId);
-		if (s == null)
-			throw new EnvironmentNotSelectedException("");
+		if (s == null) {
+            if (DEFAULTSESSIONID.equals(sessionId)) {
+                installDefaultEnvironment();
+                return settings.get(sessionId);
+            } else
+                throw new EnvironmentNotSelectedException("");
+        }
 		return s;
 	}
+
+    static void installDefaultEnvironment() {
+        File envFile = Installation.installation().getDefaultEnvironmentFile();
+        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured");
+        new EnvSetting(DEFAULTSESSIONID, DEFAULTSESSIONID, envFile);
+    }
 
 	public EnvSetting(String sessionId, String name, File dir) {
 		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
@@ -38,6 +51,7 @@ public class EnvSetting {
 	private EnvSetting(String name, File dir) {
 		this.envName = name;
 		this.envDir = dir;
+        validateEnvironment();
 	}
 	
 	public String getEnvName() {
@@ -58,5 +72,9 @@ public class EnvSetting {
 		return null;
 	}
 
+    void validateEnvironment() {
+        if (getCodesFile() == null)
+            throw new EnvironmentNotSelectedException("Selected environment " + envName + " not valid - does not contain codex.xml file");
+    }
 
 }

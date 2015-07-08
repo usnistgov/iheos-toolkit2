@@ -18,6 +18,7 @@ import gov.nist.toolkit.testenginelogging.SectionLogMap;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.*;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
@@ -418,7 +419,7 @@ public abstract class BasicTransaction  {
 	}
 	
 	ValidationContext getValidationContextFromTransactionName() {
-		ValidationContext vc = new ValidationContext();
+		ValidationContext vc = DefaultValidationContextFactory.validationContext();
 		
 		String tname = getBasicTransactionName();
 		

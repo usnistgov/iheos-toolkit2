@@ -31,6 +31,7 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import org.apache.axiom.om.OMElement;
@@ -414,7 +415,7 @@ public class SimServlet  extends HttpServlet {
 
 
 			
-			ValidationContext vc = new ValidationContext();
+			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			
 			SimulatorConfigElement asce = asc.get(ActorFactory.codesEnvironment);
 			if (asce != null)

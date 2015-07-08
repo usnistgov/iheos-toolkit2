@@ -1,7 +1,6 @@
 package gov.nist.toolkit.valsupport.engine;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 
@@ -142,7 +141,7 @@ public class MessageValidatorEngine {
 	 * @param er its private ErrorRecorder
 	 */
 	public void addErrorRecorder(String stepName, ErrorRecorder er) {
-		ValidationStep step = addMessageValidator(stepName, new ServiceRequestContainer(new ValidationContext()), er);
+		ValidationStep step = addMessageValidator(stepName, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 		step.ran = true;
 		logger.info("ENGINE: preRUN: " + step.toString());
 	}

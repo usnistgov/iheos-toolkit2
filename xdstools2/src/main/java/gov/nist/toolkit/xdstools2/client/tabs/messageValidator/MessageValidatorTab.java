@@ -1,49 +1,24 @@
 package gov.nist.toolkit.xdstools2.client.tabs.messageValidator;
 
 
-import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
-import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.valsupport.client.MessageValidatorDisplay;
-import gov.nist.toolkit.valsupport.client.ValFormatter;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.RenameSimFileDialogBox;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
-import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
-import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
+import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.valsupport.client.*;
+import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
+import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
+
+import java.util.*;
 
 public class MessageValidatorTab extends TabbedWindow {
 	protected TabContainer myContainer;
@@ -485,7 +460,7 @@ public class MessageValidatorTab extends TabbedWindow {
 
 			public void onClick(ClickEvent event) {
 				new GwtValFormatter().clearResults();
-				final ValidationContext vc = new ValidationContext();
+				final ValidationContext vc = EmptyValidationContextFactory.validationContext();
 				loadValidationContext(vc);
 				vc.hasSoap = true;
 				int sel = simFilesListBox.getSelectedIndex();
@@ -767,7 +742,7 @@ public class MessageValidatorTab extends TabbedWindow {
 	}
 
 	void requestValidation() {
-		ValidationContext vc = new ValidationContext();
+		ValidationContext vc = EmptyValidationContextFactory.validationContext();
 		loadValidationContext(vc);
 
 		System.out.println(vc);

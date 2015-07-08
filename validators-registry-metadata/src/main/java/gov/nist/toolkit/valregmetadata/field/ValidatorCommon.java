@@ -4,7 +4,6 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
@@ -14,12 +13,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import org.apache.axiom.om.OMElement;
 
 public class ValidatorCommon implements ErrorRecorder {
 	Metadata m;
 	RegistryErrorListGenerator rel;
-	ValidationContext valCtx = new ValidationContext();
+	ValidationContext valCtx = DefaultValidationContextFactory.validationContext();
 	List<ErrorRecorder> children = new ArrayList<>();
 
 	public static String NeedReference = "Need Reference";

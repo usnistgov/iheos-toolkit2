@@ -3,6 +3,7 @@ package gov.nist.toolkit.valsupport.client;
 
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.commondatatypes.client.SchematronMetadataTypes;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 
 import java.io.Serializable;
@@ -107,6 +108,14 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	// and XDM.  Provide & Register (XDS or XDR) could be considered a container as well. So
 	// far there is no requirement to deal with content validation in those areas.
 	List<ValidationContext> innerContexts = new ArrayList<ValidationContext>();
+
+    // Never never call this directly
+    // Should only be used by GWT compiler
+    public ValidationContext() {}
+
+    public ValidationContext(String codesFilename) {
+        this.codesFilename = codesFilename;
+    }
 
 	public void addInnerContext(ValidationContext ivc) {
 		innerContexts.add(ivc);
@@ -228,6 +237,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		leafClassWithDocumentOk = v.leafClassWithDocumentOk;
 		isNcpdp = v.isNcpdp;
 		ccdaType = v.ccdaType;
+		codesFilename = v.codesFilename;
 	}
 
 	public boolean hasMetadata() {
@@ -388,10 +398,10 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		//			if (minMeta) buf.append(";MinMetadata");
 		if (isXDRLimited) buf.append(";XDRLimited");
 		if (isXDRMinimal) buf.append(";XDRMinimal");
-		if (updateable)
-			buf.append(";Updateable");
-		else
-			buf.append(";NotUpdateable");
+//		if (updateable)
+//			buf.append(";Updateable");
+//		else
+//			buf.append(";NotUpdateable");
 		if (!metadataPatterns.isEmpty()) 
 			buf.append(";MetadataPatterns:").append(metadataPatterns);
 		if (ccdaType != null)
@@ -402,6 +412,8 @@ public class ValidationContext  implements Serializable, IsSerializable {
 				buf.append("[").append(v.toString()).append("]");
 			}
 		}
+//		if (codesFilename != null)
+//			buf.append(";HasCodes");
 
 		return buf.toString();
 	}

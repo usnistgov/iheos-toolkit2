@@ -9,7 +9,7 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 
@@ -34,7 +34,7 @@ public class RecipientActorFactory  extends ActorFactory {
 		else 
 			sc = new SimulatorConfig();
 		if (sc.getValidationContext() == null)
-			sc.setValidationContext(new ValidationContext());
+			sc.setValidationContext(DefaultValidationContextFactory.validationContext());
 		
 
 		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();

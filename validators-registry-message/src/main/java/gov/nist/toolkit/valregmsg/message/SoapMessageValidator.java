@@ -9,13 +9,12 @@ import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.namespace.QName;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
@@ -70,7 +69,7 @@ public class SoapMessageValidator extends MessageValidator {
 	
 	// needed for junit testing
 	public SoapMessageValidator(OMElement messagebody) {
-		super(new ValidationContext());
+		super(DefaultValidationContextFactory.validationContext());
 		this.messagebody = messagebody;
 	}
 
@@ -135,7 +134,7 @@ public class SoapMessageValidator extends MessageValidator {
 
 
 	void verifywsActionCorrectForValidationContext(String wsaction) {
-		ValidationContext v = new ValidationContext();
+		ValidationContext v = DefaultValidationContextFactory.validationContext();
 		
 		v.clone(vc);
 		

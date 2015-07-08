@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -74,7 +75,7 @@ public class WrapperValidator extends MessageValidator {
 		List<String> x;
 		ValidationContext v;
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("ProvideAndRegisterDocumentSetRequest");
 		x.add("SubmitObjectsRequest");
@@ -83,7 +84,7 @@ public class WrapperValidator extends MessageValidator {
 		v.isRequest = true;
 		wrapperList.put(v.getTransactionName(), x);
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("SubmitObjectsRequest");
 		x.add("RegistryObjectList");
@@ -95,7 +96,7 @@ public class WrapperValidator extends MessageValidator {
 		wrapperList.put(v.getTransactionName(), x);
 		v.isXDM = false;
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("AdhocQueryRequest");
 		v.isSQ = true;
@@ -104,7 +105,7 @@ public class WrapperValidator extends MessageValidator {
 		v.isXC = true;
 		wrapperList.put(v.getTransactionName(), x);
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("AdhocQueryResponse");
 		x.add("RegistryObjectList");
@@ -114,7 +115,7 @@ public class WrapperValidator extends MessageValidator {
 		v.isXC = true;
 		wrapperList.put(v.getTransactionName(), x);
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("RetrieveDocumentSetRequest");
 		x.add("DocumentRequest");

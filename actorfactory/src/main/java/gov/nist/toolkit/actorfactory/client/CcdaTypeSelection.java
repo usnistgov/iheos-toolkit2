@@ -1,15 +1,15 @@
 package gov.nist.toolkit.actorfactory.client;
 
+import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.tk.client.PropertyNotFoundException;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.valsupport.client.EmptyValidationContextFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class CcdaTypeSelection {
 	TkProps tkProps;
@@ -18,7 +18,7 @@ public class CcdaTypeSelection {
 	ValidationContext defaultValidationContext = null;
 
 	/**
-	 * Selectable CCDA types are taken from TkProps.  defaultValidationContext, if
+	 * Selectable CCDA types are taken from TkProps.  validationContext, if
 	 * non-null, holds the default CCDA type. This default value is
 	 * pre-selected when radio button group is created.
 	 * @param props - if this is null then type names must be passed into 
@@ -121,7 +121,7 @@ public class CcdaTypeSelection {
 	}
 
 	public void addDocTypeToValidation(ValidationContext vc) {
-		ValidationContext vc2 = new ValidationContext();
+		ValidationContext vc2 = EmptyValidationContextFactory.validationContext();
 		vc2.ccdaType = getCcdaContentType();
 		vc.addInnerContext(vc2);
 	}

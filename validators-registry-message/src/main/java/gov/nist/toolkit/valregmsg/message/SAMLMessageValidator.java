@@ -23,6 +23,7 @@ import gov.nist.toolkit.saml.util.TimeStamp;
 import gov.nist.toolkit.saml.util.TimeStampValidate;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
@@ -83,7 +84,7 @@ public class SAMLMessageValidator extends MessageValidator {
 	
 	// needed for junit testing
 	public SAMLMessageValidator(OMElement messagebody) {
-		super(new ValidationContext());
+		super(DefaultValidationContextFactory.validationContext());
 		this.messagebody = messagebody;
 	}
 	void err(String msg, String ref) {
