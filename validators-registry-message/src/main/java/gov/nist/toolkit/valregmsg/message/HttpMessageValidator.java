@@ -58,7 +58,7 @@ public class HttpMessageValidator extends MessageValidator {
 			hparser.setErrorRecorder(er);
 			if (hparser.isMultipart()) {
 				if (vc.isValid() && vc.requiresSimpleSoap()) 
-					er.err(vc.getBasicErrorCode(), "Requested message type requires SIMPLE SOAP format message - MTOM format found", this, "ITI TF Volumes 2a and 2b");
+					er.err(vc.getBasicErrorCode(), "Requested message type " + vc + " requires SIMPLE SOAP format message - MTOM format found", this, "ITI TF Volumes 2a and 2b");
 				else
 					er.detail("Message is Multipart format");
 				er.detail("Scheduling MTOM parser");

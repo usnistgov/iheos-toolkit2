@@ -148,7 +148,7 @@ public class SoapMessageValidator extends MessageValidator {
 
 	// is this fails to make a setting, it can be detected by the method
 	// vc.isValid()
-	void setValidationContextFromWSAction(ValidationContext vc, String wsaction) {
+	static public void setValidationContextFromWSAction(ValidationContext vc, String wsaction) {
 		if (wsaction == null)
 			return;
 		if (wsaction.equals("urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b")) {

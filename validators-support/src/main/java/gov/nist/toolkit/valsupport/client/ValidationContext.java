@@ -368,23 +368,27 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
+        buf.append("[");
+
 		if (isRequest) buf.append("Request");
 		else if (isResponse) buf.append("Response");
 		else buf.append("???");
+
+		if (isR) buf.append(";Register");
+		if (isMU) buf.append(";MU");
+		if (isPnR) buf.append(";PnR");
+		if (isRet) buf.append(";Retrieve");
+		if (isXDR) buf.append(";XDR");
+		if (isXDM) buf.append(";XDM");
+		if (isSQ) buf.append(";SQ");
+
 
 		if (hasHttp) buf.append(";HTTP");
 		if (hasSoap) buf.append(";SOAP");
 		if (hasSaml) buf.append(";SAML");
 		if (xds_b) buf.append(";xds.b");
-		if (isR) buf.append(";R");
-		if (isMU) buf.append(";MU");
-		if (isPnR) buf.append(";PnR");
-		if (isRet) buf.append(";Ret");
-		if (isXDR) buf.append(";XDR");
-		if (isXDM) buf.append(";XDM");
 		if (isDIRECT) buf.append(";DIRECT");
 		if (isCCDA) buf.append(";CCDA");
-		if (isSQ) buf.append(";SQ");
 		if (isXC) buf.append(";XC");
 		if (isEpsos) buf.append(";Epsos");
 		//NHIN xcpd and C32
@@ -415,6 +419,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 //		if (codesFilename != null)
 //			buf.append(";HasCodes");
 
+        buf.append("]");
 		return buf.toString();
 	}
 
