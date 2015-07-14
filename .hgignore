@@ -10,6 +10,7 @@ lib/**
 xdstools2/xdstools2/**
 **/*.iml
 *.iml
+*/target/**
 
 #check. created by eclipse
 *bin

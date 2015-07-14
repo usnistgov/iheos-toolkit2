@@ -4,11 +4,12 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>2.200.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
     <artifactId>http</artifactId>
+    <version>${project.version}</version>
 
     <dependencies>
         <dependency>
@@ -24,8 +25,36 @@
             <artifactId>error-recording</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>soap</groupId>
+            <artifactId>soap</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
         </dependency>
     </dependencies>
 

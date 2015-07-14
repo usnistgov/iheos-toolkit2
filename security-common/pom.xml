@@ -4,17 +4,17 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>2.200.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
     <artifactId>security-common</artifactId>
+    <version>${project.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>xds-exceptions</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

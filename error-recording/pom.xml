@@ -4,16 +4,35 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>2.200.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
     <artifactId>error-recording</artifactId>
+    <version>${project.version}</version>
 
     <dependencies>
         <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>xds-exceptions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>0.7-groovy-2.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

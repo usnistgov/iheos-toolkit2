@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12022/apnd</Test>
+  <TestStep id="submit">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="doc01" symbol="$doc1$" step="submit" section="AssignedUuids"/>
+      <UseId testdir="../submit" id="doc01" symbol="$pid$" step="submit" section="AssignedPatientId"/>
+      <MetadataFile>two_doc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

@@ -4,21 +4,26 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>3.0.0-SNAPSHOT</version>
+        <version>2.200.0-SNAPSHOT</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
     <artifactId>validators-support</artifactId>
+    <version>${project.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>xds-exceptions</artifactId>
+            <artifactId>envSettings</artifactId>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>registry-metadata</artifactId>
+            <artifactId>xds-exceptions</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nist.toolkit</groupId>-->
+            <!--<artifactId>registry-metadata</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>common-datatypes</artifactId>
@@ -26,6 +31,10 @@
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>error-recording</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
