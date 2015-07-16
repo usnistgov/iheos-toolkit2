@@ -6,13 +6,12 @@
 
     <artifactId>tk-deps</artifactId>
     <groupId>gov.nist.toolkit</groupId>
-    <version>2.200.0-SNAPSHOT</version>
+    <version>2.201.0</version>
     <packaging>pom</packaging>
 
     <name>tk-deps</name>
 
     <properties>
-        <project.version>2.201.0</project.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.7</jdk.version>
@@ -31,30 +30,6 @@
 
 
     <repositories>
-        <!--
-        <repository>
-            <id>internal-nist-repo-releases</id>
-            <url>http://vm-070.nist.gov:8081/nexus/content/repositories/releases/</url>
-        </repository>
-        <repository>
-            <id>internal-nist-repo-snapshots</id>
-            <url>http://vm-070.nist.gov:8081/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>internal-nist-repo-maven-central</id>
-            <url>http://vm-070.nist.gov:8081/nexus/content/repositories/central/</url>
-        </repository>
-        <repository>
-            <id>jboss-maven2-release-repository</id>
-            <url>http://vm-070.nist.gov:8081/nexus/content/repositories/jboss-thirdparty-releases/</url>
-        </repository>
-         Avoid commenting out our Nexus thirdparty repository. It contains jars that sometimes
-        become unavailable on Maven Central. As an alternative, use the JBoss public repository.
-        <repository>
-            <id>internal-nist-repo-third-party</id>
-            <url>http://vm-070.nist.gov:8081/nexus/content/repositories/thirdparty/</url>
-        </repository>
-        -->
         <repository>
             <id>repository.jboss.org-public</id>
             <name>JBoss.org Maven repository</name>
@@ -73,17 +48,6 @@
                 <name>gazelle nexus</name>
                 <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
             </repository>
-
-        <!--<repository>-->
-            <!--<id>codehaus1</id>-->
-            <!--<url>http://repository.codehaus.org/org/codehaus</url>-->
-            <!--<releases>-->
-                <!--<enabled>false</enabled>-->
-            <!--</releases>-->
-            <!--<snapshots>-->
-                <!--<enabled>false</enabled>-->
-            <!--</snapshots>-->
-        <!--</repository>-->
     </repositories>
 
     <scm>
@@ -97,92 +61,92 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>simulators</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>envSettings</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>sim-common</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>session</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actorfactory</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>test-engine</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>saml</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>message-validator-factory2</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>testkit-utilities</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>soap</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-metadata</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-registry-message</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xdstest2-logging</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>installation</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-msg-formats</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>site-management</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>http</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>xml-security</groupId>
@@ -192,67 +156,67 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>results</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>docref</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>dsig</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>security-common</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>tk</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>validators-support</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xds-exceptions</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>error-recording</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>utilities</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-metadata</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>registry-support</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>common-datatypes</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actor-transaction</artifactId>
-                <version>${project.version}</version>
+                <version>2.201.0</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
@@ -517,6 +481,19 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>deployment</id>
+            <name>gazelle 3rd party</name>
+            <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
+        </repository>
+        <snapshotRepository>
+            <id>internal</id>
+            <name>Internal Releases</name>
+            <url>http://your.server.com:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
