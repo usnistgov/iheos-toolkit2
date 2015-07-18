@@ -14,6 +14,7 @@ public class EnvSetting {
 	// SessionID ==> Environment Setting
 	static Map<String, EnvSetting> settings = new HashMap<String, EnvSetting>();
     static public final String DEFAULTSESSIONID = "DEFAULT";
+	static public final String DEFAULTENVIRONMENTNAME = "default";
 	String envName;
 	File envDir;
 	
@@ -32,9 +33,9 @@ public class EnvSetting {
 	}
 
     static void installDefaultEnvironment() {
-        File envFile = Installation.installation().getDefaultEnvironmentFile();
+        File envFile = Installation.installation().environmentFile(DEFAULTENVIRONMENTNAME);
         if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured");
-        new EnvSetting(DEFAULTSESSIONID, DEFAULTSESSIONID, envFile);
+        new EnvSetting(DEFAULTSESSIONID, DEFAULTENVIRONMENTNAME, envFile);
     }
 
 	public EnvSetting(String sessionId, String name, File dir) {
