@@ -45,19 +45,19 @@ public class IdIndex {
 			return null;
 		return att.getAttributeValue();
 	}
-	
+
 	public OMAttribute getExternalIdentifierAttribute(String id, String identifier_scheme) {
 		HashMap<String,List<OMElement>> part_map = object_parts_by_id().get(id);
 		if (part_map == null)
 			return null;
-		
+
 		try {  // huh?
 			@SuppressWarnings("unused")
 			OMElement obj = m.getObjectById(id);
 		} catch (Exception e) {}
-		
+
 		List<OMElement> external_identifiers = part_map.get("ExternalIdentifier");
-		
+
 		for (int i=0; i<external_identifiers.size(); i++ ) {
 			OMElement ei = (OMElement) external_identifiers.get(i);
 			OMAttribute id_scheme_att = ei.getAttribute(MetadataSupport.identificationscheme_qname);
@@ -118,7 +118,7 @@ public class IdIndex {
 		OMElement name_ele = getName(id);
 		if (name_ele == null)
 			return null;
-		OMElement loc_st = MetadataSupport.firstChildWithLocalName(name_ele, "LocalizedString"); 
+		OMElement loc_st = MetadataSupport.firstChildWithLocalName(name_ele, "LocalizedString");
 		if (loc_st == null)
 			return null;
 		return loc_st.getAttributeValue(MetadataSupport.value_qname);
@@ -128,7 +128,7 @@ public class IdIndex {
 		OMElement desc_ele = getDescription(id);
 		if (desc_ele == null)
 			return null;
-		OMElement loc_st = MetadataSupport.firstChildWithLocalName(desc_ele, "LocalizedString"); 
+		OMElement loc_st = MetadataSupport.firstChildWithLocalName(desc_ele, "LocalizedString");
 		if (loc_st == null)
 			return null;
 		return loc_st.getAttributeValue(MetadataSupport.value_qname);
@@ -164,9 +164,9 @@ public class IdIndex {
 			String name = slot.getAttributeValue(MetadataSupport.name_qname);
 			if (name == null)
 				continue;
-			if ( !name.equals(slot_name)) 
+			if ( !name.equals(slot_name))
 				continue;
-			OMElement value_list = MetadataSupport.firstChildWithLocalName(slot, "ValueList"); 
+			OMElement value_list = MetadataSupport.firstChildWithLocalName(slot, "ValueList");
 			if (value_list == null)
 				continue;
 			OMElement value = MetadataSupport.firstChildWithLocalName(value_list, "Value");
@@ -224,13 +224,13 @@ public class IdIndex {
 		}
 		return i;
 	}
-	
+
 	private HashMap<String, OMElement> object_by_id() {
-		if (_object_by_id == null) 
+		if (_object_by_id == null)
 			_object_by_id = new HashMap<String, OMElement>();   // id => OMElement
 		return _object_by_id;
 	}
-	
+
 	private HashMap<String, HashMap<String,List<OMElement>>> object_parts_by_id() {
 		if (_object_parts_by_id == null)
 			_object_parts_by_id = new HashMap<String, HashMap<String,List<OMElement>>>();   // id => HashMap(type => List(OMElement))   type is Slot, Description, ...
@@ -249,60 +249,60 @@ public class IdIndex {
 		if (log_message != null)
 			try {log_message.addOtherParam("ii object to parse", obj.getLocalName() + " " + "id=" + id + " " + count_iterator(obj.getChildElements()) + " minor elements"); } catch (Exception e) {}
 
-			// ebxmlrr gens ObjectRefs even when real object is returned
-			OMElement existing = (OMElement) object_by_id().get(id);
-			if (existing != null) {
-				String existing_type = existing.getLocalName();
-				if ( existing_type.equals("ObjectRef") )
-					object_by_id().put(id, obj);
-			} else
+		// ebxmlrr gens ObjectRefs even when real object is returned
+		OMElement existing = (OMElement) object_by_id().get(id);
+		if (existing != null) {
+			String existing_type = existing.getLocalName();
+			if ( existing_type.equals("ObjectRef") )
 				object_by_id().put(id, obj);
+		} else
+			object_by_id().put(id, obj);
 
-			HashMap<String, List<OMElement>> parts = new HashMap<String, List<OMElement>>();
-			List<OMElement> name = new ArrayList<OMElement>();
-			List<OMElement> description = new ArrayList<OMElement>();
-			List<OMElement> slots = new ArrayList<OMElement>();
-			List<OMElement> external_identifiers = new ArrayList<OMElement>();
-			List<OMElement> classifications = new ArrayList<OMElement>();
+		HashMap<String, List<OMElement>> parts = new HashMap<String, List<OMElement>>();
+		List<OMElement> name = new ArrayList<OMElement>();
+		List<OMElement> description = new ArrayList<OMElement>();
+		List<OMElement> slots = new ArrayList<OMElement>();
+		List<OMElement> external_identifiers = new ArrayList<OMElement>();
+		List<OMElement> classifications = new ArrayList<OMElement>();
 
 
 
-			for (@SuppressWarnings("unchecked")
-			Iterator<OMNode> it=obj.getChildren(); it.hasNext(); ) {
-				OMNode part_n =  it.next();
-				if ( !(part_n instanceof OMElement))
-					continue;
-				OMElement part = (OMElement) part_n;
-				String part_type = part.getLocalName();
+		for (@SuppressWarnings("unchecked")
+			 Iterator<OMNode> it=obj.getChildren(); it.hasNext(); ) {
+			OMNode part_n =  it.next();
+			if ( !(part_n instanceof OMElement))
+				continue;
+			OMElement part = (OMElement) part_n;
+			String part_type = part.getLocalName();
+			if (log_message != null)
+				try {log_message.addOtherParam("part", part.toString()); } catch (Exception e) {}
+
+			if (part_type.equals("Name"))
+				name.add(part);
+			else if (part_type.equals("Description"))
+				description.add(part);
+			else if (part_type.equals("Slot"))
+				slots.add(part);
+			else if (part_type.equals("ExternalIdentifier")) {
+				external_identifiers.add(part);
 				if (log_message != null)
-					try {log_message.addOtherParam("part", part.toString()); } catch (Exception e) {}
-
-					if (part_type.equals("Name")) 
-						name.add(part);
-					else if (part_type.equals("Description"))
-						description.add(part);
-					else if (part_type.equals("Slot"))
-						slots.add(part);
-					else if (part_type.equals("ExternalIdentifier")) {
-						external_identifiers.add(part);
-						if (log_message != null)
-							try {log_message.addOtherParam("adding", external_identifiers.size() + " eis so far"); } catch (Exception e) {}
-					}
-					else if (part_type.equals("Classification"))
-						classifications.add(part);
-					else if (part_type.equals("ObjectRef"))
-						;
-					else
-						;
+					try {log_message.addOtherParam("adding", external_identifiers.size() + " eis so far"); } catch (Exception e) {}
 			}
-			parts.put("Name", name);
-			parts.put("Description", description);
-			parts.put("Slot", slots);
-			parts.put("ExternalIdentifier", external_identifiers);
-			parts.put("Classification", classifications);
-			parts.put("Element", singleton(obj));
+			else if (part_type.equals("Classification"))
+				classifications.add(part);
+			else if (part_type.equals("ObjectRef"))
+				;
+			else
+				;
+		}
+		parts.put("Name", name);
+		parts.put("Description", description);
+		parts.put("Slot", slots);
+		parts.put("ExternalIdentifier", external_identifiers);
+		parts.put("Classification", classifications);
+		parts.put("Element", singleton(obj));
 
-			object_parts_by_id().put(id, parts);
+		object_parts_by_id().put(id, parts);
 	}
 
 	public String toString() {
@@ -312,7 +312,7 @@ public class IdIndex {
 
 		for (String id : object_parts_by_id().keySet()) {
 			OMElement obj = null;
-			try { 
+			try {
 				obj = m.getObjectById(id);
 			} catch(Exception e) {break;}
 			buf.append(id + "(" + obj.getLocalName() + ")\n");
@@ -333,7 +333,7 @@ public class IdIndex {
 
 		return buf.toString();
 	}
-	
+
 	List<OMElement> singleton(OMElement o) {
 		List<OMElement> al = new ArrayList<OMElement>();
 		al.add(o);

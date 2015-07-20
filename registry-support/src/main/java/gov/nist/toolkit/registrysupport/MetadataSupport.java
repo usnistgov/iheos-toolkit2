@@ -41,12 +41,12 @@ public class MetadataSupport {
 
 	static public String xdsB_uri = "urn:ihe:iti:xds-b:2007";
 	static public OMNamespace xdsB =   om_factory.createOMNamespace(xdsB_uri, "xdsb");
-	
+
 	static public OMNamespace xop_include = om_factory.createOMNamespace("http://www.w3.org/2004/08/xop/include", "xopinclude");
 
 	static public String xdsB_eb_assoc_namespace_uri = "urn:oasis:names:tc:ebxml-regrep:AssociationType";
 	static public String xdsB_ihe_assoc_namespace_uri = "urn:ihe:iti:2007:AssociationType";
-	
+
 	static public String ws_addressing_namespace_uri = "http://www.w3.org/2005/08/addressing";
 	static public OMNamespace ws_addressing_namespace = om_factory.createOMNamespace(ws_addressing_namespace_uri, "wsa");
 	static public String oasis_wsnb2_namespace_uri = "http://docs.oasis-open.org/wsn/b-2";
@@ -55,7 +55,7 @@ public class MetadataSupport {
 	static public QName slot_qnamens = new QName(ebRIMns3_uri, "Slot", "rim");
 	static public QName valuelist_qnamens = new QName(ebRIMns3_uri, "ValueList", "rim");
 	static public QName value_qnamens = new QName(ebRIMns3_uri, "Value", "rim");
-	
+
 	static public QName externalidentifier_qnamens = new QName(ebRIMns3_uri, "ExternalIdentifier", "rim");
 	static public QName name_qnamens = new QName(ebRIMns3_uri, "Name", "rim");
 	static public QName description_qnamens = new QName(ebRIMns3_uri, "Description", "rim");
@@ -77,11 +77,11 @@ public class MetadataSupport {
 	static public QName fault_reason_qnamens = new QName(soap_env_uri, "Reason", fault_pre);
 	static public QName fault_detail_qnamens = new QName(soap_env_uri, "Detail", fault_pre);
 	static public QName fault_text_qnamens = new QName(soap_env_uri, "Text", fault_pre);
-	
+
 	static public QName soap_env_qnamens = new QName(soap_env_uri, "Envelope", "S");
 	static public QName soap_hdr_qnamens = new QName(soap_env_uri, "Header", "S");
 	static public QName soap_body_qnamens = new QName(soap_env_uri, "Body", "S");
-	
+
 	static public boolean isV3Namespace(String ns) { return ns != null && (ns.equals(ebRSns3_uri) || ns.equals(ebRIMns3_uri) || ns.equals(ebQns3_uri) || ns.equals(ebLcm3_uri) || ns.equals(xdsB_uri)); }
 	static public boolean isV3Namespace(OMNamespace ns) { return isV3Namespace(ns.getNamespaceURI()); }
 
@@ -96,9 +96,9 @@ public class MetadataSupport {
 	static public String association_type_namespace = "urn:oasis:names:tc:ebxml-regrep:AssociationType:";
 
 	static public String document_entry_object_type = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
-	
+
 	static public QName href_qname = new QName("href");
-	
+
 	public static QName name_qname = new QName("Name");
 	static public QName value_qname = new QName("value");
 
@@ -147,24 +147,24 @@ public class MetadataSupport {
 	public static QName severity_qname = new QName("severity");
 
 	public static QName home_community_id_qname = new QName(xdsB.getNamespaceURI(), "HomeCommunityId", "xdsb");
-	
+
 	public static QName code_context_qname = new QName("codeContext");
-	
+
 	public static QName error_code_qname = new QName("errorCode");
-	
+
 	public static QName location_qname = new QName("location");
-	
+
 	public static QName registry_errorlist_qname = new QName(ebRSns3_uri, "RegistryErrorList");
-	
+
 	public static QName expected_error_message_qname = new QName("ExpectedErrorMessage");
-	
+
 	public static QName document_response_qnamens = new QName(xdsB.getNamespaceURI(), "DocumentResponse", "xdsb");
 	public static QName retrieve_document_set_response_qnamens = new QName(xdsB.getNamespaceURI(), "RetrieveDocumentSetResponse", "xdsb");
 	public static QName repository_unique_id_qnamens = new QName(xdsB.getNamespaceURI(), "RepositoryUniqueId", "xdsb");
 	public static QName document_unique_id_qnamens = new QName(xdsB.getNamespaceURI(), "DocumentUniqueId", "xdsb");
 	public static QName mimetype_qnamens = new QName(xdsB.getNamespaceURI(), "mimeType", "xdsb");
 	public static QName document_qnamens = new QName(xdsB.getNamespaceURI(), "Document", "xdsb");
-	
+
 	public static QName xop_include_qname = new QName(xop_include.getNamespaceURI(), "Include", "xop");
 
 	public static OMNamespace soapns = om_factory.createOMNamespace("http://www.w3.org/2003/05/soap-envelope", "soapenv");
@@ -173,7 +173,7 @@ public class MetadataSupport {
 
 	public static QName v2ObjectRefQName = new QName(MetadataSupport.ebRIMns2_uri, "ObjectRef");
 	public static QName v3ObjectRefQName = new QName(MetadataSupport.ebRIMns3_uri, "ObjectRef");
-	
+
 	public static String epsos_ns_uri = "urn:ihe:iti:xds-ebrim:extensions:2010";
 	public static OMNamespace epsos_rimext_ns = om_factory.createOMNamespace(epsos_ns_uri, "rimext");
 	public static QName epsos_document_qnamens = new QName(epsos_ns_uri, "Document");
@@ -182,30 +182,35 @@ public class MetadataSupport {
 	public static QName xop_include_qnamens = new QName("http://www.w3.org/2004/08/xop/include", "Include", "xop");
 
 	public static QName xop_content_type_qnamens = new QName("http://www.w3.org/2004/11/xmlmime","contentType");
-	
+
 	// Status values
-	
+
 	public static String status_success = "urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success";
 	public static String status_partial_success = "urn:ihe:iti:2007:ResponseStatusType:PartialSuccess";
 	public static String status_failure = "urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Failure";
-	
+
+	// availability status values
+
+	public static String statusType_approved = "urn:oasis:names:tc:ebxml-regrep:StatusType:Approved";
+	public static String statusType_deprecated = "urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated";
+
 	// Association types
-	
+
 	public static String assoctype_has_member = "urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember";
 	public static String assoctype_rplc = "urn:ihe:iti:2007:AssociationType:RPLC";
 	public static String assoctype_xfrm = "urn:ihe:iti:2007:AssociationType:XFRM";
 	public static String assoctype_apnd = "urn:ihe:iti:2007:AssociationType:APND";
 	public static String assoctype_xfrm_rplc = "urn:ihe:iti:2007:AssociationType:XFRM_RPLC";
 	public static String assoctype_signs = "urn:ihe:iti:2007:AssociationType:signs";
-	
+
 	// Additional MU & on-demand Association types
-	
+
 	public static String assoctype_update_availabilityStatus = "urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus";
 	public static String assoctype_submitAssociation = "urn:ihe:iti:2010:AssociationType:SubmitAssociation";
-	
+
 	public static String assoctype_isSnapshotOf = "urn:ihe:iti:2010:AssociationType:IsSnapshotOf";
-	
-	public static List<String> relationship_associations = 
+
+	public static List<String> relationship_associations =
 		Arrays.asList(
 				assoctype_rplc,
 				assoctype_xfrm,
@@ -214,9 +219,9 @@ public class MetadataSupport {
 				);
 
 	// Association slots
-	
+
 	public static String assoc_slot_submission_set_status = "SubmissionSetStatus";
-	
+
 	// Stored Query query ids
 
 	public static String SQ_FindDocuments = "urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d";
@@ -232,7 +237,7 @@ public class MetadataSupport {
 	public static String SQ_GetFolderAndContents = "urn:uuid:b909a503-523d-4517-8acf-8e5834dfc4c7";
 	public static String SQ_GetFoldersForDocument = "urn:uuid:10cae35a-c7f9-4cf5-b61e-fc3278ffb578";
 	public static String SQ_GetRelatedDocuments = "urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6";
-	
+
 	public static boolean isSQId(String id) {
 		if (id == null) return false;
 		if (id.equals(SQ_FindDocuments)) return true;
@@ -250,7 +255,7 @@ public class MetadataSupport {
 		if (id.equals(SQ_GetRelatedDocuments)) return true;
 		return false;
 	}
-	
+
 	public static String getSQName(String id) {
 		if (id == null) return "";
 		if (id.equals(SQ_FindDocuments)) return "FindDocuments";
@@ -268,10 +273,10 @@ public class MetadataSupport {
 		if (id.equals(SQ_GetRelatedDocuments)) return "GetRelatedDocuments";
 		return "";
 	}
-	
+
 	public static String SQ_action = "urn:ihe:iti:2007:RegistryStoredQuery";
 	public static String MPQ_action = "urn:ihe:iti:2009:MultiPatientStoredQuery";
-	
+
 	// multi-patient stored query ids
 	public static String SQ_FindDocumentsForMultiplePatients = "urn:uuid:3d1bdb10-39a2-11de-89c2-2f44d94eaa9f";
 	public static String SQ_FindFoldersForMultiplePatients = "urn:uuid:50d3f5ac-39a2-11de-a1ca-b366239e58df";
@@ -282,17 +287,19 @@ public class MetadataSupport {
 		if (id.equals(SQ_FindFoldersForMultiplePatients)) return true;
 		return false;
 	}
-	
 
-	
-	// uuids defined 
+
+
+	// uuids defined
 
 	public static String XDSSubmissionSet_patientid_uuid = "urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446";
 	public static String XDSDocumentEntry_patientid_uuid = "urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427";
+	public static String XDSDocumentEntry_patientid_name = "XDSDocumentEntry.patientId";
 	public static String XDSFolder_patientid_uuid = "urn:uuid:f64ffdf0-4b97-4e06-b79f-a52b38ec2f8a";
 
 	public static String XDSSubmissionSet_uniqueid_uuid = "urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8";
 	public static String XDSDocumentEntry_uniqueid_uuid = "urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab";
+	public static String XDSDocumentEntry_uniqueid_name = "XDSDocumentEntry.uniqueId";
 	public static String XDSFolder_uniqueid_uuid = "urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a";
 
 	public static String XDSSubmissionSet_author_uuid = "urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d";
@@ -312,18 +319,18 @@ public class MetadataSupport {
 	public static String XDSDocumentEntry_eventCode_uuid="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4";
 	public static String XDSDocumentEntry_confCode_uuid="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f";
 	public static String XDSDocumentEntry_typeCode_uuid="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983";
-	
+
 	public static String XDSSubmissionSet_contentTypeCode_uuid = "urn:uuid:aa543740-bdda-424e-8c96-df4873be8500";
-	
+
 	public static String XDSFolder_codeList_uuid="urn:uuid:1ba97051-7806-41a8-a48b-8fce7af683c5";
-	
+
 	public static String XDSAssociationDocumentation_uuid = "urn:uuid:abd807a3-4432-4053-87b4-fd82c643d1f3";
-	
+
 	public static String XDSSubmissionSet_limitedMetadata_uuid = "urn:uuid:5003a9db-8d8d-49e6-bf0c-990e34ac7707";
 	public static String XDSDocumentEntry_limitedMetadata_uuid = "urn:uuid:ab9b591b-83ab-4d03-8f5d-f93b1fb92e85";
 	public static String XDSFolder_limitedMetadata_uuid = "urn:uuid:2c144a76-29a9-4b7c-af54-b25409fe7d03";
 
-	// XDS error codes	
+	// XDS error codes
 	public static String XDSMissingDocument = "XDSMissingDocument";
 	public static String XDSMissingDocumentMetadata = "XDSMissingDocumentMetadata";
 	public static String XDSRegistryNotAvailable = "XDSRegistryNotAvailable";
@@ -358,17 +365,17 @@ public class MetadataSupport {
 
 	public static QName response_option_qname = new QName("ResponseOption");
 	public static QName adhoc_query_qname = new QName("AdhocQuery");
-	
+
 	// Update stuff
-	
+
 	public static String documentAvailability_online = "urn:ihe:iti:2010:DocumentAvailability:Online";
 	public static String documentAvailability_offline = "urn:ihe:iti:2010:DocumentAvailability:Offline";
-	
+
 	// DSUB stuff
-	
+
 	public static String wsnt_ns_uri = "http://docs.oasis-open.org/wsn/b-2";
 	public static OMNamespace wsnt_ns =  om_factory.createOMNamespace(wsnt_ns_uri, "wsnt");
-	
+
 	public static String dsub_ns_uri = "urn:ihe:iti:dsub:2009";
 	public static OMNamespace dsub_ns =  om_factory.createOMNamespace(dsub_ns_uri, "dsub");
 	public static String dsub_subscribe_action = "http://docs.oasis-open.org/wsn/bw-2/NotificationProducer/SubscribeRequest";
@@ -435,7 +442,7 @@ public class MetadataSupport {
 		if (decendents.size() == 0) return null;
 		return decendents.get(0);
 	}
-	
+
 	public static List<OMElement> decendentsWithLocalName(OMElement ele, String localName) {
 		return decendentsWithLocalName(ele, localName, -1);
 	}
@@ -458,7 +465,7 @@ public class MetadataSupport {
 			decendentsWithLocalName1(decendents, child, localName, depth - 1);
 		}
 	}
-	
+
 	public static OMElement createElement(String localName, OMNamespace ns) {
 		return om_factory.createOMElement(localName, ns);
 	}
@@ -466,7 +473,7 @@ public class MetadataSupport {
 	public static OMElement addChild(String localName, OMNamespace ns, OMElement parent) {
 		return om_factory.createOMElement(localName, ns, parent);
 	}
-	
+
 	public static String associationTypeWithNamespace(String type) {
 		if (type.startsWith("urn"))
 			return type;
@@ -474,7 +481,7 @@ public class MetadataSupport {
 			return "urn:oasis:names:tc:ebxml-regrep:AssociationType:" + type;
 		return "urn:ihe:iti:2007:AssociationType:" + type;
 	}
-	
+
 	public static String associationTypeWithoutNamespace(String type) {
 		if ( ! type.startsWith("urn"))
 			return type;
