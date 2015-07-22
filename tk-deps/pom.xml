@@ -43,11 +43,11 @@
             <id>apache-central</id>
             <url>http://repo.maven.apache.org/maven2</url>
         </repository>
-            <repository>
-                <id>gazelle-3rd-party</id>
-                <name>gazelle nexus</name>
-                <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
-            </repository>
+        <repository>
+            <id>gazelle-3rd-party</id>
+            <name>gazelle nexus</name>
+            <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
+        </repository>
     </repositories>
 
     <scm>
@@ -58,6 +58,10 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!--
+                Modules defined in this project
+            -->
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>simulators</artifactId>
@@ -149,11 +153,6 @@
                 <version>2.202.0-SNAPSHOT</version>
             </dependency>
             <dependency>
-                <groupId>xml-security</groupId>
-                <artifactId>xmlsec</artifactId>
-                <version>1.3.0</version>
-            </dependency>
-            <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>results</artifactId>
                 <version>2.202.0-SNAPSHOT</version>
@@ -218,54 +217,47 @@
                 <artifactId>actor-transaction</artifactId>
                 <version>2.202.0-SNAPSHOT</version>
             </dependency>
+
+            <!-- External JARS -->
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>wsseTool</artifactId>
                 <version>1.3.1</version>
             </dependency>
 
-            <!-- External -->
-            <dependency>
-                <groupId>org.opensaml</groupId>
-                <artifactId>opensaml</artifactId>
-                <version>2.5.3</version>
-            </dependency>
 
             <dependency>
-                <groupId>org.apache.axis2</groupId>
-                <artifactId>axis2-transport-http</artifactId>
-                <version>1.5.4</version>
+                <groupId>backport-util-concurrent</groupId>
+                <artifactId>backport-util-concurrent</artifactId>
+                <version>3.1</version>
+            </dependency>
+            <!-- GWT dependencies -->
+            <dependency>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-user</artifactId>
+                <version>${gwtVersion}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.axis2</groupId>
-                <artifactId>axis2-transport-local</artifactId>
-                <version>1.6.2</version>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-servlet</artifactId>
+                <scope>runtime</scope>
+                <version>${gwtVersion}</version>
             </dependency>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
+                <groupId>com.google.gwt.inject</groupId>
+                <artifactId>gin</artifactId>
+                <version>1.5.0</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.sun.ebxml</groupId>
+                <artifactId>ebxmlrr-common</artifactId>
+                <version>1.0</version>
+            </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>2.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>1.9</version>
-            </dependency>
-            <dependency>
-                <groupId>xmlpull</groupId>
-                <artifactId>xmlpull</artifactId>
-                <version>1.1.3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.groovy.modules.http-builder</groupId>
-                <artifactId>http-builder</artifactId>
-                <version>0.7</version>
             </dependency>
             <dependency>
                 <groupId>com.sun.jersey</groupId>
@@ -273,9 +265,40 @@
                 <version>1.9</version>
             </dependency>
             <dependency>
-                <groupId>soap</groupId>
-                <artifactId>soap</artifactId>
-                <version>2.3.1</version>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.5.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.smartgwt</groupId>
+                <artifactId>smartgwt</artifactId>
+                <version>4.1p</version>
+            </dependency>
+            <dependency>
+                <groupId>com.smartgwt</groupId>
+                <artifactId>smartgwt-skins</artifactId>
+                <version>4.1p</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml</groupId>
+                <artifactId>jackson-xml-databind</artifactId>
+                <version>0.6.2</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.9</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.mail</groupId>
@@ -294,9 +317,40 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.sun.ebxml</groupId>
-                <artifactId>ebxmlrr-common</artifactId>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.17</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jcip</groupId>
+                <artifactId>jcip-annotations</artifactId>
                 <version>1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.codehaus.groovy.modules.http-builder</groupId>
+                <artifactId>http-builder</artifactId>
+                <version>0.7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.opensaml</groupId>
+                <artifactId>opensaml</artifactId>
+                <version>2.5.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-transport-http</artifactId>
+                <version>1.5.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.axis2</groupId>
+                <artifactId>axis2-transport-local</artifactId>
+                <version>1.6.2</version>
             </dependency>
             <dependency>
                 <groupId>org.spockframework</groupId>
@@ -323,11 +377,6 @@
                 <version>2.17</version>
             </dependency>
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
-            </dependency>
-            <dependency>
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>1.9.12</version>
@@ -348,40 +397,10 @@
                 <version>1.2.10</version>
             </dependency>
             <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.3</version>
-            </dependency>
-            <!-- GWT dependencies -->
-            <dependency>
-                <groupId>com.google.gwt</groupId>
-                <artifactId>gwt-user</artifactId>
-                <version>${gwtVersion}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.gwt</groupId>
-                <artifactId>gwt-servlet</artifactId>
-                <scope>runtime</scope>
-                <version>${gwtVersion}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.gwt.inject</groupId>
-                <artifactId>gin</artifactId>
-                <version>1.5.0</version>
-            </dependency>
-            <!--  -->
-
-            <dependency>
                 <groupId>org.apache.velocity</groupId>
                 <artifactId>velocity</artifactId>
                 <version>1.5</version>
             </dependency>
-            <!--<dependency>-->
-                <!--<groupId>org.slf4j</groupId>-->
-                <!--<artifactId>log4j-over-slf4j</artifactId>-->
-                <!--<version>1.7.5</version>-->
-            <!--</dependency>-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
@@ -398,22 +417,6 @@
                 <version>1.2.14</version>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>3.0.1</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>xmlunit</groupId>
-                <artifactId>xmlunit</artifactId>
-                <version>1.4</version>
-            </dependency>
-            <dependency>
-                <groupId>xerces</groupId>
-                <artifactId>xercesImpl</artifactId>
-                <version>2.9.1</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.xmlbeans</groupId>
                 <artifactId>xmlbeans</artifactId>
                 <version>2.4.0</version>
@@ -423,46 +426,12 @@
                 <groupId>org.apache.commons.io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.4</version>
-                <!--
-                <scope>system</scope>
-                <systemPath>${basedir}/../lib/commons-io-2.4.jar</systemPath>
-                -->
-            </dependency>
-            <dependency>
-                <groupId>backport-util-concurrent</groupId>
-                <artifactId>backport-util-concurrent</artifactId>
-                <version>3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.5.1</version>
             </dependency>
             <!-- for now wsseTool limits this version -->
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
                 <version>2.1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.smartgwt</groupId>
-                <artifactId>smartgwt</artifactId>
-                <version>4.1p</version>
-            </dependency>
-            <dependency>
-                <groupId>com.smartgwt</groupId>
-                <artifactId>smartgwt-skins</artifactId>
-                <version>4.1p</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml</groupId>
-                <artifactId>jackson-xml-databind</artifactId>
-                <version>0.6.2</version>
-            </dependency>
-            <dependency>
-                <groupId>net.jcip</groupId>
-                <artifactId>jcip-annotations</artifactId>
-                <version>1.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.axis2</groupId>
@@ -478,6 +447,32 @@
                 <groupId>org.apache.axis2</groupId>
                 <artifactId>axis2</artifactId>
                 <version>1.5.4</version>
+            </dependency>
+            <dependency>
+                <groupId>soap</groupId>
+                <artifactId>soap</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>xml-security</groupId>
+                <artifactId>xmlsec</artifactId>
+                <version>1.3.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>xmlpull</groupId>
+                <artifactId>xmlpull</artifactId>
+                <version>1.1.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>xmlunit</groupId>
+                <artifactId>xmlunit</artifactId>
+                <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>2.9.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

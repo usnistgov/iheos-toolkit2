@@ -2,18 +2,17 @@ package gov.nist.toolkit.envSetting;
 
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.NoSessionException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 public class EnvSetting {
 	// SessionID ==> Environment Setting
 	static Map<String, EnvSetting> settings = new HashMap<String, EnvSetting>();
     static public final String DEFAULTSESSIONID = "DEFAULT";
+    static public final String DEFAULTSESSIONNAME = "default";
 	String envName;
 	File envDir;
 	
@@ -33,8 +32,8 @@ public class EnvSetting {
 
     static void installDefaultEnvironment() {
         File envFile = Installation.installation().getDefaultEnvironmentFile();
-        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured");
-        new EnvSetting(DEFAULTSESSIONID, DEFAULTSESSIONID, envFile);
+        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Toolkit not properly configured - internal/default environments directory " +  envFile  + " not available.");
+        new EnvSetting(DEFAULTSESSIONID, DEFAULTSESSIONNAME, new File(envFile, DEFAULTSESSIONNAME));
     }
 
 	public EnvSetting(String sessionId, String name, File dir) {
@@ -66,15 +65,16 @@ public class EnvSetting {
 		if (envDir == null) 
 			throw new EnvironmentNotSelectedException("");
 //			return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
-		File f = new File(envDir + File.separator + "codes.xml");
+		File f = new File(envDir, File.separator + "codes.xml");
 		if (f.exists())
 			return f;
+		logger.warn("Codes file " + f + " does not exist");
 		return null;
 	}
 
     void validateEnvironment() {
         if (getCodesFile() == null)
-            throw new EnvironmentNotSelectedException("Selected environment " + envName + " not valid - does not contain codex.xml file");
+            throw new EnvironmentNotSelectedException("Selected environment " + envName + " not valid - does not contain codes.xml file");
     }
 
 }
