@@ -859,7 +859,7 @@ public class Metadata {
 			if (!name.equals(slot_name))
 				continue;
 			OMElement value_list = MetadataSupport.firstChildWithLocalName(
-					slot, "ValueList");
+                    slot, "ValueList");
 			if (value_list == null)
 				continue;
 			int value_count = 0;
@@ -1052,6 +1052,25 @@ public class Metadata {
 		return e;
 	}
 
+	/**
+	 * Create external classification (olivier's work to make authors work)
+	 * @param ele
+	 * @param uuid
+	 * @return
+	 */
+	public OMElement addExtClassification(OMElement ele, String uuid) {
+		OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.classification_qnamens);
+		ele.addChild(e);
+
+		String myid = allocate_id();
+		e.addAttribute("id", myid, null);
+		e.addAttribute("objectType", "urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification", null);
+		e.addAttribute("classificationScheme", uuid, null);
+		e.addAttribute("classifiedObject", ele.getAttributeValue(MetadataSupport.id_qname), null);
+
+		return e;
+	}
+
 	public OMElement addIntClassification(OMElement ele, String uuid) {
 		OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.classification_qnamens);
 		ele.addChild(e);
@@ -1073,6 +1092,24 @@ public class Metadata {
 
 		e.addAttribute("versionName", version, null);
 	}
+
+    /**
+     * This method adds a localized string under the name node in the parent node given as parameter.
+     * @param ele parent node.
+     * @param lang localized string language.
+     * @param value localized string value.
+     */
+    public void addName(OMElement ele, String lang, String value){
+        OMElement nameNode=ele.getFirstChildWithName(MetadataSupport.name_qnamens);
+        if (nameNode==null){
+            nameNode=MetadataSupport.om_factory.createOMElement(MetadataSupport.name_qnamens);
+            ele.addChild(nameNode);
+        }
+        OMElement ls = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
+        nameNode.addChild(ls);
+        ls.addAttribute("xml:lang", lang, null);
+        ls.addAttribute("value", value, null);
+    }
 
     void addName(OMElement ele, String value) {
         OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.name_qnamens);
