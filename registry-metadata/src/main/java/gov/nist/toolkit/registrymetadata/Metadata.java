@@ -2142,6 +2142,25 @@ public class Metadata {
 		locStr.addAttribute("value", title, null);
 	}
 
+	/**
+	 * This method adds a localized string under the 'Description' node in the parent node given as parameter.
+     * If it does not exist yet, this method will create the 'Description' node.
+	 * @param ele parent node.
+	 * @param lang localized string language.
+	 * @param value localized string value.
+	 */
+	public void addDescription(OMElement ele, String lang, String value){
+		OMElement nameNode=ele.getFirstChildWithName(MetadataSupport.description_qnamens);
+		if (nameNode==null){
+			nameNode=MetadataSupport.om_factory.createOMElement(MetadataSupport.description_qnamens);
+			ele.addChild(nameNode);
+		}
+		OMElement ls = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
+		nameNode.addChild(ls);
+		ls.addAttribute("xml:lang", lang, null);
+		ls.addAttribute("value", value, null);
+	}
+
 	public void setDescriptionValue(OMElement ele, String description) {
 		OMElement nameEle = MetadataSupport.om_factory.createOMElement(MetadataSupport.description_qnamens);
 		ele.addChild(nameEle);
