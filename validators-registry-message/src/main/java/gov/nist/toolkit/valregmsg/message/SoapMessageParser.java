@@ -7,13 +7,16 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import org.apache.axiom.om.OMElement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by bill on 6/19/15.
  */
 public class SoapMessageParser extends MessageValidator {
     OMElement envelope;
-    OMElement header;
-    OMElement body;
+    List<OMElement> headers = new ArrayList<>();
+    List<OMElement> bodies = new ArrayList<>();
 
     public SoapMessageParser(ValidationContext vc, OMElement envelope) {
         super(vc);
@@ -28,11 +31,20 @@ public class SoapMessageParser extends MessageValidator {
     }
 
     void parse() {
-        header = MetadataSupport.firstChildWithLocalName(envelope, "Header");
-        body = MetadataSupport.firstChildWithLocalName(envelope, "Body");
+        headers = MetadataSupport.childrenWithLocalName(envelope, "Header");
+        bodies = MetadataSupport.childrenWithLocalName(envelope, "Body");
     }
 
     public OMElement getEnvelope() { return envelope; }
-    public OMElement getHeader() { return header; }
-    public OMElement getBody() { return body; }
+    public OMElement getHeader() {
+        if (headers.size() > 0)
+            return headers.get(0);
+        return null;
+    }
+    public List<OMElement> getHeaders() { return headers; }
+    public OMElement getBody() {
+        if (bodies.size() > 0)
+            return bodies.get(0);
+        return null;
+    }
 }

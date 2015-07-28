@@ -48,32 +48,31 @@ public class HttpMessageValidator extends MessageValidator {
 			if (mvc == null) 
 				mvc = new MessageValidatorEngine();
 
-			er.challenge("Parsing HTTP message");
-			
+			er.sectionHeading("HTTP message");
+
 			if (header != null)
 				hparser = new HttpParserBa(header.getBytes()); // since this is an exploratory parse, don't pass er
 			else
 				body = hparser.getBody();
-			
+
+            er.challenge("HTTP message format");
 			hparser.setErrorRecorder(er);
 			if (hparser.isMultipart()) {
-				if (vc.isValid() && vc.requiresSimpleSoap()) 
+                er.detail("is multipart format");
+				if (vc.isValid() && vc.requiresSimpleSoap())
 					er.err(vc.getBasicErrorCode(), "Requested message type " + vc + " requires SIMPLE SOAP format message - MTOM format found", this, "ITI TF Volumes 2a and 2b");
-				else
-					er.detail("Message is Multipart format");
-				er.detail("Scheduling MTOM parser");
+//				er.detail("Scheduling MTOM parser");
 				mvc.addMessageValidator("Validate MTOM", new MtomMessageValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 //				er.err("MTOM parser not available","");
 			} else {
-				boolean val = vc.isValid(); 
+                er.detail("is simple format");
+				boolean val = vc.isValid();
 				boolean mt = vc.requiresMtom();
 				if (!val && mt)
 					er.err(vc.getBasicErrorCode(), "Invalid message format: " + vc, this, "ITI TF Volumes 2a and 2b");
 				if (mt)
 					er.err(vc.getBasicErrorCode(), "Request Message is SIMPLE SOAP but MTOM is required", this, "ITI TF Volumes 2a and 2b");
-				else
-					er.detail("Request Message is SIMPLE SOAP format");
-				er.detail("Scheduling SIMPLE SOAP parser");
+//				er.detail("Scheduling SIMPLE SOAP parser");
 				mvc.addMessageValidator("Parse SIMPLE SOAP message", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 //				SimpleSoapHttpHeaderValidator val = new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc);
 //				val.run(er);

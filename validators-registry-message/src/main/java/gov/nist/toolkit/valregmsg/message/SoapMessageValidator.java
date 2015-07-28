@@ -8,18 +8,17 @@ import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.util.XMLUtils;
 import org.w3c.dom.Element;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Validate a SOAP wrapper according to ITI Appendix V and launch new
@@ -90,7 +89,7 @@ public class SoapMessageValidator extends MessageValidator {
 		parseWSAddressing();
 
 		if (wsaction != null) {
-			er.challenge("WS-Addressing Action Header");
+			er.challenge("Checking for WS-Addressing Action Header");
 			er.detail("Found WS-Action: " + wsaction);
 			if (!wsaction.equals(wsaction.trim()))
 				err("WS-Action contains whitespace prefix or suffix","");
@@ -99,12 +98,15 @@ public class SoapMessageValidator extends MessageValidator {
 		messagebody = body();
 
 		if (vc.isMessageTypeKnown()) {
+            // Validation challenge has been established - verify against it
 			er.challenge("Checking WS-Action against SOAP Body contents");
 			verifywsActionCorrectForValidationContext(wsaction);
 			er.detail("Scheduling validation of body based on requested message type");
 			MessageValidatorFactory.validateBasedOnValidationContext(erBuilder, messagebody, mvc, vc, rvi);
 		} else if (messagebody == null) {
+			// Is this an error?
 		} else {
+            // Validation challenge is established by examining the WS:Action
 			er.detail("Scheduling validation of body based on WS-Action");
 			setValidationContextFromWSAction(vc, wsaction);
 			if (vc.isValid()) {
@@ -140,104 +142,109 @@ public class SoapMessageValidator extends MessageValidator {
 		
 		setValidationContextFromWSAction(v, wsaction);
 		if (!v.equals(vc)) {
-			err("WS-Action wrong: " + wsaction + " not appropriate for message " + 
-					vc.getTransactionName() + " required Validation Context is " + vc.toString() + 
-					" Validation Context from WS-Action is " + v.toString(),"ITI TF");
+            er.error("???", "Expected WS:Action", wsaction, expected, "???");
+			err("WS-Action wrong: " + wsaction + " not appropriate for message " +
+                    vc.getTransactionName() + " required Validation Context is " + vc.toString() +
+                    " Validation Context from WS-Action is " + v.toString(), "ITI TF");
 		}
 	}
 
-	// is this fails to make a setting, it can be detected by the method
-	// vc.isValid()
-	static public void setValidationContextFromWSAction(ValidationContext vc, String wsaction) {
-		if (wsaction == null)
-			return;
-		if (wsaction.equals("urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b")) {
-			vc.isRequest = true;
-			vc.isPnR = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse")) {
-			vc.isResponse = true;
-			vc.isPnR = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:RetrieveDocumentSet")) {
-			vc.isRequest = true;
-			vc.isRet = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:RetrieveDocumentSetResponse")) {
-			vc.isResponse = true;
-			vc.isRet = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:RegisterDocumentSet-b")) {
-			vc.isRequest = true;
-			vc.isR = true;
-		} else if (wsaction.equals("urn:ihe:iti:2010:UpdateDocumentSet")) {
-			vc.isRequest = true;
-			vc.isMU = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:RegisterDocumentSet-bResponse")) {
-			vc.isResponse = true;
-			vc.isR = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:RegistryStoredQuery")) {
-			vc.isRequest = true;
-			vc.isSQ = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:RegistryStoredQueryResponse")) {
-			vc.isResponse = true;
-			vc.isSQ = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayQuery")) {
-			vc.isRequest = true;
-			vc.isSQ = true;
-			vc.isXC = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayQueryAsync")) {
-			vc.isRequest = true;
-			vc.isSQ = true;
-			vc.isXC = true;
-			vc.isAsync = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayQueryResponse")) {
-			vc.isResponse = true;
-			vc.isSQ = true;
-			vc.isXC = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayQueryAsyncResponse")) {
-			vc.isResponse = true;
-			vc.isSQ = true;
-			vc.isXC = true;
-			vc.isAsync = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayRetrieveAsyncResponse")) {
-			vc.isResponse = true;
-			vc.isRet = true;
-			vc.isXC = true;
-			vc.isAsync = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayRetrieveAsync")) {
-			vc.isRequest = true;
-			vc.isRet = true;
-			vc.isXC = true;
-			vc.isAsync = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayRetrieve")) {
-			vc.isRequest = true;
-			vc.isRet = true;
-			vc.isXC = true;
-		} else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayRetrieveResponse")) {
-			vc.isResponse = true;
-			vc.isRet = true;
-			vc.isXC = true;
-		} else if (wsaction.equals("urn:ihe:iti:2009:MultiPatientStoredQuery")) {
-			vc.isRequest = true;
-			vc.isSQ = true;
-			vc.isMultiPatient = true;
-		} else if (wsaction.equals("urn:ihe:iti:2009:MultiPatientStoredQueryResponse")) {
-			vc.isResponse = true;
-			vc.isSQ = true;
-			vc.isMultiPatient = true;
-		} else if (wsaction.equals("urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery")) {
-			vc.isRequest = true;
-            vc.isXcpd = true;
-		} else if (wsaction.equals("urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery")) {
-			vc.isResponse = true;
-            vc.isXcpd = true;
-		} else if (wsaction.equals(SoapActionFactory.epsos_xcqr_action)) {
-			vc.isRequest = true;
-			vc.isSQ = true;
-			vc.isXC = true;
-			vc.isEpsos = true;
-		} 
 
-	}
+    // wsaction ==> isRequest (true/false), isPnr/isRet/isR/isMU...
+    // need reverse
 
-	static String wsaddresingNamespace = "http://www.w3.org/2005/08/addressing";
+
+
+    static public void setValidationContextFromWSAction(ValidationContext vc, String wsaction) {
+        if (wsaction == null)
+            return;
+        if (wsaction.equals("urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b")) {
+            vc.isRequest = true;
+            vc.isPnR = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse")) {
+            vc.isResponse = true;
+            vc.isPnR = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:RetrieveDocumentSet")) {
+            vc.isRequest = true;
+            vc.isRet = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:RetrieveDocumentSetResponse")) {
+            vc.isResponse = true;
+            vc.isRet = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:RegisterDocumentSet-b")) {
+            vc.isRequest = true;
+            vc.isR = true;
+        } else if (wsaction.equals("urn:ihe:iti:2010:UpdateDocumentSet")) {
+            vc.isRequest = true;
+            vc.isMU = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:RegisterDocumentSet-bResponse")) {
+            vc.isResponse = true;
+            vc.isR = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:RegistryStoredQuery")) {
+            vc.isRequest = true;
+            vc.isSQ = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:RegistryStoredQueryResponse")) {
+            vc.isResponse = true;
+            vc.isSQ = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayQuery")) {
+            vc.isRequest = true;
+            vc.isSQ = true;
+            vc.isXC = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayQueryAsync")) {
+            vc.isRequest = true;
+            vc.isSQ = true;
+            vc.isXC = true;
+            vc.isAsync = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayQueryResponse")) {
+            vc.isResponse = true;
+            vc.isSQ = true;
+            vc.isXC = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayQueryAsyncResponse")) {
+            vc.isResponse = true;
+            vc.isSQ = true;
+            vc.isXC = true;
+            vc.isAsync = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayRetrieveAsyncResponse")) {
+            vc.isResponse = true;
+            vc.isRet = true;
+            vc.isXC = true;
+            vc.isAsync = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayRetrieveAsync")) {
+            vc.isRequest = true;
+            vc.isRet = true;
+            vc.isXC = true;
+            vc.isAsync = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayRetrieve")) {
+            vc.isRequest = true;
+            vc.isRet = true;
+            vc.isXC = true;
+        } else if (wsaction.equals("urn:ihe:iti:2007:CrossGatewayRetrieveResponse")) {
+            vc.isResponse = true;
+            vc.isRet = true;
+            vc.isXC = true;
+        } else if (wsaction.equals("urn:ihe:iti:2009:MultiPatientStoredQuery")) {
+            vc.isRequest = true;
+            vc.isSQ = true;
+            vc.isMultiPatient = true;
+        } else if (wsaction.equals("urn:ihe:iti:2009:MultiPatientStoredQueryResponse")) {
+            vc.isResponse = true;
+            vc.isSQ = true;
+            vc.isMultiPatient = true;
+        } else if (wsaction.equals("urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery")) {
+            vc.isRequest = true;
+            vc.isXcpd = true;
+        } else if (wsaction.equals("urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery")) {
+            vc.isResponse = true;
+            vc.isXcpd = true;
+        } else if (wsaction.equals(SoapActionFactory.epsos_xcqr_action)) {
+            vc.isRequest = true;
+            vc.isSQ = true;
+            vc.isXC = true;
+            vc.isEpsos = true;
+        }
+
+    }
+
+    static String wsaddresingNamespace = "http://www.w3.org/2005/08/addressing";
 	static String wsaddressingRef = "http://www.w3.org/TR/ws-addr-core/";
 
 	void parseWSAddressing() {
@@ -400,12 +407,14 @@ public class SoapMessageValidator extends MessageValidator {
 	static String soapEnvelopeNamespace = "http://www.w3.org/2003/05/soap-envelope";
 
 	void validateHeader() {
-		er.challenge("Header");
+		er.challenge("Validate SOAP Header");
 		if (header == null) {
 			err("Header must be present","ITI TF-2x: V.3.2.2 and SOAP Version 1.2 Section 4");
 			return;
 		}
-		OMNamespace ns = header.getNamespace();
+        er.detail("Header found");
+        er.detail("Envelope namespace is " + soapEnvelopeNamespace);
+        OMNamespace ns = header.getNamespace();
 		if (ns == null) 
 			err("Namespace must be " + soapEnvelopeNamespace + " - found instead - " 
 					+ "null","SOAP Version 1.2 Section 4");
@@ -423,6 +432,7 @@ public class SoapMessageValidator extends MessageValidator {
 			}
 			String metadataLevelTxt = metadataLevel.getText();
 			if (metadataLevelTxt == null) metadataLevelTxt = "";
+            er.detail("metadata-level = " + metadataLevelTxt);
 			if (metadataLevelTxt.equals("minimal")) {
 				vc.isXDRMinimal = true;
 			} else if (metadataLevelTxt.equals("XDS")) {
@@ -433,11 +443,12 @@ public class SoapMessageValidator extends MessageValidator {
 	}
 
 	OMElement body() {
-		er.challenge("Body");
+		er.challenge("Validate SOAP Body");
 		if (body == null) {
 			err("Body must be present","ITI TF-2x: V.3.2 and SOAP Version 1.2 Section 4");
 			return null;
-		} 
+		}
+        er.detail("Body namespace is " + soapEnvelopeNamespace);
 
 		if (header != null) {
 			OMNamespace ns = header.getNamespace();
@@ -465,12 +476,13 @@ public class SoapMessageValidator extends MessageValidator {
 	}
 
 	void validateEnvelope() {
-		er.challenge("Envelope");
+		er.challenge("Validate Soap Envelope");
 		OMNamespace ns = envelope.getNamespace();
 		if (ns == null) 
 			err("Envelope namespace must be " + soapEnvelopeNamespace + " - found instead - " 
 					+ "null","ITI TF-2x: V.3.2.1.3 and http://www.w3.org/TR/soap12-part1/#soapenvelope");
 		else {
+			er.detail("Envelope namespace is " + soapEnvelopeNamespace);
 			String uri = ns.getNamespaceURI();
 			if (!soapEnvelopeNamespace.equals(uri))
 				err("Envelope namespace must be " + soapEnvelopeNamespace + " - found instead - " 
