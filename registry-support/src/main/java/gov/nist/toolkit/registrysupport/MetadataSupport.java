@@ -103,6 +103,7 @@ public class MetadataSupport {
 
     public static QName name_qname = new QName("Name");
     static public QName value_qname = new QName("value");
+    static public QName lang_qname = new QName("xml:lang");
 
     public static QName object_type_qname = new QName("objectType");
 

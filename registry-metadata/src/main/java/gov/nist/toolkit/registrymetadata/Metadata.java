@@ -996,6 +996,10 @@ public class Metadata {
 
 	}
 
+    public void addSourceId(OMElement ele, String id){
+        addExternalId(ele,MetadataSupport.XDSSubmissionSet_sourceid_uuid,id,"XDSSubmissionSet.sourceId");
+    }
+
 	public void addExternalId(OMElement ele, String uuid, String id, String name) {
 		OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.externalidentifier_qnamens);
 		ele.addChild(e);
@@ -1016,16 +1020,7 @@ public class Metadata {
 	}
 
 	public OMElement addExtClassification(OMElement ele, String uuid, String codingScheme, String codeName, String code) {
-		OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.classification_qnamens);
-		ele.addChild(e);
-
-		String myid = allocate_id();
-		e.addAttribute("id", myid, null);
-		e.addAttribute("objectType", "urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Classification", null);
-		e.addAttribute("classificationScheme", uuid, null);
-		e.addAttribute("nodeRepresentation", code, null);
-		e.addAttribute("lid", myid, null);
-		e.addAttribute("classifiedObject", ele.getAttributeValue(MetadataSupport.id_qname), null);
+		OMElement e = addExtClassification(ele,uuid);
 
 		if (codingScheme != null && !codingScheme.equals(""))
 			addSlot(e, "codingScheme", codingScheme);
@@ -1036,7 +1031,7 @@ public class Metadata {
 	}
 
 	/**
-	 * Create external classification (olivier's work to make authors work)
+	 * Create external classification element.
 	 * @param ele
 	 * @param uuid
 	 * @return
@@ -1095,12 +1090,7 @@ public class Metadata {
     }
 
     void addName(OMElement ele, String value) {
-        OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.name_qnamens);
-        ele.addChild(e);
-
-        OMElement ls = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
-        e.addChild(ls);
-        ls.addAttribute("value", value, null);
+        addName(ele,"en-US",value);
     }
 
 	public void addLid(OMElement ele, String lid) {
@@ -2141,19 +2131,12 @@ public class Metadata {
 		OMElement ls = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
 		nameNode.addChild(ls);
 		ls.addAttribute("xml:lang", lang, null);
+		ls.addAttribute("charset", "UTF-8", null);
 		ls.addAttribute("value", value, null);
 	}
 
 	public void setDescriptionValue(OMElement ele, String description) {
-		OMElement nameEle = MetadataSupport.om_factory.createOMElement(MetadataSupport.description_qnamens);
-		ele.addChild(nameEle);
-
-		OMElement locStr = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
-		nameEle.addChild(locStr);
-
-		locStr.addAttribute("lang", "us-en", MetadataSupport.xml_namespace);
-		locStr.addAttribute("charset", "UTF-8", null);
-		locStr.addAttribute("value", description, null);
+		addDescription(ele,"en-US",description);
 	}
 
 	void add_classification(OMElement ele, OMElement classification) {
