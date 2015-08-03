@@ -37,10 +37,10 @@ public class PatientId {
 
 	void gather_patient_ids(Metadata m, List<String> parts, String uuid) throws MetadataException {
 		String patient_id;
-		for (String id : parts) {		
+		for (String id : parts) {
 			patient_id = m.getExternalIdentifierValue(id, uuid);
 			if (patient_id == null) continue;
-			if ( ! patient_ids.contains(patient_id)) 
+			if ( ! patient_ids.contains(patient_id))
 				patient_ids.add(patient_id);
 		}
 	}

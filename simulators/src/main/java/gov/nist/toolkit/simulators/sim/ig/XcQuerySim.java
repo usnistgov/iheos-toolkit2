@@ -74,7 +74,7 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		
+
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
 
@@ -92,13 +92,13 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 			OMElement ahqr = smv.getMessageBody();
 
 			request = new AdhocQueryRequestParser(ahqr).getAdhocQueryRequest();
-			
+
 			Sites remoteSites = new Sites(asc.remoteSites);
 
 
 			if (findQueryIds.contains(request.getQueryId())) {
 				// a find type query
-				// should not have home attribute 
+				// should not have home attribute
 				if (request.getHomeAtt() != null) {
 					er.err(Code.XDSRegistryError, "Request is Query by Patient ID, homeCommunityId attribute is not allowed", this, "ITI TF-2b: 3.18.4.1.3 (XCA Supplement)");
 					return;
@@ -117,8 +117,8 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 					er.err(Code.XDSRegistryError, "No RGs configured", this, null);
 					return;
 				}
-				
-				
+
+
 			} else {
 				// look at home to see where to route this message
 				if (request.getHomeAtt() == null) {
@@ -131,7 +131,7 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 					er.err(Code.XDSRegistryError, "Don't have configuration for RG with homeCommunityId " + request.getHome(), this, null);
 					return;
 				}
-				
+
 				if (!site.hasActor(ActorType.RESPONDING_GATEWAY)) {
 					er.err(Code.XDSRegistryError, "Requested RG " + request.getHome() + " is not configured as an RG", this, null);
 					return;
@@ -146,21 +146,21 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 			List<OMElement> results = m.getAllObjects(); // everything but ObjectRefs
 			results.addAll(m.getObjectRefs());
 			response.addQueryResults(results, false);
-			
+
 			// set status
 			boolean hasErrors = response.has_errors();
 			boolean hasResults = response.getQueryResult().getFirstElement() != null;
 			String status;
-			
+
 			if (hasErrors && !hasResults)
 				status = MetadataSupport.status_failure;
 			else if (hasErrors && hasResults)
 				status = MetadataSupport.status_partial_success;
 			else
 				status = MetadataSupport.status_success;
-			
+
 			response.setForcedStatus(status);
-			
+
 		} catch (Exception e) {
 			logException(er, e);
 		}
@@ -174,17 +174,17 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 		try {
 			String endpoint = site.getEndpoint(ATFactory.TransactionType.XC_QUERY, isSecure, isAsync);
 			er.detail("Forwarding query to " + endpoint);
-			
+
 			OMElement req = request.getAdhocQueryRequestElement();
-			
+
 			er.challenge("Request to RG is");
 			er.detail(new OMFormatter(req).toString());
 
 			AdhocQueryResponseParser.AdhocQueryResponse rgResponse = sqCall(req, endpoint);
-			
+
 			er.challenge("Response from RG is");
 			er.detail(new OMFormatter(rgResponse.getMessage()).toString());
-			
+
 			if (rgResponse.isSuccess()) {
 				Metadata mr = MetadataParser.parseNonSubmission(rgResponse.getRegistryObjectListEle());
 
@@ -193,11 +193,11 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 					home = home2;
 
 				boolean ok = areObjectsLabeledWithHome(mr);
-				
+
 				if (ok)
 					m.copy(mr);
 			} else {
-				
+
 				// filter out XDSUnknownPatientId errors before adding to general response
 				List<String> codesToFilter = new ArrayList<String>();
 				codesToFilter.add(XdsErrorCode.Code.XDSUnknownPatientId.toString());
@@ -211,14 +211,14 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 			logException(er, e);
 		}
 	}
-	
+
 	String findHome(Metadata mr) {
 		// All ExtrinsicObjects, RegistryPackages, and ObjectRefs must be labeled with non empty home
 		List<OMElement> all = new ArrayList<OMElement>();
 		all.addAll(mr.getExtrinsicObjects());
 		all.addAll(mr.getRegistryPackages());
 		all.addAll(mr.getObjectRefs());
-		
+
 		boolean ok = true;
 		for (OMElement ele : all) {
 			String home = m.getHome(ele);
@@ -236,14 +236,14 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 		all.addAll(mr.getExtrinsicObjects());
 		all.addAll(mr.getRegistryPackages());
 		all.addAll(mr.getObjectRefs());
-		
+
 		boolean ok = true;
 		for (OMElement ele : all) {
 			String home = m.getHome(ele);
 			if (home == null || home.equals("") || !home.startsWith("urn:oid:")) {
-				er.err(XdsErrorCode.Code.XDSMissingHomeCommunityId, 
+				er.err(XdsErrorCode.Code.XDSMissingHomeCommunityId,
 						ele.getLocalName() + " " + m.getId(ele) + " from RG " + home +
-						" is missing the homeCommunityId (or is incorrectly formatted)", 
+						" is missing the homeCommunityId (or is incorrectly formatted)",
 						this,  "ITI TF-2b: 3.38.4.1.3 (XCA Supplement)");
 				ok = false;
 			}
@@ -267,8 +267,8 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 		OMElement result;
 		if (mockSoap == null) {
 			try {
-				soap.soapCall(request, 
-						endpoint, 
+				soap.soapCall(request,
+						endpoint,
 						false, //mtom
 						true,  // WS-Addressing
 						true,  // SOAP 1.2
@@ -282,7 +282,7 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 		} else {
 			result = mockSoap.call(endpoint, request);
 		}
-		
+
 		AdhocQueryResponseParser.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
 
 		return response;

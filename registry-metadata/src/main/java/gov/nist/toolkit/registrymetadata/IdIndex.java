@@ -2,6 +2,7 @@ package gov.nist.toolkit.registrymetadata;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class IdIndex {
 		OMElement name_ele = getName(id);
 		if (name_ele == null)
 			return null;
-		OMElement loc_st = MetadataSupport.firstChildWithLocalName(name_ele, "LocalizedString");
+		OMElement loc_st = XmlUtil.firstChildWithLocalName(name_ele, "LocalizedString");
 		if (loc_st == null)
 			return null;
 		return loc_st.getAttributeValue(MetadataSupport.value_qname);
@@ -128,7 +129,7 @@ public class IdIndex {
 		OMElement desc_ele = getDescription(id);
 		if (desc_ele == null)
 			return null;
-		OMElement loc_st = MetadataSupport.firstChildWithLocalName(desc_ele, "LocalizedString");
+		OMElement loc_st = XmlUtil.firstChildWithLocalName(desc_ele, "LocalizedString");
 		if (loc_st == null)
 			return null;
 		return loc_st.getAttributeValue(MetadataSupport.value_qname);
@@ -166,10 +167,10 @@ public class IdIndex {
 				continue;
 			if ( !name.equals(slot_name))
 				continue;
-			OMElement value_list = MetadataSupport.firstChildWithLocalName(slot, "ValueList");
+			OMElement value_list = XmlUtil.firstChildWithLocalName(slot, "ValueList");
 			if (value_list == null)
 				continue;
-			OMElement value = MetadataSupport.firstChildWithLocalName(value_list, "Value");
+			OMElement value = XmlUtil.firstChildWithLocalName(value_list, "Value");
 			if (value == null)
 				continue;
 			return value.getText();

@@ -12,12 +12,12 @@ public class UseReport {
 	public String reportName;
 	public String useAs;
 	public String value;
-	
+
 	public OMElement toXML() {
 		OMElement ur = MetadataSupport.om_factory.createOMElement("UseReport", null);
-		
+
 		normalize();
-		
+
 		if (!test.equals(""))
 			ur.addAttribute("test", test, null);
 		ur.addAttribute("section", section, null);
@@ -25,7 +25,7 @@ public class UseReport {
 		ur.addAttribute("reportName", reportName, null);
 		ur.addAttribute("useAs", useAs, null);
 		ur.addAttribute("value", value, null);
-				
+
 		return ur;
 	}
 
@@ -37,11 +37,11 @@ public class UseReport {
 		if (useAs == null) useAs = "";
 		if (value == null) value = "";
 	}
-	
+
 	public String toString() {
-		
+
 		normalize();
-		
+
 		return "UseReport:" +
 		( (test.equals("") ? "" : " test=" + test)  )  +
 		" section=" + section +
@@ -50,14 +50,14 @@ public class UseReport {
 		" useAs=" + useAs +
 		" value=" + value;
 	}
-	
+
 	public boolean isComplete() {
 		normalize();
 		return ! (  //section.equals("") ||
 				step.equals("") ||
 				reportName.equals("") ||
 				useAs.equals(""));
-		
+
 	}
-	
+
 }

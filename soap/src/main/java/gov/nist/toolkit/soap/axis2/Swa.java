@@ -3,6 +3,7 @@ package gov.nist.toolkit.soap.axis2;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.HttpCodeException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -41,7 +42,7 @@ public class Swa {
 		String rest;
 
 		parts = this.endpoint.split(":");
-		if (parts.length < 2) 
+		if (parts.length < 2)
 			throw new XdsInternalException("swa.parse_endpoint(): (" + endpoint + ") Cannot parse endpoint: cannot find http or https before :");
 		protocol = parts[0];
 
@@ -50,7 +51,7 @@ public class Swa {
 		parts = rest.split("/");
 		if (parts.length < 4)  {
 			StringBuffer buf = new StringBuffer();
-			for (int i=0; i<parts.length; i++) 
+			for (int i=0; i<parts.length; i++)
 				buf.append(i + ") " + parts[i] + "\n");
 			throw new XdsInternalException("swa.parse_endpoint(): (" + endpoint + ") Cannot parse endpoint: cannot find machine and port (parts.length = " + parts.length +")\n" + buf.toString());
 		}
@@ -58,7 +59,7 @@ public class Swa {
 		String host_port = parts[2];
 
 		this.service = "";
-		for (int i=3; i<parts.length; i++) 
+		for (int i=3; i<parts.length; i++)
 			this.service += "/" + parts[i];
 
 		parts = host_port.split(":");
@@ -108,7 +109,7 @@ public class Swa {
 				byte[] by = new byte[256];
 				int cnt;
 				while ( (cnt=is.read(by, 0, 256)) > 0 )
-					b.append(new String(by, 0, cnt));  
+					b.append(new String(by, 0, cnt));
 				conn.disconnect();
 				String err_response = new String(b);
 				try {
@@ -121,8 +122,8 @@ public class Swa {
 				} catch (Exception e1 ) {
 
 				}
-				throw new XdsInternalException(	"ERROR: HttpClient: code: " + String.valueOf(response_code) 
-						+ 
+				throw new XdsInternalException(	"ERROR: HttpClient: code: " + String.valueOf(response_code)
+						+
 						"\nmessage: " + conn.getResponseMessage() +
 						"\n" + new String(b) + "\n"
 				);
@@ -193,7 +194,7 @@ public class Swa {
 
 		if (reply_xml == null || !reply_xml.getLocalName().equals("Envelope"))
 			throw new XdsInternalException("Reply is not SOAP Envelope: \n" + reply_str);
-		
+
 		if (hasFault(reply_xml))
 			throw new XdsInternalException("Fault: " + getFaultMessage(reply_xml));
 
@@ -201,21 +202,21 @@ public class Swa {
 
 		return reply_xml;
 	}
-	
+
 	boolean hasFault(OMElement reply) throws Exception {
-		OMElement body = MetadataSupport.firstChildWithLocalName(reply, "Body");
+		OMElement body = XmlUtil.firstChildWithLocalName(reply, "Body");
 		if (body == null)
 			throw new XdsInternalException("Swa: hasFault(): SOAP message has no body");
-		OMElement fault = MetadataSupport.firstChildWithLocalName(body, "Fault");
+		OMElement fault = XmlUtil.firstChildWithLocalName(body, "Fault");
 		return fault != null;
 	}
-	
+
 	String getFaultMessage(OMElement reply) {
-		OMElement body = MetadataSupport.firstChildWithLocalName(reply, "Body");
+		OMElement body = XmlUtil.firstChildWithLocalName(reply, "Body");
 		if (body == null) return "";
-		OMElement fault = MetadataSupport.firstChildWithLocalName(body, "Fault");
+		OMElement fault = XmlUtil.firstChildWithLocalName(body, "Fault");
 		if (fault == null) return "";
-		OMElement faultstring = MetadataSupport.firstChildWithLocalName(fault, "faultstring");
+		OMElement faultstring = XmlUtil.firstChildWithLocalName(fault, "faultstring");
 		if (faultstring == null) return "";
 		return faultstring.getText();
 	}
@@ -250,13 +251,13 @@ public class Swa {
 	public OMElement getHeader() {
 		if (this.response == null)
 			return null;
-		return MetadataSupport.firstChildWithLocalName(this.response, "Header");
+		return XmlUtil.firstChildWithLocalName(this.response, "Header");
 	}
 
 	public OMElement getBody() {
 		if (this.response == null)
 			return null;
-		return MetadataSupport.firstChildWithLocalName(this.response, "Body");
+		return XmlUtil.firstChildWithLocalName(this.response, "Body");
 	}
 
 }

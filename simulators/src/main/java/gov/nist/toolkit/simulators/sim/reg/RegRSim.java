@@ -47,7 +47,7 @@ public class RegRSim extends TransactionSimulator   {
 	}
 
 	public Map<String, String> UUIDToSymbolic = null;
-	Map<String, String> symbolicToUUID = null; 
+	Map<String, String> symbolicToUUID = null;
 	List<String> submittedUUIDs;
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -57,7 +57,7 @@ public class RegRSim extends TransactionSimulator   {
 		// These steps are common to Registry and Update.  They operate
 		// on the entire metadata collection in both transactions.
 		setup();
-		
+
 		// Check whether Extra Metadata is present, is allowed, and is legal
 		// TODO - split into validation (as validator) and remover
 		extraMetadataCheck(m);
@@ -70,9 +70,9 @@ public class RegRSim extends TransactionSimulator   {
 			return;
 
 		// save metadata objects XML
-		saveMetadataXml(); 
+		saveMetadataXml();
 
-		// delta will be flushed to disk, assuming no errors, by caller 
+		// delta will be flushed to disk, assuming no errors, by caller
 
 	}
 
@@ -108,16 +108,16 @@ public class RegRSim extends TransactionSimulator   {
 
 	// These steps are run on the entire metadata collection
 	// for the Register transaction but only on an operation
-	// for the Update transaction.  
+	// for the Update transaction.
 	public void processMetadata(Metadata m, ProcessMetadataInterface pmi) {
-		
+
 		// Are all UUIDs, submitted and generated, valid?
 		validateUUIDs();
-		
+
 		// MU will change
 		pmi.checkUidUniqueness(m);
 
-		// set logicalId to id 
+		// set logicalId to id
 		pmi.setLidToId(m);
 
 		// install version attribute in SubmissionSet, DocumentEntry and Folder objects
@@ -205,10 +205,10 @@ public class RegRSim extends TransactionSimulator   {
 
 		UUIDToSymbolic = reverse(symbolicToUUID);
 	}
-	
+
 	void validateUUIDs() {
 		UuidValidator validator;
-		
+
 		validator = new UuidValidator(er, "Validating submitted UUID ");
 		for (String uuid : submittedUUIDs) {
 			validator.validateUUID(uuid);
@@ -220,12 +220,12 @@ public class RegRSim extends TransactionSimulator   {
 		}
 
 	}
-	
+
 	// check for Extra Metadata
 	void extraMetadataCheck(Metadata m) {
 		SimulatorConfigElement extraMetadataASCE = asc.get(ActorFactory.extraMetadataSupported);
 		boolean isExtraMetadataSupported = extraMetadataASCE.asBoolean();
-		
+
 		for (OMElement ele : m.getMajorObjects()) {
 			String id = m.getId(ele);
 			try {
@@ -233,7 +233,7 @@ public class RegRSim extends TransactionSimulator   {
 					String slotName = m.getSlotName(slotEle);
 					if (!slotName.startsWith("urn:"))
 						continue;
-					if (slotName.equals("urn:ihe:iti:xds:2013:referenceIdList"))    // used by referenceIdList 
+					if (slotName.equals("urn:ihe:iti:xds:2013:referenceIdList"))    // used by referenceIdList
 						continue;
 					if (slotName.startsWith("urn:ihe:")) {
 						// there are no slots defined by ihe with this prefix - reserved for future
@@ -283,7 +283,7 @@ public class RegRSim extends TransactionSimulator   {
 		try {
 			if (m.getSubmissionSet() != null)
 				log.debug("Save SubmissionSet(" + m.getSubmissionSetId() + ")");
-			for (OMElement ele : m.getExtrinsicObjects()) 
+			for (OMElement ele : m.getExtrinsicObjects())
 				log.debug("Save DocEntry(" + m.getId(ele) + ")");
 			for (OMElement ele : m.getFolders())
 				log.debug("Save Folder(" + m.getId(ele) + ")");
@@ -305,6 +305,6 @@ public class RegRSim extends TransactionSimulator   {
 			delta.storeMetadata(m);
 		} catch (Exception e1) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e1);
-		} 
+		}
 	}
 }

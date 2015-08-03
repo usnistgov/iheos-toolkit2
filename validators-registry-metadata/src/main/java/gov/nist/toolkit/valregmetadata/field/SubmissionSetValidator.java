@@ -2,7 +2,6 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,8 +22,8 @@ public class SubmissionSetValidator extends ValidatorCommon {
 				MetadataSupport.XDSSubmissionSet_sourceid_uuid,
 				MetadataSupport.XDSSubmissionSet_uniqueid_uuid
 		);
-	
-	static final List<String> classificationSchemes = 
+
+	static final List<String> classificationSchemes =
 		Arrays.asList(
 				MetadataSupport.XDSSubmissionSet_author_uuid,
 				MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid
@@ -120,7 +119,7 @@ public class SubmissionSetValidator extends ValidatorCommon {
 
 				//                                               classificatinScheme								name							required	multiple
 				validate_class("SubmissionSet", id, classs, "urn:uuid:aa543740-bdda-424e-8c96-df4873be8500" , 	"contentTypeCode",		true, 		 false);
-			}		
+			}
 		} catch (MetadataException e) {
 			err(e);
 		}

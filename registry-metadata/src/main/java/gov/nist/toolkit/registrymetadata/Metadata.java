@@ -7,30 +7,13 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.NoMetadataException;
-import gov.nist.toolkit.xdsexception.NoSubmissionSetException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.xdsexception.*;
+import org.apache.axiom.om.*;
 
 import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMAttribute;
-import org.apache.axiom.om.OMContainer;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.axiom.om.OMNode;
+import java.io.File;
+import java.util.*;
 
 public class Metadata {
 	protected OMFactory fac;
@@ -780,7 +763,7 @@ public class Metadata {
 	public boolean hasSlot(OMElement obj, String slot_name) {
 		if (obj == null)
 			return false;
-		for (OMElement slot : MetadataSupport
+		for (OMElement slot : XmlUtil
 				.childrenWithLocalName(obj, "Slot")) {
 			String name = slot
 					.getAttributeValue(MetadataSupport.slot_name_qname);
@@ -795,8 +778,8 @@ public class Metadata {
 			return false;
 		if (classificationNodeUUID == null)
 			return false;
-		for (OMElement classif_ele : MetadataSupport.childrenWithLocalName(obj,
-                "Classification")) {
+		for (OMElement classif_ele : XmlUtil.childrenWithLocalName(obj,
+				"Classification")) {
 			String classification_node = classif_ele
 					.getAttributeValue(MetadataSupport.classificationnode_qname);
 			if (classificationNodeUUID.equals(classification_node))
@@ -816,7 +799,7 @@ public class Metadata {
 		if (!(parent_node instanceof OMElement))
 			return false;
 		OMElement parent = (OMElement) parent_node;
-		for (OMElement classif_ele : MetadataSupport.childrenWithLocalName(parent,
+		for (OMElement classif_ele : XmlUtil.childrenWithLocalName(parent,
 				"Classification")) {
 			String classification_node = classif_ele
 					.getAttributeValue(MetadataSupport.classificationnode_qname);
@@ -838,7 +821,7 @@ public class Metadata {
 	public OMElement getSlot(OMElement obj, String slot_name) {
 		if (obj == null)
 			return null;
-		for (OMElement slot : MetadataSupport
+		for (OMElement slot : XmlUtil
 				.childrenWithLocalName(obj, "Slot")) {
 			String name = slot
 					.getAttributeValue(MetadataSupport.slot_name_qname);
@@ -852,18 +835,18 @@ public class Metadata {
 	public String getSlotValue(OMElement obj, String slot_name, int value_index) {
 		if (obj == null)
 			return null;
-		for (OMElement slot : MetadataSupport
+		for (OMElement slot : XmlUtil
 				.childrenWithLocalName(obj, "Slot")) {
 			String name = slot
 					.getAttributeValue(MetadataSupport.slot_name_qname);
 			if (!name.equals(slot_name))
 				continue;
-			OMElement value_list = MetadataSupport.firstChildWithLocalName(
-                    slot, "ValueList");
+			OMElement value_list = XmlUtil.firstChildWithLocalName(
+					slot, "ValueList");
 			if (value_list == null)
 				continue;
 			int value_count = 0;
-			for (OMElement value_ele : MetadataSupport.childrenWithLocalName(
+			for (OMElement value_ele : XmlUtil.childrenWithLocalName(
 					value_list, "Value")) {
 				if (value_count != value_index) {
 					value_count++;
@@ -879,17 +862,17 @@ public class Metadata {
 		List<String> values = new ArrayList<String>();
 		if (obj == null)
 			return values;
-		for (OMElement slot : MetadataSupport
+		for (OMElement slot : XmlUtil
 				.childrenWithLocalName(obj, "Slot")) {
 			String name = slot
 					.getAttributeValue(MetadataSupport.slot_name_qname);
 			if (!name.equals(slot_name))
 				continue;
-			OMElement value_list = MetadataSupport.firstChildWithLocalName(
+			OMElement value_list = XmlUtil.firstChildWithLocalName(
 					slot, "ValueList");
 			if (value_list == null)
 				continue;
-			for (OMElement value_ele : MetadataSupport.childrenWithLocalName(
+			for (OMElement value_ele : XmlUtil.childrenWithLocalName(
 					value_list, "Value")) {
 				values.add(value_ele.getText());
 			}
@@ -914,18 +897,18 @@ public class Metadata {
 							 String value) {
 		if (obj == null)
 			return;
-		for (OMElement slot : MetadataSupport
+		for (OMElement slot : XmlUtil
 				.childrenWithLocalName(obj, "Slot")) {
 			String name = slot
 					.getAttributeValue(MetadataSupport.slot_name_qname);
 			if (!name.equals(slot_name))
 				continue;
-			OMElement value_list = MetadataSupport.firstChildWithLocalName(
+			OMElement value_list = XmlUtil.firstChildWithLocalName(
 					slot, "ValueList");
 			if (value_list == null)
 				continue;
 			int value_count = 0;
-			for (OMElement value_ele : MetadataSupport.childrenWithLocalName(
+			for (OMElement value_ele : XmlUtil.childrenWithLocalName(
 					value_list, "Value")) {
 				if (value_count != value_index) {
 					value_count++;
@@ -1102,7 +1085,7 @@ public class Metadata {
     public void addName(OMElement ele, String lang, String value){
         OMElement nameNode=ele.getFirstChildWithName(MetadataSupport.name_qnamens);
         if (nameNode==null){
-            nameNode=MetadataSupport.om_factory.createOMElement(MetadataSupport.name_qnamens);
+            nameNode= MetadataSupport.om_factory.createOMElement(MetadataSupport.name_qnamens);
             ele.addChild(nameNode);
         }
         OMElement ls = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
@@ -1240,14 +1223,14 @@ public class Metadata {
 	}
 
 	public String getVersion(OMElement ele) {
-		OMElement ve = MetadataSupport.firstChildWithLocalName(ele, "VersionInfo");
+		OMElement ve = XmlUtil.firstChildWithLocalName(ele, "VersionInfo");
 		if (ve == null)
 			return "1.1";
 		return ve.getAttributeValue(MetadataSupport.versionname_qname);
 	}
 
 	public void setVersion(OMElement ele, String version) {
-		OMElement ve = MetadataSupport.firstChildWithLocalName(ele, "VersionInfo");
+		OMElement ve = XmlUtil.firstChildWithLocalName(ele, "VersionInfo");
 		if (ve == null) {
 			ve = MetadataSupport.om_factory.createOMElement(MetadataSupport.versioninfo_qnamens);
 			ve.addAttribute("versionName", version, null);
@@ -1528,7 +1511,7 @@ public class Metadata {
 
 	public OMElement mkSlot(String slot_name, String value) {
 		OMElement slot = mkSlot(slot_name);
-		OMElement value_list = MetadataSupport.firstChildWithLocalName(slot,
+		OMElement value_list = XmlUtil.firstChildWithLocalName(slot,
 				"ValueList");
 
 		OMElement valueEle = this.om_factory().createOMElement(MetadataSupport.value_qnamens);
@@ -1551,7 +1534,7 @@ public class Metadata {
 
 
 	public OMElement addSlotValue(OMElement slot, String value) {
-		OMElement value_list = MetadataSupport.firstChildWithLocalName(slot,
+		OMElement value_list = XmlUtil.firstChildWithLocalName(slot,
 				"ValueList");
 
 		OMElement valueEle = this.om_factory().createOMElement("Value", null);
@@ -1572,7 +1555,7 @@ public class Metadata {
 		if (slot == null)
 			addSlot(ele, slot_name, slot_value);
 		else {
-			OMElement value_list = MetadataSupport.firstChildWithLocalName(
+			OMElement value_list = XmlUtil.firstChildWithLocalName(
 					slot, "ValueList");
 			if (value_list == null)
 				throw new MetadataException(
@@ -2095,11 +2078,11 @@ public class Metadata {
 	}
 
 	public String getNameValue(OMElement ele) {
-		OMElement name_ele = MetadataSupport.firstChildWithLocalName(ele,
+		OMElement name_ele = XmlUtil.firstChildWithLocalName(ele,
 				"Name");
 		if (name_ele == null)
 			return null;
-		OMElement loc_st = MetadataSupport.firstChildWithLocalName(name_ele,
+		OMElement loc_st = XmlUtil.firstChildWithLocalName(name_ele,
 				"LocalizedString");
 		if (loc_st == null)
 			return null;
@@ -2107,11 +2090,11 @@ public class Metadata {
 	}
 
 	public String getDescriptionValue(OMElement ele) {
-		OMElement name_ele = MetadataSupport.firstChildWithLocalName(ele,
+		OMElement name_ele = XmlUtil.firstChildWithLocalName(ele,
 				"Description");
 		if (name_ele == null)
 			return null;
-		OMElement loc_st = MetadataSupport.firstChildWithLocalName(name_ele,
+		OMElement loc_st = XmlUtil.firstChildWithLocalName(name_ele,
 				"LocalizedString");
 		if (loc_st == null)
 			return null;
@@ -2119,11 +2102,11 @@ public class Metadata {
 	}
 
 	public String getTitleValue(OMElement ele) {
-		OMElement name_ele = MetadataSupport.firstChildWithLocalName(ele,
+		OMElement name_ele = XmlUtil.firstChildWithLocalName(ele,
 				"Name");
 		if (name_ele == null)
 			return null;
-		OMElement loc_st = MetadataSupport.firstChildWithLocalName(name_ele,
+		OMElement loc_st = XmlUtil.firstChildWithLocalName(name_ele,
 				"LocalizedString");
 		if (loc_st == null)
 			return null;
@@ -2152,7 +2135,7 @@ public class Metadata {
 	public void addDescription(OMElement ele, String lang, String value){
 		OMElement nameNode=ele.getFirstChildWithName(MetadataSupport.description_qnamens);
 		if (nameNode==null){
-			nameNode=MetadataSupport.om_factory.createOMElement(MetadataSupport.description_qnamens);
+			nameNode= MetadataSupport.om_factory.createOMElement(MetadataSupport.description_qnamens);
 			ele.addChild(nameNode);
 		}
 		OMElement ls = MetadataSupport.om_factory.createOMElement(MetadataSupport.localizedstring_qnamens);
@@ -2289,10 +2272,10 @@ public class Metadata {
 		StringBuffer b = new StringBuffer();
 		b.append(ele.getLocalName());
 
-		OMElement name_ele = MetadataSupport.firstChildWithLocalName(ele,
+		OMElement name_ele = XmlUtil.firstChildWithLocalName(ele,
 				"Name");
 		if (name_ele != null) {
-			OMElement loc = MetadataSupport.firstChildWithLocalName(name_ele,
+			OMElement loc = XmlUtil.firstChildWithLocalName(name_ele,
 					"LocalizedString");
 			if (loc != null) {
 				String name = loc.getAttributeValue(new QName("value"));
@@ -2323,20 +2306,20 @@ public class Metadata {
 					EbRS.SOR_example);
 
 		if (metadata.getLocalName().equals("TestResults")) {
-			OMElement test_step = MetadataSupport.firstChildWithLocalName(
+			OMElement test_step = XmlUtil.firstChildWithLocalName(
 					metadata, "TestStep");
 			if (test_step != null) {
-				OMElement sqt = MetadataSupport.firstChildWithLocalName(
+				OMElement sqt = XmlUtil.firstChildWithLocalName(
 						test_step, "StoredQueryTransaction");
 				if (sqt != null) {
-					OMElement result = MetadataSupport.firstChildWithLocalName(
+					OMElement result = XmlUtil.firstChildWithLocalName(
 							sqt, "Result");
 					if (result != null) {
-						OMElement ahqr = MetadataSupport
+						OMElement ahqr = XmlUtil
 								.firstChildWithLocalName(result,
 										"AdhocQueryResponse");
 						if (ahqr != null) {
-							OMElement rol = MetadataSupport
+							OMElement rol = XmlUtil
 									.firstChildWithLocalName(ahqr,
 											"RegistryObjectList");
 							if (rol != null) {
@@ -2356,10 +2339,10 @@ public class Metadata {
 
 		if (metadata.getLocalName().equals(
 				"ProvideAndRegisterDocumentSetRequest")) {
-			OMElement sor = MetadataSupport.firstChildWithLocalName(metadata,
+			OMElement sor = XmlUtil.firstChildWithLocalName(metadata,
 					"SubmitObjectsRequest");
 			if (sor != null) {
-				return MetadataSupport.firstChildWithLocalName(sor,
+				return XmlUtil.firstChildWithLocalName(sor,
 						"RegistryObjectList");
 			}
 		}
@@ -2370,7 +2353,7 @@ public class Metadata {
 			if (child.getLocalName().equals("RegistryObjectList"))
 				return child;
 			if (child.getLocalName().equals("AdhocQueryResponse")) {
-				OMElement achild = MetadataSupport.firstChildWithLocalName(
+				OMElement achild = XmlUtil.firstChildWithLocalName(
 						child, "SQLQueryResult");
 				if (achild != null)
 					return achild;

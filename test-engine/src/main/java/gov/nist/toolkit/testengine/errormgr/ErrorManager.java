@@ -9,14 +9,14 @@ import java.util.List;
 import org.apache.axiom.om.OMElement;
 
 public class ErrorManager {
-	
+
 	abstract class Event {
 		String msg;
 		String code;
 		String location;
 		String url;
 		String urltext;
-		
+
 		Event(String msg) {
 			this.msg = msg;
 			this.code = null;
@@ -25,25 +25,25 @@ public class ErrorManager {
 			this.urltext = null;
 		}
 	}
-	
+
 	class Error extends Event {
 		Error(String msg) {
 			super(msg);
 		}
 	}
-	
+
 	class Info extends Event {
 		Info(String msg) {
 			super(msg);
 		}
 	}
-	
+
 	class Warning extends Event {
 		Warning(String msg) {
 			super(msg);
 		}
 	}
-	
+
 
 	List<Event> events = new ArrayList<Event>();
 	List <AssertionResult> assertions;
@@ -51,19 +51,19 @@ public class ErrorManager {
 
 	public ErrorManager() {
 	}
-	
+
 	public void setFatal () {
 		fatal = true;
 	}
-	
+
 	public boolean isFatal() {
 		return fatal;
 	}
-	
+
 	public ErrorManager(String err) {
 		add(err);
 	}
-	
+
 	Event add(Event event) {
 		events.add(event);
 		return event;
@@ -77,7 +77,7 @@ public class ErrorManager {
 	public ErrorManager add(Exception e) {
 		return add(ExceptionUtil.exception_details(e));
 	}
-	
+
 	public ErrorManager addURL(String url, String urltext) {
 		if (events.size() == 0 )
 			return this;
@@ -114,11 +114,11 @@ public class ErrorManager {
 
 	public void asXml(OMElement root, String errorElementName, String infoElementName) {
 		for (Event e : events) {
-			if (e instanceof Error) 
+			if (e instanceof Error)
 				addElement(root, errorElementName, e.msg);
-			else if (e instanceof Warning) 
+			else if (e instanceof Warning)
 				addElement(root, infoElementName, "Warning: " + e.msg);
-			else if (e instanceof Info) 
+			else if (e instanceof Info)
 				addElement(root, infoElementName, e.msg);
 		}
 	}

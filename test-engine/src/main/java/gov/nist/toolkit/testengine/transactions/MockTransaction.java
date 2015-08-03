@@ -17,7 +17,7 @@ public class MockTransaction extends BasicTransaction {
 	@Override
 	protected void run(OMElement request) throws Exception {
 		testLog.add_name_value(instruction_output, "Endpoint", "http://localhost:8080/myendpoint");
-		testLog.add_name_value(	instruction_output, 
+		testLog.add_name_value(	instruction_output,
 				"InputMetadata", MetadataSupport.om_factory.createOMElement("MyTopElement", null));
 		testLog.add_name_value(instruction_output, "OutHeader", MetadataSupport.om_factory.createOMElement("Header", null));
 		testLog.add_name_value(instruction_output, "OutAction", "Action");

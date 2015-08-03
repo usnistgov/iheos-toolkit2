@@ -43,11 +43,11 @@ public abstract class Response implements ErrorLogger {
 
 	public RegistryErrorListGenerator getRegistryErrorList() { return registryErrorList; }
 
-	public void setIsXCA() { 
+	public void setIsXCA() {
 		isXCA = true;
 	}
 
-	public String getStatus() throws XdsInternalException { 
+	public String getStatus() throws XdsInternalException {
 		if (response != null) {
 			String status = response.getAttributeValue(MetadataSupport.status_qname);
 			if (status == null)
@@ -72,11 +72,11 @@ public abstract class Response implements ErrorLogger {
 
 	public Response(short version) throws XdsInternalException {
 		init(version, new RegistryErrorListGenerator(version, true /* log */));
-	} 
+	}
 
 	public Response() throws XdsInternalException {
 		init(version_3, new RegistryErrorListGenerator(version_3, true /* log */));
-	} 
+	}
 
 	public Response(short version, RegistryErrorListGenerator rel)  throws XdsInternalException {
 		init(version, rel);
@@ -103,7 +103,7 @@ public abstract class Response implements ErrorLogger {
 					registryErrorList.add_warning(vei.getCodeString(), msg, null, null, null);
 				}
 			}
-		}	
+		}
 	}
 
 
@@ -114,7 +114,7 @@ public abstract class Response implements ErrorLogger {
 		}
 		this.version = version;
 		if (version == version_2) {
-			ebRSns =  MetadataSupport.ebRSns2;  
+			ebRSns =  MetadataSupport.ebRSns2;
 			ebRIMns = MetadataSupport.ebRIMns2;
 			ebQns = MetadataSupport.ebQns2;
 		} else {
@@ -123,7 +123,7 @@ public abstract class Response implements ErrorLogger {
 			ebQns = MetadataSupport.ebQns3;
 		}
 
-		registryErrorList = rel;		
+		registryErrorList = rel;
 
 	}
 
@@ -159,10 +159,10 @@ public abstract class Response implements ErrorLogger {
 
 		//			if (this instanceof RetrieveMultipleResponse) {
 		//				return ((RetrieveMultipleResponse) this).rdsr;
-		//			} 
+		//			}
 		//			else if (this instanceof RegistryResponse) {
-		//				
-		//			} 
+		//
+		//			}
 		//			else if (this instanceof AdhocQueryResponse) {
 		//				AdhocQueryResponse a = (AdhocQueryResponse) this;
 		//				OMElement query_result = a.getQueryResult();

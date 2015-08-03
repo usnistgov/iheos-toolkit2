@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmetadata.object.ExternalIdentifier;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -16,8 +17,8 @@ public class DocumentEntryValidator extends ValidatorCommon {
 				MetadataSupport.XDSDocumentEntry_patientid_uuid,
 				MetadataSupport.XDSDocumentEntry_uniqueid_uuid
 				);
-	
-	List<String> doc_classifications = 
+
+	List<String> doc_classifications =
 		Arrays.asList(
 				MetadataSupport.XDSDocumentEntry_author_uuid,
 				MetadataSupport.XDSDocumentEntry_classCode_uuid,
@@ -40,13 +41,13 @@ public class DocumentEntryValidator extends ValidatorCommon {
 //				docEntries.add(new DocumentEntry(m, ele));
 //			} catch (Exception e) {
 //				err(e);
-//			} 
+//			}
 //		}
-//		
+//
 //		for (DocumentEntry de : docEntries) {
 //			de.validate(this, this.valCtx);
 //		}
-//		
+//
 //		validate_externalIds();
 //		validate_special_doc_slot_structure();
 //	}
@@ -70,7 +71,7 @@ public class DocumentEntryValidator extends ValidatorCommon {
 //
 //				if (slot_name.equals("legalAuthenticator")) {
 //
-//				} 
+//				}
 //				else if (slot_name.equals("sourcePatientId")) {
 //					validate_source_patient_id(slot);
 //				}
@@ -91,8 +92,8 @@ public class DocumentEntryValidator extends ValidatorCommon {
 //	}
 
 	void validate_source_patient_id(OMElement spi_slot) {
-		OMElement value_list = MetadataSupport.firstChildWithLocalName(spi_slot, "ValueList");
-		List<OMElement> valueEles = MetadataSupport.childrenWithLocalName(value_list, "Value");
+		OMElement value_list = XmlUtil.firstChildWithLocalName(spi_slot, "ValueList");
+		List<OMElement> valueEles = XmlUtil.childrenWithLocalName(value_list, "Value");
 		if (valueEles.size() != 1) {
 			err("sourcePatientId must have exactly one value");
 			return;
@@ -109,7 +110,7 @@ public class DocumentEntryValidator extends ValidatorCommon {
 			String id = (String) doc_ids.get(i);
 			try {
 				List<OMElement> ext_ids = m.getExternalIdentifiers(id);
-				
+
 				for (OMElement extid : ext_ids) {
 					ExternalIdentifier ei = new ExternalIdentifier(m, extid);
 					if (!doc_externalIdentifiers.contains(ei.getIdentificationScheme()))

@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.validation.schematron.ReportProcessor;
 import gov.nist.toolkit.valregmsg.validation.schematron.schematronValidation;
 import gov.nist.toolkit.xdsexception.MetadataException;
@@ -22,7 +23,7 @@ import org.jaxen.JaxenException;
 public class XcpdTransaction extends BasicTransaction {
 
 	boolean clean_params = true;
-	
+
 	public XcpdTransaction(StepContext s_ctx, OMElement instruction,
 			OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
@@ -31,30 +32,30 @@ public class XcpdTransaction extends BasicTransaction {
 	protected void run(OMElement request) throws Exception {
 		useAddressing = true;
 		soap_1_2 = true;
-		
+
 		if (metadata_filename == null)
 			throw new XdsInternalException("No MetadataFile element found for XcpdTransaction instruction within step " + this.s_ctx.get("step_id"));
 
-		
+
 		if (clean_params)
 			cleanSqParams(request);
-		
+
 		try {
 			soapCall(request);
 			OMElement result = getSoapResult();
 			if (result != null) {
 				testLog.add_name_value(instruction_output, "Result", result);
-				
+
 				// here get validation call and put here
-				
-				
+
+
 				validate_response(result);
 			} else {
 				testLog.add_name_value(instruction_output, "Result", "None");
 				s_ctx.set_error("Result was null");
 			}
 
-		} 
+		}
 		catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -62,17 +63,17 @@ public class XcpdTransaction extends BasicTransaction {
 	}
 
 	private void validate_response(OMElement result) throws XdsInternalException {
-		
+
 	try {
 		    String warHome = System.getProperty("warHome");
 		    System.out.print("warHome[xdstest2:validate_response]: " + warHome + "\n");
 		    String path = warHome + File.separator + "toolkitx" + File.separator + "schematron" + File.separator + "xcpd" + File.separator + "files" + File.separator + "schematronValidationConfig.xml";
-		   
+
 		    File config = new File(path);
 		    if (!config.exists()) {
 		    	System.out.print("file: " + path + "does not exist");
 		    }
-		    
+
 			String xmlstring = result.toString();
 			String messageType = "IHE_XCPD_306";
 			XmlObject createdReport = schematronValidation.createReport(warHome, config, xmlstring, messageType);
@@ -83,7 +84,7 @@ public class XcpdTransaction extends BasicTransaction {
 			s_ctx.set_error("Problem generating your report");
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void reportFormatter(XmlObject report) {
 
@@ -92,7 +93,7 @@ public class XcpdTransaction extends BasicTransaction {
 	//	String headerErrorsReport = new String();
 	//	String schemaErrorsReport = new String();
 	//	String schematronErrorsReport = new String();
-		
+
 		// Utility class that breaks the xml report into 3 sections for formatting and reporting back
 		ReportProcessor rp = new ReportProcessor();
 		rp.documentParser(reportAsString);
@@ -103,7 +104,7 @@ public class XcpdTransaction extends BasicTransaction {
 		testLog.add_name_value(instruction_output, "Detail", "DateOfTest: " + reportHeader.get("DateOfTest"));
 		testLog.add_name_value(instruction_output, "Detail", "ResultOfTest: " + reportHeader.get("ResultOfTest"));
 		testLog.add_name_value(instruction_output, "Detail", "TotalErrorCount: " + reportHeader.get("ErrorCount"));
-		
+
 		// Sets schema reporting
 		testLog.add_name_value(instruction_output, "Detail", "");
 		testLog.add_name_value(instruction_output, "Detail", "---- Schema Report ----");
@@ -116,7 +117,7 @@ public class XcpdTransaction extends BasicTransaction {
 					s_ctx.set_error(i + ") " + schemaErrors.get(i).toString());
 				} catch (XdsInternalException e) {
 				}
-		}	
+		}
 		// Sets schematron reporting
 			testLog.add_name_value(instruction_output, "Detail", "");
 			testLog.add_name_value(instruction_output, "Detail", "---- Schematron Report ----");
@@ -134,7 +135,7 @@ public class XcpdTransaction extends BasicTransaction {
 				testLog.add_name_value(instruction_output, "Detail", "");
 			}
 		}
-	}	
+	}
 	}
 
 
@@ -150,7 +151,7 @@ public class XcpdTransaction extends BasicTransaction {
 	protected String getResponseAction() {
 		return "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery";
 	}
-	
+
 	protected String getBasicTransactionName() {
 		return "xcpd";
 	}
@@ -162,10 +163,10 @@ public class XcpdTransaction extends BasicTransaction {
 			OMElement adhocQuery = (OMElement) xpathExpression.selectSingleNode(ele);
 			if (adhocQuery == null)
 				return;
-			
+
             // Clean livingSubjectAdministrativeGender
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "livingSubjectAdministrativeGender")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "livingSubjectAdministrativeGender")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -175,12 +176,12 @@ public class XcpdTransaction extends BasicTransaction {
 					    System.out.println("detatched");
 					}
 				}
-				
+
 			} // Cleaned LivingSubjectsAdministrativeGender
-			
+
 			//livingSubjectsBirthPlaceAddress
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "livingSubjectBirthPlaceAddress")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "livingSubjectBirthPlaceAddress")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -189,8 +190,8 @@ public class XcpdTransaction extends BasicTransaction {
 					    slot.detach();
 					}
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "streetAddressLine")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "streetAddressLine")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -202,8 +203,8 @@ public class XcpdTransaction extends BasicTransaction {
 					value.detach();
 					System.out.println("detatched");
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "city")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "city")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -214,8 +215,8 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "state")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "state")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -226,8 +227,8 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "postalCode")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "postalCode")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -238,8 +239,8 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "country")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "country")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -250,16 +251,16 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				
+
 				if (!valueList.getChildElements().hasNext()) {
 					valueList.detach();
 					slot.detach();
 				}
 			} // End of Address
-			
+
 			//livingSubjectsBirthPlaceName
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "livingSubjectBirthPlaceName")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "livingSubjectBirthPlaceName")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -269,8 +270,8 @@ public class XcpdTransaction extends BasicTransaction {
 					    System.out.println("Gavin: Detatched" );
 					}
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "Value")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "Value")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)
@@ -285,11 +286,11 @@ public class XcpdTransaction extends BasicTransaction {
 					slot.detach();
 				}
 			}
-			
+
 
 			//livingSubjectsID --SSN  -- need to figure out representation and value
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "livingSubjectId")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "livingSubjectId")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -298,8 +299,8 @@ public class XcpdTransaction extends BasicTransaction {
 					    slot.detach();
 					}
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "Value")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "Value")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)
@@ -315,8 +316,8 @@ public class XcpdTransaction extends BasicTransaction {
 				}
 			}
 			//livingSubjectsID -- patientID --- need to figure out what we are putting where
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "livingSubjectId")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "livingSubjectId")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -325,8 +326,8 @@ public class XcpdTransaction extends BasicTransaction {
 					    slot.detach();
 					}
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "Value")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "Value")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)
@@ -342,10 +343,10 @@ public class XcpdTransaction extends BasicTransaction {
 				}
 			}
 			//livingSubjectID
-			
-			//livingSubjectName 
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "livingSubjectName")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+
+			//livingSubjectName
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "livingSubjectName")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				//System.out.println("Gavin: " + slot);
 				//System.out.println("Gavin: " + valueList);
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
@@ -356,8 +357,8 @@ public class XcpdTransaction extends BasicTransaction {
 					    slot.detach();
 					}
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "given")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "given")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)
@@ -367,8 +368,8 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "suffix")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "suffix")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)
@@ -384,10 +385,10 @@ public class XcpdTransaction extends BasicTransaction {
 				}
 			}
 			//livingSubjectID
-			
+
 			//mothersMaidenName
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "mothersMaidenName")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "mothersMaidenName")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -396,8 +397,8 @@ public class XcpdTransaction extends BasicTransaction {
 					    slot.detach();
 					}
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "given")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "given")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)
@@ -407,8 +408,8 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "family")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "family")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)
@@ -418,8 +419,8 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "suffix")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "suffix")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)
@@ -429,16 +430,16 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				
+
 				if (!valueList.getChildElements().hasNext()) {
 					valueList.detach();
 					slot.detach();
 				}
 			}
-			
+
 			//patientAddress
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "patientAddress")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "patientAddress")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -447,8 +448,8 @@ public class XcpdTransaction extends BasicTransaction {
 					    slot.detach();
 					}
 				}
-				
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "streetAddressLine")) {
+
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "streetAddressLine")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -459,7 +460,7 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "city")) {
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "city")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -470,7 +471,7 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "state")) {
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "state")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -481,7 +482,7 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "postalCode")) {
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "postalCode")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -492,7 +493,7 @@ public class XcpdTransaction extends BasicTransaction {
 						continue;
 					value.detach();
 				}
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "country")) {
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "country")) {
 					//check if a value exist anywhere within the address
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
@@ -509,8 +510,8 @@ public class XcpdTransaction extends BasicTransaction {
 				}
 			}
 			//patient telecom
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "patientTelecom")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "patientTelecom")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -521,10 +522,10 @@ public class XcpdTransaction extends BasicTransaction {
 				}
 			}
 			//patient telecom
-			
+
 			//principleCarePrividerID
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "principalCareProviderId")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "value");
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "principalCareProviderId")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "value");
 				for (Iterator<OMAttribute> it=valueList.getAllAttributes(); it.hasNext(); ) {
 					OMAttribute at = it.next();
 					if ((at.getAttributeValue().indexOf("$") != -1) || (at.getAttributeValue().equals(null)))  {
@@ -534,7 +535,7 @@ public class XcpdTransaction extends BasicTransaction {
 					}
 				}
 			}
-			
+
 		} catch (JaxenException e) {
 		}
 
