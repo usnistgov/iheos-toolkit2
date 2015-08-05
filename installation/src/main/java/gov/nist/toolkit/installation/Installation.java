@@ -49,9 +49,9 @@ public class Installation {
 	public File warHome() { 
 		return warHome; 
 		}
-	public void warHome(File warHome) {
-		logger.info("Initializing V2 - warhome is " + warHome);
-		this.warHome = warHome; 
+	public void warHome(File warHome) { 
+		logger.info("V2 - Installation - war home set to " + warHome);
+		this.warHome = warHome;
 		}
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) { 

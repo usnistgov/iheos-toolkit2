@@ -3,13 +3,12 @@ package gov.nist.toolkit.valsupport.engine;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
 
 /**
  * Maintain collection of validation steps and run them on request.  New steps are added to the end of the list. 
@@ -131,7 +130,7 @@ public class MessageValidatorEngine {
 	public ValidationStep addMessageValidator(String stepName, MessageValidator v, ErrorRecorder er) {
 		ValidationStep step = new ValidationStep(stepName, v, er);
 		validationSteps.add(step);
-		logger.debug("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
+		logger.info("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());
 		return step;
 	}
 	

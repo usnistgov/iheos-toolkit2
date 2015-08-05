@@ -43,11 +43,16 @@
             <id>apache-central</id>
             <url>http://repo.maven.apache.org/maven2</url>
         </repository>
-            <repository>
-                <id>gazelle-3rd-party</id>
-                <name>gazelle nexus</name>
-                <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
-            </repository>
+        <repository>
+            <id>Codehaus Mojo</id>
+            <name>Codehaus Mojo</name>
+            <url>https://nexus.codehaus.org/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>gazelle-3rd-party</id>
+            <name>gazelle nexus</name>
+            <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
+        </repository>
     </repositories>
 
     <scm>
@@ -378,9 +383,9 @@
                 <version>1.5</version>
             </dependency>
             <!--<dependency>-->
-                <!--<groupId>org.slf4j</groupId>-->
-                <!--<artifactId>log4j-over-slf4j</artifactId>-->
-                <!--<version>1.7.5</version>-->
+            <!--<groupId>org.slf4j</groupId>-->
+            <!--<artifactId>log4j-over-slf4j</artifactId>-->
+            <!--<version>1.7.5</version>-->
             <!--</dependency>-->
             <dependency>
                 <groupId>org.slf4j</groupId>

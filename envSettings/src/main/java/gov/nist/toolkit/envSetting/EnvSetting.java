@@ -2,19 +2,17 @@ package gov.nist.toolkit.envSetting;
 
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.NoSessionException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 public class EnvSetting {
 	// SessionID ==> Environment Setting
 	static Map<String, EnvSetting> settings = new HashMap<String, EnvSetting>();
     static public final String DEFAULTSESSIONID = "DEFAULT";
-	static public final String DEFAULTENVIRONMENTNAME = "default";
+    static public final String DEFAULTENVIRONMENTNAME = "default";
 	String envName;
 	File envDir;
 	
@@ -70,6 +68,7 @@ public class EnvSetting {
 		File f = new File(envDir + File.separator + "codes.xml");
 		if (f.exists())
 			return f;
+		logger.warn("Codes file " + f + " does not exist");
 		return null;
 	}
 
