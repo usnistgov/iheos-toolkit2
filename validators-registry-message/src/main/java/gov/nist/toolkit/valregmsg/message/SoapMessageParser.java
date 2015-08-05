@@ -2,6 +2,7 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
@@ -28,8 +29,8 @@ public class SoapMessageParser extends MessageValidator {
     }
 
     void parse() {
-        header = MetadataSupport.firstChildWithLocalName(envelope, "Header");
-        body = MetadataSupport.firstChildWithLocalName(envelope, "Body");
+        header = XmlUtil.firstChildWithLocalName(envelope, "Header");
+        body = XmlUtil.firstChildWithLocalName(envelope, "Body");
     }
 
     public OMElement getEnvelope() { return envelope; }

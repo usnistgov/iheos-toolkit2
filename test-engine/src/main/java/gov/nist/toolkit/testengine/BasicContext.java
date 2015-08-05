@@ -16,17 +16,17 @@ public class BasicContext  {
 	BasicContext parent_context;
 	HashMap atts;
 	OmLogger testLog = new TestLogFactory().getLogger();
-	
+
 	public BasicContext(BasicContext parent_context) {
 		this.parent_context = parent_context;
 		atts = null;
 	}
-	
+
 	public void set(String attname, Object attvalue) {
 		if (atts == null) atts = new HashMap();
 		atts.put(attname, attvalue);
 	}
-	
+
 	public Object getObj(String attname) {
 		if (atts == null) atts = new HashMap();
 		Object value = atts.get(attname);
@@ -36,19 +36,19 @@ public class BasicContext  {
 			return parent_context.getObj(attname);
 		return null;
 	}
-	
+
 	public String get(String attname) {
 		return (String) getObj(attname);
 	}
-	
+
 	public PlanContext getPlan() {
-		if (this instanceof PlanContext) 
+		if (this instanceof PlanContext)
 			return (PlanContext) this;
 		if (parent_context != null)
 			return parent_context.getPlan();
 		return null;
 	}
-	
+
 	public String getRecursive(String attname) {
 		String value = get(attname);
 		//System.out.println("getRecursive (" + attname + ") : " + getClass().getName() + ": " + value);
@@ -58,7 +58,7 @@ public class BasicContext  {
 		}
 		return null;
 	}
-	
+
 	public void dumpContext() {
 		System.out.println(getClass().getName());
 		if (atts == null)
@@ -70,13 +70,13 @@ public class BasicContext  {
 			System.out.println("    " + key + " : " + value.toString() );
 		}
 	}
-	
+
 	public void dumpContextRecursive() {
 		dumpContext();
-		if (parent() != null) 
+		if (parent() != null)
 			parent().dumpContextRecursive();
 	}
-	
+
 	public void dumpContextIntoOutput(OMElement output) {
 		OMElement context = MetadataSupport.om_factory.createOMElement(new QName("Context"));
 		context.addAttribute("class", getClass().getName(), null);
@@ -95,7 +95,7 @@ public class BasicContext  {
 			parent().dumpContextIntoOutput(context);
 		}
 	}
-	
+
 	public BasicContext parent() { return parent_context; }
 
 
@@ -133,5 +133,5 @@ public class BasicContext  {
 	}
 
 
-	
+
 }

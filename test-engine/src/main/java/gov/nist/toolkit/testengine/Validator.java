@@ -4,6 +4,7 @@ import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -34,7 +35,7 @@ public class Validator {
 	public Validator(File test_assertion_file, String subset_name) throws XdsInternalException {
 		test_assertions = Util.parse_xml(test_assertion_file);
 		if (subset_name != null) {
-			test_assertions = MetadataSupport.firstChildWithLocalName(test_assertions, subset_name);
+			test_assertions = XmlUtil.firstChildWithLocalName(test_assertions, subset_name);
 			if ( test_assertions == null)
 				throw new XdsInternalException("Validator: assertion subset " + subset_name + " not found in file " + test_assertion_file);
 		}
@@ -129,7 +130,7 @@ public class Validator {
 	}
 
 	public boolean hasSubmissionSet() {
-		if (m.getSubmissionSet() == null) { 
+		if (m.getSubmissionSet() == null) {
 			err("No Submission Set found");
 			return false;
 		}
@@ -182,10 +183,10 @@ public class Validator {
 			val = "";
 		return val;
 	}
-	
+
 	String properAssocFormatting(String type) {
-		return (m.isVersion2()) ? 
-				MetadataSupport.associationTypeWithoutNamespace(type) : 
+		return (m.isVersion2()) ?
+				MetadataSupport.associationTypeWithoutNamespace(type) :
 					MetadataSupport.associationTypeWithNamespace(type);
 	}
 
@@ -205,9 +206,9 @@ public class Validator {
 				continue;
 			return a;
 		}
-		err(type + " assocation missing between sourceObject " + 
-				m.getIdentifyingString(source_id) + 
-				" and targetObject " + 
+		err(type + " assocation missing between sourceObject " +
+				m.getIdentifyingString(source_id) +
+				" and targetObject " +
 				m.getIdentifyingString(target_id) +
 				" expected " + type1);
 		return null;
@@ -240,9 +241,9 @@ public class Validator {
 				continue; // error
 			return a;
 		}
-		err(type + " assocation missing between sourceObject " + 
-				m.getIdentifyingString(source_id) + 
-				" and targetObject (one of) " + 
+		err(type + " assocation missing between sourceObject " +
+				m.getIdentifyingString(source_id) +
+				" and targetObject (one of) " +
 				getIdentifyingStrings(target_ids) +
 				" expected " + type1);
 		return null;
@@ -293,7 +294,7 @@ public class Validator {
 				if (docUuid == null)
 					docUuid = m.getAssocTarget(a);
 				else {
-					if (docUuid.equals(m.getAssocTarget(a))) 
+					if (docUuid.equals(m.getAssocTarget(a)))
 						throw new MetadataException("HasRPLC test: multiple RPLC associations found for same Document", MetadataTables.Doc_relationships);
 				}
 			}
@@ -301,7 +302,7 @@ public class Validator {
 
 		return found;
 	}
-	
+
 	public boolean isDocApproved(OMElement eo) {
 		String status = m.stripNamespace(eo.getAttributeValue(MetadataSupport.status_qname));
 		if ( status == null || !status.equals("Approved")) {
@@ -309,7 +310,7 @@ public class Validator {
 		}
 		return true;
 	}
-	
+
 	public boolean isDocDeprecated(OMElement eo) {
 		String status = m.stripNamespace(eo.getAttributeValue(MetadataSupport.status_qname));
 		if ( status == null || !status.equals("Deprecated")) {
@@ -317,7 +318,7 @@ public class Validator {
 		}
 		return true;
 	}
-	
+
 	public boolean docApproved(OMElement eo) {
 		String status = m.stripNamespace(eo.getAttributeValue(MetadataSupport.status_qname));
 		if ( status == null || !status.equals("Approved")) {
@@ -362,7 +363,7 @@ public class Validator {
 
 	public boolean ssApproved() throws MetadataException {
 		OMElement ss = m.getSubmissionSet();
-		if (ss == null) { 
+		if (ss == null) {
 			err("No Submission Set");
 			return false;
 		}
@@ -377,7 +378,7 @@ public class Validator {
 	public boolean docsDeprecated() throws MetadataException {
 		for (OMElement eo : m.getExtrinsicObjects()) {
 			String status = m.stripNamespace(eo.getAttributeValue(MetadataSupport.status_qname));
-			if ( !status.equals("Deprecated")) {	
+			if ( !status.equals("Deprecated")) {
 				err("ExtrinsicObject " + eo.getAttributeValue(MetadataSupport.id_qname) + " has status " + status + " instead of 'Deprecated'");
 				return false;
 			}
@@ -389,7 +390,7 @@ public class Validator {
 		int count = 0;
 		for (OMElement eo : m.getExtrinsicObjects()) {
 			String status = m.stripNamespace(eo.getAttributeValue(MetadataSupport.status_qname));
-			if ( status.equals("Deprecated")) 
+			if ( status.equals("Deprecated"))
 				count++;
 		}
 		if (count == 1)
@@ -402,7 +403,7 @@ public class Validator {
 		int count = 0;
 		for (OMElement eo : m.getExtrinsicObjects()) {
 			String status = m.stripNamespace(eo.getAttributeValue(MetadataSupport.status_qname));
-			if ( status.equals("Approved")) 
+			if ( status.equals("Approved"))
 				count++;
 		}
 		if (count == 1)
@@ -427,47 +428,47 @@ public class Validator {
 			if (ec_name.equals("SSwithOneDoc")) {
 				ss1Doc();
 				ssApproved();
-			} 
+			}
 			else if (ec_name.equals("SSApproved")) {
 				ssApproved();
-			} 
+			}
 			else if (ec_name.equals("DocDep")) {
 				docsDeprecated();
-			} 
+			}
 			else if (ec_name.equals("DocApp")) {
 				docsApproved();
-			} 
+			}
 			else if (ec_name.equals("HasRPLC")) {
 				hasRplc();
-			} 
+			}
 			else if (ec_name.equals("DocRplcDoc")) {
 				docRplcDoc();
 			}
 			else if (ec_name.equals("OneDocDep")) {
 				oneDocDeprecated();
-			} 
+			}
 			else if (ec_name.equals("OneDocApp")) {
 				oneDocApproved();
-			} 
+			}
 			else if (ec_name.equals("FolApp")) {
 				folsApproved();
-			} 
+			}
 			else if (ec_name.equals("SSwithTwoDoc")) {
 				ss2Doc();
 				ssApproved();
-			} 
+			}
 			else if (ec_name.equals("SSwithOneDocOneFol")) {
 				sswithOneDocOneFol();
-			} 
+			}
 			else if (ec_name.equals("SSwithTwoDocOneFol")) {
 				sswithTwoDocOneFol();
-			} 
+			}
 			else if (ec_name.equals("SSwithTwoDocOneFolOneDocInFol")) {
 				sswithTwoDocOneFolOneDocInFol();
-			} 
+			}
 			else if (ec_name.equals("SSwithOneFol")) {
 				sswithOneFol();
-			} 
+			}
 			else if (ec_name.equals("None")) {
 				hasNoSubmissionSet();
 				hasDocuments(0);
@@ -475,7 +476,7 @@ public class Validator {
 				if (hasError())
 					continue;
 				hasAssociations(0);
-			} 
+			}
 			else if (ec_name.equals("ObjectRefs")) {
 				int count = Integer.parseInt(ec.getAttributeValue(new QName("count")));
 				hasObjectRefs(count);
@@ -506,7 +507,7 @@ public class Validator {
 
 		}
 	}
-	
+
 	public boolean docRplcDoc() throws MetadataException {
 		hasDocuments(2);
 		hasAssociations(1);
@@ -530,13 +531,13 @@ public class Validator {
 		}
 		return !hasError();
 	}
-	
+
 	protected List<?> clone(List<?> lst) {
 		List<Object> lst2 = new ArrayList<Object>();
-		
+
 		for (int i=0; i<lst.size(); i++)
 			lst2.add(lst.get(i));
-		
+
 		return lst2;
 	}
 
@@ -631,7 +632,7 @@ public class Validator {
 		}
 		return !hasError();
 	}
-	
+
 	public boolean replaceDocument() throws MetadataException {
 		hasSubmissionSet();
 		hasDocuments(1);
@@ -786,7 +787,7 @@ public class Validator {
 
 			a = hasAssociation(m.getFolder(0), m.getExtrinsicObject(1), "HasMember");
 			if (a != null) {
-				unknownAssocs.remove(a);			
+				unknownAssocs.remove(a);
 				folderDocAssocs.add(a);
 			}
 
@@ -831,8 +832,8 @@ public class Validator {
 				if (a != null)
 					unknownAssocs.remove(a);
 			}
-			
-		
+
+
 		}
 		return !hasError();
 	}
@@ -882,7 +883,7 @@ public class Validator {
 					assertion_set_name = args[i];
 				} else
 					usage();
-			} 
+			}
 			else if (i == args.length-1) {
 				filename = args[i];
 			}
@@ -910,10 +911,10 @@ public class Validator {
 				v.run_test_assertions(ele_of_focus);
 			}
 			else {
-				OMElement step = MetadataSupport.firstChildWithLocalName(input, test_step);
+				OMElement step = XmlUtil.firstChildWithLocalName(input, test_step);
 				if (step == null) throw new Exception("TestStep " + test_step + " not found in file " + filename);
 			}
-		} 
+		}
 		catch (Exception e) {
 			System.out.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(-1);
@@ -927,7 +928,7 @@ public class Validator {
 		OMElement current_ele = top_element;
 
 		for (String name : path) {
-			OMElement ele = MetadataSupport.firstChildWithLocalName(current_ele, name);
+			OMElement ele = XmlUtil.firstChildWithLocalName(current_ele, name);
 			if (ele == null) throw new Exception("find_nexted_element: Cannot find element " + name + " in path " + path);
 			current_ele = ele;
 		}

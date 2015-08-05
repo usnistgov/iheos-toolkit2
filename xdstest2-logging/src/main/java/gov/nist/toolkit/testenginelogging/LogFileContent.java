@@ -3,6 +3,7 @@ package gov.nist.toolkit.testenginelogging;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.File;
@@ -24,7 +25,7 @@ import org.apache.axiom.om.OMElement;
  */
 public class LogFileContent implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2046605414265224604L;
 	transient OMElement log;
@@ -38,28 +39,28 @@ public class LogFileContent implements Serializable {
 	String fatalError;
 	List<Report> reports;
 	File inputFile = null;
-	
+
 	public Map<String, TestStepLogContent> getStepMap() {
 		return stepMap;
 	}
-	
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append("[LogFile: ");
-		
+
 		if (inputFile != null)
 			buf.append(inputFile).append("  ");
-		
+
 		for (TestStepLogContent s : steps) {
 			buf.append(s.toString());
 		}
-		
+
 		buf.append("]");
-		
+
 		return buf.toString();
 	}
-	
+
 	public String getSection() {
 		return section;
 	}
@@ -104,7 +105,7 @@ public class LogFileContent implements Serializable {
 	void parseTestSteps() throws Exception {
 		steps = new ArrayList<TestStepLogContent>();
 		stepMap = new HashMap<String, TestStepLogContent>();
-		List<OMElement> stepEles = MetadataSupport.childrenWithLocalName(log, "TestStep");
+		List<OMElement> stepEles = XmlUtil.childrenWithLocalName(log, "TestStep");
 		for (OMElement step : stepEles) {
 			TestStepLogContent stepLog = new TestStepLogContent(step);
 			steps.add(stepLog);
@@ -122,12 +123,12 @@ public class LogFileContent implements Serializable {
 		sectionGoals = goals;
 	}
 
-	public OMElement getLog() { 
+	public OMElement getLog() {
 		return log;
 	}
 
 	void parseFatalError() {
-		OMElement ele = MetadataSupport.firstChildWithLocalName(log, "FatalError");
+		OMElement ele = XmlUtil.firstChildWithLocalName(log, "FatalError");
 		if (ele == null)
 			return;
 		fatalError = ele.getText();
@@ -171,7 +172,7 @@ public class LogFileContent implements Serializable {
 
 	void parseTest() {
 		try {
-			testAttribute = MetadataSupport.firstChildWithLocalName(log, "Test").getText();
+			testAttribute = XmlUtil.firstChildWithLocalName(log, "Test").getText();
 			if (testAttribute == null) {
 				test = null;
 				section = null;
@@ -221,7 +222,7 @@ public class LogFileContent implements Serializable {
 	//	}
 
 	String firstNChars(String s, int n) {
-		if (s.length() > n) 
+		if (s.length() > n)
 			return s.substring(0, n);
 		return s;
 	}
@@ -241,7 +242,7 @@ public class LogFileContent implements Serializable {
 	public List<Report> getReports()  {
 		return reports;
 	}
-	
+
 	public TestStepLogContent getTestStepLog(int index) throws XdsInternalException {
 		if (index >= steps.size())
 			throw new XdsInternalException("Step index " + index + " is illegal, there are " + steps.size() + " steps");

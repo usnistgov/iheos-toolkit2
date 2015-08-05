@@ -19,7 +19,7 @@ public class DsubSubscribeTransaction extends BasicTransaction {
 			OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
 
-		setXdsVersion(BasicTransaction.xds_b); 
+		setXdsVersion(BasicTransaction.xds_b);
 
 		useAddressing = true;
 		soap_1_2 = true;
@@ -36,7 +36,7 @@ public class DsubSubscribeTransaction extends BasicTransaction {
 	}
 
 	protected void parseInstruction(OMElement part) throws XdsInternalException {
-		parseBasicInstruction(part);		
+		parseBasicInstruction(part);
 	}
 
 	protected void run(OMElement metadata_element) throws XdsException {
@@ -64,18 +64,18 @@ public class DsubSubscribeTransaction extends BasicTransaction {
 				fail(errors);
 			}
 		}
-		
+
 		HashMap<String, String> response_parms_map = new HashMap<String, String>();
-		
+
 		System.out.println("result is " + result.getLocalName());
-		
+
 		String sub_ref = xpathGet(result, "subscriptionReference", "//*[local-name()='SubscribeResponse']/*[local-name()='SubscriptionReference']/*[local-name()='Address']");
 		String sub_id = xpathGet(result, "subscriptionId", "//*[local-name()='SubscribeResponse']/*[local-name()='SubscriptionReference']/*[local-name()='ReferenceParameters']/*[local-name()='SubscriptionId']");
-		
+
 		response_parms_map.put("subscriptionRef", sub_ref);
 		response_parms_map.put("subscriptionId", sub_id);
-		
-		
+
+
 		testLog.add_name_value(instruction_output, generate_xml("SubscriptionParms", response_parms_map));
 
 
@@ -83,7 +83,7 @@ public class DsubSubscribeTransaction extends BasicTransaction {
 
 
 	}
-	
+
 	String xpathGet(OMElement doc, String description, String xpath) throws XdsException {
 		AXIOMXPath xpathExpression;
 		try {
@@ -92,8 +92,8 @@ public class DsubSubscribeTransaction extends BasicTransaction {
 		} catch (JaxenException e) {
 			throw new XdsInternalException("Error extracting " + description + ": " + e.getMessage() + "\n", e);
 		}
-		
+
 	}
-	
-	
+
+
 }

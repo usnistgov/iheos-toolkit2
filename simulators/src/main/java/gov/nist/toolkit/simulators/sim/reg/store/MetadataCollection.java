@@ -30,13 +30,13 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 	private static final long serialVersionUID = 1L;
 
-	
+
 	public DocEntryCollection docEntryCollection;
 	public AssocCollection assocCollection;
 	public SubSetCollection subSetCollection;
 	public FolCollection folCollection;
 
-	
+
 	transient List<RegObCollection> allCollections = null;
 	public transient FolCollection updatedFolCollection;
 	transient boolean dirty;
@@ -46,11 +46,11 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	// To maintain a delta ...
 	transient MetadataCollection parent = null;
 	transient List<OldValueNewValueStatus> statusChanges = null;
-	
-	// create a delta for this collection 
+
+	// create a delta for this collection
 	public MetadataCollection mkDelta() {
 		MetadataCollection delta = new MetadataCollection();
-		
+
 		delta.init();
 		delta.parent = this;
 		delta.regIndex = regIndex;
@@ -58,61 +58,61 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		delta.folCollection     .parent = folCollection;
 		delta.assocCollection   .parent = assocCollection;
 		delta.subSetCollection  .parent = subSetCollection;
-		
+
 		delta.updatedFolCollection = new FolCollection();
 		delta.updatedFolCollection.init();
-		
+
 		delta.statusChanges = new ArrayList<OldValueNewValueStatus>();
-		
+
 		return delta;
 	}
-	
+
 	public void changeAvailabilityStatus(String id, StatusValue oldValue, StatusValue newValue) {
 		OldValueNewValueStatus ons = (new RegIndex()).new OldValueNewValueStatus(oldValue, newValue, id);
 		statusChanges.add(ons);
 	}
-	
+
 	// A delta has been created during the operation of a Register transaction
 	// Merge the delta into the parent record
 	// Caller takes responsibility for locking
 	public boolean mergeDelta(ErrorRecorder er) {
 		if (parent == null)
 			return false;
-		
+
 		// do the parts that can fail first
 		// first loop checks for problems, second makes changes
-		
+
 		for (OldValueNewValueStatus ons : statusChanges) {
 			StatusValue oldVal = ons.o;
 			String id = ons.id;
-			
+
 			Ro obj = getObjectById(id);
 			if (obj == null) {
 				er.err(Code.XDSRegistryError, "mergeDelta: cannot find object " + id, this, null);
 				return false;
 			}
-			
+
 			if (obj.getAvailabilityStatus() != oldVal) {
 				er.err(Code.XDSRegistryError, "mergeDelta: old status has changed", this, null);
 				return false;
 			}
-			
+
 			ons.ro = obj;
-			
+
 		}
 
 		for (OldValueNewValueStatus ons : statusChanges) {
 			StatusValue newVal = ons.n;
-			
+
 			ons.ro.setAvailabilityStatus(newVal);
 		}
-		
+
 		for (Fol f  : updatedFolCollection.fols) {
 			String fid = f.getId();
-			
+
 			for (int i=0; i<parent.folCollection.fols.size(); i++) {
 				Fol origFol = parent.folCollection.fols.get(i);
-				
+
 				if (fid.equals(origFol.getId())) {
 					parent.folCollection.fols.set(i, f);
 					break;
@@ -120,24 +120,24 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 			}
 		}
 
-		
+
 		parent.docEntryCollection.entries.addAll(docEntryCollection.entries);
 
 		parent.assocCollection.assocs.addAll(assocCollection.assocs);
-		
+
 		parent.folCollection.fols.addAll(folCollection.fols);
-		
+
 		parent.subSetCollection.subSets.addAll(subSetCollection.subSets);
-		
+
 		return true;
 	}
-	
+
 	public void labelFolderUpdated(Fol f, String lastUpdateTime) {
 		Fol nf = f.clone();
 		nf.lastUpdateTime = lastUpdateTime;
 		updatedFolCollection.fols.add(nf);
 	}
-	
+
 	public void init() {
 		docEntryCollection = new DocEntryCollection();
 		docEntryCollection.init();
@@ -153,7 +153,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 		dirty = false;
 	}
-	
+
 	public void mkDirty() {
 		dirty = true;
 	}
@@ -180,24 +180,24 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 			if (ro instanceof DocEntry) {
 				uid = ro.uid;
 			}
-			
+
 			System.out.println("Delete " + id);
 
 			synchronized(regIndex) {
 				// delete entry in registry index
 				roc.delete(id);
-				
+
 				// delete file containing xml
 				File xml = ro.getFile();
 				xml.delete();
-				
-				
+
+
 			}
 			return uid;
 		}
 		return null;
 	}
-	
+
 	// purge objects from the index that are no longer present in files behind the index
 	public void purge() {
 		buildAllCollections();
@@ -216,20 +216,20 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 			}
 		}
 	}
-	
+
 	public List<Fol> getFoldersContaining(String id) {
 		List<Fol> fols = new ArrayList<Fol>();
-		
+
 		List<Assoc> hasmembers = assocCollection.getBySourceDestAndType(null, id, AssocType.HASMEMBER);
-		
+
 		for (Assoc a : hasmembers) {
 			if (isFolder(a.from))
 				fols.add(folCollection.getById(a.from));
 		}
-		
+
 		return fols;
 	}
-	
+
 	public List<Fol> getFoldersContaining(DocEntry de) {
 		return getFoldersContaining(de.getId());
 	}
@@ -243,9 +243,9 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		}
 		return null;
 	}
-	
+
 	public void addDocEntryToFolAssoc(DocEntry de, Fol f) throws MetadataException, XdsInternalException, IOException {
-		addAssoc(f.getId(), de.getId(), AssocType.HASMEMBER); 
+		addAssoc(f.getId(), de.getId(), AssocType.HASMEMBER);
 	}
 
 
@@ -288,7 +288,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		m = attachFolderLastUpdateTime(m);
 		return m;
 	}
-	
+
 	public Metadata loadRawRo(String id) throws MetadataValidationException, MetadataException, XdsInternalException {
 		Ro ro = getRo(id);
 		if (ro == null)
@@ -307,11 +307,11 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 				throw new XdsInternalException("Cannot load metadata for object " + id);
 			m.addMetadata(m2);
 		}
-		
+
 
 		return m;
 	}
-	
+
 	Metadata attachFolderLastUpdateTime(Metadata m) throws XdsInternalException, MetadataValidationException, MetadataException {
 
 		boolean updateMade = false;
@@ -324,7 +324,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 				else
 					m.addSlot(ele, "lastUpdateTime", f.lastUpdateTime);
 				updateMade = true;
-			} 
+			}
 			catch (Exception e) {
 				throw new XdsInternalException("Internal Error: unable to attach lastUpdateTime to Folder " + id);
 			}
@@ -451,7 +451,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		File rof = regIndex.getSimDb().getRegistryObjectFile(id);
 
 		if (rof == null)
-			throw new MetadataException("Object with id " + id + " cannot be persisted, the id must be a UUID", null);  
+			throw new MetadataException("Object with id " + id + " cannot be persisted, the id must be a UUID", null);
 
 		if (!overwriteOk && rof.exists())
 			throw new MetadataException("Object with id " + id + " already exists in Registry", null);
@@ -466,16 +466,16 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	public void storeMetadata(Metadata m, boolean overwriteOk) throws MetadataException, IOException, XdsInternalException {
-		for (OMElement ele : m.getExtrinsicObjects()) 
+		for (OMElement ele : m.getExtrinsicObjects())
 			storeMetadata(ele, overwriteOk);
 
-		for (OMElement ele : m.getSubmissionSets()) 
+		for (OMElement ele : m.getSubmissionSets())
 			storeMetadata(ele, overwriteOk);
 
-		for (OMElement ele : m.getFolders()) 
+		for (OMElement ele : m.getFolders())
 			storeMetadata(ele, overwriteOk);
 
-		for (OMElement ele : m.getAssociations()) 
+		for (OMElement ele : m.getAssociations())
 			storeMetadata(ele, overwriteOk);
 
 	}
@@ -501,25 +501,25 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		a.from = source;
 		a.to = target;
 		a.type = type;
-		
+
 		a.id = UuidAllocator.allocate();
-		
+
 		Metadata m = new Metadata();
 		m.setVersion3();
-		
+
 		OMElement ele = m.mkAssociation(MetadataSupport.associationTypeWithNamespace(RegIndex.getAssocString(type)), source, target);
 		ele.addAttribute("id", a.id, null);
-		
+
 		assocCollection.assocs.add(a);
-		
+
 		storeMetadata(ele, false);
 	}
-	
+
 	// for the registry objects that are associatons, filter out those who reference
 	// object not in this set
 	public List<Ro> filterAssocs(List<Ro> ros) {
 		List<Ro> out = new ArrayList<Ro>();
-		
+
 		for (Ro ro : ros) {
 			if (ro instanceof Assoc) {
 				Assoc a = (Assoc) ro;
@@ -532,10 +532,10 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 				out.add(ro);
 			}
 		}
-		
+
 		return out;
 	}
-	
+
 	boolean hasRo(List<Ro> ros, String id) {
 		for (Ro ro : ros) {
 			if (ro.getId().equals(id))

@@ -27,13 +27,13 @@ public class MetadataValidator {
 		this.vc = vc;
 		this.rvi = rvi;
 	}
-	
+
 	public void run(ErrorRecorder er) {
 		runObjectStructureValidation(er);
 		runCodeValidation(er);
 		runSubmissionStructureValidation(er);
 	}
-	
+
 	public void runCodeValidation(ErrorRecorder er)   {
 		CodeValidation cv = new CodeValidation(m);
 		try {
@@ -46,10 +46,10 @@ public class MetadataValidator {
 	}
 
 	public void runObjectStructureValidation(ErrorRecorder er)   {
-		
+
 		if (vc.skipInternalStructure)
 			return;
-		
+
 		er.sectionHeading("Evaluating metadata object structure");
 
 		Set<String> knownIds = new HashSet<String>();
@@ -65,7 +65,7 @@ public class MetadataValidator {
 			}
 			s.validate(er, vc, knownIds);
 		}
-		
+
 		for (OMElement deEle : m.getExtrinsicObjects() ) {
 			er.sectionHeading("DocumentEntry(" + deEle.getAttributeValue(MetadataSupport.id_qname) + ")");
 			DocumentEntry de = null;
@@ -77,7 +77,7 @@ public class MetadataValidator {
 			}
 			de.validate(er, vc, knownIds);
 		}
-		
+
 		for (OMElement fEle : m.getFolders()) {
 			er.sectionHeading("Folder(" + fEle.getAttributeValue(MetadataSupport.id_qname) + ")");
 			Folder f = null;
@@ -89,7 +89,7 @@ public class MetadataValidator {
 			}
 			f.validate(er, vc, knownIds);
 		}
-		
+
 		for (OMElement aEle : m.getAssociations()) {
 			er.sectionHeading("Association(" + aEle.getAttributeValue(MetadataSupport.id_qname) + ")");
 			Association a = null;
@@ -101,9 +101,9 @@ public class MetadataValidator {
 			}
 			a.validate(er, vc, knownIds);
 		}
-		
+
 		er.sectionHeading("Other metadata objects");
-		
+
 		for (String id : m.getRegistryPackageIds()) {
 			if (m.getSubmissionSetIds().contains(id))
 				;
@@ -117,6 +117,6 @@ public class MetadataValidator {
 	public void runSubmissionStructureValidation(ErrorRecorder er) {
 		new SubmissionStructure(m, rvi).run(er, vc);
 	}
-	
+
 
 }

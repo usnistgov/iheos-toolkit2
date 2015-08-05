@@ -7,6 +7,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.util.ArrayList;
@@ -23,21 +24,21 @@ public class ValidatorCommon implements ErrorRecorder {
 	List<ErrorRecorder> children = new ArrayList<>();
 
 	public static String NeedReference = "Need Reference";
-	
+
 	public ValidatorCommon(Metadata m) {
 		this.m = m;
 	}
-	
+
 	// not public on purpose - only to be used by subclasses that
 	// take care of initializing Metadata m
 	ValidatorCommon() {
-		
+
 	}
-	
+
 	public void cloneEnvironment(ValidatorCommon vc) {
 		m         = vc.m;
 		rel       = vc.rel;
-		
+
 		valCtx.clone(vc.valCtx);
 	}
 
@@ -72,7 +73,7 @@ public class ValidatorCommon implements ErrorRecorder {
 				OMElement child = it.next();
 				child_count++;
 				String child_type = child.getLocalName();
-				if ( !child_type.equals("Name") && !child_type.equals("Description") && !child_type.equals("VersionInfo")) 
+				if ( !child_type.equals("Name") && !child_type.equals("Description") && !child_type.equals("VersionInfo"))
 					err(parentObjectType + " " + parentObjectId + " : ExternalIdentifier of type " + id_scheme + " (" + name + ") has invalid internal element (" + child_type + ")");
 			}
 			if (is_oid) {
@@ -117,7 +118,7 @@ public class ValidatorCommon implements ErrorRecorder {
 			if (found)
 				err(type + " " + id + " has multiple slots with name " + name);
 			found = true;
-			OMElement value_list = MetadataSupport.firstChildWithLocalName(slot, "ValueList");
+			OMElement value_list = XmlUtil.firstChildWithLocalName(slot, "ValueList");
 			int value_count = 0;
 			for (Iterator<OMElement> it=value_list.getChildElements(); it.hasNext(); ) {
 				OMElement value = (OMElement) it.next();
@@ -125,11 +126,11 @@ public class ValidatorCommon implements ErrorRecorder {
 				value_count++;
 				if (number && !isInt(value_string)) {
 					err(type + " " + id + " the value of slot " + name + "(" + value_string + ") is required to be an integer");
-				} 
+				}
 			}
 			if (	(value_count > 1 && ! multivalue)   ||
 					value_count == 0
-			) 
+			)
 				err(type + " " + id + " has slot " + name + " is required to have a single value");
 
 		}
@@ -169,11 +170,11 @@ public class ValidatorCommon implements ErrorRecorder {
 				continue;
 			count++;
 
-			OMElement name_ele = MetadataSupport.firstChildWithLocalName(classif, "Name") ;
-			if (name_ele == null) 
+			OMElement name_ele = XmlUtil.firstChildWithLocalName(classif, "Name") ;
+			if (name_ele == null)
 				err(type + " " + id + " : Classification of type " + classification_scheme + " ( " + class_name + " ) the name attribute is missing");
 
-			OMElement slot_ele = MetadataSupport.firstChildWithLocalName(classif, "Slot") ;
+			OMElement slot_ele = XmlUtil.firstChildWithLocalName(classif, "Slot") ;
 			if (slot_ele == null) {
 				err(type + " " + id + " : Classification of type " + classification_scheme + " ( " + class_name + " ) the slot 'codingScheme' is missing");
 				continue;
@@ -203,7 +204,7 @@ public class ValidatorCommon implements ErrorRecorder {
 		String part2 = parts[1];
 		part2 = part2.replaceAll("&amp;", "&");
 		String[] partsa = part2.split("&");
-		if (partsa.length != 3) 
+		if (partsa.length != 3)
 			return "Expected &OID&ISO after ^^^ in CX data type";
 		if (partsa[0].length() != 0)
 			return "Expected &OID&ISO after ^^^ in CX data type";
@@ -216,64 +217,64 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	public void sectionHeading(String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void challenge(String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void finish() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void showErrorInfo() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void detail(String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void externalChallenge(String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void err(String code, String msg, String location, String resource,
 			Object logMessage) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void err(Code code, String msg, String location, String resource,
 			Object log_message) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void err(Code code, String msg, String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void err(Code code, Exception e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void err(Code code, String msg, String location, String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void err(Code code, String msg, Object location, String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public boolean hasErrors() {
@@ -285,26 +286,26 @@ public class ValidatorCommon implements ErrorRecorder {
 	public void err(String code, String msg, String location, String severity,
 			String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void err(Code code, String msg, String location, String severity,
 			String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void warning(String code, String msg, String location,
 			String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void warning(Code code, String msg, String location, String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -326,7 +327,7 @@ public class ValidatorCommon implements ErrorRecorder {
 	@Override
 	public void concat(ErrorRecorder er) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -356,31 +357,31 @@ public class ValidatorCommon implements ErrorRecorder {
 	@Override
 	public void success(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void error(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void warning(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void info(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void summary(String msg, boolean success, boolean part) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 

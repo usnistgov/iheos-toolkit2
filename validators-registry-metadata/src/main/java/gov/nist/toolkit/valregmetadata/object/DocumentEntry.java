@@ -27,7 +27,7 @@ import java.util.Set;
 import org.apache.axiom.om.OMElement;
 
 public class DocumentEntry extends AbstractRegistryObject implements TopLevelObject {
-	static List<String> definedSlots = 
+	static List<String> definedSlots =
 		Arrays.asList(
 				"creationTime",
 				"languageCode",
@@ -43,14 +43,14 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 				"documentAvailability"
 		);
 
-	static List<String> requiredSlots = 
+	static List<String> requiredSlots =
 		Arrays.asList(
 				"creationTime",
 				"languageCode",
 				"sourcePatientId"
 		);
 
-	static List<String> directRequiredSlots = 
+	static List<String> directRequiredSlots =
 			Arrays.asList(
 			);
 
@@ -68,7 +68,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 					MetadataSupport.XDSDocumentEntry_typeCode_uuid,
 					MetadataSupport.XDSDocumentEntry_author_uuid
 			);
-		classificationDescription.requiredSchemes = 
+		classificationDescription.requiredSchemes =
 			Arrays.asList(
 					MetadataSupport.XDSDocumentEntry_classCode_uuid,
 					MetadataSupport.XDSDocumentEntry_confCode_uuid,
@@ -92,8 +92,8 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		classificationDescription.names.put(MetadataSupport.XDSDocumentEntry_psCode_uuid, "Practice Setting Code");
 		classificationDescription.names.put(MetadataSupport.XDSDocumentEntry_typeCode_uuid, "Type Code");
 		classificationDescription.names.put(MetadataSupport.XDSDocumentEntry_author_uuid, "Author");
-	} 
-	
+	}
+
 	static public ClassAndIdDescription directClassificationDescription = new ClassAndIdDescription();
 	static {
 		directClassificationDescription.definedSchemes =
@@ -107,7 +107,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 					MetadataSupport.XDSDocumentEntry_typeCode_uuid,
 					MetadataSupport.XDSDocumentEntry_author_uuid
 			);
-		directClassificationDescription.requiredSchemes = 
+		directClassificationDescription.requiredSchemes =
 			Arrays.asList(
 			);
 		directClassificationDescription.multipleSchemes =
@@ -125,8 +125,8 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_psCode_uuid, "Practice Setting Code");
 		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_typeCode_uuid, "Type Code");
 		directClassificationDescription.names.put(MetadataSupport.XDSDocumentEntry_author_uuid, "Author");
-	} 
-	
+	}
+
 	static public ClassAndIdDescription externalIdentifierDescription = new ClassAndIdDescription();
 	static {
 		externalIdentifierDescription.definedSchemes =
@@ -134,14 +134,14 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 					MetadataSupport.XDSDocumentEntry_patientid_uuid,
 					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
 			);
-		
-		externalIdentifierDescription.requiredSchemes = 
+
+		externalIdentifierDescription.requiredSchemes =
 			Arrays.asList(
 					MetadataSupport.XDSDocumentEntry_patientid_uuid,
 					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
 					);
-		externalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
-		
+		externalIdentifierDescription.multipleSchemes = new ArrayList<String>();
+
 		externalIdentifierDescription.names = new HashMap<String, String>();
 		externalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_patientid_uuid, "Patient ID");
 		externalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_uniqueid_uuid, "Unique ID");
@@ -154,13 +154,13 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 					MetadataSupport.XDSDocumentEntry_patientid_uuid,
 					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
 			);
-		
-		XDMexternalIdentifierDescription.requiredSchemes = 
+
+		XDMexternalIdentifierDescription.requiredSchemes =
 			Arrays.asList(
 					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
 					);
-		XDMexternalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
-		
+		XDMexternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
+
 		XDMexternalIdentifierDescription.names = new HashMap<String, String>();
 		XDMexternalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_patientid_uuid, "Patient ID");
 		XDMexternalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_uniqueid_uuid, "Unique ID");
@@ -173,19 +173,19 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 					MetadataSupport.XDSDocumentEntry_patientid_uuid,
 					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
 			);
-		
-		directExternalIdentifierDescription.requiredSchemes = 
+
+		directExternalIdentifierDescription.requiredSchemes =
 			Arrays.asList(
 					MetadataSupport.XDSDocumentEntry_uniqueid_uuid
 					);
-		directExternalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
-		
+		directExternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
+
 		directExternalIdentifierDescription.names = new HashMap<String, String>();
 		directExternalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_patientid_uuid, "Patient ID");
 		directExternalIdentifierDescription.names.put(MetadataSupport.XDSDocumentEntry_uniqueid_uuid, "Unique ID");
 	}
 
-	static List<String> statusValues = 
+	static List<String> statusValues =
 		Arrays.asList(
 				MetadataSupport.status_type_namespace + "Approved",
 				MetadataSupport.status_type_namespace + "Deprecated"
@@ -207,7 +207,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	public boolean equals(DocumentEntry d) {
-		if (!d.mimeType.equals(mimeType)) 
+		if (!d.mimeType.equals(mimeType))
 			return false;
 		if (!id.equals(d.id))
 			return false;
@@ -236,7 +236,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	public String identifyingString() {
 		return "DocumentEntry(" + getId() + ")";
 	}
-	
+
 	public boolean isMetadataLimited() {
 		return isClassifiedAs(MetadataSupport.XDSDocumentEntry_limitedMetadata_uuid);
 	}
@@ -244,10 +244,10 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	public void validate(ErrorRecorder er, ValidationContext vc, Set<String> knownIds) {
 		if (vc.skipInternalStructure)
 			return;
-		
+
 		if (vc.isXDR)
 			vc.isXDRLimited = isMetadataLimited();
-		
+
 		if (vc.isXDRLimited)
 			er.sectionHeading("is labeled as Limited Metadata");
 
@@ -277,7 +277,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	//  Optional Slots required by this transaction
 	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
 		// Slots always required
-		
+
 		if (vc.isXDRMinimal) {
 			for (String slotName : directRequiredSlots) {
 				if (getSlot(slotName) == null)
@@ -294,13 +294,13 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		//  Optional Slots required by this transaction
 		if (vc.hashRequired() && getSlot("hash") == null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot hash required in this context", this, table415);
-		
+
 		if (vc.sizeRequired() && getSlot("size") == null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot size required in this context", this, table415);
-		
+
 		if (vc.repositoryUniqueIdRequired() && getSlot("repositoryUniqueId") == null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot repositoryUniqueId required in this context", this, table415);
-		
+
 		if (vc.uriRequired() && getSlot("URI") == null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot URI required in this context", this, table415);
 
@@ -347,13 +347,13 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			} catch (MetadataException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Slot URI: " + e.getMessage(), this, table415);
 			}
-		} 
-		
+		}
+
 		Slot docAvail = getSlot("documentAvailability");
 		if (docAvail != null) {
 			if (docAvail.getValues().size() > 1)
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Slot documentAvailability shall have a single value", this, table415);
-			String val; 
+			String val;
 			try {
 				val = docAvail.getValue(0);
 				if (MetadataSupport.documentAvailability_offline.equals(val)   ||
@@ -378,7 +378,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": mimeType attribute missing or empty", this, table415);
 
 		validateTopAtts(er, vc, table415, statusValues);
-		
+
 	}
 
 

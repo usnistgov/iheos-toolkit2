@@ -53,7 +53,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 			return;
 		}
 	}
-	
+
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 
 		if (startUpException != null)
@@ -68,7 +68,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 			}
 			return;
 		}
-				
+
 		boolean validateOk = gatewayCommon.validateHomeCommunityId(er, query, true);
 		if (!validateOk)
 			return;
@@ -80,26 +80,26 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 		Soap soap = new Soap();
 		OMElement result = null;
 		try {
-			
+
 			er.challenge("Forwarding on as SQ from RG to local Registry " + endpoint);
 			er.detail(new OMFormatter(query).toString());
-			
-			
+
+
 			result = soap.soapCall(query, endpoint, false, true, true, MetadataSupport.SQ_action, SoapActionFactory.getResponseAction(MetadataSupport.SQ_action));
 
 			er.challenge("Response from registry is");
 			er.detail(new OMFormatter(result).toString());
-			
+
 			boolean hasErrors = passOnErrors(mvc, result);
-			
+
 			if (hasErrors)
 				return;
-			
+
 			Metadata mr = MetadataParser.parseNonSubmission(result);
 //			m.copy(mr);
 			m = mr;
 
-			List<OMElement> results = m.getAllObjects(); // everything 
+			List<OMElement> results = m.getAllObjects(); // everything
 //			results.addAll(m.getObjectRefs());
 			response.addQueryResults(results, false);
 
@@ -113,25 +113,25 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 
 			return;
 		}
-		
+
 	}
-	
+
 	boolean passOnErrors(MessageValidatorEngine mvc, OMElement result) throws XdsInternalException {
-		
+
 		AdhocQueryResponseParser aqrp = new AdhocQueryResponseParser(result);
 		AdhocQueryResponseParser.AdhocQueryResponse aqr = aqrp.getResponse();
-		
+
 		if (!aqr.isSuccess()) {
 			RegistryErrorListGenerator relg = new RegistryErrorListGenerator();
 			relg.addRegistryErrorList(aqr.getRegistryErrorListEle(), null);
             dsSimCommon.setRegistryErrorListGenerator(relg);
 			mvc.addMessageValidator("Send RegistryResponse with errors", new RegistryResponseSendingSim(common, dsSimCommon), er);
-			
+
 			mvc.run();
 
 			return true;
 		}
-		
+
 		return false;
 	}
 

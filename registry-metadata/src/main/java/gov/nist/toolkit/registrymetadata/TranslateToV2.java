@@ -11,13 +11,13 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 
 public class TranslateToV2 extends Translate {
-	
+
 	public OMElement translate(OMElement ro2, boolean must_dup) throws XdsInternalException {
-		if (MetadataSupport.isV2Namespace(ro2.getNamespace()) && !must_dup) 
+		if (MetadataSupport.isV2Namespace(ro2.getNamespace()) && !must_dup)
 			return Util.deep_copy(ro2);
 		return  deep_copy(ro2, MetadataSupport.ebRIMns2);
 	}
-	
+
 	enum Att { Name, Description, Slot, Classification, ExternalIdentifier };
 
 	OMElement deep_copy(OMElement from, OMNamespace new_namespace) {
@@ -25,7 +25,7 @@ public class TranslateToV2 extends Translate {
 
 		copy_attributes(from, to);
 		OMElement x;
-		
+
 		for (Att att : Att.values()) {
 			String att_name = att.name();
 			for (Iterator it=from.getChildElements(); it.hasNext(); ) {
@@ -46,7 +46,7 @@ public class TranslateToV2 extends Translate {
 			if (x.getLocalName().equals("Classification")) continue;
 			if (x.getLocalName().equals("ExternalIdentifier")) continue;
 			if (x.getLocalName().equals("ObjectRef")) continue;
-			
+
 			//System.out.println("deep_copy(): also copying a " + x.getLocalName());
 
 			to.addChild(deep_copy(x, new_namespace));
@@ -57,14 +57,14 @@ public class TranslateToV2 extends Translate {
 
 		return to;
 	}
-	
+
 	String last_part(String value, String separator) {
 		String[] parts = value.split(separator);
 		if (parts.length == 0)
 			return value;
 		return parts[parts.length-1];
 	}
-	
+
 	String translate_att(String value) {
 		value = last_part(value, ":");
 		return value;
@@ -97,10 +97,10 @@ public class TranslateToV2 extends Translate {
 			OMAttribute to_a = MetadataSupport.om_factory.createOMAttribute(name, namespace, value);
 			to.addAttribute(to_a);
 		}
-		
+
 	}
 
-	
+
 //	protected void copy_attributes(OMElement from, OMElement to) {
 //		for (Iterator it=from.getAllAttributes(); it.hasNext();  ) {
 //			OMAttribute from_a = (OMAttribute) it.next();

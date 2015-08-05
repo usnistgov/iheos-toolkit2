@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmetadata.datatype.CxFormat;
 import gov.nist.toolkit.valregmetadata.datatype.FormatValidator;
 import gov.nist.toolkit.valregmetadata.datatype.OidFormat;
@@ -43,15 +44,15 @@ public abstract class AbstractRegistryObject {
 	String id = "";
 	String lid;
 	String version = "1.1";
-	
+
 	public OMElement getElement() {
 		return ro;
 	}
-	
+
 	public Metadata getMetadata() {
 		return m;
 	}
-	
+
 	public boolean isClassifiedAs(String uuid) {
 		for (InternalClassification ic : internalClassifications) {
 			if (ic.getClassificationNode().equals(uuid))
@@ -82,10 +83,10 @@ public abstract class AbstractRegistryObject {
 			if (a.home != null && !a.home.equals(home))
 				return false;
 		}
-		
+
 		if (!version.equals(a.version))
 			return false;
-		
+
 		if (lid == null && a.lid == null)
 			;
 		else {
@@ -94,20 +95,20 @@ public abstract class AbstractRegistryObject {
 			if (a.lid != null && !a.lid.equals(lid))
 				return false;
 		}
-		
+
 		if (a.slots.size() != slots.size()) return false;
-		for (int i=0; i<slots.size(); i++) 
+		for (int i=0; i<slots.size(); i++)
 			if (!a.slots.get(i).equals(slots.get(i))) return false;
 
 		if (!a.name.equals(name)) return false;
 		if (!a.description.equals(description))	return false;
 
 		if (a.classifications.size() != classifications.size()) return false;
-		for (int i=0; i<classifications.size(); i++) 
+		for (int i=0; i<classifications.size(); i++)
 			if (!a.classifications.get(i).equals(classifications.get(i))) return false;
 
 		if (a.authors.size() != authors.size()) return false;
-		for (int i=0; i<authors.size(); i++) 
+		for (int i=0; i<authors.size(); i++)
 			if (!a.authors.get(i).equals(authors.get(i))) return false;
 
 		if (a.externalIdentifiers.size() != externalIdentifiers.size()) return false;
@@ -161,7 +162,7 @@ public abstract class AbstractRegistryObject {
 			parent.addChild(n);
 		}
 	}
-	
+
 	public void addVersionXml(OMElement parent) {
 		OMElement n = MetadataSupport.om_factory.createOMElement(MetadataSupport.versioninfo_qnamens);
 		n.addAttribute("versionName", version, null);
@@ -185,7 +186,7 @@ public abstract class AbstractRegistryObject {
 				parent.addChild(ic.toXml());
 		}
 	}
-	
+
 	public void addAuthorsXml(OMElement parent) throws XdsInternalException  {
 		for (Author a : authors) {
 			OMElement ele = a.toXml(parent);
@@ -199,7 +200,7 @@ public abstract class AbstractRegistryObject {
 			parent.addChild(ele);
 		}
 	}
-	
+
 	public AbstractRegistryObject(String id) {
 		ro = null;
 		this.id = id;
@@ -208,34 +209,34 @@ public abstract class AbstractRegistryObject {
 	public AbstractRegistryObject(Metadata m, OMElement ro) throws XdsInternalException  {
 		this.m = m;
 		this.ro = ro;
-		
+
 		if (ro == null)
 			throw new XdsInternalException("Not a RegistryObject");
 
 		id = ro.getAttributeValue(MetadataSupport.id_qname);
 		if (id == null) id = "";
-		
+
 		lid = ro.getAttributeValue(MetadataSupport.lid_qname);
 		if (lid == null) lid = "";
-		
+
 		status = ro.getAttributeValue(MetadataSupport.status_qname);
 		home = ro.getAttributeValue(MetadataSupport.home_qname);
 
-		for (OMElement slotEle : MetadataSupport.childrenWithLocalName(ro, "Slot")) {
+		for (OMElement slotEle : XmlUtil.childrenWithLocalName(ro, "Slot")) {
 			Slot s = new Slot(slotEle);
 			slots.add(s);
 		}
 
-		name = getLocalizedString(MetadataSupport.firstChildWithLocalName(ro, "Name"));
+		name = getLocalizedString(XmlUtil.firstChildWithLocalName(ro, "Name"));
 		if (name == null) name = "";
-		description = getLocalizedString(MetadataSupport.firstChildWithLocalName(ro, "Description"));
+		description = getLocalizedString(XmlUtil.firstChildWithLocalName(ro, "Description"));
 		if (description == null) description = "";
-		
-		OMElement vinfo = MetadataSupport.firstChildWithLocalName(ro, "VersionInfo");
+
+		OMElement vinfo = XmlUtil.firstChildWithLocalName(ro, "VersionInfo");
 		if (vinfo != null)
 			version = vinfo.getAttributeValue(MetadataSupport.versionname_qname);
 
-		for (OMElement clEle : MetadataSupport.childrenWithLocalName(ro, "Classification")) {
+		for (OMElement clEle : XmlUtil.childrenWithLocalName(ro, "Classification")) {
 			if (Author.isAuthorClassification(clEle)) {
 				Author a = new Author(m, clEle);
 				authors.add(a);
@@ -247,13 +248,13 @@ public abstract class AbstractRegistryObject {
 			}
 		}
 
-		for (OMElement eiEle : MetadataSupport.childrenWithLocalName(ro, "ExternalIdentifier")) {
+		for (OMElement eiEle : XmlUtil.childrenWithLocalName(ro, "ExternalIdentifier")) {
 			ExternalIdentifier ei = new ExternalIdentifier(m, eiEle);
 			externalIdentifiers.add(ei);
 		}
 	}
 
-	public String getOwnerType() { 
+	public String getOwnerType() {
 		if (owner == null)
 			return "";
 		return owner.getLocalName();
@@ -266,7 +267,7 @@ public abstract class AbstractRegistryObject {
 	}
 
 	String ownerIdentifyingString() {
-		if (owner == null) 
+		if (owner == null)
 			return "Unknown";
 		return getOwnerType() + "(" + getOwnerId() + ")";
 	}
@@ -274,7 +275,7 @@ public abstract class AbstractRegistryObject {
 
 	String getLocalizedString(OMElement attEle) {
 		if (attEle != null) {
-			OMElement nameLocStr =  MetadataSupport.firstChildWithLocalName(attEle, "LocalizedString") ;
+			OMElement nameLocStr =  XmlUtil.firstChildWithLocalName(attEle, "LocalizedString") ;
 			if (nameLocStr != null) {
 				return nameLocStr.getAttributeValue(MetadataSupport.value_qname);
 			}
@@ -306,11 +307,11 @@ public abstract class AbstractRegistryObject {
 		}
 		return null;
 	}
-	
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
 	public void setHome(String home) {
 		this.home = home;
 	}
@@ -327,11 +328,11 @@ public abstract class AbstractRegistryObject {
 	public List<Classification> getClassifications() {
 		return classifications;
 	}
-	
+
 	public List<Author> getAuthors() {
 		return authors;
 	}
-	
+
 	public List<ExternalIdentifier> getExternalIdentifiers() {
 		return externalIdentifiers;
 	}
@@ -366,7 +367,7 @@ public abstract class AbstractRegistryObject {
 		boolean ok = true;
 		List<String> names = new ArrayList<String>();
 		for (Slot slot : slots) {
-			if (names.contains(slot.getName())) 
+			if (names.contains(slot.getName()))
 				if (er != null) {
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slot.getName() + " is multiply defined", this, "ebRIM 3.0 section 2.8.2");
 					ok = false;
@@ -376,21 +377,21 @@ public abstract class AbstractRegistryObject {
 		}
 		return ok;
 	}
-	
+
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc, String tableRef, List<String> statusValues) {
 		validateId(er, vc, "entryUUID", id, null);
-		
+
 		if (vc.isSQ && vc.isResponse) {
-			if (status == null) 
+			if (status == null)
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": availabilityStatus attribute (status attribute in XML) must be present", this, tableRef);
 			else {
 				if (!statusValues.contains(status))
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": availabilityStatus attribute must take on one of these values: " + statusValues + ", found " + status, this, "ITI TF-2a: 3.18.4.1.2.3.6");
 			}
-			
+
 			validateId(er, vc, "lid", lid, null);
-			
-			List<OMElement> versionInfos = MetadataSupport.childrenWithLocalName(ro, "VersionInfo");
+
+			List<OMElement> versionInfos = XmlUtil.childrenWithLocalName(ro, "VersionInfo");
 			if (versionInfos.size() == 0) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": VersionInfo attribute missing", this, "ebRIM Section 2.5.1");
 			}
@@ -413,43 +414,43 @@ public abstract class AbstractRegistryObject {
 				new UuidFormat(er, identifyingString() + " " + attName + " attribute", (resource!=null) ? resource : defaultResource).validate(id);
 			}
 		}
-		
+
 		for (Classification c : classifications)
 			c.validateId(er, vc, "entryUUID", c.getId(), resource);
-		
+
 		for (Author a : authors)
 			a.validateId(er, vc, "entryUUID", a.getId(), resource);
-		
-		for (ExternalIdentifier ei : externalIdentifiers) 
+
+		for (ExternalIdentifier ei : externalIdentifiers)
 			ei.validateId(er, vc, "entryUUID", ei.getId(), resource);
-		
+
 	}
-	
+
 	public void verifyIdsUnique(ErrorRecorder er, Set<String> knownIds) {
 		if (id != null) {
 			if (knownIds.contains(id))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": entryUUID " + id + "  identifies multiple objects", this, "ITI TF-3: 4.1.12.3 and ebRS 5.1.2");
 			knownIds.add(id);
 		}
-		
+
 		for (Classification c : classifications)
 			c.verifyIdsUnique(er, knownIds);
-		
+
 		for (Author a : authors)
 			a.verifyIdsUnique(er, knownIds);
-		
-		for (ExternalIdentifier ei : externalIdentifiers) 
+
+		for (ExternalIdentifier ei : externalIdentifiers)
 			ei.verifyIdsUnique(er, knownIds);
-		
-		
+
+
 	}
 	public void validateHome(ErrorRecorder er, String resource) {
-		if (home == null) 
+		if (home == null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": homeCommunityId attribute must be present", this, resource);
 		else {
 			if (home.length() > 64)
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": homeCommunityId is limited to 64 characters, found " + home.length(), this, resource);
-			
+
 			String[] parts = home.split(":");
 			if (parts.length < 3 || !parts[0].equals("urn") || !parts[1].equals("oid"))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": homeCommunityId must begin with urn:oid: prefix, found [" + home + "]", this, resource);
@@ -458,14 +459,14 @@ public abstract class AbstractRegistryObject {
 	}
 	protected int count(List<String> strings, String target) {
 		int i=0;
-	
+
 		for (String s : strings)
 			if (s.equals(target))
 				i++;
-	
+
 		return i;
 	}
-	
+
 	public void validateClassificationsLegal(ErrorRecorder er, ClassAndIdDescription desc, String resource) {
 		List<String> cSchemes = new ArrayList<String>();
 
@@ -489,7 +490,7 @@ public abstract class AbstractRegistryObject {
 	String classificationDescription(ClassAndIdDescription desc, String cScheme) {
 		return "Classification(" + cScheme + ")(" + desc.names.get(cScheme) + ")";
 	}
-	
+
 	String externalIdentifierDescription(ClassAndIdDescription desc, String eiScheme) {
 		return "ExternalIdentifier(" + eiScheme + ")(" + desc.names.get(eiScheme) + ")";
 	}
@@ -498,17 +499,17 @@ public abstract class AbstractRegistryObject {
 		if (!(vc.isXDM || vc.isXDRLimited)) {
 			for (String cScheme : desc.requiredSchemes) {
 				List<Classification> cs = getClassificationsByClassificationScheme(cScheme);
-				if (cs.size() == 0) 
+				if (cs.size() == 0)
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + classificationDescription(desc, cScheme) + " is required but missing", this, resource);
 			}
 		}
 	}
 
 	public void validateClassificationsCodedCorrectly(ErrorRecorder er, ValidationContext vc) {
-		for (Classification c : getClassifications()) 
+		for (Classification c : getClassifications())
 			c.validateStructure(er, vc);
 
-		for (Author a : getAuthors()) 
+		for (Author a : getAuthors())
 			a.validateStructure(er, vc);
 	}
 
@@ -529,7 +530,7 @@ public abstract class AbstractRegistryObject {
 		er.challenge("Validating ExternalIdentifiers coded correctly");
 		validateExternalIdentifiersCodedCorrectly(er, vc, desc, resource);
 	}
-	
+
 	public void validateExternalIdentifiersCodedCorrectly(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource) {
 		for (ExternalIdentifier ei : getExternalIdentifiers()) {
 			ei.validateStructure(er, vc);
@@ -551,7 +552,7 @@ public abstract class AbstractRegistryObject {
 	}
 
 
-	
+
 	public void validateRequiredExternalIdentifiersPresent(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource)  {
 		for (String idScheme : desc.requiredSchemes) {
 			List<ExternalIdentifier> eis = getExternalIdentifiers(idScheme);
@@ -566,7 +567,7 @@ public abstract class AbstractRegistryObject {
 	public void validateExternalIdentifiersLegal(ErrorRecorder er, ClassAndIdDescription desc, String resource) {
 		for (ExternalIdentifier ei : getExternalIdentifiers()) {
 			String idScheme = ei.getIdentificationScheme();
-			if (idScheme == null || idScheme.equals("") || !desc.definedSchemes.contains(idScheme)) 
+			if (idScheme == null || idScheme.equals("") || !desc.definedSchemes.contains(idScheme))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + ei.identifyingString() + " has an unknown identificationScheme attribute value: " + idScheme, this, resource);
 		}
 	}

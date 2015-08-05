@@ -2,6 +2,7 @@ package gov.nist.toolkit.valregmetadata.datatype;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmetadata.field.ValidatorCommon;
 
 import org.apache.axiom.om.OMElement;
@@ -12,22 +13,22 @@ public class SourcePatientInfoFormat extends FormatValidator{
 			String resource) {
 		super(er, context, resource);
 	}
-	
+
 	String xresource = "ITI TF-3: Table 4.1-5: sourcePatientInfo";
 
 	public void validate(OMElement spi_slot) {
-		OMElement value_list = MetadataSupport.firstChildWithLocalName(spi_slot, "ValueList");
+		OMElement value_list = XmlUtil.firstChildWithLocalName(spi_slot, "ValueList");
 		int valueI = -1;
-		for (OMElement value : MetadataSupport.childrenWithLocalName(value_list, "Value")) {
+		for (OMElement value : XmlUtil.childrenWithLocalName(value_list, "Value")) {
 			valueI++;
 			String content = value.getText();
 			if (content == null || content.equals("")) {
-				err(context, "Slot sourcePatientInfo has empty Slot value (index " + valueI + 
+				err(context, "Slot sourcePatientInfo has empty Slot value (index " + valueI +
 						")", xresource);
 				continue;
 			}
 			String[] parts = content.split("\\|");
-			
+
 			if (parts.length == 0) {
 				err(context, twoPartsMsg(valueI), xresource);
 				continue;
@@ -52,10 +53,10 @@ public class SourcePatientInfoFormat extends FormatValidator{
 		}
 	}
 
-	String twoPartsMsg(int valueI) { 
+	String twoPartsMsg(int valueI) {
 			return
-					"Slot sourcePatientInfo Value " + 
-					"(index " + valueI + 
+					"Slot sourcePatientInfo Value " +
+					"(index " + valueI +
 					") must have two parts separated by | and the first part must be formatted as PID-x where x is a number";
 	}
 

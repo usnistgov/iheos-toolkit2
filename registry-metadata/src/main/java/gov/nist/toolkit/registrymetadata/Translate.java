@@ -20,7 +20,7 @@ abstract public class Translate extends MetadataSupport {
 			OMElement e = (OMElement) in.get(i);
 			OMElement output = translate(e, must_dup);
 			if (output != null)
-				out.add(output);	
+				out.add(output);
 		}
 		return out;
 	}

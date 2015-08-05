@@ -16,6 +16,7 @@ import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.SectionLogMap;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
@@ -97,7 +98,7 @@ public abstract class BasicTransaction  {
 	public void setTransactionSettings(TransactionSettings ts) {
 		this.transactionSettings = ts;
 	}
-	
+
 	public StepContext getStepContext() {
 		return s_ctx;
 	}
@@ -109,7 +110,7 @@ public abstract class BasicTransaction  {
 			assign_patient_id = transactionSettings.assignPatientId;
 		async = false;
 		if (transactionSettings.siteSpec != null)     // null for Direct
-			async = transactionSettings.siteSpec.isAsync;   
+			async = transactionSettings.siteSpec.isAsync;
 		if (transactionSettings.patientId != null)
 			planContext.setPatientId(transactionSettings.patientId);
 		if (transactionSettings.altPatientId != null)
@@ -159,17 +160,17 @@ public abstract class BasicTransaction  {
 		if (trans.equals("sq") || trans.equals("pr") || trans.equals("r")) {
 			//			if (async)
 			//				trans = trans + ".as";
-			//			else 
+			//			else
 			if (isB())
 				trans = trans + ".b";
 			else
 				trans = trans + ".a";
-		} 
+		}
 		//		else if (async)
 		//			trans = trans + ".as";
 
 		TransactionType ttype = ATFactory.TransactionType.find(trans);
-		
+
 //		if (ttype == null)
 //			fatal("Do not understand transaction type " + trans);
 
@@ -224,17 +225,17 @@ public abstract class BasicTransaction  {
 			}
 
 			//TestSections dependencies = useReportManager.getTestSections();
-			
+
 			try {
 				useReportManager.loadPriorTestSections(testConfig);
 			} catch (Exception e) {
-				
+
 				// because useReportManager.resolve below will take care of many problems
 //				fatal("UseReportManager failed to load necessary prior-test log files", e);
 //				return;
 			}
-			
-			
+
+
 			useReportManager.resolve(sectionLogs);
 
 			useReportManager.apply(metadata_element);
@@ -336,12 +337,12 @@ public abstract class BasicTransaction  {
 	}
 
 	void validate_registry_response_in_soap(OMElement env, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
-		if (!env.getLocalName().equals("Envelope")) 
+		if (!env.getLocalName().equals("Envelope"))
 			throw new XdsInternalException("Expected 'Envelope' but found " + env.getLocalName() + " instead");
 		OMElement hdr = env.getFirstElement();
 		if (hdr == null)
 			throw new XdsInternalException("Expected 'Header' but found nothing instead");
-		if (!hdr.getLocalName().equals("Header")) 
+		if (!hdr.getLocalName().equals("Header"))
 			throw new XdsInternalException("Expected 'Header' but found " + hdr.getLocalName() + " instead");
 		Object next = hdr.getNextOMSibling();
 		if (!(next instanceof OMElement))
@@ -349,7 +350,7 @@ public abstract class BasicTransaction  {
 		OMElement body = (OMElement) next;
 		if (body == null)
 			throw new XdsInternalException("Expected 'Body' but found nothing instead");
-		if (!body.getLocalName().equals("Body")) 
+		if (!body.getLocalName().equals("Body"))
 			throw new XdsInternalException("Expected 'Body' but found " + body.getLocalName() + " instead");
 		validate_registry_response(body.getFirstElement(), metadata_type);
 
@@ -357,7 +358,7 @@ public abstract class BasicTransaction  {
 
 	void validate_registry_response(OMElement result, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		// metadata type was MetadataTypes.METADATA_TYPE_PR
-		validate_registry_response_no_set_status(result, metadata_type);		
+		validate_registry_response_no_set_status(result, metadata_type);
 
 		add_step_status_to_output();
 	}
@@ -417,16 +418,16 @@ public abstract class BasicTransaction  {
 			}
 		}
 	}
-	
+
 	ValidationContext getValidationContextFromTransactionName() {
 		ValidationContext vc = DefaultValidationContextFactory.validationContext();
-		
+
 		String tname = getBasicTransactionName();
-		
+
 		if ("sq".equals(tname)) vc.isSQ = true;
 		if ("pr".equals(tname)) vc.isPnR = true;
 		if ("r".equals(tname)) vc.isR = true;
-		
+
 		return vc;
 	}
 
@@ -609,7 +610,7 @@ public abstract class BasicTransaction  {
 		if (endpoint == null || endpoint.equals("") || testConfig.endpointOverride) {			//boolean async = false;
 			if (testConfig.verbose)
 				System.out.println("endpoint coming from actors.xml");
-			if (trans.getCode().endsWith(".as")) { 
+			if (trans.getCode().endsWith(".as")) {
 				xds_version = xds_b;
 			}
 			if (testConfig.site == null) {
@@ -617,7 +618,7 @@ public abstract class BasicTransaction  {
 			}
 			endpoint = testConfig.site.getEndpoint(trans, testConfig.secure, async);
 			if (endpoint == null || endpoint.equals(""))
-				fatal("No endpoint specified for transaction " + trans + " and XDS version " + xds_version_name() + 
+				fatal("No endpoint specified for transaction " + trans + " and XDS version " + xds_version_name() +
 						" and secure = " + testConfig.secure +
 						" on site " + testConfig.site.getSiteName() + "\nactor config is " + testConfig.site.toString());
 			testLog.add_name_value(instruction_output, "Endpoint", endpoint);
@@ -635,7 +636,7 @@ public abstract class BasicTransaction  {
 
 	protected void parseRepEndpoint(String repositoryUniqueId, boolean isSecure) throws Exception {
 		if (endpoint == null || endpoint.equals("")) {
-			if (s_ctx.getPlan().getRegistryEndpoint() != null) 
+			if (s_ctx.getPlan().getRegistryEndpoint() != null)
 				endpoint = s_ctx.getPlan().getRegistryEndpoint();
 			else {
 				try {
@@ -649,7 +650,7 @@ public abstract class BasicTransaction  {
 						endpoint = testConfig.allRepositoriesSite.getRetrieveEndpoint(repositoryUniqueId, isSecure, async);
 						//					endpoint = testConfig.site.getRetrieveEndpoint(repositoryUniqueId, isSecure, async);
 					} catch (XdsInternalException e) {
-						if (planContext.getDefaultRegistryEndpoint() != null) 
+						if (planContext.getDefaultRegistryEndpoint() != null)
 							endpoint = planContext.getDefaultRegistryEndpoint();
 						else
 							fatal(e.getMessage());
@@ -663,7 +664,7 @@ public abstract class BasicTransaction  {
 
 	protected void parseGatewayEndpoint(String home, boolean isSecure) throws Exception {
 		if (endpoint == null || endpoint.equals("")) {
-			if (s_ctx.getPlan().getRegistryEndpoint() != null) 
+			if (s_ctx.getPlan().getRegistryEndpoint() != null)
 				endpoint = s_ctx.getPlan().getRegistryEndpoint();
 			else
 				try {
@@ -679,7 +680,7 @@ public abstract class BasicTransaction  {
 
 	protected void parseIGREndpoint(String home, boolean isSecure) throws Exception {
 		if (endpoint == null || endpoint.equals("")) {
-			if (s_ctx.getPlan().getRegistryEndpoint() != null) 
+			if (s_ctx.getPlan().getRegistryEndpoint() != null)
 				endpoint = s_ctx.getPlan().getRegistryEndpoint();
 			else
 				try {
@@ -692,15 +693,15 @@ public abstract class BasicTransaction  {
 		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
 		showEndpoint();
 	}
-	
+
 	String failMsg = null;
-	
+
 	public void fail(String msg) throws XdsInternalException {
 		failMsg = msg;
 		failed();
 		s_ctx.set_error(msg);
 	}
-	
+
 	public String getFail() {
 		return failMsg;
 	}
@@ -715,7 +716,7 @@ public abstract class BasicTransaction  {
 
 
 	protected void log_metadata(OMElement submission) throws XdsInternalException {
-		testLog.add_name_value(	instruction_output, 
+		testLog.add_name_value(	instruction_output,
 				"InputMetadata", Util.deep_copy(submission));
 	}
 
@@ -741,7 +742,7 @@ public abstract class BasicTransaction  {
 				metadata = MetadataParser.noParse(request_element);
 			}
 
-		} 
+		}
 		catch (MetadataValidationException e) {
 			this.s_ctx.metadata_validation_error(e.getMessage());
 			return metadata;
@@ -796,7 +797,7 @@ public abstract class BasicTransaction  {
 			}
 
 
-		} 
+		}
 
 		// from StoredQueryTransaction
 		// compile in results of previous steps (linkage)
@@ -804,7 +805,7 @@ public abstract class BasicTransaction  {
 			compileUseIdLinkage(metadata, use_id);
 		if (use_object_ref.size() > 0)
 			compileUseObjectRefLinkage(metadata, use_object_ref);
-		if (use_xpath.size() > 0) 
+		if (use_xpath.size() > 0)
 			compileUseXPathLinkage(metadata, use_xpath);
 
 		addStandardLinkage(metadata);
@@ -849,27 +850,27 @@ public abstract class BasicTransaction  {
 			String part_name = part.getLocalName();
 			if (part_name.equals("DataRef")) {
 				data_refs.add(part);
-			} 
+			}
 			else if (part_name.equals("Assert")) {
 				assertions.add(part);
-			} 
+			}
 		}
 	}
 
 	protected void parseBasicInstruction(OMElement part) throws XdsInternalException {
 		String part_name = part.getLocalName();
 
-		if (part_name.equals("Metadata")) { 
+		if (part_name.equals("Metadata")) {
 			metadata_filename = "";
 			request_element = part.getFirstElement();
-		} 
+		}
 		else if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + File.separator + part.getText();
 			testLog.add_name_value(this.instruction_output, "MetadataFile", metadata_filename);
-		} 
+		}
 		else if (part_name.equals("AssignUuids")) {
 			assign_uuids = true;
-		} 
+		}
 		else if (part_name.equals("NoAssignUids")) {
 			assign_uids = false;
 			String id = part.getAttributeValue(MetadataSupport.id_qname);
@@ -877,15 +878,15 @@ public abstract class BasicTransaction  {
 				no_assign_uid_to = id;
 				assign_uids = true;
 			}
-		} 
+		}
 		else if (part_name.equals("NoConvert")) {
 			this.no_convert = true;
-		} 
+		}
 		else if (part_name.equals("Report")) {
 			if (reportManager == null)
 				reportManager = new ReportManager(testConfig);
 			reportManager.addReport(part);
-		} 
+		}
 		else if (part_name.equals("UseReport")) {
 			if (useReportManager == null)
 				useReportManager = new UseReportManager(testConfig);
@@ -896,13 +897,13 @@ public abstract class BasicTransaction  {
 			testLog.add_name_value(this.instruction_output, "ParseMetadata", value);
 			if (value.equals("False"))
 				parse_metadata = false;
-		} 
+		}
 		else if (part_name.equals("NoMetadata")) {
 			noMetadataProcessing = true;
-		} 
+		}
 		else if (part_name.equals("SOAPHeader")) {
-			
-			
+
+
 			if (additionalHeaders == null)
 				additionalHeaders = new ArrayList<OMElement>();
 			testLog.add_name_value(this.instruction_output, "SOAPHeader", part.getFirstElement());
@@ -910,7 +911,7 @@ public abstract class BasicTransaction  {
 			additionalHeaders.add(part.getFirstElement());
 		}
 		else if (part_name.equals("WSSECHeader")) {
-			
+
 			//vbeera: commented below code
 			/*
 			 if(transactionSettings.issaml){
@@ -922,7 +923,7 @@ public abstract class BasicTransaction  {
 				System.out.println(omElement.toString());
 				//this.s_ctx.add_name_value(omElement, "WSSECHeader", part.getFirstElement());
 				this.s_ctx.add_name_value(this.instruction_output, "WSSECHeader", omElement);
-	
+
 				//wsSecHeaders.add(part.getFirstElement());
 				wsSecHeaders.add(omElement);
 			 }
@@ -938,27 +939,27 @@ public abstract class BasicTransaction  {
 		}
 		else if (part_name.equals("Assertions")) {
 			parse_assertion_instruction(part);
-		} 
+		}
 		else if (part_name.equals("XDSb")) {
 			xds_version = BasicTransaction.xds_b;
 			testLog.add_simple_element(this.instruction_output, "Xdsb");
-		} 
+		}
 		else if (part_name.equals("XDSa")) {
 			xds_version = BasicTransaction.xds_a;
 			testLog.add_simple_element(this.instruction_output, "Xdsa");
-		} 
+		}
 		else if (part_name.equals("NoPatientId")) {
 			assign_patient_id = false;
 			testLog.add_simple_element(this.instruction_output, "NoPatientId");
-		} 
+		}
 		else if (part_name.equals("SOAP11")) {
 			soap_1_2 = false;
 			testLog.add_simple_element(this.instruction_output, "SOAP11");
-		} 
+		}
 		else if (part_name.equals("ASync")) {
 			async = true;
 			testLog.add_simple_element(this.instruction_output, "ASync");
-		} 
+		}
 		else if (part_name.equals("WaitBefore")) {
 			String millisecondsStr = part.getText();
 			int milliseconds = 0;;
@@ -1022,7 +1023,7 @@ public abstract class BasicTransaction  {
 			throw new XdsInternalException("Cannot find referenced instruction output");
 		}
 
-		OMElement result = MetadataSupport.firstChildWithLocalName(res, "Result");
+		OMElement result = XmlUtil.firstChildWithLocalName(res, "Result");
 		if (result == null) {
 			fail("Cannot find <Result/>");
 			throw new XdsInternalException("Cannot find <Result/>");
@@ -1030,9 +1031,9 @@ public abstract class BasicTransaction  {
 
 		Metadata m = MetadataParser.parseNonSubmission(result.getFirstElement());
 		if (m.getExtrinsicObjectIds().size() == 0) {
-			fail("No ExtrinsicObjects found in log file " + log_file + " step " + step_id + 
+			fail("No ExtrinsicObjects found in log file " + log_file + " step " + step_id +
 					" with transaction type " + transaction_type);
-			throw new XdsInternalException("No ExtrinsicObjects found in log file " + log_file + " step " + step_id + 
+			throw new XdsInternalException("No ExtrinsicObjects found in log file " + log_file + " step " + step_id +
 					" with transaction type " + transaction_type);
 		}
 		OMElement eo = m.getExtrinsicObject(0);
@@ -1070,7 +1071,7 @@ public abstract class BasicTransaction  {
 		if (doubleSlash == -1)
 			throw new XdsInternalException("Endpoint contains no double slash");
 		int singleSlash = endpoint.indexOf("/", doubleSlash+2);
-		if (singleSlash == -1) 
+		if (singleSlash == -1)
 			throw new XdsInternalException("Endpoint has no service");
 		return endpoint.substring(singleSlash);
 	}
@@ -1082,7 +1083,7 @@ public abstract class BasicTransaction  {
 		if (doubleSlash == -1)
 			throw new XdsInternalException("Endpoint contains no double slash");
 		int singleSlash = endpoint.indexOf("/", doubleSlash+2);
-		if (singleSlash == -1) 
+		if (singleSlash == -1)
 			throw new XdsInternalException("Endpoint has no service");
 
 		String machAndPort = endpoint.substring(doubleSlash+2, singleSlash);
@@ -1103,7 +1104,7 @@ public abstract class BasicTransaction  {
 		if (doubleSlash == -1)
 			throw new XdsInternalException("Endpoint contains no double slash");
 		int singleSlash = endpoint.indexOf("/", doubleSlash+2);
-		if (singleSlash == -1) 
+		if (singleSlash == -1)
 			throw new XdsInternalException("Endpoint has no service");
 
 		String machAndPort = endpoint.substring(doubleSlash+2, singleSlash);
@@ -1147,7 +1148,7 @@ public abstract class BasicTransaction  {
 					logSoapRequest(soap);
 				}
 		}
-		
+
 		/*
 		if (wsSecHeaders != null) {
 			for (OMElement hdr : wsSecHeaders)
@@ -1165,9 +1166,9 @@ public abstract class BasicTransaction  {
 			testLog.add_name_value(instruction_output, "InputMetadata", requestBody);
 
 			soap.setSecurityParams(s_ctx.getTransactionSettings().securityParams);
-			
-			soap.soapCall(requestBody, 
-					endpoint, 
+
+			soap.soapCall(requestBody,
+					endpoint,
 					useMtom, //mtom
 					useAddressing,  // WS-Addressing
 					soap_1_2,  // SOAP 1.2
@@ -1218,8 +1219,8 @@ public abstract class BasicTransaction  {
 //		soap = testConfig.soap;
 //
 //		try {
-//			soap.soapSend(request_element, 
-//					endpoint, 
+//			soap.soapSend(request_element,
+//					endpoint,
 //					useMtom, //mtom
 //					useAddressing,  // WS-Addressing
 //					soap_1_2,  // SOAP 1.2
