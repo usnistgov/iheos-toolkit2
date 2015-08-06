@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-Generic implementation of FindDocuments Stored Query. This class knows how to parse a 
+Generic implementation of FindDocuments Stored Query. This class knows how to parse a
  * FindDocuments Stored Query request producing a collection of instance variables describing
  * the request.  A sub-class must provide the runImplementation() method that uses the pre-parsed
  * information about the stored query and queries a metadata database.
@@ -62,13 +62,13 @@ abstract public class FindDocuments extends StoredQuery {
 		if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
 			QueryReturnType save = sqs.returnType;
 
-			// since the Public Registry gets some crazy requests, first do an ObjectRefs query to see how many 
+			// since the Public Registry gets some crazy requests, first do an ObjectRefs query to see how many
 			// results are planned.  If not out of order then do the real query for LeafClass
 
 			sqs.returnType = QueryReturnType.OBJECTREF;
 
 			Metadata m = runImplementation();
-			if (m.getObjectRefs().size() > 25) 
+			if (m.getObjectRefs().size() > 25)
 				throw new XDSRegistryOutOfResourcesException("GetDocuments Stored Query for LeafClass is limited to 25 documents on this Registry. Your query targeted " + m.getObjectRefs().size() + " documents");
 
 
@@ -104,7 +104,7 @@ abstract public class FindDocuments extends StoredQuery {
 		sqs.validate_parm("$XDSDocumentEntryStatus",                            true,      true,      true,         false,           false,                               (String[])null												);
 		sqs.validate_parm("$XDSDocumentEntryAuthorPerson",                      false,     true,     true,          false,           false,                               (String[])null												);
 
-		if (sqs.has_validation_errors) 
+		if (sqs.has_validation_errors)
 			throw new MetadataValidationException(QueryParmsErrorPresentErrMsg, SqDocRef.Individual_query_parms);
 
 	}
@@ -121,27 +121,27 @@ abstract public class FindDocuments extends StoredQuery {
 	protected SQCodedTerm format_codes;
 	protected List<String> status;
 	protected List<String> author_person;
-	
+
 	protected SQCodedTerm class_codes;
 	protected SQCodedTerm type_codes;
 	protected SQCodedTerm practice_setting_codes;
 	protected SQCodedTerm hcft_codes;
 	protected SQCodedTerm event_codes;
 	protected SQCodedTerm conf_codes;
-		
+
 	void toBuffer(StringBuffer buf, String name, String arg) {
 		if (arg != null && !arg.equals(""))
 			buf.append(name).append("=").append(arg).append("\n");
 	}
-	
+
 	void toBuffer(StringBuffer buf, String name, SQCodedTerm arg) {
 		if (arg != null && !arg.equals(""))
 			buf.append(name).append("=").append(arg).append("\n");
 	}
-		
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		
+
 		buf.append("FindDocuments: [\n");
 
 		toBuffer(buf, "patient_id", patient_id);
@@ -150,9 +150,9 @@ abstract public class FindDocuments extends StoredQuery {
 		toBuffer(buf, "hcft_codes", hcft_codes);
 		toBuffer(buf, "event_codes", event_codes);
 		toBuffer(buf, "conf_codes", conf_codes);
-		
+
 		buf.append("]\n");
-		
+
 		return buf.toString();
 	}
 
@@ -182,7 +182,7 @@ abstract public class FindDocuments extends StoredQuery {
 		for (int i=0; i<status.size(); i++) {
 			String stat = (String) status.get(i);
 
-			if ( ! stat.startsWith(status_ns_prefix)) 
+			if ( ! stat.startsWith(status_ns_prefix))
 				throw new MetadataValidationException("Status parameter must have namespace prefix " + status_ns_prefix + " found " + stat, EbRim.RegistryObject_attributes);
 			new_status.add(stat.replaceFirst(status_ns_prefix, ""));
 		}
@@ -191,7 +191,7 @@ abstract public class FindDocuments extends StoredQuery {
 		if (sqs.log_message != null)
 			sqs.log_message.addOtherParam("Some Parameters", toString());
 
-		
+
 	}
 
 

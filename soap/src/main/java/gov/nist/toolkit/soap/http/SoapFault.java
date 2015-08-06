@@ -18,7 +18,7 @@ public class SoapFault {
 		faultCode = getCodeString(code);
 		faultReason = reason;
 	}
-	
+
 	public void addDetail(String adetail) {
 		details.add(adetail);
 	}
@@ -59,16 +59,16 @@ public class SoapFault {
 
 //		if (details.size() > 0) {
 //			OMElement detail = MetadataSupport.om_factory.createOMElement(MetadataSupport.fault_detail_qnamens);
-//			
+//
 //			for (String d : details) {
 //				OMElement r = MetadataSupport.om_factory.createOMElement("Nit", null);
 //				r.setText(d);
 //				detail.addChild(r);
 //			}
-//			
+//
 //			root.addChild(detail);
 //		}
-		
+
 		return root;
 	}
 }

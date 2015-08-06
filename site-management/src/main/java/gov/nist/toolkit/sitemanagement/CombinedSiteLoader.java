@@ -14,26 +14,26 @@ import org.apache.axiom.om.OMElement;
 
 public class CombinedSiteLoader extends SiteLoader {
 	String defaultSiteName = null;
-	
+
 	public Sites load(OMElement conf, Sites sites) throws Exception {
 		if (sites == null)
 			sites = new Sites();
 		siteMap = sites.getSiteMap();
-		
+
 		parse(conf);
-		
+
 		sites.setDefaultSite(defaultSiteName);
 		sites.setSites(siteMap);
 		sites.buildRepositoriesSite();
-		
+
 		return sites;
 	}
-	
+
 	public Sites load(File actorsFile, Sites sites) throws Exception {
 		OMElement conf = Util.parse_xml(actorsFile);
 		return load(conf, sites);
 	}
-	
+
 	public Sites load(String actorsString, Sites sites) throws Exception {
 		OMElement conf = Util.parse_xml(actorsString);
 		return load(conf, sites);
@@ -50,7 +50,7 @@ public class CombinedSiteLoader extends SiteLoader {
 			throw new Exception("Validation errors: " + errs.toString());
 		Util.write_xml(actorsFile, toXML(sites));
 	}
-	
+
 	public OMElement toXML(Sites sites) {
 		OMElement sites_ele = MetadataSupport.om_factory.createOMElement("sites", null);
 

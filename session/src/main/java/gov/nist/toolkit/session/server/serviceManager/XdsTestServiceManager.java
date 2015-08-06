@@ -40,6 +40,7 @@ import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -93,7 +94,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 	/**
 	 * Run a testplan(s) as a utility within a session.  This is different from
-	 * runMesaTest in that runMesaTest stores logs in the external_cache and 
+	 * runMesaTest in that runMesaTest stores logs in the external_cache and
 	 * this call stores the logs within the session so they go away at the
 	 * end of the end of the session.  Hence the label 'utility'.
 	 * @param params
@@ -115,14 +116,14 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			if (session.xt == null)
 				session.xt = getNewXt();
 
-			if (session.res == null) 
+			if (session.res == null)
 				session.res = new AssertionResults();
 
 			if (session.transactionSettings.logRepository == null)
 				session.transactionSettings.logRepository = new LogRepositoryFactory().
 				getRepository(Installation.installation().sessionCache(), session.getId(), LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 			session.xt.setLogRepository(session.transactionSettings.logRepository);
-			
+
 			try {
 				if (testName.startsWith("tc:")) {
 					String collectionName = testName.split(":")[1];
@@ -220,13 +221,13 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			}
 		} catch (Throwable e) {
 			logger.error(ExceptionUtil.exception_details(e));
-			if (session.res == null)                 
+			if (session.res == null)
 				session.res = new AssertionResults();
 			session.res.add(ExceptionUtil.exception_details(e), false);
 			return ResultBuilder.RESULT(testName, session.res, null, null);
 		}
 	}
-	
+
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession) {
 		logger.debug(session.id() + ": " + "getTestResults() ids=" + testIds + " testSession=" + testSession );
 
@@ -262,8 +263,8 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	 * instance. It is an identifier that is generated when the result is
 	 * created so that the log details can be cached in the server and the
 	 * client can ask for them later.
-	 * 
-	 * This call only works for test logs created as part of the session 
+	 *
+	 * This call only works for test logs created as part of the session
 	 * that correspond to utilities based on the test engine. Raw
 	 * test engine output cannot be accessed this way as they are stored
 	 * separate from the current GUI session.
@@ -348,8 +349,8 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			return null;
 		}
 	}
-	
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections, 
+
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections,
 			Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
 		logger.info(session.id() + ": " + "runMesaTest" + " " + mesaTestSession + " " + testName + " " + sections + " " + siteSpec + " " + params + " " + stopOnFirstFailure);
 		try {
@@ -360,15 +361,15 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			if ((mesaTestSession == null || mesaTestSession.equals("")))
 				throw new TestSessionNotSelectedException("Must choose test session");
 			session.setSiteSpec(siteSpec);
-			
+
 			if (session.transactionSettings.logRepository == null) {
 				session.transactionSettings.logRepository = new LogRepositoryFactory().
 						getRepository(
-								Installation.installation().testLogFile(), 
-								mesaTestSession, 
-								LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, 
-								LogRepositoryFactory.Id_type.SPECIFIC_ID, 
-								testName); 
+								Installation.installation().testLogFile(),
+								mesaTestSession,
+								LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
+								LogRepositoryFactory.Id_type.SPECIFIC_ID,
+								testName);
 				session.transactionSettings.writeLogs = true;
 			}
 
@@ -378,14 +379,14 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			if (pid != null && !pid.equals("")) {
 				session.transactionSettings.patientId = pid;
 			}
-			
+
 			String altPid = params.get("$altpatientid$");
 			if (altPid != null && !altPid.equals("")) {
 				session.transactionSettings.altPatientId = altPid;
 			} else
 				session.transactionSettings.altPatientId = null;
-			
-				
+
+
 
 			// This sets result.logId so it looks like a session-based utility usage
 			// of the test engine.  Need to re-label it so the logs can later
@@ -393,8 +394,8 @@ public class XdsTestServiceManager extends CommonServiceManager {
 			Result result = xdstest(testName, sections, params, params2, null, stopOnFirstFailure);
 //			ResultSummary summary = new ResultSummary(result);
 			ResultPersistence rPer = new ResultPersistence();
-			
-			// Save results to external_cache.  
+
+			// Save results to external_cache.
 			try {
 				rPer.write(result, mesaTestSession);
 			}
@@ -486,7 +487,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 		File testDir = getTestLogCache().getTestDir(sessionName, testName);
 
-		if (testDir == null) 
+		if (testDir == null)
 			throw new Exception("Cannot find log file for test " + testName);
 
 		LogMap lm = buildLogMap(testDir, testName);
@@ -514,7 +515,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 		return asList(result);
 	}
-	
+
 	public LogMap buildLogMap(File testDir, String testName) throws Exception {
 		LogMap lm = new LogMap();
 
@@ -532,7 +533,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 				if (f.isFile() && f.getName().equals("log.xml")) {
 					LogFileContent ll = new LogFileContent(f);
 					lm.add(f.getName(), ll);
-				} 
+				}
 			}
 
 		} else {
@@ -625,11 +626,11 @@ public class XdsTestServiceManager extends CommonServiceManager {
 		//		// This allows xdstest2 to use sessionID/siteNae dir as the LOGDIR
 		//		// for referencing old log file. May also lead to downloadable log files
 		//		// for Pre-Connectathon test results
-		//		
+		//
 		//		SessionCache sc = new SessionCache(s, getTestLogCache());
 		//		for (LogMapItem item : lm.items) {
 		//			sc.addLogFile(item.log);
-		//			
+		//
 		//		}
 
 		// load metadata results into Result
@@ -694,12 +695,12 @@ public class XdsTestServiceManager extends CommonServiceManager {
 									response = tsLog.getRawResult();  // throws exception on Direct messages (no response)
 								} catch (Exception e) {
 
-								} 
+								}
 								if (response != null) {
 									OMElement rdsr = response;
 									if (!rdsr.getLocalName().equals(
 											"RetrieveDocumentSetResponse"))
-										rdsr = MetadataSupport
+										rdsr = XmlUtil
 										.firstDecendentWithLocalName(
 												response,
 												"RetrieveDocumentSetResponse");
@@ -724,7 +725,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 											stepResult.documents.add(doc);
 
 											File localFile = new File(
-													Installation.installation().warHome() + File.separator + 
+													Installation.installation().warHome() + File.separator +
 													"xdstools2" + File.separator + "DocumentCache" + File.separator
 													+ doc.uid
 													+ getRepositoryCacheFileExtension(doc.mimeType));
@@ -811,9 +812,9 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 
 	/******************************************************************
-	 * 
+	 *
 	 * Expose these methods to the ToolkitService
-	 * 
+	 *
 	 ******************************************************************/
 
 	public void setMesaTestSession(String sessionName) {

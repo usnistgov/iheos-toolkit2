@@ -14,7 +14,7 @@ public class TestSupport extends TestCase {
 	OMElement wrapper;
 	protected Metadata m;
 	short version = 3;
-	
+
 	String metadataToString() {
 		return root.toString();
 	}
@@ -26,20 +26,20 @@ public class TestSupport extends TestCase {
 		parent.addChild(c);
 		return c;
 	}
-	
+
 	OMAttribute add_att(String name, String value, OMElement parent) {
 		OMAttribute att = fac().createOMAttribute(name, null, value);
 		parent.addAttribute(att);
 		return att;
 	}
-	
+
 	OMElement add_name(String name_value, OMElement parent) {
 		OMElement name_ele = add_child("Name", parent);
 		OMElement loc = add_child("LocalizedString", name_ele);
 		add_att("value", name_value, loc);
 		return name_ele;
 	}
-	
+
 	OMElement add_class(String class_scheme, String classified_object_id, OMElement parent) {
 		OMElement class_ele = add_child("Classification", parent);
 		add_att("classificationScheme", class_scheme, class_ele);
@@ -112,7 +112,7 @@ public class TestSupport extends TestCase {
 		a.addAttribute("targetObject", target, null);
 		return a;
 	}
-	
+
 	protected OMElement add_bad_namespace_assoc(String source, String type, String target) {
 		OMElement a = add_object("Association");
 		a.addAttribute("sourceObject", source, null);
@@ -120,7 +120,7 @@ public class TestSupport extends TestCase {
 		a.addAttribute("targetObject", target, null);
 		return a;
 	}
-	
+
 	public void setUp() {
 		root = fac().createOMElement("SubmitObjectsRequest", MetadataSupport.ebRSns3);
 		wrapper = add_child("LeafRegistryObjectList", root);

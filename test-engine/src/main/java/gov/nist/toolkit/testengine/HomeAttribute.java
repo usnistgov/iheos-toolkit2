@@ -24,7 +24,7 @@ public class HomeAttribute {
 	public void set(OMElement root) {
 		String localname = root.getLocalName();
 
-		if (requiresHome(localname)) 
+		if (requiresHome(localname))
 			root.addAttribute("home", home, null);
 
 		for (OMNode child=root.getFirstElement(); child != null; child=child.getNextOMSibling()) {
@@ -45,7 +45,7 @@ public class HomeAttribute {
 
 	public void validate1(OMElement root) {
 		String localname = root.getLocalName();
-		
+
 		if (requiresHome(localname)) {
 
 			OMAttribute home_att = root.getAttribute(MetadataSupport.home_qname);
@@ -56,7 +56,7 @@ public class HomeAttribute {
 				String home1 = home_att.getAttributeValue();
 				if (home1 == null) home1 = "";
 				if ( !home1.equals(home))
-					errs += "\nElement of type " + localname + " has home of [" + home1 + "] which does not match expected value of [" + home + "]"; 
+					errs += "\nElement of type " + localname + " has home of [" + home1 + "] which does not match expected value of [" + home + "]";
 			}
 		}
 

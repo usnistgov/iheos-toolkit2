@@ -1,6 +1,5 @@
 package gov.nist.toolkit.registrymetadata;
 
-import gov.nist.toolkit.registrymetadata.TranslateToV2.Att;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -16,12 +15,12 @@ public class TranslateToV3 extends Translate {
 	Metadata m;
 
 	public OMElement translate(OMElement ro2, boolean must_dup) throws XdsInternalException {
-		if (MetadataSupport.isV3Namespace(ro2.getNamespace()) && !must_dup) 
+		if (MetadataSupport.isV3Namespace(ro2.getNamespace()) && !must_dup)
 			return Util.deep_copy(ro2);
 		m = new Metadata();
 		return deep_copy(ro2, MetadataSupport.ebRIMns3);
 	}
- 
+
 	String new_id() {
 		return "id_" + id_count++;
 	}
@@ -35,11 +34,11 @@ public class TranslateToV3 extends Translate {
 
 	enum Att { Slot, Name, Description, VersionInfo, Classification, ExternalIdentifier };
 
-	
+
 	OMElement deep_copy(OMElement from, OMNamespace new_namespace) {
 		String to_id = from.getAttributeValue(id_qname);
 		String to_name = from.getLocalName();
-				
+
 		if (to_name.equals("ObjectRef"))
 			return null;
 
@@ -69,7 +68,7 @@ public class TranslateToV3 extends Translate {
 			}
 		}
 
-			
+
 		OMElement x;
 
 		for (Iterator it=from.getChildElements(); it.hasNext(); ) {
@@ -91,8 +90,8 @@ public class TranslateToV3 extends Translate {
 
 		return to;
 	}
-	
-	
+
+
 	protected void copy_attributes(OMElement from, OMElement to) {
 		String element_name = from.getLocalName();
 		for (Iterator it=from.getAllAttributes(); it.hasNext();  ) {

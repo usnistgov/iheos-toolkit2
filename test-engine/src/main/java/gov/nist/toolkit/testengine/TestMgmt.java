@@ -13,7 +13,7 @@ import org.apache.axiom.om.OMElement;
 
 public class TestMgmt extends OMGenerator {
 	TestConfig testConfig;
-	
+
 	public TestMgmt(TestConfig config) {
 		testConfig = config;
 	}
@@ -22,7 +22,7 @@ public class TestMgmt extends OMGenerator {
 		HashMap<String, String> unique_ids = new HashMap<String, String>();    // object id field => uniqueID assigned
 
 
-			IdAllocator allocator = UniqueIdAllocator.getInstance(testConfig); 
+			IdAllocator allocator = UniqueIdAllocator.getInstance(testConfig);
 			// for all ExtrinsicObjects
 			allocator.assign(metadata, "ExtrinsicObject", MetadataSupport.XDSDocumentEntry_uniqueid_uuid, unique_ids, no_assign_uid_to);
 

@@ -2,9 +2,7 @@ package gov.nist.toolkit.testengine;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.testenginelogging.Report;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class ReportManager {
 		// XPath will search entire tree, even if we give it an intermediate node
 		root = Util.deep_copy(xml);
 	}
-	
+
 	String stringAround(String s, int focus) {
 		int offset=25;
 		int from = focus - offset;
@@ -98,7 +96,7 @@ public class ReportManager {
 								" evaluates to [" + val + "] when evaluated " +
 								"against section " + report.getSection());
 				}
-			} 
+			}
 			catch (JaxenException e) {
 				throw new XdsInternalException("Error evaluating Report " + report.name, e);
 			}

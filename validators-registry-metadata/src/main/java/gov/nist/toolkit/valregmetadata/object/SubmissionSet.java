@@ -5,7 +5,6 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.datatype.DtmFormat;
-import gov.nist.toolkit.valregmetadata.datatype.XonXcnFormat;
 import gov.nist.toolkit.valregmetadata.datatype.XonXcnXtnFormat;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -20,23 +19,23 @@ import org.apache.axiom.om.OMElement;
 
 public class SubmissionSet extends AbstractRegistryObject implements TopLevelObject {
 
-	static List<String> statusValues = 
+	static List<String> statusValues =
 			Arrays.asList(
 					MetadataSupport.status_type_namespace + "Approved"
 					);
 
-	static List<String> definedSlots = 
+	static List<String> definedSlots =
 			Arrays.asList(
 					"intendedRecipient",
 					"submissionTime"
 					);
 
-	static List<String> requiredSlots = 
+	static List<String> requiredSlots =
 			Arrays.asList(
 					"submissionTime"
 					);
 
-	static List<String> requiredSlotsMinimal = 
+	static List<String> requiredSlotsMinimal =
 			Arrays.asList(
 					"intendedRecipient"
 					);
@@ -48,9 +47,9 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid ,
 						MetadataSupport.XDSSubmissionSet_author_uuid
 						);
-		classificationDescription.requiredSchemes = 
+		classificationDescription.requiredSchemes =
 				Arrays.asList(
-						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid 
+						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid
 						);
 		classificationDescription.multipleSchemes =
 				Arrays.asList(
@@ -59,7 +58,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 		classificationDescription.names = new HashMap<String, String>();
 		classificationDescription.names.put(MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid, "Content Type Code");
 		classificationDescription.names.put(MetadataSupport.XDSSubmissionSet_author_uuid, "Author");
-	} 
+	}
 
 	static public ClassAndIdDescription XDMclassificationDescription = new ClassAndIdDescription();
 	static {
@@ -68,7 +67,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid ,
 						MetadataSupport.XDSSubmissionSet_author_uuid
 						);
-		XDMclassificationDescription.requiredSchemes = 
+		XDMclassificationDescription.requiredSchemes =
 				Arrays.asList(
 						);
 		XDMclassificationDescription.multipleSchemes =
@@ -78,7 +77,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 		XDMclassificationDescription.names = new HashMap<String, String>();
 		XDMclassificationDescription.names.put(MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid, "Content Type Code");
 		XDMclassificationDescription.names.put(MetadataSupport.XDSSubmissionSet_author_uuid, "Author");
-	} 
+	}
 
 	static public ClassAndIdDescription MinimalclassificationDescription = new ClassAndIdDescription();
 	static {
@@ -87,7 +86,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid ,
 						MetadataSupport.XDSSubmissionSet_author_uuid
 						);
-		MinimalclassificationDescription.requiredSchemes = 
+		MinimalclassificationDescription.requiredSchemes =
 				Arrays.asList(
 						);
 		MinimalclassificationDescription.multipleSchemes =
@@ -97,7 +96,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 		MinimalclassificationDescription.names = new HashMap<String, String>();
 		//MinimalclassificationDescription.names.put(MetadataSupport.XDSSubmissionSet_contentTypeCode_uuid, "Content Type Code");
 		MinimalclassificationDescription.names.put(MetadataSupport.XDSSubmissionSet_author_uuid, "Author");
-	} 
+	}
 
 	static public ClassAndIdDescription externalIdentifierDescription = new ClassAndIdDescription();
 	static {
@@ -108,13 +107,13 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
 						);
 
-		externalIdentifierDescription.requiredSchemes = 
+		externalIdentifierDescription.requiredSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_patientid_uuid,
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
 						);
-		externalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
+		externalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		externalIdentifierDescription.names = new HashMap<String, String>();
 		externalIdentifierDescription.names.put(MetadataSupport.XDSSubmissionSet_patientid_uuid, "Patient ID");
@@ -131,12 +130,12 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
 						);
 
-		XDMexternalIdentifierDescription.requiredSchemes = 
+		XDMexternalIdentifierDescription.requiredSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
 						);
-		XDMexternalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
+		XDMexternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		XDMexternalIdentifierDescription.names = new HashMap<String, String>();
 		XDMexternalIdentifierDescription.names.put(MetadataSupport.XDSSubmissionSet_patientid_uuid, "Patient ID");
@@ -153,12 +152,12 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
 						);
 
-		MinimalexternalIdentifierDescription.requiredSchemes = 
+		MinimalexternalIdentifierDescription.requiredSchemes =
 				Arrays.asList(
 						MetadataSupport.XDSSubmissionSet_uniqueid_uuid,
 						MetadataSupport.XDSSubmissionSet_sourceid_uuid
 						);
-		MinimalexternalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
+		MinimalexternalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		MinimalexternalIdentifierDescription.names = new HashMap<String, String>();
 		//MinimalexternalIdentifierDescription.names.put(MetadataSupport.XDSSubmissionSet_patientid_uuid, "Patient ID");
@@ -180,7 +179,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	public boolean equals(SubmissionSet s)  {
-		if (!id.equals(id)) 
+		if (!id.equals(id))
 			return false;
 		return	super.equals(s);
 	}
@@ -250,7 +249,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {
-		if (vc.isXDRMinimal) { 
+		if (vc.isXDRMinimal) {
 			validateDirectSlotsCodedCorrectly(er, vc);
 		} else {
 			//                    name				   multi	format                                                  resource

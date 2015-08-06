@@ -1,19 +1,18 @@
 package gov.nist.toolkit.soap.http;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 
 /**
- * Build a SOAP message.  Must be called in the order: buildSoapEnvelope, 
+ * Build a SOAP message.  Must be called in the order: buildSoapEnvelope,
  * attachSoapHeader, attachSoapBody.
  * @author bill
  *
  */
 public class SoapUtil {
-	
+
 	static public OMElement buildSoapEnvelope() {
 		return MetadataSupport.om_factory.createOMElement(MetadataSupport.soap_env_qnamens);
 	}

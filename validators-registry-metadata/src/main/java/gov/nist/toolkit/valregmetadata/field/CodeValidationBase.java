@@ -2,14 +2,13 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.http.httpclient.HttpClient;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmetadata.object.Classification;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -35,27 +34,27 @@ public class CodeValidationBase {
 	HashMap<String, String> ext_map;   // ext => mime
 	Exception startUpError = null;
 	ValidationContext vc = null;
-	
+
 	static String ADConfigError = "ITI TF-3: 4.1.10";
 	static Logger logger = Logger.getLogger(CodeValidationBase.class);
 
 
 	CodeValidationBase() {}
-	
+
 	CodeValidationBase(int ignore) throws XdsInternalException {
 		loadCodes();
 	}
-	
+
 	public void setValidationContext(ValidationContext vc) throws XdsInternalException {
 		this.vc = vc;
 		loadCodes();
 	}
-	
+
 	void loadCodes() throws XdsInternalException {
 		if (codes != null)
 			return;
 		String fileCodesLocation = null;
-		
+
 		if (vc != null)
 			fileCodesLocation = vc.getCodesFilename();
 
@@ -75,17 +74,17 @@ public class CodeValidationBase {
 		}
 		if (codes_string == null)
 			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned NULL from " + from);
-		if (codes_string.equals("")) 
+		if (codes_string.equals(""))
 			throw new XdsInternalException("CodeValidation.init(): GET codes.xml returned enpty from " + from);
 
 		logger.debug("Codes loaded from " + from);
-		
+
 		codes = Util.parse_xml(codes_string);
 		if (codes == null)
 			throw new XdsInternalException("CodeValidation: cannot parse code configuration file from " + from);
 
 		assigning_authorities = new ArrayList<String>();
-		for (OMElement aa_ele : MetadataSupport.childrenWithLocalName(codes, "AssigningAuthority")) 
+		for (OMElement aa_ele : XmlUtil.childrenWithLocalName(codes, "AssigningAuthority"))
 		{
 			this.assigning_authorities.add(aa_ele.getAttributeValue(MetadataSupport.id_qname));
 		}
@@ -129,8 +128,8 @@ public class CodeValidationBase {
 		}
 		return assigning_authorities;
 	}
-	
-	String[] assocClassifications = { 
+
+	String[] assocClassifications = {
 			"XFRM", "APND", "RPLC", "XFRM_RPLC"
 	};
 
@@ -164,18 +163,18 @@ public class CodeValidationBase {
 			return "Association";
 		return "Unknown";
 	}
-	
+
 	String objectDescription(String id) {
 		return objectType(id) + "(" + id + ")";
 	}
-	
+
 	String objectDescription(OMElement ele) {
 		String objectType = objectType(m.getId(ele));
 		if (objectType.equals("Unknown"))
 			objectType = ele.getLocalName();
 		return objectType + "(" + m.getId(ele) + ")";
 	}
-	
+
 	String getObjectTypeById(ErrorRecorder er, String id) {
 		try {
 			return m.getObjectTypeById(id);
@@ -184,7 +183,7 @@ public class CodeValidationBase {
 			return null;
 		}
 	}
-	
+
 	OMElement getObjectById(ErrorRecorder er, String id) {
 		try {
 			return m.getObjectById(id);
@@ -193,7 +192,7 @@ public class CodeValidationBase {
 			return null;
 		}
 	}
-	
+
 	String getSimpleAssocType(ErrorRecorder er, OMElement assoc) {
 		try {
 			return m.getSimpleAssocType(assoc);
@@ -212,24 +211,24 @@ public class CodeValidationBase {
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, startUpError);
 			return;
 		}
-		
+
 		er.sectionHeading("Evaluating use of Affinity Domain coding");
-		
-	
+
+
 		List<String> all_object_ids = m.getObjectIds(m.getAllObjects());
-	
+
 		for (String obj_id : all_object_ids) {
 			List<OMElement> classifications = null;
-	
+
 			try {
 				classifications = m.getClassifications(obj_id);
 			} catch (MetadataException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
 				continue;
 			}
-	
+
 			for (OMElement cl_ele : classifications) {
-	
+
 				Classification cl = null;
 				try {
 					cl = new Classification(m, cl_ele);
@@ -238,20 +237,20 @@ public class CodeValidationBase {
 					continue;
 				}
 				validate(er, cl);
-	
+
 				validateAssocClassifications(er, cl);
-	
+
 			}
 		}
-	
+
 		for (OMElement doc_ele : m.getExtrinsicObjects()) {
 			String mime_type = doc_ele.getAttributeValue(MetadataSupport.mime_type_qname);
 			if ( !isValidMimeType(mime_type)) {
-				if (vc.isXDM || vc.isXDR) 
+				if (vc.isXDM || vc.isXDR)
 					er.detail("Mime type, " + mime_type + ", is not available in this Affinity Domain");
 				else
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Mime type, " + mime_type + ", is not available in this Affinity Domain", this, ADConfigError);
-			} 
+			}
 		}
 	}
 
@@ -276,7 +275,7 @@ public class CodeValidationBase {
 
 		String assoc_id = classified_object_id;
 		OMElement assoc_ele = getObjectById(er, assoc_id);
-		if (assoc_ele == null) 
+		if (assoc_ele == null)
 			return;
 		String assoc_type = getSimpleAssocType(er, assoc_ele);
 		for (int i=0; i<assocClassifications.length; i++) {
@@ -286,7 +285,7 @@ public class CodeValidationBase {
 		}
 		er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc_ele) + ": Association Type " + assoc_type + " cannot have an associationDocumentation classification", this, "ITI TF-3: 4.1.6.1");
 	}
-	
+
 	void validate(ErrorRecorder er, Classification cl) {
 		String classification_scheme = cl.getClassificationScheme();
 
@@ -313,17 +312,17 @@ public class CodeValidationBase {
 			cannotValidate(er, cl);
 			return;
 		}
-		for (OMElement code_type : MetadataSupport.childrenWithLocalName(codes, "CodeType")) {
+		for (OMElement code_type : XmlUtil.childrenWithLocalName(codes, "CodeType")) {
 			String class_scheme = code_type.getAttributeValue(MetadataSupport.classscheme_qname);
 
 			// some codes don't have classScheme in their definition
 			if (class_scheme != null && !class_scheme.equals(classification_scheme))
 				continue;
 
-			for (OMElement code_ele : MetadataSupport.childrenWithLocalName(code_type, "Code")) {
+			for (OMElement code_ele : XmlUtil.childrenWithLocalName(code_type, "Code")) {
 				String code_name = code_ele.getAttributeValue(MetadataSupport.code_qname);
 				String code_scheme = code_ele.getAttributeValue(MetadataSupport.codingscheme_qname);
-				if ( 	code_name.equals(code) && 
+				if ( 	code_name.equals(code) &&
 						(code_scheme == null || code_scheme.equals(coding_scheme) )
 				) {
 					return;
@@ -337,7 +336,7 @@ public class CodeValidationBase {
 			if (container instanceof OMElement)
 				owner = (OMElement) container;
 		}
-		if (vc.isXDM || vc.isXDR) 
+		if (vc.isXDM || vc.isXDR)
 			er.detail(objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration");
 		else
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration", this, "ITI TF-3: 4.1.10");

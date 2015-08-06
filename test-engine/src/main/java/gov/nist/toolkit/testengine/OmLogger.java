@@ -67,7 +67,7 @@ public class OmLogger implements ILogger {
 			parent.addChild(elel);
 		}
 	}
-	
+
 	String encodeLT(String msg) {
 		return msg;
 	}
