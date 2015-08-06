@@ -496,7 +496,7 @@
         <snapshotRepository>
             <id>internal</id>
             <name>Internal Releases</name>
-            <url>http://your.server.com:8081/nexus/content/repositories/snapshots/</url>
+            <url>http://gazelle.ihe.net/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
