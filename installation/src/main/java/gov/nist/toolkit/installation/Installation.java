@@ -99,7 +99,12 @@ public class Installation {
 	public File environmentFile() {
 		return new File(externalCache + sep + "environment");
 	}
-	
+
+	// Default codes.xml to use if no environments are configured
+	public File internalEnvironmentFile(String envName) {
+		return new File(new File(toolkitxFile(), "environment"), envName);
+	}
+
 	public File directSendLogFile(String userName) {
 		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
 	}

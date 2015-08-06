@@ -31,8 +31,8 @@ public class EnvSetting {
 	}
 
     static void installDefaultEnvironment() {
-        File envFile = Installation.installation().environmentFile(DEFAULTENVIRONMENTNAME);
-        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured");
+        File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
+        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(DEFAULTSESSIONID, DEFAULTENVIRONMENTNAME, envFile);
     }
 
