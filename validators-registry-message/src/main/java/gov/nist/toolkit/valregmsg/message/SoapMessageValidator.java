@@ -238,22 +238,7 @@ public class SoapMessageValidator extends MessageValidator {
         } else if (wsaction.equals("urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery")) {
             vc.isResponse = true;
             vc.isXcpd = true;
-<<<<<<< local
-        } else if (wsaction.equals(SoapActionFactory.epsos_xcqr_action)) {
-            vc.isRequest = true;
-            vc.isSQ = true;
-            vc.isXC = true;
-            vc.isEpsos = true;
         }
-=======
-		} else if (wsaction.equals(SoapActionFactory.epsos_xcqr_action)) {
-			vc.isRequest = true;
-			vc.isSQ = true;
-			vc.isXC = true;
-			vc.isEpsos = true;
-		}
->>>>>>> other
-
     }
 
     static String wsaddresingNamespace = "http://www.w3.org/2005/08/addressing";
@@ -424,17 +409,11 @@ public class SoapMessageValidator extends MessageValidator {
 			err("Header must be present","ITI TF-2x: V.3.2.2 and SOAP Version 1.2 Section 4");
 			return;
 		}
-<<<<<<< local
         er.detail("Header found");
         er.detail("Envelope namespace is " + soapEnvelopeNamespace);
         OMNamespace ns = header.getNamespace();
 		if (ns == null) 
 			err("Namespace must be " + soapEnvelopeNamespace + " - found instead - " 
-=======
-		OMNamespace ns = header.getNamespace();
-		if (ns == null)
-			err("Namespace must be " + soapEnvelopeNamespace + " - found instead - "
->>>>>>> other
 					+ "null","SOAP Version 1.2 Section 4");
 		else {
 			String uri = ns.getNamespaceURI();
@@ -466,10 +445,7 @@ public class SoapMessageValidator extends MessageValidator {
 			err("Body must be present","ITI TF-2x: V.3.2 and SOAP Version 1.2 Section 4");
 			return null;
 		}
-<<<<<<< local
         er.detail("Body namespace is " + soapEnvelopeNamespace);
-=======
->>>>>>> other
 
 		if (header != null) {
 			OMNamespace ns = header.getNamespace();
