@@ -9,6 +9,7 @@ import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams;
@@ -23,7 +24,7 @@ import org.apache.axiom.om.OMElement;
 
 /**
  * Generic Stored Query Factory class that is sub-classed to define a specific stored query implementation.
- * The generic/specific nature relates to the underlying implementation.  The key method, 
+ * The generic/specific nature relates to the underlying implementation.  The key method,
  * buildStoredQueryHandler(), which is to be defined in the sub-class, decides which stored queries
  * are implemented and what the implementation classes are. This class provides the generic stored
  * query parsing and support.
@@ -33,20 +34,20 @@ import org.apache.axiom.om.OMElement;
 abstract public class StoredQueryFactory {
 
 	/**
-	 * Returns an object of generic type StoredQuery which implements a single stored query 
-	 * type implemented against a specific registry implementation. The sub-class that implements 
+	 * Returns an object of generic type StoredQuery which implements a single stored query
+	 * type implemented against a specific registry implementation. The sub-class that implements
 	 * this method is specific to an implementation.
 	 * @param sqs
 	 * @throws MetadataValidationException
-	 * @throws LoggerException 
+	 * @throws LoggerException
 	 */
 	abstract public StoredQueryFactory buildStoredQueryHandler(StoredQuerySupport sqs) throws MetadataValidationException, LoggerException;
 
 	OMElement ahqr;
-	
+
 	public enum QueryReturnType  { OBJECTREF, LEAFCLASS, LEAFCLASSWITHDOCUMENT };
-	
-	
+
+
 	QueryReturnType returnType = QueryReturnType.OBJECTREF;
 	SqParams params;
 	protected String query_id;
@@ -65,7 +66,7 @@ abstract public class StoredQueryFactory {
 	public boolean hasHome() { return homeCommunityId != null; }
 
 	public boolean isLeafClassReturnType() {
-		OMElement response_option = MetadataSupport.firstChildWithLocalName(ahqr, "ResponseOption");
+		OMElement response_option = XmlUtil.firstChildWithLocalName(ahqr, "ResponseOption");
 		if (response_option == null) return true;
 		String return_type = response_option.getAttributeValue(MetadataSupport.return_type_qname);
 		if (return_type == null || return_type.equals("") || !return_type.equals("LeafClass")) return false;
@@ -87,7 +88,7 @@ abstract public class StoredQueryFactory {
 		this.er = er;
 
 		build();
-		
+
 	}
 
 	public StoredQueryFactory(OMElement ahqr, Response response, LogMessage log_message) throws XdsInternalException, MetadataException, XdsException, LoggerException {
@@ -114,12 +115,12 @@ abstract public class StoredQueryFactory {
 
 
 	void build() throws XdsException, LoggerException {
-		
+
 		if (response != null && er == null)
 			er = response.getErrorRecorder();
 
-		OMElement response_option = MetadataSupport.firstChildWithLocalName(ahqr, "ResponseOption") ;
-		if (response_option == null) 
+		OMElement response_option = XmlUtil.firstChildWithLocalName(ahqr, "ResponseOption") ;
+		if (response_option == null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, "Cannot find /AdhocQueryRequest/ResponseOption element", this, "ebRS 3.0 Section 6.1.1.1");
 
 		String return_type = response_option.getAttributeValue(MetadataSupport.return_type_qname);
@@ -131,16 +132,16 @@ abstract public class StoredQueryFactory {
 			returnType = QueryReturnType.OBJECTREF;
 		else if (return_type.equals("LeafClassWithRepositoryItem"))
 			returnType = QueryReturnType.LEAFCLASSWITHDOCUMENT;
-		
+
 		else
 			er.err(XdsErrorCode.Code.XDSRegistryError, "/AdhocQueryRequest/ResponseOption/@returnType must be LeafClass or ObjectRef or for some special queries LeafClassWithRepositoryItem. Found value "
 					+ return_type, this, EbRS.ReturnTypes);
 
-		OMElement adhoc_query = MetadataSupport.firstChildWithLocalName(ahqr, "AdhocQuery") ;
+		OMElement adhoc_query = XmlUtil.firstChildWithLocalName(ahqr, "AdhocQuery") ;
 		if (adhoc_query == null) {
 			throw new XdsInternalException("Cannot find /AdhocQueryRequest/AdhocQuery element");
 		}
-		
+
 		homeCommunityId = adhoc_query.getAttributeValue(MetadataSupport.home_qname);
 
 		ParamParser parser = new ParamParser();
@@ -193,7 +194,7 @@ abstract public class StoredQueryFactory {
 	 * @return Metadata object
 	 * @throws XdsException
 	 * @throws LoggerException
-	 * @throws XDSRegistryOutOfResourcesException 
+	 * @throws XDSRegistryOutOfResourcesException
 	 */
 	abstract public Metadata FindDocuments(StoredQuerySupport sqs) throws XdsException, LoggerException, XDSRegistryOutOfResourcesException;
 	/**

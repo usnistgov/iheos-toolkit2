@@ -31,18 +31,18 @@ public class AssertionEngine {
 		String file;
 		String as;
 		DataRef(String file, String as) { this.file = file; this.as = as; }
-	} 
+	}
 
 	ArrayList<DataRef> refs = new ArrayList<DataRef>();
 
 	public void setTestConfig(TestConfig config) {
 		testConfig = config;
 	}
-	
+
 	public void setLinkage(Linkage l) {
 		linkage = l;
 	}
-	
+
 	void parseDataRefs() throws XdsException {
 		for (OMElement xref : raw_data_refs) {
 			String file = xref.getAttributeValue(new QName("file"));
@@ -94,11 +94,11 @@ public class AssertionEngine {
 	class Assertion {
 		String id;
 		String xpath;
-		Assertion(String id, String xpath) { 
-			this.id = id; 
+		Assertion(String id, String xpath) {
+			this.id = id;
 			this.xpath = xpath.replaceAll("SITE", testConfig.siteXPath);
 		}
-		
+
 		public String toString() {
 			return "[Assertion: id=" +id + " xpath=" + xpath + "]";
 		}
@@ -122,7 +122,7 @@ public class AssertionEngine {
 			}
 			String id = asser.getAttributeValue(new QName("id"));
 			String xpath = asser.getText();
-			xpath = xpath.replaceAll("\\$DATE\\$", date());	
+			xpath = xpath.replaceAll("\\$DATE\\$", date());
 
 			assertions.add(new Assertion(id, xpath));
 		}
@@ -151,13 +151,13 @@ public class AssertionEngine {
 			err.fail("AssertionEngine Error: " + e.getMessage());
 			return;
 		}
-		
+
 
 		logger.add_name_value(assertion_output, "CompiledAssertion", assertions.toString());
 		logger.add_name_value(assertion_output,"RawAssertionData", data);
 		logger.add_name_value(assertion_output, "AssertionCount", Integer.toString(assertions.size()));
-		
-		
+
+
 		try {
 			for (Assertion assertion : assertions) {
 				AXIOMXPath xpathExpression = new AXIOMXPath (assertion.xpath);
@@ -174,20 +174,20 @@ public class AssertionEngine {
 						String eqToken = tokenAt(assertion.xpath, equals_index);
 						String left_side_xpath = assertion.xpath.substring(0, equals_index).trim();
 						String right_side_xpath = assertion.xpath.substring(equals_index + eqToken.length()).trim();
-						
-						
+
+
 						String left_side_value;
 						if (left_side_xpath.indexOf("//") == -1)
 							left_side_value = left_side_xpath;
 						else
 							left_side_value= (new AXIOMXPath(left_side_xpath)).stringValueOf(data);
-						
+
 						String right_side_value;
 						if (right_side_xpath.indexOf("//") == -1)
 							right_side_value = right_side_xpath;
 						else
 							right_side_value = (new AXIOMXPath(right_side_xpath)).stringValueOf(data);
-						
+
 						errs.append("AssertionEngine: assertion " + assertion.id + " left side value is " + left_side_value + "\n" +
 								"AssertionEngine: assertion " + assertion.id + " right side value is " + right_side_value + "\n"+
 								"AssertionEngine: operator is " + tokenAt(assertion.xpath, equals_index));
@@ -199,7 +199,7 @@ public class AssertionEngine {
 					err.setInContext("AssertionEngine: assertion " + assertion.id, "pass");
 				}
 			}
-		} 
+		}
 		catch (Exception e) {
 			err.fail("AssertionEngine: exception " + e.getClass().getName() + ": " + e.getMessage() + '\n' + ExceptionUtil.exception_details(e));
 			return ;

@@ -37,14 +37,14 @@ public class MetadataParser {
 
 		return m;
 	}
-	
+
 	static public Metadata parseObject(OMElement e) throws MetadataException {
 		Metadata m = new Metadata();
-		
+
 		m.setGrokMetadata(false);
-				
+
 		m.parseObject(e);
-		
+
 		return m;
 	}
 
@@ -54,7 +54,7 @@ public class MetadataParser {
 		return parseNonSubmission(Util.parse_xml(metadata_file));
 
 	}
-	
+
 	static public Metadata noParse(OMElement e) {
 		Metadata m = new Metadata();
 
@@ -70,8 +70,13 @@ public class MetadataParser {
 	static public Metadata noParse(File metadata_file) throws MetadataException,XdsInternalException  {
 		return noParse(Util.parse_xml(metadata_file));
 	}
-	
+
 	static public Metadata parse(OMElement e)  throws MetadataException,XdsInternalException, MetadataValidationException {
 		return new Metadata(e);
+	}
+
+	static public Metadata parse(String metadata) throws XdsInternalException, MetadataException {
+		OMElement ele = Util.parse_xml(metadata);
+		return parse(ele);
 	}
 }

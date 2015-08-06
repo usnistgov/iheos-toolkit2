@@ -6,6 +6,7 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.Parse;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
@@ -48,8 +49,8 @@ public class Linkage extends BasicLinkage {
 	}
 
 	// m - metadata to modify based on linkage  ( if null - no modifications made)
-	// instruction_output - log output - place to search previous test steps for linkage targets 
-	//     - if null only previous testplans will be searched 
+	// instruction_output - log output - place to search previous test steps for linkage targets
+	//     - if null only previous testplans will be searched
 	// use_id - linkage specification (requests) to previous steps
 	public Linkage(TestConfig config, OMElement instruction_output, Metadata m, List<OMElement> use_id) {
 		super(config);
@@ -59,7 +60,7 @@ public class Linkage extends BasicLinkage {
 		this.debug = testConfig.verbose;
 		addHome();
 
-		if (debug) 
+		if (debug)
 			System.out.println(use_id);
 	}
 
@@ -114,7 +115,7 @@ public class Linkage extends BasicLinkage {
 			linkage = new HashMap<String, String>();
 		linkage.put(symbol, value);
 	}
-	
+
 	public void addLinkage(Map<String, String> linkageMap) {
 		if (linkage == null)
 			linkage = new HashMap<String, String>();
@@ -162,7 +163,7 @@ public class Linkage extends BasicLinkage {
 
 	}
 
-	public OMElement find_instruction_output(OMElement wrapper, String target_test_step_id, 
+	public OMElement find_instruction_output(OMElement wrapper, String target_test_step_id,
 			String target_transaction_type) throws XdsInternalException {
 		for (Iterator it=wrapper.getChildElements(); it.hasNext(); ) {
 			OMElement section = (OMElement) it.next();
@@ -207,7 +208,7 @@ public class Linkage extends BasicLinkage {
 
 		if (root == null)
 			return;
-		
+
 		// don't look inside document contents
 		try {
 			if (root.getLocalName().equals("Document") &&
@@ -225,7 +226,7 @@ public class Linkage extends BasicLinkage {
 			} catch (Exception ex) {
 				throw new XdsInternalException("Error trying to replace [" + old_text + "] with [" +
 				new_text + "] in element " + e.getLocalName(), ex		);
-				
+
 			}
 
 			// recurse
@@ -254,7 +255,7 @@ public class Linkage extends BasicLinkage {
 		}
 	}
 
-	String escape_pattern(String pattern) {  
+	String escape_pattern(String pattern) {
 		//	String new_pattern = "\\" + pattern.substring(0, pattern.length()-1) + "\\$";
 		StringBuffer buf = new StringBuffer();
 		for(int i=0; i<pattern.length(); i++) {
@@ -291,7 +292,7 @@ public class Linkage extends BasicLinkage {
 			String step = use.getAttributeValue(new QName("step"));
 			String symbol = use.getAttributeValue(new QName("symbol"));
 
-			if (debug) 
+			if (debug)
 				System.out.println("compileUseRepositoryUniqueId:" +
 						"\ntestdir = " + testdir +
 						"\nstep = " + step +
@@ -325,9 +326,9 @@ public class Linkage extends BasicLinkage {
 			return null;
 		OMElement ele = result_ele.getFirstElement();
 		Metadata m = MetadataParser.parseNonSubmission(ele);
-		if (debug) 
-			System.out.println("getResult:" + 
-					"\ntestdir = " + testdir + 
+		if (debug)
+			System.out.println("getResult:" +
+					"\ntestdir = " + testdir +
 					"\nstep = " + step +
 					"\nresult =  " + result_ele.getLocalName() +
 					"\nele = " + ((ele == null) ? "null" : ele.getLocalName()) +
@@ -339,12 +340,12 @@ public class Linkage extends BasicLinkage {
 		repUniqueId =  null;
 		for (OMElement eo : m.getExtrinsicObjects()) {
 			String rui = m.getSlotValue(eo, "repositoryUniqueId", 0);
-			if (debug) 
+			if (debug)
 				System.out.println("eo = " + eo.getAttributeValue(MetadataSupport.id_qname) +
 						" repositoryUniqueId = " + rui);
 			if (rui == null || rui.equals(""))
-				throw new XdsInternalException("RetrieveTransaction: getRepositoryUniqueId(): ExtrinsicObject " + 
-						eo.getAttributeValue(MetadataSupport.id_qname) + 
+				throw new XdsInternalException("RetrieveTransaction: getRepositoryUniqueId(): ExtrinsicObject " +
+						eo.getAttributeValue(MetadataSupport.id_qname) +
 				"does not have a repositoryUniqueId attribute");
 			if (repUniqueId == null)
 				repUniqueId = rui;
@@ -392,7 +393,7 @@ public class Linkage extends BasicLinkage {
 			String symbol = use.getAttributeValue(new QName("symbol"));
 			boolean base64decode = bool(use.getAttributeValue(new QName("decodebase64")));
 
-			boolean is_testdir = 
+			boolean is_testdir =
 				(testdir != null && !testdir.equals("") &&
 						step != null && !step.equals("") &&
 						xpath != null && !xpath.equals("") &&
@@ -409,7 +410,7 @@ public class Linkage extends BasicLinkage {
 			try {
 				if (is_testdir) {
 					OMElement root = Parse.parse_xml_file(getLogFileName(testdir));
-					List<OMElement> test_steps = MetadataSupport.decendentsWithLocalName(root, "TestStep");
+					List<OMElement> test_steps = XmlUtil.decendentsWithLocalName(root, "TestStep");
 					OMElement step_ele = null;
 					for (OMElement test_step : test_steps) {
 						String step_id = test_step.getAttributeValue(new QName("id"));
@@ -432,7 +433,7 @@ public class Linkage extends BasicLinkage {
 						replace_string_in_text_and_attributes(metadata_ele, symbol, result);
 
 				} else {
-					if (file.contains("MGMT")) 
+					if (file.contains("MGMT"))
 						file = file.replaceFirst("MGMT", testConfig.testmgmt_dir);
 					OMElement root = Parse.parse_xml_file(file);
 					AXIOMXPath xpathExpression = new AXIOMXPath (xpath);
@@ -479,7 +480,7 @@ public class Linkage extends BasicLinkage {
 					value != null && !value.equals(""))
 				by_value = true; // ok combination
 			else
-				if( 
+				if(
 						id == null || id.equals("") ||
 						step_id == null || step_id.equals("") ||
 						section_name == null || section_name.equals("") ||
@@ -500,8 +501,8 @@ public class Linkage extends BasicLinkage {
 
 			OMElement transaction_output;
 			if (by_value) {
-				if (debug) 
-					System.out.println("addLinkage by value symbol=" + symbol + "  value=" + value); 
+				if (debug)
+					System.out.println("addLinkage by value symbol=" + symbol + "  value=" + value);
 				addLinkage(symbol, value);
 				if (metadata_ele == null) throw new XdsInternalException("metadata_ele is null");
 				if (metadata_ele != null)
@@ -513,7 +514,7 @@ public class Linkage extends BasicLinkage {
 					OMElement log = getLogContents(test_dir);
 					transaction_output = find_instruction_output(log, step_id, null);
 					if (transaction_output == null) {
-						throw new XdsInternalException("Linkage:CompileUseId(): " + format_section_and_step(step_id, section_name) +  
+						throw new XdsInternalException("Linkage:CompileUseId(): " + format_section_and_step(step_id, section_name) +
 								" Transaction with step_id " + step_id + " cannot be found in log file " + getLogFileName(test_dir));
 					}
 				} else {
@@ -526,7 +527,7 @@ public class Linkage extends BasicLinkage {
 					}
 				}
 
-				OMElement section = MetadataSupport.firstChildWithLocalName(transaction_output, section_name); 
+				OMElement section = XmlUtil.firstChildWithLocalName(transaction_output, section_name);
 				if (section == null)
 					throw new XdsInternalException(format_section_and_step(step_id, section_name) + " not found in any previous step");
 
@@ -534,10 +535,10 @@ public class Linkage extends BasicLinkage {
 					System.out.println("section is " + section);
 
 				boolean foundit = false;
-				for (OMElement assign : MetadataSupport.childrenWithLocalName(section, "Assign")) {
+				for (OMElement assign : XmlUtil.childrenWithLocalName(section, "Assign")) {
 					String symbol_value = assign.getAttributeValue(new QName("symbol"));
 					String id_value = assign.getAttributeValue(new QName("id"));
-					if (debug) 
+					if (debug)
 						System.out.println("Assign symbol=" + symbol_value + "  value=" + id_value + " looking for id=" + id);
 
 					if (symbol_value == null || symbol_value.equals(""))
@@ -549,8 +550,8 @@ public class Linkage extends BasicLinkage {
 					if (section.equals("AssignedPatientId")) {
 						new TestMgmt(testConfig).assignPatientId(m, id_value);
 					} else {
-						if (debug) 
-							System.out.println("addLinkage symbol=" + symbol + "  value=" + value);					
+						if (debug)
+							System.out.println("addLinkage symbol=" + symbol + "  value=" + value);
 						addLinkage(symbol, id_value);
 						foundit = true;
 						if (metadata_ele != null)
@@ -558,7 +559,7 @@ public class Linkage extends BasicLinkage {
 					}
 				}
 				if (!foundit)
-					throw new XdsInternalException("Linkage Compiler: cannot find definition of id " + id + 
+					throw new XdsInternalException("Linkage Compiler: cannot find definition of id " + id +
 							" from " + test_dir + " step " + step_id + " section " + section_name);
 			}
 
@@ -594,12 +595,12 @@ public class Linkage extends BasicLinkage {
 		OMElement metadata_ele = (m == null) ? null : m.getRoot();
 		for (int i=0; i<use_object_ref.size(); i++) {
 			OMElement use = (OMElement) use_object_ref.get(i);
-			String step_id = use.getAttributeValue(new QName("step"));  
+			String step_id = use.getAttributeValue(new QName("step"));
 			String index = use.getAttributeValue(new QName("index"));
-			String symbol = use.getAttributeValue(new QName("symbol")); 
-			String test_dir = use.getAttributeValue(new QName("testdir"));  
+			String symbol = use.getAttributeValue(new QName("symbol"));
+			String test_dir = use.getAttributeValue(new QName("testdir"));
 
-			if ( step_id != null && !step_id.equals("") && 
+			if ( step_id != null && !step_id.equals("") &&
 					index != null && !index.equals("") &&
 					symbol != null && !symbol.equals("") )
 				;
@@ -615,7 +616,7 @@ public class Linkage extends BasicLinkage {
 
 			OMElement transaction_output = find_transaction_in_log(step_id, test_dir);
 
-			OMElement result = MetadataSupport.firstChildWithLocalName(transaction_output, "Result");
+			OMElement result = XmlUtil.firstChildWithLocalName(transaction_output, "Result");
 			if (result == null)
 				throw new XdsInternalException("Cannot find Result section in log of step " + step_id + " in test directory " + test_dir);
 
@@ -644,7 +645,7 @@ public class Linkage extends BasicLinkage {
 			OMElement log = getLogContents(test_dir);
 			transaction_output = find_instruction_output(log, step_id, null);
 			if (transaction_output == null) {
-				throw new XdsInternalException(format_section_and_step(step_id, "any") +  
+				throw new XdsInternalException(format_section_and_step(step_id, "any") +
 						" Transaction with step_id " + step_id + " cannot be found in log file " + getLogFileName(test_dir));
 			}
 		} else {
@@ -664,14 +665,14 @@ public class Linkage extends BasicLinkage {
 
 		OMElement transaction_output = find_transaction_in_log(step_id, test_dir);
 
-		if (transaction_output == null) 
+		if (transaction_output == null)
 			throw new XdsInternalException("Linkage:findResultInLog(): Cannot find *Transaction in log of step " + step_id + " in " + test_dir + "/log.xml");
 
-		OMElement result = MetadataSupport.firstChildWithLocalName(transaction_output, "Result");
-		if (result == null) 
+		OMElement result = XmlUtil.firstChildWithLocalName(transaction_output, "Result");
+		if (result == null)
 			throw new XdsInternalException("Linkage:findResultInLog(): Cannot find Result in log of step " + step_id + " in " + test_dir + "/log.xml");
 
-		if (debug) 
+		if (debug)
 			System.out.println("findResultInLog\n" + result.toString());
 
 		return result;
@@ -686,9 +687,9 @@ public class Linkage extends BasicLinkage {
 		while (step_output != null) {
 			String step_output_id = step_output.getAttributeValue(new QName("id"));
 			if (step_output_id != null && step_output_id.equals(target_test_step_id)) {
-				OMElement transaction_output = (target_transaction_type == null)  
-				? MetadataSupport.firstChildWithLocalNameEndingWith(step_output, "Transaction")
-						: MetadataSupport.firstChildWithLocalName(step_output, target_transaction_type) ;
+				OMElement transaction_output = (target_transaction_type == null)
+				? XmlUtil.firstChildWithLocalNameEndingWith(step_output, "Transaction")
+						: XmlUtil.firstChildWithLocalName(step_output, target_transaction_type) ;
 				return transaction_output;
 			}
 			step_output = (OMElement) step_output.getPreviousOMSibling();

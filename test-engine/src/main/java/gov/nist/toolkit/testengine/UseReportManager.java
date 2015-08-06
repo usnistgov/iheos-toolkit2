@@ -6,6 +6,7 @@ import gov.nist.toolkit.testenginelogging.Report;
 import gov.nist.toolkit.testenginelogging.SectionLogMap;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.File;
@@ -29,14 +30,14 @@ public class UseReportManager  {
 	 */
 	public TestSections getTestSections() {
 		TestSections ts = new TestSections();
-		
+
 		for (UseReport ur : useReports) {
 			ts.add(ur.test, ur.section);
 		}
-		
+
 		return ts;
 	}
-	
+
 	public void loadPriorTestSections(TestConfig config) throws Exception {
 		TestSections ts = getTestSections();
 		for (TestSection tsec : ts.getTestSections()) {
@@ -46,7 +47,7 @@ public class UseReportManager  {
 				test = config.testNum;
 			if (section != null && section.equals("THIS"))
 				continue;
-			if (config.verbose) 
+			if (config.verbose)
 				System.out.println("\tLoading logs for test " + test + " section " + section);
 			TestDetails tspec = new TestDetails(config.testkitHome, test);
 			tspec.setLogDir(config.logRepository.logDir());
@@ -55,11 +56,11 @@ public class UseReportManager  {
 				priorTests.put((section.equals("") ? "None" : section), new LogFileContent(testlogFile));
 		}
 	}
-	
+
 	public String toString() {
 		return useReports.toString();
 	}
-	
+
 	String useReportsToString() {
 		StringBuffer buf = new StringBuffer();
 
@@ -99,22 +100,22 @@ public class UseReportManager  {
 		u.step = useRep.getAttributeValue(step_qname);
 		u.reportName = useRep.getAttributeValue(reportName_qname);
 		u.useAs = useRep.getAttributeValue(useas_qname);
-		
+
 		if (u.section == null || u.section.equals(""))
 			u.section = "None";
 
 		if (!u.isComplete()) {
 			throw new XdsInternalException("Invalid UseReport: cannot have null or empty fields: " + u);
-		}	
+		}
 
 		add(u);
 	}
-	
+
 	void add(String name, String value) {
 		UseReport ur = new UseReport();
 		ur.useAs = name;
 		ur.value = value;
-		
+
 		add(ur);
 	}
 
@@ -125,7 +126,7 @@ public class UseReportManager  {
 
 	public void setRetInfo(RetInfo ri, int docIndex) {
 		retInfo = ri;
-		
+
 		add("$repuid_doc" + Integer.toString(docIndex)  + "$", ri.getRep_uid());
 		add("$mimetype_doc" + Integer.toString(docIndex)  + "$", ri.getContent_type());
 		add("$hash_doc" + Integer.toString(docIndex)  + "$", ri.getHash());
@@ -140,7 +141,7 @@ public class UseReportManager  {
 	public void resolve(SectionLogMap previousLogs) throws XdsInternalException {
 		for (UseReport ur : useReports) {
 			LogFileContent log = previousLogs.get(ur.section);
-			if (log == null) 
+			if (log == null)
 				log = priorTests.get(ur.section);
 			if (log == null)
 				throw new XdsInternalException("UseReportManager#resolve: cannot find log for section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
@@ -150,10 +151,10 @@ public class UseReportManager  {
 
 			OMElement reportEles = stepLog.getRawReports();
 			if (reportEles == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find Reports section for step  " + ur.step + " in section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");	
+				throw new XdsInternalException("UseReportManager#resolve: cannot find Reports section for step  " + ur.step + " in section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
 
 			String reportName = ur.reportName;
-			for (OMElement rep : MetadataSupport.childrenWithLocalName(reportEles, "Report")) {
+			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {
 				Report r = Report.parse(rep);
 				if (reportName.equals(r.name)) {
 					ur.value = r.getValue();
@@ -162,9 +163,9 @@ public class UseReportManager  {
 
 		}
 	}
-	
+
 	public void apply(List<OMElement> xmls) throws XdsInternalException {
-		for (OMElement xml : xmls) 
+		for (OMElement xml : xmls)
 			apply(xml);
 	}
 

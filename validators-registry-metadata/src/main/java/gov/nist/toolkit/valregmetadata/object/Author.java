@@ -104,7 +104,7 @@ public class Author extends AbstractRegistryObject {
 		String classifiedObjectId = ro.getAttributeValue(MetadataSupport.classified_object_qname);
 
 		if (parentEle != null && !parentEleId.equals(classifiedObjectId))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of object " + parentEleId + " but the classifiedObject value is " + 
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of object " + parentEleId + " but the classifiedObject value is " +
 					classifiedObjectId + ", they must match", this, "ITI TF-3: 4.1.12.2");
 
 		try {

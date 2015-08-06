@@ -25,19 +25,19 @@ public class AdhocQueryResponse extends Response {
 
 		init(version);
 	}
-	
+
 	public AdhocQueryResponse() throws XdsInternalException {
 		super(version_3);
-		
+
 		init(version_3);
 	}
-	
+
 	public OMElement getRoot() {
 		response.addChild(getQueryResult());
 		return response;
-//		return getQueryResult(); 
+//		return getQueryResult();
 	}
-	
+
 
 	private void init(short version) {
 		if (version == version_2) {
@@ -55,7 +55,7 @@ public class AdhocQueryResponse extends Response {
 
 	// called to get parent element of query results
 
-	public OMElement getQueryResult() { 
+	public OMElement getQueryResult() {
 		if (queryResult != null)
 			return queryResult;
 
@@ -95,7 +95,7 @@ public class AdhocQueryResponse extends Response {
 		}
 		OMElement res = getQueryResult();  // used for side effect if v3 and error - must
 		// still have empty RegistryObjectList after RegistryErrorList
-		
+
 		if (metadatas != null)
 			for (int i=0; i<metadatas.size(); i++) {
 				OMElement ele = metadatas.get(i);
@@ -104,7 +104,7 @@ public class AdhocQueryResponse extends Response {
 					ele.detach();
 				res.addChild(ele);
 			}
-		
+
 	}
 
 }

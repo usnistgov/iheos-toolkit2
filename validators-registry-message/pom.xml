@@ -79,18 +79,18 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>wsseTool</artifactId>
         </dependency>
-	<dependency>
-		<groupId>org.opensaml</groupId>
-		<artifactId>opensaml</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.xmlbeans</groupId>
-		<artifactId>xmlbeans</artifactId>
-	</dependency>
-            <dependency>
-                <groupId>com.google.gwt</groupId>
-                <artifactId>gwt-user</artifactId>
-            </dependency>
+        <dependency>
+            <groupId>org.opensaml</groupId>
+            <artifactId>opensaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
@@ -98,9 +98,9 @@
         </dependency>
     </dependencies>
 
-<build>
+    <build>
         <plugins>
-<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven-source-plugin.version}</version>
@@ -113,10 +113,10 @@
                     </execution>
                 </executions>
             </plugin>
- 	</plugins>
-</build>
+        </plugins>
+    </build>
 
-  <scm>
-    <tag>v3.0.2a</tag>
-  </scm>
+    <scm>
+        <tag>v3.0.2a</tag>
+    </scm>
 </project>

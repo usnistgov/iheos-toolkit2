@@ -4,6 +4,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.io.File;
@@ -23,14 +24,14 @@ public class CodeUpdater {
 	private static final QName nodeRepresentationQName = new QName("nodeRepresentation");
 	private static final QName valueQName = new QName("value");
 
-	// walk the file tree looking for testplan.xml files 
+	// walk the file tree looking for testplan.xml files
 	// when one is found, edit all referenced metadata files updating their codes
 	// all metadata files are backed up by creating .bak file in same directory
 	void walkTestData(File testDataDir, File codesFile) {
 		init(codesFile);
 		walkTestData2(testDataDir);
 	}
-	
+
 	void walkTestData2(File dir) {
 //		System.out.println("walking " + dir);
 		if (!dir.isDirectory()) return;
@@ -56,7 +57,7 @@ public class CodeUpdater {
 			for (String stepName : perStepMetadataFiles.keySet()) {
 				File stepMetadataFile = perStepMetadataFiles.get(stepName);
 				File stepMetadataBackupFile = new File(stepMetadataFile.toString() + ".bak");
-				if (!stepMetadataBackupFile.exists()) {				
+				if (!stepMetadataBackupFile.exists()) {
 					// might be first time running - back up data
 					FileUtils.copyFile(stepMetadataFile, stepMetadataBackupFile);
 				}
@@ -94,10 +95,10 @@ public class CodeUpdater {
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
-		List<OMElement> testSteps = MetadataSupport.decendentsWithLocalName(testplanEle, "TestStep");
+		List<OMElement> testSteps = XmlUtil.decendentsWithLocalName(testplanEle, "TestStep");
 		for (OMElement testStep : testSteps) {
 			String stepName = testStep.getAttributeValue(MetadataSupport.id_qname);
-			OMElement metadataFileEle = MetadataSupport.firstDecendentWithLocalName(testStep, "MetadataFile");
+			OMElement metadataFileEle = XmlUtil.firstDecendentWithLocalName(testStep, "MetadataFile");
 			if (metadataFileEle == null) continue;
 			String metadataFileName = metadataFileEle.getText();
 			if (metadataFileName == null || metadataFileName.equals("")) continue;
@@ -117,16 +118,16 @@ public class CodeUpdater {
 
 	List<OMElement> nonConformingCodes(OMElement data) {
 		List<OMElement> badCodes = new ArrayList<OMElement>();
-		List<OMElement> classifications = MetadataSupport.decendentsWithLocalName(data, "Classification");
+		List<OMElement> classifications = XmlUtil.decendentsWithLocalName(data, "Classification");
 		for (OMElement classification : classifications) {
-			String classificationScheme = classification.getAttributeValue(classificationSchemeQName); 
+			String classificationScheme = classification.getAttributeValue(classificationSchemeQName);
 			if (classificationScheme == null || classificationScheme.equals(""))
 				continue;
 			Uuid classificationUuid = new Uuid(classificationScheme);
 			if (!allCodes.isKnownClassification(classificationUuid))
 				continue;
 			Code code = code(classification);
-			if (!allCodes.exists(classificationUuid, code)) 
+			if (!allCodes.exists(classificationUuid, code))
 				badCodes.add(classification);
 		}
 		return badCodes;
@@ -134,7 +135,7 @@ public class CodeUpdater {
 
 	void updateCodes(List<OMElement> badCodes) throws XdsInternalException, FactoryConfigurationError {
 		for (OMElement classification : badCodes) {
-			String classificationScheme = classification.getAttributeValue(classificationSchemeQName); 
+			String classificationScheme = classification.getAttributeValue(classificationSchemeQName);
 			Uuid classificationUuid = new Uuid(classificationScheme);
 			Code newCode = allCodes.pick(classificationUuid);
 			updateClassification(classification, newCode);
@@ -160,32 +161,32 @@ public class CodeUpdater {
 	}
 
 	String displayName(OMElement classification) {
-		OMElement nameElement = MetadataSupport.firstChildWithLocalName(classification, "Name");
+		OMElement nameElement = XmlUtil.firstChildWithLocalName(classification, "Name");
 		if (nameElement == null) return "";
-		OMElement localizedStringElement = MetadataSupport.firstChildWithLocalName(nameElement, "LocalizedString");
+		OMElement localizedStringElement = XmlUtil.firstChildWithLocalName(nameElement, "LocalizedString");
 		if (localizedStringElement == null) return "";
 		return localizedStringElement.getAttributeValue(valueQName);
 	}
 
 	void updateDisplayName(OMElement classification, String displayName) {
-		OMElement nameElement = MetadataSupport.firstChildWithLocalName(classification, "Name");
+		OMElement nameElement = XmlUtil.firstChildWithLocalName(classification, "Name");
 		if (nameElement == null) return;
-		OMElement localizedStringElement = MetadataSupport.firstChildWithLocalName(nameElement, "LocalizedString");
+		OMElement localizedStringElement = XmlUtil.firstChildWithLocalName(nameElement, "LocalizedString");
 		if (localizedStringElement == null) return;
 		localizedStringElement.getAttribute(valueQName).setAttributeValue(displayName);
 	}
 
 	OMElement codeSystemElement(OMElement classification) {
-		OMElement slot = MetadataSupport.firstChildWithLocalName(classification, "Slot");
+		OMElement slot = XmlUtil.firstChildWithLocalName(classification, "Slot");
 		if (slot == null) return null;
 		OMElement codeSystemElement = slotValueElement(slot);
 		return codeSystemElement;
 	}
 
 	OMElement slotValueElement(OMElement slot) {
-		OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "ValueList");
+		OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "ValueList");
 		if (valueList == null) return null;
-		OMElement value = MetadataSupport.firstChildWithLocalName(valueList, "Value");
+		OMElement value = XmlUtil.firstChildWithLocalName(valueList, "Value");
 		if (value == null) return null;
 		return value;
 	}

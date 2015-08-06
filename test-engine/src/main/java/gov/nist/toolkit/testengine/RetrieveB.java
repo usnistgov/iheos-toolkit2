@@ -6,6 +6,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.transactions.BasicTransaction;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.MetadataException;
@@ -49,11 +50,11 @@ public class RetrieveB {
 	public void setAsync(boolean async) {
 		this.async = async;
 	}
-	
+
 	public void setUseIG(boolean useIG) {
 		this.useIG = useIG;
 	}
-	
+
 	public RetrieveB(BasicTransaction basic) {
 		basicTransaction = basic;
 	}
@@ -66,7 +67,7 @@ public class RetrieveB {
 		this.r_ctx = r_ctx;
 		this.endpoint = endpoint;
 	}
-	
+
 	public void setUseReportManager(UseReportManager m ) {
 		useReportManager = m;
 	}
@@ -118,26 +119,26 @@ public class RetrieveB {
 
 		OMElement result = null;
 		OMElement request = r_ctx.getRequest();
-		if (request == null) 
+		if (request == null)
 			r_ctx.setRequest(build_request(r_ctx));
-		
+
 
 		result = call(r_ctx.getRequest(), endpoint); // AxisFault will signal the caller that the endpoint did not work
 		r_ctx.setResult(result);
 
 		return result;
 	}
-	
+
 	public void validate() throws XdsInternalException, MetadataException, XdsPreparsedException{
 		OMElement result = r_ctx.getResult();
 
-		if (result == null) 
+		if (result == null)
 			throw new XdsInternalException("Response is null");
 
-		OMElement registry_response = MetadataSupport.firstChildWithLocalName(result, "RegistryResponse") ;
+		OMElement registry_response = XmlUtil.firstChildWithLocalName(result, "RegistryResponse") ;
 		if (registry_response == null) {
 			throw new XdsInternalException("Did not find RegistryResponse within RetrieveDocumentSetResponse");
-		} 
+		}
 
 		// schema validate
 		RegistryResponseParser rrp = new RegistryResponseParser(registry_response);
@@ -181,24 +182,24 @@ public class RetrieveB {
 			serviceClient.setOptions(options);
 			OMElement result;
 			Soap soap = new Soap();
-			
+
 			soap.setSecurityParams(this.basicTransaction.getStepContext().getTransactionSettings().securityParams);
-			
+
 			soap.setAsync(async);
-			soap.soapCall(metadata_ele, endpoint, 
+			soap.soapCall(metadata_ele, endpoint,
 					true,    // mtom
 					true,     // addressing
 					soap12,     // soap12
 					getRequestAction(),
 					getResponseAction());
 			result = soap.getResult();
-			
+
 			basicTransaction.logSoapRequest(soap);
-			
-			
+
+
 			return result;
 	}
-	
+
 	protected String getResponseAction() {
 		return SoapActionFactory.getResponseAction(getRequestAction());
 	}
@@ -206,7 +207,7 @@ public class RetrieveB {
 	protected String getRequestAction() {
 		if (async) {
 			if (is_xca && !useIG) {
-				return "urn:ihe:iti:2007:CrossGatewayRetrieve"; 
+				return "urn:ihe:iti:2007:CrossGatewayRetrieve";
 			} else {
 				return "urn:ihe:iti:2007:RetrieveDocumentSet";
 			}
@@ -226,19 +227,19 @@ public class RetrieveB {
 		HashMap<String, RetInfo> map = new HashMap<String, RetInfo>();
 
 		int docIndex = 1;
-		for (OMElement doc_response : MetadataSupport.childrenWithLocalName(response, "DocumentResponse")) {
+		for (OMElement doc_response : XmlUtil.childrenWithLocalName(response, "DocumentResponse")) {
 			RetInfo rr = new RetInfo();
 
-			OMElement doc_uid_ele = MetadataSupport.firstChildWithLocalName(doc_response, "DocumentUniqueId") ;
+			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "DocumentUniqueId") ;
 			rr.setDoc_uid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
 
-			OMElement rep_uid_ele = MetadataSupport.firstChildWithLocalName(doc_response, "RepositoryUniqueId") ;
+			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "RepositoryUniqueId") ;
 			rr.setRep_uid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
 
-			OMElement mime_type_ele = MetadataSupport.firstChildWithLocalName(doc_response, "mimeType") ;
+			OMElement mime_type_ele = XmlUtil.firstChildWithLocalName(doc_response, "mimeType") ;
 			rr.setContent_type((mime_type_ele != null) ? mime_type_ele.getText() : null);
 
-			OMElement document_content_ele = MetadataSupport.firstChildWithLocalName(doc_response, "Document") ;
+			OMElement document_content_ele = XmlUtil.firstChildWithLocalName(doc_response, "Document") ;
 
 			Mtom mtom = new Mtom();
 			mtom.decode(document_content_ele);
@@ -248,10 +249,10 @@ public class RetrieveB {
 
 			String mtom_mime = mtom.getContent_type();
 			boolean isOptimized = mtom.isOptimized();
-			if (this.log_parent != null) 
+			if (this.log_parent != null)
 				testLog.add_simple_element_with_id(log_parent, "IsOptimized", (isOptimized) ? "true" : "false");
-			
-			// MTOM encoding does not require correct/accurate content type.  If MTOM package punted 
+
+			// MTOM encoding does not require correct/accurate content type.  If MTOM package punted
 			// and used application/octet-stream then take mime type from retrieve response metadata
 			if (mtom_mime != null && mtom_mime.equals("application/octet-stream") && isOptimized)
 				mtom_mime = rr.getContent_type();
@@ -263,7 +264,7 @@ public class RetrieveB {
 				throw new MetadataException("parse_rep_result(): Document uniqueId not found in response", null);
 
 			map.put(rr.getDoc_uid(), rr);
-			
+
 			if (useReportManager != null) {
 				useReportManager.setRetInfo(rr, docIndex);
 			}
@@ -307,7 +308,7 @@ public class RetrieveB {
 				query_mime_type = this.reference_metadata.getMimeType(eo);
 			}
 
-			if (query_mime_type == null) 
+			if (query_mime_type == null)
 				query_mime_type = this.expected_mime_type;
 
 			if (rsp == null) {
@@ -343,22 +344,22 @@ public class RetrieveB {
 
 			if (this.log_parent != null) {
 				testLog.add_name_value(
-						this.log_parent, 
-						"ContentType", 
-						testLog.create_name_value("Original", req.getContent_type()), 
-						testLog.create_name_value("Query", query_mime_type), 
+						this.log_parent,
+						"ContentType",
+						testLog.create_name_value("Original", req.getContent_type()),
+						testLog.create_name_value("Query", query_mime_type),
 						testLog.create_name_value("Retrieve", rsp.getContent_type()));
 				testLog.add_name_value(
-						this.log_parent, 
-						"Hash", 
-						testLog.create_name_value("Original", req.getHash()), 
-						testLog.create_name_value("Query", query_hash), 
+						this.log_parent,
+						"Hash",
+						testLog.create_name_value("Original", req.getHash()),
+						testLog.create_name_value("Query", query_hash),
 						testLog.create_name_value("Retrieve", rsp.getHash()));
 				testLog.add_name_value(
-						this.log_parent, 
-						"Size", 
-						testLog.create_name_value("Original", String.valueOf(req.getSize())), 
-						testLog.create_name_value("Query", query_size), 
+						this.log_parent,
+						"Size",
+						testLog.create_name_value("Original", String.valueOf(req.getSize())),
+						testLog.create_name_value("Query", query_size),
 						testLog.create_name_value("Retrieve", String.valueOf(rsp.getSize())));
 			}
 
@@ -394,7 +395,7 @@ public class RetrieveB {
 
 			if (query_size != null) {
 				int query_size_int = Integer.parseInt(query_size);
-				if (query_size_int != rsp.getSize()) 
+				if (query_size_int != rsp.getSize())
 					errors.append("Size does not match - query response has [" + query_size_int + "] and Retreive response has [" + rsp.getSize() + "]\n");
 			}
 

@@ -18,6 +18,7 @@ import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.soap.http.SoapUtil;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valregmsg.message.MtomMessageValidator;
 import gov.nist.toolkit.valregmsg.message.SimpleSoapHttpHeaderValidator;
@@ -248,11 +249,11 @@ public class DsSimCommon {
         if (documentsToAttach == null)
             return;
 
-        List<OMElement> docResponses = MetadataSupport.decendentsWithLocalName(env, "DocumentResponse");
+        List<OMElement> docResponses = XmlUtil.decendentsWithLocalName(env, "DocumentResponse");
         Map<String, OMElement> uidToDocResp = new HashMap<String, OMElement>();
 
         for (OMElement docResp : docResponses) {
-            OMElement docUidEle = MetadataSupport.firstChildWithLocalName(docResp, "DocumentUniqueId");
+            OMElement docUidEle = XmlUtil.firstChildWithLocalName(docResp, "DocumentUniqueId");
             if (docUidEle == null) {
                 er.err(XdsErrorCode.Code.XDSRepositoryError, "Internal Error: response does not have DocumentUniqueId element", "SimCommon#insertDocumentIncludes", null);
                 continue;
@@ -385,7 +386,7 @@ public class DsSimCommon {
     public ErrorRecorder registryResponseAsErrorRecorder(OMElement regResp) {
         ErrorRecorder er = simCommon.getUnconnectedErrorRecorder();
 
-        for (OMElement re : MetadataSupport.decendentsWithLocalName(regResp, "RegistryError")) {
+        for (OMElement re : XmlUtil.decendentsWithLocalName(regResp, "RegistryError")) {
             String errorCode   = re.getAttributeValue(MetadataSupport.error_code_qname);
             String codeContext = re.getAttributeValue(MetadataSupport.code_context_qname);
             String location    = re.getAttributeValue(MetadataSupport.location_qname);

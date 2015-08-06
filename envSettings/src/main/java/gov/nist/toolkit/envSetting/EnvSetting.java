@@ -12,7 +12,7 @@ public class EnvSetting {
 	// SessionID ==> Environment Setting
 	static Map<String, EnvSetting> settings = new HashMap<String, EnvSetting>();
     static public final String DEFAULTSESSIONID = "DEFAULT";
-    static public final String DEFAULTSESSIONNAME = "default";
+    static public final String DEFAULTENVIRONMENTNAME = "default";
 	String envName;
 	File envDir;
 	
@@ -31,9 +31,9 @@ public class EnvSetting {
 	}
 
     static void installDefaultEnvironment() {
-        File envFile = Installation.installation().getDefaultEnvironmentFile();
-        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Toolkit not properly configured - internal/default environments directory " +  envFile  + " not available.");
-        new EnvSetting(DEFAULTSESSIONID, DEFAULTSESSIONNAME, new File(envFile, DEFAULTSESSIONNAME));
+        File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
+        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
+        new EnvSetting(DEFAULTSESSIONID, DEFAULTENVIRONMENTNAME, envFile);
     }
 
 	public EnvSetting(String sessionId, String name, File dir) {
@@ -65,7 +65,7 @@ public class EnvSetting {
 		if (envDir == null) 
 			throw new EnvironmentNotSelectedException("");
 //			return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
-		File f = new File(envDir, File.separator + "codes.xml");
+		File f = new File(envDir + File.separator + "codes.xml");
 		if (f.exists())
 			return f;
 		logger.warn("Codes file " + f + " does not exist");
@@ -74,7 +74,7 @@ public class EnvSetting {
 
     void validateEnvironment() {
         if (getCodesFile() == null)
-            throw new EnvironmentNotSelectedException("Selected environment " + envName + " not valid - does not contain codes.xml file");
+            throw new EnvironmentNotSelectedException("Selected environment " + envName + " not valid - does not contain codex.xml file");
     }
 
 }

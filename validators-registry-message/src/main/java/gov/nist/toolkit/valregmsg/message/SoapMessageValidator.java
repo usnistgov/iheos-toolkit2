@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -32,7 +33,7 @@ public class SoapMessageValidator extends MessageValidator {
 	OMElement body;
 	OMElement messagebody = null;
 	String wsaction = null;
-	String reqMessageId = null; 
+	String reqMessageId = null;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
 	RegistryValidationInterface rvi;
@@ -65,7 +66,7 @@ public class SoapMessageValidator extends MessageValidator {
 		this.mvc = mvc;
 		this.rvi = rvi;
 	}
-	
+
 	// needed for junit testing
 	public SoapMessageValidator(OMElement messagebody) {
 		super(DefaultValidationContextFactory.validationContext());
@@ -116,10 +117,10 @@ public class SoapMessageValidator extends MessageValidator {
 				err("Cannot validate SOAP Body - WS-Addressing Action header " + wsaction + " is not understood","ITI TF-2a, 2b, XDR, XCA, MPQ Supplements");
 			}
 		}
-		
+
 		//ADD SAML VALIDATION IF NEEDED. -@Antoine
 		//TODO check if this is the best place to do so.
-		OMElement security = MetadataSupport.firstChildWithLocalName(header, "Security");
+		OMElement security = XmlUtil.firstChildWithLocalName(header, "Security");
 		if(security != null){
 			vc.hasSaml = true; // setting the flag is not really necessary, for consistency only.
 			// mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
@@ -131,23 +132,23 @@ public class SoapMessageValidator extends MessageValidator {
 				er.err(XdsErrorCode.Code.NoCode, e);
 			}
 		}
-		
+
 	}
 
 
 	void verifywsActionCorrectForValidationContext(String wsaction) {
 		ValidationContext v = DefaultValidationContextFactory.validationContext();
-		
+
 		v.clone(vc);
-		
+
 		setValidationContextFromWSAction(v, wsaction);
 		// TODO - finish this
         String expected = "foo";
 		if (true || !v.equals(vc)) {
             er.error("???", "Expected WS:Action", wsaction, expected, "???");
 			err("WS-Action wrong: " + wsaction + " not appropriate for message " +
-                    vc.getTransactionName() + " required Validation Context is " + vc.toString() +
-                    " Validation Context from WS-Action is " + v.toString(), "ITI TF");
+					vc.getTransactionName() + " required Validation Context is " + vc.toString() +
+					" Validation Context from WS-Action is " + v.toString(),"ITI TF");
 		}
 	}
 
@@ -237,12 +238,21 @@ public class SoapMessageValidator extends MessageValidator {
         } else if (wsaction.equals("urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery")) {
             vc.isResponse = true;
             vc.isXcpd = true;
+<<<<<<< local
         } else if (wsaction.equals(SoapActionFactory.epsos_xcqr_action)) {
             vc.isRequest = true;
             vc.isSQ = true;
             vc.isXC = true;
             vc.isEpsos = true;
         }
+=======
+		} else if (wsaction.equals(SoapActionFactory.epsos_xcqr_action)) {
+			vc.isRequest = true;
+			vc.isSQ = true;
+			vc.isXC = true;
+			vc.isEpsos = true;
+		}
+>>>>>>> other
 
     }
 
@@ -253,13 +263,13 @@ public class SoapMessageValidator extends MessageValidator {
 		if (header == null)
 			return;
 		er.challenge("WS-Addressing");
-		List<OMElement> messageId = MetadataSupport.childrenWithLocalName(header, "MessageID");
-		List<OMElement> relatesTo = MetadataSupport.childrenWithLocalName(header, "RelatesTo");
-		List<OMElement> to = MetadataSupport.childrenWithLocalName(header, "To");
-		List<OMElement> action = MetadataSupport.childrenWithLocalName(header, "Action");
-		List<OMElement> from = MetadataSupport.childrenWithLocalName(header, "From");
-		List<OMElement> replyTo = MetadataSupport.childrenWithLocalName(header, "ReplyTo");
-		List<OMElement> faultTo = MetadataSupport.childrenWithLocalName(header, "FaultTo");
+		List<OMElement> messageId = XmlUtil.childrenWithLocalName(header, "MessageID");
+		List<OMElement> relatesTo = XmlUtil.childrenWithLocalName(header, "RelatesTo");
+		List<OMElement> to = XmlUtil.childrenWithLocalName(header, "To");
+		List<OMElement> action = XmlUtil.childrenWithLocalName(header, "Action");
+		List<OMElement> from = XmlUtil.childrenWithLocalName(header, "From");
+		List<OMElement> replyTo = XmlUtil.childrenWithLocalName(header, "ReplyTo");
+		List<OMElement> faultTo = XmlUtil.childrenWithLocalName(header, "FaultTo");
 
 		// check for namespace
 		validateNamespace(messageId, wsaddresingNamespace);
@@ -284,7 +294,7 @@ public class SoapMessageValidator extends MessageValidator {
 			err("WS-Addressing Action header is required",wsaddressingRef + "#msgaddrpropsinfoset");
 		if (action.size() > 1)
 			err("Multiple WS-Addressing Action headers are not allowed",wsaddressingRef + "#msgaddrpropsinfoset");
-		if (messageId.size() > 	1) 
+		if (messageId.size() > 	1)
 			err("Multiple WS-Addressing MessageID headers are not allowed",wsaddressingRef + "#msgaddrpropsinfoset");
 
 		List<OMElement> hdrs = new ArrayList<OMElement> ();
@@ -345,7 +355,7 @@ public class SoapMessageValidator extends MessageValidator {
 		}
 
 	}
-	
+
 	boolean mustUnderstandValueOk(String value) {
 		if ("1".equals(value)) return true;
 		if ("true".equalsIgnoreCase("true")) return true;
@@ -367,7 +377,7 @@ public class SoapMessageValidator extends MessageValidator {
 			if (first == null) {
 				err("Validating contents of " + ele.getLocalName() + ": " + "not HTTP style endpoint"
 						,wsaddressingRef);
-				
+
 			} else {
 				String valError = validateEndpoint(first, anyURIOk);
 				if (valError != null)
@@ -385,10 +395,10 @@ public class SoapMessageValidator extends MessageValidator {
 		if (!endpoint.getNamespace().getNamespaceURI().equals(wsaddresingNamespace))
 			return "found namespace" + endpoint.getNamespace().getNamespaceURI() + " but expected " + wsaddresingNamespace;
 		String value = endpoint.getText();
-		
+
 		if (anyURIOk && value.startsWith("urn:"))
 			return null;
-		
+
 		if (!value.startsWith("http"))
 			return "not HTTP style endpoint";
 		return null;
@@ -401,7 +411,7 @@ public class SoapMessageValidator extends MessageValidator {
 			String nsuri = omns.getNamespaceURI();
 			if (!namespace.equals(nsuri))
 				err("Namespace on element " + ele.getLocalName() + " must be " +
-						namespace + " - found instead " + nsuri, 
+						namespace + " - found instead " + nsuri,
 						wsaddressingRef);
 		}
 	}
@@ -414,20 +424,26 @@ public class SoapMessageValidator extends MessageValidator {
 			err("Header must be present","ITI TF-2x: V.3.2.2 and SOAP Version 1.2 Section 4");
 			return;
 		}
+<<<<<<< local
         er.detail("Header found");
         er.detail("Envelope namespace is " + soapEnvelopeNamespace);
         OMNamespace ns = header.getNamespace();
 		if (ns == null) 
 			err("Namespace must be " + soapEnvelopeNamespace + " - found instead - " 
+=======
+		OMNamespace ns = header.getNamespace();
+		if (ns == null)
+			err("Namespace must be " + soapEnvelopeNamespace + " - found instead - "
+>>>>>>> other
 					+ "null","SOAP Version 1.2 Section 4");
 		else {
 			String uri = ns.getNamespaceURI();
 			if (!soapEnvelopeNamespace.equals(uri))
-				err("Namespace must be " + " - found instead - " 
+				err("Namespace must be " + " - found instead - "
 						+ uri,"SOAP Version 1.2 Section 4");
 		}
-		
-		OMElement metadataLevel = MetadataSupport.firstChildWithLocalName(header, "metadata-level");
+
+		OMElement metadataLevel = XmlUtil.firstChildWithLocalName(header, "metadata-level");
 		if (metadataLevel != null) {
 			if (!"urn:direct:addressing".equals(metadataLevel.getNamespace().getNamespaceURI())) {
 				err("Namespace on metadata-level header element must be " + "urn:direct:addressing");
@@ -450,22 +466,25 @@ public class SoapMessageValidator extends MessageValidator {
 			err("Body must be present","ITI TF-2x: V.3.2 and SOAP Version 1.2 Section 4");
 			return null;
 		}
+<<<<<<< local
         er.detail("Body namespace is " + soapEnvelopeNamespace);
+=======
+>>>>>>> other
 
 		if (header != null) {
 			OMNamespace ns = header.getNamespace();
-			if (ns == null) 
-				err("Namespace must be " + soapEnvelopeNamespace + " - found instead - " 
+			if (ns == null)
+				err("Namespace must be " + soapEnvelopeNamespace + " - found instead - "
 						+ "null","http://www.w3.org/TR/soap12-part1/#soapenvelope");
 			else {
 				String uri = ns.getNamespaceURI();
 				if (!soapEnvelopeNamespace.equals(uri))
-					err("Namespace must be " + soapEnvelopeNamespace + " - found instead - " 
+					err("Namespace must be " + soapEnvelopeNamespace + " - found instead - "
 							+ uri,"http://www.w3.org/TR/soap12-part1/#soapenvelope");
 			}
-		} 
+		}
 
-		List<String> kids = MetadataSupport.childrenLocalNames(body);
+		List<String> kids = XmlUtil.childrenLocalNames(body);
 		if (kids.size() == 0) {
 			err("Body must has a single child, found none", "ebRS 3.0 Section 2.1");
 			return null;
@@ -480,14 +499,14 @@ public class SoapMessageValidator extends MessageValidator {
 	void validateEnvelope() {
 		er.challenge("Validate Soap Envelope");
 		OMNamespace ns = envelope.getNamespace();
-		if (ns == null) 
-			err("Envelope namespace must be " + soapEnvelopeNamespace + " - found instead - " 
+		if (ns == null)
+			err("Envelope namespace must be " + soapEnvelopeNamespace + " - found instead - "
 					+ "null","ITI TF-2x: V.3.2.1.3 and http://www.w3.org/TR/soap12-part1/#soapenvelope");
 		else {
 			er.detail("Envelope namespace is " + soapEnvelopeNamespace);
 			String uri = ns.getNamespaceURI();
 			if (!soapEnvelopeNamespace.equals(uri))
-				err("Envelope namespace must be " + soapEnvelopeNamespace + " - found instead - " 
+				err("Envelope namespace must be " + soapEnvelopeNamespace + " - found instead - "
 						+ uri,"http://www.w3.org/TR/soap12-part1/#soapenvelope");
 		}
 
@@ -495,7 +514,7 @@ public class SoapMessageValidator extends MessageValidator {
 		if (eleName.equals("Envelope"))
 			;
 		else
-			err("Envelope Element name must be Envelope - found instead - " 
+			err("Envelope Element name must be Envelope - found instead - "
 					+ eleName,"http://www.w3.org/TR/soap12-part1/#soapenvelope");
 	}
 

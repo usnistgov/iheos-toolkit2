@@ -21,7 +21,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 	String type = "";
 	ValidationContext vc;
 
-	static List<String> assocTypes = 
+	static List<String> assocTypes =
 		Arrays.asList(
 				MetadataSupport.assoctype_has_member,
 				MetadataSupport.assoctype_rplc,
@@ -31,8 +31,8 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 				MetadataSupport.assoctype_signs,
 				MetadataSupport.assoctype_isSnapshotOf
 		);
-	
-	static List<String> assocTypesMU = 
+
+	static List<String> assocTypesMU =
 		Arrays.asList(
 				MetadataSupport.assoctype_update_availabilityStatus,
 				MetadataSupport.assoctype_submitAssociation
@@ -43,7 +43,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		externalIdentifierDescription.definedSchemes = new ArrayList<String>();
 
 		externalIdentifierDescription.requiredSchemes = new ArrayList<String>();
-		externalIdentifierDescription.multipleSchemes = new ArrayList<String>(); 
+		externalIdentifierDescription.multipleSchemes = new ArrayList<String>();
 
 		externalIdentifierDescription.names = new HashMap<String, String>();
 	}
@@ -57,7 +57,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		normalize();
 		this.vc = vc;
 	}
-	
+
 	public Association(String id, String type, String source, String target) {
 		super(id);
 		this.type = type;
@@ -65,7 +65,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		this.target = target;
 		normalize();
 	}
-	
+
 	void normalize() {
 		if (source == null) source="";
 		if (target == null) target = "";
@@ -114,7 +114,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 			Set<String> knownIds) {
 		if (vc.skipInternalStructure)
 			return;
-		
+
 		validateTopAtts(er, vc);
 
 		validateSlots(er, vc);
@@ -124,10 +124,10 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		validateExternalIdentifiers(er, vc, externalIdentifierDescription, "ITI TF-3 4.1.3");
 
 		verifyIdsUnique(er, knownIds);
-		
+
 		verifyNotReferenceSelf(er);
 	}
-	
+
 	void verifyNotReferenceSelf(ErrorRecorder er) {
 		if (source.equals(id))
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + " sourceObject attribute references self", this, "???");
@@ -135,7 +135,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + " targetObject attribute references self", this, "???");
 	}
 
-	static List<String> assocs_with_documentation = 
+	static List<String> assocs_with_documentation =
 		Arrays.asList(
 				MetadataSupport.assoctype_rplc,
 				MetadataSupport.assoctype_xfrm,
@@ -151,22 +151,22 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 		if (c.size() == 0)
 			;
 		else if (c.size() > 1)
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + 
-					": may contain only a single documentation classification (classificationScheme=" + 
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() +
+					": may contain only a single documentation classification (classificationScheme=" +
 					MetadataSupport.XDSAssociationDocumentation_uuid + ")", this, "ITI TF-3 4.1.6.1");
 		else {
 			if (!assocs_with_documentation.contains(type))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + 
-						": documentation classification (classificationScheme=" + 
-						MetadataSupport.XDSAssociationDocumentation_uuid + 
-						") may only be present on the following association types: " + 
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() +
+						": documentation classification (classificationScheme=" +
+						MetadataSupport.XDSAssociationDocumentation_uuid +
+						") may only be present on the following association types: " +
 						assocs_with_documentation, this, "ITI TF-3 4.1.6.1");
 		}
 		er.challenge("Required Classifications present");
 		er.challenge("Classifications coded correctly");
 	}
-	
-	List<String> relationship_assocs = 
+
+	List<String> relationship_assocs =
 		Arrays.asList(
 				MetadataSupport.assoctype_rplc,
 				MetadataSupport.assoctype_apnd,
@@ -179,26 +179,26 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 
 		validateId(er, vc, "sourceObject", source, null);
 		validateId(er, vc, "targetObject", target, null);
-		
-		
+
+
 		boolean muReq = vc.isMU && vc.isRequest;
 		boolean basicType = assocTypes.contains(type);
 		boolean muType = assocTypesMU.contains(type);
-				
+
 		if (muReq) {
 			if (basicType == false && muType == false)
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": associationType " + type + " unknown. Known assocationTypes are " + assocTypes + " and " + assocTypesMU, this, "ITI TF-3 Table 4.1-2.1");
 		}
-				
+
 		else if (vc.isResponse) {
 			if (!assocTypes.contains(type) && !assocTypesMU.contains(type))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": associationType " + type + " unknown. Known assocationTypes are " + assocTypes + " and " + assocTypesMU, this, "ITI TF-3 Table 4.1-2.1");
 		}
-		
+
 		else if (!assocTypes.contains(type))
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": associationType " + type + " unknown. Known assocationTypes are " + assocTypes, this, "ITI TF-3 Table 4.1-2.1");
 
-		
+
 	}
 
 	public void validateRequiredSlotsPresent(ErrorRecorder er,
@@ -210,7 +210,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 //			if (getSlot(MetadataSupport.assoc_slot_submission_set_status) == null)
 //				er.err(identifyingString() + ": SubmissionSet to DocumentEntry HasMember association must have a SubmissionSetStatus Slot", "ITI TF-3: 4.1.4.1");
 //		} else {
-//			
+//
 //		}
 
 	}
