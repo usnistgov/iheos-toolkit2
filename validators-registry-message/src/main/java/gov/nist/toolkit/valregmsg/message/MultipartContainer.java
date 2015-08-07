@@ -22,6 +22,7 @@ public class MultipartContainer extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
 		MultipartMessageBa mm = mp.getMultipartMessage();
 		er.detail("Have content for ...");
@@ -44,6 +45,7 @@ public class MultipartContainer extends MessageValidator {
 //				}
 			}
 		}
+        er.unRegisterValidator(this);
 	}
 	
 	public StoredDocumentInt getContent(String id) {

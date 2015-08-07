@@ -9,13 +9,12 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
-import org.apache.axiom.om.OMElement;
 
 public class ValidatorCommon implements ErrorRecorder {
 	Metadata m;
@@ -352,6 +351,21 @@ public class ValidatorCommon implements ErrorRecorder {
 		}
 
 		return depth + maxChildDepth;
+	}
+
+	@Override
+	public void setLocation(String location) {
+
+	}
+
+	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
 	}
 
 	@Override

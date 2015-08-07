@@ -9,10 +9,12 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,9 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.zip.ZipException;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 public class XdmDecoder extends MessageValidator {
 	InputStream in;
@@ -83,10 +82,12 @@ public class XdmDecoder extends MessageValidator {
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+		er.registerValidator(this);
 
 		logger.debug("running");
 		if (!decode(er)) {
 			logger.info("Did not decode zip properly");
+			er.unRegisterValidator(this);
 			return;
 		}
 
@@ -220,11 +221,13 @@ public class XdmDecoder extends MessageValidator {
 				} catch (Exception e) {
 					er.err(Code.NoCode, "Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e), subsetDir,"");
 					logger.info("Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e));
+					er.unRegisterValidator(this);
 					return;
 				}
 			}
 		}
 		mvc.run();
+        er.unRegisterValidator(this);
 	}
 
 	boolean decode(ErrorRecorder er) {

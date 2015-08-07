@@ -10,16 +10,11 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.util.XPathEvaluator;
+
+import java.util.*;
 
 /**
  * Creates a mapping from DocumentEntry.id (used in metadata) to Document.cid
@@ -87,6 +82,7 @@ public class DocumentAttachmentMapper  extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 
 		XPathEvaluator eval = new XPathEvaluator();
 		try {
@@ -163,7 +159,9 @@ public class DocumentAttachmentMapper  extends MessageValidator {
 			}
 		} catch (Exception e) {
 			er.err(XdsErrorCode.Code.XDSRepositoryError, e);
-			return;
+		}
+		finally {
+			er.unRegisterValidator(this);
 		}
 	}
 

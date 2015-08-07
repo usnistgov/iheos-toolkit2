@@ -26,8 +26,9 @@ public class SoapMessageParser extends MessageValidator {
     @Override
     public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
         this.er = er;
-
+        er.registerValidator(this);
         parse();
+        er.unRegisterValidator(this);
     }
 
     void parse() {

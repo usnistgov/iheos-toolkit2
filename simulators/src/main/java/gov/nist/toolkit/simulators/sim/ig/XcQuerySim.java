@@ -8,11 +8,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest;
-import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser;
-import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
-import gov.nist.toolkit.registrymsg.registry.Response;
+import gov.nist.toolkit.registrymsg.registry.*;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
@@ -27,13 +23,12 @@ import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 public class XcQuerySim extends MessageValidator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
 	SimCommon common;
@@ -74,6 +69,7 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
@@ -164,6 +160,9 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 		} catch (Exception e) {
 			logException(er, e);
 		}
+        finally {
+            er.unRegisterValidator(this);
+        }
 
 	}
 

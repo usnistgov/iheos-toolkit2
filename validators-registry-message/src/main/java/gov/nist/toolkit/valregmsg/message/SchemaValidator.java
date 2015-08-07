@@ -25,6 +25,7 @@ public class SchemaValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
 		int schemaValidationType = vc.getSchemaValidationType();
 		
@@ -35,6 +36,9 @@ public class SchemaValidator extends MessageValidator {
 		} catch (Exception e) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e.getMessage(), this, "Schema");
 		}
+        finally {
+            er.unRegisterValidator(this);
+        }
 
 	}
 	

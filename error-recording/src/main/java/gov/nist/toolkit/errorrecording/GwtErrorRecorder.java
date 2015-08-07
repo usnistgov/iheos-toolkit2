@@ -6,11 +6,10 @@ import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 
 public class GwtErrorRecorder implements ErrorRecorder  {
@@ -388,6 +387,16 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		}
 
 		return depth + maxChildDepth;
+	}
+
+	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
 	}
 
 }

@@ -279,5 +279,15 @@ public class TextErrorRecorder implements ErrorRecorder {
 		return depth + maxChildDepth;
 	}
 
+	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
+	}
+
 
 }

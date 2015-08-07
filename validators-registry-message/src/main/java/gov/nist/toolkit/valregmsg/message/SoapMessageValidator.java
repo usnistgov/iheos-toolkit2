@@ -6,7 +6,6 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
@@ -79,6 +78,7 @@ public class SoapMessageValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 
 		SoapMessageParser smp = (SoapMessageParser) mvc.findMessageValidator("SoapMessageParser");
 		envelope = smp.getEnvelope();
@@ -132,7 +132,7 @@ public class SoapMessageValidator extends MessageValidator {
 				er.err(XdsErrorCode.Code.NoCode, e);
 			}
 		}
-
+        er.unRegisterValidator(this);
 	}
 
 

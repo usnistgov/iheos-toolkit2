@@ -39,6 +39,7 @@ public class SimpleSoapHttpHeaderValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 
 		er.challenge("Validate SIMPLE SOAP HTTP headers");
 
@@ -73,6 +74,9 @@ public class SimpleSoapHttpHeaderValidator extends MessageValidator {
 			err(e);
 //		} catch (UnsupportedEncodingException e) {
 //			err(e);
+		}
+		finally {
+			er.unRegisterValidator(this);
 		}
 
 	}
