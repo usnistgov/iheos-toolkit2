@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.logrepository;
 
 import gov.nist.toolkit.results.client.XdstestLogId;
-import gov.nist.toolkit.testengine.LogMap;
+import gov.nist.toolkit.testengine.engine.LogMap;
 import gov.nist.toolkit.xdsexception.XdsException;
 
 import java.io.File;

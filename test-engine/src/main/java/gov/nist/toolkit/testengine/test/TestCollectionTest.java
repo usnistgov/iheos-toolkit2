@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.test;
 
-import gov.nist.toolkit.testengine.TestCollection;
+import gov.nist.toolkit.testengine.engine.TestCollection;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 
