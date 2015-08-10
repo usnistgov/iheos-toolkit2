@@ -18,11 +18,10 @@ import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 /**
  * Validate a Query Request message.
@@ -34,9 +33,11 @@ public class QueryRequestMessageValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 
 		if (ahqr == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "AdhocQueryRequest: top element null", this, "");
+            er.unRegisterValidator(this);
 			return;
 		}
 
@@ -94,6 +95,7 @@ public class QueryRequestMessageValidator extends MessageValidator {
 
 				if (sq == null) {
 					er.err(XdsErrorCode.Code.XDSRegistryError, "Do not understand query [" + queryId + "]", this, SqDocRef.QueryID);
+                    er.unRegisterValidator(this);
 					return;
 				}
 
@@ -105,6 +107,9 @@ public class QueryRequestMessageValidator extends MessageValidator {
 			} catch (XdsException e) {
 				er.err(XdsErrorCode.Code.XDSRegistryError, e.getMessage(), this, SqDocRef.Request_parms);
 			}
+            finally {
+                er.unRegisterValidator(this);
+            }
 		}
 
 		try {

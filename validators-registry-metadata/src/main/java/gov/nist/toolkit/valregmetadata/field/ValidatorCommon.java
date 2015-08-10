@@ -9,13 +9,12 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
-import org.apache.axiom.om.OMElement;
 
 public class ValidatorCommon implements ErrorRecorder {
 	Metadata m;
@@ -240,6 +239,11 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	}
 
+	@Override
+	public void report(String name, String found) {
+
+	}
+
 	public void externalChallenge(String msg) {
 		// TODO Auto-generated method stub
 
@@ -355,6 +359,16 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
+	}
+
+	@Override
 	public void success(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
 
@@ -363,6 +377,11 @@ public class ValidatorCommon implements ErrorRecorder {
 	@Override
 	public void error(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
 
 	}
 

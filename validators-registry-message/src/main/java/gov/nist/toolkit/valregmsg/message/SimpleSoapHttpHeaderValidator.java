@@ -39,33 +39,44 @@ public class SimpleSoapHttpHeaderValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
+
+		er.challenge("Validate SIMPLE SOAP HTTP headers");
+
 		String contentTypeString = hparser.getHttpMessage().getHeader("content-type");
 		try {
 			HttpHeader contentTypeHeader = new HttpHeader(contentTypeString);
 			String contentTypeValue = contentTypeHeader.getValue();
 			if (contentTypeValue == null) contentTypeValue = "";
 			if (!"application/soap+xml".equals(contentTypeValue.toLowerCase()))
-				err("Content-Type header must have value application/soap+xml - found instead " + contentTypeValue,"http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
+                er.error("??", "Content-Type header", contentTypeValue, "application/soap+xml","http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
+            else
+                er.success("??", "Content-Type header", contentTypeValue, "application/soap+xml", "http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
+            //err("Content-Type header must have value application/soap+xml - found instead " + contentTypeValue,"http://www.w3.org/TR/soap12-part0 - Section 4.1.2");
 
 			charset = contentTypeHeader.getParam("charset");
 			if (charset == null || charset.equals("")) {
 				charset = "UTF-8";
-				er.detail("No message CharSet found in Content-Type header, assuming " + charset);
+				er.report("No message CharSet found in Content-Type header - using default", charset);
 			} else {
-				er.detail("Message CharSet is " + charset);
+				er.report("Message CharSet", charset);
 			}
 
 //			String body = new String(bodyBytes, charset);
 			vc.isSimpleSoap = true;
 			vc.hasSoap = true;
 
-			er.detail("Scheduling validation of SOAP wrapper");
+//			er.detail("Scheduling validation of SOAP content");
+            er.sectionHeading("SOAP Message");
 			MessageValidatorFactory.getValidatorContext(erBuilder, bodyBytes, mvc, "Validate SOAP", vc, rvi);
 
 		} catch (ParseException e) {
 			err(e);
 //		} catch (UnsupportedEncodingException e) {
 //			err(e);
+		}
+		finally {
+			er.unRegisterValidator(this);
 		}
 
 	}

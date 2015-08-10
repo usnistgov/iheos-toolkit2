@@ -19,11 +19,13 @@ public class MetadataPatternValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
 		if (validation != null) {
 			if (!common.vc.hasMetadataPattern(validation))
 				er.err(Code.XDSRegistryError, "Validation " + validation + " failed", this, null);
 		}
+		er.unRegisterValidator(this);
 	}
 
 }

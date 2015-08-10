@@ -1,16 +1,14 @@
 package gov.nist.toolkit.valsupport.client;
 
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.commondatatypes.client.SchematronMetadataTypes;
-import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 
 /**
@@ -28,7 +26,9 @@ public class ValidationContext  implements Serializable, IsSerializable {
 
 	public boolean xds_b     = false;
 
+	//
 	// primary transaction selection
+    //
 	public boolean isR       = false;
 	public boolean isPnR     = false;
 	public boolean isRet	 = false;
@@ -40,6 +40,16 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean isMU      = false;
 	public boolean isDIRECT  = false;
 	public boolean isCCDA	 = false;
+    //NHIN xcpd
+    public boolean isXcpd = false;
+    public boolean isNwHINxcpd = false;
+    public boolean isC32 = false;
+    //E-Priscription ncpdp/
+    public boolean isNcpdp = false;
+
+    //
+    // Modifiers
+    //
 
 	// is Cross Community - a modifier on other settings
 	public boolean isXC      = false;
@@ -56,12 +66,6 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean updateable = true;
 
 	public boolean isEpsos = false;
-	//NHIN xcpd
-	public boolean isXcpd = false;
-	public boolean isNwHINxcpd = false;
-	public boolean isC32 = false;
-	//E-Priscription ncpdp/
-	public boolean isNcpdp = false;
 
 	//
 	// State maintained by various validators
@@ -90,7 +94,9 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public enum MetadataPattern { UpdateDocumentEntry, UpdateDocumentEntryStatus };
 
 	public List<MetadataPattern> metadataPatterns = new ArrayList<MetadataPattern>();
-	
+    public String wsAction;
+
+
 	// Since content can be nested (CCDA inside XDM inside ...) the context(s) for validation
 	// must also be nested.
 	// In the current code, a CCDA nested inside a Direct message is coded as isCCDA = true and ccdaType = ???
@@ -115,6 +121,16 @@ public class ValidationContext  implements Serializable, IsSerializable {
 
     public ValidationContext(String codesFilename) {
         this.codesFilename = codesFilename;
+    }
+
+    public void setDirection(MessageDirection dir) {
+        if (MessageDirection.REQUEST.equals(dir)) {
+            isRequest = true;
+            isResponse = false;
+        } else {
+            isRequest = false;
+            isResponse = true;
+        }
     }
 
 	public void addInnerContext(ValidationContext ivc) {

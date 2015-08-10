@@ -8,11 +8,10 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
+import org.apache.axiom.om.OMElement;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 /**
  * Validate a RegistryResponse message.
@@ -36,15 +35,18 @@ public class RegistryResponseValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 
 		if (xml == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "RegistryResponseValidator: no RegistryResponse found", this, "");
+            er.unRegisterValidator(this);
 			return;
 		}
 
 		String longStatus = xml.getAttributeValue(MetadataSupport.status_qname);
 		if (longStatus == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "RegistryResponseValidator: required attribute status is missing", this, "ebRS 3.0 Schema");
+            er.unRegisterValidator(this);
 			return;
 		}
 
@@ -71,7 +73,7 @@ public class RegistryResponseValidator extends MessageValidator {
 		if (!isSuccess && !hasErrors)
 			er.err(XdsErrorCode.Code.XDSRegistryError, "Status attribute is " + longStatus + " but no errors are present", this, "ebRS 3.0 Section 2.1.3.2");
 
-
+        er.unRegisterValidator(this);
 	}
 
 	boolean isPartialSuccessPermitted() {

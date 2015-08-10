@@ -3,16 +3,14 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
+import org.apache.axiom.om.OMElement;
 
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 /**
  * Validate a RetreiveDocumentSetRequest message.
@@ -32,11 +30,14 @@ public class RetrieveRequestValidator  extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
+
 		MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
 		xml = cont.getBody();
 
 		if (xml == null) {
 			er.err(XdsErrorCode.Code.XDSRepositoryError, "RetrieveDocumentSetRequest: top element null", this, "");
+            er.unRegisterValidator(this);
 			return;
 		}
 
@@ -58,7 +59,7 @@ public class RetrieveRequestValidator  extends MessageValidator {
 				}
 			}
 		}
-
+        er.unRegisterValidator(this);
 	}
 
 }

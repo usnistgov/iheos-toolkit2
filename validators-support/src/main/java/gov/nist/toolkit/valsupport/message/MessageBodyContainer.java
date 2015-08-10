@@ -18,6 +18,8 @@ public class MessageBodyContainer extends MessageValidator {
 
     @Override
     public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+        er.registerValidator(this);
+        er.unRegisterValidator(this);
     }
 
     public OMElement getBody() {

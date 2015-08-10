@@ -39,12 +39,14 @@ public class RecipientPnRSim extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc)  {
 		this.er = er;
+		er.registerValidator(this);
 
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
 
 		// if request didn't validation, return so errors can be reported
 		if (common.hasErrors()) {
+			er.unRegisterValidator(this);
 			return;
 		}
 		
@@ -56,7 +58,7 @@ public class RecipientPnRSim extends MessageValidator {
 		
 		common.mvc.run();
 		
-
+		er.unRegisterValidator(this);
 	}
 
 

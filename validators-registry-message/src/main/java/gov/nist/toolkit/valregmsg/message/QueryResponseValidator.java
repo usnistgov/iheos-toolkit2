@@ -22,7 +22,8 @@ public class QueryResponseValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		
+		er.registerValidator(this);
+		er.unRegisterValidator(this);
 
 	}
 

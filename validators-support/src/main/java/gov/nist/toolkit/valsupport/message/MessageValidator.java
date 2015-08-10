@@ -6,7 +6,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 
 
 /**
- * Abstract class that all valiators are based on. It's primary
+ * Abstract class that all validators and simulators are based on. It's primary
  * significance is forcing validators to support the run method so they
  * can be called when their turn comes on the validation queue.
  * @author bill

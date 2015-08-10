@@ -33,6 +33,8 @@ public class WrapperValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
+
 		MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
 		xml = cont.getBody();
 		init();
@@ -41,17 +43,20 @@ public class WrapperValidator extends MessageValidator {
 
 		if (xml == null) {
 			err("No content present", "");
+            er.unRegisterValidator(this);
 			return;
 		}
 
 		if (expectedWrappers == null) {
 //			er.err("Do not have expected wrappers for validation type of " + vc.getTransactionName(), "Internal Error");
+            er.unRegisterValidator(this);
 			return;
 		}
 
 		validateWrappers(xml, expectedWrappers);
 
 //		checkElementOrder(xml);
+        er.unRegisterValidator(this);
 
 	}
 

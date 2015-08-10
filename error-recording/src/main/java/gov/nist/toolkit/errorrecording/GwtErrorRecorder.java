@@ -6,11 +6,10 @@ import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 
 public class GwtErrorRecorder implements ErrorRecorder  {
@@ -169,7 +168,12 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		errMsgs.add(ei);
 	}
 
-	public void externalChallenge(String msg) {
+    @Override
+    public void report(String name, String found) {
+        detail(name + ": " + found);
+    }
+
+    public void externalChallenge(String msg) {
 		tagLastInfo2();
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.EXTERNALCHALLENGE;
@@ -323,6 +327,12 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	}
 
 	@Override
+	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
+		if (good) success(dts, name, found, expected, RFC);
+		else error(dts, name, found, expected, RFC);
+	}
+
+	@Override
 	public void warning(String dts, String name, String found, String expected, String RFC) {
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.D_WARNING;
@@ -388,6 +398,16 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		}
 
 		return depth + maxChildDepth;
+	}
+
+	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
 	}
 
 }
