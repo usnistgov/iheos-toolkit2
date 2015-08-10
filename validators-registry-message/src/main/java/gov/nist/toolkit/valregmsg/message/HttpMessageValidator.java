@@ -43,44 +43,48 @@ public class HttpMessageValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
 		try {
 			if (mvc == null) 
 				mvc = new MessageValidatorEngine();
 
-			er.sectionHeading("HTTP message");
+			er.sectionHeading("HTTP message format validation");
+            if (!vc.isValid()) {
+                er.err(vc.getBasicErrorCode(), "Internal Error: Invalid message format: " + vc, this, "");
+                er.unRegisterValidator(this);
+                return;
+            }
 
 			if (header != null)
 				hparser = new HttpParserBa(header.getBytes()); // since this is an exploratory parse, don't pass er
 			else
 				body = hparser.getBody();
 
-            er.challenge("HTTP message format");
 			hparser.setErrorRecorder(er);
 			if (hparser.isMultipart()) {
-                er.detail("is multipart format");
-				if (vc.isValid() && vc.requiresSimpleSoap())
-					er.err(vc.getBasicErrorCode(), "Requested message type " + vc + " requires SIMPLE SOAP format message - MTOM format found", this, "ITI TF Volumes 2a and 2b");
-//				er.detail("Scheduling MTOM parser");
+				if (vc.requiresSimpleSoap()) {
+                    er.error("", "Message Format", "Multipart", "SIMPLE Format", "ITI TF Volumes 2a and 2b");
+				} else {
+                    er.success("", "Message format", "Multipart", "Multipart", "ITI TF Volumes 2a and 2b");
+				}
 				mvc.addMessageValidator("Validate MTOM", new MtomMessageValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
-//				er.err("MTOM parser not available","");
 			} else {
-                er.detail("is simple format");
-				boolean val = vc.isValid();
 				boolean mt = vc.requiresMtom();
-				if (!val && mt)
-					er.err(vc.getBasicErrorCode(), "Invalid message format: " + vc, this, "ITI TF Volumes 2a and 2b");
-				if (mt)
-					er.err(vc.getBasicErrorCode(), "Request Message is SIMPLE SOAP but MTOM is required", this, "ITI TF Volumes 2a and 2b");
-//				er.detail("Scheduling SIMPLE SOAP parser");
+                if (mt) {
+                    er.error("", "Message Format", "SIMPLE Format", "Multipart", "ITI TF Volumes 2a and 2b");
+                } else {
+                    er.success("", "Message format", "SIMPLE Format", "SIMPLE Format", "ITI TF Volumes 2a and 2b");
+                }
 				mvc.addMessageValidator("Parse SIMPLE SOAP message", new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
-//				SimpleSoapHttpHeaderValidator val = new SimpleSoapHttpHeaderValidator(vc, hparser, body, erBuilder, mvc);
-//				val.run(er);
 			}
 		} catch (HttpParseException e) {
 			er.err(vc.getBasicErrorCode(), e);
 		} catch (ParseException e) {
 			er.err(vc.getBasicErrorCode(), e);
+		}
+		finally {
+			er.unRegisterValidator(this);
 		}
 
 	}

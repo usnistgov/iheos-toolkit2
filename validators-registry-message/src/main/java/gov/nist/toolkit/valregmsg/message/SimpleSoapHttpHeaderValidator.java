@@ -57,9 +57,9 @@ public class SimpleSoapHttpHeaderValidator extends MessageValidator {
 			charset = contentTypeHeader.getParam("charset");
 			if (charset == null || charset.equals("")) {
 				charset = "UTF-8";
-				er.detail("No message CharSet found in Content-Type header, defaulting to " + charset);
+				er.report("No message CharSet found in Content-Type header - using default", charset);
 			} else {
-				er.detail("Message CharSet is " + charset);
+				er.report("Message CharSet", charset);
 			}
 
 //			String body = new String(bodyBytes, charset);

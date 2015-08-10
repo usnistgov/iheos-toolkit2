@@ -168,7 +168,12 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		errMsgs.add(ei);
 	}
 
-	public void externalChallenge(String msg) {
+    @Override
+    public void report(String name, String found) {
+        detail(name + ": " + found);
+    }
+
+    public void externalChallenge(String msg) {
 		tagLastInfo2();
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.EXTERNALCHALLENGE;
@@ -319,6 +324,12 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 			}
 		}
 		
+	}
+
+	@Override
+	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
+		if (good) success(dts, name, found, expected, RFC);
+		else error(dts, name, found, expected, RFC);
 	}
 
 	@Override

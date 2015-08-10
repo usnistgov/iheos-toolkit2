@@ -408,6 +408,11 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	}
 
+	@Override
+	public void report(String name, String found) {
+
+	}
+
 	public void externalChallenge(String msg) {
 		// TODO Auto-generated method stub
 
@@ -541,6 +546,11 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	@Override
 	public void error(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
 
 	}
 

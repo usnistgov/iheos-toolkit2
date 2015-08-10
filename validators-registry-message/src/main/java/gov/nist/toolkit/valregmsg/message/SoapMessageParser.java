@@ -48,4 +48,5 @@ public class SoapMessageParser extends MessageValidator {
             return bodies.get(0);
         return null;
     }
+    public List<OMElement> getBodies() { return bodies; }
 }
