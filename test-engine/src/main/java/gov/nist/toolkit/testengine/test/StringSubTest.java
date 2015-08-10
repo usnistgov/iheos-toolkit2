@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.test;
 
-import gov.nist.toolkit.testengine.StringSub;
+import gov.nist.toolkit.testengine.engine.StringSub;
 import junit.framework.TestCase;
 
 public class StringSubTest extends TestCase {

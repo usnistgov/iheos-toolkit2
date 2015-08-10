@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.test;
 
-import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.xdsexception.XdsException;
 import junit.framework.TestCase;
 
