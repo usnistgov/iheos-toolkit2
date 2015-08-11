@@ -7,6 +7,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
+import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
@@ -22,12 +23,18 @@ public class ClientApi implements SecurityParams {
     File testkitFile;
     static Logger logger = Logger.getLogger(ClientApi.class);
 
+    public ClientApi() {
+        this(Support.setupToolkit());
+    }
+
     public ClientApi(Session session) {
         this.session = session;
         this.testkitFile = Installation.installation().testkitFile();
     }
 
-    public boolean runTest(String testname, Site site, boolean tls, Map<String, String> parms) throws Exception {
+    public Session getSession() { return session; }
+
+    public boolean runTest(String testname, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError) throws Exception {
         Xdstest2 engine = new Xdstest2(Installation.installation().toolkitxFile(), this);
         engine.setTestkitLocation(testkitFile);
         engine.addTest(testname);
@@ -36,11 +43,19 @@ public class ClientApi implements SecurityParams {
         ts.writeLogs = true;
         ts.patientId = parms.get("$patientid$");
         ts.securityParams = this;
+        ts.logRepository =
+                new LogRepositoryFactory().getRepository(
+                        Installation.installation().testLogFile(),
+                        session.getId(),
+                        LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
+                        LogRepositoryFactory.Id_type.SPECIFIC_ID,
+                        testname);
+        System.out.println("RUN TEST " + testname + " to log " + ts.logRepository);
         logger.info("TransactionSettings: " + ts);
-        return engine.run(parms, null, true, ts);
+        return engine.run(parms, null, stopOnFirstError, ts);
     }
 
-    public boolean runTestCollection(String testCollectionName, Site site, boolean tls, Map<String, String> parms) throws Exception {
+    public boolean runTestCollection(String testCollectionName, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError) throws Exception {
         Xdstest2 engine = new Xdstest2(Installation.installation().toolkitxFile(), this);
         engine.setTestkitLocation(testkitFile);
         engine.addTestCollection(testCollectionName);
@@ -49,7 +64,15 @@ public class ClientApi implements SecurityParams {
         ts.writeLogs = true;
         ts.patientId = parms.get("$patientid$");
         ts.securityParams = this;
-        return engine.run(parms, null, true, ts);
+        ts.logRepository =
+                new LogRepositoryFactory().getRepository(
+                        Installation.installation().testLogFile(),
+                        session.getId(),
+                        LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
+                        LogRepositoryFactory.Id_type.SPECIFIC_ID,
+                        null);
+        System.out.println("RUN TEST COLLECTION " + testCollectionName + " to log " + ts.logRepository);
+        return engine.run(parms, null, stopOnFirstError, ts);
     }
 
     // Start - Things required by SecurityParams parent class

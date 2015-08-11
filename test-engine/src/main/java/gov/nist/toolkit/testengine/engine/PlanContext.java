@@ -10,6 +10,8 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 public class PlanContext extends BasicContext {
 	OMElement results_document = null;
@@ -36,6 +35,8 @@ public class PlanContext extends BasicContext {
 	
 	public void setTransactionSettings(TransactionSettings ts) {
 		this.transactionSettings = ts;
+		if (ts.patientId != null)
+			setPatientId(ts.patientId);
 	}
 	
 	public void setTestConfig(TestConfig config) {

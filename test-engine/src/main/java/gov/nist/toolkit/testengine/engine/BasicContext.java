@@ -3,14 +3,12 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
 
 public class BasicContext  {
 	BasicContext parent_context;
@@ -23,6 +21,7 @@ public class BasicContext  {
 	}
 
 	public void set(String attname, Object attvalue) {
+		System.out.println("BasicContext set " + attname + " ==> " + attvalue);
 		if (atts == null) atts = new HashMap();
 		atts.put(attname, attvalue);
 	}
@@ -60,7 +59,7 @@ public class BasicContext  {
 	}
 
 	public void dumpContext() {
-		System.out.println(getClass().getName());
+		System.out.println("Context for " + getClass().getName());
 		if (atts == null)
 			return;
 		Set keys = atts.keySet();
@@ -69,6 +68,7 @@ public class BasicContext  {
 			Object value = atts.get(key);
 			System.out.println("    " + key + " : " + value.toString() );
 		}
+        System.out.println("End Context");
 	}
 
 	public void dumpContextRecursive() {

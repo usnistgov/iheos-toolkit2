@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11901</Test>
+  <Rule>Test GetDocuments Stored Query</Rule>
+  <TestStep id="uniqueid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion>Basic operation with UniqueId</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4">
+            <tag0:Slot name="$XDSDocumentEntryUniqueId">
+              <tag0:ValueList>
+                <tag0:Value>('$uid$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="Document01" symbol="$uid$" step="submit_doc" section="AssignedUids"/>
+      <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uniqueid2">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion>Operation with multiple UniqueIds</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4">
+            <tag0:Slot name="$XDSDocumentEntryUniqueId">
+              <tag0:ValueList>
+                <tag0:Value>('$uid1$','$uid2$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="Document01" symbol="$uid1$" step="submit_doc" section="AssignedUids"/>
+      <UseId testdir="../12346" id="Document02" symbol="$uid2$" step="submit_2doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <Documents count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uuid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion>Operation with UUID</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4">
+            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
+              <tag0:ValueList>
+                <tag0:Value>('$uuid$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uuid2">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion>Operation with multiple UUIDs</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4">
+            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
+              <tag0:ValueList>
+                <tag0:Value>('$uuid1$', '$uuid2$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../12346" id="Document02" symbol="$uuid2$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Documents count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uuid_multiple_slot_values">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion>Operation with multiple UUIDs spread across multiple Slot values</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4">
+            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
+              <tag0:ValueList>
+                <tag0:Value>('$uuid1$')</tag0:Value>
+                <tag0:Value>('$uuid2$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../12346" id="Document02" symbol="$uuid2$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Documents count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="homeCommunityId">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion>homeCommunityId present - must not cause error</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4" home="urn:oid:1.1.1">
+            <tag0:Slot name="$XDSDocumentEntryUniqueId">
+              <tag0:ValueList>
+                <tag0:Value>('$uid$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="Document01" symbol="$uid$" step="submit_doc" section="AssignedUids"/>
+      <ExpectedContents>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

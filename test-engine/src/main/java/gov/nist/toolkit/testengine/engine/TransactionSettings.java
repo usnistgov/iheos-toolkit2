@@ -5,6 +5,11 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.testengine.logrepository.LogRepository;
 
+/**
+ * Control the execution of a transaction.  Does not include the spec
+ * of what transaction to run.  This only holds the environment for the
+ * transaction.  That way it can be reused.
+ */
 public class TransactionSettings {
 	/**
 	 * Should Patient ID be assigned from xdstest config on Submissions?

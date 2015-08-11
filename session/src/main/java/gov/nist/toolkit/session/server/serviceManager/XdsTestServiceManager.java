@@ -8,29 +8,14 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.AssertionResult;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.results.client.XdstestLogId;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSessionNotSelectedException;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.engine.LogMap;
-import gov.nist.toolkit.testengine.engine.ResultPersistence;
-import gov.nist.toolkit.testengine.engine.RetInfo;
-import gov.nist.toolkit.testengine.engine.RetrieveB;
-import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
-import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testengine.engine.Xdstest2;
+import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestDetails;
@@ -43,31 +28,26 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class XdsTestServiceManager extends CommonServiceManager {
 	CodesConfiguration codesConfiguration = null;
 	// always reference through getTestKit()
 	TestKit testKit = null;
-	Session session;
+	public Session session;
 
 	static Logger logger = Logger.getLogger(XdsTestServiceManager.class);
 	static boolean allCiphersEnabled = false;
 
 	public XdsTestServiceManager(Session session)  {
 		this.session = session;
+        System.out.println("XdsTestServiceManager - patient id is " + session.transactionSettings.patientId);
 	}
 
 	TestLogCache getTestLogCache() throws IOException {
@@ -109,8 +89,9 @@ public class XdsTestServiceManager extends CommonServiceManager {
 		cleanupParams(params);
 
 		try {
-			if (session.transactionSettings == null)
+			if (session.transactionSettings == null) {
 				session.transactionSettings = new TransactionSettings();
+			}
 
 			if (session.xt == null)
 				session.xt = getNewXt();
@@ -228,7 +209,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	}
 
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession) {
-		logger.debug(session.id() + ": " + "getTestResults() ids=" + testIds + " testSession=" + testSession );
+		logger.debug(session.id() + ": " + "getTestResults() ids=" + testIds + " testSession=" + testSession);
 
 		Map<String, Result> map = new HashMap<String, Result>();
 

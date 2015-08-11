@@ -57,7 +57,7 @@ public abstract class BasicTransaction  {
 	static public final short xds_b = 2;
 	short xds_version = BasicTransaction.xds_none;
 	protected String endpoint = null;
-	HashMap<String, String> local_linkage_data ;  // dangerous, most of linkage kept inside Linkage class
+	HashMap<String, String> local_linkage_data = new HashMap<>() ;  // dangerous, most of linkage kept inside Linkage class
 	Linkage linkage = null;
 	protected String metadata_filename = null;
 
@@ -758,8 +758,11 @@ public abstract class BasicTransaction  {
 
 			TestMgmt tm = new TestMgmt(testConfig);
 			if ( assign_patient_id ) {
+				System.out.println("============================= assign_patient_id  in BasicTransaction#prepareMetadata()==============================");
 				// get and insert PatientId
 				String forced_patient_id = s_ctx.get("PatientId");
+                System.out.println("    to " + forced_patient_id);
+                s_ctx.dumpContextRecursive();
 				if (s_ctx.useAltPatientId()) {
 					forced_patient_id = s_ctx.get("AltPatientId");
 				}

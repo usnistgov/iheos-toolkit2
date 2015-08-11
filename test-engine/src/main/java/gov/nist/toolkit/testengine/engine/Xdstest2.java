@@ -11,7 +11,11 @@ import gov.nist.toolkit.testenginelogging.StepGoals;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
+import org.apache.log4j.Logger;
 
+import javax.net.ssl.*;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,17 +24,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.security.cert.CertificateException;
-import javax.security.cert.X509Certificate;
-
-import org.apache.log4j.Logger;
 
 /***
  * API for XDSTest test engine
@@ -207,26 +200,26 @@ public class Xdstest2 {
 	public void addTest(String testname, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
 		testnum = testname;
 		this.sections = sections;
-		TestDetails ts;
+		TestDetails testDetails;
 		if (areas == null)
-			ts = new TestDetails(xt.getTestkit(), testname);
+			testDetails = new TestDetails(xt.getTestkit(), testname);
 		else
-			ts = new TestDetails(xt.getTestkit(), testname, areas);
+			testDetails = new TestDetails(xt.getTestkit(), testname, areas);
 		if (logRepository != null)
-			ts.setLogDir(logRepository.logDir());
+			testDetails.setLogDir(logRepository.logDir());
 		if (doLogCheck) {
 			if (sections != null && sections.size() != 0)
-				ts.selectSections(sections);
+				testDetails.selectSections(sections);
 		}
-		xt.addTestSpec(ts);
+		xt.addTestSpec(testDetails);
 	}
 	
 	public void addTest(String testName, File testDir) throws Exception {
 		testnum = testName;
-		TestDetails ts = new TestDetails(testDir);
+		TestDetails testDetails = new TestDetails(testDir);
 		if (logRepository != null)
-			ts.setLogDir(logRepository.logDir());
-		xt.addTestSpec(ts);
+			testDetails.setLogDir(logRepository.logDir());
+		xt.addTestSpec(testDetails);
 	}
 
 	public void addTest(String testname, List<String> sections, String[] areas) throws Exception {

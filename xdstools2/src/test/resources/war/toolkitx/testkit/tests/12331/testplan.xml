@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12331</Test>
+  <Rule>Test FindDocuments Stored Query over asynchronous web services</Rule>
+  <TestStep id="object_refs">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+      <Assertion>Basic ObjectRef return</Assertion>
+    </Rule>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <ASync/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
+            <tag0:Slot name="$XDSDocumentEntryPatientId">
+              <tag0:ValueList>
+                <tag0:Value>'$patient_id$'</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+            <tag0:Slot name="$XDSDocumentEntryStatus">
+              <tag0:ValueList>
+                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../11890" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <ObjectRefs count="5"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

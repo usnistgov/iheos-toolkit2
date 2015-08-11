@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12309</Test>
+  <TestStep id="finddocs">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>XGQ</Transaction>
+      <SQ>Test FindDocuments XGC</SQ>
+      <Assertion>ObjectRef return</Assertion>
+    </Rule>
+    <XCQTransaction>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
+            <tag0:Slot name="$XDSDocumentEntryPatientId">
+              <tag0:ValueList>
+                <tag0:Value>'$patient_id$'</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+            <tag0:Slot name="$XDSDocumentEntryStatus">
+              <tag0:ValueList>
+                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="..//12318" id="SubmissionSet01" symbol="$patient_id$" step="init" section="AssignedPatientId"/>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="ObjectRefCount"> 
+                    count(//XCQTransaction[@step="finddocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef']) = 2
+                </Assert>
+      </Assertions>
+    </XCQTransaction>
+  </TestStep>
+</TestPlan>
