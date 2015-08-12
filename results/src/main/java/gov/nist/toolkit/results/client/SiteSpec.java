@@ -5,16 +5,19 @@ import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
- * Lightweight recording of the selected Site parameters. Does
- * not interact with the Site class which has full
- * transaction details. This is used to aim the test engine
- * for firing at an actor implementation.
+ * A Site is the collection of endpoints and parameters for a single site or as Gazelle calls it a system.
+ * A Site references multiple actor types but it can hold only one copy of an actor type:
+ * one Registry, one Repository etc.
+ * A SiteSpec is a reference to a Site and a selection of one actor type. Having a SiteSpec you know
+ * exactly which transactions are possible.
+ *
+ * SiteSpec reference the Site through the name attribute.
  * @author bill
  *
  */
 public class SiteSpec implements IsSerializable {
 
-	public String name = "";
+	public String name = "";   // site name
 	public ActorType actorType = null;
 	public String homeId = "";
 	public String homeName = "";

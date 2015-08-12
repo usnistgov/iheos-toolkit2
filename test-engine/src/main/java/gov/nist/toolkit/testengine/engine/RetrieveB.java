@@ -8,28 +8,17 @@ import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.SchemaValidationException;
-import gov.nist.toolkit.xdsexception.XdsConfigurationException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsIOException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-import gov.nist.toolkit.xdsexception.XdsPreparsedException;
-import gov.nist.toolkit.xdsexception.XdsWSException;
-
-import java.io.IOException;
-import java.util.HashMap;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.FactoryConfigurationError;
-
+import gov.nist.toolkit.xdsexception.*;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.IOException;
+import java.util.HashMap;
 
 public class RetrieveB {
 	String endpoint = null;
@@ -129,7 +118,7 @@ public class RetrieveB {
 		return result;
 	}
 
-	public void validate() throws XdsInternalException, MetadataException, XdsPreparsedException{
+	public void validate() throws XdsInternalException, MetadataException {
 		OMElement result = r_ctx.getResult();
 
 		if (result == null)

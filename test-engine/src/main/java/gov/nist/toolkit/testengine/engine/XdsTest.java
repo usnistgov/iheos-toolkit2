@@ -690,9 +690,9 @@ public class XdsTest {
 				testConfig.testplanDir = testPlanFile.getParentFile();
 				testConfig.logFile = null;
 				
-				File logDirectory = logRepository.logDir();
+				File logDirectory = logRepository.logDir(testSpec.getTestNum());
 				if (ts != null && ts.logRepository != null)
-					logDirectory = ts.logRepository.logDir();
+					logDirectory = ts.logRepository.logDir(testSpec.getTestNum());
 
 				if (writeLogFiles) {
 					// This is the log.xml file

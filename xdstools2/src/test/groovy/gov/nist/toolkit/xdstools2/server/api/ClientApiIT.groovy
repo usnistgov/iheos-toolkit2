@@ -23,7 +23,6 @@ class ClientApiIT extends Specification {
     Session session
     SimulatorApi simApi
     String regSimId = 'myreg'
-    String repSimId = 'myrec'
     String rrSimId = 'rr'
     boolean tls = false
     String pid = '123^^^&1.2.343&ISO'
@@ -193,10 +192,10 @@ class ClientApiIT extends Specification {
         !status
     }
 
-    def 'Run SQ tests'() {
+    def 'Initialize SQ tests'() {
         setup:
-        simApi.delete(rrSimId)   // Delete sim since old data will mess up results
-        Simulator sim = simApi.create('rr', rrSimId)
+        simApi.delete(regSimId)   // Delete sim since old data will mess up results
+        Simulator sim = simApi.create('reg', regSimId)
 
         when: 'Create site for simulator'
         Site site = SimManager.getSite(sim.configs.get(0))
@@ -204,17 +203,40 @@ class ClientApiIT extends Specification {
         then: 'site exists'
         site
 
-        when: 'Load test data'
+        when: 'Declare patientid'
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
 
+        then:
+        true
+
+        when: 'Test data part 1'
         boolean status = client.runTest('12346', site, tls, parms, true)
 
         then:
         status
 
+        when: 'Test data part 2'
+        status = client.runTest('12374', site, tls, parms, true)
+
+        then:
+        status
+    }
+
+    def 'Run SQ tests'() {
+        setup:
+        Simulator sim = simApi.create('reg', regSimId)
+
+        when: 'Create site for simulator'
+        Site site = SimManager.getSite(sim.configs.get(0))
+
+        then: 'site exists'
+        site
+
         when: 'Run SQ tests'
-        status = client.runTestCollection('SQ.b', site, tls, parms, true)
+        Map<String, String> parms  = new HashMap<String, String>();
+        parms.put('$patientid$', pid);
+        boolean status = client.runTestCollection('SQ.b', site, tls, parms, true)
 
         then:
         status

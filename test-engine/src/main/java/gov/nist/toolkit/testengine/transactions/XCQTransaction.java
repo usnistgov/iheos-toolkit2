@@ -8,8 +8,9 @@ import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
 import org.apache.axiom.om.OMElement;
+
+import java.util.List;
 
 public class XCQTransaction extends StoredQueryTransaction {
 	String expectedHomeCommunityId = null;

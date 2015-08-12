@@ -3,17 +3,15 @@ package gov.nist.toolkit.registrymsg.registry;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.JaxenException;
+
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class RegistryResponseParser {
 	OMElement response_element;
@@ -113,26 +111,39 @@ public class RegistryResponseParser {
 	}
 
 	public String get_regrep_error_msg() {
+		List<String> msgs = get_regrep_error_msgs();
+		StringBuilder buf = new StringBuilder();
+		for (String x : msgs) buf.append(x);
+		return buf.toString();
+	}
+
+	public List<String> get_regrep_error_msgs() {
+		List<String> messages = new ArrayList<>();
 		if (response_element == null)
-			return "No Message";
+			return asList("No Message");
 		OMElement registry_response = XmlUtil.firstChildWithLocalName(response_element, "RegistryResponse") ;
 		OMElement current = (registry_response == null) ? response_element : registry_response;
 		OMElement registry_error_list = XmlUtil.firstChildWithLocalName(current, "RegistryErrorList") ;
 		if (registry_error_list == null)
-			return "";
-		StringBuffer errorMessages = new StringBuffer();
+			return messages;
 		for (OMElement registry_error : XmlUtil.childrenWithLocalName(registry_error_list, "RegistryError")) {
 			String severity = registry_error.getAttributeValue(MetadataSupport.severity_qname);
 			if (severity != null && severity.endsWith("Warning"))
 				continue;
 			String msg =
-				registry_error.getAttributeValue(new QName("errorCode")) + "  :  " +
-				registry_error.getAttributeValue(new QName("codeContext")) + "  :  " +
-				registry_error.getText();
+					registry_error.getAttributeValue(new QName("errorCode")) + "  :  " +
+							registry_error.getAttributeValue(new QName("codeContext")) + "  :  " +
+							registry_error.getText();
 			if (msg == null) continue;
-			errorMessages.append(msg);
+			messages.add(msg);
 		}
-		return errorMessages.toString();
+		return messages;
+	}
+
+	List<String> asList(String value) {
+		List<String> lst = new ArrayList<>();
+		lst.add(value);
+		return lst;
 	}
 
 	public String get_registry_response_status() throws XdsInternalException {

@@ -694,16 +694,34 @@ public abstract class BasicTransaction  {
 		showEndpoint();
 	}
 
-	String failMsg = null;
+	List<String> failMsgs = null;
 
 	public void fail(String msg) throws XdsInternalException {
-		failMsg = msg;
+		failMsgs = asList(msg);
 		failed();
 		s_ctx.set_error(msg);
 	}
 
+    public void fail(List<String> msgs) throws XdsInternalException {
+        failMsgs = msgs;
+        failed();
+        for (String x : msgs) s_ctx.set_error(x);
+    }
+
+    String asString(List<String> strs) {
+        StringBuilder buf = new StringBuilder();
+        for (String x : strs) buf.append(x).append("\n");
+        return buf.toString();
+    }
+
+    List<String> asList(String str) {
+        List<String> lst = new ArrayList<>();
+        lst.add(str);
+        return lst;
+    }
+
 	public String getFail() {
-		return failMsg;
+		return asString(failMsgs);
 	}
 
 	protected void fatal(String msg) throws XdsInternalException {
@@ -758,11 +776,11 @@ public abstract class BasicTransaction  {
 
 			TestMgmt tm = new TestMgmt(testConfig);
 			if ( assign_patient_id ) {
-				System.out.println("============================= assign_patient_id  in BasicTransaction#prepareMetadata()==============================");
+//				System.out.println("============================= assign_patient_id  in BasicTransaction#prepareMetadata()==============================");
 				// get and insert PatientId
 				String forced_patient_id = s_ctx.get("PatientId");
-                System.out.println("    to " + forced_patient_id);
-                s_ctx.dumpContextRecursive();
+//                System.out.println("    to " + forced_patient_id)
+//              s_ctx.dumpContextRecursive();
 				if (s_ctx.useAltPatientId()) {
 					forced_patient_id = s_ctx.get("AltPatientId");
 				}
@@ -1197,9 +1215,11 @@ public abstract class BasicTransaction  {
 
 		if (s_ctx.getExpectedStatus().isSuccess()) {
 			RegistryResponseParser registry_response = new RegistryResponseParser(getSoapResult());
-			String errs = registry_response.get_regrep_error_msg();
-			if (errs != null && !errs.equals("")) {
-				s_ctx.set_error(errs);
+			List<String> errs = registry_response.get_regrep_error_msgs();
+			if (errs.size() > 0) {
+                System.out.println("Received errors in response");
+                for (String err : errs)
+				    s_ctx.set_error(err);
 				failed();
 			}
 

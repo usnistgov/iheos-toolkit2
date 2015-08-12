@@ -1,5 +1,6 @@
 package gov.nist.toolkit.sitemanagement.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
@@ -11,10 +12,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+
+/**
+ * A Site is the collection of endpoints and parameters for a single site or as Gazelle calls it a system.
+ * A Site references multiple actor types but it can hold only one copy of an actor type:
+ * one Registry, one Repository etc.
+ * A SiteSpec is a reference to a Site and a selection of one actor type. Having a SiteSpec you know
+ * exactly which transactions are possible.
+ *
+ * SiteSpec reference the Site through the name attribute.
+ * @author bill
+ *
+ */
 
 // Transaction names are listed in TransactionCollection.java
-
 
 public class Site  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;

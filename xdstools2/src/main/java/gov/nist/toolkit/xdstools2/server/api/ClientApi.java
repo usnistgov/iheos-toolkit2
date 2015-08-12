@@ -64,6 +64,7 @@ public class ClientApi implements SecurityParams {
         ts.writeLogs = true;
         ts.patientId = parms.get("$patientid$");
         ts.securityParams = this;
+        // TODO - this writes to the directory null instead of updating it given the current test
         ts.logRepository =
                 new LogRepositoryFactory().getRepository(
                         Installation.installation().testLogFile(),
