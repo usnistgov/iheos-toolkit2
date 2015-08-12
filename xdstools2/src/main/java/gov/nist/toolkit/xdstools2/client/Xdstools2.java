@@ -114,8 +114,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		}
 		
 			
-	}
-	
+	}	
 
 	HomeTab ht = null;
 
