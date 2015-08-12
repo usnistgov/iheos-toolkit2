@@ -6,13 +6,8 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
-import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XDSRegistryOutOfResourcesException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,21 +54,21 @@ abstract public class FindDocuments extends StoredQuery {
 
 		parseParameters();
 
-		if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
-			QueryReturnType save = sqs.returnType;
-
-			// since the Public Registry gets some crazy requests, first do an ObjectRefs query to see how many
-			// results are planned.  If not out of order then do the real query for LeafClass
-
-			sqs.returnType = QueryReturnType.OBJECTREF;
-
-			Metadata m = runImplementation();
-			if (m.getObjectRefs().size() > 25)
-				throw new XDSRegistryOutOfResourcesException("GetDocuments Stored Query for LeafClass is limited to 25 documents on this Registry. Your query targeted " + m.getObjectRefs().size() + " documents");
-
-
-			sqs.returnType = save;;
-		}
+//		if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
+//			QueryReturnType save = sqs.returnType;
+//
+//			// since the Public Registry gets some crazy requests, first do an ObjectRefs query to see how many
+//			// results are planned.  If not out of order then do the real query for LeafClass
+//
+//			sqs.returnType = QueryReturnType.OBJECTREF;
+//
+//			Metadata m = runImplementation();
+//			if (m.getObjectRefs().size() > 25)
+//				throw new XDSRegistryOutOfResourcesException("GetDocuments Stored Query for LeafClass is limited to 25 documents on this Registry. Your query targeted " + m.getObjectRefs().size() + " documents");
+//
+//
+//			sqs.returnType = save;;
+//		}
 
 
 		Metadata m = runImplementation();
