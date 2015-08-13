@@ -9,6 +9,11 @@ import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testRunnerTab.TestRunnerTab;
 
+import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
+
+
+import com.google.web.bindery.event.shared.EventBus;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -21,16 +26,22 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.GWT;
+
 
 public class Xdstools2 implements EntryPoint, TabContainer {
 
 
-	TabPanel tabPanel;
+	static TabPanel tabPanel = new TabPanel();
 
 	TabContainer getTabContainer() { return this;}
 
 	static TkProps props;
 	static public boolean showEnvironment = true;
+	
+	static EventBus eventBus = null;	
 
 	// Central storage for parameters shared across all
 	// query type tabs
@@ -60,8 +71,9 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	}
 
 	void buildWrapper() {
-		tabPanel = new TabPanel();
-		RootPanel.get().insert(tabPanel, 0);
+		// tabPanel = new TabPanel();
+		if ("xdstools2".equals(GWT.getModuleName())) // Hide this from V3 module
+			RootPanel.get().insert(tabPanel, 0);
 //		RootPanel.get().add(tabPanel);
 
 
@@ -69,6 +81,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	}
 
+	
 	public void addTab(VerticalPanel w, String title, boolean select) {
 		HTML left = new HTML();
 		left.setHTML("&nbsp");
@@ -82,13 +95,26 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		wrapper.add(right);
 		wrapper.setCellWidth(left, "1%");
 		wrapper.setCellWidth(right, "1%");
-
-
+	
 		tabPanel.add(wrapper, title);
-
+	
+		int index = tabPanel.getWidgetCount() - 1;
+	
 		if (select)
-			tabPanel.selectTab(tabPanel.getWidgetCount() - 1);
-	}
+			tabPanel.selectTab(index);		
+
+		try {
+		
+			if (getEventBus()!=null && index>0) {
+				getEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
+			} 
+			
+		} catch (Throwable t) {
+			Window.alert("V2TabOpenedEvent error: " +t.toString());
+		}
+		
+			
+	}	
 
 	HomeTab ht = null;
 
@@ -199,6 +225,14 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		return tabPanel;
 	}
 
+
+	public EventBus getEventBus() {
+		return eventBus;
+	}
+	
+	public void setEventBus(EventBus eventBus) {
+		this.eventBus = eventBus;
+	}
 
 
 
