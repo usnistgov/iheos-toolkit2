@@ -121,6 +121,11 @@ public class TextErrorRecorder implements ErrorRecorder {
 		errMsgs.add(ei);
 	}
 
+	@Override
+	public void report(String name, String found) {
+
+	}
+
 	public void externalChallenge(String msg) {
 		tagLastInfo2();
 		ErrorInfo ei = new ErrorInfo();
@@ -247,6 +252,11 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
+	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
+
+	}
+
+	@Override
 	public void warning(String dts, String name, String found, String expected, String RFC) {
 		warning(dts, name, "", dts);
 	}
@@ -277,6 +287,16 @@ public class TextErrorRecorder implements ErrorRecorder {
 		}
 
 		return depth + maxChildDepth;
+	}
+
+	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
 	}
 
 

@@ -19,11 +19,12 @@ public class Committer extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
 
 		// merge in changes
 		delta.mergeDelta(er);
-		
+		er.unRegisterValidator(this);
 	}
 
 }

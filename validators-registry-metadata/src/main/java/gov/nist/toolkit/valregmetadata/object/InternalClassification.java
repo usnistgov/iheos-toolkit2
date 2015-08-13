@@ -11,15 +11,15 @@ import org.apache.axiom.om.OMElement;
 public class InternalClassification extends AbstractRegistryObject {
 	String classifiedObjectId;
 	String classificationNode;
-	
+
 	public InternalClassification(String id, String classifiedObject, String classificationNode) {
 		super(id);
 		this.classifiedObjectId = classifiedObject;
 		this.classificationNode = classificationNode;
 	}
-	
+
 	public boolean equals(InternalClassification ic) {
-		if (ic == null) 
+		if (ic == null)
 			return false;
 		if (!id.equals(ic.id))
 			return false;
@@ -29,17 +29,17 @@ public class InternalClassification extends AbstractRegistryObject {
 			return false;
 		return super.equals(ic);
 	}
-	
+
 	public String getClassificationNode() {
 		return classificationNode;
 	}
-	
+
 	public InternalClassification(Metadata m, OMElement ro) throws XdsInternalException  {
 		super(m, ro);
 		classifiedObjectId = ro.getAttributeValue(MetadataSupport.classified_object_qname);
 		classificationNode = ro.getAttributeValue(MetadataSupport.classificationnode_qname);
 	}
-	
+
 	static public boolean isInternalClassification(OMElement ele) {
 		return ele.getAttribute(MetadataSupport.classificationnode_qname) != null;
 	}
@@ -53,7 +53,7 @@ public class InternalClassification extends AbstractRegistryObject {
 		ro.addAttribute("id", id, null);
 		ro.addAttribute("classifiedObject", classifiedObjectId, null);
 		ro.addAttribute("classificationNode", classificationNode, null);
- 
+
 		if (home != null)
 			ro.addAttribute("home", home, null);
 

@@ -5,9 +5,10 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.axis2.Swa;
-import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.HttpCodeException;
@@ -50,7 +51,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 		return "pr";
 	}
 
-	public void run(OMElement metadata_element) 
+	public void run(OMElement metadata_element)
 	throws XdsException {
 		boolean my_swa = false;
 
@@ -111,11 +112,11 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 					testLog.add_name_value(instruction_output, "Result", result);
 
 					validate_registry_response(
-							result, 
+							result,
 							(xds_version == xds_a) ? MetadataTypes.METADATA_TYPE_R : MetadataTypes.METADATA_TYPE_SQ);
 				}
 
-			} 
+			}
 			catch (Exception e) {
 				throw new XdsInternalException(ExceptionUtil.exception_details(e));
 			}
@@ -159,10 +160,10 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 					testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 					System.out.println("The result was NULL");
 				} else {
-					OMElement fault = MetadataSupport.firstChildWithLocalName(result, "Fault");
+					OMElement fault = XmlUtil.firstChildWithLocalName(result, "Fault");
 					if (fault != null) {
 						//s_ctx.add_name_value(instruction_output, "StepStatus", "Failure");
-						OMElement faultstring_ele = MetadataSupport.firstChildWithLocalName(fault, "faultstring");
+						OMElement faultstring_ele = XmlUtil.firstChildWithLocalName(fault, "faultstring");
 						String faultstring;
 						if (faultstring_ele != null) {
 							faultstring = faultstring_ele.getText();
@@ -170,7 +171,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 							faultstring = "SOAP Fault: cannot parse message";
 						}
 					} else {
-						OMElement rr = MetadataSupport.firstChildWithLocalName(result, "RegistryResponse"); 
+						OMElement rr = XmlUtil.firstChildWithLocalName(result, "RegistryResponse");
 						if (rr == null) {
 							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
 							testLog.add_name_value(instruction_output, "StepStatus", "Failure");
@@ -266,7 +267,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 					testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 					System.out.println("The result was NULL");
 				} else {
-					OMElement rr = MetadataSupport.firstChildWithLocalName(result, "RegistryResponse"); 
+					OMElement rr = XmlUtil.firstChildWithLocalName(result, "RegistryResponse");
 					if (rr == null) {
 						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
 						testLog.add_name_value(instruction_output, "StepStatus", "Failure");
@@ -311,11 +312,11 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 	}
 
 	OMElement getHeader(OMElement envelope) {
-		return MetadataSupport.firstChildWithLocalName(envelope, "Header");
+		return XmlUtil.firstChildWithLocalName(envelope, "Header");
 	}
 
 	OMElement getBody(OMElement envelope) {
-		return MetadataSupport.firstChildWithLocalName(envelope, "Body");
+		return XmlUtil.firstChildWithLocalName(envelope, "Body");
 	}
 
 	protected void parseInstruction(OMElement part) throws XdsInternalException {
@@ -326,16 +327,16 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 			String filename = part.getText();
 			if (filename == null || filename.equals("")) throw new XdsInternalException("ProvideAndRegisterTransaction: Document with id " + id + " has no filename specified");
 			document_id_filenames.put(id, testConfig.testplanDir + File.separator + filename);
-		} 
+		}
 		else if (part_name.equals("XDSb")) {
 			xds_version = BasicTransaction.xds_b;
-		} 
+		}
 		else if (part_name.equals("XDSa")) {
 			xds_version = BasicTransaction.xds_a;
-		} 
+		}
 		else if (part_name.equals("NoXOP")) {
 			this.use_xop = false;
-		} 
+		}
 		else {
 			parseBasicInstruction(part);
 		}

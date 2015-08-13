@@ -23,18 +23,18 @@ public class UniqueId {
 
 		for (String id : m.getFolderIds()) {
 			String uid = m.getExternalIdentifierValue(id, "urn:uuid:75df8f67-9973-4fbe-a900-df66cefecc5a");
-			if (unique_ids.contains(uid)) 
-				rel.add_error(MetadataSupport.XDSRegistryDuplicateUniqueIdInMessage, 
-						"UniqueId " + uid + " is not unique within the submission", 
+			if (unique_ids.contains(uid))
+				rel.add_error(MetadataSupport.XDSRegistryDuplicateUniqueIdInMessage,
+						"UniqueId " + uid + " is not unique within the submission",
 						"validation/UniqueId.java", "ITI TF-3: 4.1.4.1", null);
 			validate_format(uid);
 		}
 
 		for (String id : m.getSubmissionSetIds()) {
 			String uid = m.getExternalIdentifierValue(id, "urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8");
-			if (unique_ids.contains(uid)) 
-				rel.add_error(MetadataSupport.XDSRegistryDuplicateUniqueIdInMessage, 
-						"UniqueId " + uid + " is not unique within the submission", 
+			if (unique_ids.contains(uid))
+				rel.add_error(MetadataSupport.XDSRegistryDuplicateUniqueIdInMessage,
+						"UniqueId " + uid + " is not unique within the submission",
 						"validation/UniqueId.java", "ITI TF-3: 4.1.4.1", null);
 			validate_format(uid);
 		}
@@ -42,14 +42,14 @@ public class UniqueId {
 		for (String id : m.getExtrinsicObjectIds()) {
 			String uid = m.getExternalIdentifierValue(id, "urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab");
 			if (uid == null) {
-				rel.add_error(MetadataSupport.XDSRegistryError, 
-						"Document unique ID is null", 
+				rel.add_error(MetadataSupport.XDSRegistryError,
+						"Document unique ID is null",
 						"validation/UniqueId.java", "ITI TF-3: 4.1.4.1", null);
 				return;
 			}
-			if (unique_ids.contains(uid)) 
-				rel.add_error(MetadataSupport.XDSRegistryDuplicateUniqueIdInMessage, 
-						"UniqueId " + uid + " is not unique within the submission", 
+			if (unique_ids.contains(uid))
+				rel.add_error(MetadataSupport.XDSRegistryDuplicateUniqueIdInMessage,
+						"UniqueId " + uid + " is not unique within the submission",
 						"validation/UniqueId.java", "ITI TF-3: 4.1.4.1", null);
 			validate_format_for_documents(uid);
 		}

@@ -10,11 +10,10 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 /**
  * Validate metadata update request messages
@@ -43,8 +42,10 @@ public class UpdateRequestValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		if (xml == null) {
 			err("UpdateRequestValidator: top element null", "");
+            er.unRegisterValidator(this);
 			return;
 		}
 
@@ -61,10 +62,12 @@ public class UpdateRequestValidator extends MessageValidator {
 
 			if (m.getSubmissionSets().size() == 0) {
 				err("Cannot validate Update Request, no SubmissionSet present","ITI TF-2b: 3.57.4.1.3.1 Rule 1");
+                er.unRegisterValidator(this);
 				return;
 			}
 			else if (m.getSubmissionSets().size() > 1) {
 				err("Cannot validate Update Request, multiple SubmissionSets present","ITI TF-2b: 3.57.4.1.3.1 Rule 1");
+                er.unRegisterValidator(this);
 				return;
 			}
 			
@@ -85,6 +88,9 @@ public class UpdateRequestValidator extends MessageValidator {
 		} catch (Exception e) {
 			err(e);
 		}
+        finally {
+            er.unRegisterValidator(this);
+        }
 
 		er.finish();
 

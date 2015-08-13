@@ -7,6 +7,7 @@ import gov.nist.toolkit.registrysupport.logging.RegistryErrorLog;
 import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
@@ -24,7 +25,7 @@ import org.apache.axiom.om.OMElement;
 
 public class TestStepLogContent  implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2676088682465214583L;
 	String id;
@@ -68,7 +69,7 @@ public class TestStepLogContent  implements Serializable {
 			success = "Pass".equals(stat);
 		id = root.getAttributeValue(MetadataSupport.id_qname);
 
-		OMElement expectedStatusEle = MetadataSupport.firstChildWithLocalName(root, "ExpectedStatus");
+		OMElement expectedStatusEle = XmlUtil.firstChildWithLocalName(root, "ExpectedStatus");
 		if (expectedStatusEle == null)
 			expectedSuccess = true;
 		else {
@@ -104,7 +105,7 @@ public class TestStepLogContent  implements Serializable {
 	void parseGoals() {
 		goals = new StepGoals(id);
 
-		for (OMElement ele : MetadataSupport.childrenWithLocalName(root, "Goal")) {
+		for (OMElement ele : XmlUtil.childrenWithLocalName(root, "Goal")) {
 			goals.goals.add(ele.getText());
 		}
 
@@ -161,14 +162,14 @@ public class TestStepLogContent  implements Serializable {
 	}
 
 	void parseEndpoint() {
-		List<OMElement> endpoints = MetadataSupport.decendentsWithLocalName(root, "Endpoint");
+		List<OMElement> endpoints = XmlUtil.decendentsWithLocalName(root, "Endpoint");
 		if (endpoints.isEmpty())
 			return;
 		endpoint = endpoints.get(0).getText();
 	}
 
 	public List<String> getAssertionErrors() {
-		List<OMElement> errorEles = MetadataSupport.decendentsWithLocalName(root, "Error");
+		List<OMElement> errorEles = XmlUtil.decendentsWithLocalName(root, "Error");
 		List<String> errors = new ArrayList<String>();
 
 		for (OMElement errorEle : errorEles ){
@@ -200,19 +201,19 @@ public class TestStepLogContent  implements Serializable {
 	public List<String> getSoapFaults() {
 		List<String> errs = new ArrayList<String>();
 
-		for (OMElement errEle : MetadataSupport.childrenWithLocalName(root, "SOAPFault")) {
+		for (OMElement errEle : XmlUtil.childrenWithLocalName(root, "SOAPFault")) {
 			String err = errEle.getText();
 			errs.add(id + ": " + err);
 		}
 
 		return errs;
 	}
-	
+
 	private void parseDetails() {
 		details = new ArrayList<String>();
-		
+
 		//for (OMElement ele : MetadataSupport.childrenWithLocalName(root, "Detail")) {
-		for (OMElement ele : MetadataSupport.decendentsWithLocalName(root, "Detail")) {
+		for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "Detail")) {
 			String detail = ele.getText();
 			details.add(detail);
 		}
@@ -222,19 +223,19 @@ public class TestStepLogContent  implements Serializable {
 
 	private void parseReports() {
 		reports = new ArrayList<String>();
-		
-		for (OMElement ele : MetadataSupport.decendentsWithLocalName(root, "Report")) {
+
+		for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "Report")) {
 			String name = ele.getAttributeValue(nameQname);
 			String value = ele.getText();
 			reports.add(name + " = " + value);
 		}
-		
+
 	}
-	
+
 	public List<String> getReports() {
 		return reports;
 	}
-	
+
 	public List<String> getDetails() {
 		return details;
 	}
@@ -251,16 +252,16 @@ public class TestStepLogContent  implements Serializable {
 	}
 
 	public OMElement getRawInputMetadata() {
-		return MetadataSupport.firstDecendentWithLocalName(root, "InputMetadata").getFirstElement();
+		return XmlUtil.firstDecendentWithLocalName(root, "InputMetadata").getFirstElement();
 	}
-	
+
 	public Metadata getParsedInputMetadata() throws MetadataValidationException, MetadataException {
 		return MetadataParser.parseNonSubmission(getRawInputMetadata());
 	}
 
 	public OMElement getRawReports() {
 		try {
-			return MetadataSupport.firstDecendentWithLocalName(root, "Reports");
+			return XmlUtil.firstDecendentWithLocalName(root, "Reports");
 		} catch (Exception e) {
 			return null;
 		}
@@ -273,9 +274,9 @@ public class TestStepLogContent  implements Serializable {
 	void parseResult() {
 		try {
 			//			result =  xmlFormat(MetadataSupport.firstDecendentWithLocalName(root, "Result").getFirstElement());
-			OMElement copy = Util.deep_copy(MetadataSupport.firstDecendentWithLocalName(root, "Result").getFirstElement());
+			OMElement copy = Util.deep_copy(XmlUtil.firstDecendentWithLocalName(root, "Result").getFirstElement());
 			//OMElement resultEle = MetadataSupport.firstDecendentWithLocalName(root, "Result").getFirstElement();
-			for (OMElement ele : MetadataSupport.decendentsWithLocalName(copy, "Document", 4)) {
+			for (OMElement ele : XmlUtil.decendentsWithLocalName(copy, "Document", 4)) {
 				String original = ele.getText();
 				int size = (original == null || original.equals("")) ? 0 : original.length();
 				ele.setText("Base64 contents removed by XDS Toolkit prior to display (" + size + " characters)");
@@ -291,7 +292,7 @@ public class TestStepLogContent  implements Serializable {
 
 	void parseInHeader() {
 		try {
-			inHeader = xmlFormat(MetadataSupport.firstDecendentWithLocalName(root, "InHeader").getFirstElement());
+			inHeader = xmlFormat(XmlUtil.firstDecendentWithLocalName(root, "InHeader").getFirstElement());
 		} catch (Exception e) {
 		}
 	}
@@ -302,7 +303,7 @@ public class TestStepLogContent  implements Serializable {
 
 	void parseOutHeader() {
 		try {
-			outHeader = xmlFormat(MetadataSupport.firstDecendentWithLocalName(root, "OutHeader").getFirstElement());
+			outHeader = xmlFormat(XmlUtil.firstDecendentWithLocalName(root, "OutHeader").getFirstElement());
 		} catch (Exception e) {
 		}
 	}

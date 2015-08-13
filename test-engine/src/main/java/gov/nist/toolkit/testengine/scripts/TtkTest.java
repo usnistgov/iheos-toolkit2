@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.scripts;
 
 import static org.junit.Assert.assertTrue;
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.testengine.XdsTest;
+import gov.nist.toolkit.testengine.engine.XdsTest;
 
 import java.io.File;
 

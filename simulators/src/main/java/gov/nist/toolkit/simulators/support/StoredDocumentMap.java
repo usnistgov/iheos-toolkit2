@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.testengine.RetInfo;
+import gov.nist.toolkit.testengine.engine.RetInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,36 +1,30 @@
 package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingCompletionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XDSMissingDocumentException;
-import gov.nist.toolkit.xdsexception.XDSRepositoryMetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.xdsexception.*;
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.log4j.Logger;
 
+import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMAttribute;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.log4j.Logger;
 
 public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public final static short version_2 = 2;
@@ -53,30 +47,30 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 
 	public void setIsXCA() { isXCA = true; }
-	
+
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 	}
-	
+
 	public String toString() {
 		if (rel == null) return "Null";
 		return getRegistryErrorList().toString();
 	}
-	
+
 	public RegistryErrorListGenerator() throws XdsInternalException {
 		init(version_3, false);
 	}
-	
+
 	public RegistryErrorListGenerator(GwtErrorRecorder er) throws XdsInternalException {
 		init(version_3, false);
-		
+
 		if (!er.hasErrors())
 			return;
-		
+
 		for (ValidatorErrorItem vei : er.getValidatorErrorInfo()) {
 			if (vei.completion == ReportingCompletionType.ERROR) {
 				addError(vei.msg, vei.getCodeString(), vei.location);
-			} 
+			}
 		}
 
 	}
@@ -97,7 +91,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 		}
 		this.version = version;
 		if (version == version_2) {
-			ebRSns =  MetadataSupport.ebRSns2;  
+			ebRSns =  MetadataSupport.ebRSns2;
 			ebRIMns = MetadataSupport.ebRIMns2;
 			ebQns = MetadataSupport.ebQns2;
 		} else {
@@ -135,10 +129,10 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 //			setHomeAsLocation();
 		return rel;
 	}
-	
+
 	public void setLocationPrefix(String prefix) {
 		OMElement ele = registryErrorList();
-		for (OMElement e : MetadataSupport.decendentsWithLocalName(ele, "RegistryError")) {
+		for (OMElement e : XmlUtil.decendentsWithLocalName(ele, "RegistryError")) {
 			OMAttribute at = e.getAttribute(MetadataSupport.location_qname);
 			if (at == null) {
 				at = MetadataSupport.om_factory.createOMAttribute("location", null, "");
@@ -147,7 +141,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 			at.setAttributeValue(prefix + at.getAttributeValue());
 		}
 	}
-	
+
 	static final QName codeContextQName = new QName("codeContext");
 
 	public String getErrorsAndWarnings() {
@@ -249,9 +243,9 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 		return err;
 	}
-	
+
 	public void addRegistryErrorsFromResponse(OMElement registryResponse) throws XdsInternalException {
-		OMElement rel = MetadataSupport.firstChildWithLocalName(registryResponse, "RegistryErrorList");
+		OMElement rel = XmlUtil.firstChildWithLocalName(registryResponse, "RegistryErrorList");
 		if (rel != null)
 			addRegistryErrorList(rel, null);
 	}
@@ -259,11 +253,11 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public void addRegistryErrorList(OMElement rel, LogMessage log_message) throws XdsInternalException {
 		addRegistryErrorList(rel, new ArrayList<String>(), log_message);
 	}
-	
+
 	public void addRegistryErrorList(OMElement rel, List<String> errorCodesToFilter, LogMessage log_message) throws XdsInternalException {
 		for (Iterator it=rel.getChildElements(); it.hasNext(); ) {
 			OMElement registry_error = (OMElement) it.next();
-			
+
 			String code = registry_error.getAttributeValue(MetadataSupport.error_code_qname);
 			if (errorCodesToFilter.contains(code))
 				continue;
@@ -287,7 +281,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 			registryErrorList().addChild(registry_error_2);
 			String severity = registry_error.getAttributeValue(MetadataSupport.severity_qname);
 			severity = new Metadata().stripNamespace(severity);
-			if (severity.equals("Error")) 
+			if (severity.equals("Error"))
 				has_errors = true;
 			else
 				has_warnings = true;
@@ -312,7 +306,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 		error.addAttribute("errorCode", code, null);
 		error.addAttribute("location", location, null);
 		String severity;
-		if (version == version_3) 
+		if (version == version_3)
 			severity = MetadataSupport.error_severity_type_namespace + "Error";
 		else
 			severity = "Error";
@@ -384,15 +378,15 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public void err(String msg, String resource) {
 		addError(msg);
 	}
-	
+
 	public void err(XDSMissingDocumentException e) {
 		this.add_error("XDSMissingDocument", e.getMessage(), e, null);
 	}
-	
+
 	public void err(XDSRepositoryMetadataException e) {
 		this.add_error("XDSRepositoryMetadataError", e.getMessage(), e, null);
 	}
-	
+
 	public void err(Exception e) {
 		addError(ExceptionUtil.exception_details(e));
 	}
@@ -411,12 +405,17 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	public void detail(String msg) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void report(String name, String found) {
+
 	}
 
 	public void externalChallenge(String msg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void err(String code, String msg, String location, String resource,
@@ -427,18 +426,18 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public void err(Code code, String msg, String location, String resource,
 			Object log_message) {
 		add_error(code, msg, location, resource, (LogMessage) log_message);
-		
+
 	}
 
 	public void err(Code code, String msg, String resource) {
 		add_error(code, msg, "", resource, null);
-		
+
 	}
 
 	public void err(Code code, Exception e) {
 		add_error(code, ExceptionUtil.exception_details(e), null, null, null);
 
-		
+
 	}
 
 	public void err(Code code, String msg, String location, String resource) {
@@ -473,13 +472,13 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public void warning(String code, String msg, String location,
 			String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void warning(Code code, String msg, String location, String resource) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -501,7 +500,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	@Override
 	public void concat(ErrorRecorder er) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -529,33 +528,48 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	}
 
 	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
+	}
+
+	@Override
 	public void success(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void error(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
+
 	}
 
 	@Override
 	public void warning(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void info(String dts, String name, String found, String expected, String RFC) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void summary(String msg, boolean success, boolean part) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

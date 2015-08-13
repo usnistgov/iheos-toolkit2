@@ -50,12 +50,13 @@ public class Installation {
 		return warHome; 
 		}
 	public void warHome(File warHome) { 
-		this.warHome = warHome; 
+		logger.info("V2 - Installation - war home set to " + warHome);
+		this.warHome = warHome;
 		}
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) { 
 		this.externalCache = externalCache;
-        logger.info("In Installation: External Cache set to " + externalCache);
+        logger.info("V2 Installation: External Cache set to " + externalCache);
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
@@ -65,10 +66,6 @@ public class Installation {
 
 	}
 
-	public File getDefaultEnvironmentFile() {
-		return new File(toolkitxFile(), "environment");
-	}
-	
 	public File getTkPropsFile() {
 		return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
 	}
@@ -102,7 +99,12 @@ public class Installation {
 	public File environmentFile() {
 		return new File(externalCache + sep + "environment");
 	}
-	
+
+	// Default codes.xml to use if no environments are configured
+	public File internalEnvironmentFile(String envName) {
+		return new File(new File(toolkitxFile(), "environment"), envName);
+	}
+
 	public File directSendLogFile(String userName) {
 		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
 	}

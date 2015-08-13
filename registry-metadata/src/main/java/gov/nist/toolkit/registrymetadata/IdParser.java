@@ -85,14 +85,14 @@ public class IdParser {
 			parse(obj, scanIds);
 		}
 	}
-	
+
 	QName[] referencingAttributeNames =
 	{
 			MetadataSupport.classified_object_qname,
 			MetadataSupport.source_object_qname,
 			MetadataSupport.target_object_qname,
 			MetadataSupport.registry_object_qname
-			
+
 	};
 
 	/**
@@ -105,7 +105,7 @@ public class IdParser {
 			if (idAtt != null)
 				identifyingAttributes.add(idAtt);
 		}
-		
+
 		for (QName attname : referencingAttributeNames) {
 			OMAttribute a = obj.getAttribute(attname);
 			if (a == null)
@@ -114,7 +114,7 @@ public class IdParser {
 			if (a.getAttributeValue().startsWith("urn:uuid:"))
 				continue;
 			referencingAttributes.add(a);
-			
+
 		}
 
 		for (Iterator it1=obj.getChildElements(); it1.hasNext(); ) {
@@ -122,10 +122,10 @@ public class IdParser {
 			parse(objI, scanIds);
 		}
 	}
-		
-	
+
+
 	List<String> submittedUUIDs;
-	
+
 	public List<String> getSubmittedUUIDs() {
 		return submittedUUIDs;
 	}

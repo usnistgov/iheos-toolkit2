@@ -4,18 +4,18 @@ import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.LogMap;
-import gov.nist.toolkit.testengine.LogMapItem;
-import gov.nist.toolkit.testengine.TransactionSettings;
-import gov.nist.toolkit.testengine.Xdstest2;
+import gov.nist.toolkit.testengine.engine.LogMap;
+import gov.nist.toolkit.testengine.engine.LogMapItem;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
+import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
 
@@ -48,7 +48,7 @@ public class DashboardDaemon {
 	public File getDashboardDirectory() {
 		return new File(output);
 	}
-	
+
 	public Session getSession() {
 		return s;
 	}
@@ -154,7 +154,7 @@ public class DashboardDaemon {
 			ts.assignPatientId = false;
 			ts.siteSpec = new SiteSpec();
 			ts.siteSpec.isAsync = false;
-			ts.securityParams = s; 
+			ts.securityParams = s;
 			try {
 				xdstest.run(parms, null, true, ts);
 			} catch (Exception e1) {
@@ -187,7 +187,7 @@ public class DashboardDaemon {
 
 			try {
 				OMElement ele = tsl.getRawResult();
-				List<OMElement> objrefs = MetadataSupport.decendentsWithLocalName(ele, "ObjectRef");
+				List<OMElement> objrefs = XmlUtil.decendentsWithLocalName(ele, "ObjectRef");
 				Metadata m = new Metadata();
 				for (OMElement objref : objrefs) {
 					String id = m.getId(objref);
@@ -250,7 +250,7 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			
+
 			System.out.println("PnR endpoint: " + rstatus.endpoint);
 
 			Xdstest2 xdstest;
@@ -280,7 +280,7 @@ public class DashboardDaemon {
 			ts.siteSpec = new SiteSpec();
 			ts.assignPatientId = false;
 			ts.siteSpec.isAsync = false;
-			ts.securityParams = s; 
+			ts.securityParams = s;
 			try {
 				xdstest.run(parms, null, true, ts);
 			} catch (Exception e1) {
@@ -323,7 +323,7 @@ public class DashboardDaemon {
 
 			rstatus.status = logFile.isSuccess();
 			rstatus.fatalError = logFile.getFatalError();
-			
+
 			System.out.println("Fatal error is " + rstatus.fatalError);
 
 			try {
@@ -363,7 +363,7 @@ public class DashboardDaemon {
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
 
-		try{ 
+		try{
 			fos = new FileOutputStream(filename);
 			out = new ObjectOutputStream(fos);
 			out.writeObject(regStat);

@@ -4,14 +4,14 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorList;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
+import org.apache.axiom.om.OMElement;
 
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 /**
  * Validate a RegistryResponse message.
@@ -21,7 +21,7 @@ import org.apache.axiom.om.OMElement;
 public class RegistryResponseValidator extends MessageValidator {
 	OMElement xml;
 
-	static List<String> statusValues = 
+	static List<String> statusValues =
 		Arrays.asList(
 				MetadataSupport.response_status_type_namespace + "Success",
 				MetadataSupport.ihe_response_status_type_namespace + "PartialSuccess",
@@ -35,15 +35,18 @@ public class RegistryResponseValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
-		
+		er.registerValidator(this);
+
 		if (xml == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "RegistryResponseValidator: no RegistryResponse found", this, "");
+            er.unRegisterValidator(this);
 			return;
 		}
 
 		String longStatus = xml.getAttributeValue(MetadataSupport.status_qname);
 		if (longStatus == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "RegistryResponseValidator: required attribute status is missing", this, "ebRS 3.0 Schema");
+            er.unRegisterValidator(this);
 			return;
 		}
 
@@ -55,10 +58,10 @@ public class RegistryResponseValidator extends MessageValidator {
 		boolean isPartialSuccess = longStatus.endsWith(":PartialSuccess");
 		boolean isSuccess = longStatus.endsWith(":Success");
 
-		RegistryErrorList rel = new RegistryErrorList(MetadataSupport.firstChildWithLocalName(xml, "RegistryErrorList"));
+		RegistryErrorList rel = new RegistryErrorList(XmlUtil.firstChildWithLocalName(xml, "RegistryErrorList"));
 		rel.validate(er, vc);
 
-		boolean hasErrors = rel.hasError();		
+		boolean hasErrors = rel.hasError();
 
 		if (isPartialSuccess && !isPartialSuccessPermitted())
 			er.err(XdsErrorCode.Code.XDSRegistryError, "Status is PartialSuccess but this status not allowed on this transaction", this, "ITI TF-3: 4.1.13");
@@ -70,7 +73,7 @@ public class RegistryResponseValidator extends MessageValidator {
 		if (!isSuccess && !hasErrors)
 			er.err(XdsErrorCode.Code.XDSRegistryError, "Status attribute is " + longStatus + " but no errors are present", this, "ebRS 3.0 Section 2.1.3.2");
 
-
+        er.unRegisterValidator(this);
 	}
 
 	boolean isPartialSuccessPermitted() {

@@ -5,8 +5,8 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.TransactionSettings;
-import gov.nist.toolkit.testengine.Xdstest2;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
+import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 

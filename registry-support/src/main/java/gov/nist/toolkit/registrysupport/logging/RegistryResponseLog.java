@@ -6,6 +6,7 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
 
 public class RegistryResponseLog {
@@ -19,7 +20,7 @@ public class RegistryResponseLog {
 			throw new Exception("null response");
 
 		if (resp.getLocalName().equals("RetrieveDocumentSetResponse"))
-			resp = MetadataSupport.firstChildWithLocalName(resp, "RegistryResponse");
+			resp = XmlUtil.firstChildWithLocalName(resp, "RegistryResponse");
 
 		String status = lastPart(resp.getAttributeValue(MetadataSupport.status_qname), ":");
 		if ("Success".equals(status))
@@ -32,10 +33,10 @@ public class RegistryResponseLog {
 
 		errors = new ArrayList<RegistryErrorLog>();
 
-		OMElement regErrList = MetadataSupport.firstChildWithLocalName(resp, "RegistryErrorList");
+		OMElement regErrList = XmlUtil.firstChildWithLocalName(resp, "RegistryErrorList");
 		if (regErrList == null)
 			return;
-		List<OMElement> errEles = MetadataSupport.childrenWithLocalName(regErrList, "RegistryError");
+		List<OMElement> errEles = XmlUtil.childrenWithLocalName(regErrList, "RegistryError");
 		for (OMElement errEle : errEles) {
 			errors.add(new RegistryErrorLog(errEle));
 		}
@@ -52,7 +53,7 @@ public class RegistryResponseLog {
 	}
 
 	public RegistryErrorLog getError(int i) throws Exception {
-		if (i < 0 || i >= errors.size()) 
+		if (i < 0 || i >= errors.size())
 			throw new Exception("RegistryResponseLog#getError: step index " + i + " does not exist");
 		return errors.get(i);
 	}

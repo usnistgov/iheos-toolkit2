@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.axiom.om.OMElement;
 
 public class FolderValidator extends ValidatorCommon {
-	List<String> fol_slots = 
+	List<String> fol_slots =
 		Arrays.asList(
 				"lastUpdateTime"
 		);
@@ -83,7 +83,7 @@ public class FolderValidator extends ValidatorCommon {
 			}
 		}
 	}
-	
+
 	boolean legal_fol_slot_name(String name) {
 		if (name == null) return false;
 		if (name.startsWith("urn:")) return true;

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
 
 abstract public class TestkitWalker {
@@ -30,7 +31,7 @@ abstract public class TestkitWalker {
 	// test plan may be inside test or part but not both
 	abstract public void startTestPlan(File testplan) throws Exception;
 	abstract public void endTestPlan(File testplan) throws Exception;
-	
+
 	abstract public void startServer(File test) throws Exception;
 	abstract public void endServer(File test) throws Exception;
 
@@ -49,15 +50,15 @@ abstract public class TestkitWalker {
 	public void setTestkit(File testkit) {
 		this.testkit = testkit;
 	}
-	
+
 	protected String getCurrentArea() {
 		return area;
 	}
-	
+
 	protected void setAreas(String[] areas) {
 		this.areas = areas;
 	}
-	
+
 	public void walkTree(File testkit) throws FactoryConfigurationError, Exception {
 		testkitPathName = testkit.toString();
 		testkitPathNameSize = testkitPathName.split("\\/").length;
@@ -65,18 +66,18 @@ abstract public class TestkitWalker {
 
 
 		System.out.println("Scanning testkit at " + testkit);
- 
+
 		setTestkit(testkit);
 
 		begin();
-		
+
 		if ( !new File(testkit + File.separator + "tests").exists())
 			throw new Exception("Testkit " + testkit + " is not really the testkit");
 
 		for (String area : areas) {
 			this.area = area;
 			System.out.println("Scanning " + area);
-						
+
 			File areaDir = new File(testkit.toString() + File.separator + area);
 			if (debug)
 				System.out.println("Area: " + areaDir);
@@ -97,7 +98,7 @@ abstract public class TestkitWalker {
 					startServer(test);
 					endServer(test);
 				}
-				
+
 				startTest(test);
 
 				for (File part : test.listFiles()) {
@@ -150,7 +151,7 @@ abstract public class TestkitWalker {
 	void walkTestPlan(File testPlanFile) throws FactoryConfigurationError, Exception {
 		OMElement testplanEle = Util.parse_xml(testPlanFile);
 
-		List<OMElement> steps = MetadataSupport.childrenWithLocalName(testplanEle, "TestStep");
+		List<OMElement> steps = XmlUtil.childrenWithLocalName(testplanEle, "TestStep");
 
 		for(int i=0; i<steps.size(); i++) {
 			OMElement stepEle = steps.get(i);

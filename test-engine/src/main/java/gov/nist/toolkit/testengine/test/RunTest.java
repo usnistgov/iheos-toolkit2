@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.test;
 
-import gov.nist.toolkit.testengine.XdsTest;
+import gov.nist.toolkit.testengine.engine.XdsTest;
 import gov.nist.toolkit.testkitutilities.TestEnvConfig;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsParameterException;
