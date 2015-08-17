@@ -1,37 +1,14 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.testengine.transactions.BasicTransaction;
-import gov.nist.toolkit.testengine.transactions.DsubPublishTransaction;
-import gov.nist.toolkit.testengine.transactions.DsubSubscribeTransaction;
-import gov.nist.toolkit.testengine.transactions.EchoV2Transaction;
-import gov.nist.toolkit.testengine.transactions.EchoV3Transaction;
-import gov.nist.toolkit.testengine.transactions.EpsosTransaction;
-import gov.nist.toolkit.testengine.transactions.GenericSoap11Transaction;
-import gov.nist.toolkit.testengine.transactions.IGQTransaction;
-import gov.nist.toolkit.testengine.transactions.MPQTransaction;
-import gov.nist.toolkit.testengine.transactions.MockTransaction;
-import gov.nist.toolkit.testengine.transactions.MuTransaction;
-import gov.nist.toolkit.testengine.transactions.NullTransaction;
-import gov.nist.toolkit.testengine.transactions.ProvideAndRegisterTransaction;
-import gov.nist.toolkit.testengine.transactions.RegisterTransaction;
-import gov.nist.toolkit.testengine.transactions.RetrieveTransaction;
-import gov.nist.toolkit.testengine.transactions.SimpleTransaction;
-import gov.nist.toolkit.testengine.transactions.SocketTransaction;
-import gov.nist.toolkit.testengine.transactions.SqlQueryTransaction;
-import gov.nist.toolkit.testengine.transactions.StoredQueryTransaction;
-import gov.nist.toolkit.testengine.transactions.XCQTransaction;
-import gov.nist.toolkit.testengine.transactions.XDRProvideAndRegisterTransaction;
-import gov.nist.toolkit.testengine.transactions.XcpdTransaction;
+import gov.nist.toolkit.testengine.transactions.*;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.FileNotFoundException;
-import java.util.Iterator;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
+
+import javax.xml.namespace.QName;
+import java.io.FileNotFoundException;
+import java.util.Iterator;
 
 public class StepContext extends BasicContext implements ErrorReportingInterface {
 	OMElement output = null;
@@ -350,6 +327,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				transaction.setPlanContext(plan_context);
 				transaction.setTestConfig(testConfig);
 				transaction.setTransactionSettings(transactionSettings);
+				transactionSettings.transactionTransport.attach(transaction);
 				transaction.doRun();				
 				
 				if (transaction != null && getStatus() /*== false*/) {

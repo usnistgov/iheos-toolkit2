@@ -1,8 +1,11 @@
 package gov.nist.toolkit.xdstools2.server.api
+
+import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.SimManager
 import gov.nist.toolkit.actorfactory.client.Simulator
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.testengine.transactions.CallType
 import spock.lang.Specification
 /**
  *
@@ -47,7 +50,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
 
-        boolean status = client.runTest('11990', site, tls, parms, false)
+        boolean status = client.runTest('11990', site, tls, parms, false, CallType.SOAP)
 
         then:
         status
@@ -67,7 +70,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
 
-        boolean status = client.runTest('11966', site, tls, parms, false)
+        boolean status = client.runTest('11966', site, tls, parms, false, CallType.SOAP)
 
         then:
         status
@@ -87,7 +90,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
 
-        boolean status = client.runTest('12029', site, tls, parms, true)
+        boolean status = client.runTest('12029', site, tls, parms, true, CallType.SOAP)
 
         then:
         status
@@ -143,7 +146,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
 
-        boolean status = client.runTestCollection('R.b', site, tls, parms, true)
+        boolean status = client.runTestCollection('R.b', site, tls, parms, true, CallType.SOAP)
 
         then:
         status
@@ -165,7 +168,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
 
-        boolean status = client.runTestCollection('A', site, tls, parms, false)
+        boolean status = client.runTestCollection('A', site, tls, parms, false, CallType.SOAP)
 
         then:
         !status
@@ -186,7 +189,7 @@ class ClientApiIT extends Specification {
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
 
-        boolean status = client.runTest('11996', site, tls, parms, false)
+        boolean status = client.runTest('11996', site, tls, parms, false, CallType.SOAP)
 
         then:
         !status
@@ -211,13 +214,13 @@ class ClientApiIT extends Specification {
         true
 
         when: 'Test data part 1'
-        boolean status = client.runTest('12346', site, tls, parms, true)
+        boolean status = client.runTest('12346', site, tls, parms, true, CallType.SOAP)
 
         then:
         status
 
         when: 'Test data part 2'
-        status = client.runTest('12374', site, tls, parms, true)
+        status = client.runTest('12374', site, tls, parms, true, CallType.SOAP)
 
         then:
         status
@@ -236,7 +239,46 @@ class ClientApiIT extends Specification {
         when: 'Run SQ tests'
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
-        boolean status = client.runTestCollection('SQ.b', site, tls, parms, true)
+        boolean status = client.runTestCollection('SQ.b', site, tls, parms, true, CallType.SOAP)
+
+        then:
+        status
+    }
+
+    def 'Run GetAll tests'() {
+        setup:
+        Simulator sim = simApi.create('reg', regSimId)
+
+        when: 'Create site for simulator'
+        Site site = SimManager.getSite(sim.configs.get(0))
+
+        then: 'site exists'
+        site
+
+        when: 'Run SQ tests'
+        Map<String, String> parms  = new HashMap<String, String>();
+//        parms.put('$patientid$', pid);
+        boolean status = client.runTest('15803', site, tls, parms, true, CallType.SOAP)
+
+        then:
+        status
+    }
+
+    def 'Run GetAll tests local'() {
+        setup:
+        Simulator sim = simApi.create('reg', regSimId)
+        SimDb db = new SimDb(new File("/Users/bill/tmp/toolkit2/simdb"), regSimId, "Registry", "Register")
+
+        when: 'Create site for simulator'
+        Site site = SimManager.getSite(sim.configs.get(0))
+
+        then: 'site exists'
+        site
+
+        when: 'Run SQ tests'
+        Map<String, String> parms  = new HashMap<String, String>();
+//        parms.put('$patientid$', pid);
+        boolean status = client.runTest('15803', site, tls, parms, true, CallType.SOAP)
 
         then:
         status

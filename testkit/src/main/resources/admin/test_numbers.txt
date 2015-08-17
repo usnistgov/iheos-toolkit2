@@ -111,6 +111,10 @@ Added step homeCommunityId to test 11901
 
 15802 - MU Update DocumentEntry Status
 
+Summer 2015 development
+
+15803 - GetAll Stored Query
+
 
 
 

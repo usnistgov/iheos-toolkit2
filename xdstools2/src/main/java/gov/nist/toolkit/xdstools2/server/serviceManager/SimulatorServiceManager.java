@@ -1,14 +1,11 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.SimulatorFactory;
+import gov.nist.toolkit.actorfactory.*;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.xdstools2.server.api.SimulatorApi;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
@@ -18,23 +15,22 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
-import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.simulators.servlet.ServletSimulator;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * Each new request should go to a new instance.  All persistence
@@ -244,21 +240,22 @@ public class SimulatorServiceManager extends CommonServiceManager {
 
 	public Simulator getNewSimulator(String actorTypeName, String simID) throws Exception  {
 		logger.debug(session.id() + ": " + "getNewSimulator(type=" + actorTypeName + ")");
-		try {
-			SimCache simCache = new SimCache();
-			SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
-			
-			Simulator scl = new SimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
-			simMgr.addSimConfigs(scl);
-			logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + scl.getIds());
-			return scl;
-		} catch (EnvironmentNotSelectedException e) {
-			logger.error("Environment Not Selected");
-			throw new Exception("Environment Not Selected", e);
-		} catch (Exception e) {
-			logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
-			throw new Exception(e.getClass().getName() + ": " + e.getMessage());
-		}
+		return new SimulatorApi(session).create(actorTypeName, simID);
+//		try {
+//			SimCache simCache = new SimCache();
+//			SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
+//
+//			Simulator scl = new SimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
+//			simMgr.addSimConfigs(scl);
+//			logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + scl.getIds());
+//			return scl;
+//		} catch (EnvironmentNotSelectedException e) {
+//			logger.error("Environment Not Selected");
+//			throw new Exception("Environment Not Selected", e);
+//		} catch (Exception e) {
+//			logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
+//			throw new Exception(e.getClass().getName() + ": " + e.getMessage());
+//		}
 	}
 
 	/**
@@ -336,13 +333,15 @@ public class SimulatorServiceManager extends CommonServiceManager {
 
 	public String deleteConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "deleteConfig " + config.getId());
-		try {
-			new SimCache().deleteSimConfig(config.getId());
-		} catch (IOException e) {
-			logger.error("deleteConfig", e);
-			throw new Exception(e.getMessage());
-		}
+		new SimulatorApi(session).delete(config.getId());
 		return "";
+//		try {
+//			new SimCache().deleteSimConfig(config.getId());
+//		} catch (IOException e) {
+//			logger.error("deleteConfig", e);
+//			throw new Exception(e.getMessage());
+//		}
+//		return "";
 	}
 
 	/**

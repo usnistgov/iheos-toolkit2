@@ -9,20 +9,16 @@ import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XDSRegistryOutOfResourcesException;
 import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
 import org.apache.axiom.om.OMElement;
 
 public class SQFactory extends StoredQueryFactory {
 	RegIndex ri;
 	
 	public SQFactory(OMElement ahqr, Response response, LogMessage log_message)
-			throws XdsInternalException, MetadataException, XdsException,
-			LoggerException {
+			throws  XdsException {
 		super(ahqr, response, log_message);
 	}
 	
@@ -44,8 +40,6 @@ public class SQFactory extends StoredQueryFactory {
 			sim.setRegIndex(ri);
 			storedQueryImpl = sim;
 		}
-		
-		
 		else if (query_id.equals(MetadataSupport.SQ_FindSubmissionSets)) {
 			setTestMessage("FindSubmissionSets");
 			FindSubmissionSetsSim sim = new FindSubmissionSetsSim(sqs);
@@ -60,7 +54,9 @@ public class SQFactory extends StoredQueryFactory {
 		}
 		else if (query_id.equals(MetadataSupport.SQ_GetAll)) {
 			setTestMessage("GetAll");
-			response.add_error("XDSRegistryError", "UnImplemented Stored Query query id = " + query_id, "AdhocQueryRequest.java", null, log_message);
+			GetAllSim sim = new GetAllSim(sqs);
+			sim.setRegIndex(ri);
+			storedQueryImpl = sim;
 		}
 		else if (query_id.equals(MetadataSupport.SQ_GetFolders)) {
 			setTestMessage("GetFolders");
@@ -137,84 +133,81 @@ public class SQFactory extends StoredQueryFactory {
 	// these are not used - yet
 	@Override
 	public Metadata FindDocuments(StoredQuerySupport sqs) throws XdsException,
-			LoggerException, XDSRegistryOutOfResourcesException {
+			 XDSRegistryOutOfResourcesException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Metadata FindFolders(StoredQuerySupport sqs) throws XdsException,
-			LoggerException {
+	public Metadata FindFolders(StoredQuerySupport sqs) throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata FindSubmissionSets(StoredQuerySupport sqs)
-			throws XdsException, LoggerException {
+			throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetAssociations(StoredQuerySupport sqs)
-			throws XdsException, LoggerException {
+			throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Metadata GetDocuments(StoredQuerySupport sqs) throws XdsException,
-			LoggerException {
+	public Metadata GetDocuments(StoredQuerySupport sqs) throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetDocumentsAndAssociations(StoredQuerySupport sqs)
-			throws XdsException, LoggerException {
+			throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetFolderAndContents(StoredQuerySupport sqs)
-			throws XdsException, LoggerException {
+			throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Metadata GetFolders(StoredQuerySupport sqs) throws XdsException,
-			LoggerException {
+	public Metadata GetFolders(StoredQuerySupport sqs) throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetFoldersForDocument(StoredQuerySupport sqs)
-			throws XdsException, LoggerException {
+			throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetRelatedDocuments(StoredQuerySupport sqs)
-			throws XdsException, LoggerException {
+			throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetSubmissionSetAndContents(StoredQuerySupport sqs)
-			throws XdsException, LoggerException {
+			throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetSubmissionSets(StoredQuerySupport sqs)
-			throws XdsException, LoggerException {
+			throws XdsException {
 		// TODO Auto-generated method stub
 		return null;
 	}

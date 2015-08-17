@@ -30,7 +30,7 @@ abstract public class FindDocuments extends StoredQuery {
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
-	abstract protected Metadata runImplementation() throws MetadataException, XdsException, LoggerException;
+	abstract protected Metadata runImplementation() throws XdsException;
 
 	/**
 	 * Basic constructor
@@ -48,7 +48,7 @@ abstract public class FindDocuments extends StoredQuery {
 	 * @throws LoggerException
 	 * @throws XDSRegistryOutOfResourcesException
 	 */
-	public Metadata runSpecific() throws XdsInternalException, XdsException, LoggerException, XDSRegistryOutOfResourcesException {
+	public Metadata runSpecific() throws XdsException, XDSRegistryOutOfResourcesException {
 
 		validateParameters();
 
@@ -104,8 +104,6 @@ abstract public class FindDocuments extends StoredQuery {
 
 	}
 
-
-
 	protected String    patient_id;
 	protected String    creation_time_from;
 	protected String    creation_time_to;
@@ -151,7 +149,7 @@ abstract public class FindDocuments extends StoredQuery {
 		return buf.toString();
 	}
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	void parseParameters() throws XdsException {
 
 		patient_id                        = sqs.params.getStringParm   ("$XDSDocumentEntryPatientId");
 		class_codes                       = sqs.params.getCodedParm("$XDSDocumentEntryClassCode");
@@ -175,7 +173,7 @@ abstract public class FindDocuments extends StoredQuery {
 
 		ArrayList<String> new_status = new ArrayList<String>();
 		for (int i=0; i<status.size(); i++) {
-			String stat = (String) status.get(i);
+			String stat = status.get(i);
 
 			if ( ! stat.startsWith(status_ns_prefix))
 				throw new MetadataValidationException("Status parameter must have namespace prefix " + status_ns_prefix + " found " + stat, EbRim.RegistryObject_attributes);

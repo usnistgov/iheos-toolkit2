@@ -8,6 +8,8 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
+import gov.nist.toolkit.testengine.transactions.CallType;
+import gov.nist.toolkit.testengine.transactions.TransactionTransportFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
@@ -34,12 +36,13 @@ public class ClientApi implements SecurityParams {
 
     public Session getSession() { return session; }
 
-    public boolean runTest(String testname, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError) throws Exception {
+    public boolean runTest(String testname, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError, CallType callType) throws Exception {
         Xdstest2 engine = new Xdstest2(Installation.installation().toolkitxFile(), this);
         engine.setTestkitLocation(testkitFile);
         engine.addTest(testname);
         engine.setSite(site);
         TransactionSettings ts = new TransactionSettings();
+        ts.transactionTransport = TransactionTransportFactory.get(callType);
         ts.writeLogs = true;
         ts.patientId = parms.get("$patientid$");
         ts.securityParams = this;
@@ -55,12 +58,13 @@ public class ClientApi implements SecurityParams {
         return engine.run(parms, null, stopOnFirstError, ts);
     }
 
-    public boolean runTestCollection(String testCollectionName, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError) throws Exception {
+    public boolean runTestCollection(String testCollectionName, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError, CallType callType) throws Exception {
         Xdstest2 engine = new Xdstest2(Installation.installation().toolkitxFile(), this);
         engine.setTestkitLocation(testkitFile);
         engine.addTestCollection(testCollectionName);
         engine.setSite(site);
         TransactionSettings ts = new TransactionSettings();
+        ts.transactionTransport = TransactionTransportFactory.get(callType);
         ts.writeLogs = true;
         ts.patientId = parms.get("$patientid$");
         ts.securityParams = this;
