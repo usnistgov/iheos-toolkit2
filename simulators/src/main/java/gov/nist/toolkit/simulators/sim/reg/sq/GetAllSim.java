@@ -26,7 +26,6 @@ public class GetAllSim extends GetAll {
         this.ri = ri;
     }
 
-
     public GetAllSim(StoredQuerySupport sqs)
             throws MetadataValidationException {
         super(sqs);
@@ -48,10 +47,17 @@ public class GetAllSim extends GetAll {
         List<Fol> folResults;
         List<SubSet> ssResults;
 
+//        System.out.println("Query: " + toString());
+
         // match on patient id
         deResults = mc.docEntryCollection.findByPid(patient_id);
         ssResults = mc.subSetCollection.findByPid(patient_id);
         folResults = mc.folCollection.findByPid(patient_id);
+
+//        System.out.println("By patientId:");
+//        System.out.println("   DE: " + deResults);
+//        System.out.println("   SS: " + ssResults);
+//        System.out.println("   FOL: " + folResults);
 
         // filter on DE availabilityStatus
         List<RegIndex.StatusValue> deStatuses = ri.translateStatusValues(deStatus);
@@ -65,8 +71,16 @@ public class GetAllSim extends GetAll {
         List<RegIndex.StatusValue> folStatuses = ri.translateStatusValues(folStatus);
         folResults = mc.folCollection.filterByStatus(folStatuses, folResults);
 
+//        System.out.println("After status filter:");
+//        System.out.println("   DE: " + deResults);
+//        System.out.println("   SS: " + ssResults);
+//        System.out.println("   FOL: " + folResults);
+
         // filter on DEType
         deResults = mc.docEntryCollection.filterByObjectType(deObjectTypes, deResults);
+
+//        System.out.println("After object type filter:");
+//        System.out.println("   DE: " + deResults);
 
         // filter on formatCode
         if (format_codes != null && !format_codes.isEmpty()) {
@@ -76,6 +90,9 @@ public class GetAllSim extends GetAll {
                 throw new XdsException("FindDocumentsSim: cannot cast object of type " + format_codes.getClass().getName() + " (from formatCodes) into an instance of class SQCodeOr", null);
             }
         }
+
+//        System.out.println("After format code filter:");
+//        System.out.println("   DE: " + deResults);
 
         // filter on confCode
         if (conf_codes != null && !conf_codes.isEmpty()) {
@@ -90,9 +107,12 @@ public class GetAllSim extends GetAll {
             }
         }
 
-        System.out.println("deIds - " + mc.getIdsForObjects(deResults));
-        System.out.println("ssIds - " + mc.getIdsForObjects(ssResults));
-        System.out.println("folIds - " + mc.getIdsForObjects(folResults));
+//        System.out.println("After conf code filter:");
+//        System.out.println("   DE: " + deResults);
+
+//        System.out.println("deIds - " + mc.getIdsForObjects(deResults));
+//        System.out.println("ssIds - " + mc.getIdsForObjects(ssResults));
+//        System.out.println("folIds - " + mc.getIdsForObjects(folResults));
 
         Set<String> uuids = new HashSet<>(mc.getIdsForObjects(deResults));
         uuids.addAll(mc.getIdsForObjects(ssResults));

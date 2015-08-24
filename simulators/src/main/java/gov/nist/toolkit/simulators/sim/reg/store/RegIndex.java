@@ -3,19 +3,13 @@ package gov.nist.toolkit.simulators.sim.reg.store;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 public class RegIndex implements RegistryValidationInterface, Serializable {
 	static Logger logger = Logger.getLogger(RegIndex.class);
@@ -42,6 +36,10 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 			mc.dirty = false;
 			mc.allCollections = null;
 		}
+	}
+
+	public RegIndex(MetadataCollection metadataCollection) {
+		mc = metadataCollection;
 	}
 	
 	public void setSimDb(SimDb db) {

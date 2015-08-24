@@ -58,7 +58,7 @@ abstract public class GetAll extends StoredQuery {
 
     public void validateParameters() throws MetadataValidationException {
         //                         param name,                                 required?, multiple?, is string?,   is code?,      support AND/OR                          alternative
-        sqs.validate_parm("$XDSDocumentEntryPatientId",                         true,      false,     true,         false,           false,                             (String[])null												);
+        sqs.validate_parm("$patientId",                                         true,      false,     true,         false,           false,                             (String[])null												);
         sqs.validate_parm("$XDSDocumentEntryConfidentialityCode",               false,     true,      true,         true,            true,                              (String[])null												);
         sqs.validate_parm("$XDSDocumentEntryFormatCode",                        false,     true,      true,         true,            false,                              (String[])null												);
         sqs.validate_parm("$XDSFolderStatus",                                   true,      true,      true,         false,           false,                               (String[])null												);
@@ -118,7 +118,7 @@ abstract public class GetAll extends StoredQuery {
 
     void parseParameters() throws XdsException {
 
-        patient_id                        = sqs.params.getStringParm("$XDSDocumentEntryPatientId");
+        patient_id                        = sqs.params.getStringParm("$patientId");
         conf_codes                        = sqs.params.getCodedParm("$XDSDocumentEntryConfidentialityCode");
         format_codes                      = sqs.params.getCodedParm("$XDSDocumentEntryFormatCode");
         deStatus                          = sqs.params.getListParm("$XDSDocumentEntryStatus");
@@ -156,6 +156,11 @@ abstract public class GetAll extends StoredQuery {
             new_status.add(stat.replaceFirst(status_ns_prefix, ""));
         }
         ssStatus = new_status;
+
+        if (deObjectTypes == null) {
+            deObjectTypes = new ArrayList<>();
+            deObjectTypes.add(MetadataSupport.XDSDocumentEntry_objectType_uuid);
+        }
 
         if (sqs.log_message != null)
             sqs.log_message.addOtherParam("Some Parameters", toString());

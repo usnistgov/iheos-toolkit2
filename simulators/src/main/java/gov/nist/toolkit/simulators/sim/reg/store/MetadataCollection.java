@@ -16,6 +16,7 @@ import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,8 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 public class MetadataCollection implements Serializable, RegistryValidationInterface {
 
@@ -46,6 +45,11 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	// To maintain a delta ...
 	transient MetadataCollection parent = null;
 	transient List<OldValueNewValueStatus> statusChanges = null;
+
+	public MetadataCollection() {
+		init();
+		buildAllCollections();
+	}
 
 	// create a delta for this collection
 	public MetadataCollection mkDelta() {
