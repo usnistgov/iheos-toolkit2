@@ -129,7 +129,8 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException ;
 	
 	List<Result> mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes) throws NoServletSessionException;
-	
+	List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) throws NoServletSessionException;
+
 	TestLogs getRawLogs(XdstestLogId logId) throws NoServletSessionException ;
 	
 	String getAdminPassword() throws NoServletSessionException ;

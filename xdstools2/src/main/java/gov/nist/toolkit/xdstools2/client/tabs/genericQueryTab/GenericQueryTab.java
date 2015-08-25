@@ -1,5 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
@@ -18,26 +22,7 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.TabbedWindow;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.*;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
@@ -63,7 +48,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	public boolean runEnabled = true;
 	ClickHandler runner;
 
-	protected VerticalPanel resultPanel = null;
+	public VerticalPanel resultPanel = new VerticalPanel();
 	public TabContainer myContainer;
 	CheckBox doTls = new CheckBox("TLS?");
 	ListBox samlListBox = new ListBox();
@@ -114,7 +99,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 
 		public void onFailure(Throwable caught) {
-			resultPanel.clear();
+//			resultPanel.clear();
 			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error running validation: " + caught.getMessage() + "</font>"));
 		}
 
@@ -220,7 +205,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return lb.getValue(i);
 	}
 
-	public HTML addHTML(String html) {		
+	static public HTML addHTML(String html) {
 		HTML msgBox = new HTML();
 		msgBox.setHTML(html);
 		return msgBox;		
@@ -360,7 +345,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 				public void onSuccess(TransactionOfferings to) {
 					GenericQueryTab.transactionOfferings = to;
-					redisplay();
+					redisplay(false);
 				}
 
 			});
@@ -381,9 +366,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		row = row_initial;
 	}
 
-	public void redisplay() {
+	public void redisplay(boolean clear) {
 
-		if (resultPanel != null)
+		if (resultPanel != null && clear)
 			resultPanel.clear();
 
 		//			genericQueryTab.perTransTypeRadioButtons = new HashMap<TransactionType, List<RadioButton>>();

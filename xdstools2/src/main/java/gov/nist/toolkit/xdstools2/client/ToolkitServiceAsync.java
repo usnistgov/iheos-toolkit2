@@ -1,16 +1,13 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.results.client.XdstestLogId;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -20,8 +17,6 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface ToolkitServiceAsync {
 	
@@ -132,7 +127,8 @@ public interface ToolkitServiceAsync {
 	void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 
 	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> callback);
-	
+	void mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes, AsyncCallback<List<Result>> callback);
+
 	void getAdminPassword(AsyncCallback<String> callback);
 	
 	void getImplementationVersion(AsyncCallback<String> callback);

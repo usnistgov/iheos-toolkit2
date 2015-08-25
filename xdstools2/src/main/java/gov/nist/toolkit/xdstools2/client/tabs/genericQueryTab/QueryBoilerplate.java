@@ -1,5 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
@@ -7,11 +10,6 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 
 import java.util.List;
-
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class QueryBoilerplate {
 	/**
@@ -32,7 +30,7 @@ public class QueryBoilerplate {
 		genericQueryTab.transactionTypes = transactionTypes;
 		genericQueryTab.couplings = couplings;
 
-		genericQueryTab.resultPanel = new VerticalPanel();
+//		genericQueryTab.resultPanel = new VerticalPanel();
 		genericQueryTab.topPanel.add(genericQueryTab.resultPanel);
 
 
@@ -41,7 +39,7 @@ public class QueryBoilerplate {
 		if (GenericQueryTab.transactionOfferings == null) {
 			genericQueryTab.reloadTransactionOfferings();
 		} else {
-			genericQueryTab.redisplay();
+			genericQueryTab.redisplay(false);
 		}
 	}
 

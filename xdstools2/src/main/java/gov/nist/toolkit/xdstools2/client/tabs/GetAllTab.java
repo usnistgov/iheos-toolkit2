@@ -4,10 +4,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -30,6 +29,9 @@ public class GetAllTab extends GenericQueryTab {
 	HorizontalPanel ssPanel;
 	HorizontalPanel folPanel;
 
+	CodeFilterBank codeFilterBank;
+	GenericQueryTab genericQueryTab;
+
 	public GetAllTab() {
 		super(new FindDocumentsSiteActorManager());
 	}
@@ -38,20 +40,23 @@ public class GetAllTab extends GenericQueryTab {
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
-		FlexTable paramGrid = new FlexTable();
+		genericQueryTab = this;
 
 
 		container.addTab(topPanel, "GetAll", select);
 		addCloseButton(container,topPanel, null);
 
+		codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
+
+		FlexTable paramGrid = new FlexTable();
+
 		HTML title = new HTML();
-		title.setHTML("<h2>Get All</h2>");
+		title.setHTML("<h2>GetAll Stored Query</h2>");
 		topPanel.add(title);
 
 		mainGrid = new FlexTable();
-		int row = 0;
-
 		int prow = 0;
+
 		paramGrid.setText(prow, 0, "Include:");
 		prow++;
 
@@ -72,10 +77,19 @@ public class GetAllTab extends GenericQueryTab {
 		paramGrid.setWidget(prow, 2, ssPanel = buildSelection("SubmissionSets"));
 		prow++;
 
+		paramGrid.setText(prow, 0, "Filter by:");
+		prow++;
+
+		codeFilterBank.addCodeFilter(new CodeFilter(paramGrid, prow, 1, "Format Code", CodesConfiguration.FormatCode, codeFilterBank.codeBoxSize));
+		prow++;
+
+		codeFilterBank.addCodeFilter(new CodeFilter(paramGrid, prow, 1, "Confidentiality Code", CodesConfiguration.ConfidentialityCode, codeFilterBank.codeBoxSize));
+		prow++;
+
 		topPanel.add(paramGrid);
-
-
+		topPanel.add(new HTML("<hr/>"));
 		topPanel.add(mainGrid);
+
 
 		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
