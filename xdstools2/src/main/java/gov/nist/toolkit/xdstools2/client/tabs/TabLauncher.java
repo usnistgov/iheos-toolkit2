@@ -26,6 +26,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String getFolderAndContentsTabLabel = "GetFolderAndContents";
 	final static public String mpqFindDocumentsTabLabel = "MPQ-FindDocuments";
 	final static public String getSubmissionSetTabLabel = "GetSubmissionSetAndContents";
+	final static public String getAllTabLabel = "GetAll";
 	final static public String registryDoThisFirstTabLabel = "XDS.b_Registry_Do_This_First";
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
@@ -75,7 +76,9 @@ public class TabLauncher implements ClickHandler {
 			new RegisterAndQueryTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(getRelatedTabLabel)) 
 			new GetRelatedTab().onAbstractTabLoad(container, true, null);
-		else if (tabType.equals(connectathonTabLabel)) 
+		else if (tabType.equals(getAllTabLabel))
+			new GetAllTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(connectathonTabLabel))
 			new ConnectathonTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(srcStoresDocValTabLabel)) 
 			new SourceStoredDocValTab().onAbstractTabLoad(container, true, null);

@@ -14,7 +14,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FindDocumentsTab extends GenericQueryTab {
+public class GetAllTab extends GenericQueryTab {
 
 	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
 	static {
@@ -26,8 +26,11 @@ public class FindDocumentsTab extends GenericQueryTab {
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 	CheckBox selectOnDemand;
+	HorizontalPanel dePanel;
+	HorizontalPanel ssPanel;
+	HorizontalPanel folPanel;
 
-	public FindDocumentsTab() {
+	public GetAllTab() {
 		super(new FindDocumentsSiteActorManager());
 	}
 
@@ -35,26 +38,57 @@ public class FindDocumentsTab extends GenericQueryTab {
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
+		FlexTable paramGrid = new FlexTable();
 
 
-		container.addTab(topPanel, "FindDocuments", select);
+		container.addTab(topPanel, "GetAll", select);
 		addCloseButton(container,topPanel, null);
 
 		HTML title = new HTML();
-		title.setHTML("<h2>Find Documents</h2>");
+		title.setHTML("<h2>Get All</h2>");
 		topPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 
+		int prow = 0;
+		paramGrid.setText(prow, 0, "Include:");
+		prow++;
+
+		paramGrid.setText(prow, 1, "DocumentEntries");
+		paramGrid.setWidget(prow, 2, dePanel = buildSelection("DocumentEntries"));
+		prow++;
+
 		selectOnDemand = new CheckBox();
-		selectOnDemand.setText("Include On-Demand DocumentEntries");
-		mainGrid.setWidget(row, 0, selectOnDemand);
-		row++;
+		selectOnDemand.setText("On-Demand DocumentEntries");
+		paramGrid.setWidget(prow, 2, selectOnDemand);
+		prow++;
+
+		paramGrid.setText(prow, 1, "Folders");
+		paramGrid.setWidget(prow, 2, folPanel = buildSelection("Folders"));
+		prow++;
+
+		paramGrid.setText(prow, 1, "SubmissionSets");
+		paramGrid.setWidget(prow, 2, ssPanel = buildSelection("SubmissionSets"));
+		prow++;
+
+		topPanel.add(paramGrid);
+
 
 		topPanel.add(mainGrid);
 
 		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+	}
+
+	HorizontalPanel buildSelection(String label) {
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(new RadioButton(label, "None"));
+		hp.add(new RadioButton(label, "Approved"));
+		hp.add(new RadioButton(label, "Deprecated"));
+		RadioButton all = new RadioButton(label, "All");
+		all.setValue(true);
+		hp.add(all);
+		return hp;
 	}
 
 	class Runner implements ClickHandler {
@@ -72,6 +106,13 @@ public class FindDocumentsTab extends GenericQueryTab {
 				new PopupMessage("You must enter a Patient ID first");
 				return;
 			}
+
+			for (int i=0; i<dePanel.getWidgetCount(); i++) {
+				RadioButton rb = (RadioButton) dePanel.getWidget(i);
+				if (rb.getValue()) new PopupMessage(rb.getText() + " selected");
+			}
+
+
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
@@ -82,7 +123,7 @@ public class FindDocumentsTab extends GenericQueryTab {
 	}
 
 	public String getWindowShortName() {
-		return "finddocuments";
+		return "getall";
 	}
 
 
