@@ -40,7 +40,7 @@
           </tag0:AdhocQuery>
         </query:AdhocQueryRequest>
       </Metadata>
-      <UseId testdir="../../12346" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <UseId testdir="../../11990" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
       <!--<ExpectedContents>-->
         <!--<Documents count="5"/>-->
       <!--</ExpectedContents>-->
