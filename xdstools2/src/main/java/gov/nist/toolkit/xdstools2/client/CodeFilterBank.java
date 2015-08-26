@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlexTable;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.CodesResult;
@@ -25,6 +26,15 @@ public class CodeFilterBank {
         this.toolkitService = toolkitService;
         this.genericQueryTab = genericQueryTab;
         toolkitService.getCodesConfiguration(loadCodeConfigCallback);
+    }
+
+    public int addCodeFiltersByName(List<String> names, FlexTable paramGrid, int startingRow, int col, int boxSize) {
+        for (String name : names) {
+            CodeFilter codeFilter;
+            addCodeFilter(codeFilter = new CodeFilter(paramGrid, startingRow++, col, name));
+            codeFilter.setCodeBoxSize(boxSize);
+        }
+        return startingRow;
     }
 
     public void addCodeFilter(CodeFilter codeFilter) {

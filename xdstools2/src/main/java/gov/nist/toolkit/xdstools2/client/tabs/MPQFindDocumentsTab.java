@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.CodeFilter;
 import gov.nist.toolkit.xdstools2.client.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -30,6 +29,21 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 	}
 	
 	static CoupledTransactions couplings = new CoupledTransactions();
+
+	static List<String> patientIdAlternateFilterNames = new ArrayList<>();
+	static {
+		patientIdAlternateFilterNames.add(CodesConfiguration.ClassCode);
+		patientIdAlternateFilterNames.add(CodesConfiguration.EventCodeList);
+		patientIdAlternateFilterNames.add(CodesConfiguration.HealthcareFacilityTypeCode);
+	}
+
+	static List<String> otherFilterNames = new ArrayList<>();
+	static {
+		otherFilterNames.add(CodesConfiguration.TypeCode);
+		otherFilterNames.add(CodesConfiguration.PracticeSettingCode);
+		otherFilterNames.add(CodesConfiguration.ConfidentialityCode);
+		otherFilterNames.add(CodesConfiguration.FormatCode);
+	}
 
 	CodeFilterBank codeFilterBank;
 	GenericQueryTab genericQueryTab;
@@ -61,30 +75,18 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 		int prow = 0;
 
 		FlexTable.FlexCellFormatter cellFormatter = paramGrid.getFlexCellFormatter();
-		paramGrid.setText(prow, 0, "Patient ID or at least one filter selection is required");
+		paramGrid.setText(prow, 0, "Patient ID or at least one of these filters is required");
 		cellFormatter.setColSpan(0, 0, 5);
 		prow++;
 
 		paramGrid.setText(prow, 0, "Filter by:");
 		prow++;
 
-		//
-		// Class code
-		//
-		codeFilterBank.addCodeFilter(new CodeFilter(paramGrid, prow, 1, "Class Code", CodesConfiguration.ClassCode, codeFilterBank.codeBoxSize));
-		prow++;
 
-		//
-		// Event code
-		//
-		codeFilterBank.addCodeFilter(new CodeFilter(paramGrid, prow, 1, "Event Code", CodesConfiguration.EventCodeList, codeFilterBank.codeBoxSize));
+		prow = codeFilterBank.addCodeFiltersByName(patientIdAlternateFilterNames, paramGrid, prow, 1, 2);
+		paramGrid.setText(prow, 0, "Optionally also filter by:");
 		prow++;
-
-		//
-		// HCFT code
-		//
-		codeFilterBank.addCodeFilter(new CodeFilter(paramGrid, prow, 1, "Healthcare Facility Type Code", CodesConfiguration.HealthcareFacilityTypeCode, codeFilterBank.codeBoxSize));
-		prow++;
+		prow = codeFilterBank.addCodeFiltersByName(otherFilterNames, paramGrid, prow, 1, 2);
 
 		topPanel.add(paramGrid);
 		topPanel.add(new HTML("<hr/>"));
