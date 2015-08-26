@@ -17,6 +17,7 @@ public class LogRepository  {
     String id;
     LogRepositoryFactory.IO_format format;
     LogRepositoryFactory.Id_type idType;
+    String timeBasedEventName = null;
 	
 	// Create through LogRepositoryFactory only
 	LogRepository(File location, String user, LogRepositoryFactory.IO_format format, LogRepositoryFactory.Id_type idType, String id) {
@@ -50,9 +51,11 @@ public class LogRepository  {
 
     File getLogDir(File location, String user, LogRepositoryFactory.Id_type idType, String id) {
         if (idType == LogRepositoryFactory.Id_type.TIME_ID) {
+            if (timeBasedEventName == null)
+                timeBasedEventName = new SimDb().nowAsFilenameBase();
             File logDir = new File(
                     location + File.separator + user +
-                            File.separator + new SimDb().nowAsFilenameBase()  );
+                            File.separator + timeBasedEventName  );
             logDir.mkdirs();
             if (!logDir.exists())
                 throw new ToolkitRuntimeException("Cannot create log directory " + logDir.toString());
