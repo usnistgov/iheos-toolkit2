@@ -274,6 +274,17 @@ public class QueryServiceManager extends CommonServiceManager {
 			return buildResultList(e);
 		}
 	}
+
+	public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
+		logger.debug(session.id() + ": " + "getAll");
+
+		try {
+			return new GetAll(session).run(site, pid, selectedCodes);
+		} catch (XdsException e) {
+			return buildResultList(e);
+		}
+	}
+
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();

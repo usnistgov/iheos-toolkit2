@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.logrepository;
 
 import gov.nist.toolkit.results.client.XdstestLogId;
 import gov.nist.toolkit.testengine.engine.LogMap;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.log4j.Logger;
@@ -39,6 +40,7 @@ public class JavaSerializationIO implements ILoggerIO  {
 	 */
 	@Override
 	public LogMap logIn(XdstestLogId id, File logDir) throws Exception {
+		logger.debug("Reading log from " + logFile(id, logDir));
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		try {
@@ -50,7 +52,10 @@ public class JavaSerializationIO implements ILoggerIO  {
 		} 
 		catch (ClassNotFoundException e) {
 			logger.debug("attempting to restore log " + "from " + logFile(id, logDir));
-			throw new XdsInternalException("Cannot create object of type LogMap - class not found",e);
+			throw new XdsInternalException("Cannot create object of type LogMap - class not found", e);
+		} catch (Exception e) {
+			logger.error(ExceptionUtil.here("Cannot load " + logFile(id, logDir)));
+			throw e;
 		} finally {
 			in.close();
 		}

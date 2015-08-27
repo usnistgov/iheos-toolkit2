@@ -126,8 +126,9 @@ public interface ToolkitServiceAsync {
 	void lifecycleValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 
-	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> callback);
+//	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> callback);
 	void mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes, AsyncCallback<List<Result>> callback);
+	void getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
 
 	void getAdminPassword(AsyncCallback<String> callback);
 	

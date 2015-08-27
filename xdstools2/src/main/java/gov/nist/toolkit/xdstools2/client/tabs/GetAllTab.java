@@ -11,7 +11,9 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActo
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GetAllTab extends GenericQueryTab {
 
@@ -24,10 +26,11 @@ public class GetAllTab extends GenericQueryTab {
 
 	static CoupledTransactions couplings = new CoupledTransactions();
 
-	CheckBox selectOnDemand;
+//	CheckBox selectOnDemand;
 	HorizontalPanel dePanel;
 	HorizontalPanel ssPanel;
 	HorizontalPanel folPanel;
+	HorizontalPanel onDemandPanel;
 
 	CodeFilterBank codeFilterBank;
 	GenericQueryTab genericQueryTab;
@@ -61,20 +64,24 @@ public class GetAllTab extends GenericQueryTab {
 		prow++;
 
 		paramGrid.setText(prow, 1, "DocumentEntries");
-		paramGrid.setWidget(prow, 2, dePanel = buildSelection("DocumentEntries"));
+		paramGrid.setWidget(prow, 2, dePanel = buildIncludeSelection("DocumentEntries"));
 		prow++;
 
-		selectOnDemand = new CheckBox();
-		selectOnDemand.setText("On-Demand DocumentEntries");
-		paramGrid.setWidget(prow, 2, selectOnDemand);
+//		selectOnDemand = new CheckBox();
+//		selectOnDemand.setText("On-Demand DocumentEntries");
+//		paramGrid.setWidget(prow, 2, selectOnDemand);
+//		prow++;
+
+		paramGrid.setText(prow, 1, "");
+		paramGrid.setWidget(prow, 2, onDemandPanel = buildOnDemandSelection("Type"));
 		prow++;
 
 		paramGrid.setText(prow, 1, "Folders");
-		paramGrid.setWidget(prow, 2, folPanel = buildSelection("Folders"));
+		paramGrid.setWidget(prow, 2, folPanel = buildIncludeSelection("Folders"));
 		prow++;
 
 		paramGrid.setText(prow, 1, "SubmissionSets");
-		paramGrid.setWidget(prow, 2, ssPanel = buildSelection("SubmissionSets"));
+		paramGrid.setWidget(prow, 2, ssPanel = buildIncludeSelection("SubmissionSets"));
 		prow++;
 
 		paramGrid.setText(prow, 0, "Filter by:");
@@ -84,7 +91,6 @@ public class GetAllTab extends GenericQueryTab {
 		prow++;
 
 		codeFilterBank.addCodeFilter(new CodeFilter(paramGrid, prow, 1, "Confidentiality Code", CodesConfiguration.ConfidentialityCode, codeFilterBank.codeBoxSize));
-		prow++;
 
 		topPanel.add(paramGrid);
 		topPanel.add(new HTML("<hr/>"));
@@ -94,7 +100,7 @@ public class GetAllTab extends GenericQueryTab {
 		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
 
-	HorizontalPanel buildSelection(String label) {
+	HorizontalPanel buildIncludeSelection(String label) {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(new RadioButton(label, "None"));
 		hp.add(new RadioButton(label, "Approved"));
@@ -102,6 +108,16 @@ public class GetAllTab extends GenericQueryTab {
 		RadioButton all = new RadioButton(label, "All");
 		all.setValue(true);
 		hp.add(all);
+		return hp;
+	}
+
+	HorizontalPanel buildOnDemandSelection(String label) {
+		HorizontalPanel hp = new HorizontalPanel();
+		RadioButton _static = new RadioButton(label, "Static");
+		_static.setValue(true);
+		hp.add(_static);
+		hp.add(new RadioButton(label, "On-Demand"));
+		hp.add(new RadioButton(label, "Both"));
 		return hp;
 	}
 
@@ -121,17 +137,44 @@ public class GetAllTab extends GenericQueryTab {
 				return;
 			}
 
-			for (int i=0; i<dePanel.getWidgetCount(); i++) {
-				RadioButton rb = (RadioButton) dePanel.getWidget(i);
-				if (rb.getValue()) new PopupMessage(rb.getText() + " selected");
-			}
-
+//			for (int i=0; i<dePanel.getWidgetCount(); i++) {
+//				RadioButton rb = (RadioButton) dePanel.getWidget(i);
+//				if (rb.getValue()) new PopupMessage(rb.getText() + " selected");
+//			}
 
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.findDocuments(siteSpec, pidTextBox.getValue().trim(), selectOnDemand.getValue(), queryCallback);
+			Map<String, List<String>> codeSpec = new HashMap<>();
+
+			// {DocumentEntry, SubmissionSet, Folder}.availabilityStatus
+			addToCodeSpec(codeSpec, dePanel, CodesConfiguration.DocumentEntryStatus);
+			addToCodeSpec(codeSpec, ssPanel, CodesConfiguration.SubmissionSetStatus);
+			addToCodeSpec(codeSpec, folPanel, CodesConfiguration.FolderStatus);
+
+			addToCodeSpec(codeSpec, onDemandPanel, CodesConfiguration.DocumentEntryType);
+
+			// Codes
+			codeFilterBank.addToCodeSpec(codeSpec);
+
+			toolkitService.getAll(siteSpec, pidTextBox.getValue().trim(), codeSpec, queryCallback);
+		}
+
+		void addToCodeSpec(Map<String, List<String>> codeSpec, HorizontalPanel panel, String codeType) {
+			List<String> status = new ArrayList<>();
+			codeSpec.put(codeType, status);
+			for (int i=0; i<dePanel.getWidgetCount(); i++) {
+				RadioButton rb = (RadioButton) dePanel.getWidget(i);
+				if (rb.getValue()) {
+					if ("Approved".equals(rb.getText())) status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved");
+					if ("Deprecated".equals(rb.getText())) status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
+					if ("All".equals(rb.getText())) {
+						status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved");
+						status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
+					}
+				}
+			}
 		}
 
 	}

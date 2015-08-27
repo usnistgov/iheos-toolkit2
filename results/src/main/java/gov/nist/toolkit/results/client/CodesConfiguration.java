@@ -18,6 +18,13 @@ public class CodesConfiguration implements IsSerializable {
 	static public String FolderCodeList = "folderCodeList";
 	static public String AssociationDocumentation = "associationDocumentation";
 
+	// Technically these are not codes but they are carried around like they are
+	// in some secondary uses of this class
+	static public String SubmissionSetStatus = "submissionSetStatus";
+	static public String DocumentEntryStatus = "documentEntryStatus";
+	static public String FolderStatus = "folderStatus";
+	static public String DocumentEntryType = "documentEntryType";
+
 	static public Map<String, String> titles = new HashMap<>();
 
 	static {
@@ -31,6 +38,10 @@ public class CodesConfiguration implements IsSerializable {
 		titles.put(TypeCode, "Type Code");
 		titles.put(FolderCodeList, "Folder Code List");
 		titles.put(AssociationDocumentation, "Association Documentation");
+		titles.put(SubmissionSetStatus, "SubmissionSet Status");
+		titles.put(DocumentEntryStatus, "DocumentEntry Status");
+		titles.put(FolderStatus, "Folder Status");
+		titles.put(DocumentEntryType, "DocumentEntry Type");
 	}
 
 	Map<String, CodeConfiguration> codes;

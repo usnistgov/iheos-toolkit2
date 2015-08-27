@@ -6,6 +6,9 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by bill on 8/25/15.
  */
@@ -33,6 +36,14 @@ public class CodeFilter {
         this(mainGrid, row, startingCol, codeName);
         setLabelText(labelText);
         setCodeBoxSize(codeBoxSize);
+    }
+
+    public List<String> getSelected() {
+        List<String> selected = new ArrayList<>();
+
+        for (int i=0; i<selectedCodes.getItemCount(); i++)
+            selected.add(selectedCodes.getItemText(i));
+        return selected;
     }
 
     public void setCodeBoxSize(int size) { selectedCodes.setVisibleItemCount(size); }

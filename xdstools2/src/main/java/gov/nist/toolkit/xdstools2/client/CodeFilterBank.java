@@ -10,6 +10,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by bill on 8/25/15.
@@ -48,6 +49,17 @@ public class CodeFilterBank {
             }
         }
         return null;
+    }
+
+    public void addToCodeSpec(Map<String, List<String>> codeSpec) {
+        for (CodeFilter codeFilter : codeFilters) {
+            List<String> codeList = codeSpec.get(codeFilter.codeName);
+            if (codeList == null) {
+                codeList = new ArrayList<>();
+                codeSpec.put(codeFilter.codeName, codeList);
+            }
+            codeList.addAll(codeFilter.getSelected());
+        }
     }
 
     protected AsyncCallback<CodesResult> loadCodeConfigCallback = new AsyncCallback<CodesResult>() {

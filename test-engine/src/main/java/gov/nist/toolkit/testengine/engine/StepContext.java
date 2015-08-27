@@ -327,7 +327,8 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				transaction.setPlanContext(plan_context);
 				transaction.setTestConfig(testConfig);
 				transaction.setTransactionSettings(transactionSettings);
-				transactionSettings.transactionTransport.attach(transaction);
+				if (transactionSettings.transactionTransport != null)
+					transactionSettings.transactionTransport.attach(transaction);
 				transaction.doRun();				
 				
 				if (transaction != null && getStatus() /*== false*/) {
