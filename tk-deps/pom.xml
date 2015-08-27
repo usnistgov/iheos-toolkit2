@@ -363,7 +363,7 @@
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
+                <version>1.2.12</version>  <!-- was 1.2.17 -->
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
@@ -400,7 +400,8 @@
             <dependency>
                 <groupId>com.google.gwt</groupId>
                 <artifactId>gwt-servlet</artifactId>
-                <scope>runtime</scope>
+                <scope>provided</scope>
+                <!--<scope>runtime</scope>-->
                 <version>${gwtVersion}</version>
             </dependency>
             <dependency>

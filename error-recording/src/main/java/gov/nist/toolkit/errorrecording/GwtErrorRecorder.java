@@ -316,6 +316,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
 		errMsgs.add(ei);
 		lastErrCount++;
+		// propagate error labeling so context is given
 		for (int i=errMsgs.size()-1; i>0; i--) {
 			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
 				break;

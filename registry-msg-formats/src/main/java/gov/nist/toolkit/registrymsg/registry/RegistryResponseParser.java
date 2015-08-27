@@ -6,6 +6,7 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
 import org.jaxen.JaxenException;
 
 import javax.xml.namespace.QName;
@@ -16,6 +17,7 @@ import java.util.List;
 public class RegistryResponseParser {
 	OMElement response_element;
 	RegistryResponse response;
+	static Logger logger = Logger.getLogger(RegistryResponseParser.class);
 
 	public class RegistryResponse {
 		boolean success;
@@ -147,12 +149,15 @@ public class RegistryResponseParser {
 	}
 
 	public String get_registry_response_status() throws XdsInternalException {
+		if ("Fault".equals(response_element.getLocalName()))
+			return "Fault";
 		try {
 			AXIOMXPath xpathExpression = new AXIOMXPath ("@status");
 			List nodeList = xpathExpression.selectNodes(response_element);
 			Iterator it = nodeList.iterator();
-			if (! it.hasNext())
-				throw new XdsInternalException("RegitryResponse:get_registry_response_status: Cannot retrieve /RegistryResponse/@status");
+			if (! it.hasNext()) {
+				throw new XdsInternalException("RegistryResponse:get_registry_response_status: Cannot retrieve /RegistryResponse/@status");
+			}
 			OMAttribute att = (OMAttribute) it.next();
 			return att.getAttributeValue();
 		} catch (JaxenException e) {

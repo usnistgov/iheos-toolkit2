@@ -4,6 +4,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ public class BasicContext  {
 	BasicContext parent_context;
 	HashMap atts;
 	OmLogger testLog = new TestLogFactory().getLogger();
+	static Logger logger = Logger.getLogger(BasicContext.class);
 
 	public BasicContext(BasicContext parent_context) {
 		this.parent_context = parent_context;
@@ -21,7 +23,7 @@ public class BasicContext  {
 	}
 
 	public void set(String attname, Object attvalue) {
-		System.out.println("BasicContext set " + attname + " ==> " + attvalue);
+		logger.debug("BasicContext set " + attname + " ==> " + attvalue);
 		if (atts == null) atts = new HashMap();
 		atts.put(attname, attvalue);
 	}

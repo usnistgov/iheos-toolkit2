@@ -271,7 +271,7 @@ public class PlanContext extends BasicContext {
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
-			throw e;
+			throw e;  // error handler above reports error in UI
 		}
 
 		if (writeLogFiles) {

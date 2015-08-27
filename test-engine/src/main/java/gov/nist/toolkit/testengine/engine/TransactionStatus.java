@@ -4,7 +4,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 
 public class TransactionStatus {
 
-	static enum StatusValue { Success, Failure, Warning, PartialSuccess, UNKNOWN };
+	static enum StatusValue { Success, Failure, Warning, PartialSuccess, FAULT, UNKNOWN };
 
 	StatusValue value = StatusValue.UNKNOWN;
 	String fullValue = "";

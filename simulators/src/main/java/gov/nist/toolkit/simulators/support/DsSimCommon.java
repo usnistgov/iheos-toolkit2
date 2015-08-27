@@ -506,6 +506,8 @@ public class DsSimCommon {
             for (ValidatorErrorItem vei : ger.getValidatorErrorInfo()) {
                 String msg = vei.msg;
                 String resource = vei.resource;
+                if (vei.level != ValidatorErrorItem.ReportingLevel.ERROR)
+                    continue;
                 if (resource == null)
                     fault.addDetail(msg);
                 else

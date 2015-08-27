@@ -2,7 +2,6 @@ package gov.nist.toolkit.soap.axis2;
 
 import gov.nist.toolkit.docref.WsDocRef;
 import gov.nist.toolkit.dsig.XMLDSigProcessor;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -79,6 +78,7 @@ public class Soap implements SoapInterface {
 	SecurityParams securityParams; // contextual security info used by SAML/TLS
 									// to access the keystore
 
+	// so they can be logged by the caller
 	OMElement inHeader = null;
 	OMElement outHeader = null;
 
@@ -485,39 +485,41 @@ public class Soap implements SoapInterface {
 
 		System.out
 				.println("******************************** BEFORE execute ****************************");
-		operationClient.execute(block); // execute sync or async
-		System.out
-				.println("******************************** AFTER execute ****************************");
+		System.out.println(ExceptionUtil.here("Making soap call"));
+		try {
+			operationClient.execute(block); // execute sync or async
+		} finally {
+			System.out
+					.println("******************************** AFTER execute ****************************");
 
-		if (async)
-			waitTillDone();
+			if (async)
+				waitTillDone();
 
-		MessageContext inMsgCtx = getInputMessageContext();
+			MessageContext inMsgCtx = getInputMessageContext();
 
-		System.out.println("Operation is complete: "
-				+ operationClient.getOperationContext().isComplete());
+			System.out.println("Operation is complete: "
+					+ operationClient.getOperationContext().isComplete());
 
-		if (async)
-			operationClient.complete(outMsgCtx);
+			if (async)
+				operationClient.complete(outMsgCtx);
+			inMsgCtx.getEnvelope().build();
 
-		inMsgCtx.getEnvelope().build();
+			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
 
-		OMElement soapBody = inMsgCtx.getEnvelope().getBody();
+			soapBody.build();
 
-		soapBody.build();
+			result = soapBody.getFirstElement();
 
-		result = soapBody.getFirstElement();
+			new OMFormatter(result).toString(); // this forces full read before
+			// channel is closed
+			// removing it breaks the reading of MTOM formatted responses
 
-		new OMFormatter(result).toString(); // this forces full read before
-											// channel is closed
-		// removing it breaks the reading of MTOM formatted responses
+			loadOutHeader();
+			loadInHeader();
 
-		loadOutHeader();
-		loadInHeader();
-
-		serviceClient.cleanupTransport();
-		serviceClient.cleanup();
-
+			serviceClient.cleanupTransport();
+			serviceClient.cleanup();
+		}
 	}
 
 	// This code is used to bypass the use of javax.net.ssl.keyStore and similar

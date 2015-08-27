@@ -15,6 +15,7 @@ import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.SectionLogMap;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
@@ -373,10 +374,11 @@ public abstract class BasicTransaction  {
 
 		RegistryResponseParser registry_response = new RegistryResponseParser(registry_result);
 
-		validateSchema(registry_result, metadata_type);
-
-		// check that status == success
 		String status = registry_response.get_registry_response_status();
+
+		if (!"Fault".equals(status))
+			validateSchema(registry_result, metadata_type);
+
 		ArrayList<String> returned_code_contexts = registry_response.get_error_code_contexts();
 
 		RegistryErrorListGenerator rel  = null;
@@ -399,7 +401,7 @@ public abstract class BasicTransaction  {
 
 		eval_expected_status(status, returned_code_contexts);
 		if (step_failure == false && validatorErrors.size() != 0) {
-			StringBuffer msg = new StringBuffer();
+			StringBuilder msg = new StringBuilder();
 			for (int i=0; i<validatorErrors.size(); i++) {
 				msg.append(validatorErrors.get(i));
 				msg.append("\n");
@@ -1188,6 +1190,7 @@ public abstract class BasicTransaction  {
 
 			soap.setSecurityParams(s_ctx.getTransactionSettings().securityParams);
 
+			logger.info("Making soap call");
 			soap.soapCall(requestBody,
 					endpoint,
 					useMtom, //mtom
@@ -1196,18 +1199,30 @@ public abstract class BasicTransaction  {
 					getRequestAction(),
 					getResponseAction(), this.planContext.getExtraLinkage()
 			);
+			logger.info("back from making soap call");
 		}
 		catch (AxisFault e) {
+			logger.info("soap fault");
+			logSoapRequest(soap);
+			logger.info("soap fault reported 1");
 			s_ctx.set_error("SOAPFault: " + e.getMessage() + "\nEndpoint is " + endpoint);
-			if ( !s_ctx.expectFault())
-				s_ctx.set_fault(e);
+			logger.info("soap fault reported 2");
+			try {
+				if (!s_ctx.expectFault())
+					s_ctx.set_fault(e);
+			} catch (Exception e1) { // throws fault - deal with it
+			}
+				logger.info("soap fault reported 3");
+
 		}
 		catch (XdsInternalException e) {
+			logger.info("internal exception");
 			s_ctx.set_error(e.getMessage());
 			failed();
 			logSoapRequest(soap);
 		}
 		finally {
+			logger.info("finally");
 			soap.clearHeaders();
 		}
 
@@ -1226,6 +1241,7 @@ public abstract class BasicTransaction  {
 		}
 	}
 	public void logSoapRequest(Soap soap) {
+		System.out.println("logSoapRequest: outheader is " + new OMFormatter(soap.getOutHeader()).toString());
 		try {
 			testLog.add_name_value(instruction_output, "OutHeader", soap.getOutHeader());
 			testLog.add_name_value(instruction_output, "OutAction", getRequestAction());
@@ -1233,7 +1249,7 @@ public abstract class BasicTransaction  {
 			testLog.add_name_value(instruction_output, "InHeader", soap.getInHeader());
 			testLog.add_name_value(instruction_output, "Result", soap.getResult());
 		} catch (Exception e) {
-			System.out.println("oops");
+			System.out.println("Cannot log soap request");
 			e.printStackTrace();
 		}
 	}
