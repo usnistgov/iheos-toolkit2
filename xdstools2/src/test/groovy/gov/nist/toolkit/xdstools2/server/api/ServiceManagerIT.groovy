@@ -28,8 +28,8 @@ class ServiceManagerIT extends Specification {
 
     // As a utility it assumes the results go in the SessionCache
     // This is controlled in XdsTestServiceManager
-    //      runMesaTest ->
-    //      runUtilityTest ->
+    //      run ->
+    //      run ->
     // and override can be done via
     // session.transactionSettings.logRepository =
     def 'Run Register Transaction as Utility'() {

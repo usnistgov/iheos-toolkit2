@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmsg.validation.engine;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -25,7 +25,7 @@ import java.util.List;
  *
  */
 
-public class ValidateMessageService extends CommonServiceManager {
+public class ValidateMessageService extends CommonService {
 	RegistryValidationInterface rvi;
 
 	public ValidateMessageService(RegistryValidationInterface rvi) {

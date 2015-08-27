@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.AssertionResult;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProvideAndRetrieve extends CommonServiceManager {
+public class ProvideAndRetrieve extends CommonService {
 	Session session;
 	
 	public ProvideAndRetrieve(Session session) throws XdsException {

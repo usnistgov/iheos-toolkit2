@@ -227,7 +227,8 @@ public class Sites {
 
 	public List<String> getSiteNames() {
 		List<String> lst = new ArrayList<String>();
-		lst.addAll(siteMap.keySet());
+		if (siteMap != null)
+			lst.addAll(siteMap.keySet());
 		return lst;
 	}
 

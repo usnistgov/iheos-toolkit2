@@ -30,7 +30,7 @@ public class JavaSerializationIO implements ILoggerIO  {
 			try {
 				out.close();
 			} catch (IOException e) {
-				throw new XdsInternalException("Cannot write transaction log file", e);
+//				throw new XdsInternalException("Cannot write transaction log file", e);
 			}
 		}
 	}

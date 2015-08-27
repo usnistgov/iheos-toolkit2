@@ -17,7 +17,7 @@ public class AssertionResults implements IsSerializable, Serializable {
 	}
 	
 	public AssertionResults(String assertion, boolean status) {
-		assertions = new ArrayList<AssertionResult>();
+		assertions = new ArrayList<>();
 		assertions.add(new AssertionResult(assertion, status));
 	}
 

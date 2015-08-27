@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.registrymetadata.client.Code;
 import gov.nist.toolkit.results.client.CodesConfiguration;
@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by bill on 8/26/15.
  */
-public class GetAll extends CommonServiceManager {
+public class GetAll extends CommonService {
     Session session;
 
     public GetAll(Session session) throws XdsException {

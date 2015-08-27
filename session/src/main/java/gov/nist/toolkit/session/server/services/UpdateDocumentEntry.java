@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdsexception.XdsException;
 
 import java.util.List;
 
-public class UpdateDocumentEntry extends CommonServiceManager {
+public class UpdateDocumentEntry extends CommonService {
 	Session session;
 	
 	public UpdateDocumentEntry(Session session) throws XdsException {

@@ -39,7 +39,7 @@ import java.util.Map;
  * @author bill
  *
  */
-public class SimulatorServiceManager extends CommonServiceManager {
+public class SimulatorServiceManager extends CommonService {
 	static Logger logger = Logger.getLogger(SimulatorServiceManager.class);
 
 	Session session;

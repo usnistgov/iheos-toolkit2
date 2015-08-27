@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class DashboardServiceManager extends CommonServiceManager {
+public class DashboardServiceManager extends CommonService {
 	
 	static Logger logger = Logger.getLogger(DashboardServiceManager.class);
 	Session session;

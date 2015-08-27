@@ -32,7 +32,7 @@ public class PlanContext extends BasicContext {
 	String currentSection;
 	TestConfig testConfig;
 	TransactionSettings transactionSettings = null;
-	
+
 	public void setTransactionSettings(TransactionSettings ts) {
 		this.transactionSettings = ts;
 		if (ts.patientId != null)
@@ -231,6 +231,7 @@ public class PlanContext extends BasicContext {
 					StepContext step_context = new StepContext(this);
 					step_context.setTestConfig(testConfig);
 					step_context.setTransationSettings(transactionSettings);
+
 					step_context.run(part, this);
 
 					if ( !step_context.getStatus() )
@@ -270,6 +271,7 @@ public class PlanContext extends BasicContext {
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
+			throw e;
 		}
 
 		if (writeLogFiles) {

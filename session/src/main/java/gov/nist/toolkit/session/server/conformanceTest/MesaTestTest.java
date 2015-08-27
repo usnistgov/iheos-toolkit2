@@ -29,7 +29,7 @@ public class MesaTestTest {
 //		ParamBuilder pbuilder = new ParamBuilder();
 //		pbuilder.withParam("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
 //		params.put("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
-//		new XdsTestServiceManager(session).runMesaTest(
+//		new XdsTestServiceManager(session).run(
 //				mesaTestSession,
 //				siteSpec,
 //				testName,
@@ -44,7 +44,7 @@ public class MesaTestTest {
 //		String testName = "11901";
 //		siteSpec.isTls = false;
 //		params.put("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
-//		new XdsTestServiceManager(session).runMesaTest(mesaTestSession, siteSpec, testName, sections, params, params2, stopOnFirstFailure);
+//		new XdsTestServiceManager(session).run(mesaTestSession, siteSpec, testName, sections, params, params2, stopOnFirstFailure);
 //	}
 //
 //	//	@Test
@@ -52,7 +52,7 @@ public class MesaTestTest {
 //		String testName = "11966";
 //		ParamBuilder pbuilder = new ParamBuilder();
 //		pbuilder.withParam("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
-//		List<Result> results = new XdsTestServiceManager(session).runMesaTest(
+//		List<Result> results = new XdsTestServiceManager(session).run(
 //				mesaTestSession,
 //				siteSpec(),
 //				testName,
@@ -131,7 +131,7 @@ public class MesaTestTest {
 //		List<TestResult> testResults = new ArrayList<TestResult>();
 //		for (String testName : rb_tests) {
 //			TestResult testResult = new TestResult(testName);
-//			List<Result> results = new XdsTestServiceManager(session).runMesaTest(
+//			List<Result> results = new XdsTestServiceManager(session).run(
 //					mesaTestSession,
 //					siteSpec(),
 //					testName,
@@ -176,7 +176,7 @@ public class MesaTestTest {
 //	List<TestResult> runtest(String testName, ParamBuilder pbuilder) {
 //		List<TestResult> testResults = new ArrayList<TestResult>();
 //		TestResult testResult = new TestResult(testName);
-//		List<Result> results = new XdsTestServiceManager(session).runMesaTest(
+//		List<Result> results = new XdsTestServiceManager(session).run(
 //				mesaTestSession,
 //				siteSpec(),
 //				testName,
