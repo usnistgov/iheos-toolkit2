@@ -68,7 +68,7 @@ public class ValidateMessageService extends CommonService {
 			try {
 				ValidationStep vs = mvc.getValidationStep(step);
 				GwtErrorRecorder ger = (GwtErrorRecorder) vs.getErrorRecorder();
-				List<ValidatorErrorItem> errs = ger.getValidatorErrorInfo();
+				List<ValidatorErrorItem> errs = ger.getValidatorErrorItems();
 				mvr.addResult(vs.getStepName(), errs);
 				mvr.addSummary(vs.getStepName(), ger.getSummaryErrorInfo());
 			} catch (Exception e) {}

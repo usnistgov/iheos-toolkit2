@@ -15,7 +15,6 @@ import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.SectionLogMap;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
@@ -1241,7 +1240,6 @@ public abstract class BasicTransaction  {
 		}
 	}
 	public void logSoapRequest(Soap soap) {
-		System.out.println("logSoapRequest: outheader is " + new OMFormatter(soap.getOutHeader()).toString());
 		try {
 			testLog.add_name_value(instruction_output, "OutHeader", soap.getOutHeader());
 			testLog.add_name_value(instruction_output, "OutAction", getRequestAction());

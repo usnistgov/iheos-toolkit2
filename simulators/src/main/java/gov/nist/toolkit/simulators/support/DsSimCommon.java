@@ -500,18 +500,18 @@ public class DsSimCommon {
 
         logger.debug("Found error recorder for " + clas.getName());
         GwtErrorRecorder ger = (GwtErrorRecorder) er;
-        if (ger.hasErrors()) {
-            logger.debug("has errors");
-            SoapFault fault = new SoapFault(SoapFault.FaultCodes.Sender, "Problem parsing input in validator " + clas.getName());
-            for (ValidatorErrorItem vei : ger.getValidatorErrorInfo()) {
-                String msg = vei.msg;
+        if (ger.hasErrorsOrContext()) {
+            logger.debug("has errors or context");
+            SoapFault fault = new SoapFault(SoapFault.FaultCodes.Sender, "Header/Format Validation errors reported by " + clas.getSimpleName());
+            for (ValidatorErrorItem vei : ger.getValidatorErrorItems()) {
+                logger.debug(vei.toString());
                 String resource = vei.resource;
-                if (vei.level != ValidatorErrorItem.ReportingLevel.ERROR)
+                if (!vei.isErrorOrContext())
                     continue;
-                if (resource == null)
-                    fault.addDetail(msg);
+                if (resource == null || "".equals(resource))
+                    fault.addDetail(vei.getReportable());
                 else
-                    fault.addDetail(msg + "(" + resource + ")");
+                    fault.addDetail(vei.getReportable() + "(" + resource + ")");
             }
             return fault;
         }

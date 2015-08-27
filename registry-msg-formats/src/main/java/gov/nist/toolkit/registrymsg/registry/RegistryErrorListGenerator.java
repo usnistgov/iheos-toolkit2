@@ -67,7 +67,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 		if (!er.hasErrors())
 			return;
 
-		for (ValidatorErrorItem vei : er.getValidatorErrorInfo()) {
+		for (ValidatorErrorItem vei : er.getValidatorErrorItems()) {
 			if (vei.completion == ReportingCompletionType.ERROR) {
 				addError(vei.msg, vei.getCodeString(), vei.location);
 			}
