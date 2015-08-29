@@ -215,7 +215,7 @@ public class RetrieveTransaction extends BasicTransaction {
 				ret_b.setSoap12(soap_1_2);
 				ret_b.setReferenceMetadata(reference_metadata);
 				OMElement result = ret_b.run();
-				testLog.add_name_value(instruction_output, "Result", result);
+//				testLog.add_name_value(instruction_output, "Result", result);
 				ret_b.validate();
 			}
 			catch (XdsPreparsedException e) {

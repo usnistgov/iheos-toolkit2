@@ -6,17 +6,16 @@ import gov.nist.toolkit.valregmsg.validation.schematron.ReportProcessor;
 import gov.nist.toolkit.valregmsg.validation.schematron.schematronValidation;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.xmlbeans.XmlObject;
 import org.jaxen.JaxenException;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class XcpdTransaction extends BasicTransaction {
@@ -43,7 +42,7 @@ public class XcpdTransaction extends BasicTransaction {
 			soapCall(request);
 			OMElement result = getSoapResult();
 			if (result != null) {
-				testLog.add_name_value(instruction_output, "Result", result);
+//				testLog.add_name_value(instruction_output, "Result", result);
 
 				// here get validation call and put here
 

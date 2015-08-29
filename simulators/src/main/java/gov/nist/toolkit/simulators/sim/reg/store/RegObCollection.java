@@ -10,6 +10,7 @@ abstract public class RegObCollection {
 	abstract public Ro getRo(String id);
 	abstract public List<?> getAllRo();
 	abstract public Ro getRoByUid(String uid);
+	abstract public List<String> getIds();
 	abstract public void delete(String id);  	// caller handles synchronization
 	
 }

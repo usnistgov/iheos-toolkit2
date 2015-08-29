@@ -25,7 +25,7 @@ public class CodesConfiguration implements IsSerializable {
 	static public String FolderStatus = "folderStatus";
 	static public String DocumentEntryType = "documentEntryType";
 
-	static public Map<String, String> titles = new HashMap<>();
+	static public Map<String, String> titles = new HashMap<String, String>();
 
 	static {
 		titles.put(ContentTypeCode, "Content Type Code");

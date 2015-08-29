@@ -57,9 +57,7 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 			siz = parent.entries.size();
 		return (siz + entries.size()) + " DocumentEntries";
 	}
-	
 
-	
 	public Ro getRo(String id) {
 		for (DocEntry de : entries) {
 			if (de.id.equals(id))
@@ -478,6 +476,13 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		de.addAll(entries);
 		de.addAll(parent.entries);
 		return de;
+	}
+
+	@Override
+	public List<String> getIds() {
+		List<String> ids = new ArrayList<>();
+		for (DocEntry a : entries) ids.add(a.getId());
+		return ids;
 	}
 
 }

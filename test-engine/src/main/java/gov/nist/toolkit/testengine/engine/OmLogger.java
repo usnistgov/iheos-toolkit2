@@ -9,11 +9,13 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMException;
 import org.apache.axiom.om.OMNode;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public class OmLogger implements ILogger {
+	static Logger logger = Logger.getLogger(OmLogger.class);
 
 	/* (non-Javadoc)
 	 * @see gov.nist.toolkit.testengine.ILogger#add_simple_element(org.apache.axiom.om.OMElement, java.lang.String)

@@ -48,7 +48,8 @@ public class ValidatorErrorItem implements IsSerializable {
 
 	public String getReportable() {
 		StringBuilder buf = new StringBuilder();
-		buf.append(msg);
+		if (hasDTS()) buf.append(dts).append(" : ");
+		buf.append(msg.trim());
 		if (hasExpected() || hasFound() )
 			buf.append('\n').append("Expected [").append(expected).append("]  ").append("Found [ ").append("]\n");
 
@@ -133,8 +134,12 @@ public class ValidatorErrorItem implements IsSerializable {
 
 	void add(StringBuffer buf) {
 		String sp = "    ";
-		buf.append(sp).append(getReportable().trim()).append('[').append(completion).append(']').append("\n");
+		buf.append(sp);
+		if (hasDTS()) buf.append(dts.trim()).append(sp);
+		buf.append(getReportable().trim()).append('[').append(completion).append(']').append("\n");
 	}
+
+	boolean hasDTS() { return dts != null && !"".equals(dts); }
 	
 	String caps(String in) {
 		return in.toUpperCase();

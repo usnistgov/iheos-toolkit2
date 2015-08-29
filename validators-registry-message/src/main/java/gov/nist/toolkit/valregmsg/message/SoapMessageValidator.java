@@ -139,7 +139,7 @@ public class SoapMessageValidator extends MessageValidator {
         setValidationContextFromWSAction(v, wsaction);
         // TODO - finish this
         String expected = "foo";
-        if (true || !v.equals(vc)) {
+        if (!v.equals(vc)) {
             er.error("???", "Expected WS:Action", wsaction, expected, "???");
 //            err("WS-Action wrong: " + wsaction + " not appropriate for message " +
 //                    vc.getTransactionName() + " required Validation Context is " + vc.toString() +

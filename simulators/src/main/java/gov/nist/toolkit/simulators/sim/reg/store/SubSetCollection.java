@@ -196,6 +196,12 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 		return l;
 	}
 
+	@Override
+	public List<String> getIds() {
+		List<String> ids = new ArrayList<>();
+		for (SubSet a : subSets) ids.add(a.getId());
+		return ids;
+	}
 
 
 

@@ -1239,7 +1239,11 @@ public abstract class BasicTransaction  {
 
 		}
 	}
+	boolean soapRequestLogged = false;
+
 	public void logSoapRequest(Soap soap) {
+		if (soapRequestLogged) return;
+		soapRequestLogged = true;
 		try {
 			testLog.add_name_value(instruction_output, "OutHeader", soap.getOutHeader());
 			testLog.add_name_value(instruction_output, "OutAction", getRequestAction());
