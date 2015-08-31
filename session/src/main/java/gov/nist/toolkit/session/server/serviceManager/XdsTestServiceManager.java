@@ -32,8 +32,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class XdsTestServiceManager extends CommonService {
-	private final UtilityRunner utilityRunner = new UtilityRunner(this);
-	private final TestRunner testRunner = new TestRunner(this);
+//	private final UtilityRunner utilityRunner = new UtilityRunner(this);
+//	private final TestRunner testRunner = new TestRunner(this);
 	CodesConfiguration codesConfiguration = null;
 	// always reference through getTestKit()
 	TestKit testKit = null;
@@ -68,7 +68,7 @@ public class XdsTestServiceManager extends CommonService {
 						  Map<String, String> params, Map<String, Object> params2, String[] areas,
 						  boolean stopOnFirstFailure) {
 
-		return utilityRunner.run(session, params, params2, sections, testName, areas,
+		return new UtilityRunner(this).run(session, params, params2, sections, testName, areas,
 				stopOnFirstFailure);
 	}
 
@@ -92,7 +92,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
-		return testRunner.run(session, mesaTestSession, siteSpec, testName, sections, params, params2, stopOnFirstFailure);
+		return new TestRunner(this).run(session, mesaTestSession, siteSpec, testName, sections, params, params2, stopOnFirstFailure);
 	}
 
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession) {
