@@ -158,7 +158,10 @@ public abstract class TabbedWindow {
 		Anchor close = new Anchor();
 		close.setTitle("Close this tab");
 		close.setText("[close]");
-		menuPanel.add(close);
+		
+		if ("xdstools2".equals(GWT.getModuleName())) // Hide this from V3 module
+			menuPanel.add(close);
+			
 		close.addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
