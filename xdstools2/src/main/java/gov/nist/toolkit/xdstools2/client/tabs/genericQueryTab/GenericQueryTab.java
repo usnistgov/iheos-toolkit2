@@ -79,6 +79,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		siteActorManager.setGenericQueryTab(this);
 
 
+		addTextResults("Tab created");
+
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
 		//		EnvironmentSelector.SETENVIRONMENT(toolkitService);
@@ -104,9 +106,11 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		}
 
 		public void onSuccess(List<Result> theresult) {
+//			addTextResults("Received " + theresult.size() + " results");
 			boolean status = true;
 			results = theresult;
 			for (Result result : results) {
+//				addTextResults("Received " + result.assertions.assertions.size() + " assertions");
 				for (AssertionResult ar : result.assertions.assertions) {
 					String assertion = ar.assertion.replaceAll("\n", "<br />");
 					if (ar.status) {
@@ -159,6 +163,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return queryBoilerplate;
 	}
 
+	//
+	// These three versions of addQueryBoilerplate should be made into static methods
+	//  probably hung off a QueryBoilerplateFactory class
 	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings, ActorType selectByActor) {
 		if (queryBoilerplate != null) {
 			queryBoilerplate.remove();
@@ -215,6 +222,14 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		HTML msgBox = new HTML();
 		msgBox.setText(text);
 		return msgBox;		
+	}
+
+	public void addHtmlResults(String html) {
+		resultPanel.add(addHTML(html));
+	}
+
+	public void addTextResults(String text) {
+		resultPanel.add(addText(text));
 	}
 
 	protected void showMessage(Throwable caught) {
@@ -445,8 +460,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			}
 		}
 
-		resultPanel = new VerticalPanel();
-		topPanel.add(resultPanel);
+//		topPanel.add(resultPanel);
 
 		if (runEnabled) {
 			setGoButton(new Button("Run"));

@@ -21,7 +21,7 @@ import java.util.Map;
 public class UtilityRunner {
     private final XdsTestServiceManager xdsTestServiceManager;
     static Logger logger = Logger.getLogger(UtilityRunner.class);
-    AssertionResults assertionResults;
+    AssertionResults assertionResults = new AssertionResults();;
 
     public UtilityRunner(XdsTestServiceManager xdsTestServiceManager) {
         this.xdsTestServiceManager = xdsTestServiceManager;
@@ -55,9 +55,9 @@ public class UtilityRunner {
             if (session.xt == null)
                 session.xt = xdsTestServiceManager.getNewXt();
 
-            if (assertionResults == null)
-                assertionResults = new AssertionResults();
-            assertionResults = assertionResults;
+//            if (assertionResults == null)
+//                assertionResults = new AssertionResults();
+//            assertionResults = assertionResults;
 
             if (session.transactionSettings.logRepository == null)
                 session.transactionSettings.logRepository = new LogRepositoryFactory().

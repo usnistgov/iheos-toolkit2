@@ -15,7 +15,15 @@ public class QueryBoilerplate {
 	/**
 	 * 
 	 */
+
+	// This class is really a factory class and should be restructured as such.
+	// when this happens a few of the calls below will move to GenericQueryTab
+	// Each query type tab
+	//    extends GenericQueryTab
+	//    contains an instance of QueryBoilerplate
+	// this references the tab class (forward and backward pointers)
 	public final GenericQueryTab genericQueryTab;
+
 	Anchor reload;
 	
 	public void enableRun(boolean enable) {
