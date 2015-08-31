@@ -1,59 +1,26 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymetadata.client.AnyId;
-import gov.nist.toolkit.registrymetadata.client.AnyIds;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.registrymetadata.client.Uid;
-import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.services.FindDocuments;
-import gov.nist.toolkit.session.server.services.FindDocumentsByRefId;
-import gov.nist.toolkit.session.server.services.FindFolders;
-import gov.nist.toolkit.session.server.services.FindPatient;
-import gov.nist.toolkit.session.server.services.FolderValidation;
-import gov.nist.toolkit.session.server.services.GetAssociations;
-import gov.nist.toolkit.session.server.services.GetDocuments;
-import gov.nist.toolkit.session.server.services.GetFolderAndContents;
-import gov.nist.toolkit.session.server.services.GetFolders;
-import gov.nist.toolkit.session.server.services.GetFoldersForDocument;
-import gov.nist.toolkit.session.server.services.GetObjects;
-import gov.nist.toolkit.session.server.services.GetRelated;
-import gov.nist.toolkit.session.server.services.GetSSandContents;
-import gov.nist.toolkit.session.server.services.GetSubmissionSets;
-import gov.nist.toolkit.session.server.services.LifecycleValidation;
-import gov.nist.toolkit.session.server.services.MpqFindDocuments;
-import gov.nist.toolkit.session.server.services.ProvideAndRetrieve;
-import gov.nist.toolkit.session.server.services.RegisterAndQuery;
-import gov.nist.toolkit.session.server.services.RetrieveDocument;
-import gov.nist.toolkit.session.server.services.SrcStoresDocVal;
-import gov.nist.toolkit.session.server.services.SubmitRegistryTestdata;
-import gov.nist.toolkit.session.server.services.SubmitRepositoryTestdata;
-import gov.nist.toolkit.session.server.services.SubmitXDRTestdata;
+import gov.nist.toolkit.session.server.services.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-public class QueryServiceManager extends CommonServiceManager {
+public class QueryServiceManager extends CommonService {
 
 	static Logger logger = Logger.getLogger(QueryServiceManager.class);
 	Session session;
@@ -293,7 +260,31 @@ public class QueryServiceManager extends CommonServiceManager {
 			return buildResultList(e);
 		}
 	}
-	
+
+	public List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
+		logger.debug(session.id() + ": " + "mpqFindDocuments");
+		List<String> classCodes = selectedCodes.get(CodesConfiguration.ClassCode);
+		List<String> hcftCodes = selectedCodes.get(CodesConfiguration.HealthcareFacilityTypeCode);
+		List<String> eventCodes = selectedCodes.get(CodesConfiguration.EventCodeList);
+
+		try {
+			return new MpqFindDocuments(session).run(site, pid, classCodes, hcftCodes,
+					eventCodes);
+		} catch (XdsException e) {
+			return buildResultList(e);
+		}
+	}
+
+	public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
+		logger.debug(session.id() + ": " + "getAll");
+
+		try {
+			return new GetAll(session).run(site, pid, selectedCodes);
+		} catch (XdsException e) {
+			return buildResultList(e);
+		}
+	}
+
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();

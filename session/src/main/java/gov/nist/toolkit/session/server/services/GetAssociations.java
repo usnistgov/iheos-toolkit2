@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GetAssociations extends CommonServiceManager {
+public class GetAssociations extends CommonService {
 	String returnType = "LeafClass";
 	Session session;
 

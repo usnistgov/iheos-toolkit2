@@ -39,7 +39,6 @@ public class SimCommon {
 	boolean tls = false;
 	MessageValidationResults mvr = null;
 	public MessageValidatorEngine mvc = null;
-	//	SoapMessageValidator smv = null;
 	public ValidationContext vc = null;
 	HttpServletResponse response = null;
 	OutputStream os = null;

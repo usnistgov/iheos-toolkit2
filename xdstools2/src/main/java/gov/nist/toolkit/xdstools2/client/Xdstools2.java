@@ -38,7 +38,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	TabContainer getTabContainer() { return this;}
 
-	static TkProps props;
+	static TkProps props = new TkProps();
 	static public boolean showEnvironment = true;
 	
 	static EventBus eventBus = null;	
@@ -150,11 +150,37 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 				props = arg0;
 //				if (props.isEmpty())
 //					new PopupMessage("Load of TkProps failed");
-				if (newHomeTab)
+				if (newHomeTab) {
 					onModuleLoad2();
+					ht.toolkitService.getDefaultEnvironment(new AsyncCallback<String>() {
+						@Override
+						public void onFailure(Throwable throwable) {
+
+						}
+
+						@Override
+						public void onSuccess(String s) {
+							ht.toolkitService.setEnvironment(s, new AsyncCallback() {
+								@Override
+								public void onFailure(Throwable throwable) {
+
+								}
+
+								@Override
+								public void onSuccess(Object o) {
+
+								}
+							});
+						}
+					});
+
+				}
 			}
 
 		});
+//		if (newHomeTab)
+//			onModuleLoad2();
+
 	}
 
 	private void onModuleLoad2() {
@@ -218,6 +244,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 				}
 			}
 		});
+
 	}
 
 

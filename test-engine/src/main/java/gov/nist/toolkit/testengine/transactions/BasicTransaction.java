@@ -57,7 +57,7 @@ public abstract class BasicTransaction  {
 	static public final short xds_b = 2;
 	short xds_version = BasicTransaction.xds_none;
 	protected String endpoint = null;
-	HashMap<String, String> local_linkage_data ;  // dangerous, most of linkage kept inside Linkage class
+	HashMap<String, String> local_linkage_data = new HashMap<>() ;  // dangerous, most of linkage kept inside Linkage class
 	Linkage linkage = null;
 	protected String metadata_filename = null;
 
@@ -373,10 +373,11 @@ public abstract class BasicTransaction  {
 
 		RegistryResponseParser registry_response = new RegistryResponseParser(registry_result);
 
-		validateSchema(registry_result, metadata_type);
-
-		// check that status == success
 		String status = registry_response.get_registry_response_status();
+
+		if (!"Fault".equals(status))
+			validateSchema(registry_result, metadata_type);
+
 		ArrayList<String> returned_code_contexts = registry_response.get_error_code_contexts();
 
 		RegistryErrorListGenerator rel  = null;
@@ -399,7 +400,7 @@ public abstract class BasicTransaction  {
 
 		eval_expected_status(status, returned_code_contexts);
 		if (step_failure == false && validatorErrors.size() != 0) {
-			StringBuffer msg = new StringBuffer();
+			StringBuilder msg = new StringBuilder();
 			for (int i=0; i<validatorErrors.size(); i++) {
 				msg.append(validatorErrors.get(i));
 				msg.append("\n");
@@ -694,16 +695,34 @@ public abstract class BasicTransaction  {
 		showEndpoint();
 	}
 
-	String failMsg = null;
+	List<String> failMsgs = null;
 
 	public void fail(String msg) throws XdsInternalException {
-		failMsg = msg;
+		failMsgs = asList(msg);
 		failed();
 		s_ctx.set_error(msg);
 	}
 
+    public void fail(List<String> msgs) throws XdsInternalException {
+        failMsgs = msgs;
+        failed();
+        for (String x : msgs) s_ctx.set_error(x);
+    }
+
+    String asString(List<String> strs) {
+        StringBuilder buf = new StringBuilder();
+        for (String x : strs) buf.append(x).append("\n");
+        return buf.toString();
+    }
+
+    List<String> asList(String str) {
+        List<String> lst = new ArrayList<>();
+        lst.add(str);
+        return lst;
+    }
+
 	public String getFail() {
-		return failMsg;
+		return asString(failMsgs);
 	}
 
 	protected void fatal(String msg) throws XdsInternalException {
@@ -758,8 +777,11 @@ public abstract class BasicTransaction  {
 
 			TestMgmt tm = new TestMgmt(testConfig);
 			if ( assign_patient_id ) {
+//				System.out.println("============================= assign_patient_id  in BasicTransaction#prepareMetadata()==============================");
 				// get and insert PatientId
 				String forced_patient_id = s_ctx.get("PatientId");
+//                System.out.println("    to " + forced_patient_id)
+//              s_ctx.dumpContextRecursive();
 				if (s_ctx.useAltPatientId()) {
 					forced_patient_id = s_ctx.get("AltPatientId");
 				}
@@ -1167,6 +1189,7 @@ public abstract class BasicTransaction  {
 
 			soap.setSecurityParams(s_ctx.getTransactionSettings().securityParams);
 
+			logger.info("Making soap call");
 			soap.soapCall(requestBody,
 					endpoint,
 					useMtom, //mtom
@@ -1175,18 +1198,30 @@ public abstract class BasicTransaction  {
 					getRequestAction(),
 					getResponseAction(), this.planContext.getExtraLinkage()
 			);
+			logger.info("back from making soap call");
 		}
 		catch (AxisFault e) {
+			logger.info("soap fault");
+			logSoapRequest(soap);
+			logger.info("soap fault reported 1");
 			s_ctx.set_error("SOAPFault: " + e.getMessage() + "\nEndpoint is " + endpoint);
-			if ( !s_ctx.expectFault())
-				s_ctx.set_fault(e);
+			logger.info("soap fault reported 2");
+			try {
+				if (!s_ctx.expectFault())
+					s_ctx.set_fault(e);
+			} catch (Exception e1) { // throws fault - deal with it
+			}
+				logger.info("soap fault reported 3");
+
 		}
 		catch (XdsInternalException e) {
+			logger.info("internal exception");
 			s_ctx.set_error(e.getMessage());
 			failed();
 			logSoapRequest(soap);
 		}
 		finally {
+			logger.info("finally");
 			soap.clearHeaders();
 		}
 
@@ -1194,15 +1229,21 @@ public abstract class BasicTransaction  {
 
 		if (s_ctx.getExpectedStatus().isSuccess()) {
 			RegistryResponseParser registry_response = new RegistryResponseParser(getSoapResult());
-			String errs = registry_response.get_regrep_error_msg();
-			if (errs != null && !errs.equals("")) {
-				s_ctx.set_error(errs);
+			List<String> errs = registry_response.get_regrep_error_msgs();
+			if (errs.size() > 0) {
+                System.out.println("Received errors in response");
+                for (String err : errs)
+				    s_ctx.set_error(err);
 				failed();
 			}
 
 		}
 	}
+	boolean soapRequestLogged = false;
+
 	public void logSoapRequest(Soap soap) {
+		if (soapRequestLogged) return;
+		soapRequestLogged = true;
 		try {
 			testLog.add_name_value(instruction_output, "OutHeader", soap.getOutHeader());
 			testLog.add_name_value(instruction_output, "OutAction", getRequestAction());
@@ -1210,7 +1251,7 @@ public abstract class BasicTransaction  {
 			testLog.add_name_value(instruction_output, "InHeader", soap.getInHeader());
 			testLog.add_name_value(instruction_output, "Result", soap.getResult());
 		} catch (Exception e) {
-			System.out.println("oops");
+			System.out.println("Cannot log soap request");
 			e.printStackTrace();
 		}
 	}

@@ -97,6 +97,32 @@ public class Metadata {
 		return buf.toString();
 	}
 
+	public String getSummary() {
+		StringBuffer buf = new StringBuffer();
+
+		buf.append("ExtrinsicObjects\n");
+		for (OMElement e : extrinsicObjects)
+			buf.append("\t").append(getId(e)).append("\n");
+
+		buf.append("Folders\n");
+		for (OMElement e : folders)
+			buf.append("\t").append(getId(e)).append("\n");
+
+		buf.append("SubmissionSets\n");
+		for (OMElement e : submissionSets)
+			buf.append("\t").append(getId(e)).append("\n");
+
+		buf.append("Associations\n");
+		for (OMElement e : associations)
+			buf.append("\t").append(getId(e)).append("\n");
+
+		buf.append("ObjectRefs\n");
+		for (OMElement e : objectRefs)
+			buf.append("\t").append(getId(e)).append("\n");
+
+		return buf.toString();
+	}
+
 	boolean version2;
 
 	OMElement metadataDup = null; // both of these are set by dup_wrapper which
@@ -1208,11 +1234,11 @@ public class Metadata {
 		return objs;
 	}
 
-	public String getId(OMElement ele) {
+	static public String getId(OMElement ele) {
 		return ele.getAttributeValue(MetadataSupport.id_qname);
 	}
 
-	public String getVersion(OMElement ele) {
+	static public String getVersion(OMElement ele) {
 		OMElement ve = XmlUtil.firstChildWithLocalName(ele, "VersionInfo");
 		if (ve == null)
 			return "1.1";
@@ -1256,7 +1282,7 @@ public class Metadata {
 		}
 	}
 
-	public String getLid(OMElement ele) {
+	static public String getLid(OMElement ele) {
 		return ele.getAttributeValue(MetadataSupport.lid_qname);
 	}
 
@@ -1264,15 +1290,15 @@ public class Metadata {
 		ele.addAttribute("lid", lid, null);
 	}
 
-	public String getSourceObject(OMElement assoc) {
+	static public String getSourceObject(OMElement assoc) {
 		return assoc.getAttributeValue(MetadataSupport.source_object_qname);
 	}
 
-	public String getTargetObject(OMElement assoc) {
+	static public String getTargetObject(OMElement assoc) {
 		return assoc.getAttributeValue(MetadataSupport.target_object_qname);
 	}
 
-	public String getAssocType(OMElement assoc) {
+	static public String getAssocType(OMElement assoc) {
 		return assoc.getAttributeValue(MetadataSupport.association_type_qname);
 	}
 
@@ -1288,11 +1314,11 @@ public class Metadata {
 		return parts[parts.length - 1];
 	}
 
-	public String getAssocSource(OMElement assoc) {
+	static public String getAssocSource(OMElement assoc) {
 		return assoc.getAttributeValue(MetadataSupport.source_object_qname);
 	}
 
-	public String getAssocTarget(OMElement assoc) {
+	static public String getAssocTarget(OMElement assoc) {
 		return assoc.getAttributeValue(MetadataSupport.target_object_qname);
 	}
 

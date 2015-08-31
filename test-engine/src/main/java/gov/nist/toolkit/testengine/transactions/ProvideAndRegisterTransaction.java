@@ -14,15 +14,6 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.HttpCodeException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMText;
@@ -38,6 +29,13 @@ import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProvideAndRegisterTransaction extends RegisterTransaction {
 	boolean use_xop = true;
@@ -109,7 +107,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 					testLog.add_name_value(instruction_output, "Result", "None");
 					s_ctx.set_error("Result was null");
 				} else {
-					testLog.add_name_value(instruction_output, "Result", result);
+//					testLog.add_name_value(instruction_output, "Result", result);
 
 					validate_registry_response(
 							result,
@@ -173,11 +171,11 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 					} else {
 						OMElement rr = XmlUtil.firstChildWithLocalName(result, "RegistryResponse");
 						if (rr == null) {
-							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
+//							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
 							testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 							s_ctx.set_error("Result has no RegistryResponse");
 						} else {
-							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
+//							testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
 							validate_registry_response(rr, MetadataTypes.METADATA_TYPE_PR);
 						}
 					}
@@ -269,11 +267,11 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 				} else {
 					OMElement rr = XmlUtil.firstChildWithLocalName(result, "RegistryResponse");
 					if (rr == null) {
-						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
+//						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(result.toString()));
 						testLog.add_name_value(instruction_output, "StepStatus", "Failure");
 						s_ctx.set_error("Result has no RegistryResponse");
 					} else {
-						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
+//						testLog.add_name_value(instruction_output, "Result", Util.parse_xml(rr.toString()));
 						validate_registry_response(rr, MetadataTypes.METADATA_TYPE_PR);
 					}
 				}

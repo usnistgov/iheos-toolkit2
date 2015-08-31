@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.registrymetadata.client.Code;
 import gov.nist.toolkit.results.client.Result;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MpqFindDocuments extends CommonServiceManager {
+public class MpqFindDocuments extends CommonService {
 	Session session;
 	
 	public MpqFindDocuments(Session session) throws XdsException {

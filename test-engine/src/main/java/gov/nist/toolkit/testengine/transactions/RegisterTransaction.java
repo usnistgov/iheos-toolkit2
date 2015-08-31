@@ -52,7 +52,7 @@ public class RegisterTransaction extends BasicTransaction {
 			soapCall(request);
 			OMElement result = getSoapResult();
 			if (result != null) {
-				testLog.add_name_value(instruction_output, "Result", result);
+//				testLog.add_name_value(instruction_output, "Result", result);
 
 				validate_response(result);
 

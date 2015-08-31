@@ -677,19 +677,22 @@ public class XdsTest {
 		if (testSpecs == null)
 			throw new Exception("XdsTest#runAndReturnLogs: testSpecs is null");
 
+        this.status = true;
 		for (TestDetails testSpec : testSpecs) {
 			System.out.println("Test: " + testSpec.getTestNum());
 			testConfig.testNum = testSpec.getTestNum();
 			System.out.println("Sections: " + testSpec.testPlanFileMap.keySet());
 			for (String section : testSpec.testPlanFileMap.keySet()) {
+                // This is experimental - this would improve output quality but does it break anything?
+                String sectionLabel = testSpec.getTestNum() + "-" + ((section.equals(".") ? "default" : section ));
 				File testPlanFile = testSpec.testPlanFileMap.get(section);
 
 				testConfig.testplanDir = testPlanFile.getParentFile();
 				testConfig.logFile = null;
 				
-				File logDirectory = logRepository.logDir();
+				File logDirectory = logRepository.logDir(testSpec.getTestNum());
 				if (ts != null && ts.logRepository != null)
-					logDirectory = ts.logRepository.logDir();
+					logDirectory = ts.logRepository.logDir(testSpec.getTestNum());
 
 				if (writeLogFiles) {
 					// This is the log.xml file
@@ -708,7 +711,10 @@ public class XdsTest {
 				plan.setTransactionSettings(ts);
 
 				boolean status =  plan.run(testPlanFile);
-				this.status = status;
+				// this.status records whether any test failed
+                if (this.status)
+    				this.status = status;
+                // This use of section is used to link reports in log files
 				testSpec.addTestPlanLog(section, new LogFileContent(plan.results_document));
 
 				if (status) 
@@ -719,10 +725,13 @@ public class XdsTest {
 				if (!status)
 					runHadError = true;
 
-				if (stopOnFirstFailure && status == false) {
-					System.out.println("Stopping on first failure");
-					break;
-				}
+                if (this.status == false) {
+                    if (stopOnFirstFailure) {
+                        System.out.println("Stopping on first failure");
+                        return testSpecs;
+                    }
+                    System.out.println("Continuing after errors");
+                }
 			}
 		}
 		return testSpecs;
@@ -951,9 +960,8 @@ public class XdsTest {
 	public void setToolkit(File toolkit) throws IOException {
 		this.toolkit = toolkit;
 		mgmt = toolkit + File.separator + "xdstest";
-		logRepository = //new TestLogRepository(null);
+		logRepository =
 		new LogRepositoryFactory().getRepository(Installation.installation().testLogFile(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
-//		logRepository = new File(toolkit + File.separator + "logs");
 		testConfig.testmgmt_dir = mgmt;
 	}
 

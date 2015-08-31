@@ -40,10 +40,11 @@ public class TestKitLog {
 			path = new File(testLog + File.separator + parts[2] +  File.separator + "log.xml");
 		else
 			path = new File(testLog + File.separator + "log.xml");
-		System.out.println("testlog is " + testLog);
-		System.out.println("testspec is " + testPlan);
-		System.out.println("log file is " + path);
-		System.out.println("relative path is " + relativePath);
+		System.out.println("getLogFile");
+		System.out.println("   testlog is " + testLog);
+		System.out.println("   testspec is " + testPlan);
+		System.out.println("   log file is " + path);
+		System.out.println("   relative path is " + relativePath);
 		path.getParentFile().mkdirs();
 
 		return path;

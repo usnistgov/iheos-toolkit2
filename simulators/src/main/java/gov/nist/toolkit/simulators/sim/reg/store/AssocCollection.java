@@ -83,7 +83,14 @@ public class AssocCollection extends RegObCollection implements Serializable {
 	public Ro getRoByUid(String uid) {
 		return null;
 	}
-	
+
+	@Override
+	public List<String> getIds() {
+		List<String> ids = new ArrayList<>();
+		for (Assoc a : assocs) ids.add(a.getId());
+		return ids;
+	}
+
 	/**
 	 * Any of the parameters may be null implying ANY.
 	 * @param sourceId

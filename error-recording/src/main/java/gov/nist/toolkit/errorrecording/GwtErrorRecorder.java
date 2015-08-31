@@ -68,7 +68,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		return codes;
 	}
 		
-	public List<ValidatorErrorItem> getValidatorErrorInfo() {
+	public List<ValidatorErrorItem> getValidatorErrorItems() {
 		return errMsgs;
 	}
 	
@@ -78,12 +78,18 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	public boolean hasErrors() {
 		for (ValidatorErrorItem vei : errMsgs) {
-			if ((vei.level == ValidatorErrorItem.ReportingLevel.ERROR) || (vei.level == ValidatorErrorItem.ReportingLevel.D_ERROR))
-				return true;
+			if (vei.isError()) return true;
 		}
 		return false;
 	}
-	
+
+	public boolean hasErrorsOrContext() {
+		for (ValidatorErrorItem vei : errMsgs) {
+			if (vei.isErrorOrContext()) return true;
+		}
+		return false;
+	}
+
 	public void err(Code code, String msg, String location, String resource) {
 		if (msg == null || msg.trim().equals(""))
 			return;
@@ -97,13 +103,23 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
 		errMsgs.add(ei);
 		lastErrCount++;
-		for (int i=errMsgs.size()-1; i>0; i--) {
-			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
-				break;
-			if (ei.level == ValidatorErrorItem.ReportingLevel.CHALLENGE) {
-				ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
+		propagateError();
+	}
+
+	// propogate error labeling to previous CHALLENGE
+	// so context of error is sent/viewed
+	private void propagateError() {
+		logger.debug("propagating errors");
+		for (int i=errMsgs.size()-2; i>=0; i--) {
+			ValidatorErrorItem ei = errMsgs.get(i);
+			if (ei.level == ReportingLevel.SECTIONHEADING)
+				break;  // too far
+			if (ei.level == ReportingLevel.CHALLENGE) {
+				ei.completion = ReportingCompletionType.ERROR;
+				break; // done
 			}
 		}
+		logger.debug("Results\n" + toString());
 	}
 
 	public void err(Code code, Exception e) {
@@ -302,9 +318,6 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 
 	@Override
 	public void error(String dts, String name, String found, String expected,String RFC) {
-		if (dts == null || dts.trim().equals(""))
-			return;
-		logger.debug(ExceptionUtil.here("err - " + dts));
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.D_ERROR;
 		ei.dts = dts;
@@ -316,14 +329,9 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
 		errMsgs.add(ei);
 		lastErrCount++;
-		for (int i=errMsgs.size()-1; i>0; i--) {
-			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
-				break;
-			if (ei.level == ValidatorErrorItem.ReportingLevel.CHALLENGE) {
-				ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
-			}
-		}
-		
+		// propagate error labeling so context is given
+		propagateError();
+
 	}
 
 	@Override

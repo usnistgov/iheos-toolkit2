@@ -208,7 +208,13 @@ public class FolCollection extends RegObCollection implements Serializable {
 		fs.addAll(parent.fols);
 		return fs;
 	}
-	
+
+	@Override
+	public List<String> getIds() {
+		List<String> ids = new ArrayList<>();
+		for (Fol a : fols) ids.add(a.getId());
+		return ids;
+	}
 
 
 }

@@ -31,6 +31,11 @@
 
     <repositories>
         <repository>
+            <id>gazelle-3rd-party</id>
+            <name>gazelle nexus</name>
+            <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
+        </repository>
+        <repository>
             <id>repository.jboss.org-public</id>
             <name>JBoss.org Maven repository</name>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
@@ -47,11 +52,6 @@
             <id>Codehaus Mojo</id>
             <name>Codehaus Mojo</name>
             <url>https://nexus.codehaus.org/content/repositories/releases/</url>
-        </repository>
-        <repository>
-            <id>gazelle-3rd-party</id>
-            <name>gazelle nexus</name>
-            <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
         </repository>
     </repositories>
 
@@ -252,6 +252,39 @@
                 <version>${junit.version}</version>
             </dependency>
 
+            <!--Sunil's demo was 3.0.5 - cannot find jars via mvn repositories-->
+            <dependency>
+                <groupId>net.timewalker.ffmq3</groupId>
+                <artifactId>ffmq3-core</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>net.timewalker.ffmq3</groupId>
+                <artifactId>ffmq3-server</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+            <dependency>
+                <groupId>net.timewalker.ffmq3</groupId>
+                <artifactId>ffmq3-tools</artifactId>
+                <version>3.0.5</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>javax.jms</groupId>
+                <artifactId>jms</artifactId>
+                <version>1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>mx4j</groupId>
+                <artifactId>mx4j</artifactId>
+                <version>3.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>mx4j</groupId>
+                <artifactId>mx4j-remote</artifactId>
+                <version>3.0.2</version>
+            </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
@@ -330,7 +363,7 @@
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
+                <version>1.2.12</version>  <!-- was 1.2.17 -->
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
@@ -367,7 +400,8 @@
             <dependency>
                 <groupId>com.google.gwt</groupId>
                 <artifactId>gwt-servlet</artifactId>
-                <scope>runtime</scope>
+                <scope>provided</scope>
+                <!--<scope>runtime</scope>-->
                 <version>${gwtVersion}</version>
             </dependency>
             <dependency>
@@ -484,6 +518,11 @@
                 <artifactId>axis2</artifactId>
                 <version>1.5.4</version>
             </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>5.0.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -516,6 +555,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>

@@ -49,7 +49,7 @@ public class Session implements SecurityParams {
 	public Xdstest2 xt;
 	public SiteSpec siteSpec = new SiteSpec();
 	public String repUid;
-	public AssertionResults res;
+	public AssertionResults assertionResults;
 	public TransactionSettings transactionSettings = new TransactionSettings();
 	public boolean isAdmin = false;
 	public boolean isSoap = true;
@@ -318,7 +318,7 @@ public class Session implements SecurityParams {
 	 */
 	public void clear() {
 		xt = null;
-		res = null;
+		assertionResults = null;
 	}
 
 	public Metadata getLastMetadata() {

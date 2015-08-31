@@ -6,15 +6,16 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMException;
+import org.apache.axiom.om.OMNode;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMException;
-import org.apache.axiom.om.OMNode;
-
 public class OmLogger implements ILogger {
+	static Logger logger = Logger.getLogger(OmLogger.class);
 
 	/* (non-Javadoc)
 	 * @see gov.nist.toolkit.testengine.ILogger#add_simple_element(org.apache.axiom.om.OMElement, java.lang.String)
@@ -88,7 +89,7 @@ public class OmLogger implements ILogger {
 	@Override
 	public OMElement add_name_value(OMElement parent, String name, String value) {
 		name = name.replaceAll(":", " ");
-		System.out.println(name + ": " + value);
+//		System.out.println(name + ": " + value);
 		OMElement ele = MetadataSupport.om_factory.createOMElement(name, null);
 		ele.addChild(MetadataSupport.om_factory.createOMText(encodeLT(value)));
 		parent.addChild(ele);

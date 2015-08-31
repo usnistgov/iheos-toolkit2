@@ -1,13 +1,13 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.xdsexception.MetadataException;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 public class RegistryFactory {
 
@@ -24,11 +24,15 @@ public class RegistryFactory {
 
 		String version = m.getVersion(ele);
 
-		try {
-			int verI = Integer.parseInt(version);
-			de.version = verI;
-		} catch (NumberFormatException e) {
-			throw new MetadataException("Version attribute does not parse as an integer, value is " + version, null);
+		if ("1.1".equals(version)) {
+			de.version = 0;
+		} else {
+			try {
+				int verI = Integer.parseInt(version);
+				de.version = verI;
+			} catch (NumberFormatException e) {
+				throw new MetadataException("Version attribute does not parse as an integer, value is " + version, null);
+			}
 		}
 
 		de.creationTime = m.getSlotValue(ele, "creationTime", 0);
@@ -152,6 +156,31 @@ public class RegistryFactory {
 
 		for (OMElement ele : m.getAssociations())
 			buildAssocIndex(m, ele, delta);
+	}
+
+	static public Ro buildMetadataIndex(OMElement ele, String filePath, MetadataCollection delta) throws MetadataException {
+		Metadata m = MetadataParser.parseObject(ele);
+		if (m.getExtrinsicObjectIds().size() != 0) {
+			Ro ro = buildDocEntryIndex(m, ele, delta);
+			ro.setFile(filePath);
+			return ro;
+		}
+		if (m.getSubmissionSetIds().size() != 0) {
+			Ro ro = buildSubSetIndex(m, ele, delta);
+			ro.setFile(filePath);
+			return ro;
+		}
+		if (m.getFolderIds().size() != 0) {
+			Ro ro = buildFolIndex(m, ele, delta);
+			ro.setFile(filePath);
+			return ro;
+		}
+		if (m.getAssociationIds().size() != 0) {
+			Ro ro = buildAssocIndex(m, ele, delta);
+			ro.setFile(filePath);
+			return ro;
+		}
+		return null;
 	}
 
 	static void nullIdCheck(Ro ro) throws MetadataException {

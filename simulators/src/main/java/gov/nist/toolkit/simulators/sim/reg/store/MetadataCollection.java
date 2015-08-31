@@ -16,6 +16,8 @@ import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,20 +26,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.axiom.om.OMElement;
-
 public class MetadataCollection implements Serializable, RegistryValidationInterface {
-
 	private static final long serialVersionUID = 1L;
-
 
 	public DocEntryCollection docEntryCollection;
 	public AssocCollection assocCollection;
 	public SubSetCollection subSetCollection;
 	public FolCollection folCollection;
 
-
+	// collection of collections
 	transient List<RegObCollection> allCollections = null;
+
 	public transient FolCollection updatedFolCollection;
 	transient boolean dirty;
 	transient public RegIndex regIndex;
@@ -46,6 +45,13 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	// To maintain a delta ...
 	transient MetadataCollection parent = null;
 	transient List<OldValueNewValueStatus> statusChanges = null;
+
+	public MetadataCollection() {
+		init();
+		buildAllCollections();
+	}
+
+	Logger logger() { return Logger.getLogger(MetadataCollection.class); }
 
 	// create a delta for this collection
 	public MetadataCollection mkDelta() {
@@ -65,6 +71,32 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		delta.statusChanges = new ArrayList<OldValueNewValueStatus>();
 
 		return delta;
+	}
+
+	public String getStats() { return getStats(""); }
+
+	public String getStats(String prefix) {
+		StringBuilder buf = new StringBuilder();
+
+		buf
+				.append(prefix).append(subSetCollection.statsToString())
+				.append('\n').append(prefix).append(docEntryCollection.statsToString())
+				.append('\n').append(prefix).append(folCollection.statsToString())
+				.append('\n').append(prefix).append(subSetCollection.statsToString())
+				.append('\n');
+		return buf.toString();
+	}
+
+	public String getIdStats(String prefix) {
+		StringBuilder buf = new StringBuilder();
+
+		buf
+				.append(prefix).append(subSetCollection.getIds())
+				.append('\n').append(prefix).append(docEntryCollection.getIds())
+				.append('\n').append(prefix).append(folCollection.getIds())
+				.append('\n').append(prefix).append(subSetCollection.getIds())
+				.append('\n');
+		return buf.toString();
 	}
 
 	public void changeAvailabilityStatus(String id, StatusValue oldValue, StatusValue newValue) {
@@ -159,13 +191,17 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	void buildAllCollections() {
-		if (allCollections == null) {
-			allCollections = new ArrayList<RegObCollection>();
-			allCollections.add(docEntryCollection);
-			allCollections.add(assocCollection);
-			allCollections.add(subSetCollection);
-			allCollections.add(folCollection);
-		}
+//		allCollections = null;
+		if (allCollections == null)
+			allCollections = new ArrayList<RegObCollection>(); // GWT needs explicit type in ArrayList<>
+		allCollections.clear();
+		allCollections.add(docEntryCollection);
+		allCollections.add(assocCollection);
+		allCollections.add(subSetCollection);
+		allCollections.add(folCollection);
+
+		logger().debug("Current metadata index\n" + getStats("   "));
+		logger().debug("...\n" + getIdStats("    "));
 	}
 
 	public String deleteRo(String id) {
@@ -411,43 +447,46 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		StringBuffer buf = new StringBuffer();
 
 		buf
-		.append(docEntryCollection.statsToString()).append("\n")
-		.append(folCollection.statsToString()).append("\n")
-		.append(subSetCollection.statsToString()).append("\n")
-		.append(assocCollection.statsToString()).append("\n");
+				.append(docEntryCollection.statsToString()).append("\n")
+				.append(folCollection.statsToString()).append("\n")
+				.append(subSetCollection.statsToString()).append("\n")
+				.append(assocCollection.statsToString()).append("\n");
 
 		return buf.toString();
 	}
 
 	public void add(DocEntry de) throws MetadataException {
 		idPresentCheck(de);
-			docEntryCollection.entries.add(de);
-			dirty = true;
+		docEntryCollection.entries.add(de);
+		dirty = true;
 	}
 
 	public void add(Assoc a) throws MetadataException {
 		idPresentCheck(a);
-			assocCollection.assocs.add(a);
-			dirty = true;
+		assocCollection.assocs.add(a);
+		dirty = true;
 	}
 
 	public void add(SubSet ss) throws MetadataException {
 		idPresentCheck(ss);
-			subSetCollection.subSets.add(ss);
-			dirty = true;
+		subSetCollection.subSets.add(ss);
+		dirty = true;
 	}
 
 	public void add(Fol f) throws MetadataException {
 		idPresentCheck(f);
-			folCollection.fols.add(f);
-			dirty = true;
+		folCollection.fols.add(f);
+		dirty = true;
 	}
 
 	public void storeMetadata(OMElement ele,  boolean overwriteOk) throws IOException, MetadataException, XdsInternalException {
-		String id = new Metadata().getId(ele);
+		String id = Metadata.getId(ele);
+		logger().debug("storing " + id + "\ngiven current metadata index\n" + getIdStats("    ") );
 		Ro ro = getRo(id);
-		if (ro == null)
+		if (ro == null) {
+			logger().debug("object " + id + " not found in metadata index");
 			throw new XdsInternalException("MetadataCollection#storeMetadata: index corrupted");
+		}
 		File rof = regIndex.getSimDb().getRegistryObjectFile(id);
 
 		if (rof == null)
@@ -466,6 +505,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	public void storeMetadata(Metadata m, boolean overwriteOk) throws MetadataException, IOException, XdsInternalException {
+		logger().debug("storeMetadata:\n" + m.getSummary() + "\ngiven existing index:\n" + getStats("    "));
 		for (OMElement ele : m.getExtrinsicObjects())
 			storeMetadata(ele, overwriteOk);
 

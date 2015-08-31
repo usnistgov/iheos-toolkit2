@@ -27,11 +27,47 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.timewalker.ffmq3</groupId>
+            <artifactId>ffmq3-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mx4j</groupId>
+            <artifactId>mx4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.timewalker.ffmq3</groupId>
+            <artifactId>ffmq3-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.timewalker.ffmq3</groupId>
+            <artifactId>ffmq3-tools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-dom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-common-impl</artifactId>
+        </dependency>
     </dependencies>
 
-<build>
+    <build>
         <plugins>
-<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven-source-plugin.version}</version>
@@ -44,10 +80,10 @@
                     </execution>
                 </executions>
             </plugin>
- 	</plugins>
-</build>
+        </plugins>
+    </build>
 
-  <scm>
-    <tag>v3.0.2a</tag>
-  </scm>
+    <scm>
+        <tag>v3.0.2a</tag>
+    </scm>
 </project>

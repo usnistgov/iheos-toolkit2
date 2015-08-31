@@ -10,6 +10,8 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 public class PlanContext extends BasicContext {
 	OMElement results_document = null;
@@ -33,9 +32,11 @@ public class PlanContext extends BasicContext {
 	String currentSection;
 	TestConfig testConfig;
 	TransactionSettings transactionSettings = null;
-	
+
 	public void setTransactionSettings(TransactionSettings ts) {
 		this.transactionSettings = ts;
+		if (ts.patientId != null)
+			setPatientId(ts.patientId);
 	}
 	
 	public void setTestConfig(TestConfig config) {
@@ -230,6 +231,7 @@ public class PlanContext extends BasicContext {
 					StepContext step_context = new StepContext(this);
 					step_context.setTestConfig(testConfig);
 					step_context.setTransationSettings(transactionSettings);
+
 					step_context.run(part, this);
 
 					if ( !step_context.getStatus() )
@@ -269,6 +271,7 @@ public class PlanContext extends BasicContext {
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
+			throw e;  // error handler above reports error in UI
 		}
 
 		if (writeLogFiles) {

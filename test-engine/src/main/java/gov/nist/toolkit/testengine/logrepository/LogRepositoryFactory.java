@@ -1,7 +1,5 @@
 package gov.nist.toolkit.testengine.logrepository;
 
-import gov.nist.toolkit.actorfactory.SimDb;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -11,8 +9,8 @@ public class LogRepositoryFactory {
 	public enum IO_format { JAVA_SERIALIZATION, JACKSON };
 	
 	public LogRepository getRepository(File location, String user, IO_format format, Id_type idType, String id) throws IOException {
-		LogRepository impl = new LogRepository();
-		impl.logDir = getLogDir(location, user, idType, id);
+		LogRepository impl = new LogRepository(location, user, format, idType, id);
+//		impl.logDir = getLogDir(location, user, idType, id);
 		impl.logger = getLoggerIO(format);
 		return impl;
 	}
@@ -27,28 +25,28 @@ public class LogRepositoryFactory {
 		}
 	}
 	
-	File getLogDir(File location, String user, Id_type idType, String id) throws IOException {
-		if (idType == Id_type.TIME_ID) {
-			File logDir = new File(
-					location + File.separator + user + 
-					File.separator + new SimDb().nowAsFilenameBase()  );
-			logDir.mkdirs();
-			if (!logDir.exists()) 
-				throw new IOException("Cannot create log directory " + logDir.toString());
-			if (!logDir.isDirectory()) 
-				throw new IOException("Cannot create log directory " + logDir.toString());
-			return logDir;
-		} else if (idType == Id_type.SPECIFIC_ID) {
-			File logDir = new File(
-					location + File.separator + user + 
-					File.separator + id  );
-			logDir.mkdirs();
-			if (!logDir.exists()) 
-				throw new IOException("Cannot create log directory " + logDir.toString());
-			if (!logDir.isDirectory()) 
-				throw new IOException("Cannot create log directory " + logDir.toString());
-			return logDir;
-		}
-		return null;
-	}
+//	File getLogDir(File location, String user, Id_type idType, String id) throws IOException {
+//		if (idType == Id_type.TIME_ID) {
+//			File logDir = new File(
+//					location + File.separator + user +
+//					File.separator + new SimDb().nowAsFilenameBase()  );
+//			logDir.mkdirs();
+//			if (!logDir.exists())
+//				throw new IOException("Cannot create log directory " + logDir.toString());
+//			if (!logDir.isDirectory())
+//				throw new IOException("Cannot create log directory " + logDir.toString());
+//			return logDir;
+//		} else if (idType == Id_type.SPECIFIC_ID) {
+//			File logDir = new File(
+//					location + File.separator + user +
+//					File.separator + id  );
+//			logDir.mkdirs();
+//			if (!logDir.exists())
+//				throw new IOException("Cannot create log directory " + logDir.toString());
+//			if (!logDir.isDirectory())
+//				throw new IOException("Cannot create log directory " + logDir.toString());
+//			return logDir;
+//		}
+//		return null;
+//	}
 }

@@ -1,33 +1,23 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.testengine.engine.Linkage;
-import gov.nist.toolkit.testengine.engine.RetContext;
-import gov.nist.toolkit.testengine.engine.RetInfo;
-import gov.nist.toolkit.testengine.engine.RetrieveB;
-import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.Sha1Bean;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-import gov.nist.toolkit.xdsexception.XdsPreparsedException;
+import gov.nist.toolkit.xdsexception.*;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
+import org.jaxen.JaxenException;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
-import org.jaxen.JaxenException;
 
 public class RetrieveTransaction extends BasicTransaction {
 	String metadata_filename = null;
@@ -51,15 +41,15 @@ public class RetrieveTransaction extends BasicTransaction {
 		"\nexpected_mime_type = " + expected_mime_type +
 		"\nuri = " + uri +
 		"\nuri_ref = " + isNull(uri_ref) +
-		"\nreferenced_documents = " + referenced_documents.toString() +
+		"\nreferenced_documents = " + referenced_documents +
 		"\nreference_metadata = " + metadataStructure(reference_metadata) +
-		"\nuse_document_unique_id = " + use_repository_unique_id.toString() +
+		"\nuse_document_unique_id = " + use_repository_unique_id +
 		"\nuse_id = " + use_id +
 		"\nuse_xpath = " + use_xpath +
-		"\nlinkage = " + local_linkage_data.toString() +
+		"\nlinkage = " + local_linkage_data +
 		"\nendpoint = " + endpoint +
 		"\nis_xca = " + is_xca +
-		"\nactor config = " + testConfig.site +
+		"\nactor config = " + ((testConfig == null) ? "null" : testConfig.site) +
 		"\n****************";
 	}
 
@@ -225,7 +215,7 @@ public class RetrieveTransaction extends BasicTransaction {
 				ret_b.setSoap12(soap_1_2);
 				ret_b.setReferenceMetadata(reference_metadata);
 				OMElement result = ret_b.run();
-				testLog.add_name_value(instruction_output, "Result", result);
+//				testLog.add_name_value(instruction_output, "Result", result);
 				ret_b.validate();
 			}
 			catch (XdsPreparsedException e) {

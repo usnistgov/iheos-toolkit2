@@ -27,6 +27,8 @@ public class Ro  implements Serializable  {
 	public File getFile() {
 		return new File(pathToMetadata);
 	}
+
+	public void setFile(String file) { pathToMetadata = file; }
 	
 	public boolean metadataExists() {
 		File f = getFile();
@@ -48,4 +50,6 @@ public class Ro  implements Serializable  {
 	public boolean equals(Ro ro) {
 		return ro.getId() == id;
 	}
+
+	public String toString() { return id; }
 }

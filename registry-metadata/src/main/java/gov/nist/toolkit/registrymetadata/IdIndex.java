@@ -4,15 +4,14 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.axiom.om.OMAttribute;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNode;
 
 public class IdIndex {
 	Metadata m;
@@ -201,6 +200,9 @@ public class IdIndex {
 		OMElement obj = getObjectById(id);
 		if (obj == null)
 			return null;
+		if (obj.getLocalName().equals("ExtrinsicObject")) {
+			return obj.getAttributeValue(MetadataSupport.object_type_qname);
+		}
 		String name = obj.getLocalName();
 		if (name.equals("RegistryPackage")) {
 			if (obj == submission_set)

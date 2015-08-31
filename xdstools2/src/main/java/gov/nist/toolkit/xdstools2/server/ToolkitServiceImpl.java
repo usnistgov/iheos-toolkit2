@@ -1,5 +1,6 @@
 	package gov.nist.toolkit.xdstools2.server;
 
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -10,11 +11,7 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.results.client.XdstestLogId;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -25,30 +22,22 @@ import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
-import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
+import org.apache.log4j.Logger;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.log4j.Logger;
-
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -128,6 +117,7 @@ ToolkitService {
 	public List<Result> srcStoresDocVal(SiteSpec site, String ssid) throws NoServletSessionException  { return session().queryServiceManager().srcStoresDocVal(site, ssid); }
 	public List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception { return session().queryServiceManager().retrieveDocument(site, uids); }
 	public List<Result> getRelated(SiteSpec site, ObjectRef or,	List<String> assocs) throws NoServletSessionException  { return session().queryServiceManager().getRelated(site, or, assocs); }
+	public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  { return session().queryServiceManager().getAll(site, pid, codesSpec); }
 
 	public List<Result> findPatient(SiteSpec site, String firstName,
 			String secondName, String lastName, String suffix, String gender,
@@ -150,7 +140,11 @@ ToolkitService {
 		return session().queryServiceManager().mpqFindDocuments(site, pid, classCodes, hcftCodes,
 				eventCodes);
 	}
-	
+	public List<Result> mpqFindDocuments(SiteSpec site, String pid,
+										 Map<String, List<String>> codesSpec) throws NoServletSessionException {
+		return session().queryServiceManager().mpqFindDocuments(site, pid, codesSpec);
+	}
+
 	public List<Result> getLastMetadata() { return queryServiceManager.getLastMetadata(); }
 
 	//------------------------------------------------------------------------

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11903</Test>
+  <TestStep id="single_from_doc">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetAssociations</SQ>
+      <Assertion>Single association referencing document</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:a7ae438b-4bc2-4642-93e9-be891f7bb155">
+            <tag0:Slot name="$uuid">
+              <tag0:ValueList>
+                <tag0:Value>('$uuid$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="multiple_assoc_from_doc">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetAssociations</SQ>
+      <Assertion>multiple associations referencing document</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:a7ae438b-4bc2-4642-93e9-be891f7bb155">
+            <tag0:Slot name="$uuid">
+              <tag0:ValueList>
+                <tag0:Value>('$uuid$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="Document01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="multiple_assoc_from_ss">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetAssociations</SQ>
+      <Assertion>multiple associations referencing ss</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:a7ae438b-4bc2-4642-93e9-be891f7bb155">
+            <tag0:Slot name="$uuid">
+              <tag0:ValueList>
+                <tag0:Value>('$uuid$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="SubmissionSet01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="3"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="multiple_doc">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetAssociations</SQ>
+      <Assertion>Input references multiple documents</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:a7ae438b-4bc2-4642-93e9-be891f7bb155">
+            <tag0:Slot name="$uuid">
+              <tag0:ValueList>
+                <tag0:Value>('$uuid1$','$uuid2$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../12346" id="SubmissionSet01" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346" id="SubmissionSet01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="4"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

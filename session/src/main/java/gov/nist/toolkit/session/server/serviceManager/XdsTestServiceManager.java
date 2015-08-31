@@ -1,37 +1,17 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.AssertionResult;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.results.client.XdstestLogId;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.TestSessionNotSelectedException;
 import gov.nist.toolkit.session.server.services.TestLogCache;
-import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.engine.LogMap;
-import gov.nist.toolkit.testengine.engine.ResultPersistence;
-import gov.nist.toolkit.testengine.engine.RetInfo;
-import gov.nist.toolkit.testengine.engine.RetrieveB;
-import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
-import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testengine.engine.Xdstest2;
-import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
+import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
@@ -43,31 +23,32 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
-public class XdsTestServiceManager extends CommonServiceManager {
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+public class XdsTestServiceManager extends CommonService {
+	private final UtilityRunner utilityRunner = new UtilityRunner(this);
+	private final TestRunner testRunner = new TestRunner(this);
 	CodesConfiguration codesConfiguration = null;
 	// always reference through getTestKit()
 	TestKit testKit = null;
-	Session session;
+	public Session session;
 
 	static Logger logger = Logger.getLogger(XdsTestServiceManager.class);
 	static boolean allCiphersEnabled = false;
 
 	public XdsTestServiceManager(Session session)  {
 		this.session = session;
+		System.out.println("XdsTestServiceManager - patient id is " + session.transactionSettings.patientId);
+	}
+
+	public static Logger getLogger() {
+		return logger;
 	}
 
 	TestLogCache getTestLogCache() throws IOException {
@@ -75,7 +56,7 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	}
 
 	/**
-	 * Wrapper around runUtilityTest
+	 * Wrapper around run
 	 * @param testName
 	 * @param sections
 	 * @param params
@@ -84,16 +65,16 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	 * @return
 	 */
 	public Result xdstest(String testName, List<String> sections,
-			Map<String, String> params, Map<String, Object> params2, String[] areas,
-			boolean stopOnFirstFailure) {
+						  Map<String, String> params, Map<String, Object> params2, String[] areas,
+						  boolean stopOnFirstFailure) {
 
-		return runUtilityTest(params, params2, sections, testName, areas,
+		return utilityRunner.run(session, params, params2, sections, testName, areas,
 				stopOnFirstFailure);
 	}
 
 	/**
 	 * Run a testplan(s) as a utility within a session.  This is different from
-	 * runMesaTest in that runMesaTest stores logs in the external_cache and
+	 * run in that run stores logs in the external_cache and
 	 * this call stores the logs within the session so they go away at the
 	 * end of the end of the session.  Hence the label 'utility'.
 	 * @param params
@@ -103,132 +84,19 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	 * @param stopOnFirstFailure
 	 * @return
 	 */
-	public Result runUtilityTest(Map<String, String> params, Map<String, Object> params2, List<String> sections,
-			String testName, String[] areas, boolean stopOnFirstFailure) {
+//	public Result runUtilityTest(Map<String, String> params, Map<String, Object> params2, List<String> sections,
+//								 String testName, String[] areas, boolean stopOnFirstFailure) {
+//
+//		return utilityRunner.run(session, params, params2, sections, testName, areas, stopOnFirstFailure);
+//	}
 
-		cleanupParams(params);
-
-		try {
-			if (session.transactionSettings == null)
-				session.transactionSettings = new TransactionSettings();
-
-			if (session.xt == null)
-				session.xt = getNewXt();
-
-			if (session.res == null)
-				session.res = new AssertionResults();
-
-			if (session.transactionSettings.logRepository == null)
-				session.transactionSettings.logRepository = new LogRepositoryFactory().
-				getRepository(Installation.installation().sessionCache(), session.getId(), LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
-			session.xt.setLogRepository(session.transactionSettings.logRepository);
-
-			try {
-				if (testName.startsWith("tc:")) {
-					String collectionName = testName.split(":")[1];
-					session.xt.addTestCollection(collectionName);
-				} else {
-					session.xt.addTest(testName, sections, areas);
-				}
-
-				// force loading of site definitions
-				SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
-			} catch (Exception e) {
-				logger.error(ExceptionUtil.exception_details(e));
-				session.res.add(ExceptionUtil.exception_details(e), false);
-				return ResultBuilder.RESULT(testName, session.res, null, null);
-			}
-			try {
-				Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
-				// Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
-				if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
-					Site site = theSites.getSite(session.siteSpec.name);
-					if (site == null)
-						throw new Exception("Cannot find site " + session.siteSpec.name);
-					session.xt.setSite(site);
-					session.xt.setSites(theSites);
-				} else if (session.repUid != null) {
-					Site site = theSites.getSite("allRepositories");
-					if (site == null)
-						throw new Exception("Cannot find site 'allRepositories'");
-					session.xt.setSite(site);
-					session.xt.setSites(theSites);
-				}
-			} catch (Exception e) {
-				logger.error(ExceptionUtil.exception_details(e));
-				session.res.add(ExceptionUtil.exception_details(e), false);
-				return ResultBuilder.RESULT(testName, session.res, null, null);
-			}
-			session.xt.setSecure(session.isTls()) ;
-
-			if (session.isSoap) {
-				if (session.isTls())
-					session.res.add("Using TLS");
-				else
-					session.res.add("Not using TLS");
-
-				session.xt.setWssec(session.isSaml());
-				if (session.isSaml())
-					session.res.add("Using SAML");
-				else
-					session.res.add("Not using SAML");
-
-
-				if (session.siteSpec != null)
-					session.res.add("Site: " + session.siteSpec.name);
-			}
-
-			session.res.add("Parameters:");
-			for (String param : params.keySet()) {
-				session.res.add("..." + param + ": " + params.get(param));
-			}
-
-			if (session.siteSpec != null)
-				System.out.println("Site is " + session.siteSpec.name);
-
-			try {
-				session.res.add("Starting");
-				// s.res.add("Log Cache: " + s.getLogCount() + " entries");
-				session.transactionSettings.securityParams = session;
-				session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
-
-				session.res.add(session.transactionSettings.res);
-
-				// Save the created logs in the SessionCache
-				XdstestLogId logid = newTestLogId();
-				session.transactionSettings.logRepository.logOut(logid, session.xt.getLogMap());
-
-				Result result = buildResult(session.xt.getTestSpecs(), logid);
-				if (result != null) {
-					session.xt.involvesMetadata = result.includesMetadata;
-				}
-				scanLogs(session.xt, session.res, sections);
-				session.res.add("Finished");
-				result.assertions.add(session.res);
-				return result;
-			} catch (EnvironmentNotSelectedException e) {
-				if (session.res == null)
-					session.res = new AssertionResults();
-				session.res.add("Must select Environment on Home page to use TLS", false);
-				return ResultBuilder.RESULT(testName, session.res, null, null);
-			} catch (Exception e) {
-				logger.error(ExceptionUtil.exception_details(e));
-				if (session.res == null)
-					session.res = new AssertionResults();
-				session.res.add(ExceptionUtil.exception_details(e), false);
-				return ResultBuilder.RESULT(testName, session.res, null, null);
-			}
-		} catch (Throwable e) {
-			logger.error(ExceptionUtil.exception_details(e));
-			if (session.res == null)
-				session.res = new AssertionResults();
-			session.res.add(ExceptionUtil.exception_details(e), false);
-			return ResultBuilder.RESULT(testName, session.res, null, null);
-		}
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections,
+									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
+		return testRunner.run(session, mesaTestSession, siteSpec, testName, sections, params, params2, stopOnFirstFailure);
 	}
 
 	public Map<String, Result> getTestResults(List<String> testIds, String testSession) {
-		logger.debug(session.id() + ": " + "getTestResults() ids=" + testIds + " testSession=" + testSession );
+		logger.debug(session.id() + ": " + "getTestResults() ids=" + testIds + " testSession=" + testSession);
 
 		Map<String, Result> map = new HashMap<String, Result>();
 
@@ -349,67 +217,6 @@ public class XdsTestServiceManager extends CommonServiceManager {
 		}
 	}
 
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections,
-			Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
-		logger.info(session.id() + ": " + "runMesaTest" + " " + mesaTestSession + " " + testName + " " + sections + " " + siteSpec + " " + params + " " + stopOnFirstFailure);
-		try {
-
-			if (session.getEnvironment() == null)
-				throw new EnvironmentNotSelectedException("");
-
-			if ((mesaTestSession == null || mesaTestSession.equals("")))
-				throw new TestSessionNotSelectedException("Must choose test session");
-			session.setSiteSpec(siteSpec);
-
-			if (session.transactionSettings.logRepository == null) {
-				session.transactionSettings.logRepository = new LogRepositoryFactory().
-						getRepository(
-								Installation.installation().testLogFile(),
-								mesaTestSession,
-								LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
-								LogRepositoryFactory.Id_type.SPECIFIC_ID,
-								testName);
-				session.transactionSettings.writeLogs = true;
-			}
-
-			// this PatientId override is necessary because the patientid.txt file
-			// is shared by all threads
-			String pid = params.get("$patientid$");
-			if (pid != null && !pid.equals("")) {
-				session.transactionSettings.patientId = pid;
-			}
-
-			String altPid = params.get("$altpatientid$");
-			if (altPid != null && !altPid.equals("")) {
-				session.transactionSettings.altPatientId = altPid;
-			} else
-				session.transactionSettings.altPatientId = null;
-
-
-
-			// This sets result.logId so it looks like a session-based utility usage
-			// of the test engine.  Need to re-label it so the logs can later
-			// be properly pulled from the external_cache.
-			Result result = xdstest(testName, sections, params, params2, null, stopOnFirstFailure);
-//			ResultSummary summary = new ResultSummary(result);
-			ResultPersistence rPer = new ResultPersistence();
-
-			// Save results to external_cache.
-			try {
-				rPer.write(result, mesaTestSession);
-			}
-			catch (Exception e) {
-				result.assertions.add(ExceptionUtil.exception_details(e), false);
-			}
-
-			return asList(result);
-		} catch (Exception e) {
-			return buildExtendedResultList(e);
-		} finally {
-			session.clear();
-		}
-	}
-
 	public boolean isPrivateMesaTesting() {
 		logger.debug(session.id() + ": " + "isPrivateMesaTesting");
 		return Installation.installation().propertyServiceManager().isTestLogCachePrivate();
@@ -417,30 +224,30 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 	public String getTestplanAsText(String testname, String section) throws Exception {
 		try {
-		logger.debug(session.id() + ": " + "getTestplanAsText");
-		List<String> sections = new ArrayList<String>();
-		sections.add(section);
+			logger.debug(session.id() + ": " + "getTestplanAsText");
+			List<String> sections = new ArrayList<String>();
+			sections.add(section);
 
-		Xdstest2 xt2 = getNewXt();
-		xt2.addTest(testname, sections, null, false);
-		TestDetails ts = xt2.getTestSpec(testname);
+			Xdstest2 xt2 = getNewXt();
+			xt2.addTest(testname, sections, null, false);
+			TestDetails ts = xt2.getTestSpec(testname);
 
-		File tsFile;
+			File tsFile;
 
-		try {
-			tsFile = ts.getTestplanFile(section);
-		} catch (Exception e) {
-			if (section.indexOf("All") > -1) {
-				// test may not contain sections
-				try {
-					tsFile = ts.getTestplanFile(null);
-				} catch (Exception e1) {
+			try {
+				tsFile = ts.getTestplanFile(section);
+			} catch (Exception e) {
+				if (section.indexOf("All") > -1) {
+					// test may not contain sections
+					try {
+						tsFile = ts.getTestplanFile(null);
+					} catch (Exception e1) {
+						throw new Exception("Cannot load test plan " + testname + "#" + section);
+					}
+				} else
 					throw new Exception("Cannot load test plan " + testname + "#" + section);
-				}
-			} else
-				throw new Exception("Cannot load test plan " + testname + "#" + section);
-		}
-		return new OMFormatter(tsFile).toString();
+			}
+			return new OMFormatter(tsFile).toString();
 		} catch (Throwable t) {
 			throw new Exception(t.getMessage() + "\n" + ExceptionUtil.exception_details(t));
 		}
@@ -563,13 +370,13 @@ public class XdsTestServiceManager extends CommonServiceManager {
 	}
 
 	CodesConfiguration codesConfiguration() throws XdsInternalException,
-	FactoryConfigurationError, EnvironmentNotSelectedException {
+			FactoryConfigurationError, EnvironmentNotSelectedException {
 		if (codesConfiguration == null)
 			codesConfiguration = new CodesConfigurationBuilder(
 					//					new File(warHome + "/toolkitx/codes/codes.xml")
 					session.getCodesFile()
-					)
-		.get();
+			)
+					.get();
 		return codesConfiguration;
 	}
 
@@ -634,114 +441,112 @@ public class XdsTestServiceManager extends CommonServiceManager {
 
 		// load metadata results into Result
 		//		List<TestSpec> testSpecs = s.xt.getTestSpecs();
-		if (testSpecs != null) {
-			for (TestDetails testSpec : testSpecs) {
-				for (String section : testSpec.sectionLogMap.keySet()) {
-					if (section.equals("THIS"))
-						continue;
-					LogFileContent testlog = testSpec.sectionLogMap.get(section);
-					for (int i = 0; i < testlog.size(); i++) {
-						StepResult stepResult = new StepResult();
-						boolean stepPass = false;
-						result.stepResults.add(stepResult);
-						try {
-							TestStepLogContent tsLog = testlog.getTestStepLog(i);
-							stepResult.section = section;
-							stepResult.stepName = tsLog.getName();
-							stepResult.status = tsLog.getStatus();
-							stepPass = stepResult.status;
+		for (TestDetails testSpec : testSpecs) {
+			for (String section : testSpec.sectionLogMap.keySet()) {
+				if (section.equals("THIS"))
+					continue;
+				LogFileContent testlog = testSpec.sectionLogMap.get(section);
+				for (int i = 0; i < testlog.size(); i++) {
+					StepResult stepResult = new StepResult();
+					boolean stepPass = false;
+					result.stepResults.add(stepResult);
+					try {
+						TestStepLogContent tsLog = testlog.getTestStepLog(i);
+						stepResult.section = section;
+						stepResult.stepName = tsLog.getName();
+						stepResult.status = tsLog.getStatus();
+						stepPass = stepResult.status;
 
-							// a transaction can have metadata in the request OR
-							// the response
-							// look in both places and save
-							// If this is a retrieve then no metadata will be
-							// found
-							boolean inRequest = false;
+						// a transaction can have metadata in the request OR
+						// the response
+						// look in both places and save
+						// If this is a retrieve then no metadata will be
+						// found
+						boolean inRequest = false;
+						try {
+							OMElement input = tsLog.getRawInputMetadata();
+							Metadata m = MetadataParser
+									.parseNonSubmission(input);
+							if (m.getAllObjects().size() > 0) {
+								MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
+										m, stepResult.stepName);
+								stepResult.setMetadata(mcp.get());
+								inRequest = true;
+							}
+						} catch (Exception e) {
+						}
+
+						boolean inResponse = false;
+						if (inRequest == false) {
 							try {
-								OMElement input = tsLog.getRawInputMetadata();
+								OMElement reslt = tsLog.getRawResult();
 								Metadata m = MetadataParser
-										.parseNonSubmission(input);
-								if (m.getAllObjects().size() > 0) {
-									MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
-											m, stepResult.stepName);
-									stepResult.setMetadata(mcp.get());
-									inRequest = true;
-								}
+										.parseNonSubmission(reslt);
+								MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
+										m, stepResult.stepName);
+								stepResult.setMetadata(mcp.get());
+								inResponse = true;
 							} catch (Exception e) {
 							}
+						}
 
-							boolean inResponse = false;
-							if (inRequest == false) {
-								try {
-									OMElement reslt = tsLog.getRawResult();
-									Metadata m = MetadataParser
-											.parseNonSubmission(reslt);
-									MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
-											m, stepResult.stepName);
-									stepResult.setMetadata(mcp.get());
-									inResponse = true;
-								} catch (Exception e) {
-								}
+						if (inRequest || inResponse)
+							result.includesMetadata = true;
+
+						// look for document contents
+						if (stepPass) {
+							OMElement response = null;
+							try {
+								response = tsLog.getRawResult();  // throws exception on Direct messages (no response)
+							} catch (Exception e) {
+
 							}
+							if (response != null) {
+								OMElement rdsr = response;
+								if (!rdsr.getLocalName().equals(
+										"RetrieveDocumentSetResponse"))
+									rdsr = XmlUtil
+											.firstDecendentWithLocalName(
+													response,
+													"RetrieveDocumentSetResponse");
+								if (rdsr != null) {
+									RetrieveB rb = new RetrieveB();
+									Map<String, RetInfo> resMap = rb
+											.parse_rep_response(response);
+									for (String docUid : resMap.keySet()) {
+										RetInfo ri = resMap.get(docUid);
+										Document doc = new Document();
+										doc.uid = ri.getDoc_uid();
+										doc.repositoryUniqueId = ri
+												.getRep_uid();
+										doc.mimeType = ri.getContent_type();
+										doc.homeCommunityId = ri.getHome();
+										doc.cacheURL = getRepositoryCacheWebPrefix()
+												+ doc.uid
+												+ getRepositoryCacheFileExtension(doc.mimeType);
 
-							if (inRequest || inResponse)
-								result.includesMetadata = true;
+										if (stepResult.documents == null)
+											stepResult.documents = new ArrayList<Document>();
+										stepResult.documents.add(doc);
 
-							// look for document contents
-							if (stepPass) {
-								OMElement response = null;
-								try {
-									response = tsLog.getRawResult();  // throws exception on Direct messages (no response)
-								} catch (Exception e) {
+										File localFile = new File(
+												Installation.installation().warHome() + File.separator +
+														"xdstools2" + File.separator + "DocumentCache" + File.separator
+														+ doc.uid
+														+ getRepositoryCacheFileExtension(doc.mimeType));
 
-								}
-								if (response != null) {
-									OMElement rdsr = response;
-									if (!rdsr.getLocalName().equals(
-											"RetrieveDocumentSetResponse"))
-										rdsr = XmlUtil
-										.firstDecendentWithLocalName(
-												response,
-												"RetrieveDocumentSetResponse");
-									if (rdsr != null) {
-										RetrieveB rb = new RetrieveB();
-										Map<String, RetInfo> resMap = rb
-												.parse_rep_response(response);
-										for (String docUid : resMap.keySet()) {
-											RetInfo ri = resMap.get(docUid);
-											Document doc = new Document();
-											doc.uid = ri.getDoc_uid();
-											doc.repositoryUniqueId = ri
-													.getRep_uid();
-											doc.mimeType = ri.getContent_type();
-											doc.homeCommunityId = ri.getHome();
-											doc.cacheURL = getRepositoryCacheWebPrefix()
-													+ doc.uid
-													+ getRepositoryCacheFileExtension(doc.mimeType);
-
-											if (stepResult.documents == null)
-												stepResult.documents = new ArrayList<Document>();
-											stepResult.documents.add(doc);
-
-											File localFile = new File(
-													Installation.installation().warHome() + File.separator +
-													"xdstools2" + File.separator + "DocumentCache" + File.separator
-													+ doc.uid
-													+ getRepositoryCacheFileExtension(doc.mimeType));
-
-											Io.bytesToFile(localFile,
-													ri.getContents());
-										}
+										Io.bytesToFile(localFile,
+												ri.getContents());
 									}
 								}
 							}
-						} catch (Exception e) {
-							result.assertions.add(
-									ExceptionUtil.exception_details(e), false);
 						}
+					} catch (Exception e) {
+						result.assertions.add(
+								ExceptionUtil.exception_details(e), false);
 					}
-
 				}
+
 			}
 		}
 

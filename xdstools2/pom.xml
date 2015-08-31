@@ -245,6 +245,10 @@ ${project.build.directory}/${project.artifactId}-${project.version}.jar
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -277,19 +281,6 @@ ${project.build.directory}/${project.artifactId}-${project.version}.jar
                     </dependency>
                 </dependencies>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-source-plugin</artifactId>-->
-            <!--<version>${maven-source-plugin.version}</version>-->
-            <!--<executions>-->
-            <!--<execution>-->
-            <!--<id>attach-sources</id>-->
-            <!--<goals>-->
-            <!--<goal>jar</goal>-->
-            <!--</goals>-->
-            <!--</execution>-->
-            <!--</executions>-->
-            <!--</plugin>-->
 
 		<!-- begin v2 export -->
 			<plugin>
@@ -429,6 +420,51 @@ ${project.build.directory}/${project.artifactId}-${project.version}.jar
 
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>2.5.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-user</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                </dependencies>
+                <!-- JS is only needed in the package phase, this speeds up testing -->
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <!-- Plugin configuration. There are many available options,
+                     see gwt-maven-plugin documentation at codehaus.org -->
+                <configuration>
+                    <!--<compileSourcesArtifacts>-->
+                    <!--<compileSourcesArtifact>gov.nist.hit.ds:repository-rpc</compileSourcesArtifact> &lt;!&ndash; gov.nist.hit.ds:repository &ndash;&gt;-->
+                    <!--<compileSourcesArtifact>gov.nist.hit.ds:repository-shared</compileSourcesArtifact>-->
+                    <!--</compileSourcesArtifacts>-->
+
+                    <!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
+                    <runTarget>Xdstools2.html</runTarget>
+                    <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
+                    <compileReport>false</compileReport>
+                    <module>gov.nist.toolkit.xdstools2.Xdstools2</module>
+                    <logLevel>INFO</logLevel>
+                    <style>${gwt.style}</style>
+                    <copyWebapp>true</copyWebapp>
+                    <!-- <genParam>true</genParam> -->
                 </configuration>
             </plugin>
         </plugins>

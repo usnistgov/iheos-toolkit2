@@ -6,13 +6,8 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
-import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XDSRegistryOutOfResourcesException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +30,7 @@ abstract public class FindDocuments extends StoredQuery {
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
-	abstract protected Metadata runImplementation() throws MetadataException, XdsException, LoggerException;
+	abstract protected Metadata runImplementation() throws XdsException;
 
 	/**
 	 * Basic constructor
@@ -53,27 +48,27 @@ abstract public class FindDocuments extends StoredQuery {
 	 * @throws LoggerException
 	 * @throws XDSRegistryOutOfResourcesException
 	 */
-	public Metadata runSpecific() throws XdsInternalException, XdsException, LoggerException, XDSRegistryOutOfResourcesException {
+	public Metadata runSpecific() throws XdsException, XDSRegistryOutOfResourcesException {
 
 		validateParameters();
 
 		parseParameters();
 
-		if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
-			QueryReturnType save = sqs.returnType;
-
-			// since the Public Registry gets some crazy requests, first do an ObjectRefs query to see how many
-			// results are planned.  If not out of order then do the real query for LeafClass
-
-			sqs.returnType = QueryReturnType.OBJECTREF;
-
-			Metadata m = runImplementation();
-			if (m.getObjectRefs().size() > 25)
-				throw new XDSRegistryOutOfResourcesException("GetDocuments Stored Query for LeafClass is limited to 25 documents on this Registry. Your query targeted " + m.getObjectRefs().size() + " documents");
-
-
-			sqs.returnType = save;;
-		}
+//		if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
+//			QueryReturnType save = sqs.returnType;
+//
+//			// since the Public Registry gets some crazy requests, first do an ObjectRefs query to see how many
+//			// results are planned.  If not out of order then do the real query for LeafClass
+//
+//			sqs.returnType = QueryReturnType.OBJECTREF;
+//
+//			Metadata m = runImplementation();
+//			if (m.getObjectRefs().size() > 25)
+//				throw new XDSRegistryOutOfResourcesException("GetDocuments Stored Query for LeafClass is limited to 25 documents on this Registry. Your query targeted " + m.getObjectRefs().size() + " documents");
+//
+//
+//			sqs.returnType = save;;
+//		}
 
 
 		Metadata m = runImplementation();
@@ -108,8 +103,6 @@ abstract public class FindDocuments extends StoredQuery {
 			throw new MetadataValidationException(QueryParmsErrorPresentErrMsg, SqDocRef.Individual_query_parms);
 
 	}
-
-
 
 	protected String    patient_id;
 	protected String    creation_time_from;
@@ -156,7 +149,7 @@ abstract public class FindDocuments extends StoredQuery {
 		return buf.toString();
 	}
 
-	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
+	void parseParameters() throws XdsException {
 
 		patient_id                        = sqs.params.getStringParm   ("$XDSDocumentEntryPatientId");
 		class_codes                       = sqs.params.getCodedParm("$XDSDocumentEntryClassCode");
@@ -180,7 +173,7 @@ abstract public class FindDocuments extends StoredQuery {
 
 		ArrayList<String> new_status = new ArrayList<String>();
 		for (int i=0; i<status.size(); i++) {
-			String stat = (String) status.get(i);
+			String stat = status.get(i);
 
 			if ( ! stat.startsWith(status_ns_prefix))
 				throw new MetadataValidationException("Status parameter must have namespace prefix " + status_ns_prefix + " found " + stat, EbRim.RegistryObject_attributes);

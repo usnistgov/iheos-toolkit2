@@ -95,7 +95,7 @@ public class SoapMessageValidator extends MessageValidator {
 
         if (vc.isMessageTypeKnown()) {
             // Validation challenge has been established - verify against it
-            er.challenge("Checking WS-Action against SOAP Body contents");
+            er.challenge("Checking expected WS-Action against SOAP Body contents");
             verifywsActionCorrectForValidationContext(wsaction);
             er.detail("Scheduling validation of body based on requested message type");
             MessageValidatorFactory.validateBasedOnValidationContext(erBuilder, messagebody, mvc, vc, rvi);
@@ -139,11 +139,11 @@ public class SoapMessageValidator extends MessageValidator {
         setValidationContextFromWSAction(v, wsaction);
         // TODO - finish this
         String expected = "foo";
-        if (true || !v.equals(vc)) {
+        if (!v.equals(vc)) {
             er.error("???", "Expected WS:Action", wsaction, expected, "???");
-            err("WS-Action wrong: " + wsaction + " not appropriate for message " +
-                    vc.getTransactionName() + " required Validation Context is " + vc.toString() +
-                    " Validation Context from WS-Action is " + v.toString(),"ITI TF");
+//            err("WS-Action wrong: " + wsaction + " not appropriate for message " +
+//                    vc.getTransactionName() + " required Validation Context is " + vc.toString() +
+//                    " Validation Context from WS-Action is " + v.toString(),"ITI TF");
         }
     }
 

@@ -1,9 +1,10 @@
 package gov.nist.toolkit.results.client;
 
 
-import java.util.Map;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CodesConfiguration implements IsSerializable {
 	static public String ContentTypeCode = "contentTypeCode";
@@ -16,7 +17,33 @@ public class CodesConfiguration implements IsSerializable {
 	static public String TypeCode = "typeCode";
 	static public String FolderCodeList = "folderCodeList";
 	static public String AssociationDocumentation = "associationDocumentation";
-	
+
+	// Technically these are not codes but they are carried around like they are
+	// in some secondary uses of this class
+	static public String SubmissionSetStatus = "submissionSetStatus";
+	static public String DocumentEntryStatus = "documentEntryStatus";
+	static public String FolderStatus = "folderStatus";
+	static public String DocumentEntryType = "documentEntryType";
+
+	static public Map<String, String> titles = new HashMap<String, String>();
+
+	static {
+		titles.put(ContentTypeCode, "Content Type Code");
+		titles.put(ClassCode, "Class Code");
+		titles.put(ConfidentialityCode, "Confidentiality Code");
+		titles.put(FormatCode, "Format Code");
+		titles.put(HealthcareFacilityTypeCode, "Healthcare Facility Type Code");
+		titles.put(PracticeSettingCode, "Practice Setting Code");
+		titles.put(EventCodeList, "Event Code List");
+		titles.put(TypeCode, "Type Code");
+		titles.put(FolderCodeList, "Folder Code List");
+		titles.put(AssociationDocumentation, "Association Documentation");
+		titles.put(SubmissionSetStatus, "SubmissionSet Status");
+		titles.put(DocumentEntryStatus, "DocumentEntry Status");
+		titles.put(FolderStatus, "Folder Status");
+		titles.put(DocumentEntryType, "DocumentEntry Type");
+	}
+
 	Map<String, CodeConfiguration> codes;
 
 	public void setCodes(Map<String, CodeConfiguration> codes) {
