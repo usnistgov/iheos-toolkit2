@@ -31,6 +31,7 @@ public class GetAllTab extends GenericQueryTab {
 	HorizontalPanel ssPanel;
 	HorizontalPanel folPanel;
 	HorizontalPanel onDemandPanel;
+	HorizontalPanel returnsPanel;
 
 	CodeFilterBank codeFilterBank;
 	GenericQueryTab genericQueryTab;
@@ -67,11 +68,6 @@ public class GetAllTab extends GenericQueryTab {
 		paramGrid.setWidget(prow, 2, dePanel = buildIncludeSelection("DocumentEntries"));
 		prow++;
 
-//		selectOnDemand = new CheckBox();
-//		selectOnDemand.setText("On-Demand DocumentEntries");
-//		paramGrid.setWidget(prow, 2, selectOnDemand);
-//		prow++;
-
 		paramGrid.setText(prow, 1, "");
 		paramGrid.setWidget(prow, 2, onDemandPanel = buildOnDemandSelection("Type"));
 		prow++;
@@ -91,6 +87,10 @@ public class GetAllTab extends GenericQueryTab {
 		prow++;
 
 		codeFilterBank.addCodeFilter(new CodeFilter(paramGrid, prow, 1, "Confidentiality Code", CodesConfiguration.ConfidentialityCode, codeFilterBank.codeBoxSize));
+		prow++;
+
+		paramGrid.setText(prow, 0, "Return");
+		paramGrid.setWidget(prow, 2, returnsPanel = buildLeafClassOrObjectRef("Label"));
 
 		topPanel.add(paramGrid);
 		topPanel.add(new HTML("<hr/>"));
@@ -102,22 +102,39 @@ public class GetAllTab extends GenericQueryTab {
 
 	HorizontalPanel buildIncludeSelection(String label) {
 		HorizontalPanel hp = new HorizontalPanel();
-		hp.add(new RadioButton(label, "None"));
+//		hp.add(new RadioButton(label, "None"));
 		hp.add(new RadioButton(label, "Approved"));
 		hp.add(new RadioButton(label, "Deprecated"));
-		RadioButton all = new RadioButton(label, "All");
+		RadioButton all = new RadioButton(label, "Both");
 		all.setValue(true);
 		hp.add(all);
 		return hp;
 	}
 
+	static final String stableString = "Stable";
+	static final String onDemandString = "On-Demand";
+	static final String bothString = "Both";
+
 	HorizontalPanel buildOnDemandSelection(String label) {
 		HorizontalPanel hp = new HorizontalPanel();
-		RadioButton _static = new RadioButton(label, "Static");
-		_static.setValue(true);
+		RadioButton _static = new RadioButton(label, stableString);
 		hp.add(_static);
-		hp.add(new RadioButton(label, "On-Demand"));
-		hp.add(new RadioButton(label, "Both"));
+		hp.add(new RadioButton(label, onDemandString));
+		RadioButton both = new RadioButton(label, bothString);
+		both.setValue(true);
+		hp.add(both);
+		return hp;
+	}
+
+	static final String leafClassString = "LeafClass";
+	static final String objectRefString = "ObjectRef";
+
+	HorizontalPanel buildLeafClassOrObjectRef(String label) {
+		HorizontalPanel hp = new HorizontalPanel();
+		RadioButton lc = new RadioButton(label, leafClassString);
+		lc.setValue(true);
+		hp.add(lc);
+		hp.add(new RadioButton(label, objectRefString));
 		return hp;
 	}
 
@@ -137,11 +154,6 @@ public class GetAllTab extends GenericQueryTab {
 				return;
 			}
 
-//			for (int i=0; i<dePanel.getWidgetCount(); i++) {
-//				RadioButton rb = (RadioButton) dePanel.getWidget(i);
-//				if (rb.getValue()) new PopupMessage(rb.getText() + " selected");
-//			}
-
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
@@ -153,7 +165,8 @@ public class GetAllTab extends GenericQueryTab {
 			addToCodeSpec(codeSpec, ssPanel, CodesConfiguration.SubmissionSetStatus);
 			addToCodeSpec(codeSpec, folPanel, CodesConfiguration.FolderStatus);
 
-			addToCodeSpec(codeSpec, onDemandPanel, CodesConfiguration.DocumentEntryType);
+			addOnDemandToCodeSpec(codeSpec, onDemandPanel, CodesConfiguration.DocumentEntryType);
+			addReturnsToCodeSpec(codeSpec, returnsPanel, CodesConfiguration.ReturnsType);
 
 			// Codes
 			codeFilterBank.addToCodeSpec(codeSpec);
@@ -164,12 +177,12 @@ public class GetAllTab extends GenericQueryTab {
 		void addToCodeSpec(Map<String, List<String>> codeSpec, HorizontalPanel panel, String codeType) {
 			List<String> status = new ArrayList<>();
 			codeSpec.put(codeType, status);
-			for (int i=0; i<dePanel.getWidgetCount(); i++) {
-				RadioButton rb = (RadioButton) dePanel.getWidget(i);
+			for (int i=0; i<panel.getWidgetCount(); i++) {
+				RadioButton rb = (RadioButton) panel.getWidget(i);
 				if (rb.getValue()) {
 					if ("Approved".equals(rb.getText())) status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved");
-					if ("Deprecated".equals(rb.getText())) status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
-					if ("All".equals(rb.getText())) {
+					else if ("Deprecated".equals(rb.getText())) status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
+					else if ("Both".equals(rb.getText())) {
 						status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Approved");
 						status.add("urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated");
 					}
@@ -177,6 +190,33 @@ public class GetAllTab extends GenericQueryTab {
 			}
 		}
 
+		void addOnDemandToCodeSpec(Map<String, List<String>> codeSpec, HorizontalPanel panel, String codeType) {
+			List<String> status = new ArrayList<>();
+			codeSpec.put(codeType, status);
+			for (int i=0; i<panel.getWidgetCount(); i++) {
+				RadioButton rb = (RadioButton) panel.getWidget(i);
+				if (rb.getValue()) {
+					if (stableString.equals(rb.getText())) status.add("urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
+					if (onDemandString.equals(rb.getText())) status.add("urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248");
+					if (bothString.equals(rb.getText())) {
+						status.add("urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
+						status.add("urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248");
+					}
+				}
+			}
+		}
+
+		void addReturnsToCodeSpec(Map<String, List<String>> codeSpec, HorizontalPanel panel, String codeType) {
+			List<String> status = new ArrayList<>();
+			codeSpec.put(codeType, status);
+			for (int i=0; i<panel.getWidgetCount(); i++) {
+				RadioButton rb = (RadioButton) panel.getWidget(i);
+				if (rb.getValue()) {
+					if (leafClassString.equals(rb.getText())) status.add("LeafClass");
+					if (objectRefString.equals(rb.getText())) status.add("ObjectRef");
+				}
+			}
+		}
 	}
 
 	public String getWindowShortName() {

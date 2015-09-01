@@ -48,7 +48,7 @@ public class RegistryActorFactory extends ActorFactory {
 		addEditableEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 		addEditableEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
 		addEditableEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
-		addEditableEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);		
+		addEditableEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
 
 		return new Simulator(sc);
 	}

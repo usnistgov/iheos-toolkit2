@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>MPQ-FindDocs</Test>
+    <Test>GetAll</Test>
     <TestStep id="object_refs">
         <ExpectedStatus>Success</ExpectedStatus>
-        <MPQTransaction>
+        <StoredQueryTransaction>
             <XDSb/>
             <CleanParams/>
             <Metadata>
@@ -11,12 +11,12 @@
                                          xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
                                          xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
                                          xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
-                    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
-                    <!-- FindDocumentsForMultiplePatients -->
+                    <query:ResponseOption returnComposedObjects="true" returnType="$rt0$"/>
+                    <!-- GetAll -->
                     <AdhocQuery id="urn:uuid:10b545ea-725c-446d-9b95-8aeb444eddf3">
-                        <Slot name="$XDSDocumentEntryPatientId">
+                        <Slot name="$patientId">
                             <ValueList>
-                                <Value>('$patient_id$')</Value>
+                                <Value>'$patient_id$'</Value>
                             </ValueList>
                         </Slot>
                         <Slot name="$XDSDocumentEntryFormatCode">
@@ -82,6 +82,6 @@
                     </AdhocQuery>
                 </query:AdhocQueryRequest>
             </Metadata>
-        </MPQTransaction>
+        </StoredQueryTransaction>
     </TestStep>
 </TestPlan>

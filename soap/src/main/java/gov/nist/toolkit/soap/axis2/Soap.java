@@ -485,7 +485,6 @@ public class Soap implements SoapInterface {
 
 		System.out
 				.println("******************************** BEFORE execute ****************************");
-		System.out.println(ExceptionUtil.here("Making soap call"));
 		try {
 			operationClient.execute(block); // execute sync or async
 		} finally {

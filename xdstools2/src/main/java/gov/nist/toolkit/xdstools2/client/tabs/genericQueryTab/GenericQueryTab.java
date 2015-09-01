@@ -79,8 +79,6 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		siteActorManager.setGenericQueryTab(this);
 
 
-		addTextResults("Tab created");
-
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
 		//		EnvironmentSelector.SETENVIRONMENT(toolkitService);

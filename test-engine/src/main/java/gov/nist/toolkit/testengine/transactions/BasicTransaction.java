@@ -265,8 +265,9 @@ public abstract class BasicTransaction  {
 			throw new Exception("foo");
 		} catch (Exception e) { exceptionString = ExceptionUtil.exception_local_stack(e); }
 		return new StringBuffer()
-		.append("Called From:\n")
-		.append(exceptionString)
+//		.append("Called From:\n")
+//		.append(exceptionString)
+		.append("BasicTransaction\n")
 		.append("Step = ").append(s_ctx.getId()).append("\n")
 		.append("transaction = ").append(this.getClass().getName()).append("\n")
 		.append("step_failure = ").append(step_failure).append("\n")
