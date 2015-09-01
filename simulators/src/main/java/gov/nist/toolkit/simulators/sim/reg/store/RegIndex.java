@@ -50,7 +50,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return db;
 	}
 
-	static public enum StatusValue { UNKNOWN, APPROVED, DEPRECATED };
+	public enum StatusValue { UNKNOWN, APPROVED, DEPRECATED };
 	
 	
 	
@@ -160,10 +160,11 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		out.close();
 	}
 
+	// This must be called from a synchronize block
 	static MetadataCollection restoreRegistry(String filename) throws IOException, ClassNotFoundException {
 		logger.debug("Restore Registry Index");
-		FileInputStream fis = null;
-		ObjectInputStream in = null;
+		FileInputStream fis;
+		ObjectInputStream in;
 		MetadataCollection mc;
 		fis = new FileInputStream(filename);
 		in = new ObjectInputStream(fis);
@@ -174,12 +175,8 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 
 // caller takes responsiblity for sync, must be on this
 	public void save() throws IOException {
-//		if (!mc.dirty)
-//			return;
-//		synchronized(this) {
 			RegIndex.saveRegistry(mc, filename);
 			mc.dirty = false;
-//		}
 	}
 
 	public void restore() throws IOException, ClassNotFoundException {

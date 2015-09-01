@@ -308,17 +308,6 @@ public class SimServlet  extends HttpServlet {
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
-//		String warHome = getServletContext().getRealPath("/");
-//		System.setProperty("warHome", warHome);
-//		logger.debug("warHome[SimServlet]: " + warHome + "\n");
-//		if (dbPath == null) {
-//			ToolkitServiceImpl tk = new ToolkitServiceImpl();
-//			tk.setWarHome(warHome);
-//			// force use of THIS reference to the servlet context
-//			// since gwt-servlet may not be loaded yet
-//			tk.propertyServiceManager.loadPropertyManager();
-//			dbPath = tk.propertyServiceManager.getSimDbDir().toString();
-//		}
 		String uri  = request.getRequestURI().toLowerCase();
 		logger.info("+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ");
 		logger.info("uri is " + uri);
@@ -407,13 +396,10 @@ public class SimServlet  extends HttpServlet {
 
 			logRequest(request, db, actor, transaction);
 
-//			SimulatorConfig asc = new SimulatorFactory(new SimCache().getSimManagerForSession(session.id())).getSimConfig(simDbDir, simid);
 			SimulatorConfig asc = SimulatorFactory.getSimConfig(simDbDir, simid);
 
 			regIndex = getRegIndex(db, simid);
 			repIndex = getRepIndex(db, simid);
-
-
 			
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			

@@ -50,6 +50,7 @@
         <module>utilities</module>
         <module>common</module>
         <module>error-recording</module>
+        <module>adt</module>
     </modules>
 
 
