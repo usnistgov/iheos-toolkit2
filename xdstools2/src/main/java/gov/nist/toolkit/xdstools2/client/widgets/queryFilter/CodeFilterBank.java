@@ -1,10 +1,11 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.xdstools2.client.widgets.queryFilter;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.CodeEditButtonSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * Created by bill on 8/25/15.
  */
-public class CodeFilterBank {
+public class CodeFilterBank  {
     List<CodeFilter> codeFilters = new ArrayList<>();
     public CodesConfiguration codesConfiguration = null;
     public int codeBoxSize = 2;
@@ -27,6 +28,12 @@ public class CodeFilterBank {
         this.toolkitService = toolkitService;
         this.genericQueryTab = genericQueryTab;
         toolkitService.getCodesConfiguration(loadCodeConfigCallback);
+    }
+
+    public void addFilter(FlexTable paramGrid, int prow, int col, String filterName) {
+        CodeFilter codeFilter = new CodeFilter(paramGrid, prow, col, CodesConfiguration.getTitle(filterName), filterName, codeBoxSize);
+        addCodeFilter(codeFilter);
+        prow++;
     }
 
     public int addCodeFiltersByName(List<String> names, FlexTable paramGrid, int startingRow, int col, int boxSize) {

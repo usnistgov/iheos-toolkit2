@@ -46,6 +46,8 @@ public class CodesConfiguration implements IsSerializable {
 		titles.put(ReturnsType, "Returns Type");
 	}
 
+	static public String getTitle(String codeName) { return titles.get(codeName);}
+
 	Map<String, CodeConfiguration> codes;
 
 	public void setCodes(Map<String, CodeConfiguration> codes) {
