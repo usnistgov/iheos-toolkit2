@@ -4,6 +4,7 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.server.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
@@ -26,7 +27,7 @@ public class ClientApi implements SecurityParams {
     static Logger logger = Logger.getLogger(ClientApi.class);
 
     public ClientApi() {
-        this(Support.setupToolkit());
+        this(TestSession.setupToolkit());
     }
 
     public ClientApi(Session session) {

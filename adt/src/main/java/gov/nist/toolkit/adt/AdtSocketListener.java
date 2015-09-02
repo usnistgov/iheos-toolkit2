@@ -1,6 +1,8 @@
 package gov.nist.toolkit.adt;
 
 
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,32 +10,50 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
-public class AdtSocketListener {
+public class AdtSocketListener implements Runnable{
+    static Logger logger = Logger.getLogger(AdtSocketListener.class);
 
     ServerSocket server = null;
-
-    int port = 8087;
+    ThreadPoolItem threadPoolItem;
 
     /** Creates a new instance of AdtSocketListener */
-    public AdtSocketListener(int port) {
-        this.port = port;
+    public AdtSocketListener(ThreadPoolItem threadPoolItem) {
+        this.threadPoolItem = threadPoolItem;
     }
+
+    public void run() {
+        try {
+            server = new ServerSocket(threadPoolItem.port);
+            if (threadPoolItem.timeoutInMilli != 0) {
+                server.setSoTimeout(threadPoolItem.timeoutInMilli);
+            }
+            listenSocket();
+        } catch (Exception e) {
+
+        } finally {
+            try {
+                server.close();
+            } catch (Exception e1) {
+
+            }
+            server = null;
+        }
+    }
+
     public void openServer() {
         try {
-            server = new ServerSocket(port);
+            server = new ServerSocket(threadPoolItem.port);
         } catch (IOException e) {
-            System.out.println("Error listening on port: " + port);
-            e.printStackTrace();
-            System.exit(1);
+            logger.fatal("Error listening on port: " + threadPoolItem.port);
         }
     }
     public void closeServer() {
         try {
             server.close();
         } catch (IOException e) {
-            System.out.println("Problem closing server connection (already closed?)");
-            e.printStackTrace();
+            logger.error("Problem closing server connection (already closed?)");
         }
     }
 
@@ -41,17 +61,36 @@ public class AdtSocketListener {
         try {
             boolean sendError = false;
             Socket socket = null;
+            logger.info("Now listening on port: " + threadPoolItem.port);
             try {
-                System.out.println("Now listening on port: " + port);
-                System.out.flush();
-                socket = server.accept();
+                while (true) {
+                    try {
+                        logger.info("accept - timeout is " + server.getSoTimeout());
+                        socket = server.accept();
+                        break;  // process the incoming request
+                    } catch (SocketTimeoutException e) {
+                        logger.info("SocketTimeoutException");
+                        if (Thread.interrupted())
+                            throw new InterruptedException("");
+                    }
+                }
+            } catch (InterruptedException e) {
+                // This is the signal to shutdown the listener
+                logger.info("Interrupted (port " + threadPoolItem.port + ")");
+                threadPoolItem.release();
+                return;
             } catch (IOException e) {
                 sendError = true;
-                System.out.println("Error while listening for connection.");
-                e.printStackTrace();
-                System.out.flush();
+                logger.fatal("Error while listening for connection.", e);
+                return;
+            } catch (Exception e) {
+                logger.fatal("Exception waiting for socket accept", e);
+                return;
+            } catch (Throwable e) {
+                logger.fatal("Throwable waiting for socket accept", e);
                 return;
             }
+            logger.info("Have incoming request");
             InputStream is = null;
             OutputStream os = null;
             PrintWriter writer = null;
@@ -63,9 +102,7 @@ public class AdtSocketListener {
                 // in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             } catch (IOException e) {
                 sendError = true;
-                System.out.println("Error creating InputStream/OutputStream/PrintWriter");
-                e.printStackTrace();
-                System.out.flush();
+                logger.fatal("Error creating InputStream/OutputStream/PrintWriter", e);
                 return;
             }
             StringBuffer input = new StringBuffer();
@@ -85,8 +122,7 @@ public class AdtSocketListener {
                 }
             } catch (IOException e) {
                 sendError = true;
-                e.printStackTrace();
-                System.out.flush();
+                logger.fatal(e);
             }
             try {
                 InetAddress address = socket.getInetAddress();
@@ -95,9 +131,7 @@ public class AdtSocketListener {
                 System.out.println("Connection from: " + addressString);
             } catch (Exception e) {
                 sendError = true;
-
-                e.printStackTrace();
-                System.out.flush();
+                logger.fatal(e);
             }
 
             AdtMessage message = null;
@@ -121,24 +155,13 @@ public class AdtSocketListener {
                 }
 
                 try {
-
                     String patientId = message.getPatientId();
                     String patientName = message.getPatientName();
-                    System.out.println("Incoming PatientID = " + patientId + "  Patient Name = " + patientName);
-                    System.out.flush();
-                        if(true /*  new patient id */) {
-                            // save it here
-                            System.out.println("New Patient!");
-                            System.out.flush();
-                        } else {
-                            System.out.println("Patient ID already exists.  Throwing away...");
-                            System.out.flush();
-                        }
-
+                    logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName);
+                    Adt.addPatientId(threadPoolItem.simId, patientId);
                 } catch (AdtMessageParseException e) {
                     sendError = true;
-                    e.printStackTrace();
-                    System.out.flush();
+                    logger.error(e);
                 }
                 //         try {
                 if(sendError == true)
@@ -150,28 +173,24 @@ public class AdtSocketListener {
                 socket.shutdownOutput();
                 socket.close();
             } catch (IOException e) {
-                System.out.println("Problem closing socket connection (already closed?)");
-                e.printStackTrace();
-                System.out.flush();
+                logger.error("Problem closing socket connection (already closed?)", e);
             }
-        } catch (Exception e )   {
-            System.out.println("Cannot save anything (log or adt).  Cannot send ACK response.");
-            e.printStackTrace();
-            System.out.flush();
+        } catch (Exception e)   {
+            logger.error("Cannot save anything (log or adt).  Cannot send ACK response.", e);
         }
     }
 
-    public static void main(String[] ignore) {
-        AdtSocketListener listener = new AdtSocketListener(8087);
-        listener.openServer();
-        while(true) {
-            try{
-                listener.listenSocket();
-            } catch (Exception e) {
-                System.out.println("Unknown error.  Contining to listen on port 8087.");
-                e.printStackTrace();
-                System.out.flush();
-            }
-        }
-    }
+//    public static void main(String[] ignore) {
+//        AdtSocketListener listener = new AdtSocketListener(8087);
+//        listener.openServer();
+//        while(true) {
+//            try{
+//                listener.listenSocket();
+//            } catch (Exception e) {
+//                System.out.println("Unknown error.  Contining to listen on port 8087.");
+//                e.printStackTrace();
+//                System.out.flush();
+//            }
+//        }
+//    }
 }

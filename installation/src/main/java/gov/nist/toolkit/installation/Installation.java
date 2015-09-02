@@ -20,7 +20,7 @@ public class Installation {
 	static Installation me = null;
 
     static {
-        // This works for unit tests if warhome.txt is installed
+        // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
             warhomeTxt = installation().getClass().getResource("/warhome/warhome.txt").getFile();

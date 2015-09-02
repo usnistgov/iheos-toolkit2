@@ -60,6 +60,11 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		return getPropertyManager().getToolkitTlsPort();
 	}
 
+	public List<String> getListenerPortRange() {
+		logger.debug(": " + "getToolkitTlsPort");
+		return getPropertyManager().getListenerPortRange();
+	}
+
 	public String getToolkitEnableAllCiphers() {
 		logger.debug(": " + "getToolkitEnableAllCiphers");
 		return getPropertyManager().getToolkitEnableAllCiphers();

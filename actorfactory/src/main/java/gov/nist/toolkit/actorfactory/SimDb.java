@@ -13,6 +13,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 /**
  * Each simulator has an on-disk presence that keeps track of its long
@@ -207,6 +206,18 @@ public class SimDb {
 		return new File(regDir.toString() + File.separator + "rep_db.ser");
 	}
 
+	public File getAffinityDomainDir(String adOid) {
+		File regDir = new File(simDir.toString(), actor);
+		File adDir = new File(regDir, adOid);
+		adDir.mkdirs();
+		return adDir;
+	}
+
+	public File getPidFile(String adOid, String pid) {
+		File adFile = getAffinityDomainDir(adOid);
+		File pidFile = new File(adFile, pid + ".txt");
+		return pidFile;
+	}
 
 	//	public void setSimulatorType(String type) throws IOException {
 	//		File simType = new File(getDBFilePrefix(fileNameBase) + File.separator + "sim_type.txt");

@@ -5,6 +5,7 @@ import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageValidator;
 
+// This commits delta into in-memory store
 public class Committer extends MessageValidator {
 	SimCommon common;
 	MetadataCollection delta;

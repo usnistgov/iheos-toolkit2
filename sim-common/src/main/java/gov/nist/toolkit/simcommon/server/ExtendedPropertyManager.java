@@ -1,10 +1,10 @@
 package gov.nist.toolkit.simcommon.server;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
 
 public class ExtendedPropertyManager {
 
@@ -21,7 +21,7 @@ public class ExtendedPropertyManager {
 		try {
 			properties.load(new FileInputStream(propFile));
 		} catch (Exception e) {
-			logger.info("Cannot load extended.properties", e);
+			logger.info("Cannot load extended.properties");
 		}
 	}
 	

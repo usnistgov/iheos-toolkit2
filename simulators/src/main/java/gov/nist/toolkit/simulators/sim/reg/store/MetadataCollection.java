@@ -42,9 +42,6 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	transient public RegIndex regIndex;
 	transient public ValidationContext vc;
 
-	// Patient DB
-	public List<String> patientIds;
-
 	// To maintain a delta ...
 	transient MetadataCollection parent = null;
 	transient List<OldValueNewValueStatus> statusChanges = null;

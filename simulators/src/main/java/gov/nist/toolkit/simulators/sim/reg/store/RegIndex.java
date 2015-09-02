@@ -175,13 +175,13 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 
 // caller takes responsiblity for sync, must be on this
 	public void save() throws IOException {
-			RegIndex.saveRegistry(mc, filename);
+			saveRegistry(mc, filename);
 			mc.dirty = false;
 	}
 
 	public void restore() throws IOException, ClassNotFoundException {
 		synchronized(this) {
-			mc = RegIndex.restoreRegistry(filename);
+			mc = restoreRegistry(filename);
 		}
 	}
 
