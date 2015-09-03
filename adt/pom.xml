@@ -21,10 +21,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
         </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>session</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nist.toolkit</groupId>-->
+            <!--<artifactId>session</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>

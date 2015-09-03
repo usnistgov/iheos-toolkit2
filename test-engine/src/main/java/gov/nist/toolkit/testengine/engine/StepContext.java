@@ -237,8 +237,12 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				else if (instruction_name.equals("DsubSubscribeTransaction")) 
 				{
 					transaction = new DsubSubscribeTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("IGQTransaction")) 
+				}
+				else if (instruction_name.equals("PatientIdentityFeedTransaction"))
+				{
+					transaction = new PatientIdentityFeedTransaction(this, instruction, instruction_output);
+				}
+				else if (instruction_name.equals("IGQTransaction"))
 				{
 					transaction = new IGQTransaction(this, instruction, instruction_output);
 				} 

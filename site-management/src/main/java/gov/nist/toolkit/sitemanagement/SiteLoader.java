@@ -8,14 +8,12 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
+
+import javax.xml.namespace.QName;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public abstract class SiteLoader {
 
@@ -119,35 +117,6 @@ public abstract class SiteLoader {
 			addTransactionXML(site_ele, tb);
 		}
 
-
-//		MetadataSupport.om_factory.createOMComment(site_ele, "REGISTRY");
-//		for (TransactionBean tb : trans.transactions) {
-//			if (ATFactory.RegistryActorType.hasTransaction(tb.getTransactionType())) {
-//				addTransactionXML(site_ele, tb);
-//			}
-//		}
-//
-//		MetadataSupport.om_factory.createOMComment(site_ele, "RESPONDING GATEWAY");
-//		for (TransactionBean tb : trans.transactions) {
-//			if (ATFactory.RespondingGatewayActorType.hasTransaction(tb.getTransactionType())) {
-//				addTransactionXML(site_ele, tb);
-//			}
-//		}
-//
-//		MetadataSupport.om_factory.createOMComment(site_ele, "INITIATING GATEWAY");
-//		for (TransactionBean tb : trans.transactions) {
-//			if (ATFactory.InitiatingGatewayActorType.hasTransaction(tb.getTransactionType())) {
-//				addTransactionXML(site_ele, tb);
-//			}
-//		}
-//
-//		MetadataSupport.om_factory.createOMComment(site_ele, "REPOSITORY");
-//		for (TransactionBean tb : trans.transactions) {
-//			if (ATFactory.RepositoryActorType.hasTransaction(tb.getTransactionType())) {
-//				addTransactionXML(site_ele, tb);
-//			}
-//		}
-
 		for (TransactionBean tb : repos.transactions) {
 			OMElement trans_ele = MetadataSupport.om_factory.createOMElement("repository", null);
 			String name_suffix = "";
@@ -157,6 +126,12 @@ public abstract class SiteLoader {
 			trans_ele.setText(tb.endpoint);
 			site_ele.addChild(trans_ele);
 		}
+
+		OMElement pif_ele = MetadataSupport.om_factory.createOMElement("patientIdFeed", null);
+		pif_ele.addAttribute("host", s.pifHost, null);
+		pif_ele.addAttribute("port", s.pifPort, null);
+		site_ele.addChild(pif_ele);
+
 
 		if (s.pidAllocateURI != null) {
 			MetadataSupport.om_factory.createOMComment(site_ele, "Patient ID allocation service to use with this site");

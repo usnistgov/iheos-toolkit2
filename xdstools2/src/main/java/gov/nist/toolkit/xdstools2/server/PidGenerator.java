@@ -1,9 +1,9 @@
 package gov.nist.toolkit.xdstools2.server;
 
-import gov.nist.toolkit.common.adt.AdtRecordBean;
 
 import com.sun.ebxml.registry.util.UUID;
 import com.sun.ebxml.registry.util.UUIDFactory;
+import gov.nist.toolkit.adt.AdtRecordBean;
 
 public class PidGenerator {
 
