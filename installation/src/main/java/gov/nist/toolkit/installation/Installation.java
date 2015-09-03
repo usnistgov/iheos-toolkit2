@@ -79,7 +79,8 @@ public class Installation {
 	}
 	
 	public File simDbFile() {
-		return propertyServiceManager().getSimDbDir();
+		return new File(externalCache(), "simdb");
+//		return propertyServiceManager().getSimDbDir();
 	}
 	
 	public File toolkitxFile() {

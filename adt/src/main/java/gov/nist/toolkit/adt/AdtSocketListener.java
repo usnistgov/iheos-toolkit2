@@ -1,6 +1,7 @@
 package gov.nist.toolkit.adt;
 
 
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -42,55 +43,44 @@ public class AdtSocketListener implements Runnable{
         }
     }
 
-    public void openServer() {
+    public void listenSocket() {
+        Socket socket;
+        logger.info("Now listening on port: " + threadPoolItem.port);
         try {
-            server = new ServerSocket(threadPoolItem.port);
+            while (true) {
+                try {
+                    logger.debug("accept - timeout is " + server.getSoTimeout());
+                    socket = server.accept();
+                    handle(socket);
+                } catch (SocketTimeoutException e) {
+                    logger.debug("SocketTimeoutException");
+                    if (Thread.interrupted())
+                        throw new InterruptedException("");
+                }
+            }
+        } catch (InterruptedException e) {
+            // This is the signal to shutdown the listener
+            logger.debug("Interrupted (port " + threadPoolItem.port + ")");
+            threadPoolItem.release();
+            return;
         } catch (IOException e) {
-            logger.fatal("Error listening on port: " + threadPoolItem.port);
+            logger.fatal("Error while listening for connection.", e);
+            return;
+        } catch (Exception e) {
+            logger.fatal("Exception waiting for socket accept", e);
+            return;
+        } catch (Throwable e) {
+            logger.fatal("Throwable waiting for socket accept", e);
+            return;
         }
-    }
-    public void closeServer() {
-        try {
-            server.close();
-        } catch (IOException e) {
-            logger.error("Problem closing server connection (already closed?)");
-        }
+
+
     }
 
-    public void listenSocket() {
+    void handle(Socket socket) {
+        boolean sendError = false;
         try {
-            boolean sendError = false;
-            Socket socket = null;
-            logger.info("Now listening on port: " + threadPoolItem.port);
-            try {
-                while (true) {
-                    try {
-                        logger.info("accept - timeout is " + server.getSoTimeout());
-                        socket = server.accept();
-                        break;  // process the incoming request
-                    } catch (SocketTimeoutException e) {
-                        logger.info("SocketTimeoutException");
-                        if (Thread.interrupted())
-                            throw new InterruptedException("");
-                    }
-                }
-            } catch (InterruptedException e) {
-                // This is the signal to shutdown the listener
-                logger.info("Interrupted (port " + threadPoolItem.port + ")");
-                threadPoolItem.release();
-                return;
-            } catch (IOException e) {
-                sendError = true;
-                logger.fatal("Error while listening for connection.", e);
-                return;
-            } catch (Exception e) {
-                logger.fatal("Exception waiting for socket accept", e);
-                return;
-            } catch (Throwable e) {
-                logger.fatal("Throwable waiting for socket accept", e);
-                return;
-            }
-            logger.info("Have incoming request");
+            logger.debug("Have incoming request");
             InputStream is = null;
             OutputStream os = null;
             PrintWriter writer = null;
@@ -101,7 +91,7 @@ public class AdtSocketListener implements Runnable{
                 writer = new PrintWriter(os);
                 // in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             } catch (IOException e) {
-                sendError = true;
+//                sendError = true;
                 logger.fatal("Error creating InputStream/OutputStream/PrintWriter", e);
                 return;
             }
@@ -122,16 +112,16 @@ public class AdtSocketListener implements Runnable{
                 }
             } catch (IOException e) {
                 sendError = true;
-                logger.fatal(e);
+                logger.error(e);
             }
             try {
                 InetAddress address = socket.getInetAddress();
 
                 String addressString = address.getHostAddress();
-                System.out.println("Connection from: " + addressString);
+                logger.info("Connection from: " + addressString);
             } catch (Exception e) {
                 sendError = true;
-                logger.fatal(e);
+                logger.error(e);
             }
 
             AdtMessage message = null;
@@ -162,35 +152,23 @@ public class AdtSocketListener implements Runnable{
                 } catch (AdtMessageParseException e) {
                     sendError = true;
                     logger.error(e);
+                } catch (Exception e) {
+                    sendError = true;
+                    logger.fatal(ExceptionUtil.exception_details(e));
                 }
-                //         try {
                 if(sendError == true)
                     writer.write(message.getNack());
                 else
                     writer.write(message.getAck());
                 writer.flush();
-                //            writer.close();
                 socket.shutdownOutput();
                 socket.close();
             } catch (IOException e) {
                 logger.error("Problem closing socket connection (already closed?)", e);
             }
+
         } catch (Exception e)   {
             logger.error("Cannot save anything (log or adt).  Cannot send ACK response.", e);
         }
     }
-
-//    public static void main(String[] ignore) {
-//        AdtSocketListener listener = new AdtSocketListener(8087);
-//        listener.openServer();
-//        while(true) {
-//            try{
-//                listener.listenSocket();
-//            } catch (Exception e) {
-//                System.out.println("Unknown error.  Contining to listen on port 8087.");
-//                e.printStackTrace();
-//                System.out.flush();
-//            }
-//        }
-//    }
 }

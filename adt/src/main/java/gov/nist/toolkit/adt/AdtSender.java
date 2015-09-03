@@ -2,12 +2,14 @@ package gov.nist.toolkit.adt;
 
 
 import gov.nist.toolkit.utilities.io.Io;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class AdtSender {
+    static Logger logger = Logger.getLogger(AdtSender.class);
     String templateFile = null;
     InputStream templateInputStream = null;
     String server;
@@ -36,12 +38,12 @@ public class AdtSender {
             in = new BufferedReader(new InputStreamReader(
                     echoSocket.getInputStream()));
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host: " + server);
-            System.exit(1);
+            logger.error("Don't know about host: " + server);
+            return;
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for "
-                    + "the connection to: " + server);
-            System.exit(1);
+            logger.error("Couldn't get I/O for "
+                    + "the connection to: " + server, e);
+            return;
         }
 
         char c;

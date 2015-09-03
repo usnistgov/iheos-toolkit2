@@ -364,7 +364,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public File getSimDbFile() {
-		return Installation.installation().propertyServiceManager().getSimDbDir();
+		return Installation.installation().simDbFile();
 	}
 
 	public MessageValidationResults validateMessage(ValidationContext vc) throws EnvironmentNotSelectedClientException {

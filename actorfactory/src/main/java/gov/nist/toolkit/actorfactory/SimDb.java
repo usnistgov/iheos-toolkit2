@@ -13,6 +13,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -43,6 +44,10 @@ public class SimDb {
 	static Logger logger = Logger.getLogger(SimDb.class);
 
 
+	static public SimDb mkSim(String simid, String actor) throws IOException, NoSimException {
+		return mkSim(Installation.installation().simDbFile(), simid, actor);
+	}
+
 	static public SimDb mkSim(File dbRoot, String simid, String actor) throws IOException, NoSimException {
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
@@ -71,12 +76,8 @@ public class SimDb {
 		return new File(Installation.installation().simDbFile(), simId).exists();
 	}
 
-
-	// ipAddr aka simid
-	public SimDb(File dbRoot, String simId, String actor, String transaction) throws IOException, NoSimException {
+	public SimDb(File dbRoot, String simId) throws IOException, NoSimException {
 		this.simId = simId;
-		this.actor = actor;
-		this.transaction = transaction;
 		this.dbRoot = dbRoot;
 
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
@@ -85,14 +86,29 @@ public class SimDb {
 		String ipdir = simId.replaceAll("\\.", "_");
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
 		if (!simDir.exists()) {
-			logger.error("Simulator " + simId + " does not exist");
+			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
+			logger.error(ExceptionUtil.here("here"));
 			throw new NoSimException("Simulator " + simId + " does not exist");
 		}
-			
+
 		simDir.mkdirs();
 
 		if (!simDir.isDirectory())
 			throw new IOException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
+
+		// add this for safety when deleting simulators
+		Io.stringToFile(simSafetyFile(), simId);
+	}
+
+	File simSafetyFile() { return new File(simDir, "simId.txt"); }
+	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
+
+	// ipAddr aka simid
+	public SimDb(File dbRoot, String simId, String actor, String transaction) throws IOException, NoSimException {
+		this(dbRoot, simId);
+
+		this.actor = actor;
+		this.transaction = transaction;
 
 		if (actor != null && transaction != null) {
 			String transdir = simDir + File.separator + actor + File.separator + transaction;
@@ -107,7 +123,8 @@ public class SimDb {
 	}
 	
 	public void delete() {
-		delete(simDir);
+		if (isSim())
+			delete(simDir);
 	}
 	
 	public String getActorForSimulator() {
@@ -206,9 +223,12 @@ public class SimDb {
 		return new File(regDir.toString() + File.separator + "rep_db.ser");
 	}
 
+	// These next two methods manage the storage of Patient IDs received through
+	// the Patient Identity Feed
 	public File getAffinityDomainDir(String adOid) {
-		File regDir = new File(simDir.toString(), actor);
-		File adDir = new File(regDir, adOid);
+		File regDir = new File(simDir, ActorType.REGISTRY.getShortName());
+		File pifDir = new File(regDir, "pif");
+		File adDir = new File(pifDir, adOid);
 		adDir.mkdirs();
 		return adDir;
 	}

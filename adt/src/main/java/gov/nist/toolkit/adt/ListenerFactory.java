@@ -18,7 +18,7 @@ public class ListenerFactory {
     static int nextPort = 0;
     static List<ThreadPoolItem> threadPool = new ArrayList<>();
     static boolean inited = false;
-    static int timeoutinMilli = 2*1000;
+    static int timeoutinMilli = 5*1000;
 
     static void init(int _firstPort, int _lastPort) {
         firstPort = _firstPort;

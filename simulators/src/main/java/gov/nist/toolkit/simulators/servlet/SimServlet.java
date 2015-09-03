@@ -76,7 +76,7 @@ public class SimServlet  extends HttpServlet {
 		logger.info("...warHome is " + warHome);
 		Installation.installation().warHome(warHome);
 //		session = new Session(warHome);
-		simDbDir = Installation.installation().propertyServiceManager().getSimDbDir();
+		simDbDir = Installation.installation().simDbFile();
 		logger.info("...simdb = " + simDbDir);
 		
 //		// this is being done for ToolkitServiceImpl - initialize the
