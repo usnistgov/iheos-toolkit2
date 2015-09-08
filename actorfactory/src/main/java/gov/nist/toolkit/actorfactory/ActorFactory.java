@@ -3,6 +3,7 @@ package gov.nist.toolkit.actorfactory;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
@@ -13,6 +14,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -257,6 +259,46 @@ public abstract class ActorFactory {
 		return simDir.exists();
 	}
 
+	static public List<String> getTransInstances(String simid, String xactor, String trans) throws NoSimException
+	{
+		SimDb simdb;
+		try {
+			simdb = new SimDb(simid);
+		} catch (IOException e) {
+			throw new ToolkitRuntimeException("Error loading sim " + simid + " of actor " + xactor,e);
+		}
+		ATFactory.ActorType actor = simdb.getSimulatorActorType();
+		return simdb.getTransInstances(actor.toString(), trans);
+	}
+
+	static public void renameSimFile(String simFileSpec, String newSimFileSpec)
+			throws Exception {
+		new SimDb().rename(simFileSpec, newSimFileSpec);
+	}
+
+	static public List<SimulatorConfig> getSimConfigs(ActorType actorType) {
+		return getSimConfigs(actorType.getName());
+	}
+
+	static public List<SimulatorConfig> getSimConfigs(String actorTypeName) {
+		SimDb db = new SimDb();
+
+		List<String> allSimIds = db.getAllSimIds();
+		List<SimulatorConfig> simConfigs = new ArrayList<>();
+
+		try {
+			for (SimulatorConfig simConfig : loadSimulators(allSimIds)) {
+				if (actorTypeName.equals(simConfig.getType()))
+					simConfigs.add(simConfig);
+			}
+		} catch (Exception e) {
+			throw new ToolkitRuntimeException("Error loading simulators of type " + actorTypeName + ".", e);
+		}
+
+		return simConfigs;
+	}
+
+
 	/**
 	 * Load simulators - IOException if sim not found
 	 * @param ids
@@ -265,7 +307,7 @@ public abstract class ActorFactory {
 	 * @throws ClassNotFoundException
 	 * @throws NoSimException 
 	 */
-	public List<SimulatorConfig> loadSimulators(List<String> ids) throws IOException, ClassNotFoundException, NoSimException {
+	static public List<SimulatorConfig> loadSimulators(List<String> ids) throws IOException, ClassNotFoundException, NoSimException {
 		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
 
 		for (String id : ids) {
@@ -314,7 +356,7 @@ public abstract class ActorFactory {
 		return config;
 	}
 
-	public SimulatorConfig getSimulator(String simid) throws IOException, ClassNotFoundException, NoSimException {
+	static public SimulatorConfig loadSimulator(String simid) throws IOException, ClassNotFoundException, NoSimException {
 		SimDb simdb = new SimDb(simid);
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfig config = restoreSimulator(simCntlFile.toString());

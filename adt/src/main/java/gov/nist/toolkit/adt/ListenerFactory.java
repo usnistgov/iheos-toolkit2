@@ -1,9 +1,17 @@
 package gov.nist.toolkit.adt;
 
+import gov.nist.toolkit.actorfactory.RegistryActorFactory;
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.SimulatorFactory;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +32,9 @@ public class ListenerFactory {
         firstPort = _firstPort;
         nextPort = _firstPort;
         lastPort = _lastPort;
+        for (int i=firstPort; i<=lastPort; i++) {
+            threadPool.add(new ThreadPoolItem(i));
+        }
     }
 
     static public void init() {
@@ -35,14 +46,54 @@ public class ListenerFactory {
         init(from, to);
     }
 
-    public static void generateListeners(List<String> simIds) {
+    static ThreadPoolItem getThreadPoolItem(int port) {
+        for (ThreadPoolItem item : threadPool) {
+            if (item.port == port)
+                return item;
+        }
+        return null;
+    }
+
+    public static void generateCurrentlyConfiguredListeners() throws IOException, NoSimException, ClassNotFoundException {
+        SimDb db = new SimDb();
+        List<String> simIds = db.getSimulatorIdsforActorType(ATFactory.ActorType.REGISTRY);
+        generateListeners(simIds);
+    }
+
+    public static void terminateCurrentlyConfiguredListeners() throws IOException, NoSimException {
+        SimDb db = new SimDb();
+        List<String> simIds = db.getSimulatorIdsforActorType(ATFactory.ActorType.REGISTRY);
+        for (String simId : simIds)
+            terminate(simId);
+    }
+
+    public static void generateListeners(List<String> simIds) throws NoSimException, IOException, ClassNotFoundException {
         init();
         for (String simId : simIds) {
-            generateListener(simId);
+            generateListener(SimulatorFactory.loadSimulator(simId));
         }
     }
 
-    public static void generateListener(String simId) {
+    public static void generateListener(SimulatorConfig simulatorConfig) {
+        init();
+        SimulatorConfigElement sce = simulatorConfig.get(RegistryActorFactory.pif_port);
+        if (sce == null)
+            throw new ToolkitRuntimeException("Simulator " + simulatorConfig.getId() + " is a Registry simulator but has no Patient ID Feed port configured");
+        String portString = sce.asString();
+        if (portString == null || portString.equals(""))
+            throw new ToolkitRuntimeException("Simulator " + simulatorConfig.getId() + " is a Registry simulator but has no Patient ID Feed port configured");
+        int port = Integer.parseInt(portString);
+        ThreadPoolItem tpi = allocateThreadPoolItem(port);
+
+        tpi.simId = simulatorConfig.getId();
+        tpi.timeoutInMilli = timeoutinMilli;
+        threadPool.add(tpi);
+        Thread thread = new Thread(new AdtSocketListener(tpi));
+        tpi.thread = thread;
+        thread.start();
+    }
+
+    public static int generateListener(String simId) {
         init();
         ThreadPoolItem tpi = allocateThreadPoolItem();
         tpi.simId = simId;
@@ -51,6 +102,7 @@ public class ListenerFactory {
         Thread thread = new Thread(new AdtSocketListener(tpi));
         tpi.thread = thread;
         thread.start();
+        return tpi.port;
     }
 
     public static void terminate(String simId) {
@@ -69,15 +121,6 @@ public class ListenerFactory {
         return null;
     }
 
-    static boolean hasNextPort() { return nextPort <= lastPort; }
-
-    static int getNextPort() {
-        if (nextPort > lastPort) return 0;
-        int ret = nextPort;
-        nextPort++;
-        return ret;
-    }
-
     static ThreadPoolItem allocateThreadPoolItem() {
         for (ThreadPoolItem tm : threadPool)
             if (!tm.inUse) {
@@ -85,13 +128,16 @@ public class ListenerFactory {
                 // Uses already allocated/assigned port
                 return tm;
             }
-        if (hasNextPort()) {
-            ThreadPoolItem tm = new ThreadPoolItem();
-            tm.inUse = true;
-            tm.port = getNextPort();
-            return tm;
-        }
         throw new ToolkitRuntimeException("Thread pool exhausted - cannot launch ADT listener");
     }
 
+    static ThreadPoolItem allocateThreadPoolItem(int port) {
+        ThreadPoolItem item = getThreadPoolItem(port);
+        if (item == null)
+            throw new ToolkitRuntimeException("Cannot allocate listener for port " + port + ". This is not a configured port for Toolkit");
+        if (item.inUse)
+            throw new ToolkitRuntimeException("Cannot allocate listener for port " + port + ". This port is already in use.");
+        item.inUse = true;
+        return item;
+    }
 }

@@ -8,11 +8,21 @@ import org.apache.log4j.Logger;
 public class ThreadPoolItem {
     static Logger logger = Logger.getLogger(ThreadPoolItem.class);
 
-    int port;
+    int port = 0;
     boolean inUse = false;
     Thread thread = null;
-    String simId;
+    String simId = null;
     int timeoutInMilli = 0;
+
+    public ThreadPoolItem() {}
+
+    public ThreadPoolItem(int port) {
+        this.port = port;
+    }
+
+    public int getPort() {
+        return port;
+    }
 
     public void release() {
         logger.info("Release port " + port);

@@ -101,7 +101,14 @@
 		<servlet-name>messageServlet</servlet-name>
 		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
 	</servlet>
-	
+
+	<servlet>
+		<servlet-name>adtServlet</servlet-name>
+		<display-name>ADT Listener</display-name>
+		<servlet-class>gov.nist.toolkit.adt.AdtServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>toolkitServlet</servlet-name>
 		<url-pattern>/xdstools2/toolkit</url-pattern>

@@ -254,6 +254,24 @@ public class SimDb {
 		}
 		return null;
 	}
+
+	static public List<String> getSimulatorIdsforActorType(ActorType actorType) throws IOException, NoSimException {
+		SimDb db = new SimDb();
+		List<String> allSimIds = db.getAllSimIds();
+		List<String> simIdsOfType = new ArrayList<>();
+		for (String simId : allSimIds) {
+			if (actorType.equals(getSimulatorActorType(simId)))
+				simIdsOfType.add(simId);
+		}
+
+		return simIdsOfType;
+	}
+
+	static public ActorType getSimulatorActorType(String simId) throws IOException, NoSimException {
+		SimDb db = new SimDb(simId);
+		if (db == null) return null;
+		return db.getSimulatorActorType();
+	}
 	
 	public List<String> getTransactionsForSimulator() {
 		List<String> trans = new ArrayList<String>();

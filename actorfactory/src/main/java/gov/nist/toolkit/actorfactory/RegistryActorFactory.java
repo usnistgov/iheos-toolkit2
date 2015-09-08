@@ -20,6 +20,7 @@ import java.util.List;
 public class RegistryActorFactory extends ActorFactory {
 
 	public static final String update_metadata_option = "Update_Metadata_Option";
+	public static final String pif_port = "Patient_Identity_Feed_Port";
 	
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(
@@ -44,6 +45,7 @@ public class RegistryActorFactory extends ActorFactory {
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
 		addEditableConfig(sc, update_metadata_option, ParamType.BOOLEAN, false);
+		addEditableConfig(sc, pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.generateListener(simId)));
 		addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
 		addEditableEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 		addEditableEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);

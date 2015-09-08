@@ -13,6 +13,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+/**
+ * This should only be invoked from ListenerFactory.
+ */
 public class AdtSocketListener implements Runnable{
     static Logger logger = Logger.getLogger(AdtSocketListener.class);
 
