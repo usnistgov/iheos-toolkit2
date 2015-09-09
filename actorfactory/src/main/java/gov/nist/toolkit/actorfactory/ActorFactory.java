@@ -145,9 +145,15 @@ public abstract class ActorFactory {
 	public Simulator buildNewSimulator(SimManager simm, String simtype, String simID, boolean save) throws Exception {
 
 		ActorType at = ActorType.findActor(simtype);
-		
+
 		if (at == null)
 			throw new NoSimException("Simulator type [" + simtype + "] does not exist");
+
+		return buildNewSimulator(simm, at, simID, save);
+
+	}
+
+	public Simulator buildNewSimulator(SimManager simm, ActorType at, String simID, boolean save) throws Exception {
 
 		ActorFactory af = factories.get(at.getName());
 
@@ -156,20 +162,16 @@ public abstract class ActorFactory {
 		Simulator simulator = af.buildNew(simm, simID, true);
 
 		if (save) {
-			for (SimulatorConfig conf : simulator.getConfigs())
+			for (SimulatorConfig conf : simulator.getConfigs()) {
 				saveConfiguration(conf);
+				if (at.isRegistryActor()) {
+					PatientIdentityFeedServlet.generateListener(conf);
+				}
+			}
 		}
 
 		return simulator;
 	}
-
-	//	void verifyConfigurationOptions(SimulatorConfig config) throws Exception {
-	//
-	//		ActorFactory af = SimManager.getActorFactory(config);
-	//
-	//		af.verifyActorConfigurationOptions(config);
-	//
-	//	}
 
 	public List<SimulatorConfig> checkExpiration(List<SimulatorConfig> configs) {
 		List<SimulatorConfig> remove = new ArrayList<SimulatorConfig>();

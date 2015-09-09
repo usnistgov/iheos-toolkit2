@@ -17,10 +17,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>utilities</artifactId>
         </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>actorfactory</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nist.toolkit</groupId>-->
+            <!--<artifactId>actorfactory</artifactId>-->
+        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>gov.nist.toolkit</groupId>-->
             <!--<artifactId>session</artifactId>-->

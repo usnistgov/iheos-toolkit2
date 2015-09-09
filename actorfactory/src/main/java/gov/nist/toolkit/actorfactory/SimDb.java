@@ -13,7 +13,6 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -87,7 +86,6 @@ public class SimDb {
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
 		if (!simDir.exists()) {
 			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
-			logger.error(ExceptionUtil.here("here"));
 			throw new NoSimException("Simulator " + simId + " does not exist");
 		}
 
@@ -151,7 +149,14 @@ public class SimDb {
 		return newExpiration.getTime();
 	}
 
-
+	static public void deleteAllSims() throws IOException, NoSimException {
+		SimDb simDb = new SimDb();
+		List<String> allSimIds = simDb.getAllSimIds();
+		for (String simId : allSimIds) {
+			SimDb db = new SimDb(simId);
+			db.delete();
+		}
+	}
 	
 	public List<String> getAllSimIds() {
 		File[] files = dbRoot.listFiles();

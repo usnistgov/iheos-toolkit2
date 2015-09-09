@@ -105,7 +105,7 @@
 	<servlet>
 		<servlet-name>adtServlet</servlet-name>
 		<display-name>ADT Listener</display-name>
-		<servlet-class>gov.nist.toolkit.adt.AdtServlet</servlet-class>
+		<servlet-class>gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 

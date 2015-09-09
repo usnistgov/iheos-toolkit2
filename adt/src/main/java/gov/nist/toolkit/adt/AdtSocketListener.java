@@ -62,7 +62,7 @@ public class AdtSocketListener implements Runnable{
                 }
             }
         } catch (InterruptedException e) {
-            // This is the signal to shutdown the listener
+            // This is the signal to shutdown the patientIdentityFeed
             logger.debug("Interrupted (port " + threadPoolItem.port + ")");
             threadPoolItem.release();
             return;
@@ -151,7 +151,8 @@ public class AdtSocketListener implements Runnable{
                     String patientId = message.getPatientId();
                     String patientName = message.getPatientName();
                     logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName);
-                    Adt.addPatientId(threadPoolItem.simId, patientId);
+                    threadPoolItem.pifCallback.addPatient(threadPoolItem.simId, patientId);
+//                    Adt.addPatientId(threadPoolItem.simId, patientId);
                 } catch (AdtMessageParseException e) {
                     sendError = true;
                     logger.error(e);

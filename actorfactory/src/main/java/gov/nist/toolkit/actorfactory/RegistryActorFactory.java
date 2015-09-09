@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
 import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -33,6 +34,9 @@ public class RegistryActorFactory extends ActorFactory {
 //		return buildNew(simm, null, configureBase);
 //	}
 
+	// This does not start any listeners allocated.  The port assignment is made
+	// and the caller gets the responsibility for starting the listeners
+	// Listeners cannot be started until the sim config is saved
 	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
@@ -45,7 +49,7 @@ public class RegistryActorFactory extends ActorFactory {
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
 		addEditableConfig(sc, update_metadata_option, ParamType.BOOLEAN, false);
-		addEditableConfig(sc, pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.generateListener(simId)));
+		addEditableConfig(sc, pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId)));
 		addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
 		addEditableEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 		addEditableEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);

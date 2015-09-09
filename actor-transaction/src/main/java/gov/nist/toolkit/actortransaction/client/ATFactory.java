@@ -269,7 +269,11 @@ public class ATFactory implements IsSerializable, Serializable {
 		public boolean isRepositoryActor() {
 			return this.equals(REPOSITORY); 
 		}
-		
+
+		public boolean isRegistryActor() {
+			return this.equals(REGISTRY);
+		}
+
 		public boolean isRGActor() {
 			return this.equals(RESPONDING_GATEWAY);
 		}

@@ -13,6 +13,7 @@ public class ThreadPoolItem {
     Thread thread = null;
     String simId = null;
     int timeoutInMilli = 0;
+    PifCallback pifCallback = null;
 
     public ThreadPoolItem() {}
 
@@ -20,9 +21,8 @@ public class ThreadPoolItem {
         this.port = port;
     }
 
-    public int getPort() {
-        return port;
-    }
+    public int getPort() { return port; }
+    public boolean getInUse() { return inUse; }
 
     public void release() {
         logger.info("Release port " + port);
