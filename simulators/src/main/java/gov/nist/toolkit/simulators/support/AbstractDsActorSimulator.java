@@ -14,7 +14,7 @@ import java.io.IOException;
  * @author bill
  *
  */
-public abstract class DsActorSimulator {
+public abstract class AbstractDsActorSimulator {
 	protected SimCommon common;
 	protected DsSimCommon dsSimCommon;
 	protected ErrorRecorder er;
@@ -33,7 +33,7 @@ public abstract class DsActorSimulator {
 	 */
 	abstract public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
 	
-	public DsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
+	public AbstractDsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
 //		super(common.getValidationContext());
 		this.common = common;
 		this.dsSimCommon = dsSimCommon;

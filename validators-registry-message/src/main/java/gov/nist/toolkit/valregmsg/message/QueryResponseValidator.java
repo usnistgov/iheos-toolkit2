@@ -3,7 +3,7 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 import org.apache.axiom.om.OMElement;
 
@@ -12,7 +12,7 @@ import org.apache.axiom.om.OMElement;
  * @author bill
  *
  */
-public class QueryResponseValidator extends MessageValidator {
+public class QueryResponseValidator extends AbstractMessageValidator {
 	OMElement xml;
 
 	public QueryResponseValidator(ValidationContext vc, OMElement xml) {

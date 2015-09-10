@@ -20,7 +20,7 @@ import java.util.List;
 
 
 
-public class RGActorFactory extends ActorFactory {
+public class RGActorFactory extends AbstractActorFactory {
 	String newID = null;
 
 	static final String homeCommunityIdBase = "urn:oid:1.1.4567334.1.";

@@ -8,7 +8,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.support.AbstractDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.axiom.om.OMElement;
 
-public class RepositoryActorSimulator extends DsActorSimulator {
+public class RepositoryActorSimulator extends AbstractDsActorSimulator {
 	RepIndex repIndex;
 	SimDb db;
 	HttpServletResponse response;

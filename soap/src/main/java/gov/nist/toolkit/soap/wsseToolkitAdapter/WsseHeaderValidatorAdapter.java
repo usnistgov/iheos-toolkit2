@@ -2,13 +2,12 @@ package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderForErrorRecorder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.wsseTool.api.WsseHeaderValidator;
 import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
@@ -45,7 +44,7 @@ import org.w3c.dom.Element;
  *
  */
 
-public class WsseHeaderValidatorAdapter extends MessageValidator {
+public class WsseHeaderValidatorAdapter extends AbstractMessageValidator {
 
 	private static Logger log = Logger.getLogger(WsseHeaderValidatorAdapter.class);
 

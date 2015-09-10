@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.server.serviceManager;
 import gov.nist.toolkit.actorfactory.CommonService;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimulatorFactory;
+import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -53,7 +53,7 @@ public class SimulatorServiceManager extends CommonService {
 	public List<String> getTransInstances(String simid, String xactor, String trans) throws Exception
 	{
 		logger.debug(session.id() + ": " + "getTransInstances : " + simid + " - " + xactor + " - " + trans);
-		return SimulatorFactory.getTransInstances(simid, xactor, trans);
+		return GenericSimulatorFactory.getTransInstances(simid, xactor, trans);
 	}
 
 	public List<Result> getSelectedMessage(String simFileSpec) {
@@ -115,7 +115,7 @@ public class SimulatorServiceManager extends CommonService {
 	public void renameSimFile(String simFileSpec, String newSimFileSpec)
 			throws Exception {
 		logger.debug(session.id() + ": " + "renameSimFile");
-		SimulatorFactory.renameSimFile(simFileSpec, newSimFileSpec);
+		GenericSimulatorFactory.renameSimFile(simFileSpec, newSimFileSpec);
 	}
 
 	public MessageValidationResults executeSimMessage(String simFileSpec) {
@@ -247,7 +247,7 @@ public class SimulatorServiceManager extends CommonService {
 	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception  {
 		logger.debug(session.id() + ": " + "getSimConfigs " + ids);
 
-		SimulatorFactory simFact = new SimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
+		GenericSimulatorFactory simFact = new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
 		List<SimulatorConfig> configs = simFact.loadSimulators(ids);
 //		List<SimulatorConfig> configs = simServices.getSimConfigs(ids);
 
@@ -260,7 +260,7 @@ public class SimulatorServiceManager extends CommonService {
 	public String putSimConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "putSimConfig");
 		try {
-			new SimulatorFactory(new SimCache().getSimManagerForSession(session.id(), true)).saveConfiguration(config);
+			new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id(), true)).saveConfiguration(config);
 		} catch (IOException e) {
 			logger.error("putSimConfig", e);
 			throw new Exception(e.getMessage());

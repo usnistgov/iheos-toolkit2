@@ -4,7 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by bill on 6/19/15.
  */
-public class SoapMessageParser extends MessageValidator {
+public class SoapMessageParser extends AbstractMessageValidator {
     OMElement envelope;
     List<OMElement> headers = new ArrayList<>();
     List<OMElement> bodies = new ArrayList<>();

@@ -1,9 +1,9 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actorfactory.ActorFactory;
+import gov.nist.toolkit.actorfactory.AbstractActorFactory;
 import gov.nist.toolkit.actorfactory.RegistryActorFactory;
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimulatorFactory;
+import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
@@ -396,14 +396,14 @@ public class SimServlet  extends HttpServlet {
 
 			logRequest(request, db, actor, transaction);
 
-			SimulatorConfig asc = SimulatorFactory.getSimConfig(simDbDir, simid);
+			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simDbDir, simid);
 
 			regIndex = getRegIndex(db, simid);
 			repIndex = getRepIndex(db, simid);
 			
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			
-			SimulatorConfigElement asce = asc.get(ActorFactory.codesEnvironment);
+			SimulatorConfigElement asce = asc.get(AbstractActorFactory.codesEnvironment);
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 			

@@ -1,9 +1,9 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 
-public abstract class TransactionSimulator extends MessageValidator {
+public abstract class TransactionSimulator extends AbstractMessageValidator {
 	protected SimCommon common;
 	
 	public TransactionSimulator(SimCommon common) {

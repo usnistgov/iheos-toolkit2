@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class RegistryActorFactory extends ActorFactory {
+public class RegistryActorFactory extends AbstractActorFactory {
 
 	public static final String update_metadata_option = "Update_Metadata_Option";
 	public static final String pif_port = "Patient_Identity_Feed_Port";

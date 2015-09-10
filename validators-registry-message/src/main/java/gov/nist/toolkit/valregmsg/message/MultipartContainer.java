@@ -6,12 +6,12 @@ import gov.nist.toolkit.http.MultipartParserBa;
 import gov.nist.toolkit.http.PartBa;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MultipartContainer extends MessageValidator {
+public class MultipartContainer extends AbstractMessageValidator {
 	MultipartParserBa mp;
 	Map<String, StoredDocumentInt> contentMap = new HashMap<String, StoredDocumentInt>();
 

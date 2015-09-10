@@ -12,7 +12,7 @@ import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 import java.io.IOException;
 
@@ -57,7 +57,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 			}
 			
 			// extract query 
-			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
                 dsSimCommon.sendErrorsInRegistryResponse(er);

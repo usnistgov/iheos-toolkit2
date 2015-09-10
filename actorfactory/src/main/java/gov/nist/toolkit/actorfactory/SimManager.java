@@ -33,14 +33,14 @@ public class SimManager {
 //	do not belong on the client side.
 //*****************************************
 	static public Site getSite(SimulatorConfig config) throws Exception {
-		ActorFactory af = getActorFactory(config);
+		AbstractActorFactory af = getActorFactory(config);
 		return af.getActorSite(config, null);
 	}
 
-	static public ActorFactory getActorFactory(SimulatorConfig config) throws Exception {
+	static public AbstractActorFactory getActorFactory(SimulatorConfig config) throws Exception {
 		String simtype = config.getType();
 		ActorType at = ActorType.findActor(simtype);
-		ActorFactory af = ActorFactory.getActorFactory(at);
+		AbstractActorFactory af = AbstractActorFactory.getActorFactory(at);
 		return af;
 	}
 //*****************************************
@@ -58,7 +58,7 @@ public class SimManager {
 		for (SimulatorConfig sc : simConfigs) {
 			String simtype = sc.getType();
 			ActorType at = ActorType.findActor(simtype);
-			ActorFactory af = ActorFactory.getActorFactory(at);
+			AbstractActorFactory af = AbstractActorFactory.getActorFactory(at);
 			af.setSimManager(this);  // doesn't get set otherwise on sim reload
 			if (!af.simExists(sc)) {
 				if (deletions == null)

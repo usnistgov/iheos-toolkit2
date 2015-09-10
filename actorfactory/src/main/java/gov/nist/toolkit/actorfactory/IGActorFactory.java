@@ -11,7 +11,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import java.util.Arrays;
 import java.util.List;
 
-public class IGActorFactory extends ActorFactory {
+public class IGActorFactory extends AbstractActorFactory {
 	String newID = null;
 
 	static final List<TransactionType> incomingTransactions = 

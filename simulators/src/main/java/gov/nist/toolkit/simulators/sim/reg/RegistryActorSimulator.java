@@ -9,7 +9,7 @@ import gov.nist.toolkit.simulators.sim.reg.mu.MuSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;
 import gov.nist.toolkit.simulators.sim.reg.store.Committer;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.support.AbstractDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-public class RegistryActorSimulator extends DsActorSimulator {
+public class RegistryActorSimulator extends AbstractDsActorSimulator {
 	SimDb db;
 	SimulatorConfig asc;
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);

@@ -7,7 +7,7 @@ import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 /**
  * Handle XDS Repository duties by storing document(s) in local Repository
@@ -16,7 +16,7 @@ import gov.nist.toolkit.valsupport.message.MessageValidator;
  *
  */
 
-public class RepositoryPnRSim extends MessageValidator {
+public class RepositoryPnRSim extends AbstractMessageValidator {
 	DsSimCommon dsSimCommon;
 	SimCommon common;
 	Exception startUpException = null;

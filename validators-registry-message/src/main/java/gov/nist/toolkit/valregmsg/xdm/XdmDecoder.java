@@ -11,7 +11,7 @@ import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.zip.ZipException;
 
-public class XdmDecoder extends MessageValidator {
+public class XdmDecoder extends AbstractMessageValidator {
 	InputStream in;
 	ErrorRecorderBuilder erBuilder;
 	static Logger logger = Logger.getLogger(XdmDecoder.class);

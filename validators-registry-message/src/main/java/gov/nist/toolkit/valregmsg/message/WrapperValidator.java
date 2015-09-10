@@ -6,7 +6,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * @author bill
  *
  */
-public class WrapperValidator extends MessageValidator {
+public class WrapperValidator extends AbstractMessageValidator {
 	OMElement xml;
 	Map<String, List<String>> wrapperList = new HashMap<String, List<String>>();
 	List<String> elementOrder = new ArrayList<String>();

@@ -13,7 +13,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.XdsException;
 import org.apache.log4j.Logger;
@@ -181,7 +181,7 @@ public class SimCommon {
 	 * @param clas
 	 * @return Matching MessageValidator
 	 */
-	public MessageValidator getMessageValidatorIfAvailable(@SuppressWarnings("rawtypes") Class clas) {
+	public AbstractMessageValidator getMessageValidatorIfAvailable(@SuppressWarnings("rawtypes") Class clas) {
 		return mvc.findMessageValidatorIfAvailable(clas.getCanonicalName());
 	}
 

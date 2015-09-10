@@ -6,7 +6,7 @@ import gov.nist.toolkit.valregmsg.validation.schematron.ReportProcessor;
 import gov.nist.toolkit.valregmsg.validation.schematron.schematronValidation;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import org.apache.axiom.om.OMElement;
 import org.apache.xmlbeans.XmlObject;
 
-public class SchematronValidator extends MessageValidator {
+public class SchematronValidator extends AbstractMessageValidator {
 	ErrorRecorder er;
 	OMElement message;
 

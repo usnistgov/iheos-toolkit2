@@ -9,7 +9,7 @@ import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 /**
@@ -20,7 +20,7 @@ import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
  * @author bill
  *
  */
-public class SimpleSoapHttpHeaderValidator extends MessageValidator {
+public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 	HttpParserBa hparser;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;

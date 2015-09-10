@@ -12,7 +12,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import java.util.Arrays;
 import java.util.List;
 
-public class RepositoryActorFactory extends ActorFactory {
+public class RepositoryActorFactory extends AbstractActorFactory {
 
 	static final String repositoryUniqueIdBase = "1.1.4567332.1.";
 	static int repositoryUniqueIdIncr = 1;
@@ -75,13 +75,13 @@ public class RepositoryActorFactory extends ActorFactory {
 				isAsync));
 
 		site.addRepository(new TransactionBean(
-				asc.get(ActorFactory.repositoryUniqueId).asString(),
+				asc.get(AbstractActorFactory.repositoryUniqueId).asString(),
 				RepositoryType.REPOSITORY,
 				asc.get(retrieveEndpoint).asString(), 
 				false, 
 				isAsync));
 		site.addRepository(new TransactionBean(
-				asc.get(ActorFactory.repositoryUniqueId).asString(),
+				asc.get(AbstractActorFactory.repositoryUniqueId).asString(),
 				RepositoryType.REPOSITORY,
 				asc.get(retrieveTlsEndpoint).asString(), 
 				true, 

@@ -9,7 +9,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.util.XPathEvaluator;
@@ -23,7 +23,7 @@ import java.util.*;
  * @author bill
  *
  */
-public class DocumentAttachmentMapper  extends MessageValidator {
+public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 
 	// maps DocumentEntry.id to Document.cid
 	//

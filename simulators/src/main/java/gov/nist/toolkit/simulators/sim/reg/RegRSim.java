@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
-import gov.nist.toolkit.actorfactory.ActorFactory;
+import gov.nist.toolkit.actorfactory.AbstractActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.common.datatypes.UuidValidator;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -223,7 +223,7 @@ public class RegRSim extends TransactionSimulator   {
 
 	// check for Extra Metadata
 	void extraMetadataCheck(Metadata m) {
-		SimulatorConfigElement extraMetadataASCE = asc.get(ActorFactory.extraMetadataSupported);
+		SimulatorConfigElement extraMetadataASCE = asc.get(AbstractActorFactory.extraMetadataSupported);
 		boolean isExtraMetadataSupported = extraMetadataASCE.asBoolean();
 
 		for (OMElement ele : m.getMajorObjects()) {

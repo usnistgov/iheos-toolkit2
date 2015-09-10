@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.List;
  * @author bill
  *
  */
-public class RegistryResponseValidator extends MessageValidator {
+public class RegistryResponseValidator extends AbstractMessageValidator {
 	OMElement xml;
 
 	static List<String> statusValues =

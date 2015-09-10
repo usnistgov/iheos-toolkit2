@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class DirectActorFactory extends ActorFactory {
+public class DirectActorFactory extends AbstractActorFactory {
 	String newID = null;
 	static final List<TransactionType> incomingTransactions = 
 			Arrays.asList(

@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.server.api;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.SimulatorFactory;
+import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.session.server.Session;
@@ -33,7 +33,7 @@ public class SimulatorApi {
             SimCache simCache = new SimCache();
             SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
 
-            Simulator scl = new SimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
+            Simulator scl = new GenericSimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
             simMgr.addSimConfigs(scl);
             logger.info("New simulator for session " + session.id() + ": " + actorTypeName + " ==> " + scl.getIds());
             return scl;

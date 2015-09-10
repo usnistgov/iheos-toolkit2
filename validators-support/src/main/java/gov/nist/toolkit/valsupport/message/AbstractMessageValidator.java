@@ -12,7 +12,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
  * @author bill
  *
  */
-abstract public class MessageValidator {
+abstract public class AbstractMessageValidator {
 	protected ValidationContext vc; 
 	public ErrorRecorder er;
 	
@@ -22,7 +22,7 @@ abstract public class MessageValidator {
 	// override this method and return true
 	public boolean isSystemValidator() { return false; }
 
-	public MessageValidator(ValidationContext vc) {
+	public AbstractMessageValidator(ValidationContext vc) {
 		this.vc = vc;
 	}
 	

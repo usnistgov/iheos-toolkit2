@@ -5,7 +5,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.support.AbstractDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-public class RecipientActorSimulator extends DsActorSimulator {
+public class RecipientActorSimulator extends AbstractDsActorSimulator {
 	DsSimCommon dsSimCommon;
 	SimDb db;
 	HttpServletResponse response;

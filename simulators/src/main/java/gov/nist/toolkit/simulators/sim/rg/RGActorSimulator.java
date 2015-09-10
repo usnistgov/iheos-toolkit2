@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rg;
 
-import gov.nist.toolkit.actorfactory.ActorFactory;
+import gov.nist.toolkit.actorfactory.AbstractActorFactory;
 import gov.nist.toolkit.actorfactory.RGActorFactory;
 import gov.nist.toolkit.actorfactory.RepositoryActorFactory;
 import gov.nist.toolkit.actorfactory.SimDb;
@@ -22,7 +22,7 @@ import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 import java.io.IOException;
 import java.util.List;
@@ -67,7 +67,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 
 			// extract retrieve request
-			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
 				returnRetrieveError();
@@ -77,7 +77,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
 
-			SimulatorConfigElement asce = asc.getUserByName(ActorFactory.homeCommunityId);
+			SimulatorConfigElement asce = asc.getUserByName(AbstractActorFactory.homeCommunityId);
 			if (asce == null) {
 				er.err(Code.XDSRepositoryError, "RG Internal Error - homeCommunityId not configured", this, "");
 				returnRetrieveError();
@@ -164,7 +164,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 
 			// extract query
-			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
 				dsSimCommon.sendErrorsInRegistryResponse(er);

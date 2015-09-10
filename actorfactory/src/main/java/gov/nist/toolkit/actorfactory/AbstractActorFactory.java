@@ -33,8 +33,8 @@ import java.util.Map;
  * @author bill
  *
  */
-public abstract class ActorFactory {
-	static Logger logger = Logger.getLogger(ActorFactory.class);
+public abstract class AbstractActorFactory {
+	static Logger logger = Logger.getLogger(AbstractActorFactory.class);
 
 	protected abstract Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws Exception;
 	//	protected abstract List<SimulatorConfig> buildNew(Session session, SimulatorConfig asc) throws Exception;
@@ -43,7 +43,7 @@ public abstract class ActorFactory {
 	public abstract List<TransactionType> getIncomingTransactions();
 	//	protected abstract void addConfigElements(SimulatorConfig asc);
 
-	static final Map<String /* ActorType.name */, ActorFactory> factories = new HashMap<String, ActorFactory>(); 
+	static final Map<String /* ActorType.name */, AbstractActorFactory> factories = new HashMap<String, AbstractActorFactory>();
 	static {
 		factories.put(ActorType.REGISTRY.getName(),           new RegistryActorFactory());
 		factories.put(ActorType.REPOSITORY.getName(),         new RepositoryActorFactory());
@@ -54,7 +54,7 @@ public abstract class ActorFactory {
 		factories.put(ActorType.DIRECT_SERVER.getName(),  new DirectActorFactory());
 	}
 
-	static public ActorFactory getActorFactory(ActorType at) {
+	static public AbstractActorFactory getActorFactory(ActorType at) {
 		return factories.get(at.getName());
 	}
 
@@ -132,13 +132,13 @@ public abstract class ActorFactory {
 		return sc;
 	}
 
-	protected ActorFactory() {}
+	protected AbstractActorFactory() {}
 
 	protected void setSimManager(SimManager simManager) {
 		this.simManager = simManager;
 	}
 
-	public ActorFactory(SimManager simManager) {
+	public AbstractActorFactory(SimManager simManager) {
 		this.simManager = simManager;
 	}
 
@@ -159,7 +159,7 @@ public abstract class ActorFactory {
 		logger.info("Build new Simulator of type " + getClass().getSimpleName());
 
 		// This is the simulator-specific factory
-		ActorFactory af = factories.get(at.getName());
+		AbstractActorFactory af = factories.get(at.getName());
 
 		af.setSimManager(simm);
 
@@ -168,7 +168,7 @@ public abstract class ActorFactory {
 		// This is out here instead of being attached to a simulator-specific factory - why?
 		if (save) {
 			for (SimulatorConfig conf : simulator.getConfigs()) {
-				ActorFactory actorFactory = getActorFactory(conf);
+				AbstractActorFactory actorFactory = getActorFactory(conf);
 				saveConfiguration(conf);
 				actorFactory.created(conf);  // hook to extensions
 			}
@@ -192,10 +192,10 @@ public abstract class ActorFactory {
 		return ActorType.findActor(config.getType());
 	}
 
-	static public ActorFactory getActorFactory(SimulatorConfig config) {
+	static public AbstractActorFactory getActorFactory(SimulatorConfig config) {
 		ActorType actorType = getActorType(config);
 		String actorTypeName = actorType.getName();
-		ActorFactory actorFactory = factories.get(actorTypeName);
+		AbstractActorFactory actorFactory = factories.get(actorTypeName);
 		return actorFactory;
 	}
 
@@ -275,7 +275,7 @@ public abstract class ActorFactory {
 		}
 		File simDir = simdb.getSimDir();
 		simdb.delete(simDir);
-		ActorFactory actorFactory = getActorFactory(config);
+		AbstractActorFactory actorFactory = getActorFactory(config);
 		actorFactory.deleted(config);
 	}
 

@@ -14,13 +14,13 @@ import java.util.List;
  * @author bill
  *
  */
-public class SimulatorFactory extends ActorFactory {
+public class GenericSimulatorFactory extends AbstractActorFactory {
 	String newID = null;
 	@SuppressWarnings("unused")
-	private SimulatorFactory() {
+	private GenericSimulatorFactory() {
 	}
 	
-	public SimulatorFactory(SimManager simManager) {
+	public GenericSimulatorFactory(SimManager simManager) {
 		super(simManager);
 	}
 

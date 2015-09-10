@@ -83,7 +83,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     // returns port
     public static int generateListener(String simId) {
         try {
-            return generateListener(SimulatorFactory.loadSimulator(simId));
+            return generateListener(GenericSimulatorFactory.loadSimulator(simId));
         } catch (Exception e) {
             throw new ToolkitRuntimeException("Error generating PIF Listener", e);
         }

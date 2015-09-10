@@ -14,7 +14,7 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser.SlotP
 import gov.nist.toolkit.valregmsg.registry.storedquery.validation.ValidationStoredQueryFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -28,7 +28,7 @@ import java.util.List;
  * @author bill
  *
  */
-public class QueryRequestMessageValidator extends MessageValidator {
+public class QueryRequestMessageValidator extends AbstractMessageValidator {
 	OMElement ahqr;
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {

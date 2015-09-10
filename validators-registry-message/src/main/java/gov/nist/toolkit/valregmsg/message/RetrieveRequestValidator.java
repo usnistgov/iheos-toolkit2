@@ -7,7 +7,7 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  * @author bill
  *
  */
-public class RetrieveRequestValidator  extends MessageValidator {
+public class RetrieveRequestValidator  extends AbstractMessageValidator {
 	OMElement xml;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
