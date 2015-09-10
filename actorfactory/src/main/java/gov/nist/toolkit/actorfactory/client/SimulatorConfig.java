@@ -1,6 +1,8 @@
 package gov.nist.toolkit.actorfactory.client;
 
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -9,8 +11,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Definition for an actor simulator.
@@ -48,7 +48,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	
 	public boolean isExpired() { return isExpired; }
 	public void isExpired(boolean is) { isExpired = is; }
-	
+
 	public boolean checkExpiration() {
 		Date now = new Date();
 		if (now.after(expires))

@@ -15,6 +15,7 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,6 +35,7 @@ import java.util.Map;
  *
  */
 public abstract class ActorFactory {
+	static Logger logger = Logger.getLogger(ActorFactory.class);
 
 	protected abstract Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws Exception;
 	//	protected abstract List<SimulatorConfig> buildNew(Session session, SimulatorConfig asc) throws Exception;
@@ -142,6 +144,7 @@ public abstract class ActorFactory {
 	}
 
 	// Returns list since multiple simulators could be built as a grouping/cluster
+	// only used by SimulatorFactory to offer a generic API for building sims
 	public Simulator buildNewSimulator(SimManager simm, String simtype, String simID, boolean save) throws Exception {
 
 		ActorType at = ActorType.findActor(simtype);
@@ -154,23 +157,47 @@ public abstract class ActorFactory {
 	}
 
 	public Simulator buildNewSimulator(SimManager simm, ActorType at, String simID, boolean save) throws Exception {
+		logger.info("Build new Simulator of type " + getClass().getSimpleName());
 
+		// This is the simulator-specific factory
 		ActorFactory af = factories.get(at.getName());
 
-		af.setSimManager(simManager);
+		af.setSimManager(simm);
 
 		Simulator simulator = af.buildNew(simm, simID, true);
 
+		// This is out here instead of being attached to a simulator-specific factory - why?
 		if (save) {
 			for (SimulatorConfig conf : simulator.getConfigs()) {
+				ActorFactory actorFactory = getActorFactory(conf);
 				saveConfiguration(conf);
-				if (at.isRegistryActor()) {
-					PatientIdentityFeedServlet.generateListener(conf);
-				}
+				actorFactory.created(conf);  // hook to extensions
 			}
 		}
 
 		return simulator;
+	}
+
+	// A collection of hooks that a simulator type can use to insert custom behavior
+	// by overriding one or more of these methods
+
+	public void created(SimulatorConfig config) {}
+	public void deleted(SimulatorConfig config) {}
+
+	//
+	// End of hooks
+
+
+	// A couple of utility classes that get around a client class calling a server class - awkward
+	static public ActorType getActorType(SimulatorConfig config) {
+		return ActorType.findActor(config.getType());
+	}
+
+	static public ActorFactory getActorFactory(SimulatorConfig config) {
+		ActorType actorType = getActorType(config);
+		String actorTypeName = actorType.getName();
+		ActorFactory actorFactory = factories.get(actorTypeName);
+		return actorFactory;
 	}
 
 	public List<SimulatorConfig> checkExpiration(List<SimulatorConfig> configs) {
@@ -240,6 +267,7 @@ public abstract class ActorFactory {
 
 
 	public void deleteSimulator(SimulatorConfig config) throws IOException {
+		logger.info("deleteSimulator " + config.getId());
 		SimDb simdb;
 		try {
 			simdb = new SimDb(config.getId());
@@ -248,6 +276,8 @@ public abstract class ActorFactory {
 		}
 		File simDir = simdb.getSimDir();
 		simdb.delete(simDir);
+		ActorFactory actorFactory = getActorFactory(config);
+		actorFactory.deleted(config);
 	}
 
 	public boolean simExists(SimulatorConfig config) throws IOException {

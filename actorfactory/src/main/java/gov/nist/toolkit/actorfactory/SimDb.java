@@ -161,6 +161,7 @@ public class SimDb {
 	public List<String> getAllSimIds() {
 		File[] files = dbRoot.listFiles();
 		List<String> ids = new ArrayList<String>();
+		if (files == null) return ids;
 		
 		for (File sim : files) {
 			if (sim.isDirectory())

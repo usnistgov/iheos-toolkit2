@@ -61,7 +61,7 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	}
 
 	public List<String> getListenerPortRange() {
-		logger.debug(": " + "getToolkitTlsPort");
+		logger.debug(": " + "getListenerPortRange");
 		return getPropertyManager().getListenerPortRange();
 	}
 

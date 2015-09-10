@@ -24,6 +24,7 @@ public class SimulatorFactory extends ActorFactory {
 		super(simManager);
 	}
 
+	// ActorFactory needs to be directly
 	public Simulator buildNewSimulator(SimManager simm, String simtype, String simID) throws Exception {
 		return buildNewSimulator(simm, simtype, simID, true);
 	}

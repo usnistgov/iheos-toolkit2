@@ -23,7 +23,7 @@ import java.util.List;
 public class PatientIdentityFeedServlet extends HttpServlet {
     static Logger logger = Logger.getLogger(PatientIdentityFeedServlet.class);
     File warHome;
-    File simDbDir;
+//    File simDbDir;
 
     private static final long serialVersionUID = 1L;
 
@@ -31,25 +31,29 @@ public class PatientIdentityFeedServlet extends HttpServlet {
         super.init(config);
         warHome = new File(config.getServletContext().getRealPath("/"));
         logger.info("...warHome is " + warHome);
-        init();
+        initPatientIdentityFeed();
     }
 
-    public void init() {
+    public void initPatientIdentityFeed() {
         logger.info("Initializing AdtServlet");
-        Installation.installation().warHome(warHome);
-        simDbDir = Installation.installation().simDbFile();
-        logger.info("...simdb = " + simDbDir);
-
-        logger.info("Initializing ADT Listeners...");
-
-        // Initialize available port range
-        List<String> portRange = Installation.installation().propertyServiceManager().getListenerPortRange();
-        int from = Integer.parseInt(portRange.get(0));
-        int to = Integer.parseInt(portRange.get(1));
-        ListenerFactory.init(from, to);
-
         try {
+            Installation.installation().warHome(warHome);
+//        simDbDir = Installation.installation().simDbFile();
+//        logger.info("...simdb = " + simDbDir);
+
+            logger.info("Initializing ADT Listeners...");
+
+            // Initialize available port range
+            List<String> portRange = Installation.installation().propertyServiceManager().getListenerPortRange();
+            logger.info("Port range is " + portRange);
+            int from = Integer.parseInt(portRange.get(0));
+            int to = Integer.parseInt(portRange.get(1));
+
+            ListenerFactory.init(from, to);
+
             generateCurrentlyConfiguredListeners();
+        } catch (ToolkitRuntimeException e) {
+            logger.fatal("Cannot start listeners: ", e);
         } catch (Exception e) {
             logger.fatal("Cannot start listeners: ", e);
         }
@@ -86,6 +90,24 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     }
 
     public static int generateListener(SimulatorConfig simulatorConfig) {
+//        SimulatorConfigElement sce = simulatorConfig.get(RegistryActorFactory.pif_port);
+        String simId = simulatorConfig.getId();
+//        if (sce == null)
+//            throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");
+        String portString = portFromSimulatorConfig(simulatorConfig);
+//        if (portString == null || portString.equals(""))
+//            throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");
+        int port = Integer.parseInt(portString);
+        ListenerFactory.generateListener(simId, port, new PifHandler());
+        return port;
+    }
+
+    public static void deleteListener(SimulatorConfig simulatorConfig) {
+        String simId = simulatorConfig.getId();
+        ListenerFactory.terminate(simId);
+    }
+
+    static String portFromSimulatorConfig(SimulatorConfig simulatorConfig) {
         SimulatorConfigElement sce = simulatorConfig.get(RegistryActorFactory.pif_port);
         String simId = simulatorConfig.getId();
         if (sce == null)
@@ -93,9 +115,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
         String portString = sce.asString();
         if (portString == null || portString.equals(""))
             throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");
-        int port = Integer.parseInt(portString);
-        ListenerFactory.generateListener(simId, port, new PifHandler());
-        return port;
+        return portString;
     }
 
 

@@ -37,6 +37,7 @@ public class RegistryActorFactory extends ActorFactory {
 	// This does not start any listeners allocated.  The port assignment is made
 	// and the caller gets the responsibility for starting the listeners
 	// Listeners cannot be started until the sim config is saved
+	@Override
 	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
@@ -57,6 +58,19 @@ public class RegistryActorFactory extends ActorFactory {
 		addEditableEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
 
 		return new Simulator(sc);
+	}
+
+	// Hooks we override on the basic ActorFactory
+
+	@Override
+	public void created(SimulatorConfig config) {
+		PatientIdentityFeedServlet.generateListener(config);
+	}
+
+	@Override
+	public void deleted(SimulatorConfig config) {
+		logger.info("Deleting " + config.getId());
+
 	}
 	 
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) {

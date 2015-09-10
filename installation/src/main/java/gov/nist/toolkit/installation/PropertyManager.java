@@ -89,8 +89,8 @@ public class PropertyManager {
 		String[] parts = rangeString.split(",");
 		if (parts.length != 2) throw new ToolkitRuntimeException("Listener_Port_Range from toolkit.properties is badly formtted - it must be port_number, port_number");
 		List<String> range = new ArrayList<>();
-		range.add(parts[0]);
-		range.add(parts[1]);
+		range.add(parts[0].trim());
+		range.add(parts[1].trim());
 		return range;
 	}
 

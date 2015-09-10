@@ -39,7 +39,7 @@ class PifIT extends Specification {
         PatientIdentityFeedServlet servlet = new PatientIdentityFeedServlet()
 
         when: 'starts no listeners - no Registry sims defined'
-        servlet.init()
+        servlet.initPatientIdentityFeed()
 
         then:
         ListenerFactory.getAllRunningListeners().isEmpty()
