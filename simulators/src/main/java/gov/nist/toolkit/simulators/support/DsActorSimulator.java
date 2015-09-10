@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -31,7 +31,7 @@ public abstract class DsActorSimulator {
 	 * @return should relevant databases be updated?
 	 * @throws IOException
 	 */
-	abstract public boolean run(ATFactory.TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
+	abstract public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
 	
 	public DsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
 //		super(common.getValidationContext());

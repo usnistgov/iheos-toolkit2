@@ -3,7 +3,7 @@ package gov.nist.toolkit.simulators.sim.reg;
 import gov.nist.toolkit.actorfactory.RegistryActorFactory;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.mu.MuSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;
@@ -33,13 +33,13 @@ public class RegistryActorSimulator extends DsActorSimulator {
 	}
 
 
-	public boolean run(ATFactory.TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		AdhocQueryResponseGenerator queryResponseGenerator;
 		RegistryResponseGeneratorSim registryResponseGenerator;		
 		
 		common.getValidationContext().updateEnabled = updateEnabled;
 		
-		if (transactionType.equals(ATFactory.TransactionType.REGISTER)) {
+		if (transactionType.equals(TransactionType.REGISTER)) {
 
 			common.vc.isR = true;
 			common.vc.xds_b = true;
@@ -79,7 +79,7 @@ public class RegistryActorSimulator extends DsActorSimulator {
 			return !common.hasErrors();
 
 		}
-		else if (transactionType.equals(ATFactory.TransactionType.STORED_QUERY)) {
+		else if (transactionType.equals(TransactionType.STORED_QUERY)) {
 
 			common.vc.isSQ = true;
 			common.vc.xds_b = true;
@@ -115,7 +115,7 @@ public class RegistryActorSimulator extends DsActorSimulator {
 			return true; // no updates anyway
 
 		}
-		else if (transactionType.equals(ATFactory.TransactionType.UPDATE)) {
+		else if (transactionType.equals(TransactionType.UPDATE)) {
 
 			common.vc.isMU = true;
 			common.vc.isRequest = true;

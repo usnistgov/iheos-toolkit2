@@ -1,12 +1,12 @@
 package gov.nist.toolkit.simcommon.client.config;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
 
 import java.io.Serializable;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 
 public class SimulatorConfigElement implements Serializable,IsSerializable {
 
@@ -19,7 +19,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	 * Parameter type
 	 */
 	public ParamType type;
-	public ATFactory.TransactionType transType = null;
+	public TransactionType transType = null;
 
 	// cannot use Object class - will not serialize so tricks are necessary
 	enum ValueType implements IsSerializable { BOOLEAN, STRING };

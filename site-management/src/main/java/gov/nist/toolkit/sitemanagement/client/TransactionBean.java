@@ -1,8 +1,7 @@
 package gov.nist.toolkit.sitemanagement.client;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 
 import java.io.Serializable;
 
@@ -98,11 +97,11 @@ public class TransactionBean implements IsSerializable, Serializable {
 		return Character.isDigit(name.charAt(0));
 	}
 	
-	public ATFactory.TransactionType getTransactionType() {
+	public TransactionType getTransactionType() {
 		return transType;
 	}
 	
-	public boolean isType(ATFactory.TransactionType transType2) {
+	public boolean isType(TransactionType transType2) {
 		try {
 			return transType2.equals(transType);
 		} catch (Exception e) {
@@ -125,7 +124,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 							// This constructor should be retired in favor of the next one which depends on TransactionType
 		
 		// name can be trans name or repository uid
-		transType = ATFactory.TransactionType.find(name);
+		transType = TransactionType.find(name);
 		this.repositoryType = repositoryType;
 		this.endpoint = endpoint;
 		this.isSecure = isSecure;
@@ -133,7 +132,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 	}
 	
 	// Used only by ActorConfigTab
-	public TransactionBean(ATFactory.TransactionType transType, RepositoryType repositoryType, String endpoint, boolean isSecure, boolean isAsync) {
+	public TransactionBean(TransactionType transType, RepositoryType repositoryType, String endpoint, boolean isSecure, boolean isAsync) {
 		this.transType = transType;
 		this.name = transType.getName();
 		this.repositoryType = repositoryType;
@@ -144,7 +143,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 
 	// Used only by Gazelle interface
 	@Deprecated
-	public TransactionBean(ATFactory.TransactionType transType, RepositoryType repositoryType, ActorType actorType, String endpoint, boolean isSecure, boolean isAsync) {
+	public TransactionBean(TransactionType transType, RepositoryType repositoryType, ActorType actorType, String endpoint, boolean isSecure, boolean isAsync) {
 		this.transType = transType;
 		this.name = transType.getName();
 		this.repositoryType = repositoryType;

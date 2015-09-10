@@ -1,7 +1,6 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -169,7 +168,7 @@ public abstract class BasicTransaction  {
 		//		else if (async)
 		//			trans = trans + ".as";
 
-		TransactionType ttype = ATFactory.TransactionType.find(trans);
+		TransactionType ttype = TransactionType.find(trans);
 
 //		if (ttype == null)
 //			fatal("Do not understand transaction type " + trans);
@@ -607,7 +606,7 @@ public abstract class BasicTransaction  {
 
 	}
 
-	private void parseEndpoint(ATFactory.TransactionType trans) throws Exception {
+	private void parseEndpoint(TransactionType trans) throws Exception {
 		endpoint = this.s_ctx.getRegistryEndpoint();   // this is busted, always returns null
 		if (endpoint == null || endpoint.equals("") || testConfig.endpointOverride) {			//boolean async = false;
 			if (testConfig.verbose)

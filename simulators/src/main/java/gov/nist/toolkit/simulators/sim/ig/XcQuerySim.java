@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -171,7 +171,7 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 		if (home == null)
 			home = site.getHome();
 		try {
-			String endpoint = site.getEndpoint(ATFactory.TransactionType.XC_QUERY, isSecure, isAsync);
+			String endpoint = site.getEndpoint(TransactionType.XC_QUERY, isSecure, isAsync);
 			er.detail("Forwarding query to " + endpoint);
 
 			OMElement req = request.getAdhocQueryRequestElement();

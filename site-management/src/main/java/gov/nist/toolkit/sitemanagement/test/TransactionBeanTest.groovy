@@ -1,7 +1,9 @@
-package gov.nist.toolkit.sitemanagement.test;
+package gov.nist.toolkit.sitemanagement.test
+
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 
 import static org.junit.Assert.*
-import gov.nist.toolkit.actortransaction.client.ATFactory
+
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType
 
@@ -12,7 +14,7 @@ class TransactionBeanTest {
 	///////////////////////////////////////////////////////////
 	@Test
 	public void testSameObjectHasSameIndex() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
@@ -22,12 +24,12 @@ class TransactionBeanTest {
 
 	@Test
 	public void testHasSameIndex() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
 			false)
-		TransactionBean c = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean c = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
@@ -37,12 +39,12 @@ class TransactionBeanTest {
 
 	@Test
 	public void testNotHasSameIndex() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
 			false)
-		TransactionBean c = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean c = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			true,
@@ -53,17 +55,17 @@ class TransactionBeanTest {
 	///////////////////////////////////////////////////////////
 	@Test
 	public void testEqualsTransactionBean() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
 			false)
-		TransactionBean c = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean c = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
 			false)
-		TransactionBean d = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean d = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			true,
@@ -76,7 +78,7 @@ class TransactionBeanTest {
 	///////////////////////////////////////////////////////////
 	@Test
 	public void testHasName() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
@@ -87,12 +89,12 @@ class TransactionBeanTest {
 	///////////////////////////////////////////////////////////
 	@Test
 	public void testGetName() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
 			false)
-		assertEquals(b.getName(), ATFactory.TransactionType.REGISTER.name)
+		assertEquals(b.getName(), TransactionType.REGISTER.name)
 		assertEquals(b.getName(), "Register")
 	}
 
@@ -125,7 +127,7 @@ class TransactionBeanTest {
 
 	@Test
 	public void testIsNotRetrieve() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
@@ -147,29 +149,29 @@ class TransactionBeanTest {
 	///////////////////////////////////////////////////////////
 	@Test
 	public void testGetTransactionType() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
 			false)
-		assertTrue b.getTransactionType() == ATFactory.TransactionType.REGISTER
+		assertTrue b.getTransactionType() == TransactionType.REGISTER
 	}
 
 	@Test
 	///////////////////////////////////////////////////////////
 	public void testIsType() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,
 			false)
-		assertTrue b.isType(ATFactory.TransactionType.REGISTER)
+		assertTrue b.isType(TransactionType.REGISTER)
 	}
 
 	///////////////////////////////////////////////////////////
 	@Test
 	public void testHasEndpoint() {
-		TransactionBean b = new TransactionBean(ATFactory.TransactionType.REGISTER,
+		TransactionBean b = new TransactionBean(TransactionType.REGISTER,
 			RepositoryType.NONE,
 			'http://fooo:40/bar',
 			false,

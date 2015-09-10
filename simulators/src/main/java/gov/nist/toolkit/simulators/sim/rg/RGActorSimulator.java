@@ -5,8 +5,7 @@ import gov.nist.toolkit.actorfactory.RGActorFactory;
 import gov.nist.toolkit.actorfactory.RepositoryActorFactory;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.Response;
@@ -45,7 +44,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 		this.asc = asc;
 	}
 
-	public boolean run(ATFactory.TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 
 		this.mvc = mvc;
 

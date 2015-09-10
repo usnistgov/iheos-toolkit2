@@ -1,9 +1,8 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
@@ -175,7 +174,7 @@ public class SimDb {
 		return new File(simDir.toString() + File.separatorChar + "simctl.ser");
 	}
 	
-	public static String getTransactionDirName(ATFactory.TransactionType tt)  {
+	public static String getTransactionDirName(TransactionType tt)  {
 		return tt.getShortName();
 	}
 	
