@@ -13,7 +13,7 @@ public class UnknownSim extends TransactionSimulator implements RegistryResponse
 	Exception startUpException = null;
 
 	public UnknownSim(SimCommon common) {
-		super(common);
+		super(common, null);
 
 		// build response
 		try {

@@ -33,17 +33,15 @@ public class RegRSim extends TransactionSimulator   {
 	protected Metadata m = null;
 	public MetadataCollection mc;
 	public MetadataCollection delta;
-	protected SimulatorConfig asc;
 	protected MessageValidatorEngine mvc;
     protected DsSimCommon dsSimCommon;
 
 	static Logger log = Logger.getLogger(RegRSim.class);
 
 
-	public RegRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
-		super(common);
+	public RegRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(common, simulatorConfig);
         this.dsSimCommon = dsSimCommon;
-		this.asc = asc;
 	}
 
 	public Map<String, String> UUIDToSymbolic = null;
@@ -223,7 +221,7 @@ public class RegRSim extends TransactionSimulator   {
 
 	// check for Extra Metadata
 	void extraMetadataCheck(Metadata m) {
-		SimulatorConfigElement extraMetadataASCE = asc.get(AbstractActorFactory.extraMetadataSupported);
+		SimulatorConfigElement extraMetadataASCE = simulatorConfig.get(AbstractActorFactory.extraMetadataSupported);
 		boolean isExtraMetadataSupported = extraMetadataASCE.asBoolean();
 
 		for (OMElement ele : m.getMajorObjects()) {

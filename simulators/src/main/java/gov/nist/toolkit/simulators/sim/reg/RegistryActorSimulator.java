@@ -13,22 +13,20 @@ import gov.nist.toolkit.simulators.support.AbstractDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
 public class RegistryActorSimulator extends AbstractDsActorSimulator {
 	SimDb db;
-	SimulatorConfig asc;
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
 
-	public RegistryActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc) {
+	public RegistryActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
 		super(common, dsSimCommon);
 		this.db = db;
-		this.asc = asc;
-		SimulatorConfigElement updateConfig = asc.get(RegistryActorFactory.update_metadata_option);
+		this.simulatorConfig = simulatorConfig;
+		SimulatorConfigElement updateConfig = simulatorConfig.get(RegistryActorFactory.update_metadata_option);
 		updateEnabled = updateConfig.asBoolean();
 	}
 
@@ -56,7 +54,7 @@ public class RegistryActorSimulator extends AbstractDsActorSimulator {
 			}
 
 			
-			RegRSim rsim = new RegRSim(common, dsSimCommon, asc);
+			RegRSim rsim = new RegRSim(common, dsSimCommon, simulatorConfig);
 			mvc.addMessageValidator("Register Transaction", rsim, er);
 
 			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
@@ -128,7 +126,7 @@ public class RegistryActorSimulator extends AbstractDsActorSimulator {
 				return false;
 			}
 
-			MuSim musim = new MuSim(common, dsSimCommon, asc);
+			MuSim musim = new MuSim(common, dsSimCommon, simulatorConfig);
 			mvc.addMessageValidator("MuSim", musim, er);
 			
 			mvc.run();

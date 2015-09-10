@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -18,9 +19,7 @@ public abstract class AbstractDsActorSimulator {
 	protected SimCommon common;
 	protected DsSimCommon dsSimCommon;
 	protected ErrorRecorder er;
-
-//	protected GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
-//	protected ErrorRecorder er = gerb.buildNewErrorRecorder();  // default error recorder - others can be created to segregate messages
+	protected SimulatorConfig simulatorConfig;
 
 	/**
 	 * Start execution of a transaction to this actor simulator.
@@ -32,7 +31,16 @@ public abstract class AbstractDsActorSimulator {
 	 * @throws IOException
 	 */
 	abstract public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
-	
+
+	// Services may need extension via hooks.  These are the hooks
+	// They are meant to be overloaded
+	public void onCreate() {}
+	public void onDelete() {}
+	public void onTransactionBegin() {}
+	public void onTransactionEnd() {}
+	public void onServiceStart() {}  // these two refer to Servlet engine start/stop
+	public void onServiceStop() {}
+
 	public AbstractDsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
 //		super(common.getValidationContext());
 		this.common = common;

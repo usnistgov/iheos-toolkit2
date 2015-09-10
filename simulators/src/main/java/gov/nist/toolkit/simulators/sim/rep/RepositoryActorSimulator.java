@@ -3,6 +3,7 @@ package gov.nist.toolkit.simulators.sim.rep;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
@@ -14,30 +15,26 @@ import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import org.apache.axiom.om.OMElement;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.axiom.om.OMElement;
 
 public class RepositoryActorSimulator extends AbstractDsActorSimulator {
 	RepIndex repIndex;
 	SimDb db;
 	HttpServletResponse response;
 	String repositoryUniqueId;
-	SimulatorConfig asc;
 
-	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc, HttpServletResponse response, String repositoryUniqueId) {
+	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response, String repositoryUniqueId) {
 		super(common, dsSimCommon);
 		this.repIndex = repIndex;
 		this.db = db;
 		this.response = response;
 		this.repositoryUniqueId = repositoryUniqueId;
-		this.asc = asc;
+		this.simulatorConfig = simulatorConfig;
 	}
 
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
@@ -59,7 +56,7 @@ public class RepositoryActorSimulator extends AbstractDsActorSimulator {
 				return false;
 			}
 
-			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, asc);
+			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, simulatorConfig);
 			mvc.addMessageValidator("PnR", pnrSim, gerb.buildNewErrorRecorder());
 
 			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);

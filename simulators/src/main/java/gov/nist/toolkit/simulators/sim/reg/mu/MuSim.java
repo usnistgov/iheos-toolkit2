@@ -184,7 +184,7 @@ public class MuSim extends RegRSim {
 			operation.add_association(assoc);
 			
 			
-			new DocumentEntryStatusUpdate(common, dsSimCommon, er, asc).run(this, operation, assoc, delta.docEntryCollection.getById(targetId), originalStatus, newStatus);
+			new DocumentEntryStatusUpdate(common, dsSimCommon, er, simulatorConfig).run(this, operation, assoc, delta.docEntryCollection.getById(targetId), originalStatus, newStatus);
 
 		}
 	}

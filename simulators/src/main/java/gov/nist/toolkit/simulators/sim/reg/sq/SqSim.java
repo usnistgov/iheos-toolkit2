@@ -31,7 +31,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 	Logger logger = Logger.getLogger(SqSim.class);
 
 	public SqSim(SimCommon common, DsSimCommon dsSimCommon) {
-		super(common);
+		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		
 		vc.hasSoap = true;

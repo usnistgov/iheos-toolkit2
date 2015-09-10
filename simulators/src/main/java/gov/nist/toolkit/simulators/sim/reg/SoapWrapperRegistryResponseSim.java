@@ -18,7 +18,7 @@ public class SoapWrapperRegistryResponseSim extends TransactionSimulator {
 	Response response;
 	
 	public SoapWrapperRegistryResponseSim(SimCommon common, DsSimCommon dsSimCommon, RegistryResponseGeneratingSim rrSim) {
-		super(common);
+		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		this.rrSim = rrSim;
 	}

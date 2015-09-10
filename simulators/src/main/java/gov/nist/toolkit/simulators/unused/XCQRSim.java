@@ -16,7 +16,7 @@ public class XCQRSim extends TransactionSimulator implements RegistryResponseGen
 	Metadata m;
 	
 	public XCQRSim(SimCommon common, RegistryResponseGeneratingSim responseSim, MetadataGeneratingSim mSim) {
-		super(common);
+		super(common, null);
 
 		response = responseSim.getResponse();
 		m = mSim.getMetadata();

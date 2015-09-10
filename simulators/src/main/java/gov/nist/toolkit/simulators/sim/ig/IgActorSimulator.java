@@ -13,24 +13,22 @@ import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
-
-import java.io.IOException;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 public class IgActorSimulator extends GatewaySimulatorCommon {
 	DsSimCommon dsSimCommon;
 	SimDb db;
-	SimulatorConfig asc;
 	OMElement messageBody;
 	static Logger logger = Logger.getLogger(IgActorSimulator.class);
 	AdhocQueryResponseGenerator sqs;
 
-	public IgActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc) {
+	public IgActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
 		super(common, dsSimCommon);
 		this.db = db;
-		this.asc = asc;
+		this.simulatorConfig = simulatorConfig;
 	}
 
 
@@ -71,7 +69,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 			if (!validateOk)
 				return false;
 
-			XcQuerySim xcqSim = new XcQuerySim(common, dsSimCommon, asc);
+			XcQuerySim xcqSim = new XcQuerySim(common, dsSimCommon, simulatorConfig);
 			mvc.addMessageValidator("XcQuerySim", xcqSim, er);
 
 			mvc.run();

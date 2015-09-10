@@ -23,25 +23,23 @@ import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
 public class RGActorSimulator extends GatewaySimulatorCommon implements MetadataGeneratingSim {
 	SimDb db;
-	SimulatorConfig asc;
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	Metadata m;
 	MessageValidatorEngine mvc;
 
-	public RGActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc) {
+	public RGActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
 		super(common, dsSimCommon);
 		this.db = db;
-		this.asc = asc;
+		this.simulatorConfig = simulatorConfig;
 	}
 
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
@@ -77,7 +75,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
 
-			SimulatorConfigElement asce = asc.getUserByName(AbstractActorFactory.homeCommunityId);
+			SimulatorConfigElement asce = simulatorConfig.getUserByName(AbstractActorFactory.homeCommunityId);
 			if (asce == null) {
 				er.err(Code.XDSRepositoryError, "RG Internal Error - homeCommunityId not configured", this, "");
 				returnRetrieveError();
@@ -100,7 +98,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 
 			// get repository endpoint for retrieve
-			String endpoint = asc.get(RepositoryActorFactory.retrieveEndpoint).asString();
+			String endpoint = simulatorConfig.get(RepositoryActorFactory.retrieveEndpoint).asString();
 
 			// issue soap call to repository
 			Soap soap = new Soap();
@@ -174,7 +172,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
 
-			RemoteSqSim rss = new RemoteSqSim(common, dsSimCommon, this, asc, query);
+			RemoteSqSim rss = new RemoteSqSim(common, dsSimCommon, this, simulatorConfig, query);
 
 			mvc.addMessageValidator("Forward query to local Registry", rss, newER());
 
@@ -182,7 +180,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			m = rss.getMetadata();
 
-			String home = asc.get(RGActorFactory.homeCommunityId).asString();
+			String home = simulatorConfig.get(RGActorFactory.homeCommunityId).asString();
 
 			// add homeCommunityId
 			XCQHomeLabelSim xc = new XCQHomeLabelSim(common, this, home);
