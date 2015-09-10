@@ -112,7 +112,7 @@ public enum TransactionType implements IsSerializable, Serializable {
 		return null;
 	}
 
-	static public TransactionType find(ATFactory.ActorType a, String transString) {
+	static public TransactionType find(ActorType a, String transString) {
         if (a == null) return null;
 
 		for (TransactionType t : a.getTransactions()) {
@@ -126,7 +126,7 @@ public enum TransactionType implements IsSerializable, Serializable {
 	static public TransactionType find(String receivingActorStr, String transString) {
         if (receivingActorStr == null || transString == null) return null;
 
-		ATFactory.ActorType a = ATFactory.ActorType.findActor(receivingActorStr);
+		ActorType a = ActorType.findActor(receivingActorStr);
         return find(a, transString);
     }
 

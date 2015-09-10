@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.api
 import gov.nist.toolkit.actorfactory.SimManager
 import gov.nist.toolkit.actorfactory.client.Simulator
-import gov.nist.toolkit.actortransaction.client.ATFactory
+import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.session.server.Session
@@ -47,7 +47,7 @@ class ServiceManagerIT extends Specification {
         String pid = '123^^^&1.2.343&ISO'
         Map<String, String> parms  = new HashMap<String, String>();
 
-        session.siteSpec = new SiteSpec(site.getSiteName(), ATFactory.ActorType.REGISTRY, null)
+        session.siteSpec = new SiteSpec(site.getSiteName(), ActorType.REGISTRY, null)
         XdsTestServiceManager manager = session.xdsTestServiceManager()
         TransactionSettings ts = new TransactionSettings()
         ts.patientId = pid
@@ -79,7 +79,7 @@ class ServiceManagerIT extends Specification {
         parms.put('$patientid$', pid);
         parms.put('$patient_id$', pid);
 
-        session.siteSpec = new SiteSpec(site.getSiteName(), ATFactory.ActorType.REGISTRY, null)
+        session.siteSpec = new SiteSpec(site.getSiteName(), ActorType.REGISTRY, null)
         XdsTestServiceManager manager = session.xdsTestServiceManager()
         TransactionSettings ts = new TransactionSettings()
 

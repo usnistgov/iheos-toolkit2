@@ -1,7 +1,7 @@
 package gov.nist.toolkit.sitemanagement;
 
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.sitemanagement.client.Site;

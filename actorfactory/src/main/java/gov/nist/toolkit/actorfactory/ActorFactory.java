@@ -3,9 +3,8 @@ package gov.nist.toolkit.actorfactory;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -299,7 +298,7 @@ public abstract class ActorFactory {
 		} catch (IOException e) {
 			throw new ToolkitRuntimeException("Error loading sim " + simid + " of actor " + xactor,e);
 		}
-		ATFactory.ActorType actor = simdb.getSimulatorActorType();
+		ActorType actor = simdb.getSimulatorActorType();
 		return simdb.getTransInstances(actor.toString(), trans);
 	}
 

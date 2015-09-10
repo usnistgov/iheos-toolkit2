@@ -2,7 +2,7 @@ package gov.nist.toolkit.sitemanagement.test;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;

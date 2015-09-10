@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simcommon.client.config;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
+import gov.nist.toolkit.actortransaction.client.ParamType;
 
 import java.io.Serializable;
 import java.util.List;

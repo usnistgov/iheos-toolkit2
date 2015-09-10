@@ -2,7 +2,7 @@ package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
@@ -63,13 +63,13 @@ public class PatientIdentityFeedServlet extends HttpServlet {
 
     public static void generateCurrentlyConfiguredListeners() throws IOException, NoSimException, ClassNotFoundException {
         SimDb db = new SimDb();
-        List<String> simIds = db.getSimulatorIdsforActorType(ATFactory.ActorType.REGISTRY);
+        List<String> simIds = db.getSimulatorIdsforActorType(ActorType.REGISTRY);
         generateListeners(simIds);
     }
 
     public static void terminateCurrentlyConfiguredListeners() throws IOException, NoSimException {
         SimDb db = new SimDb();
-        List<String> simIds = db.getSimulatorIdsforActorType(ATFactory.ActorType.REGISTRY);
+        List<String> simIds = db.getSimulatorIdsforActorType(ActorType.REGISTRY);
         for (String simId : simIds)
             ListenerFactory.terminate(simId);
     }

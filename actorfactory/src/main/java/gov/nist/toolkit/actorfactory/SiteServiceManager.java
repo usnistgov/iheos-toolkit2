@@ -1,6 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;

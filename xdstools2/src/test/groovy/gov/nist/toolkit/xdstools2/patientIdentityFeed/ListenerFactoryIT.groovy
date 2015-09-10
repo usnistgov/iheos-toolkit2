@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.patientIdentityFeed
 
 import gov.nist.toolkit.actorfactory.PifHandler
 import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actortransaction.client.ATFactory
+import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.AdtSender
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.adt.ThreadPoolItem
@@ -25,8 +25,8 @@ class ListenerFactoryIT extends Specification {
     def setup() {
         TestSession.setupToolkit()
         ListenerFactory.init(firstPort, lastPort)
-        SimDb.mkSim(simId1, ATFactory.ActorType.REGISTRY.shortName).delete()
-        SimDb.mkSim(simId1, ATFactory.ActorType.REGISTRY.shortName)
+        SimDb.mkSim(simId1, ActorType.REGISTRY.shortName).delete()
+        SimDb.mkSim(simId1, ActorType.REGISTRY.shortName)
     }
 
     def 'Start/stop a listener'() {

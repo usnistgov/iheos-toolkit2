@@ -1,9 +1,10 @@
 package gov.nist.toolkit.sitemanagement.test
 
+import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 
 import static org.junit.Assert.*
-import gov.nist.toolkit.actortransaction.client.ATFactory
+
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType
@@ -117,8 +118,8 @@ class TransactionCollectionTest {
 			false)
 		TransactionCollection tc = new TransactionCollection(false)
 		tc.addTransaction(b)
-		assertTrue tc.hasActor(ATFactory.ActorType.REGISTRY)
-		assertFalse tc.hasActor(ATFactory.ActorType.REPOSITORY)
+		assertTrue tc.hasActor(ActorType.REGISTRY)
+		assertFalse tc.hasActor(ActorType.REPOSITORY)
 	}
 
 	@Test

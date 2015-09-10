@@ -1,7 +1,6 @@
 package gov.nist.toolkit.session.test.java.server.services;
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.session.server.Session;

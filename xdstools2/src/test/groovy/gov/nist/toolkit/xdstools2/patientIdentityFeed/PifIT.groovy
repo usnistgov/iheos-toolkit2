@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.patientIdentityFeed
 
 import gov.nist.toolkit.actorfactory.*
 import gov.nist.toolkit.actorfactory.client.Simulator
-import gov.nist.toolkit.actortransaction.client.ATFactory
+import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.AdtSender
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.adt.ThreadPoolItem
@@ -47,7 +47,7 @@ class PifIT extends Specification {
 
         when: 'Build new Registry simulator'
         RegistryActorFactory registryActorFactory = new RegistryActorFactory()
-        Simulator sim = new RegistryActorFactory().buildNewSimulator(simManager, ATFactory.ActorType.REGISTRY, simId1, true)
+        Simulator sim = new RegistryActorFactory().buildNewSimulator(simManager, ActorType.REGISTRY, simId1, true)
 //        Simulator sim = registryActorFactory.buildNew(simManager, simId1, true)
         ListenerFactory.getAllRunningListeners().each { ThreadPoolItem tpi ->
             println "Port ${tpi.port} running"

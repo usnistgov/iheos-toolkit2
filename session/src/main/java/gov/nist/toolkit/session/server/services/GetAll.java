@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.actorfactory.CommonService;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.client.Code;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
@@ -59,7 +59,7 @@ public class GetAll extends CommonService {
             }
 
             List<String> sections = new ArrayList<String>();
-            if (session.siteSpec.actorType.equals(ATFactory.ActorType.REGISTRY))
+            if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
                 sections.add("XDS");
             else
                 sections.add("XCA");
