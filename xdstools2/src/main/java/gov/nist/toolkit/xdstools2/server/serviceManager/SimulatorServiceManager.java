@@ -257,12 +257,12 @@ public class SimulatorServiceManager extends CommonService {
 		return configs;
 	}
 
-	public String putSimConfig(SimulatorConfig config) throws Exception  {
-		logger.debug(session.id() + ": " + "putSimConfig");
+	public String saveSimConfig(SimulatorConfig config) throws Exception  {
+		logger.debug(session.id() + ": " + "saveSimConfig");
 		try {
 			new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id(), true)).saveConfiguration(config);
 		} catch (IOException e) {
-			logger.error("putSimConfig", e);
+			logger.error("saveSimConfig", e);
 			throw new Exception(e.getMessage());
 		}
 		return "";

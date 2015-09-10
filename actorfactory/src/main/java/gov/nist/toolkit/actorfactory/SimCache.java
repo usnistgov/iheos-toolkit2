@@ -1,15 +1,10 @@
 package gov.nist.toolkit.actorfactory;
 
 
-import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Cache of loaded simulators. This is maintained globally (covering all sessions) since one session
@@ -48,7 +43,6 @@ public class SimCache {
 		for (SimulatorConfig config : configs) {
 			update(sessionId, config);
 		}
-		
 	}
 	
 	public SimManager getSimManagerForSession(String sessionId) {
@@ -94,11 +88,16 @@ public class SimCache {
 	 * @return
 	 * @throws IOException
 	 */
-	public SimulatorConfig getSimulatorConfig(String simId) throws IOException {
+	static public SimulatorConfig getSimulatorConfig(String simId) throws IOException {
 		for (SimManager sman : mgrs.values()) {
 			SimulatorConfig sconf = sman.getSimulatorConfig(simId);
 			if (sconf != null)
 				return sconf;
+		}
+		try {
+			return GenericSimulatorFactory.loadSimulator(simId);
+		} catch (Exception e) {
+			// ignore
 		}
 		return null;
 	}
@@ -108,9 +107,11 @@ public class SimCache {
 		for (SimManager sman : mgrs.values()) {
 			sman.removeSimulatorConfig(simId);
 		}
-		try {
-			SimDb simdb = new SimDb(simId);
-			simdb.delete();
-		} catch (NoSimException e) {}
+		SimulatorConfig config = getSimulatorConfig(simId);
+
+		// TODO - this doesn't work because delete hook for listener is hung off RegistrySimulatorFactory and not
+		// GenericSimulatorFactory - need to move the hook mechanism. Maybe to SimulatorConfig or Simulator classes.
+		// In general it should be attached to a run class and not a factory class
+		GenericSimulatorFactory.delete(config);
 	}
 }

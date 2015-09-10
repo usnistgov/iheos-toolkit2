@@ -248,9 +248,13 @@ public abstract class AbstractActorFactory {
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
 		verifyActorConfigurationOptions(config);
 
+		//
+		// This statically links the IG to the CURRENT list of remote sites that it could possibly be a
+		// gateway to in the future.  BAD IDEA.  This list needs to be generated on the fly so it is current.
+		//
 		if (config.getType().equals(ActorType.INITIATING_GATEWAY.getName())) {
 			// must load up XCQ and XCR endpoints for simulator to use
-			config.remoteSites = new ArrayList<Site>();
+			config.remoteSites = new ArrayList<>();
 
 			Sites sites = simManager.getAllSites();
 			for (String remote : config.remoteSiteNames) {
@@ -258,28 +262,29 @@ public abstract class AbstractActorFactory {
 				config.remoteSites.add(site);
 			}
 		}
+		//
+		//
 
 		SimDb simdb = SimDb.mkSim(Installation.installation().simDbFile(), config.getId(), config.getType());
 		File simCntlFile = simdb.getSimulatorControlFile();
 		new SimulatorConfigIo().save(config, simCntlFile.toString());   //config.save(simCntlFile.toString());
 	}
 
-
-	public void deleteSimulator(SimulatorConfig config) throws IOException {
-		logger.info("deleteSimulator " + config.getId());
+	static public void delete(SimulatorConfig config) throws IOException {
+		logger.info("delete simulator" + config.getId());
 		SimDb simdb;
 		try {
 			simdb = new SimDb(config.getId());
+			File simDir = simdb.getSimDir();
+			simdb.delete(simDir);
 		} catch (NoSimException e) {
 			return;		
 		}
-		File simDir = simdb.getSimDir();
-		simdb.delete(simDir);
 		AbstractActorFactory actorFactory = getActorFactory(config);
 		actorFactory.deleted(config);
 	}
 
-	public boolean simExists(SimulatorConfig config) throws IOException {
+	static public boolean simExists(SimulatorConfig config) throws IOException {
 		SimDb simdb;
 		try {
 			simdb = new SimDb(config.getId());

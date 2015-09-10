@@ -29,7 +29,6 @@ public class GenericSimulatorFactory extends AbstractActorFactory {
 		return buildNewSimulator(simm, simtype, simID, true);
 	}
 
-	
 	@Override
 	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws Exception {
 		this.newID = newID;

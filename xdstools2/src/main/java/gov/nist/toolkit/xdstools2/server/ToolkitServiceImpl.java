@@ -221,7 +221,7 @@ ToolkitService {
 	// Simulator Service
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public String putSimConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).putSimConfig(config); }
+	public String putSimConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).saveSimConfig(config); }
 	public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
 	public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
 	public String getSimulatorEndpoint() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorEndpoint(); }

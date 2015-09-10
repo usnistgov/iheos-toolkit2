@@ -21,7 +21,7 @@ class SaveButtonClickHandler implements ClickHandler {
 		simulatorControlTab.toolkitService.putSimConfig(config, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
-				new PopupMessage("putSimConfig:" + caught.getMessage());
+				new PopupMessage("saveSimConfig:" + caught.getMessage());
 			}
 
 			public void onSuccess(String result) {

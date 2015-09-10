@@ -64,7 +64,7 @@ public class SimManager {
 				if (deletions == null)
 					deletions = new ArrayList<SimulatorConfig>();
 				deletions.add(sc);
-				af.deleteSimulator(sc);
+				af.delete(sc);
 			}
 		}
 		if (deletions != null) {

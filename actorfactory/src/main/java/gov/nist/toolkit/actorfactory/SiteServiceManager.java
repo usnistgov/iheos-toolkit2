@@ -98,6 +98,7 @@ public class SiteServiceManager {
 		}
 	}
 
+	// Statically defined sites (does not include simulators)
 	public Sites getCommonSites() throws FactoryConfigurationError,
 			Exception {
 		if (commonSites == null) {

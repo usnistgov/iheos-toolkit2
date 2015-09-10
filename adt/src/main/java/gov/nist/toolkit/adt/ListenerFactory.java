@@ -83,7 +83,7 @@ public class ListenerFactory {
     }
 
     public static void terminate(String simId) {
-        logger.info("terminate patientIdentityFeed for sim " + simId + "...");
+        logger.info("terminate patientIdentityFeed listener for sim " + simId + "...");
         ThreadPoolItem tpi = getItem(simId);
         if (tpi == null) return;
         logger.info("...which is port " + tpi.port);
