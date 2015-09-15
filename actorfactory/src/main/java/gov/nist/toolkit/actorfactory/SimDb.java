@@ -12,6 +12,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -76,6 +77,8 @@ public class SimDb {
 
 	public SimDb(File dbRoot, String simId) throws IOException, NoSimException {
 		this.simId = simId;
+		if (simId == null)
+			throw new ToolkitRuntimeException("SimDb - cannot build SimDb with null simId");
 		this.dbRoot = dbRoot;
 
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())

@@ -10,7 +10,7 @@ import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.AbstractDsActorSimulator;
+import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryActorSimulator extends AbstractDsActorSimulator {
+public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	RepIndex repIndex;
 	SimDb db;
 	String repositoryUniqueId;

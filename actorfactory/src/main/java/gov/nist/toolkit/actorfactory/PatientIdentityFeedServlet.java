@@ -31,7 +31,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
         super.init(config);
         warHome = new File(config.getServletContext().getRealPath("/"));
         logger.info("...warHome is " + warHome);
-        //initPatientIdentityFeed();
+        initPatientIdentityFeed();
     }
 
     public void initPatientIdentityFeed() {
@@ -49,7 +49,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
 
             ListenerFactory.init(from, to);
 
-            generateCurrentlyConfiguredListeners();
+//            generateCurrentlyConfiguredListeners();
         } catch (ToolkitRuntimeException e) {
             logger.fatal("Cannot start listeners: ", e);
         } catch (Exception e) {

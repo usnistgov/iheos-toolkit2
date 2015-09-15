@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
+import gov.nist.toolkit.actorfactory.BaseActorSimulator;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -17,7 +18,7 @@ import java.io.IOException;
  * @author bill
  *
  */
-public abstract class AbstractDsActorSimulator {
+public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 	protected SimDb db;
 	protected SimCommon common = null;
 	protected DsSimCommon dsSimCommon = null;
@@ -37,26 +38,15 @@ public abstract class AbstractDsActorSimulator {
 	abstract public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
 	abstract public void init();
 
-	// Services may need extension via hooks.  These are the hooks
-	// They are meant to be overloaded
-	public void onCreate() {}
-	public void onDelete() {}
 
-	public void onTransactionBegin() {}
-	public void onTransactionEnd() {}
-
-	// simulatorConfig guarenteed to be initialized
-	public void onServiceStart() {}  // these two refer to Servlet start/stop
-	public void onServiceStop() {}
-
-	public AbstractDsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
+	public BaseDsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
 //		super(common.getValidationContext());
 		this.common = common;
 		this.dsSimCommon = dsSimCommon;
 		er = common.getCommonErrorRecorder();
 	}
 
-	public AbstractDsActorSimulator() {}
+	public BaseDsActorSimulator() {}
 
 	public void init(DsSimCommon c, SimulatorConfig config) {
 		dsSimCommon = c;

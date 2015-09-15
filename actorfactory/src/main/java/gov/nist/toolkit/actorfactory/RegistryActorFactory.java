@@ -60,19 +60,6 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		return new Simulator(sc);
 	}
 
-	// Hooks we override on the basic ActorFactory
-
-	@Override
-	public void created(SimulatorConfig config) {
-		PatientIdentityFeedServlet.generateListener(config);
-	}
-
-	@Override
-	public void deleted(SimulatorConfig config) {
-		logger.info("Deleting " + config.getId());
-
-	}
-	 
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) {
 		SimulatorConfigElement ele = config.get(update_metadata_option);
 		if (ele == null)

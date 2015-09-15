@@ -9,7 +9,7 @@ import gov.nist.toolkit.simulators.sim.reg.mu.MuSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;
 import gov.nist.toolkit.simulators.sim.reg.store.Committer;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.simulators.support.AbstractDsActorSimulator;
+import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
-public class RegistryActorSimulator extends AbstractDsActorSimulator {
+public class RegistryActorSimulator extends BaseDsActorSimulator {
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
 
@@ -204,12 +204,23 @@ public class RegistryActorSimulator extends AbstractDsActorSimulator {
 		}
 	}
 
-	// simulatorConfig guarenteed to be initialized
-	public void onServiceStart() {
-		PatientIdentityFeedServlet.generateListener(simulatorConfig);
+	@Override
+	public void onCreate(SimulatorConfig config) {
+		PatientIdentityFeedServlet.generateListener(config);
 	}
 
-	public void onServiceStop() {
-		PatientIdentityFeedServlet.deleteListener(simulatorConfig);
+	@Override
+	public void onDelete(SimulatorConfig config) {
+		PatientIdentityFeedServlet.deleteListener(config);
+	}
+
+	@Override
+	public void onServiceStart(SimulatorConfig config) {
+		PatientIdentityFeedServlet.generateListener(config);
+	}
+
+	@Override
+	public void onServiceStop(SimulatorConfig config) {
+		PatientIdentityFeedServlet.deleteListener(config);
 	}
 }
