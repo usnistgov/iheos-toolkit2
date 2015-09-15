@@ -61,7 +61,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Document Repository/Registry",
 			new ArrayList<String>(),
             "rr",
-            null,
+            "gov.nist.toolkit.simulators.sim.RegRepActorSimulator",
 			Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ, TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
             false,
             null

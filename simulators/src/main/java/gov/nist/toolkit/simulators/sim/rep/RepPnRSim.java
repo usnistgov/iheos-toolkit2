@@ -29,7 +29,7 @@ import java.util.Set;
 public class RepPnRSim extends TransactionSimulator implements MetadataGeneratingSim {
 	DsSimCommon dsSimCommon;
 	Metadata m = null;
-	SimulatorConfig simulatorConfig;
+//	SimulatorConfig simulatorConfig;
 	static Logger logger = Logger.getLogger(RepPnRSim.class);
 
 	public RepPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {

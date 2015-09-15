@@ -22,7 +22,7 @@ public class RuntimeManager {
         String actorTypeName = config.getType();
         ActorType actorType = ActorType.findActor(actorTypeName);
         String actorSimClassName = actorType.getSimulatorClassName();
-        logger.info("Loading runtime for sim " + simId + " of class " + actorSimClassName);
+        logger.info("Loading runtime for sim " + simId + " of type " + actorTypeName + " of class " + actorSimClassName);
         Class<?> clas = Class.forName(actorSimClassName);
 
         // find correct constructor - no parameters

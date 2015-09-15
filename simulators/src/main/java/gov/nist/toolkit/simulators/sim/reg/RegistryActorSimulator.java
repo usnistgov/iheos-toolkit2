@@ -16,10 +16,24 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RegistryActorSimulator extends BaseDsActorSimulator {
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
+
+	static List<TransactionType> transactions = new ArrayList<>();
+
+	static {
+		transactions.add(TransactionType.REGISTER);
+		transactions.add(TransactionType.STORED_QUERY);
+		transactions.add(TransactionType.UPDATE);
+	}
+
+	public boolean supports(TransactionType transactionType) {
+		return transactions.contains(transactionType);
+	}
 
 	public RegistryActorSimulator() {}
 

@@ -32,7 +32,8 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory {
 		// This needs to be grouped with a Document Repository also
 		repositoryActorFactory = new RepositoryActorFactory();
 		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).getConfig(0);
-		
+
+		// two combined simulators do not have separate lives
 		sc.add(registryConfig);
 		sc.add(repositoryConfig);
 		

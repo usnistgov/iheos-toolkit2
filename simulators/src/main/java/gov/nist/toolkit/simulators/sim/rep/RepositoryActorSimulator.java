@@ -25,8 +25,19 @@ import java.util.List;
 
 public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	RepIndex repIndex;
-	SimDb db;
+//	SimDb db;
 	String repositoryUniqueId;
+
+	static List<TransactionType> transactions = new ArrayList<>();
+
+	static {
+		transactions.add(TransactionType.PROVIDE_AND_REGISTER);
+		transactions.add(TransactionType.RETRIEVE);
+	}
+
+	public boolean supports(TransactionType transactionType) {
+		return transactions.contains(transactionType);
+	}
 
 	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response, String repositoryUniqueId) {
 		super(common, dsSimCommon);
