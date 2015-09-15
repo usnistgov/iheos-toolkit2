@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -38,7 +39,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 	// and the caller gets the responsibility for starting the listeners
 	// Listeners cannot be started until the sim config is saved
 	@Override
-	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -50,7 +51,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
 		addEditableConfig(sc, update_metadata_option, ParamType.BOOLEAN, false);
-		addEditableConfig(sc, pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId)));
+		addEditableConfig(sc, pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 		addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
 		addEditableEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 		addEditableEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);

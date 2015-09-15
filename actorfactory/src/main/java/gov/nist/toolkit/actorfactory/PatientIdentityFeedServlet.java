@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.adt.ListenerFactory;
@@ -63,25 +64,25 @@ public class PatientIdentityFeedServlet extends HttpServlet {
 
     public static void generateCurrentlyConfiguredListeners() throws IOException, NoSimException, ClassNotFoundException {
         SimDb db = new SimDb();
-        List<String> simIds = db.getSimulatorIdsforActorType(ActorType.REGISTRY);
+        List<SimId> simIds = db.getSimulatorIdsforActorType(ActorType.REGISTRY);
         generateListeners(simIds);
     }
 
     public static void terminateCurrentlyConfiguredListeners() throws IOException, NoSimException {
         SimDb db = new SimDb();
-        List<String> simIds = db.getSimulatorIdsforActorType(ActorType.REGISTRY);
-        for (String simId : simIds)
-            ListenerFactory.terminate(simId);
+        List<SimId> simIds = db.getSimulatorIdsforActorType(ActorType.REGISTRY);
+        for (SimId simId : simIds)
+            ListenerFactory.terminate(simId.toString());
     }
 
-    public static void generateListeners(List<String> simIds) throws NoSimException, IOException, ClassNotFoundException {
-        for (String simId : simIds) {
+    public static void generateListeners(List<SimId> simIds) throws NoSimException, IOException, ClassNotFoundException {
+        for (SimId simId : simIds) {
             generateListener(simId);
         }
     }
 
     // returns port
-    public static int generateListener(String simId) {
+    public static int generateListener(SimId simId) {
         try {
             return generateListener(GenericSimulatorFactory.loadSimulator(simId));
         } catch (Exception e) {
@@ -90,21 +91,21 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     }
 
     public static int generateListener(SimulatorConfig simulatorConfig) {
-        String simId = simulatorConfig.getId();
+        SimId simId = simulatorConfig.getId();
         String portString = portFromSimulatorConfig(simulatorConfig);
         int port = Integer.parseInt(portString);
-        ListenerFactory.generateListener(simId, port, new PifHandler());
+        ListenerFactory.generateListener(simId.toString(), port, new PifHandler());
         return port;
     }
 
     public static void deleteListener(SimulatorConfig simulatorConfig) {
-        String simId = simulatorConfig.getId();
-        ListenerFactory.terminate(simId);
+        SimId simId = simulatorConfig.getId();
+        ListenerFactory.terminate(simId.toString());
     }
 
     static String portFromSimulatorConfig(SimulatorConfig simulatorConfig) {
         SimulatorConfigElement sce = simulatorConfig.get(RegistryActorFactory.pif_port);
-        String simId = simulatorConfig.getId();
+        SimId simId = simulatorConfig.getId();
         if (sce == null)
             throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");
         String portString = sce.asString();

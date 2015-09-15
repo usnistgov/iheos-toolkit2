@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -26,7 +27,7 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 //		return buildNew(simm, null, configureBase);
 //	}
 
-	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) {
+	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) {
 		ActorType actorType = ActorType.REPOSITORY;
 		SimulatorConfig sc;
 		if (configureBase)

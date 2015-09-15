@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import org.apache.log4j.Logger;
 
@@ -22,8 +23,8 @@ public class SimInstanceTerminator {
 		Date now = new Date();
 		int deleted = 0;
 		
-		List<String> simIds = simdb.getAllSimIds();
-		for (String simId : simIds) {
+		List<SimId> simIds = simdb.getAllSimIds();
+		for (SimId simId : simIds) {
 			SimulatorConfig asc;
 			try {
 				asc = new SimCache().getSimulatorConfig(simId);

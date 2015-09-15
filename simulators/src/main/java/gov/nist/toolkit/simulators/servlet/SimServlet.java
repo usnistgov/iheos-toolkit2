@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.*;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -347,12 +348,12 @@ public class SimServlet  extends HttpServlet {
 		transIds.add("pnr");
 		transIds.add("xcqr");
 
-		String simid = null;
+		SimId simid = null;
 		String actor = null;
 		String transaction = null;
 		String validation = null;
 		try {
-			simid = uriParts[simIndex + 1];
+			simid = new SimId(uriParts[simIndex + 1]);
 			actor = uriParts[simIndex + 2];
 			transaction = uriParts[simIndex + 3];
 		}
@@ -540,8 +541,8 @@ public class SimServlet  extends HttpServlet {
 	public static void onServiceStart()  {
 		try {
 			SimDb db = new SimDb();
-			List<String> simIds = db.getAllSimIds();
-			for (String simId : simIds) {
+			List<SimId> simIds = db.getAllSimIds();
+			for (SimId simId : simIds) {
 				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
 
 				DsSimCommon dsSimCommon = null;
@@ -557,8 +558,8 @@ public class SimServlet  extends HttpServlet {
 	public static void onServiceStop() {
 		try {
 			SimDb db = new SimDb();
-			List<String> simIds = db.getAllSimIds();
-			for (String simId : simIds) {
+			List<SimId> simIds = db.getAllSimIds();
+			for (SimId simId : simIds) {
 				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
 
 				DsSimCommon dsSimCommon = null;
@@ -601,7 +602,7 @@ public class SimServlet  extends HttpServlet {
 //	}
 
 
-	public RegIndex getRegIndex(SimDb db, String simid) {
+	public RegIndex getRegIndex(SimDb db, SimId simid) {
 		ServletContext servletContext = config.getServletContext();
 		String registryIndexFile = db.getRegistryIndexFile().toString();
 		RegIndex regIndex;
@@ -620,7 +621,7 @@ public class SimServlet  extends HttpServlet {
 		return regIndex;
 	}
 
-	public RepIndex getRepIndex(SimDb db, String simid) {
+	public RepIndex getRepIndex(SimDb db, SimId simid) {
 		ServletContext servletContext = config.getServletContext();
 		String repositoryIndexFile = db.getRepositoryIndexFile().toString();
 		RepIndex repIndex;

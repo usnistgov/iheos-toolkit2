@@ -26,7 +26,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	/**
 	 * Globally unique id for this simulator
 	 */
-	String id;
+	SimId id;
 	String type;
 //	String[] values;   // these are possible values
 	Date expires;
@@ -110,7 +110,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		
 	}
 	
-	public SimulatorConfig(String id, String type, Date expiration) {
+	public SimulatorConfig(SimId id, String type, Date expiration) {
 		this.id = id;
 		this.type = type;
 		expires = expiration;
@@ -195,7 +195,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	}
 	
 	
-	public String getId() {
+	public SimId getId() {
 		return id;
 	}
 	
@@ -212,7 +212,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	}
 		
 	public String getDefaultName() {
-		return get("Name").asString() + "." + getType();
+		return get("Name").asString(); // + "." + getType();
 	}
 	
 	public ValidationContext getValidationContext() {
@@ -222,6 +222,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public void setValidationContext(ValidationContext vc) {
 		this.vc = vc;
 	}
+
 
 //	public ActorFactory getActorFactory() throws Exception {
 //		String simtype = getType();

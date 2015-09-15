@@ -1,20 +1,17 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.selectors.TestSessionManager;
 import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public abstract class TabbedWindow {
@@ -28,7 +25,7 @@ public abstract class TabbedWindow {
 	boolean envMgrEnabled = true;
 	boolean testSesMgrEnabled = true;
 	TabContainer tabContainer;
-
+	Logger logger = Logger.getLogger("Tabbed window");
 	final public ToolkitServiceAsync toolkitService = GWT
 			.create(ToolkitService.class);
 
@@ -46,6 +43,7 @@ public abstract class TabbedWindow {
 
 	public void onAbstractTabLoad(TabContainer container, boolean select, String eventName) {
 		tabContainer = container;
+		logger.log(Level.FINE, "onAbstractTabLoad");
 		onTabLoad(container, select, eventName);
 		registerTab(container);
 		onTabSelection();

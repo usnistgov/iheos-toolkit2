@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -22,11 +23,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Factory class for simulators.  Technically ActorFactry is no longer accurate
@@ -38,7 +35,7 @@ import java.util.Map;
 public abstract class AbstractActorFactory {
 	static Logger logger = Logger.getLogger(AbstractActorFactory.class);
 
-	protected abstract Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws Exception;
+	protected abstract Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws Exception;
 	//	protected abstract List<SimulatorConfig> buildNew(Session session, SimulatorConfig asc) throws Exception;
 	protected abstract void verifyActorConfigurationOptions(SimulatorConfig config);
 	public abstract Site getActorSite(SimulatorConfig asc, Site site) throws NoSimulatorException;
@@ -107,7 +104,7 @@ public abstract class AbstractActorFactory {
 		return configureBaseElements(simType, null);
 	}
 
-	protected SimulatorConfig configureBaseElements(ActorType simType, String newId) {
+	protected SimulatorConfig configureBaseElements(ActorType simType, SimId newId) {
 		if (newId == null)
 			newId = getNewId();
 		SimulatorConfig sc = new SimulatorConfig(newId, simType.getShortName(), SimDb.getNewExpiration(SimulatorConfig.class));
@@ -127,7 +124,7 @@ public abstract class AbstractActorFactory {
 		ele = new SimulatorConfigElement();
 		ele.name = name;
 		ele.type = ParamType.TEXT;
-		ele.setValue("Private");
+		ele.setValue(sc.getId().toString());
 		addUser(sc, ele);
 
 		return sc;
@@ -145,7 +142,7 @@ public abstract class AbstractActorFactory {
 
 	// Returns list since multiple simulators could be built as a grouping/cluster
 	// only used by SimulatorFactory to offer a generic API for building sims
-	public Simulator buildNewSimulator(SimManager simm, String simtype, String simID, boolean save) throws Exception {
+	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID, boolean save) throws Exception {
 
 		ActorType at = ActorType.findActor(simtype);
 
@@ -156,11 +153,14 @@ public abstract class AbstractActorFactory {
 
 	}
 
-	public Simulator buildNewSimulator(SimManager simm, ActorType at, String simID, boolean save) throws Exception {
+	public Simulator buildNewSimulator(SimManager simm, ActorType at, SimId simID, boolean save) throws Exception {
 		logger.info("Build new Simulator of type " + getClass().getSimpleName());
 
 		// This is the simulator-specific factory
 		AbstractActorFactory af = factories.get(at.getName());
+
+		if (af == null)
+			throw new ToolkitRuntimeException("Cannot build simulator for unknown type: " + at.getName());
 
 		af.setSimManager(simm);
 
@@ -209,13 +209,13 @@ public abstract class AbstractActorFactory {
 	}
 
 
-	public String getNewId() {
+	public SimId getNewId() {
 		String id = UuidAllocator.allocate();
 		String[] parts = id.split(":");
 		id = parts[2];
 		//		id = id.replaceAll("-", "_");
 
-		return id;
+		return new SimId(id);
 	}
 
 	String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) {
@@ -303,7 +303,7 @@ public abstract class AbstractActorFactory {
 		return simDir.exists();
 	}
 
-	static public List<String> getTransInstances(String simid, String xactor, String trans) throws NoSimException
+	static public List<String> getTransInstances(SimId simid, String xactor, String trans) throws NoSimException
 	{
 		SimDb simdb;
 		try {
@@ -327,7 +327,7 @@ public abstract class AbstractActorFactory {
 	static public List<SimulatorConfig> getSimConfigs(String actorTypeName) {
 		SimDb db = new SimDb();
 
-		List<String> allSimIds = db.getAllSimIds();
+		List<SimId> allSimIds = db.getAllSimIds();
 		List<SimulatorConfig> simConfigs = new ArrayList<>();
 
 		try {
@@ -351,10 +351,10 @@ public abstract class AbstractActorFactory {
 	 * @throws ClassNotFoundException
 	 * @throws NoSimException 
 	 */
-	static public List<SimulatorConfig> loadSimulators(List<String> ids) throws IOException, ClassNotFoundException, NoSimException {
+	static public List<SimulatorConfig> loadSimulators(List<SimId> ids) throws IOException, ClassNotFoundException, NoSimException {
 		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
 
-		for (String id : ids) {
+		for (SimId id : ids) {
 			SimDb simdb = new SimDb(id);
 			File simCntlFile = simdb.getSimulatorControlFile();
 			SimulatorConfig config = restoreSimulator(simCntlFile.toString());
@@ -371,10 +371,10 @@ public abstract class AbstractActorFactory {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public List<SimulatorConfig> loadAvailableSimulators(List<String> ids) throws IOException, ClassNotFoundException {
+	public List<SimulatorConfig> loadAvailableSimulators(List<SimId> ids) throws IOException, ClassNotFoundException {
 		List<SimulatorConfig> configs = new ArrayList<SimulatorConfig>();
 
-		for (String id : ids) {
+		for (SimId id : ids) {
 			try {
 				SimDb simdb = new SimDb(id);
 				File simCntlFile = simdb.getSimulatorControlFile();
@@ -400,14 +400,14 @@ public abstract class AbstractActorFactory {
 		return config;
 	}
 
-	static public SimulatorConfig loadSimulator(String simid) throws IOException, ClassNotFoundException, NoSimException {
+	static public SimulatorConfig loadSimulator(SimId simid) throws IOException, ClassNotFoundException, NoSimException {
 		SimDb simdb = new SimDb(simid);
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfig config = restoreSimulator(simCntlFile.toString());
 		return config;
 	}	
 
-	static public SimulatorConfig getSimConfig(File simDbFile, String simulatorId) throws IOException, ClassNotFoundException, NoSimException {
+	static public SimulatorConfig getSimConfig(File simDbFile, SimId simulatorId) throws IOException, ClassNotFoundException, NoSimException {
 		SimDb simdb = new SimDb(simDbFile, simulatorId, null, null);
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfig config = restoreSimulator(simCntlFile.toString());

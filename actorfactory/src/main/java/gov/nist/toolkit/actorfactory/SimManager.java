@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -84,7 +85,7 @@ public class SimManager {
 		simConfigs = configs;
 	}
 	
-	public SimulatorConfig getSimulatorConfig(String simId) {
+	public SimulatorConfig getSimulatorConfig(SimId simId) {
 		for (SimulatorConfig config : simConfigs) {
 			if (simId.equals(config.getId()) && !config.isExpired())
 				return config;
@@ -123,12 +124,12 @@ public class SimManager {
 	 * Return map from simName => simId
 	 * @return
 	 */
-	public Map<String, String> getNameMap() {
-		Map<String, String> nameMap = new HashMap<String, String>();
+	public Map<String, SimId> getNameMap() {
+		Map<String, SimId> nameMap = new HashMap<>();
 		
 		for (SimulatorConfig sc : simConfigs) {
 			String name = sc.getDefaultName();
-			String id = sc.getId();
+			SimId id = sc.getId();
 			nameMap.put(name, id);
 		}
 		
@@ -140,7 +141,7 @@ public class SimManager {
 	 * not because there can be multiple (there can't)
 	 * @param simId
 	 */
-	public void removeSimulatorConfig(String simId) {
+	public void removeSimulatorConfig(SimId simId) {
 		List<SimulatorConfig> delete = new ArrayList<SimulatorConfig>();
 		for (SimulatorConfig sc : simConfigs) {
 			if (sc.getId().equals(simId))

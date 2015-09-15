@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.session.server.Session;
@@ -25,7 +26,7 @@ public class SimulatorApi {
         this.session = session;
     }
 
-    public Simulator create(String actorTypeName, String simID) throws Exception {
+    public Simulator create(String actorTypeName, SimId simID) throws Exception {
 //        return new SimulatorServiceManager(session).getNewSimulator(actorTypeName, simID);
         try {
             SimCache simCache = new SimCache();
@@ -44,7 +45,7 @@ public class SimulatorApi {
         }
     }
 
-    public void delete(String simID) throws Exception {
+    public void delete(SimId simID) throws Exception {
         SimulatorConfig config = new SimulatorConfig(simID, "", null);
 //        new SimulatorServiceManager(session).deleteConfig(config);
         try {
@@ -55,7 +56,7 @@ public class SimulatorApi {
         }
     }
 
-    public boolean exists(String simId) {
+    public boolean exists(SimId simId) {
         return new SimDb().exists(simId);
     }
 

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -12,14 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class IGActorFactory extends AbstractActorFactory {
-	String newID = null;
+	SimId newID = null;
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(
 				TransactionType.STORED_QUERY, 
 				TransactionType.RETRIEVE);
 
-	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) {
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) {
 		this.newID = newID;
 
 		ActorType actorType = ActorType.INITIATING_GATEWAY;

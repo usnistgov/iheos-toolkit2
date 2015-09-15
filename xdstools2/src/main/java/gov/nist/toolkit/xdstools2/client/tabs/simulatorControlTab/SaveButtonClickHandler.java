@@ -6,14 +6,17 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
 
 class SaveButtonClickHandler implements ClickHandler {
 	SimulatorControlTab simulatorControlTab;
 	SimulatorConfig config;
+	TestSessionState testSessionState;
 	
-	SaveButtonClickHandler(SimulatorControlTab simulatorControlTab, SimulatorConfig config) {
+	SaveButtonClickHandler(SimulatorControlTab simulatorControlTab, SimulatorConfig config, TestSessionState testSessionState) {
 		this.simulatorControlTab = simulatorControlTab;
 		this.config = config;
+		this.testSessionState = testSessionState;
 	}
 
 	public void onClick(ClickEvent event) {
@@ -26,7 +29,7 @@ class SaveButtonClickHandler implements ClickHandler {
 
 			public void onSuccess(String result) {
 				// reload simulators to get updates
-				new LoadSimulatorsClickHandler(simulatorControlTab).onClick(null);
+				new LoadSimulatorsClickHandler(simulatorControlTab, testSessionState).onClick(null);
 				
 			}
 			

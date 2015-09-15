@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -21,7 +22,7 @@ import java.util.List;
 
 
 public class RGActorFactory extends AbstractActorFactory {
-	String newID = null;
+	SimId newID = null;
 
 	static final String homeCommunityIdBase = "urn:oid:1.1.4567334.1.";
 	static int homeCommunityIdIncr = 1;
@@ -39,7 +40,7 @@ public class RGActorFactory extends AbstractActorFactory {
 //	RegistryActorFactory registryActorFactory;
 //	RepositoryActorFactory repositoryActorFactory;
 
-	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		this.newID = newID;
 		ActorType actorType = ActorType.RESPONDING_GATEWAY;
 		SimulatorConfig sc; 
@@ -48,7 +49,7 @@ public class RGActorFactory extends AbstractActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		String simId = sc.getId();
+		SimId simId = sc.getId();
 
 		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());

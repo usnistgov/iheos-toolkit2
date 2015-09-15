@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -18,13 +19,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RecipientActorFactory  extends AbstractActorFactory {
-	String newID = null;
+	SimId newID = null;
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(TransactionType.PROVIDE_AND_REGISTER);
 
 
-	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		this.newID = newID;
 
 		ActorType actorType = ActorType.DOCUMENT_RECIPIENT;

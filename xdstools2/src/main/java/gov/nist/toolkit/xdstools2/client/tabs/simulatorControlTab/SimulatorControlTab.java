@@ -1,5 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.http.client.HtmlMarkup;
@@ -12,17 +18,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.Collection;
 import java.util.List;
-
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class SimulatorControlTab extends GenericQueryTab {
 
@@ -38,15 +33,18 @@ public class SimulatorControlTab extends GenericQueryTab {
 	HorizontalPanel simConfigWrapperPanel = new HorizontalPanel();
 	VerticalPanel   simConfigPanel = new VerticalPanel();
 	TextArea        simIdsTextArea = new TextArea();
+	TextBox         newSimIdTextBox = new TextBox();
 	Button          createActorSimulatorButton = new Button("Create Actor Simulator");
 	Button          loadSimulatorsButton = new Button("Load Simulators");
 
-//	final protected ToolkitServiceAsync toolkitService = GWT
-//	.create(ToolkitService.class);
+	SimConfigSuper simConfigSuper;
+
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
+
+		simConfigSuper = new SimConfigSuper(this, simConfigPanel, myContainer.getTestSessionState());
 
 		container.addTab(topPanel, "Sim Control", select);
 		addCloseButton(container,topPanel, null);
@@ -66,16 +64,19 @@ public class SimulatorControlTab extends GenericQueryTab {
 		actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
 		actorSelectPanel.add(actorSelectListBox);
 		loadActorSelectListBox();
-		
+
+		actorSelectPanel.add(HtmlMarkup.html("Simulator ID"));
+		actorSelectPanel.add(newSimIdTextBox);
+
 		actorSelectPanel.add(createActorSimulatorButton);
-		createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this));
-		
+		createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, container.getTestSessionState()));
+
 		topPanel.add(actorSelectPanel);
-		
+
 		HorizontalPanel simIdsPanel = new HorizontalPanel();
-		
+
 		simIdsTextArea.setSize("600px", "50px");
-		
+
 		loadSimulatorsFromCookies();
 
 		simIdsTextArea.addChangeHandler(new ChangeHandler() {
@@ -83,22 +84,22 @@ public class SimulatorControlTab extends GenericQueryTab {
 			public void onChange(ChangeEvent event) {
 				updateSimulatorCookies();
 			}
-			
+
 		});
-		
-		
+
+
 		simIdsPanel.add(simIdsTextArea);
-		
-		loadSimulatorsButton.addClickHandler(new LoadSimulatorsClickHandler(this));
+
+		loadSimulatorsButton.addClickHandler(new LoadSimulatorsClickHandler(this, container.getTestSessionState()));
 		simIdsPanel.add(loadSimulatorsButton);
-		
+
 		topPanel.add(simIdsPanel);
-		
+
 		topPanel.add(HtmlMarkup.html("<br />"));
-		
+
 		topPanel.add(simConfigWrapperPanel);
-		
-		
+
+
 		simConfigWrapperPanel.add(simConfigPanel);
 
 		// force loading of sites in the back end
@@ -110,7 +111,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 			public void onSuccess(Collection<Site> result) {
 			}
-			
+
 		});
 
 
@@ -125,7 +126,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 			return;
 		
 		simIdsTextArea.setText(cookieString);
-		new LoadSimulatorsClickHandler(this).loadSimulators();
+		new LoadSimulatorsClickHandler(this, myContainer.getTestSessionState()).loadSimulators();
 	}
 	
 	void updateSimulatorCookies() {
@@ -142,12 +143,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		}
 	}
 	
-	
-	
-	SimConfigSuper simConfigSuper = new SimConfigSuper(this, simConfigPanel);
-	
-	void getNewSimulator(String actorTypeName) {
-		toolkitService.getNewSimulator(actorTypeName, new AsyncCallback<Simulator>() {
+
+	void getNewSimulator(String actorTypeName, SimId simId) {
+		toolkitService.getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("Error creating new simulator: " + caught.getMessage());
@@ -158,9 +156,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 					simConfigSuper.add(config);
 				simConfigSuper.reloadSimulators();
 			}
-			
+
 		});
-		
+
 	}
 	
 	

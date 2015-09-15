@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
@@ -16,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 public class RuntimeManager {
     static Logger logger = Logger.getLogger(RuntimeManager.class);
 
-    public static BaseActorSimulator getSimulatorRuntime(String simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static BaseActorSimulator getSimulatorRuntime(SimId simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
         SimDb db = new SimDb();
         SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
         String actorTypeName = config.getType();

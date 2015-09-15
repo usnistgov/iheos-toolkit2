@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -50,7 +51,7 @@ public class SimulatorServiceManager extends CommonService {
 		this.session = session;
 	}
 
-	public List<String> getTransInstances(String simid, String xactor, String trans) throws Exception
+	public List<String> getTransInstances(SimId simid, String xactor, String trans) throws Exception
 	{
 		logger.debug(session.id() + ": " + "getTransInstances : " + simid + " - " + xactor + " - " + trans);
 		return GenericSimulatorFactory.getTransInstances(simid, xactor, trans);
@@ -159,7 +160,7 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
-	public List<String> getTransactionsForSimulator(String simid) throws Exception  {
+	public List<String> getTransactionsForSimulator(SimId simid) throws Exception  {
 		logger.debug(session.id() + ": " + "getTransactionsForSimulator(" + simid + ")");
 		SimDb simdb;
 		try {
@@ -171,7 +172,7 @@ public class SimulatorServiceManager extends CommonService {
 		return simdb.getTransactionsForSimulator();
 	}
 
-	public String getTransactionRequest(String simid, String actor,
+	public String getTransactionRequest(SimId simid, String actor,
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionRequest - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
@@ -192,7 +193,7 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
-	public String getTransactionResponse(String simid, String actor,
+	public String getTransactionResponse(SimId simid, String actor,
 			String trans, String event) {
 		logger.debug(session.id() + ": " + "getTransactionResponse - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
@@ -214,7 +215,7 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
-	public String getTransactionLog(String simid, String actor, String trans,
+	public String getTransactionLog(SimId simid, String actor, String trans,
 			String event) {
 		logger.debug(session.id() + ": " + "getTransactionLog - " + simid + " - " + actor + " - " + trans + " - " + event);
 		try {
@@ -231,7 +232,7 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
-	public Simulator getNewSimulator(String actorTypeName, String simID) throws Exception  {
+	public Simulator getNewSimulator(String actorTypeName, SimId simID) throws Exception  {
 		logger.debug(session.id() + ": " + "getNewSimulator(type=" + actorTypeName + ")");
 		return new SimulatorApi(session).create(actorTypeName, simID);
 	}
@@ -244,7 +245,7 @@ public class SimulatorServiceManager extends CommonService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception  {
+	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception  {
 		logger.debug(session.id() + ": " + "getSimConfigs " + ids);
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
@@ -285,7 +286,7 @@ public class SimulatorServiceManager extends CommonService {
 	 * 
 	 * @return map from simulator name (private name) to simulator id (global id)
 	 */
-	public Map<String, String> getSimulatorNameMap() {
+	public Map<String, SimId> getSimulatorNameMap() {
 		logger.debug(session.id() + ": " + "getActorSimulatorNameMap");
 		return new SimCache().getSimManagerForSession(session.id(), true).getNameMap();
 	}

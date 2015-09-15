@@ -1,13 +1,14 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Simulator configuration supervisor - holds multiple SimConfigMgr objects, each one manages
@@ -17,16 +18,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 class SimConfigSuper {
 	VerticalPanel panel;
-	List<SimConfigMgr> mgrs = new ArrayList<SimConfigMgr>();
+	List<SimConfigMgr> mgrs = new ArrayList<>();
 	SimulatorControlTab simulatorControlTab;
+	TestSessionState testSessionState;
 
-	SimConfigSuper(SimulatorControlTab simulatorControlTab, VerticalPanel panel) {
+	SimConfigSuper(SimulatorControlTab simulatorControlTab, VerticalPanel panel, TestSessionState testSessionState) {
 		this.simulatorControlTab = simulatorControlTab;
 		this.panel = panel;
+		this.testSessionState = testSessionState;
 	}
 	
-	List<String> getIds() {
-		List<String> ids = new ArrayList<String>();
+	List<SimId> getIds() {
+		List<SimId> ids = new ArrayList<>();
 		for (SimConfigMgr mgr : mgrs) {
 			ids.add(mgr.config.getId());
 		}
@@ -35,13 +38,13 @@ class SimConfigSuper {
 	
 	void add(SimulatorConfig config) {
 		delete(config);
-		SimConfigMgr mgr = new SimConfigMgr(simulatorControlTab, panel, config);
+		SimConfigMgr mgr = new SimConfigMgr(simulatorControlTab, panel, config, testSessionState);
 		mgr.displayInPanel();
 		mgrs.add(mgr);
 		
 		String txt = simulatorControlTab.simIdsTextArea.getText();
 		if (txt == null || txt.equals("")) {
-			simulatorControlTab.simIdsTextArea.setText(mgr.config.getId());
+			simulatorControlTab.simIdsTextArea.setText(mgr.config.getId().toString());
 		} else {
 			txt = txt + ", " + mgr.config.getId();
 			simulatorControlTab.simIdsTextArea.setText(txt);
@@ -60,10 +63,10 @@ class SimConfigSuper {
 	 * Delete existing instance of this simulator
 	 */
 	void delete(SimulatorConfig config) {
-		String targetId = config.getId();
+		String targetId = config.getId().toString();
 		SimConfigMgr toDelete = null;
 		for (SimConfigMgr mgr : mgrs) {
-			String id = mgr.config.getId();
+			String id = mgr.config.getId().toString();
 			if (id.equals(targetId)) {
 				toDelete = mgr;
 				break;
@@ -85,7 +88,7 @@ class SimConfigSuper {
 		String txt = "";
 		for (SimConfigMgr mgr : mgrs) {
 			if (txt.equals(""))
-				txt = mgr.config.getId();
+				txt = mgr.config.getId().toString();
 			else
 				txt = txt + ", " + mgr.config.getId();
 			

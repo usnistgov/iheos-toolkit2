@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -10,12 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryRegistryActorFactory extends AbstractActorFactory {
-	String newID = null;
+	SimId newID = null;
 
 	RegistryActorFactory registryActorFactory;
 	RepositoryActorFactory repositoryActorFactory;
 
-	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws Exception {
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
 		this.newID = newID;
 		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
 		SimulatorConfig sc;
@@ -24,7 +25,7 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		String simId = sc.getId();
+		SimId simId = sc.getId();
 		// This needs to be grouped with a Document Registry
 		registryActorFactory = new RegistryActorFactory();
 		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);

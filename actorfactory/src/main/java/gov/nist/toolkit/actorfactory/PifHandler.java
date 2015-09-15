@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.adt.PifCallback;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
@@ -27,7 +28,7 @@ public class PifHandler implements PifCallback {
 
     static File pidFile(String simId, String patientId) throws IOException, NoSimException {
         logger.debug("patientID is " + patientId);
-        SimDb simdb = new SimDb(simId);
+        SimDb simdb = new SimDb(new SimId(simId));
         logger.debug("simdir = " + simdb.getSimDir());
         String[] parts = patientId.split("\\^");
         if (parts.length != 4)

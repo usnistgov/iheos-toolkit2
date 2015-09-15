@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -194,7 +195,7 @@ public class SimCommon {
 	}
 
 
-	static public void deleteSim(String simulatorId) {
+	static public void deleteSim(SimId simulatorId) {
 		try {
 			logger.info("Delete sim " + simulatorId);
 			SimDb simdb = new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);
