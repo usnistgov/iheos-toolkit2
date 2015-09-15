@@ -169,18 +169,13 @@ public abstract class AbstractActorFactory {
 			for (SimulatorConfig conf : simulator.getConfigs()) {
 				AbstractActorFactory actorFactory = getActorFactory(conf);
 				saveConfiguration(conf);
-				actorFactory.created(conf);  // hook to extensions
+
 			}
 		}
 
 		return simulator;
 	}
 
-	// A collection of hooks that a simulator type can use to insert custom behavior
-	// by overriding one or more of these methods
-
-	public void created(SimulatorConfig config) {}
-	public void deleted(SimulatorConfig config) {}
 
 	//
 	// End of hooks
@@ -280,7 +275,6 @@ public abstract class AbstractActorFactory {
 			return;		
 		}
 		AbstractActorFactory actorFactory = getActorFactory(config);
-		actorFactory.deleted(config);
 	}
 
 	static public boolean simExists(SimulatorConfig config) throws IOException {

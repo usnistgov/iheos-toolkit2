@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
+import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
 import gov.nist.toolkit.actorfactory.RegistryActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -201,5 +202,14 @@ public class RegistryActorSimulator extends AbstractDsActorSimulator {
 				dsSimCommon.regIndex.save();
 			}
 		}
+	}
+
+	// simulatorConfig guarenteed to be initialized
+	public void onServiceStart() {
+		PatientIdentityFeedServlet.generateListener(simulatorConfig);
+	}
+
+	public void onServiceStop() {
+		PatientIdentityFeedServlet.deleteListener(simulatorConfig);
 	}
 }

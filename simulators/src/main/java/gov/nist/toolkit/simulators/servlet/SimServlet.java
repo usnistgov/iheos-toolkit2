@@ -75,8 +75,15 @@ public class SimServlet  extends HttpServlet {
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);
 
+		onServiceStart();
+
 		logger.info("SimServlet initialized");
 	}
+
+	public void destroy() {
+		onServiceStop();
+	}
+
 
 	public MessageValidationResults getMessageValidationResults() {
 		return mvr;
@@ -413,40 +420,8 @@ public class SimServlet  extends HttpServlet {
 
 			response.setContentType("application/soap+xml");
 
-			dsSimCommon.regIndex = regIndex;
+			AbstractDsActorSimulator sim = getSimulatorRuntime(simid);
 
-			ActorType actorType = ActorType.findActor(actor);
-			if (actorType == null) {
-				throw new ToolkitRuntimeException("Received message for actor type " + actor + " which does not exist");
-			}
-			String actorSimClassName = actorType.getSimulatorClassName();
-			if (actorSimClassName == null) {
-				throw new ToolkitRuntimeException("Received message for actor type " + actor + " which has no configured handler/simulator");
-			}
-			logger.info("Simulator/handler is " + actorSimClassName);
-			Class<?> clas = Class.forName(actorSimClassName);
-			// find correct constructor
-
-			Constructor<?>[] constructors = clas.getConstructors();
-			Constructor<?> constructor = null;
-			for (int i=0; i<constructors.length; i++) {
-				Constructor<?> cons = constructors[i];
-				Class<?>[] parmTypes = cons.getParameterTypes();
-				if (parmTypes.length != 0) continue;
-//				if (!parmTypes[0].getSimpleName().equals(dsSimCommon.getClass().getSimpleName())) continue;
-//				if (!parmTypes[1].getSimpleName().equals(asc.getClass().getSimpleName())) continue;
-				constructor = cons;
-			}
-			if (constructor == null)
-				throw new ToolkitRuntimeException("Cannot find correct constructor for " + actorSimClassName);
-			Object[] params = new Object[2];
-			params[0] = dsSimCommon;
-			params[1] = asc;
-			Object obj = constructor.newInstance();
-			if (!(obj instanceof AbstractDsActorSimulator)) {
-				throw new ToolkitRuntimeException("Received message for actor type " + actor + " which has a handler/simulator that does not extend AbstractDsActorSimulator");
-			}
-			AbstractDsActorSimulator sim = (AbstractDsActorSimulator) obj;
 			sim.init(dsSimCommon, asc);
 			sim.onTransactionBegin();
 			transactionOk = sim.run(transactionType, mvc, validation);
@@ -566,6 +541,68 @@ public class SimServlet  extends HttpServlet {
 		logger.debug(repCacheCount + " items left in the Repository Index cache");
 
 	}
+
+	public static void onServiceStart()  {
+		try {
+			SimDb db = new SimDb();
+			List<String> simIds = db.getAllSimIds();
+			for (String simId : simIds) {
+				AbstractDsActorSimulator sim = getSimulatorRuntime(simId);
+
+				DsSimCommon dsSimCommon = null;
+				sim.init(dsSimCommon, GenericSimulatorFactory.getSimConfig(db.getRoot(), simId));
+				sim.onServiceStart();
+			}
+		} catch (Exception e) {
+			logger.fatal(ExceptionUtil.exception_details(e));
+		}
+	}
+
+	public static void onServiceStop() {
+		try {
+			SimDb db = new SimDb();
+			List<String> simIds = db.getAllSimIds();
+			for (String simId : simIds) {
+				AbstractDsActorSimulator sim = getSimulatorRuntime(simId);
+
+				DsSimCommon dsSimCommon = null;
+				sim.init(dsSimCommon, GenericSimulatorFactory.getSimConfig(db.getRoot(), simId));
+				sim.onServiceStop();
+			}
+		} catch (Exception e) {
+			logger.fatal(ExceptionUtil.exception_details(e));
+		}
+	}
+
+	public static AbstractDsActorSimulator getSimulatorRuntime(String simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
+		SimDb db = new SimDb();
+		SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
+		String actorTypeName = config.getType();
+		ActorType actorType = ActorType.findActor(actorTypeName);
+		String actorSimClassName = actorType.getSimulatorClassName();
+		logger.info("Starting sim " + simId + " of class " + actorSimClassName);
+		Class<?> clas = Class.forName(actorSimClassName);
+
+		// find correct constructor - no parameters
+		Constructor<?>[] constructors = clas.getConstructors();
+		Constructor<?> constructor = null;
+		for (int i=0; i<constructors.length; i++) {
+			Constructor<?> cons = constructors[i];
+			Class<?>[] parmTypes = cons.getParameterTypes();
+			if (parmTypes.length != 0) continue;
+//				if (!parmTypes[0].getSimpleName().equals(dsSimCommon.getClass().getSimpleName())) continue;
+//				if (!parmTypes[1].getSimpleName().equals(asc.getClass().getSimpleName())) continue;
+			constructor = cons;
+		}
+		if (constructor == null)
+			throw new ToolkitRuntimeException("Cannot find correct constructor for " + actorSimClassName);
+		Object obj = constructor.newInstance();
+		if (!(obj instanceof AbstractDsActorSimulator)) {
+			throw new ToolkitRuntimeException("Received message for actor type " + actorTypeName + " which has a handler/simulator that does not extend AbstractDsActorSimulator");
+		}
+		return (AbstractDsActorSimulator) obj;
+	}
+
 
 	public RegIndex getRegIndex(SimDb db, String simid) {
 		ServletContext servletContext = config.getServletContext();

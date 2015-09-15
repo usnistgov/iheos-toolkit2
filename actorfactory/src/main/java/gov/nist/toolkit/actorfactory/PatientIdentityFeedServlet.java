@@ -31,7 +31,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
         super.init(config);
         warHome = new File(config.getServletContext().getRealPath("/"));
         logger.info("...warHome is " + warHome);
-        initPatientIdentityFeed();
+        //initPatientIdentityFeed();
     }
 
     public void initPatientIdentityFeed() {
@@ -58,6 +58,8 @@ public class PatientIdentityFeedServlet extends HttpServlet {
 
         logger.info("AdtServlet initialized");
     }
+
+
 
     public static void generateCurrentlyConfiguredListeners() throws IOException, NoSimException, ClassNotFoundException {
         SimDb db = new SimDb();

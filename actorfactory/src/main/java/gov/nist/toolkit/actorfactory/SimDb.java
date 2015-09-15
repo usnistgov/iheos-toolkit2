@@ -118,6 +118,8 @@ public class SimDb {
 		event = nowAsFilenameBase();
 
 	}
+
+	public File getRoot() { return dbRoot; }
 	
 	public void delete() {
 		if (isSim())

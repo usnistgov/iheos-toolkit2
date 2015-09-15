@@ -41,8 +41,11 @@ public abstract class AbstractDsActorSimulator {
 	// They are meant to be overloaded
 	public void onCreate() {}
 	public void onDelete() {}
+
 	public void onTransactionBegin() {}
 	public void onTransactionEnd() {}
+
+	// simulatorConfig guarenteed to be initialized
 	public void onServiceStart() {}  // these two refer to Servlet start/stop
 	public void onServiceStop() {}
 
