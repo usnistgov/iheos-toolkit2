@@ -7,6 +7,7 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.support.AbstractDsActorSimulator;
@@ -25,7 +26,6 @@ import java.util.List;
 public class RepositoryActorSimulator extends AbstractDsActorSimulator {
 	RepIndex repIndex;
 	SimDb db;
-	HttpServletResponse response;
 	String repositoryUniqueId;
 
 	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response, String repositoryUniqueId) {
@@ -35,6 +35,22 @@ public class RepositoryActorSimulator extends AbstractDsActorSimulator {
 		this.response = response;
 		this.repositoryUniqueId = repositoryUniqueId;
 		this.simulatorConfig = simulatorConfig;
+	}
+
+	public RepositoryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.repIndex = dsSimCommon.repIndex;
+		this.db = dsSimCommon.simCommon.db;;
+		this.response = dsSimCommon.simCommon.response;
+		this.simulatorConfig = simulatorConfig;
+		init();
+	}
+
+	public RepositoryActorSimulator() {}
+
+	public void init() {
+		SimulatorConfigElement configEle = simulatorConfig.get("repositoryUniqueId");
+		this.repositoryUniqueId = configEle.asString();
 	}
 
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {

@@ -1,12 +1,14 @@
 package gov.nist.toolkit.simulators.support;
 
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -16,10 +18,12 @@ import java.io.IOException;
  *
  */
 public abstract class AbstractDsActorSimulator {
-	protected SimCommon common;
-	protected DsSimCommon dsSimCommon;
-	protected ErrorRecorder er;
-	protected SimulatorConfig simulatorConfig;
+	protected SimDb db;
+	protected SimCommon common = null;
+	protected DsSimCommon dsSimCommon = null;
+	protected ErrorRecorder er = null;
+	protected SimulatorConfig simulatorConfig = null;
+	public HttpServletResponse response;
 
 	/**
 	 * Start execution of a transaction to this actor simulator.
@@ -31,6 +35,7 @@ public abstract class AbstractDsActorSimulator {
 	 * @throws IOException
 	 */
 	abstract public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException;
+	abstract public void init();
 
 	// Services may need extension via hooks.  These are the hooks
 	// They are meant to be overloaded
@@ -38,7 +43,7 @@ public abstract class AbstractDsActorSimulator {
 	public void onDelete() {}
 	public void onTransactionBegin() {}
 	public void onTransactionEnd() {}
-	public void onServiceStart() {}  // these two refer to Servlet engine start/stop
+	public void onServiceStart() {}  // these two refer to Servlet start/stop
 	public void onServiceStop() {}
 
 	public AbstractDsActorSimulator(SimCommon common, DsSimCommon dsSimCommon) {
@@ -47,7 +52,20 @@ public abstract class AbstractDsActorSimulator {
 		this.dsSimCommon = dsSimCommon;
 		er = common.getCommonErrorRecorder();
 	}
-	
+
+	public AbstractDsActorSimulator() {}
+
+	public void init(DsSimCommon c, SimulatorConfig config) {
+		dsSimCommon = c;
+		if (c == null) return;
+		common = c.simCommon;
+		er = common.getCommonErrorRecorder();
+		db = c.simCommon.db;
+		simulatorConfig = config;
+		response = dsSimCommon.simCommon.response;
+		init();
+	}
+
 	public ValidationContext getValidationContext() {
 		return common.getValidationContext();
 	}

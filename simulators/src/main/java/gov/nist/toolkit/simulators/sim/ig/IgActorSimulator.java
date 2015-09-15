@@ -31,6 +31,13 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 		this.simulatorConfig = simulatorConfig;
 	}
 
+	public IgActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+		this.simulatorConfig = simulatorConfig;
+	}
+
+	public void init() {}
 
 	// boolean => hasErrors?
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validationPattern) throws IOException {

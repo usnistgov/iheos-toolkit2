@@ -15,6 +15,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Document Registry",
 			Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
             "reg",
+            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
 			Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
             true,
             null
@@ -33,6 +34,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Document Repository",
 			Arrays.asList("DOC_REPOSITORY"),
             "rep",
+            "gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator",
 			Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
 			true,
             "repository"
@@ -41,6 +43,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "On-Demand Document Source",
 			Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
+            null,
 			Arrays.asList(TransactionType.ODDS_RETRIEVE),
 			true,
             "odds"
@@ -49,6 +52,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Integrated Source/Repository",
 			Arrays.asList("EMBED_REPOS"),
             "isr",
+            null,
 			Arrays.asList(TransactionType.ISR_RETRIEVE),
 			true,
             "isr"
@@ -57,6 +61,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Document Repository/Registry",
 			new ArrayList<String>(),
             "rr",
+            null,
 			Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ, TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
             false,
             null
@@ -65,6 +70,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Document Recipient",
 			Arrays.asList("DOC_RECIPIENT"),
             "rec",
+            "gov.nist.toolkit.simulators.sim.recip.RecipientActorSimulator",
 			Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             true,
             null
@@ -73,6 +79,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Responding Gateway",
 			Arrays.asList("RESP_GATEWAY"),
             "rg",
+            "gov.nist.toolkit.simulators.sim.rg.RGActorSimulator",
 			Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_PATIENT_DISCOVERY),
             true,
             null
@@ -81,18 +88,12 @@ public enum ActorType implements IsSerializable, Serializable {
             "Initiating Gateway",
 			Arrays.asList("INIT_GATEWAY"),
             "ig",
+            "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
 			Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
             null
-	),
-    DIRECT_SERVER(
-            "Direct Server",
-			Arrays.asList("DIRECT_SERVER"),
-            "direct",
-			Arrays.asList(TransactionType.DIRECT),
-            true,
-            null
-	);
+	)
+    ;
 
 	private static final long serialVersionUID = 1L;
     String name;
@@ -101,14 +102,16 @@ public enum ActorType implements IsSerializable, Serializable {
     List<TransactionType> transactionTypes; // TransactionTypes this actor can receive
     boolean showInConfig;
     String actorsFileLabel;
+    String simulatorClassName;
 
 	ActorType() {
 	} // for GWT
 
-    ActorType(String name, List<String> altNames, String shortName, List<TransactionType> tt, boolean showInConfig, String actorsFileLabel) {
+    ActorType(String name, List<String> altNames, String shortName, String simulatorClassName, List<TransactionType> tt, boolean showInConfig, String actorsFileLabel) {
         this.name = name;
         this.altNames = altNames;
         this.shortName = shortName;
+        this.simulatorClassName = simulatorClassName;
         this.transactionTypes = tt;   // This actor receives
         this.showInConfig = showInConfig;
         this.actorsFileLabel = actorsFileLabel;
@@ -137,6 +140,8 @@ public enum ActorType implements IsSerializable, Serializable {
 	public boolean isGW() {
         return isRGActor() || isIGActor();
     }
+
+    public String getSimulatorClassName() { return simulatorClassName; }
 
 	public String getActorsFileLabel() {
         return actorsFileLabel;

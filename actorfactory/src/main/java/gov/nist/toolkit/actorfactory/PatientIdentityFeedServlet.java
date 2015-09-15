@@ -37,9 +37,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     public void initPatientIdentityFeed() {
         logger.info("Initializing AdtServlet");
         try {
-            Installation.installation().warHome(warHome);
-//        simDbDir = Installation.installation().simDbFile();
-//        logger.info("...simdb = " + simDbDir);
+//            Installation.installation().warHome(warHome);
 
             logger.info("Initializing ADT Listeners...");
 
@@ -90,13 +88,8 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     }
 
     public static int generateListener(SimulatorConfig simulatorConfig) {
-//        SimulatorConfigElement sce = simulatorConfig.get(RegistryActorFactory.pif_port);
         String simId = simulatorConfig.getId();
-//        if (sce == null)
-//            throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");
         String portString = portFromSimulatorConfig(simulatorConfig);
-//        if (portString == null || portString.equals(""))
-//            throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");
         int port = Integer.parseInt(portString);
         ListenerFactory.generateListener(simId, port, new PifHandler());
         return port;

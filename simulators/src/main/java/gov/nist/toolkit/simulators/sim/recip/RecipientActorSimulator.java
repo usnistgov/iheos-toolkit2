@@ -25,7 +25,16 @@ public class RecipientActorSimulator extends AbstractDsActorSimulator {
 		this.response = response;
 		this.simulatorConfig = simulatorConfig;
 	}
-	 
+
+	public RecipientActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+		this.response = dsSimCommon.simCommon.response;
+		this.simulatorConfig = simulatorConfig;
+	}
+
+	public void init() {}
+
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 		

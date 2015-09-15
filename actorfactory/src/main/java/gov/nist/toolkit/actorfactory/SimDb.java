@@ -79,7 +79,7 @@ public class SimDb {
 		this.dbRoot = dbRoot;
 
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
-			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
+			throw new IOException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
 
 		String ipdir = simId.replaceAll("\\.", "_");
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
@@ -124,13 +124,14 @@ public class SimDb {
 			delete(simDir);
 	}
 	
-	public String getActorForSimulator() {
+	public List<String> getActorsForSimulator() {
+		List<String> actors = new ArrayList<>();
 		File[] files = simDir.listFiles();
 		for (File file : files) {
 			if (file.isDirectory())
-				return file.getName();
+				actors.add(file.getName());
 		}
-		return null;
+		return actors;
 	}
 	
 	static public Date getNewExpiration(@SuppressWarnings("rawtypes") Class controllingClass)   {

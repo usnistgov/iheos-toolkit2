@@ -40,7 +40,7 @@ public class SimCommon {
 	MessageValidationResults mvr = null;
 	public MessageValidatorEngine mvc = null;
 	public ValidationContext vc = null;
-	HttpServletResponse response = null;
+	public HttpServletResponse response = null;
 	OutputStream os = null;
 	ValidateMessageService vms = null;
 	boolean faultReturned = false;

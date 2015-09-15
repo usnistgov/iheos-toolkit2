@@ -1,7 +1,6 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.actorfactory.RegistryActorFactory;
-import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
@@ -18,18 +17,29 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 public class RegistryActorSimulator extends AbstractDsActorSimulator {
-	SimDb db;
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
 
-	public RegistryActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
-		super(common, dsSimCommon);
-		this.db = db;
+	public RegistryActorSimulator() {}
+
+	// this constructor must be used when running simulator
+	public RegistryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
 		this.simulatorConfig = simulatorConfig;
+		init();
+	}
+
+	public void init() {
 		SimulatorConfigElement updateConfig = simulatorConfig.get(RegistryActorFactory.update_metadata_option);
 		updateEnabled = updateConfig.asBoolean();
 	}
 
+	// This constructor can be used to implement calls to onCreate(), onDelete(),
+	// onServiceStart(), onServiceStop()
+	public RegistryActorSimulator(SimulatorConfig simulatorConfig) {
+		this.simulatorConfig = simulatorConfig;
+	}
 
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		AdhocQueryResponseGenerator queryResponseGenerator;
@@ -114,7 +124,10 @@ public class RegistryActorSimulator extends AbstractDsActorSimulator {
 
 		}
 		else if (transactionType.equals(TransactionType.UPDATE)) {
-
+			if (!updateEnabled) {
+				dsSimCommon.sendFault("Metadata Update not enabled on this actor ", null);
+				return false;
+			}
 			common.vc.isMU = true;
 			common.vc.isRequest = true;
 

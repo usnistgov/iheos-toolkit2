@@ -51,7 +51,6 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), new RepositoryRegistryActorFactory());
 		factories.put(ActorType.INITIATING_GATEWAY.getName(),  new IGActorFactory());
 		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  new RGActorFactory());
-		factories.put(ActorType.DIRECT_SERVER.getName(),  new DirectActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {

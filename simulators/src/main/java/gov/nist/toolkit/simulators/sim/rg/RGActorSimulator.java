@@ -42,6 +42,15 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 		this.simulatorConfig = simulatorConfig;
 	}
 
+	public RGActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+		this.simulatorConfig = simulatorConfig;
+	}
+
+	public void init() {}
+
+
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 
 		this.mvc = mvc;

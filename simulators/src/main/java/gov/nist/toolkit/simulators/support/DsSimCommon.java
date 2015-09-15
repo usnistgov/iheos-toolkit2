@@ -43,7 +43,7 @@ import java.util.*;
 public class DsSimCommon {
     public RegIndex regIndex = null;
     public RepIndex repIndex = null;
-    SimCommon simCommon;
+    public SimCommon simCommon;
     Map<String, StoredDocument> documentsToAttach = null;  // cid => document
     RegistryErrorListGenerator relGen = null;
 

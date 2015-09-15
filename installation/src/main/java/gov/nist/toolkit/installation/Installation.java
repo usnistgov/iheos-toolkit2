@@ -52,7 +52,10 @@ public class Installation {
 	public void warHome(File warHome) { 
 		logger.info("V2 - Installation - war home set to " + warHome);
 		this.warHome = warHome;
-		}
+		propertyServiceMgr = null;
+		externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+	}
+
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) { 
 		this.externalCache = externalCache;

@@ -1,9 +1,9 @@
 package gov.nist.toolkit.xdstools2.server.api;
 
+import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.session.server.Session;
@@ -12,8 +12,6 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by bill on 6/15/15.
@@ -61,15 +59,4 @@ public class SimulatorApi {
         return new SimDb().exists(simId);
     }
 
-    public Map<String, String> getSimulatorsAndTypes() {
-        Map<String, String> map = new HashMap<String, String>();
-        SimDb simHook = new SimDb();
-
-        for (String simId : simHook.getAllSimIds()) {
-            String actor = simHook.getActorForSimulator();
-            map.put(simId, actor);
-        }
-
-        return map;
-    }
 }

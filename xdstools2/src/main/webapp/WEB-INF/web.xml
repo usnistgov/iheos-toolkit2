@@ -90,6 +90,7 @@
 	<servlet>
 		<servlet-name>simulatorServlet</servlet-name>
 		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
 	<servlet>
@@ -100,13 +101,6 @@
 	<servlet>
 		<servlet-name>messageServlet</servlet-name>
 		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>adtServlet</servlet-name>
-		<display-name>ADT Listener</display-name>
-		<servlet-class>gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet</servlet-class>
-		<load-on-startup>10</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
