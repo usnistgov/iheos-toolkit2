@@ -1048,6 +1048,8 @@ public class Metadata {
 	public OMElement addExtClassification(OMElement ele, String uuid, String codingScheme, String codeName, String code) {
 		OMElement e = addExtClassification(ele,uuid);
 
+		if (code!=null && !code.equals(""))
+            e.addAttribute("nodeRepresentation",code,null);
 		if (codingScheme != null && !codingScheme.equals(""))
 			addSlot(e, "codingScheme", codingScheme);
 		if (codeName != null && !codeName.equals(""))
