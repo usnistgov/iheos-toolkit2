@@ -614,6 +614,22 @@ public class XdsTestServiceManager extends CommonService {
 		return true;
 	}
 
+	public boolean delMesaTestSession(String name) throws Exception  {
+		File cache;
+		try {
+			cache = Installation.installation().propertyServiceManager().getTestLogCache();
+
+			if (name == null || name.equals(""))
+				throw new Exception("Cannot add test session with no name");
+		} catch (Exception e) {
+			logger.error("delMesaTestSession", e);
+			throw new Exception(e.getMessage());
+		}
+		File dir = new File(cache.toString() + File.separator + name);
+		Io.delete(dir);
+		return true;
+	}
+
 
 	/******************************************************************
 	 *

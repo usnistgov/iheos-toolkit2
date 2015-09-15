@@ -1,26 +1,19 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import gov.nist.toolkit.xdstools2.client.CookieManager;
-import gov.nist.toolkit.xdstools2.client.Panel;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
-import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector.AddTestSessionClickHandler;
-import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
-
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.Panel;
+import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestSessionManager {
 	TabContainer tabContainer;
@@ -62,13 +55,66 @@ public class TestSessionManager {
 					testSession = testSessionTextBox.getText();
 					loadTestSessionNames(newItem);
 					testSession = testSessionTextBox.getText();
+					new TestSessionChangeHandler().testSessionChanged();
 				}
 				
 			});
 		}
-		
 	}
-	
+
+	class DelTestSessionClickHandler implements ClickHandler {
+
+		public void onClick(ClickEvent event) {
+			final String newItem = getCurrentSelection();
+			toolkitService.delMesaTestSession(newItem, new AsyncCallback<Boolean>() {
+
+				public void onFailure(Throwable caught) {
+					new PopupMessage("delMesaTestSession: " + caught.getMessage());
+				}
+
+				public void onSuccess(Boolean result) {
+					testSession = getCurrentSelection();
+					for (int i = 0; i < testSessionListBox.getItemCount(); i++) {
+						if (testSession.equals(testSessionListBox.getItemText(i))) {
+							testSessionListBox.removeItem(i);
+						}
+					}
+					new TestSessionChangeHandler().testSessionChanged();
+				}
+			});
+
+			try {
+				toolkitService.getAllSimConfigs(newItem, new AsyncCallback<List<SimulatorConfig>>() {
+					@Override
+					public void onFailure(Throwable throwable) {
+						new PopupMessage("getAllSimConfigs: " + throwable.getMessage());
+					}
+
+					@Override
+					public void onSuccess(List<SimulatorConfig> simulatorConfigs) {
+						for (SimulatorConfig config : simulatorConfigs) {
+							delete(config);
+						}
+					}
+				});
+			} catch (Exception e) {}
+		}
+
+		public void delete(SimulatorConfig config) {
+			toolkitService.deleteConfig(config, new AsyncCallback<String>() {
+
+				public void onFailure(Throwable caught) {
+					new PopupMessage("deleteConfig:" + caught.getMessage());
+				}
+
+				public void onSuccess(String result) {
+				}
+
+			});
+		}
+
+	}
+
 	public void close() {
 		testSessionState.deleteManager(this);
 	}
@@ -84,11 +130,16 @@ public class TestSessionManager {
 		testSessionListBox.addChangeHandler(new TestSessionChangeHandler());
 
 		testSessionPanel.add(testSessionTextBox);
+
 		Button addTestSessionButton = new Button("Add");
 		testSessionPanel.add(addTestSessionButton);
 		addTestSessionButton.addClickHandler(new AddTestSessionClickHandler());
 
-		
+		Button delTestSessionButton = new Button("Delete");
+		testSessionPanel.add(delTestSessionButton);
+		delTestSessionButton.addClickHandler(new DelTestSessionClickHandler());
+
+
 		updateTestSessionListBox();
 
 		loadTestSessionNames(Cookies.getCookie(CookieManager.TESTSESSIONCOOKIENAME));
@@ -193,19 +244,33 @@ public class TestSessionManager {
 
 	};
 
+	List<TabbedWindow> managedWindows = new ArrayList<>();
+
+	public void addManagedWindow(TabbedWindow window) { managedWindows.add(window);}
+
 	class TestSessionChangeHandler implements ChangeHandler {
 
 		public void onChange(ChangeEvent event) {
+			testSessionChanged();
+		}
+
+		void testSessionChanged() {
 			int selectionI = testSessionListBox.getSelectedIndex();
 			String value = testSessionListBox.getItemText(selectionI);
 			change(value);
-			
+
 			testSessionState.updated(testSessionManager);
 
 			toolkitService.setMesaTestSession(value, setTestSessionCallback);
-		}
 
+			for (TabbedWindow win : managedWindows) {
+				win.onTestSessionChange(value);
+			}
+
+		}
 	}
+
+
 
 	boolean isEmpty(String x) { return x == null || x.equals(""); }
 	

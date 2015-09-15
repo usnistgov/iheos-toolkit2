@@ -29,6 +29,10 @@ public class SimulatorApi {
     public Simulator create(String actorTypeName, SimId simID) throws Exception {
 //        return new SimulatorServiceManager(session).getNewSimulator(actorTypeName, simID);
         try {
+            SimDb db = new SimDb();
+            if (db.exists(simID))
+                throw new Exception("Simulator " + simID + " exists");
+
             SimCache simCache = new SimCache();
             SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
 
@@ -47,9 +51,12 @@ public class SimulatorApi {
 
     public void delete(SimId simID) throws Exception {
         SimulatorConfig config = new SimulatorConfig(simID, "", null);
+        SimCache simCache = new SimCache();
+        SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
 //        new SimulatorServiceManager(session).deleteConfig(config);
         try {
-            new SimCache().deleteSimConfig(config.getId());
+            simCache.deleteSimConfig(config.getId());
+            simMgr.purge();
         } catch (IOException e) {
             logger.error("deleteConfig", e);
             throw new Exception(e.getMessage());

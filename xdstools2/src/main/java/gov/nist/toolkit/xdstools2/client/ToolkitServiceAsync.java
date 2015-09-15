@@ -142,6 +142,7 @@ public interface ToolkitServiceAsync {
 	void  getActorTypeNames(AsyncCallback<List<String>> callback);
 	void  getNewSimulator(String actorTypeName, SimId simId, AsyncCallback<Simulator> callback);
 	void getSimConfigs(List<SimId> ids, AsyncCallback<List<SimulatorConfig>> callback);
+	void getAllSimConfigs(String user, AsyncCallback<List<SimulatorConfig>> callback) throws Exception;
 	void putSimConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void deleteConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void getActorSimulatorNameMap(AsyncCallback<Map<String, SimId>> callback);
@@ -156,7 +157,8 @@ public interface ToolkitServiceAsync {
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
-	
+	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
+
 	void getTestplanAsText(String testname, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> callback);
 }

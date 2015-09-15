@@ -44,4 +44,8 @@ public class SimId  implements Serializable, IsSerializable {
     public String toString() { return user + SEPARATOR + id; }
 
     String cleanId(String id) { return id.replaceAll("\\.", "_"); }
+
+    public boolean isUser(String user) {
+        return user != null && user.equals(this.user);
+    }
 }

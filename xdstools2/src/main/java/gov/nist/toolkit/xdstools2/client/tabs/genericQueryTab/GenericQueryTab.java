@@ -339,13 +339,22 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			reload.addClickHandler(new ClickHandler() {
 
 				public void onClick(ClickEvent event) {
-					//					redisplay();
 					reloadTransactionOfferings();
+				}
+
+			});
+			reload.addClickHandler(new ClickHandler() {
+
+				public void onClick(ClickEvent event) {
+					onReload();
 				}
 
 			});
 		}
 	}
+
+	// so it can be overloaded
+	public void onReload() {}
 
 	void reloadTransactionOfferings() {
 		try {

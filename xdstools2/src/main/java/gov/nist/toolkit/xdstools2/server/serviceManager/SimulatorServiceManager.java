@@ -258,6 +258,28 @@ public class SimulatorServiceManager extends CommonService {
 		return configs;
 	}
 
+	public List<SimulatorConfig> getAllSimConfigs(String user) throws Exception {
+		logger.debug(session.id() + ": " + "getSimConfigs for " + user);
+
+		GenericSimulatorFactory simFact = new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
+
+		SimDb db = new SimDb();
+		List<SimId> simIds = db.getAllSimIds();
+
+		List<SimId> userSimIds = new ArrayList<>();
+		for (SimId simId : simIds) {
+			if (user == null || simId.isUser(user))
+				userSimIds.add(simId);
+		}
+
+		List<SimulatorConfig> configs = simFact.loadSimulators(userSimIds);
+
+		// update cache
+		new SimCache().update(session.id(), configs);
+
+		return configs;
+	}
+
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "saveSimConfig");
 		try {

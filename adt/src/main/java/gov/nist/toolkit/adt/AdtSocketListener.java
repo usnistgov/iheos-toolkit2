@@ -52,11 +52,11 @@ public class AdtSocketListener implements Runnable{
         try {
             while (true) {
                 try {
-                    logger.debug("accept - timeout is " + server.getSoTimeout());
+//                    logger.debug("accept - timeout is " + server.getSoTimeout());
                     socket = server.accept();
                     handle(socket);
                 } catch (SocketTimeoutException e) {
-                    logger.debug("SocketTimeoutException on port " + threadPoolItem.port);
+//                    logger.debug("SocketTimeoutException on port " + threadPoolItem.port);
                     if (Thread.interrupted())
                         throw new InterruptedException("");
                 }
@@ -65,6 +65,7 @@ public class AdtSocketListener implements Runnable{
             // This is the signal to shutdown the patientIdentityFeed
             logger.debug("Interrupted (port " + threadPoolItem.port + ")");
             threadPoolItem.release();
+            logger.info("Available ports are " + ListenerFactory.availablePorts());
             return;
         } catch (IOException e) {
             logger.fatal("Error while listening for connection.", e);

@@ -1,7 +1,6 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
-import gov.nist.toolkit.actorfactory.RegistryActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
@@ -46,7 +45,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	}
 
 	public void init() {
-		SimulatorConfigElement updateConfig = simulatorConfig.get(RegistryActorFactory.update_metadata_option);
+		SimulatorConfigElement updateConfig = simulatorConfig.get(SimulatorConfig.update_metadata_option);
 		updateEnabled = updateConfig.asBoolean();
 	}
 

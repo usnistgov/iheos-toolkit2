@@ -30,7 +30,7 @@ class LoadSimulatorsClickHandler implements ClickHandler {
 		String[] parts = idStr.split(",");
 		List<SimId> ids = new ArrayList<>();
 
-		simulatorControlTab.updateSimulatorCookies(idStr);
+//		simulatorControlTab.updateSimulatorCookies(idStr);
 
 		for (int i=0; i<parts.length; i++) {
 			String x = parts[i].trim();

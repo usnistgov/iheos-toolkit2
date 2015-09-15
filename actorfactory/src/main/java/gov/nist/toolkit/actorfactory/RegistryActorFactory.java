@@ -21,10 +21,7 @@ import java.util.List;
 
 public class RegistryActorFactory extends AbstractActorFactory {
 
-	public static final String update_metadata_option = "Update_Metadata_Option";
-	public static final String pif_port = "Patient_Identity_Feed_Port";
-	
-	static final List<TransactionType> incomingTransactions = 
+	static final List<TransactionType> incomingTransactions =
 		Arrays.asList(
 				TransactionType.REGISTER,
 				TransactionType.STORED_QUERY,
@@ -50,8 +47,8 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
-		addEditableConfig(sc, update_metadata_option, ParamType.BOOLEAN, false);
-		addEditableConfig(sc, pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
+		addEditableConfig(sc, SimulatorConfig.update_metadata_option, ParamType.BOOLEAN, false);
+		addEditableConfig(sc, SimulatorConfig.pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 		addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
 		addEditableEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 		addEditableEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
@@ -62,7 +59,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 	}
 
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) {
-		SimulatorConfigElement ele = config.get(update_metadata_option);
+		SimulatorConfigElement ele = config.get(SimulatorConfig.update_metadata_option);
 		if (ele == null)
 			return;
 		Boolean optionOn = ele.asBoolean();
@@ -129,7 +126,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 				true, 
 				isAsync));
 		
-		SimulatorConfigElement ele = asc.get(update_metadata_option);
+		SimulatorConfigElement ele = asc.get(SimulatorConfig.update_metadata_option);
 		if (ele.asBoolean()) {
 			site.addTransaction(new TransactionBean(
 					TransactionType.UPDATE.getCode(),

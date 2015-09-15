@@ -400,8 +400,14 @@ public abstract class AbstractActorFactory {
 		return config;
 	}
 
-	static public SimulatorConfig loadSimulator(SimId simid) throws IOException, ClassNotFoundException, NoSimException {
-		SimDb simdb = new SimDb(simid);
+	static public SimulatorConfig loadSimulator(SimId simid, boolean okifNotExist) throws IOException, ClassNotFoundException, NoSimException {
+		SimDb simdb;
+		try {
+			simdb = new SimDb(simid);
+		} catch (NoSimException e) {
+			if (okifNotExist) return null;
+			throw e;
+		}
 		File simCntlFile = simdb.getSimulatorControlFile();
 		SimulatorConfig config = restoreSimulator(simCntlFile.toString());
 		return config;

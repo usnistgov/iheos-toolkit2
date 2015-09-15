@@ -26,14 +26,24 @@ class DeleteButtonClickHandler implements ClickHandler {
 			}
 
 			public void onSuccess(String result) {
-//				// reload simulators to get any updates
-//				new LoadSimulatorsClickHandler().loadSimulators();
-				
+				simulatorControlTab.loadSimStatus();
 			}
 			
 		});
-		
+	}
 
+	public void delete() {
+		simulatorControlTab.toolkitService.deleteConfig(config, new AsyncCallback<String>() {
+
+			public void onFailure(Throwable caught) {
+				new PopupMessage("deleteConfig:" + caught.getMessage());
+			}
+
+			public void onSuccess(String result) {
+				simulatorControlTab.loadSimStatus();
+			}
+
+		});
 	}
 	
 }

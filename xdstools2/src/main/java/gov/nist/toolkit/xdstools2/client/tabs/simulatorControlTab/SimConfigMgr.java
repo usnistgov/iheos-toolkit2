@@ -108,9 +108,9 @@ class SimConfigMgr {
 		hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
 
 
-		Button deleteButton = new Button("Delete");
-		deleteButton.addClickHandler(new DeleteButtonClickHandler(simulatorControlTab, config));
-		hpanel.add(deleteButton);
+//		Button deleteButton = new Button("Delete");
+//		deleteButton.addClickHandler(new DeleteButtonClickHandler(simulatorControlTab, config));
+//		hpanel.add(deleteButton);
 
 		panel.add(HtmlMarkup.html("<br />"));
 	}

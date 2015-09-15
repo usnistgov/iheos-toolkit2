@@ -1,15 +1,15 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.Cookies;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
@@ -36,13 +36,15 @@ public class SimulatorControlTab extends GenericQueryTab {
 	TextBox         newSimIdTextBox = new TextBox();
 	Button          createActorSimulatorButton = new Button("Create Actor Simulator");
 	Button          loadSimulatorsButton = new Button("Load Simulators");
+	FlexTable       table = new FlexTable();
 
 	SimConfigSuper simConfigSuper;
-
+	SimulatorControlTab self;
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
+		self = this;
 
 		simConfigSuper = new SimConfigSuper(this, simConfigPanel, myContainer.getTestSessionState());
 
@@ -60,6 +62,11 @@ public class SimulatorControlTab extends GenericQueryTab {
 		title.setHTML("<h2>Simulator Control</h2>");
 		topPanel.add(title);
 
+		HTML addNewTitle = new HTML();
+		addNewTitle.setHTML("<h3>Add new simulator to this test session</h3>");
+		topPanel.add(addNewTitle);
+
+
 		HorizontalPanel actorSelectPanel = new HorizontalPanel();
 		actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
 		actorSelectPanel.add(actorSelectListBox);
@@ -73,31 +80,42 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		topPanel.add(actorSelectPanel);
 
-		HorizontalPanel simIdsPanel = new HorizontalPanel();
+//		HorizontalPanel simIdsPanel = new HorizontalPanel();
+//
+//		simIdsTextArea.setSize("600px", "50px");
 
-		simIdsTextArea.setSize("600px", "50px");
+//		loadSimulatorsFromCookies();
 
-		loadSimulatorsFromCookies();
-
-		simIdsTextArea.addChangeHandler(new ChangeHandler() {
-
-			public void onChange(ChangeEvent event) {
-				updateSimulatorCookies();
-			}
-
-		});
+//		simIdsTextArea.addChangeHandler(new ChangeHandler() {
+//
+//			public void onChange(ChangeEvent event) {
+//				updateSimulatorCookies();
+//			}
+//
+//		});
 
 
-		simIdsPanel.add(simIdsTextArea);
-
-		loadSimulatorsButton.addClickHandler(new LoadSimulatorsClickHandler(this, container.getTestSessionState()));
-		simIdsPanel.add(loadSimulatorsButton);
-
-		topPanel.add(simIdsPanel);
+//		simIdsPanel.add(simIdsTextArea);
+//
+//		loadSimulatorsButton.addClickHandler(new LoadSimulatorsClickHandler(this, container.getTestSessionState()));
+//		simIdsPanel.add(loadSimulatorsButton);
+//
+//		topPanel.add(simIdsPanel);
 
 		topPanel.add(HtmlMarkup.html("<br />"));
 
-		topPanel.add(simConfigWrapperPanel);
+//		topPanel.add(simConfigWrapperPanel);
+
+		loadSimStatus();
+
+		VerticalPanel tableWrapper = new VerticalPanel();
+		table.setBorderWidth(1);
+		HTML tableTitle = new HTML();
+		tableTitle.setHTML("<h3>Current Simulators for this test session</h3>");
+		tableWrapper.add(tableTitle);
+		tableWrapper.add(table);
+
+		topPanel.add(tableWrapper);
 
 
 		simConfigWrapperPanel.add(simConfigPanel);
@@ -116,32 +134,42 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 
 	}
-	
-	static final String SIMULATORCOOKIENAME = "gov.nist.registry.xdstools2.XDSSimulatorsCookie";
-	
-	void loadSimulatorsFromCookies() {
-		String cookieString = Cookies.getCookie(SIMULATORCOOKIENAME);
-		
-		if (cookieString == null || cookieString.equals(""))
-			return;
-		
-		simIdsTextArea.setText(cookieString);
-		new LoadSimulatorsClickHandler(this, myContainer.getTestSessionState()).loadSimulators();
+
+	@Override
+	public void onReload() {
+		loadSimStatus();
+	}
+
+	@Override
+	public void onTestSessionChange(String testSessionName) {
+		loadSimStatus(testSessionName);
 	}
 	
-	void updateSimulatorCookies() {
-		updateSimulatorCookies(simIdsTextArea.getText().trim());
-	}
-	
-	void updateSimulatorCookies(String value) {
-		if (value == null) {
-			if (Cookies.getCookie(SIMULATORCOOKIENAME) != null)
-				Cookies.setCookie(SIMULATORCOOKIENAME, value);
-		} else {
-			if (!value.equals(Cookies.getCookie(SIMULATORCOOKIENAME)))
-				Cookies.setCookie(SIMULATORCOOKIENAME, value);
-		}
-	}
+//	static final String SIMULATORCOOKIENAME = "gov.nist.registry.xdstools2.XDSSimulatorsCookie";
+//
+//	void loadSimulatorsFromCookies() {
+//		String cookieString = Cookies.getCookie(SIMULATORCOOKIENAME);
+//
+//		if (cookieString == null || cookieString.equals(""))
+//			return;
+//
+//		simIdsTextArea.setText(cookieString);
+//		new LoadSimulatorsClickHandler(this, myContainer.getTestSessionState()).loadSimulators();
+//	}
+//
+//	void updateSimulatorCookies() {
+//		updateSimulatorCookies(simIdsTextArea.getText().trim());
+//	}
+//
+//	void updateSimulatorCookies(String value) {
+//		if (value == null) {
+//			if (Cookies.getCookie(SIMULATORCOOKIENAME) != null)
+//				Cookies.setCookie(SIMULATORCOOKIENAME, value);
+//		} else {
+//			if (!value.equals(Cookies.getCookie(SIMULATORCOOKIENAME)))
+//				Cookies.setCookie(SIMULATORCOOKIENAME, value);
+//		}
+//	}
 	
 
 	void getNewSimulator(String actorTypeName, SimId simId) {
@@ -155,6 +183,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 				for (SimulatorConfig config : sconfigs.getConfigs())
 					simConfigSuper.add(config);
 				simConfigSuper.reloadSimulators();
+				loadSimStatus(myContainer.getTestSessionState().getTestSessionName());
 			}
 
 		});
@@ -181,7 +210,87 @@ public class SimulatorControlTab extends GenericQueryTab {
 			
 		});
 	}
-	
+
+	// columns
+	int idColumn = 0;
+	int typeColumn = 1;
+	int pidPortColumn = 2;
+	int buttonColumn = 3;
+
+
+	void buildTableHeader() {
+		table.removeAllRows();
+
+		int row = 0;
+		table.setText(row, idColumn, "ID");
+		table.setText(row, typeColumn, "Type");
+		table.setText(row, pidPortColumn, "Patient Feed Port");
+
+	}
+
+	void loadSimStatus() {
+		loadSimStatus(myContainer.getTestSessionState().getTestSessionName());
+	}
+
+	void loadSimStatus(String user)  {
+		try {
+			toolkitService.getAllSimConfigs(user, new AsyncCallback<List<SimulatorConfig>>() {
+				public void onFailure(Throwable caught) {
+					new PopupMessage("loadSimStatus:" + caught.getMessage());
+				}
+
+				public void onSuccess(List<SimulatorConfig> configs) {
+					buildTableHeader();
+					int row = 1;
+					for (SimulatorConfig config : configs) {
+						table.setText(row, idColumn, config.getId().toString());
+						table.setText(row, typeColumn, config.getType());
+						SimulatorConfigElement updateConfig = config.get(SimulatorConfig.pif_port);
+						if (updateConfig != null) {
+							String pifPort = updateConfig.asString();
+							table.setText(row, pidPortColumn, pifPort);
+						}
+						HorizontalPanel buttonPanel = new HorizontalPanel();
+						table.setWidget(row, buttonColumn, buttonPanel);
+
+						Button loadButton = new Button("Load");
+						loadButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+							@Override
+							public void onClick(ClickEvent clickEvent) {
+								SimulatorConfig config = getData();
+							}
+						});
+						buttonPanel.add(loadButton);
+
+						Button editButton = new Button("Edit");
+						editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+							@Override
+							public void onClick(ClickEvent clickEvent) {
+								SimulatorConfig config = getData();
+								EditTab editTab = new EditTab(self, config);
+								editTab.onTabLoad(myContainer, true, null);
+							}
+						});
+						buttonPanel.add(editButton);
+
+						Button deleteButton = new Button("Delete");
+						deleteButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+							@Override
+							public void onClick(ClickEvent clickEvent) {
+								SimulatorConfig config = getData();
+								DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
+								handler.delete();
+							}
+						});
+						buttonPanel.add(deleteButton);
+						row++;
+					}
+				}
+			});
+		} catch (Exception e) {
+			new PopupMessage("Cannot load sim status for user " + user + ": " + e.getClass());
+		}
+	}
 	
 
 	public String getWindowShortName() {

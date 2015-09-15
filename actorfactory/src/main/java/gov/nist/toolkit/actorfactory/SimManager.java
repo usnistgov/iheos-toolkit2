@@ -1,5 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -52,25 +53,16 @@ public class SimManager {
 		return sessionId;
 	}
 	
-	// Be careful, this may no longer be relevant??????
-	@Deprecated
-	void purgeDeletedSims() throws IOException {
-		List<SimulatorConfig> deletions = null;
+	public void purge() throws IOException {
+		List<SimulatorConfig> deletions = new ArrayList<>();
 		for (SimulatorConfig sc : simConfigs) {
-			String simtype = sc.getType();
-			ActorType at = ActorType.findActor(simtype);
-			AbstractActorFactory af = AbstractActorFactory.getActorFactory(at);
-			af.setSimManager(this);  // doesn't get set otherwise on sim reload
-			if (!af.simExists(sc)) {
-				if (deletions == null)
-					deletions = new ArrayList<SimulatorConfig>();
+			try {
+				new SimDb(sc.getId());
+			} catch (NoSimException e) {
 				deletions.add(sc);
-				af.delete(sc);
 			}
 		}
-		if (deletions != null) {
-			simConfigs.removeAll(deletions);
-		}
+		simConfigs.removeAll(deletions);
 	}
 	
 	public void addSimConfigs(Simulator s) {

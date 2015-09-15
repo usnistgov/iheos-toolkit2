@@ -97,7 +97,7 @@ class SimConfigSuper {
 		}
 		simulatorControlTab.simIdsTextArea.setText(txt);
 		
-		simulatorControlTab.updateSimulatorCookies(txt);
+//		simulatorControlTab.updateSimulatorCookies(txt);
 	}
 	
 	void reloadSimulators() {

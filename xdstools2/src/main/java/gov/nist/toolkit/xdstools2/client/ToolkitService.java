@@ -38,11 +38,13 @@ public interface ToolkitService extends RemoteService  {
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames() throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;
-	
+	public boolean delMesaTestSession(String name) throws Exception;
+
 	/* Simulator Management */
 	public List<String> getActorTypeNames() throws NoServletSessionException ;
 	public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception;
 	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
+	List<SimulatorConfig> getAllSimConfigs(String user) throws Exception;
 	public String putSimConfig(SimulatorConfig config) throws Exception;
 	public String deleteConfig(SimulatorConfig config) throws Exception;
 	public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;

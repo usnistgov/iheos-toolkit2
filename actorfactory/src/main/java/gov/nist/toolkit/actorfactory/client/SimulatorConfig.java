@@ -45,7 +45,10 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	// selection.
 	ValidationContext vc = null;
 	transient CcdaTypeSelection docTypeSelector;
-	
+
+	public static final String update_metadata_option = "Update_Metadata_Option";
+	public static final String pif_port = "Patient_Identity_Feed_Port";
+
 	public boolean isExpired() { return isExpired; }
 	public void isExpired(boolean is) { isExpired = is; }
 

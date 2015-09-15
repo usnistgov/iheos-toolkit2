@@ -57,6 +57,7 @@ public class ListenerFactory {
             tpi.thread = thread;
             thread.start();
         }
+        logger.info("Available ports are " + ListenerFactory.availablePorts());
         return tpi.port;
     }
 
@@ -68,6 +69,9 @@ public class ListenerFactory {
         tpi.pifCallback = pifCallback;
         tpi.timeoutInMilli = timeoutinMilli;
 //        threadPool.add(tpi);
+        logger.info("Launching listener for simId " + simId + " on port " + tpi.port);
+        tpi.inUse = true;
+        logger.info("Available ports are " + ListenerFactory.availablePorts());
         if (tpi.thread == null) {  // not started
             Thread thread = new Thread(new AdtSocketListener(tpi));
             tpi.thread = thread;
@@ -98,13 +102,22 @@ public class ListenerFactory {
         return null;
     }
 
-    static ThreadPoolItem allocateThreadPoolItem() {
+    static synchronized ThreadPoolItem allocateThreadPoolItem() {
         for (ThreadPoolItem tm : threadPool)
             if (!tm.inUse) {
                 tm.inUse = true;
                 return tm;
             }
         throw new ToolkitRuntimeException("Thread pool exhausted - cannot launch ADT patientIdentityFeed");
+    }
+
+    public static List<String> availablePorts() {
+        List<String> ports = new ArrayList<>();
+        for (ThreadPoolItem tm : threadPool) {
+            if (!tm.inUse)
+                ports.add(Integer.toString(tm.getPort()));
+        }
+        return ports;
     }
 
     static ThreadPoolItem allocateThreadPoolItem(int port) {

@@ -84,7 +84,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     // returns port
     public static int generateListener(SimId simId) {
         try {
-            return generateListener(GenericSimulatorFactory.loadSimulator(simId));
+            return generateListener(GenericSimulatorFactory.loadSimulator(simId, false));
         } catch (Exception e) {
             throw new ToolkitRuntimeException("Error generating PIF Listener", e);
         }
@@ -104,7 +104,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     }
 
     static String portFromSimulatorConfig(SimulatorConfig simulatorConfig) {
-        SimulatorConfigElement sce = simulatorConfig.get(RegistryActorFactory.pif_port);
+        SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.pif_port);
         SimId simId = simulatorConfig.getId();
         if (sce == null)
             throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");

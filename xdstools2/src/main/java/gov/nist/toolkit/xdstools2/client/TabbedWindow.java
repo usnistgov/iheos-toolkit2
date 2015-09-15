@@ -51,8 +51,11 @@ public abstract class TabbedWindow {
 		if (Xdstools2.showEnvironment) {
 			if (envMgrEnabled)
 				environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
-			if (testSesMgrEnabled && testSessionManager == null)
+			if (testSesMgrEnabled && testSessionManager == null) {
 				testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
+				testSessionManager.addManagedWindow(this);
+			}
+
 		}
 	}
 	
@@ -231,5 +234,8 @@ public abstract class TabbedWindow {
 		msgBox.setHTML("<b>" + message + "</b>");
 		topPanel.add(msgBox);		
 	}
+
+	// meant to be overridden by tool window implementations
+	public void onTestSessionChange(String testSessionName) {}
 
 }

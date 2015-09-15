@@ -96,7 +96,7 @@ public class SimCache {
 				return sconf;
 		}
 		try {
-			return GenericSimulatorFactory.loadSimulator(simId);
+			return GenericSimulatorFactory.loadSimulator(simId, true);
 		} catch (Exception e) {
 			// ignore
 		}
