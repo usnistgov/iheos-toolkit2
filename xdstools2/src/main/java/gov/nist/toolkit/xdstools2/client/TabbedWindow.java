@@ -238,4 +238,10 @@ public abstract class TabbedWindow {
 	// meant to be overridden by tool window implementations
 	public void onTestSessionChange(String testSessionName) {}
 
+	public void _onTestSessionChange(String testSessionName) {
+		if (testSessionManager == null) return;
+		testSessionManager.changeLocal(testSessionName);
+		onTestSessionChange(testSessionName);
+	}
+
 }

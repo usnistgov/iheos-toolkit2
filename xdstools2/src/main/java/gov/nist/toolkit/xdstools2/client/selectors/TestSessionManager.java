@@ -199,8 +199,13 @@ public class TestSessionManager {
 		updateServer();
 	}
 
-	
-	void loadTestSessionNames(final String initialTestSessionName) {
+	public void changeLocal(String testSessionName) {
+		testSessionState.setTestSessionName(testSessionName);
+		updateSelectionOnScreen();
+	}
+
+
+	public void loadTestSessionNames(final String initialTestSessionName) {
 		toolkitService.getMesaTestSessionNames(new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
@@ -261,10 +266,10 @@ public class TestSessionManager {
 
 			testSessionState.updated(testSessionManager);
 
-			toolkitService.setMesaTestSession(value, setTestSessionCallback);
+			//toolkitService.setMesaTestSession(value, setTestSessionCallback);
 
 			for (TabbedWindow win : managedWindows) {
-				win.onTestSessionChange(value);
+				win._onTestSessionChange(value);
 			}
 
 		}

@@ -255,7 +255,7 @@ public class SimulatorServiceManager extends CommonService {
 	}
 
 	public List<SimulatorConfig> getAllSimConfigs(String user) throws Exception {
-		logger.debug(session.id() + ": " + "getSimConfigs for " + user);
+		logger.debug(session.id() + ": " + "getAllSimConfigs for " + user);
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
 

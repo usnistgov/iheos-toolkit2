@@ -81,33 +81,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		topPanel.add(actorSelectPanel);
 
-//		HorizontalPanel simIdsPanel = new HorizontalPanel();
-//
-//		simIdsTextArea.setSize("600px", "50px");
-
-//		loadSimulatorsFromCookies();
-
-//		simIdsTextArea.addChangeHandler(new ChangeHandler() {
-//
-//			public void onChange(ChangeEvent event) {
-//				updateSimulatorCookies();
-//			}
-//
-//		});
-
-
-//		simIdsPanel.add(simIdsTextArea);
-//
-//		loadSimulatorsButton.addClickHandler(new LoadSimulatorsClickHandler(this, container.getTestSessionState()));
-//		simIdsPanel.add(loadSimulatorsButton);
-//
-//		topPanel.add(simIdsPanel);
-
 		topPanel.add(HtmlMarkup.html("<br />"));
-
-//		topPanel.add(simConfigWrapperPanel);
-
-		loadSimStatus();
 
 		VerticalPanel tableWrapper = new VerticalPanel();
 		table.setBorderWidth(1);
@@ -133,7 +107,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		});
 
-
+		loadSimStatus();
 	}
 
 	@Override
@@ -320,14 +294,14 @@ public class SimulatorControlTab extends GenericQueryTab {
 					HorizontalPanel buttonPanel = new HorizontalPanel();
 					table.setWidget(row, maxColumn, buttonPanel);
 
-					Button loadButton = new Button("Load");
-					loadButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-                        @Override
-                        public void onClick(ClickEvent clickEvent) {
-                            SimulatorConfig config = getData();
-                        }
-                    });
-					buttonPanel.add(loadButton);
+//					Button loadButton = new Button("Load");
+//					loadButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+//                        @Override
+//                        public void onClick(ClickEvent clickEvent) {
+//                            SimulatorConfig config = getData();
+//                        }
+//                    });
+//					buttonPanel.add(loadButton);
 
 					Button editButton = new Button("Edit");
 					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {

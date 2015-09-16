@@ -42,6 +42,7 @@ public class Site  implements IsSerializable, Serializable {
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
+	public String user = null;  // loaded from SimId - when non-null this site represents a sim
 	
 	public boolean equals(Site s) {
 		return

@@ -1,34 +1,21 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
-import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
-import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
-import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
-import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
-import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
-import gov.nist.toolkit.xdstools2.client.tabs.testRunnerTab.TestRunnerTab;
-
-import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
-
-
-import com.google.web.bindery.event.shared.EventBus;
-
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import com.google.web.bindery.event.shared.EventBus;
+import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
+import gov.nist.toolkit.xdstools2.client.tabs.*;
+import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
+import gov.nist.toolkit.xdstools2.client.tabs.testRunnerTab.TestRunnerTab;
 
 
 public class Xdstools2 implements EntryPoint, TabContainer {
@@ -123,6 +110,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	 */
 	@SuppressWarnings("deprecation")
 	public void onModuleLoad() {
+
 		loadTkProps();
 	}
 
@@ -244,6 +232,9 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 				}
 			}
 		});
+
+		// create a never-to-be-seen tab to force initialization of test sesson manager
+		new DummyTab().onAbstractTabLoad(this, true, null);
 
 	}
 

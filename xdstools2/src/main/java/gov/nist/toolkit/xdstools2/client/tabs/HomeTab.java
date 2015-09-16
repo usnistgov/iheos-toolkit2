@@ -9,7 +9,7 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
-import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 public class HomeTab extends GenericQueryTab {
@@ -20,12 +20,16 @@ public class HomeTab extends GenericQueryTab {
 
 
 	public HomeTab() {
-		super(new GetDocumentsSiteActorManager());
+		super(new FindDocumentsSiteActorManager());
+//		super(new GetDocumentsSiteActorManager());
 	}
 
 
 	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
 		myContainer = container;
+
+		addActorReloader();
+
 		topPanel = new VerticalPanel();	
 
 		select = true;

@@ -544,6 +544,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	List<Site> findSites(TransactionType tt, boolean tls) {
 		Map<TransactionType, List<Site>> map;
 
+		// aka testSession
+		String user = null; // testSessionManager.getCurrentSelection()
+
 		if (tls) {
 			map = GenericQueryTab.transactionOfferings.tmap;
 		} else {
@@ -551,8 +554,21 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		}
 
 		for (TransactionType t : map.keySet()) {
-			if (t.getName().equals(tt.getName()))
-				return map.get(t);
+			if (t.getName().equals(tt.getName())) {
+				List<Site> sitesForTransaction = map.get(t);
+				if (user == null) return sitesForTransaction;
+
+				// filter out sites that represent sims and do not match user
+				List<Site> sitesForUser = new ArrayList<>();
+				for (Site s : sitesForTransaction) {
+					if (s.user == null)
+						sitesForUser.add(s);
+					else if (user.equals(s.user))
+						sitesForUser.add(s);
+				}
+
+				return sitesForTransaction;
+			}
 		}
 		return new ArrayList<Site>();
 	}
