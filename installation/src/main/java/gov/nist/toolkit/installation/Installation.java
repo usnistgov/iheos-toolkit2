@@ -135,4 +135,12 @@ public class Installation {
 
 	public String defaultSessionName() { return "STANDALONE"; }
 
+	/**
+	 * Queries the PropertyServiceManager to retrieve the Toolkit Properties as a File.
+	 * This function is called from within v3.
+	 * @return the toolkit properties file
+	 */
+	public File getToolkitPropertiesFile(){
+		return propertyServiceMgr.getPropertiesFile();
+	}
 }
