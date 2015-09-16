@@ -49,7 +49,8 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		if (toDelete != null)
 			entries.remove(toDelete);
 	}
-	
+
+	public int size() { return entries.size(); }
 
 	public String statsToString() {
 		int siz = 0;

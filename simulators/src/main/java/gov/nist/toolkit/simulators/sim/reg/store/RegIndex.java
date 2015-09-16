@@ -1,6 +1,10 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
@@ -19,17 +23,26 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 	String filename;
 	public Calendar cacheExpires;
 	transient SimDb db;
+	SimId simId;
 	
 	public RegIndex() {}
 
-	public RegIndex(String filename) {
+	public RegIndex(File file, SimId simId) {
+		this(file.toString(), simId);
+	}
+
+	public RegIndex(String filename, SimId simId) {
 		this.filename = filename;
+		this.simId = simId;
 		try {
+//		logger.debug("Restore Registry Index");
+			logger.debug("Attempting to Restore Registry Index");
 			restore();
 			mc.regIndex = this;
 			mc.dirty = false;
 		} catch (Exception e) {
 			// no existing database - initialize instead
+			logger.debug("No existing - creating new");
 			mc = new MetadataCollection();
 			mc.init();
 			mc.regIndex = this;
@@ -162,7 +175,6 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 
 	// This must be called from a synchronize block
 	static MetadataCollection restoreRegistry(String filename) throws IOException, ClassNotFoundException {
-		logger.debug("Restore Registry Index");
 		FileInputStream fis;
 		ObjectInputStream in;
 		MetadataCollection mc;
@@ -201,5 +213,18 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 		return mc.subSetCollection.hasObject(uuid);
 	}
 
+	public SimulatorStats getSimulatorStats() throws IOException, NoSimException {
+		SimulatorStats stats = new SimulatorStats();
+		stats.actorType = ActorType.REGISTRY;
+		stats.simId = simId;
 
+		stats.put(SimulatorStats.DOCUMENT_ENTRY_COUNT, mc.docEntryCollection.size());
+		stats.put(SimulatorStats.SUBMISSION_SET_COUNT, mc.subSetCollection.size());
+		stats.put(SimulatorStats.FOLDER_COUNT, mc.folCollection.size());
+
+		SimDb db = new SimDb(simId);
+		stats.put(SimulatorStats.PATIENT_ID_COUNT, db.getAllPatientIds().size());
+
+		return stats;
+	}
 }

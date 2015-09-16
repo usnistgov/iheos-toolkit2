@@ -1,23 +1,19 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonService;
-import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.*;
+import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.ParseException;
-import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
+import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
+import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
@@ -249,7 +245,7 @@ public class SimulatorServiceManager extends CommonService {
 		logger.debug(session.id() + ": " + "getSimConfigs " + ids);
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
-		List<SimulatorConfig> configs = simFact.loadSimulators(ids);
+		List<SimulatorConfig> configs = simFact.loadAvailableSimulators(ids);
 //		List<SimulatorConfig> configs = simServices.getSimConfigs(ids);
 
 		// update cache
@@ -283,7 +279,9 @@ public class SimulatorServiceManager extends CommonService {
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "saveSimConfig");
 		try {
-			new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id(), true)).saveConfiguration(config);
+			SimManager simManager = new SimCache().getSimManagerForSession(session.id(), true);
+			new GenericSimulatorFactory(simManager).saveConfiguration(config);
+
 		} catch (IOException e) {
 			logger.error("saveSimConfig", e);
 			throw new Exception(e.getMessage());
@@ -323,10 +321,6 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
-	public File getSimDbFile() {
-		return Installation.installation().simDbFile();
-	}
-
 	public MessageValidationResults validateMessage(ValidationContext vc) throws EnvironmentNotSelectedClientException {
 		logger.debug(session.id() + ": " + "validateMessage");
 		try {
@@ -336,9 +330,6 @@ public class SimulatorServiceManager extends CommonService {
 			throw new EnvironmentNotSelectedClientException(e.getMessage());
 		}
 		try {
-
-//			ValidateMessageService vm = new ValidateMessageService(session, null);
-//			MessageValidationResults mvr = vm.validateLastUpload(vc);
 			MessageValidationResults mvr = validateLastUpload(vc);
 			return mvr;
 		} 
@@ -361,6 +352,35 @@ public class SimulatorServiceManager extends CommonService {
 		}
 		ValidateMessageService vm = new ValidateMessageService(null);
 		return vm.runValidation(vc, message, input2, gerb);
+	}
+
+	public List<SimulatorStats> getSimulatorStats(List<SimId> simIds) throws IOException, NoSimException {
+		logger.debug(session.id() + ": " + "getSimulatorStats for " + simIds);
+		try {
+			List<SimulatorStats> stats = new ArrayList<>();
+			for (SimId simId : simIds) {
+				SimDb db = new SimDb(simId);
+				if (db.getSimulatorActorType() == ActorType.REGISTRY) {
+					stats.add(RegistryActorSimulator.getSimulatorStats(simId));
+				}
+				else if (db.getSimulatorActorType() == ActorType.REPOSITORY) {
+					stats.add(RepositoryActorSimulator.getSimulatorStats(simId));
+				}
+				else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
+					SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
+					SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
+					rep.add(reg);
+					stats.add(rep);
+				}
+				else {
+					logger.debug("Don't recognize actorType - " + db.getSimulatorActorType());
+				}
+			}
+			return stats;
+		} catch (Exception e) {
+			logger.error(ExceptionUtil.exception_details(e, "getSimulatorStats"));
+			throw e;
+		}
 	}
 
 }

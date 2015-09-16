@@ -36,12 +36,12 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 			sc = new SimulatorConfig();
 
 		addEditableConfig(sc, repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
-		addEditableEndpoint(sc, pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
-		addEditableEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
-		addEditableEndpoint(sc, retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
-		addEditableEndpoint(sc, retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
-		addEditableEndpoint(sc, registerEndpoint, actorType, TransactionType.REGISTER, false);
-		addEditableEndpoint(sc, registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+		addFixedEndpoint(sc, pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
+		addFixedEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
+		addFixedEndpoint(sc, retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
+		addFixedEndpoint(sc, retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
+		addFixedEndpoint(sc, registerEndpoint, actorType, TransactionType.REGISTER, false);
+		addFixedEndpoint(sc, registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
 		
 		return new Simulator(sc);
 	}

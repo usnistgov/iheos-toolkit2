@@ -11,6 +11,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -50,7 +51,8 @@ public interface ToolkitService extends RemoteService  {
 	public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;
 //	public List<String> getSimulatorTransactionNames(String simid) throws Exception;
 	public int removeOldSimulators() throws NoServletSessionException;
-	
+	List<SimulatorStats> getSimulatorStats(List<SimId> simid) throws Exception;
+
 	String setToolkitProperties(Map<String, String> props) throws Exception;
 	Map<String, String> getToolkitProperties() throws NoServletSessionException ;
 	boolean reloadPropertyFile() throws NoServletSessionException ;

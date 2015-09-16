@@ -6,8 +6,10 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -16,8 +18,7 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class SimulatorControlTab extends GenericQueryTab {
 
@@ -212,16 +213,19 @@ public class SimulatorControlTab extends GenericQueryTab {
 	}
 
 	// columns
-	int idColumn = 0;
-	int typeColumn = 1;
-	int pidPortColumn = 2;
-	int buttonColumn = 3;
+	int nameColumn = 0;
+	int idColumn = 1;
+	int typeColumn = 2;
+	int pidPortColumn = 3;
+	int statsColumn = 4;
 
 
 	void buildTableHeader() {
 		table.removeAllRows();
+		table.clear();
 
 		int row = 0;
+		table.setText(row, nameColumn, "Name");
 		table.setText(row, idColumn, "ID");
 		table.setText(row, typeColumn, "Type");
 		table.setText(row, pidPortColumn, "Patient Feed Port");
@@ -239,52 +243,113 @@ public class SimulatorControlTab extends GenericQueryTab {
 					new PopupMessage("loadSimStatus:" + caught.getMessage());
 				}
 
-				public void onSuccess(List<SimulatorConfig> configs) {
+				public void onSuccess(List<SimulatorConfig> configs2) {
+					final List<SimulatorConfig> configs = configs2;
+					List<SimId> simIds = new ArrayList<>();
+					for (SimulatorConfig config : configs)
+						simIds.add(config.getId());
+					try {
+						toolkitService.getSimulatorStats(simIds, new AsyncCallback<List<SimulatorStats>>() {
+							@Override
+							public void onFailure(Throwable throwable) {
+								new PopupMessage("Cannot load simulator stats - " + throwable.getMessage());
+							}
+
+							@Override
+							public void onSuccess(List<SimulatorStats> simulatorStatses) {
+								buildTable(configs, simulatorStatses);
+							}
+						});
+					} catch (Exception e) {}
+				}
+
+				private void buildTable(List<SimulatorConfig> configs, List<SimulatorStats> stats) {
 					buildTableHeader();
 					int row = 1;
 					for (SimulatorConfig config : configs) {
+						table.setText(row, nameColumn, config.getDefaultName());
 						table.setText(row, idColumn, config.getId().toString());
-						table.setText(row, typeColumn, config.getType());
-						SimulatorConfigElement updateConfig = config.get(SimulatorConfig.pif_port);
-						if (updateConfig != null) {
-							String pifPort = updateConfig.asString();
+						table.setText(row, typeColumn, ActorType.findActor(config.getType()).getName());
+						SimulatorConfigElement portConfig = config.get(SimulatorConfig.pif_port);
+						if (portConfig != null) {
+							String pifPort = portConfig.asString();
 							table.setText(row, pidPortColumn, pifPort);
 						}
-						HorizontalPanel buttonPanel = new HorizontalPanel();
-						table.setWidget(row, buttonColumn, buttonPanel);
-
-						Button loadButton = new Button("Load");
-						loadButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-							@Override
-							public void onClick(ClickEvent clickEvent) {
-								SimulatorConfig config = getData();
-							}
-						});
-						buttonPanel.add(loadButton);
-
-						Button editButton = new Button("Edit");
-						editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-							@Override
-							public void onClick(ClickEvent clickEvent) {
-								SimulatorConfig config = getData();
-								EditTab editTab = new EditTab(self, config);
-								editTab.onTabLoad(myContainer, true, null);
-							}
-						});
-						buttonPanel.add(editButton);
-
-						Button deleteButton = new Button("Delete");
-						deleteButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-							@Override
-							public void onClick(ClickEvent clickEvent) {
-								SimulatorConfig config = getData();
-								DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
-								handler.delete();
-							}
-						});
-						buttonPanel.add(deleteButton);
 						row++;
 					}
+					// add the variable width stats columns and keep track of max column used
+					int column = addSimStats(statsColumn, configs, stats);
+
+					// now we know width of statsColumn so we can add button column after it
+					row = 1;
+					for (SimulatorConfig config : configs) {
+						addButtonPanel(row, column, config);
+						row++;
+					}
+				}
+
+				// returns next available column
+				private int addSimStats(int column, List<SimulatorConfig> configs, List<SimulatorStats> statss) {
+					for (int colOffset=0; colOffset<SimulatorStats.displayOrder.size(); colOffset++) {
+						String statType = SimulatorStats.displayOrder.get(colOffset);
+						table.setText(0, column+colOffset, statType);
+					}
+					int row = 1;
+					for (SimulatorConfig config : configs) {
+						SimulatorStats stats = findSimulatorStats(statss, config.getId());
+						if (stats == null) continue;
+						for (int colOffset=0; colOffset<SimulatorStats.displayOrder.size(); colOffset++) {
+							String statType = SimulatorStats.displayOrder.get(colOffset);
+							String value = stats.stats.get(statType);
+							if (value == null) value = "";
+							table.setText(row, column+colOffset, value);
+						}
+						row++;
+					}
+					return column + SimulatorStats.displayOrder.size();
+				}
+
+				private SimulatorStats findSimulatorStats(List<SimulatorStats> statss, SimId simId) {
+					for (SimulatorStats ss : statss) {
+						if (ss.simId.equals(simId)) return ss;
+					}
+					return null;
+				}
+
+				private void addButtonPanel(int row, int maxColumn, final SimulatorConfig config) {
+					HorizontalPanel buttonPanel = new HorizontalPanel();
+					table.setWidget(row, maxColumn, buttonPanel);
+
+					Button loadButton = new Button("Load");
+					loadButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+                        @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            SimulatorConfig config = getData();
+                        }
+                    });
+					buttonPanel.add(loadButton);
+
+					Button editButton = new Button("Edit");
+					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+                        @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            SimulatorConfig config = getData();
+                            EditTab editTab = new EditTab(self, config);
+                            editTab.onTabLoad(myContainer, true, null);
+                        }
+                    });
+					buttonPanel.add(editButton);
+
+					Button deleteButton = new Button("Delete");
+					deleteButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+                        @Override
+                        public void onClick(ClickEvent clickEvent) {
+                            SimulatorConfig config = getData();
+                            DeleteButtonClickHandler handler = new DeleteButtonClickHandler(self, config);
+                            handler.delete();
+                        }
+                    });
+					buttonPanel.add(deleteButton);
 				}
 			});
 		} catch (Exception e) {

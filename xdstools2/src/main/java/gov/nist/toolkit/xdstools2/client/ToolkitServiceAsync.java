@@ -9,6 +9,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -148,7 +149,8 @@ public interface ToolkitServiceAsync {
 	void getActorSimulatorNameMap(AsyncCallback<Map<String, SimId>> callback);
 //	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> callback);
 	void removeOldSimulators(AsyncCallback<Integer> callback);
-	
+	void getSimulatorStats(List<SimId> simid, AsyncCallback<List<SimulatorStats>> callback) throws Exception;
+
 	void getCollectionNames(String collectionSetName, AsyncCallback<Map<String, String>> callback);
 	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
 	void getTestReadme(String test, AsyncCallback<String> callback);

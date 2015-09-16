@@ -35,13 +35,13 @@ public class PifHandler implements PifCallback {
             return null;   // not valid pid
         String id = parts[0];
         logger.debug("id is " + id);
-        String ad = parts[3];
-        String[] parts2 = ad.split("&");
+        String affinityDomain = parts[3];
+        String[] parts2 = affinityDomain.split("&");
         if (parts2.length < 2)
             return null;
-        String oid = parts2[1];
-        logger.debug("oid is " + oid);
-        File pidFile = simdb.getPidFile(oid, id);
+        String affinityDomainOid = parts2[1];
+        logger.debug("oid is " + affinityDomainOid);
+        File pidFile = simdb.getPidFile(affinityDomainOid, id);
         logger.debug("pidfile is " + pidFile);
         return pidFile;
     }

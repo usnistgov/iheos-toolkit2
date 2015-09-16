@@ -66,15 +66,33 @@ public class SimManager {
 	}
 	
 	public void addSimConfigs(Simulator s) {
-		simConfigs.addAll(s.getConfigs());
+		for (SimulatorConfig config : s.getConfigs()) {
+			addSimConfig(config);
+		}
 	}
 	
 	public void addSimConfig(SimulatorConfig config) {
+		delSimConfig(config.getId());
 		simConfigs.add(config);
 	}
 	
 	public void setSimConfigs(List<SimulatorConfig> configs) {
 		simConfigs = configs;
+	}
+
+	public void delSimConfig(SimId simId) {
+		int index = findSimConfig(simId);
+		if (index != -1)
+			simConfigs.remove(index);
+	}
+
+	public int findSimConfig(SimId simId) {
+		for (int i=0; i<simConfigs.size(); i++) {
+			if (simConfigs.get(i).getId().equals(simId)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 	
 	public SimulatorConfig getSimulatorConfig(SimId simId) {

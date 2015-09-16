@@ -1,13 +1,17 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
@@ -155,8 +159,12 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return false;
 		}
-
-
 	}
+
+	static public SimulatorStats getSimulatorStats(SimId simId) throws IOException, NoSimException {
+		RepIndex repIndex = SimServlet.getRepIndex(simId);
+		return repIndex.getSimulatorStats();
+	}
+
 
 }

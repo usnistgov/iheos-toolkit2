@@ -46,7 +46,7 @@ public class SimServlet  extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	ServletConfig config;
+	static ServletConfig config;
 	Map<String, String> headers = new HashMap<String, String>();
 	String contentType;
 	HttpHeader contentTypeHeader;
@@ -57,9 +57,9 @@ public class SimServlet  extends HttpServlet {
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
 
 
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		this.config = config;
+	public void init(ServletConfig sConfig) throws ServletException {
+		super.init(sConfig);
+		config = sConfig;
 		logger.info("Initializing toolkit");
 		warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
@@ -390,8 +390,8 @@ public class SimServlet  extends HttpServlet {
 
 			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simDbDir, simid);
 
-			regIndex = getRegIndex(db, simid);
-			repIndex = getRepIndex(db, simid);
+			regIndex = getRegIndex(simid);
+			repIndex = getRepIndex(simid);
 
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 
@@ -602,18 +602,21 @@ public class SimServlet  extends HttpServlet {
 //	}
 
 
-	public RegIndex getRegIndex(SimDb db, SimId simid) {
+	static public RegIndex getRegIndex(SimId simid) throws IOException, NoSimException {
+		SimDb db = new SimDb(simid);
 		ServletContext servletContext = config.getServletContext();
 		String registryIndexFile = db.getRegistryIndexFile().toString();
 		RegIndex regIndex;
 
-		synchronized(this) {
+		synchronized(config) {
 			regIndex = (RegIndex) servletContext.getAttribute("Reg_" + simid);
 			if (regIndex == null) {
-				regIndex = new RegIndex(registryIndexFile);
+				logger.debug("Creating new RegIndex for " + simid);
+				regIndex = new RegIndex(registryIndexFile, simid);
 				regIndex.setSimDb(db);
 				servletContext.setAttribute("Reg_" + simid, regIndex);
-			}
+			} else
+				logger.debug("Using cached RegIndex");
 
 			regIndex.cacheExpires = getNewExpiration();
 		}
@@ -621,15 +624,16 @@ public class SimServlet  extends HttpServlet {
 		return regIndex;
 	}
 
-	public RepIndex getRepIndex(SimDb db, SimId simid) {
+	static public RepIndex getRepIndex(SimId simid) throws IOException, NoSimException {
+		SimDb db = new SimDb(simid);
 		ServletContext servletContext = config.getServletContext();
 		String repositoryIndexFile = db.getRepositoryIndexFile().toString();
 		RepIndex repIndex;
 
-		synchronized(this) {
+		synchronized(config) {
 			repIndex = (RepIndex) servletContext.getAttribute("Rep_" + simid);
 			if (repIndex == null) {
-				repIndex = new RepIndex(repositoryIndexFile);
+				repIndex = new RepIndex(repositoryIndexFile, simid);
 				servletContext.setAttribute("Rep_" + simid, repIndex);
 			}
 
@@ -647,7 +651,7 @@ public class SimServlet  extends HttpServlet {
 		}
 	}
 
-	Calendar getNewExpiration() {
+	static Calendar getNewExpiration() {
 		// establish expiration for newly touched cache elements
 		Date now = new Date();
 		Calendar newExpiration = Calendar.getInstance();

@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.envSetting.EnvSetting;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
@@ -48,12 +49,12 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
 		addEditableConfig(sc, SimulatorConfig.update_metadata_option, ParamType.BOOLEAN, false);
-		addEditableConfig(sc, SimulatorConfig.pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
+		addFixedConfig(sc, SimulatorConfig.pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 		addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
-		addEditableEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
-		addEditableEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
-		addEditableEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
-		addEditableEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
+		addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
+		addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
+		addFixedEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
+		addFixedEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
 
 		return new Simulator(sc);
 	}
@@ -126,8 +127,8 @@ public class RegistryActorFactory extends AbstractActorFactory {
 				true, 
 				isAsync));
 		
-		SimulatorConfigElement ele = asc.get(SimulatorConfig.update_metadata_option);
-		if (ele.asBoolean()) {
+		SimulatorConfigElement updateElement = asc.get(SimulatorConfig.update_metadata_option);
+		if (updateElement.asBoolean()) {
 			site.addTransaction(new TransactionBean(
 					TransactionType.UPDATE.getCode(),
 					RepositoryType.NONE,
@@ -141,6 +142,9 @@ public class RegistryActorFactory extends AbstractActorFactory {
 					true, 
 					isAsync));
 		}
+		SimulatorConfigElement pifPortElement = asc.get(SimulatorConfig.pif_port);
+		site.pifPort = pifPortElement.asString();
+		site.pifHost = Installation.installation().propertyServiceManager().getToolkitHost();
 
 		return site;
 	}

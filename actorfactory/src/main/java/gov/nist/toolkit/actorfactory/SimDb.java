@@ -59,9 +59,10 @@ public class SimDb {
 			logger.error("Simulator " + simid + ", " + actor + " cannot be created");
 			throw new IOException("Simulator " + simid + ", " + actor + " cannot be created");
 		}
-		
-		return new SimDb(dbRoot, simid, actor, null);
 
+		SimDb db = new SimDb(dbRoot, simid, actor, null);
+		db.setSimulatorType(actor);
+		return db;
 	}
 	
 	public SimDb() {
@@ -236,8 +237,48 @@ public class SimDb {
 		return new File(regDir.toString() + File.separator + "rep_db.ser");
 	}
 
-	// These next two methods manage the storage of Patient IDs received through
-	// the Patient Identity Feed
+	//
+	// Patient Id Feed support
+	//
+
+	// These next methods manage the storage of Patient IDs received through
+	// the Patient Identity Feed.
+	// All these require the new SimDb() be called with SimId parameter
+	// The other class that manages patient ids is PifHandler
+
+	public File getPatientIDFeedDir() {
+		File regDir = new File(simDir, ActorType.REGISTRY.getShortName());
+		File pifDir = new File(regDir, "pif");
+		return pifDir;
+	}
+
+	public List<String> getAllPatientIds() {
+		List<String> pids = new ArrayList<>();
+		File pidDir = getPatientIDFeedDir();
+		File[] aaDirs = pidDir.listFiles();
+		if (aaDirs == null) return pids;
+		for (int aai=0; aai<aaDirs.length; aai++) {
+			File aaDir = aaDirs[aai];
+			if (!aaDir.isDirectory()) continue;
+			String aaString = aaDir.getName();
+			File[] pidFiles = aaDir.listFiles();
+			if (pidFiles == null) continue;
+			for (int pidi=0; pidi<pidFiles.length; pidi++) {
+				File pidFile = pidFiles[pidi];
+				if (!pidFile.getName().endsWith(".txt")) continue;
+				String pid = stripFileType(pidFile.getName(), "txt");
+				pids.add(pid + "^^^&" + aaString + "&ISO");
+			}
+		}
+		return pids;
+	}
+
+	String stripFileType(String filename, String filetype) {
+		int dot = filename.lastIndexOf("." + filetype);
+		if (dot == -1) return filename;
+		return filename.substring(0, dot);
+	}
+
 	public File getAffinityDomainDir(String adOid) {
 		File regDir = new File(simDir, ActorType.REGISTRY.getShortName());
 		File pifDir = new File(regDir, "pif");
@@ -252,20 +293,25 @@ public class SimDb {
 		return pidFile;
 	}
 
+	//
+	//
+	//
+
+
 	//	public void setSimulatorType(String type) throws IOException {
 	//		File simType = new File(getDBFilePrefix(fileNameBase) + File.separator + "sim_type.txt");
 	//		Io.stringToFile(simType, type);
 	//	}
 	
 	public ActorType getSimulatorActorType() {
-		File aDir = new File(simDir.toString());
-		for (File file : aDir.listFiles()) {
-			if (file.isDirectory()) {
-				String name = file.getName();
-				return ActorType.findActor(name);
-			}
+		File typeFile = new File(simDir, "sim_type.txt");
+		String name = null;
+		try {
+			name = Io.stringFromFile(typeFile).trim();
+		} catch (IOException e) {
+			return null;
 		}
-		return null;
+		return ActorType.findActor(name);
 	}
 
 	static public List<SimId> getSimulatorIdsforActorType(ActorType actorType) throws IOException, NoSimException {
@@ -302,11 +348,14 @@ public class SimDb {
 		return trans;
 	}
 
-	
-	// huh? nothing is creating this file
 	public String getSimulatorType() throws IOException {
-		File simType = new File(getDBFilePrefix(event) + File.separator + "sim_type.txt");
+		File simType = new File(simDir + File.separator + "sim_type.txt");
 		return Io.stringFromFile(simType).trim();
+	}
+
+	public void setSimulatorType(String type) throws IOException {
+		File simType = new File(simDir + File.separator + "sim_type.txt");
+		Io.stringToFile(simType, type);
 	}
 
 	public File getRepositoryDocumentFile(String documentId) {
@@ -483,18 +532,6 @@ public class SimDb {
 
 	public void delete(File f) {
 		Io.delete(f);
-//		if (!f.exists())
-//			return;
-//		if (f.isDirectory()) {
-//			logger.debug("Delete dir " + f);
-//			String[] contents = f.list();
-//			for (int i=0; i<contents.length; i++) 
-//				delete(new File(f + File.separator + contents[i]));
-//			f.delete();
-//		} else if (f.isFile()){
-//			logger.debug("Delete file " + f);
-//			f.delete();
-//		}
 	}
 
 	public void rename(String fileNameBase, String newFileNameBase) throws IOException {
@@ -530,15 +567,6 @@ public class SimDb {
 	}
 
 	public File getRequestHeaderFile(SimId simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "request_hdr.txt"
-//		);
-//
-//		return dir;
-		
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
@@ -546,14 +574,6 @@ public class SimDb {
 	}
 
 	public File getResponseHeaderFile(SimId simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "response_hdr.txt"
-//		);
-//
-//		return dir;
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
@@ -561,14 +581,6 @@ public class SimDb {
 	}
 
 	public File getRequestBodyFile(SimId simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "request_body.bin"
-//		);
-//
-//		return dir;
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
@@ -576,14 +588,6 @@ public class SimDb {
 	}
 
 	public File getResponseBodyFile(SimId simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "response_body.txt"
-//		);
-//
-//		return dir;
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
@@ -591,14 +595,6 @@ public class SimDb {
 	}
 
 	public File getLogFile(SimId simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "log.txt"
-//		);
-//
-//		return dir;
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
