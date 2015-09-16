@@ -2,19 +2,18 @@ package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	PropertyManager propertyManager = null;
 	File warHome = null;
-	
+    String TOOLKIT_PROPERTIES_PATH = "";
+    File propertiesFile = null;
+
 	static Logger logger = Logger.getLogger(PropertyServiceManager.class);
 	
 	public PropertyServiceManager(File warHome)  {
@@ -98,7 +97,11 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		if (propertyManager != null)
 			return;
 
-		propertyManager = new PropertyManager(warHome + File.separator + "WEB-INF" + File.separator + "toolkit.properties");
+        // Create a File from the properties file in order to pass it to v3
+        TOOLKIT_PROPERTIES_PATH = warHome + File.separator + "WEB-INF" + File.separator + "toolkit.properties";
+        setPropertiesFile(TOOLKIT_PROPERTIES_PATH);
+
+        propertyManager = new PropertyManager(TOOLKIT_PROPERTIES_PATH);
 
 		// This removes the dependency that 
 		// gov.nist.registry.common2.xml.SchemaValidation
@@ -234,6 +237,23 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		logger.debug(": " + "getDefaultEnvironment()");
 		return getPropertyManager().getDefaultEnvironmentName();
 	}
+
+    /**
+     * Create a properties File based on v2 toolkit properties file location.
+     * @param path
+     */
+    public void setPropertiesFile(String path) {
+        propertiesFile = new File(path);
+    }
+
+    /**
+     * Getter used by v3 to obtain the Toolkit Properties file
+     * @return the toolkit properties file located in v2
+     */
+    public File getPropertiesFile(){
+        return propertiesFile;
+    }
+
 
 //	public void setSessionProperties(Map<String, String> props) {
 //		logger.debug(": " + "setSessionProperties()");
