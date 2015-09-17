@@ -14,6 +14,9 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -47,7 +50,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 		self = this;
 
-		simConfigSuper = new SimConfigSuper(this, simConfigPanel, myContainer.getTestSessionState());
+		simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
 		container.addTab(topPanel, "Sim Control", select);
 		addCloseButton(container,topPanel, null);
@@ -77,7 +80,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		actorSelectPanel.add(newSimIdTextBox);
 
 		actorSelectPanel.add(createActorSimulatorButton);
-		createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, container.getTestSessionState()));
+		createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, getCurrentTestSession()));
 
 		topPanel.add(actorSelectPanel);
 
@@ -107,6 +110,13 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		});
 
+		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
+			@Override
+			public void onTestSessionChanged(TestSessionChangedEvent event) {
+				loadSimStatus(event.value);
+			}
+		});
+
 		loadSimStatus();
 	}
 
@@ -114,38 +124,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 	public void onReload() {
 		loadSimStatus();
 	}
-
-	@Override
-	public void onTestSessionChange(String testSessionName) {
-		loadSimStatus(testSessionName);
-	}
-	
-//	static final String SIMULATORCOOKIENAME = "gov.nist.registry.xdstools2.XDSSimulatorsCookie";
-//
-//	void loadSimulatorsFromCookies() {
-//		String cookieString = Cookies.getCookie(SIMULATORCOOKIENAME);
-//
-//		if (cookieString == null || cookieString.equals(""))
-//			return;
-//
-//		simIdsTextArea.setText(cookieString);
-//		new LoadSimulatorsClickHandler(this, myContainer.getTestSessionState()).loadSimulators();
-//	}
-//
-//	void updateSimulatorCookies() {
-//		updateSimulatorCookies(simIdsTextArea.getText().trim());
-//	}
-//
-//	void updateSimulatorCookies(String value) {
-//		if (value == null) {
-//			if (Cookies.getCookie(SIMULATORCOOKIENAME) != null)
-//				Cookies.setCookie(SIMULATORCOOKIENAME, value);
-//		} else {
-//			if (!value.equals(Cookies.getCookie(SIMULATORCOOKIENAME)))
-//				Cookies.setCookie(SIMULATORCOOKIENAME, value);
-//		}
-//	}
-	
 
 	void getNewSimulator(String actorTypeName, SimId simId) {
 		toolkitService.getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
@@ -158,7 +136,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 				for (SimulatorConfig config : sconfigs.getConfigs())
 					simConfigSuper.add(config);
 				simConfigSuper.reloadSimulators();
-				loadSimStatus(myContainer.getTestSessionState().getTestSessionName());
+				loadSimStatus(getCurrentTestSession());
 			}
 
 		});
@@ -207,7 +185,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 	}
 
 	void loadSimStatus() {
-		loadSimStatus(myContainer.getTestSessionState().getTestSessionName());
+		loadSimStatus(getCurrentTestSession());
 	}
 
 	void loadSimStatus(String user)  {

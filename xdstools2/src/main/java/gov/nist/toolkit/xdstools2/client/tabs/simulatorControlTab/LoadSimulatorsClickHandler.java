@@ -6,18 +6,17 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class LoadSimulatorsClickHandler implements ClickHandler {
 	SimulatorControlTab simulatorControlTab;
-	TestSessionState testSessionState;
+	String currentTestSession;
 
-	LoadSimulatorsClickHandler(SimulatorControlTab simulatorControlTab, TestSessionState testSessionState) {
+	LoadSimulatorsClickHandler(SimulatorControlTab simulatorControlTab, String currentTestSession) {
 		this.simulatorControlTab = simulatorControlTab;
-		this.testSessionState = testSessionState;
+		this.currentTestSession = currentTestSession;
 	}
 
 	public void onClick(ClickEvent event) {
@@ -35,7 +34,7 @@ class LoadSimulatorsClickHandler implements ClickHandler {
 		for (int i=0; i<parts.length; i++) {
 			String x = parts[i].trim();
 			if (!x.equals(""))
-				ids.add(new SimId(testSessionState.getTestSessionName(), x));
+				ids.add(new SimId(currentTestSession, x));
 		}
 
 		simulatorControlTab.toolkitService.getSimConfigs(ids, new AsyncCallback<List<SimulatorConfig>>() {

@@ -110,9 +110,7 @@ public class TabLauncher implements ClickHandler {
 			new ToolConfigTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(mesaTabLabel)) 
 			new MesaTestTab().onAbstractTabLoad(container, true, "Pre-Con Tests");
-		else if (tabType.equals(testRunnerTabLabel)) 
-			new gov.nist.toolkit.xdstools2.client.tabs.testRunnerTab.TestRunnerTabController().onAbstractTabLoad(container, true, "Conformance Tests");
-		else if (tabType.equals(nwhinTabLabel)) 
+		else if (tabType.equals(nwhinTabLabel))
 			new MesaTestTab().onAbstractTabLoad(container, true, "On-Boarding Tests");
 		else if (tabType.equals(testLogLabel)) 
 			new TestLogListingTab().onAbstractTabLoad(container, true, null);

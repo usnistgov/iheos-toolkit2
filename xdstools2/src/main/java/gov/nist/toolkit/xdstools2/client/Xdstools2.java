@@ -6,6 +6,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -13,9 +14,9 @@ import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
-import gov.nist.toolkit.xdstools2.client.tabs.testRunnerTab.TestRunnerTab;
 
 
 public class Xdstools2 implements EntryPoint, TabContainer {
@@ -26,9 +27,16 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	TabContainer getTabContainer() { return this;}
 
 	static TkProps props = new TkProps();
-	static public boolean showEnvironment = true;
-	
-	static EventBus eventBus = null;	
+
+	// This is probably a conflic with Sunil's code and we
+	// will have to reconcile the initialization.  This is done
+	// here because the initialization of testSessionManager,
+	// immediately following depends on it.
+	static EventBus eventBus = new SimpleEventBus();
+
+	// This is as toolkit wide singleton.  See class for details.
+	TestSessionManager2 testSessionManager = new TestSessionManager2();
+	public TestSessionManager2 getTestSessionManager() { return testSessionManager; }
 
 	// Central storage for parameters shared across all
 	// query type tabs
@@ -39,9 +47,6 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	EnvironmentState environmentState = new EnvironmentState();
 	@Override public EnvironmentState getEnvironmentState() { return environmentState; }
-
-	TestSessionState testSessionState = new TestSessionState();
-	@Override public TestSessionState getTestSessionState() { return testSessionState; }
 
 	static public TkProps tkProps() {
 		return props;
@@ -110,8 +115,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	 */
 	@SuppressWarnings("deprecation")
 	public void onModuleLoad() {
-
 		loadTkProps();
+		testSessionManager.load();
 	}
 
 	static boolean newHomeTab = false;
@@ -223,9 +228,6 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 						//	              // Select the specified tab panel
 						//	              tabPanel.selectTab(tabIndex);
 					}
-					else if (historyToken.equals("conf")) {
-						new TestRunnerTab().onTabLoad(getTabContainer(), true);
-					}
 
 				} catch (IndexOutOfBoundsException e) {
 					tabPanel.selectTab(0);
@@ -244,11 +246,13 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	}
 
 
-	public EventBus getEventBus() {
+	static public EventBus getEventBus() {
 		return eventBus;
 	}
-	
-	public void setEventBus(EventBus eventBus) {
+
+	// To force an error when I merge with Sunil. We need
+	// to reconcile the initialization.
+	private void setEventBus(EventBus eventBus) {
 		this.eventBus = eventBus;
 	}
 

@@ -4,15 +4,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
 
 class CreateButtonClickHandler implements ClickHandler {
 	SimulatorControlTab simulatorControlTab;
-	TestSessionState testSessionState;
+	String testSession;
 	
-	CreateButtonClickHandler(SimulatorControlTab simulatorControlTab, TestSessionState testSessionState) {
+	CreateButtonClickHandler(SimulatorControlTab simulatorControlTab, String testSession) {
 		this.simulatorControlTab = simulatorControlTab;
-		this.testSessionState = testSessionState;
+		this.testSession = testSession;
 	}
 
 	public void onClick(ClickEvent event) {
@@ -27,7 +26,7 @@ class CreateButtonClickHandler implements ClickHandler {
 			new PopupMessage("Enter Simulator ID");
 			return;
 		}
-		SimId simId = new SimId(testSessionState.getTestSessionName(), rawSimId);
+		SimId simId = new SimId(testSession, rawSimId);
 		simulatorControlTab.getNewSimulator(actorTypeName, simId);
 	}
 	

@@ -1,22 +1,20 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 class SaveButtonClickHandler implements ClickHandler {
 	SimulatorControlTab simulatorControlTab;
 	SimulatorConfig config;
-	TestSessionState testSessionState;
+	String testSession;
 	
-	SaveButtonClickHandler(SimulatorControlTab simulatorControlTab, SimulatorConfig config, TestSessionState testSessionState) {
+	SaveButtonClickHandler(SimulatorControlTab simulatorControlTab, SimulatorConfig config, String testSession) {
 		this.simulatorControlTab = simulatorControlTab;
 		this.config = config;
-		this.testSessionState = testSessionState;
+		this.testSession = testSession;
 	}
 
 	public void onClick(ClickEvent event) {
@@ -29,7 +27,7 @@ class SaveButtonClickHandler implements ClickHandler {
 
 			public void onSuccess(String result) {
 				// reload simulators to get updates
-				new LoadSimulatorsClickHandler(simulatorControlTab, testSessionState).onClick(null);
+				new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
 				
 			}
 			

@@ -5,7 +5,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +19,12 @@ class SimConfigSuper {
 	VerticalPanel panel;
 	List<SimConfigMgr> mgrs = new ArrayList<>();
 	SimulatorControlTab simulatorControlTab;
-	TestSessionState testSessionState;
+	String testSession;
 
-	SimConfigSuper(SimulatorControlTab simulatorControlTab, VerticalPanel panel, TestSessionState testSessionState) {
+	SimConfigSuper(SimulatorControlTab simulatorControlTab, VerticalPanel panel, String testSession) {
 		this.simulatorControlTab = simulatorControlTab;
 		this.panel = panel;
-		this.testSessionState = testSessionState;
+		this.testSession = testSession;
 	}
 	
 	List<SimId> getIds() {
@@ -38,7 +37,7 @@ class SimConfigSuper {
 	
 	void add(SimulatorConfig config) {
 		delete(config);
-		SimConfigMgr mgr = new SimConfigMgr(simulatorControlTab, panel, config, testSessionState);
+		SimConfigMgr mgr = new SimConfigMgr(simulatorControlTab, panel, config, testSession);
 		mgr.displayInPanel();
 		mgrs.add(mgr);
 		
@@ -49,14 +48,6 @@ class SimConfigSuper {
 			txt = txt + ", " + mgr.config.getId();
 			simulatorControlTab.simIdsTextArea.setText(txt);
 		}
-	}
-	
-	boolean contains(String id) {
-		for (SimConfigMgr mgr : mgrs) {
-			if (id.equals(mgr.config.getId()))
-				return true;
-		}
-		return false;
 	}
 	
 	/*

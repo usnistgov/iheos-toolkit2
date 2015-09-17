@@ -6,8 +6,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
-import gov.nist.toolkit.xdstools2.client.selectors.TestSessionManager;
+import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
 
 import java.util.logging.Level;
@@ -21,9 +22,8 @@ public abstract class TabbedWindow {
 	public HorizontalPanel menuPanel = new HorizontalPanel();
 	//	EnvironmentSelector environmentSelector = null;
 	EnvironmentManager environmentManager = null;
-	public TestSessionManager testSessionManager = null;
-	boolean envMgrEnabled = true;
-	boolean testSesMgrEnabled = true;
+//	public TestSessionManager testSessionManager = null;
+	TestSessionManager2 testSessionManager2 = Xdstools2.getInstance().getTestSessionManager();
 	TabContainer tabContainer;
 	Logger logger = Logger.getLogger("Tabbed window");
 	final public ToolkitServiceAsync toolkitService = GWT
@@ -32,11 +32,9 @@ public abstract class TabbedWindow {
 	public TabbedWindow() {
 	}
 
+	protected String getCurrentTestSession() { return testSessionManager2.getCurrentTestSession(); }
 
 	abstract public void onTabLoad(TabContainer container, boolean select, String eventName);
-	
-	public void disableEnvMgr() { envMgrEnabled = false; }
-	public void disableTestSesMgr() { testSesMgrEnabled = false; }
 
 	// getWindowShortName() + ".html"is documentation file in /doc
 	abstract public String getWindowShortName();
@@ -48,21 +46,10 @@ public abstract class TabbedWindow {
 		registerTab(container);
 		onTabSelection();
 
-		if (Xdstools2.showEnvironment) {
-			if (envMgrEnabled)
-				environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
-			if (testSesMgrEnabled && testSessionManager == null) {
-				testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
-				testSessionManager.addManagedWindow(this);
-			}
-
-		}
+		environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
+		menuPanel.add(new TestSessionSelector(testSessionManager2.getTestSessions(), testSessionManager2.getCurrentTestSession()).asWidget());
 	}
 	
-	public void loadTestSessionManagerEarly() {
-		testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
-	}
-
 	public TkProps tkProps() {
 		return Xdstools2.tkProps();
 	}
@@ -176,11 +163,6 @@ public abstract class TabbedWindow {
 				if (environmentManager != null)
 					environmentManager.close();
 				environmentManager = null;
-				environmentManager = null;
-				if (testSessionManager != null)
-					testSessionManager.close();
-				testSessionManager = null;
-
 			}
 
 		});
@@ -208,15 +190,15 @@ public abstract class TabbedWindow {
 
 		menuPanel.setSpacing(10);
 		topPanel.add(menuPanel);
+		HTML line = new HTML();
+		line.setHTML("<hr />");
+		topPanel.add(line);
+
 		topPanel.setCellWidth(menuPanel, "100%");
 
 		// add environment selector to top menu bar
 		//		environmentSelector = EnvironmentSelector.getInstance(toolkitService, new Panel(menuPanel));
 
-	}
-
-	public TestSessionManager getTestSessionManager() {
-		return testSessionManager;
 	}
 
 	public void addToMenu(Anchor anchor) {
@@ -233,15 +215,6 @@ public abstract class TabbedWindow {
 		HTML msgBox = new HTML();
 		msgBox.setHTML("<b>" + message + "</b>");
 		topPanel.add(msgBox);		
-	}
-
-	// meant to be overridden by tool window implementations
-	public void onTestSessionChange(String testSessionName) {}
-
-	public void _onTestSessionChange(String testSessionName) {
-		if (testSessionManager == null) return;
-		testSessionManager.changeLocal(testSessionName);
-		onTestSessionChange(testSessionName);
 	}
 
 }

@@ -9,7 +9,6 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
-import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
 
 /**
  * Manages the content of a single Simulator on the screen
@@ -24,14 +23,14 @@ class SimConfigMgr {
 	VerticalPanel panel;
 	HorizontalPanel hpanel;
 	SimulatorConfig config;
-	TestSessionState testSessionState;
+	String testSession;
 	FlexTable tbl = new FlexTable();
 
-	SimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, TestSessionState testSessionState) {
+	SimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
 		this.simulatorControlTab = simulatorControlTab;
 		this.panel = panel;
 		this.config = config;
-		this.testSessionState = testSessionState;
+		this.testSession = testSession;
 
 //			tbl.setCellPadding(2);
 //			tbl.setCellSpacing(2);
@@ -102,7 +101,7 @@ class SimConfigMgr {
 		hpanel.add(tbl);
 
 		Button saveButton = new Button("Save");
-		saveButton.addClickHandler(new SaveButtonClickHandler(simulatorControlTab, config, testSessionState));
+		saveButton.addClickHandler(new SaveButtonClickHandler(simulatorControlTab, config, testSession));
 		hpanel.add(saveButton);
 
 		hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
