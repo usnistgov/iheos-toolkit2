@@ -52,18 +52,26 @@ public class TestSessionSelector {
         testSessionLabel.setText("TestSession: ");
         panel.add(testSessionLabel);
 
+        //
+        // List Box
+        //
         for (String i : initialContents) listBox.addItem(i);
         listBox.setSelectedIndex(initialContents.indexOf(initialSelection));
         panel.add(listBox);
         listBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, listBox.getSelectedValue()));
+                String newValue = listBox.getSelectedValue();
+                Xdstools2.getTestSessionManager().setCurrentTestSession(newValue);
+                Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
             }
         });
 
         panel.add(textBox);
 
+        //
+        // Add Button
+        //
         Button addTestSessionButton = new Button("Add");
         panel.add(addTestSessionButton);
         addTestSessionButton.addClickHandler(new ClickHandler() {
@@ -76,6 +84,9 @@ public class TestSessionSelector {
             }
         });
 
+        //
+        // Delete Button
+        //
         Button delTestSessionButton = new Button("Delete");
         panel.add(delTestSessionButton);
         delTestSessionButton.addClickHandler(new ClickHandler() {

@@ -10,11 +10,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by bill on 9/1/15.
+ * Widget for capturing the parameters for the GetAll query. This does not include PatientID
+ * since that is handled elsewhere.
  */
-public class GetAllParams extends Widget {
+public class GetAllParams {
+    // container for the composite widget being built
     FlexTable paramGrid = new FlexTable();
     int prow = 0;
+
+    // The query parameters are organized into three groups:
+    //    What to include
+    //       Approved?  Deprecated?  Both?
+    //       Stable/OnDemand is through a separate filter - OnDemandFilter
+    //    Filters to run this data through
+    //       Restrict the return based on code selections
+    //    What return format do you want
+    //       LeafClass or ObjectRef
 
     StatusFilter deStatusFilter;
     StatusFilter ssStatusFilter;
@@ -25,8 +36,10 @@ public class GetAllParams extends Widget {
     CodeFilterBank codeFilterBank;
 
     public GetAllParams(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab) {
+        // The collective filter bank being assembled
         codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
 
+        // What to include
         paramGrid.setText(prow, 0, "Include:");
         prow++;
 
@@ -50,6 +63,7 @@ public class GetAllParams extends Widget {
         paramGrid.setWidget(prow, 2, ssStatusFilter.asWidget());
         prow++;
 
+        // Filters to run this data through
         paramGrid.setText(prow, 0, "Filter by:");
         prow++;
 
@@ -58,6 +72,7 @@ public class GetAllParams extends Widget {
         codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.ConfidentialityCode);
         prow++;
 
+        // What format to return
         paramGrid.setText(prow, 0, "Return");
         returnFilter = new ReturnTypeFilter("Return");
         paramGrid.setWidget(prow, 2, returnFilter.asWidget());
@@ -65,6 +80,7 @@ public class GetAllParams extends Widget {
     }
 
     public void addToCodeSpec(Map<String, List<String>> codeSpec) {
+        // Assemble all this detail into the codeSpec format for passing to the server
         // {DocumentEntry, SubmissionSet, Folder}.availabilityStatus
         deStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryStatus);
         folStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.FolderStatus);

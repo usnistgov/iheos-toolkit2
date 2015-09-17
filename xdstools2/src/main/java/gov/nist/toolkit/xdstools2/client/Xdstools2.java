@@ -2,6 +2,8 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -23,6 +25,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 
 	static TabPanel tabPanel = new TabPanel();
+	boolean UIDebug = true;
+	HorizontalPanel uiDebugPanel = new HorizontalPanel();
 
 	TabContainer getTabContainer() { return this;}
 
@@ -36,13 +40,13 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	// This is as toolkit wide singleton.  See class for details.
 	TestSessionManager2 testSessionManager = new TestSessionManager2();
-	public TestSessionManager2 getTestSessionManager() { return testSessionManager; }
+	static public TestSessionManager2 getTestSessionManager() { return ME.testSessionManager; }
 
 	// Central storage for parameters shared across all
 	// query type tabs
 	QueryState queryState = new QueryState();
-	public QueryState getQueryState() { 
-		return queryState; 
+	public QueryState getQueryState() {
+		return queryState;
 	}
 
 	EnvironmentState environmentState = new EnvironmentState();
@@ -73,7 +77,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	}
 
-	
+
 	public void addTab(VerticalPanel w, String title, boolean select) {
 		HTML left = new HTML();
 		left.setHTML("&nbsp");
@@ -87,26 +91,26 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		wrapper.add(right);
 		wrapper.setCellWidth(left, "1%");
 		wrapper.setCellWidth(right, "1%");
-	
+
 		tabPanel.add(wrapper, title);
-	
+
 		int index = tabPanel.getWidgetCount() - 1;
-	
+
 		if (select)
-			tabPanel.selectTab(index);		
+			tabPanel.selectTab(index);
 
 		try {
-		
+
 			if (getEventBus()!=null && index>0) {
 				getEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
-			} 
-			
+			}
+
 		} catch (Throwable t) {
 			Window.alert("V2TabOpenedEvent error: " +t.toString());
 		}
-		
-			
-	}	
+
+
+	}
 
 	HomeTab ht = null;
 
@@ -176,15 +180,31 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	}
 
+	final ListBox debugMessages = new ListBox();
+	static public void DEBUG(String msg) {
+		ME.debugMessages.addItem(msg);
+		ME.debugMessages.setSelectedIndex(ME.debugMessages.getItemCount()-1);
+	}
+
 	private void onModuleLoad2() {
-
-//		if (tkProps() == null) {
-//			
-//		}
-//		else if ("direct".equals(tkProps().get("toolkit.home", null)))
-//			showEnvironment = false;
-
 		buildWrapper();
+
+		if (UIDebug) {
+			RootPanel.get().insert(uiDebugPanel, 0);
+			uiDebugPanel.add(new HTML("<b>DEBUG</b>"));
+			debugMessages.setVisibleItemCount(7);
+			debugMessages.setWidth("1000px");
+			uiDebugPanel.add(debugMessages);
+			Button debugClearButton = new Button("Clear", new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					debugMessages.clear();
+				}
+			});
+			uiDebugPanel.add(debugClearButton);
+		}
+
+		DEBUG("started");
 
 		ht.onTabLoad(this, false, null);
 

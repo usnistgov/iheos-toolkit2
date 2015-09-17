@@ -20,10 +20,8 @@ public abstract class TabbedWindow {
 	String helpHTML;
 	String topMessage = null;
 	public HorizontalPanel menuPanel = new HorizontalPanel();
-	//	EnvironmentSelector environmentSelector = null;
 	EnvironmentManager environmentManager = null;
-//	public TestSessionManager testSessionManager = null;
-	TestSessionManager2 testSessionManager2 = Xdstools2.getInstance().getTestSessionManager();
+	protected TestSessionManager2 testSessionManager = Xdstools2.getInstance().getTestSessionManager();
 	TabContainer tabContainer;
 	Logger logger = Logger.getLogger("Tabbed window");
 	final public ToolkitServiceAsync toolkitService = GWT
@@ -32,7 +30,7 @@ public abstract class TabbedWindow {
 	public TabbedWindow() {
 	}
 
-	protected String getCurrentTestSession() { return testSessionManager2.getCurrentTestSession(); }
+	protected String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
 
 	abstract public void onTabLoad(TabContainer container, boolean select, String eventName);
 
@@ -47,7 +45,7 @@ public abstract class TabbedWindow {
 		onTabSelection();
 
 		environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
-		menuPanel.add(new TestSessionSelector(testSessionManager2.getTestSessions(), testSessionManager2.getCurrentTestSession()).asWidget());
+		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 	}
 	
 	public TkProps tkProps() {

@@ -45,7 +45,15 @@ public class TestSessionManager2 {
     }
 
     public List<String> getTestSessions() { return testSessions; }
-    public String getCurrentTestSession() { return currentTestSession; }
+
+    public String getCurrentTestSession() {
+        Xdstools2.DEBUG("getCurrentTestSession() - " + currentTestSession);
+        return currentTestSession;
+    }
+    public void setCurrentTestSession(String testSession) {
+        Xdstools2.DEBUG("setTestSession(" + testSession + ")");
+        currentTestSession = testSession;
+    }
 
     String fromCookie() { return Cookies.getCookie(CookieManager.TESTSESSIONCOOKIENAME); }
     void toCookie(String value) { Cookies.setCookie(CookieManager.TESTSESSIONCOOKIENAME, value);}
@@ -54,7 +62,7 @@ public class TestSessionManager2 {
     // get sessionNames from server and broadcast to all tabs
     public void load() { load(fromCookie()); }
     public void load(final String newSelection) {
-
+        Xdstools2.DEBUG("load(" + newSelection + ")");
         toolkitService.getMesaTestSessionNames(new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -65,6 +73,7 @@ public class TestSessionManager2 {
             public void onSuccess(List<String> testSessionNames) {
                 Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessionNames));
                 if (!newSelection.isEmpty()) {
+                    currentTestSession = newSelection;
                     if (testSessionNames.contains(newSelection)) {
                         toCookie(newSelection);
                         Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newSelection));

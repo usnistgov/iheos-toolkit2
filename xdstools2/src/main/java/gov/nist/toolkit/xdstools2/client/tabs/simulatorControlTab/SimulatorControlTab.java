@@ -80,7 +80,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		actorSelectPanel.add(newSimIdTextBox);
 
 		actorSelectPanel.add(createActorSimulatorButton);
-		createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, getCurrentTestSession()));
+		createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, testSessionManager));
 
 		topPanel.add(actorSelectPanel);
 
@@ -125,7 +125,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		loadSimStatus();
 	}
 
-	void getNewSimulator(String actorTypeName, SimId simId) {
+
+	void createNewSimulator(String actorTypeName, SimId simId) {
+		Xdstools2.DEBUG("createNewSimulator(" + actorTypeName + ", " + simId + ") for " + getCurrentTestSession() );
 		toolkitService.getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
 
 			public void onFailure(Throwable caught) {
@@ -271,15 +273,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 				private void addButtonPanel(int row, int maxColumn, final SimulatorConfig config) {
 					HorizontalPanel buttonPanel = new HorizontalPanel();
 					table.setWidget(row, maxColumn, buttonPanel);
-
-//					Button loadButton = new Button("Load");
-//					loadButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-//                        @Override
-//                        public void onClick(ClickEvent clickEvent) {
-//                            SimulatorConfig config = getData();
-//                        }
-//                    });
-//					buttonPanel.add(loadButton);
 
 					Button editButton = new Button("Edit");
 					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {

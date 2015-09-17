@@ -70,6 +70,13 @@ public class HomeTab extends GenericQueryTab {
 				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + TabLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new TabLauncher(myContainer, TabLauncher.toolConfigTabLabel))
 
 				);
+
+		final PushButton debugEnable = new PushButton("UI DEBUG", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent clickEvent) {
+			}
+		});
+		menubar.add(debugEnable);
 		
 //		HTML faq = new HTML();
 //		faq.setHTML("<a href=\"" + "doc/faq.html" + "\" target=\"_blank\">" +  "[FAQ]" + "</a>");
