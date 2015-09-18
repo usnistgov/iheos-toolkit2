@@ -88,11 +88,12 @@ public class GetAllTab extends GenericQueryTab {
 		topPanel.add(sqParams.asWidget());
 		topPanel.add(new HTML("<hr/>"));
 
+		topPanel.add(mainGrid);
+
 		// add below-the-line-stuff (PatientId, site selection etc.)
 		// Also link in the Runner class (shown below) which is called when the user clicks on the Run button.
 		// Since this call organizes the site selection grid, it needs the transactionTypes and couplings config
 		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
-		topPanel.add(mainGrid);
 	}
 
 	class Runner implements ClickHandler {
