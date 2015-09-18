@@ -408,15 +408,6 @@
                                 <copy todir="${testkitOut}/actorcollections">
                                     <fileset dir="${testkitIn}/actorcollections"/>
                                 </copy>
-                                <copy todir="${testkitOut}/testdata-registry">
-                                    <fileset dir="${testkitIn}/testdata-registry"/>
-                                </copy>
-                                <copy todir="${testkitOut}/testdata-repository">
-                                    <fileset dir="${testkitIn}/testdata-repository"/>
-                                </copy>
-                                <copy todir="${testkitOut}/testdata-xdr">
-                                    <fileset dir="${testkitIn}/testdata-xdr"/>
-                                </copy>
                             </target>
 
                         </configuration>
