@@ -1,18 +1,18 @@
 package gov.nist.toolkit.valsupport.engine;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 /**
  * Created by bill on 6/23/15.
  */
 public class ValidationStep {
     String stepName;
-    MessageValidator validator;
+    AbstractMessageValidator validator;
     ErrorRecorder er;
     boolean ran = false;
 
-    public ValidationStep(String stepName, MessageValidator validator, ErrorRecorder er) {
+    public ValidationStep(String stepName, AbstractMessageValidator validator, ErrorRecorder er) {
         this.stepName = stepName;
         this.validator = validator;
         this.er = er;

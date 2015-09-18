@@ -9,10 +9,10 @@ import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBody;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
-public class MetadataMessageValidator extends MessageValidator {
+public class MetadataMessageValidator extends AbstractMessageValidator {
 //	OMElement xml;
 	Metadata m = null;
 	ErrorRecorderBuilder erBuilder;

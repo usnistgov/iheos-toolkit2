@@ -1,20 +1,22 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 class LoadSimulatorsClickHandler implements ClickHandler {
 	SimulatorControlTab simulatorControlTab;
+	String currentTestSession;
 
-	LoadSimulatorsClickHandler(SimulatorControlTab simulatorControlTab) {
+	LoadSimulatorsClickHandler(SimulatorControlTab simulatorControlTab, String currentTestSession) {
 		this.simulatorControlTab = simulatorControlTab;
+		this.currentTestSession = currentTestSession;
 	}
 
 	public void onClick(ClickEvent event) {
@@ -25,14 +27,14 @@ class LoadSimulatorsClickHandler implements ClickHandler {
 		simulatorControlTab.simConfigSuper.panel.clear();
 		String idStr = simulatorControlTab.simIdsTextArea.getText();
 		String[] parts = idStr.split(",");
-		List<String> ids = new ArrayList<String>();
+		List<SimId> ids = new ArrayList<>();
 
-		simulatorControlTab.updateSimulatorCookies(idStr);
+//		simulatorControlTab.updateSimulatorCookies(idStr);
 
 		for (int i=0; i<parts.length; i++) {
 			String x = parts[i].trim();
 			if (!x.equals(""))
-				ids.add(x);
+				ids.add(new SimId(currentTestSession, x));
 		}
 
 		simulatorControlTab.toolkitService.getSimConfigs(ids, new AsyncCallback<List<SimulatorConfig>>() {

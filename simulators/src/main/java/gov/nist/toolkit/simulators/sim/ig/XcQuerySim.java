@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -21,7 +21,7 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class XcQuerySim extends MessageValidator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
+public class XcQuerySim extends AbstractMessageValidator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
 	SimCommon common;
 	DsSimCommon dsSimCommon;
 	AdhocQueryResponse response;
@@ -171,7 +171,7 @@ public class XcQuerySim extends MessageValidator implements MetadataGeneratingSi
 		if (home == null)
 			home = site.getHome();
 		try {
-			String endpoint = site.getEndpoint(ATFactory.TransactionType.XC_QUERY, isSecure, isAsync);
+			String endpoint = site.getEndpoint(TransactionType.XC_QUERY, isSecure, isAsync);
 			er.detail("Forwarding query to " + endpoint);
 
 			OMElement req = request.getAdhocQueryRequestElement();

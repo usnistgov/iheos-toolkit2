@@ -16,7 +16,7 @@ public class RegistryResponseGeneratorSim extends TransactionSimulator implement
 
 
 	public RegistryResponseGeneratorSim(SimCommon common, DsSimCommon dsSimCommon) {
-		super(common);
+		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 	}
 

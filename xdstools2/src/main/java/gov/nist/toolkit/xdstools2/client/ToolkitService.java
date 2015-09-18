@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -10,6 +11,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -37,25 +39,28 @@ public interface ToolkitService extends RemoteService  {
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames() throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;
-	
+	public boolean delMesaTestSession(String name) throws Exception;
+
 	/* Simulator Management */
 	public List<String> getActorTypeNames() throws NoServletSessionException ;
-	public Simulator getNewSimulator(String actorTypeName) throws Exception;
-	public List<SimulatorConfig> getSimConfigs(List<String> ids) throws Exception;
+	public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception;
+	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception;
+	List<SimulatorConfig> getAllSimConfigs(String user) throws Exception;
 	public String putSimConfig(SimulatorConfig config) throws Exception;
 	public String deleteConfig(SimulatorConfig config) throws Exception;
-	public Map<String, String> getActorSimulatorNameMap() throws NoServletSessionException;
+	public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException;
 //	public List<String> getSimulatorTransactionNames(String simid) throws Exception;
 	public int removeOldSimulators() throws NoServletSessionException;
-	
+	List<SimulatorStats> getSimulatorStats(List<SimId> simid) throws Exception;
+
 	String setToolkitProperties(Map<String, String> props) throws Exception;
 	Map<String, String> getToolkitProperties() throws NoServletSessionException ;
 	boolean reloadPropertyFile() throws NoServletSessionException ;
 
-	String getTransactionRequest(String simName, String actor, String trans, String event)  throws NoServletSessionException;
-	String getTransactionResponse(String simName, String actor, String trans, String event)  throws NoServletSessionException;
-	String getTransactionLog(String simName, String actor, String trans, String event)  throws NoServletSessionException;
-	List<String> getTransactionsForSimulator(String simName) throws Exception;
+	String getTransactionRequest(SimId simName, String actor, String trans, String event)  throws NoServletSessionException;
+	String getTransactionResponse(SimId simName, String actor, String trans, String event)  throws NoServletSessionException;
+	String getTransactionLog(SimId simName, String actor, String trans, String event)  throws NoServletSessionException;
+	List<String> getTransactionsForSimulator(SimId simName) throws Exception;
 //	List<String> getActorNames();
 	MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException;
 	
@@ -67,7 +72,7 @@ public interface ToolkitService extends RemoteService  {
 	@Deprecated
 	String getClientIPAddress();
 	
-	List<String> getTransInstances(String simid, String actor, String trans)  throws Exception;
+	List<String> getTransInstances(SimId simid, String actor, String trans)  throws Exception;
 	
 	List<Result> getLastMetadata();
 	String getLastFilename();

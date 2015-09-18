@@ -331,7 +331,6 @@ public class MessageValidatorTab extends TabbedWindow {
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
-		disableTestSesMgr();
 		ccdaSel = new CcdaTypeSelection(tkProps(), null);
 
 		container.addTab(topPanel, "Message Validator", select);

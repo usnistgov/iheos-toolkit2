@@ -24,6 +24,7 @@ public class CodesConfiguration implements IsSerializable {
 	static public String DocumentEntryStatus = "documentEntryStatus";
 	static public String FolderStatus = "folderStatus";
 	static public String DocumentEntryType = "documentEntryType";
+	static public String ReturnsType = "returnsType";
 
 	static public Map<String, String> titles = new HashMap<String, String>();
 
@@ -42,7 +43,10 @@ public class CodesConfiguration implements IsSerializable {
 		titles.put(DocumentEntryStatus, "DocumentEntry Status");
 		titles.put(FolderStatus, "Folder Status");
 		titles.put(DocumentEntryType, "DocumentEntry Type");
+		titles.put(ReturnsType, "Returns Type");
 	}
+
+	static public String getTitle(String codeName) { return titles.get(codeName);}
 
 	Map<String, CodeConfiguration> codes;
 

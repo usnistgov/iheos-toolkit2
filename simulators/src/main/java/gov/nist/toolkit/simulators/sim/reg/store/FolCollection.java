@@ -37,6 +37,8 @@ public class FolCollection extends RegObCollection implements Serializable {
 		if (toDelete != null)
 			fols.remove(toDelete);
 	}
+
+	public int size() { return fols.size(); }
 	
 	public List<Fol> getByLid(String lid) {
 		List<Fol> flist = new ArrayList<Fol>();

@@ -1,20 +1,18 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
-import gov.nist.toolkit.xdstools2.client.selectors.TestSessionManager;
-import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
+import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
+import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public abstract class TabbedWindow {
@@ -22,46 +20,34 @@ public abstract class TabbedWindow {
 	String helpHTML;
 	String topMessage = null;
 	public HorizontalPanel menuPanel = new HorizontalPanel();
-	//	EnvironmentSelector environmentSelector = null;
 	EnvironmentManager environmentManager = null;
-	public TestSessionManager testSessionManager = null;
-	boolean envMgrEnabled = true;
-	boolean testSesMgrEnabled = true;
+	protected TestSessionManager2 testSessionManager = Xdstools2.getInstance().getTestSessionManager();
 	TabContainer tabContainer;
-
+	Logger logger = Logger.getLogger("Tabbed window");
 	final public ToolkitServiceAsync toolkitService = GWT
 			.create(ToolkitService.class);
 
 	public TabbedWindow() {
 	}
 
+	protected String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
 
 	abstract public void onTabLoad(TabContainer container, boolean select, String eventName);
-	
-	public void disableEnvMgr() { envMgrEnabled = false; }
-	public void disableTestSesMgr() { testSesMgrEnabled = false; }
 
 	// getWindowShortName() + ".html"is documentation file in /doc
 	abstract public String getWindowShortName();
 
 	public void onAbstractTabLoad(TabContainer container, boolean select, String eventName) {
 		tabContainer = container;
+		logger.log(Level.FINE, "onAbstractTabLoad");
 		onTabLoad(container, select, eventName);
 		registerTab(container);
 		onTabSelection();
 
-		if (Xdstools2.showEnvironment) {
-			if (envMgrEnabled)
-				environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
-			if (testSesMgrEnabled && testSessionManager == null)
-				testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
-		}
+		environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
+		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 	}
 	
-	public void loadTestSessionManagerEarly() {
-		testSessionManager = new TestSessionManager(tabContainer, toolkitService, new Panel(menuPanel));
-	}
-
 	public TkProps tkProps() {
 		return Xdstools2.tkProps();
 	}
@@ -175,11 +161,6 @@ public abstract class TabbedWindow {
 				if (environmentManager != null)
 					environmentManager.close();
 				environmentManager = null;
-				environmentManager = null;
-				if (testSessionManager != null)
-					testSessionManager.close();
-				testSessionManager = null;
-
 			}
 
 		});
@@ -207,15 +188,15 @@ public abstract class TabbedWindow {
 
 		menuPanel.setSpacing(10);
 		topPanel.add(menuPanel);
+		HTML line = new HTML();
+		line.setHTML("<hr />");
+		topPanel.add(line);
+
 		topPanel.setCellWidth(menuPanel, "100%");
 
 		// add environment selector to top menu bar
 		//		environmentSelector = EnvironmentSelector.getInstance(toolkitService, new Panel(menuPanel));
 
-	}
-
-	public TestSessionManager getTestSessionManager() {
-		return testSessionManager;
 	}
 
 	public void addToMenu(Anchor anchor) {

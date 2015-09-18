@@ -1,9 +1,8 @@
 package gov.nist.toolkit.sitemanagement.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
 import java.io.Serializable;
@@ -43,6 +42,7 @@ public class Site  implements IsSerializable, Serializable {
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
+	public String user = null;  // loaded from SimId - when non-null this site represents a sim
 	
 	public boolean equals(Site s) {
 		return
@@ -262,14 +262,14 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
-	public String getEndpoint(ATFactory.TransactionType transaction, boolean isSecure, boolean isAsync) throws Exception {
+	public String getEndpoint(TransactionType transaction, boolean isSecure, boolean isAsync) throws Exception {
 		String endpoint = getRawEndpoint(transaction, isSecure, isAsync);
 		if (endpoint == null) 
 			throw new Exception("Site#getEndpoint: no endpoint defined for site=" + name + " transaction=" + transaction + " secure=" + isSecure + " async=" + isAsync);
 		return endpoint;
 	}
 
-	public String getRawEndpoint(ATFactory.TransactionType transaction, boolean isSecure,
+	public String getRawEndpoint(TransactionType transaction, boolean isSecure,
 			boolean isAsync) {
 		return transactions.get(transaction, isSecure, isAsync);
 	}

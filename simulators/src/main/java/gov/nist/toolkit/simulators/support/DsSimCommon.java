@@ -26,7 +26,7 @@ import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
@@ -43,7 +43,7 @@ import java.util.*;
 public class DsSimCommon {
     public RegIndex regIndex = null;
     public RepIndex repIndex = null;
-    SimCommon simCommon;
+    public SimCommon simCommon;
     Map<String, StoredDocument> documentsToAttach = null;  // cid => document
     RegistryErrorListGenerator relGen = null;
 
@@ -486,7 +486,7 @@ public class DsSimCommon {
      * @return SoapFault instance
      */
     SoapFault getFaultFromMessageValidator(Class clas) {
-        MessageValidator mv = simCommon.getMessageValidatorIfAvailable(clas);
+        AbstractMessageValidator mv = simCommon.getMessageValidatorIfAvailable(clas);
         if (mv == null) {
             logger.debug("MessageValidator for " + clas.getName() + " not found");
             return null;

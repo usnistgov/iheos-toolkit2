@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.actorfactory.CommonService;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.client.Code;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
@@ -29,7 +29,7 @@ public class GetAll extends CommonService {
             session.transactionSettings.assignPatientId = false;
             String testName = "GetAll";
 
-            System.out.println("GetAll:\n" +  selectedCodes);
+            System.out.println("GetAll:  " +  selectedCodes);
 
             List<String> formatCodes = selectedCodes.get(CodesConfiguration.FormatCode);
             if (formatCodes == null) formatCodes = new ArrayList<String>();
@@ -52,8 +52,14 @@ public class GetAll extends CommonService {
                 deType.add("urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
             }
 
+            List<String> returnsType = selectedCodes.get(CodesConfiguration.ReturnsType);
+            if (returnsType == null) {
+                returnsType = new ArrayList<>();
+                returnsType.add("ObjectRef");
+            }
+
             List<String> sections = new ArrayList<String>();
-            if (session.siteSpec.actorType.equals(ATFactory.ActorType.REGISTRY))
+            if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
                 sections.add("XDS");
             else
                 sections.add("XCA");
@@ -76,25 +82,31 @@ public class GetAll extends CommonService {
 
             i=0;
             for (String codeDef : dStatus) {
-                params.put("$dst" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
+                params.put("$dst" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             i=0;
             for (String codeDef : fStatus) {
-                params.put("$fst" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
+                params.put("$fst" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             i=0;
             for (String codeDef : sStatus) {
-                params.put("$sst" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
+                params.put("$sst" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 
             i=0;
             for (String codeDef : deType) {
-                params.put("$ot" + String.valueOf(i) + "$", new Code(codeDef).getNoDisplay());
+                params.put("$ot" + String.valueOf(i) + "$", codeDef);
+                i++;
+            }
+
+            i=0;
+            for (String codeDef : returnsType) {
+                params.put("$rt" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 

@@ -15,7 +15,7 @@ public class SoapWrapperResponseSim extends TransactionSimulator {
 	DsSimCommon dsSimCommon;
 
 	public SoapWrapperResponseSim(SimCommon common, DsSimCommon dsSimCommon, OMElement response) {
-		super(common);
+		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		this.response = response;
 	}

@@ -12,12 +12,11 @@ import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMElement;
 
 import java.util.Collection;
 import java.util.List;
-
-import org.apache.axiom.om.OMAttribute;
-import org.apache.axiom.om.OMElement;
 
 public class DocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
 	DsSimCommon dsSimCommon;
@@ -27,7 +26,7 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 	String repositoryUniqueId;
 
 	public DocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
-		super(common);
+		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		this.documentUids = documentUids;
 		this.repIndex = dsSimCommon.repIndex;

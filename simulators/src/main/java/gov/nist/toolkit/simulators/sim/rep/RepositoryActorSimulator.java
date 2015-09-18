@@ -1,44 +1,71 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import org.apache.axiom.om.OMElement;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.axiom.om.OMElement;
-
-public class RepositoryActorSimulator extends DsActorSimulator {
+public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	RepIndex repIndex;
-	SimDb db;
-	HttpServletResponse response;
+//	SimDb db;
 	String repositoryUniqueId;
-	SimulatorConfig asc;
 
-	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc, HttpServletResponse response, String repositoryUniqueId) {
+	static List<TransactionType> transactions = new ArrayList<>();
+
+	static {
+		transactions.add(TransactionType.PROVIDE_AND_REGISTER);
+		transactions.add(TransactionType.RETRIEVE);
+	}
+
+	public boolean supports(TransactionType transactionType) {
+		return transactions.contains(transactionType);
+	}
+
+	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response, String repositoryUniqueId) {
 		super(common, dsSimCommon);
 		this.repIndex = repIndex;
 		this.db = db;
 		this.response = response;
 		this.repositoryUniqueId = repositoryUniqueId;
-		this.asc = asc;
+		this.simulatorConfig = simulatorConfig;
+	}
+
+	public RepositoryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.repIndex = dsSimCommon.repIndex;
+		this.db = dsSimCommon.simCommon.db;;
+		this.response = dsSimCommon.simCommon.response;
+		this.simulatorConfig = simulatorConfig;
+		init();
+	}
+
+	public RepositoryActorSimulator() {}
+
+	public void init() {
+		SimulatorConfigElement configEle = simulatorConfig.get("repositoryUniqueId");
+		this.repositoryUniqueId = configEle.asString();
 	}
 
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
@@ -60,7 +87,7 @@ public class RepositoryActorSimulator extends DsActorSimulator {
 				return false;
 			}
 
-			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, asc);
+			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, simulatorConfig);
 			mvc.addMessageValidator("PnR", pnrSim, gerb.buildNewErrorRecorder());
 
 			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
@@ -132,8 +159,12 @@ public class RepositoryActorSimulator extends DsActorSimulator {
 			dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return false;
 		}
-
-
 	}
+
+	static public SimulatorStats getSimulatorStats(SimId simId) throws IOException, NoSimException {
+		RepIndex repIndex = SimServlet.getRepIndex(simId);
+		return repIndex.getSimulatorStats();
+	}
+
 
 }

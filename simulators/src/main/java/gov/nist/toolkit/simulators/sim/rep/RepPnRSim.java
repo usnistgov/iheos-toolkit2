@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
-import gov.nist.toolkit.actorfactory.ActorFactory;
+import gov.nist.toolkit.actorfactory.AbstractActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -18,25 +18,23 @@ import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.XDSMissingDocumentException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
 public class RepPnRSim extends TransactionSimulator implements MetadataGeneratingSim {
 	DsSimCommon dsSimCommon;
 	Metadata m = null;
-	SimulatorConfig asc;
+//	SimulatorConfig simulatorConfig;
 	static Logger logger = Logger.getLogger(RepPnRSim.class);
 
-	public RepPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
-		super(common);
+	public RepPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(common, simulatorConfig);
         this.dsSimCommon = dsSimCommon;
-		this.asc = asc;
 	}
 
 	public Metadata getMetadata() {
@@ -155,7 +153,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					m.insertSlot(eo, slot);
 				}
 
-				String repUID = asc.get(ActorFactory.repositoryUniqueId).asString();
+				String repUID = simulatorConfig.get(AbstractActorFactory.repositoryUniqueId).asString();
 				OMElement rid = m.mkSlot("repositoryUniqueId", repUID);
 				m.insertSlot(eo, rid);
 			}
@@ -184,7 +182,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 			}
 			
 			// issue soap call to registry
-			String endpoint = asc.get(ActorFactory.registerEndpoint).asString();
+			String endpoint = simulatorConfig.get(AbstractActorFactory.registerEndpoint).asString();
 			
 			Soap soap = new Soap();
 			try {

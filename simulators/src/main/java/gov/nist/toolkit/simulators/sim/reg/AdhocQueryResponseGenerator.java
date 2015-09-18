@@ -17,7 +17,7 @@ public class AdhocQueryResponseGenerator extends TransactionSimulator implements
 	DsSimCommon dsSimCommon;
 	
 	public AdhocQueryResponseGenerator(SimCommon common, DsSimCommon dsSimCommon, AdhocQueryResponseGeneratingSim querySim) {
-		super(common);
+		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		this.querySim = querySim;
 	}

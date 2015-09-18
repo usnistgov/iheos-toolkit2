@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -8,6 +9,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -48,11 +50,11 @@ public interface ToolkitServiceAsync {
 	void getTestlogListing(String sessionName, AsyncCallback<List<String>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
-	void getTransactionRequest(String simName, String actor, String trans, String event, AsyncCallback<String> callback);
-	void getTransactionResponse(String simName, String actor, String trans, String event, AsyncCallback<String> callback);
-	void getTransactionLog(String simName, String actor, String trans, String event, AsyncCallback<String> callback);
+	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
+	void getTransactionResponse(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
+	void getTransactionLog(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
 
-	void getTransactionsForSimulator(String simid, AsyncCallback<List<String>> callback);
+	void getTransactionsForSimulator(SimId simid, AsyncCallback<List<String>> callback);
 
 //	void getActorNames(AsyncCallback<List<String>> callback);
 
@@ -72,7 +74,7 @@ public interface ToolkitServiceAsync {
 
 //	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> callback);
 
-	void  getTransInstances(String simid, String actor, String trans, AsyncCallback<List<String>> callback);
+	void  getTransInstances(SimId simid, String actor, String trans, AsyncCallback<List<String>> callback);
   
 	void getLastMetadata(AsyncCallback<List<Result>> callback);
 	void getLastFilename(AsyncCallback<String> callback);
@@ -139,14 +141,16 @@ public interface ToolkitServiceAsync {
 	void reloadPropertyFile(AsyncCallback<Boolean> callback);
 	
 	void  getActorTypeNames(AsyncCallback<List<String>> callback);
-	void  getNewSimulator(String actorTypeName, AsyncCallback<Simulator> callback);
-	void getSimConfigs(List<String> ids, AsyncCallback<List<SimulatorConfig>> callback);
+	void  getNewSimulator(String actorTypeName, SimId simId, AsyncCallback<Simulator> callback);
+	void getSimConfigs(List<SimId> ids, AsyncCallback<List<SimulatorConfig>> callback);
+	void getAllSimConfigs(String user, AsyncCallback<List<SimulatorConfig>> callback) throws Exception;
 	void putSimConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void deleteConfig(SimulatorConfig config, AsyncCallback<String> callback);
-	void getActorSimulatorNameMap(AsyncCallback<Map<String, String>> callback);
+	void getActorSimulatorNameMap(AsyncCallback<Map<String, SimId>> callback);
 //	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> callback);
 	void removeOldSimulators(AsyncCallback<Integer> callback);
-	
+	void getSimulatorStats(List<SimId> simid, AsyncCallback<List<SimulatorStats>> callback) throws Exception;
+
 	void getCollectionNames(String collectionSetName, AsyncCallback<Map<String, String>> callback);
 	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
 	void getTestReadme(String test, AsyncCallback<String> callback);
@@ -155,7 +159,8 @@ public interface ToolkitServiceAsync {
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
-	
+	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
+
 	void getTestplanAsText(String testname, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> callback);
 }

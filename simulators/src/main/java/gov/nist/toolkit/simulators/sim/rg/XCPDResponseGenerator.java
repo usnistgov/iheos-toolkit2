@@ -4,17 +4,11 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.impl.llom.util.AXIOMUtil;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.*;
 
 
 public class XCPDResponseGenerator extends TransactionSimulator implements XCPDResponseGeneratingSim {
@@ -23,7 +17,7 @@ public class XCPDResponseGenerator extends TransactionSimulator implements XCPDR
 	Exception startUpException = null;
 
 	public XCPDResponseGenerator(SimCommon common) {
-		super(common);
+		super(common, null);
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {	

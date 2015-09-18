@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -13,7 +14,7 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.XdsException;
 import org.apache.log4j.Logger;
@@ -40,7 +41,7 @@ public class SimCommon {
 	MessageValidationResults mvr = null;
 	public MessageValidatorEngine mvc = null;
 	public ValidationContext vc = null;
-	HttpServletResponse response = null;
+	public HttpServletResponse response = null;
 	OutputStream os = null;
 	ValidateMessageService vms = null;
 	boolean faultReturned = false;
@@ -181,7 +182,7 @@ public class SimCommon {
 	 * @param clas
 	 * @return Matching MessageValidator
 	 */
-	public MessageValidator getMessageValidatorIfAvailable(@SuppressWarnings("rawtypes") Class clas) {
+	public AbstractMessageValidator getMessageValidatorIfAvailable(@SuppressWarnings("rawtypes") Class clas) {
 		return mvc.findMessageValidatorIfAvailable(clas.getCanonicalName());
 	}
 
@@ -194,7 +195,7 @@ public class SimCommon {
 	}
 
 
-	static public void deleteSim(String simulatorId) {
+	static public void deleteSim(SimId simulatorId) {
 		try {
 			logger.info("Delete sim " + simulatorId);
 			SimDb simdb = new SimDb(Installation.installation().simDbFile(), simulatorId, null, null);

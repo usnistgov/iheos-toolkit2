@@ -1,10 +1,11 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
@@ -12,7 +13,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import java.util.Arrays;
 import java.util.List;
 
-public class RepositoryActorFactory extends ActorFactory {
+public class RepositoryActorFactory extends AbstractActorFactory {
 
 	static final String repositoryUniqueIdBase = "1.1.4567332.1.";
 	static int repositoryUniqueIdIncr = 1;
@@ -26,7 +27,7 @@ public class RepositoryActorFactory extends ActorFactory {
 //		return buildNew(simm, null, configureBase);
 //	}
 
-	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) {
+	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) {
 		ActorType actorType = ActorType.REPOSITORY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -35,12 +36,12 @@ public class RepositoryActorFactory extends ActorFactory {
 			sc = new SimulatorConfig();
 
 		addEditableConfig(sc, repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
-		addEditableEndpoint(sc, pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
-		addEditableEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
-		addEditableEndpoint(sc, retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
-		addEditableEndpoint(sc, retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
-		addEditableEndpoint(sc, registerEndpoint, actorType, TransactionType.REGISTER, false);
-		addEditableEndpoint(sc, registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+		addFixedEndpoint(sc, pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
+		addFixedEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
+		addFixedEndpoint(sc, retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
+		addFixedEndpoint(sc, retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
+		addFixedEndpoint(sc, registerEndpoint, actorType, TransactionType.REGISTER, false);
+		addFixedEndpoint(sc, registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
 		
 		return new Simulator(sc);
 	}
@@ -59,6 +60,8 @@ public class RepositoryActorFactory extends ActorFactory {
 		if (site == null)
 			site = new Site(siteName);
 
+		site.user = asc.getId().user;  // labels this site as coming from a sim
+
 		boolean isAsync = false;
 
 		site.addTransaction(new TransactionBean(
@@ -75,13 +78,13 @@ public class RepositoryActorFactory extends ActorFactory {
 				isAsync));
 
 		site.addRepository(new TransactionBean(
-				asc.get(ActorFactory.repositoryUniqueId).asString(),
+				asc.get(AbstractActorFactory.repositoryUniqueId).asString(),
 				RepositoryType.REPOSITORY,
 				asc.get(retrieveEndpoint).asString(), 
 				false, 
 				isAsync));
 		site.addRepository(new TransactionBean(
-				asc.get(ActorFactory.repositoryUniqueId).asString(),
+				asc.get(AbstractActorFactory.repositoryUniqueId).asString(),
 				RepositoryType.REPOSITORY,
 				asc.get(retrieveTlsEndpoint).asString(), 
 				true, 

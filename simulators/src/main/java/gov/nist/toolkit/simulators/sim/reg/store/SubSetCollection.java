@@ -33,7 +33,8 @@ public class SubSetCollection extends RegObCollection implements Serializable {
 		if (toDelete != null)
 			subSets.remove(toDelete);
 	}
-	
+
+	public int size() { return subSets.size(); }
 
 	
 	public Ro getRo(String id) {

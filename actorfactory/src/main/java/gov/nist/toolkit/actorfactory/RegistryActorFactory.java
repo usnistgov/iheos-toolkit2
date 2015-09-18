@@ -1,11 +1,14 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.adt.ListenerFactory;
 import gov.nist.toolkit.envSetting.EnvSetting;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
@@ -17,11 +20,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class RegistryActorFactory extends ActorFactory {
+public class RegistryActorFactory extends AbstractActorFactory {
 
-	public static final String update_metadata_option = "Update_Metadata_Option";
-	
-	static final List<TransactionType> incomingTransactions = 
+	static final List<TransactionType> incomingTransactions =
 		Arrays.asList(
 				TransactionType.REGISTER,
 				TransactionType.STORED_QUERY,
@@ -32,7 +33,11 @@ public class RegistryActorFactory extends ActorFactory {
 //		return buildNew(simm, null, configureBase);
 //	}
 
-	public Simulator buildNew(SimManager simm, String simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	// This does not start any listeners allocated.  The port assignment is made
+	// and the caller gets the responsibility for starting the listeners
+	// Listeners cannot be started until the sim config is saved
+	@Override
+	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		ActorType actorType = ActorType.REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -43,18 +48,19 @@ public class RegistryActorFactory extends ActorFactory {
 		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
-		addEditableConfig(sc, update_metadata_option, ParamType.BOOLEAN, false);
+		addEditableConfig(sc, SimulatorConfig.update_metadata_option, ParamType.BOOLEAN, false);
+		addFixedConfig(sc, SimulatorConfig.pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 		addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
-		addEditableEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
-		addEditableEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
-		addEditableEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
-		addEditableEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);		
+		addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
+		addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
+		addFixedEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
+		addFixedEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
 
 		return new Simulator(sc);
 	}
-	 
+
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) {
-		SimulatorConfigElement ele = config.get(update_metadata_option);
+		SimulatorConfigElement ele = config.get(SimulatorConfig.update_metadata_option);
 		if (ele == null)
 			return;
 		Boolean optionOn = ele.asBoolean();
@@ -92,6 +98,8 @@ public class RegistryActorFactory extends ActorFactory {
 		
 		if (site == null)
 			site = new Site(siteName);
+
+		site.user = asc.getId().user;  // labels this site as coming from a sim
 		
 		boolean isAsync = false;
 		
@@ -121,8 +129,8 @@ public class RegistryActorFactory extends ActorFactory {
 				true, 
 				isAsync));
 		
-		SimulatorConfigElement ele = asc.get(update_metadata_option);
-		if (ele.asBoolean()) {
+		SimulatorConfigElement updateElement = asc.get(SimulatorConfig.update_metadata_option);
+		if (updateElement.asBoolean()) {
 			site.addTransaction(new TransactionBean(
 					TransactionType.UPDATE.getCode(),
 					RepositoryType.NONE,
@@ -136,6 +144,9 @@ public class RegistryActorFactory extends ActorFactory {
 					true, 
 					isAsync));
 		}
+		SimulatorConfigElement pifPortElement = asc.get(SimulatorConfig.pif_port);
+		site.pifPort = pifPortElement.asString();
+		site.pifHost = Installation.installation().propertyServiceManager().getToolkitHost();
 
 		return site;
 	}

@@ -7,7 +7,7 @@ import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 /**
@@ -15,7 +15,7 @@ import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
  * @author bill
  *   
  */
-public class HttpMessageValidator extends MessageValidator {
+public class HttpMessageValidator extends AbstractMessageValidator {
 	// Either header and body OR hparser are initialized by the constructor
 	String header = null;
 	byte[] body;

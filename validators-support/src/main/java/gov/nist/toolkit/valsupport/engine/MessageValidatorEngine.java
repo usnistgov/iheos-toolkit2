@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valsupport.engine;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
@@ -75,9 +75,9 @@ public class MessageValidatorEngine {
 		return new ValidationStepEnumeration(validationSteps);
 	}
 	
-	public MessageValidator findMessageValidatorIfAvailable(String className) {
+	public AbstractMessageValidator findMessageValidatorIfAvailable(String className) {
 		for (ValidationStep vs : validationSteps) {
-			MessageValidator mv = vs.validator;
+			AbstractMessageValidator mv = vs.validator;
 			if (mv == null)
 				continue;
 			String clasname = mv.getClass().getName();
@@ -87,8 +87,8 @@ public class MessageValidatorEngine {
 		return null;
 	}
 
-	public MessageValidator findMessageValidator(String className) {
-		MessageValidator mv = findMessageValidatorIfAvailable(className);
+	public AbstractMessageValidator findMessageValidator(String className) {
+		AbstractMessageValidator mv = findMessageValidatorIfAvailable(className);
 		if (mv == null) throw new ToolkitRuntimeException("Message Validator named " + className + " does not exist");
 		return mv;
 	}
@@ -96,7 +96,7 @@ public class MessageValidatorEngine {
 	public List<String> getValidatorNames() {
 		List<String> names = new ArrayList<String>();
 		for (ValidationStep vs : validationSteps) {
-			MessageValidator mv = vs.validator;
+			AbstractMessageValidator mv = vs.validator;
 			if (mv == null)
 				continue;
 			String clasname = mv.getClass().getName();
@@ -127,7 +127,7 @@ public class MessageValidatorEngine {
 	 * @param er its private ErrorRecorder
 	 * @return the ValidationStep structure which is used internally to the engine
 	 */
-	public ValidationStep addMessageValidator(String stepName, MessageValidator v, ErrorRecorder er) {
+	public ValidationStep addMessageValidator(String stepName, AbstractMessageValidator v, ErrorRecorder er) {
 		ValidationStep step = new ValidationStep(stepName, v, er);
 		validationSteps.add(step);
 		logger.info("ENGINE: ADD: " + stepName + ": " + v.getClass().getSimpleName());

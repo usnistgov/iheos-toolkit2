@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.actorfactory.CommonService;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.client.AnyId;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.results.client.Result;

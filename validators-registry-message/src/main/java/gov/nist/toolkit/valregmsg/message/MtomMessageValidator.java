@@ -11,14 +11,14 @@ import gov.nist.toolkit.http.PartBa;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MtomMessageValidator extends MessageValidator {
+public class MtomMessageValidator extends AbstractMessageValidator {
 	HttpParserBa headers;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;

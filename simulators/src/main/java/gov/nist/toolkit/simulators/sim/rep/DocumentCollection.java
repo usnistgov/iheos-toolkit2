@@ -49,4 +49,6 @@ public class DocumentCollection implements Serializable {
 	public void init() {
 		documents = new ArrayList<StoredDocument>();
 	}
+
+	public int size() { return documents.size(); }
 }

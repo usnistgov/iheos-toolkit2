@@ -200,8 +200,8 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		allCollections.add(subSetCollection);
 		allCollections.add(folCollection);
 
-		logger().debug("Current metadata index\n" + getStats("   "));
-		logger().debug("...\n" + getIdStats("    "));
+//		logger().debug("Current metadata index\n" + getStats("   "));
+//		logger().debug("...\n" + getIdStats("    "));
 	}
 
 	public String deleteRo(String id) {
@@ -481,7 +481,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 	public void storeMetadata(OMElement ele,  boolean overwriteOk) throws IOException, MetadataException, XdsInternalException {
 		String id = Metadata.getId(ele);
-		logger().debug("storing " + id + "\ngiven current metadata index\n" + getIdStats("    ") );
+//		logger().debug("storing " + id + "\ngiven current metadata index\n" + getIdStats("    ") );
 		Ro ro = getRo(id);
 		if (ro == null) {
 			logger().debug("object " + id + " not found in metadata index");
@@ -505,7 +505,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	public void storeMetadata(Metadata m, boolean overwriteOk) throws MetadataException, IOException, XdsInternalException {
-		logger().debug("storeMetadata:\n" + m.getSummary() + "\ngiven existing index:\n" + getStats("    "));
+//		logger().debug("storeMetadata:\n" + m.getSummary() + "\ngiven existing index:\n" + getStats("    "));
 		for (OMElement ele : m.getExtrinsicObjects())
 			storeMetadata(ele, overwriteOk);
 

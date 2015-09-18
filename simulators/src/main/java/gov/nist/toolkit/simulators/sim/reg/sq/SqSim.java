@@ -17,11 +17,10 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySuppor
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.List;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 
 public class SqSim  extends TransactionSimulator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
@@ -32,7 +31,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 	Logger logger = Logger.getLogger(SqSim.class);
 
 	public SqSim(SimCommon common, DsSimCommon dsSimCommon) {
-		super(common);
+		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		
 		vc.hasSoap = true;
@@ -135,6 +134,9 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 			sim.setRegIndex(dsSimCommon.regIndex);
 		} else if (sq instanceof GetFolderAndContentsSim) {
 			GetFolderAndContentsSim sim = (GetFolderAndContentsSim) sq;
+			sim.setRegIndex(dsSimCommon.regIndex);
+		} else if (sq instanceof GetAllSim) {
+			GetAllSim sim = (GetAllSim) sq;
 			sim.setRegIndex(dsSimCommon.regIndex);
 		} else {
 			throw new XdsInternalException("Internal Error: " + sq.getClass().getCanonicalName() + " is not linked to Registry Index");

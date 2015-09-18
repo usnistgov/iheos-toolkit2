@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class PropertyServiceManager  /*extends CommonServiceManager*/ {
@@ -59,6 +60,11 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		return getPropertyManager().getToolkitTlsPort();
 	}
 
+	public List<String> getListenerPortRange() {
+		logger.debug(": " + "getListenerPortRange");
+		return getPropertyManager().getListenerPortRange();
+	}
+
 	public String getToolkitEnableAllCiphers() {
 		logger.debug(": " + "getToolkitEnableAllCiphers");
 		return getPropertyManager().getToolkitEnableAllCiphers();
@@ -69,14 +75,16 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		return new File(getPropertyManager().getExternalCache() + File.separator + "actors.xml");
 	}
 
-	// This now pulls from Installation so that external cache location can be overridden
-	public File getSimDbDir() {
-		logger.debug(": " + "getSimDbDir");
-		File f = new File(getPropertyManager().getExternalCache() + File.separator + "simdb");
-//		File f = new File(Installation.installation().externalCache() + File.separator + "simdb");
-		f.mkdirs();
-		return f;
-	}
+
+
+//	// This now pulls from Installation so that external cache location can be overridden
+//	public File getSimDbDir() {
+//		logger.debug(": " + "getSimDbDir");
+//		File f = new File(getPropertyManager().getExternalCache() + File.separator + "simdb");
+////		File f = new File(Installation.installation().externalCache() + File.separator + "simdb");
+//		f.mkdirs();
+//		return f;
+//	}
 
 	public String getDefaultEnvironmentName() {
 		logger.debug(": " + "getDefaultEnvironmentName");

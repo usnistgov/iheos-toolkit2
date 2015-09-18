@@ -90,6 +90,7 @@
 	<servlet>
 		<servlet-name>simulatorServlet</servlet-name>
 		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
 	<servlet>
@@ -101,7 +102,7 @@
 		<servlet-name>messageServlet</servlet-name>
 		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
 	</servlet>
-	
+
 	<servlet-mapping>
 		<servlet-name>toolkitServlet</servlet-name>
 		<url-pattern>/xdstools2/toolkit</url-pattern>

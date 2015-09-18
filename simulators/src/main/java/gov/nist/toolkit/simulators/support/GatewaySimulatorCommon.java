@@ -11,7 +11,7 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySuppor
 
 import org.apache.axiom.om.OMElement;
 
-abstract public class GatewaySimulatorCommon extends DsActorSimulator {
+abstract public class GatewaySimulatorCommon extends BaseDsActorSimulator {
 	
 	public GatewaySimulatorCommon(SimCommon common, DsSimCommon dsSimCommon) {
 		super(common, dsSimCommon);

@@ -8,7 +8,7 @@ import gov.nist.toolkit.registrymetadata.MetadataUtil;
 import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
 
@@ -20,7 +20,7 @@ import java.util.List;
  * @author bill
  *
  */
-public class UpdateRequestValidator extends MessageValidator {
+public class UpdateRequestValidator extends AbstractMessageValidator {
 	OMElement xml;
 	Metadata m = null;
 	RegistryValidationInterface rvi;

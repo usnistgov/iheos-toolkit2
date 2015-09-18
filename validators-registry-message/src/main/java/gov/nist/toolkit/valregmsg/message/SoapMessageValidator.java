@@ -10,7 +10,7 @@ import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author bill
  *
  */
-public class SoapMessageValidator extends MessageValidator {
+public class SoapMessageValidator extends AbstractMessageValidator {
     OMElement envelope;
     OMElement header;
     OMElement body;

@@ -13,13 +13,11 @@ public class ValidationFindDocuments extends FindDocuments {
 	public ValidationFindDocuments(StoredQuerySupport sqs)
 			throws MetadataValidationException {
 		super(sqs);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected Metadata runImplementation() throws MetadataException,
 			XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

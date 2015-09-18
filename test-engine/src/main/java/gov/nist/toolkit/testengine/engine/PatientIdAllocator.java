@@ -1,14 +1,14 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.http.httpclient.HttpClient;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.log4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import org.apache.log4j.Logger;
 
 
 /**
@@ -43,6 +43,7 @@ public class PatientIdAllocator extends IdAllocator {
 		super(config);
 	}
 
+	PatientIdAllocator() { }
 
 	public PatientIdAllocator(TestConfig config, String patient_id) {
 		super(config);
@@ -143,5 +144,25 @@ public class PatientIdAllocator extends IdAllocator {
 		return newPid;
 
 	}
+
+	String base;
+	int cnt;
+	static PatientIdAllocator patientIdAllocator;
+
+	static {
+		patientIdAllocator = new PatientIdAllocator();
+		patientIdAllocator.base = "P" + new Hl7Date().now();
+		patientIdAllocator.cnt = 1;
+	}
+
+	synchronized String alloc() {
+		cnt++;
+		return base + "." + String.valueOf(cnt);
+	}
+
+	static public String getNew() {
+		return patientIdAllocator.alloc();
+	}
+
 
 }

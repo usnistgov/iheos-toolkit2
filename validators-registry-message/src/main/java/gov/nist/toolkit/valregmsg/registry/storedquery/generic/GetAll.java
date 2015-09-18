@@ -8,6 +8,7 @@ import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.xdsexception.*;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
  * Created by bill on 8/13/15.
  */
 abstract public class GetAll extends StoredQuery {
+    static final Logger logger = Logger.getLogger(GetAll.class);
     /**
      * Method required in subclasses (implementation specific class) to define specific
      * linkage to local database
@@ -43,7 +45,6 @@ abstract public class GetAll extends StoredQuery {
      * @throws XDSRegistryOutOfResourcesException
      */
     public Metadata runSpecific() throws XdsException, XDSRegistryOutOfResourcesException {
-
         validateParameters();
 
         parseParameters();

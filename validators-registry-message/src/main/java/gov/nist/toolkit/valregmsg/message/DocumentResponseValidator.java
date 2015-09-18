@@ -5,10 +5,10 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 
-public class DocumentResponseValidator extends MessageValidator {
+public class DocumentResponseValidator extends AbstractMessageValidator {
 	OMElement xml;
 
 	public DocumentResponseValidator(ValidationContext vc, OMElement xml) {

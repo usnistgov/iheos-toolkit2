@@ -21,27 +21,24 @@ import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.List;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 public class RemoteSqSim  extends TransactionSimulator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
 	DsSimCommon dsSimCommon;
 	AdhocQueryResponse response;
-	SimulatorConfig asc;
 	GatewaySimulatorCommon gatewayCommon;
 	Metadata m = new Metadata();
 	Exception startUpException = null;
 	OMElement query;
 	Logger logger = Logger.getLogger(SqSim.class);
 
-	public RemoteSqSim(SimCommon common, DsSimCommon dsSimCommon, GatewaySimulatorCommon gatewayCommon, SimulatorConfig asc, OMElement query) {
-		super(common);
+	public RemoteSqSim(SimCommon common, DsSimCommon dsSimCommon, GatewaySimulatorCommon gatewayCommon, SimulatorConfig simulatorConfig, OMElement query) {
+		super(common, simulatorConfig);
         this.dsSimCommon = dsSimCommon;
 		this.gatewayCommon = gatewayCommon;
-		this.asc = asc;
 		this.query = query;
 
 		// build response
@@ -74,7 +71,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 			return;
 
 		// get configured endpoint for backend registry for SQ
-		String endpoint = asc.get(RegistryActorFactory.storedQueryEndpoint).asString();
+		String endpoint = simulatorConfig.get(RegistryActorFactory.storedQueryEndpoint).asString();
 
 		// issue soap call to registry
 		Soap soap = new Soap();

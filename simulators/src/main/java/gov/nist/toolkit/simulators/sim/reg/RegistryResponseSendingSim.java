@@ -16,7 +16,7 @@ public class RegistryResponseSendingSim extends TransactionSimulator {
 	DsSimCommon dsSimCommon;
 
 	public RegistryResponseSendingSim(SimCommon common, DsSimCommon dsSimCommon) {
-        super(common);
+        super(common, null);
         this.dsSimCommon = dsSimCommon;
 	}
 

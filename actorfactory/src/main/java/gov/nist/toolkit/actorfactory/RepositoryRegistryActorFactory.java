@@ -1,21 +1,22 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryRegistryActorFactory extends ActorFactory {
-	String newID = null;
+public class RepositoryRegistryActorFactory extends AbstractActorFactory {
+	SimId newID = null;
 
 	RegistryActorFactory registryActorFactory;
 	RepositoryActorFactory repositoryActorFactory;
 
-	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws Exception {
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
 		this.newID = newID;
 		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
 		SimulatorConfig sc;
@@ -24,7 +25,7 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		String simId = sc.getId();
+		SimId simId = sc.getId();
 		// This needs to be grouped with a Document Registry
 		registryActorFactory = new RegistryActorFactory();
 		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);
@@ -32,7 +33,8 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 		// This needs to be grouped with a Document Repository also
 		repositoryActorFactory = new RepositoryActorFactory();
 		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).getConfig(0);
-		
+
+		// two combined simulators do not have separate lives
 		sc.add(registryConfig);
 		sc.add(repositoryConfig);
 		

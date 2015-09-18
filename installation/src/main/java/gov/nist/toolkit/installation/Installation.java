@@ -20,7 +20,7 @@ public class Installation {
 	static Installation me = null;
 
     static {
-        // This works for unit tests if warhome.txt is installed
+        // This works for unit tests if warhome.txt is installed as part of a unit test environment
         String warhomeTxt = null;
         try {
             warhomeTxt = installation().getClass().getResource("/warhome/warhome.txt").getFile();
@@ -52,7 +52,10 @@ public class Installation {
 	public void warHome(File warHome) { 
 		logger.info("V2 - Installation - war home set to " + warHome);
 		this.warHome = warHome;
-		}
+		propertyServiceMgr = null;
+		externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+	}
+
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) { 
 		this.externalCache = externalCache;
@@ -79,7 +82,8 @@ public class Installation {
 	}
 	
 	public File simDbFile() {
-		return propertyServiceManager().getSimDbDir();
+		return new File(externalCache(), "simdb");
+//		return propertyServiceManager().getSimDbDir();
 	}
 	
 	public File toolkitxFile() {

@@ -1,45 +1,72 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
-import gov.nist.toolkit.actorfactory.RegistryActorFactory;
-import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.mu.MuSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;
 import gov.nist.toolkit.simulators.sim.reg.store.Committer;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 
-public class RegistryActorSimulator extends DsActorSimulator {
-	SimDb db;
-	SimulatorConfig asc;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class RegistryActorSimulator extends BaseDsActorSimulator {
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
 
-	public RegistryActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc) {
-		super(common, dsSimCommon);
-		this.db = db;
-		this.asc = asc;
-		SimulatorConfigElement updateConfig = asc.get(RegistryActorFactory.update_metadata_option);
+	static List<TransactionType> transactions = new ArrayList<>();
+
+	static {
+		transactions.add(TransactionType.REGISTER);
+		transactions.add(TransactionType.STORED_QUERY);
+		transactions.add(TransactionType.UPDATE);
+	}
+
+	public boolean supports(TransactionType transactionType) {
+		return transactions.contains(transactionType);
+	}
+
+	public RegistryActorSimulator() {}
+
+	// this constructor must be used when running simulator
+	public RegistryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+		this.simulatorConfig = simulatorConfig;
+		init();
+	}
+
+	public void init() {
+		SimulatorConfigElement updateConfig = simulatorConfig.get(SimulatorConfig.update_metadata_option);
 		updateEnabled = updateConfig.asBoolean();
 	}
 
+	// This constructor can be used to implement calls to onCreate(), onDelete(),
+	// onServiceStart(), onServiceStop()
+	public RegistryActorSimulator(SimulatorConfig simulatorConfig) {
+		this.simulatorConfig = simulatorConfig;
+	}
 
-	public boolean run(ATFactory.TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		AdhocQueryResponseGenerator queryResponseGenerator;
 		RegistryResponseGeneratorSim registryResponseGenerator;		
 		
 		common.getValidationContext().updateEnabled = updateEnabled;
 		
-		if (transactionType.equals(ATFactory.TransactionType.REGISTER)) {
+		if (transactionType.equals(TransactionType.REGISTER)) {
 
 			common.vc.isR = true;
 			common.vc.xds_b = true;
@@ -56,7 +83,7 @@ public class RegistryActorSimulator extends DsActorSimulator {
 			}
 
 			
-			RegRSim rsim = new RegRSim(common, dsSimCommon, asc);
+			RegRSim rsim = new RegRSim(common, dsSimCommon, simulatorConfig);
 			mvc.addMessageValidator("Register Transaction", rsim, er);
 
 			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
@@ -79,7 +106,7 @@ public class RegistryActorSimulator extends DsActorSimulator {
 			return !common.hasErrors();
 
 		}
-		else if (transactionType.equals(ATFactory.TransactionType.STORED_QUERY)) {
+		else if (transactionType.equals(TransactionType.STORED_QUERY)) {
 
 			common.vc.isSQ = true;
 			common.vc.xds_b = true;
@@ -115,8 +142,11 @@ public class RegistryActorSimulator extends DsActorSimulator {
 			return true; // no updates anyway
 
 		}
-		else if (transactionType.equals(ATFactory.TransactionType.UPDATE)) {
-
+		else if (transactionType.equals(TransactionType.UPDATE)) {
+			if (!updateEnabled) {
+				dsSimCommon.sendFault("Metadata Update not enabled on this actor ", null);
+				return false;
+			}
 			common.vc.isMU = true;
 			common.vc.isRequest = true;
 
@@ -128,7 +158,7 @@ public class RegistryActorSimulator extends DsActorSimulator {
 				return false;
 			}
 
-			MuSim musim = new MuSim(common, dsSimCommon, asc);
+			MuSim musim = new MuSim(common, dsSimCommon, simulatorConfig);
 			mvc.addMessageValidator("MuSim", musim, er);
 			
 			mvc.run();
@@ -190,5 +220,30 @@ public class RegistryActorSimulator extends DsActorSimulator {
 				dsSimCommon.regIndex.save();
 			}
 		}
+	}
+
+	static public SimulatorStats getSimulatorStats(SimId simId) throws IOException, NoSimException {
+		RegIndex regIndex = SimServlet.getRegIndex(simId);
+		return regIndex.getSimulatorStats();
+	}
+
+	@Override
+	public void onCreate(SimulatorConfig config) {
+		PatientIdentityFeedServlet.generateListener(config);
+	}
+
+	@Override
+	public void onDelete(SimulatorConfig config) {
+		PatientIdentityFeedServlet.deleteListener(config);
+	}
+
+	@Override
+	public void onServiceStart(SimulatorConfig config) {
+		PatientIdentityFeedServlet.generateListener(config);
+	}
+
+	@Override
+	public void onServiceStop(SimulatorConfig config) {
+		PatientIdentityFeedServlet.deleteListener(config);
 	}
 }

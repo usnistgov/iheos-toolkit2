@@ -8,7 +8,7 @@ import org.apache.axiom.om.OMElement;
 /**
  * Created by bill on 6/19/15.
  */
-public class MessageBodyContainer extends MessageValidator {
+public class MessageBodyContainer extends AbstractMessageValidator {
     OMElement body;
 
     public MessageBodyContainer(ValidationContext vc, OMElement body) {

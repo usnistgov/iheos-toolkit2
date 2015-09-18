@@ -3,15 +3,13 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMAttribute;
-import org.apache.axiom.om.OMElement;
 
 
 public abstract class IdAllocator {
@@ -41,6 +39,8 @@ public abstract class IdAllocator {
 		uniqueIdIncrFile = new File(mgmt_dir +  File.separator + "uniqueid_incr.txt");
 		sourceIdFile = new File(mgmt_dir +  File.separator + "sourceid.txt");
 	}
+
+	IdAllocator() {}
 
 	public String assign(Metadata metadata, String object_type, String external_identifier_uuid, HashMap<String, String> assignments, String no_assign_uid_to)
 	throws XdsInternalException {

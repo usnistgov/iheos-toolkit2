@@ -1,14 +1,11 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actorfactory.ActorFactory;
-import gov.nist.toolkit.actorfactory.RegistryActorFactory;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SimulatorFactory;
+import gov.nist.toolkit.actorfactory.*;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
@@ -16,22 +13,17 @@ import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simulators.sim.ig.IgActorSimulator;
-import gov.nist.toolkit.simulators.sim.recip.RecipientActorSimulator;
-import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
-import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
-import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
-import gov.nist.toolkit.simulators.sim.rg.RGActorSimulator;
+import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.soap.http.SoapFault;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import org.apache.axiom.om.OMElement;
@@ -46,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class SimServlet  extends HttpServlet {
@@ -53,290 +46,278 @@ public class SimServlet  extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	ServletConfig config;
+	static ServletConfig config;
 	Map<String, String> headers = new HashMap<String, String>();
 	String contentType;
 	HttpHeader contentTypeHeader;
 	String bodyCharset;
-	byte[] bodyBytes;
-	String body;
-	File simDbDir;  // = "/Users/bill/tmp/xdstools2/simdb";
+	File simDbDir;
 	MessageValidationResults mvr;
 	File warHome;
-//	Session session;
-
-//	enum SimType { RECIPIENT, REGISTRY};
+	PatientIdentityFeedServlet patientIdentityFeedServlet;
 
 
-	public void init(ServletConfig config) throws ServletException {
-		super.init(config);
-		this.config = config;
+	public void init(ServletConfig sConfig) throws ServletException {
+		super.init(sConfig);
+		config = sConfig;
 		logger.info("Initializing toolkit");
 		warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
 		Installation.installation().warHome(warHome);
-//		session = new Session(warHome);
-		simDbDir = Installation.installation().propertyServiceManager().getSimDbDir();
+		simDbDir = Installation.installation().simDbFile();
 		logger.info("...simdb = " + simDbDir);
-		
-//		// this is being done for ToolkitServiceImpl - initialize the
-//		// session caches by deleting the old ones (previous launch)
-//		File sessionCaches = PerSessionCache.getSessionCaches(getServletContext());
-//		Io.delete(sessionCaches);
-//		sessionCaches.mkdirs();
+
+		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
+		patientIdentityFeedServlet.init(config);
+
+		onServiceStart();
 
 		logger.info("SimServlet initialized");
 	}
+
+	public void destroy() {
+		onServiceStop();
+	}
+
 
 	public MessageValidationResults getMessageValidationResults() {
 		return mvr;
 	}
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response) {
-		String uri = request.getRequestURI();
+//	public void doGet(HttpServletRequest request, HttpServletResponse response) {
+//		String uri = request.getRequestURI();
+//
+//		String[] parts;
+//		try {
+//			int in = uri.indexOf("/del/");
+//			if (in != -1) {
+//				parts = uri.substring(in + "/del/".length()).split("\\/");
+//				handleDelete(response, parts);
+//				return;
+//			}
+//			in = uri.indexOf("/index/");
+//			if (in != -1) {
+//				parts = uri.substring(in + "/index/".length()).split("\\/");
+//				handleIndex(response, parts);
+//				return;
+//			}
+//			in = uri.indexOf("/message/");
+//			if (in != -1) {
+//				parts = uri.substring(in + "/message/".length()).split("\\/");
+//				handleMsgDownload(response, parts);
+//				return;
+//			}
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		} catch (Exception e) {
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//
+//	}
 
-		String[] parts;
-		try {
-			int in = uri.indexOf("/del/");
-			if (in != -1) {
-				parts = uri.substring(in + "/del/".length()).split("\\/");
-				handleDelete(response, parts);
-				return;
-			}
-			in = uri.indexOf("/index/");
-			if (in != -1) {
-				parts = uri.substring(in + "/index/".length()).split("\\/");
-				handleIndex(response, parts);
-				return;
-			}
-			in = uri.indexOf("/message/");
-			if (in != -1) {
-				parts = uri.substring(in + "/message/".length()).split("\\/");
-				handleMsgDownload(response, parts);
-				return;
-			}
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
+//	void handleDelete(HttpServletResponse response, String[] parts) {
+//		String simid;
+//		String actor;
+//		String transaction;
+//		String message;
+//
+//		try {
+//			simid = parts[0];
+//			actor = parts[1];
+//			transaction = parts[2];
+//			message = parts[3];
+//		} catch (Exception e) {
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//		if (actor == null || actor.equals("null")) {
+//			try {
+//				SimDb sdb = new SimDb(simDbDir, simid, null, null);
+//				actor = sdb.getActorForSimulator();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		if (actor == null || actor.equals("null")) {
+//			logger.debug("No actor name found");
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//		SimDb db;
+//		try {
+//			db = new SimDb(simDbDir, simid, actor, transaction);
+//		} catch (Exception e) {
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//		List<String> registryFilenames = db.getRegistryIds(simid, actor, transaction, message);
+//		List<String> registryUUIDs = new ArrayList<String>();
+//		for (String filename : registryFilenames) {
+//			registryUUIDs.add("urn:uuid:" + filename);
+//		}
+//
+//
+//		RegIndex regIndex = getRegIndex(db, simid);
+//
+//		MetadataCollection mc = regIndex.mc;
+//		List<String> docUids = new ArrayList<String>();
+//		for (String id : registryUUIDs) {
+//			String uid = mc.deleteRo(id);
+//			if (uid != null)
+//				docUids.add(uid);
+//		}
+//
+//		if (docUids.size() > 0) {
+//			RepIndex repIndex = getRepIndex(db, simid);
+//
+//			for (String uid : docUids) {
+//				logger.debug("Delete document from index " + uid);
+//				repIndex.dc.delete(uid);
+//			}
+//
+//		}
+//
+//
+//		logger.debug("Delete event " + simid + "/" + actor + "/" + transaction + "/" + message);
+//		File transEventFile = db.getTransactionEvent(simid, actor, transaction, message);
+//		db.delete(transEventFile);
+//
+//
+//		response.setStatus(HttpServletResponse.SC_OK);
+//	}
+
+//	// handle simulator message download
+//	void handleMsgDownload(HttpServletResponse response, String[] parts) {
+//		String simid;
+//		String actor;
+//		String transaction;
+//		String message;
+//
+//
+//		try {
+//			simid       = parts[0];
+//			actor       = parts[1];
+//			transaction = parts[2];
+//			message     = parts[3];
+//		} catch (Exception e) {
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//		if (actor == null || actor.equals("null")) {
+//			try {
+//				SimDb sdb = new SimDb(simDbDir, simid, null, null);
+//				actor = sdb.getActorForSimulator();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		if (actor == null || actor.equals("null")) {
+//			logger.debug("No actor name found");
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//		SimDb db;
+//		try {
+//			db = new SimDb(simDbDir, simid, actor, transaction);
+//			response.setContentType("application/zip");
+//			db.getMessageLogZip(response.getOutputStream(), message);
+//			response.getOutputStream().close();
+//			response.addHeader("Content-Disposition", "attachment; filename=" + message + ".zip");
+//		} catch (Exception e) {
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//
+//
+//		response.setStatus(HttpServletResponse.SC_OK);
+//	}
 
 
-	}
-
-	void handleDelete(HttpServletResponse response, String[] parts) {
-		String simid;
-		String actor;
-		String transaction;
-		String message;
-
-		try {
-			simid = parts[0];
-			actor = parts[1];
-			transaction = parts[2];
-			message = parts[3];
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		if (actor == null || actor.equals("null")) {
-			try {
-				SimDb sdb = new SimDb(simDbDir, simid, null, null);
-				actor = sdb.getActorForSimulator();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				e.printStackTrace();
-			}
-		}
-
-		if (actor == null || actor.equals("null")) {
-			logger.debug("No actor name found");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		SimDb db;
-		try {
-			db = new SimDb(simDbDir, simid, actor, transaction);
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		List<String> registryFilenames = db.getRegistryIds(simid, actor, transaction, message);
-		List<String> registryUUIDs = new ArrayList<String>();
-		for (String filename : registryFilenames) {
-			registryUUIDs.add("urn:uuid:" + filename);
-		}
-
-
-		RegIndex regIndex = getRegIndex(db, simid);
-
-		MetadataCollection mc = regIndex.mc;
-		List<String> docUids = new ArrayList<String>();
-		for (String id : registryUUIDs) {
-			String uid = mc.deleteRo(id);
-			if (uid != null)
-				docUids.add(uid);
-		}
-
-		if (docUids.size() > 0) {
-			RepIndex repIndex = getRepIndex(db, simid);
-
-			for (String uid : docUids) {
-				logger.debug("Delete document from index " + uid);
-				repIndex.dc.delete(uid);
-			}
-
-		}
-
-
-		logger.debug("Delete event " + simid + "/" + actor + "/" + transaction + "/" + message);
-		File transEventFile = db.getTransactionEvent(simid, actor, transaction, message);
-		db.delete(transEventFile);
-
-
-		response.setStatus(HttpServletResponse.SC_OK);
-	}
-	
-	// handle simulator message download
-	void handleMsgDownload(HttpServletResponse response, String[] parts) {
-		String simid;
-		String actor;
-		String transaction;
-		String message;
-		
-
-		try {
-			simid       = parts[0];
-			actor       = parts[1];
-			transaction = parts[2];
-			message     = parts[3];
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		if (actor == null || actor.equals("null")) {
-			try {
-				SimDb sdb = new SimDb(simDbDir, simid, null, null);
-				actor = sdb.getActorForSimulator();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				e.printStackTrace();
-			}
-		}
-
-		if (actor == null || actor.equals("null")) {
-			logger.debug("No actor name found");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		SimDb db;
-		try {
-			db = new SimDb(simDbDir, simid, actor, transaction);
-			response.setContentType("application/zip");
-			db.getMessageLogZip(response.getOutputStream(), message);
-			response.getOutputStream().close();
-			response.addHeader("Content-Disposition", "attachment; filename=" + message + ".zip");
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		
-
-		response.setStatus(HttpServletResponse.SC_OK);
-	}
-
-
-	// clean up index of an actor
-	void handleIndex(HttpServletResponse response, String[] parts) {
-		String simid;
-		String actor;
-		String transaction;
-
-		try {
-			simid = parts[0];
-			actor = parts[1];
-			transaction = parts[2];
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		if (actor == null || actor.equals("null")) {
-			try {
-				SimDb sdb = new SimDb(simDbDir, simid, null, null);
-				actor = sdb.getActorForSimulator();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (NoSimException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		if (actor == null || actor.equals("null")) {
-			logger.debug("No actor name found");
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-
-		SimDb db;
-		try {
-			db = new SimDb(simDbDir, simid, actor, transaction);
-		} catch (Exception e) {
-			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
-		}
-		
-		if (actor.equals("registry")) {
-			RegIndex regIndex = getRegIndex(db, simid);
-			MetadataCollection mc = regIndex.getMetadataCollection();
-			
-			// purge object in the index that are no longer present behind the index
-			mc.purge();
-		}
-
-		response.setStatus(HttpServletResponse.SC_OK);
-	}
+//	// clean up index of an actor
+//	void handleIndex(HttpServletResponse response, String[] parts) {
+//		String simid;
+//		String actor;
+//		String transaction;
+//
+//		try {
+//			simid = parts[0];
+//			actor = parts[1];
+//			transaction = parts[2];
+//		} catch (Exception e) {
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//		if (actor == null || actor.equals("null")) {
+//			try {
+//				SimDb sdb = new SimDb(simDbDir, simid, null, null);
+//				actor = sdb.getActorForSimulator();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			} catch (NoSimException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		if (actor == null || actor.equals("null")) {
+//			logger.debug("No actor name found");
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//		SimDb db;
+//		try {
+//			db = new SimDb(simDbDir, simid, actor, transaction);
+//		} catch (Exception e) {
+//			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+//			return;
+//		}
+//
+//		if (actor.equals("registry")) {
+//			RegIndex regIndex = getRegIndex(db, simid);
+//			MetadataCollection mc = regIndex.getMetadataCollection();
+//
+//			// purge object in the index that are no longer present behind the index
+//			mc.purge();
+//		}
+//
+//		response.setStatus(HttpServletResponse.SC_OK);
+//	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
-//		String warHome = getServletContext().getRealPath("/");
-//		System.setProperty("warHome", warHome);
-//		logger.debug("warHome[SimServlet]: " + warHome + "\n");
-//		if (dbPath == null) {
-//			ToolkitServiceImpl tk = new ToolkitServiceImpl();
-//			tk.setWarHome(warHome);
-//			// force use of THIS reference to the servlet context
-//			// since gwt-servlet may not be loaded yet
-//			tk.propertyServiceManager.loadPropertyManager();
-//			dbPath = tk.propertyServiceManager.getSimDbDir().toString();
-//		}
 		String uri  = request.getRequestURI().toLowerCase();
 		logger.info("+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ");
 		logger.info("uri is " + uri);
 		logger.info("warHome is " + warHome);
 		RegIndex regIndex = null;
 		RepIndex repIndex = null;
-		ServletContext servletContext = config.getServletContext(); 
+		ServletContext servletContext = config.getServletContext();
 		boolean responseSent = false;
 
 		Date now = new Date();
 
 		String[] uriParts = uri.split("\\/");
 		String toolkitServletName = (uriParts.length < 2) ? "" : uriParts[1];
-		
-		String endpointFormat = " - Endpoint format is http://" + request.getLocalName() + ":" + request.getLocalPort() + "/" + toolkitServletName + "/sim/simid/actor/transaction[/validation] " + 
-		"where simid, actor and transaction are variables for simulators. "  + 
-		"If validation is included, then this validation must be performed successfully for the transaction to be successful. " +
-		" Validations are documented as part of tests that use them.";
+
+		String endpointFormat = " - Endpoint format is http://" + request.getLocalName() + ":" + request.getLocalPort() + "/" + toolkitServletName + "/sim/simid/actor/transaction[/validation] " +
+				"where simid, actor and transaction are variables for simulators. "  +
+				"If validation is included, then this validation must be performed successfully for the transaction to be successful. " +
+				" Validations are documented as part of tests that use them.";
 
 		// endpoint parsing
 		//
@@ -367,12 +348,12 @@ public class SimServlet  extends HttpServlet {
 		transIds.add("pnr");
 		transIds.add("xcqr");
 
-		String simid = null;
+		SimId simid = null;
 		String actor = null;
 		String transaction = null;
 		String validation = null;
 		try {
-			simid = uriParts[simIndex + 1];
+			simid = new SimId(uriParts[simIndex + 1]);
 			actor = uriParts[simIndex + 2];
 			transaction = uriParts[simIndex + 3];
 		}
@@ -380,20 +361,20 @@ public class SimServlet  extends HttpServlet {
 			sendSoapFault(response, "Simulator: Do not understand endpoint http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat + " - " + e.getClass().getName() + ": " + e.getMessage());
 			return;
 		}
-		
+
 		try {
 			validation = uriParts[simIndex+4];
 		} catch (Exception e) {
 			// ignore - null value will signal no validation
 		}
 
-		TransactionType transactionType = ATFactory.findTransactionByShortName(transaction); 
+		TransactionType transactionType = ATFactory.findTransactionByShortName(transaction);
 		if (transactionType == null) {
 			sendSoapFault(response, "Simulator: Do not understand the transaction requested by this endpoint (" + transaction + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat);
 			return;
 		}
-		
-		
+
+
 
 
 		boolean transactionOk = true;
@@ -407,25 +388,20 @@ public class SimServlet  extends HttpServlet {
 
 			logRequest(request, db, actor, transaction);
 
-//			SimulatorConfig asc = new SimulatorFactory(new SimCache().getSimManagerForSession(session.id())).getSimConfig(simDbDir, simid);
-			SimulatorConfig asc = SimulatorFactory.getSimConfig(simDbDir, simid);
+			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simDbDir, simid);
 
-			regIndex = getRegIndex(db, simid);
-			repIndex = getRepIndex(db, simid);
+			regIndex = getRegIndex(simid);
+			repIndex = getRepIndex(simid);
 
-
-			
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
-			
-			SimulatorConfigElement asce = asc.get(ActorFactory.codesEnvironment);
+
+			SimulatorConfigElement asce = asc.get(AbstractActorFactory.codesEnvironment);
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
-			
-			
-			
+
 			SimCommon common= new SimCommon(db, uri.startsWith("https"), vc, mvc, response);
-            DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex);
-			
+			DsSimCommon dsSimCommon = new DsSimCommon(common, regIndex, repIndex);
+
 			ErrorRecorder er = new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 			er.sectionHeading("Endpoint");
 			er.detail("Endpoint is " + uri);
@@ -437,79 +413,42 @@ public class SimServlet  extends HttpServlet {
 			//
 			//////////////////////////////////////////////////////////////
 
-			if (ActorType.REGISTRY.getShortName().equals(actor)) {
-				
-				SimulatorConfigElement updateConfig = asc.get(RegistryActorFactory.update_metadata_option);
-				boolean updateEnabled = updateConfig.asBoolean();
-				if (transactionType.equals(TransactionType.UPDATE) && !updateEnabled) {
-					sendSoapFault(response, "Metadata Update not enabled on this actor " + uri + endpointFormat);
-					return;
-				}
-				
-				response.setContentType("application/soap+xml");
+			response.setContentType("application/soap+xml");
 
-                dsSimCommon.regIndex = regIndex;
-				RegistryActorSimulator reg = new RegistryActorSimulator(common, dsSimCommon, db, asc);
-				transactionOk = reg.run(transactionType, mvc, validation);
-				
-			}
-			else if (ActorType.RESPONDING_GATEWAY.getShortName().equals(actor)) {
-				response.setContentType("application/soap+xml");
+//			BaseDsActorSimulator sim = getSimulatorRuntime(simid);
+			BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simid);
 
-				RGActorSimulator rg = new RGActorSimulator(common, dsSimCommon, db, asc);
-				transactionOk = rg.run(transactionType, mvc, validation);
-				
-			}
-			else if (ActorType.INITIATING_GATEWAY.getShortName().equals(actor)) {
-				response.setContentType("application/soap+xml");
+			sim.init(dsSimCommon, asc);
+			sim.onTransactionBegin(asc);
+			transactionOk = sim.run(transactionType, mvc, validation);
+			sim.onTransactionEnd(asc);
 
-				IgActorSimulator ig = new IgActorSimulator(common, dsSimCommon, db, asc);
-				transactionOk = ig.run(transactionType, mvc, validation);
-				
-			}
-			else if (ActorType.REPOSITORY.getShortName().equals(actor)) {
-				
-				String repositoryUniqueId = "";
-
-				SimulatorConfigElement configEle = asc.get("repositoryUniqueId");
-				if (configEle == null || configEle.asString() == null || configEle.asString().equals("")) {
-					
-				} else {
-					repositoryUniqueId = configEle.asString();
-				}
-
-				RepositoryActorSimulator rg = new RepositoryActorSimulator(repIndex, common, dsSimCommon, db, asc, response, repositoryUniqueId);
-				transactionOk = rg.run(transactionType, mvc, validation);
-				
-			}
-			else if (ActorType.DOCUMENT_RECIPIENT.getShortName().equals(actor)) {
-				
-				RecipientActorSimulator rg = new RecipientActorSimulator(common, dsSimCommon, db, asc, response);
-				transactionOk = rg.run(transactionType, mvc, validation);
-				
-			}
-			else {
-				sendSoapFault(response, "Simulator: Do not understand endpoint " + uri + ". Actor " + actor + " is not understood. " + endpointFormat);
-				mvc.run();
-				closeOut(response);
-				return;
-			}
-
-
-
-
-
-		} 
+		}
+		catch (InvocationTargetException e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
+		}
+		catch (IllegalAccessException e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
+		}
+		catch (InstantiationException e) {
+			sendSoapFault(response, ExceptionUtil.exception_details(e));
+			logger.error(ExceptionUtil.exception_details(e));
+			responseSent = true;
+		}
 		catch (RuntimeException e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
-		} 
+		}
 		catch (IOException e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
-		} 
+		}
 		catch (HttpHeaderParseException e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
 			logger.error(ExceptionUtil.exception_details(e));
@@ -530,12 +469,12 @@ public class SimServlet  extends HttpServlet {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
 			logger.error(ExceptionUtil.exception_details(e));
 			responseSent = true;
-		} 
+		}
 		finally {
 			mvc.run();
 			closeOut(response);
 		}
-		
+
 		mvc.run();
 
 
@@ -565,7 +504,7 @@ public class SimServlet  extends HttpServlet {
 
 				// check for indexes that are old enough they should be removed from cache
 				for (@SuppressWarnings("unchecked")
-						Enumeration<String> en = (Enumeration<String>) servletContext.getAttributeNames(); en.hasMoreElements(); ) {
+					 Enumeration<String> en = (Enumeration<String>) servletContext.getAttributeNames(); en.hasMoreElements(); ) {
 					String name = en.nextElement();
 					if (name.startsWith("Reg_")) {
 						RegIndex ri = (RegIndex) servletContext.getAttribute(name);
@@ -598,19 +537,86 @@ public class SimServlet  extends HttpServlet {
 		logger.debug(repCacheCount + " items left in the Repository Index cache");
 
 	}
-	
-	public RegIndex getRegIndex(SimDb db, String simid) {
-		ServletContext servletContext = config.getServletContext(); 
+
+	public static void onServiceStart()  {
+		try {
+			SimDb db = new SimDb();
+			List<SimId> simIds = db.getAllSimIds();
+			for (SimId simId : simIds) {
+				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+
+				DsSimCommon dsSimCommon = null;
+				SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
+				sim.init(dsSimCommon, asc);
+				sim.onServiceStart(asc);
+			}
+		} catch (Exception e) {
+			logger.fatal(ExceptionUtil.exception_details(e));
+		}
+	}
+
+	public static void onServiceStop() {
+		try {
+			SimDb db = new SimDb();
+			List<SimId> simIds = db.getAllSimIds();
+			for (SimId simId : simIds) {
+				BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simId);
+
+				DsSimCommon dsSimCommon = null;
+				SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
+				sim.init(dsSimCommon, asc);
+				sim.onServiceStop(asc);
+			}
+		} catch (Exception e) {
+			logger.fatal(ExceptionUtil.exception_details(e));
+		}
+	}
+
+//	public static BaseDsActorSimulator getSimulatorRuntime(String simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
+//		SimDb db = new SimDb();
+//		SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
+//		String actorTypeName = config.getType();
+//		ActorType actorType = ActorType.findActor(actorTypeName);
+//		String actorSimClassName = actorType.getSimulatorClassName();
+//		logger.info("Starting sim " + simId + " of class " + actorSimClassName);
+//		Class<?> clas = Class.forName(actorSimClassName);
+//
+//		// find correct constructor - no parameters
+//		Constructor<?>[] constructors = clas.getConstructors();
+//		Constructor<?> constructor = null;
+//		for (int i=0; i<constructors.length; i++) {
+//			Constructor<?> cons = constructors[i];
+//			Class<?>[] parmTypes = cons.getParameterTypes();
+//			if (parmTypes.length != 0) continue;
+////				if (!parmTypes[0].getSimpleName().equals(dsSimCommon.getClass().getSimpleName())) continue;
+////				if (!parmTypes[1].getSimpleName().equals(asc.getClass().getSimpleName())) continue;
+//			constructor = cons;
+//		}
+//		if (constructor == null)
+//			throw new ToolkitRuntimeException("Cannot find correct constructor for " + actorSimClassName);
+//		Object obj = constructor.newInstance();
+//		if (!(obj instanceof BaseDsActorSimulator)) {
+//			throw new ToolkitRuntimeException("Received message for actor type " + actorTypeName + " which has a handler/simulator that does not extend AbstractDsActorSimulator");
+//		}
+//		return (BaseDsActorSimulator) obj;
+//	}
+
+
+	static public RegIndex getRegIndex(SimId simid) throws IOException, NoSimException {
+		SimDb db = new SimDb(simid);
+		ServletContext servletContext = config.getServletContext();
 		String registryIndexFile = db.getRegistryIndexFile().toString();
 		RegIndex regIndex;
 
-		synchronized(this) {
+		synchronized(config) {
 			regIndex = (RegIndex) servletContext.getAttribute("Reg_" + simid);
 			if (regIndex == null) {
-				regIndex = new RegIndex(registryIndexFile);
+				logger.debug("Creating new RegIndex for " + simid);
+				regIndex = new RegIndex(registryIndexFile, simid);
 				regIndex.setSimDb(db);
 				servletContext.setAttribute("Reg_" + simid, regIndex);
-			}
+			} else
+				logger.debug("Using cached RegIndex");
 
 			regIndex.cacheExpires = getNewExpiration();
 		}
@@ -618,15 +624,16 @@ public class SimServlet  extends HttpServlet {
 		return regIndex;
 	}
 
-	public RepIndex getRepIndex(SimDb db, String simid) {
-		ServletContext servletContext = config.getServletContext(); 
+	static public RepIndex getRepIndex(SimId simid) throws IOException, NoSimException {
+		SimDb db = new SimDb(simid);
+		ServletContext servletContext = config.getServletContext();
 		String repositoryIndexFile = db.getRepositoryIndexFile().toString();
 		RepIndex repIndex;
 
-		synchronized(this) {
+		synchronized(config) {
 			repIndex = (RepIndex) servletContext.getAttribute("Rep_" + simid);
 			if (repIndex == null) {
-				repIndex = new RepIndex(repositoryIndexFile);
+				repIndex = new RepIndex(repositoryIndexFile, simid);
 				servletContext.setAttribute("Rep_" + simid, repIndex);
 			}
 
@@ -640,11 +647,11 @@ public class SimServlet  extends HttpServlet {
 		try {
 			response.getOutputStream().close();
 		} catch (IOException e) {
-			
+
 		}
 	}
 
-	Calendar getNewExpiration() {
+	static Calendar getNewExpiration() {
 		// establish expiration for newly touched cache elements
 		Date now = new Date();
 		Calendar newExpiration = Calendar.getInstance();
@@ -658,17 +665,17 @@ public class SimServlet  extends HttpServlet {
 		try {
 			SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
 			SimCommon c = new SimCommon(response);
-            DsSimCommon dsSimCommon = new DsSimCommon(c);
+			DsSimCommon dsSimCommon = new DsSimCommon(c);
 			OMElement faultEle = sf.getXML();
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);
-            dsSimCommon.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
+			dsSimCommon.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
 		} catch (Exception e) {
 			logger.error(ExceptionUtil.exception_details(e));
 		}
 	}
 
 	void logRequest(HttpServletRequest request, SimDb db, String actor, String transaction)
-	throws FileNotFoundException, IOException, HttpHeaderParseException, ParseException {
+			throws FileNotFoundException, IOException, HttpHeaderParseException, ParseException {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append(request.getMethod() + " " + request.getRequestURI() + " " + request.getProtocol() + "\r\n");

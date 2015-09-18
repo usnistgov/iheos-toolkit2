@@ -1,17 +1,11 @@
 package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.utilities.io.Io;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
+
+import java.io.*;
+import java.util.*;
 
 public class PropertyManager {
 
@@ -19,11 +13,11 @@ public class PropertyManager {
 
 	String propFile;
 	Properties toolkitProperties = null;
-
+	
 	public PropertyManager(String propFile) {
 		this.propFile = propFile;
 	}
-
+	
 	public void update(Map<String, String> props) throws Exception {
 		if (toolkitProperties == null)
 			toolkitProperties = new Properties();
@@ -34,7 +28,7 @@ public class PropertyManager {
 			save(props);
 		}
 	}
-
+	
 	void validateProperty(String name, String value) throws Exception {
 		if (name == null)
 			throw new Exception("Property with name null not allowed");
@@ -67,39 +61,51 @@ public class PropertyManager {
 				throw new Exception("Cannot create Message_database_directory " + value);
 		}
 	}
-
+	
 	public String getPassword() {
 		loadProperties();
 		return (String) toolkitProperties.get("Admin_password");
 	}
-
+	
 	public String getToolkitHost() {
 		loadProperties();
 		return (String) toolkitProperties.get("Toolkit_Host");
 	}
-
+	
 	public String getToolkitPort() {
 		loadProperties();
 		return (String) toolkitProperties.get("Toolkit_Port");
 	}
-
+	
 	public String getToolkitTlsPort() {
 		loadProperties();
 		return (String) toolkitProperties.get("Toolkit_TLS_Port");
+	}
+
+	public List<String> getListenerPortRange() {
+		loadProperties();
+		String rangeString = (String) toolkitProperties.get("Listener_Port_Range");
+		if (rangeString == null) throw new ToolkitRuntimeException("Listener_Port_Range missing from toolkit.properties file");
+		String[] parts = rangeString.split(",");
+		if (parts.length != 2) throw new ToolkitRuntimeException("Listener_Port_Range from toolkit.properties is badly formtted - it must be port_number, port_number");
+		List<String> range = new ArrayList<>();
+		range.add(parts[0].trim());
+		range.add(parts[1].trim());
+		return range;
 	}
 
 	public String getToolkitGazelleConfigURL() {
 		loadProperties();
 		return (String) toolkitProperties.get("Gazelle_Config_URL");
 	}
-
+	
 	public String getExternalCache() {
 		loadProperties();
 		String cache = (String) toolkitProperties.get("External_Cache");
 		System.setProperty("External_Cache", cache);
 		return cache;
 	}
-
+	
 	public boolean isUseActorsFile() {
 		loadProperties();
 		String use = (String) toolkitProperties.get("Use_Actors_File");
@@ -107,12 +113,12 @@ public class PropertyManager {
 			return true;
 		return "true".compareToIgnoreCase(use) == 0;
 	}
-
+	
 	public String getDefaultAssigningAuthority() {
 		loadProperties();
 		return (String) toolkitProperties.get("PatientID_Assigning_Authority");
 	}
-
+	
 	public String getDefaultEnvironmentName() {
 		loadProperties();
 		return (String) toolkitProperties.get("Default_Environment");
@@ -128,24 +134,24 @@ public class PropertyManager {
 		} catch (IOException e) {}
 		return currentName;
 	}
-
+	
 	@Deprecated
 	public void setCurrentEnvironmentName(String name) throws IOException {
 		String cache = getExternalCache();
-
+		
 		File currentFile = new File(cache + File.separator + "environment" + File.separator + "current");
 		Io.stringToFile(currentFile, name);
 	}
-
+	
 	public String getToolkitEnableAllCiphers() {
 		loadProperties();
 		return (String) toolkitProperties.getProperty("Enable_all_ciphers");
 	}
-
+		
 	public void save(Map<String, String> props) throws Exception {
 		saveProperties();
 	}
-
+	
 	public void loadProperties() {
 		if (toolkitProperties != null)
 			return;
@@ -162,7 +168,7 @@ public class PropertyManager {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void saveProperties() {
 		try {
 			FileOutputStream fos = new FileOutputStream(propFile);
@@ -177,7 +183,7 @@ public class PropertyManager {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public Map<String, String> getPropertyMap() {
 		loadProperties();
 		Map<String, String> props = new HashMap<String, String>();
@@ -188,5 +194,6 @@ public class PropertyManager {
 		}
 		return props;
 	}
+	
 
 }

@@ -3,7 +3,7 @@ package gov.nist.toolkit.simulators.sim.ig;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
@@ -12,27 +12,32 @@ import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
-
-import java.io.IOException;
-
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 public class IgActorSimulator extends GatewaySimulatorCommon {
 	DsSimCommon dsSimCommon;
 	SimDb db;
-	SimulatorConfig asc;
 	OMElement messageBody;
 	static Logger logger = Logger.getLogger(IgActorSimulator.class);
 	AdhocQueryResponseGenerator sqs;
 
-	public IgActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc) {
+	public IgActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
 		super(common, dsSimCommon);
 		this.db = db;
-		this.asc = asc;
+		this.simulatorConfig = simulatorConfig;
 	}
 
+	public IgActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+		this.simulatorConfig = simulatorConfig;
+	}
+
+	public void init() {}
 
 	// boolean => hasErrors?
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validationPattern) throws IOException {
@@ -57,7 +62,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 			}
 			
 			// extract query 
-			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
                 dsSimCommon.sendErrorsInRegistryResponse(er);
@@ -71,7 +76,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 			if (!validateOk)
 				return false;
 
-			XcQuerySim xcqSim = new XcQuerySim(common, dsSimCommon, asc);
+			XcQuerySim xcqSim = new XcQuerySim(common, dsSimCommon, simulatorConfig);
 			mvc.addMessageValidator("XcQuerySim", xcqSim, er);
 
 			mvc.run();

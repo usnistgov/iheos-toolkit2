@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valsupport;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.valsupport.client.MessageDirection;
 import gov.nist.toolkit.valsupport.client.MessageTransaction;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -41,46 +41,46 @@ public class ValidationContextFactory {
     static void setValidationContextFromWSAction(ValidationContext vc, String wsaction) {
         if (wsaction == null)
             return;
-        ATFactory.TransactionType tt;
+        TransactionType tt;
         boolean isRequest = true;
-        tt = ATFactory.TransactionType.findByRequestAction(wsaction);
+        tt = TransactionType.findByRequestAction(wsaction);
         if (tt == null) {
-            tt = ATFactory.TransactionType.findByResponseAction(wsaction);
+            tt = TransactionType.findByResponseAction(wsaction);
             isRequest = false;
         }
         if (tt == null)
             return;
-        if (ATFactory.TransactionType.PROVIDE_AND_REGISTER.equals(tt)) {
+        if (TransactionType.PROVIDE_AND_REGISTER.equals(tt)) {
             vc.isPnR = true;
             vc.isRequest = isRequest;
             vc.isResponse = !isRequest;
-        } else if (ATFactory.TransactionType.RETRIEVE.equals(tt)) {
+        } else if (TransactionType.RETRIEVE.equals(tt)) {
             vc.isRet = true;
             vc.isRequest = isRequest;
             vc.isResponse = !isRequest;
-        } else if (ATFactory.TransactionType.REGISTER.equals(tt)) {
+        } else if (TransactionType.REGISTER.equals(tt)) {
             vc.isR = true;
             vc.isRequest = isRequest;
             vc.isResponse = !isRequest;
-        } else if (ATFactory.TransactionType.UPDATE.equals(tt)) {
+        } else if (TransactionType.UPDATE.equals(tt)) {
             vc.isMU = true;
             vc.isRequest = isRequest;
             vc.isResponse = !isRequest;
-        } else if (ATFactory.TransactionType.STORED_QUERY.equals(tt)) {
+        } else if (TransactionType.STORED_QUERY.equals(tt)) {
             vc.isSQ = true;
             vc.isRequest = isRequest;
             vc.isResponse = !isRequest;
-        } else if (ATFactory.TransactionType.XC_QUERY.equals(tt)) {
+        } else if (TransactionType.XC_QUERY.equals(tt)) {
             vc.isSQ = true;
             vc.isXC = true;
             vc.isRequest = isRequest;
             vc.isResponse = !isRequest;
-        } else if (ATFactory.TransactionType.XC_RETRIEVE.equals(tt)) {
+        } else if (TransactionType.XC_RETRIEVE.equals(tt)) {
             vc.isRet = true;
             vc.isXC = true;
             vc.isRequest = isRequest;
             vc.isResponse = !isRequest;
-        } else if (ATFactory.TransactionType.MPQ.equals(tt)) {
+        } else if (TransactionType.MPQ.equals(tt)) {
             vc.isSQ = true;
             vc.isMultiPatient = true;
             vc.isRequest = isRequest;

@@ -2,32 +2,39 @@ package gov.nist.toolkit.simulators.sim.recip;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.DsActorSimulator;
+import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
-
-import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-public class RecipientActorSimulator extends DsActorSimulator {
+public class RecipientActorSimulator extends BaseDsActorSimulator {
 	DsSimCommon dsSimCommon;
 	SimDb db;
 	HttpServletResponse response;
-	SimulatorConfig asc;
-	
-	public RecipientActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig asc, HttpServletResponse response) {
+
+	public RecipientActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response) {
 		super(common, dsSimCommon);
 		this.db = db;
 		this.response = response;
-		this.asc = asc;
+		this.simulatorConfig = simulatorConfig;
 	}
-	 
+
+	public RecipientActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+		this.response = dsSimCommon.simCommon.response;
+		this.simulatorConfig = simulatorConfig;
+	}
+
+	public void init() {}
+
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 		
@@ -41,8 +48,8 @@ public class RecipientActorSimulator extends DsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (asc.getValidationContext()  != null) {
-				common.vc.addInnerContext(asc.getValidationContext());
+			if (simulatorConfig.getValidationContext()  != null) {
+				common.vc.addInnerContext(simulatorConfig.getValidationContext());
 			}
 			
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())

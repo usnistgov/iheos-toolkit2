@@ -1,60 +1,56 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
-import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
-import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
-import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
-import gov.nist.toolkit.xdstools2.client.tabs.TestSessionState;
-import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
-import gov.nist.toolkit.xdstools2.client.tabs.testRunnerTab.TestRunnerTab;
-
-import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
-
-
-import com.google.web.bindery.event.shared.EventBus;
-
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import com.google.web.bindery.event.shared.EventBus;
+import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.tabs.*;
+import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 
 
 public class Xdstools2 implements EntryPoint, TabContainer {
 
 
 	static TabPanel tabPanel = new TabPanel();
+	boolean UIDebug = false;
+	HorizontalPanel uiDebugPanel = new HorizontalPanel();
 
 	TabContainer getTabContainer() { return this;}
 
 	static TkProps props = new TkProps();
-	static public boolean showEnvironment = true;
-	
-	static EventBus eventBus = null;	
+
+	// This is probably a conflic with Sunil's code and we
+	// will have to reconcile the initialization.  This is done
+	// here because the initialization of testSessionManager,
+	// immediately following depends on it.
+	static EventBus eventBus = new SimpleEventBus();
+
+	// This is as toolkit wide singleton.  See class for details.
+	TestSessionManager2 testSessionManager = new TestSessionManager2();
+	static public TestSessionManager2 getTestSessionManager() { return ME.testSessionManager; }
 
 	// Central storage for parameters shared across all
 	// query type tabs
 	QueryState queryState = new QueryState();
-	public QueryState getQueryState() { 
-		return queryState; 
+	public QueryState getQueryState() {
+		return queryState;
 	}
 
 	EnvironmentState environmentState = new EnvironmentState();
 	@Override public EnvironmentState getEnvironmentState() { return environmentState; }
-
-	TestSessionState testSessionState = new TestSessionState();
-	@Override public TestSessionState getTestSessionState() { return testSessionState; }
 
 	static public TkProps tkProps() {
 		return props;
@@ -81,7 +77,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	}
 
-	
+
 	public void addTab(VerticalPanel w, String title, boolean select) {
 		HTML left = new HTML();
 		left.setHTML("&nbsp");
@@ -95,26 +91,26 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		wrapper.add(right);
 		wrapper.setCellWidth(left, "1%");
 		wrapper.setCellWidth(right, "1%");
-	
+
 		tabPanel.add(wrapper, title);
-	
+
 		int index = tabPanel.getWidgetCount() - 1;
-	
+
 		if (select)
-			tabPanel.selectTab(index);		
+			tabPanel.selectTab(index);
 
 		try {
-		
+
 			if (getEventBus()!=null && index>0) {
 				getEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
-			} 
-			
+			}
+
 		} catch (Throwable t) {
 			Window.alert("V2TabOpenedEvent error: " +t.toString());
 		}
-		
-			
-	}	
+
+
+	}
 
 	HomeTab ht = null;
 
@@ -124,6 +120,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	@SuppressWarnings("deprecation")
 	public void onModuleLoad() {
 		loadTkProps();
+		testSessionManager.load();
 	}
 
 	static boolean newHomeTab = false;
@@ -183,15 +180,29 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	}
 
+	final ListBox debugMessages = new ListBox();
+//	static public void DEBUG(String msg) {
+//		ME.debugMessages.addItem(msg);
+//		ME.debugMessages.setSelectedIndex(ME.debugMessages.getItemCount()-1);
+//	}
+
 	private void onModuleLoad2() {
-
-//		if (tkProps() == null) {
-//			
-//		}
-//		else if ("direct".equals(tkProps().get("toolkit.home", null)))
-//			showEnvironment = false;
-
 		buildWrapper();
+
+		if (UIDebug) {
+			RootPanel.get().insert(uiDebugPanel, 0);
+			uiDebugPanel.add(new HTML("<b>DEBUG</b>"));
+			debugMessages.setVisibleItemCount(7);
+			debugMessages.setWidth("1000px");
+			uiDebugPanel.add(debugMessages);
+			Button debugClearButton = new Button("Clear", new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent clickEvent) {
+					debugMessages.clear();
+				}
+			});
+			uiDebugPanel.add(debugClearButton);
+		}
 
 		ht.onTabLoad(this, false, null);
 
@@ -235,16 +246,12 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 						//	              // Select the specified tab panel
 						//	              tabPanel.selectTab(tabIndex);
 					}
-					else if (historyToken.equals("conf")) {
-						new TestRunnerTab().onTabLoad(getTabContainer(), true);
-					}
 
 				} catch (IndexOutOfBoundsException e) {
 					tabPanel.selectTab(0);
 				}
 			}
 		});
-
 	}
 
 
@@ -253,11 +260,13 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	}
 
 
-	public EventBus getEventBus() {
+	static public EventBus getEventBus() {
 		return eventBus;
 	}
-	
-	public void setEventBus(EventBus eventBus) {
+
+	// To force an error when I merge with Sunil. We need
+	// to reconcile the initialization.
+	private void setEventBus(EventBus eventBus) {
 		this.eventBus = eventBus;
 	}
 

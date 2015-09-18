@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.server;
 
 import gov.nist.toolkit.actorfactory.SimCache;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -203,6 +204,8 @@ public class Session implements SecurityParams {
 		mesaSessionCache.mkdirs();
 	}
 
+	public String getMesaSessionName() { return mesaSessionName; }
+
 	public void setSessionProperties(Map<String, String> m) {
 		SessionPropertyManager props = getSessionProperties();
 		if (props == null)
@@ -252,8 +255,8 @@ public class Session implements SecurityParams {
 		return ipAddr;
 	}
 	
-	public String getDefaultSimId() {
-		return ipAddr;
+	public SimId getDefaultSimId() {
+		return new SimId(ipAddr);
 	}
 	
 	public void setLastUpload(String filename, byte[] last, String filename2, byte[] last2) {

@@ -4,8 +4,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.AnyId;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -78,8 +78,6 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		this.siteActorManager = siteActorManager;
 		siteActorManager.setGenericQueryTab(this);
 
-
-		addTextResults("Tab created");
 
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
@@ -341,13 +339,22 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			reload.addClickHandler(new ClickHandler() {
 
 				public void onClick(ClickEvent event) {
-					//					redisplay();
 					reloadTransactionOfferings();
+				}
+
+			});
+			reload.addClickHandler(new ClickHandler() {
+
+				public void onClick(ClickEvent event) {
+					onReload();
 				}
 
 			});
 		}
 	}
+
+	// so it can be overloaded
+	public void onReload() {}
 
 	void reloadTransactionOfferings() {
 		try {
@@ -537,6 +544,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	List<Site> findSites(TransactionType tt, boolean tls) {
 		Map<TransactionType, List<Site>> map;
 
+		// aka testSession
+		String user = null; // testSessionManager.getCurrentSelection()
+
 		if (tls) {
 			map = GenericQueryTab.transactionOfferings.tmap;
 		} else {
@@ -544,8 +554,21 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		}
 
 		for (TransactionType t : map.keySet()) {
-			if (t.getName().equals(tt.getName()))
-				return map.get(t);
+			if (t.getName().equals(tt.getName())) {
+				List<Site> sitesForTransaction = map.get(t);
+				if (user == null) return sitesForTransaction;
+
+				// filter out sites that represent sims and do not match user
+				List<Site> sitesForUser = new ArrayList<>();
+				for (Site s : sitesForTransaction) {
+					if (s.user == null)
+						sitesForUser.add(s);
+					else if (user.equals(s.user))
+						sitesForUser.add(s);
+				}
+
+				return sitesForTransaction;
+			}
 		}
 		return new ArrayList<Site>();
 	}
