@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.event.testSession;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 
 import java.util.List;
@@ -88,8 +90,7 @@ public class TestSessionManager2 {
                         Xdstools2.DEBUG("currentTestSelection, " + currentTestSession + ", is legal");
                         toCookie(currentTestSession);
                         Xdstools2.DEBUG("set cookie to " + currentTestSession);
-                    }
-                    else {
+                    } else {
                         currentTestSession = "";
                         Xdstools2.DEBUG("delete cookie");
                         deleteCookie();
@@ -99,6 +100,37 @@ public class TestSessionManager2 {
                 Xdstools2.DEBUG("cookie is " + fromCookie());
                 Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
+
+                try {
+                    toolkitService.getAllSimConfigs(currentTestSession, new AsyncCallback<List<SimulatorConfig>>() {
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            new PopupMessage("Cannot load sim configs - " + throwable.getMessage());
+                        }
+
+                        @Override
+                        public void onSuccess(List<SimulatorConfig> simulatorConfigs) {
+                            try {
+                                toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings>() {
+                                    @Override
+                                    public void onFailure(Throwable throwable) {
+
+                                    }
+
+                                    @Override
+                                    public void onSuccess(TransactionOfferings transactionOfferings) {
+
+                                    }
+                                });
+                            } catch (Exception e) {
+                                new PopupMessage("getTransactionOfferings failed - " + e.getMessage());
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    new PopupMessage("Cannot load sim configs - " + e.getMessage());
+
+                }
             }
         });
     }

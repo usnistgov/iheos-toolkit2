@@ -47,6 +47,7 @@ public class Site  implements IsSerializable, Serializable {
 	public boolean equals(Site s) {
 		return
 				((name == null) ? s.name == null : name.equals(s.name)) &&
+						((user == null) ? s.user == null : user.equals(s.user)) &&
 				((home == null) ? s.home == null : home.equals(s.home)) &&
 				((pifHost == null) ? s.pifHost == null : pifHost.equals(s.pifHost)) &&
 				((pifPort == null) ? s.pifPort == null : pifPort.equals(s.pifPort)) &&

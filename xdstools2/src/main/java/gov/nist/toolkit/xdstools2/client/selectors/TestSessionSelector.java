@@ -31,6 +31,8 @@ public class TestSessionSelector {
 
     // Listen on the EventBus in the future
     private void link() {
+
+        // Test sessions reloaded
         Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
@@ -39,6 +41,8 @@ public class TestSessionSelector {
             }
         });
 
+
+        // SELECT
         Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {

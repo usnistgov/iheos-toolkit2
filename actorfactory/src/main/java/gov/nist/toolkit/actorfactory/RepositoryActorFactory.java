@@ -32,6 +32,7 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 
 	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) {
 		ActorType actorType = ActorType.REPOSITORY;
+		logger.debug("Creating " + actorType.getName() + " with id " + simId);
 		SimulatorConfig sc;
 		if (configureBase)
 			sc = configureBaseElements(actorType, simId);

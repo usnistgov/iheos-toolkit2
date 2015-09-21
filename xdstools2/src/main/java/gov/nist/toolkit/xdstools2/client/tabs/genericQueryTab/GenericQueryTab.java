@@ -14,9 +14,11 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
@@ -26,6 +28,7 @@ import java.util.*;
  *
  */
 public abstract class GenericQueryTab  extends TabbedWindow {
+	private final SiteLoader siteLoader = new SiteLoader(this);
 	GenericQueryTab me;
 
 	protected FlexTable mainGrid;
@@ -73,11 +76,12 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		this.siteActorManager = siteActorManager;
 		siteActorManager.setGenericQueryTab(this);
 
-
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
 		//		EnvironmentSelector.SETENVIRONMENT(toolkitService);
 	}
+
+	protected TestSessionManager2 getTestSessionManager() { return testSessionManager; }
 
 	public boolean isTLS() {
 		return doTls.getValue();
@@ -407,9 +411,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	Widget mainConfigPanelDivider = null;
 	VerticalPanel mainConfigPanel = null;
 
-	public void redisplay(boolean clear) {
+	public void redisplay(boolean clearResults) {
 
-		if (resultPanel != null && clear)
+		if (resultPanel != null && clearResults)
 			resultPanel.clear();
 		initMainGrid();
 
@@ -474,7 +478,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			HTML label = new HTML();
 			label.setHTML("Site");
 			mainGrid.setWidget(row, 0, label);
-			byActorButtons = addSitesForActor(selectByActor, row);
+			byActorButtons = siteLoader.addSitesForActor(selectByActor, row);
 			row++;
 		} else if (transactionTypes != null){    // most queries and retrieves use this
 			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("Site"));
@@ -484,7 +488,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			for (TransactionType tt : transactionTypes) {
 				ActorType at = ActorType.getActorType(tt);  
 				siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
-				siteGrid.setWidget(siteGridRow++, 1, siteTableforTransactions(tt));
+				siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
 			}
 		}
 
@@ -513,96 +517,17 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		runnerButtons.add(resultsShortDescription);
 	}
 
-	public List<RadioButton> addSitesForActor(ActorType actorType, int majorRow) {
-
-		Set<Site> sites = new HashSet<Site>();
-
-		List<String> siteNames = new ArrayList<String>();
-		for (Site site : sites) 
-			siteNames.add(site.getName());
-		siteNames = new StringSort().sort(siteNames);
-
-		for (TransactionType tt : actorType.getTransactions()) {
-			sites.addAll(findSites(tt, true  /* tls */));
-			sites.addAll(findSites(tt, false /* tls */));
-		}
-
-		int cols = 5;
-		int row=0;
-		int col=0;
-		Grid grid = new Grid( sites.size()/cols + 1 , cols);
-		List<RadioButton> buttons = new ArrayList<RadioButton>();
-
-		SiteSpec commonSiteSpec = getCommonSiteSpec();
-
-		for (Site site : sites) {
-			String siteName = site.getName();
-			RadioButton rb = new RadioButton(actorType.getName(), siteName);
-
-			if (
-					commonSiteSpec.getName().equals(actorType.getName())  
-					//	&& commonSiteSpec.getActorType() == actorType
-					) 
-				rb.setValue(true);
-			if (
-					commonSiteSpec.getName().equals(siteName) 
-					//	&& commonSiteSpec.getActorType() == actorType
-					)
-				rb.setValue(true);
-
-			buttons.add(rb);
-			grid.setWidget(row, col, rb);
-			col++;
-			if (col >= cols) {
-				col = 0;
-				row++;
-			}
-
-		}
-		mainGrid.setWidget(majorRow, 1, grid);
-
-		return buttons;
-	}
 
 	// since to has come over from server and tt was generated here, they
 	// don't align hashvalues.  Search must be done the old fashion way
 	List<Site> findSites(TransactionType tt, boolean tls) {
-		Map<TransactionType, List<Site>> map;
 
 		// aka testSession
-		String user = testSessionManager.getCurrentTestSession();
-		Xdstools2.DEBUG("user is " + user);
 
-		if (tls) {
-			map = GenericQueryTab.transactionOfferings.tmap;
-		} else {
-			map = GenericQueryTab.transactionOfferings.map;
-		}
-
-		for (TransactionType t : map.keySet()) {
-			if (t.getName().equals(tt.getName())) {
-				List<Site> sitesForTransaction = map.get(t);
-				if (user == null) return sitesForTransaction;
-
-				// filter out sites that represent sims and do not match user
-				List<Site> sitesForUser = new ArrayList<>();
-				for (Site s : sitesForTransaction) {
-					Xdstools2.DEBUG("site " + s.getName() + " has user " + s.user);
-					if (s.user == null)
-						sitesForUser.add(s);
-					else if (user.equals(s.user)) {
-						Xdstools2.DEBUG("add site " + s.getName() + "(" + s.user + ") for user " + user);
-						sitesForUser.add(s);
-					}
-				}
-
-				return sitesForUser;
-			}
-		}
-		return new ArrayList<Site>();
+		return siteLoader.findSites(tt, tls);
 	}
 
-	Widget siteTableforTransactions(TransactionType tt) {
+	Widget getSiteTableWidgetforTransactions(TransactionType tt) {
 		if (transactionSelectionManager == null)
 			transactionSelectionManager = new TransactionSelectionManager(couplings, this);
 		List<Site> sites = getSiteList(tt); 
@@ -625,7 +550,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	}
 
 	List<Site> getSiteList(TransactionType tt) {
-		List<Site> sites = findSites(tt, isTLS());
+		List<Site> sites = siteLoader.findSites(tt, isTLS());
 
 		List<String> siteNames = new ArrayList<String>();
 		for (Site site : sites) 
