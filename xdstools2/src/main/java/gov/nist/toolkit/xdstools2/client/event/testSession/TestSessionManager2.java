@@ -52,6 +52,7 @@ public class TestSessionManager2 {
     public void setCurrentTestSession(String testSession) {
         currentTestSession = testSession;
     }
+    public boolean isTestSessionValid() { return !isEmpty(currentTestSession); }
 
     String fromCookie() {
         String x = Cookies.getCookie(CookieManager.TESTSESSIONCOOKIENAME);
@@ -63,7 +64,9 @@ public class TestSessionManager2 {
 
     // get sessionNames from server and broadcast to all tabs
     public void load() { load(fromCookie()); }
-    public void load(final String newSelection) {
+    public void load(final String initialSelection) {
+        Xdstools2.DEBUG("initialSelection is " + initialSelection + ".  currentTestSession is " + currentTestSession);
+
         toolkitService.getMesaTestSessionNames(new AsyncCallback<List<String>>() {
             @Override
             public void onFailure(Throwable throwable) {
@@ -71,18 +74,31 @@ public class TestSessionManager2 {
             }
 
             @Override
-            public void onSuccess(List<String> testSessionNames) {
-                if (!newSelection.isEmpty()) {
-                    currentTestSession = newSelection;
-                    if (testSessionNames.contains(newSelection)) {
-                        toCookie(newSelection);
-                        Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessionNames));
-                        Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newSelection));
-                    } else {
-                        Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessionNames));
+            public void onSuccess(List<String> newTestSessions) {
+                Xdstools2.DEBUG("newTestSessions = " + newTestSessions);
+                testSessions = newTestSessions;
+
+                if (isLegalTestSession(initialSelection)) {
+                    Xdstools2.DEBUG("initialSeletion is legal");
+                    currentTestSession = initialSelection;
+                    toCookie(currentTestSession);
+                    Xdstools2.DEBUG("set cookie to " + currentTestSession);
+                } else {
+                    if (isLegalTestSession(currentTestSession)) {
+                        Xdstools2.DEBUG("currentTestSelection, " + currentTestSession + ", is legal");
+                        toCookie(currentTestSession);
+                        Xdstools2.DEBUG("set cookie to " + currentTestSession);
+                    }
+                    else {
+                        currentTestSession = "";
+                        Xdstools2.DEBUG("delete cookie");
                         deleteCookie();
                     }
                 }
+                Xdstools2.DEBUG("currentTestSelection is " + currentTestSession);
+                Xdstools2.DEBUG("cookie is " + fromCookie());
+                Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
+                Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
             }
         });
     }
@@ -116,4 +132,7 @@ public class TestSessionManager2 {
             }
         });
     }
+
+    boolean isEmpty(String x) { return x == null || x.trim().equals(""); }
+    boolean isLegalTestSession(String name) { return !isEmpty(name) && testSessions.contains(name); }
 }

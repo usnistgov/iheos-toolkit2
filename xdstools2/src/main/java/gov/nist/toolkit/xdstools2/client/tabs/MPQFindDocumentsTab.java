@@ -89,7 +89,6 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 		prow = codeFilterBank.addCodeFiltersByName(otherFilterNames, paramGrid, prow, 1, 2);
 
 		topPanel.add(paramGrid);
-		topPanel.add(new HTML("<hr/>"));
 		topPanel.add(mainGrid);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);

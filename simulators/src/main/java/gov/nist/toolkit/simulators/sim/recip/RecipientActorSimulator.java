@@ -14,10 +14,10 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Deprecated  // Using RepositoryActorSimulator and RegistryActorSimulator via RepositoryRegistryActorFactory instead
 public class RecipientActorSimulator extends BaseDsActorSimulator {
-	DsSimCommon dsSimCommon;
-	SimDb db;
-	HttpServletResponse response;
+
+	public RecipientActorSimulator() {}
 
 	public RecipientActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response) {
 		super(common, dsSimCommon);
@@ -31,6 +31,7 @@ public class RecipientActorSimulator extends BaseDsActorSimulator {
 		this.db = dsSimCommon.simCommon.db;
 		this.response = dsSimCommon.simCommon.response;
 		this.simulatorConfig = simulatorConfig;
+		init();
 	}
 
 	public void init() {}
@@ -42,7 +43,6 @@ public class RecipientActorSimulator extends BaseDsActorSimulator {
 			
 			common.vc.isPnR = true;
 			common.vc.isXDR = true;
-//			common.vc.isXDRLimited = true;;
 			common.vc.xds_b = true;
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;

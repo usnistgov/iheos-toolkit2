@@ -19,6 +19,7 @@ public class SimulatorStats implements Serializable, IsSerializable {
 
     static public final String DOCUMENT_ENTRY_COUNT = "DocumentEntries";
     static public final String SUBMISSION_SET_COUNT = "SubmissionSets";
+    static public final String ASSOCIATION_COUNT = "Associations";
     static public final String FOLDER_COUNT = "Folders";
     static public final String PATIENT_ID_COUNT = "PatientIds";
     static public final String DOCUMENT_COUNT = "Documents";

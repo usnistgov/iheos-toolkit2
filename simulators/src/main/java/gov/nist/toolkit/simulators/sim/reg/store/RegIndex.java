@@ -220,6 +220,7 @@ public class RegIndex implements RegistryValidationInterface, Serializable {
 
 		stats.put(SimulatorStats.DOCUMENT_ENTRY_COUNT, mc.docEntryCollection.size());
 		stats.put(SimulatorStats.SUBMISSION_SET_COUNT, mc.subSetCollection.size());
+		stats.put(SimulatorStats.ASSOCIATION_COUNT, mc.assocCollection.size());
 		stats.put(SimulatorStats.FOLDER_COUNT, mc.folCollection.size());
 
 		SimDb db = new SimDb(simId);

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RegistryActorFactory extends AbstractActorFactory {
+	boolean isRecipient = false;  // used as part of Document Recipient
 
 	static final List<TransactionType> incomingTransactions =
 		Arrays.asList(
@@ -28,10 +29,6 @@ public class RegistryActorFactory extends AbstractActorFactory {
 				TransactionType.STORED_QUERY,
 				TransactionType.UPDATE
 				);
-	
-//	public Simulator buildNew(SimManager simm, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
-//		return buildNew(simm, null, configureBase);
-//	}
 
 	// This does not start any listeners allocated.  The port assignment is made
 	// and the caller gets the responsibility for starting the listeners
@@ -45,22 +42,34 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
-		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
+		if (isRecipient) {  // part of recipient
+			addFixedConfig(sc, SimulatorConfig.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addFixedConfig(sc, SimulatorConfig.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
+			addEditableConfig(sc, SimulatorConfig.VALIDATE_CODES, ParamType.BOOLEAN, false);
+			addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
+			addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
+			addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
+		} else {  // not part of recipient
+			File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+			addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
-		addEditableConfig(sc, SimulatorConfig.update_metadata_option, ParamType.BOOLEAN, false);
-		addFixedConfig(sc, SimulatorConfig.pif_port, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
-		addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
-		addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
-		addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
-		addFixedEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
-		addFixedEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
+			addEditableConfig(sc, SimulatorConfig.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addFixedConfig(sc, SimulatorConfig.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
+			addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
+			addEditableConfig(sc, SimulatorConfig.VALIDATE_CODES, ParamType.BOOLEAN, true);
+			addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
+			addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
+			addFixedEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
+			addFixedEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
+		}
 
 		return new Simulator(sc);
 	}
 
+	public void asRecipient() { isRecipient = true; }
+
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) {
-		SimulatorConfigElement ele = config.get(SimulatorConfig.update_metadata_option);
+		SimulatorConfigElement ele = config.get(SimulatorConfig.UPDATE_METADATA_OPTION);
 		if (ele == null)
 			return;
 		Boolean optionOn = ele.asBoolean();
@@ -129,7 +138,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 				true, 
 				isAsync));
 		
-		SimulatorConfigElement updateElement = asc.get(SimulatorConfig.update_metadata_option);
+		SimulatorConfigElement updateElement = asc.get(SimulatorConfig.UPDATE_METADATA_OPTION);
 		if (updateElement.asBoolean()) {
 			site.addTransaction(new TransactionBean(
 					TransactionType.UPDATE.getCode(),
@@ -144,7 +153,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 					true, 
 					isAsync));
 		}
-		SimulatorConfigElement pifPortElement = asc.get(SimulatorConfig.pif_port);
+		SimulatorConfigElement pifPortElement = asc.get(SimulatorConfig.PIF_PORT);
 		site.pifPort = pifPortElement.asString();
 		site.pifHost = Installation.installation().propertyServiceManager().getToolkitHost();
 

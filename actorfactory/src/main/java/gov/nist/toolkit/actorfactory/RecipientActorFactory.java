@@ -4,29 +4,25 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 public class RecipientActorFactory  extends AbstractActorFactory {
-	SimId newID = null;
 
 	static final List<TransactionType> incomingTransactions = 
-		Arrays.asList(TransactionType.PROVIDE_AND_REGISTER);
+		Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER);
 
 
 	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
-		this.newID = newID;
+		RegistryActorFactory registryActorFactory;
+		RepositoryActorFactory repositoryActorFactory;
 
 		ActorType actorType = ActorType.DOCUMENT_RECIPIENT;
 		SimulatorConfig sc;
@@ -34,16 +30,21 @@ public class RecipientActorFactory  extends AbstractActorFactory {
 			sc = configureBaseElements(actorType, newID);
 		else 
 			sc = new SimulatorConfig();
-		if (sc.getValidationContext() == null)
-			sc.setValidationContext(DefaultValidationContextFactory.validationContext());
-		
 
-		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+		SimId simId = sc.getId();
+		// This needs to be grouped with a Document Registry
+		registryActorFactory = new RegistryActorFactory();
+		registryActorFactory.asRecipient();
+		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);
 
-		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
-		
-		addEditableEndpoint(sc, pnrEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, false);
-		addEditableEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, true);
+		// This needs to be grouped with a Document Repository also
+		repositoryActorFactory = new RepositoryActorFactory();
+		repositoryActorFactory.asRecipient();  // behave like Document Recipient
+		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).getConfig(0);
+
+		// two combined simulators do not have separate lives
+		sc.add(registryConfig);
+		sc.add(repositoryConfig);
 
 		return new Simulator(sc);
 	}

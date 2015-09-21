@@ -2,6 +2,7 @@ package gov.nist.toolkit.testenginelogging;
 
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 public class TestDetails  {
 
@@ -387,7 +386,7 @@ public class TestDetails  {
 		}
 		if ( ! path.exists() )
 			throw new Exception("Test Section " + section + 
-					" has been requested but does not exist or does not contain a " + testPlanFileName + " file");
+					" has been requested but does not exist or does not contain a " + testPlanFileName + " file (" + path + ")");
 		return path;
 	}
 

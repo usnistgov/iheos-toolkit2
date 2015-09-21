@@ -17,15 +17,18 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 
 	static final String repositoryUniqueIdBase = "1.1.4567332.1.";
 	static int repositoryUniqueIdIncr = 1;
+	boolean isRecipient = false;
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(
 				TransactionType.PROVIDE_AND_REGISTER,
 				TransactionType.RETRIEVE);
 
-//	public Simulator buildNew(SimManager simm, boolean configureBase) {
-//		return buildNew(simm, null, configureBase);
-//	}
+
+	// Label as a DocumentRecipient
+	public void asRecipient() {
+		isRecipient = true;
+	}
 
 	public Simulator buildNew(SimManager simm, SimId simId, boolean configureBase) {
 		ActorType actorType = ActorType.REPOSITORY;
@@ -35,14 +38,19 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		addEditableConfig(sc, repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
-		addFixedEndpoint(sc, pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
-		addFixedEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
-		addFixedEndpoint(sc, retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
-		addFixedEndpoint(sc, retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
-		addFixedEndpoint(sc, registerEndpoint, actorType, TransactionType.REGISTER, false);
-		addFixedEndpoint(sc, registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
-		
+		if (isRecipient) {
+			addFixedEndpoint(sc, pnrEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, false);
+			addFixedEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, true);
+		} else {   // Repository
+			addEditableConfig(sc, repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
+			addFixedEndpoint(sc, pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
+			addFixedEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
+			addFixedEndpoint(sc, retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
+			addFixedEndpoint(sc, retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
+			addFixedEndpoint(sc, registerEndpoint, actorType, TransactionType.REGISTER, false);
+			addFixedEndpoint(sc, registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+		}
+
 		return new Simulator(sc);
 	}
 	

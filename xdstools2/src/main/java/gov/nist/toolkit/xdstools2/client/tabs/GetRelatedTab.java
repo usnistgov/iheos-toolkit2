@@ -1,9 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -12,14 +14,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class GetRelatedTab  extends GenericQueryTab {
 
@@ -97,7 +91,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 			mainGrid.setWidget(row, 1, cb);
 			row++;
 		}
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings);
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 	}
 
 
@@ -106,11 +100,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null) {
-				new PopupMessage("You must select a site first");
-				return;
-			}
+			if (!verifySiteProvided()) return;
 
 			if (uuid.getValue() == null || uuid.getValue().equals("")) {
 				new PopupMessage("You must enter a UUID first");
@@ -122,12 +112,13 @@ public class GetRelatedTab  extends GenericQueryTab {
 				if (cb.getValue())
 					assocs.add(cb.getText());
 			}
-			
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+			if (assocs.size() == 0) {
+				new PopupMessage("You must choose at least one Association type");
+				return;
+			}
 
-			toolkitService.getRelated(siteSpec, new ObjectRef(uuid.getValue().trim()), assocs, queryCallback);
+			rigForRunning();
+			toolkitService.getRelated(getSiteSelection(), new ObjectRef(uuid.getValue().trim()), assocs, queryCallback);
 		}
 
 	}

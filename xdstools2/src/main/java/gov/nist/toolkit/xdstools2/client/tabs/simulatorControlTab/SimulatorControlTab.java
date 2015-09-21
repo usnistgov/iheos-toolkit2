@@ -127,6 +127,10 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 
 	void createNewSimulator(String actorTypeName, SimId simId) {
+		if(!simId.isValid()) {
+			new PopupMessage("SimId " + simId + " is not valid");
+			return;
+		}
 		toolkitService.getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
 
 			public void onFailure(Throwable caught) {
@@ -223,7 +227,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 						table.setText(row, nameColumn, config.getDefaultName());
 						table.setText(row, idColumn, config.getId().toString());
 						table.setText(row, typeColumn, ActorType.findActor(config.getType()).getName());
-						SimulatorConfigElement portConfig = config.get(SimulatorConfig.pif_port);
+						SimulatorConfigElement portConfig = config.get(SimulatorConfig.PIF_PORT);
 						if (portConfig != null) {
 							String pifPort = portConfig.asString();
 							table.setText(row, pidPortColumn, pifPort);

@@ -11,20 +11,14 @@ import gov.nist.toolkit.valregmetadata.object.Classification;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMContainer;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.*;
 
 public class CodeValidationBase {
 	Metadata m;
@@ -336,10 +330,12 @@ public class CodeValidationBase {
 			if (container instanceof OMElement)
 				owner = (OMElement) container;
 		}
-		if (vc.isXDM || vc.isXDR)
-			er.detail(objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration");
-		else
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration", this, "ITI TF-3: 4.1.10");
+		if (vc.isValidateCodes) {
+			if (vc.isXDM || vc.isXDR)
+				er.detail(objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration");
+			else
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration", this, "ITI TF-3: 4.1.10");
+		}
 	}
 
 

@@ -402,9 +402,6 @@
                                 <copy todir="${testkitOut}/examples">
                                     <fileset dir="${testkitIn}/examples"/>
                                 </copy>
-                                <copy todir="${testkitOut}/utilities">
-                                    <fileset dir="${testkitIn}/utilities"/>
-                                </copy>
                                 <copy todir="${testkitOut}/actorcollections">
                                     <fileset dir="${testkitIn}/actorcollections"/>
                                 </copy>
