@@ -158,41 +158,52 @@ public class HomeTab extends GenericQueryTab {
 
 		if (forIHE) {
 			mainGrid.setWidget(row, col, addHTML("<b>Queries & Retrieves</b>"));
+			Xdstools2.addtoMainMenu(addHTML("<h2>Toolkit</h2>"));
+			Xdstools2.addtoMainMenu(addHTML("<h3>Queries & Retrieves</h3>"));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findDocumentsByRefIdTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsByRefIdTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsByRefIdTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsByRefIdTabLabel)));
 			row++;
-		}
 
-		if (forIHE) {
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.mpqFindDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.mpqFindDocumentsTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.mpqFindDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.mpqFindDocumentsTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.getDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.getDocumentsTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.getDocumentsTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.getRelatedTabLabel, new TabLauncher(myContainer, TabLauncher.getRelatedTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getRelatedTabLabel, new TabLauncher(myContainer, TabLauncher.getRelatedTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findFoldersTabLabel, new TabLauncher(myContainer, TabLauncher.findFoldersTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findFoldersTabLabel, new TabLauncher(myContainer, TabLauncher.findFoldersTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.getFoldersTabLabel, new TabLauncher(myContainer, TabLauncher.getFoldersTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getFoldersTabLabel, new TabLauncher(myContainer, TabLauncher.getFoldersTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.getFolderAndContentsTabLabel, new TabLauncher(myContainer, TabLauncher.getFolderAndContentsTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getFolderAndContentsTabLabel, new TabLauncher(myContainer, TabLauncher.getFolderAndContentsTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.getSubmissionSetTabLabel, new TabLauncher(myContainer, TabLauncher.getSubmissionSetTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getSubmissionSetTabLabel, new TabLauncher(myContainer, TabLauncher.getSubmissionSetTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.getAllTabLabel, new TabLauncher(myContainer, TabLauncher.getAllTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getAllTabLabel, new TabLauncher(myContainer, TabLauncher.getAllTabLabel)));
 			row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.documentRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.documentRetrieveTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.documentRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.documentRetrieveTabLabel)));
 			row++;
 		}
 
@@ -208,15 +219,19 @@ public class HomeTab extends GenericQueryTab {
 		col=startingColumn+1;
 
 		mainGrid.setWidget(row, col, addHTML("<b>Send Test Data</b>"));
+		Xdstools2.addtoMainMenu(addHTML("<h3>Send Test Data</h3>"));
 		row++;
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.registryTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.registryTestDataTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.link(TabLauncher.registryTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.registryTestDataTabLabel)));
 		row++;
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.repositoryTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTestDataTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.link(TabLauncher.repositoryTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTestDataTabLabel)));
 		row++;
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.recipientTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.recipientTestDataTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.link(TabLauncher.recipientTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.recipientTestDataTabLabel)));
 		row++;
 
 
@@ -228,18 +243,20 @@ public class HomeTab extends GenericQueryTab {
 		col=startingColumn+2;
 
 		mainGrid.setWidget(row, col, addHTML("<b>Tools</b>"));
+		Xdstools2.addtoMainMenu(addHTML("<h3>Tools</h3>"));
 		row++;
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.adminTabLabel, new TabLauncher(myContainer, TabLauncher.adminTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.adminTabLabel, new TabLauncher(myContainer, TabLauncher.adminTabLabel)));
 		row++;
 
 		if (forIHE) {
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.repositoryTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.repositoryTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTabLabel)));
 			row++;
-		}
 
-		if (forIHE) {
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(myContainer, TabLauncher.mesaTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(myContainer, TabLauncher.mesaTabLabel)));
 			row++;
 
 			if (Xdstools2.tkProps().get("toolkit.mainmenu.experimental", "false").equalsIgnoreCase("true")) {
@@ -248,16 +265,19 @@ public class HomeTab extends GenericQueryTab {
 			}
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testLogLabel, new TabLauncher(myContainer, TabLauncher.testLogLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.testLogLabel, new TabLauncher(myContainer, TabLauncher.testLogLabel)));
 			row++;
 
 			//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.allocatePatientIdTabLabel, new TabLauncher(container, TabLauncher.allocatePatientIdTabLabel)));
 			//		row++;
 
 			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.connectathonTabLabel, new TabLauncher(myContainer, TabLauncher.connectathonTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.connectathonTabLabel, new TabLauncher(myContainer, TabLauncher.connectathonTabLabel)));
 			row++;
 		}
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.messageValidatorTabLabel, new TabLauncher(myContainer, TabLauncher.messageValidatorTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.messageValidatorTabLabel, new TabLauncher(myContainer, TabLauncher.messageValidatorTabLabel)));
 		row++;
 
 		// ***************************************************************************
@@ -267,12 +287,15 @@ public class HomeTab extends GenericQueryTab {
 		col=startingColumn+3;
 
 		mainGrid.setWidget(row, col, addHTML("<b>Simulators</b>"));
+		Xdstools2.addtoMainMenu(addHTML("<h3>Simulators</h3>"));
 		row++;
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.simulatorControlTabLabel, new TabLauncher(myContainer, TabLauncher.simulatorControlTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.simulatorControlTabLabel, new TabLauncher(myContainer, TabLauncher.simulatorControlTabLabel)));
 		row++;
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.simulatorMessageViewTabLabel, new TabLauncher(myContainer, TabLauncher.simulatorMessageViewTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.simulatorMessageViewTabLabel, new TabLauncher(myContainer, TabLauncher.simulatorMessageViewTabLabel)));
 		row++;
 
 

@@ -70,7 +70,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Document Recipient",
 			Arrays.asList("DOC_RECIPIENT"),
             "rec",
-            "gov.nist.toolkit.simulators.sim.recip.RecipientActorSimulator",
+            "gov.nist.toolkit.simulators.sim.RegRepActorSimulator",
 			Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             true,
             null

@@ -77,6 +77,8 @@ public class RegRSim extends TransactionSimulator   {
 	// These steps are common to Registry and Update.  They operate
 	// on the entire metadata collection in both transactions.
 	protected void setup() {
+
+		// Pull metadata container off validation stack
 		try {
 			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidatorIfAvailable(MetadataContainer.class);
 			m = metaCon.getMetadata();

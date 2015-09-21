@@ -256,6 +256,7 @@ public class SimulatorServiceManager extends CommonService {
 
 	public List<SimulatorConfig> getAllSimConfigs(String user) throws Exception {
 		logger.debug(session.id() + ": " + "getAllSimConfigs for " + user);
+		if (user == null) return new ArrayList<>();
 
 		GenericSimulatorFactory simFact = new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
 
@@ -367,6 +368,12 @@ public class SimulatorServiceManager extends CommonService {
 					stats.add(RepositoryActorSimulator.getSimulatorStats(simId));
 				}
 				else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
+					SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
+					SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
+					rep.add(reg);
+					stats.add(rep);
+				}
+				else if (db.getSimulatorActorType() == ActorType.DOCUMENT_RECIPIENT) {
 					SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
 					SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
 					rep.add(reg);

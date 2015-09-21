@@ -65,19 +65,24 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 
 	public void init() {
 		SimulatorConfigElement configEle = simulatorConfig.get("repositoryUniqueId");
-		this.repositoryUniqueId = configEle.asString();
+		if (configEle != null)   // happens when used to implement a Document Recipient
+			this.repositoryUniqueId = configEle.asString();
 	}
 
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-		if (transactionType.equals(TransactionType.PROVIDE_AND_REGISTER)) {
+		if (transactionType.equals(TransactionType.PROVIDE_AND_REGISTER) ||
+				transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {
 
 			common.vc.isPnR = true;
 			common.vc.xds_b = true;
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
+
+			if (transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER))
+				common.vc.isXDR = true;
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
@@ -156,7 +161,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			return true;
 		}
 		else {
-			dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("RepositoryActorSimulator: Don't understand transaction " + transactionType, null);
 			return false;
 		}
 	}

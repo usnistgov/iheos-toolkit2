@@ -23,9 +23,11 @@ import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorT
 
 public class Xdstools2 implements EntryPoint, TabContainer {
 
-
+	HorizontalPanel tabPanelWrapper = new HorizontalPanel();
+	VerticalPanel mainMenuPanel = new VerticalPanel();
 	static TabPanel tabPanel = new TabPanel();
-	boolean UIDebug = false;
+
+	boolean UIDebug = true;
 	HorizontalPanel uiDebugPanel = new HorizontalPanel();
 
 	TabContainer getTabContainer() { return this;}
@@ -41,6 +43,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	// This is as toolkit wide singleton.  See class for details.
 	TestSessionManager2 testSessionManager = new TestSessionManager2();
 	static public TestSessionManager2 getTestSessionManager() { return ME.testSessionManager; }
+
+	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
 
 	// Central storage for parameters shared across all
 	// query type tabs
@@ -68,13 +72,19 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	void buildWrapper() {
 		// tabPanel = new TabPanel();
-		if ("xdstools2".equals(GWT.getModuleName())) // Hide this from V3 module
-			RootPanel.get().insert(tabPanel, 0);
-//		RootPanel.get().add(tabPanel);
-
+		if ("xdstools2".equals(GWT.getModuleName())) { // Hide this from V3 module
+			HorizontalPanel mainMenuWrapper = new HorizontalPanel();
+			mainMenuWrapper.setBorderWidth(1);
+			mainMenuWrapper.add(mainMenuPanel);
+			tabPanelWrapper.add(mainMenuWrapper);
+			tabPanelWrapper.add(tabPanel);
+			RootPanel.get().insert(tabPanelWrapper, 0);
+		}
 
 		tabPanel.setWidth("100%");
-
+		tabPanel.setHeight("100%");
+		tabPanelWrapper.setWidth("100%");
+		tabPanelWrapper.setHeight("100%");
 	}
 
 
@@ -100,7 +110,6 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 			tabPanel.selectTab(index);
 
 		try {
-
 			if (getEventBus()!=null && index>0) {
 				getEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
 			}
@@ -108,8 +117,6 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		} catch (Throwable t) {
 			Window.alert("V2TabOpenedEvent error: " +t.toString());
 		}
-
-
 	}
 
 	HomeTab ht = null;
@@ -181,10 +188,10 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	}
 
 	final ListBox debugMessages = new ListBox();
-//	static public void DEBUG(String msg) {
-//		ME.debugMessages.addItem(msg);
-//		ME.debugMessages.setSelectedIndex(ME.debugMessages.getItemCount()-1);
-//	}
+	static public void DEBUG(String msg) {
+		ME.debugMessages.addItem(msg);
+		ME.debugMessages.setSelectedIndex(ME.debugMessages.getItemCount()-1);
+	}
 
 	private void onModuleLoad2() {
 		buildWrapper();
@@ -214,7 +221,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		// only one panel, it's all done in tabs
 		tabPanel.selectTab(0);
 
-		tabPanel.addSelectionHandler(new SelectionHandler<Integer>(){
+		tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {

@@ -7,19 +7,13 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
-import gov.nist.toolkit.registrymetadata.client.AnyId;
-import gov.nist.toolkit.registrymetadata.client.AnyIds;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 
 import java.util.*;
@@ -63,6 +57,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	public boolean doASYNC = false;
 	BaseSiteActorManager siteActorManager;// = new SiteActorManager(this);
 	boolean hasPatientIdParam = false;
+	HTML resultsShortDescription = new HTML();
 
 	static TransactionOfferings transactionOfferings = null;  // Loaded from server
 
@@ -101,14 +96,26 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		public void onFailure(Throwable caught) {
 //			resultPanel.clear();
 			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error running validation: " + caught.getMessage() + "</font>"));
+			resultsShortDescription.setText("");
 		}
 
 		public void onSuccess(List<Result> theresult) {
-//			addTextResults("Received " + theresult.size() + " results");
+			resultsShortDescription.setText("");
+			try {
+				if (theresult.size() > 0) {
+					MetadataCollection mc = theresult.get(0).getStepResults().get(0).getMetadata();
+					StringBuilder buf = new StringBuilder();
+					buf.append("  ==> ");
+					buf.append(mc.submissionSets.size()).append(" SubmissionSets ");
+					buf.append(mc.docEntries.size()).append(" DocumentEntries ");
+					buf.append(mc.folders.size()).append(" Folders ");
+					buf.append(mc.objectRefs.size()).append(" ObjectRefs ");
+					resultsShortDescription.setText(buf.toString());
+				}
+			} catch (Exception e) {}
 			boolean status = true;
 			results = theresult;
 			for (Result result : results) {
-//				addTextResults("Received " + result.assertions.assertions.size() + " assertions");
 				for (AssertionResult ar : result.assertions.assertions) {
 					String assertion = ar.assertion.replaceAll("\n", "<br />");
 					if (ar.status) {
@@ -196,6 +203,15 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			queryBoilerplate = null;
 		}
 		this.hasPatientIdParam = hasPatientIdParam;
+
+		if (mainConfigPanelDivider == null) {
+			mainConfigPanelDivider = new HTML("<hr />");
+			topPanel.add(mainConfigPanelDivider);
+			mainConfigPanel = new VerticalPanel();
+			topPanel.add(mainConfigPanel);
+			topPanel.add(new HTML("<hr />"));
+		}
+		topPanel.add(resultPanel);
 		queryBoilerplate = new QueryBoilerplate(
 				this, runner, transactionTypes,
 				couplings
@@ -388,33 +404,40 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		row = row_initial;
 	}
 
+	Widget mainConfigPanelDivider = null;
+	VerticalPanel mainConfigPanel = null;
+
 	public void redisplay(boolean clear) {
 
 		if (resultPanel != null && clear)
 			resultPanel.clear();
+		initMainGrid();
 
 		//			genericQueryTab.perTransTypeRadioButtons = new HashMap<TransactionType, List<RadioButton>>();
 
-		initMainGrid();
+		mainConfigPanel.clear();
+
+
+		// two columns - title and contents
+		final int titleColumn = 0;
+		final int contentsColumn = 1;
+		int commonGridRow = 0;
+		FlexTable commonParamGrid = new FlexTable();
+		mainConfigPanel.add(commonParamGrid);
 
 		if (hasPatientIdParam) {
-			HTML pidLabel = new HTML();
-			pidLabel.setText("Patient ID");
-			mainGrid.setWidget(row,0, pidLabel);
+			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("Patient ID"));
+
 			pidTextBox = new TextBox();
 			pidTextBox.setWidth("400px");
 			pidTextBox.setText(getCommonPatientId());
 			pidTextBox.addChangeHandler(new PidChangeHandler(this));
-			mainGrid.setWidget(row, 1, pidTextBox);
-			row++;
+			commonParamGrid.setWidget(commonGridRow++, contentsColumn, pidTextBox);
 		}
 
 		SiteSpec commonSiteSpec = null;
 		if (samlEnabled) {
-			HTML samlListLabel = new HTML();
-			samlListLabel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-			samlListLabel.setText("SAML");
-			mainGrid.setWidget(row, 0, samlListLabel);
+			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("SAML"));
 
 			commonSiteSpec = getCommonSiteSpec();
 
@@ -423,20 +446,19 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			samlListBox.addItem("NHIN SAML", "1");
 			samlListBox.setVisibleItemCount(1);
 			samlListBox.addChangeHandler(new SamlSelector(this));
-			mainGrid.setWidget(row, 1, samlListBox);
 			if (commonSiteSpec != null)
 				samlListBox.setSelectedIndex((commonSiteSpec.isSaml) ? 1 : 0);
-			row++;
+			commonParamGrid.setWidget(commonGridRow++, contentsColumn, samlListBox);
 		}
 
 
 		if (tlsEnabled) {
-			doTls = new CheckBox("TLS?");
+			doTls = new CheckBox("");
 			if (commonSiteSpec != null)
 				doTls.setValue(getCommonSiteSpec().isTls());
 			doTls.addClickHandler(new TlsSelector(this));
-			mainGrid.setWidget(row, 1, doTls);
-			row++;
+			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("TLS"));
+			commonParamGrid.setWidget(commonGridRow++, contentsColumn, doTls);
 		}
 
 
@@ -445,9 +467,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			doAsync.setValue(doASYNC);
 			doAsync.addClickHandler(new AsyncSelector(this));
 			mainGrid.setWidget(row, 1, doAsync);
+			row++;
 		}
-		row++;
-
 
 		if (selectByActor != null) {  // this is only used in Mesa test related panels
 			HTML label = new HTML();
@@ -456,22 +477,23 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			byActorButtons = addSitesForActor(selectByActor, row);
 			row++;
 		} else if (transactionTypes != null){    // most queries and retrieves use this
+			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("Site"));
+			FlexTable siteGrid = new FlexTable();
+			commonParamGrid.setWidget(commonGridRow++, contentsColumn, siteGrid);
+			int siteGridRow = 0;
 			for (TransactionType tt : transactionTypes) {
 				ActorType at = ActorType.getActorType(tt);  
-				HTML label = new HTML();
-				label.setHTML(at.getName());    // actor type (Registry or IG etc)
-				mainGrid.setWidget(row, 0, label);
-
-				addSitesForTransaction(tt, row);
-				row++;
+				siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
+				siteGrid.setWidget(siteGridRow++, 1, siteTableforTransactions(tt));
 			}
 		}
 
-//		topPanel.add(resultPanel);
-
+		HorizontalPanel runnerButtons = new HorizontalPanel();
+		commonParamGrid.setWidget(commonGridRow++, 1, runnerButtons);
 		if (runEnabled) {
 			setGoButton(new Button("Run"));
-			mainGrid.setWidget(row++, 1, getGoButton());
+			runnerButtons.add(getGoButton());
+//			mainGrid.setWidget(row++, 1, getGoButton());
 		}
 
 		try {
@@ -481,11 +503,14 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		if (enableInspectResults) {
 			setInspectButton(new Button("Inspect Results"));
 			getInspectButton().setEnabled(false);
-			mainGrid.setWidget(row++, 1, getInspectButton());
+			runnerButtons.add(getInspectButton());
 		}
 
 		if (getInspectButton() != null)
 			getInspectButton().addClickHandler(new InspectorLauncher(me));
+
+		resultsShortDescription.setHTML("");
+		runnerButtons.add(resultsShortDescription);
 	}
 
 	public List<RadioButton> addSitesForActor(ActorType actorType, int majorRow) {
@@ -545,7 +570,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		Map<TransactionType, List<Site>> map;
 
 		// aka testSession
-		String user = null; // testSessionManager.getCurrentSelection()
+		String user = testSessionManager.getCurrentTestSession();
+		Xdstools2.DEBUG("user is " + user);
 
 		if (tls) {
 			map = GenericQueryTab.transactionOfferings.tmap;
@@ -561,24 +587,26 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 				// filter out sites that represent sims and do not match user
 				List<Site> sitesForUser = new ArrayList<>();
 				for (Site s : sitesForTransaction) {
+					Xdstools2.DEBUG("site " + s.getName() + " has user " + s.user);
 					if (s.user == null)
 						sitesForUser.add(s);
-					else if (user.equals(s.user))
+					else if (user.equals(s.user)) {
+						Xdstools2.DEBUG("add site " + s.getName() + "(" + s.user + ") for user " + user);
 						sitesForUser.add(s);
+					}
 				}
 
-				return sitesForTransaction;
+				return sitesForUser;
 			}
 		}
 		return new ArrayList<Site>();
 	}
 
-	void addSitesForTransaction(TransactionType tt, int majorRow) {
+	Widget siteTableforTransactions(TransactionType tt) {
 		if (transactionSelectionManager == null)
 			transactionSelectionManager = new TransactionSelectionManager(couplings, this);
 		List<Site> sites = getSiteList(tt); 
 		transactionSelectionManager.addTransactionType(tt, sites);
-
 
 		int cols = 5;
 		int row=0;
@@ -591,14 +619,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 				col = 0;
 				row++;
 			}
-
-			//				SiteSpec commonSiteSpec = genericQueryTab.getCommonSiteSpec();
-			//				if (
-			//						commonSiteSpec.getName().equals(siteName) &&
-			//						commonSiteSpec.getActorType().hasTransaction(tt))
-			//					rb.setValue(true);
 		}
-		mainGrid.setWidget(majorRow, 1, grid);
+//		mainGrid.setWidget(majorRow, startingCol, grid);
+		return grid;
 	}
 
 	List<Site> getSiteList(TransactionType tt) {
@@ -621,6 +644,30 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return sites;
 	}
 
+	protected SiteSpec getSiteSelection() { return queryBoilerplate.getSiteSelection(); }
 
+	protected boolean verifyPidProvided() {
+		if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
+			new PopupMessage("You must enter a Patient ID first");
+			return false;
+		}
+		return true;
+	}
 
+	protected boolean verifySiteProvided() {
+		SiteSpec siteSpec = getSiteSelection();
+		if (siteSpec == null) {
+			new PopupMessage("You must select a site first");
+			return false;
+		}
+		return true;
+	}
+
+	protected void rigForRunning() {
+		resultPanel.clear();
+		// Where the bottom-of-screen listing from server goes
+		addStatusBox();
+		getGoButton().setEnabled(false);
+		getInspectButton().setEnabled(false);
+	}
 }

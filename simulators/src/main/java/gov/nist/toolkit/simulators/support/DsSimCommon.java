@@ -425,6 +425,7 @@ public class DsSimCommon {
      * @param e exception causing fault
      */
     public void sendFault(String description, Exception e) {
+        logger.info("Sending SoapFault - " + description + " - " + ((e == null) ? "" : e.getMessage()));
         SoapFault fault = new SoapFault(SoapFault.FaultCodes.Receiver, "InteralError: Exception building Response: " + description + " : " + ((e == null) ? "" : e.getMessage()));
         sendFault(fault);
     }

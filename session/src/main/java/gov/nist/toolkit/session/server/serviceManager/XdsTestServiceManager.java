@@ -595,6 +595,7 @@ public class XdsTestServiceManager extends CommonService {
 				names.add(namea[i]);
 		}
 
+		logger.debug("testSession names are " + names);
 		return names;
 	}
 

@@ -35,7 +35,7 @@ public class RegRepActorSimulator extends BaseDsActorSimulator {
 
     @Override
     public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
-        if (rep.supports(transactionType))
+        if (rep.supports(transactionType) || transactionType.isIdentifiedBy("xdrpr"))
             return rep.run(transactionType, mvc, validation);
         return reg.run(transactionType, mvc, validation);
     }
