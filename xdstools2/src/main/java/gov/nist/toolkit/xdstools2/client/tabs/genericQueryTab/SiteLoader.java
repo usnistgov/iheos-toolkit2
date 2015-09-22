@@ -7,7 +7,6 @@ import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
 
 import java.util.*;
 
@@ -32,17 +31,17 @@ public class SiteLoader {
             map = GenericQueryTab.transactionOfferings.map;
         }
 
-        Xdstools2.DEBUG("findSites for " + user);
+//        Xdstools2.DEBUG("findSites for " + user);
         for (TransactionType t : map.keySet()) {
             if (t.getName().equals(tt.getName())) {
                 List<Site> sitesForTransaction = map.get(t);
-                Xdstools2.DEBUG("tmap(" + t  + ") is " + sitesForTransaction);
+//                Xdstools2.DEBUG("tmap(" + t  + ") is " + sitesForTransaction);
                 if (user == null) return sitesForTransaction;
 
                 // filter out sites that represent sims and do not match user
                 List<Site> sitesForUser = new ArrayList<Site>();
                 for (Site s : sitesForTransaction) {
-                    Xdstools2.DEBUG("site " + s.getName() + " has user " + s.user);
+//                    Xdstools2.DEBUG("site " + s.getName() + " has user " + s.user);
                     if (s.user == null)
                         sitesForUser.add(s);
                     else if (user.equals(s.user)) {

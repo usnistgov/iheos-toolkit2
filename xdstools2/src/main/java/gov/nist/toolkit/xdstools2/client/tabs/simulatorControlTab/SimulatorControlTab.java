@@ -53,7 +53,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
 		container.addTab(topPanel, "Sim Control", select);
-		addCloseButton(container,topPanel, null);
+		addCloseButton(container, topPanel, null);
 		
 		addActorReloader();
 		
@@ -62,14 +62,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		tlsEnabled = false;
 		enableInspectResults = false;
 
-		HTML title = new HTML();
-		title.setHTML("<h2>Simulator Control</h2>");
-		topPanel.add(title);
+		topPanel.add(new HTML("<h2>Simulator Control</h2>"));
 
-		HTML addNewTitle = new HTML();
-		addNewTitle.setHTML("<h3>Add new simulator to this test session</h3>");
-		topPanel.add(addNewTitle);
-
+		topPanel.add(new HTML("<h3>Add new simulator to this test session</h3>"));
 
 		HorizontalPanel actorSelectPanel = new HorizontalPanel();
 		actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
@@ -298,6 +293,17 @@ public class SimulatorControlTab extends GenericQueryTab {
                         }
                     });
 					buttonPanel.add(deleteButton);
+
+					Button pidButton = new Button("Patient IDs");
+					pidButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+						@Override
+						public void onClick(ClickEvent clickEvent) {
+							SimulatorConfig config = getData();
+							PidEditTab editTab = new PidEditTab(config);
+							editTab.onTabLoad(myContainer, true, null);
+						}
+					});
+					buttonPanel.add(pidButton);
 				}
 			});
 		} catch (Exception e) {

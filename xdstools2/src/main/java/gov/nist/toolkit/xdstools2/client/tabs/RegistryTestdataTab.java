@@ -44,7 +44,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 		container.addTab(topPanel, "RegistryTestdata", select);
 		addCloseButton(container, topPanel, help);
 
-		topPanel.add(new HTML("<h2>Submit Registry Testdata</h2>"));
+		topPanel.add(new HTML("<h2>Send XDS Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;

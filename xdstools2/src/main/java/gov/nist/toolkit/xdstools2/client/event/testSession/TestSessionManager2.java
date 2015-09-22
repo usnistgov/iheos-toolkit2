@@ -67,7 +67,7 @@ public class TestSessionManager2 {
     // get sessionNames from server and broadcast to all tabs
     public void load() { load(fromCookie()); }
     public void load(final String initialSelection) {
-        Xdstools2.DEBUG("initialSelection is " + initialSelection + ".  currentTestSession is " + currentTestSession);
+//        Xdstools2.DEBUG("initialSelection is " + initialSelection + ".  currentTestSession is " + currentTestSession);
 
         toolkitService.getMesaTestSessionNames(new AsyncCallback<List<String>>() {
             @Override
@@ -77,27 +77,27 @@ public class TestSessionManager2 {
 
             @Override
             public void onSuccess(List<String> newTestSessions) {
-                Xdstools2.DEBUG("newTestSessions = " + newTestSessions);
+//                Xdstools2.DEBUG("newTestSessions = " + newTestSessions);
                 testSessions = newTestSessions;
 
                 if (isLegalTestSession(initialSelection)) {
-                    Xdstools2.DEBUG("initialSeletion is legal");
+//                    Xdstools2.DEBUG("initialSeletion is legal");
                     currentTestSession = initialSelection;
                     toCookie(currentTestSession);
-                    Xdstools2.DEBUG("set cookie to " + currentTestSession);
+//                    Xdstools2.DEBUG("set cookie to " + currentTestSession);
                 } else {
                     if (isLegalTestSession(currentTestSession)) {
-                        Xdstools2.DEBUG("currentTestSelection, " + currentTestSession + ", is legal");
+//                        Xdstools2.DEBUG("currentTestSelection, " + currentTestSession + ", is legal");
                         toCookie(currentTestSession);
-                        Xdstools2.DEBUG("set cookie to " + currentTestSession);
+//                        Xdstools2.DEBUG("set cookie to " + currentTestSession);
                     } else {
                         currentTestSession = "";
-                        Xdstools2.DEBUG("delete cookie");
+//                        Xdstools2.DEBUG("delete cookie");
                         deleteCookie();
                     }
                 }
-                Xdstools2.DEBUG("currentTestSelection is " + currentTestSession);
-                Xdstools2.DEBUG("cookie is " + fromCookie());
+//                Xdstools2.DEBUG("currentTestSelection is " + currentTestSession);
+//                Xdstools2.DEBUG("cookie is " + fromCookie());
                 Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
 

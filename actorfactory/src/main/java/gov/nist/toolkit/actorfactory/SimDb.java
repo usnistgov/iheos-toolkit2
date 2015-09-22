@@ -1,6 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -34,6 +35,7 @@ import java.util.List;
  * configurations are managed through ActorSimulatorConfig class.
  */
 public class SimDb {
+	private final PidDb pidDb = new PidDb(this);
 	SimId simId = null;    // ip is the simulator id
 	File dbRoot = null;  // base of the simulator db
 	String event = null;
@@ -102,6 +104,8 @@ public class SimDb {
 		// add this for safety when deleting simulators
 		Io.stringToFile(simSafetyFile(), simId.toString());
 	}
+
+	public PidDb getPidDb() { return pidDb; }
 
 	File simSafetyFile() { return new File(simDir, "simId.txt"); }
 	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
@@ -246,31 +250,8 @@ public class SimDb {
 	// All these require the new SimDb() be called with SimId parameter
 	// The other class that manages patient ids is PifHandler
 
-	public File getPatientIDFeedDir() {
-		File regDir = new File(simDir, ActorType.REGISTRY.getShortName());
-		File pifDir = new File(regDir, "pif");
-		return pifDir;
-	}
-
-	public List<String> getAllPatientIds() {
-		List<String> pids = new ArrayList<>();
-		File pidDir = getPatientIDFeedDir();
-		File[] aaDirs = pidDir.listFiles();
-		if (aaDirs == null) return pids;
-		for (int aai=0; aai<aaDirs.length; aai++) {
-			File aaDir = aaDirs[aai];
-			if (!aaDir.isDirectory()) continue;
-			String aaString = aaDir.getName();
-			File[] pidFiles = aaDir.listFiles();
-			if (pidFiles == null) continue;
-			for (int pidi=0; pidi<pidFiles.length; pidi++) {
-				File pidFile = pidFiles[pidi];
-				if (!pidFile.getName().endsWith(".txt")) continue;
-				String pid = stripFileType(pidFile.getName(), "txt");
-				pids.add(pid + "^^^&" + aaString + "&ISO");
-			}
-		}
-		return pids;
+	public List<Pid> getAllPatientIds() {
+		return pidDb.getAllPatientIds();
 	}
 
 	String stripFileType(String filename, String filetype) {
@@ -280,20 +261,21 @@ public class SimDb {
 	}
 
 	public File getAffinityDomainDir(String adOid) {
-		File regDir = new File(simDir, ActorType.REGISTRY.getShortName());
-		File pifDir = new File(regDir, "pif");
-		File adDir = new File(pifDir, adOid);
-		adDir.mkdirs();
-		return adDir;
+		return pidDb.getAffinityDomainDir(adOid);
 	}
 
-	public File getPidFile(String adOid, String pid) {
-		File adFile = getAffinityDomainDir(adOid);
-		File pidFile = new File(adFile, pid + ".txt");
-		return pidFile;
+	public void addPatientId(Pid pid) throws IOException {
+		pidDb.addPatientId(pid);
 	}
 
-	//
+	public void addPatientId(String patientId) throws IOException {
+		pidDb.addPatientId(patientId);
+	}
+
+	public boolean deletePatientIds(List<Pid> toDelete) {
+		return pidDb.deletePatientIds(toDelete);
+	}
+		//
 	//
 	//
 

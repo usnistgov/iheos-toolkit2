@@ -24,7 +24,7 @@ public class TestSessionSelector {
     static final String NONSELECTION = "--Select--";
 
     public TestSessionSelector(List<String> initialContents, String initialSelection) {
-        Xdstools2.DEBUG("initialize TestSessionSelector with " + initialContents + " ==>" + initialSelection);
+//        Xdstools2.DEBUG("initialize TestSessionSelector with " + initialContents + " ==>" + initialSelection);
         build(initialContents, initialSelection);
         link();
     }

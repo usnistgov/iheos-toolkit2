@@ -48,7 +48,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		addCloseButton(container, topPanel, help);
 
 		// Build UI content of tab
-		topPanel.add(new HTML("<h2>Submit Repository Testdata</h2>"));
+		topPanel.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;

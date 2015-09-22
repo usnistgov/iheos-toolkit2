@@ -390,4 +390,20 @@ public class SimulatorServiceManager extends CommonService {
 		}
 	}
 
+	public List<Pid> getPatientIds(SimId simId) throws IOException, NoSimException {
+		SimDb db = new SimDb(simId);
+		return db.getAllPatientIds();
+	}
+
+	public String addPatientIds(SimId simId, List<Pid> patientIds) throws IOException, NoSimException {
+		SimDb db = new SimDb(simId);
+		for (Pid pid : patientIds)
+			db.addPatientId(pid);
+		return null;
+	}
+
+	public boolean deletePatientIds(SimId simId, List<Pid> patientIds) throws IOException, NoSimException {
+		return new SimDb(simId).deletePatientIds(patientIds);
+	}
+
 }
