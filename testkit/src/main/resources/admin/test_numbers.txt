@@ -114,6 +114,7 @@ Added step homeCommunityId to test 11901
 Summer 2015 development
 
 15803 - GetAll Stored Query
+15804 - Simple Patient Identity Feed
 
 
 

@@ -3,6 +3,7 @@ package gov.nist.toolkit.actorfactory;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
@@ -179,10 +180,24 @@ public class SimDb {
 			if (sim.isDirectory())
 				ids.add(new SimId(sim.getName()));
 		}
-		
 		return ids;
 	}
-	
+
+	/**
+	 * Get a simulator.
+	 * @return simulator if it exists or null
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public SimulatorConfig getSimulator(SimId simId) throws IOException, ClassNotFoundException {
+		SimulatorConfig config = null;
+		try {
+			config = GenericSimulatorFactory.loadSimulator(simId, true);
+		} catch (NoSimException e) { // cannot actually happen give parameters
+		}
+		return config;
+	}
+
 	public File getSimulatorControlFile() {
 		return new File(simDir.toString() + File.separatorChar + "simctl.ser");
 	}
@@ -274,6 +289,10 @@ public class SimDb {
 
 	public boolean deletePatientIds(List<Pid> toDelete) {
 		return pidDb.deletePatientIds(toDelete);
+	}
+
+	public boolean patientIdExists(Pid pid) throws IOException {
+		return pidDb.patientIdExists(pid);
 	}
 		//
 	//

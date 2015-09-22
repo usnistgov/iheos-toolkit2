@@ -28,6 +28,15 @@ public class SimManager {
 	public SimManager(String sessionId) {
 		this.sessionId = sessionId;
 	}
+
+	public void loadAllSims() throws IOException, ClassNotFoundException {
+		SimDb db = new SimDb();
+		List<SimId> simIds = db.getAllSimIds();
+		for (SimId simId : simIds) {
+			if (!hasSim(simId))
+				simConfigs.add(db.getSimulator(simId));
+		}
+	}
 	
 //*****************************************
 //  These methods would normally belong in class SimulatorConfig but that
@@ -160,4 +169,10 @@ public class SimManager {
 		simConfigs.removeAll(delete);
 	}
 
+	private boolean hasSim(SimId simId) {
+		for (SimulatorConfig config : simConfigs) {
+			if (config.getId().equals(simId)) return true;
+		}
+		return false;
+	}
 }
