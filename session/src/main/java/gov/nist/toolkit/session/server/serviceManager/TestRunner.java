@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonService;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
@@ -43,6 +43,8 @@ public class TestRunner {
                                 testName);
                 session.transactionSettings.writeLogs = true;
             }
+
+
 
             // this PatientId override is necessary because the patientid.txt file
             // is shared by all threads

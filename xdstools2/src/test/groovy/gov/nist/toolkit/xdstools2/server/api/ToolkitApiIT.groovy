@@ -3,6 +3,7 @@ import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.TransactionType
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.sitemanagement.client.Site
 import spock.lang.Specification
 /**
@@ -15,6 +16,8 @@ class ToolkitApiIT extends Specification {
     def setup() {
         api = new ToolkitApi()
         api.deleteSimulatorIfItExists(testSim)
+        println "EC is ${Installation.installation().externalCache().toString()}"
+        println "${api.getSiteNames(true)}"
     }
 
     def 'Create/delete Simulator'() {
@@ -53,20 +56,13 @@ class ToolkitApiIT extends Specification {
         site.hasTransaction(TransactionType.PROVIDE_AND_REGISTER)
     }
 
+    // this depends on the simulator mike__reg site file to be downloaded
+    // from the running toolkit (where the sim lives) and added
+    // to the external cache
     def 'Submit Register transaction to Registry simulator'() {
-        setup: 'delete left-over sim from last time'
-        SimId registry = new SimId("TestRegistry")
-        api.deleteSimulatorIfItExists(registry)
-
-        when: 'create new simulator'
-        api.createSimulator(ActorType.REGISTRY, registry)
-
-        then: 'verify it exists'
-        api.simulatorExists(registry)
-
         when:
         String testSession = null;  // use default
-        String siteName = api.getSiteForSimulator(registry).siteName
+        String siteName = 'mike__reg'
         String testName = "11990"
         List<String> sections = new ArrayList<>()
         sections.add("submit")
@@ -75,17 +71,34 @@ class ToolkitApiIT extends Specification {
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
 
-        and: 'Get toolkit port to verify this is configured correctly'
-        println "Port is ${Installation.installation().propertyServiceManager().toolkitPort}"
-
-//        and: 'Run Register test'
-//        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        and: 'Run Register test'
+        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
 
         then:
         true
-//        results.size() == 1
-//        results.get(0).passed()
+        results.size() == 1
+        results.get(0).passed()
+    }
 
+    def 'Submit Pid transaction to Registry simulator'() {
+        when:
+        String testSession = null;  // use default
+        String siteName = 'mike__reg'
+        String testName = "15804"
+        List<String> sections = new ArrayList<>()
+        sections.add("section")
+        String patientId = 'BR14^^^&1.2.360&ISO'   // not used
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', patientId)
+        boolean stopOnFirstError = true
+
+        and: 'Run pid transaction test'
+        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+
+        then:
+        true
+        results.size() == 1
+        results.get(0).passed()
     }
 
 }

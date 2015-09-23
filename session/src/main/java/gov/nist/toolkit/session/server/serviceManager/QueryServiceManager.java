@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonService;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ActorType;

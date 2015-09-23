@@ -10,8 +10,7 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <PatientIdentityFeedTransaction>
       <XDSb/>
-      <Metadata>
-      </Metadata>
+      <NoMetadata/>
     </PatientIdentityFeedTransaction>
   </TestStep>
 </TestPlan>

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonService;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;

@@ -1,12 +1,14 @@
 package gov.nist.toolkit.session.server;
 
 import gov.nist.toolkit.actorfactory.SimCache;
+import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.results.client.AssertionResults;
+import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
@@ -14,12 +16,14 @@ import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -83,6 +87,9 @@ public class Session implements SecurityParams {
 	XdsTestServiceManager xdsTestServiceManager = null;
 	QueryServiceManager queryServiceMgr = null;
 	static Map<String, Session> sessionMap = new HashMap<String, Session>();
+	// environment name ==> codes configuration
+	static Map<String, CodesConfiguration> codesConfigurations = new Hashtable<>();
+
 	static final Logger logger = Logger.getLogger(Session.class);
 	
 	public boolean isTls() {
@@ -455,11 +462,22 @@ public class Session implements SecurityParams {
 		return toolkit;
 	}
 
-	public String allocateNewPid(String assigningAuthority) {
-//		return new PidGenerator(assigningAuthority).get();
-		return "x";
+	public Pid allocateNewPid(String assigningAuthority) {
+		return PatientIdAllocator.getNew(assigningAuthority);
 	}
 
+	public CodesConfiguration getCodesConfiguration(String environmentName) throws XdsInternalException {
+		CodesConfiguration config = codesConfigurations.get(environmentName);
+		if (config != null) return config;
+		CodesConfigurationBuilder builder = new CodesConfigurationBuilder(getCodesFile());
+		config = builder.get();
+		codesConfigurations.put(environmentName, config);
+		return config;
+	}
+
+	public CodesConfiguration getCodesConfiguration() throws XdsInternalException {
+		return getCodesConfiguration(getCurrentEnvironment());
+	}
 
 
 }

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.transactions;
 
+import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.adt.A01Sender;
 import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
 import gov.nist.toolkit.testengine.engine.StepContext;
@@ -24,13 +25,14 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 	throws XdsException {
 
 		try {
-			String pid = PatientIdAllocator.getNew();
-			transactionSettings.patientId = pid;
-			testLog.add_name_value(instruction_output, "PatientId", pid);
+			Pid pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
+			String pidString = pid.toString();
+			transactionSettings.patientId = pidString;
+			testLog.add_name_value(instruction_output, "PatientId", pidString);
 			String server = testConfig.site.pifHost;
 			String port = testConfig.site.pifPort;
 
-			A01Sender.send(server, Integer.parseInt(port), pid);
+			A01Sender.send(server, Integer.parseInt(port), pidString);
 
 		}
 		catch (Exception e) {

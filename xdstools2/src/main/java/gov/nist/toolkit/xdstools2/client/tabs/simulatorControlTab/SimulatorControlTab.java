@@ -269,6 +269,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 				}
 
 				private void addButtonPanel(int row, int maxColumn, final SimulatorConfig config) {
+					SimId simId = config.getId();
 					HorizontalPanel buttonPanel = new HorizontalPanel();
 					table.setWidget(row, maxColumn, buttonPanel);
 
@@ -304,6 +305,14 @@ public class SimulatorControlTab extends GenericQueryTab {
 						}
 					});
 					buttonPanel.add(pidButton);
+
+					String u = "<a href=\"" +
+							"/xdstools2/site/" + simId.toString() + "\"" +
+ 							" target=\"_blank\"" +
+							">Download Site File</a>";
+					HTML siteDownload = new HTML(u);
+
+					buttonPanel.add(siteDownload);
 				}
 			});
 		} catch (Exception e) {

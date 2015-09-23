@@ -51,7 +51,6 @@
         <module>common</module>
         <module>error-recording</module>
         <module>adt</module>
-        <module>sim-servlet-war</module>
     </modules>
 
 

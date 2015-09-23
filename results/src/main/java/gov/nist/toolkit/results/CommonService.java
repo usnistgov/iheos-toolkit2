@@ -1,6 +1,5 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.results;
 
-import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 

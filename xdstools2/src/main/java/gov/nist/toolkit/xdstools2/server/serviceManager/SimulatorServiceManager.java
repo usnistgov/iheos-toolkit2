@@ -8,6 +8,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.ParseException;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;

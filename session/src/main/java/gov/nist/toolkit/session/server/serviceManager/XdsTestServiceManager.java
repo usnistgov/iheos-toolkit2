@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonService;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -665,7 +665,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	public String getNewPatientId(String assigningAuthority) {
 		logger.debug(session.id() + ": " + "getNewPatientId()");
-		return session.allocateNewPid(assigningAuthority);
+		return session.allocateNewPid(assigningAuthority).toString();
 	}
 
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {

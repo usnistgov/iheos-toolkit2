@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.server.api;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -124,6 +125,11 @@ public class ToolkitApi {
         return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testName, sections, params, null, stopOnFirstFailure);
     }
 
+    public List<String> getSiteNames(boolean simAlso) {
+        return siteServiceManager().getSiteNames(session.getId(), true, simAlso);
+    }
+
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }
     private XdsTestServiceManager xdsTestServiceManager() { return session.xdsTestServiceManager(); }
+    private SiteServiceManager siteServiceManager() { return SiteServiceManager.getSiteServiceManager(); }
 }

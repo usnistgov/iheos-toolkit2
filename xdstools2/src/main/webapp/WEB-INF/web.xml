@@ -103,6 +103,11 @@
 		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
 	</servlet>
 
+	<servlet>
+		<servlet-name>siteServlet</servlet-name>
+		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>toolkitServlet</servlet-name>
 		<url-pattern>/xdstools2/toolkit</url-pattern>
@@ -127,7 +132,17 @@
 		<servlet-name>messageServlet</servlet-name>
 		<url-pattern>/message/*</url-pattern>
 	</servlet-mapping>
- 
+
+	<servlet-mapping>
+		<servlet-name>siteServlet</servlet-name>
+		<url-pattern>/xdstools2/site/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>siteServlet</servlet-name>
+		<url-pattern>/site/*</url-pattern>
+	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>simulatorServlet</servlet-name>
 		<url-pattern>/sim/*</url-pattern>

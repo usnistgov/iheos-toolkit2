@@ -1,28 +1,26 @@
 package gov.nist.toolkit.session.server;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.results.client.CodeConfiguration;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.axiom.om.OMElement;
-
 public class CodesConfigurationBuilder {
 	static transient QName codeQname = new QName("code");
 	static transient QName codingSchemeQname = new QName("codingScheme");
 	static transient QName displayQname = new QName("display");
 	static transient QName nameQname = new QName("name");
+	static transient QName idQname = new QName("id");
 
 	CodesConfiguration csc;
 
@@ -50,12 +48,12 @@ public class CodesConfigurationBuilder {
 				cc.codes.add(c.toString());
 			}
 
-
 			codes.put(cc.name, cc);
 		}
 
 		for (OMElement aaEle : XmlUtil.decendentsWithLocalName(ele, "AssigningAuthority")) {
-			String aa;
+			String aa = aaEle.getAttributeValue(idQname);
+			if (aa != null && !aa.equals("")) csc.assigningAuthorities.add(aa);
 		}
 
 	}

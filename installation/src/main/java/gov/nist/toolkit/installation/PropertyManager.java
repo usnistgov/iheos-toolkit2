@@ -61,7 +61,12 @@ public class PropertyManager {
 				throw new Exception("Cannot create Message_database_directory " + value);
 		}
 	}
-	
+
+	public String getCacheDisabled() {
+		loadProperties();
+		return (String) toolkitProperties.get("Cache_Disabled");
+	}
+
 	public String getPassword() {
 		loadProperties();
 		return (String) toolkitProperties.get("Admin_password");
