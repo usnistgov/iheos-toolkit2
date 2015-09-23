@@ -38,6 +38,8 @@ public class PidEditTab extends GenericQueryTab {
         container.addTab(topPanel, "Pid Edit", select);
         addCloseButton(container, topPanel, null);
 
+        addReloader();
+
         topPanel.add(new HTML("<h2>Patient ID Display/Edit</h2>"));
         topPanel.add(new HTML("<h3>Simulator " + simId.toString() + "</h3>"));
 
@@ -127,7 +129,7 @@ public class PidEditTab extends GenericQueryTab {
                             int dups = 0;
                             int added = 0;
                             for (Pid pid : pids) {
-                                String s = pid.toString();
+                                String s = pid.asString();
                                 if (contains(s)) { dups++; continue; }
                                 added++;
                                 pidList.insertItem(s, 0);
@@ -167,7 +169,7 @@ public class PidEditTab extends GenericQueryTab {
                 @Override
                 public void onSuccess(List<Pid> pids) {
                     pidList.clear();
-                    for (Pid pid : pids) pidList.addItem(pid.toString());
+                    for (Pid pid : pids) pidList.addItem(pid.asString());
                 }
             });
         } catch (Exception e) {
@@ -178,4 +180,31 @@ public class PidEditTab extends GenericQueryTab {
     public String getWindowShortName() {
         return "PidEditTab";
     }
+
+    Anchor reload = null;
+
+    public void addReloader() {
+        if (reload == null) {
+            reload = new Anchor();
+            reload.setTitle("Reload Patient ID data");
+            reload.setText("[reload]");
+            addToMenu(reload);
+
+            reload.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    loadPids();
+                }
+
+            });
+            reload.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    onReload();
+                }
+
+            });
+        }
+    }
+
 }

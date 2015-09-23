@@ -24,7 +24,9 @@ public enum TransactionType implements IsSerializable, Serializable {
     XC_RETRIEVE("ITI-39", "Cross-Community Retrieve", "xcr", "xcr", "xcr.as", false, "urn:ihe:iti:2007:CrossGatewayRetrieve", "urn:ihe:iti:2007:CrossGatewayRetrieveResponse"),
     MPQ("ITI-51", "Multi-Patient Query", "mpq", "mpq", "mpq.as", false, "urn:ihe:iti:2009:MultiPatientStoredQuery", "urn:ihe:iti:2009:MultiPatientStoredQueryResponse"),
     XC_PATIENT_DISCOVERY("ITI-55", "Cross Community Patient Discovery", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery"),
-    DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", "");
+    DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", ""),
+    PIF("PIF", "Patient Identity Feed", "pif", "pif", "pif", false, "", "");
+
 
 	private static final long serialVersionUID = 1L;
     String id = "";
@@ -68,6 +70,11 @@ public enum TransactionType implements IsSerializable, Serializable {
 
 	public String getAsyncCode() {
         return asyncCode;
+    }
+
+    public boolean usesTraditionalTransactions() {
+        if (requestAction.equals("")) return false;
+        return true;
     }
 
 	public boolean equals(TransactionType tt) {

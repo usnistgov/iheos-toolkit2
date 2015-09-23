@@ -72,5 +72,17 @@ public class CodesConfiguration implements IsSerializable {
 		Pid pid = PidBuilder.createPid("111^^^" + aa);  // make complete PID
 		return pid.getAd();
 	}
-		
+
+	public List<String> getAssigningAuthorityOids() {
+		if (assigningAuthorities == null) return null;
+		if (assigningAuthorities.size() == 0) return null;
+		List<String> ids = new ArrayList<>();
+		for (String aa : assigningAuthorities) {
+			Pid pid = PidBuilder.createPid("111^^^" + aa);  // make complete PID
+			String x = pid.getAd();
+			if (x != null) ids.add(x);
+		}
+		return ids;
+	}
+
 }

@@ -162,6 +162,11 @@ public interface ToolkitService extends RemoteService  {
 	
 	public Map<String, String> getSessionProperties() throws NoServletSessionException;
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
+	Pid createPid(String assigningAuthority) throws NoServletSessionException;
+	String getAssigningAuthority() throws Exception;
+	List<String> getAssigningAuthorities() throws Exception;
+	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+
 	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
 }

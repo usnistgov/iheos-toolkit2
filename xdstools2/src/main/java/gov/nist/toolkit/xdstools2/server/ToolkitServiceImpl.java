@@ -171,7 +171,7 @@ ToolkitService {
 	public List<String> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-	
+	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
 	
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -197,7 +197,10 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
-	
+	public Pid createPid(String assigningAuthority) throws NoServletSessionException { return session().allocateNewPid(assigningAuthority); }
+	public String getAssigningAuthority() throws Exception { return session().getAssigningAuthority(); }
+	public List<String> getAssigningAuthorities() throws Exception { return session().getAssigningAuthorities(); }
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Property Service

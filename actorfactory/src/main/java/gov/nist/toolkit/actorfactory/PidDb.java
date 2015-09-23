@@ -64,7 +64,7 @@ public class PidDb {
 
     public void addPatientId(Pid pid) throws IOException {
         if (patientIdExists(pid)) return;
-        Io.stringToFile(getPidFile(pid), pid.toString());
+        Io.stringToFile(getPidFile(pid), pid.asString());
     }
 
     public boolean patientIdExists(Pid pid) {

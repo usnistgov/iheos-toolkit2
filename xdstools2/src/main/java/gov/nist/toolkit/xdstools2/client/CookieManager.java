@@ -14,5 +14,6 @@ public class CookieManager {
 	static public final String TESTSESSIONCOOKIENAME = "gov.nist.registry.xdstools2.TestSessionCookie";
 	static public final String PATIENTIDCOOKIENAME = "gov.nist.registry.xdstools2.PatientIDCookie";
 	static public final String LASTSITECOOKIENAME = "gov.nist.registry.xdstools2.LastSiteCookie";
+	static public final String FAVORITEPIDSCOOKIENAME = "gov.nist.registry.xdstools2.FavoritePidsCookie";
 
 }

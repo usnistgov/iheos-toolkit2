@@ -48,6 +48,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String mesaTabLabel = "Pre-Connectathon Tests";
 	final static public String testRunnerTabLabel = "Conformance Tests";
 	final static public String nwhinTabLabel = "Pre-OnBoarding Tests";
+	final static public String pidFavoritesLabel = "Patient IDs";
 	
 	final static public String testLogLabel = "Test Log Listing";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";	
@@ -118,6 +119,8 @@ public class TabLauncher implements ClickHandler {
 			new DashboardTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(repositoryTabLabel)) 
 			new RepositoryListingTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(pidFavoritesLabel))
+			new PidFavoritesTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(metadataEditorTabLabel)) {
 			MetadataEditorTab t = new MetadataEditorTab();
 			t.setSiteSpec(siteSpec);

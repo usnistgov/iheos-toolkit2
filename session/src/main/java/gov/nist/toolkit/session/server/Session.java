@@ -479,5 +479,24 @@ public class Session implements SecurityParams {
 		return getCodesConfiguration(getCurrentEnvironment());
 	}
 
+	public String getAssigningAuthority() throws Exception {
+		CodesConfiguration config = null;
+		try {
+			config = getCodesConfiguration();
+		} catch (XdsInternalException e) {
+			throw new Exception("Error loading current Assigning Authority", e);
+		}
+		return config.getAssigningAuthorityOid();
+	}
+
+	public List<String> getAssigningAuthorities() throws Exception {
+		CodesConfiguration config = null;
+		try {
+			config = getCodesConfiguration();
+		} catch (XdsInternalException e) {
+			throw new Exception("Error loading current Assigning Authority", e);
+		}
+		return config.getAssigningAuthorityOids();
+	}
 
 }

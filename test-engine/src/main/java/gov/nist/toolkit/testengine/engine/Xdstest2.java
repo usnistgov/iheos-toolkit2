@@ -27,8 +27,7 @@ import java.util.Properties;
 
 /***
  * API for XDSTest test engine
- * 
- * @author bill
+ *
  * 
  */
 public class Xdstest2 {

@@ -160,6 +160,11 @@ public interface ToolkitServiceAsync {
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
+	void createPid(String assigningAuthority, AsyncCallback<Pid> callback) throws NoServletSessionException;
+	void getAssigningAuthority(AsyncCallback<String> callback) throws Exception;
+	void getAssigningAuthorities(AsyncCallback<List<String>> callback) throws Exception;
+	void sendPidToRegistry(SiteSpec site, Pid pid, AsyncCallback<List<Result>> callback) throws NoServletSessionException;
+
 
 	void getTestplanAsText(String testname, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> callback);

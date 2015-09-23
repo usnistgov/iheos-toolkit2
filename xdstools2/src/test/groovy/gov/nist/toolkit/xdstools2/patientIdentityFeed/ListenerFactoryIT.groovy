@@ -71,7 +71,7 @@ class ListenerFactoryIT extends Specification {
         def port = item.port
         String templateFile = getClass().getResource('/adt/A01.txt').file
         AdtSender sender = new AdtSender(templateFile, 'localhost', port)
-        sender.send(pid1.toString())
+        sender.send(pid1.asString())
 
         then:
         db.patientIdExists(pid1)
@@ -101,14 +101,14 @@ class ListenerFactoryIT extends Specification {
         !db.patientIdExists(pid1)
 
         when: 'Send A01'
-        new AdtSender(templateFile, 'localhost', port).send(pid1.toString())
+        new AdtSender(templateFile, 'localhost', port).send(pid1.asString())
 
         then:
         db.patientIdExists(pid1)
         !db.patientIdExists(PidBuilder.createPid("xxx^^^&1.2&ISO"))  // random name to check for
 
         when: 'Send another A01'
-        new AdtSender(templateFile, 'localhost', port).send(pid2.toString())
+        new AdtSender(templateFile, 'localhost', port).send(pid2.asString())
 
         then:
         db.patientIdExists(pid1)

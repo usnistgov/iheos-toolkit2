@@ -44,6 +44,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	CoupledTransactions couplings;
 	public boolean runEnabled = true;
 	ClickHandler runner;
+	String runButtonText = "Run";
 
 	public VerticalPanel resultPanel = new VerticalPanel();
 	public TabContainer myContainer;
@@ -56,6 +57,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	private Button inspectButton;
 	private Button goButton;
 
+	boolean showInspectButton = true;
 	boolean asyncEnabled = false;
 	public boolean doASYNC = false;
 	BaseSiteActorManager siteActorManager;// = new SiteActorManager(this);
@@ -82,6 +84,14 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	}
 
 	protected TestSessionManager2 getTestSessionManager() { return testSessionManager; }
+
+	public void setTlsEnabled(boolean value) { tlsEnabled = value; }
+	public void setSamlEnabled(boolean value) { samlEnabled = value; }
+	public void setShowInspectButton(boolean value) {
+		showInspectButton = value;
+		if (inspectButton != null)
+			inspectButton.setVisible(showInspectButton);
+	}
 
 	public boolean isTLS() {
 		return doTls.getValue();
@@ -345,6 +355,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 	public void setInspectButton(Button inspectButton) {
 		this.inspectButton = inspectButton;
+		inspectButton.setVisible(showInspectButton);
 	}
 
 	Anchor reload = null;
@@ -495,7 +506,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		HorizontalPanel runnerButtons = new HorizontalPanel();
 		commonParamGrid.setWidget(commonGridRow++, 1, runnerButtons);
 		if (runEnabled) {
-			setGoButton(new Button("Run"));
+			setGoButton(new Button(runButtonText));
 			runnerButtons.add(getGoButton());
 //			mainGrid.setWidget(row++, 1, getGoButton());
 		}
@@ -515,6 +526,10 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 		resultsShortDescription.setHTML("");
 		runnerButtons.add(resultsShortDescription);
+	}
+
+	public void setRunButtonText(String label) {
+		runButtonText = label;
 	}
 
 

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 public class PatientIdentityFeedTransaction extends BasicTransaction {
 	private final static Logger logger = Logger.getLogger(PatientIdentityFeedTransaction.class);
+	String patientid = null;
 
 	public PatientIdentityFeedTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
@@ -21,16 +22,29 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 		return "pif";
 	}
 
-	public void run(OMElement request) 
-	throws XdsException {
+	public void run(OMElement request)
+			throws XdsException {
 
 		try {
-			Pid pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
-			String pidString = pid.toString();
+			Pid pid;
+			String pidString;
+			if (patientid == null) {
+				pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
+				pidString = pid.asString();
+			} else {
+				pidString = patientid;
+			}
 			transactionSettings.patientId = pidString;
 			testLog.add_name_value(instruction_output, "PatientId", pidString);
+
+			if (testConfig == null) throw new Exception("Internal Error - TestConfig not initialized");
+			if (testConfig.site == null) throw new Exception("Internal Error - TestConfig.site not initialized");
+
 			String server = testConfig.site.pifHost;
 			String port = testConfig.site.pifPort;
+
+			if (server == null) throw new Exception("Site " + testConfig.site.getName() + " has no Patient Identity Feed host configured");
+			if (port == null) throw new Exception("Site " + testConfig.site.getName() + " has no Patient Identity Feed port configured");
 
 			A01Sender.send(server, Integer.parseInt(port), pidString);
 
@@ -40,10 +54,15 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 			logger.error(ExceptionUtil.exception_details(e));
 		}
 	}
-	
+
 
 	protected void parseInstruction(OMElement part) throws XdsInternalException {
-		parseBasicInstruction(part);
+		String part_name = part.getLocalName();
+		if (part_name.equals("PatientID")) {
+			patientid = part.getText();
+		} else {
+			parseBasicInstruction(part);
+		}
 	}
 
 	@Override
@@ -51,6 +70,7 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 		return null;
 	}
 
+	@Override
 	protected String getBasicTransactionName() {
 		return "pif";
 	}
