@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.event.testSession;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 
 import java.util.List;
@@ -39,6 +41,7 @@ public class TestSessionManager2 {
                     case SELECT:
                         currentTestSession = event.value;
                         toCookie(event.value);
+                        Xdstools2.DEBUG("testSession is " + currentTestSession);
                 }
             }
         });
@@ -65,7 +68,7 @@ public class TestSessionManager2 {
     // get sessionNames from server and broadcast to all tabs
     public void load() { load(fromCookie()); }
     public void load(final String initialSelection) {
-        Xdstools2.DEBUG("initialSelection is " + initialSelection + ".  currentTestSession is " + currentTestSession);
+//        Xdstools2.DEBUG("initialSelection is " + initialSelection + ".  currentTestSession is " + currentTestSession);
 
         toolkitService.getMesaTestSessionNames(new AsyncCallback<List<String>>() {
             @Override
@@ -75,30 +78,60 @@ public class TestSessionManager2 {
 
             @Override
             public void onSuccess(List<String> newTestSessions) {
-                Xdstools2.DEBUG("newTestSessions = " + newTestSessions);
+//                Xdstools2.DEBUG("newTestSessions = " + newTestSessions);
                 testSessions = newTestSessions;
 
                 if (isLegalTestSession(initialSelection)) {
-                    Xdstools2.DEBUG("initialSeletion is legal");
+//                    Xdstools2.DEBUG("initialSeletion is legal");
                     currentTestSession = initialSelection;
                     toCookie(currentTestSession);
-                    Xdstools2.DEBUG("set cookie to " + currentTestSession);
+//                    Xdstools2.DEBUG("set cookie to " + currentTestSession);
                 } else {
                     if (isLegalTestSession(currentTestSession)) {
-                        Xdstools2.DEBUG("currentTestSelection, " + currentTestSession + ", is legal");
+//                        Xdstools2.DEBUG("currentTestSelection, " + currentTestSession + ", is legal");
                         toCookie(currentTestSession);
-                        Xdstools2.DEBUG("set cookie to " + currentTestSession);
-                    }
-                    else {
+//                        Xdstools2.DEBUG("set cookie to " + currentTestSession);
+                    } else {
                         currentTestSession = "";
-                        Xdstools2.DEBUG("delete cookie");
+//                        Xdstools2.DEBUG("delete cookie");
                         deleteCookie();
                     }
                 }
-                Xdstools2.DEBUG("currentTestSelection is " + currentTestSession);
-                Xdstools2.DEBUG("cookie is " + fromCookie());
+//                Xdstools2.DEBUG("currentTestSelection is " + currentTestSession);
+//                Xdstools2.DEBUG("cookie is " + fromCookie());
                 Xdstools2.getEventBus().fireEvent(new TestSessionsUpdatedEvent(testSessions));
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, currentTestSession));
+
+                try {
+                    toolkitService.getAllSimConfigs(currentTestSession, new AsyncCallback<List<SimulatorConfig>>() {
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            new PopupMessage("Cannot load sim configs - " + throwable.getMessage());
+                        }
+
+                        @Override
+                        public void onSuccess(List<SimulatorConfig> simulatorConfigs) {
+                            try {
+                                toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings>() {
+                                    @Override
+                                    public void onFailure(Throwable throwable) {
+
+                                    }
+
+                                    @Override
+                                    public void onSuccess(TransactionOfferings transactionOfferings) {
+
+                                    }
+                                });
+                            } catch (Exception e) {
+                                new PopupMessage("getTransactionOfferings failed - " + e.getMessage());
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    new PopupMessage("Cannot load sim configs - " + e.getMessage());
+
+                }
             }
         });
     }

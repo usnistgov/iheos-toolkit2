@@ -109,7 +109,8 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			site = new Site(siteName);
 
 		site.user = asc.getId().user;  // labels this site as coming from a sim
-		
+		site.user = asc.getId().user;  // labels this site as coming from a sim
+
 		boolean isAsync = false;
 		
 		site.addTransaction(new TransactionBean(

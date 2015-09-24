@@ -36,10 +36,10 @@ public class TabLauncher implements ClickHandler {
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
 	final static public String documentRetrieveTabLabel = "RetrieveDocument";
 	final static public String allocatePatientIdTabLabel = "Allocate Patient ID for the Public Registry";
-	final static public String registryTestDataTabLabel = "Registry Test Data";
+	final static public String registryTestDataTabLabel = "XDS Register";
 	final static public String dashboardTabLabel = "Dashboard";
-	final static public String repositoryTestDataTabLabel = "Repository Test Data";
-	final static public String recipientTestDataTabLabel = "XDR Send";
+	final static public String repositoryTestDataTabLabel = "XDS Provide & Register";
+	final static public String recipientTestDataTabLabel = "XDR Provide & Register";
 	final static public String repositoryDoThisFirstTabLabel = "XDS.b_Repository_Do_This_First";
 	final static public String registryLifecycleTabLabel = "XDS.b_Lifecycle";
 	final static public String registryFolderHandlingTabLabel = "XDS.b_Registry_Folder_Handling";
@@ -48,6 +48,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String mesaTabLabel = "Pre-Connectathon Tests";
 	final static public String testRunnerTabLabel = "Conformance Tests";
 	final static public String nwhinTabLabel = "Pre-OnBoarding Tests";
+	final static public String pidFavoritesLabel = "Patient IDs";
 	
 	final static public String testLogLabel = "Test Log Listing";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";	
@@ -118,6 +119,8 @@ public class TabLauncher implements ClickHandler {
 			new DashboardTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(repositoryTabLabel)) 
 			new RepositoryListingTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(pidFavoritesLabel))
+			new PidFavoritesTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(metadataEditorTabLabel)) {
 			MetadataEditorTab t = new MetadataEditorTab();
 			t.setSiteSpec(siteSpec);

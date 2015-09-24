@@ -17,7 +17,10 @@ import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
-import gov.nist.toolkit.xdstools2.client.tabs.*;
+import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
+import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
+import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 
 
@@ -259,6 +262,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 				}
 			}
 		});
+
+
 	}
 
 

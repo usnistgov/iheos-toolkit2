@@ -52,6 +52,9 @@ public class UtilityRunner {
                 session.transactionSettings = new TransactionSettings();
             }
 
+            // depending on the configuration, this could be null
+            session.transactionSettings.patientIdAssigningAuthorityOid = session.getCodesConfiguration().getAssigningAuthorityOid();
+
             if (session.xt == null)
                 session.xt = xdsTestServiceManager.getNewXt();
 

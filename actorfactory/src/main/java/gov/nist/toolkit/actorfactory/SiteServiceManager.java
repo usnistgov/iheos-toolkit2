@@ -104,11 +104,13 @@ public class SiteServiceManager {
 		if (commonSites == null) {
 			if (!useActorsFile()) {
 				File dir = Installation.installation().propertyServiceManager().getActorsDirName();
+				logger.debug("loading sites from " + dir);
 				commonSites = new SeparateSiteLoader().load(dir, commonSites);
 			} else {
 				File loc = Installation.installation().propertyServiceManager().configuredActorsFile(true);
 				if (loc == null)
 					loc = Installation.installation().propertyServiceManager().internalActorsFile();
+				logger.debug("loading sites from " + loc);
 				commonSites = new CombinedSiteLoader().load(loc, commonSites);
 			}
 		}

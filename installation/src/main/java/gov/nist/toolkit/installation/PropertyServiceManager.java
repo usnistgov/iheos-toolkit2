@@ -40,6 +40,11 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		return null;
 	}
 
+	public boolean getCacheDisabled() {
+		logger.debug(": " + "getCacheDisabled");
+		return "true".equals(getPropertyManager().getCacheDisabled());
+	}
+
 	public String getAdminPassword() {
 		logger.debug(": " + "getAdminPassword");
 		return getPropertyManager().getPassword();

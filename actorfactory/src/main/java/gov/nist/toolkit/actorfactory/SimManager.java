@@ -5,8 +5,11 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,9 +27,30 @@ import java.util.Map;
 public class SimManager {
 	List<SimulatorConfig> simConfigs = new ArrayList<SimulatorConfig>();  // for this session
 	String sessionId;
+	static Logger logger = Logger.getLogger(SimManager.class);
+
 
 	public SimManager(String sessionId) {
 		this.sessionId = sessionId;
+		if (Installation.installation().propertyServiceManager().getCacheDisabled()) {
+			List<SimId> simIds = loadAllSims();
+			logger.debug("Cache disabled - loaded " + simIds.size() + "  sims");
+		}
+	}
+
+	public List<SimId> loadAllSims() {
+		SimDb db = new SimDb();
+		List<SimId> simIds = db.getAllSimIds();
+		for (SimId simId : simIds) {
+			if (!hasSim(simId))
+				try {
+					simConfigs.add(db.getSimulator(simId));
+				}
+				catch (Exception e) {
+					throw new ToolkitRuntimeException("", e);
+				}
+		}
+		return simIds;
 	}
 	
 //*****************************************
@@ -160,4 +184,10 @@ public class SimManager {
 		simConfigs.removeAll(delete);
 	}
 
+	private boolean hasSim(SimId simId) {
+		for (SimulatorConfig config : simConfigs) {
+			if (config.getId().equals(simId)) return true;
+		}
+		return false;
+	}
 }

@@ -1,11 +1,12 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonService;
+import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
@@ -44,7 +45,6 @@ public class XdsTestServiceManager extends CommonService {
 
 	public XdsTestServiceManager(Session session)  {
 		this.session = session;
-		System.out.println("XdsTestServiceManager - patient id is " + session.transactionSettings.patientId);
 	}
 
 	public static Logger getLogger() {
@@ -665,7 +665,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	public String getNewPatientId(String assigningAuthority) {
 		logger.debug(session.id() + ": " + "getNewPatientId()");
-		return session.allocateNewPid(assigningAuthority);
+		return session.allocateNewPid(assigningAuthority).asString();
 	}
 
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
@@ -673,5 +673,13 @@ public class XdsTestServiceManager extends CommonService {
 		return getTestKit().getCollectionNames(collectionSetName);
 	}
 
+	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) {
+		logger.debug(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
+		session.setSiteSpec(site);
+		Map<String, String> params = new HashMap<>();
+		params.put("$pid$", pid.asString());
+		String testName = "PidFeed";
+		return asList(new UtilityRunner(this).run(session, params, null, null, testName, null, true));
+	}
 
 }

@@ -3,9 +3,7 @@
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -15,7 +13,6 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.TkLoader;
@@ -130,11 +127,11 @@ ToolkitService {
 			String workPhone, String principleCareProvider, String pob,
 			String pobAddress1, String pobAddress2, String pobCity,
 			String pobState, String pobZip, String pobCountry) {
-		return queryServiceManager.findPatient(site, firstName, secondName,  lastName, suffix, gender, dob, ssn, pid,  
+		return queryServiceManager.findPatient(site, firstName, secondName, lastName, suffix, gender, dob, ssn, pid,
 				homeAddress1, homeAddress2, homeCity, homeState, homeZip, homeCountry,
-				mothersFirstName, mothersSecondName, mothersLastName, mothersSuffix, 
-				homePhone, workPhone, principleCareProvider, 
-				pob, pobAddress1, pobAddress2, pobCity,pobState, pobZip, pobCountry);
+				mothersFirstName, mothersSecondName, mothersLastName, mothersSuffix,
+				homePhone, workPhone, principleCareProvider,
+				pob, pobAddress1, pobAddress2, pobCity, pobState, pobZip, pobCountry);
 	}
 	public List<Result> mpqFindDocuments(SiteSpec site, String pid,
 			List<String> classCodes, List<String> hcftCodes,
@@ -174,7 +171,7 @@ ToolkitService {
 	public List<String> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-	
+	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
 	
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -200,7 +197,10 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
-	
+	public Pid createPid(String assigningAuthority) throws NoServletSessionException { return session().allocateNewPid(assigningAuthority); }
+	public String getAssigningAuthority() throws Exception { return session().getAssigningAuthority(); }
+	public List<String> getAssigningAuthorities() throws Exception { return session().getAssigningAuthorities(); }
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Property Service
@@ -244,6 +244,10 @@ ToolkitService {
 	public List<String> getTransactionsForSimulator(SimId simid) throws Exception { return new SimulatorServiceManager(session()).getTransactionsForSimulator(simid); }
 	public List<SimulatorStats> getSimulatorStats(List<SimId> simids) throws Exception { return new SimulatorServiceManager(session()).getSimulatorStats(simids); }
 	public String getTransactionLog(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionLog(simid, actor, trans, event); }
+
+	public List<Pid> getPatientIds(SimId simId) throws Exception { return new SimulatorServiceManager(session()).getPatientIds(simId); }
+	public String addPatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).addPatientIds(simId, pids); }
+	public boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).deletePatientIds(simId, pids); }
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

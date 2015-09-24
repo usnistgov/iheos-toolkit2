@@ -8,6 +8,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.ParseException;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;
@@ -388,6 +389,22 @@ public class SimulatorServiceManager extends CommonService {
 			logger.error(ExceptionUtil.exception_details(e, "getSimulatorStats"));
 			throw e;
 		}
+	}
+
+	public List<Pid> getPatientIds(SimId simId) throws IOException, NoSimException {
+		SimDb db = new SimDb(simId);
+		return db.getAllPatientIds();
+	}
+
+	public String addPatientIds(SimId simId, List<Pid> patientIds) throws IOException, NoSimException {
+		SimDb db = new SimDb(simId);
+		for (Pid pid : patientIds)
+			db.addPatientId(pid);
+		return null;
+	}
+
+	public boolean deletePatientIds(SimId simId, List<Pid> patientIds) throws IOException, NoSimException {
+		return new SimDb(simId).deletePatientIds(patientIds);
 	}
 
 }

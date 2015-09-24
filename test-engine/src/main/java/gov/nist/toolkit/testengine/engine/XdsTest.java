@@ -266,6 +266,7 @@ public class XdsTest {
 
 	public void setSite(Site site) {
 		this.site = site;
+		if (testConfig.site == null) testConfig.site = site;
 	}
 	
 	public void setSites(Sites sites) {
@@ -290,6 +291,9 @@ public class XdsTest {
 			}
 		}
 
+		if (site == null) logger.debug("No site specified");
+		else logger.debug("Site specified is " + site.getName());
+
 		sites = loadSites();
 		testConfig.allRepositoriesSite = sites.getAllRepositoriesSite();
 
@@ -298,11 +302,19 @@ public class XdsTest {
 			siteName = sites.getDefaultSiteName();
 		}
 
+		if (site == null) {
+			logger.debug("site not set - try pulling default site");
+		}
+
 		site = sites.getSite(siteName);
+
+		if (site == null) {
+			logger.debug("site still not set");
+		}
 
 		testConfig.site = site;
 
-		System.out.println("Site is " + siteName);
+		logger.debug("XdsTest.run - Site is " + siteName);
 
 		if (showConfig) {
 			showConfiguration(sites);
@@ -671,6 +683,9 @@ public class XdsTest {
             if (siteName != null)
                 testConfig.site = loadSites().getSite(siteName);
         }
+
+		if (testConfig.site == null)
+			testConfig.site = site;
 
         testConfig.allRepositoriesSite = (sites == null) ? null : sites.getAllRepositoriesSite();
 

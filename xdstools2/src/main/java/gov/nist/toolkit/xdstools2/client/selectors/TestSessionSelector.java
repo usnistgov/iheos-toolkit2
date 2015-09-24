@@ -24,13 +24,15 @@ public class TestSessionSelector {
     static final String NONSELECTION = "--Select--";
 
     public TestSessionSelector(List<String> initialContents, String initialSelection) {
-        Xdstools2.DEBUG("initialize TestSessionSelector with " + initialContents + " ==>" + initialSelection);
+//        Xdstools2.DEBUG("initialize TestSessionSelector with " + initialContents + " ==>" + initialSelection);
         build(initialContents, initialSelection);
         link();
     }
 
     // Listen on the EventBus in the future
     private void link() {
+
+        // Test sessions reloaded
         Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
@@ -39,6 +41,8 @@ public class TestSessionSelector {
             }
         });
 
+
+        // SELECT
         Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {

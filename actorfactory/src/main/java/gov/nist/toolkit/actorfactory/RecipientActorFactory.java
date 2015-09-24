@@ -59,6 +59,8 @@ public class RecipientActorFactory  extends AbstractActorFactory {
 		if (site == null)
 			site = new Site(siteName);
 
+		site.user = sc.getId().user;  // labels this site as coming from a sim
+
 		boolean isAsync = false;
 
 		site.addTransaction(new TransactionBean(

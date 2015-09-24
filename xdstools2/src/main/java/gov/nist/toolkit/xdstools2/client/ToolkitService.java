@@ -3,15 +3,12 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -52,6 +49,9 @@ public interface ToolkitService extends RemoteService  {
 //	public List<String> getSimulatorTransactionNames(String simid) throws Exception;
 	public int removeOldSimulators() throws NoServletSessionException;
 	List<SimulatorStats> getSimulatorStats(List<SimId> simid) throws Exception;
+	List<Pid> getPatientIds(SimId simId) throws Exception;
+	String addPatientIds(SimId simId, List<Pid> pids) throws Exception;
+	boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception;
 
 	String setToolkitProperties(Map<String, String> props) throws Exception;
 	Map<String, String> getToolkitProperties() throws NoServletSessionException ;
@@ -162,6 +162,11 @@ public interface ToolkitService extends RemoteService  {
 	
 	public Map<String, String> getSessionProperties() throws NoServletSessionException;
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
+	Pid createPid(String assigningAuthority) throws NoServletSessionException;
+	String getAssigningAuthority() throws Exception;
+	List<String> getAssigningAuthorities() throws Exception;
+	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+
 	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
 }

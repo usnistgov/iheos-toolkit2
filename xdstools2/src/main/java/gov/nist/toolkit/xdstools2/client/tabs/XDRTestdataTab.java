@@ -41,7 +41,7 @@ public class XDRTestdataTab  extends GenericQueryTab {
 		container.addTab(topPanel, "XDR Send", select);
 		addCloseButton(container,topPanel, help);
 
-		topPanel.add(new HTML("<h2>Send XDR</h2>"));
+		topPanel.add(new HTML("<h2>Send XDR Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;

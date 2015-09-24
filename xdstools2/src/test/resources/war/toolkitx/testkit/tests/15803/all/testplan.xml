@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
   <Test>15803/all</Test>
   <Rule>Test GetAll Stored Query</Rule>
   <TestStep id="leafclass">

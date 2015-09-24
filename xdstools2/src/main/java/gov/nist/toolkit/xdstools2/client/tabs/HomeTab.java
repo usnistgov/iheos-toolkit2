@@ -218,8 +218,8 @@ public class HomeTab extends GenericQueryTab {
 		row=0;
 		col=startingColumn+1;
 
-		mainGrid.setWidget(row, col, addHTML("<b>Send Test Data</b>"));
-		Xdstools2.addtoMainMenu(addHTML("<h3>Send Test Data</h3>"));
+		mainGrid.setWidget(row, col, addHTML("<b>Submit</b>"));
+		Xdstools2.addtoMainMenu(addHTML("<h3>Submit</h3>"));
 		row++;
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.registryTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.registryTestDataTabLabel)));
@@ -244,6 +244,10 @@ public class HomeTab extends GenericQueryTab {
 
 		mainGrid.setWidget(row, col, addHTML("<b>Tools</b>"));
 		Xdstools2.addtoMainMenu(addHTML("<h3>Tools</h3>"));
+		row++;
+
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.pidFavoritesLabel, new TabLauncher(myContainer, TabLauncher.pidFavoritesLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.pidFavoritesLabel, new TabLauncher(myContainer, TabLauncher.pidFavoritesLabel)));
 		row++;
 
 		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.adminTabLabel, new TabLauncher(myContainer, TabLauncher.adminTabLabel)));
