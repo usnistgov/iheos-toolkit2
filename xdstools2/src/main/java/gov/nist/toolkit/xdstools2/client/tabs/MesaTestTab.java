@@ -9,7 +9,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -106,12 +105,12 @@ public class MesaTestTab extends GenericQueryTab {
 		HorizontalPanel patientIdPanel = new HorizontalPanel();
 		topPanel.add(patientIdPanel);
 		
-		HTML patientIdLabel = new HTML();
-		patientIdLabel.setText("Patient ID");
-		patientIdPanel.add(patientIdLabel);
-
-		patientIdBox.setWidth("400px");
-		patientIdPanel.add(patientIdBox);
+//		HTML patientIdLabel = new HTML();
+//		patientIdLabel.setText("Patient ID");
+//		patientIdPanel.add(patientIdLabel);
+//
+//		patientIdBox.setWidth("400px");
+//		patientIdPanel.add(patientIdBox);
 	
 		// Alt Patient ID
 		HorizontalPanel altPatientIdPanel = new HorizontalPanel();
@@ -130,7 +129,65 @@ public class MesaTestTab extends GenericQueryTab {
 
 
 	}
-	
+
+	class Runner implements ClickHandler {
+
+		public void onClick(ClickEvent event) {
+			resultPanel.clear();
+
+//			if (!getCurrentTestSession().isEmpty()) {
+//				new PopupMessage("Test Session must be selected");
+//				return;
+//			}
+
+			if (!verifySiteProvided()) return;
+			if (!verifyPidProvided()) return;
+
+//			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
+//			if (siteSpec == null) {
+//				new PopupMessage("Site must be selected");
+//				return;
+//			}
+
+			if (selectedTest == null) {
+				new PopupMessage("Test must be selected");
+				return;
+			}
+
+//			addStatusBox();
+//			getGoButton().setEnabled(false);
+//			getInspectButton().setEnabled(false);
+
+			List<String> selectedSections = new ArrayList<String>();
+			if (selectedSection.equals(allSelection)) {
+				selectedSections.addAll(sections);
+			} else
+				selectedSections.add(selectedSection);
+
+			Map<String, String> parms = new HashMap<>();
+			parms.put("$patientid$", pidTextBox.getValue().trim());
+
+//			String pid = patientIdBox.getText();
+//			if (pid != null && !pid.equals("")) {
+//				pid = pid.trim();
+//				parms.put("$patientid$", pid);
+//			}
+
+			String altPid = altPatientIdBox.getText();
+			if (altPid != null && !altPid.equals("")) {
+				altPid = altPid.trim();
+				parms.put("$altpatientid$", altPid);
+			}
+
+			rigForRunning();
+			toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), selectedTest, selectedSections, parms, true, queryCallback);
+
+		}
+
+	}
+
+
+
 	void addReadme() {
 		HTML readmeBefore = new HTML();
 		readmeBefore.setHTML("<hr />");
@@ -273,7 +330,7 @@ public class MesaTestTab extends GenericQueryTab {
 					new Runner(), 
 					tt,
 					new CoupledTransactions(),
-					act); 
+					true);
 
 		}
 
@@ -328,56 +385,6 @@ public class MesaTestTab extends GenericQueryTab {
 		});
 	}
 	
-	class Runner implements ClickHandler {
-
-		public void onClick(ClickEvent event) {
-			resultPanel.clear();
-			
-			if (!getCurrentTestSession().isEmpty()) {
-				new PopupMessage("Test Session must be selected");
-				return;
-			}
-
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null) {
-				new PopupMessage("Site must be selected");
-				return;
-			}
-			
-			if (selectedTest == null) {
-				new PopupMessage("Test must be selected");
-				return;
-			}
-
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
-
-			List<String> selectedSections = new ArrayList<String>();
-			if (selectedSection.equals(allSelection)) {
-				selectedSections.addAll(sections);
-			} else
-				selectedSections.add(selectedSection);
-			
-			Map<String, String> parms = new HashMap<String, String>();
-			String pid = patientIdBox.getText();
-			if (pid != null && !pid.equals("")) { 
-				pid = pid.trim();
-				parms.put("$patientid$", pid);
-			}
-
-			String altPid = altPatientIdBox.getText();
-			if (altPid != null && !altPid.equals("")) { 
-				altPid = altPid.trim();
-				parms.put("$altpatientid$", altPid);
-			}
-
-			toolkitService.runMesaTest(getCurrentTestSession(), siteSpec, selectedTest, selectedSections, parms, true, queryCallback);
-			
-		}
-		
-	}
-
 
 	HTML htmlize(String header, String in) {
 		HTML h = new HTML(

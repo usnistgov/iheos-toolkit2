@@ -52,6 +52,8 @@ public class SimDb {
 	}
 
 	static public SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
+		if (!dbRoot.exists())
+			dbRoot.mkdir();
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
 

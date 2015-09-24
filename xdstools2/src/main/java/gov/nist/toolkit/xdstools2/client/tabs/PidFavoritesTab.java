@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
@@ -33,6 +35,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
     ListBox favoritesListBox = new ListBox();
     TextArea pidBox = new TextArea();
     VerticalPanel assigningAuthorityPanel = new VerticalPanel();
+    HTML selectedPids = new HTML();
 
     // model
     Set<Pid> favoritePids = new HashSet<>();  // the database of values
@@ -63,6 +66,12 @@ public class PidFavoritesTab  extends GenericQueryTab {
         favoritesListBox.setVisibleItemCount(20);
         favoritesListBox.setMultipleSelect(true);
         favoritesListBox.setWidth("600px");
+        favoritesListBox.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent changeEvent) {
+                updatePidsSelected(getSelectedPids());
+            }
+        });
 
         VerticalPanel pidPanel = new VerticalPanel();
         panel.add(pidPanel);
@@ -105,6 +114,8 @@ public class PidFavoritesTab  extends GenericQueryTab {
         setShowInspectButton(false);
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 
+        panel.add(selectedPids);
+
         fromCookie();
         updateFavoritesFromModel();
         loadAssigningAuthorities();
@@ -134,6 +145,16 @@ public class PidFavoritesTab  extends GenericQueryTab {
     void addToFavorities(Pid pid) {
         favoritePids.add(pid);
         updateFavoritesFromModel();
+    }
+
+    void updatePidsSelected(Collection<Pid> pids) {
+        StringBuilder buf = new StringBuilder();
+
+        buf.append("<b>Selected Patient IDs</b><br />");
+        for (Pid pid : pids) {
+            buf.append(pid.asString()).append("<br />");
+        }
+        selectedPids.setHTML(buf.toString());
     }
 
     void updateFavoritesFromModel() {

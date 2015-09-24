@@ -501,6 +501,8 @@ public class Soap implements SoapInterface {
 
 			if (async)
 				operationClient.complete(outMsgCtx);
+			
+			// TODO - null pointer exception here if port number in configuration is wrong
 			inMsgCtx.getEnvelope().build();
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
