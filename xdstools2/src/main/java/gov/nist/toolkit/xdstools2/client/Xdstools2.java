@@ -27,7 +27,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	VerticalPanel mainMenuPanel = new VerticalPanel();
 	static TabPanel tabPanel = new TabPanel();
 
-	boolean UIDebug = true;
+	boolean UIDebug = false;
 	HorizontalPanel uiDebugPanel = new HorizontalPanel();
 
 	TabContainer getTabContainer() { return this;}
