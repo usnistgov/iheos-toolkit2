@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class SimulatorStats implements Serializable, IsSerializable {
     public SimId simId;
-    public Map<String, String> stats = new HashMap<>();
+    public Map<String, String> stats = new HashMap<String, String>();
     public ActorType actorType;
 
     static public final String DOCUMENT_ENTRY_COUNT = "DocumentEntries";
@@ -24,7 +24,7 @@ public class SimulatorStats implements Serializable, IsSerializable {
     static public final String PATIENT_ID_COUNT = "PatientIds";
     static public final String DOCUMENT_COUNT = "Documents";
 
-    public static List<String> displayOrder = new ArrayList<>();
+    public static List<String> displayOrder = new ArrayList<String>();
 
     static {
         displayOrder.add(SUBMISSION_SET_COUNT);

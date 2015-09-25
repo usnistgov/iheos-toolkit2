@@ -78,7 +78,7 @@ public class TestSessionSelector {
         listBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                String newValue = listBox.getSelectedValue();
+                String newValue = listBox.getValue(listBox.getSelectedIndex());
                 if (NONSELECTION.equals(newValue)) return;
                 Xdstools2.getTestSessionManager().setCurrentTestSession(newValue);
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
@@ -110,7 +110,7 @@ public class TestSessionSelector {
         delTestSessionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                String value = listBox.getSelectedValue();
+                String value = listBox.getValue(listBox.getSelectedIndex());
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
             }
         });
