@@ -98,6 +98,7 @@
         <testkitOut>${project.basedir}/target/${project.build.finalName}/toolkitx/testkit</testkitOut>
         <!--<testkitIn>${project.basedir}/src/main/webapp/toolkitx/testkit</testkitIn>-->
         <testkitIn>${project.basedir}/../testkit/src/main/resources</testkitIn>
+        <!--<gwt.style>DETAILED</gwt.style>-->
     </properties>
 
     <dependencies>
@@ -353,6 +354,9 @@
                     </compileSourcesArtifacts>
                     <!-- end repository related -->
 
+                    <!--<logLevel>INFO</logLevel>-->
+                    <!--<style>${gwt.style}</style>-->
+
                     <runTarget>Xdstools2.html</runTarget>
                     <modules>
                         <module>${gwtModule}</module>
@@ -478,8 +482,8 @@
                     <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
                     <compileReport>false</compileReport>
                     <module>gov.nist.toolkit.xdstools2.Xdstools2</module>
-                    <logLevel>INFO</logLevel>
-                    <style>${gwt.style}</style>
+                    <!--<logLevel>INFO</logLevel>-->
+                    <!--<style>${gwt.style}</style>-->
                     <copyWebapp>true</copyWebapp>
                     <!-- <genParam>true</genParam> -->
                 </configuration>
