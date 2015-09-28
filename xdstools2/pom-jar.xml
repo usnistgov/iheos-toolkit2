@@ -8,6 +8,61 @@
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- this jar project profile is only for a jar -->
+            <!-- use the default project for a war file! -->
+            <properties>
+                <gwtModule>${project.groupId}.xdstools2.Xdstools2_NOEP</gwtModule>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>make-a-jar</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-install-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>install-file</goal>
+                                </goals>
+                                <configuration>
+                                    <packaging>jar</packaging>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <groupId>${project.groupId}</groupId>
+                                    <version>${project.version}</version>
+                                    <file>
+                                        ${project.build.directory}/${project.artifactId}-${project.version}.jar
+                                    </file>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
+
     <name>XDS Toolkit</name>
     <description>Collection of tools for testing IHE Document Sharing profiles</description>
     <mailingLists>
@@ -21,7 +76,7 @@
     </organization>
 
     <artifactId>xdstools2</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
@@ -218,6 +273,29 @@
                 </dependencies>
             </plugin>
 
+            <!-- begin v2 export -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- end v2 -->
+
+
+
+
+
             <!-- GWT Maven Plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -264,7 +342,7 @@
 
                     <runTarget>Xdstools2.html</runTarget>
                     <modules>
-                        <module>${project.groupId}.xdstools2.Xdstools2</module>
+                        <module>${gwtModule}</module>
                     </modules>
                 </configuration>
             </plugin>
