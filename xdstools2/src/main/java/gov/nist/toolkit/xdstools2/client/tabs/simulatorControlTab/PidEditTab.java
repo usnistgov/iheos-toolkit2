@@ -40,7 +40,7 @@ public class PidEditTab extends GenericQueryTab {
 
         addReloader();
 
-        topPanel.add(new HTML("<h2>Patient ID Display/Edit</h2>"));
+        topPanel.add(new HTML("<h2>Registry Simulator Patient ID Display/Edit</h2>"));
         topPanel.add(new HTML("<h3>Simulator " + simId.toString() + "</h3>"));
 
         HorizontalPanel panel = new HorizontalPanel();

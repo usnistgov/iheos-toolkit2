@@ -15,6 +15,7 @@ import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.Panel;
 import gov.nist.toolkit.xdstools2.client.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 	ScrollPanel scrollOutPanel = new ScrollPanel();
 	ScrollPanel scrollLogPanel = new ScrollPanel();
 
-	SimId simid = new SimId("");
+	SimId simid = null;//new SimId("");
 	String currentActor;
 	String currentTransaction;
 	String currentEvent;
@@ -60,12 +61,17 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 	public String getCurrentTransaction() { return currentTransaction; }
 	public String getCurrentEvent() { return currentEvent; }
 
+	// If eventName is null then display list of simulators.  If non-null then it is
+	// the simulator id. In this case do not allow simulator selection.
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 
-		container.addTab(topPanel, "Sim Msgs", select);
-		addCloseButton(container,topPanel, null);
+		if (eventName != null)
+			simid = new SimId(eventName);
+
+		container.addTab(topPanel, "Sim Logs", select);
+		addCloseButton(container, topPanel, null);
 
 		topPanel.add(simDisplayPanel);
 		simDisplayPanel.add(simControlPanel);
@@ -92,10 +98,15 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		inOutPanel.add(transInPanel);
 		inOutPanel.add(transOutPanel);
 
-		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator Msg View")));
+		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Transaction Log")));
 		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator:")));
 
-		simControlPanel.add(simulatorNamesListBox);
+		if (simid == null) {
+			simControlPanel.add(simulatorNamesListBox);
+		} else {
+			simControlPanel.add(new HTML("<h3>" + simid.toString() + "</h3>"));
+			loadTransactionNames(simid);
+		}
 		loadSimulatorNamesListBox();
 		simulatorNamesListBox.addChangeHandler(new SimulatorNameChangeHandler());
 
@@ -163,7 +174,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		});
 	}
 
-//	final String simidFinal = simid;
+	Map<String, String> fullNameMap= new HashMap<>();
 
 	void loadTransactionNames(SimId simid) {
 		simidFinal = simid;
@@ -177,14 +188,25 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 			public void onSuccess(List<String> transNames) {
 				transactionNamesPanel.clear();
-				transactionNamesPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Transaction: ")));
+//				transactionNamesPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Transaction: ")));
+//
+//
+//				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), simidFinal);
+//				transactionRadButtons.addButton("All");
+//				transactionRadButtons.buttons.get(0).setValue(true);
+//
+//				// translate transNames into full descriptive names
+//				List<String> fullNames = new ArrayList<>();
+//				for (String name : transNames) {
+//					TransactionType transType = TransactionType.find(name);
+//					if (transType == null) continue;
+//					if (transType.getId().equals("PIF")) continue;
+//					fullNames.add(transType.getName());
+//					fullNameMap.put(name, transType.getName());
+//
+//				}
+//				transactionRadButtons.addButtons(fullNames);
 
-
-				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), simidFinal);
-				transactionRadButtons.addButton("All");
-				transactionRadButtons.buttons.get(0).setValue(true);
-				transactionRadButtons.addButtons(transNames);
-				
 				transactionChosen(simidFinal, "all");
 			}
 			

@@ -108,7 +108,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         });
         pidButtonPanel.add(addToFavoritesButton);
 
-        setRunButtonText("Send To Registry");
+        setRunButtonText("Send Patient Identity Feed");
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);

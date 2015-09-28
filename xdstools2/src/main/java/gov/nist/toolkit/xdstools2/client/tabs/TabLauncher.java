@@ -31,8 +31,8 @@ public class TabLauncher implements ClickHandler {
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
 	final static public String messageValidatorTabLabel = "Message Validator";
-	final static public String simulatorMessageViewTabLabel = "Simulator Message View";
-	final static public String simulatorControlTabLabel = "Simulator Control";
+	final static public String simulatorMessageViewTabLabel = "Simulator Log Viewer";
+	final static public String simulatorControlTabLabel = "Simulator Manager";
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
 	final static public String documentRetrieveTabLabel = "RetrieveDocument";
 	final static public String allocatePatientIdTabLabel = "Allocate Patient ID for the Public Registry";
@@ -48,7 +48,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String mesaTabLabel = "Pre-Connectathon Tests";
 	final static public String testRunnerTabLabel = "Conformance Tests";
 	final static public String nwhinTabLabel = "Pre-OnBoarding Tests";
-	final static public String pidFavoritesLabel = "Patient IDs";
+	final static public String pidFavoritesLabel = "Manage Favorite Patient IDs";
 	
 	final static public String testLogLabel = "Test Log Listing";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";	
