@@ -469,7 +469,10 @@ public class Session implements SecurityParams {
 	public CodesConfiguration getCodesConfiguration(String environmentName) throws XdsInternalException {
 		CodesConfiguration config = codesConfigurations.get(environmentName);
 		if (config != null) return config;
-		CodesConfigurationBuilder builder = new CodesConfigurationBuilder(getCodesFile());
+		File codesFile = getCodesFile();
+		if (!codesFile.exists()) throw new XdsInternalException("No code configuration defined for Environment " + environmentName +
+		" or that Environment does not exist");
+		CodesConfigurationBuilder builder = new CodesConfigurationBuilder(codesFile);
 		config = builder.get();
 		codesConfigurations.put(environmentName, config);
 		return config;
