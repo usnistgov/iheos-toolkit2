@@ -285,7 +285,7 @@ public class SimulatorControlTab extends GenericQueryTab {
                     });
 					buttonPanel.add(logButton);
 
-					Button pidButton = new Button("Patient ID Log");
+					Button pidButton = new Button("Patient ID Feed");
 					pidButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
 						@Override
 						public void onClick(ClickEvent clickEvent) {
@@ -296,7 +296,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 					});
 					buttonPanel.add(pidButton);
 
-					Button editButton = new Button("Edit");
+					Button editButton = new Button("Configure");
 					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
 						@Override
 						public void onClick(ClickEvent clickEvent) {
