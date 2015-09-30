@@ -8,6 +8,36 @@
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
+    <profiles>
+        <profile>
+            <id>Bill</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>Bill</build.profile.id>
+            </properties>
+        </profile>
+        <profile>
+            <id>Diane</id>
+            <properties>
+                <build.profile.id>Diane</build.profile.id>
+            </properties>
+        </profile>
+        <profile>
+            <id>Olivier</id>
+            <properties>
+                <build.profile.id>Olivier</build.profile.id>
+            </properties>
+        </profile>        
+        <profile>
+            <id>Sunil</id>
+            <properties>
+                <build.profile.id>Sunil</build.profile.id>
+            </properties>
+        </profile>
+    </profiles>
+    
     <name>XDS Toolkit</name>
     <description>Collection of tools for testing IHE Document Sharing profiles</description>
     <mailingLists>
@@ -188,9 +218,24 @@
     </dependencies>
 
     <build>
+   
+  
+        
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
+        <!-- See profiles stanza above -->
+        <!-- Begin profile part 1/2 -->    
+        <filters>
+                    <!--
+                        Ensures that an environment properties file is always loaded from the
+                        configuration directory of the active Maven profile.
+                    -->
+                <filter>profiles/env/${build.profile.id}.properties</filter>
+        </filters>
+        <!-- End profile part 1/2 -->    
+        
         <plugins>
+        
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
@@ -218,6 +263,27 @@
                 </dependencies>
             </plugin>
 
+            <!-- Begin profile part 2/2 -->    
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                       <resource>
+                        <filtering>true</filtering>
+                        <directory>src/main/webapp</directory>   
+                        <includes>
+                            <include>WEB-INF/toolkit.properties</include>
+                        </includes>                
+                    </resource>
+                  </webResources>    
+                   <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                <webXml>src/main/webapp/WEB-INF/web.xml</webXml>                                
+                </configuration>
+            </plugin> 
+            <!-- End profile part 2/2 -->        
+                
+            
             <!-- GWT Maven Plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
