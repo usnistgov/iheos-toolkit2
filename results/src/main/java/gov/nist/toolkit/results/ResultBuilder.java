@@ -1,11 +1,10 @@
 package gov.nist.toolkit.results;
 
-import java.util.Calendar;
-
-import gov.nist.toolkit.results.client.AssertionResult;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+
+import java.util.Calendar;
 
 public class ResultBuilder {
 
@@ -38,6 +37,15 @@ public class ResultBuilder {
 			r.addAssertion(ExceptionUtil.exception_details(t), false);
 		r.pass = r.passed();
 		return r;
+	}
+
+	static public Result RESULT(Metadata m) {
+		Result result = new Result("NoTest");
+		StepResult stepResult = new StepResult();
+		result.addStepResult(stepResult);
+		stepResult.setMetadata(MetadataToMetadataCollectionParser.buildMetadataCollection(m, "NoTest"));
+
+		return result;
 	}
 	
 

@@ -25,7 +25,7 @@ class RegistrySelfTestIT extends Specification {
         List<String> sections = new ArrayList<>()
         sections.add("section")
         Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)
+        params.put('$patientid$', patientId)     // this is igored - a new patient id is created
         boolean stopOnFirstError = true
 
         and: 'Run pid transaction test'

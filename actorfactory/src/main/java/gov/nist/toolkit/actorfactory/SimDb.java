@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
@@ -22,10 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Each simulator has an on-disk presence that keeps track of its long
@@ -128,8 +126,37 @@ public class SimDb {
 				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
 		}
 
-		event = nowAsFilenameBase();
+		Date date = new Date();
 
+		event = asFilenameBase(date);
+
+		File eventDir = new File(transactionDir, event);
+		eventDir.mkdirs();
+		Serialize.out(new File(eventDir, "date.ser"), date);
+
+	}
+
+	public SimDb(TransactionInstance ti) throws IOException, NoSimException {
+		this(Installation.installation().simDbFile(), new SimId(ti.simId));
+
+		this.actor = ti.actorType.getShortName();
+		this.transaction = ti.name;
+
+		if (actor != null && transaction != null) {
+			String transdir = simDir + File.separator + actor + File.separator + transaction;
+			transactionDir = new File(transdir);
+			transactionDir.mkdirs();
+			if (!transactionDir.isDirectory())
+				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
+		}
+		event = ti.label;
+	}
+
+	// actor, transaction, and event must be filled in
+	public Date getEventDate() throws IOException, ClassNotFoundException {
+		if (transactionDir == null || event == null) return null;
+		File eventDir = new File(transactionDir, event);
+		return (Date) Serialize.in(new File(eventDir, "date.ser"));
 	}
 
 	public File getRoot() { return dbRoot; }
@@ -392,8 +419,11 @@ public class SimDb {
 		return simDir;
 	}
 
-	public List<String> getTransInstances(String ignored_actor, String trans) {
+	public List<TransactionInstance> getTransInstances(String ignored_actor, String trans) {
+		String event_save = event;
+		File transDir_save = transactionDir;
 		List<String> names = new ArrayList<String>();
+		List<TransactionInstance> transList = new ArrayList<>();
 
 		for (File actor : simDir.listFiles()) {
 			if (!actor.isDirectory())
@@ -408,19 +438,44 @@ public class SimDb {
 					if (!inst.isDirectory())
 						continue;
 					names.add(inst.getName() + " " + name);
+					TransactionInstance t = new TransactionInstance();
+					t.simId = simId.toString();
+					t.actorType = ActorType.findActor(actor.getName());
+					t.label = inst.getName();
+					t.name = name;
+
+					transactionDir = new File(actor, name);
+					logger.debug("transaction dir is " + transactionDir);
+					event = t.label;
+					Date date = null;
+					try {
+						date = getEventDate();
+					} catch (IOException e) {
+					} catch (ClassNotFoundException e) {
+					}
+					if (date == null) continue;  // only interested in transactions that have dates
+					t.labelInterpretedAsDate = (date == null) ? "oops" : date.toString();
+					t.nameInterpretedAsTransactionType = TransactionType.find(t.name);
+					logger.debug("Found " + t);
+					transList.add(t);
 				}
 			}
 		}
-		
-		String[] nameArray = names.toArray(new String[0]);
-		java.util.Arrays.sort(nameArray);	
 
-		
-		List<String> returns = new ArrayList<String>();
-		for (int i=nameArray.length-1; i>=0; i--)
-			returns.add(nameArray[i]);
-		
-		return returns;
+		Collections.sort(transList, new ReverseTransactionInstanceComparator());
+
+		event = event_save;
+		transactionDir = transDir_save;
+		logger.debug("returning " + transList);
+		return transList;
+	}
+
+	// this cannot be stuffed into TransactionInstance since that is a client class
+	class ReverseTransactionInstanceComparator implements Comparator<TransactionInstance> {
+		@Override
+		public int compare(TransactionInstance s1, TransactionInstance s2) {
+			return -s1.label.compareTo(s2.label);
+		}
 	}
 	
 	public File[] getTransInstanceFiles(String actor, String trans) {
@@ -632,8 +687,10 @@ public class SimDb {
 	}
 
 	public String nowAsFilenameBase() {
-		Date date = new Date();
-		
+		return asFilenameBase(new Date());
+	}
+
+	public String asFilenameBase(Date date) {
 		Calendar c  = Calendar.getInstance();
 		c.setTime(date);
 		

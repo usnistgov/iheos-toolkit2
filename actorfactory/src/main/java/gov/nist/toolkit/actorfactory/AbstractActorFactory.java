@@ -6,6 +6,7 @@ import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -303,7 +304,7 @@ public abstract class AbstractActorFactory {
 		return simDir.exists();
 	}
 
-	static public List<String> getTransInstances(SimId simid, String xactor, String trans) throws NoSimException
+	static public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws NoSimException
 	{
 		SimDb simdb;
 		try {

@@ -1,9 +1,10 @@
 	package gov.nist.toolkit.xdstools2.server;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+	import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -230,7 +231,7 @@ ToolkitService {
 	public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
 	public String getSimulatorEndpoint() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorEndpoint(); }
 	public MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).executeSimMessage(simFileSpec); }
-	public List<String> getTransInstances(SimId simid, String xactor, String trans) throws Exception { return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans); }
+	public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception { return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans); }
 	public String getTransactionRequest(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionRequest(simid, actor, trans, event); }
 	public String getTransactionResponse(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionResponse(simid, actor, trans, event); }
 	public int removeOldSimulators() throws NoServletSessionException { return new SimulatorServiceManager(session()).removeOldSimulators(); }
@@ -250,6 +251,12 @@ ToolkitService {
 	public String addPatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).addPatientIds(simId, pids); }
 	public boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).deletePatientIds(simId, pids); }
 
+	public Result getSimulatorEventRequest(TransactionInstance ti) throws Exception {
+		return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(ti);
+	}
+	public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
+		return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
+	}
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Dashboard Service
