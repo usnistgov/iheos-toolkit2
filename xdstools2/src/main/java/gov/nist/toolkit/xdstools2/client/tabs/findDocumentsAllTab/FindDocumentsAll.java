@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.tabs;
+package gov.nist.toolkit.xdstools2.client.tabs.findDocumentsAllTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,14 +10,14 @@ import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.GetAllParams;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Diane Azais local on 9/23/2015.
  */
-public class FindAllDocumentsTab extends GenericQueryTab {
+public class FindDocumentsAll extends GenericQueryTab {
 
 
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
@@ -29,9 +29,9 @@ public class FindAllDocumentsTab extends GenericQueryTab {
     static CoupledTransactions couplings = new CoupledTransactions();
 
     GenericQueryTab genericQueryTab;
-    GetAllParams sqParams;
+    FindDocumentsAllParams sqParams;
 
-    public FindAllDocumentsTab() {
+    public FindDocumentsAll() {
         super(new FindDocumentsSiteActorManager());
     }
 
@@ -45,16 +45,16 @@ public class FindAllDocumentsTab extends GenericQueryTab {
         genericQueryTab = this;   // share with other methods
 
 
-        container.addTab(topPanel, "FindAllDocuments", select);  // link into container/tab management
+        container.addTab(topPanel, "Find Documents (All Parameters)", select);  // link into container/tab management
         addCloseButton(container, topPanel, null);   // add the close button
 
         HTML title = new HTML();
-        title.setHTML("<h2>Find Documents (all criteria)</h2>");
+        title.setHTML("<h2>Find Documents (All Parameters)</h2>");
         topPanel.add(title);
 
         // Generate the composite widget that allows selection of all the GetAll query parameters. Below is the call
         // sqParams.asWidget() which gets the actual Widget.
-        sqParams = new GetAllParams(toolkitService, genericQueryTab);
+        sqParams = new FindDocumentsAllParams(toolkitService, genericQueryTab);
 
         mainGrid = new FlexTable();  // this is important in some tabs, not this one.  This init should be moved to definition
         topPanel.add(sqParams.asWidget());
@@ -70,7 +70,7 @@ public class FindAllDocumentsTab extends GenericQueryTab {
 
     @Override
     public String getWindowShortName() {
-        return null;
+        return "findalldocuments";
     }
 }
 

@@ -4,7 +4,7 @@ package gov.nist.toolkit.adt;
  *
  * @author mccaffrey
  */
-public class Hl7Address {
+public class HL7Address {
 
     private String parent = null;   //  uuid link to record... used in database but may not be used in actuality in java object
 
@@ -16,16 +16,16 @@ public class Hl7Address {
     private String country = null;
     private String countyOrParish = null;
 
-    public Hl7Address() {}
+    public HL7Address() {}
 
 
-    public Hl7Address(String parent) {
+    public HL7Address(String parent) {
         this.setParent(parent);
 
     }
 
-    /** Creates a new instance of Hl7Address */
-    public Hl7Address(String parent, String streetAddress, String otherDesignation, String city, String stateOrProvince,
+    /** Creates a new instance of HL7Address */
+    public HL7Address(String parent, String streetAddress, String otherDesignation, String city, String stateOrProvince,
                       String zipCode, String country, String countyOrParish) {
         this.setParent(parent);
         this.setStreetAddress(streetAddress);
