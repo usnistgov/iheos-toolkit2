@@ -9,7 +9,7 @@ import spock.lang.Specification
 /**
  * Created by bill on 9/22/15.
  */
-class ToolkitApiIT extends Specification {
+class RegistrySimIT extends Specification {
     SimId testSim = new SimId('testsim')
     ToolkitApi api;
 
@@ -79,6 +79,7 @@ class ToolkitApiIT extends Specification {
         results.size() == 1
         results.get(0).passed()
     }
+
 
     def 'Submit Pid transaction to Registry simulator'() {
         when:

@@ -466,6 +466,10 @@ public class Session implements SecurityParams {
 		return PatientIdAllocator.getNew(assigningAuthority);
 	}
 
+	public Pid allocateNewPid() throws Exception {
+		return PatientIdAllocator.getNew(getAssigningAuthority());
+	}
+
 	public CodesConfiguration getCodesConfiguration(String environmentName) throws XdsInternalException {
 		CodesConfiguration config = codesConfigurations.get(environmentName);
 		if (config != null) return config;

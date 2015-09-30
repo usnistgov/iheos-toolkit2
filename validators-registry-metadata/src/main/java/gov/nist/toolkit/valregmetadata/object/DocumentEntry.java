@@ -285,7 +285,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		if (vc.sizeRequired() && getSlot("size") == null)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot size required in this context", this, table415);
 
-		if (vc.repositoryUniqueIdRequired() && getSlot("repositoryUniqueId") == null && (vc.isXDR || vc.isXDRMinimal || vc.isXDRLimited))
+		if (vc.repositoryUniqueIdRequired() && getSlot("repositoryUniqueId") == null || (vc.isXDR || vc.isXDRMinimal || vc.isXDRLimited))
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot repositoryUniqueId required in this context", this, table415);
 
 		if (vc.uriRequired() && getSlot("URI") == null)

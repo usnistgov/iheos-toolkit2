@@ -21,5 +21,5 @@ Release Notes
 
 [Tool documentation organized by tool](tools/index.html)
 
-Tool documentation organized by How To topic
+[Tool documentation organized by How To topic](howto/index.html)
 

@@ -132,7 +132,8 @@ public class RegistryFactory {
 			int verI = Integer.parseInt(version);
 			f.version = verI;
 		} catch (NumberFormatException e) {
-			throw new MetadataException("Version attribute does not parse as an integer, value is " + version, null);
+			if (!"1.1".equals(version))
+				throw new MetadataException("Version attribute does not parse as an integer, value is " + version, null);
 		}
 
 

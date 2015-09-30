@@ -13,6 +13,7 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
+import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
@@ -294,6 +295,7 @@ public class SimulatorServiceManager extends CommonService {
 	public String deleteConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "deleteConfig " + config.getId());
 		new SimulatorApi(session).delete(config.getId());
+		SimServlet.deleteSim(config.getId());
 		return "";
 //		try {
 //			new SimCache().deleteSimConfig(config.getId());

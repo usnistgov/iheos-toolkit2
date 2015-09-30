@@ -114,7 +114,7 @@ public class ToolkitApi {
      * @param sections - list of section names or null to run all
      * @param params - parameter map
      * @param stopOnFirstFailure
-     * @return - list of Result objects - on per test step (transaction) run
+     * @return - list of Result objects - one per test step (transaction) run
      * @throws Exception if testSession could not be created
      */
     public List<Result> runTest(String testSession, String siteName, String testName, List<String> sections,  Map<String, String> params, boolean stopOnFirstFailure) throws Exception {

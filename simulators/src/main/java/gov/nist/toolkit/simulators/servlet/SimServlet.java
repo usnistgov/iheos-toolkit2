@@ -709,6 +709,13 @@ public class SimServlet  extends HttpServlet {
 		return repIndex;
 	}
 
+	// remove the index(s)
+	static public void deleteSim(SimId simId) {
+		ServletContext servletContext = config.getServletContext();
+		servletContext.removeAttribute("Reg_" + simId);
+		servletContext.removeAttribute("Rep_" + simId);
+	}
+
 
 	void closeOut(HttpServletResponse response) {
 		try {
