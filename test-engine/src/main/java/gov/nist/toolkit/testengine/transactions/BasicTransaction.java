@@ -102,6 +102,10 @@ public abstract class BasicTransaction  {
 		return s_ctx;
 	}
 
+	public Map<String, String> getExternalLinkage() {
+		return planContext.getExtraLinkage();
+	}
+
 	void applyTransactionSettings() {
 		if (transactionSettings == null)
 			return;

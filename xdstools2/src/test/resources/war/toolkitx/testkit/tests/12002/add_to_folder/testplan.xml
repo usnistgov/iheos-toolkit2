@@ -9,6 +9,7 @@
     <PatientIdentityFeedTransaction>
       <XDSb/>
       <NoMetadata/>
+      <CreateNewPatientId/>
     </PatientIdentityFeedTransaction>
   </TestStep>
   <TestStep id="add">

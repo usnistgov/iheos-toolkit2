@@ -4,7 +4,19 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import spock.lang.Specification
 /**
- * Created by bill on 9/29/15.
+ * Runs all Registry tests.
+ * To run:
+ *    Start toolkit from IntelliJ.  This will establish the EC at a location something like
+ *       /Users/bill/dev/toolkit2/xdstools2/target/test-classes/external_cache
+ *    On startup this will be echoed in the log window
+ *    Using the toolkit [Toolkit Configuration] tool, save this location as the external cache location
+ *    Shutdown toolkit
+ *    Start toolkit - this will recognize the EC location change
+ *    Open Simulation Manager
+ *    Select test session named mike (create it if it doesn't exist)
+ *    Create a Registry simulator named reg - the full id will be mike__reg
+ *    Come back to this file in IntelliJ and click right on the class name and select Run RegistrySelfTestIT
+ *    All the self tests will run
  */
 class RegistrySelfTestIT extends Specification {
     ToolkitApi api;
@@ -13,12 +25,13 @@ class RegistrySelfTestIT extends Specification {
     String regrep = 'mike__regrep'
 
     def setup() {
-        Installation.installation().externalCache(new File('/Users/bill/tmp/toolkit2'))
+//        Installation.installation().externalCache(new File('/Users/bill/tmp/toolkit2'))
         api = new ToolkitApi()
         println "EC is ${Installation.installation().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
     }
 
+    // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
         String testSession = null;  // use default
@@ -27,7 +40,7 @@ class RegistrySelfTestIT extends Specification {
         List<String> sections = new ArrayList<>()
         sections.add("section")
         Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)     // this is igored - a new patient id is created
+        params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
 
         and: 'Run pid transaction test'
@@ -63,8 +76,8 @@ class RegistrySelfTestIT extends Specification {
 //    def 'Run test under debug'() {
 //        when:
 //        String testSession = null;  // use default
-//        String siteName = 'mike__regrep'
-//        String testName = "11981"
+//        String siteName = 'mike__reg'
+//        String testName = "12002"
 //        List<String> sections = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)

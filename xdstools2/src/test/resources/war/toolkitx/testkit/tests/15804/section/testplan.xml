@@ -1,11 +1,11 @@
  
 <TestPlan>
   <Test>15804/section</Test>
-  <Rule>Simple Patient Identity Feed</Rule>
+  <Rule>Patient Identity Feed</Rule>
   <TestStep id="step">
     <Rule>
       <Transaction>Patient Identity Feed</Transaction>
-      <Assertion>Send to Registry</Assertion>
+      <Assertion>Send UI configured Patient ID</Assertion>
     </Rule>
     <ExpectedStatus>Success</ExpectedStatus>
     <PatientIdentityFeedTransaction>
