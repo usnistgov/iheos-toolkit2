@@ -28,6 +28,7 @@ public class XdsTest {
 	String version = "xx.yy";
 	//controlling variables
 	File testkit;
+	File altTestkit;
 	String mgmt;
 	File toolkit;
 	LogRepository logRepository;
@@ -369,6 +370,7 @@ public class XdsTest {
 
 	private void initTestConfig() {
 		testConfig.testkitHome = testkit;
+		testConfig.altTestkitHome = altTestkit;
 		testConfig.logRepository = logRepository;
 		testConfig.site = site;
 		testConfig.secure = secure;
@@ -715,7 +717,7 @@ public class XdsTest {
 
 				if (writeLogFiles) {
 					// This is the log.xml file
-					testConfig.logFile = new TestKitLog(logDirectory, testkit).getLogFile(testPlanFile);
+					testConfig.logFile = new TestKitLog(logDirectory, testkit, altTestkit).getLogFile(testPlanFile);
 					logFiles.add(testConfig.logFile);
 				}
 				
@@ -926,11 +928,17 @@ public class XdsTest {
 	public File getTestkit() {
 		return testkit;
 	}
+	public File getAltTestkit() {
+		return altTestkit;
+	}
 
 	public void setTestkit(File testkit) {
 		this.testkit = testkit;
 	}
 
+	public void setAltTestkit(File testkit) {
+		this.altTestkit = testkit;
+	}
 
 
 	public File getLogDir() throws IOException {
@@ -953,13 +961,17 @@ public class XdsTest {
 	}
 
 	public void addTestCollection(String testCollectionName) throws Exception {
-
-		TestCollection tcol = new TestCollection(testkit,testCollectionName);
-
 		if (testSpecs == null)
 			testSpecs = new ArrayList<TestDetails>();
 
-		testSpecs.addAll(tcol.getTestSpecs());
+		List<TestDetails> details;
+
+		details = new TestCollection(altTestkit,testCollectionName).getTestSpecs();
+		if (details.isEmpty()) {
+			details = new TestCollection(testkit, testCollectionName).getTestSpecs();
+		}
+
+		testSpecs.addAll(details);
 	}
 
 

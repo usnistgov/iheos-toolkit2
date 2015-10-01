@@ -503,7 +503,11 @@ public class Soap implements SoapInterface {
 				operationClient.complete(outMsgCtx);
 			
 			// TODO - null pointer exception here if port number in configuration is wrong
-			inMsgCtx.getEnvelope().build();
+			try {
+				inMsgCtx.getEnvelope().build();
+			} catch (NullPointerException e) {
+				throw new XdsInternalException("Port number may be configured wrong", e);
+			}
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
 

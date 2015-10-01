@@ -35,6 +35,7 @@ public class Xdstest2 {
 	XdsTest xt;
 	LogRepository logRepository;
 	File testkit;
+	File altTestkit;
 	String testnum;
 	Site site;
 	File toolkitDir;   // never referenced
@@ -155,6 +156,11 @@ public class Xdstest2 {
 	public void setTestkitLocation(File locationDir) {
 		testkit = locationDir;
 		xt.setTestkit(locationDir);
+	}
+
+	public void setAlternateTestkitLocation(File dir) {
+		altTestkit = dir;
+		xt.setAltTestkit(dir);
 	}
 
 	/**
