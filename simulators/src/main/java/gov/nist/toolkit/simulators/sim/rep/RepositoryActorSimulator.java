@@ -21,6 +21,7 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryActorSimulator extends BaseDsActorSimulator {
+	static final Logger logger = Logger.getLogger(RepositoryActorSimulator.class);
+
 	RepIndex repIndex;
 //	SimDb db;
 	String repositoryUniqueId;
@@ -72,17 +75,22 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
+		logger.debug("Repository starting transaction " + transactionType);
+
 		if (transactionType.equals(TransactionType.PROVIDE_AND_REGISTER) ||
 				transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {
 
 			common.vc.isPnR = true;
 			common.vc.xds_b = true;
+			common.vc.isXDR = false;
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
-			if (transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER))
+			if (transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {
+				logger.debug("XDR style of PnR");
 				common.vc.isXDR = true;
+			}
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;

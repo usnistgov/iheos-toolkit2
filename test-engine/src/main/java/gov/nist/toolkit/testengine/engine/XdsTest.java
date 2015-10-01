@@ -673,7 +673,7 @@ public class XdsTest {
 
 	boolean runHadError = false;
 
-	public List<TestDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings ts, boolean writeLogFiles) throws Exception {
+	public List<TestDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings globalTransactionSettings, boolean writeLogFiles) throws Exception {
 		initTestConfig();
 
 		//resetTestSpecLogs();
@@ -695,6 +695,10 @@ public class XdsTest {
         this.status = true;
 		for (TestDetails testSpec : testSpecs) {
 			System.out.println("Test: " + testSpec.getTestNum());
+			// Changes made by a test should be isolated to that test
+			// They need to run independently
+			TransactionSettings ts = globalTransactionSettings.clone();
+
 			testConfig.testNum = testSpec.getTestNum();
 			System.out.println("Sections: " + testSpec.testPlanFileMap.keySet());
 			for (String section : testSpec.testPlanFileMap.keySet()) {

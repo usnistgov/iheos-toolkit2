@@ -43,8 +43,17 @@ public class Site  implements IsSerializable, Serializable {
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
 	public String user = null;  // loaded from SimId - when non-null this site represents a sim
-	
-	public boolean equals(Site s) {
+
+	@Override
+	public int hashCode() {
+		return 41 + ((name == null) ? 0 : name.hashCode());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) return false;
+		if (!(o instanceof Site)) return false;
+		Site s = (Site) o;
 		return
 				((name == null) ? s.name == null : name.equals(s.name)) &&
 						((user == null) ? s.user == null : user.equals(s.user)) &&

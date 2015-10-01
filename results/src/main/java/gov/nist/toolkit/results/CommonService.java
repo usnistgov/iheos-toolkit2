@@ -52,7 +52,10 @@ public class CommonService {
 
 	static public List<Result> buildResultList(Exception e) {
 		Result r = ResultBuilder.RESULT("test");
-		r.addAssertion(e.getMessage(), false);
+		if (e.getMessage() == null)
+			r.addAssertion(ExceptionUtil.exception_details(e), false);
+		else
+			r.addAssertion(e.getMessage(), false);
 		return asList(r);
 	}
 

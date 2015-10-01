@@ -54,6 +54,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
 
 			addEditableConfig(sc, SimulatorConfig.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addEditableConfig(sc, SimulatorConfig.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
 			addFixedConfig(sc, SimulatorConfig.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 			addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorConfig.VALIDATE_CODES, ParamType.BOOLEAN, true);

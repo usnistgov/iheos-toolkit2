@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
@@ -71,7 +72,7 @@ public interface ToolkitServiceAsync {
 
 //	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> callback);
 
-	void  getTransInstances(SimId simid, String actor, String trans, AsyncCallback<List<String>> callback);
+	void  getTransInstances(SimId simid, String actor, String trans, AsyncCallback<List<TransactionInstance>> callback);
   
 	void getLastMetadata(AsyncCallback<List<Result>> callback);
 	void getLastFilename(AsyncCallback<String> callback);
@@ -164,6 +165,8 @@ public interface ToolkitServiceAsync {
 	void getAssigningAuthority(AsyncCallback<String> callback) throws Exception;
 	void getAssigningAuthorities(AsyncCallback<List<String>> callback) throws Exception;
 	void sendPidToRegistry(SiteSpec site, Pid pid, AsyncCallback<List<Result>> callback) throws NoServletSessionException;
+	void getSimulatorEventRequest(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
+	void getSimulatorEventResponse(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
 
 
 	void getTestplanAsText(String testname, String section, AsyncCallback<String> callback);

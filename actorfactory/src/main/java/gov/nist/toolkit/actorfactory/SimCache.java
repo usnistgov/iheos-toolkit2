@@ -3,6 +3,7 @@ package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.sitemanagement.client.Site;
 
 import java.io.IOException;
 import java.util.*;
@@ -20,6 +21,14 @@ public class SimCache {
 
 	public void put(String sessionId, SimManager sim) {
 		mgrs.put(sessionId, sim);
+	}
+
+	static public Collection<Site> getAllSites() throws Exception {
+		Set<Site> sitesSet = new HashSet<>();
+		for (SimManager mgr : mgrs.values()) {
+			sitesSet.addAll(mgr.getAllSites().asCollection());
+		}
+		return sitesSet;
 	}
 
 	/**

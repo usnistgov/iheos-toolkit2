@@ -1,18 +1,25 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.*;
+import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
+import gov.nist.toolkit.actorfactory.SimCache;
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.ParseException;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
+import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
@@ -48,7 +55,7 @@ public class SimulatorServiceManager extends CommonService {
 		this.session = session;
 	}
 
-	public List<String> getTransInstances(SimId simid, String xactor, String trans) throws Exception
+	public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception
 	{
 		logger.debug(session.id() + ": " + "getTransInstances : " + simid + " - " + xactor + " - " + trans);
 		return GenericSimulatorFactory.getTransInstances(simid, xactor, trans);
@@ -294,6 +301,7 @@ public class SimulatorServiceManager extends CommonService {
 	public String deleteConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "deleteConfig " + config.getId());
 		new SimulatorApi(session).delete(config.getId());
+		SimServlet.deleteSim(config.getId());
 		return "";
 //		try {
 //			new SimCache().deleteSimConfig(config.getId());
@@ -405,6 +413,42 @@ public class SimulatorServiceManager extends CommonService {
 
 	public boolean deletePatientIds(SimId simId, List<Pid> patientIds) throws IOException, NoSimException {
 		return new SimDb(simId).deletePatientIds(patientIds);
+	}
+
+	public Result getSimulatorEventRequestAsResult(TransactionInstance ti) throws Exception {
+		SimDb db = null;
+		try {
+			db = new SimDb(ti);
+		} catch (Exception e) {
+			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
+		}
+		File reqeustFile = db.getRequestBodyFile();
+		if (reqeustFile == null) return null;
+		Metadata m = null;
+		try {
+			m = MetadataParser.parseContent(reqeustFile);
+		} catch (Exception e) {
+			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
+		}
+		return ResultBuilder.RESULT(m);
+	}
+
+	public Result getSimulatorEventResponseAsResult(TransactionInstance ti) throws Exception {
+		SimDb db = null;
+		try {
+			db = new SimDb(ti);
+		} catch (Exception e) {
+			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
+		}
+		File reqeustFile = db.getResponseBodyFile();
+		if (reqeustFile == null) return null;
+		Metadata m = null;
+		try {
+			m = MetadataParser.parseContent(reqeustFile);
+		} catch (Exception e) {
+			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
+		}
+		return ResultBuilder.RESULT(m);
 	}
 
 }

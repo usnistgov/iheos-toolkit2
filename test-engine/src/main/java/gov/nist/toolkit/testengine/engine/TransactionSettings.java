@@ -32,4 +32,21 @@ public class TransactionSettings {
 	public TransactionSettings() {
 		res = new AssertionResults();
 	}
+
+	@Override
+	public TransactionSettings clone() {
+		TransactionSettings ts = new TransactionSettings();
+		ts.assignPatientId = assignPatientId;
+		ts.patientId = patientId;
+		ts.altPatientId = altPatientId;
+		ts.patientIdAssigningAuthorityOid = patientIdAssigningAuthorityOid;
+		ts.logRepository = logRepository;
+		ts.writeLogs = writeLogs;
+		ts.siteSpec = siteSpec;
+		ts.res = res;
+		ts.user = user;
+		ts.transactionTransport = transactionTransport;
+		ts.securityParams = securityParams;
+		return ts;
+	}
 }

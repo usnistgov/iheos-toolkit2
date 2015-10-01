@@ -111,6 +111,9 @@ public class RegistryFactory {
 		a.type = RegIndex.getAssocType(m, ele);
 		nullIdCheck(a);
 
+		a.isOriginal = m.isOriginalHasMember(ele);
+		a.isReference = m.isReferenceHasMember(ele);
+
 		delta.add(a);
 
 		return a;
@@ -132,7 +135,8 @@ public class RegistryFactory {
 			int verI = Integer.parseInt(version);
 			f.version = verI;
 		} catch (NumberFormatException e) {
-			throw new MetadataException("Version attribute does not parse as an integer, value is " + version, null);
+			if (!"1.1".equals(version))
+				throw new MetadataException("Version attribute does not parse as an integer, value is " + version, null);
 		}
 
 

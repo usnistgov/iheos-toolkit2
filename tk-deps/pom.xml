@@ -16,9 +16,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.7</jdk.version>
         <junit.version>4.11</junit.version>
-        <!--<gwtVersion>2.7.0</gwtVersion>-->
-        <gwtVersion>2.6.1</gwtVersion>
         <groovyVersion>2.1.1</groovyVersion>
+        <gwtVersion>2.7.0</gwtVersion>
+        <!-- <gwtVersion>2.6.1</gwtVersion> -->
         <mavenCompilerPluginVersion>3.1</mavenCompilerPluginVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>

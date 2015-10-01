@@ -3,10 +3,9 @@ package gov.nist.toolkit.simulators.sim.reg.store;
 
 import java.io.Serializable;
 
-public class Fol extends Ro implements Serializable {
+public class Fol extends PatientObject implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	public String pid;
 	public int version;
 	public String lid;
 	public String lastUpdateTime;

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
+import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
@@ -15,6 +16,7 @@ import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +80,10 @@ public class UtilityRunner {
                 // force loading of site definitions
                 SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
 
-                Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
+//                Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
+                Collection<Site> siteCollection = SimCache.getAllSites();
+                logger.debug("UtilityRunner - defined sites - " + siteCollection.toString());
+                Sites theSites = new Sites(siteCollection);
                 // Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
                 if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
                     Site site = theSites.getSite(session.siteSpec.name);

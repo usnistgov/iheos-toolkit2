@@ -1761,6 +1761,26 @@ public class Metadata {
 		return objects;
 	}
 
+	public boolean isOriginalHasMember(OMElement assoc) {
+		if (assoc == null) return false;
+		String id = getId(assoc);
+		if (!isAssociation(id)) return false;
+		String sss = getSlotValue(assoc, "SubmissionSetStatus", 0);
+		if (sss == null) return false;
+		if (sss.equals("Original")) return true;
+		return false;
+	}
+
+	public boolean isReferenceHasMember(OMElement assoc) {
+		if (assoc == null) return false;
+		String id = getId(assoc);
+		if (!isAssociation(id)) return false;
+		String sss = getSlotValue(assoc, "SubmissionSetStatus", 0);
+		if (sss == null) return false;
+		if (sss.equals("Reference")) return true;
+		return false;
+	}
+
 	String assoc_type(String type) {
 		if (isVersion2())
 			return type;

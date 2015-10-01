@@ -141,7 +141,7 @@ public class TestSessionManager2 {
         toolkitService.addMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot load test session names - " + throwable.getMessage());
+                new PopupMessage("Cannot add test session - " + throwable.getMessage());
             }
 
             @Override
@@ -156,7 +156,7 @@ public class TestSessionManager2 {
         toolkitService.delMesaTestSession(sessionName, new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable throwable) {
-                new PopupMessage("Cannot load test session names - " + throwable.getMessage());
+                new PopupMessage("Cannot delete test session - " + throwable.getMessage());
             }
 
             @Override

@@ -21,11 +21,12 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		this.warHome = warHome;
 	}
 
-	public File getActorsDirName() {
-		File f = new File(getPropertyManager().getExternalCache() + File.separator + "actors");
-		f.mkdirs();
-		return f;
-	}
+	// this was removed force lookup through Installation.  Makes writing unit tests easier
+//	private File getActorsDirName() {
+//		File f = new File(getPropertyManager().getExternalCache() + File.separator + "actors");
+//		f.mkdirs();
+//		return f;
+//	}
 
 	// isRead - is the actors file about to be read? (as opposed to written)
 	public File configuredActorsFile(boolean isRead) throws IOException {
@@ -77,7 +78,7 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 	public File getActorsFileName() {
 		logger.debug(": " + "getActorsFileName");
-		return new File(getPropertyManager().getExternalCache() + File.separator + "actors.xml");
+		return new File(Installation.installation().externalCache() + File.separator + "actors.xml");
 	}
 
 
@@ -132,7 +133,7 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 
 	public File getTestLogCache() throws IOException {
-		String testLogCache = getPropertyManager().getExternalCache() + File.separator + "TestLogCache";
+		String testLogCache = Installation.installation().externalCache() + File.separator + "TestLogCache";
 		File f;
 		
 //		// internal is obsolete
@@ -171,7 +172,7 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	}
 	
 	File getAttributeCache(String username) throws Exception {
-		String attributeCache = getPropertyManager().getExternalCache() + File.separator + "Attributes" + File.separator + username;
+		String attributeCache = Installation.installation().externalCache() + File.separator + "Attributes" + File.separator + username;
 		File f = new File(attributeCache);
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {

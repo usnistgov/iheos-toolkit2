@@ -16,11 +16,14 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactor
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class SqSim  extends TransactionSimulator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
@@ -50,6 +53,7 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 	}
 	
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+		this.er = er;
 
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
@@ -81,10 +85,12 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 			linkSqToRegIndex(sq);
 			
 			Metadata mr = sq.run();
+
+			if (verifySinglePatientId(mr))
+				m.copy(mr);
+
+			er.detail("SQ contents: " + m.structure());
 			
-			er.detail("SQ contents: " + mr.structure());
-			
-			m.copy(mr);
 			List<OMElement> results = m.getAllObjects(); // everything but ObjectRefs
 			results.addAll(m.getObjectRefs());
 			response.addQueryResults(results, false);
@@ -96,6 +102,20 @@ public class SqSim  extends TransactionSimulator implements MetadataGeneratingSi
 			er.err(XdsErrorCode.Code.XDSRegistryError, msg, this, null);
 		}
 
+	}
+
+	boolean verifySinglePatientId(Metadata m) throws MetadataException {
+		Set<String> pids = new HashSet<>();
+		for (OMElement ele : m.getAllObjects()) {
+			String pid = m.getPatientId(ele);
+			if (pid == null) continue;
+			pids.add(pid);
+		}
+		if (pids.size() > 1) {
+			er.err(XdsErrorCode.Code.XDSResultNotSinglePatient, "Submission contains " + pids.size() + " Patient IDs", this, null);
+			return false;
+		}
+		return true;
 	}
 	
 	void linkSqToRegIndex(StoredQuery sq) throws XdsInternalException {

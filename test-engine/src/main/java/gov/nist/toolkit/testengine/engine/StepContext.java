@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.testengine.transactions.*;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
@@ -190,19 +191,17 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			} 
 			else if (instruction_name.equals("NewPatientId"))  
 			{
-				// Doesn't work in gui
-//				PatientIdAllocator pia = new PatientIdAllocator(testConfig);
-//				String pid = pia.useNewPatientId(); // allocate a new patient id
-//				add_name_value(test_step_output, "NewPatientId", pid); 
-			} 
+				Pid pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
+				testLog.add_name_value(test_step_output, "NewPatientId", pid.toString());
+				transactionSettings.patientId = pid.toString();
+			}
 			else if (instruction_name.equals("AltPatientId"))  
 			{
 				useAltPatientId = true;
-				// Doesn't work in gui
-//				PatientIdAllocator pia = new PatientIdAllocator(testConfig);
-//				String pid = pia.useNewAlternatePatientId(); // allocate a new patient id
-//				add_name_value(test_step_output, "AltPatientId", pid); 
-			} 
+				Pid pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
+				testLog.add_name_value(test_step_output, "AltPatientId", pid.toString());
+				transactionSettings.altPatientId = pid.toString();
+			}
 			else if (instruction_name.equals("ExpectedErrorMessage")) 
 			{
 				expected_error_message = instruction.getText();

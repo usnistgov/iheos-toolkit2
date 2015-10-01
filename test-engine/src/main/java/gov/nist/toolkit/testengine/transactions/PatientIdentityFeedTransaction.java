@@ -10,9 +10,12 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.util.Map;
+
 public class PatientIdentityFeedTransaction extends BasicTransaction {
 	private final static Logger logger = Logger.getLogger(PatientIdentityFeedTransaction.class);
-	String patientid = null;
+	boolean createNewPID = false;
+	String forcePatientId = null;
 
 	public PatientIdentityFeedTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
@@ -25,14 +28,19 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 	public void run(OMElement request)
 			throws XdsException {
 
+
 		try {
 			Pid pid;
 			String pidString;
-			if (patientid == null) {
+			if (createNewPID) {
 				pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
 				pidString = pid.asString();
-			} else {
-				pidString = patientid;
+			} else if (forcePatientId != null) {
+				pidString = forcePatientId;
+			}
+			else {
+				Map<String, String> linkage = getExternalLinkage();
+				pidString = linkage.get("$patientid$");
 			}
 			transactionSettings.patientId = pidString;
 			testLog.add_name_value(instruction_output, "PatientId", pidString);
@@ -58,9 +66,13 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 
 	protected void parseInstruction(OMElement part) throws XdsInternalException {
 		String part_name = part.getLocalName();
-		if (part_name.equals("PatientID")) {
-			patientid = part.getText();
-		} else {
+		if (part_name.equals("CreateNewPatientId")) {
+			createNewPID = true;
+		}
+		else if (part_name.equals("PatientID")) {
+			forcePatientId = part.getText();
+		}
+		else {
 			parseBasicInstruction(part);
 		}
 	}

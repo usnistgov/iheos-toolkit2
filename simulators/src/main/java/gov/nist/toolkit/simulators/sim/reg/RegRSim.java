@@ -1,6 +1,8 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.actorfactory.AbstractActorFactory;
+import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.actorfactory.client.PidBuilder;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.common.datatypes.UuidValidator;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -10,10 +12,7 @@ import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataForRegister;
-import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataInterface;
-import gov.nist.toolkit.simulators.sim.reg.store.RegistryFactory;
+import gov.nist.toolkit.simulators.sim.reg.store.*;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
@@ -25,6 +24,7 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +55,30 @@ public class RegRSim extends TransactionSimulator   {
 		// These steps are common to Registry and Update.  They operate
 		// on the entire metadata collection in both transactions.
 		setup();
+
+		// Verify patient id against patient identity feed
+		if (vc.validateAgainstPatientIdentityFeed) {
+			log.debug("validating patient id ");
+			// this MetadataCollection is separate from delta and only used for PID validation
+			MetadataCollection submission = new MetadataCollection();
+			try {
+				RegistryFactory.buildMetadataIndex(m, submission);
+			} catch (MetadataException e) {
+				er.err(Code.XDSRegistryMetadataError, e);
+				return;
+			}
+			if (submission.subSetCollection.size() > 0) {
+				SubSet ss = (SubSet) submission.subSetCollection.getAllRo().get(0);
+				Pid pid = PidBuilder.createPid(ss.pid);
+				try {
+					if (pid == null || !common.db.patientIdExists(pid)) {
+                        er.err(Code.XDSUnknownPatientId, "Patient ID " + ss.pid + " has not been received in a Patient Identity Feed", this, null);
+                    }
+				} catch (IOException e) {
+					er.err(Code.XDSUnknownPatientId, "Patient ID " + ss.pid + " has not been received in a Patient Identity Feed", this, null);
+				}
+			}
+		}
 
 		// Check whether Extra Metadata is present, is allowed, and is legal
 		// TODO - split into validation (as validator) and remover
@@ -128,6 +152,9 @@ public class RegRSim extends TransactionSimulator   {
 		// this will later be committed
 		// This is done now because the operations below need this index
 		buildMetadataIndex(m);
+
+		// verify object/patient id linking rules are observed
+		pmi.associationPatientIdRules();
 
 		// set folder lastUpdateTime on folders in the submission
 		// must be done after metadata index built

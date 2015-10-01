@@ -19,6 +19,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.*;
@@ -52,7 +53,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
-		container.addTab(topPanel, "Sim Control", select);
+		container.addTab(topPanel, "Sim Mgr", select);
 		addCloseButton(container, topPanel, null);
 		
 		addActorReloader();
@@ -62,7 +63,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		tlsEnabled = false;
 		enableInspectResults = false;
 
-		topPanel.add(new HTML("<h2>Simulator Control</h2>"));
+		topPanel.add(new HTML("<h2>Simulator Manager</h2>"));
 
 		topPanel.add(new HTML("<h3>Add new simulator to this test session</h3>"));
 
@@ -84,7 +85,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		VerticalPanel tableWrapper = new VerticalPanel();
 		table.setBorderWidth(1);
 		HTML tableTitle = new HTML();
-		tableTitle.setHTML("<h3>Current Simulators for this test session</h3>");
+		tableTitle.setHTML("<h3>Simulators for this test session</h3>");
 		tableWrapper.add(tableTitle);
 		tableWrapper.add(table);
 
@@ -273,15 +274,37 @@ public class SimulatorControlTab extends GenericQueryTab {
 					HorizontalPanel buttonPanel = new HorizontalPanel();
 					table.setWidget(row, maxColumn, buttonPanel);
 
-					Button editButton = new Button("Edit");
-					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+					Button logButton = new Button("Transaction Log");
+					logButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
                         @Override
                         public void onClick(ClickEvent clickEvent) {
                             SimulatorConfig config = getData();
-                            EditTab editTab = new EditTab(self, config);
-                            editTab.onTabLoad(myContainer, true, null);
+							SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
+							viewTab.onTabLoad(myContainer, true, config.getId().toString());
                         }
                     });
+					buttonPanel.add(logButton);
+
+					Button pidButton = new Button("Patient ID Feed");
+					pidButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+						@Override
+						public void onClick(ClickEvent clickEvent) {
+							SimulatorConfig config = getData();
+							PidEditTab editTab = new PidEditTab(config);
+							editTab.onTabLoad(myContainer, true, null);
+						}
+					});
+					buttonPanel.add(pidButton);
+
+					Button editButton = new Button("Configure");
+					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+						@Override
+						public void onClick(ClickEvent clickEvent) {
+							SimulatorConfig config = getData();
+							EditTab editTab = new EditTab(self, config);
+							editTab.onTabLoad(myContainer, true, null);
+						}
+					});
 					buttonPanel.add(editButton);
 
 					Button deleteButton = new Button("Delete");
@@ -294,17 +317,6 @@ public class SimulatorControlTab extends GenericQueryTab {
                         }
                     });
 					buttonPanel.add(deleteButton);
-
-					Button pidButton = new Button("Patient IDs");
-					pidButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
-						@Override
-						public void onClick(ClickEvent clickEvent) {
-							SimulatorConfig config = getData();
-							PidEditTab editTab = new PidEditTab(config);
-							editTab.onTabLoad(myContainer, true, null);
-						}
-					});
-					buttonPanel.add(pidButton);
 
 					String u = "<a href=\"" +
 							"/xdstools2/site/" + simId.toString() + "\"" +

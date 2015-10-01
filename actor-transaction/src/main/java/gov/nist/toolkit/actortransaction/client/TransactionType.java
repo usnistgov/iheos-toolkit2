@@ -78,7 +78,7 @@ public enum TransactionType implements IsSerializable, Serializable {
     }
 
 	public boolean equals(TransactionType tt) {
-		return id.equals(tt.id);
+        return name.equals(tt.name);
 	}
 
     // if lookup by id is needed, must also select off of receiving actor

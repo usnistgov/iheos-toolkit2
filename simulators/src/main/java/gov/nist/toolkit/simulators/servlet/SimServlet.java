@@ -436,6 +436,8 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		TransactionType transactionType = ATFactory.findTransactionByShortName(transaction);
+		logger.debug("Incoming transaction is " + transaction);
+		logger.debug("... which is " + transactionType);
 		if (transactionType == null) {
 			sendSoapFault(response, "Simulator: Do not understand the transaction requested by this endpoint (" + transaction + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat);
 			return;
@@ -707,6 +709,13 @@ public class SimServlet  extends HttpServlet {
 			repIndex.cacheExpires = getNewExpiration();
 		}
 		return repIndex;
+	}
+
+	// remove the index(s)
+	static public void deleteSim(SimId simId) {
+		ServletContext servletContext = config.getServletContext();
+		servletContext.removeAttribute("Reg_" + simId);
+		servletContext.removeAttribute("Rep_" + simId);
 	}
 
 

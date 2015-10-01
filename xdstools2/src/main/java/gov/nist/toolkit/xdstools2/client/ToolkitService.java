@@ -4,6 +4,7 @@ package gov.nist.toolkit.xdstools2.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
@@ -52,6 +53,8 @@ public interface ToolkitService extends RemoteService  {
 	List<Pid> getPatientIds(SimId simId) throws Exception;
 	String addPatientIds(SimId simId, List<Pid> pids) throws Exception;
 	boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception;
+	Result getSimulatorEventRequest(TransactionInstance ti) throws Exception;
+	Result getSimulatorEventResponse(TransactionInstance ti) throws Exception;
 
 	String setToolkitProperties(Map<String, String> props) throws Exception;
 	Map<String, String> getToolkitProperties() throws NoServletSessionException ;
@@ -72,7 +75,7 @@ public interface ToolkitService extends RemoteService  {
 	@Deprecated
 	String getClientIPAddress();
 	
-	List<String> getTransInstances(SimId simid, String actor, String trans)  throws Exception;
+	List<TransactionInstance> getTransInstances(SimId simid, String actor, String trans)  throws Exception;
 	
 	List<Result> getLastMetadata();
 	String getLastFilename();
