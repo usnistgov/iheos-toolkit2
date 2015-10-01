@@ -94,22 +94,23 @@ public class FindDocumentsAllParams {
         prow++;
         codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.EventCodeList);
         prow++;
-
-
-        // Pick which results should be returned
     }
 
-
     /**
-     * Assemble all this detail into the codeSpec format for passing to the server. Called from inside the related tab.
+     * Assemble all the parameters into the codeSpec format for passing to the server. Called from inside the related tab.
      * @param codeSpec includes the name of a parameter as a String and the acceptable values of that parameter
      *                 as a List<String>.
      */
     public void addToCodeSpec(Map<String, List<String>> codeSpec) {
+        creationTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.CreationTimeFrom);
+        creationTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.CreationTimeTo);
+        serviceStartTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStartTimeFrom);
+        serviceStartTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStartTimeTo);
+        serviceStopTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStopTimeFrom);
+        serviceStopTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStopTimeTo);
+        authorFilter.addToCodeSpec(codeSpec, CodesConfiguration.AuthorPerson);
         codeFilterBank.addToCodeSpec(codeSpec);
-       // deStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryStatus);
     }
-
 
     public Widget asWidget() { return paramGrid; }
 }

@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.widgets.queryFilter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.AuthorPicker;
 
@@ -35,6 +36,7 @@ public class AuthorFilter extends Widget implements QueryFilter {
                         try {
                             new AuthorPicker(inputAuthorList).show();
                         } catch (Exception e) {
+                            //TODO genericquerytab not accessible from here
                             //genericQueryTab.setStatus(e.getMessage(), false);
                         }
                     }
@@ -59,7 +61,9 @@ public class AuthorFilter extends Widget implements QueryFilter {
 
     List<String> getValues() {
         List<String> values = new ArrayList<>();
-        //TODO fill out values
+        for (int i=0; i<inputAuthorList.getItemCount(); i++) {
+            values.add(inputAuthorList.getValue(i));
+        }
         return values;
     }
 
