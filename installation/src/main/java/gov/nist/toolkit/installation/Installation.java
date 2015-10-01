@@ -59,7 +59,7 @@ public class Installation {
 
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) {
-		if (this.externalCache == null)
+//		if (this.externalCache == null)
 			this.externalCache = externalCache;
         logger.info("V2 Installation: External Cache set to " + externalCache);
 		try {
