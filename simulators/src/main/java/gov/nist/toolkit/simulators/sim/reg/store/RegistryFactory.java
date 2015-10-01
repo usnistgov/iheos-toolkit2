@@ -111,6 +111,9 @@ public class RegistryFactory {
 		a.type = RegIndex.getAssocType(m, ele);
 		nullIdCheck(a);
 
+		a.isOriginal = m.isOriginalHasMember(ele);
+		a.isReference = m.isReferenceHasMember(ele);
+
 		delta.add(a);
 
 		return a;

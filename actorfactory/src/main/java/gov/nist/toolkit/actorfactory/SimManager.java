@@ -25,7 +25,7 @@ import java.util.Map;
  */
 
 public class SimManager {
-	List<SimulatorConfig> simConfigs = new ArrayList<SimulatorConfig>();  // for this session
+	List<SimulatorConfig> simConfigs = new ArrayList<>();  // for this session
 	String sessionId;
 	static Logger logger = Logger.getLogger(SimManager.class);
 
@@ -138,6 +138,8 @@ public class SimManager {
 	
 	public Sites getAllSites(Sites commonSites)  throws Exception{
 		Sites sites;
+
+		loadAllSims();
 		
 		if (commonSites == null)
 			sites = new Sites();

@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
   <Test>12346</Test>
   <Rule>Submit data to XDS.b registry to support SQ testing</Rule>
-  <TestStep id="init_patient_id">
+  <TestStep id="register_new_patient_id">
+    <Rule>
+      <Transaction>Patient Identity Feed</Transaction>
+      <Assertion>Send to Registry</Assertion>
+    </Rule>
     <ExpectedStatus>Success</ExpectedStatus>
-    <NewPatientId/>
+    <PatientIdentityFeedTransaction>
+      <XDSb/>
+      <NoMetadata/>
+    </PatientIdentityFeedTransaction>
   </TestStep>
   <TestStep id="submit_doc">
-    <NewPatientId/>
     <Rule>
       <Transaction>R</Transaction>
       <Assertion>Single document submission supports various query testing</Assertion>

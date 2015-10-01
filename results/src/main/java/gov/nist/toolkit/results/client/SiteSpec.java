@@ -55,15 +55,15 @@ public class SiteSpec implements IsSerializable {
 	}
 	
 	public boolean isGW() {
-		return actorType.isGW();
+		return (actorType != null) && actorType.isGW();
 	}
 	
 	public boolean isIG() {
-		return actorType.isIGActor();
+		return (actorType != null) && actorType.isIGActor();
 	}
 	
 	public boolean isRG() {
-		return actorType.isRGActor();
+		return (actorType != null) && actorType.isRGActor();
 	}
 	
 	public String getTypeName() {

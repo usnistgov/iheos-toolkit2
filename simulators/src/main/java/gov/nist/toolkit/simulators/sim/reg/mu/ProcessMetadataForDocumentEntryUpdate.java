@@ -5,20 +5,14 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.simulators.sim.reg.store.Assoc;
-import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;
-import gov.nist.toolkit.simulators.sim.reg.store.Fol;
-import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataForRegister;
-import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataInterface;
+import gov.nist.toolkit.simulators.sim.reg.store.*;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;
 import gov.nist.toolkit.xdsexception.MetadataException;
-
-import java.util.List;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
+import java.util.List;
 
 public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInterface {
 	static Logger log = Logger.getLogger(ProcessMetadataForDocumentEntryUpdate.class);
@@ -110,6 +104,44 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 				}
 			}
 			
+		}
+	}
+
+	@Override
+	// TODO - this was copied from ProcessMetadataForRegister - may be some rules that are not appropriate for update
+	// verify that no associations are being added that:
+	//     link objects with different patient ids (except for special cases)
+	public void associationPatientIdRules() {
+
+		for (Assoc a : delta.assocCollection.assocs) {
+			String fromId = a.getFrom();
+			String toId = a.getTo();
+
+			Ro sourceObject = delta.getObjectById(fromId);
+			if (sourceObject == null) sourceObject = mc.getObjectById(fromId);
+
+			Ro targetObject = delta.getObjectById(toId);
+			if (targetObject == null) targetObject = mc.getObjectById(toId);
+
+			if (sourceObject == null || targetObject == null) continue;  // checked elsewhere
+
+			PatientObject src = null;
+			if (sourceObject instanceof PatientObject) src = (PatientObject) sourceObject;
+			PatientObject tgt = null;
+			if (targetObject instanceof PatientObject) tgt = (PatientObject) targetObject;
+
+			if (src == null || tgt == null) continue;
+
+			if (src.pid != null && src.pid.equals(tgt.pid)) continue;  // all is good
+
+			// if is Reference type HasMember then ok
+			if (a.isReference) continue;
+			er.err(Code.XDSPatientIdDoesNotMatch, "Association " +
+					a.getType() + "(" + a.getId() + ")" +
+					" links two objects with different Patient IDs: " +
+					src.getType() + "(" + src.getId() + ") and " +
+					tgt.getType() + "(" + tgt.getId() + ") "
+					, this, null);
 		}
 	}
 

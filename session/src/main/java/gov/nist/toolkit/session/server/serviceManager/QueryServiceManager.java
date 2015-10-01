@@ -174,8 +174,8 @@ public class QueryServiceManager extends CommonService {
 	}
 
 	public List<Result> getObjects(SiteSpec site, ObjectRefs ids) {
-		logger.debug(session.id() + ": " + "getObjects");
-		if (site == null) site = session.siteSpec;
+		logger.debug(session.id() + ": " + "getObjects " + ids + " from " + site);
+		if (site == null) { site = session.siteSpec; logger.debug("default site is " + site); }
 		try {
 			return new GetObjects(session).run(site, ids);
 		} catch (XdsException e) {

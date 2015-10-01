@@ -436,6 +436,8 @@ public class SimServlet  extends HttpServlet {
 		}
 
 		TransactionType transactionType = ATFactory.findTransactionByShortName(transaction);
+		logger.debug("Incoming transaction is " + transaction);
+		logger.debug("... which is " + transactionType);
 		if (transactionType == null) {
 			sendSoapFault(response, "Simulator: Do not understand the transaction requested by this endpoint (" + transaction + ") in http://" + request.getLocalName() + ":" + request.getLocalPort() + uri + endpointFormat);
 			return;

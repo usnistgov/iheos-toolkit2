@@ -58,7 +58,8 @@ public class RegRSim extends TransactionSimulator   {
 
 		// Verify patient id against patient identity feed
 		if (vc.validateAgainstPatientIdentityFeed) {
-			log.debug("validating pateint id ");
+			log.debug("validating patient id ");
+			// this MetadataCollection is separate from delta and only used for PID validation
 			MetadataCollection submission = new MetadataCollection();
 			try {
 				RegistryFactory.buildMetadataIndex(m, submission);
@@ -67,10 +68,8 @@ public class RegRSim extends TransactionSimulator   {
 				return;
 			}
 			if (submission.subSetCollection.size() > 0) {
-				log.debug("found submission set");
 				SubSet ss = (SubSet) submission.subSetCollection.getAllRo().get(0);
 				Pid pid = PidBuilder.createPid(ss.pid);
-				log.debug("ss pid is " + ss.pid);
 				try {
 					if (pid == null || !common.db.patientIdExists(pid)) {
                         er.err(Code.XDSUnknownPatientId, "Patient ID " + ss.pid + " has not been received in a Patient Identity Feed", this, null);
@@ -153,6 +152,9 @@ public class RegRSim extends TransactionSimulator   {
 		// this will later be committed
 		// This is done now because the operations below need this index
 		buildMetadataIndex(m);
+
+		// verify object/patient id linking rules are observed
+		pmi.associationPatientIdRules();
 
 		// set folder lastUpdateTime on folders in the submission
 		// must be done after metadata index built

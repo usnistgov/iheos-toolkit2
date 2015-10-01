@@ -161,6 +161,9 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				}
 			}
 
+			if (er.hasErrors())
+				return;
+
 			// flush documents to repository
 			for (String uid : sdMap.keySet()) {
 				StoredDocument sd = sdMap.get(uid);

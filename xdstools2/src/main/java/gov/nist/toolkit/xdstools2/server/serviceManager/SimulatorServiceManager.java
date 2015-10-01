@@ -426,7 +426,7 @@ public class SimulatorServiceManager extends CommonService {
 		if (reqeustFile == null) return null;
 		Metadata m = null;
 		try {
-			m = MetadataParser.parseNonSubmission(reqeustFile);
+			m = MetadataParser.parseContent(reqeustFile);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}
@@ -444,7 +444,7 @@ public class SimulatorServiceManager extends CommonService {
 		if (reqeustFile == null) return null;
 		Metadata m = null;
 		try {
-			m = MetadataParser.parseNonSubmission(reqeustFile);
+			m = MetadataParser.parseContent(reqeustFile);
 		} catch (Exception e) {
 			throw new Exception("Cannot load simulator event - " + e.getMessage(), e);
 		}

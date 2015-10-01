@@ -1,21 +1,20 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
 
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 public class GetObjects implements ClickHandler {
 	MetadataInspectorTab it;
 	ObjectRefs ids;
 	
 	void run() {
-		it.data.toolkitService.getObjects(null, ids, queryCallback);
+		it.data.toolkitService.getObjects(it.siteSpec, ids, queryCallback);
 	}
 	
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
