@@ -1,8 +1,8 @@
 package gov.nist.toolkit.xdstools2.client.widgets.queryFilter;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 
@@ -16,16 +16,17 @@ import java.util.Map;
  */
 public class TimeFilter extends Widget implements QueryFilter {
     HorizontalPanel hp = new HorizontalPanel();
+    Label errorLabel;
     DateBox box;
 
     // label is required non-empty but is never displayed
-    public TimeFilter(String label) {
+    public TimeFilter(Label error_label, String label) {
+        errorLabel = error_label;
+
         box = new DateBox();
-        DateTimeFormat uiViewFormat = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormat uiViewFormat = DateTimeFormat.getFormat("yyyy-MM-dd HH:mm");
         box.setFormat(new DateBox.DefaultFormat(uiViewFormat));
-        //box.setToolTip("This value is required. The format of these values is defined as following: YYYY[MM[DD[hh[mm[ss]]]]]; YYYY is the four digit year (ex: 2014); MM is the two digit month 01-12, where January is 01, December is 12; DD is the two digit day of the month 01-31; HH is the two digit hour, 00-23, where 00 is midnight, 01 is 1 am, 12 is noon, 13 is 1 pm; mm is the two digit minute, 00-59; ss is the two digit seconds, 00-59");
-        //box.setValue("YYYY[MM[DD[hh[mm[ss]]]]] (ex: 201103160830)");
-       hp.add(box);
+        hp.add(box);
     }
 
     public Widget asWidget() { return hp; }
@@ -40,15 +41,22 @@ public class TimeFilter extends Widget implements QueryFilter {
 
     /**
      * Converts the date entered to the HL7DTM format accepted by the server
-     * @return
+     * @return the array of possible values. Here, the array only contains one date. However, it still exists for
+     * compability with the rest of the data model.
      */
-    //TODO the return could be only a Date and not an ArrayList
     List<String> getValues() {
         List<String> times = new ArrayList<>();
 
         Date date = box.getValue();
-        DateTimeFormat hl7DTM = DateTimeFormat.getFormat("yyyyMMddHHmmss");
+        DateTimeFormat hl7DTM = DateTimeFormat.getFormat("yyyyMMddHHmm");
         String dateStr = hl7DTM.format(date);
+
+        // TODO Check the format of the Date entered by the user, use regex in Shared classes (not supported in client)
+        // , use the DocEntryEditor Shared Model classes
+
+        // TODO Display an error, later, when date validation is added
+        //errorLabel.setText(e.getMessage());
+
         times.add(dateStr);
         return times;
     }

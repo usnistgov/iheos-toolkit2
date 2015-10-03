@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.findDocumentsAllTab;
 
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
@@ -32,10 +33,13 @@ public class FindDocumentsAllParams {
     TimeFilter serviceStopTimeToFilter;
     AuthorFilter authorFilter;
     CodeFilterBank codeFilterBank;
+    Label errorLabel;
 
     public FindDocumentsAllParams(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab){
         // The collective filter bank being assembled
         codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
+
+        errorLabel = new Label();
 
         // ------- Parameters to include in the search --------
         // Date parameters
@@ -43,29 +47,31 @@ public class FindDocumentsAllParams {
         prow++;
 
         paramGrid.setText(prow, 1, "Creation Time, From:");
-        creationTimeFromFilter = new TimeFilter("CreationTimeFrom");
+        creationTimeFromFilter = new TimeFilter(errorLabel, "CreationTimeFrom");
         paramGrid.setWidget(prow, 2, creationTimeFromFilter.asWidget());
 
         paramGrid.setText(prow, 3, "To:");
-        creationTimeToFilter = new TimeFilter("CreationTimeTo");
+        creationTimeToFilter = new TimeFilter(errorLabel, "CreationTimeTo");
         paramGrid.setWidget(prow, 4, creationTimeToFilter.asWidget());
+
+        paramGrid.setWidget(prow, 5, errorLabel);
         prow++;
 
         paramGrid.setText(prow, 1, "Service Start Time, From:");
-        serviceStartTimeFromFilter = new TimeFilter("ServiceStartTimeFrom");
+        serviceStartTimeFromFilter = new TimeFilter(errorLabel, "ServiceStartTimeFrom");
         paramGrid.setWidget(prow, 2, serviceStartTimeFromFilter.asWidget());
 
         paramGrid.setText(prow, 3, "To:");
-        serviceStartTimeToFilter = new TimeFilter("ServiceStartTimeTo");
+        serviceStartTimeToFilter = new TimeFilter(errorLabel, "ServiceStartTimeTo");
         paramGrid.setWidget(prow, 4, serviceStartTimeToFilter.asWidget());
         prow++;
 
         paramGrid.setText(prow, 1, "Service Stop Time, From:");
-        serviceStopTimeFromFilter = new TimeFilter("ServiceStopTimeFrom");
+        serviceStopTimeFromFilter = new TimeFilter(errorLabel, "ServiceStopTimeFrom");
         paramGrid.setWidget(prow, 2, serviceStopTimeFromFilter.asWidget());
 
         paramGrid.setText(prow, 3, "To:");
-        serviceStopTimeToFilter = new TimeFilter("ServiceStopTimeTo");
+        serviceStopTimeToFilter = new TimeFilter(errorLabel, "ServiceStopTimeTo");
         paramGrid.setWidget(prow, 4, serviceStopTimeToFilter.asWidget());
         prow++;
 
