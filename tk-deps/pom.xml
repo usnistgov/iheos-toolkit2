@@ -16,6 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.7</jdk.version>
         <junit.version>4.11</junit.version>
+        <groovyVersion>2.1.1</groovyVersion>
         <gwtVersion>2.7.0</gwtVersion>
         <!-- <gwtVersion>2.6.1</gwtVersion> -->
         <mavenCompilerPluginVersion>3.1</mavenCompilerPluginVersion>
@@ -487,7 +488,7 @@
             <dependency>
                 <groupId>org.codehaus.groovy</groupId>
                 <artifactId>groovy-all</artifactId>
-                <version>2.1.1</version>
+                <version>${groovyVersion}</version>
             </dependency>
             <dependency>
                 <groupId>com.smartgwt</groupId>

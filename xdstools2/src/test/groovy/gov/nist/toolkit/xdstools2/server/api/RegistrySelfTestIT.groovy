@@ -22,10 +22,10 @@ class RegistrySelfTestIT extends Specification {
     ToolkitApi api;
     String patientId = 'BR14^^^&1.2.360&ISO'
     String reg = 'mike__reg'
-    String regrep = 'mike__regrep'
+//    String regrep = 'mike__regrep'
+    String testSession = 'mike';
 
     def setup() {
-//        Installation.installation().externalCache(new File('/Users/bill/tmp/toolkit2'))
         api = new ToolkitApi()
         println "EC is ${Installation.installation().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
@@ -34,7 +34,6 @@ class RegistrySelfTestIT extends Specification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String testSession = null;  // use default
         String siteName = 'mike__reg'
         String testName = "15804"
         List<String> sections = new ArrayList<>()
@@ -94,7 +93,6 @@ class RegistrySelfTestIT extends Specification {
 
     def 'Run all Register tests'() {
         when:
-        String testSession = null;  // use default
         String siteName = 'mike__reg'
         String testName = "tc:R.b"
         List<String> sections = new ArrayList<>()
@@ -113,7 +111,6 @@ class RegistrySelfTestIT extends Specification {
 
     def 'Run SQ initialization'() {
         when:
-        String testSession = null;  // use default
         String siteName = 'mike__reg'
         String testName = "tc:Initialize_for_Stored_Query"
         List<String> sections = new ArrayList<>()
@@ -132,7 +129,6 @@ class RegistrySelfTestIT extends Specification {
 
     def 'Run SQ tests'() {
         when:
-        String testSession = null;  // use default
         String siteName = 'mike__reg'
         String testName = "tc:SQ.b"
         List<String> sections = new ArrayList<>()

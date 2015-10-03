@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.util.List;
 
 public class Installation {
 	File warHome = null;
@@ -59,7 +60,7 @@ public class Installation {
 
 	public File externalCache() { return externalCache; }
 	public void externalCache(File externalCache) {
-		if (this.externalCache == null)
+//		if (this.externalCache == null)
 			this.externalCache = externalCache;
         logger.info("V2 Installation: External Cache set to " + externalCache);
 		try {
@@ -92,6 +93,10 @@ public class Installation {
 	public File simDbFile() {
 		return new File(externalCache(), "simdb");
 //		return propertyServiceManager().getSimDbDir();
+	}
+
+	public List<String> getListenerPortRange() {
+		return propertyServiceManager().getListenerPortRange();
 	}
 	
 	public File toolkitxFile() {
@@ -141,7 +146,7 @@ public class Installation {
 		return new File(warHome + sep + "SessionCache");
 	}
 
-	public File testLogFile() {
+	public File testLogCache() {
 		return new File(externalCache + sep + "TestLogCache");
 	}
 

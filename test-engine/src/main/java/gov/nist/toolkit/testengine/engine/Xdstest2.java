@@ -35,6 +35,7 @@ public class Xdstest2 {
 	XdsTest xt;
 	LogRepository logRepository;
 	File testkit;
+	File altTestkit;
 	String testnum;
 	Site site;
 	File toolkitDir;   // never referenced
@@ -157,6 +158,11 @@ public class Xdstest2 {
 		xt.setTestkit(locationDir);
 	}
 
+	public void setAlternateTestkitLocation(File dir) {
+		altTestkit = dir;
+		xt.setAltTestkit(dir);
+	}
+
 	/**
 	 * LogDir location - logDir is a directory where the xdstest log files will be written.
 	 * Each log file is named log.xml. The directory structure of logDir reflects that of the
@@ -240,8 +246,8 @@ public class Xdstest2 {
 	 * of the testkit.
 	 * @throws Exception - If the collection does not exist.
 	 */
-	public void addTestCollection(String collection) throws Exception {
-		xt.addTestCollection(collection);
+	public void addTestCollection(String collectionName) throws Exception {
+		xt.addTestCollection(collectionName);
 	}
 
 	/**

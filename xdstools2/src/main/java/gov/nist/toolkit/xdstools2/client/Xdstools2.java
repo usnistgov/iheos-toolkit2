@@ -42,6 +42,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	// here because the initialization of testSessionManager,
 	// immediately following depends on it.
 	static EventBus eventBus = new SimpleEventBus();
+	EventBus v2V3IntegrationEventBus = null;
 
 	// This is as toolkit wide singleton.  See class for details.
 	TestSessionManager2 testSessionManager = new TestSessionManager2();
@@ -113,8 +114,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 			tabPanel.selectTab(index);
 
 		try {
-			if (getEventBus()!=null && index>0) {
-				getEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
+			if (getIntegrationEventBus()!=null && index>0) {
+				getIntegrationEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
 			}
 
 		} catch (Throwable t) {
@@ -278,8 +279,11 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	// To force an error when I merge with Sunil. We need
 	// to reconcile the initialization.
-	private void setEventBus(EventBus eventBus) {
-		this.eventBus = eventBus;
+	public void setIntegrationEventBus(EventBus eventBus) {
+		v2V3IntegrationEventBus = eventBus;
+	}
+	public EventBus getIntegrationEventBus() {
+		return v2V3IntegrationEventBus;
 	}
 
 

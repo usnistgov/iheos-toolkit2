@@ -67,4 +67,14 @@ public class SimulatorApi {
         return new SimDb().exists(simId);
     }
 
+    public void setConfig(SimulatorConfig config, String parameterName, String value) {
+        SimManager simMgr = new SimCache().getSimManagerForSession(session.id(), true);
+        new GenericSimulatorFactory(simMgr).setConfig(config, parameterName, value);
+    }
+
+    public void setConfig(SimulatorConfig config, String parameterName, Boolean value) {
+        SimManager simMgr = new SimCache().getSimManagerForSession(session.id(), true);
+        new GenericSimulatorFactory(simMgr).setConfig(config, parameterName, value);
+    }
+
 }

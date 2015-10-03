@@ -35,7 +35,7 @@ public class Simulator  implements Serializable, IsSerializable  {
 	public SimulatorConfig getConfig(int i) { return configs.get(i); }
 	
 	public List<SimId> getIds() {
-		List<SimId> ids = new ArrayList<>();
+		List<SimId> ids = new ArrayList<SimId>();
 		for (SimulatorConfig c : configs)
 			ids.add(c.id);
 		return ids;

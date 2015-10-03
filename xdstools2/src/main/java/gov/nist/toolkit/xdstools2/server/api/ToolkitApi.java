@@ -124,11 +124,20 @@ public class ToolkitApi {
         }
         SiteSpec siteSpec = new SiteSpec();
         siteSpec.setName(siteName);
+        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSession);
         return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testName, sections, params, null, stopOnFirstFailure);
     }
 
     public List<String> getSiteNames(boolean simAlso) {
         return siteServiceManager().getSiteNames(session.getId(), true, simAlso);
+    }
+
+    public void setConfig(SimulatorConfig config, String parameterName, String value) {
+        new SimulatorApi(session).setConfig(config, parameterName, value);
+    }
+
+    public void setConfig(SimulatorConfig config, String parameterName, Boolean value) {
+        new SimulatorApi(session).setConfig(config, parameterName, value);
     }
 
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }

@@ -21,12 +21,14 @@ import java.util.List;
 import java.util.Map;
 
 public class UtilityRunner {
-    private final XdsTestServiceManager xdsTestServiceManager;
+    private final XdsTestServiceManager xdsTestServiceManager;  // this is here only because of an automatic refactoring
     static Logger logger = Logger.getLogger(UtilityRunner.class);
-    AssertionResults assertionResults = new AssertionResults();;
+    AssertionResults assertionResults = new AssertionResults();
+    final TestRunType testRunType;
 
-    public UtilityRunner(XdsTestServiceManager xdsTestServiceManager) {
+    public UtilityRunner(XdsTestServiceManager xdsTestServiceManager, TestRunType testRunType) {
         this.xdsTestServiceManager = xdsTestServiceManager;
+        this.testRunType = testRunType;
     }
 
     /**
@@ -64,9 +66,27 @@ public class UtilityRunner {
 //                assertionResults = new AssertionResults();
 //            assertionResults = assertionResults;
 
-            if (session.transactionSettings.logRepository == null)
-                session.transactionSettings.logRepository = new LogRepositoryFactory().
-                        getRepository(Installation.installation().sessionCache(), session.getId(), LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+            if (session.transactionSettings.logRepository == null) {
+                if (testRunType == TestRunType.UTILITY) {
+                    session.transactionSettings.logRepository =
+                            new LogRepositoryFactory().
+                                    getRepository(
+                                            Installation.installation().sessionCache(),
+                                            session.getId(),
+                                            LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
+                                            LogRepositoryFactory.Id_type.TIME_ID,
+                                            null);
+                } else if (testRunType == TestRunType.TEST) {
+                    session.transactionSettings.logRepository =
+                            new LogRepositoryFactory().
+                                    getRepository(
+                                            Installation.installation().testLogCache(),
+                                            session.getMesaSessionName(),
+                                            LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
+                                            LogRepositoryFactory.Id_type.SPECIFIC_ID,
+                                            null);
+                }
+            }
             session.xt.setLogRepository(session.transactionSettings.logRepository);
 
             try {
@@ -141,7 +161,10 @@ public class UtilityRunner {
 
                 // Save the created logs in the SessionCache
                 XdstestLogId logid = xdsTestServiceManager.newTestLogId();
-                session.transactionSettings.logRepository.logOut(logid, session.xt.getLogMap());
+
+                // Remove this - not sure why it is here - obsolete?
+                // it writes a uuid named file to TestLogCache/${user}/
+//                session.transactionSettings.logRepository.logOut(logid, session.xt.getLogMap());
 
                 Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), logid);
                 xdsTestServiceManager.scanLogs(session.xt, assertionResults, sections);

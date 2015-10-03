@@ -49,7 +49,7 @@ public class ClientApi implements SecurityParams {
         ts.securityParams = this;
         ts.logRepository =
                 new LogRepositoryFactory().getRepository(
-                        Installation.installation().testLogFile(),
+                        Installation.installation().testLogCache(),
                         session.getId(),
                         LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
                         LogRepositoryFactory.Id_type.SPECIFIC_ID,
@@ -72,7 +72,7 @@ public class ClientApi implements SecurityParams {
         // TODO - this writes to the directory null instead of updating it given the current test
         ts.logRepository =
                 new LogRepositoryFactory().getRepository(
-                        Installation.installation().testLogFile(),
+                        Installation.installation().testLogCache(),
                         session.getId(),
                         LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
                         LogRepositoryFactory.Id_type.SPECIFIC_ID,

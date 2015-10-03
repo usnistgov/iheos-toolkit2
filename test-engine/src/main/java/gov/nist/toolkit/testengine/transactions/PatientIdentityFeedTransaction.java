@@ -15,6 +15,7 @@ import java.util.Map;
 public class PatientIdentityFeedTransaction extends BasicTransaction {
 	private final static Logger logger = Logger.getLogger(PatientIdentityFeedTransaction.class);
 	boolean createNewPID = false;
+	String forcePatientId = null;
 
 	public PatientIdentityFeedTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
@@ -34,7 +35,10 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 			if (createNewPID) {
 				pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
 				pidString = pid.asString();
-			} else {
+			} else if (forcePatientId != null) {
+				pidString = forcePatientId;
+			}
+			else {
 				Map<String, String> linkage = getExternalLinkage();
 				pidString = linkage.get("$patientid$");
 			}
@@ -64,7 +68,11 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 		String part_name = part.getLocalName();
 		if (part_name.equals("CreateNewPatientId")) {
 			createNewPID = true;
-		}  else {
+		}
+		else if (part_name.equals("PatientID")) {
+			forcePatientId = part.getText();
+		}
+		else {
 			parseBasicInstruction(part);
 		}
 	}

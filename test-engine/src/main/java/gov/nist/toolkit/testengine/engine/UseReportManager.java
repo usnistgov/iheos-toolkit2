@@ -1,21 +1,15 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.Report;
-import gov.nist.toolkit.testenginelogging.SectionLogMap;
-import gov.nist.toolkit.testenginelogging.TestDetails;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.*;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
 
 public class UseReportManager  {
 	List<UseReport> useReports;
@@ -49,7 +43,12 @@ public class UseReportManager  {
 				continue;
 			if (config.verbose)
 				System.out.println("\tLoading logs for test " + test + " section " + section);
-			TestDetails tspec = new TestDetails(config.testkitHome, test);
+			TestDetails tspec = null;
+			try {
+				tspec = new TestDetails(config.altTestkitHome, test);
+			} catch (Exception e) {
+				tspec = new TestDetails(config.testkitHome, test);
+			}
 			tspec.setLogDir(config.logRepository.logDir());
 			File testlogFile = tspec.getTestLog(test, section);
 			if (testlogFile != null)

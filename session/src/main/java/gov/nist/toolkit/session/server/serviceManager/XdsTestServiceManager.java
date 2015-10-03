@@ -56,7 +56,11 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	/**
-	 * Wrapper around run
+	 * Wrapper around run to be used for using the test-client as a utility.  The difference between using
+	 * it as a utility or as a test is how and where the logs are stored.  For tests they are stored in
+	 * the external cache under TestLogCache and for utilities they are stored in war/SessionCache.  Logs in
+	 * TestLogCache are permanent (manually deleted) and in SessionCache they are delete when the session
+	 * times out.
 	 * @param testName
 	 * @param sections
 	 * @param params
@@ -68,7 +72,7 @@ public class XdsTestServiceManager extends CommonService {
 						  Map<String, String> params, Map<String, Object> params2, String[] areas,
 						  boolean stopOnFirstFailure) {
 
-		return new UtilityRunner(this).run(session, params, params2, sections, testName, areas,
+		return new UtilityRunner(this, TestRunType.UTILITY).run(session, params, params2, sections, testName, areas,
 				stopOnFirstFailure);
 	}
 
@@ -679,7 +683,7 @@ public class XdsTestServiceManager extends CommonService {
 		Map<String, String> params = new HashMap<>();
 		params.put("$pid$", pid.asString());
 		String testName = "PidFeed";
-		return asList(new UtilityRunner(this).run(session, params, null, null, testName, null, true));
+		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testName, null, true));
 	}
 
 }

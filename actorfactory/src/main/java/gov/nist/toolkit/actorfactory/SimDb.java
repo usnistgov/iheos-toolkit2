@@ -94,7 +94,7 @@ public class SimDb {
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
 		if (!simDir.exists()) {
 			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
-			throw new NoSimException("Simulator " + simId + " does not exist");
+			throw new NoSimException("Simulator " + simId + " does not exist (" + simDir + ")");
 		}
 
 		simDir.mkdirs();

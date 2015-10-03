@@ -28,6 +28,7 @@ public class XdsTest {
 	String version = "xx.yy";
 	//controlling variables
 	File testkit;
+	File altTestkit;
 	String mgmt;
 	File toolkit;
 	LogRepository logRepository;
@@ -184,7 +185,7 @@ public class XdsTest {
 		if (testkitdir != null)
 			testkit = new File(testkitdir);
 		if (logdirstr != null) {
-			File testLogCache = Installation.installation().testLogFile();
+			File testLogCache = Installation.installation().testLogCache();
 			logRepository = new LogRepositoryFactory().
 					getRepository(
 							testLogCache,   // location
@@ -369,6 +370,7 @@ public class XdsTest {
 
 	private void initTestConfig() {
 		testConfig.testkitHome = testkit;
+		testConfig.altTestkitHome = altTestkit;
 		testConfig.logRepository = logRepository;
 		testConfig.site = site;
 		testConfig.secure = secure;
@@ -713,9 +715,10 @@ public class XdsTest {
 				if (ts != null && ts.logRepository != null)
 					logDirectory = ts.logRepository.logDir(testSpec.getTestNum());
 
+				// This is the log.xml file
+				testConfig.logFile = new TestKitLog(logDirectory, testkit, altTestkit).getLogFile(testPlanFile);
+				writeLogFiles = true;
 				if (writeLogFiles) {
-					// This is the log.xml file
-					testConfig.logFile = new TestKitLog(logDirectory, testkit).getLogFile(testPlanFile);
 					logFiles.add(testConfig.logFile);
 				}
 				
@@ -926,11 +929,17 @@ public class XdsTest {
 	public File getTestkit() {
 		return testkit;
 	}
+	public File getAltTestkit() {
+		return altTestkit;
+	}
 
 	public void setTestkit(File testkit) {
 		this.testkit = testkit;
 	}
 
+	public void setAltTestkit(File testkit) {
+		this.altTestkit = testkit;
+	}
 
 
 	public File getLogDir() throws IOException {
@@ -953,16 +962,18 @@ public class XdsTest {
 	}
 
 	public void addTestCollection(String testCollectionName) throws Exception {
-
-		TestCollection tcol = new TestCollection(testkit,testCollectionName);
-
 		if (testSpecs == null)
 			testSpecs = new ArrayList<TestDetails>();
 
-		testSpecs.addAll(tcol.getTestSpecs());
+		List<TestDetails> details;
+
+		try {
+			details = new TestCollection(altTestkit, testCollectionName).getTestSpecs();
+		} catch (Exception e) {
+			details = new TestCollection(testkit, testCollectionName).getTestSpecs();
+		}
+		testSpecs.addAll(details);
 	}
-
-
 
 	public boolean isSecure() {
 		return secure;
@@ -979,8 +990,8 @@ public class XdsTest {
 	public void setToolkit(File toolkit) throws IOException {
 		this.toolkit = toolkit;
 		mgmt = toolkit + File.separator + "xdstest";
-		logRepository =
-		new LogRepositoryFactory().getRepository(Installation.installation().testLogFile(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+//		logRepository =
+//		new LogRepositoryFactory().getRepository(Installation.installation().testLogCache(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 		testConfig.testmgmt_dir = mgmt;
 	}
 
