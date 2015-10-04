@@ -1,4 +1,4 @@
-package gov.nist.toolkit.testengine.logrepository;
+package gov.nist.toolkit.testenginelogging.logrepository;
 
 import org.apache.log4j.Logger;
 

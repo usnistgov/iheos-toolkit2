@@ -1,15 +1,13 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.errormgr.AssertionResults;
-import gov.nist.toolkit.testengine.logrepository.LogRepository;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.StepGoals;
-import gov.nist.toolkit.testenginelogging.TestDetails;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.*;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
@@ -36,7 +34,7 @@ public class Xdstest2 {
 	LogRepository logRepository;
 	File testkit;
 	File altTestkit;
-	String testnum;
+	TestId testId;
 	Site site;
 	File toolkitDir;   // never referenced
 	List<String> sections;
@@ -173,7 +171,7 @@ public class Xdstest2 {
 	 */
 	public void setLogRepository(LogRepository logRepository) throws IOException {
 		this.logRepository = logRepository;
-		this.logRepository.logDir().mkdirs();
+//		this.logRepository.logDir().mkdirs();
 		xt.setLogRepository(logRepository);
 	}
 
@@ -181,14 +179,14 @@ public class Xdstest2 {
 	 * Select test to be run. All steps of all sections of this test will be
 	 * run. Overrides earlier calls to addTest* methods.
 	 * 
-	 * @param testname - corresponds to name of a directory of TESTKIT/area/testname
+	 * @param testId - corresponds to name of a directory of TESTKIT/area/testname
 	 * where area comes from a default list and does not need to be specified.  All sections
 	 * of the test are executed in the default order.
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
-	public void addTest(String testname) throws Exception {
-		testnum = testname;
-		xt.addTestSpec(new TestDetails(xt.getTestkit(), testname));
+	public void addTest(TestId testId) throws Exception {
+		this.testId = testId;
+		xt.addTestSpec(new TestDetails(xt.getTestkit(), testId));
 
 	}
 
@@ -196,22 +194,22 @@ public class Xdstest2 {
 	 * Select test to be run. All steps of this section will be run. Overrides
 	 * earlier calls to addTest* methods.
 	 * 
-	 * @param testname - corresponds to name of a directory of TESTKIT/area/testname
+	 * @param testId - corresponds to name of a directory of TESTKIT/area/testname
 	 * @param sections - list of sections of the test to execute. The ordering in this list
 	 * controls the order of execution.
 	 * @param areas - controls which areas of the testkit should be searched
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
-	public void addTest(String testname, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
-		testnum = testname;
+	public void addTest(TestId testId, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
+		this.testId = testId;
 		this.sections = sections;
 		TestDetails testDetails;
 		if (areas == null)
-			testDetails = new TestDetails(xt.getTestkit(), testname);
+			testDetails = new TestDetails(xt.getTestkit(), testId);
 		else
-			testDetails = new TestDetails(xt.getTestkit(), testname, areas);
+			testDetails = new TestDetails(xt.getTestkit(), testId, areas);
 		if (logRepository != null)
-			testDetails.setLogDir(logRepository.logDir());
+			testDetails.setLogRepository(logRepository);
 		if (doLogCheck) {
 			if (sections != null && sections.size() != 0)
 				testDetails.selectSections(sections);
@@ -219,20 +217,20 @@ public class Xdstest2 {
 		xt.addTestSpec(testDetails);
 	}
 	
-	public void addTest(String testName, File testDir) throws Exception {
-		testnum = testName;
+	public void addTest(TestId testId, File testDir) throws Exception {
+		this.testId = testId;
 		TestDetails testDetails = new TestDetails(testDir);
 		if (logRepository != null)
-			testDetails.setLogDir(logRepository.logDir());
+			testDetails.setLogRepository(logRepository);
 		xt.addTestSpec(testDetails);
 	}
 
-	public void addTest(String testname, List<String> sections, String[] areas) throws Exception {
-		addTest(testname, sections, areas, true);
+	public void addTest(TestId testId, List<String> sections, String[] areas) throws Exception {
+		addTest(testId, sections, areas, true);
 	}
 	
-	public TestDetails getTestSpec(String testname) throws Exception {
-		return new TestDetails(xt.getTestkit(), testname);
+	public TestDetails getTestSpec(TestId testId) throws Exception {
+		return new TestDetails(xt.getTestkit(), testId);
 	}
 
 	/**
@@ -302,7 +300,7 @@ public class Xdstest2 {
 	 */
 	public boolean run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
-		logger.debug("Running " + testnum);
+		logger.debug("Running " + testId);
 		testDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
 		if (testDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");
@@ -346,7 +344,7 @@ public class Xdstest2 {
 
 		res.add(dashes);
 		for (TestDetails testSpec : testDetails) {
-			res.add("Test: " + testSpec.getTestNum());
+			res.add("Test: " + testSpec.getTestId());
 			res.add(dashes);
 			Collection<String> sections;
 			if (sectionsToScan == null)

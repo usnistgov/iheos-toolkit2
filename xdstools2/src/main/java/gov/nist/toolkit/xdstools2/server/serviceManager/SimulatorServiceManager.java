@@ -17,6 +17,7 @@ import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
@@ -64,7 +65,7 @@ public class SimulatorServiceManager extends CommonService {
 	public List<Result> getSelectedMessage(String simFileSpec) {
 		logger.debug(session.id() + ": " + "getSelectedMessage");
 		List<Result> results = new ArrayList<Result>();
-		Result result = ResultBuilder.RESULT("getSelectedMessage");
+		Result result = ResultBuilder.RESULT(new TestId("getSelectedMessage"));
 		results.add(result);
 		try {
 			SimDb sdb = new SimDb(session.getDefaultSimId());
@@ -84,7 +85,7 @@ public class SimulatorServiceManager extends CommonService {
 	public List<Result> getSelectedMessageResponse(String simFileSpec) {
 		logger.debug(session.id() + ": " + "getSelectedMessageResponse");
 		List<Result> results = new ArrayList<Result>();
-		Result result = ResultBuilder.RESULT("getSelectedMessageResponse");
+		Result result = ResultBuilder.RESULT(new TestId("getSelectedMessageResponse"));
 		results.add(result);
 		try {
 			SimDb sdb = new SimDb(session.getDefaultSimId());

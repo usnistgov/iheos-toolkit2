@@ -1,11 +1,12 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.registrymetadata.client.AnyId;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -33,7 +34,7 @@ public class GetRelated extends CommonService {
 				return buildResultList(e);
 			}
 
-			String testName = "GetRelated";
+			TestId testName = new TestId("GetRelated");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$uuid$", aid.id);

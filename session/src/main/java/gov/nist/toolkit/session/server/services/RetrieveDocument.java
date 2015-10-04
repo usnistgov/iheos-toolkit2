@@ -1,11 +1,12 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -38,7 +39,7 @@ public class RetrieveDocument extends CommonService {
 					uid.repositoryUniqueId = session.repUid;
 			}
 
-			String testName = "RetrieveDocumentSet";
+			TestId testId = new TestId("RetrieveDocumentSet");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			if (session.siteSpec.isRG()) {
@@ -52,7 +53,7 @@ public class RetrieveDocument extends CommonService {
 			else {
 				sections.add("XDS");
 			}
-			List<Result> results = session.queryServiceManager().perRepositoryRetrieve(uids, testName, sections, params);
+			List<Result> results = session.queryServiceManager().perRepositoryRetrieve(uids, testId, sections, params);
 			return results;
 	}
 

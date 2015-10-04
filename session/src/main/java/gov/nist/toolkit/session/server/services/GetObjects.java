@@ -1,10 +1,11 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -73,25 +74,25 @@ public class GetObjects extends CommonService {
 		List<Result> results = new ArrayList<Result>();
 
 		try {
-			List<Result> results1 = session.queryServiceManager().perCommunityQuery(aids, "GetAssociations", sections, params);
+			List<Result> results1 = session.queryServiceManager().perCommunityQuery(aids, new TestId("GetAssociations"), sections, params);
 			if (hasContent(results1))
 				results.addAll(results1);
 		} catch (Exception e) {		}
 
 		try {
-			List<Result> results2 = session.queryServiceManager().perCommunityQuery(aids, "GetSubmissionSetAndContents", sections, params);
+			List<Result> results2 = session.queryServiceManager().perCommunityQuery(aids, new TestId("GetSubmissionSetAndContents"), sections, params);
 			if (hasContent(results2))
 				results.addAll(results2);
 		} catch (Exception e) {}
 
 		try {
-			List<Result> results3 = session.queryServiceManager().perCommunityQuery(aids, "GetDocuments", sections, params);
+			List<Result> results3 = session.queryServiceManager().perCommunityQuery(aids, new TestId("GetDocuments"), sections, params);
 			if (hasContent(results3))
 				results.addAll(results3);
 		} catch (Exception e) {}
 
 		try {
-			List<Result> results4 = session.queryServiceManager().perCommunityQuery(aids, "GetFolders", sections, params);
+			List<Result> results4 = session.queryServiceManager().perCommunityQuery(aids, new TestId("GetFolders"), sections, params);
 			if (hasContent(results4))
 				results.addAll(results4);
 		} catch (Exception e) {}

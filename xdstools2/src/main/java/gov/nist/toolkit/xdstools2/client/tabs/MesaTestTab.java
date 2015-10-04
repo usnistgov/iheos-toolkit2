@@ -9,6 +9,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -180,7 +181,7 @@ public class MesaTestTab extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), selectedTest, selectedSections, parms, true, queryCallback);
+			toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestId(selectedTest), selectedSections, parms, true, queryCallback);
 
 		}
 
@@ -206,7 +207,7 @@ public class MesaTestTab extends GenericQueryTab {
 	class SelectSectionViewButtonClickHandler implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
-			toolkitService.getTestplanAsText(selectedTest, selectedSection, new AsyncCallback<String>() {
+			toolkitService.getTestplanAsText(new TestId(selectedTest), selectedSection, new AsyncCallback<String>() {
 
 				public void onFailure(Throwable caught) {
 					new PopupMessage("getTestplanAsText: " + caught.getMessage());

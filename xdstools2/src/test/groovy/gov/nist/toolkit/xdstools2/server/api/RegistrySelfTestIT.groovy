@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.server.api
 
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
+import gov.nist.toolkit.results.client.TestId
 import spock.lang.Specification
 /**
  * Runs all Registry tests.
@@ -35,7 +36,7 @@ class RegistrySelfTestIT extends Specification {
     def 'Submit Pid transaction to Registry simulator'() {
         when:
         String siteName = 'mike__reg'
-        String testName = "15804"
+        TestId testId = new TestId("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
         Map<String, String> params = new HashMap<>()
@@ -43,7 +44,7 @@ class RegistrySelfTestIT extends Specification {
         boolean stopOnFirstError = true
 
         and: 'Run pid transaction test'
-        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -57,14 +58,14 @@ class RegistrySelfTestIT extends Specification {
 //        when:
 //        String testSession = null;  // use default
 //        String siteName = 'mike__reg'
-//        String testName = "11990"
+//        String testId = "11990"
 //        List<String> sections = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run Register test'
-//        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 //
 //        then:
 //        true
@@ -76,14 +77,14 @@ class RegistrySelfTestIT extends Specification {
 //        when:
 //        String testSession = null;  // use default
 //        String siteName = 'mike__reg'
-//        String testName = "12002"
+//        String testId = "12002"
 //        List<String> sections = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run Register test'
-//        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 //
 //        then:
 //        true
@@ -94,14 +95,14 @@ class RegistrySelfTestIT extends Specification {
     def 'Run all Register tests'() {
         when:
         String siteName = 'mike__reg'
-        String testName = "tc:R.b"
+        TestId testId = new TestId("tc:R.b")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -112,14 +113,14 @@ class RegistrySelfTestIT extends Specification {
     def 'Run SQ initialization'() {
         when:
         String siteName = 'mike__reg'
-        String testName = "tc:Initialize_for_Stored_Query"
+        TestId testId = new TestId("tc:Initialize_for_Stored_Query")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -130,14 +131,14 @@ class RegistrySelfTestIT extends Specification {
     def 'Run SQ tests'() {
         when:
         String siteName = 'mike__reg'
-        String testName = "tc:SQ.b"
+        TestId testId = new TestId("tc:SQ.b")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)   // not used
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -149,14 +150,14 @@ class RegistrySelfTestIT extends Specification {
 //        when:
 //        String testSession = null;  // use default
 //        String siteName = 'mike__regrep'
-//        String testName = "tc:PR.b"
+//        String testId = "tc:PR.b"
 //        List<String> sections = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run'
-//        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 //
 //        then:
 //        true

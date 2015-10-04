@@ -1,13 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.results.client.Result;
-
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestId;
+
+import java.util.List;
 
 public class GetRelated implements ClickHandler {
 	MetadataInspectorTab it;
@@ -23,7 +23,7 @@ public class GetRelated implements ClickHandler {
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 		public void onFailure(Throwable caught) {
-			Result result = Result.RESULT("GetRelated");
+			Result result = Result.RESULT(new TestId("GetRelated"));
 			result.assertions.add(caught.getMessage());
 			it.addToHistory(result);
 		}

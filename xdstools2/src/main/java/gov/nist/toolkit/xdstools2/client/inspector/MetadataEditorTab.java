@@ -1,26 +1,21 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.registrymetadata.client.Document;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.RegistryObject;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestLog;
-import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
-
-import java.util.List;
-import java.util.Map;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.registrymetadata.client.Document;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
+import gov.nist.toolkit.registrymetadata.client.RegistryObject;
+import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+
+import java.util.List;
+import java.util.Map;
 
 public class MetadataEditorTab extends TabbedWindow {
 
@@ -158,10 +153,10 @@ public class MetadataEditorTab extends TabbedWindow {
 	}
 
 	Result findResultbyLogId(TestLogs testLogs) {
-		if (testLogs.logId == null)
+		if (testLogs.testId == null)
 			return null;
 		for (Result result : results) {
-			if (testLogs.logId.equals(result.logId)) {
+			if (testLogs.testId.equals(result.logId)) {
 				return result;
 			}
 		}

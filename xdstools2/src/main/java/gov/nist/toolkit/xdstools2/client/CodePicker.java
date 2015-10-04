@@ -1,18 +1,12 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import gov.nist.toolkit.registrymetadata.client.Code;
-import gov.nist.toolkit.results.client.CodeConfiguration;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.registrymetadata.client.Code;
+import gov.nist.toolkit.results.client.CodeConfiguration;
 
 public class CodePicker extends DialogBox {
 	int listSize = 25;

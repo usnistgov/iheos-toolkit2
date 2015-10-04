@@ -1,10 +1,11 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -25,7 +26,7 @@ public class GetAssociations extends CommonService {
 		try {
 			session.setSiteSpec(site);
 
-			String testName = "GetAssociations";
+			TestId testId = new TestId("GetAssociations");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$returnType$", returnType);
@@ -46,18 +47,18 @@ public class GetAssociations extends CommonService {
 				}
 				else if (session.siteSpec.isIG()) {
 					sections.add("IG");
-					List<Result> results = session.queryServiceManager().perCommunityQuery(new AnyIds(ids), testName, sections, params);
+					List<Result> results = session.queryServiceManager().perCommunityQuery(new AnyIds(ids), testId, sections, params);
 					session.clear();
 					return results;
 				}
 				else {
 					sections.add("XDS");
-					return asList(session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, false));
+					return asList(session.xdsTestServiceManager().xdstest(testId, sections, params, null, null, false));
 				}
 			} catch (Exception e) {
 				return buildResultList(e);
 			}
-			List<Result> results = session.queryServiceManager().perCommunityQuery(new AnyIds(ids), testName, sections, params);
+			List<Result> results = session.queryServiceManager().perCommunityQuery(new AnyIds(ids), testId, sections, params);
 			return results;
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.scripts;
 
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
@@ -15,7 +16,7 @@ public class Main implements SecurityParams {
 	static Xdstest2 engine;
 	File config = null;
 	File logDir = null;
-	String testName = null;
+	TestId testId = null;
 	File testDir = null;
 	File testKit = null;
 	static File toolkit = null;
@@ -43,7 +44,7 @@ public class Main implements SecurityParams {
 		parameterCheck();
 		TransactionSettings ts = new TransactionSettings();
 		try {
-			engine.addTest(testName);
+			engine.addTest(testId);
 			engine.run(null, null, true, ts);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -55,7 +56,7 @@ public class Main implements SecurityParams {
 		boolean ok = true;
 //		if (config == null) 
 //			fatal("-config parameter missing");
-		if (testName == null)
+		if (testId == null)
 			ok = ok & err("-t parameter missing");
 		return ok;
 	}
@@ -82,7 +83,7 @@ public class Main implements SecurityParams {
 				testKit = new File(config + File.separator + "testkitIn");
 			}
 			else if (name.equals("-t")) {
-				testName = value;
+				testId = new TestId(value);
 				testDir = testDir();
 				if (testDir == null || !testExists())
 					ok = false;
@@ -129,7 +130,7 @@ public class Main implements SecurityParams {
 			LinesOfFile lof = new LinesOfFile(new File(config + File.separator + "areas"));
 			while(lof.hasNext()) {
 				String area = lof.next().trim();
-				File d = new File(testKit + File.separator + area + File.separator + testName);
+				File d = new File(testKit + File.separator + area + File.separator + testId);
 				if (d.exists())
 					return d;
 			}

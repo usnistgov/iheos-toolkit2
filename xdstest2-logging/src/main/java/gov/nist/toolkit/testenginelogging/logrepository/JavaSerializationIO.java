@@ -1,7 +1,7 @@
-package gov.nist.toolkit.testengine.logrepository;
+package gov.nist.toolkit.testenginelogging.logrepository;
 
-import gov.nist.toolkit.results.client.XdstestLogId;
-import gov.nist.toolkit.testengine.engine.LogMap;
+import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.testenginelogging.LogMap;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -13,10 +13,10 @@ public class JavaSerializationIO implements ILoggerIO  {
 	Logger logger = Logger.getLogger(JavaSerializationIO.class);
 
 	/* (non-Javadoc)
-	 * @see gov.nist.toolkit.testengine.logrepository.ILoggerIO#logOut(gov.nist.toolkit.results.client.XdstestLogId, gov.nist.toolkit.testengine.LogMap, java.io.File)
+	 * @see gov.nist.toolkit.testenginelogging.logrepository.ILoggerIO#logOut(gov.nist.toolkit.results.client.XdstestLogId, gov.nist.toolkit.testengine.LogMap, java.io.File)
 	 */
 	@Override
-	public void logOut(XdstestLogId id, LogMap log, File logDir) throws XdsException {
+	public void logOut(TestId id, LogMap log, File logDir) throws XdsException {
 		logger.debug("Writing log " + log.getKeys() + " to " + logFile(id, logDir));
 		FileOutputStream fos;
 		ObjectOutputStream out = null;
@@ -36,10 +36,10 @@ public class JavaSerializationIO implements ILoggerIO  {
 	}
 	
 	/* (non-Javadoc)
-	 * @see gov.nist.toolkit.testengine.logrepository.ILoggerIO#logIn(gov.nist.toolkit.results.client.XdstestLogId, java.io.File)
+	 * @see gov.nist.toolkit.testenginelogging.logrepository.ILoggerIO#logIn(gov.nist.toolkit.results.client.XdstestLogId, java.io.File)
 	 */
 	@Override
-	public LogMap logIn(XdstestLogId id, File logDir) throws Exception {
+	public LogMap logIn(TestId id, File logDir) throws Exception {
 		logger.debug("Reading log from " + logFile(id, logDir));
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
@@ -57,11 +57,12 @@ public class JavaSerializationIO implements ILoggerIO  {
 			logger.error(ExceptionUtil.here("Cannot load " + logFile(id, logDir)));
 			throw e;
 		} finally {
-			in.close();
+			if (in != null)
+				in.close();
 		}
 	}
 
-	String logFile(XdstestLogId id, File logDir)  {
+	String logFile(TestId id, File logDir)  {
 		return logDir.toString() + File.separator + id.getId();
 	}
 

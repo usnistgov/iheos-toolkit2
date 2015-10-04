@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestId;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class GetObjects implements ClickHandler {
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 		public void onFailure(Throwable caught) {
-			Result result = Result.RESULT("GetObjects");
+			Result result = Result.RESULT(new TestId("GetObjects"));
 			result.assertions.add(caught.getMessage());
 			it.addToHistory(result);
 		}

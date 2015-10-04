@@ -2,15 +2,18 @@ package gov.nist.toolkit.xdstools2.server.api;
 
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.results.client.LogIdIOFormat;
+import gov.nist.toolkit.results.client.LogIdType;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSession;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
-import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.testengine.transactions.CallType;
 import gov.nist.toolkit.testengine.transactions.TransactionTransportFactory;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;
 
@@ -37,10 +40,10 @@ public class ClientApi implements SecurityParams {
 
     public Session getSession() { return session; }
 
-    public boolean runTest(String testname, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError, CallType callType) throws Exception {
+    public boolean runTest(TestId testId, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError, CallType callType) throws Exception {
         Xdstest2 engine = new Xdstest2(Installation.installation().toolkitxFile(), this);
         engine.setTestkitLocation(testkitFile);
-        engine.addTest(testname);
+        engine.addTest(testId);
         engine.setSite(site);
         TransactionSettings ts = new TransactionSettings();
         ts.transactionTransport = TransactionTransportFactory.get(callType);
@@ -51,10 +54,10 @@ public class ClientApi implements SecurityParams {
                 new LogRepositoryFactory().getRepository(
                         Installation.installation().testLogCache(),
                         session.getId(),
-                        LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
-                        LogRepositoryFactory.Id_type.SPECIFIC_ID,
-                        testname);
-        System.out.println("RUN TEST " + testname + " to log " + ts.logRepository);
+                        LogIdIOFormat.JAVA_SERIALIZATION,
+                        LogIdType.SPECIFIC_ID,
+                        testId);
+        System.out.println("RUN TEST " + testId + " to log " + ts.logRepository);
         logger.info("TransactionSettings: " + ts);
         return engine.run(parms, null, stopOnFirstError, ts);
     }
@@ -74,8 +77,8 @@ public class ClientApi implements SecurityParams {
                 new LogRepositoryFactory().getRepository(
                         Installation.installation().testLogCache(),
                         session.getId(),
-                        LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
-                        LogRepositoryFactory.Id_type.SPECIFIC_ID,
+                        LogIdIOFormat.JAVA_SERIALIZATION,
+                        LogIdType.SPECIFIC_ID,
                         null);
         System.out.println("RUN TEST COLLECTION " + testCollectionName + " to log " + ts.logRepository);
         return engine.run(parms, null, stopOnFirstError, ts);

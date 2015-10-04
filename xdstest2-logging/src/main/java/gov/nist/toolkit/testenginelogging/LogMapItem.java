@@ -1,4 +1,4 @@
-package gov.nist.toolkit.testengine.engine;
+package gov.nist.toolkit.testenginelogging;
 
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 
@@ -18,6 +18,6 @@ public class LogMapItem implements Serializable {
 	}
 	
 	public String toString() {
-		return "[LogMapItem: testName=" + testName + " log=" + log.toString() + "]";
+		return "[LogMapItem: testId=" + testName + " log=" + log.toString() + "]";
 	}
 }

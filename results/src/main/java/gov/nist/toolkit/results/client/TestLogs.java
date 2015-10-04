@@ -3,14 +3,14 @@ package gov.nist.toolkit.results.client;
 
 
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 public class TestLogs implements IsSerializable {
 
-	public XdstestLogId logId;
+	public TestId testId;
 	public AssertionResult assertionResult; // for reporting errors in getLogs() call
 	public List<TestLog> logs = new ArrayList<TestLog>();
 	

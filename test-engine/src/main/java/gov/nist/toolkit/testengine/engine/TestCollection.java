@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 
@@ -73,9 +74,9 @@ public class TestCollection {
 			List<String> tokens = tokenize(line);
 			if (tokens.size() == 0)
 				continue;
-			String testNum = tokens.remove(0);
+			TestId testId = new TestId(tokens.remove(0));
 			
-			TestDetails ts = new TestDetails(testkit, testNum);
+			TestDetails ts = new TestDetails(testkit, testId);
 			if (tokens.size() > 0) 
 				ts.selectSections(tokens);
 			specs.add(ts);

@@ -1,9 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.results.client.AssertionResults;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import gov.nist.toolkit.results.client.AssertionResults;
 
 public class AssertionResultSelector implements ClickHandler {
 	MetadataInspectorTab it;

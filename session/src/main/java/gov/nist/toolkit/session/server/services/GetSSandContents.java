@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.server.services;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -22,7 +23,7 @@ public class GetSSandContents extends CommonService {
 		try {
 			session.setSiteSpec(site);
 
-			String testName = "GetSubmissionSetAndContents";
+			TestId testId = new TestId("GetSubmissionSetAndContents");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			try {
@@ -50,7 +51,7 @@ public class GetSSandContents extends CommonService {
 				return buildResultList(e);
 			}
 
-			List<Result> results = asList(session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, true));
+			List<Result> results = asList(session.xdsTestServiceManager().xdstest(testId, sections, params, null, null, true));
 			return results;
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

@@ -10,6 +10,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSession;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
@@ -110,14 +111,14 @@ public class ToolkitApi {
      *
      * @param testSession - name of test session to use or null to use default
      * @param siteName - name of site to target
-     * @param testName - which test
+     * @param testId - which test
      * @param sections - list of section names or null to run all
      * @param params - parameter map
      * @param stopOnFirstFailure
      * @return - list of Result objects - one per test step (transaction) run
      * @throws Exception if testSession could not be created
      */
-    public List<Result> runTest(String testSession, String siteName, String testName, List<String> sections,  Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+    public List<Result> runTest(String testSession, String siteName, TestId testId, List<String> sections,  Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
         if (testSession == null) {
             testSession = "API";
             xdsTestServiceManager().addMesaTestSession(testSession);
@@ -125,7 +126,7 @@ public class ToolkitApi {
         SiteSpec siteSpec = new SiteSpec();
         siteSpec.setName(siteName);
         if (session.getMesaSessionName() == null) session.setMesaSessionName(testSession);
-        return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testName, sections, params, null, stopOnFirstFailure);
+        return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testId, sections, params, null, stopOnFirstFailure);
     }
 
     public List<String> getSiteNames(boolean simAlso) {

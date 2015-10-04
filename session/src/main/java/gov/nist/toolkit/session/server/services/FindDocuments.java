@@ -1,9 +1,10 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -23,7 +24,7 @@ public class FindDocuments extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			String testName = "FindDocuments";
+			TestId testId = new TestId("FindDocuments");
 			List<String> sections = new ArrayList<String>();
 
 			Map<String, String> params = new HashMap<String, String>();
@@ -46,7 +47,7 @@ public class FindDocuments extends CommonService {
 				params.put("$object_types$","('urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1')");
 				
 
-			Result r = session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, true);
+			Result r = session.xdsTestServiceManager().xdstest(testId, sections, params, null, null, true);
 			return asList(r);
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

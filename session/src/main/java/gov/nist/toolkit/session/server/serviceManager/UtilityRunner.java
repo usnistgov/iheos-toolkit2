@@ -4,14 +4,12 @@ import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.XdstestLogId;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
@@ -39,13 +37,13 @@ public class UtilityRunner {
      *
      * @param params
      * @param sections
-     * @param testName
+     * @param testId
      * @param areas
      * @param stopOnFirstFailure
      * @return
      */
     public Result run(Session session, Map<String, String> params, Map<String, Object> params2, List<String> sections,
-                      String testName, String[] areas, boolean stopOnFirstFailure) {
+                      TestId testId, String[] areas, boolean stopOnFirstFailure) {
 
         xdsTestServiceManager.cleanupParams(params);
 
@@ -73,8 +71,8 @@ public class UtilityRunner {
                                     getRepository(
                                             Installation.installation().sessionCache(),
                                             session.getId(),
-                                            LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
-                                            LogRepositoryFactory.Id_type.TIME_ID,
+                                            LogIdIOFormat.JAVA_SERIALIZATION,
+                                            LogIdType.TIME_ID,
                                             null);
                 } else if (testRunType == TestRunType.TEST) {
                     session.transactionSettings.logRepository =
@@ -82,19 +80,19 @@ public class UtilityRunner {
                                     getRepository(
                                             Installation.installation().testLogCache(),
                                             session.getMesaSessionName(),
-                                            LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,
-                                            LogRepositoryFactory.Id_type.SPECIFIC_ID,
+                                            LogIdIOFormat.JAVA_SERIALIZATION,
+                                            LogIdType.SPECIFIC_ID,
                                             null);
                 }
             }
             session.xt.setLogRepository(session.transactionSettings.logRepository);
 
             try {
-                if (testName.startsWith("tc:")) {
-                    String collectionName = testName.split(":")[1];
+                if (testId.getId().startsWith("tc:")) {
+                    String collectionName = testId.getId().split(":")[1];
                     session.xt.addTestCollection(collectionName);
                 } else {
-                    session.xt.addTest(testName, sections, areas);
+                    session.xt.addTest(testId, sections, areas);
                 }
 
                 // force loading of site definitions
@@ -121,7 +119,7 @@ public class UtilityRunner {
             } catch (Exception e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add(ExceptionUtil.exception_details(e), false);
-                return ResultBuilder.RESULT(testName, assertionResults, null, null);
+                return ResultBuilder.RESULT(testId, assertionResults, null, null);
             }
             session.xt.setSecure(session.isTls());
 
@@ -160,13 +158,12 @@ public class UtilityRunner {
                 assertionResults.add(session.transactionSettings.res);
 
                 // Save the created logs in the SessionCache
-                XdstestLogId logid = xdsTestServiceManager.newTestLogId();
+//                TestId testId1 = xdsTestServiceManager.newTestLogId();
 
-                // Remove this - not sure why it is here - obsolete?
                 // it writes a uuid named file to TestLogCache/${user}/
-//                session.transactionSettings.logRepository.logOut(logid, session.xt.getLogMap());
+                session.transactionSettings.logRepository.logOut(testId, session.xt.getLogMap());
 
-                Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), logid);
+                Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), testId);
                 xdsTestServiceManager.scanLogs(session.xt, assertionResults, sections);
                 assertionResults.add("Finished");
                 result.assertions.add(assertionResults);
@@ -174,20 +171,20 @@ public class UtilityRunner {
             } catch (EnvironmentNotSelectedException e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add("Environment not selected", false);
-                return ResultBuilder.RESULT(testName, assertionResults, null, null);
+                return ResultBuilder.RESULT(testId, assertionResults, null, null);
             } catch (Exception e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add(ExceptionUtil.exception_details(e), false);
-                return ResultBuilder.RESULT(testName, assertionResults, null, null);
+                return ResultBuilder.RESULT(testId, assertionResults, null, null);
             }
         } catch (NullPointerException e) {
             logger.error(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
-            return ResultBuilder.RESULT(testName, assertionResults, null, null);
+            return ResultBuilder.RESULT(testId, assertionResults, null, null);
         } catch (Throwable e) {
             logger.error(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
-            return ResultBuilder.RESULT(testName, assertionResults, null, null);
+            return ResultBuilder.RESULT(testId, assertionResults, null, null);
         }
     }
 

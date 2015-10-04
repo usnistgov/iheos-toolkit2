@@ -1,5 +1,7 @@
 package gov.nist.toolkit.testenginelogging;
 
+import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.log4j.Logger;
@@ -14,9 +16,11 @@ import java.util.Map;
 public class TestDetails  {
 
 	File testkit;
-	File logdir;
+	LogRepository logRepository = null;
+//	File logdir;
+	public TestId testLogId = null;
 	String area;  // examples, tests etc
-	String testNum;
+	TestId testId;
 //	List<File> testPlanFiles;
 	public SectionTestPlanFileMap testPlanFileMap;   // sectionName ==> testplan.xml file
 	public SectionLogMap sectionLogMap = new SectionLogMap();
@@ -30,7 +34,7 @@ public class TestDetails  {
 	static final String testPlanFileName = "testplan.xml";
 
 	public String toString() { return "[TestSpec: testkit=" + testkit + " area=" + area +
-		"<br />testnum=" + testNum +
+		"<br />testnum=" + testId +
 		"<br />sections= " + testPlansToString() +
 		"<br />logs= " + sectionLogMap.toString() +
 		"]";
@@ -54,8 +58,8 @@ public class TestDetails  {
 		return sectionLogMap;
 	}
 	
-	public void setLogDir(File logdir) {
-		this.logdir = logdir;
+	public void setLogRepository(LogRepository logRepository) {
+		this.logRepository = logRepository;
 	}
 
 	String testPlansToString() {
@@ -114,19 +118,19 @@ public class TestDetails  {
 		return file;
 	}
 
-	public TestDetails(File testkit, String testNum) throws Exception {
+	public TestDetails(File testkit, TestId testId) throws Exception {
 		this.testkit = testkit;
-		this.testNum = testNum;
+		this.testId = testId;
 		areas = defaultAreas;
-		verifyCurrentTestExists(testkit, testNum);
+		verifyCurrentTestExists(testkit, testId);
 		testPlanFileMap = getTestPlans();
 	}
 
-	public TestDetails(File testkit, String testNum, String[] areas) throws Exception {
+	public TestDetails(File testkit, TestId testId, String[] areas) throws Exception {
 		this.testkit = testkit;
-		this.testNum = testNum;
+		this.testId = testId;
 		this.areas = areas;
-		verifyCurrentTestExists(testkit, testNum);
+		verifyCurrentTestExists(testkit, testId);
 		testPlanFileMap = getTestPlans();
 	}
 	
@@ -142,7 +146,7 @@ public class TestDetails  {
 		}
 	}
 
-	private void verifyCurrentTestExists(File testkit, String testNum)
+	private void verifyCurrentTestExists(File testkit, TestId testId)
 			throws Exception {
 		for (int i=0; i<areas.length; i++) {
 			area = areas[i];
@@ -150,7 +154,7 @@ public class TestDetails  {
 				break;
 		}
 		if ( ! exists() ) {
-			String msg = "TestSpec (testkit=" + testkit + " testNum=" + testNum + ", no " + testPlanFileName + " files found";
+			String msg = "TestSpec (testkit=" + testkit + " testId=" + testId + ", no " + testPlanFileName + " files found";
 			logger.error(msg);
 			throw new Exception(msg);
 		}
@@ -175,13 +179,13 @@ public class TestDetails  {
 				File file = new File(sectionDir + File.separator + files[j]);
 				if ( !file.isDirectory()) 
 					continue;
-				ts.testNum = file.getName();
+				ts.testId = new TestId(file.getName());
 				if (ts.isTestDir()) {
 					File readme = ts.getReadme();
 					String firstline = "";
 					if (readme.exists() && readme.isFile())
 						firstline = firstLineOfFile(readme);
-					System.out.println(ts.testNum + "\t" + firstline.trim());
+					System.out.println(ts.testId + "\t" + firstline.trim());
 				}
 			}
 		}
@@ -206,13 +210,13 @@ public class TestDetails  {
 				File file = new File(sectionDir + File.separator + files[j]);
 				if ( !file.isDirectory()) 
 					continue;
-				ts.testNum = file.getName();
+				ts.testId = new TestId(file.getName());
 				if (ts.isTestDir()) {
 					File readme = ts.getReadme();
 					String firstline = "";
 					if (readme.exists() && readme.isFile())
 						firstline = firstLineOfFile(readme);
-					map.put(ts.testNum, firstline.trim());
+					map.put(ts.testId.getId(), firstline.trim());
 				}
 			}
 		}
@@ -237,14 +241,14 @@ public class TestDetails  {
 	}
 
 	public File getTestDir() {
-		return new File(testkit + File.separator + area + File.separatorChar + testNum);
+		return new File(testkit + File.separator + area + File.separatorChar + testId.getId());
 	}
 
-	public File getTestLogDir() {
-		if (logdir == null)
-			return null;
-		return new File(logdir + File.separator + area + File.separatorChar + testNum);
-	}
+//	public LogRepository getLoggerRepository() {
+//		if (logdir == null)
+//			return null;
+//		return new File(logdir + File.separator + area + File.separatorChar + testId);
+//	}
 
 	public boolean exists() {
 		return getTestDir().isDirectory();
@@ -264,19 +268,19 @@ public class TestDetails  {
 		return new File(getTestDir() + File.separator + "index.idx");
 	}
 	
-	public List<File> getTestLogs(String upToSection) throws Exception {
-		List<File> logfiles = new ArrayList<File>();
-		File index = getIndexFile();
-		if (index.exists()) 
-			return getTestLogsFromIndex(index, upToSection);
-		else {
-			File testlogdir = getTestLogDir();
-			if (testlogdir != null)
-				logfiles.add(new File(testlogdir.toString() + File.separatorChar + "log.xml"));
-		}
-		
-		return logfiles;
-	}
+//	public List<File> getTestLogs(String upToSection) throws Exception {
+//		List<File> logfiles = new ArrayList<File>();
+//		File index = getIndexFile();
+//		if (index.exists())
+//			return getTestLogsFromIndex(index, upToSection);
+//		else {
+//			File testlogdir = getTestLogDir();
+//			if (testlogdir != null)
+//				logfiles.add(new File(testlogdir.toString() + File.separatorChar + "log.xml"));
+//		}
+//
+//		return logfiles;
+//	}
 
 	SectionTestPlanFileMap getTestPlansFromIndex(File index) throws Exception {
 		SectionTestPlanFileMap plans = new SectionTestPlanFileMap();
@@ -305,9 +309,10 @@ public class TestDetails  {
 	 */
 	List<File> getTestLogsFromIndex(File index, String upToSection) throws Exception {
 		List<File> logs = new ArrayList<File>();
-		if (logdir == null)
+		if (logRepository == null)
 			return logs;
-		
+		File logdir = logRepository.logDir();
+
 		if (!index.exists())
 			return logs;
 
@@ -328,9 +333,10 @@ public class TestDetails  {
 	
 	public List<String> getSectionsFromTestDef(File testdir) throws IOException {
 		List<String> sections = new ArrayList<String>();
-		if (logdir == null)
+		if (logRepository == null)
 			return sections;
-		
+		File logdir = logRepository.logDir();
+
 		File index = new File(testdir + File.separator + "index.idx");
 		
 		if (!index.exists())
@@ -340,7 +346,7 @@ public class TestDetails  {
 			String dir = lof.next().trim();
 			if (dir.length() ==0)
 				continue;
-			File path = new File(logdir + File.separator + area + File.separator + testNum + File.separatorChar + dir + File.separatorChar + "log.xml");
+			File path = new File(logdir + File.separator + area + File.separator + testId + File.separatorChar + dir + File.separatorChar + "log.xml");
 			sections.add(dir);
 		}
 		
@@ -348,15 +354,16 @@ public class TestDetails  {
 		return sections;
 	}
 	
-	public File getTestLog(String testNum, String section) {
+	public File getTestLog(TestId testId, String section) {
 		File path;
-		if (logdir == null)
+		if (logRepository == null)
 			return null;
-		
+		File logdir = logRepository.logDir();
+
 		if (section != null && !section.equals("") && !section.equals("None"))
-			path = new File(logdir + File.separator + ".." + File.separator + testNum + File.separatorChar + section + File.separatorChar + "log.xml");
+			path = new File(logdir + File.separator + ".." + File.separator + testId + File.separatorChar + section + File.separatorChar + "log.xml");
 		else
-			path = new File(logdir + File.separator + ".." + File.separator + testNum + File.separatorChar  + "log.xml");
+			path = new File(logdir + File.separator + ".." + File.separator + testId + File.separatorChar  + "log.xml");
 		return path;
 	}
 
@@ -432,8 +439,8 @@ public class TestDetails  {
 		}
 	}
 
-	public String getTestNum() {
-		return testNum;
+	public TestId getTestId() {
+		return testId;
 	}
 }
 

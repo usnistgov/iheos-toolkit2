@@ -44,8 +44,8 @@ public interface ToolkitServiceAsync {
 	void getDashboardRegistryData(AsyncCallback<List<RegistryStatus>> callback);
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
-	void getLogContent(String sessionName, String testName, AsyncCallback<List<Result>> callback);
-	void getTestlogListing(String sessionName, AsyncCallback<List<String>> callback);
+	void getLogContent(String sessionName, TestId testId, AsyncCallback<List<Result>> callback);
+	void getTestlogListing(String sessionName, AsyncCallback<List<TestId>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
@@ -87,7 +87,7 @@ public interface ToolkitServiceAsync {
 	void getRepositoryNames(AsyncCallback<List<String>> callback);
 	void getRGNames(AsyncCallback<List<String>> callback);
 	void getIGNames(AsyncCallback<List<String>> callback);
-	void getRawLogs(XdstestLogId logId, AsyncCallback<TestLogs> callback);
+	void getRawLogs(TestId logId, AsyncCallback<TestLogs> callback);
 	void getTestdataSetListing(String testdataSetName, AsyncCallback<List<String>> callback);
 	void getCodesConfiguration(AsyncCallback<CodesResult> callback);
 	void getSite(String siteName, AsyncCallback<Site> callback);
@@ -102,7 +102,7 @@ public interface ToolkitServiceAsync {
 	void findDocuments(SiteSpec site, String pid, boolean onDemand, AsyncCallback<List<Result>> callback);
 	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;
 	void findFolders(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
-	void findPatient(SiteSpec site, String firstName, String secondName, String lastName, String suffix, 
+	void findPatient(SiteSpec site, String firstName, String secondName, String lastName, String suffix,
 			String gender, String dob, String ssn, String pid,
 			String homeAddress1, String homeAddress2, String homeCity, String homeState, String homeZip, String homeCountry,
             String mothersFirstName, String mothersSecondName, String mothersLastName, String mothersSuffix, 
@@ -156,7 +156,7 @@ public interface ToolkitServiceAsync {
 	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
 	void getTestReadme(String test, AsyncCallback<String> callback);
 	void getTestIndex(String test, AsyncCallback<List<String>> callback);
-	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
+	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestId testId, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
@@ -169,6 +169,6 @@ public interface ToolkitServiceAsync {
 	void getSimulatorEventResponse(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
 
 
-	void getTestplanAsText(String testname, String section, AsyncCallback<String> callback);
+	void getTestplanAsText(TestId testId, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> callback);
 }

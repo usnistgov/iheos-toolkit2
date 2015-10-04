@@ -5,33 +5,28 @@ import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestId;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.engine.LogMap;
-import gov.nist.toolkit.testengine.engine.LogMapItem;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.testenginelogging.LogMap;
+import gov.nist.toolkit.testenginelogging.LogMapItem;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.axiom.om.OMElement;
+import java.util.*;
 
 public class DashboardDaemon {
 //	ToolkitServiceImpl toolkit = new ToolkitServiceImpl();
@@ -134,7 +129,7 @@ public class DashboardDaemon {
 			List<String> sections = new ArrayList<String>();
 			sections.add("XDS");
 			try {
-				xdstest.addTest("GetDocuments", sections, areas);
+				xdstest.addTest(new TestId("GetDocuments"), sections, areas);
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = e1.getMessage();
@@ -267,7 +262,7 @@ public class DashboardDaemon {
 			xdstest.setSecure(true);
 			String[] areas = {"testdata-repository"};
 			try {
-				xdstest.addTest("SingleDocument", null, areas);
+				xdstest.addTest(new TestId("SingleDocument"), null, areas);
 			} catch (Exception e1) {
 				rstatus.status = false;
 				rstatus.fatalError = e1.getMessage();
