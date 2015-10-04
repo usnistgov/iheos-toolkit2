@@ -90,18 +90,25 @@ public class LogRepository  {
         if (user == null) throw new ToolkitRuntimeException("Internal Error: user is null");
         if (idType == LogIdType.TIME_ID) {
             // here user is the session id probably
-            String event = new SimDb().nowAsFilenameBase();
+
+            String event;
+            if (id.linkedToLogRepository())
+                event = id.getEvent();
+            else
+                event = new SimDb().nowAsFilenameBase();
             File logDir = new File(
                     location + File.separator + user +
                             File.separator + event  );
 
             // save enough in TestId so log can be retrieved by logIn above
-            id.setInternalEvent(event);
-            id.setEventDir(logDir.toString());
-            id.setLocation(location.toString());
-            id.setUser(user);
-            id.setFormat(format);
-            id.setIdType(idType);
+            if (!id.linkedToLogRepository()) {
+                id.setInternalEvent(event);
+                id.setEventDir(logDir.toString());
+                id.setLocation(location.toString());
+                id.setUser(user);
+                id.setFormat(format);
+                id.setIdType(idType);
+            }
 
             logDir.mkdirs();
             if (!logDir.exists())

@@ -10,14 +10,16 @@ public class TestId implements IsSerializable, Serializable {
 	String eventDir;
 
 	// params to re-create LogRepository
-	String location;
-	String user;
-	LogIdIOFormat format;
-	LogIdType idType;
+	String location = null;
+	String user = null;
+	LogIdIOFormat format = null;
+	LogIdType idType = null;
 	
 	public TestId() {
 		
 	}
+
+	public boolean linkedToLogRepository() { return location != null; }
 
 	public void setEvent(String event) {
 		this.event = event;
