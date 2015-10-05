@@ -272,7 +272,7 @@ public class TestDetails  {
 //		List<File> logfiles = new ArrayList<File>();
 //		File index = getIndexFile();
 //		if (index.exists())
-//			return getTestLogsFromIndex(index, upToSection);
+//			return getTestLogsForThisTest(index, upToSection);
 //		else {
 //			File testlogdir = getTestLogDir();
 //			if (testlogdir != null)
@@ -307,11 +307,11 @@ public class TestDetails  {
 	 * @return list of Files representing log files
 	 * @throws Exception
 	 */
-	List<File> getTestLogsFromIndex(File index, String upToSection) throws Exception {
+	List<File> getTestLogsForThisTest(File index, String upToSection) throws Exception {
 		List<File> logs = new ArrayList<File>();
 		if (logRepository == null)
 			return logs;
-		File logdir = logRepository.logDir();
+		File logdir = logRepository.logDir(testId);
 
 		if (!index.exists())
 			return logs;
@@ -371,7 +371,7 @@ public class TestDetails  {
 		loadTestPlansFromSectionList(sectionNames);
 		
 		// will need to load all previous section logs for referencing
-		List<File> previousLogFiles = getTestLogsFromIndex(getIndexFile(), sectionNames.get(0));
+		List<File> previousLogFiles = getTestLogsForThisTest(getIndexFile(), sectionNames.get(0));
 				
 		for (File f : previousLogFiles) {
 			LogFileContent lf = new LogFileContent(f);
