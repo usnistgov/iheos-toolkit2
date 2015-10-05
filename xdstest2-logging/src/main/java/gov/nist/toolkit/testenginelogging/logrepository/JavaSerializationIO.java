@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.LogMap;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
@@ -16,7 +16,7 @@ public class JavaSerializationIO implements ILoggerIO  {
 	 * @see gov.nist.toolkit.testenginelogging.logrepository.ILoggerIO#logOut(gov.nist.toolkit.results.client.XdstestLogId, gov.nist.toolkit.testengine.LogMap, java.io.File)
 	 */
 	@Override
-	public void logOut(TestId id, LogMap log, File logDir) throws XdsException {
+	public void logOut(TestInstance id, LogMap log, File logDir) throws XdsException {
 		logger.debug("Writing log " + log.getKeys() + " to " + logFile(id, logDir));
 		FileOutputStream fos;
 		ObjectOutputStream out = null;
@@ -39,7 +39,7 @@ public class JavaSerializationIO implements ILoggerIO  {
 	 * @see gov.nist.toolkit.testenginelogging.logrepository.ILoggerIO#logIn(gov.nist.toolkit.results.client.XdstestLogId, java.io.File)
 	 */
 	@Override
-	public LogMap logIn(TestId id, File logDir) throws Exception {
+	public LogMap logIn(TestInstance id, File logDir) throws Exception {
 		logger.debug("Reading log from " + logFile(id, logDir));
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
@@ -62,7 +62,7 @@ public class JavaSerializationIO implements ILoggerIO  {
 		}
 	}
 
-	String logFile(TestId id, File logDir)  {
+	String logFile(TestInstance id, File logDir)  {
 		return logDir.toString() + File.separator + id.getId();
 	}
 

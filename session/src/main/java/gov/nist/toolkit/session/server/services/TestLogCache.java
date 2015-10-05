@@ -1,7 +1,7 @@
 package gov.nist.toolkit.session.server.services;
 
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 
 import java.io.File;
 
@@ -12,7 +12,7 @@ public class TestLogCache {
 		this.cache = cache;
 	}
 	
-	public File getTestDir(String sessionName, TestId testId) {
+	public File getTestDir(String sessionName, TestInstance testInstance) {
 		// find test directory under external_cache/TestLogCache/<sessionName>/
 
 		for (File area : getSessionDir(sessionName).listFiles()) {  // area is tests, testdata etc
@@ -21,7 +21,7 @@ public class TestLogCache {
 			for (File testDir : area.listFiles()) {
 				if (!testDir.isDirectory())
 					continue;
-				if (testDir.getName().equals(testId.getId())) {
+				if (testDir.getName().equals(testInstance.getId())) {
 					return testDir;
 				}
 			}

@@ -8,10 +8,10 @@ import java.util.List;
 
 public class Result  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
-	public TestId testId;   // test can be a single test or a test collection
+	public TestInstance testInstance;   // test can be a single test or a test collection
 	public AssertionResults assertions = null;
 	public String timestamp;
-	public TestId logId;
+	public TestInstance logId;
 	public List<StepResult> stepResults;
 	String text = null;
 	public boolean pass = true;
@@ -23,7 +23,7 @@ public class Result  implements IsSerializable, Serializable {
 
 	public Result clone() {
 		Result r = new Result();
-		r.testId = testId;
+		r.testInstance = testInstance;
 		r.assertions = assertions.clone();
 		r.timestamp = timestamp;
 		r.logId = logId;
@@ -49,19 +49,19 @@ public class Result  implements IsSerializable, Serializable {
 		this.timestamp = timestamp;
 		assertions = new AssertionResults();
 		stepResults = new ArrayList<StepResult>();
-		testId = new TestId("Metadata");
+		testInstance = new TestInstance("Metadata");
 	}
 	
-	static public Result RESULT(TestId testId) {
+	static public Result RESULT(TestInstance testInstance) {
 		Result r = new Result("");
-		r.testId = testId;
+		r.testInstance = testInstance;
 		return r;
 	}
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
-		buf.append(testId).append("\n");
+		buf.append(testInstance).append("\n");
 		buf.append(assertions.toString());
 		
 		return buf.toString();
@@ -69,7 +69,7 @@ public class Result  implements IsSerializable, Serializable {
 	
 	public boolean passed() { return pass && (assertions == null || !assertions.isFailed()); }
 	
-	public void setTestId(TestId testId) { this.testId = testId; }
+	public void setTestInstance(TestInstance testInstance) { this.testInstance = testInstance; }
 	
 	public Result(AssertionResults assertions) {
 		this.assertions = assertions;

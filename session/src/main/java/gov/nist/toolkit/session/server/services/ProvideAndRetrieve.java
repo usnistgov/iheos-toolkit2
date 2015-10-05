@@ -6,7 +6,7 @@ import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.XdsException;
@@ -27,7 +27,7 @@ public class ProvideAndRetrieve extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestId testId = new TestId("ProvideAndRetrieve");
+			TestInstance testInstance = new TestInstance("ProvideAndRetrieve");
 			List<String> sections = new ArrayList<String>();
 			sections.add("text");
 			sections.add("xml");
@@ -39,13 +39,13 @@ public class ProvideAndRetrieve extends CommonService {
 //			Site si = session.siteServiceManager().getSites().getSite(session.siteSpec.name);
 			String repuid = si.getRepositoryUniqueId();
 			if (repuid == null) {
-				Result r = ResultBuilder.RESULT(testId, null, new AssertionResult("Repository has no configured repositoryUniqueId","",false), null);
+				Result r = ResultBuilder.RESULT(testInstance, null, new AssertionResult("Repository has no configured repositoryUniqueId","",false), null);
 				return asList(r);
 			}
 			params.put("$repositoryUniqueId$", repuid);
 			params.put("$repuid$", repuid);
 
-			Result r = session.xdsTestServiceManager().xdstest(testId, sections, params, null, null, false);
+			Result r = session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, false);
 			return asList(r);
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

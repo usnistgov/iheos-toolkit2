@@ -63,18 +63,18 @@ public class XdsTestServiceManager extends CommonService {
 	 * the external cache under TestLogCache and for utilities they are stored in war/SessionCache.  Logs in
 	 * TestLogCache are permanent (manually deleted) and in SessionCache they are delete when the session
 	 * times out.
-	 * @param testId
+	 * @param testInstance
 	 * @param sections
 	 * @param params
 	 * @param areas
 	 * @param stopOnFirstFailure
 	 * @return
 	 */
-	public Result xdstest(TestId testId, List<String> sections,
+	public Result xdstest(TestInstance testInstance, List<String> sections,
 						  Map<String, String> params, Map<String, Object> params2, String[] areas,
 						  boolean stopOnFirstFailure) {
 
-		return new UtilityRunner(this, TestRunType.UTILITY).run(session, params, params2, sections, testId, areas,
+		return new UtilityRunner(this, TestRunType.UTILITY).run(session, params, params2, sections, testInstance, areas,
 				stopOnFirstFailure);
 	}
 
@@ -85,7 +85,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * end of the end of the session.  Hence the label 'utility'.
 	 * @param params
 	 * @param sections
-	 * @param testId
+	 * @param testInstance
 	 * @param areas
 	 * @param stopOnFirstFailure
 	 * @return
@@ -96,22 +96,22 @@ public class XdsTestServiceManager extends CommonService {
 //		return utilityRunner.run(session, params, params2, sections, testId, areas, stopOnFirstFailure);
 //	}
 
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestId testId, List<String> sections,
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
-		return new TestRunner(this).run(session, mesaTestSession, siteSpec, testId, sections, params, params2, stopOnFirstFailure);
+		return new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 
-	public Map<String, Result> getTestResults(List<TestId> testIds, String testSession) {
-		logger.debug(session.id() + ": " + "getTestResults() ids=" + testIds + " testSession=" + testSession);
+	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) {
+		logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
 
 		Map<String, Result> map = new HashMap<String, Result>();
 
 		ResultPersistence rp = new ResultPersistence();
 
-		for (TestId testId : testIds) {
+		for (TestInstance testInstance : testInstances) {
 			try {
-				Result result = rp.read(testId, testSession);
-				map.put(testId.getId(), result);
+				Result result = rp.read(testInstance, testSession);
+				map.put(testInstance.getId(), result);
 			}
 			catch (Exception e) {}
 		}
@@ -142,23 +142,23 @@ public class XdsTestServiceManager extends CommonService {
 	 * test engine output cannot be accessed this way as they are stored
 	 * separate from the current GUI session.
 	 */
-	public TestLogs getRawLogs(TestId testId) {
-		logger.debug(session.id() + ": " + "getRawLogs " + testId);
+	public TestLogs getRawLogs(TestInstance testInstance) {
+		logger.debug(session.id() + ": " + "getRawLogs " + testInstance);
 		TestLogs testLogs = new TestLogs();
-		testLogs.testId = testId;
+		testLogs.testInstance = testInstance;
 
 		try {
-			LogMap logMap = findRawLogs(testId);
+			LogMap logMap = findRawLogs(testInstance);
 			if (logMap == null) {
 				String msg = "Internal Server Error: Cannot find logs for TestId "
-						+ testId;
+						+ testInstance;
 				testLogs.assertionResult = new AssertionResult(msg, false);
 				ExceptionUtil.here(msg);
 				return testLogs;
 			}
 
 			testLogs = getRawLogs(logMap);
-			testLogs.testId = testId;
+			testLogs.testInstance = testInstance;
 
 		} catch (Exception e) {
 			testLogs.assertionResult = new AssertionResult(
@@ -169,11 +169,11 @@ public class XdsTestServiceManager extends CommonService {
 
 	}
 
-	LogMap findRawLogs(TestId testId) {
+	LogMap findRawLogs(TestInstance testInstance) {
 		try {
-			return LogRepository.logIn(testId);
+			return LogRepository.logIn(testInstance);
 		} catch (Exception e) {
-			logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + testId));
+			logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + testInstance));
 		}
 		return null;
 	}
@@ -230,15 +230,15 @@ public class XdsTestServiceManager extends CommonService {
 		return Installation.installation().propertyServiceManager().isTestLogCachePrivate();
 	}
 
-	public String getTestplanAsText(TestId testId, String section) throws Exception {
+	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception {
 		try {
 			logger.debug(session.id() + ": " + "getTestplanAsText");
 			List<String> sections = new ArrayList<String>();
 			sections.add(section);
 
 			Xdstest2 xt2 = getNewXt();
-			xt2.addTest(testId, sections, null, false);
-			TestDetails ts = xt2.getTestSpec(testId);
+			xt2.addTest(testInstance, sections, null, false);
+			TestDetails ts = xt2.getTestSpec(testInstance);
 
 			File tsFile;
 
@@ -250,10 +250,10 @@ public class XdsTestServiceManager extends CommonService {
 					try {
 						tsFile = ts.getTestplanFile(null);
 					} catch (Exception e1) {
-						throw new Exception("Cannot load test plan " + testId + "#" + section);
+						throw new Exception("Cannot load test plan " + testInstance + "#" + section);
 					}
 				} else
-					throw new Exception("Cannot load test plan " + testId + "#" + section);
+					throw new Exception("Cannot load test plan " + testInstance + "#" + section);
 			}
 			return new OMFormatter(tsFile).toString();
 		} catch (Throwable t) {
@@ -261,7 +261,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public List<TestId> getTestlogListing(String sessionName) throws Exception {
+	public List<TestInstance> getTestlogListing(String sessionName) throws Exception {
 		logger.debug(session.id() + ": " + "getTestlogListing(" + sessionName + ")");
 
 		List<String> names = getMesaTestSessionNames();
@@ -271,7 +271,7 @@ public class XdsTestServiceManager extends CommonService {
 
 		File sessionDir = new File(Installation.installation().propertyServiceManager().getTestLogCache() + File.separator + sessionName);
 
-		List<TestId> testIds = new ArrayList<TestId>();
+		List<TestInstance> testInstances = new ArrayList<TestInstance>();
 
 		for (File area : sessionDir.listFiles()) {
 			if (!area.isDirectory())
@@ -279,11 +279,11 @@ public class XdsTestServiceManager extends CommonService {
 			for (File test : area.listFiles()) {
 				if (!test.isDirectory())
 					continue;
-				testIds.add(new TestId(test.getName()));
+				testInstances.add(new TestInstance(test.getName()));
 			}
 		}
 
-		return testIds;
+		return testInstances;
 	}
 
 	/**
@@ -292,26 +292,26 @@ public class XdsTestServiceManager extends CommonService {
 	 * returned list (Result object) represents the output of all steps in a single section of the test.
 	 * @param sessionName - not the servlet session but instead the dir name
 	 * under external_cache/TestLogCache identifying the user of the service
-	 * @param testId like 12355
+	 * @param testInstance like 12355
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Result> getLogContent(String sessionName, TestId testId) throws Exception {
-		logger.debug(session.id() + ": " + "getLogContent(" + testId + ")");
+	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception {
+		logger.debug(session.id() + ": " + "getLogContent(" + testInstance + ")");
 
-		File testDir = getTestLogCache().getTestDir(sessionName, testId);
+		File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
 
 		if (testDir == null)
-			throw new Exception("Cannot find log file for test " + testId);
+			throw new Exception("Cannot find log file for test " + testInstance);
 
-		LogMap lm = buildLogMap(testDir, testId);
+		LogMap lm = buildLogMap(testDir, testInstance);
 
 		// this has a slightly different structure than the testkit
 		// so pass the parent dir so the tests dir can be navigated
 		File testkitDir = getTestKit().getTestsDir();
 		File testkitD = testkitDir.getParentFile();
 
-		TestDetails testDetails = new TestDetails(testkitD, testId);
+		TestDetails testDetails = new TestDetails(testkitD, testInstance);
 		List<TestDetails> testDetailsList = new ArrayList<TestDetails>();
 		testDetailsList.add(testDetails);
 
@@ -321,7 +321,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 
 		// Save the created logs in the SessionCache
-		TestId logid = newTestLogId();
+		TestInstance logid = newTestLogId();
 		session.transactionSettings.logRepository.logOut(logid, lm);
 //		session.saveLogMapInSessionCache(lm, logid);
 
@@ -330,7 +330,7 @@ public class XdsTestServiceManager extends CommonService {
 		return asList(result);
 	}
 
-	public LogMap buildLogMap(File testDir, TestId testId) throws Exception {
+	public LogMap buildLogMap(File testDir, TestInstance testInstance) throws Exception {
 		LogMap lm = new LogMap();
 
 		// this has a slightly different structure than the testkit
@@ -338,9 +338,9 @@ public class XdsTestServiceManager extends CommonService {
 		File testkitDir = getTestKit().getTestsDir();
 		File testkitD = testkitDir.getParentFile();
 
-		TestDetails testDetails = new TestDetails(testkitD, testId);
+		TestDetails testDetails = new TestDetails(testkitD, testInstance);
 
-		List<String> sectionNames = testDetails.getSectionsFromTestDef(new File(testkitDir + File.separator + testId));
+		List<String> sectionNames = testDetails.getSectionsFromTestDef(new File(testkitDir + File.separator + testInstance));
 
 		if (sectionNames.size() == 0) {
 			for (File f : testDir.listFiles()) {
@@ -421,18 +421,18 @@ public class XdsTestServiceManager extends CommonService {
 	//		return result;
 	//	}
 
-	TestId newTestLogId() {
-		return new TestId(UuidAllocator.allocate().replaceAll(":", "_"));
+	TestInstance newTestLogId() {
+		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"));
 	}
 
-	Result buildResult(List<TestDetails> testSpecs, TestId logId) throws Exception {
-		TestId testId;
+	Result buildResult(List<TestDetails> testSpecs, TestInstance logId) throws Exception {
+		TestInstance testInstance;
 		if (testSpecs.size() == 1) {
-			testId = testSpecs.get(0).getTestId();
+			testInstance = testSpecs.get(0).getTestInstance();
 		} else {
-			testId = new TestId("Combined_Test");
+			testInstance = new TestInstance("Combined_Test");
 		}
-		Result result = ResultBuilder.RESULT(testId);
+		Result result = ResultBuilder.RESULT(testInstance);
 		result.logId = logId;
 		//		Result result = mkResult(testId);
 
@@ -686,8 +686,8 @@ public class XdsTestServiceManager extends CommonService {
 		session.setSiteSpec(site);
 		Map<String, String> params = new HashMap<>();
 		params.put("$pid$", pid.asString());
-		TestId testId = new TestId("PidFeed");
-		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testId, null, true));
+		TestInstance testInstance = new TestInstance("PidFeed");
+		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
 	}
 
 }

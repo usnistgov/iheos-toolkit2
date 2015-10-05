@@ -288,7 +288,7 @@ public class QueryServiceManager extends CommonService {
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();
-		Result result = ResultBuilder.RESULT(new TestId("getLastMetadata"));
+		Result result = ResultBuilder.RESULT(new TestInstance("getLastMetadata"));
 		results.add(result);
 
 		try {
@@ -308,7 +308,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 
-	public List<Result> perRepositoryRetrieve(Uids uids, TestId testId,
+	public List<Result> perRepositoryRetrieve(Uids uids, TestInstance testInstance,
 			List<String> sections, Map<String, String> params) {
 		List<Result> results = new ArrayList<Result>();
 
@@ -328,14 +328,14 @@ public class QueryServiceManager extends CommonService {
 			} else {
 				Map<String, String> myparams = dup(params);
 				myparams.put("$home$", org.get(repuid).uids.get(0).home);
-				results.add(session.xdsTestServiceManager().xdstest(testId, sections, myparams, null, null, false));
+				results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
 			}
 		}
 		return results;
 	}
 
 	public List<Result> runPerCommunityQuery(AnyIds aids, Session s,
-			TestId testId, List<String> sections, Map<String, String> params)
+			TestInstance testInstance, List<String> sections, Map<String, String> params)
 					throws Exception {
 		if (s.siteSpec.isRG()) {
 			sections.add("XCA");
@@ -345,12 +345,12 @@ public class QueryServiceManager extends CommonService {
 		}
 		else {
 			sections.add("XDS");
-			return asList(session.xdsTestServiceManager().xdstest(testId, sections, params, null, null, false));
+			return asList(session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, false));
 		}
-		return perCommunityQuery(aids, testId, sections, params);
+		return perCommunityQuery(aids, testInstance, sections, params);
 	}
 
-	public List<Result> perCommunityQuery(AnyIds ids, TestId testId,
+	public List<Result> perCommunityQuery(AnyIds ids, TestInstance testInstance,
 			List<String> sections, Map<String, String> aparams) throws Exception {
 		List<Result> results = new ArrayList<Result>();
 
@@ -381,7 +381,7 @@ public class QueryServiceManager extends CommonService {
 			}
 			Map<String, String> myparams = dup(params);
 			myparams.put("$home$", home);
-			results.add(session.xdsTestServiceManager().xdstest(testId, sections, myparams, null, null, false));
+			results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
 		}
 		return results;
 	}

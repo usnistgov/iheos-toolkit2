@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.LogMap;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -24,7 +24,7 @@ abstract public class LogRepository1 {
 	protected LogRepository1() {
 	}
 	
-	public void logOut(TestId id, LogMap log) throws XdsException {
+	public void logOut(TestInstance id, LogMap log) throws XdsException {
 		getLogger().debug("Writing log " + log.getKeys() + " to " + logDir);
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
@@ -43,7 +43,7 @@ abstract public class LogRepository1 {
 		}
 	}
 	
-	public LogMap logIn(TestId id) throws Exception {
+	public LogMap logIn(TestInstance id) throws Exception {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		try {
@@ -61,7 +61,7 @@ abstract public class LogRepository1 {
 		}
 	}
 
-	String logFile(TestId id) throws IOException {
+	String logFile(TestInstance id) throws IOException {
 		return logDir().toString() + File.separator + id.getId();
 	}
 

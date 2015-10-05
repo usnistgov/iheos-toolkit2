@@ -153,10 +153,10 @@ public class MetadataEditorTab extends TabbedWindow {
 	}
 
 	Result findResultbyLogId(TestLogs testLogs) {
-		if (testLogs.testId == null)
+		if (testLogs.testInstance == null)
 			return null;
 		for (Result result : results) {
-			if (testLogs.testId.equals(result.logId)) {
+			if (testLogs.testInstance.equals(result.logId)) {
 				return result;
 			}
 		}

@@ -3,7 +3,7 @@ package gov.nist.toolkit.testenginelogging.logrepository;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.LogMap;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
@@ -20,12 +20,12 @@ public class LogRepository  {
 	ILoggerIO logger;
     File location;
     String user;
-    TestId id;
+    TestInstance id;
     LogIdIOFormat format;
     LogIdType idType;
 
 	// Create through LogRepositoryFactory only
-	LogRepository(File location, String user, LogIdIOFormat format, LogIdType idType, TestId id) {
+	LogRepository(File location, String user, LogIdIOFormat format, LogIdType idType, TestInstance id) {
         this.location = location;
         this.user = user;
         this.format = format;
@@ -44,7 +44,7 @@ public class LogRepository  {
 		return logDir().toString();
 	}
 
-    public void logOut(TestId id, LogMap log)
+    public void logOut(TestInstance id, LogMap log)
 			throws XdsException {
 		logger.logOut(id, log, logDir(id));
 	}
@@ -53,18 +53,18 @@ public class LogRepository  {
 //		return logger.logIn(id, logDir());
 //	}
 
-    static public LogMap logIn(TestId testId) throws Exception {
-        if (testId == null) {
+    static public LogMap logIn(TestInstance testInstance) throws Exception {
+        if (testInstance == null) {
             log.error(ExceptionUtil.here("testId is null"));
             return null;
         }
-        LogRepository repo = LogRepositoryFactory.getRepository(new File(testId.getLocation()),
-                testId.getUser(),
-                testId.getFormat(),
-                testId.getIdType(),
-                testId);
-        log.debug("logIn - logDir is " + repo.logDir(testId));
-        return repo.logger.logIn(testId, repo.logDir(testId));
+        LogRepository repo = LogRepositoryFactory.getRepository(new File(testInstance.getLocation()),
+                testInstance.getUser(),
+                testInstance.getFormat(),
+                testInstance.getIdType(),
+                testInstance);
+        log.debug("logIn - logDir is " + repo.logDir(testInstance));
+        return repo.logger.logIn(testInstance, repo.logDir(testInstance));
     }
 
 //    public LogMap logIn(File logDir) throws Exception {
@@ -78,14 +78,14 @@ public class LogRepository  {
         return dir;
     }
 
-    public File logDir(TestId id) {
+    public File logDir(TestInstance id) {
         File dir = getLogDir(location, user, idType, id);
         if (dir.toString().contains("tc:")) throw new ToolkitRuntimeException("Bad LogDir - " + dir);
 //        log.debug(ExceptionUtil.here("LogRepository at " + dir));
         return dir;
     }
 
-    File getLogDir(File location, String user, LogIdType idType, TestId id) {
+    File getLogDir(File location, String user, LogIdType idType, TestInstance id) {
         if (location == null) throw new ToolkitRuntimeException("Internal Error: location is null");
         if (user == null) throw new ToolkitRuntimeException("Internal Error: user is null");
         if (idType == LogIdType.TIME_ID) {

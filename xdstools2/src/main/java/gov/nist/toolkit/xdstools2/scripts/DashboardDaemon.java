@@ -5,7 +5,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
@@ -129,7 +129,7 @@ public class DashboardDaemon {
 			List<String> sections = new ArrayList<String>();
 			sections.add("XDS");
 			try {
-				xdstest.addTest(new TestId("GetDocuments"), sections, areas);
+				xdstest.addTest(new TestInstance("GetDocuments"), sections, areas);
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = e1.getMessage();
@@ -262,7 +262,7 @@ public class DashboardDaemon {
 			xdstest.setSecure(true);
 			String[] areas = {"testdata-repository"};
 			try {
-				xdstest.addTest(new TestId("SingleDocument"), null, areas);
+				xdstest.addTest(new TestInstance("SingleDocument"), null, areas);
 			} catch (Exception e1) {
 				rstatus.status = false;
 				rstatus.fatalError = e1.getMessage();

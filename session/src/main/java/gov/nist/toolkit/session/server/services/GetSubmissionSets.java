@@ -4,7 +4,7 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -31,7 +31,7 @@ public class GetSubmissionSets extends CommonService {
 			}
 			session.setSiteSpec(site);
 
-			TestId testId = new TestId("GetSubmissionSets");
+			TestInstance testInstance = new TestInstance("GetSubmissionSets");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			
@@ -60,12 +60,12 @@ public class GetSubmissionSets extends CommonService {
 				} 
 				else{
 					sections.add("XDS");
-					return asList(session.xdsTestServiceManager().xdstest(testId, sections, params, null, null, false));
+					return asList(session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, false));
 				}
 			} catch (Exception e) {
 				return buildResultList(e);
 			}
-			List<Result> results = session.queryServiceManager().perCommunityQuery(aids, testId, sections, params);
+			List<Result> results = session.queryServiceManager().perCommunityQuery(aids, testInstance, sections, params);
 			return results;
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

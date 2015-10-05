@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 
 import java.io.File;
 
@@ -9,7 +9,7 @@ public class Xdstest2test {
 	
 	static public void t1() throws Exception {
 		Xdstest2 x = new Xdstest2(new File("/Users/bill/dev/xdstoolkit"), null);
-		x.addTest(new TestId("11990"));
+		x.addTest(new TestInstance("11990"));
 //		x.setSite("dev");
 //		boolean ok = x.run();
 //		System.out.println("ok is " + ok);

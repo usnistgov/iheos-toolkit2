@@ -4,7 +4,7 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -26,7 +26,7 @@ public class GetDocuments extends CommonService {
 			// load site config into session
 			session.setSiteSpec(site);
 			
-			TestId testId = new TestId("GetDocuments");
+			TestInstance testInstance = new TestInstance("GetDocuments");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$returnType$", returnType);
@@ -51,7 +51,7 @@ public class GetDocuments extends CommonService {
 			params.put("$metadatalevel$", 
 					(aids.isLid()) ? "2" : "1");
 
-			return session.queryServiceManager().runPerCommunityQuery(aids, session, testId, sections, params);
+			return session.queryServiceManager().runPerCommunityQuery(aids, session, testInstance, sections, params);
 				
 		} catch (Exception e) {
 			return buildResultList(e);

@@ -4,7 +4,7 @@ import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSession;
@@ -40,10 +40,10 @@ public class ClientApi implements SecurityParams {
 
     public Session getSession() { return session; }
 
-    public boolean runTest(TestId testId, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError, CallType callType) throws Exception {
+    public boolean runTest(TestInstance testInstance, Site site, boolean tls, Map<String, String> parms, boolean stopOnFirstError, CallType callType) throws Exception {
         Xdstest2 engine = new Xdstest2(Installation.installation().toolkitxFile(), this);
         engine.setTestkitLocation(testkitFile);
-        engine.addTest(testId);
+        engine.addTest(testInstance);
         engine.setSite(site);
         TransactionSettings ts = new TransactionSettings();
         ts.transactionTransport = TransactionTransportFactory.get(callType);
@@ -56,8 +56,8 @@ public class ClientApi implements SecurityParams {
                         session.getId(),
                         LogIdIOFormat.JAVA_SERIALIZATION,
                         LogIdType.SPECIFIC_ID,
-                        testId);
-        System.out.println("RUN TEST " + testId + " to log " + ts.logRepository);
+                        testInstance);
+        System.out.println("RUN TEST " + testInstance + " to log " + ts.logRepository);
         logger.info("TransactionSettings: " + ts);
         return engine.run(parms, null, stopOnFirstError, ts);
     }

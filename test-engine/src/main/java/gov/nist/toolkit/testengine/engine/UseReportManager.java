@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.*;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -27,7 +27,7 @@ public class UseReportManager  {
 		TestSections ts = new TestSections();
 
 		for (UseReport ur : useReports) {
-			ts.add(ur.testId, ur.section);
+			ts.add(ur.testInstance, ur.section);
 		}
 
 		return ts;
@@ -36,22 +36,22 @@ public class UseReportManager  {
 	public void loadPriorTestSections(TestConfig config) throws Exception {
 		TestSections ts = getTestSections();
 		for (TestSection tsec : ts.getTestSections()) {
-			TestId testId = tsec.testId;
+			TestInstance testInstance = tsec.testInstance;
 			String section = tsec.section;
-			if (testId == null || testId.isEmpty())
-				testId = config.testId;
+			if (testInstance == null || testInstance.isEmpty())
+				testInstance = config.testInstance;
 			if (section != null && section.equals("THIS"))
 				continue;
 			if (config.verbose)
-				System.out.println("\tLoading logs for test " + testId + " section " + section);
+				System.out.println("\tLoading logs for test " + testInstance + " section " + section);
 			TestDetails tspec = null;
 			try {
-				tspec = new TestDetails(config.altTestkitHome, testId);
+				tspec = new TestDetails(config.altTestkitHome, testInstance);
 			} catch (Exception e) {
-				tspec = new TestDetails(config.testkitHome, testId);
+				tspec = new TestDetails(config.testkitHome, testInstance);
 			}
 			tspec.setLogRepository(config.logRepository);
-			File testlogFile = tspec.getTestLog(testId, section);
+			File testlogFile = tspec.getTestLog(testInstance, section);
 			if (testlogFile != null)
 				priorTests.put((section.equals("") ? "None" : section), new LogFileContent(testlogFile));
 		}
@@ -95,7 +95,7 @@ public class UseReportManager  {
 
 	public void add(OMElement useRep) throws XdsInternalException {
 		UseReport u = new UseReport();
-		u.testId = new TestId(useRep.getAttributeValue(test_qname));
+		u.testInstance = new TestInstance(useRep.getAttributeValue(test_qname));
 		u.section = useRep.getAttributeValue(section_qname);
 		u.step = useRep.getAttributeValue(step_qname);
 		u.reportName = useRep.getAttributeValue(reportName_qname);

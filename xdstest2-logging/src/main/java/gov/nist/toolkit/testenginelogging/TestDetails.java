@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testenginelogging;
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -18,9 +18,9 @@ public class TestDetails  {
 	File testkit;
 	LogRepository logRepository = null;
 //	File logdir;
-	public TestId testLogId = null;
+	public TestInstance testLogId = null;
 	String area;  // examples, tests etc
-	TestId testId;
+	TestInstance testInstance;
 //	List<File> testPlanFiles;
 	public SectionTestPlanFileMap testPlanFileMap;   // sectionName ==> testplan.xml file
 	public SectionLogMap sectionLogMap = new SectionLogMap();
@@ -34,7 +34,7 @@ public class TestDetails  {
 	static final String testPlanFileName = "testplan.xml";
 
 	public String toString() { return "[TestSpec: testkit=" + testkit + " area=" + area +
-		"<br />testnum=" + testId +
+		"<br />testnum=" + testInstance +
 		"<br />sections= " + testPlansToString() +
 		"<br />logs= " + sectionLogMap.toString() +
 		"]";
@@ -118,19 +118,19 @@ public class TestDetails  {
 		return file;
 	}
 
-	public TestDetails(File testkit, TestId testId) throws Exception {
+	public TestDetails(File testkit, TestInstance testInstance) throws Exception {
 		this.testkit = testkit;
-		this.testId = testId;
+		this.testInstance = testInstance;
 		areas = defaultAreas;
-		verifyCurrentTestExists(testkit, testId);
+		verifyCurrentTestExists(testkit, testInstance);
 		testPlanFileMap = getTestPlans();
 	}
 
-	public TestDetails(File testkit, TestId testId, String[] areas) throws Exception {
+	public TestDetails(File testkit, TestInstance testInstance, String[] areas) throws Exception {
 		this.testkit = testkit;
-		this.testId = testId;
+		this.testInstance = testInstance;
 		this.areas = areas;
-		verifyCurrentTestExists(testkit, testId);
+		verifyCurrentTestExists(testkit, testInstance);
 		testPlanFileMap = getTestPlans();
 	}
 	
@@ -146,7 +146,7 @@ public class TestDetails  {
 		}
 	}
 
-	private void verifyCurrentTestExists(File testkit, TestId testId)
+	private void verifyCurrentTestExists(File testkit, TestInstance testInstance)
 			throws Exception {
 		for (int i=0; i<areas.length; i++) {
 			area = areas[i];
@@ -154,7 +154,7 @@ public class TestDetails  {
 				break;
 		}
 		if ( ! exists() ) {
-			String msg = "TestSpec (testkit=" + testkit + " testId=" + testId + ", no " + testPlanFileName + " files found";
+			String msg = "TestSpec (testkit=" + testkit + " testId=" + testInstance + ", no " + testPlanFileName + " files found";
 			logger.error(msg);
 			throw new Exception(msg);
 		}
@@ -179,13 +179,13 @@ public class TestDetails  {
 				File file = new File(sectionDir + File.separator + files[j]);
 				if ( !file.isDirectory()) 
 					continue;
-				ts.testId = new TestId(file.getName());
+				ts.testInstance = new TestInstance(file.getName());
 				if (ts.isTestDir()) {
 					File readme = ts.getReadme();
 					String firstline = "";
 					if (readme.exists() && readme.isFile())
 						firstline = firstLineOfFile(readme);
-					System.out.println(ts.testId + "\t" + firstline.trim());
+					System.out.println(ts.testInstance + "\t" + firstline.trim());
 				}
 			}
 		}
@@ -210,13 +210,13 @@ public class TestDetails  {
 				File file = new File(sectionDir + File.separator + files[j]);
 				if ( !file.isDirectory()) 
 					continue;
-				ts.testId = new TestId(file.getName());
+				ts.testInstance = new TestInstance(file.getName());
 				if (ts.isTestDir()) {
 					File readme = ts.getReadme();
 					String firstline = "";
 					if (readme.exists() && readme.isFile())
 						firstline = firstLineOfFile(readme);
-					map.put(ts.testId.getId(), firstline.trim());
+					map.put(ts.testInstance.getId(), firstline.trim());
 				}
 			}
 		}
@@ -241,7 +241,7 @@ public class TestDetails  {
 	}
 
 	public File getTestDir() {
-		return new File(testkit + File.separator + area + File.separatorChar + testId.getId());
+		return new File(testkit + File.separator + area + File.separatorChar + testInstance.getId());
 	}
 
 //	public LogRepository getLoggerRepository() {
@@ -311,7 +311,7 @@ public class TestDetails  {
 		List<File> logs = new ArrayList<File>();
 		if (logRepository == null)
 			return logs;
-		File logdir = logRepository.logDir(testId);
+		File logdir = logRepository.logDir(testInstance);
 
 		if (!index.exists())
 			return logs;
@@ -346,7 +346,7 @@ public class TestDetails  {
 			String dir = lof.next().trim();
 			if (dir.length() ==0)
 				continue;
-			File path = new File(logdir + File.separator + area + File.separator + testId + File.separatorChar + dir + File.separatorChar + "log.xml");
+			File path = new File(logdir + File.separator + area + File.separator + testInstance + File.separatorChar + dir + File.separatorChar + "log.xml");
 			sections.add(dir);
 		}
 		
@@ -354,16 +354,16 @@ public class TestDetails  {
 		return sections;
 	}
 	
-	public File getTestLog(TestId testId, String section) {
+	public File getTestLog(TestInstance testInstance, String section) {
 		File path;
 		if (logRepository == null)
 			return null;
 		File logdir = logRepository.logDir();
 
 		if (section != null && !section.equals("") && !section.equals("None"))
-			path = new File(logdir + File.separator + ".." + File.separator + testId + File.separatorChar + section + File.separatorChar + "log.xml");
+			path = new File(logdir + File.separator + ".." + File.separator + testInstance + File.separatorChar + section + File.separatorChar + "log.xml");
 		else
-			path = new File(logdir + File.separator + ".." + File.separator + testId + File.separatorChar  + "log.xml");
+			path = new File(logdir + File.separator + ".." + File.separator + testInstance + File.separatorChar  + "log.xml");
 		return path;
 	}
 
@@ -439,8 +439,8 @@ public class TestDetails  {
 		}
 	}
 
-	public TestId getTestId() {
-		return testId;
+	public TestInstance getTestInstance() {
+		return testInstance;
 	}
 }
 

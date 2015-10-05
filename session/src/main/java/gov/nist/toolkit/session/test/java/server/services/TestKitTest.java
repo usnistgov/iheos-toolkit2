@@ -3,7 +3,7 @@ package gov.nist.toolkit.session.test.java.server.services;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class TestKitTest {
 		siteSpec.isSaml = false;
 		siteSpec.isTls = false;
 
-		TestId testId = new TestId("11990");
+		TestInstance testInstance = new TestInstance("11990");
 		List<String> sections = null;
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("$patientid$", pid);
@@ -37,6 +37,6 @@ public class TestKitTest {
 		List<Result> results;
 
 		XdsTestServiceManager man = new XdsTestServiceManager(session);
-		results = man.runMesaTest(session.getId(), siteSpec, testId, sections, params, params2, stopOnFirstFailure);
+		results = man.runMesaTest(session.getId(), siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 }

@@ -152,7 +152,7 @@ ToolkitService {
 	// Test Service
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public Map<String, Result> getTestResults(List<TestId> testIds, String testSession )  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
+	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testInstances, testSession); }
 	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
 	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
 	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
@@ -161,15 +161,15 @@ ToolkitService {
 	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
 	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
-	public List<Result> getLogContent(String sessionName, TestId testId) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testId); }
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestId testId, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
-		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testId, sections, params, null, stopOnFirstFailure);
+	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
+		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
-	public TestLogs getRawLogs(TestId logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
+	public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
 	public List<String> getTestdataSetListing(String testdataSetName)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestdataSetListing(testdataSetName); }
-	public String getTestplanAsText(TestId testId, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testId, section); }
+	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
 	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
-	public List<TestId> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
+	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }

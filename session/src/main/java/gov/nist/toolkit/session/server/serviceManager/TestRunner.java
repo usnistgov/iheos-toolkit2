@@ -20,9 +20,9 @@ public class TestRunner {
         this.xdsTestServiceManager = xdsTestServiceManager;
     }
 
-    public List<Result> run(Session session, String mesaTestSession, SiteSpec siteSpec, TestId testId, List<String> sections,
+    public List<Result> run(Session session, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
                             Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
-        XdsTestServiceManager.logger.info(session.id() + ": " + "run" + " " + mesaTestSession + " " + testId + " " + sections + " " + siteSpec + " " + params + " " + stopOnFirstFailure);
+        XdsTestServiceManager.logger.info(session.id() + ": " + "run" + " " + mesaTestSession + " " + testInstance + " " + sections + " " + siteSpec + " " + params + " " + stopOnFirstFailure);
         try {
 
             if (session.getEnvironment() == null)
@@ -35,14 +35,14 @@ public class TestRunner {
             // if testId is actualy a test collection then let a lower leve fill in the logRepository
             // for the individual test - no logRepository should be created for the test collection
             // itself
-            if (session.transactionSettings.logRepository == null && !testId.getId().startsWith("tc:")) {
+            if (session.transactionSettings.logRepository == null && !testInstance.getId().startsWith("tc:")) {
                 session.transactionSettings.logRepository = new LogRepositoryFactory().
                         getRepository(
                                 Installation.installation().testLogCache(),
                                 mesaTestSession,
                                 LogIdIOFormat.JAVA_SERIALIZATION,
                                 LogIdType.SPECIFIC_ID,
-                                testId);
+                                testInstance);
                 session.transactionSettings.writeLogs = true;
             }
 
@@ -67,7 +67,7 @@ public class TestRunner {
             // be properly pulled from the external_cache.
 //            Result result = xdsTestServiceManager.xdstest(testId, sections, params, params2, null, stopOnFirstFailure);
             UtilityRunner utilityRunner = new UtilityRunner(xdsTestServiceManager, TestRunType.TEST);
-            Result result = utilityRunner.run(session, params, params2, sections, testId, null, stopOnFirstFailure);
+            Result result = utilityRunner.run(session, params, params2, sections, testInstance, null, stopOnFirstFailure);
 //			ResultSummary summary = new ResultSummary(result);
 
             // Save results to external_cache.

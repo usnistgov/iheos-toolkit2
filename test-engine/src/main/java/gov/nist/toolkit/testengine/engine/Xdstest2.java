@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -34,7 +34,7 @@ public class Xdstest2 {
 	LogRepository logRepository;
 	File testkit;
 	File altTestkit;
-	TestId testId;
+	TestInstance testInstance;
 	Site site;
 	File toolkitDir;   // never referenced
 	List<String> sections;
@@ -179,14 +179,14 @@ public class Xdstest2 {
 	 * Select test to be run. All steps of all sections of this test will be
 	 * run. Overrides earlier calls to addTest* methods.
 	 * 
-	 * @param testId - corresponds to name of a directory of TESTKIT/area/testname
+	 * @param testInstance - corresponds to name of a directory of TESTKIT/area/testname
 	 * where area comes from a default list and does not need to be specified.  All sections
 	 * of the test are executed in the default order.
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
-	public void addTest(TestId testId) throws Exception {
-		this.testId = testId;
-		xt.addTestSpec(new TestDetails(xt.getTestkit(), testId));
+	public void addTest(TestInstance testInstance) throws Exception {
+		this.testInstance = testInstance;
+		xt.addTestSpec(new TestDetails(xt.getTestkit(), testInstance));
 
 	}
 
@@ -194,20 +194,20 @@ public class Xdstest2 {
 	 * Select test to be run. All steps of this section will be run. Overrides
 	 * earlier calls to addTest* methods.
 	 * 
-	 * @param testId - corresponds to name of a directory of TESTKIT/area/testname
+	 * @param testInstance - corresponds to name of a directory of TESTKIT/area/testname
 	 * @param sections - list of sections of the test to execute. The ordering in this list
 	 * controls the order of execution.
 	 * @param areas - controls which areas of the testkit should be searched
 	 * @throws Exception - Thrown if testname does not exist in the testkit
 	 */
-	public void addTest(TestId testId, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
-		this.testId = testId;
+	public void addTest(TestInstance testInstance, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
+		this.testInstance = testInstance;
 		this.sections = sections;
 		TestDetails testDetails;
 		if (areas == null)
-			testDetails = new TestDetails(xt.getTestkit(), testId);
+			testDetails = new TestDetails(xt.getTestkit(), testInstance);
 		else
-			testDetails = new TestDetails(xt.getTestkit(), testId, areas);
+			testDetails = new TestDetails(xt.getTestkit(), testInstance, areas);
 		if (logRepository != null)
 			testDetails.setLogRepository(logRepository);
 		if (doLogCheck) {
@@ -217,20 +217,20 @@ public class Xdstest2 {
 		xt.addTestSpec(testDetails);
 	}
 	
-	public void addTest(TestId testId, File testDir) throws Exception {
-		this.testId = testId;
+	public void addTest(TestInstance testInstance, File testDir) throws Exception {
+		this.testInstance = testInstance;
 		TestDetails testDetails = new TestDetails(testDir);
 		if (logRepository != null)
 			testDetails.setLogRepository(logRepository);
 		xt.addTestSpec(testDetails);
 	}
 
-	public void addTest(TestId testId, List<String> sections, String[] areas) throws Exception {
-		addTest(testId, sections, areas, true);
+	public void addTest(TestInstance testInstance, List<String> sections, String[] areas) throws Exception {
+		addTest(testInstance, sections, areas, true);
 	}
 	
-	public TestDetails getTestSpec(TestId testId) throws Exception {
-		return new TestDetails(xt.getTestkit(), testId);
+	public TestDetails getTestSpec(TestInstance testInstance) throws Exception {
+		return new TestDetails(xt.getTestkit(), testInstance);
 	}
 
 	/**
@@ -300,7 +300,7 @@ public class Xdstest2 {
 	 */
 	public boolean run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
-		logger.debug("Running " + testId);
+		logger.debug("Running " + testInstance);
 		testDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
 		if (testDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");
@@ -344,7 +344,7 @@ public class Xdstest2 {
 
 		res.add(dashes);
 		for (TestDetails testSpec : testDetails) {
-			res.add("Test: " + testSpec.getTestId());
+			res.add("Test: " + testSpec.getTestInstance());
 			res.add(dashes);
 			Collection<String> sections;
 			if (sectionsToScan == null)

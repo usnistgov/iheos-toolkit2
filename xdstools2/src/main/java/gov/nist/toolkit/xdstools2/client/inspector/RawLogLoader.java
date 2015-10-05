@@ -14,11 +14,11 @@ class RawLogLoader implements ClickHandler {
 	 * 
 	 */
 	private final MetadataInspectorTab metadataInspectorTab;
-	TestId logId;
+	TestInstance logId;
 	TreeItem loadLogsTreeItem;
 	List<StepResult> stepResults;
 
-	RawLogLoader(MetadataInspectorTab metadataInspectorTab, TestId logId, List<StepResult> stepResults) {
+	RawLogLoader(MetadataInspectorTab metadataInspectorTab, TestInstance logId, List<StepResult> stepResults) {
 		this.metadataInspectorTab = metadataInspectorTab;
 		this.logId = logId;
 		this.stepResults = stepResults;

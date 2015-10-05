@@ -4,7 +4,7 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -26,7 +26,7 @@ import java.util.Map;
 			try {
 				session.setSiteSpec(site);
 
-				TestId testId = new TestId("GetFolderAndContents");
+				TestInstance testInstance = new TestInstance("GetFolderAndContents");
 				List<String> sections = new ArrayList<String>();
 				Map<String, String> params = new HashMap<String, String>();
 				params.put("$returnType$", returnType);
@@ -46,7 +46,7 @@ import java.util.Map;
 					params.put("$" + prefix + i + "$", aids.ids.get(i).id);
 				}
 				
-				return session.queryServiceManager().runPerCommunityQuery(aids, session, testId, sections, params);
+				return session.queryServiceManager().runPerCommunityQuery(aids, session, testInstance, sections, params);
 				
 			} catch (Exception e) {
 				return buildResultList(e);

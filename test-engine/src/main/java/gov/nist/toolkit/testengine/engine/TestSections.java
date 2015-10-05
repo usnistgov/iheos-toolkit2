@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,15 +14,15 @@ public class TestSections {
 		testSections = new ArrayList<TestSection>();
 	}
 	
-	public void add(TestId testId, String section) {
-		if (contains(testId, section))
+	public void add(TestInstance testInstance, String section) {
+		if (contains(testInstance, section))
 			return;
-		testSections.add(new TestSection(testId, section));
+		testSections.add(new TestSection(testInstance, section));
 	}
 	
-	public boolean contains(TestId testId, String section) {
+	public boolean contains(TestInstance testInstance, String section) {
 		for (TestSection ts : testSections) {
-			if (ts.equals(testId, section))
+			if (ts.equals(testInstance, section))
 				return true;
 		}
 		return false;

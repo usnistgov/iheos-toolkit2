@@ -4,7 +4,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -35,7 +35,7 @@ public class XdsTest {
 	String mgmt;
 	File toolkit;
 	LogRepository logRepository;
-	TestId testId;
+	TestInstance testInstance;
 	String testPart;
 	List<TestDetails> testSpecs;     
 	List<File> logFiles;
@@ -699,22 +699,22 @@ public class XdsTest {
 
         this.status = true;
 		for (TestDetails testSpec : testSpecs) {
-			System.out.println("Test: " + testSpec.getTestId());
+			System.out.println("Test: " + testSpec.getTestInstance());
 			// Changes made by a test should be isolated to that test
 			// They need to run independently
 			TransactionSettings ts = globalTransactionSettings.clone();
 
-			testConfig.testId = testSpec.getTestId();
+			testConfig.testInstance = testSpec.getTestInstance();
 			System.out.println("Sections: " + testSpec.testPlanFileMap.keySet());
 			for (String section : testSpec.testPlanFileMap.keySet()) {
                 // This is experimental - this would improve output quality but does it break anything?
-                String sectionLabel = testSpec.getTestId() + "-" + ((section.equals(".") ? "default" : section ));
+                String sectionLabel = testSpec.getTestInstance() + "-" + ((section.equals(".") ? "default" : section ));
 				File testPlanFile = testSpec.testPlanFileMap.get(section);
 
 				testConfig.testplanDir = testPlanFile.getParentFile();
 				testConfig.logFile = null;
 
-				TestId testLogId = testSpec.getTestId();
+				TestInstance testLogId = testSpec.getTestInstance();
 				testSpec.testLogId = testLogId;
 				File logDirectory = logRepository.logDir(testLogId);
 				if (ts != null && ts.logRepository != null)
@@ -831,10 +831,10 @@ public class XdsTest {
 			else if (option.equals("--test") || option.equals("-t")) {
 				if (verbose) System.out.println("parsing -t");
 				bshow();
-				testId = new TestId(bpop("--testId expects a test number"));
-				if (verbose) System.out.println("testId=" + testId);
-				optAssert(!testId.getId().startsWith("-"), "--testId expects a test number");
-				TestDetails ts = new TestDetails(testkit, testId);
+				testInstance = new TestInstance(bpop("--testId expects a test number"));
+				if (verbose) System.out.println("testId=" + testInstance);
+				optAssert(!testInstance.getId().startsWith("-"), "--testId expects a test number");
+				TestDetails ts = new TestDetails(testkit, testInstance);
 
 				if (verbose) System.out.println("before section check");
 				if (verbose) System.out.println("testspec is " + ts);
@@ -856,7 +856,7 @@ public class XdsTest {
 					}
 				}
 				testSpecs.add(ts);
-				testId = null;
+				testInstance = null;
 				runFlag = true;
 			}
 			else if (option.equals("--decode")) {

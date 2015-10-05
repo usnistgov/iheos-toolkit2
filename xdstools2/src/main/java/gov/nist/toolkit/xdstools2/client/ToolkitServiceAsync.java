@@ -44,8 +44,8 @@ public interface ToolkitServiceAsync {
 	void getDashboardRegistryData(AsyncCallback<List<RegistryStatus>> callback);
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
-	void getLogContent(String sessionName, TestId testId, AsyncCallback<List<Result>> callback);
-	void getTestlogListing(String sessionName, AsyncCallback<List<TestId>> callback);
+	void getLogContent(String sessionName, TestInstance testInstance, AsyncCallback<List<Result>> callback);
+	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
@@ -87,7 +87,7 @@ public interface ToolkitServiceAsync {
 	void getRepositoryNames(AsyncCallback<List<String>> callback);
 	void getRGNames(AsyncCallback<List<String>> callback);
 	void getIGNames(AsyncCallback<List<String>> callback);
-	void getRawLogs(TestId logId, AsyncCallback<TestLogs> callback);
+	void getRawLogs(TestInstance logId, AsyncCallback<TestLogs> callback);
 	void getTestdataSetListing(String testdataSetName, AsyncCallback<List<String>> callback);
 	void getCodesConfiguration(AsyncCallback<CodesResult> callback);
 	void getSite(String siteName, AsyncCallback<Site> callback);
@@ -156,7 +156,7 @@ public interface ToolkitServiceAsync {
 	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
 	void getTestReadme(String test, AsyncCallback<String> callback);
 	void getTestIndex(String test, AsyncCallback<List<String>> callback);
-	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestId testId, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
+	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
@@ -169,6 +169,6 @@ public interface ToolkitServiceAsync {
 	void getSimulatorEventResponse(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
 
 
-	void getTestplanAsText(TestId testId, String section, AsyncCallback<String> callback);
+	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> callback);
 }

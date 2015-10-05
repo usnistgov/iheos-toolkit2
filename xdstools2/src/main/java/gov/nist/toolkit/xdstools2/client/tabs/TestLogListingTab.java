@@ -8,7 +8,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
@@ -101,21 +101,21 @@ public class TestLogListingTab extends GenericQueryTab {
 	
 	
 	void loadTestNumbers() {
-		toolkitService.getTestlogListing(testSession, new AsyncCallback<List<TestId>>() {
+		toolkitService.getTestlogListing(testSession, new AsyncCallback<List<TestInstance>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestlogListing: " + caught.getMessage());			
 			}
 
-			public void onSuccess(List<TestId> result) {
+			public void onSuccess(List<TestInstance> result) {
 				int row=0;
 				
-				for (TestId testId : result) {
+				for (TestInstance testInstance : result) {
 					HTML h = new HTML();
-					h.setText(testId.getId());
+					h.setText(testInstance.getId());
 					grid.setWidget(row, 0, h);
 					Button inspect = new Button("Inspect");
-					inspect.addClickHandler(new InspectButtonClickHandler(testId));
+					inspect.addClickHandler(new InspectButtonClickHandler(testInstance));
 					grid.setWidget(row, 1, inspect);
 					
 					row++;
@@ -126,14 +126,14 @@ public class TestLogListingTab extends GenericQueryTab {
 	}
 	
 	class InspectButtonClickHandler implements ClickHandler {
-		TestId testId;
+		TestInstance testInstance;
 		
-		InspectButtonClickHandler(TestId testId) {
-			this.testId = testId;
+		InspectButtonClickHandler(TestInstance testInstance) {
+			this.testInstance = testInstance;
 		}
 
 		public void onClick(ClickEvent event) {
-			toolkitService.getLogContent(testSession, testId, new AsyncCallback<List<Result>>() {
+			toolkitService.getLogContent(testSession, testInstance, new AsyncCallback<List<Result>>() {
 
 				public void onFailure(Throwable caught) {
 					new PopupMessage("getLogsForTest: " + caught.getMessage());			

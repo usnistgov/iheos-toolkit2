@@ -5,7 +5,7 @@ import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -31,7 +31,7 @@ public class UpdateDocumentEntry extends CommonService {
 			areas[0] = "testdata-registry";
 
 //			Result r = toolkit.xdstest(testId, sections, params, areas, true);
-			return asList(ResultBuilder.RESULT(new TestId("UpdateDocumentEntry")));
+			return asList(ResultBuilder.RESULT(new TestInstance("UpdateDocumentEntry")));
 		} catch (Exception e) {
 			return buildExtendedResultList(e);
 		} finally {

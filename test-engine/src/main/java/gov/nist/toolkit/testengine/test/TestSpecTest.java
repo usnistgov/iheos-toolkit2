@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.test;
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class TestSpecTest {
 	public void badTest() {
 		try {
 			@SuppressWarnings("unused")
-			TestDetails ts = new TestDetails(testKitDir, new TestId("999999"));
+			TestDetails ts = new TestDetails(testKitDir, new TestInstance("999999"));
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			assert e.getMessage().indexOf("no testplan.xml files found") != -1;
@@ -26,7 +26,7 @@ public class TestSpecTest {
 	public void simpleTestDirTest() {
 		try {
 			// 
-			TestDetails ts = new TestDetails(testKitDir, new TestId("11801"));
+			TestDetails ts = new TestDetails(testKitDir, new TestInstance("11801"));
 			String testdir = ts.getTestDir().toString();
 			assert "/Users/bill/dev/testkit/tests/11801".equals(testdir);
 			assert ts.isTestDir();
@@ -39,7 +39,7 @@ public class TestSpecTest {
 	@Test
 	public void multiTestDirTest() {
 		try {
-			TestDetails ts = new TestDetails(testKitDir, new TestId("11733"));
+			TestDetails ts = new TestDetails(testKitDir, new TestInstance("11733"));
 			String testdir = ts.getTestDir().toString();
 			assert "/Users/bill/dev/testkit/tests/11733".equals(testdir);
 			assert ts.isTestDir();

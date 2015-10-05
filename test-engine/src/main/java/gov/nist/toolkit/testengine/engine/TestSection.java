@@ -1,24 +1,24 @@
 package gov.nist.toolkit.testengine.engine;
 
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 
 public class TestSection {
-	public TestId testId;
+	public TestInstance testInstance;
 	public String section;
 	
-	public TestSection(TestId testId, String section) {
-		this.testId = testId;
+	public TestSection(TestInstance testInstance, String section) {
+		this.testInstance = testInstance;
 		this.section = section;
 	}
 	
 	void normalize() {
-		if (testId == null) testId = new TestId("");
+		if (testInstance == null) testInstance = new TestInstance("");
 		if (section == null) section = "";
 	}
 	
-	public boolean equals(TestId testId, String section) {
-		if (this.testId.equals(testId) && this.section.equals(section))
+	public boolean equals(TestInstance testInstance, String section) {
+		if (this.testInstance.equals(testInstance) && this.section.equals(section))
 			return true;
 		return false;
 	}

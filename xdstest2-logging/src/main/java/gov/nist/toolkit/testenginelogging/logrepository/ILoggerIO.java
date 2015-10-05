@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testenginelogging.logrepository;
 
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.LogMap;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -8,9 +8,9 @@ import java.io.File;
 
 public interface ILoggerIO {
 
-	void logOut(TestId id, LogMap log, File logDir)
+	void logOut(TestInstance id, LogMap log, File logDir)
 			throws XdsException;
 
-	LogMap logIn(TestId id, File logDir) throws Exception;
+	LogMap logIn(TestInstance id, File logDir) throws Exception;
 
 }

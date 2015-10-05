@@ -4,8 +4,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 
-public class TestId implements IsSerializable, Serializable {
-	String id = null; 
+public class TestInstance implements IsSerializable, Serializable {
+	String id = null;    //  id of the test
 	String event = null;
 	String eventDir;
 
@@ -15,7 +15,7 @@ public class TestId implements IsSerializable, Serializable {
 	LogIdIOFormat format = null;
 	LogIdType idType = null;
 	
-	public TestId() {
+	public TestInstance() {
 		
 	}
 
@@ -77,15 +77,15 @@ public class TestId implements IsSerializable, Serializable {
 	public String getEventDir() { return eventDir; }
 	public void setEventDir(String eventDir) { this.eventDir = eventDir; }
 
-	public TestId(String id) {
+	public TestInstance(String id) {
 		this.id = id;
 	}
 	
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) return false;
-		if (!(o instanceof TestId)) return false;
-		TestId x = (TestId) o;
+		if (!(o instanceof TestInstance)) return false;
+		TestInstance x = (TestInstance) o;
 		if (id == null && x.id != null) return false;
 		if (id != null && !id.equals(x.id)) return false;
 		if (event == null && x.event != null) return false;

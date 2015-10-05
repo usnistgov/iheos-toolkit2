@@ -3,7 +3,7 @@ package gov.nist.toolkit.session.server.services;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestId;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -22,12 +22,12 @@ public class FolderValidation  extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			TestId testId = new TestId("tc:folder");
+			TestInstance testInstance = new TestInstance("tc:folder");
 			List<String> sections = null;
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$patientid$", pid);
 
-			List<Result> results = asList(session.xdsTestServiceManager().xdstest(testId, sections, params, null, null, false));
+			List<Result> results = asList(session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, false));
 			return results;
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

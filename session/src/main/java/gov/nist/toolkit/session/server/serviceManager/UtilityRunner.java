@@ -37,13 +37,13 @@ public class UtilityRunner {
      *
      * @param params
      * @param sections
-     * @param testId
+     * @param testInstance
      * @param areas
      * @param stopOnFirstFailure
      * @return
      */
     public Result run(Session session, Map<String, String> params, Map<String, Object> params2, List<String> sections,
-                      TestId testId, String[] areas, boolean stopOnFirstFailure) {
+                      TestInstance testInstance, String[] areas, boolean stopOnFirstFailure) {
 
         xdsTestServiceManager.cleanupParams(params);
 
@@ -88,11 +88,11 @@ public class UtilityRunner {
             session.xt.setLogRepository(session.transactionSettings.logRepository);
 
             try {
-                if (testId.getId().startsWith("tc:")) {
-                    String collectionName = testId.getId().split(":")[1];
+                if (testInstance.getId().startsWith("tc:")) {
+                    String collectionName = testInstance.getId().split(":")[1];
                     session.xt.addTestCollection(collectionName);
                 } else {
-                    session.xt.addTest(testId, sections, areas);
+                    session.xt.addTest(testInstance, sections, areas);
                 }
 
                 // force loading of site definitions
@@ -119,7 +119,7 @@ public class UtilityRunner {
             } catch (Exception e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add(ExceptionUtil.exception_details(e), false);
-                return ResultBuilder.RESULT(testId, assertionResults, null, null);
+                return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
             }
             session.xt.setSecure(session.isTls());
 
@@ -161,9 +161,9 @@ public class UtilityRunner {
 //                TestId testId1 = xdsTestServiceManager.newTestLogId();
 
                 // it writes a uuid named file to TestLogCache/${user}/
-                session.transactionSettings.logRepository.logOut(testId, session.xt.getLogMap());
+                session.transactionSettings.logRepository.logOut(testInstance, session.xt.getLogMap());
 
-                Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), testId);
+                Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), testInstance);
                 xdsTestServiceManager.scanLogs(session.xt, assertionResults, sections);
                 assertionResults.add("Finished");
                 result.assertions.add(assertionResults);
@@ -171,20 +171,20 @@ public class UtilityRunner {
             } catch (EnvironmentNotSelectedException e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add("Environment not selected", false);
-                return ResultBuilder.RESULT(testId, assertionResults, null, null);
+                return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
             } catch (Exception e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add(ExceptionUtil.exception_details(e), false);
-                return ResultBuilder.RESULT(testId, assertionResults, null, null);
+                return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
             }
         } catch (NullPointerException e) {
             logger.error(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
-            return ResultBuilder.RESULT(testId, assertionResults, null, null);
+            return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
         } catch (Throwable e) {
             logger.error(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
-            return ResultBuilder.RESULT(testId, assertionResults, null, null);
+            return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
         }
     }
 

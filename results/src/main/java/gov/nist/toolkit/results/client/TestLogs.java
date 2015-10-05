@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TestLogs implements IsSerializable {
 
-	public TestId testId;
+	public TestInstance testInstance;
 	public AssertionResult assertionResult; // for reporting errors in getLogs() call
 	public List<TestLog> logs = new ArrayList<TestLog>();
 	

@@ -28,12 +28,12 @@ public interface ToolkitService extends RemoteService  {
 	public TkProps getTkProps() throws NoServletSessionException;
 	
 	/* Test management */
-	public Map<String, Result> getTestResults(List<TestId> testIds, String testSession) throws NoServletSessionException ;
+	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
 	public String getTestReadme(String test) throws Exception;
 	public List<String> getTestIndex(String test) throws Exception;
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestId testId, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames() throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;
@@ -135,17 +135,17 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) throws NoServletSessionException;
 	List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
 
-	TestLogs getRawLogs(TestId logId) throws NoServletSessionException ;
+	TestLogs getRawLogs(TestInstance logId) throws NoServletSessionException ;
 	
 	String getAdminPassword() throws NoServletSessionException ;
 	
-	String getTestplanAsText(TestId testId, String section) throws Exception;
+	String getTestplanAsText(TestInstance testInstance, String section) throws Exception;
 	
 	public String getImplementationVersion() throws NoServletSessionException ;
 	
 	public List<String> getUpdateNames() throws NoServletSessionException ;
-	public List<TestId> getTestlogListing(String sessionName) throws Exception;
-	public List<Result> getLogContent(String sessionName, TestId testId) throws Exception;
+	public List<TestInstance> getTestlogListing(String sessionName) throws Exception;
+	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception;
 	
 	public List<RegistryStatus> getDashboardRegistryData() throws Exception;
 	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
