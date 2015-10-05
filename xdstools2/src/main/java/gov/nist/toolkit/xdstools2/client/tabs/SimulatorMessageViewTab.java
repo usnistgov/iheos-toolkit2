@@ -11,10 +11,16 @@ import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.Panel;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +41,15 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 	ScrollPanel scrollOutPanel = new ScrollPanel();
 	ScrollPanel scrollLogPanel = new ScrollPanel();
 
-	SimId simid = new SimId("");
+	SimId simid = null;//new SimId("");
 	String currentActor;
 	String currentTransaction;
 	String currentEvent;
 
-//	ActorNamesRadioButtonGroup simRadButtons;
+	List<TransactionInstance> transactionInstances = null;
+	TransactionInstance currentTransactionInstance = null;
+
+	//	ActorNamesRadioButtonGroup simRadButtons;
 	TransactionNamesRadioButtonGroup transactionRadButtons;
 
 	//	HorizontalPanel actorNamesPanel = new HorizontalPanel();
@@ -51,21 +60,25 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 	ListBox simulatorNamesListBox = new ListBox();
 
 	Button refreshButton = new Button("Refresh");
+	Button inspectRequestButton = new Button("Inspect Request");
+	Button inspectResponseButton = new Button("Inspect Response");
 	Button deleteButton = new Button("Delete");
 	
 	HTML download = new HTML();
 	
 	public SimId getSimid() { return simid; }
-	public String getCurrentActor() { return currentActor; }
-	public String getCurrentTransaction() { return currentTransaction; }
-	public String getCurrentEvent() { return currentEvent; }
 
+	// If eventName is null then display list of simulators.  If non-null then it is
+	// the simulator id. In this case do not allow simulator selection.
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 
-		container.addTab(topPanel, "Sim Msgs", select);
-		addCloseButton(container,topPanel, null);
+		if (eventName != null)
+			simid = new SimId(eventName);
+
+		container.addTab(topPanel, "Sim Logs", select);
+		addCloseButton(container, topPanel, null);
 
 		topPanel.add(simDisplayPanel);
 		simDisplayPanel.add(simControlPanel);
@@ -92,10 +105,15 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		inOutPanel.add(transInPanel);
 		inOutPanel.add(transOutPanel);
 
-		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator Msg View")));
+		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Transaction Log")));
 		simControlPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Simulator:")));
 
-		simControlPanel.add(simulatorNamesListBox);
+		if (simid == null) {
+			simControlPanel.add(simulatorNamesListBox);
+		} else {
+			simControlPanel.add(new HTML("<h3>" + simid.toString() + "</h3>"));
+			loadTransactionNames(simid);
+		}
 		loadSimulatorNamesListBox();
 		simulatorNamesListBox.addChangeHandler(new SimulatorNameChangeHandler());
 
@@ -114,6 +132,12 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 		refreshButton.addClickHandler(refreshClickHandler);
 		transactionDisplayPanel.add(refreshButton);
+
+		inspectRequestButton.addClickHandler(inspectRequestClickHandler);
+		transactionDisplayPanel.add(inspectRequestButton);
+
+		inspectResponseButton.addClickHandler(inspectResponseClickHandler);
+		transactionDisplayPanel.add(inspectResponseButton);
 
 //		deleteButton.addClickHandler(deleteClickHandler);
 //		transactionDisplayPanel.add(deleteButton);
@@ -163,7 +187,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		});
 	}
 
-//	final String simidFinal = simid;
+	Map<String, String> fullNameMap= new HashMap<>();
 
 	void loadTransactionNames(SimId simid) {
 		simidFinal = simid;
@@ -177,14 +201,25 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 			public void onSuccess(List<String> transNames) {
 				transactionNamesPanel.clear();
-				transactionNamesPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Transaction: ")));
+//				transactionNamesPanel.add(HtmlMarkup.html(HtmlMarkup.bold("Transaction: ")));
+//
+//
+//				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), simidFinal);
+//				transactionRadButtons.addButton("All");
+//				transactionRadButtons.buttons.get(0).setValue(true);
+//
+//				// translate transNames into full descriptive names
+//				List<String> fullNames = new ArrayList<>();
+//				for (String name : transNames) {
+//					TransactionType transType = TransactionType.find(name);
+//					if (transType == null) continue;
+//					if (transType.getId().equals("PIF")) continue;
+//					fullNames.add(transType.getName());
+//					fullNameMap.put(name, transType.getName());
+//
+//				}
+//				transactionRadButtons.addButtons(fullNames);
 
-
-				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), simidFinal);
-				transactionRadButtons.addButton("All");
-				transactionRadButtons.buttons.get(0).setValue(true);
-				transactionRadButtons.addButtons(transNames);
-				
 				transactionChosen(simidFinal, "all");
 			}
 			
@@ -220,6 +255,16 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 //		currentEvent = null;
 //	}
 
+
+	TransactionInstance findTransactionInstance(String label) {
+		if (label == null) return null;
+		for (TransactionInstance ti : transactionInstances) {
+			if (label.equals(ti.label)) return ti;
+			if (label.equals(ti.labelInterpretedAsDate)) return ti;
+		}
+		return null;
+	}
+
 	void transactionChosen(SimId simid, String transName) {
 		currentTransaction = transName;
 		clear();
@@ -229,20 +274,22 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		if ("all".equalsIgnoreCase(transName))
 			transName = null;
 
-		toolkitService.getTransInstances(simid, "", transName, new AsyncCallback<List<String>>() {
+		toolkitService.getTransInstances(simid, "", transName, new AsyncCallback<List<TransactionInstance>>() {
 
 			public void onFailure(Throwable caught) {
 				if (caught.getMessage() != null)
 					new PopupMessage("Error: " + caught.getMessage());			
 			}
 
-			public void onSuccess(List<String> result) {
+			public void onSuccess(List<TransactionInstance> result) {
+				transactionInstances = result;
 				transInstanceListBox.clear();
 				
 //				for (int i=result.size()-1; i >= 0; i--)
 //					transInstanceListBox.addItem(result.get(i));
-				for (String x : result) 
-					transInstanceListBox.addItem(x);
+				for (TransactionInstance x : result) {
+					transInstanceListBox.addItem(x.labelInterpretedAsDate + " " + x.nameInterpretedAsTransactionType, x.label);
+				}
 
 			}
 
@@ -254,11 +301,14 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 		public void onChange(ChangeEvent event) {
 			int selectedItem = transInstanceListBox.getSelectedIndex();
-			String label = transInstanceListBox.getItemText(selectedItem);
-			loadTransactionInstanceDetails(label);
+			String value = transInstanceListBox.getValue(selectedItem);
+			TransactionInstance ti = findTransactionInstance(value);
+			if (ti == null) return;
+			currentTransactionInstance = ti;
+			loadTransactionInstanceDetails(ti);
 			
-			String messageId = getMessageIdFromLabel(label);
-			currentTransaction = getTransactionFromLabel(label);
+			String messageId = getMessageIdFromLabel(value);
+			currentTransaction = getTransactionFromLabel(value);
 
 			String u = "<a href=\"" +
 			"/xdstools2/message/" + simid + "/" + currentActor + "/" + currentTransaction + "/" + messageId + "\"" +
@@ -297,13 +347,12 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		return label;
 	}
 
-	void loadTransactionInstanceDetails(String label) {
+	void loadTransactionInstanceDetails(TransactionInstance ti) {
 		SimId simid = this.simidFinal;
-		String actor = currentActor;
-		String trans = getTransactionFromLabel(label);
-		String messageId = getMessageIdFromLabel(label);
-
-		currentEvent = label;
+		if (ti.actorType == null) return;
+		String actor = ti.actorType.getShortName();
+		String trans = ti.name;
+		String messageId = ti.label;
 
 		scrollInPanel.clear();
 		scrollOutPanel.clear();
@@ -359,6 +408,63 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 			clear();
 		}
 
+	};
+
+	ClickHandler inspectRequestClickHandler = new ClickHandler() {
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			try {
+				toolkitService.getSimulatorEventRequest(currentTransactionInstance, new AsyncCallback<Result>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        new PopupMessage(throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(Result result) {
+    					List<Result> results = new ArrayList<Result>();
+						results.add(result);
+						MetadataInspectorTab tab = new MetadataInspectorTab();
+						tab.setResults(results);
+						Xdstools2.DEBUG("simdb is " + getSimid().toString());
+						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
+						tab.setSiteSpec(siteSpec);
+						tab.setToolkitService(toolkitService);
+						tab.onTabLoad(myContainer, true, null);
+                    }
+                });
+			} catch (Exception e) {
+				new PopupMessage(e.getMessage());
+			}
+		}
+	};
+
+	ClickHandler inspectResponseClickHandler = new ClickHandler() {
+		@Override
+		public void onClick(ClickEvent clickEvent) {
+			try {
+				toolkitService.getSimulatorEventResponse(currentTransactionInstance, new AsyncCallback<Result>() {
+					@Override
+					public void onFailure(Throwable throwable) {
+						new PopupMessage(throwable.getMessage());
+					}
+
+					@Override
+					public void onSuccess(Result result) {
+						List<Result> results = new ArrayList<Result>();
+						results.add(result);
+						MetadataInspectorTab tab = new MetadataInspectorTab();
+						tab.setResults(results);
+						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
+						tab.setSiteSpec(siteSpec);
+						tab.setToolkitService(toolkitService);
+						tab.onTabLoad(myContainer, true, null);
+					}
+				});
+			} catch (Exception e) {
+				new PopupMessage(e.getMessage());
+			}
+		}
 	};
 
 //	ClickHandler deleteClickHandler = new ClickHandler() {

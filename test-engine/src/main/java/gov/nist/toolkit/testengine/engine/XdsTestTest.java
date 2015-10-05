@@ -95,7 +95,7 @@ public class XdsTestTest extends TestEnvConfig {
 		}
 		assert xt.testSpecs.size() == 1;
 		TestDetails ts = xt.testSpecs.get(0);
-		ts.getTestNum().equals("11710");
+		ts.getTestInstance().equals("11710");
 		try {
 			assert ts.getReadmeFirstLine().startsWith("Register IP address against Public Registry");
 		} catch (IOException e) {

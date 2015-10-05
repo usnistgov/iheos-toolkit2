@@ -273,7 +273,7 @@ public class MetadataInspectorTab extends TabbedWindow {
 		for (Result res : data.results) {
 			AssertionResults ares = res.assertions;
 			Tree historyTree = new Tree();
-			TreeItem historyElement = new TreeItem(redAsHTML(res.testName + "   (" + res.timestamp + ")", !ares.isFailed()));
+			TreeItem historyElement = new TreeItem(redAsHTML(res.testInstance.getId() + "   (" + res.timestamp + ")", !ares.isFailed()));
 			historyTree.addItem(historyElement);
 			
 //			if (data.results.size() == 1) 
@@ -420,10 +420,10 @@ public class MetadataInspectorTab extends TabbedWindow {
 	}
 
 	Result findResultbyLogId(TestLogs testLogs) {
-		if (testLogs.logId == null)
+		if (testLogs.testInstance == null)
 			return null;
 		for (Result result : data.results) {
-			if (testLogs.logId.equals(result.logId)) {
+			if (testLogs.testInstance.equals(result.logId)) {
 				return result;
 			}
 		}

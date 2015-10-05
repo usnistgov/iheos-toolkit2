@@ -11,6 +11,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionsUpdatedEventHandler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,13 +21,18 @@ public class TestSessionSelector {
     ListBox listBox = new ListBox();
     TextBox textBox = new TextBox();
     HorizontalPanel panel;
+    static final String NONSELECTION = "--Select--";
 
     public TestSessionSelector(List<String> initialContents, String initialSelection) {
+//        Xdstools2.DEBUG("initialize TestSessionSelector with " + initialContents + " ==>" + initialSelection);
         build(initialContents, initialSelection);
         link();
     }
 
+    // Listen on the EventBus in the future
     private void link() {
+
+        // Test sessions reloaded
         Xdstools2.getEventBus().addHandler(TestSessionsUpdatedEvent.TYPE, new TestSessionsUpdatedEventHandler() {
             @Override
             public void onTestSessionsUpdated(TestSessionsUpdatedEvent event) {
@@ -35,6 +41,8 @@ public class TestSessionSelector {
             }
         });
 
+
+        // SELECT
         Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
             @Override
             public void onTestSessionChanged(TestSessionChangedEvent event) {
@@ -45,25 +53,33 @@ public class TestSessionSelector {
         });
     }
 
+    // Initialize screen now
     private void build(List<String> initialContents, String initialSelection) {
+        if (initialContents == null) initialContents = new ArrayList<>();
+        List<String> contents = new ArrayList<>();
+
+        contents.add(NONSELECTION);
+        contents.addAll(initialContents);
+
+
         panel = new HorizontalPanel();
 
-        assert(initialContents != null);
-
-        HTML testSessionLabel = new HTML();
-        testSessionLabel.setText("TestSession: ");
-        panel.add(testSessionLabel);
+        panel.add(new HTML("TestSession: "));
 
         //
         // List Box
         //
-        for (String i : initialContents) listBox.addItem(i);
-        listBox.setSelectedIndex(initialContents.indexOf(initialSelection));
+        for (String i : contents) listBox.addItem(i);
+        if (contents.contains(initialSelection))
+            listBox.setSelectedIndex(contents.indexOf(initialSelection));
+        else
+            listBox.setSelectedIndex(0);
         panel.add(listBox);
         listBox.addChangeHandler(new ChangeHandler() {
             @Override
             public void onChange(ChangeEvent changeEvent) {
-                String newValue = listBox.getSelectedValue();
+                String newValue = listBox.getValue(listBox.getSelectedIndex());
+                if (NONSELECTION.equals(newValue)) return;
                 Xdstools2.getTestSessionManager().setCurrentTestSession(newValue);
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.SELECT, newValue));
             }
@@ -94,7 +110,7 @@ public class TestSessionSelector {
         delTestSessionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                String value = listBox.getSelectedValue();
+                String value = listBox.getValue(listBox.getSelectedIndex());
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
             }
         });

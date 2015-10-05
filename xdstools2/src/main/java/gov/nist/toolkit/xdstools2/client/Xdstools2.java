@@ -17,14 +17,19 @@ import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
-import gov.nist.toolkit.xdstools2.client.tabs.*;
+import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
+import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
+import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 
 
 public class Xdstools2 implements EntryPoint, TabContainer {
 
-
+	HorizontalPanel tabPanelWrapper = new HorizontalPanel();
+	VerticalPanel mainMenuPanel = new VerticalPanel();
 	static TabPanel tabPanel = new TabPanel();
+
 	boolean UIDebug = false;
 	HorizontalPanel uiDebugPanel = new HorizontalPanel();
 
@@ -37,10 +42,13 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	// here because the initialization of testSessionManager,
 	// immediately following depends on it.
 	static EventBus eventBus = new SimpleEventBus();
+	EventBus v2V3IntegrationEventBus = null;
 
 	// This is as toolkit wide singleton.  See class for details.
 	TestSessionManager2 testSessionManager = new TestSessionManager2();
 	static public TestSessionManager2 getTestSessionManager() { return ME.testSessionManager; }
+
+	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
 
 	// Central storage for parameters shared across all
 	// query type tabs
@@ -68,13 +76,19 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	void buildWrapper() {
 		// tabPanel = new TabPanel();
-		if ("xdstools2".equals(GWT.getModuleName())) // Hide this from V3 module
-			RootPanel.get().insert(tabPanel, 0);
-//		RootPanel.get().add(tabPanel);
-
+		if ("xdstools2".equals(GWT.getModuleName())) { // Hide this from V3 module
+			HorizontalPanel mainMenuWrapper = new HorizontalPanel();
+			mainMenuWrapper.setBorderWidth(1);
+			mainMenuWrapper.add(mainMenuPanel);
+			tabPanelWrapper.add(mainMenuWrapper);
+			tabPanelWrapper.add(tabPanel);
+			RootPanel.get().insert(tabPanelWrapper, 0);
+		}
 
 		tabPanel.setWidth("100%");
-
+		tabPanel.setHeight("100%");
+		tabPanelWrapper.setWidth("100%");
+		tabPanelWrapper.setHeight("100%");
 	}
 
 
@@ -100,16 +114,13 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 			tabPanel.selectTab(index);
 
 		try {
-
-			if (getEventBus()!=null && index>0) {
-				getEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
+			if (getIntegrationEventBus()!=null && index>0) {
+				getIntegrationEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
 			}
 
 		} catch (Throwable t) {
 			Window.alert("V2TabOpenedEvent error: " +t.toString());
 		}
-
-
 	}
 
 	HomeTab ht = null;
@@ -181,10 +192,10 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	}
 
 	final ListBox debugMessages = new ListBox();
-//	static public void DEBUG(String msg) {
-//		ME.debugMessages.addItem(msg);
-//		ME.debugMessages.setSelectedIndex(ME.debugMessages.getItemCount()-1);
-//	}
+	static public void DEBUG(String msg) {
+		ME.debugMessages.addItem(msg);
+		ME.debugMessages.setSelectedIndex(ME.debugMessages.getItemCount()-1);
+	}
 
 	private void onModuleLoad2() {
 		buildWrapper();
@@ -214,7 +225,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		// only one panel, it's all done in tabs
 		tabPanel.selectTab(0);
 
-		tabPanel.addSelectionHandler(new SelectionHandler<Integer>(){
+		tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
 
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
@@ -252,6 +263,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 				}
 			}
 		});
+
+
 	}
 
 
@@ -266,8 +279,11 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	// To force an error when I merge with Sunil. We need
 	// to reconcile the initialization.
-	private void setEventBus(EventBus eventBus) {
-		this.eventBus = eventBus;
+	public void setIntegrationEventBus(EventBus eventBus) {
+		v2V3IntegrationEventBus = eventBus;
+	}
+	public EventBus getIntegrationEventBus() {
+		return v2V3IntegrationEventBus;
 	}
 
 

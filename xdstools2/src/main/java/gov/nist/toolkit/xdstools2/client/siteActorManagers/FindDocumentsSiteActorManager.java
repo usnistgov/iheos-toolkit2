@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.siteActorManagers;
 
+
 import gov.nist.toolkit.results.client.SiteSpec;
 
 public class FindDocumentsSiteActorManager extends BaseSiteActorManager {

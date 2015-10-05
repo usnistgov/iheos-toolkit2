@@ -19,6 +19,7 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEve
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.*;
@@ -52,8 +53,8 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
-		container.addTab(topPanel, "Sim Control", select);
-		addCloseButton(container,topPanel, null);
+		container.addTab(topPanel, "Sim Mgr", select);
+		addCloseButton(container, topPanel, null);
 		
 		addActorReloader();
 		
@@ -62,14 +63,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		tlsEnabled = false;
 		enableInspectResults = false;
 
-		HTML title = new HTML();
-		title.setHTML("<h2>Simulator Control</h2>");
-		topPanel.add(title);
+		topPanel.add(new HTML("<h2>Simulator Manager</h2>"));
 
-		HTML addNewTitle = new HTML();
-		addNewTitle.setHTML("<h3>Add new simulator to this test session</h3>");
-		topPanel.add(addNewTitle);
-
+		topPanel.add(new HTML("<h3>Add new simulator to this test session</h3>"));
 
 		HorizontalPanel actorSelectPanel = new HorizontalPanel();
 		actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
@@ -89,7 +85,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		VerticalPanel tableWrapper = new VerticalPanel();
 		table.setBorderWidth(1);
 		HTML tableTitle = new HTML();
-		tableTitle.setHTML("<h3>Current Simulators for this test session</h3>");
+		tableTitle.setHTML("<h3>Simulators for this test session</h3>");
 		tableWrapper.add(tableTitle);
 		tableWrapper.add(table);
 
@@ -127,6 +123,10 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 
 	void createNewSimulator(String actorTypeName, SimId simId) {
+		if(!simId.isValid()) {
+			new PopupMessage("SimId " + simId + " is not valid");
+			return;
+		}
 		toolkitService.getNewSimulator(actorTypeName, simId, new AsyncCallback<Simulator>() {
 
 			public void onFailure(Throwable caught) {
@@ -223,7 +223,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 						table.setText(row, nameColumn, config.getDefaultName());
 						table.setText(row, idColumn, config.getId().toString());
 						table.setText(row, typeColumn, ActorType.findActor(config.getType()).getName());
-						SimulatorConfigElement portConfig = config.get(SimulatorConfig.pif_port);
+						SimulatorConfigElement portConfig = config.get(SimulatorConfig.PIF_PORT);
 						if (portConfig != null) {
 							String pifPort = portConfig.asString();
 							table.setText(row, pidPortColumn, pifPort);
@@ -270,18 +270,41 @@ public class SimulatorControlTab extends GenericQueryTab {
 				}
 
 				private void addButtonPanel(int row, int maxColumn, final SimulatorConfig config) {
+					SimId simId = config.getId();
 					HorizontalPanel buttonPanel = new HorizontalPanel();
 					table.setWidget(row, maxColumn, buttonPanel);
 
-					Button editButton = new Button("Edit");
-					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+					Button logButton = new Button("Transaction Log");
+					logButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
                         @Override
                         public void onClick(ClickEvent clickEvent) {
                             SimulatorConfig config = getData();
-                            EditTab editTab = new EditTab(self, config);
-                            editTab.onTabLoad(myContainer, true, null);
+							SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
+							viewTab.onTabLoad(myContainer, true, config.getId().toString());
                         }
                     });
+					buttonPanel.add(logButton);
+
+					Button pidButton = new Button("Patient ID Feed");
+					pidButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+						@Override
+						public void onClick(ClickEvent clickEvent) {
+							SimulatorConfig config = getData();
+							PidEditTab editTab = new PidEditTab(config);
+							editTab.onTabLoad(myContainer, true, null);
+						}
+					});
+					buttonPanel.add(pidButton);
+
+					Button editButton = new Button("Configure");
+					editButton.addClickHandler(new ClickHandlerData<SimulatorConfig>(config) {
+						@Override
+						public void onClick(ClickEvent clickEvent) {
+							SimulatorConfig config = getData();
+							EditTab editTab = new EditTab(self, config);
+							editTab.onTabLoad(myContainer, true, null);
+						}
+					});
 					buttonPanel.add(editButton);
 
 					Button deleteButton = new Button("Delete");
@@ -294,6 +317,14 @@ public class SimulatorControlTab extends GenericQueryTab {
                         }
                     });
 					buttonPanel.add(deleteButton);
+
+					String u = "<a href=\"" +
+							"/xdstools2/site/" + simId.toString() + "\"" +
+ 							" target=\"_blank\"" +
+							">Download Site File</a>";
+					HTML siteDownload = new HTML(u);
+
+					buttonPanel.add(siteDownload);
 				}
 			});
 		} catch (Exception e) {

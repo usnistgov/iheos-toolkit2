@@ -1,7 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -10,15 +13,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class XDRTestdataTab  extends GenericQueryTab {
 	
@@ -30,7 +24,6 @@ public class XDRTestdataTab  extends GenericQueryTab {
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 
-	TextBox pid;
 	ListBox testlistBox;
 	
 	String help = "Submit selected test data set to the selected Document Recipient " +
@@ -48,23 +41,12 @@ public class XDRTestdataTab  extends GenericQueryTab {
 		container.addTab(topPanel, "XDR Send", select);
 		addCloseButton(container,topPanel, help);
 
-		HTML title = new HTML();
-		title.setHTML("<h2>Send XDR</h2>");
-		topPanel.add(title);
+		topPanel.add(new HTML("<h2>Send XDR Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
 		topPanel.add(mainGrid);
-
-		HTML pidLabel = new HTML();
-		pidLabel.setText("Patient ID");
-		mainGrid.setWidget(row,0, pidLabel);
-
-		pid = new TextBox();
-		pid.setWidth("400px");
-		mainGrid.setWidget(row, 1, pid);
-		row++;
 
 		HTML dataLabel = new HTML();
 		dataLabel.setText("Select Test Data Set");
@@ -77,7 +59,7 @@ public class XDRTestdataTab  extends GenericQueryTab {
 		testlistBox.setVisibleItemCount(1);
 		toolkitService.getTestdataSetListing("testdata-xdr", loadRecipientTestListCallback);
 
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings);
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
 	
 	protected AsyncCallback<List<String>> loadRecipientTestListCallback = new AsyncCallback<List<String>>() {
@@ -102,14 +84,8 @@ public class XDRTestdataTab  extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null)
-				return;
-
-			if (pid.getValue() == null || pid.getValue().equals("")) {
-				new PopupMessage("You must enter a Patient ID first");
-				return;
-			}
+			if (!verifySiteProvided()) return;
+			if (!verifyPidProvided()) return;
 			
 			int selected = testlistBox.getSelectedIndex();
 			if (selected < 1 || selected >= testlistBox.getItemCount()) {
@@ -119,15 +95,9 @@ public class XDRTestdataTab  extends GenericQueryTab {
 			}
 			
 			String testdataSetName = testlistBox.getItemText(selected);	
-			
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
 
-//			siteSpec.isTls = doTLS;
-//			siteSpec.isSaml = doSAML;
-//			siteSpec.isAsync = doASYNC;
-			toolkitService.submitXDRTestdata(siteSpec, testdataSetName, pid.getValue().trim(), queryCallback);
+			rigForRunning();
+			toolkitService.submitXDRTestdata(getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

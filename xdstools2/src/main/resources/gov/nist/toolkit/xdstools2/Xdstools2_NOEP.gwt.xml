@@ -45,6 +45,8 @@
 
   <inherits name="com.google.gwt.logging.Logging"/>
 
+  <source path="doc/howto/index.html"/>
+
 </module>
 
 

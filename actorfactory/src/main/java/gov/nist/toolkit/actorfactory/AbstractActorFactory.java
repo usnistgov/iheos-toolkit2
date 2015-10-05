@@ -6,6 +6,7 @@ import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -303,7 +304,7 @@ public abstract class AbstractActorFactory {
 		return simDir.exists();
 	}
 
-	static public List<String> getTransInstances(SimId simid, String xactor, String trans) throws NoSimException
+	static public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws NoSimException
 	{
 		SimDb simdb;
 		try {
@@ -454,6 +455,18 @@ public abstract class AbstractActorFactory {
 
 	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, String value) {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
+	}
+
+	public void setConfig(SimulatorConfig sc, String name, String value) {
+		SimulatorConfigElement ele = sc.getUserByName(name);
+		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " - cannot set its value");
+		ele.setValue(value);
+	}
+
+	public void setConfig(SimulatorConfig sc, String name, Boolean value) {
+		SimulatorConfigElement ele = sc.getUserByName(name);
+		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " - cannot set its value");
+		ele.setValue(value);
 	}
 
 	public void addEditableEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {

@@ -103,12 +103,14 @@ public class SiteServiceManager {
 			Exception {
 		if (commonSites == null) {
 			if (!useActorsFile()) {
-				File dir = Installation.installation().propertyServiceManager().getActorsDirName();
+				File dir = Installation.installation().getActorsDirName();
+				logger.debug("loading sites from " + dir);
 				commonSites = new SeparateSiteLoader().load(dir, commonSites);
 			} else {
 				File loc = Installation.installation().propertyServiceManager().configuredActorsFile(true);
 				if (loc == null)
 					loc = Installation.installation().propertyServiceManager().internalActorsFile();
+				logger.debug("loading sites from " + loc);
 				commonSites = new CombinedSiteLoader().load(loc, commonSites);
 			}
 		}
@@ -228,7 +230,7 @@ public class SiteServiceManager {
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
-				new SeparateSiteLoader().saveToFile(Installation.installation().propertyServiceManager()
+				new SeparateSiteLoader().saveToFile(Installation.installation()
 						.getActorsDirName(), site);
 			else {
 				CombinedSiteLoader loader = new CombinedSiteLoader();
@@ -249,7 +251,7 @@ public class SiteServiceManager {
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
-				new SeparateSiteLoader().delete(Installation.installation().propertyServiceManager()
+				new SeparateSiteLoader().delete(Installation.installation()
 						.getActorsDirName(), siteName);
 			else
 				new CombinedSiteLoader().saveToFile(Installation.installation().propertyServiceManager()

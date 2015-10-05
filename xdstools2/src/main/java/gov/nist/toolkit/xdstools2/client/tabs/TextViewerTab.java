@@ -1,14 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.TabbedWindow;
 
 import java.util.List;
-
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TextViewerTab extends TabbedWindow {
 	boolean escapeHTML = true;

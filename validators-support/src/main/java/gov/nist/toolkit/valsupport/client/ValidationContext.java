@@ -54,6 +54,10 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	// is Cross Community - a modifier on other settings
 	public boolean isXC      = false;
 
+	public boolean isValidateCodes = true;
+	public boolean isPartOfRecipient = false;
+	public boolean validateAgainstPatientIdentityFeed = false;
+
 	// if neither set then context is not known
 	public boolean isRequest = false;
 	public boolean isResponse= false;

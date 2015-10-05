@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.transactions;
 
+import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.adt.A01Sender;
 import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
 import gov.nist.toolkit.testengine.engine.StepContext;
@@ -9,8 +10,12 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.util.Map;
+
 public class PatientIdentityFeedTransaction extends BasicTransaction {
 	private final static Logger logger = Logger.getLogger(PatientIdentityFeedTransaction.class);
+	boolean createNewPID = false;
+	String forcePatientId = null;
 
 	public PatientIdentityFeedTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
@@ -20,17 +25,36 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 		return "pif";
 	}
 
-	public void run(OMElement request) 
-	throws XdsException {
+	public void run(OMElement request)
+			throws XdsException {
+
 
 		try {
-			String pid = PatientIdAllocator.getNew();
-			transactionSettings.patientId = pid;
-			testLog.add_name_value(instruction_output, "PatientId", pid);
+			Pid pid;
+			String pidString;
+			if (createNewPID) {
+				pid = PatientIdAllocator.getNew(transactionSettings.patientIdAssigningAuthorityOid);
+				pidString = pid.asString();
+			} else if (forcePatientId != null) {
+				pidString = forcePatientId;
+			}
+			else {
+				Map<String, String> linkage = getExternalLinkage();
+				pidString = linkage.get("$patientid$");
+			}
+			transactionSettings.patientId = pidString;
+			testLog.add_name_value(instruction_output, "PatientId", pidString);
+
+			if (testConfig == null) throw new Exception("Internal Error - TestConfig not initialized");
+			if (testConfig.site == null) throw new Exception("Internal Error - TestConfig.site not initialized");
+
 			String server = testConfig.site.pifHost;
 			String port = testConfig.site.pifPort;
 
-			A01Sender.send(server, Integer.parseInt(port), pid);
+			if (server == null) throw new Exception("Site " + testConfig.site.getName() + " has no Patient Identity Feed host configured");
+			if (port == null) throw new Exception("Site " + testConfig.site.getName() + " has no Patient Identity Feed port configured");
+
+			A01Sender.send(server, Integer.parseInt(port), pidString);
 
 		}
 		catch (Exception e) {
@@ -38,10 +62,19 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 			logger.error(ExceptionUtil.exception_details(e));
 		}
 	}
-	
+
 
 	protected void parseInstruction(OMElement part) throws XdsInternalException {
-		parseBasicInstruction(part);
+		String part_name = part.getLocalName();
+		if (part_name.equals("CreateNewPatientId")) {
+			createNewPID = true;
+		}
+		else if (part_name.equals("PatientID")) {
+			forcePatientId = part.getText();
+		}
+		else {
+			parseBasicInstruction(part);
+		}
 	}
 
 	@Override
@@ -49,6 +82,7 @@ public class PatientIdentityFeedTransaction extends BasicTransaction {
 		return null;
 	}
 
+	@Override
 	protected String getBasicTransactionName() {
 		return "pif";
 	}

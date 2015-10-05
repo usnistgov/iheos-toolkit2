@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.http.httpclient.HttpClient;
 import gov.nist.toolkit.utilities.io.Io;
@@ -160,8 +161,8 @@ public class PatientIdAllocator extends IdAllocator {
 		return base + "." + String.valueOf(cnt);
 	}
 
-	static public String getNew() {
-		return patientIdAllocator.alloc();
+	static public Pid getNew(String assigningAuthorityOid) {
+		return new Pid(assigningAuthorityOid, patientIdAllocator.alloc());
 	}
 
 

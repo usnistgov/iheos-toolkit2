@@ -4,14 +4,13 @@ package gov.nist.toolkit.simulators.sim.reg.store;
 import java.io.Serializable;
 
 
-public class DocEntry extends Ro implements Serializable {
+public class DocEntry extends PatientObject implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	public String lid;
 	public int version;
 	public String objecttype;
 
-	public String pid;
 	public String hash;
 	public String size;
 	

@@ -11,13 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryRegistryActorFactory extends AbstractActorFactory {
-	SimId newID = null;
-
-	RegistryActorFactory registryActorFactory;
-	RepositoryActorFactory repositoryActorFactory;
 
 	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
-		this.newID = newID;
+		RegistryActorFactory registryActorFactory;
+		RepositoryActorFactory repositoryActorFactory;
 		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -51,6 +48,7 @@ public class RepositoryRegistryActorFactory extends AbstractActorFactory {
 
 		if (site == null)
 			site = new Site(siteName);
+		site.user = sc.getId().user;  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 

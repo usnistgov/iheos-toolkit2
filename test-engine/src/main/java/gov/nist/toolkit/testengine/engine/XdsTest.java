@@ -2,15 +2,18 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
+import gov.nist.toolkit.results.client.LogIdIOFormat;
+import gov.nist.toolkit.results.client.LogIdType;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testengine.logrepository.LogRepository;
-import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -28,10 +31,11 @@ public class XdsTest {
 	String version = "xx.yy";
 	//controlling variables
 	File testkit;
+	File altTestkit;
 	String mgmt;
 	File toolkit;
 	LogRepository logRepository;
-	String testNum;
+	TestInstance testInstance;
 	String testPart;
 	List<TestDetails> testSpecs;     
 	List<File> logFiles;
@@ -184,13 +188,13 @@ public class XdsTest {
 		if (testkitdir != null)
 			testkit = new File(testkitdir);
 		if (logdirstr != null) {
-			File testLogCache = Installation.installation().testLogFile();
+			File testLogCache = Installation.installation().testLogCache();
 			logRepository = new LogRepositoryFactory().
 					getRepository(
 							testLogCache,   // location
 							null,           // user
-							LogRepositoryFactory.IO_format.JAVA_SERIALIZATION,   // IO format
-							LogRepositoryFactory.Id_type.TIME_ID,                // ID type
+							LogIdIOFormat.JAVA_SERIALIZATION,   // IO format
+							LogIdType.TIME_ID,                // ID type
 							null);            // ID
 		}
 		if (toolkitstr != null)
@@ -266,6 +270,7 @@ public class XdsTest {
 
 	public void setSite(Site site) {
 		this.site = site;
+		if (testConfig.site == null) testConfig.site = site;
 	}
 	
 	public void setSites(Sites sites) {
@@ -290,6 +295,9 @@ public class XdsTest {
 			}
 		}
 
+		if (site == null) logger.debug("No site specified");
+		else logger.debug("Site specified is " + site.getName());
+
 		sites = loadSites();
 		testConfig.allRepositoriesSite = sites.getAllRepositoriesSite();
 
@@ -298,11 +306,19 @@ public class XdsTest {
 			siteName = sites.getDefaultSiteName();
 		}
 
+		if (site == null) {
+			logger.debug("site not set - try pulling default site");
+		}
+
 		site = sites.getSite(siteName);
+
+		if (site == null) {
+			logger.debug("site still not set");
+		}
 
 		testConfig.site = site;
 
-		System.out.println("Site is " + siteName);
+		logger.debug("XdsTest.run - Site is " + siteName);
 
 		if (showConfig) {
 			showConfiguration(sites);
@@ -357,6 +373,7 @@ public class XdsTest {
 
 	private void initTestConfig() {
 		testConfig.testkitHome = testkit;
+		testConfig.altTestkitHome = altTestkit;
 		testConfig.logRepository = logRepository;
 		testConfig.site = site;
 		testConfig.secure = secure;
@@ -661,7 +678,7 @@ public class XdsTest {
 
 	boolean runHadError = false;
 
-	public List<TestDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings ts, boolean writeLogFiles) throws Exception {
+	public List<TestDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings globalTransactionSettings, boolean writeLogFiles) throws Exception {
 		initTestConfig();
 
 		//resetTestSpecLogs();
@@ -672,6 +689,9 @@ public class XdsTest {
                 testConfig.site = loadSites().getSite(siteName);
         }
 
+		if (testConfig.site == null)
+			testConfig.site = site;
+
         testConfig.allRepositoriesSite = (sites == null) ? null : sites.getAllRepositoriesSite();
 
 		if (testSpecs == null)
@@ -679,24 +699,31 @@ public class XdsTest {
 
         this.status = true;
 		for (TestDetails testSpec : testSpecs) {
-			System.out.println("Test: " + testSpec.getTestNum());
-			testConfig.testNum = testSpec.getTestNum();
+			System.out.println("Test: " + testSpec.getTestInstance());
+			// Changes made by a test should be isolated to that test
+			// They need to run independently
+			TransactionSettings ts = globalTransactionSettings.clone();
+
+			testConfig.testInstance = testSpec.getTestInstance();
 			System.out.println("Sections: " + testSpec.testPlanFileMap.keySet());
 			for (String section : testSpec.testPlanFileMap.keySet()) {
                 // This is experimental - this would improve output quality but does it break anything?
-                String sectionLabel = testSpec.getTestNum() + "-" + ((section.equals(".") ? "default" : section ));
+                String sectionLabel = testSpec.getTestInstance() + "-" + ((section.equals(".") ? "default" : section ));
 				File testPlanFile = testSpec.testPlanFileMap.get(section);
 
 				testConfig.testplanDir = testPlanFile.getParentFile();
 				testConfig.logFile = null;
-				
-				File logDirectory = logRepository.logDir(testSpec.getTestNum());
-				if (ts != null && ts.logRepository != null)
-					logDirectory = ts.logRepository.logDir(testSpec.getTestNum());
 
+				TestInstance testLogId = testSpec.getTestInstance();
+				testSpec.testLogId = testLogId;
+				File logDirectory = logRepository.logDir(testLogId);
+				if (ts != null && ts.logRepository != null)
+					logDirectory = ts.logRepository.logDir(testLogId);
+
+				// This is the log.xml file
+				testConfig.logFile = new TestKitLog(logDirectory, testkit, altTestkit).getLogFile(testPlanFile);
+				writeLogFiles = true;
 				if (writeLogFiles) {
-					// This is the log.xml file
-					testConfig.logFile = new TestKitLog(logDirectory, testkit).getLogFile(testPlanFile);
 					logFiles.add(testConfig.logFile);
 				}
 				
@@ -804,10 +831,10 @@ public class XdsTest {
 			else if (option.equals("--test") || option.equals("-t")) {
 				if (verbose) System.out.println("parsing -t");
 				bshow();
-				testNum = bpop("--testnum expects a test number");
-				if (verbose) System.out.println("testNum=" + testNum);
-				optAssert(!testNum.startsWith("-"), "--testnum expects a test number");
-				TestDetails ts = new TestDetails(testkit, testNum);
+				testInstance = new TestInstance(bpop("--testId expects a test number"));
+				if (verbose) System.out.println("testId=" + testInstance);
+				optAssert(!testInstance.getId().startsWith("-"), "--testId expects a test number");
+				TestDetails ts = new TestDetails(testkit, testInstance);
 
 				if (verbose) System.out.println("before section check");
 				if (verbose) System.out.println("testspec is " + ts);
@@ -824,12 +851,12 @@ public class XdsTest {
 						sections.add(section);
 					}
 					if (sections != null) {
-						ts.setLogDir(logRepository.logDir());
+						ts.setLogRepository(logRepository);
 						ts.selectSections(sections);
 					}
 				}
 				testSpecs.add(ts);
-				testNum = null;
+				testInstance = null;
 				runFlag = true;
 			}
 			else if (option.equals("--decode")) {
@@ -907,11 +934,17 @@ public class XdsTest {
 	public File getTestkit() {
 		return testkit;
 	}
+	public File getAltTestkit() {
+		return altTestkit;
+	}
 
 	public void setTestkit(File testkit) {
 		this.testkit = testkit;
 	}
 
+	public void setAltTestkit(File testkit) {
+		this.altTestkit = testkit;
+	}
 
 
 	public File getLogDir() throws IOException {
@@ -934,16 +967,18 @@ public class XdsTest {
 	}
 
 	public void addTestCollection(String testCollectionName) throws Exception {
-
-		TestCollection tcol = new TestCollection(testkit,testCollectionName);
-
 		if (testSpecs == null)
 			testSpecs = new ArrayList<TestDetails>();
 
-		testSpecs.addAll(tcol.getTestSpecs());
+		List<TestDetails> details;
+
+		try {
+			details = new TestCollection(altTestkit, testCollectionName).getTestSpecs();
+		} catch (Exception e) {
+			details = new TestCollection(testkit, testCollectionName).getTestSpecs();
+		}
+		testSpecs.addAll(details);
 	}
-
-
 
 	public boolean isSecure() {
 		return secure;
@@ -960,8 +995,8 @@ public class XdsTest {
 	public void setToolkit(File toolkit) throws IOException {
 		this.toolkit = toolkit;
 		mgmt = toolkit + File.separator + "xdstest";
-		logRepository =
-		new LogRepositoryFactory().getRepository(Installation.installation().testLogFile(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+//		logRepository =
+//		new LogRepositoryFactory().getRepository(Installation.installation().testLogCache(), null, LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
 		testConfig.testmgmt_dir = mgmt;
 	}
 

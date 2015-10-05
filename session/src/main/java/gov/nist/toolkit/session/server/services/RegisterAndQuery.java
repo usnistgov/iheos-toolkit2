@@ -1,8 +1,9 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonService;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.xdsexception.XdsException;
@@ -22,12 +23,12 @@ public class RegisterAndQuery extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			String testName = "RegisterAndQuery";
+			TestInstance testInstance = new TestInstance("RegisterAndQuery");
 			List<String> sections = null;
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$patientid$", pid);
 
-			List<Result> results = asList(new XdsTestServiceManager(session).xdstest(testName, sections, params, null, null, true));
+			List<Result> results = asList(new XdsTestServiceManager(session).xdstest(testInstance, sections, params, null, null, true));
 			return results;
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

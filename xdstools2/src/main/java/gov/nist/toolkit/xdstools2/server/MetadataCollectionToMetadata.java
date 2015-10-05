@@ -2,23 +2,17 @@ package gov.nist.toolkit.xdstools2.server;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymetadata.client.Association;
-import gov.nist.toolkit.registrymetadata.client.Author;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.Folder;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
+import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 public class MetadataCollectionToMetadata {
 	Metadata m = new Metadata();

@@ -9,12 +9,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,7 +89,6 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 		prow = codeFilterBank.addCodeFiltersByName(otherFilterNames, paramGrid, prow, 1, 2);
 
 		topPanel.add(paramGrid);
-		topPanel.add(new HTML("<hr/>"));
 		topPanel.add(mainGrid);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);

@@ -29,6 +29,10 @@ public class ListenerFactory {
         }
     }
 
+    static public void init(List<String> portRange) {
+        init(Integer.parseInt(portRange.get(0)), Integer.parseInt(portRange.get(1)));
+    }
+
     static public List<ThreadPoolItem> getAllRunningListeners() {
         List<ThreadPoolItem> listeners = new ArrayList<>();
         for(ThreadPoolItem threadPoolItem : threadPool) {
@@ -108,7 +112,7 @@ public class ListenerFactory {
                 tm.inUse = true;
                 return tm;
             }
-        throw new ToolkitRuntimeException("Thread pool exhausted - cannot launch ADT patientIdentityFeed");
+        throw new ToolkitRuntimeException("Thread pool exhausted - cannot allocate ADT patientIdentityFeed");
     }
 
     public static List<String> availablePorts() {

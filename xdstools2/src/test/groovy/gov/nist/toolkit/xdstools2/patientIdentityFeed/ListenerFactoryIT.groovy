@@ -1,7 +1,9 @@
 package gov.nist.toolkit.xdstools2.patientIdentityFeed
-
 import gov.nist.toolkit.actorfactory.PifHandler
 import gov.nist.toolkit.actorfactory.SimDb
+import gov.nist.toolkit.actorfactory.client.Pid
+import gov.nist.toolkit.actorfactory.client.PidBuilder
+import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.AdtSender
 import gov.nist.toolkit.adt.ListenerFactory
@@ -14,26 +16,27 @@ import spock.lang.Specification
  */
 class ListenerFactoryIT extends Specification {
     static Logger logger = Logger.getLogger(ListenerFactoryIT.class);
-    def simId1 = 'reg1'
-    def pid1 = 'A1^^^&1.2.3&ISO'
-    def pid2 = 'A2^^^&1.2.3&ISO'
-    PifHandler pifHandler = new PifHandler()
+    def simId1 = new SimId('reg1')
+    Pid pid1 = PidBuilder.createPid('A1^^^&1.2.3&ISO')
+    Pid pid2 = PidBuilder.createPid('A2^^^&1.2.3&ISO')
     int firstPort = 5000
     int secondPort = 5001
     int lastPort = 5005
+    SimDb db
 
     def setup() {
         TestSession.setupToolkit()
         ListenerFactory.init(firstPort, lastPort)
         SimDb.mkSim(simId1, ActorType.REGISTRY.shortName).delete()
         SimDb.mkSim(simId1, ActorType.REGISTRY.shortName)
+        db = new SimDb(simId1)
     }
 
     def 'Start/stop a listener'() {
         when:
         logger.info("generate patientIdentityFeed")
-        ListenerFactory.generateListener(simId1);
-        ThreadPoolItem item = ListenerFactory.getItem(simId1)
+        ListenerFactory.generateListener(simId1.id);
+        ThreadPoolItem item = ListenerFactory.getItem(simId1.id)
 
         then: 'Valid ThreadPoolItem created'
         item
@@ -42,41 +45,41 @@ class ListenerFactoryIT extends Specification {
         logger.info("sleep for 5 seconds")
         sleep(5*1000);
         logger.info("sleep over - signal termination")
-        ListenerFactory.terminate(simId1)
+        ListenerFactory.terminate(simId1.id)
         logger.info("sleep for 5 seconds")
         sleep(5*1000);
         logger.info("exiting")
 
         then:  'Verify thread terminated and ThreadPoolItem no longer findable'
         !item.inUse
-        !ListenerFactory.getItem(simId1)
+        !ListenerFactory.getItem(simId1.id)
 
     }
 
     def 'Listen and send'() {
         when: 'Start patientIdentityFeed'
         logger.info("generate patientIdentityFeed")
-        ListenerFactory.generateListener(simId1, firstPort, new PifHandler());
-        ThreadPoolItem item = ListenerFactory.getItem(simId1)
+        ListenerFactory.generateListener(simId1.id, firstPort, new PifHandler());
+        ThreadPoolItem item = ListenerFactory.getItem(simId1.id)
 
         then: 'Valid ThreadPoolItem created'
         item
         item.inUse
-        !pifHandler.hasPatientId(simId1, pid1)
+        !db.patientIdExists(pid1)
 
         when: 'Send A01'
         def port = item.port
         String templateFile = getClass().getResource('/adt/A01.txt').file
         AdtSender sender = new AdtSender(templateFile, 'localhost', port)
-        sender.send(pid1)
+        sender.send(pid1.asString())
 
         then:
-        pifHandler.hasPatientId(simId1, pid1)
-        !pifHandler.hasPatientId(simId1, "xxx")  // random name to check for
+        db.patientIdExists(pid1)
+        !db.patientIdExists(PidBuilder.createPid("xxx^^^&1.2&ISO"))  // random name to check for
 
         when:
         sleep(1*1000)
-        ListenerFactory.terminate(simId1)
+        ListenerFactory.terminate(simId1.id)
 
         then:
         true
@@ -88,32 +91,32 @@ class ListenerFactoryIT extends Specification {
 
         when: 'Start patientIdentityFeed'
         logger.info("generate patientIdentityFeed")
-        ListenerFactory.generateListener(simId1, firstPort, new PifHandler());
-        ThreadPoolItem item = ListenerFactory.getItem(simId1)
+        ListenerFactory.generateListener(simId1.id, firstPort, new PifHandler());
+        ThreadPoolItem item = ListenerFactory.getItem(simId1.id)
         def port = item.port
 
         then: 'Valid ThreadPoolItem created'
         item
         item.inUse
-        !pifHandler.hasPatientId(simId1, pid1)
+        !db.patientIdExists(pid1)
 
         when: 'Send A01'
-        new AdtSender(templateFile, 'localhost', port).send(pid1)
+        new AdtSender(templateFile, 'localhost', port).send(pid1.asString())
 
         then:
-        pifHandler.hasPatientId(simId1, pid1)
-        !pifHandler.hasPatientId(simId1, "xxx")  // random name to check for
+        db.patientIdExists(pid1)
+        !db.patientIdExists(PidBuilder.createPid("xxx^^^&1.2&ISO"))  // random name to check for
 
         when: 'Send another A01'
-        new AdtSender(templateFile, 'localhost', port).send(pid2)
+        new AdtSender(templateFile, 'localhost', port).send(pid2.asString())
 
         then:
-        pifHandler.hasPatientId(simId1, pid1)
-        pifHandler.hasPatientId(simId1, pid2)
+        db.patientIdExists(pid1)
+        db.patientIdExists(pid2)
 
         when:
         sleep(1*1000)
-        ListenerFactory.terminate(simId1)
+        ListenerFactory.terminate(simId1.id)
 
         then:
         true

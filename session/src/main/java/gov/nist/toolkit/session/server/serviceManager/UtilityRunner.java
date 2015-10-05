@@ -1,30 +1,32 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
+import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.XdstestLogId;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testengine.logrepository.LogRepositoryFactory;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class UtilityRunner {
-    private final XdsTestServiceManager xdsTestServiceManager;
+    private final XdsTestServiceManager xdsTestServiceManager;  // this is here only because of an automatic refactoring
     static Logger logger = Logger.getLogger(UtilityRunner.class);
-    AssertionResults assertionResults = new AssertionResults();;
+    AssertionResults assertionResults = new AssertionResults();
+    final TestRunType testRunType;
 
-    public UtilityRunner(XdsTestServiceManager xdsTestServiceManager) {
+    public UtilityRunner(XdsTestServiceManager xdsTestServiceManager, TestRunType testRunType) {
         this.xdsTestServiceManager = xdsTestServiceManager;
+        this.testRunType = testRunType;
     }
 
     /**
@@ -35,13 +37,13 @@ public class UtilityRunner {
      *
      * @param params
      * @param sections
-     * @param testName
+     * @param testInstance
      * @param areas
      * @param stopOnFirstFailure
      * @return
      */
     public Result run(Session session, Map<String, String> params, Map<String, Object> params2, List<String> sections,
-                      String testName, String[] areas, boolean stopOnFirstFailure) {
+                      TestInstance testInstance, String[] areas, boolean stopOnFirstFailure) {
 
         xdsTestServiceManager.cleanupParams(params);
 
@@ -52,6 +54,9 @@ public class UtilityRunner {
                 session.transactionSettings = new TransactionSettings();
             }
 
+            // depending on the configuration, this could be null
+            session.transactionSettings.patientIdAssigningAuthorityOid = session.getCodesConfiguration().getAssigningAuthorityOid();
+
             if (session.xt == null)
                 session.xt = xdsTestServiceManager.getNewXt();
 
@@ -59,23 +64,44 @@ public class UtilityRunner {
 //                assertionResults = new AssertionResults();
 //            assertionResults = assertionResults;
 
-            if (session.transactionSettings.logRepository == null)
-                session.transactionSettings.logRepository = new LogRepositoryFactory().
-                        getRepository(Installation.installation().sessionCache(), session.getId(), LogRepositoryFactory.IO_format.JAVA_SERIALIZATION, LogRepositoryFactory.Id_type.TIME_ID, null);
+            if (session.transactionSettings.logRepository == null) {
+                if (testRunType == TestRunType.UTILITY) {
+                    session.transactionSettings.logRepository =
+                            new LogRepositoryFactory().
+                                    getRepository(
+                                            Installation.installation().sessionCache(),
+                                            session.getId(),
+                                            LogIdIOFormat.JAVA_SERIALIZATION,
+                                            LogIdType.TIME_ID,
+                                            null);
+                } else if (testRunType == TestRunType.TEST) {
+                    session.transactionSettings.logRepository =
+                            new LogRepositoryFactory().
+                                    getRepository(
+                                            Installation.installation().testLogCache(),
+                                            session.getMesaSessionName(),
+                                            LogIdIOFormat.JAVA_SERIALIZATION,
+                                            LogIdType.SPECIFIC_ID,
+                                            null);
+                }
+            }
             session.xt.setLogRepository(session.transactionSettings.logRepository);
 
             try {
-                if (testName.startsWith("tc:")) {
-                    String collectionName = testName.split(":")[1];
+                if (testInstance.getId().startsWith("tc:")) {
+                    String collectionName = testInstance.getId().split(":")[1];
                     session.xt.addTestCollection(collectionName);
                 } else {
-                    session.xt.addTest(testName, sections, areas);
+                    session.xt.addTest(testInstance, sections, areas);
                 }
 
                 // force loading of site definitions
                 SiteServiceManager.getSiteServiceManager().getAllSites(session.getId());
 
-                Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
+//                Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
+                Collection<Site> siteCollection = SimCache.getAllSites();
+                logger.debug("UtilityRunner - defined sites - " + siteCollection.toString());
+                Sites theSites = new Sites(siteCollection);
                 // Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
                 if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
                     Site site = theSites.getSite(session.siteSpec.name);
@@ -93,7 +119,7 @@ public class UtilityRunner {
             } catch (Exception e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add(ExceptionUtil.exception_details(e), false);
-                return ResultBuilder.RESULT(testName, assertionResults, null, null);
+                return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
             }
             session.xt.setSecure(session.isTls());
 
@@ -132,10 +158,12 @@ public class UtilityRunner {
                 assertionResults.add(session.transactionSettings.res);
 
                 // Save the created logs in the SessionCache
-                XdstestLogId logid = xdsTestServiceManager.newTestLogId();
-                session.transactionSettings.logRepository.logOut(logid, session.xt.getLogMap());
+//                TestId testId1 = xdsTestServiceManager.newTestLogId();
 
-                Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), logid);
+                // it writes a uuid named file to TestLogCache/${user}/
+                session.transactionSettings.logRepository.logOut(testInstance, session.xt.getLogMap());
+
+                Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), testInstance);
                 xdsTestServiceManager.scanLogs(session.xt, assertionResults, sections);
                 assertionResults.add("Finished");
                 result.assertions.add(assertionResults);
@@ -143,20 +171,20 @@ public class UtilityRunner {
             } catch (EnvironmentNotSelectedException e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add("Environment not selected", false);
-                return ResultBuilder.RESULT(testName, assertionResults, null, null);
+                return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
             } catch (Exception e) {
                 logger.error(ExceptionUtil.exception_details(e));
                 assertionResults.add(ExceptionUtil.exception_details(e), false);
-                return ResultBuilder.RESULT(testName, assertionResults, null, null);
+                return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
             }
         } catch (NullPointerException e) {
             logger.error(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
-            return ResultBuilder.RESULT(testName, assertionResults, null, null);
+            return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
         } catch (Throwable e) {
             logger.error(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
-            return ResultBuilder.RESULT(testName, assertionResults, null, null);
+            return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
         }
     }
 

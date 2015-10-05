@@ -3,8 +3,8 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.testengine.logrepository.LogRepository;
 import gov.nist.toolkit.testengine.transactions.TransactionTransport;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 
 /**
  * Control the execution of a transaction.  Does not include the spec
@@ -18,6 +18,7 @@ public class TransactionSettings {
 	public Boolean assignPatientId = null;   // allows for null (unknown)
 	public String patientId = null;
 	public String altPatientId = null;
+	public String patientIdAssigningAuthorityOid = null;
 //	public File logDir = null;
 	public LogRepository logRepository = null;
 	public boolean writeLogs = false;
@@ -30,5 +31,22 @@ public class TransactionSettings {
 	
 	public TransactionSettings() {
 		res = new AssertionResults();
+	}
+
+	@Override
+	public TransactionSettings clone() {
+		TransactionSettings ts = new TransactionSettings();
+		ts.assignPatientId = assignPatientId;
+		ts.patientId = patientId;
+		ts.altPatientId = altPatientId;
+		ts.patientIdAssigningAuthorityOid = patientIdAssigningAuthorityOid;
+		ts.logRepository = logRepository;
+		ts.writeLogs = writeLogs;
+		ts.siteSpec = siteSpec;
+		ts.res = res;
+		ts.user = user;
+		ts.transactionTransport = transactionTransport;
+		ts.securityParams = securityParams;
+		return ts;
 	}
 }

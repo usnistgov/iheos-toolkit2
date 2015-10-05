@@ -6,9 +6,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
@@ -85,7 +83,6 @@ public class GetAllTab extends GenericQueryTab {
 
 		mainGrid = new FlexTable();  // this is important in some tabs, not this one.  This init should be moved to definition
 		topPanel.add(sqParams.asWidget());
-		topPanel.add(new HTML("<hr/>"));
 
 		topPanel.add(mainGrid);
 
@@ -101,22 +98,8 @@ public class GetAllTab extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null) {
-				new PopupMessage("You must select a site first");
-				return;
-			}
-
-			if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
-				new PopupMessage("You must enter a Patient ID first");
-				return;
-			}
-
-			// Where the bottom-of-screen listing from server goes
-			addStatusBox();
-
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+			if (!verifySiteProvided()) return;
+			if (!verifyPidProvided()) return;
 
 			// Capture the query-specific parameter details.  They have been generated in
 			// sqParams and here they are formatted in the codeSpec layout which the server requires
@@ -125,7 +108,8 @@ public class GetAllTab extends GenericQueryTab {
 
 			// tell the server to run the query. The display is handled by GenericQueryTab which
 			// is linked in via the queryCallback parameter
-			toolkitService.getAll(siteSpec, pidTextBox.getValue().trim(), codeSpec, queryCallback);
+			rigForRunning();
+			toolkitService.getAll(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
 		}
 	}
 

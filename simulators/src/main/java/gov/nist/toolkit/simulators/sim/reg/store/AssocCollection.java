@@ -7,7 +7,7 @@ import java.util.List;
 public class AssocCollection extends RegObCollection implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-	List<Assoc> assocs = new ArrayList<Assoc>();
+	public List<Assoc> assocs = new ArrayList<Assoc>();
 	
 	transient public AssocCollection parent = null;
 
@@ -32,6 +32,8 @@ public class AssocCollection extends RegObCollection implements Serializable {
 		if (toDelete != null)
 			assocs.remove(toDelete);
 	}
+
+	public int size() { return assocs.size(); }
 	
 	public Ro getRo(String id) {
 		for (Assoc de : assocs) {

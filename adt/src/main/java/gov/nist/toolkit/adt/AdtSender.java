@@ -28,6 +28,7 @@ public class AdtSender {
     }
 
     public void send(String pid) throws IOException {
+        logger.debug("Sending Patient ID " + pid + " to " + server + ":" + port + "...");
         Socket echoSocket = null;
         PrintWriter out = null;
         BufferedReader in = null;
@@ -37,6 +38,7 @@ public class AdtSender {
             out = new PrintWriter(echoSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(
                     echoSocket.getInputStream()));
+            logger.debug("...no errors");
         } catch (UnknownHostException e) {
             logger.error("Don't know about host: " + server);
             return;

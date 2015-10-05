@@ -3,6 +3,8 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.results.client.TestLog;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.testenginelogging.LogMap;
+import gov.nist.toolkit.testenginelogging.LogMapItem;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
 
 import java.util.List;

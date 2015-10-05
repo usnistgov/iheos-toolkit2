@@ -3,15 +3,13 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -30,12 +28,12 @@ public interface ToolkitService extends RemoteService  {
 	public TkProps getTkProps() throws NoServletSessionException;
 	
 	/* Test management */
-	public Map<String, Result> getTestResults(List<String> testIds, String testSession) throws NoServletSessionException ;
+	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
 	public String getTestReadme(String test) throws Exception;
 	public List<String> getTestIndex(String test) throws Exception;
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames() throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;
@@ -52,6 +50,11 @@ public interface ToolkitService extends RemoteService  {
 //	public List<String> getSimulatorTransactionNames(String simid) throws Exception;
 	public int removeOldSimulators() throws NoServletSessionException;
 	List<SimulatorStats> getSimulatorStats(List<SimId> simid) throws Exception;
+	List<Pid> getPatientIds(SimId simId) throws Exception;
+	String addPatientIds(SimId simId, List<Pid> pids) throws Exception;
+	boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception;
+	Result getSimulatorEventRequest(TransactionInstance ti) throws Exception;
+	Result getSimulatorEventResponse(TransactionInstance ti) throws Exception;
 
 	String setToolkitProperties(Map<String, String> props) throws Exception;
 	Map<String, String> getToolkitProperties() throws NoServletSessionException ;
@@ -72,7 +75,7 @@ public interface ToolkitService extends RemoteService  {
 	@Deprecated
 	String getClientIPAddress();
 	
-	List<String> getTransInstances(SimId simid, String actor, String trans)  throws Exception;
+	List<TransactionInstance> getTransInstances(SimId simid, String actor, String trans)  throws Exception;
 	
 	List<Result> getLastMetadata();
 	String getLastFilename();
@@ -132,17 +135,17 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) throws NoServletSessionException;
 	List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
 
-	TestLogs getRawLogs(XdstestLogId logId) throws NoServletSessionException ;
+	TestLogs getRawLogs(TestInstance logId) throws NoServletSessionException ;
 	
 	String getAdminPassword() throws NoServletSessionException ;
 	
-	String getTestplanAsText(String testname, String section) throws Exception;
+	String getTestplanAsText(TestInstance testInstance, String section) throws Exception;
 	
 	public String getImplementationVersion() throws NoServletSessionException ;
 	
 	public List<String> getUpdateNames() throws NoServletSessionException ;
-	public List<String> getTestlogListing(String sessionName) throws Exception;
-	public List<Result> getLogContent(String sessionName, String testName) throws Exception;
+	public List<TestInstance> getTestlogListing(String sessionName) throws Exception;
+	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception;
 	
 	public List<RegistryStatus> getDashboardRegistryData() throws Exception;
 	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
@@ -162,6 +165,11 @@ public interface ToolkitService extends RemoteService  {
 	
 	public Map<String, String> getSessionProperties() throws NoServletSessionException;
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
+	Pid createPid(String assigningAuthority) throws NoServletSessionException;
+	String getAssigningAuthority() throws Exception;
+	List<String> getAssigningAuthorities() throws Exception;
+	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+
 	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
 }

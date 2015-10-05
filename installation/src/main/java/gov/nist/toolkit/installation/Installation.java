@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.util.List;
 
 public class Installation {
 	File warHome = null;
@@ -53,12 +54,14 @@ public class Installation {
 		logger.info("V2 - Installation - war home set to " + warHome);
 		this.warHome = warHome;
 		propertyServiceMgr = null;
-		externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+		if (externalCache == null) // this can be different in a unit test situation
+			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
 	}
 
 	public File externalCache() { return externalCache; }
-	public void externalCache(File externalCache) { 
-		this.externalCache = externalCache;
+	public void externalCache(File externalCache) {
+//		if (this.externalCache == null)
+			this.externalCache = externalCache;
         logger.info("V2 Installation: External Cache set to " + externalCache);
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
@@ -80,10 +83,20 @@ public class Installation {
 			propertyServiceMgr = new PropertyServiceManager(warHome);
 		return propertyServiceMgr;
 	}
-	
+
+	public File getActorsDirName() {
+		File f = new File(externalCache() + File.separator + "actors");
+		f.mkdirs();
+		return f;
+	}
+
 	public File simDbFile() {
 		return new File(externalCache(), "simdb");
 //		return propertyServiceManager().getSimDbDir();
+	}
+
+	public List<String> getListenerPortRange() {
+		return propertyServiceManager().getListenerPortRange();
 	}
 	
 	public File toolkitxFile() {
@@ -133,7 +146,7 @@ public class Installation {
 		return new File(warHome + sep + "SessionCache");
 	}
 
-	public File testLogFile() {
+	public File testLogCache() {
 		return new File(externalCache + sep + "TestLogCache");
 	}
 

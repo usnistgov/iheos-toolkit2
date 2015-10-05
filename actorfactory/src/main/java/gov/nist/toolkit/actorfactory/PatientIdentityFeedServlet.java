@@ -93,6 +93,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     public static int generateListener(SimulatorConfig simulatorConfig) {
         SimId simId = simulatorConfig.getId();
         String portString = portFromSimulatorConfig(simulatorConfig);
+        if (portString == null) return 0;
         int port = Integer.parseInt(portString);
         ListenerFactory.generateListener(simId.toString(), port, new PifHandler());
         return port;
@@ -104,10 +105,10 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     }
 
     static String portFromSimulatorConfig(SimulatorConfig simulatorConfig) {
-        SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.pif_port);
+        SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.PIF_PORT);
         SimId simId = simulatorConfig.getId();
-        if (sce == null)
-            throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");
+        if (sce == null) return null;
+//            throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");
         String portString = sce.asString();
         if (portString == null || portString.equals(""))
             throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");

@@ -1,13 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import gov.nist.toolkit.xdstools2.client.PidAllocateService;
-import gov.nist.toolkit.xdstools2.client.PidAllocateServiceAsync;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -16,7 +8,15 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.xdstools2.client.PidAllocateService;
+import gov.nist.toolkit.xdstools2.client.PidAllocateServiceAsync;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
+import gov.nist.toolkit.xdstools2.client.TabbedWindow;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Deprecated
 public class PidAllocateTab extends TabbedWindow {
 	
 	final PidAllocateServiceAsync pidAllocateService = GWT

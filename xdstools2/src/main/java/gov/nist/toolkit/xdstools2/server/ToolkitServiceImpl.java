@@ -1,45 +1,43 @@
 	package gov.nist.toolkit.xdstools2.server;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.installation.PropertyServiceManager;
-import gov.nist.toolkit.registrymetadata.client.AnyIds;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-import gov.nist.toolkit.tk.TkLoader;
-import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.valregmsg.message.SchemaValidation;
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
-import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdstools2.client.*;
-import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
-import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
-import org.apache.log4j.Logger;
+	import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+	import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+	import gov.nist.toolkit.actorfactory.SiteServiceManager;
+	import gov.nist.toolkit.actorfactory.client.*;
+	import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+	import gov.nist.toolkit.installation.Installation;
+	import gov.nist.toolkit.installation.PropertyServiceManager;
+	import gov.nist.toolkit.registrymetadata.client.AnyIds;
+	import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+	import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+	import gov.nist.toolkit.registrymetadata.client.Uids;
+	import gov.nist.toolkit.results.client.*;
+	import gov.nist.toolkit.session.server.Session;
+	import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+	import gov.nist.toolkit.sitemanagement.client.Site;
+	import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+	import gov.nist.toolkit.tk.TkLoader;
+	import gov.nist.toolkit.tk.client.TkProps;
+	import gov.nist.toolkit.valregmsg.message.SchemaValidation;
+	import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+	import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+	import gov.nist.toolkit.valsupport.client.ValidationContext;
+	import gov.nist.toolkit.xdstools2.client.*;
+	import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
+	import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+	import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
+	import org.apache.log4j.Logger;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.parsers.FactoryConfigurationError;
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+	import javax.servlet.ServletContext;
+	import javax.servlet.http.HttpServletRequest;
+	import javax.servlet.http.HttpSession;
+	import javax.xml.parsers.FactoryConfigurationError;
+	import java.io.File;
+	import java.io.IOException;
+	import java.util.Collection;
+	import java.util.Date;
+	import java.util.List;
+	import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -130,11 +128,11 @@ ToolkitService {
 			String workPhone, String principleCareProvider, String pob,
 			String pobAddress1, String pobAddress2, String pobCity,
 			String pobState, String pobZip, String pobCountry) {
-		return queryServiceManager.findPatient(site, firstName, secondName,  lastName, suffix, gender, dob, ssn, pid,  
+		return queryServiceManager.findPatient(site, firstName, secondName, lastName, suffix, gender, dob, ssn, pid,
 				homeAddress1, homeAddress2, homeCity, homeState, homeZip, homeCountry,
-				mothersFirstName, mothersSecondName, mothersLastName, mothersSuffix, 
-				homePhone, workPhone, principleCareProvider, 
-				pob, pobAddress1, pobAddress2, pobCity,pobState, pobZip, pobCountry);
+				mothersFirstName, mothersSecondName, mothersLastName, mothersSuffix,
+				homePhone, workPhone, principleCareProvider,
+				pob, pobAddress1, pobAddress2, pobCity, pobState, pobZip, pobCountry);
 	}
 	public List<Result> mpqFindDocuments(SiteSpec site, String pid,
 			List<String> classCodes, List<String> hcftCodes,
@@ -154,7 +152,7 @@ ToolkitService {
 	// Test Service
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public Map<String, Result> getTestResults(List<String> testIds, String testSession )  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
+	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testInstances, testSession); }
 	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
 	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
 	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
@@ -163,18 +161,18 @@ ToolkitService {
 	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
 	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
-	public List<Result> getLogContent(String sessionName, String testName) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testName); }
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, String testName, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
-		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testName, sections, params, null, stopOnFirstFailure); 
+	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
+		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
-	public TestLogs getRawLogs(XdstestLogId logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
+	public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
 	public List<String> getTestdataSetListing(String testdataSetName)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestdataSetListing(testdataSetName); }
-	public String getTestplanAsText(String testname, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testname, section); }
+	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
 	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
-	public List<String> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
+	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
-	
+	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
 	
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -200,7 +198,10 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
 	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
-	
+	public Pid createPid(String assigningAuthority) throws NoServletSessionException { return session().allocateNewPid(assigningAuthority); }
+	public String getAssigningAuthority() throws Exception { return session().getAssigningAuthority(); }
+	public List<String> getAssigningAuthorities() throws Exception { return session().getAssigningAuthorities(); }
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Property Service
@@ -225,11 +226,12 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public String putSimConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).saveSimConfig(config); }
+	// this deletes a simulator
 	public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
 	public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
 	public String getSimulatorEndpoint() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorEndpoint(); }
 	public MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).executeSimMessage(simFileSpec); }
-	public List<String> getTransInstances(SimId simid, String xactor, String trans) throws Exception { return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans); }
+	public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception { return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans); }
 	public String getTransactionRequest(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionRequest(simid, actor, trans, event); }
 	public String getTransactionResponse(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionResponse(simid, actor, trans, event); }
 	public int removeOldSimulators() throws NoServletSessionException { return new SimulatorServiceManager(session()).removeOldSimulators(); }
@@ -245,6 +247,16 @@ ToolkitService {
 	public List<SimulatorStats> getSimulatorStats(List<SimId> simids) throws Exception { return new SimulatorServiceManager(session()).getSimulatorStats(simids); }
 	public String getTransactionLog(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionLog(simid, actor, trans, event); }
 
+	public List<Pid> getPatientIds(SimId simId) throws Exception { return new SimulatorServiceManager(session()).getPatientIds(simId); }
+	public String addPatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).addPatientIds(simId, pids); }
+	public boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).deletePatientIds(simId, pids); }
+
+	public Result getSimulatorEventRequest(TransactionInstance ti) throws Exception {
+		return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(ti);
+	}
+	public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
+		return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
+	}
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Dashboard Service

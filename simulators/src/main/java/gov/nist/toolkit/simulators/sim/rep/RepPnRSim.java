@@ -7,6 +7,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.support.*;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.utilities.io.Hash;
@@ -153,15 +154,20 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					m.insertSlot(eo, slot);
 				}
 
-				String repUID = simulatorConfig.get(AbstractActorFactory.repositoryUniqueId).asString();
-				OMElement rid = m.mkSlot("repositoryUniqueId", repUID);
-				m.insertSlot(eo, rid);
+				SimulatorConfigElement sce = simulatorConfig.get(AbstractActorFactory.repositoryUniqueId);
+				if (sce != null) {
+					OMElement rid = m.mkSlot("repositoryUniqueId", sce.asString());
+					m.insertSlot(eo, rid);
+				}
 			}
+
+			if (er.hasErrors())
+				return;
 
 			// flush documents to repository
 			for (String uid : sdMap.keySet()) {
 				StoredDocument sd = sdMap.get(uid);
-                dsSimCommon.repIndex.getDocumentCollection().add(sd);
+				dsSimCommon.repIndex.getDocumentCollection().add(sd);
 				byte[] content = sdMap.get(uid).content;
 				Io.bytesToFile(sd.getPathToDocument(), content);
 				byte[] content2 = Io.bytesFromFile(sd.getPathToDocument());
@@ -180,7 +186,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					logger.error(e.getMessage());
 				}
 			}
-			
+
 			// issue soap call to registry
 			String endpoint = simulatorConfig.get(AbstractActorFactory.registerEndpoint).asString();
 			
@@ -192,7 +198,6 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 			} catch (Exception e) {
 				er.err(Code.XDSRepositoryError, e);
 			}
-
 
 		}
 		// these are all un-recoverable errors

@@ -1,21 +1,13 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.registrymetadata.client.Association;
-import gov.nist.toolkit.registrymetadata.client.Author;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.Folder;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.MetadataObject;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.AssertionResults;
 
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DetailDisplay {
 	VerticalPanel detailPanel;

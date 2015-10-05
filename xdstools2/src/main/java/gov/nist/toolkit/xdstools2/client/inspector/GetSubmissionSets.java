@@ -1,15 +1,15 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
 
 import java.util.List;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class GetSubmissionSets implements ClickHandler {
 
@@ -23,7 +23,7 @@ public class GetSubmissionSets implements ClickHandler {
 	AsyncCallback<List<Result>> queryCallback = new AsyncCallback<List<Result>> () {
 
 		public void onFailure(Throwable caught) {
-			Result result = Result.RESULT("GetSubmissionSets");
+			Result result = Result.RESULT(new TestInstance("GetSubmissionSets"));
 			result.assertions.add(caught.getMessage());
 			it.addToHistory(result);
 		}

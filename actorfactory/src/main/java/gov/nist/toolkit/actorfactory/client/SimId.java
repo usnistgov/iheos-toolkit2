@@ -52,4 +52,6 @@ public class SimId  implements Serializable, IsSerializable {
     public boolean isUser(String user) {
         return user != null && user.equals(this.user);
     }
+    public boolean isValid() { return (!isEmpty(user)) && (!isEmpty(id)); }
+    boolean isEmpty(String x) { return x == null || x.trim().equals(""); }
 }

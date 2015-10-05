@@ -102,6 +102,10 @@ public abstract class BasicTransaction  {
 		return s_ctx;
 	}
 
+	public Map<String, String> getExternalLinkage() {
+		return planContext.getExtraLinkage();
+	}
+
 	void applyTransactionSettings() {
 		if (transactionSettings == null)
 			return;
@@ -615,14 +619,18 @@ public abstract class BasicTransaction  {
 				xds_version = xds_b;
 			}
 			if (testConfig.site == null) {
+				logger.error(ExceptionUtil.here("testConfig.site is null"));
 				throw new XdsInternalException("BasicTransaction#parseEndpoint: TestConfig.site not configured");
 			}
-			endpoint = testConfig.site.getEndpoint(trans, testConfig.secure, async);
-			if (endpoint == null || endpoint.equals(""))
-				fatal("No endpoint specified for transaction " + trans + " and XDS version " + xds_version_name() +
-						" and secure = " + testConfig.secure +
-						" on site " + testConfig.site.getSiteName() + "\nactor config is " + testConfig.site.toString());
-			testLog.add_name_value(instruction_output, "Endpoint", endpoint);
+			if (trans.usesTraditionalTransactions()) {
+				// otherwise handled elsewhere
+				endpoint = testConfig.site.getEndpoint(trans, testConfig.secure, async);
+				if (endpoint == null || endpoint.equals(""))
+					fatal("No endpoint specified for transaction " + trans + " and XDS version " + xds_version_name() +
+							" and secure = " + testConfig.secure +
+							" on site " + testConfig.site.getSiteName() + "\nactor config is " + testConfig.site.toString());
+				testLog.add_name_value(instruction_output, "Endpoint", endpoint);
+			}
 		} else {
 			if (testConfig.verbose)
 				System.out.println("endpoint coming from testplan.xml");

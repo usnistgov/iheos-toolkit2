@@ -41,17 +41,34 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 	public RegistryActorSimulator() {}
 
+	public boolean isPartOfRecipient() {
+		SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.PART_OF_RECIPIENT);
+		return sce != null && sce.asBoolean();
+	}
+
+	public boolean isValidateCodes() {
+		SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.VALIDATE_CODES);
+		return sce != null && sce.asBoolean();
+	}
+
+	public boolean validateAgainstPatientIdentityFeed() {
+		SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED);
+		return sce != null && sce.asBoolean();
+	}
+
 	// this constructor must be used when running simulator
 	public RegistryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(dsSimCommon.simCommon, dsSimCommon);
 		this.db = dsSimCommon.simCommon.db;
+		this.response = dsSimCommon.simCommon.response;
 		this.simulatorConfig = simulatorConfig;
 		init();
 	}
 
 	public void init() {
-		SimulatorConfigElement updateConfig = simulatorConfig.get(SimulatorConfig.update_metadata_option);
-		updateEnabled = updateConfig.asBoolean();
+		SimulatorConfigElement updateConfig = simulatorConfig.get(SimulatorConfig.UPDATE_METADATA_OPTION);
+		if (updateConfig != null)
+			updateEnabled = updateConfig.asBoolean();
 	}
 
 	// This constructor can be used to implement calls to onCreate(), onDelete(),
@@ -69,6 +86,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		if (transactionType.equals(TransactionType.REGISTER)) {
 
 			common.vc.isR = true;
+
+			common.vc.isPartOfRecipient = isPartOfRecipient();   // part of implementation of Document Recipient
+			common.vc.isValidateCodes = isValidateCodes();
+			common.vc.validateAgainstPatientIdentityFeed = validateAgainstPatientIdentityFeed();
 			common.vc.xds_b = true;
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;
@@ -188,7 +209,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 		}
 		else {
-			dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("RegistryActorSimulator - Don't understand transaction " + transactionType, null);
 			return false;
 		}
 
@@ -229,7 +250,10 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 	@Override
 	public void onCreate(SimulatorConfig config) {
-		PatientIdentityFeedServlet.generateListener(config);
+		// When registry part of implementation of Document Recipient there is no patient feed necessary
+		SimulatorConfigElement pifPortConfigured = config.get(SimulatorConfig.PIF_PORT);
+		if (pifPortConfigured != null)
+			PatientIdentityFeedServlet.generateListener(config);
 	}
 
 	@Override
