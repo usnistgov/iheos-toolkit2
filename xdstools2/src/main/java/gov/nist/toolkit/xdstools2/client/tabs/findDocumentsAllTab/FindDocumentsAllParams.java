@@ -6,9 +6,7 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.AuthorFilter;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.TimeFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +23,7 @@ public class FindDocumentsAllParams {
     FlexTable paramGrid = new FlexTable();
     int prow = 0;
 
+    OnDemandFilter onDemandFilter;
     TimeFilter creationTimeFromFilter;
     TimeFilter creationTimeToFilter;
     TimeFilter serviceStartTimeFromFilter;
@@ -33,6 +32,7 @@ public class FindDocumentsAllParams {
     TimeFilter serviceStopTimeToFilter;
     AuthorFilter authorFilter;
     CodeFilterBank codeFilterBank;
+    ReturnTypeFilter returnFilter;
     Label errorLabel;
 
     public FindDocumentsAllParams(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab){
@@ -42,10 +42,24 @@ public class FindDocumentsAllParams {
         errorLabel = new Label();
 
         // ------- Parameters to include in the search --------
-        // Date parameters
         paramGrid.setText(prow, 0, "Select search parameters:");
         prow++;
 
+
+        // On Demand
+        paramGrid.setText(prow, 1, "On Demand / Stable");
+        onDemandFilter = new OnDemandFilter("Type");
+        paramGrid.setWidget(prow, 2, onDemandFilter.asWidget());
+        prow++;
+
+        // What format to return
+        paramGrid.setText(prow, 1, "Return");
+        returnFilter = new ReturnTypeFilter("Return");
+        paramGrid.setWidget(prow, 2, returnFilter.asWidget());
+        prow++;
+
+
+        // Date parameters
         paramGrid.setText(prow, 1, "Creation Time, From:");
         creationTimeFromFilter = new TimeFilter(errorLabel, "CreationTimeFrom");
         paramGrid.setWidget(prow, 2, creationTimeFromFilter.asWidget());
@@ -116,6 +130,9 @@ public class FindDocumentsAllParams {
         serviceStopTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStopTimeTo);
         authorFilter.addToCodeSpec(codeSpec, CodesConfiguration.AuthorPerson);
         codeFilterBank.addToCodeSpec(codeSpec);
+
+        onDemandFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryType);
+        returnFilter.addToCodeSpec(codeSpec, CodesConfiguration.ReturnsType);
     }
 
     public Widget asWidget() { return paramGrid; }
