@@ -1,11 +1,11 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
@@ -288,7 +288,7 @@ public class QueryServiceManager extends CommonService {
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();
-		Result result = ResultBuilder.RESULT("getLastMetadata"); 
+		Result result = ResultBuilder.RESULT(new TestInstance("getLastMetadata"));
 		results.add(result);
 
 		try {
@@ -308,7 +308,7 @@ public class QueryServiceManager extends CommonService {
 	}
 
 
-	public List<Result> perRepositoryRetrieve(Uids uids, String testName,
+	public List<Result> perRepositoryRetrieve(Uids uids, TestInstance testInstance,
 			List<String> sections, Map<String, String> params) {
 		List<Result> results = new ArrayList<Result>();
 
@@ -328,14 +328,14 @@ public class QueryServiceManager extends CommonService {
 			} else {
 				Map<String, String> myparams = dup(params);
 				myparams.put("$home$", org.get(repuid).uids.get(0).home);
-				results.add(session.xdsTestServiceManager().xdstest(testName, sections, myparams, null, null, false));
+				results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
 			}
 		}
 		return results;
 	}
 
 	public List<Result> runPerCommunityQuery(AnyIds aids, Session s,
-			String testName, List<String> sections, Map<String, String> params)
+			TestInstance testInstance, List<String> sections, Map<String, String> params)
 					throws Exception {
 		if (s.siteSpec.isRG()) {
 			sections.add("XCA");
@@ -345,12 +345,12 @@ public class QueryServiceManager extends CommonService {
 		}
 		else {
 			sections.add("XDS");
-			return asList(session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, false));
+			return asList(session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, false));
 		}
-		return perCommunityQuery(aids, testName, sections, params);
+		return perCommunityQuery(aids, testInstance, sections, params);
 	}
 
-	public List<Result> perCommunityQuery(AnyIds ids, String testName,
+	public List<Result> perCommunityQuery(AnyIds ids, TestInstance testInstance,
 			List<String> sections, Map<String, String> aparams) throws Exception {
 		List<Result> results = new ArrayList<Result>();
 
@@ -381,7 +381,7 @@ public class QueryServiceManager extends CommonService {
 			}
 			Map<String, String> myparams = dup(params);
 			myparams.put("$home$", home);
-			results.add(session.xdsTestServiceManager().xdstest(testName, sections, myparams, null, null, false));
+			results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
 		}
 		return results;
 	}

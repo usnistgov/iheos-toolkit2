@@ -3,6 +3,7 @@ package gov.nist.toolkit.session.server.services;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -22,7 +23,7 @@ public class FindPatient extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			String testName = "FindPatient";
+			TestInstance testInstance = new TestInstance("FindPatient");
 			List<String> sections = new ArrayList<String>();
 			sections.add("XCA");
 			Map<String, String> params = new HashMap<String, String>();
@@ -84,7 +85,7 @@ public class FindPatient extends CommonService {
 			if (! pobCountry.equals(""))
 			  params.put("$pobCountry_id$", pobCountry);
 
-			Result r = session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, true);
+			Result r = session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, true);
 			return asList(r);
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

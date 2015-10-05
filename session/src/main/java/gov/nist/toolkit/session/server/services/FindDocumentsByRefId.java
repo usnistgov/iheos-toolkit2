@@ -1,9 +1,10 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -23,7 +24,7 @@ public class FindDocumentsByRefId extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			String testName = "FindDocumentsByRefId";
+			TestInstance testName = new TestInstance("FindDocumentsByRefId");
 			List<String> sections = new ArrayList<String>();
 
 			Map<String, String> params = new HashMap<String, String>();

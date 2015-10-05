@@ -1,18 +1,12 @@
-package gov.nist.toolkit.testengine.logrepository;
+package gov.nist.toolkit.testenginelogging.logrepository;
 
-import gov.nist.toolkit.results.client.XdstestLogId;
-import gov.nist.toolkit.testengine.engine.LogMap;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.testenginelogging.LogMap;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import org.apache.log4j.Logger;
+
+import java.io.*;
 
 /**
  * A LogRepository is a directory where log files can be stored
@@ -30,7 +24,7 @@ abstract public class LogRepository1 {
 	protected LogRepository1() {
 	}
 	
-	public void logOut(XdstestLogId id, LogMap log) throws XdsException {
+	public void logOut(TestInstance id, LogMap log) throws XdsException {
 		getLogger().debug("Writing log " + log.getKeys() + " to " + logDir);
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
@@ -49,7 +43,7 @@ abstract public class LogRepository1 {
 		}
 	}
 	
-	public LogMap logIn(XdstestLogId id) throws Exception {
+	public LogMap logIn(TestInstance id) throws Exception {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		try {
@@ -67,7 +61,7 @@ abstract public class LogRepository1 {
 		}
 	}
 
-	String logFile(XdstestLogId id) throws IOException {
+	String logFile(TestInstance id) throws IOException {
 		return logDir().toString() + File.separator + id.getId();
 	}
 

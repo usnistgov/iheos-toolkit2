@@ -1,11 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
-import gov.nist.toolkit.results.client.CodeConfiguration;
-import gov.nist.toolkit.xdstools2.client.CodePicker;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.ListBox;
+import gov.nist.toolkit.results.client.CodeConfiguration;
+import gov.nist.toolkit.xdstools2.client.CodePicker;
 
 public class CodeEditButtonSelector implements ClickHandler {
 	CodeConfiguration cc;

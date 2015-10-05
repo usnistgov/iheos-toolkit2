@@ -25,14 +25,14 @@ public class MesaTestTest {
 //	//	@Test
 //	public void buildTestData() {
 //		siteSpec.isTls = false;
-//		String testName = "12346";
+//		String testId = "12346";
 //		ParamBuilder pbuilder = new ParamBuilder();
 //		pbuilder.withParam("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
 //		params.put("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
 //		new XdsTestServiceManager(session).run(
 //				mesaTestSession,
 //				siteSpec,
-//				testName,
+//				testId,
 //				sections,
 //				params,
 //				params2,
@@ -41,21 +41,21 @@ public class MesaTestTest {
 //
 //	//	@Test
 //	public void verifyTestData() {
-//		String testName = "11901";
+//		String testId = "11901";
 //		siteSpec.isTls = false;
 //		params.put("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
-//		new XdsTestServiceManager(session).run(mesaTestSession, siteSpec, testName, sections, params, params2, stopOnFirstFailure);
+//		new XdsTestServiceManager(session).run(mesaTestSession, siteSpec, testId, sections, params, params2, stopOnFirstFailure);
 //	}
 //
 //	//	@Test
 //	public void twoStepTest() {
-//		String testName = "11966";
+//		String testId = "11966";
 //		ParamBuilder pbuilder = new ParamBuilder();
 //		pbuilder.withParam("$patientid$", "25d5fe7674a443d^^^&1.3.6.1.4.1.21367.2009.1.2.300&ISO");
 //		List<Result> results = new XdsTestServiceManager(session).run(
 //				mesaTestSession,
 //				siteSpec(),
-//				testName,
+//				testId,
 //				sections,
 //				pbuilder.getSParms(),
 //				pbuilder.getOParms(),
@@ -65,17 +65,17 @@ public class MesaTestTest {
 //			if (!result.passed())
 //				pass = false;
 //		}
-//		if (!pass) System.out.println(testName + ": failed");
+//		if (!pass) System.out.println(testId + ": failed");
 //	}
 //
 //	class TestResult {
-//		String testNum;
+//		String testId;
 //		List<AssertionResult> msgs = new ArrayList<AssertionResult>();
 //		boolean passed = true;
 //
-//		TestResult(String testnum) { testNum = testnum; }
+//		TestResult(String testnum) { testId = testnum; }
 //
-//		public String toString() { return testNum + ": " + lines(msgs.get(0).assertion, 1); }
+//		public String toString() { return testId + ": " + lines(msgs.get(0).assertion, 1); }
 //	}
 //
 //
@@ -129,12 +129,12 @@ public class MesaTestTest {
 //		int failures = 0;
 //		int ran = 0;
 //		List<TestResult> testResults = new ArrayList<TestResult>();
-//		for (String testName : rb_tests) {
-//			TestResult testResult = new TestResult(testName);
+//		for (String testId : rb_tests) {
+//			TestResult testResult = new TestResult(testId);
 //			List<Result> results = new XdsTestServiceManager(session).run(
 //					mesaTestSession,
 //					siteSpec(),
-//					testName,
+//					testId,
 //					sections,
 //					pbuilder.getSParms(),
 //					pbuilder.getOParms(),
@@ -148,7 +148,7 @@ public class MesaTestTest {
 //				}
 //			}
 //			ran++;
-//			if (!pass) { System.out.println(testName + ": failed"); failures++; }
+//			if (!pass) { System.out.println(testId + ": failed"); failures++; }
 //		}
 //		System.out.println("\n========================\ntests: " + ran + " ran " + failures + " failed\n\n");
 //		for (TestResult tr : testResults) {
@@ -160,7 +160,7 @@ public class MesaTestTest {
 //	void prTestResults(List<TestResult> testResults) {
 //		System.out.println("\n========================\n");
 //		for (TestResult tr : testResults) {
-//			System.out.println(tr.testNum + ": " + lines(tr.msgs.get(0).assertion, 1));
+//			System.out.println(tr.testId + ": " + lines(tr.msgs.get(0).assertion, 1));
 //		}
 //		System.out.println("\n========================\n");
 //	}
@@ -173,13 +173,13 @@ public class MesaTestTest {
 //		prTestResults(testResults);
 //	}
 //
-//	List<TestResult> runtest(String testName, ParamBuilder pbuilder) {
+//	List<TestResult> runtest(String testId, ParamBuilder pbuilder) {
 //		List<TestResult> testResults = new ArrayList<TestResult>();
-//		TestResult testResult = new TestResult(testName);
+//		TestResult testResult = new TestResult(testId);
 //		List<Result> results = new XdsTestServiceManager(session).run(
 //				mesaTestSession,
 //				siteSpec(),
-//				testName,
+//				testId,
 //				sections,
 //				pbuilder.getSParms(),
 //				pbuilder.getOParms(),

@@ -1,7 +1,5 @@
-package gov.nist.toolkit.testengine.engine;
+package gov.nist.toolkit.testenginelogging;
 
-
-import gov.nist.toolkit.testenginelogging.LogFileContent;
 
 import java.io.Serializable;
 import java.util.ArrayList;

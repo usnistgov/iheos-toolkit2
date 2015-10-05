@@ -5,7 +5,7 @@ package gov.nist.toolkit.xdstools2.scripts
  */
 
 import gov.nist.toolkit.actorfactory.SiteServiceManager
-import gov.nist.toolkit.results.client.Result
+import gov.nist.toolkit.results.foofoo.Result
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 

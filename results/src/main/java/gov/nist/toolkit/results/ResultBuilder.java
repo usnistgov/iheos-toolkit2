@@ -8,19 +8,19 @@ import java.util.Calendar;
 
 public class ResultBuilder {
 
-	static public Result RESULT(String testName) {
+	static public Result RESULT(TestInstance testInstance) {
 		Calendar calendar = Calendar.getInstance();
 		String timestamp = calendar.getTime().toString();
 		Result r = new Result(timestamp);
-		r.testName = testName;
+		r.testInstance = testInstance;
 		return r;
 	}
 	
-	static public Result RESULT(String testName, AssertionResults assertions, AssertionResult assertion, Throwable t) {
+	static public Result RESULT(TestInstance testInstance, AssertionResults assertions, AssertionResult assertion, Throwable t) {
 		Calendar calendar = Calendar.getInstance();
 		String timestamp = calendar.getTime().toString();
 		Result r = new Result(timestamp);
-		r.testName = testName;
+		r.testInstance = testInstance;
 		if (assertions != null) {
 			if (r.assertions == null || r.assertions.size() == 0) {
 				r.assertions = assertions;

@@ -10,6 +10,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSession;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
@@ -110,25 +111,34 @@ public class ToolkitApi {
      *
      * @param testSession - name of test session to use or null to use default
      * @param siteName - name of site to target
-     * @param testName - which test
+     * @param testInstance - which test
      * @param sections - list of section names or null to run all
      * @param params - parameter map
      * @param stopOnFirstFailure
      * @return - list of Result objects - one per test step (transaction) run
      * @throws Exception if testSession could not be created
      */
-    public List<Result> runTest(String testSession, String siteName, String testName, List<String> sections,  Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+    public List<Result> runTest(String testSession, String siteName, TestInstance testInstance, List<String> sections,  Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
         if (testSession == null) {
             testSession = "API";
             xdsTestServiceManager().addMesaTestSession(testSession);
         }
         SiteSpec siteSpec = new SiteSpec();
         siteSpec.setName(siteName);
-        return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testName, sections, params, null, stopOnFirstFailure);
+        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSession);
+        return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
 
     public List<String> getSiteNames(boolean simAlso) {
         return siteServiceManager().getSiteNames(session.getId(), true, simAlso);
+    }
+
+    public void setConfig(SimulatorConfig config, String parameterName, String value) {
+        new SimulatorApi(session).setConfig(config, parameterName, value);
+    }
+
+    public void setConfig(SimulatorConfig config, String parameterName, Boolean value) {
+        new SimulatorApi(session).setConfig(config, parameterName, value);
     }
 
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }

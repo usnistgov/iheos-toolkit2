@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.results.client.XdstestLogId;
+
+import gov.nist.toolkit.results.client.TestInstance;
 
 import java.io.File;
 
@@ -19,7 +20,7 @@ public class RawLogCache {
 //		return logIn(id);
 //	}
 	
-	String logFile(XdstestLogId id) {
+	String logFile(TestInstance id) {
 		if (logCache == null)
 			return "";
 		return logCache.toString() + File.separator + id.getId();

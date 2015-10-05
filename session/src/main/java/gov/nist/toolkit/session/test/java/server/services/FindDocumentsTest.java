@@ -6,14 +6,12 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.FindDocuments;
 import gov.nist.toolkit.xdsexception.XdsException;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.List;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class FindDocumentsTest {
 	static File warHome = new File("/home/bill/Documents/sf/toolkit/xdstools2/war");

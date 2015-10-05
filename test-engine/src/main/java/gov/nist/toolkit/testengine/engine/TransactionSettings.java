@@ -3,8 +3,8 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.results.client.AssertionResults;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.testengine.logrepository.LogRepository;
 import gov.nist.toolkit.testengine.transactions.TransactionTransport;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 
 /**
  * Control the execution of a transaction.  Does not include the spec

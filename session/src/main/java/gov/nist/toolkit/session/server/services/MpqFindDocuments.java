@@ -1,10 +1,11 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.client.Code;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -24,7 +25,7 @@ public class MpqFindDocuments extends CommonService {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			String testName = "MPQ-FindDocuments";
+			TestInstance testInstance = new TestInstance("MPQ-FindDocuments");
 			List<String> sections = new ArrayList<String>();
 			if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
 				sections.add("XDS");
@@ -52,7 +53,7 @@ public class MpqFindDocuments extends CommonService {
 				i++;
 			}
 
-			Result r = session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, true);
+			Result r = session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, true);
 			return asList(r);
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

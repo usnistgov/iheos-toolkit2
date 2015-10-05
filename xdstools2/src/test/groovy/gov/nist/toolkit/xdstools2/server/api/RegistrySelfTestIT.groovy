@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.server.api
 
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
+import gov.nist.toolkit.results.client.TestInstance
 import spock.lang.Specification
 /**
  * Runs all Registry tests.
@@ -22,10 +23,10 @@ class RegistrySelfTestIT extends Specification {
     ToolkitApi api;
     String patientId = 'BR14^^^&1.2.360&ISO'
     String reg = 'mike__reg'
-    String regrep = 'mike__regrep'
+//    String regrep = 'mike__regrep'
+    String testSession = 'mike';
 
     def setup() {
-//        Installation.installation().externalCache(new File('/Users/bill/tmp/toolkit2'))
         api = new ToolkitApi()
         println "EC is ${Installation.installation().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
@@ -34,9 +35,8 @@ class RegistrySelfTestIT extends Specification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String testSession = null;  // use default
         String siteName = 'mike__reg'
-        String testName = "15804"
+        TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
         Map<String, String> params = new HashMap<>()
@@ -44,7 +44,7 @@ class RegistrySelfTestIT extends Specification {
         boolean stopOnFirstError = true
 
         and: 'Run pid transaction test'
-        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -58,14 +58,14 @@ class RegistrySelfTestIT extends Specification {
 //        when:
 //        String testSession = null;  // use default
 //        String siteName = 'mike__reg'
-//        String testName = "11990"
+//        String testId = "11990"
 //        List<String> sections = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run Register test'
-//        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 //
 //        then:
 //        true
@@ -77,14 +77,14 @@ class RegistrySelfTestIT extends Specification {
 //        when:
 //        String testSession = null;  // use default
 //        String siteName = 'mike__reg'
-//        String testName = "12002"
+//        String testId = "12002"
 //        List<String> sections = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run Register test'
-//        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 //
 //        then:
 //        true
@@ -94,16 +94,15 @@ class RegistrySelfTestIT extends Specification {
 
     def 'Run all Register tests'() {
         when:
-        String testSession = null;  // use default
         String siteName = 'mike__reg'
-        String testName = "tc:R.b"
+        TestInstance testId = new TestInstance("tc:R.b")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -113,16 +112,15 @@ class RegistrySelfTestIT extends Specification {
 
     def 'Run SQ initialization'() {
         when:
-        String testSession = null;  // use default
         String siteName = 'mike__reg'
-        String testName = "tc:Initialize_for_Stored_Query"
+        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -132,16 +130,15 @@ class RegistrySelfTestIT extends Specification {
 
     def 'Run SQ tests'() {
         when:
-        String testSession = null;  // use default
         String siteName = 'mike__reg'
-        String testName = "tc:SQ.b"
+        TestInstance testId = new TestInstance("tc:SQ.b")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)   // not used
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -153,14 +150,14 @@ class RegistrySelfTestIT extends Specification {
 //        when:
 //        String testSession = null;  // use default
 //        String siteName = 'mike__regrep'
-//        String testName = "tc:PR.b"
+//        String testId = "tc:PR.b"
 //        List<String> sections = new ArrayList<>()
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true
 //
 //        and: 'Run'
-//        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
+//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 //
 //        then:
 //        true

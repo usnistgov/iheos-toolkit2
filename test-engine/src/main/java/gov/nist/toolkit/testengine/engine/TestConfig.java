@@ -1,8 +1,9 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testengine.logrepository.LogRepository;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,7 +13,7 @@ import java.io.IOException;
 public class TestConfig {
 	
 	// current test number
-	public String testNum;
+	public TestInstance testInstance;
 	
 	// location of testkit
 	public File testkitHome = null;   // how is this used?

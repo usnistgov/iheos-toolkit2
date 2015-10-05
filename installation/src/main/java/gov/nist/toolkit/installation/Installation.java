@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.util.List;
 
 public class Installation {
 	File warHome = null;
@@ -93,6 +94,10 @@ public class Installation {
 		return new File(externalCache(), "simdb");
 //		return propertyServiceManager().getSimDbDir();
 	}
+
+	public List<String> getListenerPortRange() {
+		return propertyServiceManager().getListenerPortRange();
+	}
 	
 	public File toolkitxFile() {
 		return new File(warHome(), "toolkitx");
@@ -141,7 +146,7 @@ public class Installation {
 		return new File(warHome + sep + "SessionCache");
 	}
 
-	public File testLogFile() {
+	public File testLogCache() {
 		return new File(externalCache + sep + "TestLogCache");
 	}
 

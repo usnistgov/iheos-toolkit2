@@ -1,6 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.widgets.queryFilter;
 
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 
 import java.util.ArrayList;

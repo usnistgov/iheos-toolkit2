@@ -457,6 +457,18 @@ public abstract class AbstractActorFactory {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
 	}
 
+	public void setConfig(SimulatorConfig sc, String name, String value) {
+		SimulatorConfigElement ele = sc.getUserByName(name);
+		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " - cannot set its value");
+		ele.setValue(value);
+	}
+
+	public void setConfig(SimulatorConfig sc, String name, Boolean value) {
+		SimulatorConfigElement ele = sc.getUserByName(name);
+		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " - cannot set its value");
+		ele.setValue(value);
+	}
+
 	public void addEditableEndpoint(SimulatorConfig sc, String endpointName, ActorType actorType, TransactionType transactionType, boolean tls) {
 		SimulatorConfigElement ele = new SimulatorConfigElement();
 		ele.name = endpointName;

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.session.server
 
+import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
@@ -21,6 +22,8 @@ class TestSession {
         String defaultEnvName = Installation.installation().defaultEnvironmentName();
         session.setEnvironment(defaultEnvName)
         new EnvSetting(session.getId(), defaultEnvName, Installation.installation().environmentFile(defaultEnvName))
+
+        ListenerFactory.init(Installation.installation().listenerPortRange);
         return session
     }
 }

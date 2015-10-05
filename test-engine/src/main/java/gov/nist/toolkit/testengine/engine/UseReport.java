@@ -1,12 +1,12 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-
+import gov.nist.toolkit.results.client.TestInstance;
 import org.apache.axiom.om.OMElement;
 
 
 public class UseReport {
-	public String test;
+	public TestInstance testInstance;
 	public String section;
 	public String step;
 	public String reportName;
@@ -18,8 +18,8 @@ public class UseReport {
 
 		normalize();
 
-		if (!test.equals(""))
-			ur.addAttribute("test", test, null);
+		if (!testInstance.isEmpty())
+			ur.addAttribute("test", testInstance.getId(), null);
 		ur.addAttribute("section", section, null);
 		ur.addAttribute("step", step, null);
 		ur.addAttribute("reportName", reportName, null);
@@ -30,7 +30,7 @@ public class UseReport {
 	}
 
 	public void normalize() {
-		if (test == null) test = "";
+		if (testInstance == null) testInstance = new TestInstance();
 		if (section == null) section = "";
 		if (step == null) step = "";
 		if (reportName == null) reportName = "";
@@ -43,7 +43,7 @@ public class UseReport {
 		normalize();
 
 		return "UseReport:" +
-		( (test.equals("") ? "" : " test=" + test)  )  +
+		( (testInstance.isEmpty() ? "" : " test=" + testInstance.getId())  )  +
 		" section=" + section +
 		" step=" + step +
 		" reportName=" + reportName +
