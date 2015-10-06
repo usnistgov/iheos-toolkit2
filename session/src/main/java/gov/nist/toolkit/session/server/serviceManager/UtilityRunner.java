@@ -8,7 +8,9 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.testengine.engine.TestCollection;
 import gov.nist.toolkit.testengine.engine.TransactionSettings;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -91,6 +93,22 @@ public class UtilityRunner {
                 if (testInstance.getId().startsWith("tc:")) {
                     String collectionName = testInstance.getId().split(":")[1];
                     session.xt.addTestCollection(collectionName);
+                    // all tests in the collection must be linked so the logs are linked
+                    // we don't use the TestInstance we were given because it references a test
+                    // collection.  We replace it with a list of linked TestInstances, one for each
+                    // contained test.
+
+                    TestCollection testCollection = new TestCollection(session.getTestkitFile(), collectionName);
+                    List<String> testIds = testCollection.getTestIds();
+                    TestInstance ti = null;
+                    for (String id : testIds) {
+                        if (ti == null) {
+                            ti = new TestInstance(id);
+                            session.xt.addTest(ti);
+                            continue;
+                        }
+                        session.xt.addTest(LogRepository.cloneTestInstance(ti, id)); // this cloning links them
+                    }
                 } else {
                     session.xt.addTest(testInstance, sections, areas);
                 }
@@ -153,7 +171,14 @@ public class UtilityRunner {
                 // s.assertionResults.add("Log Cache: " + s.getLogCount() + " entries");
                 session.transactionSettings.securityParams = session;
 
+
+
+
                 session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
+
+
+
+
 
                 assertionResults.add(session.transactionSettings.res);
 
@@ -161,7 +186,8 @@ public class UtilityRunner {
 //                TestId testId1 = xdsTestServiceManager.newTestLogId();
 
                 // it writes a uuid named file to TestLogCache/${user}/
-                session.transactionSettings.logRepository.logOut(testInstance, session.xt.getLogMap());
+                if (!testInstance.isTestCollection())
+                    session.transactionSettings.logRepository.logOutIfLinkedToUser(testInstance, session.xt.getLogMap());
 
                 Result result = xdsTestServiceManager.buildResult(session.xt.getTestSpecs(), testInstance);
                 xdsTestServiceManager.scanLogs(session.xt, assertionResults, sections);

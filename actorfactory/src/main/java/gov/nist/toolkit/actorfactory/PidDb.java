@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.actorfactory.client.PidBuilder;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.utilities.io.Io;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PidDb {
+    static Logger logger = Logger.getLogger(PidDb.class);
     private final SimDb simDb;
 
     public PidDb(SimDb simDb) {
@@ -63,6 +65,7 @@ public class PidDb {
     }
 
     public void addPatientId(Pid pid) throws IOException {
+        logger.debug("storing Patient ID " + pid + " to " + getPidFile(pid));
         if (patientIdExists(pid)) return;
         Io.stringToFile(getPidFile(pid), pid.asString());
     }

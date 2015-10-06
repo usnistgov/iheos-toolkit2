@@ -19,7 +19,22 @@ public class TestInstance implements IsSerializable, Serializable {
 		
 	}
 
+
+    public TestInstance copy() {
+        TestInstance x = new TestInstance();
+        x.id = id;
+        x.event = event;
+        x.eventDir = eventDir;
+        x.location = location;
+        x.user = user;
+        x.format = format;
+        x.idType = idType;
+        return x;
+    }
+
 	public boolean linkedToLogRepository() { return location != null; }
+
+    public boolean isTestCollection() { return id.startsWith("tc:"); }
 
 	public void setEvent(String event) {
 		this.event = event;
