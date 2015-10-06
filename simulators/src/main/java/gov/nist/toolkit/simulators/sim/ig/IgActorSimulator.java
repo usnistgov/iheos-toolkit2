@@ -28,13 +28,13 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 	public IgActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
 		super(common, dsSimCommon);
 		this.db = db;
-		this.simulatorConfig = simulatorConfig;
+		setSimulatorConfig(simulatorConfig);
 	}
 
 	public IgActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(dsSimCommon.simCommon, dsSimCommon);
 		this.db = dsSimCommon.simCommon.db;
-		this.simulatorConfig = simulatorConfig;
+        setSimulatorConfig(simulatorConfig);
 	}
 
 	public void init() {}
@@ -76,7 +76,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 			if (!validateOk)
 				return false;
 
-			XcQuerySim xcqSim = new XcQuerySim(common, dsSimCommon, simulatorConfig);
+			XcQuerySim xcqSim = new XcQuerySim(common, dsSimCommon, getSimulatorConfig());
 			mvc.addMessageValidator("XcQuerySim", xcqSim, er);
 
 			mvc.run();

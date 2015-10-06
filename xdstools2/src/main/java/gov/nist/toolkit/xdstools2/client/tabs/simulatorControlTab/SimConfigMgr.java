@@ -49,7 +49,7 @@ class SimConfigMgr {
 		int row = 0;
 
 		tbl.setWidget(row, 0, HtmlMarkup.html("Simulator Type"));
-		tbl.setWidget(row, 1, HtmlMarkup.html(config.getType()));
+		tbl.setWidget(row, 1, HtmlMarkup.html(config.getActorType()));
 
 		row++;
 

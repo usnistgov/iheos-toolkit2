@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -11,6 +12,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -41,6 +43,7 @@ import java.util.*;
  * Created by bill on 7/1/15.
  */
 public class DsSimCommon {
+    SimulatorConfig simulatorConfig = null;
     public RegIndex regIndex = null;
     public RepIndex repIndex = null;
     public SimCommon simCommon;
@@ -67,6 +70,9 @@ public class DsSimCommon {
     public DsSimCommon(SimCommon simCommon) {
         this.simCommon = simCommon;
     }
+
+    public void setSimulatorConfig(SimulatorConfig config) { this.simulatorConfig = config; }
+    public SimulatorConfig getSimulatorConfig() { return simulatorConfig; }
 
     /**
      * Starts the validation process by scheduling the HTTP parser. This is called
@@ -378,6 +384,13 @@ public class DsSimCommon {
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
             simCommon.generateLog();
+            SimulatorConfigElement callbackElement = getSimulatorConfig().get(SimulatorConfig.REST_CALLBACK_URI);
+            if (callbackElement != null) {
+                String callbackURI = callbackElement.asString();
+                if (callbackURI != null && !callbackURI.equals("")) {
+                    new Callback().callback(simCommon.db, getSimulatorConfig(), callbackURI);
+                }
+            }
         } catch (IOException e) {
             logger.fatal(ExceptionUtil.exception_details(e));
         }

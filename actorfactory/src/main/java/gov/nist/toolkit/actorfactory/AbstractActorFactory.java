@@ -188,7 +188,7 @@ public abstract class AbstractActorFactory {
 
 	// A couple of utility classes that get around a client class calling a server class - awkward
 	static public ActorType getActorType(SimulatorConfig config) {
-		return ActorType.findActor(config.getType());
+		return ActorType.findActor(config.getActorType());
 	}
 
 	static public AbstractActorFactory getActorFactory(SimulatorConfig config) {
@@ -220,7 +220,7 @@ public abstract class AbstractActorFactory {
 	}
 
 	String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) {
-		return mkEndpoint(asc, ele, asc.getType().toLowerCase(), isTLS);
+		return mkEndpoint(asc, ele, asc.getActorType().toLowerCase(), isTLS);
 	}
 
 	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
@@ -239,7 +239,7 @@ public abstract class AbstractActorFactory {
 		+ "/sim/" 
 		+ asc.getId() 
 		+ "/" +
-		actor           //asc.getType().toLowerCase()
+		actor           //asc.getActorType().toLowerCase()
 		+ "/" 
 		+ transtype;
 	}
@@ -251,7 +251,7 @@ public abstract class AbstractActorFactory {
 		// This statically links the IG to the CURRENT list of remote sites that it could possibly be a
 		// gateway to in the future.  BAD IDEA.  This list needs to be generated on the fly so it is current.
 		//
-		if (config.getType().equals(ActorType.INITIATING_GATEWAY.getName())) {
+		if (config.getActorType().equals(ActorType.INITIATING_GATEWAY.getName())) {
 			// must load up XCQ and XCR endpoints for simulator to use
 			config.remoteSites = new ArrayList<>();
 
@@ -264,7 +264,7 @@ public abstract class AbstractActorFactory {
 		//
 		//
 
-		SimDb simdb = SimDb.mkSim(Installation.installation().simDbFile(), config.getId(), config.getType());
+		SimDb simdb = SimDb.mkSim(Installation.installation().simDbFile(), config.getId(), config.getActorType());
 		File simCntlFile = simdb.getSimulatorControlFile();
 		new SimulatorConfigIo().save(config, simCntlFile.toString());   //config.save(simCntlFile.toString());
 	}
@@ -333,7 +333,7 @@ public abstract class AbstractActorFactory {
 
 		try {
 			for (SimulatorConfig simConfig : loadSimulators(allSimIds)) {
-				if (actorTypeName.equals(simConfig.getType()))
+				if (actorTypeName.equals(simConfig.getActorType()))
 					simConfigs.add(simConfig);
 			}
 		} catch (Exception e) {

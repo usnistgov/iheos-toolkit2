@@ -222,7 +222,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 					for (SimulatorConfig config : configs) {
 						table.setText(row, nameColumn, config.getDefaultName());
 						table.setText(row, idColumn, config.getId().toString());
-						table.setText(row, typeColumn, ActorType.findActor(config.getType()).getName());
+						table.setText(row, typeColumn, ActorType.findActor(config.getActorType()).getName());
 						SimulatorConfigElement portConfig = config.get(SimulatorConfig.PIF_PORT);
 						if (portConfig != null) {
 							String pifPort = portConfig.asString();

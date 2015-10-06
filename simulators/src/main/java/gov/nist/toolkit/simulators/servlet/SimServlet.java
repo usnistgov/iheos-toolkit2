@@ -644,7 +644,7 @@ public class SimServlet  extends HttpServlet {
 //	public static BaseDsActorSimulator getSimulatorRuntime(String simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
 //		SimDb db = new SimDb();
 //		SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
-//		String actorTypeName = config.getType();
+//		String actorTypeName = config.getActorType();
 //		ActorType actorType = ActorType.findActor(actorTypeName);
 //		String actorSimClassName = actorType.getSimulatorClassName();
 //		logger.info("Starting sim " + simId + " of class " + actorSimClassName);

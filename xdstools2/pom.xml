@@ -156,6 +156,11 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>rest-tools</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
         </dependency>
         <dependency>
