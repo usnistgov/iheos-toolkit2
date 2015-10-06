@@ -12,7 +12,6 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -384,13 +383,13 @@ public class DsSimCommon {
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
             simCommon.generateLog();
-            SimulatorConfigElement callbackElement = getSimulatorConfig().get(SimulatorConfig.REST_CALLBACK_URI);
-            if (callbackElement != null) {
-                String callbackURI = callbackElement.asString();
-                if (callbackURI != null && !callbackURI.equals("")) {
-                    new Callback().callback(simCommon.db, getSimulatorConfig(), callbackURI);
-                }
-            }
+//            SimulatorConfigElement callbackElement = getSimulatorConfig().get(SimulatorConfig.REST_CALLBACK_URI);
+//            if (callbackElement != null) {
+//                String callbackURI = callbackElement.asString();
+//                if (callbackURI != null && !callbackURI.equals("")) {
+//                    new Callback().callback(simCommon.db, getSimulatorConfig(), callbackURI);
+//                }
+//            }
         } catch (IOException e) {
             logger.fatal(ExceptionUtil.exception_details(e));
         }

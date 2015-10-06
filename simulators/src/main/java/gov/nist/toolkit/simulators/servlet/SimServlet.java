@@ -458,6 +458,7 @@ public class SimServlet  extends HttpServlet {
 			logRequest(request, db, actor, transaction);
 
 			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simDbDir, simid);
+            request.setAttribute("SimulatorConfig", asc);
 
 			regIndex = getRegIndex(simid);
 			repIndex = getRepIndex(simid);

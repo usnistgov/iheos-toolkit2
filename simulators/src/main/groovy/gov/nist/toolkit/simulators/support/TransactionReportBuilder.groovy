@@ -18,7 +18,7 @@ class TransactionReportBuilder {
                 body(new String(db.requestMessageBody))
             }
             response() {
-//                header(db.responseMessageHeader)  not available this early in the processing - gets written by simfilter
+                header(db.responseMessageHeader)
                 body(new String(db.responseMessageBody))
             }
         }
