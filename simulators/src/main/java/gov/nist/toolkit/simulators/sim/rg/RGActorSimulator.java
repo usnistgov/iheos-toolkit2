@@ -39,13 +39,13 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 	public RGActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
 		super(common, dsSimCommon);
 		this.db = db;
-		this.simulatorConfig = simulatorConfig;
+		setSimulatorConfig(simulatorConfig);
 	}
 
 	public RGActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(dsSimCommon.simCommon, dsSimCommon);
 		this.db = dsSimCommon.simCommon.db;
-		this.simulatorConfig = simulatorConfig;
+        setSimulatorConfig(simulatorConfig);
 	}
 
 	public void init() {}
@@ -84,7 +84,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
 
-			SimulatorConfigElement asce = simulatorConfig.getUserByName(AbstractActorFactory.homeCommunityId);
+			SimulatorConfigElement asce = getSimulatorConfig().getUserByName(AbstractActorFactory.homeCommunityId);
 			if (asce == null) {
 				er.err(Code.XDSRepositoryError, "RG Internal Error - homeCommunityId not configured", this, "");
 				returnRetrieveError();
@@ -107,7 +107,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 
 			// get repository endpoint for retrieve
-			String endpoint = simulatorConfig.get(RepositoryActorFactory.retrieveEndpoint).asString();
+			String endpoint = getSimulatorConfig().get(RepositoryActorFactory.retrieveEndpoint).asString();
 
 			// issue soap call to repository
 			Soap soap = new Soap();
@@ -181,7 +181,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
 
-			RemoteSqSim rss = new RemoteSqSim(common, dsSimCommon, this, simulatorConfig, query);
+			RemoteSqSim rss = new RemoteSqSim(common, dsSimCommon, this, getSimulatorConfig(), query);
 
 			mvc.addMessageValidator("Forward query to local Registry", rss, newER());
 
@@ -189,7 +189,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			m = rss.getMetadata();
 
-			String home = simulatorConfig.get(RGActorFactory.homeCommunityId).asString();
+			String home = getSimulatorConfig().get(RGActorFactory.homeCommunityId).asString();
 
 			// add homeCommunityId
 			XCQHomeLabelSim xc = new XCQHomeLabelSim(common, this, home);

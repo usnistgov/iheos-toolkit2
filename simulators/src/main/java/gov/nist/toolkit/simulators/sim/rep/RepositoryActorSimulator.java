@@ -52,7 +52,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 		this.db = db;
 		this.response = response;
 		this.repositoryUniqueId = repositoryUniqueId;
-		this.simulatorConfig = simulatorConfig;
+		setSimulatorConfig(simulatorConfig);
 	}
 
 	public RepositoryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
@@ -60,14 +60,14 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 		this.repIndex = dsSimCommon.repIndex;
 		this.db = dsSimCommon.simCommon.db;;
 		this.response = dsSimCommon.simCommon.response;
-		this.simulatorConfig = simulatorConfig;
+        setSimulatorConfig(simulatorConfig);
 		init();
 	}
 
 	public RepositoryActorSimulator() {}
 
 	public void init() {
-		SimulatorConfigElement configEle = simulatorConfig.get("repositoryUniqueId");
+		SimulatorConfigElement configEle = getSimulatorConfig().get("repositoryUniqueId");
 		if (configEle != null)   // happens when used to implement a Document Recipient
 			this.repositoryUniqueId = configEle.asString();
 	}
@@ -100,7 +100,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 				return false;
 			}
 
-			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, simulatorConfig);
+			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, getSimulatorConfig());
 			mvc.addMessageValidator("PnR", pnrSim, gerb.buildNewErrorRecorder());
 
 			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);

@@ -93,10 +93,10 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
-	<servlet>
-		<servlet-name>simulatorServlet2</servlet-name>
-		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
-	</servlet>
+	<!--<servlet>-->
+		<!--<servlet-name>simulatorServlet2</servlet-name>-->
+		<!--<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>-->
+	<!--</servlet>-->
 	
 	<servlet>
 		<servlet-name>messageServlet</servlet-name>
@@ -107,6 +107,16 @@
 		<servlet-name>siteServlet</servlet-name>
 		<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>
 	</servlet>
+
+    <servlet>
+        <servlet-name>RestDisplay</servlet-name>
+        <servlet-class>gov.nist.toolkit.restTools.RestMessageDisplayServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>RestDisplay</servlet-name>
+        <url-pattern>/rest/display</url-pattern>
+    </servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>toolkitServlet</servlet-name>

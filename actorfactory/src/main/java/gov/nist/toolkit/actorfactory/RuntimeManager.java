@@ -20,7 +20,7 @@ public class RuntimeManager {
     public static BaseActorSimulator getSimulatorRuntime(SimId simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
         SimDb db = new SimDb();
         SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
-        String actorTypeName = config.getType();
+        String actorTypeName = config.getActorType();
         ActorType actorType = ActorType.findActor(actorTypeName);
         String actorSimClassName = actorType.getSimulatorClassName();
         logger.info("Loading runtime for sim " + simId + " of type " + actorTypeName + " of class " + actorSimClassName);

@@ -64,7 +64,7 @@ public class SimManager {
 	}
 
 	static public AbstractActorFactory getActorFactory(SimulatorConfig config) throws Exception {
-		String simtype = config.getType();
+		String simtype = config.getActorType();
 		ActorType at = ActorType.findActor(simtype);
 		AbstractActorFactory af = AbstractActorFactory.getActorFactory(at);
 		return af;

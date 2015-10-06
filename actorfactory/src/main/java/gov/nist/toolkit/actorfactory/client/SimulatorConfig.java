@@ -27,7 +27,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	 * Globally unique id for this simulator
 	 */
 	SimId id;
-	String type;
+	String actorType;
 //	String[] values;   // these are possible values
 	Date expires;
 	boolean isExpired = false;
@@ -51,6 +51,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public static final String PART_OF_RECIPIENT = "Part_of_Recipient";
 	public static final String VALIDATE_CODES = "Validate_Codes";
 	public static final String VALIDATE_AGAINST_PATIENT_IDENTITY_FEED = "Validate_Against_Patient_Identity_Feed";
+	public static final String REST_CALLBACK_URI = "REST_Callback_URI";
 
 	public boolean isExpired() { return isExpired; }
 	public void isExpired(boolean is) { isExpired = is; }
@@ -99,7 +100,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		
 		buf.append("ActorSimulatorConfig:");
 		buf.append(" id=").append(id);
-		buf.append(" type=").append(type);
+		buf.append(" type=").append(actorType);
 		buf.append("\n\telements=[");
 		for (SimulatorConfigElement asce : elements) {
 			buf.append("\n\t\t").append(asce);
@@ -116,9 +117,9 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		
 	}
 	
-	public SimulatorConfig(SimId id, String type, Date expiration) {
+	public SimulatorConfig(SimId id, String actorType, Date expiration) {
 		this.id = id;
-		this.type = type;
+		this.actorType = actorType;
 		expires = expiration;
 	}
 	
@@ -205,8 +206,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		return id;
 	}
 	
-	public String getType() {
-		return type;
+	public String getActorType() {
+		return actorType;
 	}
 	
 	public SimulatorConfigElement get(String name) {
@@ -218,7 +219,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	}
 		
 	public String getDefaultName() {
-		return get("Name").asString(); // + "." + getType();
+		return get("Name").asString(); // + "." + getActorType();
 	}
 	
 	public ValidationContext getValidationContext() {
@@ -231,7 +232,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 
 
 //	public ActorFactory getActorFactory() throws Exception {
-//		String simtype = getType();
+//		String simtype = getActorType();
 //		ActorType at = ActorType.findActor(simtype);
 //		ActorFactory af = ActorFactory.getActorFactory(at);
 //		return af;
