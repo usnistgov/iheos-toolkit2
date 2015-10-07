@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by Diane Azais local on 9/23/2015.
  */
-public class FindDocumentsAll extends GenericQueryTab {
+public class FindDocumentsAllTab extends GenericQueryTab {
 
 
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
@@ -35,7 +35,7 @@ public class FindDocumentsAll extends GenericQueryTab {
     GenericQueryTab genericQueryTab;
     FindDocumentsAllParams sqParams;
 
-    public FindDocumentsAll() {
+    public FindDocumentsAllTab() {
         super(new FindDocumentsSiteActorManager());
     }
 
