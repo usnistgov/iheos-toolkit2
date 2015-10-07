@@ -14,8 +14,8 @@ import spock.lang.Specification
 /**
  * Created by bill on 9/2/15.
  */
-class ListenerFactoryIT extends Specification {
-    static Logger logger = Logger.getLogger(ListenerFactoryIT.class);
+class ListenerFactoryITh extends Specification {
+    static Logger logger = Logger.getLogger(ListenerFactoryITh.class);
     def simId1 = new SimId('reg1')
     Pid pid1 = PidBuilder.createPid('A1^^^&1.2.3&ISO')
     Pid pid2 = PidBuilder.createPid('A2^^^&1.2.3&ISO')

@@ -20,7 +20,7 @@ import spock.lang.Specification
  *
  * Created by bill on 6/15/15.
  */
-class ClientApiIT extends Specification {
+class ClientApiITh extends Specification {
     ClientApi client
     Session session
     SimulatorApi simApi

@@ -141,6 +141,8 @@ public class ToolkitApi {
         new SimulatorApi(session).setConfig(config, parameterName, value);
     }
 
+    public void createTestSession(String name) throws Exception { xdsTestServiceManager().addMesaTestSession(name); }
+
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }
     private XdsTestServiceManager xdsTestServiceManager() { return session.xdsTestServiceManager(); }
     private SiteServiceManager siteServiceManager() { return SiteServiceManager.getSiteServiceManager(); }

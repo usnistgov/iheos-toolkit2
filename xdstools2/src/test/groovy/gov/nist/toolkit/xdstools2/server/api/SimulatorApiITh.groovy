@@ -8,7 +8,7 @@ import spock.lang.Specification
 /**
  * Created by bill on 6/15/15.
  */
-class SimulatorApiIT extends Specification {
+class SimulatorApiITh extends Specification {
     Session session
     String simId = 'myreg'
 

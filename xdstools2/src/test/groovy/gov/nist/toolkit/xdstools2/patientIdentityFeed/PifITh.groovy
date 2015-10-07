@@ -14,8 +14,8 @@ import spock.lang.Specification
 /**
  * Created by bill on 9/9/15.
  */
-class PifIT extends Specification {
-    static Logger logger = Logger.getLogger(PifIT.class);
+class PifITh extends Specification {
+    static Logger logger = Logger.getLogger(PifITh.class);
     def simId1 = 'reg1'
     def pid1 = 'A1^^^&1.2.3&ISO'
     def pid2 = 'A2^^^&1.2.3&ISO'
