@@ -103,13 +103,13 @@ class Runner implements ClickHandler {
 
         // tell the server to run the query. The display is handled by GenericQueryTab which
         // is linked in via the queryCallback parameter
-        //TODO replace with new service function for Find Documents
-        toolkitService.getAll(siteSpec, pidTextBox.getValue().trim(), codeSpec, queryCallback);
+        rigForRunning();
+        toolkitService.findDocuments2(siteSpec, pidTextBox.getValue().trim(), codeSpec, queryCallback);
     }
     }
 
     @Override
     public String getWindowShortName() {
-        return "findalldocuments";
+        return "finddocuments2";
     }
 }
