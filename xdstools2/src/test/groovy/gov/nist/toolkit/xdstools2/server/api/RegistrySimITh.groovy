@@ -9,7 +9,7 @@ import spock.lang.Specification
 /**
  * Created by bill on 9/22/15.
  */
-class RegistrySimIT extends Specification {
+class RegistrySimITh extends Specification {
     SimId testSim = new SimId('testsim')
     ToolkitApi api;
 

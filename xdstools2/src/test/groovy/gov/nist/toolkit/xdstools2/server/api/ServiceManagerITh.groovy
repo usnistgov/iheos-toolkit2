@@ -12,7 +12,7 @@ import spock.lang.Specification
 /**
  * Created by bill on 8/11/15.
  */
-class ServiceManagerIT extends Specification {
+class ServiceManagerITh extends Specification {
     Session session
     SimulatorApi simApi
     String regSimId = 'myreg'

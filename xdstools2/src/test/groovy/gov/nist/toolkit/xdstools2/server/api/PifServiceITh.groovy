@@ -12,7 +12,7 @@ import spock.lang.Specification
 /**
  * Created by bill on 9/23/15.
  */
-class PifServiceIT extends Specification {
+class PifServiceITh extends Specification {
     Session session
     String siteName = 'mike__reg'
     ToolkitApi api;

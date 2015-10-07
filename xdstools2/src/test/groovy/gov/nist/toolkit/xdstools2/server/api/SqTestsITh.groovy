@@ -6,11 +6,11 @@ import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.testengine.transactions.CallType
 import spock.lang.Specification
-
 /**
  * Created by bill on 8/24/15.
  */
-class GetAllTestIT extends Specification {
+class SqTestsITh extends Specification {
+
     ClientApi client
     Session session
     SimulatorApi simApi
@@ -25,7 +25,38 @@ class GetAllTestIT extends Specification {
         simApi = new SimulatorApi(session)
     }
 
-    def 'Run 11990 Register test'() {
+    def 'Initialize SQ tests'() {
+        setup:
+        simApi.delete(regSimId)   // Delete sim since old data will mess up results
+        Simulator sim = simApi.create('reg', regSimId)
+
+        when: 'Create site for simulator'
+        Site site = SimManager.getSite(sim.configs.get(0))
+
+        then: 'site exists'
+        site
+
+        when: 'Declare patientid'
+        Map<String, String> parms  = new HashMap<String, String>();
+        parms.put('$patientid$', pid);
+
+        then:
+        true
+
+        when: 'Test data part 1'
+        boolean status = client.runTest('12346', site, tls, parms, true, CallType.SOAP)
+
+        then:
+        status
+
+        when: 'Test data part 2'
+        status = client.runTest('12374', site, tls, parms, true, CallType.SOAP)
+
+        then:
+        status
+    }
+
+    def 'Run SQ tests'() {
         setup:
         Simulator sim = simApi.create('reg', regSimId)
 
@@ -35,11 +66,10 @@ class GetAllTestIT extends Specification {
         then: 'site exists'
         site
 
-        when: 'Send transaction'
+        when: 'Run SQ tests'
         Map<String, String> parms  = new HashMap<String, String>();
         parms.put('$patientid$', pid);
-
-        boolean status = client.runTest('11990', site, tls, parms, false, CallType.SOAP)
+        boolean status = client.runTestCollection('SQ.b', site, tls, parms, true, CallType.SOAP)
 
         then:
         status
@@ -63,4 +93,5 @@ class GetAllTestIT extends Specification {
         then:
         status
     }
+
 }
