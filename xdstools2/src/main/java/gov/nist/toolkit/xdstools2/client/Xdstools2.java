@@ -37,11 +37,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	static TkProps props = new TkProps();
 
-	// This is probably a conflic with Sunil's code and we
-	// will have to reconcile the initialization.  This is done
-	// here because the initialization of testSessionManager,
-	// immediately following depends on it.
 	static EventBus eventBus = new SimpleEventBus();
+	// This bus is used for v2 v3 integration that signals v2 launch tab event inside the v3 environment
 	EventBus v2V3IntegrationEventBus = null;
 
 	// This is as toolkit wide singleton.  See class for details.
