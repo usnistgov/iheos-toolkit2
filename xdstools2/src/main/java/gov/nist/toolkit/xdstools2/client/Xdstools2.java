@@ -73,7 +73,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	void buildWrapper() {
 		// tabPanel = new TabPanel();
-		if ("xdstools2".equals(GWT.getModuleName())) { // Hide this from V3 module
+		if ("xdstools2".equals(GWT.getModuleName())) { // This RootPanel is exclusive to v2. In other words, the intention of this block is to hide this from V3 module.
 			HorizontalPanel mainMenuWrapper = new HorizontalPanel();
 			mainMenuWrapper.setBorderWidth(1);
 			mainMenuWrapper.add(mainMenuPanel);
