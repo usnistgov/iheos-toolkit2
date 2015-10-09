@@ -9,14 +9,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class SimIdBean {
-    String user;
-    String id;
+    String user = null;
+    String id = null;
+    String actorType = null;
+    String environmentName = null;
 
     public SimIdBean() { }
 
     public SimIdBean(SimId simId) {
         user = simId.user;
         id = simId.id;
+        actorType = simId.getActorType();
+        environmentName = simId.getEnvironmenName();
     }
 
     public String getUser() {
@@ -35,5 +39,21 @@ public class SimIdBean {
         this.id = id;
     }
 
-    public SimId asSimId() { return new SimId(user, id); }
+    public SimId asSimId() { return new SimId(user, id, actorType, environmentName); }
+
+    public String getActorType() {
+        return actorType;
+    }
+
+    public void setActorType(String actorType) {
+        this.actorType = actorType;
+    }
+
+    public String getEnvironmentName() {
+        return environmentName;
+    }
+
+    public void setEnvironmentName(String environmentName) {
+        this.environmentName = environmentName;
+    }
 }

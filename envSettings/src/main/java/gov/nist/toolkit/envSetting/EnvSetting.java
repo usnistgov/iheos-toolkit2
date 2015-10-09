@@ -19,16 +19,22 @@ public class EnvSetting {
 	static Logger logger = Logger.getLogger(EnvSetting.class);
 
 	static public EnvSetting getEnvSetting(String sessionId) throws EnvironmentNotSelectedException {
-		EnvSetting s = settings.get(sessionId);
-		if (s == null) {
+        EnvSetting s = getEnvSettingForSession(sessionId);
+        if (s == null) throw new EnvironmentNotSelectedException("");
+		return s;
+	}
+
+    static public EnvSetting getEnvSettingForSession(String sessionId) {
+        EnvSetting s = settings.get(sessionId);
+        if (s == null) {
             if (DEFAULTSESSIONID.equals(sessionId)) {
                 installDefaultEnvironment();
                 return settings.get(sessionId);
             } else
-                throw new EnvironmentNotSelectedException("");
+                return null;
         }
-		return s;
-	}
+        return s;
+    }
 
     static void installDefaultEnvironment() {
         File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
@@ -44,8 +50,13 @@ public class EnvSetting {
 	public EnvSetting(String sessionId, String name) {
 		File dir = Installation.installation().environmentFile(name);
 		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
-		settings.put(sessionId, new EnvSetting(name, dir));
+        settings.put(sessionId, new EnvSetting(name, dir));
 	}
+
+    public EnvSetting(String envName) {
+        this.envName = envName;
+        this.envDir = Installation.installation().environmentFile(envName);
+    }
 	
 	private EnvSetting(String name, File dir) {
 		this.envName = name;

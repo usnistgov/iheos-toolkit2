@@ -51,8 +51,14 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
 		} else {  // not part of recipient
-			File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
-			addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            if (simId.getEnvironmenName() != null) {
+                EnvSetting es = new EnvSetting(simId.getEnvironmenName());
+                File codesFile = es.getCodesFile();
+                addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            } else {
+                File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+                addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            }
 
 			addEditableConfig(sc, SimulatorConfig.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorConfig.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);

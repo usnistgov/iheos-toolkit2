@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.api;
+package gov.nist.toolkit.services.server;
 
 import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.SimCache;

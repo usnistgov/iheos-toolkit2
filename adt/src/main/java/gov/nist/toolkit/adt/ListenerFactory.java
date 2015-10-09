@@ -25,7 +25,8 @@ public class ListenerFactory {
         nextPort = _firstPort;
         lastPort = _lastPort;
         for (int i=firstPort; i<=lastPort; i++) {
-            threadPool.add(new ThreadPoolItem(i));
+            if (getThreadPoolItem(i) == null)
+                threadPool.add(new ThreadPoolItem(i));
         }
     }
 

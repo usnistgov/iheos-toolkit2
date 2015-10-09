@@ -208,8 +208,11 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>services</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-services</artifactId>
-            <version>2.202.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
@@ -490,6 +493,7 @@
                     <compileSourcesArtifacts>
                         <compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>

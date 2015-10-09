@@ -151,6 +151,7 @@ public class Installation {
 	}
 
 	public String defaultSessionName() { return "STANDALONE"; }
+    public String defaultServiceSessionName() { return "SERVICE"; }
 
 	/**
 	 * Queries the PropertyServiceManager to retrieve the Toolkit Properties as a File.

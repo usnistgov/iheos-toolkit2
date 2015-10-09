@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.api
 
 import gov.nist.toolkit.actorfactory.client.Simulator
+import gov.nist.toolkit.services.server.SimulatorApi
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.session.server.TestSession
 import spock.lang.Specification

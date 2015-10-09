@@ -1,4 +1,5 @@
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.toolkitServices.SimIdBean
 import spock.lang.Specification
 
@@ -30,6 +31,8 @@ class SimIdTest extends Specification {
         given:
         String id = 'mike__reg'
         SimId simId = new SimId(id)
+        simId.setActorType(ActorType.REGISTRY.getName());
+        simId.setEnvironmenName('NA2015')
         when:
         SimIdBean bean = new SimIdBean(simId);
         Response response = target.path("simulators").request().put(Entity.xml(bean));

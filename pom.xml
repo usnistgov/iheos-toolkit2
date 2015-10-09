@@ -56,6 +56,7 @@
         <module>toolkit-api</module>
     <!--<module>simple-service</module>-->
         <module>toolkit-services</module>
+        <module>services</module>
         <!--<module>toolkit-services-test</module>-->
     </modules>
 

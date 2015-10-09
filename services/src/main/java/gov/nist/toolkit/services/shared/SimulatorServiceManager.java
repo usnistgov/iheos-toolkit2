@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.server.serviceManager;
+package gov.nist.toolkit.services.shared;
 
 import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.SimCache;
@@ -18,6 +18,8 @@ import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
@@ -30,8 +32,6 @@ import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdstools2.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.xdstools2.server.api.SimulatorApi;
 import org.apache.log4j.Logger;
 
 import java.io.File;
