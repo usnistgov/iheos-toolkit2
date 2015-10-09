@@ -1,5 +1,6 @@
 package gov.nist.toolkit.adt;
 
+import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -113,7 +114,7 @@ public class ListenerFactory {
                 tm.inUse = true;
                 return tm;
             }
-        throw new ToolkitRuntimeException("Thread pool exhausted - cannot allocate ADT patientIdentityFeed");
+        throw new ThreadPoolExhaustedException("Thread pool exhausted - cannot allocate ADT patientIdentityFeed");
     }
 
     public static List<String> availablePorts() {

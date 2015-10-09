@@ -3,6 +3,7 @@ package gov.nist.toolkit.toolkitServices;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;
+import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 import org.apache.log4j.Logger;
 
 import javax.ws.rs.Consumes;
@@ -29,7 +30,7 @@ public class SimulatorsResource {
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
     public Response setSim(final SimIdBean simIdBean) {
-        SimId simId = simIdBean.asSimId();
+        SimId simId = ToolkitFactory.asServerSimId(simIdBean);
         logger.info("SPI Create simulator " + simId.toString());
         String errors = simId.validateState();
         ToolkitApi api = ToolkitApi.forServiceUse();

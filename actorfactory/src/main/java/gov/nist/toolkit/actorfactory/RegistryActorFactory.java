@@ -51,8 +51,8 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
 		} else {  // not part of recipient
-            if (simId.getEnvironmenName() != null) {
-                EnvSetting es = new EnvSetting(simId.getEnvironmenName());
+            if (simId.getEnvironmentName() != null) {
+                EnvSetting es = new EnvSetting(simId.getEnvironmentName());
                 File codesFile = es.getCodesFile();
                 addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
             } else {

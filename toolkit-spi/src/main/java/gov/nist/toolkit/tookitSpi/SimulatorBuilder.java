@@ -1,7 +1,8 @@
 package gov.nist.toolkit.tookitSpi;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;
+import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -21,7 +22,7 @@ public class SimulatorBuilder {
     }
 
     public SimId create(String id, String user, String actorType, String environmentName) throws ToolkitServiceException {
-        SimId simId = new SimId(user, id, actorType, environmentName);
+        SimId simId = ToolkitFactory.newSimId(id, user, actorType, environmentName);
         SimIdBean bean = new SimIdBean(simId);
         Response response = target.path("simulators").request().put(Entity.xml(bean));
         if (response.getStatus() != 200)

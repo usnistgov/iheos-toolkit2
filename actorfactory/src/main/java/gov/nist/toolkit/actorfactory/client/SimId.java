@@ -81,12 +81,20 @@ public class SimId  implements Serializable, IsSerializable {
         this.actorType = actorType;
     }
 
-    public String getEnvironmenName() {
+    public String getEnvironmentName() {
         return environmenName;
     }
 
     public void setEnvironmenName(String environmenName) {
         this.environmenName = environmenName;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public boolean isUser(String user) {

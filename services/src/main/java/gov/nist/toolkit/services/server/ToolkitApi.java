@@ -1,6 +1,5 @@
 package gov.nist.toolkit.services.server;
 
-import gov.nist.toolkit.actorfactory.AbstractActorFactory;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
@@ -18,6 +17,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSession;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,22 +58,33 @@ public class ToolkitApi {
      * @param actorType - simulator type
      * @param simId - id for the simulator
      * @return - simulator description
+     * @throws NoSimException if actortype does not exist
+     * @throws ThreadPoolExhaustedException if simulator needs to launch a socket listener and no ports are left in the configuration
      * @throws Exception - if simulator of that id already exists
      */
     public Simulator createSimulator(ActorType actorType, SimId simId) throws Exception {
         try {
             simId.setActorType(actorType.getName());
             return simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
-        } catch (Exception e) {
-            if (e.getMessage().contains("Thread pool exhausted")) {
-                // not expecting it to work
-                return null;
-            } else throw e;
         }
+        catch (NoSimException e) {
+            throw e;
+        }
+        catch (ThreadPoolExhaustedException e) {
+            throw e;
+        }
+//        catch (Exception e) {
+//            if (e.getMessage().contains("Thread pool exhausted")) {
+//                // not expecting it to work
+//                return null;
+//            } else throw e;
+//        }
     }
 
     public Simulator createSimulator(SimId simId) throws Exception {
-        return createSimulator(ActorType.findActor(simId.getActorType()), simId);
+        ActorType actorType = ActorType.findActor(simId.getActorType());
+        if (actorType == null) throw new NoSimException("Simulator type " + simId.getActorType() + " does not exist");
+        return createSimulator(actorType, simId);
     }
 
     /**

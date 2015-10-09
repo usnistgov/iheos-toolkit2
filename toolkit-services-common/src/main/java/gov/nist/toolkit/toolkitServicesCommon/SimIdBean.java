@@ -1,6 +1,5 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
-import gov.nist.toolkit.actorfactory.client.SimId;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -8,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class SimIdBean {
+public class SimIdBean implements gov.nist.toolkit.toolkitServicesCommon.SimId{
     String user = null;
     String id = null;
     String actorType = null;
@@ -17,12 +16,13 @@ public class SimIdBean {
     public SimIdBean() { }
 
     public SimIdBean(SimId simId) {
-        user = simId.user;
-        id = simId.id;
+        user = simId.getUser();
+        id = simId.getId();
         actorType = simId.getActorType();
-        environmentName = simId.getEnvironmenName();
+        environmentName = simId.getEnvironmentName();
     }
 
+    @Override
     public String getUser() {
         return user;
     }
@@ -31,6 +31,7 @@ public class SimIdBean {
         this.user = user;
     }
 
+    @Override
     public String getId() {
         return id;
     }
@@ -39,8 +40,9 @@ public class SimIdBean {
         this.id = id;
     }
 
-    public SimId asSimId() { return new SimId(user, id, actorType, environmentName); }
+    public SimId asSimId() { return ToolkitFactory.newSimId(user, id, actorType, environmentName); }
 
+    @Override
     public String getActorType() {
         return actorType;
     }
@@ -49,6 +51,7 @@ public class SimIdBean {
         this.actorType = actorType;
     }
 
+    @Override
     public String getEnvironmentName() {
         return environmentName;
     }

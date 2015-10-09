@@ -1,8 +1,7 @@
-import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.tookitSpi.SimulatorBuilder
-import gov.nist.toolkit.tookitSpi.ToolkitServiceException
+import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.toolkitServicesCommon.SimIdBean
+import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
 import spock.lang.Specification
 
 import javax.ws.rs.client.Client
@@ -32,9 +31,10 @@ class SimIdTest extends Specification {
     def 'Put SimId'() {
         given:
         String id = 'mike__reg'
-        SimId simId = new SimId(id)
-        simId.setActorType(ActorType.REGISTRY.getName());
-        simId.setEnvironmenName('NA2015')
+        SimId simId = ToolkitFactory.newSimId('reg', 'mike', 'reg', 'NA2015');
+//        SimId simId = new SimId(id)
+//        simId.setActorType(ActorType.REGISTRY.getName());
+//        simId.setEnvironmenName('NA2015')
         when:
         SimIdBean bean = new SimIdBean(simId);
         Response response = target.path("simulators").request().put(Entity.xml(bean));
@@ -48,9 +48,9 @@ class SimIdTest extends Specification {
         SimulatorBuilder builder = new SimulatorBuilder('localhost', '8888');
 
         when:
-        SimId simId = builder.create('reg', 'mike', ActorType.REGISTRY.getName(), 'NA2015')
+        SimId simId = builder.create('reg', 'mike', 'reg', 'NA2015')
 
         then:
-        notThrown ToolkitServiceException
+        simId.getId() == 'reg'
     }
 }
