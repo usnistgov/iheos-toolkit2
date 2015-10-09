@@ -7,7 +7,7 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
-import gov.nist.toolkit.xdstools2.client.tabs.findDocumentsAllTab.FindDocumentsAllTab;
+import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
@@ -63,7 +63,7 @@ public class TabLauncher implements ClickHandler {
 		else if (tabType.equals(findDocumentsByRefIdTabLabel)) 
 			new FindDocumentsByRefIdTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(findDocumentsAllParametersTabLabel))
-			new FindDocumentsAllTab().onAbstractTabLoad(container, true, null);
+			new FindDocuments2Tab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(findPatientTabLabel)) 
 			new FindPatientTab().onAbstractTabLoad(container, true, null);		
 		else if (tabType.equals(findFoldersTabLabel)) 

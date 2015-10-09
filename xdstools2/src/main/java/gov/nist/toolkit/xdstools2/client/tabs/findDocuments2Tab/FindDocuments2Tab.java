@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.tabs.findDocumentsAllTab;
+package gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by Diane Azais local on 9/23/2015.
  */
-public class FindDocumentsAllTab extends GenericQueryTab {
+public class FindDocuments2Tab extends GenericQueryTab {
 
 
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
@@ -33,9 +33,9 @@ public class FindDocumentsAllTab extends GenericQueryTab {
     static CoupledTransactions couplings = new CoupledTransactions();
 
     GenericQueryTab genericQueryTab;
-    FindDocumentsAllParams sqParams;
+    FindDocuments2Params sqParams;
 
-    public FindDocumentsAllTab() {
+    public FindDocuments2Tab() {
         super(new FindDocumentsSiteActorManager());
     }
 
@@ -58,7 +58,7 @@ public class FindDocumentsAllTab extends GenericQueryTab {
 
         // Generate the composite widget that allows selection of all the GetAll query parameters. Below is the call
         // sqParams.asWidget() which gets the actual Widget.
-        sqParams = new FindDocumentsAllParams(toolkitService, genericQueryTab);
+        sqParams = new FindDocuments2Params(toolkitService, genericQueryTab);
 
         mainGrid = new FlexTable();  // this is important in some tabs, not this one.  This init should be moved to definition
         topPanel.add(sqParams.asWidget());

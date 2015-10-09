@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.tabs.findDocumentsAllTab;
+package gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
@@ -17,7 +17,7 @@ import java.util.Map;
  * Widget for capturing the parameters for the full FindDocuments (incl. all parameters) query. This does not include PatientID
  * since that is handled elsewhere.
  */
-public class FindDocumentsAllParams {
+public class FindDocuments2Params {
 
     // container for the composite widget being built
     FlexTable paramGrid = new FlexTable();
@@ -35,7 +35,7 @@ public class FindDocumentsAllParams {
     ReturnTypeFilter returnFilter;
     Label errorLabel;
 
-    public FindDocumentsAllParams(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab){
+    public FindDocuments2Params(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab){
         // The collective filter bank being assembled
         codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
 
