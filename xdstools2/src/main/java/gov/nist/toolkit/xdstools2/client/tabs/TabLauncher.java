@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 
 public class TabLauncher implements ClickHandler {
 	TabContainer container;
@@ -48,7 +49,9 @@ public class TabLauncher implements ClickHandler {
 	final static public String testRunnerTabLabel = "Conformance Tests";
 	final static public String nwhinTabLabel = "Pre-OnBoarding Tests";
 	final static public String pidFavoritesLabel = "Manage Favorite Patient IDs";
-	
+	final static public String testsOverviewTabLabel = "Tests Overview";
+
+
 	final static public String testLogLabel = "Test Log Listing";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";	
 	final static public String metadataEditorTabLabel = "Action: Edit";
@@ -120,6 +123,8 @@ public class TabLauncher implements ClickHandler {
 			new RepositoryListingTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(pidFavoritesLabel))
 			new PidFavoritesTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(testsOverviewTabLabel))
+			new TestsOverviewTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(metadataEditorTabLabel)) {
 			MetadataEditorTab t = new MetadataEditorTab();
 			t.setSiteSpec(siteSpec);

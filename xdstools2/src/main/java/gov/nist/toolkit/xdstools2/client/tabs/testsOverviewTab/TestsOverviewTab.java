@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 /**
@@ -13,9 +14,9 @@ public class TestsOverviewTab extends GenericQueryTab {
 
     GenericQueryTab genericQueryTab;
 
-    //TODO not sure which siteactormanager to use
-    public TestsOverviewTab(BaseSiteActorManager siteActorManager) {
-        super(siteActorManager);
+    // this super is kinda useless now - was a good idea for documentation at one time
+    public TestsOverviewTab(){
+    super(new FindDocumentsSiteActorManager());
     }
 
     // Tab initialization
