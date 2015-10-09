@@ -9,8 +9,8 @@ import javax.ws.rs.core.Response;
 /**
  *
  */
-@Path("/simulators")
-public class Simulators {
+@Path("simulators")
+public class SimulatorsResource {
     @PUT
     @Consumes(MediaType.APPLICATION_XML)
     public Response setSim(final SimIdBean simId) {

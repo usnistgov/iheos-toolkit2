@@ -22,7 +22,7 @@ public class Main {
     public static HttpServer startServer() {
         // create a resource config that scans for JAX-RS resources and providers
         // in gov.nist.toolkit.simpleService package
-        final ResourceConfig rc = new ResourceConfig().packages("gov.nist.toolkit.simpleService, gov.nist.toolkit.toolkitServices");
+        final ResourceConfig rc = new ResourceConfig().packages("gov.nist.toolkit.simpleService, gov.nist.toolkit.toolkitServicesTest");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI

@@ -1,5 +1,7 @@
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.simpleService.Main
 import gov.nist.toolkit.toolkitServices.SimIdBean
+import org.glassfish.grizzly.http.server.HttpServer
 import spock.lang.Specification
 
 import javax.ws.rs.client.Client
@@ -7,15 +9,30 @@ import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.client.Entity
 import javax.ws.rs.client.WebTarget
 import javax.ws.rs.core.Response
+
 /**
  *
  */
-class SimIdTest extends Specification {
+class SimIdFakeTest extends Specification {
+    private HttpServer server
     private WebTarget target
 
-    def setup() {
+    def setupGrizzly() {
+        server = Main.startServer();
         Client c = ClientBuilder.newClient();
-        target = c.target('http://localhost:8888/xdstools2/rest/');
+        target = c.target(Main.BASE_URI);
+    }
+
+    def setupToolkit() {
+        Client c = ClientBuilder.newClient();
+        target = c.target('http://localhost:8888/xdstools2');
+    }
+
+    boolean toolkit = false
+
+    def setup() {
+        if (toolkit) setupToolkit()
+        else setupGrizzly()
     }
 
     def 'Get SimId'() {
