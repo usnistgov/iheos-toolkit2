@@ -1,4 +1,4 @@
-package gov.nist.toolkit.toolkitServices;
+package gov.nist.toolkit.toolkitServicesCommon;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
 

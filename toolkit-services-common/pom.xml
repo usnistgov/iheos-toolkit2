@@ -10,10 +10,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>toolkit-api</artifactId>
+    <artifactId>toolkit-services-common</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>actorfactory</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

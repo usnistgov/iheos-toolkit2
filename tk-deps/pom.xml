@@ -16,6 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.7</jdk.version>
         <junit.version>4.11</junit.version>
+        <jersey.version>2.22.1</jersey.version>
         <!--<groovyVersion>2.1.1</groovyVersion>-->
         <groovyVersion>2.4.5</groovyVersion>
         <gwtVersion>2.7.0</gwtVersion>
@@ -66,6 +67,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>toolkit-services-common</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>services</artifactId>

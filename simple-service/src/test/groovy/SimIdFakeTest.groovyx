@@ -1,6 +1,6 @@
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.simpleService.Main
-import gov.nist.toolkit.toolkitServices.SimIdBean
+import SimIdBean
 import org.glassfish.grizzly.http.server.HttpServer
 import spock.lang.Specification
 

@@ -1,6 +1,8 @@
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.toolkitServices.SimIdBean
+import gov.nist.toolkit.tookitSpi.SimulatorBuilder
+import gov.nist.toolkit.tookitSpi.ToolkitServiceException
+import gov.nist.toolkit.toolkitServicesCommon.SimIdBean
 import spock.lang.Specification
 
 import javax.ws.rs.client.Client
@@ -39,5 +41,16 @@ class SimIdTest extends Specification {
 
         then: response.status == 200
 
+    }
+
+    def 'Put SimId via SPI'() {
+        given:
+        SimulatorBuilder builder = new SimulatorBuilder('localhost', '8888');
+
+        when:
+        SimId simId = builder.create('reg', 'mike', ActorType.REGISTRY.getName(), 'NA2015')
+
+        then:
+        notThrown ToolkitServiceException
     }
 }

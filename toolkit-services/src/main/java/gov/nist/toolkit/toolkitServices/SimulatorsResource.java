@@ -2,6 +2,7 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.services.server.ToolkitApi;
+import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;
 import org.apache.log4j.Logger;
 
 import javax.ws.rs.Consumes;
