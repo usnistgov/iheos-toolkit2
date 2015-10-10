@@ -14,7 +14,7 @@ import javax.ws.rs.PathParam;
  *
  */
 
-@Path("simulators")
+@Path("simulator")
 public class SimulatorResource {
     static Logger logger = Logger.getLogger(SimulatorResource.class);
 

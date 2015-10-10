@@ -1,4 +1,4 @@
-package gov.nist.toolkit.tookitSpi;
+package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;

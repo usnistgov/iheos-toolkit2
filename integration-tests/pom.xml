@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>toolkit-spi</artifactId>
+            <artifactId>toolkit-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>

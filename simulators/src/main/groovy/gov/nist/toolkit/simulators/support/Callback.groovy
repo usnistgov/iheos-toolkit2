@@ -1,11 +1,15 @@
 package gov.nist.toolkit.simulators.support
 
-import com.sun.jersey.api.client.Client
-import com.sun.jersey.api.client.ClientResponse
-import com.sun.jersey.api.client.WebResource
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import groovy.util.logging.Log4j
+import org.glassfish.jersey.client.ClientResponse
+
+import javax.ws.rs.client.Client
+import javax.ws.rs.client.ClientBuilder
+import javax.ws.rs.client.Entity
+import javax.ws.rs.client.WebTarget
+
 /**
  * Created by bill on 10/6/15.
  */
@@ -17,23 +21,20 @@ class Callback {
             String payload = new TransactionReportBuilder().build(db, config);
             log.info("Callback to ${callbackURI}");
             try {
+                Client client = ClientBuilder.newClient()
+                WebTarget target = client.target(callbackURI)
 
-                Client client = Client.create();
-
-                WebResource webResource = client.resource(callbackURI);
-
-                ClientResponse response = webResource.type("applicaiton/xml")
-                        .post(ClientResponse.class, payload);
+                ClientResponse response = target
+                        .request('text/xml')
+                        .post(Entity.entity(payload, 'text/xml'),
+                                ClientResponse.class)
 
                 if (response.getStatus() != 200) {
                     throw new RuntimeException("Failed : HTTP error code : "
                             + response.getStatus());
                 }
-
             } catch (Exception e) {
-
                 log.error("Error on callback for simulator ${config.id} to URI ${callbackURI}", e)
-
             }
 
         }

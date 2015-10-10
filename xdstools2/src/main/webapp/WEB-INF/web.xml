@@ -181,6 +181,10 @@
         <servlet-name>jersey</servlet-name>
         <url-pattern>/xdstools2/rest/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>jersey</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
 
     <!--
 		session times out in 15 minutes (default is 30 minutes)

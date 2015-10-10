@@ -59,7 +59,7 @@
         <module>toolkit-services-common</module>
         <module>integration-tests</module>
         <!--<module>toolkit-services-test</module>-->
-        <module>toolkit-spi</module>
+        <module>toolkit-api</module>
     </modules>
 
 

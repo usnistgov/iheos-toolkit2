@@ -1,4 +1,4 @@
-package gov.nist.toolkit.tookitSpi;
+package gov.nist.toolkit.tookitApi;
 
 /**
  * Created by bill on 10/9/15.
