@@ -2,7 +2,6 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;
-import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;

@@ -53,12 +53,13 @@
         <module>error-recording</module>
         <module>adt</module>
         <module>rest-tools</module>
-        <module>toolkit-api</module>
     <!--<module>simple-service</module>-->
         <module>toolkit-services</module>
         <module>services</module>
         <module>toolkit-services-common</module>
+        <module>integration-tests</module>
         <!--<module>toolkit-services-test</module>-->
+        <module>toolkit-spi</module>
     </modules>
 
 
