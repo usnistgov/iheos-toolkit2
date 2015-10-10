@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimExistsException;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -31,7 +32,7 @@ public class SimulatorApi {
         try {
             SimDb db = new SimDb();
             if (db.exists(simID))
-                throw new Exception("Simulator " + simID + " exists");
+                throw new SimExistsException("Simulator " + simID + " exists");
 
             SimCache simCache = new SimCache();
             SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
@@ -45,7 +46,8 @@ public class SimulatorApi {
             throw new Exception("Environment Not Selected", e);
         } catch (Exception e) {
             logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
-            throw new Exception(e.getClass().getName() + ": " + e.getMessage());
+            throw e;
+//            throw new Exception(e.getClass().getName() + ": " + e.getMessage());
         }
     }
 

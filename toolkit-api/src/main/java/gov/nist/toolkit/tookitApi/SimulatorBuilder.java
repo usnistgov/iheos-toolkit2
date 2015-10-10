@@ -21,6 +21,15 @@ public class SimulatorBuilder {
         target = c.target("http://" + hostname + ":" + port + "/xdstools2/rest/");
     }
 
+    /**
+     * Create simulator
+     * @param id
+     * @param user
+     * @param actorType
+     * @param environmentName
+     * @return
+     * @throws ToolkitServiceException
+     */
     public SimId create(String id, String user, String actorType, String environmentName) throws ToolkitServiceException {
         SimId simId = ToolkitFactory.newSimId(id, user, actorType, environmentName);
         SimIdBean bean = new SimIdBean(simId);
@@ -29,4 +38,21 @@ public class SimulatorBuilder {
             throw new ToolkitServiceException(response.getStatus());
         return simId;
     }
+
+    public void delete(String id, String user) throws ToolkitServiceException {
+        SimId simId = ToolkitFactory.newSimId(id, user, null, null);
+        SimIdBean bean = new SimIdBean(simId);
+        Response response = target.path("simulators/_delete/" + user + "__" + id).request().post(Entity.xml(bean));
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response.getStatus());
+    }
+
+
+//    public void delete(String id, String user) throws ToolkitServiceException {
+//        SimId simId = ToolkitFactory.newSimId(id, user, null, null);
+//        SimIdBean bean = new SimIdBean(simId);
+//        Response response = target.path("simulator/" + user + "__" + id).request().delete();
+//        if (response.getStatus() != 200)
+//            throw new ToolkitServiceException(response.getStatus());
+//    }
 }

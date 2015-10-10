@@ -27,4 +27,14 @@ class SimIdTest extends Specification {
         then:
         simId.getId() == 'reg'
     }
+
+    def 'Delete SimId 8888'() {
+        given:
+        SimulatorBuilder builder = new SimulatorBuilder('localhost', '8888');
+
+        when:
+        builder.delete('reg', 'mike')
+
+        then: true
+    }
 }

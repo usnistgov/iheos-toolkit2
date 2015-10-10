@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.BadSimConfigException;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
@@ -83,7 +84,7 @@ public class ToolkitApi {
 
     public Simulator createSimulator(SimId simId) throws Exception {
         ActorType actorType = ActorType.findActor(simId.getActorType());
-        if (actorType == null) throw new NoSimException("Simulator type " + simId.getActorType() + " does not exist");
+        if (actorType == null) throw new BadSimConfigException("Simulator type " + simId.getActorType() + " does not exist");
         return createSimulator(actorType, simId);
     }
 
