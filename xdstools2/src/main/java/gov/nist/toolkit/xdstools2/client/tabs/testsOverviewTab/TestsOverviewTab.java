@@ -1,11 +1,21 @@
 package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import org.junit.runner.Runner;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Diane Azais local on 9/23/2015.
@@ -13,6 +23,18 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 public class TestsOverviewTab extends GenericQueryTab {
 
     GenericQueryTab genericQueryTab;
+
+
+    static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+    static {
+        transactionTypes.add(TransactionType.STORED_QUERY);
+        transactionTypes.add(TransactionType.IG_QUERY);
+        transactionTypes.add(TransactionType.XC_QUERY);
+    }
+
+    // TODO - add proper transaction couplings
+    static CoupledTransactions couplings = new CoupledTransactions();
+
 
     // this super is kinda useless now - was a good idea for documentation at one time
     public TestsOverviewTab(){
@@ -35,7 +57,26 @@ public class TestsOverviewTab extends GenericQueryTab {
         title.setHTML("<h2>Tests Overview</h2>");
         topPanel.add(title);
 
+        // add below-the-line-stuff (PatientId, site selection etc.)
+        // Also link in the Runner class (shown below) which is called when the user clicks on the Run button.
+        // Since this call organizes the site selection grid, it needs the transactionTypes and couplings config
+        // TODO adding this first messes up with the display of the rest of the tab
+        //addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+
+        TestsOverviewWidget testWidget = new TestsOverviewWidget();
+        topPanel.add(testWidget.asWidget());
     }
+
+
+    class Runner implements ClickHandler {
+
+        // Process the run button click
+        public void onClick(ClickEvent event) {
+            resultPanel.clear();
+
+        }
+    }
+
 
     @Override
     public String getWindowShortName() {
