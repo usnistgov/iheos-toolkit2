@@ -1,4 +1,4 @@
-package gov.nist.toolkit.callbackService;
+package gov.nist.toolkit.transactionNotificationService;
 
 /**
  * Created by bill on 10/10/15.

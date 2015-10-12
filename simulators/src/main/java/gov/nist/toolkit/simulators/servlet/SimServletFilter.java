@@ -65,8 +65,8 @@ public class SimServletFilter implements Filter {
 
         // This parameter is the base address of a webservice, for example
         // http://localhost:8080/xdstools2/rest/
-        SimulatorConfigElement callbackBaseAddressEle = config.get(SimulatorConfig.REST_CALLBACK_URI);
-        SimulatorConfigElement callbackClassNameEle = config.get(SimulatorConfig.REST_CALLBACK_CLASS);
+        SimulatorConfigElement callbackBaseAddressEle = config.get(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
+        SimulatorConfigElement callbackClassNameEle = config.get(SimulatorConfig.TRANSACTION_NOTIFICATION_CLASS);
         if (callbackBaseAddressEle == null) return;
         if (callbackClassNameEle == null) return;
         String callbackClassName = callbackClassNameEle.asString();
@@ -79,6 +79,7 @@ public class SimServletFilter implements Filter {
         if (!callbackBase.endsWith("/")) callbackBase = callbackBase + "/";
         String callbackURI = callbackBase + "toolkitcallback";
         new Callback().callback(db, config.getId(), callbackURI, callbackClassName);
+        logger.info("...callback successful");
     }
 
 	public void init(FilterConfig arg0) throws ServletException {

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.callbackService;
+package gov.nist.toolkit.transactionNotificationService;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -11,7 +11,7 @@ public class TransactionLogBean implements TransactionLog {
     private String requestMessageBody;
     private String responseMessageHeader;
     private String responseMessageBody;
-    // implements interface gov.nist.toolkit.callbackService.Callback
+    // implements interface gov.nist.toolkit.transactionNotificationService.Callback
     private String callbackClassName;
     private String simulatorUser;
     private String simulatorId;

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.callbackService;
+package gov.nist.toolkit.transactionNotificationService;
 
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -28,7 +28,7 @@ public class CallbackResource {
         String callbackClassName;
         Class<?> genericCallbackClass;
         try {
-            logger.info("Toolkit Callback...");
+            logger.info("Toolkit Transaction Notification...");
             callbackClassName = log.getCallbackClassName();
             logger.info("...classname - " + callbackClassName);
             if (callbackClassName == null)
@@ -39,17 +39,17 @@ public class CallbackResource {
                 return Response.status(Response.Status.BAD_REQUEST).header("X-Toolkit-Error", "Callback class " + callbackClassName + " does not exist").build();
             }
             logger.info("...exists");
-            Class<Callback> callbackClass;
-            callbackClass = (Class<Callback>) genericCallbackClass;
+            Class<TransactionNotification> callbackClass;
+            callbackClass = (Class<TransactionNotification>) genericCallbackClass;
             logger.info("...implements Callback interface");
-            Callback callbackInstance;
+            TransactionNotification transactionNotificationInstance;
             try {
-                callbackInstance = callbackClass.newInstance();
+                transactionNotificationInstance = callbackClass.newInstance();
             } catch (Exception e) {
                 return Response.status(Response.Status.BAD_REQUEST).header("X-Toolkit-Error", "Cannot create instance of Callback class " + callbackClassName + " - requires no argument constructor").build();
             }
             logger.info("...instance built - calling");
-            callbackInstance.callback(log);
+            transactionNotificationInstance.notify(log);
             logger.info("...Done");
         }
         catch (Exception e) {

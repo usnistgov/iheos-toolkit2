@@ -60,7 +60,7 @@
         <!--<module>integration-tests</module>-->
         <!--<module>toolkit-services-test</module>-->
         <module>toolkit-api</module>
-        <module>callback-service</module>
+        <module>transaction-notification-service</module>
     </modules>
 
 

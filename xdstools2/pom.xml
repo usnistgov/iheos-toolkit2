@@ -208,7 +208,7 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>callback-service</artifactId>
+            <artifactId>transaction-notification-service</artifactId>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
