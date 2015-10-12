@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Created by Diane Azais local on 10/11/2015.
  */
-public class TestButtonsWidget extends Widget{
+public class TestButtonsWidget extends Widget {
     public HorizontalPanel mainPanel;
 
     public TestButtonsWidget(){

@@ -6,15 +6,15 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 public class Test {
     String number;
     String description;
-    TestButtonsWidget commands;
+    String commands;
     String time;
     String status;
 
 
-    public Test(String _number, String _description, String _time, String _status){
+    public Test(String _number, String _description, String _commands, String _time, String _status){
         number = _number;
         description = _description;
-        commands = new TestButtonsWidget();
+        commands = _commands;
         time = _time;
         status =_status;
     }
