@@ -10,6 +10,9 @@ public class LoggingCallback implements Callback {
 
     @Override
     public void callback(TransactionLog log) {
-        logger.info("Toolkit callback - \n" + log.getRequestMessageHeader());
+        logger.info("Toolkit callback called...\n"
+                + "...User " + log.getSimulatorUser() + "\n"
+                + "...SimulatorId " + log.getSimulatorId() + "\n"
+                + log.getRequestMessageHeader());
     }
 }

@@ -13,6 +13,26 @@ public class TransactionLogBean implements TransactionLog {
     private String responseMessageBody;
     // implements interface gov.nist.toolkit.callbackService.Callback
     private String callbackClassName;
+    private String simulatorUser;
+    private String simulatorId;
+
+    @Override
+    public String getSimulatorUser() {
+        return simulatorUser;
+    }
+
+    @Override
+    public String getSimulatorId() {
+        return simulatorId;
+    }
+
+    public void setSimulatorUser(String simulatorUser) {
+        this.simulatorUser = simulatorUser;
+    }
+
+    public void setSimulatorId(String simulatorId) {
+        this.simulatorId = simulatorId;
+    }
 
     @Override
     public String getRequestMessageHeader() {
@@ -50,7 +70,6 @@ public class TransactionLogBean implements TransactionLog {
         this.responseMessageBody = responseMessageBody;
     }
 
-    @Override
     public String getCallbackClassName() {
         return callbackClassName;
     }

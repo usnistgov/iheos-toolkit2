@@ -172,7 +172,7 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>gov.nist.toolkit</param-value>
         </init-param>
-        <init-param>
+        <init-param>  <!-- returns debug info in X-JERSEY-* headers -->
             <param-name>jersey.config.server.tracing.type</param-name>
             <param-value>ALL</param-value>
         </init-param>
@@ -184,11 +184,11 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>jersey</servlet-name>
-        <url-pattern>/xdstools2/rest/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>jersey</servlet-name>
         <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>   <!-- for running in Intellij -->
+        <servlet-name>jersey</servlet-name>
+        <url-pattern>/xdstools2/rest/*</url-pattern>
     </servlet-mapping>
 
     <!--

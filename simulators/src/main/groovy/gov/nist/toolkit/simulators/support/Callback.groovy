@@ -18,7 +18,7 @@ class Callback {
     def callback(SimDb db, SimId simId, String callbackURI, String callbackClassName) {
         if (callbackURI) {
             assert callbackURI.startsWith("http")
-            TransactionLogBean bean = new TransactionReportBuilder().asBean(db, callbackClassName);
+            TransactionLogBean bean = new TransactionReportBuilder().asBean(db, simId, callbackClassName);
 //            String payload = new TransactionReportBuilder().build(db, config);
             log.info("Callback to ${callbackURI}");
             try {
