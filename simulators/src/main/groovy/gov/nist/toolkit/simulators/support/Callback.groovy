@@ -35,7 +35,7 @@ class Callback {
                             response.getHeaderString("X-Toolkit-Error"));
                 }
             } catch (Exception e) {
-                log.error("Error on callback for simulator ${simId} to URI ${callbackURI} to class ${callbackClassName}", e)
+                log.error("Error on callback for simulator ${simId} to URI ${callbackURI} to class ${bean.callbackClassName}")
             }
 
         }

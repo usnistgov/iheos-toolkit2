@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -24,7 +23,7 @@ public class CallbackResource {
     }
 
     @POST
-    public Response callback(@BeanParam TransactionLogBean log)  {
+    public Response callback(TransactionLogBean log)  {
 //        TransactionLogBean log = new TransactionLogBean();
         String callbackClassName;
         Class<?> genericCallbackClass;
