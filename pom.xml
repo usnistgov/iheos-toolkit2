@@ -57,9 +57,10 @@
         <module>toolkit-services</module>
         <module>services</module>
         <module>toolkit-services-common</module>
-        <module>integration-tests</module>
+        <!--<module>integration-tests</module>-->
         <!--<module>toolkit-services-test</module>-->
         <module>toolkit-api</module>
+        <module>callback-service</module>
     </modules>
 
 

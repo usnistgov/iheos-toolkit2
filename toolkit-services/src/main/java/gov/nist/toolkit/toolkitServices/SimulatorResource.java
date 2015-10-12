@@ -23,6 +23,7 @@ public class SimulatorResource {
     static Logger logger = Logger.getLogger(SimulatorResource.class);
 
     public SimulatorResource() {
+        logger.info("SimulatorResource loaded");
         ResourceConfig resourceConfig = new ResourceConfig(SimulatorResource.class);
         resourceConfig.property(ServerProperties.TRACING, "ALL");
     }

@@ -2,7 +2,6 @@ package gov.nist.toolkit.actorfactory.client;
 
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -52,6 +51,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public static final String VALIDATE_CODES = "Validate_Codes";
 	public static final String VALIDATE_AGAINST_PATIENT_IDENTITY_FEED = "Validate_Against_Patient_Identity_Feed";
 	public static final String REST_CALLBACK_URI = "REST_Callback_URI";
+    public static final String REST_CALLBACK_CLASS = "REST_Callback_Class";
 
 	public boolean isExpired() { return isExpired; }
 	public void isExpired(boolean is) { isExpired = is; }
