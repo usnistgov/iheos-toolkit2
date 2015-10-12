@@ -16,6 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jdk.version>1.7</jdk.version>
         <junit.version>4.11</junit.version>
+        <jersey.version>2.22.1</jersey.version>
         <!--<groovyVersion>2.1.1</groovyVersion>-->
         <groovyVersion>2.4.5</groovyVersion>
         <gwtVersion>2.7.0</gwtVersion>
@@ -66,6 +67,31 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>transaction-notification-service</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>toolkit-services-common</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>toolkit-api</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>services</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
+                <artifactId>toolkit-services</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>rest-tools</artifactId>
@@ -318,16 +344,25 @@
                 <artifactId>http-builder</artifactId>
                 <version>0.7.1</version>
             </dependency>
+
             <dependency>
-                <groupId>com.sun.jersey</groupId>
-                <artifactId>jersey-server</artifactId>
-                <version>1.9</version>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <!-- if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core"  -->
+                <artifactId>jersey-container-servlet</artifactId>
+                <version>${jersey.version}</version>
             </dependency>
+
             <dependency>
-                <groupId>com.sun.jersey</groupId>
+                <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-client</artifactId>
-                <version>1.9</version>
+                <version>${jersey.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-common</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>soap</groupId>
                 <artifactId>soap</artifactId>

@@ -45,20 +45,27 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		if (isRecipient) {  // part of recipient
 			addEditableConfig(sc, SimulatorConfig.VALIDATE_CODES, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
-			addEditableConfig(sc, SimulatorConfig.REST_CALLBACK_URI, ParamType.TEXT, "");
+			addEditableConfig(sc, SimulatorConfig.TRANSACTION_NOTIFICATION_URI, ParamType.TEXT, "");
 			addFixedConfig(sc, SimulatorConfig.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorConfig.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
 			addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
 		} else {  // not part of recipient
-			File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
-			addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            if (simId.getEnvironmentName() != null) {
+                EnvSetting es = new EnvSetting(simId.getEnvironmentName());
+                File codesFile = es.getCodesFile();
+                addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            } else {
+                File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+                addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            }
 
 			addEditableConfig(sc, SimulatorConfig.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorConfig.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorConfig.VALIDATE_CODES, ParamType.BOOLEAN, true);
-			addEditableConfig(sc, SimulatorConfig.REST_CALLBACK_URI, ParamType.TEXT, "");
+			addEditableConfig(sc, SimulatorConfig.TRANSACTION_NOTIFICATION_URI, ParamType.TEXT, "");
+            addEditableConfig(sc, SimulatorConfig.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
 			addFixedConfig(sc, SimulatorConfig.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 			addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);

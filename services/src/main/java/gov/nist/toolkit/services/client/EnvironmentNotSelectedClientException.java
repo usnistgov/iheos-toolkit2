@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.services.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

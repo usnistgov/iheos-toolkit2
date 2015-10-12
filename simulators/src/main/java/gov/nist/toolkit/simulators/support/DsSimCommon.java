@@ -383,11 +383,11 @@ public class DsSimCommon {
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
             simCommon.generateLog();
-//            SimulatorConfigElement callbackElement = getSimulatorConfig().get(SimulatorConfig.REST_CALLBACK_URI);
+//            SimulatorConfigElement callbackElement = getSimulatorConfig().get(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {
 //                String callbackURI = callbackElement.asString();
 //                if (callbackURI != null && !callbackURI.equals("")) {
-//                    new Callback().callback(simCommon.db, getSimulatorConfig(), callbackURI);
+//                    new Callback().notify(simCommon.db, getSimulatorConfig(), callbackURI);
 //                }
 //            }
         } catch (IOException e) {
