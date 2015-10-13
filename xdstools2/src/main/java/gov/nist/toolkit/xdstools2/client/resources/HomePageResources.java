@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client;
+package gov.nist.toolkit.xdstools2.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;

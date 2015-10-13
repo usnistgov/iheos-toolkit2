@@ -13,6 +13,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Button;
+import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 
 /**
  * Created by Diane Azais local on 10/12/2015. Inspired by ImagesCell.java by L.Pelov.
@@ -71,9 +72,13 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
 
         // Retrieve the widget to display in HTML form
         //TestButtonsWidget widget = new TestButtonsWidget();
-        Button bt1 = new Button("bt1");
+       // Button bt1 = new Button("bt1");
         String widgetStr = bt1.getElement().toString();
         SafeHtml widgetHTML = SafeHtmlUtils.fromString(widgetStr);
+
+        TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
+
+        RESOURCES.getPlayIcon();
 
         SafeHtml rendered = templates.cell("ICON_PDF", style, widgetHTML);
         sb.append(rendered);

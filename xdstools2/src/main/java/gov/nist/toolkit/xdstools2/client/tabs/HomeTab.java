@@ -11,7 +11,7 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.HomePageResources;
+import gov.nist.toolkit.xdstools2.client.resources.HomePageResources;
 
 public class HomeTab extends GenericQueryTab {
 	//	private static final String Container = null;
