@@ -12,16 +12,16 @@ public interface TestsOverviewResources extends ClientBundle {
         public static final TestsOverviewResources INSTANCE = GWT.create(TestsOverviewResources.class);
 
         // ----- Load icons -----//
-        @Source("icons/delete.png")
+        @Source("icons/delete_24x24.png")
         ImageResource getRemoveIcon();
 
-        @Source("icons/refresh-128.png")
+        @Source("icons/refresh_24x24.png")
         ImageResource getRefreshIcon();
 
-        @Source("icons/play.png")
+        @Source("icons/play_24x24.png")
         ImageResource getPlayIcon();
 
-        @Source("icons/Button_Blank_Blue_Icon_32.png")
+        @Source("icons/blue_button_24x24.png")
         ImageResource getBlueRoundIcon();
 
 }

@@ -1,12 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +10,9 @@ import java.util.List;
  * Created by Diane Azais local on 10/11/2015.
  */
 public class TestsOverviewWidget extends CellTable<Test> {
+
+    TextColumn<Test> testnumberColumn, descriptionColumn, timeColumn, statusColumn;
+    TestButtonsColumn<Test> buttonsColumn;
 
     /**
      * The list of data to display.
@@ -27,7 +25,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
     public TestsOverviewWidget(){
         setDefaults();
 
-        TextColumn<Test> testnumberColumn = new TextColumn<Test>() {
+        testnumberColumn = new TextColumn<Test>() {
             @Override
             public String getValue(Test object) {
                 return object.number;
@@ -35,7 +33,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         };
         addColumn(testnumberColumn, "Test Number");
 
-        TextColumn<Test> descriptionColumn = new TextColumn<Test>() {
+        descriptionColumn = new TextColumn<Test>() {
             @Override
             public String getValue(Test object) {
                 return object.description;
@@ -44,7 +42,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         addColumn(descriptionColumn, "Description");
 
         // Create custom TestButtonsCells
-        TestButtonsColumn<Test> buttonsColumn = new TestButtonsColumn<Test>() {
+        buttonsColumn = new TestButtonsColumn<Test>() {
             @Override
             public String getValue(Test object) {
                 return object.commands;
@@ -52,7 +50,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         };
         addColumn(buttonsColumn, "Commands");
 
-        TextColumn<Test> timeColumn = new TextColumn<Test>() {
+        timeColumn = new TextColumn<Test>() {
             @Override
             public String getValue(Test object) {
                 return object.time;
@@ -60,7 +58,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         };
         addColumn(timeColumn, "Time");
 
-        TextColumn<Test> statusColumn = new TextColumn<Test>() {
+        statusColumn = new TextColumn<Test>() {
             @Override
             public String getValue(Test object) {
                 return object.status;

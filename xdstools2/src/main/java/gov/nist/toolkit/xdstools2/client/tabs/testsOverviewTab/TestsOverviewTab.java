@@ -41,6 +41,7 @@ public class TestsOverviewTab extends GenericQueryTab {
     super(new FindDocumentsSiteActorManager());
     }
 
+
     // Tab initialization
     @Override
     public void onTabLoad(TabContainer container, boolean select, String eventName) {

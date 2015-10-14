@@ -4,6 +4,7 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safecss.shared.SafeStylesUtils;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
@@ -12,6 +13,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 
@@ -21,6 +23,15 @@ import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
  * Custom cell to display the TestButtonsWidget.
  */
 public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
+    TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
+
+    SafeHtml PLAY_ICON = makeImage(RESOURCES.getPlayIcon());
+    SafeHtml REMOVE_ICON = makeImage(RESOURCES.getRemoveIcon());
+
+    Button TEST_PLAN_BUTTON = new Button("Test Plan");
+    Button LOG_BUTTON = new Button("Log");
+    Button TEST_DESCRIPTION_BUTTON = new Button("Full Test Description");
+
 
     /**
      * The HTML templates used to render the cell.
@@ -64,23 +75,44 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
             return;
         }
 
-        // TODO this should be some kind of parameter on which to base the rendering of the cell
-        // SafeHtml safeValue = SafeHtmlUtils.fromString(value);
+        // ------ generate the composite cell -----
+        SafeStyles style = SafeStylesUtils.fromTrustedString("float:left;cursor:pointer;margin:3px;");
 
-        // generate the composite cell
-        SafeStyles style = SafeStylesUtils.fromTrustedString("float:left;cursor:hand;cursor:pointer;");
-
-        // Retrieve the widget to display in HTML form
-        //TestButtonsWidget widget = new TestButtonsWidget();
-       // Button bt1 = new Button("bt1");
-        String widgetStr = bt1.getElement().toString();
-        SafeHtml widgetHTML = SafeHtmlUtils.fromString(widgetStr);
-
-        TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
-
-        RESOURCES.getPlayIcon();
-
-        SafeHtml rendered = templates.cell("ICON_PDF", style, widgetHTML);
+        SafeHtml rendered = templates.cell("PLAY_ICON", style, PLAY_ICON);
         sb.append(rendered);
+
+        rendered = templates.cell("REMOVE_ICON", style, REMOVE_ICON);
+        sb.append(rendered);
+
+        SafeHtml testplanButtonHtml = makeButton(TEST_PLAN_BUTTON);
+        rendered = templates.cell("TEST_PLAN_BUTTON", style, testplanButtonHtml);
+        sb.append(rendered);
+
+        SafeHtml logButtonHtml = makeButton(LOG_BUTTON);
+        rendered = templates.cell("LOG_BUTTON", style, logButtonHtml);
+        sb.append(rendered);
+
+        SafeHtml testDescrButtonHtml = makeButton(TEST_DESCRIPTION_BUTTON);
+        rendered = templates.cell("TEST_DESCRIPTION_BUTTON", style, testDescrButtonHtml);
+        sb.append(rendered);
+    }
+
+    /**
+     * Make icons available as SafeHtml
+     * @param resource the image resource to transform
+     * @return SafeHtml code for the image
+     */
+    private static SafeHtml makeImage(ImageResource resource) {
+        AbstractImagePrototype proto = AbstractImagePrototype.create(resource);
+        return proto.getSafeHtml();
+    }
+
+    /**
+     * Make buttons available as SafeHtml
+     * @param b the button
+     * @return SafeHtml code for the button
+     */
+    private static SafeHtml makeButton(Button b){
+        return SafeHtmlUtils.fromTrustedString(b.getElement().toString());
     }
 }
