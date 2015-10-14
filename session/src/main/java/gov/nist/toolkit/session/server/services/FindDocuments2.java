@@ -98,7 +98,6 @@ public class FindDocuments2 extends CommonService {
                 returnsType.add("ObjectRef");
             }
 
-            //TODO do we need sections information (XCA etc)?
             List<String> sections = new ArrayList<String>();
             if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
                 sections.add("XDS");
