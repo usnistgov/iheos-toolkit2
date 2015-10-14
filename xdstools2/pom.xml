@@ -264,6 +264,13 @@
             <artifactId>security-common</artifactId>
         </dependency>
         <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>ui-theme</artifactId>
+            <classifier>sources</classifier>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
         </dependency>
@@ -550,7 +557,7 @@
                     <compileReport>false</compileReport>
                     <module>gov.nist.toolkit.xdstools2.Xdstools2</module>
                     <!--<logLevel>INFO</logLevel>-->
-                    <!--<style>${gwt.style}</style>-->
+                    <style>DETAILED</style>
                     <copyWebapp>true</copyWebapp>
                     <!-- <genParam>true</genParam> -->
                 </configuration>

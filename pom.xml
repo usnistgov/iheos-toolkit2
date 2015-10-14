@@ -18,6 +18,7 @@
         <module>xds-exceptions</module>
         <module>actor-transaction</module>
         <module>docref</module>
+        <module>ui-theme</module>
         <module>xdstools2</module>
         <module>session</module>
         <module>simulators</module>

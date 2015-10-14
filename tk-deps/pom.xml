@@ -238,6 +238,13 @@
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
+                <artifactId>ui-theme</artifactId>
+                <classifier>sources</classifier>
+                <version>2.202.0-SNAPSHOT</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
                 <artifactId>wsseTool</artifactId>
                 <version>1.3.1</version>
             </dependency>
