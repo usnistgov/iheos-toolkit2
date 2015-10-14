@@ -1,7 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +50,17 @@ public class TestsOverviewWidget extends CellTable<Test> {
                 return object.commands;
             }
         };
+        buttonsColumn.setFieldUpdater(new FieldUpdater<Test, String>() {
+
+            @Override
+            /**
+             * Return the element of the buttons cell that was clicked (icon or button).
+             */
+            public void update(int index, Test object, String value) {
+                Window.alert("This is the field updater, with value: " + value + " Index: " + index);
+                //TODO add appropriate action
+            }
+        });
         addColumn(buttonsColumn, "Commands");
 
         timeColumn = new TextColumn<Test>() {

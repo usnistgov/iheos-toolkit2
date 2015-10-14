@@ -3,7 +3,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safecss.shared.SafeStylesUtils;
@@ -97,6 +101,54 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
         sb.append(rendered);
     }
 
+
+    /**
+     * Called when an event occurs in a rendered instance of this Cell. The
+     * parent element refers to the element that contains the rendered cell, NOT
+     * to the outermost element that the Cell rendered.
+     *
+     * Passes the name of the component that was clicked (icon or button) to the update component valueUpdater.
+     */
+    @Override
+    public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context,
+                               Element parent, String value, NativeEvent event,
+                               com.google.gwt.cell.client.ValueUpdater<String> valueUpdater) {
+
+        // Let AbstractCell handle the keydown event.
+        super.onBrowserEvent(context, parent, value, event, valueUpdater);
+
+        // Handle the click event.
+        if ("click".equals(event.getType())) {
+
+            // Ignore clicks that occur outside of the outermost element.
+            EventTarget eventTarget = event.getEventTarget();
+            if (parent.isOrHasChild(Element.as(eventTarget))) {
+
+                // use this to get the selected element!!
+                Element el = Element.as(eventTarget);
+
+                // check if we really click on the image
+                if (el.getNodeName().equalsIgnoreCase("IMG") || el.getNodeName().equalsIgnoreCase("BUTTON")) {
+                    doAction(el.getParentElement().getAttribute("name"),
+                            valueUpdater);
+                }
+
+            }
+        }
+
+    };
+
+    /**
+     * onEnterKeyDown is called when the user presses the ENTER key will the
+     * Cell is selected. You are not required to override this method, but its a
+     * common convention that allows your cell to respond to key events.
+     */
+    @Override
+    protected void onEnterKeyDown(Context context, Element parent,
+                                  String value, NativeEvent event, ValueUpdater<String> valueUpdater) {
+        doAction(value, valueUpdater);
+    }
+
     /**
      * Make icons available as SafeHtml
      * @param resource the image resource to transform
@@ -115,4 +167,21 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
     private static SafeHtml makeButton(Button b){
         return SafeHtmlUtils.fromTrustedString(b.getElement().toString());
     }
+
+    /**
+     * Internal action
+     *
+     * @param value
+     *            selected value
+     * @param valueUpdater
+     *            value updater or the custom value update to be called
+     */
+    private void doAction(String value, ValueUpdater<String> valueUpdater) {
+        // Trigger a value updater. In this case, the value doesn't actually
+        // change, but we use a ValueUpdater to let the app know that a value
+        // was clicked.
+        if (valueUpdater != null)
+            valueUpdater.update(value);
+    }
+
 }
