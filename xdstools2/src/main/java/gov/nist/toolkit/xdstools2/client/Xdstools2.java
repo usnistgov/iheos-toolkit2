@@ -2,8 +2,11 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -26,7 +29,11 @@ import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorT
 
 public class Xdstools2 implements EntryPoint, TabContainer {
 
-	HorizontalPanel tabPanelWrapper = new HorizontalPanel();
+	public static final int TRAY_SIZE = 190;
+	public static final int TRAY_CTL_BTN_SIZE = 23;
+	private SplitLayoutPanel mainSplitPanel = new SplitLayoutPanel(3);
+//	HorizontalPanel tabPanelWrapper = new HorizontalPanel();
+
 	VerticalPanel mainMenuPanel = new VerticalPanel();
 	static TabPanel tabPanel = new TabPanel();
 
@@ -74,20 +81,103 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 	void buildWrapper() {
 		// tabPanel = new TabPanel();
 		if ("xdstools2".equals(GWT.getModuleName())) { // This RootPanel is exclusive to v2. In other words, the intention of this block is to hide this from V3 module.
-			HorizontalPanel mainMenuWrapper = new HorizontalPanel();
-			mainMenuWrapper.setBorderWidth(1);
-			mainMenuWrapper.add(mainMenuPanel);
-			tabPanelWrapper.add(mainMenuWrapper);
-			tabPanelWrapper.add(tabPanel);
-			RootPanel.get().insert(tabPanelWrapper, 0);
+
+
+			Widget decoratedTray = decorateMenuContainer();
+
+			mainSplitPanel.addWest(decoratedTray, TRAY_SIZE);
+			mainSplitPanel.setWidgetToggleDisplayAllowed(decoratedTray,true);
+
+
+			tabPanel.setWidth("100%");
+			tabPanel.setHeight("100%");
+
+			// Wrap tab panel in a scroll panel
+			ScrollPanel spTabPanel = new ScrollPanel(tabPanel);
+			spTabPanel.setAlwaysShowScrollBars(false);
+			mainSplitPanel.add(spTabPanel);
+
+//			RootPanel.get().insert(mainSplitPanel, 0);
+
+			RootLayoutPanel.get().add(mainSplitPanel);
+
+			Window.addResizeHandler(new ResizeHandler() {
+				@Override
+				public void onResize(ResizeEvent event) {
+					resizeToolkit();
+				}
+			});
 		}
 
-		tabPanel.setWidth("100%");
-		tabPanel.setHeight("100%");
-		tabPanelWrapper.setWidth("100%");
-		tabPanelWrapper.setHeight("100%");
 	}
 
+	private Widget decorateMenuContainer() {
+
+		final VerticalPanel vpCollapsible =  new VerticalPanel();
+
+		// Set margins
+		mainMenuPanel.getElement().getStyle().setMargin(3, Style.Unit.PX);
+
+
+
+		// Make it Collapsible
+
+		final HTML menuTrayStateToBe = new HTML("<<");
+		menuTrayStateToBe.setTitle("Collapse");
+
+		// Make it rounded
+		menuTrayStateToBe.setStyleName("roundedButton1");
+		menuTrayStateToBe.setWidth("15px");
+
+//		vpCollapsible.setBorderWidth(1);
+		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		vpCollapsible.add(menuTrayStateToBe);
+		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		vpCollapsible.add(mainMenuPanel);
+
+
+		// Wrap menu in a scroll panel
+		final ScrollPanel spMenu = new ScrollPanel(vpCollapsible);
+
+
+		menuTrayStateToBe.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (menuTrayStateToBe.getText().equals("<<")) {
+					menuTrayStateToBe.setHTML(">>");
+					menuTrayStateToBe.setTitle("Expand");
+					mainMenuPanel.setVisible(false);
+					mainSplitPanel.setWidgetSize(spMenu, TRAY_CTL_BTN_SIZE);
+				} else {
+					menuTrayStateToBe.setHTML("<<");
+					menuTrayStateToBe.setTitle("Collapse");
+					mainMenuPanel.setVisible(true);
+					mainSplitPanel.setWidgetSize(spMenu,TRAY_SIZE);
+				}
+			}
+		});
+
+
+
+		return spMenu;
+	}
+
+
+
+	private void resizeToolkit() {
+		long containerWidth =  mainSplitPanel.getParent().getElement().getClientWidth();
+		long containerHeight = mainSplitPanel.getParent().getElement().getClientHeight() - 42; /* compensate for tab bar height, which is a fixed size */
+
+
+		int selectedTabIndex  = tabPanel.getTabBar().getSelectedTab();
+
+		if (selectedTabIndex>=0) {
+//			tabPanel.setWidth("100%");
+//			tabPanel.getWidget(selectedTabIndex).setWidth("100%");
+			tabPanel.getWidget(selectedTabIndex).setHeight(containerHeight + "px");
+		}
+
+	}
 
 	public void addTab(VerticalPanel w, String title, boolean select) {
 		HTML left = new HTML();
@@ -97,11 +187,13 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		right.setHTML("&nbsp");
 
 		HorizontalPanel wrapper = new HorizontalPanel();
+
 		wrapper.add(left);
 		wrapper.add(w);
 		wrapper.add(right);
 		wrapper.setCellWidth(left, "1%");
 		wrapper.setCellWidth(right, "1%");
+
 
 		tabPanel.add(wrapper, title);
 
@@ -109,6 +201,8 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 		if (select)
 			tabPanel.selectTab(index);
+		resizeToolkit();
+
 
 		try {
 			if (getIntegrationEventBus()!=null && index>0) {
