@@ -21,12 +21,12 @@ public class PasswordManagement {
 		signInCallbacks.add(callback);
 	}
 	
-//	public static void rmSignInCallback(AsyncCallback<Boolean> callback) {
-//		signInCallbacks.remove(callback);
+//	public static void rmSignInCallback(AsyncCallback<Boolean> notify) {
+//		signInCallbacks.remove(notify);
 //	}
 	
 	/**
-	 * Register callback to be called after authentication completes.  Authentication
+	 * Register notify to be called after authentication completes.  Authentication
 	 * is an asynchronous event so the callbacks represent something to be
 	 * done after authentication is successful.
 	 */

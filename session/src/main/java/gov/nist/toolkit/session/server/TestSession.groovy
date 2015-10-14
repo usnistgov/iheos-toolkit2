@@ -5,7 +5,7 @@ import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
 /**
- * Created by bill on 6/15/15.
+ * This is used to initialize parts of toolkit for internal unit tests.
  */
 class TestSession {
 

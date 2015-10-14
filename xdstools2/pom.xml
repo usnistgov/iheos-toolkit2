@@ -127,6 +127,58 @@
                 <build.profile.id>Sunil</build.profile.id>
             </properties>
         </profile>
+        <profile>
+            <id>Integration-Tests</id>
+            <properties>
+                <build.profile.id>Integration-Tests</build.profile.id>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>run-integration-tests</id>
+                                <phase>integration-test</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <version>2.2</version>
+                        <configuration>
+                            <path>/</path>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>start-tomcat</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <fork>true</fork>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-tomcat</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>shutdown</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
     
     <name>XDS Toolkit</name>
@@ -154,6 +206,18 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>transaction-notification-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>services</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>toolkit-services</artifactId>
+        </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>rest-tools</artifactId>
@@ -311,6 +375,27 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.glassfish.jersey.containers</groupId>-->
+            <!--&lt;!&ndash; if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core"  &ndash;&gt;-->
+            <!--<artifactId>jersey-container-servlet</artifactId>-->
+            <!--<version>2.22.1</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>2.22.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>2.22.1</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.sun.jersey</groupId>-->
+            <!--<artifactId>jersey-server</artifactId>-->
+            <!--<version>1.9</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -412,6 +497,7 @@
                     <compileSourcesArtifacts>
                         <compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>
