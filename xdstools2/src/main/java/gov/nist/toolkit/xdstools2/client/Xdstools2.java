@@ -30,7 +30,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorT
 public class Xdstools2 implements EntryPoint, TabContainer {
 
 	public static final int TRAY_SIZE = 190;
-	public static final int TRAY_CTL_BTN_SIZE = 23;
+	public static final int TRAY_CTL_BTN_SIZE = 9; // 23
 	private SplitLayoutPanel mainSplitPanel = new SplitLayoutPanel(3);
 //	HorizontalPanel tabPanelWrapper = new HorizontalPanel();
 
@@ -123,7 +123,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		// Make it Collapsible
 
 		final HTML menuTrayStateToBe = new HTML("&laquo;");
-		menuTrayStateToBe.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		menuTrayStateToBe.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		menuTrayStateToBe.getElement().getStyle().setFontSize(14, Style.Unit.PX);
 		menuTrayStateToBe.setTitle("Collapse");
 
@@ -131,6 +131,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 //		menuTrayStateToBe.setStyleName("roundedButton1");
 		menuTrayStateToBe.setStyleName("simplePointer");
 		menuTrayStateToBe.setWidth("15px");
+		menuTrayStateToBe.setWidth("100%");
 
 //		vpCollapsible.setBorderWidth(1);
 		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
@@ -142,7 +143,6 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 		// Wrap menu in a scroll panel
 		final ScrollPanel spMenu = new ScrollPanel(vpCollapsible);
 
-
 		menuTrayStateToBe.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -150,11 +150,15 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 					menuTrayStateToBe.setHTML("&raquo;");
 					menuTrayStateToBe.setTitle("Expand");
 					mainMenuPanel.setVisible(false);
+					menuTrayStateToBe.setWidth("");
+					menuTrayStateToBe.setHeight(mainSplitPanel.getElement().getClientHeight()+"px");
 					mainSplitPanel.setWidgetSize(spMenu, TRAY_CTL_BTN_SIZE);
 				} else {
 					menuTrayStateToBe.setHTML("&laquo;");
 					menuTrayStateToBe.setTitle("Collapse");
 					mainMenuPanel.setVisible(true);
+					menuTrayStateToBe.setWidth("100%");
+					menuTrayStateToBe.setHeight("");
 					mainSplitPanel.setWidgetSize(spMenu,TRAY_SIZE);
 				}
 			}
