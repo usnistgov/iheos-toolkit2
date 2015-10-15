@@ -11,7 +11,6 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -89,7 +88,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
 
         // ----- Push the data into the widget. -----
 
-        AsyncCallback<List<Test>> callback = new AsyncCallback<List<Test>>()
+        AsyncCallback<List<Test>> testsListCallback = new AsyncCallback<List<Test>>()
         {
             @Override
             public void onFailure(Throwable caught)
@@ -100,8 +99,16 @@ public class TestsOverviewWidget extends CellTable<Test> {
             public void onSuccess(List<Test> result)
             { setRowData(0, result); }
         };
+        loadTestsData(testsListCallback);
+    }
+
+    /**
+     * Load the full list of tests for a given Site and the current Session, as well as their parameters from the server
+     * @param testsListCallback
+     */
+    private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
         // TODO the currently selected Site must be retrieved
-        service.getTestsList(new Site("testEHR"), callback);
+        service.getTestsList(new Site("testEHR"), testsListCallback);
     }
 
 
