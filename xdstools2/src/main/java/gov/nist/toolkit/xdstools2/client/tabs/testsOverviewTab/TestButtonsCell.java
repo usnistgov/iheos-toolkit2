@@ -29,8 +29,8 @@ import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
     TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
 
-    SafeHtml PLAY_ICON = makeImage(RESOURCES.getPlayIcon());
-    SafeHtml REMOVE_ICON = makeImage(RESOURCES.getRemoveIcon());
+    SafeHtml PLAY_ICON = Utils.makeImage(RESOURCES.getPlayIcon());
+    SafeHtml REMOVE_ICON = Utils.makeImage(RESOURCES.getRemoveIcon());
 
     Button TEST_PLAN_BUTTON = new Button("Test Plan");
     Button LOG_BUTTON = new Button("Log");
@@ -94,15 +94,15 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
         rendered = templates.cell(REMOVE_ICON_NAME, style, REMOVE_ICON);
         sb.append(rendered);
 
-        SafeHtml testplanButtonHtml = makeButton(TEST_PLAN_BUTTON);
+        SafeHtml testplanButtonHtml = Utils.makeButton(TEST_PLAN_BUTTON);
         rendered = templates.cell(TEST_PLAN_BUTTON_NAME, style, testplanButtonHtml);
         sb.append(rendered);
 
-        SafeHtml logButtonHtml = makeButton(LOG_BUTTON);
+        SafeHtml logButtonHtml = Utils.makeButton(LOG_BUTTON);
         rendered = templates.cell(LOG_BUTTON_NAME, style, logButtonHtml);
         sb.append(rendered);
 
-        SafeHtml testDescrButtonHtml = makeButton(TEST_DESCRIPTION_BUTTON);
+        SafeHtml testDescrButtonHtml = Utils.makeButton(TEST_DESCRIPTION_BUTTON);
         rendered = templates.cell(TEST_DESCRIPTION_BUTTON_NAME, style, testDescrButtonHtml);
         sb.append(rendered);
     }
@@ -155,24 +155,7 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
         doAction(value, valueUpdater);
     }
 
-    /**
-     * Make icons available as SafeHtml
-     * @param resource the image resource to transform
-     * @return SafeHtml code for the image
-     */
-    private static SafeHtml makeImage(ImageResource resource) {
-        AbstractImagePrototype proto = AbstractImagePrototype.create(resource);
-        return proto.getSafeHtml();
-    }
 
-    /**
-     * Make buttons available as SafeHtml
-     * @param b the button
-     * @return SafeHtml code for the button
-     */
-    private static SafeHtml makeButton(Button b){
-        return SafeHtmlUtils.fromTrustedString(b.getElement().toString());
-    }
 
     /**
      * Internal action

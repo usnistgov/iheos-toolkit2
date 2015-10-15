@@ -39,7 +39,6 @@ public class TestsOverviewWidget extends CellTable<Test> {
                 return object.getNumber();
             }
         };
-        testnumberColumn.setSortable(true);
         addColumn(testnumberColumn, "Test Number");
 
         descriptionColumn = new TextColumn<Test>() {

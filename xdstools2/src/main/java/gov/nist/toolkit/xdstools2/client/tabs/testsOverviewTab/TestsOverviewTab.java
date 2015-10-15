@@ -64,6 +64,9 @@ public class TestsOverviewTab extends GenericQueryTab {
         // TODO adding this first messes up with the display of the rest of the tab
        // addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 
+        CommandsWidget commands = new CommandsWidget();
+        topPanel.add(commands.asWidget());
+
         TestsOverviewWidget testWidget = new TestsOverviewWidget();
         topPanel.add(testWidget.asWidget());
     }
