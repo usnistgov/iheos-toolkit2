@@ -71,7 +71,11 @@ h1 {
  -moz-border-radius: 16px;
 }
 
-.simplePointer {
+.menuCollapse {
   cursor: pointer;
   cursor: hand;
+}
+
+.menuCollapse:hover {
+  background-color: lavender;
 }
