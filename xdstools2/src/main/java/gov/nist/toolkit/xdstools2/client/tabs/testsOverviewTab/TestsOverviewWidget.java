@@ -141,6 +141,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
      * Default options for the cell table
      */
     private void setDefaults(){
+        setWidth("100%");
         setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
     }
 }

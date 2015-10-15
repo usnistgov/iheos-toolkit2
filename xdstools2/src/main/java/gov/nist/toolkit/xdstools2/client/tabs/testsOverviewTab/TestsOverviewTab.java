@@ -69,6 +69,8 @@ public class TestsOverviewTab extends GenericQueryTab {
 
         TestsOverviewWidget testWidget = new TestsOverviewWidget();
         topPanel.add(testWidget.asWidget());
+
+        setDefaults();
     }
 
 
@@ -79,6 +81,14 @@ public class TestsOverviewTab extends GenericQueryTab {
             resultPanel.clear();
 
         }
+    }
+
+    /**
+     * Default display parameters
+     * */
+    private void setDefaults() {
+        topPanel.setSpacing(10);
+        topPanel.setWidth("100%");
     }
 
 

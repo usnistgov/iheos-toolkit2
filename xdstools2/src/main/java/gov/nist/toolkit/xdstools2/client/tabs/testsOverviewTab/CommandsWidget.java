@@ -5,9 +5,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safecss.shared.SafeStylesUtils;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 
 
@@ -31,6 +29,9 @@ public class CommandsWidget extends HorizontalPanel {
 
 
     public CommandsWidget(){
+        FlowPanel spacer = new FlowPanel();
+        spacer.setWidth("550px");
+
         playAllButton = new Button();
         removeAllButton = new Button();
         refreshAllButton = new Button();
@@ -39,6 +40,10 @@ public class CommandsWidget extends HorizontalPanel {
         removeAllButton.getElement().appendChild(REMOVE_ALL_ICON.getElement());
         refreshAllButton.getElement().appendChild(REFRESH_ALL_ICON.getElement());
 
+        setWidth("100%");
+        setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+
+        add(spacer);
         add(playAllButton);
         add(removeAllButton);
         add(refreshAllButton);
