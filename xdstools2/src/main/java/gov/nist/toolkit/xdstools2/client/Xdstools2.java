@@ -129,7 +129,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 		// Make it rounded
 //		menuTrayStateToBe.setStyleName("roundedButton1");
-		menuTrayStateToBe.setStyleName("simplePointer");
+		menuTrayStateToBe.setStyleName("menuCollapse");
 		menuTrayStateToBe.setWidth("15px");
 		menuTrayStateToBe.setWidth("100%");
 
