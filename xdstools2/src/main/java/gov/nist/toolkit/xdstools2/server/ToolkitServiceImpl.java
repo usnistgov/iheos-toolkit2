@@ -23,6 +23,7 @@
 	import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 	import gov.nist.toolkit.valsupport.client.ValidationContext;
 	import gov.nist.toolkit.xdstools2.client.*;
+	import gov.nist.toolkit.results.shared.Test;
 	import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
 	import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
 	import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
@@ -158,6 +159,8 @@ ToolkitService {
 	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
 	public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
 	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
+
+
 	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
 	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
@@ -257,6 +260,7 @@ ToolkitService {
 	public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
 		return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
 	}
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Dashboard Service
@@ -264,6 +268,18 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	public List<RegistryStatus> getDashboardRegistryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRegistryData(); }
 	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRepositoryData(); }
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Tests Overview Tab
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	@Override
+	public List<Test> getTestsList(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().getTestsList(getSession().getMesaSessionName(), site); }
+
+
+
+
 
 	// Other support calls
 	

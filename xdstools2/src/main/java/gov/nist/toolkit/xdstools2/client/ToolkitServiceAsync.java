@@ -13,6 +13,7 @@ import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.results.shared.Test;
 
 import java.util.Collection;
 import java.util.List;
@@ -171,4 +172,11 @@ public interface ToolkitServiceAsync {
 
 	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> callback);
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Tests Overview Tab
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void getTestsList(Site site, AsyncCallback<List<Test>> async);
 }

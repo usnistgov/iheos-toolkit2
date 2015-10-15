@@ -12,6 +12,7 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
+import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.LogMap;
@@ -28,11 +29,12 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
-
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import gov.nist.toolkit.results.shared.Test;
+
 
 public class XdsTestServiceManager extends CommonService {
 //	private final UtilityRunner utilityRunner = new UtilityRunner(this);
@@ -689,5 +691,28 @@ public class XdsTestServiceManager extends CommonService {
 		TestInstance testInstance = new TestInstance("PidFeed");
 		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
 	}
+
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Tests Overview Tab
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// TODO To complete
+
+	/**
+	 * A Test needs a Number, Short Description, Time and Status. The Commands parameter will eventually disappear.
+	 * Create the Tests object using the Test class I created inside the package Results, or replace Test with a similar
+	 * existing object.
+	 * @return
+	 */
+	public List<Test> getTestsList(String sessionName, Site site){
+	// Test data
+		return Arrays.asList(
+				new Test("10891", "test 1", " ", "04:10 PM EST", "pass"),
+				new Test("17685", "test 2", " ", "04:10 PM EST", "not run")
+		);
+	}
+
 
 }
