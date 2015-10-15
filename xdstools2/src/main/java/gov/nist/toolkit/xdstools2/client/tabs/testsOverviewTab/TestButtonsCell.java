@@ -36,6 +36,12 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
     Button LOG_BUTTON = new Button("Log");
     Button TEST_DESCRIPTION_BUTTON = new Button("Full Test Description");
 
+    public static String PLAY_ICON_NAME = "PLAY_ICON";
+    public static String REMOVE_ICON_NAME = "REMOVE_ICON";
+    public static String TEST_PLAN_BUTTON_NAME = "TEST_PLAN_BUTTON";
+    public static String LOG_BUTTON_NAME = "LOG_BUTTON";
+    public static String TEST_DESCRIPTION_BUTTON_NAME = "TEST_DESCRIPTION_BUTTON";
+
 
     /**
      * The HTML templates used to render the cell.
@@ -82,22 +88,22 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
         // ------ generate the composite cell -----
         SafeStyles style = SafeStylesUtils.fromTrustedString("float:left;cursor:pointer;margin:3px;");
 
-        SafeHtml rendered = templates.cell("PLAY_ICON", style, PLAY_ICON);
+        SafeHtml rendered = templates.cell(PLAY_ICON_NAME, style, PLAY_ICON);
         sb.append(rendered);
 
-        rendered = templates.cell("REMOVE_ICON", style, REMOVE_ICON);
+        rendered = templates.cell(REMOVE_ICON_NAME, style, REMOVE_ICON);
         sb.append(rendered);
 
         SafeHtml testplanButtonHtml = makeButton(TEST_PLAN_BUTTON);
-        rendered = templates.cell("TEST_PLAN_BUTTON", style, testplanButtonHtml);
+        rendered = templates.cell(TEST_PLAN_BUTTON_NAME, style, testplanButtonHtml);
         sb.append(rendered);
 
         SafeHtml logButtonHtml = makeButton(LOG_BUTTON);
-        rendered = templates.cell("LOG_BUTTON", style, logButtonHtml);
+        rendered = templates.cell(LOG_BUTTON_NAME, style, logButtonHtml);
         sb.append(rendered);
 
         SafeHtml testDescrButtonHtml = makeButton(TEST_DESCRIPTION_BUTTON);
-        rendered = templates.cell("TEST_DESCRIPTION_BUTTON", style, testDescrButtonHtml);
+        rendered = templates.cell(TEST_DESCRIPTION_BUTTON_NAME, style, testDescrButtonHtml);
         sb.append(rendered);
     }
 

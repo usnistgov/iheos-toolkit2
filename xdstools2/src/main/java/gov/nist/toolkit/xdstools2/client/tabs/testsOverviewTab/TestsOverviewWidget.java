@@ -39,6 +39,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
                 return object.getNumber();
             }
         };
+        testnumberColumn.setSortable(true);
         addColumn(testnumberColumn, "Test Number");
 
         descriptionColumn = new TextColumn<Test>() {
@@ -63,8 +64,26 @@ public class TestsOverviewWidget extends CellTable<Test> {
              * Return the element of the buttons cell that was clicked (icon or button).
              */
             public void update(int index, Test object, String value) {
-                Window.alert("This is the field updater, with value: " + value + " Index: " + index);
-                //TODO add appropriate action
+                Window.alert("This is the field updater, with value: " + value + " Index: " + index + " Test no: "+ object.getNumber());
+
+                if (value == TestButtonsCell.PLAY_ICON_NAME){
+                    runSingleTest(object);
+                }
+                else if (value == TestButtonsCell.REMOVE_ICON_NAME){
+                    deleteSingleTestResults();
+                }
+                else if (value == TestButtonsCell.TEST_PLAN_BUTTON_NAME){
+                    //TODO retrieve test plan page based on Test or TestNumber and open link to that page
+                    Window.open("link_to_HTML_page","_blank","");
+                }
+                else if (value == TestButtonsCell.LOG_BUTTON_NAME){
+                    //TODO add link to log page
+                    Window.open("link_to_HTML_page","_blank","");
+                }
+                else if (value == TestButtonsCell.TEST_DESCRIPTION_BUTTON_NAME){
+                    //TODO add link to description page
+                    Window.open("link_to_HTML_page","_blank","");
+                }
             }
         });
         addColumn(buttonsColumn, "Commands");
@@ -111,6 +130,13 @@ public class TestsOverviewWidget extends CellTable<Test> {
         service.getTestsList(new Site("testEHR"), testsListCallback);
     }
 
+    private void runSingleTest(Test t){
+        // TODO implement the service and refresh that line on callback
+    }
+
+    private void deleteSingleTestResults(){
+        // TODO implement the service and refresh that line on callback
+    }
 
     /**
      * Default options for the cell table
