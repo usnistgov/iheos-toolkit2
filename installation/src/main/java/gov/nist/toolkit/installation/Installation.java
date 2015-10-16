@@ -50,7 +50,9 @@ public class Installation {
 	public File warHome() { 
 		return warHome; 
 		}
-	public void warHome(File warHome) { 
+	synchronized public void warHome(File warHome) {
+		if (warHome()!=null && warHome().equals(warHome))
+			return; /* already set */
 		logger.info("V2 - Installation - war home set to " + warHome);
 		this.warHome = warHome;
 		propertyServiceMgr = null;
