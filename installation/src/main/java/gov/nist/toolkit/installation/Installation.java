@@ -56,6 +56,7 @@ public class Installation {
 		propertyServiceMgr = null;
 		if (externalCache == null) // this can be different in a unit test situation
 			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+        logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
 	}
 
 	public File externalCache() { return externalCache; }

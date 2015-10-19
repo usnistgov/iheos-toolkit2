@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -98,17 +99,26 @@ public class TestDetails  {
 	 * @throws Exception
 	 */
 	static public String getLogicalPath(File testPath, File testkit) throws Exception {
-		String testkitpath = testkit.toString();
-		String testpath = testPath.toString();
-
-		if ( ! testpath.startsWith(testkitpath))
-			throw new Exception("Path does not target contents of testkit");
-
-		String diff = testpath.substring(testkitpath.length());
-		if (diff.charAt(0) == '/')
-			return diff.substring(1);
-		return diff;
+        return getLogicalPath(testPath.toPath(), testkit.toPath()).toFile().toString();
+//		String testkitpath = testkit.toString();
+//		String testpath = testPath.toString();
+//
+//		if ( ! testpath.startsWith(testkitpath))
+//			throw new Exception("Path does not target contents of testkit");
+//
+//		String diff = testpath.substring(testkitpath.length());
+//		if (diff.charAt(0) == '/')
+//			return diff.substring(1);
+//		return diff;
 	}
+
+    static public Path getLogicalPath(Path testPath, Path testkit) throws Exception {
+        if (!testPath.startsWith(testkit))
+            throw new Exception("Path does not target contents of testkit");
+        int testPathSize = testPath.getNameCount();
+        int testkitSize = testkit.getNameCount();
+        return testPath.subpath(testkitSize, testPathSize);
+    }
 
 
 	File simpleTestDir() throws Exception {
