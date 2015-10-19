@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11906/objectrefs</Test>
+  <Rule>Test GetSubmissionSetAndContents Stored Query - Query based on uniqueId, but request ObjectRefs in return</Rule>
+  <TestStep id="objectrefs">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:e8e3cb2c-e39c-46b9-99e4-c12f57260b83">
+            <tag0:Slot name="$XDSSubmissionSetUniqueId">
+              <tag0:ValueList>
+                <tag0:Value>'$uniqueid$'</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../../12346" id="SubmissionSet01" symbol="$uniqueid$" step="submit_doc" section="AssignedUids"/>
+      <ExpectedContents>
+        <ObjectRefs count="3"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

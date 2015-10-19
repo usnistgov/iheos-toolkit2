@@ -320,8 +320,10 @@ public class XdsTestServiceManager extends CommonService {
 			testDetails.addTestPlanLog(section, ll);
 		}
 
-		// Save the created logs in the SessionCache
+		// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
 		TestInstance logid = newTestLogId();
+
+        // TODO -  why is a method named getLogContent doing a WRITE???????
 		session.transactionSettings.logRepository.logOut(logid, lm);
 //		session.saveLogMapInSessionCache(lm, logid);
 

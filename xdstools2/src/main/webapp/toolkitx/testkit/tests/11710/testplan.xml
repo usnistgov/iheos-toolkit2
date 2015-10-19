@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11710</Test>
+  <RegistryEndpoint>http://129.6.24.109:9080/tf6/services/test11710</RegistryEndpoint>
+  <TestStep id="submit">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <SimpleTransaction>
+      <NoMetadata/>
+      <Metadata>
+        <hello>
+          <caller tester="your_name" email="your_email" vendor="your_company_name"/>
+        </hello>
+      </Metadata>
+    </SimpleTransaction>
+  </TestStep>
+</TestPlan>

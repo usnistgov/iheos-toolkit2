@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15800/initial_version</Test>
+  <TestStep id="initial_version">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <MuTransaction>
+      <XDSb/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12361/single_doc</Test>
+  <Rule>Submit data to XDS.b registry to support MPQ testing</Rule>
+  <TestStep id="single_doc">
+    <NewPatientId/>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Single document submission supports various query testing</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>findss</Test>
+    <Rule>Submit data to XDS.b registry to support SQ testing</Rule>
+    <TestStep id="allocate_patient_id">
+        <NewPatientId/>
+    </TestStep>  
+    
+    <TestStep id="sub1">
+        <Rule>
+            <Transaction>R</Transaction>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <MetadataFile>sub1.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+    
+    <TestStep id="sub2">
+        <Rule>
+            <Transaction>R</Transaction>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <MetadataFile>sub2.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+    
+    
+    
+</TestPlan>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12342</Test>
+    <Rule>Stored Query in the presence of XCA</Rule>
+    
+    
+    <TestStep id="uuid">
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>GetDocuments</SQ>
+            <Assertion>Operation with UUID, verify Public Registry code returns home</Assertion>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <IGQTransaction>
+	    <XDSb/>
+            <Metadata>
+                <query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+                    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+                    <AdhocQuery id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4" home="$configHome$">
+                        <Slot name="$XDSDocumentEntryEntryUUID">
+                            <ValueList>
+                                <Value>('$uuid$')</Value>
+                            </ValueList>
+                        </Slot>
+                    </AdhocQuery>
+                </query:AdhocQueryRequest>
+            </Metadata>
+            <UseId testdir="../../testdata/12344" id="Document01" step="submit_doc"
+                section="AssignedUuids" symbol="$uuid$"/>
+            <ExpectedContents>
+                <Documents count="1"/>
+            </ExpectedContents>
+            <Assertions>
+                <DataRef file="THIS" as="output"/>
+                <Assert id="vaidateHome"> 
+                    count(//IGQTransaction[@step="uuid"]/Result//*[local-name(.)='ExtrinsicObject'][@home='$configHome$']) = 1
+                </Assert>
+            </Assertions>
+        </IGQTransaction>
+    </TestStep>
+    
+    
+    <TestStep id="pid">
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>FindDocuments</SQ>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <IGQTransaction>
+	    <XDSb/>
+            <Metadata>
+                <query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                    xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                    xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+                    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+                    <AdhocQuery id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d" >
+                        <Slot name="$XDSDocumentEntryPatientId">
+                            <ValueList>
+                                <Value>'$patientid$'</Value>
+                            </ValueList>
+                        </Slot>
+                        <Slot name="$XDSDocumentEntryStatus">
+                            <ValueList>
+                                <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</Value>
+                            </ValueList>
+                        </Slot>
+                    </AdhocQuery>
+                </query:AdhocQueryRequest>
+            </Metadata>
+            <UseId testdir="../../testdata/12344" id="Document01" step="submit_doc"
+                section="AssignedUuids" symbol="$uuid$"/>
+            <UseId testdir="../../testdata/12344" id="Document01" step="submit_doc"
+                section="AssignedPatientId" symbol="$patientid$"/>
+            <ExpectedContents>
+                <ObjectRefs count="5"/>
+            </ExpectedContents>
+            <Assertions>
+                <DataRef file="THIS" as="output"/>
+                <Assert id="vaidateHome"> 
+                    count(//IGQTransaction[@step="pid"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef'][@home='$configHome$']) = 5
+                </Assert>
+            </Assertions>
+        </IGQTransaction>
+    </TestStep>
+    
+    
+</TestPlan>
