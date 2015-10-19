@@ -714,5 +714,9 @@ public class XdsTestServiceManager extends CommonService {
 		);
 	}
 
+	public Test runSingleTest(String sessionName, Site site, String testNumber) {
+		// Test data
+		return new Test(testNumber, "returned result test", " ", "05:23 PM EST", "failed");
+	}
 
 }

@@ -178,5 +178,7 @@ public interface ToolkitServiceAsync {
 	// Tests Overview Tab
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void getTestsList(Site site, AsyncCallback<List<Test>> async);
+	void getTestsList(Site site, AsyncCallback<List<Test>> callback);
+	void runSingleTest(Site site, String testNumber, AsyncCallback<Test> callback);
+
 }

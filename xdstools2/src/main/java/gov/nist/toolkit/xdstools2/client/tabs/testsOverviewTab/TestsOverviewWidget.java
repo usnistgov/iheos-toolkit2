@@ -11,6 +11,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
     ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
     Logger LOGGER = Logger.getLogger("TestsOverviewWidget");
 
+    TestsWidgetDataModel dataModel;
     TextColumn<Test> testnumberColumn, descriptionColumn, timeColumn, statusColumn;
     TestButtonsColumn<Test> buttonsColumn;
 
@@ -29,6 +31,9 @@ public class TestsOverviewWidget extends CellTable<Test> {
 
     public TestsOverviewWidget(){
         setDefaults();
+
+        // ----- Create the data model -----
+        dataModel = new TestsWidgetDataModel();
 
 
         // ----- Create the UI -----
@@ -63,13 +68,13 @@ public class TestsOverviewWidget extends CellTable<Test> {
              * Return the element of the buttons cell that was clicked (icon or button).
              */
             public void update(int index, Test object, String value) {
-                Window.alert("This is the field updater, with value: " + value + " Index: " + index + " Test no: "+ object.getNumber());
+                //Window.alert("This is the field updater, with value: " + value + " Index: " + index + " Test no: "+ object.getNumber());
 
                 if (value == TestButtonsCell.PLAY_ICON_NAME){
-                    runSingleTest(object);
+                    runSingleTest(object.getNumber(), index);
                 }
                 else if (value == TestButtonsCell.REMOVE_ICON_NAME){
-                    deleteSingleTestResults();
+                    deleteSingleTestResults(object.getNumber());
                 }
                 else if (value == TestButtonsCell.TEST_PLAN_BUTTON_NAME){
                     //TODO retrieve test plan page based on Test or TestNumber and open link to that page
@@ -104,37 +109,70 @@ public class TestsOverviewWidget extends CellTable<Test> {
         addColumn(statusColumn, "Status");
 
 
-        // ----- Push the data into the widget. -----
+        // --------------------------------------------------------------
+        // ----- Retrieve test results and set data into the widget -----
+        // --------------------------------------------------------------
 
         AsyncCallback<List<Test>> testsListCallback = new AsyncCallback<List<Test>>()
         {
             @Override
             public void onFailure(Throwable caught)
             { LOGGER.severe("Failed to load the list of available tests for current site and session, in the Tests Overview tab.");
-                 }
+            }
 
             @Override
-            public void onSuccess(List<Test> result)
-            { setRowData(0, result); }
-        };
-        loadTestsData(testsListCallback);
-    }
+            public void onSuccess(List<Test> result) {
+                ArrayList<Test> res = new ArrayList<Test>();
+                res.addAll(result);
+                dataModel.setData(res);
+                refreshUIData() ;
+            }};
+            loadTestsData(testsListCallback);
+        }
 
-    /**
-     * Load the full list of tests for a given Site and the current Session, as well as their parameters from the server
-     * @param testsListCallback
-     */
+        /**
+         * Load the full list of tests for a given Site and the current Session, as well as their parameters from the server
+         * @param testsListCallback
+         */
     private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
-        // TODO the currently selected Site must be retrieved
+        // TODO the currently selected Site must be retrieved and passed as argument
         service.getTestsList(new Site("testEHR"), testsListCallback);
     }
 
-    private void runSingleTest(Test t){
+
+    // --------------------------------------------------------------
+    // ------- Run a single test, retrieve and display results ------
+    // --------------------------------------------------------------
+
+    AsyncCallback<Test> runSingleTestCallback = new AsyncCallback<Test>()
+    {
+        @Override
+        public void onFailure(Throwable caught)
+        { LOGGER.severe("Failed to run a test for current site and session, in the Tests Overview tab.");
+        }
+
+        @Override
+        public void onSuccess(Test result)
+        { dataModel.updateSingleTestResult(result);
+        refreshUIData();
+        }
+    };
+
+    private void runSingleTest(String testNumber, int index){
+        service.runSingleTest(new Site("testEHR"), testNumber, runSingleTestCallback);
+    }
+
+
+
+    private void deleteSingleTestResults(String testNumber){
         // TODO implement the service and refresh that line on callback
     }
 
-    private void deleteSingleTestResults(){
-        // TODO implement the service and refresh that line on callback
+    /**
+     * Refreshes the data view (UI)
+     */
+    private void refreshUIData(){
+        setRowData(0, dataModel.getData());
     }
 
     /**

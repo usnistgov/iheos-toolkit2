@@ -1,5 +1,6 @@
 	package gov.nist.toolkit.xdstools2.server;
 
+	import com.google.gwt.user.client.rpc.AsyncCallback;
 	import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 	import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 	import gov.nist.toolkit.actorfactory.SiteServiceManager;
@@ -276,6 +277,8 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	@Override
 	public List<Test> getTestsList(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().getTestsList(getSession().getMesaSessionName(), site); }
+	public Test runSingleTest(Site site, String testNumber) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testNumber); }
+
 
 
 
