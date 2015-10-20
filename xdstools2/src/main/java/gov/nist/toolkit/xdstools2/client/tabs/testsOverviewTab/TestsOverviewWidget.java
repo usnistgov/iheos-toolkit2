@@ -158,15 +158,34 @@ public class TestsOverviewWidget extends CellTable<Test> {
         }
     };
 
+    //TODO replace the hardcoded site name with the one retrieved from the UI
     private void runSingleTest(String testNumber, int index){
         service.runSingleTest(new Site("testEHR"), testNumber, runSingleTestCallback);
     }
 
 
+    // --------------------------------------------------------------
+    // ------ Delete logs for a single test and update display ------
+    // --------------------------------------------------------------
 
+    AsyncCallback<Test> deleteSingleLogCallback = new AsyncCallback<Test>()
+    {
+        @Override
+        public void onFailure(Throwable caught)
+        { LOGGER.severe("Failed to delete a test log, in the Tests Overview tab.");
+        }
+
+        @Override
+        public void onSuccess(Test result)
+        { dataModel.updateSingleTestResult(result);
+            refreshUIData();
+        }
+    };
+
+    //TODO replace the hardcoded site name with the one retrieved from the UI
     private void deleteSingleTestResults(String testNumber){
-        // TODO implement the service and refresh that line on callback
-    }
+        service.deleteSingleTestResult(new Site("testEHR"), testNumber, deleteSingleLogCallback);
+        }
 
     /**
      * Refreshes the data view (UI)

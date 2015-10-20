@@ -719,4 +719,16 @@ public class XdsTestServiceManager extends CommonService {
 		return new Test(testNumber, "returned result test", " ", "05:23 PM EST", "failed");
 	}
 
+	/**
+	 * Delete logs for a single test
+	 * @param sessionName
+	 * @param site
+	 * @param testNumber
+	 * @return
+	 */
+	public Test deleteSingleTestResult(String sessionName, Site site, String testNumber) {
+		// Test data, status must be "NOT RUN"
+		return new Test(testNumber, "test description", " ", "10:20 PM EST", "not run");
+	}
+
 }

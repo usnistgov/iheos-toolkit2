@@ -181,7 +181,7 @@ public interface ToolkitService extends RemoteService  {
 	//------------------------------------------------------------------------
 	public List<Test> getTestsList(Site site) throws NoServletSessionException;
 	public Test runSingleTest(Site site, String testNumber) throws NoServletSessionException;
-
+	public Test deleteSingleTestResult(Site site, String testNumber) throws NoServletSessionException;
 
 
 }

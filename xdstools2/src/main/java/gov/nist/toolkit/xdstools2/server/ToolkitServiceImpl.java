@@ -278,8 +278,7 @@ ToolkitService {
 	@Override
 	public List<Test> getTestsList(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().getTestsList(getSession().getMesaSessionName(), site); }
 	public Test runSingleTest(Site site, String testNumber) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testNumber); }
-
-
+	public Test deleteSingleTestResult(Site site, String testNumber) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testNumber); }
 
 
 

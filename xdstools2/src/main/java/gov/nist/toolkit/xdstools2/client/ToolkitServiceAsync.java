@@ -180,5 +180,7 @@ public interface ToolkitServiceAsync {
 	//------------------------------------------------------------------------
 	void getTestsList(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, String testNumber, AsyncCallback<Test> callback);
+	void deleteSingleTestResult(Site site, String testNumber, AsyncCallback<Test> callback);
+
 
 }
