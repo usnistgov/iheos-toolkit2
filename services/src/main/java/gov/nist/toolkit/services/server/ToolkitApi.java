@@ -3,11 +3,7 @@ package gov.nist.toolkit.services.server;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actorfactory.client.BadSimConfigException;
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
@@ -31,10 +27,18 @@ import java.util.Map;
 public class ToolkitApi {
     Session session;
 
+    /**
+     * Use when running unit tests
+     * @return
+     */
     public static ToolkitApi forInternalUse() {
         return new ToolkitApi(TestSession.setupToolkit());
     }
 
+    /**
+     * Use to initialize when implementing a service
+     * @return
+     */
     public static ToolkitApi forServiceUse() {
         ToolkitApi tk = new ToolkitApi();
         tk.session = new Session(

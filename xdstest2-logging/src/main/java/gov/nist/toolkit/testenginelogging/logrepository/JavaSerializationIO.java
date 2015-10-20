@@ -17,7 +17,7 @@ public class JavaSerializationIO implements ILoggerIO  {
 	 */
 	@Override
 	public void logOut(TestInstance id, LogMap log, File logDir) throws XdsException {
-		logger.debug("Writing log " + log.getKeys() + " to " + logFile(id, logDir));
+		logger.debug("Writing logs " + log.getKeys() + " to " + logFile(id, logDir));
 		FileOutputStream fos;
 		ObjectOutputStream out = null;
 		try {
