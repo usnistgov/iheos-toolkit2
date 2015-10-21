@@ -706,13 +706,29 @@ public class XdsTestServiceManager extends CommonService {
 	 * existing object.
 	 * @return
 	 */
-	public List<Test> getTestsList(String sessionName, Site site){
+	public List<Test> reloadAllTestResults(String sessionName, Site site){
 	// Test data
 		return Arrays.asList(
 				new Test("10891", "test 1", " ", "04:10 PM EST", "pass"),
 				new Test("17685", "test 2", " ", "04:10 PM EST", "not run")
 		);
 	}
+
+	public List<Test> runAllTests(String sessionName, Site site){
+		// Test data
+		return Arrays.asList(
+				new Test("10891", "re-run test 1", " ", "04:10 PM EST", "pass"),
+				new Test("17685", "re-run test 2", " ", "04:10 PM EST", "not run")
+		);
+	}
+
+    public List<Test> deleteAllTestResults(String sessionName, Site site){
+        // Test data
+        return Arrays.asList(
+                new Test("10891", "test 1", " ", "--", "not run"),
+                new Test("17685", "test 2", " ", "--", "not run")
+        );
+    }
 
 	public Test runSingleTest(String sessionName, Site site, String testNumber) {
 		// Test data

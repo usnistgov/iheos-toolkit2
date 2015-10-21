@@ -178,7 +178,9 @@ public interface ToolkitServiceAsync {
 	// Tests Overview Tab
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void getTestsList(Site site, AsyncCallback<List<Test>> callback);
+	void reloadAllTestResults(Site site, AsyncCallback<List<Test>> callback);
+	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
+	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, String testNumber, AsyncCallback<Test> callback);
 	void deleteSingleTestResult(Site site, String testNumber, AsyncCallback<Test> callback);
 

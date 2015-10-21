@@ -1,6 +1,5 @@
 	package gov.nist.toolkit.xdstools2.server;
 
-	import com.google.gwt.user.client.rpc.AsyncCallback;
 	import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 	import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 	import gov.nist.toolkit.actorfactory.SiteServiceManager;
@@ -276,7 +275,9 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	@Override
-	public List<Test> getTestsList(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().getTestsList(getSession().getMesaSessionName(), site); }
+	public List<Test> reloadAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().reloadAllTestResults(getSession().getMesaSessionName(), site); }
+	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
+	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
 	public Test runSingleTest(Site site, String testNumber) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testNumber); }
 	public Test deleteSingleTestResult(Site site, String testNumber) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testNumber); }
 

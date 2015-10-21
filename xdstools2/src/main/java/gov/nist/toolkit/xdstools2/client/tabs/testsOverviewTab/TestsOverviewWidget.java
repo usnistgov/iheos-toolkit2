@@ -11,7 +11,6 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,18 +22,18 @@ public class TestsOverviewWidget extends CellTable<Test> {
     ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
     Logger LOGGER = Logger.getLogger("TestsOverviewWidget");
 
-    TestsWidgetDataModel dataModel;
     TextColumn<Test> testnumberColumn, descriptionColumn, timeColumn, statusColumn;
     TestButtonsColumn<Test> buttonsColumn;
+    TestsWidgetDataModel dataModel;
 
 
 
-    public TestsOverviewWidget(){
+    public TestsOverviewWidget(TestsWidgetDataModel _dataModel) {
+        dataModel = _dataModel;
+        Updater updater = Updater.getUpdater(this);
+
+        // ----- Set defaults UI parameters -----
         setDefaults();
-
-        // ----- Create the data model -----
-        dataModel = new TestsWidgetDataModel();
-
 
         // ----- Create the UI -----
 
@@ -70,23 +69,19 @@ public class TestsOverviewWidget extends CellTable<Test> {
             public void update(int index, Test object, String value) {
                 //Window.alert("This is the field updater, with value: " + value + " Index: " + index + " Test no: "+ object.getNumber());
 
-                if (value == TestButtonsCell.PLAY_ICON_NAME){
+                if (value == TestButtonsCell.PLAY_ICON_NAME) {
                     runSingleTest(object.getNumber(), index);
-                }
-                else if (value == TestButtonsCell.REMOVE_ICON_NAME){
+                } else if (value == TestButtonsCell.REMOVE_ICON_NAME) {
                     deleteSingleTestResults(object.getNumber());
-                }
-                else if (value == TestButtonsCell.TEST_PLAN_BUTTON_NAME){
+                } else if (value == TestButtonsCell.TEST_PLAN_BUTTON_NAME) {
                     //TODO retrieve test plan page based on Test or TestNumber and open link to that page
-                    Window.open("link_to_HTML_page","_blank","");
-                }
-                else if (value == TestButtonsCell.LOG_BUTTON_NAME){
+                    Window.open("link_to_HTML_page", "_blank", "");
+                } else if (value == TestButtonsCell.LOG_BUTTON_NAME) {
                     //TODO add link to log page
-                    Window.open("link_to_HTML_page","_blank","");
-                }
-                else if (value == TestButtonsCell.TEST_DESCRIPTION_BUTTON_NAME){
+                    Window.open("link_to_HTML_page", "_blank", "");
+                } else if (value == TestButtonsCell.TEST_DESCRIPTION_BUTTON_NAME) {
                     //TODO add link to description page
-                    Window.open("link_to_HTML_page","_blank","");
+                    Window.open("link_to_HTML_page", "_blank", "");
                 }
             }
         });
@@ -113,30 +108,17 @@ public class TestsOverviewWidget extends CellTable<Test> {
         // ----- Retrieve test results and set data into the widget -----
         // --------------------------------------------------------------
 
-        AsyncCallback<List<Test>> testsListCallback = new AsyncCallback<List<Test>>()
-        {
-            @Override
-            public void onFailure(Throwable caught)
-            { LOGGER.severe("Failed to load the list of available tests for current site and session, in the Tests Overview tab.");
-            }
+        ReloadAllTestResultsCallback testsListCallback = new ReloadAllTestResultsCallback(updater);
+        loadTestsData(testsListCallback);
+    }
 
-            @Override
-            public void onSuccess(List<Test> result) {
-                ArrayList<Test> res = new ArrayList<Test>();
-                res.addAll(result);
-                dataModel.setData(res);
-                refreshUIData() ;
-            }};
-            loadTestsData(testsListCallback);
-        }
-
-        /**
-         * Load the full list of tests for a given Site and the current Session, as well as their parameters from the server
-         * @param testsListCallback
-         */
+    /**
+     * Load the full list of tests for a given Site and the current Session, as well as their parameters from the server
+     * @param testsListCallback
+     */
     private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
         // TODO the currently selected Site must be retrieved and passed as argument
-        service.getTestsList(new Site("testEHR"), testsListCallback);
+        service.reloadAllTestResults(new Site("testEHR"), testsListCallback);
     }
 
 
@@ -154,7 +136,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         @Override
         public void onSuccess(Test result)
         { dataModel.updateSingleTestResult(result);
-        refreshUIData();
+            refreshUIData();
         }
     };
 
@@ -185,13 +167,17 @@ public class TestsOverviewWidget extends CellTable<Test> {
     //TODO replace the hardcoded site name with the one retrieved from the UI
     private void deleteSingleTestResults(String testNumber){
         service.deleteSingleTestResult(new Site("testEHR"), testNumber, deleteSingleLogCallback);
-        }
+    }
 
     /**
      * Refreshes the data view (UI)
      */
-    private void refreshUIData(){
+    public void refreshUIData(){
         setRowData(0, dataModel.getData());
+    }
+
+    public TestsWidgetDataModel getDataModel() {
+        return dataModel;
     }
 
     /**

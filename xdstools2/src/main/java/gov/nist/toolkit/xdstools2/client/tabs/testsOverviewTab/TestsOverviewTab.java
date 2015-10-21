@@ -7,15 +7,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import org.junit.runner.Runner;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Diane Azais local on 9/23/2015.
@@ -23,6 +20,8 @@ import java.util.Map;
 public class TestsOverviewTab extends GenericQueryTab {
 
     GenericQueryTab genericQueryTab;
+    TestsWidgetDataModel dataModel;
+
 
 
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
@@ -38,14 +37,14 @@ public class TestsOverviewTab extends GenericQueryTab {
 
     // this super is kinda useless now - was a good idea for documentation at one time
     public TestsOverviewTab(){
-    super(new FindDocumentsSiteActorManager());
+        super(new FindDocumentsSiteActorManager());
     }
 
 
-    // Tab initialization
     @Override
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         myContainer = container;
+
         // Panel to build inside of
         topPanel = new VerticalPanel();
 
@@ -62,12 +61,22 @@ public class TestsOverviewTab extends GenericQueryTab {
         // Also link in the Runner class (shown below) which is called when the user clicks on the Run button.
         // Since this call organizes the site selection grid, it needs the transactionTypes and couplings config
         // TODO adding this first messes up with the display of the rest of the tab
-       // addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+        // addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 
-        CommandsWidget commands = new CommandsWidget();
+
+        // ----- Create the data model -----
+        dataModel = new TestsWidgetDataModel();
+
+        // ----- Tests View -----
+        TestsOverviewWidget testWidget = new TestsOverviewWidget(dataModel);
+
+        // ----- View Updater ----
+        Updater updater = Updater.getUpdater(testWidget);
+
+        // ----- Upper row of widgets -----
+        CommandsWidget commands = new CommandsWidget(updater);
+
         topPanel.add(commands.asWidget());
-
-        TestsOverviewWidget testWidget = new TestsOverviewWidget();
         topPanel.add(testWidget.asWidget());
 
         setDefaults();
