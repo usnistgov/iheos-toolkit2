@@ -15,24 +15,39 @@ import gov.nist.toolkit.session.server.TestSession;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * This is a second attempt to start a real API.  ClientAPI has not
  * been very useful so far. This one is based on the service managers used by the UI
  */
 public class ToolkitApi {
-    Session session;
+    static Logger logger = Logger.getLogger(ToolkitApi.class);
+    private Session session;
+    boolean internalUse = true;
+    private static ToolkitApi api = null;
 
     /**
      * Use when running unit tests
      * @return
      */
     public static ToolkitApi forInternalUse() {
-        return new ToolkitApi(TestSession.setupToolkit());
+        if (api == null) {
+            api = new ToolkitApi(TestSession.setupToolkit());
+            api.internalUse = true;
+            return api;
+        }
+        if (!api.internalUse) {
+            String msg = "Engine initialized for Service Use - cannot reinitialize for Internal Use";
+            logger.fatal(msg);
+            throw new EngineInitializationException(msg);
+        }
+        return api;
     }
 
     /**
@@ -40,11 +55,20 @@ public class ToolkitApi {
      * @return
      */
     public static ToolkitApi forServiceUse() {
-        ToolkitApi tk = new ToolkitApi();
-        tk.session = new Session(
-                Installation.installation().warHome(),
-                Installation.installation().defaultServiceSessionName());
-        return tk;
+        if (api == null) {
+            api = new ToolkitApi();
+            api.session = new Session(
+                    Installation.installation().warHome(),
+                    Installation.installation().defaultServiceSessionName());
+            api.internalUse = false;
+            return api;
+        }
+        if (api.internalUse) {
+            String msg = "Engine initialized for Internal Use - cannot reinitialize for Service Use";
+            logger.fatal(msg);
+            throw new EngineInitializationException(msg);
+        }
+        return api;
     }
 
     /**
@@ -68,22 +92,8 @@ public class ToolkitApi {
      * @throws Exception - if simulator of that id already exists
      */
     public Simulator createSimulator(ActorType actorType, SimId simId) throws Exception {
-        try {
-            simId.setActorType(actorType.getName());
-            return simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
-        }
-        catch (NoSimException e) {
-            throw e;
-        }
-        catch (ThreadPoolExhaustedException e) {
-            throw e;
-        }
-//        catch (Exception e) {
-//            if (e.getMessage().contains("Thread pool exhausted")) {
-//                // not expecting it to work
-//                return null;
-//            } else throw e;
-//        }
+        simId.setActorType(actorType.getName());
+        return simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
     }
 
     public Simulator createSimulator(SimId simId) throws Exception {
@@ -133,6 +143,13 @@ public class ToolkitApi {
         return SimManager.getSite(config);
     }
 
+    public SimulatorConfig getConfig(SimId simId) {
+        if (session == null) return null;
+        SimManager simManager = new SimManager(session.getId());
+        simManager.loadAllSims();
+        return simManager.getSimulatorConfig(simId);
+    }
+
     public SiteSpec getSiteSpecForSimulator(SimId simId) throws Exception {
         Site site = getSiteForSimulator(simId);
         SiteSpec siteSpec = new SiteSpec();
@@ -168,6 +185,10 @@ public class ToolkitApi {
 
     public void setConfig(SimulatorConfig config, String parameterName, String value) {
         new SimulatorApi(session).setConfig(config, parameterName, value);
+    }
+
+    public void setConfig(SimulatorConfig config, Properties props) {
+        new SimulatorApi(session).setConfig(config, props);
     }
 
     public void setConfig(SimulatorConfig config, String parameterName, Boolean value) {

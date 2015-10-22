@@ -1,7 +1,7 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
 /**
- * Created by bill on 10/9/15.
+ *
  */
 public class ToolkitFactory {
 

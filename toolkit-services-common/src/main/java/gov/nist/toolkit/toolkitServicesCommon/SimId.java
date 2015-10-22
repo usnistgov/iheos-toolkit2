@@ -8,4 +8,5 @@ public interface SimId {
     String getId();
     String getActorType();
     String getEnvironmentName();
+    String getFullId();
 }

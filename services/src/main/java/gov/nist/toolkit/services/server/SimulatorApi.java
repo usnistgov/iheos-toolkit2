@@ -4,16 +4,18 @@ import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.client.SimExistsException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actorfactory.client.SimExistsException;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Created by bill on 6/15/15.
@@ -77,6 +79,22 @@ public class SimulatorApi {
     public void setConfig(SimulatorConfig config, String parameterName, Boolean value) {
         SimManager simMgr = new SimCache().getSimManagerForSession(session.id(), true);
         new GenericSimulatorFactory(simMgr).setConfig(config, parameterName, value);
+    }
+
+    public void setConfig(SimulatorConfig config, Properties props) {
+        SimManager simMgr = new SimCache().getSimManagerForSession(session.id(), true);
+        for (Object okey : props.keySet()) {
+            String key = (String) okey;
+            Object ovalue = props.get(okey);
+            if (ovalue instanceof Boolean) {
+                Boolean b = (Boolean) ovalue;
+                setConfig(config, key, b);
+            } else if (ovalue instanceof String) {
+                String s = (String) ovalue;
+                setConfig(config, key, s);
+            } else
+                throw new ToolkitRuntimeException("SimulatorApi.setConfig() - illegal type - value must be Boolean or String, found " + ovalue.getClass().getName());
+        }
     }
 
 }

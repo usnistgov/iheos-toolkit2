@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class SimIdBean implements gov.nist.toolkit.toolkitServicesCommon.SimId{
+public class SimIdBean implements gov.nist.toolkit.toolkitServicesCommon.SimId {
     String user = null;
     String id = null;
     String actorType = null;
@@ -55,6 +55,13 @@ public class SimIdBean implements gov.nist.toolkit.toolkitServicesCommon.SimId{
     public String getEnvironmentName() {
         return environmentName;
     }
+
+    @Override
+    public String getFullId() {
+        return user + "__" + id;
+    }
+
+    public void setFullId(String x) {}
 
     public void setEnvironmentName(String environmentName) {
         this.environmentName = environmentName;

@@ -166,7 +166,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		}
 		return user;
 	}
-	
+
+    @Deprecated
 	public SimulatorConfigElement	getUserByName(String name) {
 		if (name == null)
 			return null;
@@ -177,7 +178,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		}
 		return null;
 	}
-	
+
+    @Deprecated
 	public SimulatorConfigElement	getFixedByName(String name) {
 		if (name == null)
 			return null;
@@ -188,8 +190,19 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		}
 		return null;
 	}
-	
-	public void deleteFixedByName(String name) {
+
+    public SimulatorConfigElement getConfigEle(String name) {
+        if (name == null)
+            return null;
+
+        for (SimulatorConfigElement ele : elements) {
+            if (name.equals(ele.name))
+                return ele;
+        }
+        return null;
+    }
+
+    public void deleteFixedByName(String name) {
 		SimulatorConfigElement ele = getFixedByName(name);
 		if (ele != null)
 			elements.remove(ele);
@@ -200,6 +213,10 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		if (ele != null)
 			elements.remove(ele);
 	}
+
+    public boolean hasConfig(String name) {
+        return getFixedByName(name) != null;
+    }
 	
 	
 	public SimId getId() {

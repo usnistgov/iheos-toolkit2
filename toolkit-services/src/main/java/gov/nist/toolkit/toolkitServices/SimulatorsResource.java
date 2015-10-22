@@ -1,6 +1,7 @@
 package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.BadSimConfigException;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimExistsException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
@@ -19,7 +20,7 @@ import java.io.IOException;
 /**
  *
  */
-@Path("simulators")
+@Path("/simulators")
 public class SimulatorsResource {
     static Logger logger = Logger.getLogger(SimulatorsResource.class);
 
@@ -27,6 +28,8 @@ public class SimulatorsResource {
         ResourceConfig resourceConfig = new ResourceConfig(SimulatorResource.class);
         resourceConfig.property(ServerProperties.TRACING, "ALL");
     }
+
+
 
     /**
      * Create new simulator with default settings.
@@ -36,8 +39,9 @@ public class SimulatorsResource {
      *     Status.BAD_REQUEST if Simulator ID is invalid
      *     Status.INTERNAL_SERVER_ERROR if necessary
      */
-    @PUT
+    @POST
     @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
     public Response setSim(final SimIdBean simIdBean) {
         SimId simId = ToolkitFactory.asServerSimId(simIdBean);
         logger.info("SPI Create simulator " + simId.toString());
@@ -50,29 +54,49 @@ public class SimulatorsResource {
         try {
             api.createSimulator(simId);
         }
-        catch (EnvironmentNotSelectedClientException e) {
-            logger.error("SPI - environment not selected - " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-        catch (ThreadPoolExhaustedException e) {
-            logger.error("SPI - thread pool exhausted - " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-        catch (BadSimConfigException e) {
-            logger.info("SPI Bad sim config - " + e.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        catch (SimExistsException e) {
-            logger.info("SPI Sim " + simId + " already exists");
-            return Response.status(Response.Status.FOUND).build();
-        }
         catch (Exception e) {
-            logger.error("SPI Create simulator " + simId.toString() + " failed - " + e.getMessage());
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }
         return Response.status(Response.Status.OK).build();
     }
 
+    static public Response mapExceptionToResponse(Throwable e, SimId simId, ResponseType responseType) {
+        logger.info("Map Exception to HTTP Response - " + e.getClass().getName() + " - " + e.getMessage());
+        Response.Status status = null;
+        if (e instanceof EnvironmentNotSelectedClientException) {
+            logger.error("SPI - environment not selected - " + e.getMessage());
+            status = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        if (e instanceof ThreadPoolExhaustedException) {
+            logger.error("SPI - thread pool exhausted - " + e.getMessage());
+            status = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        if (e instanceof BadSimConfigException) {
+            logger.info("SPI Bad sim config - " + e.getMessage());
+            status = Response.Status.BAD_REQUEST;
+        }
+        if (e instanceof SimExistsException) {
+            logger.info("SPI Sim " + simId + " already exists");
+            status = Response.Status.FOUND;
+        }
+        if (e instanceof NoSimException) {
+            logger.info("SPI Sim " + simId + " does not exist");
+            status = Response.Status.NOT_FOUND;
+        }
+        if (status == null) {
+            logger.error("SPI Create simulator " + simId.toString() + " failed - " + e.getMessage());
+            status = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        if (responseType == ResponseType.THROW) throw new WebApplicationException(status);
+        return Response.status(status).build();
+    }
+
+
+    /**
+     * Delete simulator with id
+     * @param id
+     * @return
+     */
     @POST
     @Path("_delete/{id}")
     public Response deleteSim(@PathParam("id") String id) {
@@ -85,6 +109,9 @@ public class SimulatorsResource {
         }
         return Response.status(Response.Status.OK).build();
     }
+
+
+
 }
 
 

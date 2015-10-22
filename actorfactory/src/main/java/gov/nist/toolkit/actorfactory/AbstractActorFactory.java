@@ -459,13 +459,13 @@ public abstract class AbstractActorFactory {
 
 	public void setConfig(SimulatorConfig sc, String name, String value) {
 		SimulatorConfigElement ele = sc.getUserByName(name);
-		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " - cannot set its value");
+		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " or cannot set its value");
 		ele.setValue(value);
 	}
 
 	public void setConfig(SimulatorConfig sc, String name, Boolean value) {
 		SimulatorConfigElement ele = sc.getUserByName(name);
-		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " - cannot set its value");
+		if (ele == null) throw new ToolkitRuntimeException("Simulator " + sc.getId() + " does not have a parameter named " + name + " or cannot set its value");
 		ele.setValue(value);
 	}
 
