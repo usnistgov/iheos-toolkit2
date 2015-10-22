@@ -12,15 +12,7 @@
             </UseXPath>
       <ExpectedMimeType>text/plain</ExpectedMimeType>
       <ReferenceDocument uid="$docuid$">../12318/my_document.txt</ReferenceDocument>
-      <Metadata>
-        <tag0:RetrieveDocumentSetRequest xmlns:tag0="urn:ihe:iti:xds-b:2007">
-          <tag0:DocumentRequest>
-            <tag0:HomeCommunityId>$home$</tag0:HomeCommunityId>
-            <tag0:RepositoryUniqueId>$repositoryuid$</tag0:RepositoryUniqueId>
-            <tag0:DocumentUniqueId>$docuid$</tag0:DocumentUniqueId>
-          </tag0:DocumentRequest>
-        </tag0:RetrieveDocumentSetRequest>
-      </Metadata>
+      <MetadataFile>query1.xml</MetadataFile>
     </XCRTransaction>
   </TestStep>
   <TestStep id="retrieve_big">
@@ -35,15 +27,7 @@
             </UseXPath>
       <ExpectedMimeType>text/xml</ExpectedMimeType>
       <ReferenceDocument uid="$docuid$">../12318/summary.xml</ReferenceDocument>
-      <Metadata>
-        <tag0:RetrieveDocumentSetRequest xmlns:tag0="urn:ihe:iti:xds-b:2007">
-          <tag0:DocumentRequest>
-            <tag0:HomeCommunityId>$home$</tag0:HomeCommunityId>
-            <tag0:RepositoryUniqueId>$repositoryuid$</tag0:RepositoryUniqueId>
-            <tag0:DocumentUniqueId>$docuid$</tag0:DocumentUniqueId>
-          </tag0:DocumentRequest>
-        </tag0:RetrieveDocumentSetRequest>
-      </Metadata>
+      <MetadataFile>query2.xml</MetadataFile>
     </XCRTransaction>
   </TestStep>
 </TestPlan>
