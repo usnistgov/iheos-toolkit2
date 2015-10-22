@@ -9,6 +9,7 @@ import gov.nist.toolkit.valregmetadata.coding.Code;
 import gov.nist.toolkit.valregmetadata.coding.CodesFactory;
 import gov.nist.toolkit.valregmetadata.coding.Uuid;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
 
@@ -16,9 +17,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class is a script supposed to update all the metadata files living inside the testkit
@@ -29,8 +28,9 @@ public class UpdateCodes {
     File testkit;
     AllCodes allCodes=null;
     boolean error;
-    String sections[] = { /*"testdata",*/ "tests"/*, "examples"*//*, "selftest"*/ };
+    static String sections[] = { "testdata", "tests", "examples"/*, "selftest"*/ };
     List<String> metadataFilesPaths=new ArrayList<String>();
+    Map<String,Code> replacementMap= new HashMap<String,Code>();
 
     /**
      * This method scans the testkit for metadata files.
@@ -88,6 +88,53 @@ public class UpdateCodes {
             throw new RuntimeException(e.getMessage());
         }
 
+    }
+
+    private void processTestplans(File testFile) {
+        try {
+            File[] dirs = testFile.listFiles();
+            if (dirs == null) {
+                System.out.println("No tests defined in " + dirs);
+                error = true;
+            }
+            for (int j = 0; j < dirs.length; j++) {
+                File testDir = dirs[j];
+                if (testDir.getName().equals(".svn"))
+                    continue;
+                if (testDir.isDirectory()) {
+                    processTestplans(testDir);
+                } else {
+                    if ("testplan.xml".equals(testDir.getName())) {
+                        // read testplan.xml
+                        String testplanContent = Io.stringFromFile(testDir);
+                        for (String oldCode : replacementMap.keySet()) {
+                            if(oldCode.contains("DEMO-Summary^^1.3.6.1.4.1.21367.100.1"))
+                            System.out.println(oldCode);
+                            String oldCodeSplit[] = oldCode.split("\\^");
+                            String code1 = oldCodeSplit[0];
+                            String scheme1 = oldCodeSplit[1];
+                            String name1 = oldCodeSplit[2];
+                            testplanContent.replaceAll(code1, replacementMap.get(oldCode).getCode());
+                            testplanContent.replaceAll(scheme1, replacementMap.get(oldCode).getScheme());
+                            testplanContent.replaceAll(name1, replacementMap.get(oldCode).getDisplay());
+                            if (testDir.getPath().contains("11897")&&testDir.getPath().contains("classcode_one")&&oldCode.contains("DEMO-Summary^^1.3.6.1.4.1.21367.100.1")) {
+                                System.out.println(testDir);
+                                System.out.println(testplanContent);
+                            }
+                        }
+                        File backupFile = new File(testDir.toString() + ".bak");
+                        if (!backupFile.exists()) {
+                            // backup the unmodified file before updating
+                            FileUtils.copyFile(testDir, backupFile);
+                        }
+                        Io.stringToFile(testDir, new OMFormatter(testplanContent).toString());
+                    }
+                }
+
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     /**
@@ -213,39 +260,46 @@ public class UpdateCodes {
      */
     void updateCodes(List<OMElement> badCodes) throws XdsInternalException, FactoryConfigurationError {
         for (OMElement classification : badCodes) {
-            String classificationScheme = classification.getAttributeValue(MetadataSupport.classificationscheme_qname);
-            Uuid classificationUuid = new Uuid(classificationScheme);
-            // pick a new conforming code out of all the codes available in codes.xml
-            Code newCode = allCodes.pick(classificationUuid);
-            updateClassification(classification, newCode);
+            updateClassification(classification);
         }
     }
 
     /**
      * This method updates the classification of the metadata element itself.
      * @param classification classification to update.
-     * @param code code that will replace the current non-conforming code.
      */
-    void updateClassification(OMElement classification, Code code) {
-        classification.getAttribute(MetadataSupport.noderepresentation_qname).setAttributeValue(code.getCode());
-
+    void updateClassification(OMElement classification) {
+        // create variables of the code to be replaced
+        OMAttribute codeToReplace=classification.getAttribute(MetadataSupport.noderepresentation_qname)/*.setAttributeValue(code.getCode())*/;
+        OMElement valueToReplace=null;
         OMElement slot = MetadataSupport.firstChildWithLocalName(classification, "Slot");
-        OMElement codeSystemElement = null;
         if (slot != null) {
             OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "ValueList");
             if (valueList!=null) {
-                OMElement value = MetadataSupport.firstChildWithLocalName(valueList, "Value");
-                codeSystemElement = value;
+                valueToReplace = MetadataSupport.firstChildWithLocalName(valueList, "Value");
             }
-        }
-        if (codeSystemElement != null){
-            codeSystemElement.setText(code.getScheme());
         }
         OMElement nameElement = MetadataSupport.firstChildWithLocalName(classification, "Name");
         if (nameElement == null) return;
         OMElement localizedStringElement = MetadataSupport.firstChildWithLocalName(nameElement, "LocalizedString");
         if (localizedStringElement == null) return;
-        localizedStringElement.getAttribute(MetadataSupport.value_qname).setAttributeValue(code.getDisplay());
+        OMAttribute nameToReplace = localizedStringElement.getAttribute(MetadataSupport.value_qname);
+        Code oldCode=new Code(codeToReplace.getAttributeValue(),valueToReplace.getText(),nameToReplace.getAttributeValue());
+        // check if the code to be replaced as already been changed before.
+        Code replacementCode=replacementMap.get(oldCode.toString());
+        if (replacementCode==null){
+            // if not, assign a new code
+            String classificationScheme = classification.getAttributeValue(MetadataSupport.classificationscheme_qname);
+            Uuid classificationUuid = new Uuid(classificationScheme);
+            // pick a new conforming code out of all the codes available in codes.xml
+            Code newCode = allCodes.pick(classificationUuid);
+            replacementCode=newCode;
+            replacementMap.put(oldCode.toString(),replacementCode);
+        }
+        // replace the code
+        codeToReplace.setAttributeValue(replacementCode.getCode());
+        nameToReplace.setAttributeValue(replacementCode.getDisplay());
+        valueToReplace.setText(replacementCode.getScheme());
     }
 
     public static void main(String[] args) {
@@ -255,6 +309,16 @@ public class UpdateCodes {
         // init testkit
         uc.testkit = new File(args[0]);
         uc.scan();
+        uc.error = false;
         uc.processCodes();
+        System.out.println(uc.replacementMap);
+        for (int i=0; i<sections.length; i++) {
+            String section = sections[i];
+
+            File sectionFile = new File(uc.testkit + File.separator + section);
+
+
+            uc.processTestplans(sectionFile);
+        }
     }
 }
