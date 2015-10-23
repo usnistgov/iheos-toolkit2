@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -32,10 +33,10 @@ public class TestsOverviewWidget extends CellTable<Test> {
         dataModel = _dataModel;
         Updater updater = Updater.getUpdater(this);
 
-        // ----- Set defaults UI parameters -----
-        setDefaults();
 
-        // ----- Create the UI -----
+        // --------------------------------------------------------------
+        // ------------------------- Create the UI ----------------------
+        // --------------------------------------------------------------
 
         testnumberColumn = new TextColumn<Test>() {
             @Override
@@ -67,7 +68,6 @@ public class TestsOverviewWidget extends CellTable<Test> {
              * Return the element of the buttons cell that was clicked (icon or button).
              */
             public void update(int index, Test object, String value) {
-                //Window.alert("This is the field updater, with value: " + value + " Index: " + index + " Test no: "+ object.getNumber());
 
                 if (value == TestButtonsCell.PLAY_ICON_NAME) {
                     runSingleTest(object.getNumber(), index);
@@ -110,6 +110,12 @@ public class TestsOverviewWidget extends CellTable<Test> {
 
         ReloadAllTestResultsCallback testsListCallback = new ReloadAllTestResultsCallback(updater);
         loadTestsData(testsListCallback);
+
+
+        // --------------------------------------------------------------
+        // --------------- Set defaults UI parameters -------------------
+        // --------------------------------------------------------------
+        setDefaults();
     }
 
     /**
@@ -183,8 +189,22 @@ public class TestsOverviewWidget extends CellTable<Test> {
     /**
      * Default options for the cell table
      */
-    private void setDefaults(){
+    private void setDefaults() {
         setWidth("100%");
         setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+        setDisplayStyle();
     }
+
+    private void setDisplayStyle() {
+        setRowStyles(new RowStyles<Test>() {
+            @Override
+            public String getStyleNames(Test rowObject, int rowIndex) {
+                if (rowObject.isSection()) {
+                    return "test-section-row";
+                }
+                return "test-row";
+            }
+        });
+    }
+
 }

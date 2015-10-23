@@ -15,17 +15,19 @@ public class Test implements Serializable {
     String commands;
     String time;
     String status;
+    boolean isSection;
 
     public Test() {
     }
 
 
-    public Test(String _number, String _description, String _commands, String _time, String _status){
+    public Test(String _number, String _description, String _commands, String _time, String _status, boolean _isSection){
         number = _number;
         description = _description;
         commands = _commands;
         time = _time;
-        status =_status;
+        status = _status;
+        isSection = _isSection;
     }
 
     public String getNumber() {
@@ -47,4 +49,6 @@ public class Test implements Serializable {
     public String getStatus() {
         return status;
     }
+
+    public boolean isSection() { return isSection; }
 }

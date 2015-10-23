@@ -19,6 +19,7 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
+import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 
 /**
@@ -83,7 +84,7 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
     protected void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
            if (data == null) {
             return;
-        }
+           }
 
         // ------ generate the composite cell -----
         SafeStyles style = SafeStylesUtils.fromTrustedString("float:left;cursor:pointer;margin:3px;");

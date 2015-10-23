@@ -56,3 +56,11 @@ h1 {
 .my-table-not-run {
 	background-color: #99FFFF
 }
+
+.test-section-row {
+  background-color: white !important;
+}
+
+.test-row {
+  background-color: #E7F1FA !important;
+}
