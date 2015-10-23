@@ -22,20 +22,20 @@ class CodeValidationTestCase extends Specification{
         metadata = getClass().classLoader.getResource('PnR1Doc.xml').text
     }
 
-    def 'Validate'(){
-        when:
-        OMElement ele = Util.parse_xml(metadata);
-        m=MetadataParser.parse(ele);
-
-        er = new TextErrorRecorder();
-
-        codeValidation=new CodeValidation(m);
-        ValidationContext vc=new ValidationContext();
-        vc.setCodesFilename(codePath);
-        codeValidation.setValidationContext(vc);
-        codeValidation.run(er);
-
-        then:
-        !er.hasErrors();
-    }
+//    def 'Validate'(){
+//        when:
+//        OMElement ele = Util.parse_xml(metadata);
+//        m=MetadataParser.parse(ele);
+//
+//        er = new TextErrorRecorder();
+//
+//        codeValidation=new CodeValidation(m);
+//        ValidationContext vc=new ValidationContext();
+//        vc.setCodesFilename(codePath);
+//        codeValidation.setValidationContext(vc);
+//        codeValidation.run(er);
+//
+//        then:
+//        !er.hasErrors();
+//    }
 }
