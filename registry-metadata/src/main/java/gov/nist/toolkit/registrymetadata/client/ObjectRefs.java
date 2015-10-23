@@ -1,10 +1,10 @@
 package gov.nist.toolkit.registrymetadata.client;
 
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 
 public class ObjectRefs implements IsSerializable  {
@@ -21,5 +21,20 @@ public class ObjectRefs implements IsSerializable  {
 
 	public ObjectRefs(ObjectRef ref) {
 		objectRefs.add(ref);
+	}
+
+	public String toString() {
+		StringBuilder buf = new StringBuilder();
+
+		buf.append("[");
+		int cnt = 0;
+		for (ObjectRef o : objectRefs) {
+			if (cnt > 0) buf.append(", ");
+			buf.append(o.displayName());
+			cnt++;
+		}
+		buf.append("]");
+
+		return buf.toString();
 	}
 }

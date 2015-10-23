@@ -2,10 +2,9 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.utilities.xml.SchemaValidation;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.SchemaValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -16,7 +15,7 @@ import org.apache.axiom.om.OMElement;
  * @author bill
  *
  */
-public class SchemaValidator extends MessageValidator {
+public class SchemaValidator extends AbstractMessageValidator {
 	OMElement xml;
 
 	public SchemaValidator(ValidationContext vc, OMElement xml) {
@@ -26,6 +25,7 @@ public class SchemaValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
 		int schemaValidationType = vc.getSchemaValidationType();
 		
@@ -36,14 +36,17 @@ public class SchemaValidator extends MessageValidator {
 		} catch (Exception e) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e.getMessage(), this, "Schema");
 		}
+        finally {
+            er.unRegisterValidator(this);
+        }
 
 	}
 	
 	void schema_validate_local(OMElement ahqr, int metadata_type)
-	throws XdsInternalException, SchemaValidationException {
+	throws XdsInternalException {
 		String schema_messages = null;
 		try {
-			schema_messages = SchemaValidation.validate_local(ahqr, metadata_type);
+			schema_messages = SchemaValidation.validate(ahqr, metadata_type);
 		} catch (Exception e) {
 			throw new XdsInternalException("Schema Validation threw internal error: " + e.getMessage());
 		}

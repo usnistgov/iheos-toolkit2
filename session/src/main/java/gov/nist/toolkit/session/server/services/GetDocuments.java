@@ -1,9 +1,10 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GetDocuments extends CommonServiceManager {
+public class GetDocuments extends CommonService {
 	String returnType = "LeafClass";
 	Session session;
 	
@@ -25,7 +26,7 @@ public class GetDocuments extends CommonServiceManager {
 			// load site config into session
 			session.setSiteSpec(site);
 			
-			String testName = "GetDocuments";
+			TestInstance testInstance = new TestInstance("GetDocuments");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("$returnType$", returnType);
@@ -50,7 +51,7 @@ public class GetDocuments extends CommonServiceManager {
 			params.put("$metadatalevel$", 
 					(aids.isLid()) ? "2" : "1");
 
-			return session.queryServiceManager().runPerCommunityQuery(aids, session, testName, sections, params);
+			return session.queryServiceManager().runPerCommunityQuery(aids, session, testInstance, sections, params);
 				
 		} catch (Exception e) {
 			return buildResultList(e);

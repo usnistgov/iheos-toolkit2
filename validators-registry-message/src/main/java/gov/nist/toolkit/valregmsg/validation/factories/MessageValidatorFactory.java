@@ -12,10 +12,12 @@ import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.*;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
@@ -32,8 +34,8 @@ import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.log4j.Logger;
 
 /**
- * A collection of static methods for initiating validations where each method 
- * returns an instance of 
+ * A collection of static methods for initiating validations where each method
+ * returns an instance of
  * MessageValidatorEngine which will manage the execution of the validation.
  * @author bill
  *
@@ -41,7 +43,7 @@ import org.apache.log4j.Logger;
 public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	static OMElement rootElement ;
 	static Logger logger = Logger.getLogger(MessageValidatorFactory.class);
-	
+
 //	static {
 //		// this is needed to manage otherwise circular references
 //		// through the class dependency graph.
@@ -54,7 +56,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param erBuilder ErrorRecorder factory. A new ErrorRecorder is allocated and used for each validation step.
 	 * @param input input file
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return new MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return new MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
@@ -65,18 +67,18 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		} catch (Exception e) {  }
 		return null;
 	}
-	
+
 	// Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
 	// a reference to an instance of this class. This is necessary to get around a circular
 	// reference in the build tree
-	
+
 	public MessageValidatorFactory() {
 		System.out.println("MessageValidatorFactory()");
 		if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
 			MessageValidatorFactoryFactory.messageValidatorFactory2I = new MessageValidatorFactory("a");
 		}
 	}
-	
+
 	public MessageValidatorFactory(String a) {}
 
 	/**
@@ -85,7 +87,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param input input string
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return new MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return new MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
@@ -96,7 +98,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			ErrorRecorder er = report(erBuilder, mvc, "Requested Validation Context");
 			er.detail(vc.toString());
 		}
-		
+
 		logger.debug("ValidationContext is " + vc.toString());
 
 		String inputString = new String(input).trim();
@@ -129,7 +131,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
@@ -164,7 +166,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
@@ -173,7 +175,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		//			EdiToXml edx = new EdiToXml(input);
 		//			edx.run();
 		//			input = edx.getGeneratedOutput();
-		//		} 
+		//		}
 		return getValidatorForXML(erBuilder, input, mvc, vc, rvi);
 	}
 	/**
@@ -183,7 +185,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
@@ -194,7 +196,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			xml = Util.parse_xml(input);
 			rootElement = xml ;
 			xml.build();
-		} catch (Exception e) {  
+		} catch (Exception e) {
 			mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
 			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
 			if (input == null)
@@ -226,7 +228,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
@@ -236,7 +238,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			// for now all the message inputs are XML - later some will be HTTP wrapped around XML
 			xml = Util.parse_xml(input);
 			xml.build();
-		} catch (Exception e) {  
+		} catch (Exception e) {
 			if (mvc == null)
 				mvc = new MessageValidatorEngine();
 			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
@@ -261,7 +263,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
@@ -276,7 +278,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
@@ -287,7 +289,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			String inputString = new String(input);
 			xml = Util.parse_xml(inputString);
 			xml.build();
-		} catch (Exception e) {  
+		} catch (Exception e) {
 			if (mvc == null)
 				mvc = new MessageValidatorEngine();
 			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
@@ -309,28 +311,28 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are not yet known.
 	 */
 	static public MessageValidatorEngine getValidatorContext(ErrorRecorderBuilder erBuilder, OMElement xml, MessageValidatorEngine mvc, String title, ValidationContext vc, RegistryValidationInterface rvi) {
 		String rootElementName = xml.getLocalName();
 		if (vc == null)
-			vc = new ValidationContext();
+			vc = DefaultValidationContextFactory.validationContext();
 
-		if (mvc == null) 
+		if (mvc == null)
 			mvc = new MessageValidatorEngine();
 
-		if (title == null) 
+		if (title == null)
 			title = "";
 
 
 		if (vc.isValid()) {
-			reportParseDecision(erBuilder, mvc, "Parse Decision", "Running requested validation - " + 
+			reportParseDecision(erBuilder, mvc, "Parse Decision", "Running requested validation - " +
 					((vc.isMessageTypeKnown()) ? vc.getTransactionName() : "Unknown message type") +
 					((vc.hasSoap) ? " with SOAP Wrapper" : ""));
 
-			// SOAP parser will find body and schedule its validation based on 
+			// SOAP parser will find body and schedule its validation based on
 			// requested validation
 			if (vc.hasSoap || vc.hasSaml) {
 				mvc.addMessageValidator("SOAP Message Parser", new SoapMessageParser(vc, xml), erBuilder.buildNewErrorRecorder());
@@ -365,7 +367,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			// for now all the message inputs are XML - later some will be HTTP wrapped around XML
 			xml = Util.parse_xml(body);
 			xml.build();
-		} catch (Exception e) {  
+		} catch (Exception e) {
 			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
 			if (body == null)
 				er.detail("Input was null");
@@ -395,7 +397,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		if (xml != null)
 			rootElementName = xml.getLocalName();
 
-		//XcpdInit, XcpdResp and C32 won't use these schema validators 
+		//XcpdInit, XcpdResp and C32 won't use these schema validators
 
 		if (!vc.isXcpd && !vc.isC32 && !vc.isNcpdp ) {
 
@@ -507,7 +509,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		} else if (vc.isC32) {
 			validateToplevelElement(erBuilder, mvc, "ClinicalDocument", rootElementName);
 			mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-			return mvc;			
+			return mvc;
 		} else {
 			reportError(erBuilder, mvc, "ValidationContext", "Don't know how to parse this: " + vc.toString());
 			return mvc;
@@ -542,7 +544,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 		try {
 			xml = Util.parse_xml(body);
 			xml.build();
-		} catch (Exception e) {  
+		} catch (Exception e) {
 			ErrorRecorder er = reportError(erBuilder, mvc, "XML Parser", e.getMessage());
 			if (body == null)
 				er.detail("Input was null");
@@ -668,7 +670,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 * @param erBuilder ErrorRecorder factory. A new ErrorRecorder is allocated and used for each validation step.
 	 * @param xml XML form of the log.xml file
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return MessageValidatorEngine which will manage the individual validation steps. It is preloaded with 
+	 * @return MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
 	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
 	 * ValidationContext is created so the goals of the validation are inferred from the contents.
 	 */
@@ -677,7 +679,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 
 		reportParseDecision(erBuilder, mvcx, "Parse Decision", "Input is a Test Log file");
 
-		List<OMElement> testSteps = MetadataSupport.childrenWithLocalName(xml, "TestStep");
+		List<OMElement> testSteps = XmlUtil.childrenWithLocalName(xml, "TestStep");
 		for (OMElement testStep : testSteps) {
 			String id = testStep.getAttributeValue(MetadataSupport.id_qname);
 			reportParseDecision(erBuilder, mvcx, "Test log Step", id);
@@ -726,7 +728,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	static ErrorRecorder reportError(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String error) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		er.err(XdsErrorCode.Code.XDSRegistryError, error, "MessageValidatorFactory", "");
-		mvc.addMessageValidator(title, new ServiceRequestContainer(new ValidationContext()), er);
+		mvc.addMessageValidator(title, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 		return er;
 	}
 
@@ -739,7 +741,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	 */
 	static ErrorRecorder report(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
-		mvc.addMessageValidator(title, new ServiceRequestContainer(new ValidationContext()), er);
+		mvc.addMessageValidator(title, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 		return er;
 	}
 
@@ -753,7 +755,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	static void reportParseDecision(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String text) {
 		ErrorRecorder er = erBuilder.buildNewErrorRecorder();
 		//		er.info1(text);
-		mvc.addMessageValidator(title + " - " + text, new ServiceRequestContainer(new ValidationContext()), er);
+		mvc.addMessageValidator(title + " - " + text, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
 	}
 
 	public static void main(String[] args) {

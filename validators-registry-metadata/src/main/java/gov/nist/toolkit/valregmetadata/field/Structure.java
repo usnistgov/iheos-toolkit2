@@ -24,8 +24,8 @@ public class Structure {
 
 	public Structure(Metadata m, boolean is_submit) throws XdsInternalException {
 		this.m = m;
-		rel = new RegistryErrorListGenerator( 
-				(m.isVersion2()) ? RegistryErrorListGenerator.version_2 : RegistryErrorListGenerator.version_3, 
+		rel = new RegistryErrorListGenerator(
+				(m.isVersion2()) ? RegistryErrorListGenerator.version_2 : RegistryErrorListGenerator.version_3,
 						false /* log */);
 		this.is_submit = is_submit;
 		log_message = null;
@@ -71,7 +71,7 @@ public class Structure {
 			String a_type = assoc.getAttributeValue(MetadataSupport.association_type_qname);
 			String a_source = assoc.getAttributeValue(MetadataSupport.source_object_qname);
 
-			boolean target_is_included_is_doc = m.getExtrinsicObjectIds().contains(a_target); 
+			boolean target_is_included_is_doc = m.getExtrinsicObjectIds().contains(a_target);
 
 			if (a_source.equals(ss_id)) {
 				if ( !a_type.equals(assoc_type("HasMember"))) {
@@ -83,7 +83,7 @@ public class Structure {
 								assoc.getAttributeValue(MetadataSupport.id_qname) +
 								" has sourceObject pointing to Submission Set but contains no SubmissionSetStatus Slot"
 						);
-					} 
+					}
 				} else if (m.getFolderIds().contains(a_target)) {
 
 				} else {
@@ -148,7 +148,7 @@ public class Structure {
 				if (ss_status == null || ss_status.equals("")) {
 					err("SubmissionSetStatus Slot on Submission Set association has no value");
 				} else if (	ss_status.equals("Original")) {
-					if ( !m.containsObject(target)) 
+					if ( !m.containsObject(target))
 						err("SubmissionSetStatus Slot on Submission Set association has value 'Original' but the targetObject " + target + " references an object not in the submission");
 				} else if (	ss_status.equals("Reference")) {
 					if (m.containsObject(target))
@@ -157,9 +157,9 @@ public class Structure {
 					err("SubmissionSetStatus Slot on Submission Set association has unrecognized value: " + ss_status);
 				}
 			} else {
-				if (ss_status != null && !ss_status.equals("Reference")) 
+				if (ss_status != null && !ss_status.equals("Reference"))
 					err("A SubmissionSet Assocation has the SubmissionSetStatus Slot but the target ExtrinsicObject is not part of the Submission");
-					
+
 			}
 		}
 	}
@@ -247,7 +247,7 @@ public class Structure {
 						m.getAssocTarget(a2).equals(aId) &&
 						m.getSimpleAssocType(a2).equals("HasMember")) {
 					if (good) {
-						err("Multiple HasMember Associations link Submission Set " + ssId + 
+						err("Multiple HasMember Associations link Submission Set " + ssId +
 								" and Association\n" + a  );
 					} else {
 						good = true;
@@ -256,7 +256,7 @@ public class Structure {
 				}
 			}
 			if (good == false)
-				err("A HasMember Association is required to link Submission Set " + ssId + 
+				err("A HasMember Association is required to link Submission Set " + ssId +
 						" and Folder/Document Association\n" + a);
 		}
 
@@ -334,7 +334,7 @@ public class Structure {
 			String id = assoc.getAttributeValue(MetadataSupport.target_object_qname);
 			String type = assoc.getAttributeValue(MetadataSupport.association_type_qname);
 			if (type.equals(assoc_type("RPLC")) && ! m.isReferencedObject(id))
-				err("Replaced document (RPLC assocation type) cannot be in submission\nThe following objects were found in the submission:" 
+				err("Replaced document (RPLC assocation type) cannot be in submission\nThe following objects were found in the submission:"
 						+ m.getIdsOfReferencedObjects().toString());
 		}
 	}
@@ -353,7 +353,7 @@ public class Structure {
 					a_source != null && a_source.equals(source)
 			)
 				return true;
-		}		
+		}
 		return false;
 	}
 

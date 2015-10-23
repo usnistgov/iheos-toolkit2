@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.registrymsg.registry.Response;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -9,13 +10,14 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 
 public class RegistryResponseGeneratorSim extends TransactionSimulator implements RegistryResponseGeneratingSim {
-
+	DsSimCommon dsSimCommon;
 	Response response = null;
 	Exception startUpException = null;
 
 
-	public RegistryResponseGeneratorSim(SimCommon common) {
-		super(common);
+	public RegistryResponseGeneratorSim(SimCommon common, DsSimCommon dsSimCommon) {
+		super(common, null);
+		this.dsSimCommon = dsSimCommon;
 	}
 
 	public Response getResponse() {
@@ -24,8 +26,7 @@ public class RegistryResponseGeneratorSim extends TransactionSimulator implement
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		try {
-			response = common.getRegistryResponse();
-//			response.add(common.getRegistryErrorList(), null);
+			response = dsSimCommon.getRegistryResponse();
 		} catch (XdsInternalException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

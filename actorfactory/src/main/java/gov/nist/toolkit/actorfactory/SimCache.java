@@ -1,15 +1,12 @@
 package gov.nist.toolkit.actorfactory;
 
 
-import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.sitemanagement.client.Site;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Cache of loaded simulators. This is maintained globally (covering all sessions) since one session
@@ -26,6 +23,14 @@ public class SimCache {
 		mgrs.put(sessionId, sim);
 	}
 
+	static public Collection<Site> getAllSites() throws Exception {
+		Set<Site> sitesSet = new HashSet<>();
+		for (SimManager mgr : mgrs.values()) {
+			sitesSet.addAll(mgr.getAllSites().asCollection());
+		}
+		return sitesSet;
+	}
+
 	/**
 	 * Make sure this SimulatorConfig is present in the cache. 
 	 * @param sessionId
@@ -37,7 +42,7 @@ public class SimCache {
 			sm = new SimManager(sessionId);
 			mgrs.put(sessionId, sm);
 		}
-		String simId = sc.getId();
+		SimId simId = sc.getId();
 		SimulatorConfig sc1 = sm.getSimulatorConfig(simId);
 		if (sc1 == null) {
 			sm.addSimConfig(sc);
@@ -48,7 +53,6 @@ public class SimCache {
 		for (SimulatorConfig config : configs) {
 			update(sessionId, config);
 		}
-		
 	}
 	
 	public SimManager getSimManagerForSession(String sessionId) {
@@ -73,7 +77,7 @@ public class SimCache {
 	 * @return
 	 * @throws IOException
 	 */
-	public Set<SimManager> getSimManagersForSim(String simId) throws IOException {
+	public Set<SimManager> getSimManagersForSim(SimId simId) throws IOException {
 		Set<SimManager> smans = new HashSet<SimManager>();
 		for (SimManager sman : mgrs.values()) {
 			SimulatorConfig sconf = sman.getSimulatorConfig(simId);
@@ -94,23 +98,30 @@ public class SimCache {
 	 * @return
 	 * @throws IOException
 	 */
-	public SimulatorConfig getSimulatorConfig(String simId) throws IOException {
+	static public SimulatorConfig getSimulatorConfig(SimId simId) throws IOException {
 		for (SimManager sman : mgrs.values()) {
 			SimulatorConfig sconf = sman.getSimulatorConfig(simId);
 			if (sconf != null)
 				return sconf;
 		}
+		try {
+			return GenericSimulatorFactory.loadSimulator(simId, true);
+		} catch (Exception e) {
+			// ignore
+		}
 		return null;
 	}
 
-	public void deleteSimConfig(String simId) throws IOException {
+	public void deleteSimConfig(SimId simId) throws IOException {
 		// remove from cache
 		for (SimManager sman : mgrs.values()) {
 			sman.removeSimulatorConfig(simId);
 		}
-		try {
-			SimDb simdb = new SimDb(simId);
-			simdb.delete();
-		} catch (NoSimException e) {}
+		SimulatorConfig config = getSimulatorConfig(simId);
+
+		// TODO - this doesn't work because delete hook for listener is hung off RegistrySimulatorFactory and not
+		// GenericSimulatorFactory - need to move the hook mechanism. Maybe to SimulatorConfig or Simulator classes.
+		// In general it should be attached to a run class and not a factory class
+		GenericSimulatorFactory.delete(config);
 	}
 }

@@ -1,14 +1,13 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.Calendar;
-
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import org.apache.log4j.Logger;
+
+import java.io.*;
+import java.util.Calendar;
 
 public class RepIndex implements Serializable {
 	static Logger logger = Logger.getLogger(RepIndex.class);
@@ -17,13 +16,15 @@ public class RepIndex implements Serializable {
 	public DocumentCollection dc;
 	String filename;
 	public Calendar cacheExpires;
+	SimId simId;
 
 	public DocumentCollection getDocumentCollection() {
 		return dc;
 	}
 
-	public RepIndex(String filename) {
+	public RepIndex(String filename, SimId simId) {
 		this.filename = filename;
+		this.simId = simId;
 		try {
 			restore();
 			dc.repIndex = this;
@@ -75,6 +76,14 @@ public class RepIndex implements Serializable {
 		out.close();
 	}
 
+	public SimulatorStats getSimulatorStats() throws IOException, NoSimException {
+		SimulatorStats stats = new SimulatorStats();
+		stats.actorType = ActorType.REPOSITORY;
+		stats.simId = simId;
+
+		stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
+		return stats;
+	}
 
 
 }

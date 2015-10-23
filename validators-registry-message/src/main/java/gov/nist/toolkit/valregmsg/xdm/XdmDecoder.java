@@ -9,9 +9,12 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,10 +25,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.zip.ZipException;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
-public class XdmDecoder extends MessageValidator {
+public class XdmDecoder extends AbstractMessageValidator {
 	InputStream in;
 	ErrorRecorderBuilder erBuilder;
 	static Logger logger = Logger.getLogger(XdmDecoder.class);
@@ -44,7 +44,7 @@ public class XdmDecoder extends MessageValidator {
 	public static void main(String[] args) {
 		try {
 			InputStream is = Io.getInputStreamFromFile(new File(args[0]));
-			ValidationContext vc = new ValidationContext();
+			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			vc.isXDM = true;
 			ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
 			ErrorRecorder er = erBuilder.buildNewErrorRecorder();
@@ -82,10 +82,12 @@ public class XdmDecoder extends MessageValidator {
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
+		er.registerValidator(this);
 
 		logger.debug("running");
 		if (!decode(er)) {
 			logger.info("Did not decode zip properly");
+			er.unRegisterValidator(this);
 			return;
 		}
 
@@ -128,7 +130,7 @@ public class XdmDecoder extends MessageValidator {
 					ByteArray ba = contents.get(metadataFilename);
 					OMElement ele = Util.parse_xml(ba.getInputStream());
 
-					ValidationContext metadataVc = new ValidationContext();
+					ValidationContext metadataVc = DefaultValidationContextFactory.validationContext();
 					metadataVc.hasHttp = false;
 					metadataVc.hasSaml = false;
 					metadataVc.hasSoap = false;
@@ -219,11 +221,13 @@ public class XdmDecoder extends MessageValidator {
 				} catch (Exception e) {
 					er.err(Code.NoCode, "Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e), subsetDir,"");
 					logger.info("Error reading metadata from " + metadataFilename + "\n" + ExceptionUtil.exception_details(e));
+					er.unRegisterValidator(this);
 					return;
 				}
 			}
 		}
 		mvc.run();
+        er.unRegisterValidator(this);
 	}
 
 	boolean decode(ErrorRecorder er) {

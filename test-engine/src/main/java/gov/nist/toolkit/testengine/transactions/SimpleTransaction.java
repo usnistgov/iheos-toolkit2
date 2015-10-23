@@ -2,15 +2,13 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
-import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
+import org.apache.axiom.om.OMElement;
 
 import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.axiom.om.OMElement;
+import java.io.File;
 
 public class SimpleTransaction extends BasicTransaction {
 	OMElement metadata_ele = null;
@@ -61,7 +59,7 @@ public class SimpleTransaction extends BasicTransaction {
 			RegistryResponseParser registry_response = new RegistryResponseParser(result);
 
 			if ( registry_response.is_error())
-				fail(registry_response.get_regrep_error_msg());
+				fail(registry_response.get_regrep_error_msgs());
 
 		} 
 		catch (Exception e) {

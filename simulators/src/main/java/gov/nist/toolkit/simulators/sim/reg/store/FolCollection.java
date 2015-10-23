@@ -37,6 +37,8 @@ public class FolCollection extends RegObCollection implements Serializable {
 		if (toDelete != null)
 			fols.remove(toDelete);
 	}
+
+	public int size() { return fols.size(); }
 	
 	public List<Fol> getByLid(String lid) {
 		List<Fol> flist = new ArrayList<Fol>();
@@ -208,7 +210,13 @@ public class FolCollection extends RegObCollection implements Serializable {
 		fs.addAll(parent.fols);
 		return fs;
 	}
-	
+
+	@Override
+	public List<String> getIds() {
+		List<String> ids = new ArrayList<>();
+		for (Fol a : fols) ids.add(a.getId());
+		return ids;
+	}
 
 
 }

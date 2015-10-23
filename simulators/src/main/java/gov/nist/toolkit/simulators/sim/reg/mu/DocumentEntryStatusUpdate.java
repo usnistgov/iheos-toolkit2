@@ -8,6 +8,7 @@ import gov.nist.toolkit.simulators.sim.reg.RegRSim;
 import gov.nist.toolkit.simulators.sim.reg.store.DocEntry;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.client.ValidationContext.MetadataPattern;
 
@@ -15,9 +16,11 @@ import org.apache.axiom.om.OMElement;
 
 public class DocumentEntryStatusUpdate extends RegRSim {
 	ErrorRecorder er;
+	DsSimCommon dsSimCommon;
 	
-	public DocumentEntryStatusUpdate(SimCommon common, ErrorRecorder er, SimulatorConfig asc) {
-		super(common, asc);
+	public DocumentEntryStatusUpdate(SimCommon common, DsSimCommon dsSimCommon, ErrorRecorder er, SimulatorConfig asc) {
+		super(common, dsSimCommon, asc);
+		this. dsSimCommon = dsSimCommon;
 		this.er = er;
 	}
 

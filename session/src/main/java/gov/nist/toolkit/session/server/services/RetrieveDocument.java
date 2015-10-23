@@ -1,11 +1,12 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RetrieveDocument extends CommonServiceManager {
+public class RetrieveDocument extends CommonService {
 	Session session;
 	
 	public RetrieveDocument(Session session) throws XdsException {
@@ -38,7 +39,7 @@ public class RetrieveDocument extends CommonServiceManager {
 					uid.repositoryUniqueId = session.repUid;
 			}
 
-			String testName = "RetrieveDocumentSet";
+			TestInstance testInstance = new TestInstance("RetrieveDocumentSet");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			if (session.siteSpec.isRG()) {
@@ -52,7 +53,7 @@ public class RetrieveDocument extends CommonServiceManager {
 			else {
 				sections.add("XDS");
 			}
-			List<Result> results = session.queryServiceManager().perRepositoryRetrieve(uids, testName, sections, params);
+			List<Result> results = session.queryServiceManager().perRepositoryRetrieve(uids, testInstance, sections, params);
 			return results;
 	}
 

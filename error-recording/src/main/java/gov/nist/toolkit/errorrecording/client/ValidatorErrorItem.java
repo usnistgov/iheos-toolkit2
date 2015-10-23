@@ -37,7 +37,28 @@ public class ValidatorErrorItem implements IsSerializable {
 			return codeString;
 		return code.toString();
 	}
-	
+
+	public boolean isError() {
+		return level == ReportingLevel.ERROR || level == ReportingLevel.D_ERROR;
+	}
+
+	public boolean isErrorOrContext() {
+		return isError() || completion == ReportingCompletionType.ERROR;
+	}
+
+	public String getReportable() {
+		StringBuilder buf = new StringBuilder();
+		if (hasDTS()) buf.append(dts).append(" : ");
+		buf.append(msg.trim());
+		if (hasExpected() || hasFound() )
+			buf.append('\n').append("Expected [").append(expected).append("]  ").append("Found [ ").append("]\n");
+
+		return buf.toString();
+	}
+
+	boolean hasExpected() { return !expected.equals(""); }
+	boolean hasFound() { return !found.equals(""); }
+
 	public void setCode(XdsErrorCode.Code code) {
 		this.code = code;
 	}
@@ -47,49 +68,78 @@ public class ValidatorErrorItem implements IsSerializable {
 		codeString = code;
 	}
 
+	String getMsg() { return msg.trim(); }
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
-		String sep = "    &&&&    ";
+//		String sep = "    &&&&    ";
+//		String sp = "    ";
 		
 		switch (level) {
 		case SECTIONHEADING:
-			buf.append("\n");
-			buf.append(caps(msg));
+			buf.append("SECTIONHEADING\n");
+			add(buf);
+//			buf.append(caps(getMsg())).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case CHALLENGE:
-				buf.append("    ").append(msg);
+			buf.append("CHALLENGE\n");
+			add(buf);
+//				buf.append(sp).append(getMsg()).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case EXTERNALCHALLENGE:
-			buf.append("    ").append(msg);
+			buf.append("EXTERNALCHALLENGE\n");
+			add(buf);
+//			buf.append(sp).append(getMsg()).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case DETAIL:
-			buf.append("        ").append(msg);
+			buf.append("DETAIL\n");
+			add(buf);
+//			buf.append(sp).append(getMsg()).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case ERROR:
-			buf
-			.append("ERROR: ")
-			.append(msg)
-			.append(sep)
-			.append(resource);
+			case D_ERROR:
+				buf.append("ERROR\n");
+				add(buf);
+//			buf
+//			.append("ERROR: ")
+//			.append(getMsg())
+//			.append(sep)
+//			.append(resource).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case WARNING:
-			buf
-			.append("WARNING: ")
-			.append(msg)
-			.append(sep)
-			.append(resource);
+			case D_WARNING:
+				buf.append("WARNING\n");
+				add(buf);
+//			buf
+//			.append("WARNING: ")
+//			.append(getMsg())
+//					.append(sep)
+//			.append(resource).append('[').append(completion).append(']').append("\n");
+				break;
+
+			case D_INFO:
+				buf.append("INFO\n");
+				add(buf);
+//			buf.append("INFO: ").append(getMsg()).append("\n");
 		}
 
-		buf.append("\n");
-		
 		return buf.toString();
 	}
+
+	void add(StringBuffer buf) {
+		String sp = "    ";
+		buf.append(sp);
+		if (hasDTS()) buf.append(dts.trim()).append(sp);
+		buf.append(getReportable().trim()).append('[').append(completion).append(']').append("\n");
+	}
+
+	boolean hasDTS() { return dts != null && !"".equals(dts); }
 	
 	String caps(String in) {
 		return in.toUpperCase();

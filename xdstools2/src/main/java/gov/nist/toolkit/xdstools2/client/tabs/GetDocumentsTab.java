@@ -1,7 +1,12 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -10,13 +15,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class GetDocumentsTab  extends GenericQueryTab {
 
@@ -62,11 +60,8 @@ public class GetDocumentsTab  extends GenericQueryTab {
 		int row = 0;
 		
 		topPanel.add(mainGrid);
-		
 
-		HTML pidLabel = new HTML();
-		pidLabel.setText("Document Entry UUIDs or UIDs");
-		mainGrid.setWidget(row,0, pidLabel);
+		mainGrid.setWidget(row,0, new HTML("Document Entry UUIDs or UIDs"));
 
 		textArea = new TextArea();
 	    textArea.setCharacterWidth(40);
@@ -74,7 +69,7 @@ public class GetDocumentsTab  extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, textArea);
 		row++;
 
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings);
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 		
 	}
 	
@@ -83,12 +78,8 @@ public class GetDocumentsTab  extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null) {
-				new PopupMessage("You must select a site first");
-				return;
-			}
-			
+			if (!verifySiteProvided()) return;
+
 			List<String> values = formatIds(textArea.getValue());
 			
 			if (!verifyUuids(values)) {
@@ -102,11 +93,8 @@ public class GetDocumentsTab  extends GenericQueryTab {
 				return;
 			}
 			
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
-
-			toolkitService.getDocuments(siteSpec, getAnyIds(values), queryCallback);
+			rigForRunning();
+			toolkitService.getDocuments(getSiteSelection(), getAnyIds(values), queryCallback);
 		}
 		
 	}

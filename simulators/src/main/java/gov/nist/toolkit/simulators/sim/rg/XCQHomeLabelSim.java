@@ -6,7 +6,6 @@ import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-
 import org.apache.axiom.om.OMElement;
 
 /**
@@ -21,7 +20,7 @@ public class XCQHomeLabelSim extends TransactionSimulator implements MetadataGen
 	String homeCommunityId;
 	
 	public XCQHomeLabelSim(SimCommon common, MetadataGeneratingSim mSim, String homeCommunityId) {
-		super(common);
+		super(common, null);
 
 		this.m = mSim.getMetadata();
 		this.homeCommunityId = homeCommunityId;

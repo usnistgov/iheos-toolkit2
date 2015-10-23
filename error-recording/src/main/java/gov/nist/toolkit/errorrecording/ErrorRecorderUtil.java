@@ -21,4 +21,13 @@ public class ErrorRecorderUtil {
         }
         return lst;
     }
+
+    static public boolean hasErrors(ErrorRecorder er) {
+        List<ErrorRecorder> erl = errorRecorderChainAsList(er);
+        for (ErrorRecorder er1: erl) {
+            if (er1.getNbErrors() > 0)
+                return true;
+        }
+        return false;
+    }
 }

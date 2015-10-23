@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.server;
 
-import gov.nist.toolkit.common.adt.AdtRecordBean;
 
 import com.sun.ebxml.registry.util.UUID;
 import com.sun.ebxml.registry.util.UUIDFactory;
@@ -19,7 +18,7 @@ public class PidGenerator {
     
 	public String get() {
 		UUID uuid = UUIDFactory.getInstance().newUUID();
-		return firstNChars(stripUuid(uuid.toString()),uuidCharsToUse) + AdtRecordBean.PATIENT_ID_DOMAIN_SEPARATOR + domain;
+		return firstNChars(stripUuid(uuid.toString()),uuidCharsToUse) + PATIENT_ID_DOMAIN_SEPARATOR + domain;
 	}
 
     public String stripUuid(String uuid) {

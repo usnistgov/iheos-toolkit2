@@ -1,33 +1,23 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.testengine.Linkage;
-import gov.nist.toolkit.testengine.RetContext;
-import gov.nist.toolkit.testengine.RetInfo;
-import gov.nist.toolkit.testengine.RetrieveB;
-import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.Sha1Bean;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-import gov.nist.toolkit.xdsexception.XdsPreparsedException;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.xdsexception.*;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
+import org.jaxen.JaxenException;
 
+import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
-import org.jaxen.JaxenException;
 
 public class RetrieveTransaction extends BasicTransaction {
 	String metadata_filename = null;
@@ -48,18 +38,18 @@ public class RetrieveTransaction extends BasicTransaction {
 		return "RetrieveTransaction: *************" +
 		"\nmetadata_filename = " + metadata_filename +
 		"\nexpected_contents = " + isNull(expected_contents) +
-		"\nexpected_mime_type = " + expected_mime_type + 
+		"\nexpected_mime_type = " + expected_mime_type +
 		"\nuri = " + uri +
 		"\nuri_ref = " + isNull(uri_ref) +
-		"\nreferenced_documents = " + referenced_documents.toString() +
+		"\nreferenced_documents = " + referenced_documents +
 		"\nreference_metadata = " + metadataStructure(reference_metadata) +
-		"\nuse_document_unique_id = " + use_repository_unique_id.toString() + 
+		"\nuse_document_unique_id = " + use_repository_unique_id +
 		"\nuse_id = " + use_id +
-		"\nuse_xpath = " + use_xpath + 
-		"\nlinkage = " + local_linkage_data.toString() + 
+		"\nuse_xpath = " + use_xpath +
+		"\nlinkage = " + local_linkage_data +
 		"\nendpoint = " + endpoint +
 		"\nis_xca = " + is_xca +
-		"\nactor config = " + testConfig.site + 
+		"\nactor config = " + ((testConfig == null) ? "null" : testConfig.site) +
 		"\n****************";
 	}
 
@@ -73,7 +63,7 @@ public class RetrieveTransaction extends BasicTransaction {
 	String isNull(Object thing) { return (thing == null) ? "null" : "not null"; }
 
 	public void setIsXca(boolean isXca) { is_xca = isXca; xds_version = BasicTransaction.xds_b; }
-	
+
 	public void setUseIG(boolean useIG) { this.useIG = useIG; }
 
 	public RetrieveTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
@@ -83,7 +73,7 @@ public class RetrieveTransaction extends BasicTransaction {
 		noMetadataProcessing = true;
 	}
 
-	public void run(OMElement request_ele) 
+	public void run(OMElement request_ele)
 	throws Exception {
 
 		validate_xds_version();
@@ -105,24 +95,24 @@ public class RetrieveTransaction extends BasicTransaction {
 //
 //			if (metadata_filename != null)
 //				request_ele = Util.parse_xml(new File(metadata_filename));
-			
+
 			// this looks useless, metadata here is the Retrive request
 //			Metadata m = MetadataParser.noParse(metadata_ele);
 
 
-//			if (use_id.size() > 0) 
+//			if (use_id.size() > 0)
 //				compileUseIdLinkage(m, use_id);
 //
-//			if (use_xpath.size() > 0) 
+//			if (use_xpath.size() > 0)
 //				compileUseXPathLinkage(m, use_xpath);
 //
-//			if (use_repository_unique_id.size() > 0)  
+//			if (use_repository_unique_id.size() > 0)
 //				compileUseRepositoryUniqueId(m, use_repository_unique_id);
 
 			applyLinkage(request_ele);
 
 			reportManagerPreRun(request_ele);
-			
+
 			if (repositoryUniqueId == null) {
 				// if managed by ReportManager then need to extract it from request
 				try {
@@ -132,10 +122,10 @@ public class RetrieveTransaction extends BasicTransaction {
 					fatal(e.getMessage());
 				}
 			}
-			
+
 			if (s_ctx.getPlan().getExtraLinkage() != null)
 				testLog.add_name_value(instruction_output, "TemplateParams", s_ctx.getPlan().getExtraLinkage());
-			
+
 			if (clean_params)
 				cleanRetParams(request_ele);
 
@@ -153,7 +143,7 @@ public class RetrieveTransaction extends BasicTransaction {
 
 				testLog.add_name_value(instruction_output, "Linkage", this.local_linkage_data.toString());
 
-				if (this.useIG) 
+				if (this.useIG)
 					parseIGREndpoint(home, testConfig.secure);
 				else
 					parseGatewayEndpoint(home, testConfig.secure);
@@ -170,7 +160,7 @@ public class RetrieveTransaction extends BasicTransaction {
 					}
 
 
-				} 
+				}
 
 
 
@@ -192,7 +182,7 @@ public class RetrieveTransaction extends BasicTransaction {
 
 				testLog.add_name_value(instruction_output, "Linkage", this.local_linkage_data.toString());
 
-				if (useReportManager == null && 
+				if (useReportManager == null &&
 						(repositoryUniqueId == null || repositoryUniqueId.equals(""))) {
 					fatal("RetrieveTransaction: no repositoryUniqueId");
 				}
@@ -225,9 +215,9 @@ public class RetrieveTransaction extends BasicTransaction {
 				ret_b.setSoap12(soap_1_2);
 				ret_b.setReferenceMetadata(reference_metadata);
 				OMElement result = ret_b.run();
-				testLog.add_name_value(instruction_output, "Result", result);
+//				testLog.add_name_value(instruction_output, "Result", result);
 				ret_b.validate();
-			} 
+			}
 			catch (XdsPreparsedException e) {
 				throw new XdsInternalException("Retrieve Error: endpoint was: " + endpoint + " " + e.getMessage(), e);
 			}
@@ -238,7 +228,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			add_step_status_to_output();
 
 			// check that status == success
-			String status = r_ctx.getRrp().get_registry_response_status();	
+			String status = r_ctx.getRrp().get_registry_response_status();
 			eval_expected_status(status, r_ctx.getRrp().get_error_code_contexts());
 
 			String expErrorCode = s_ctx.getExpectedErrorCode();
@@ -305,11 +295,11 @@ public class RetrieveTransaction extends BasicTransaction {
 	HashMap<String, String> parse_rep_request(OMElement rdsr) {
 		HashMap<String, String> map = new HashMap<String, String>();  // docuid -> repuid
 
-		for (OMElement document_request : MetadataSupport.childrenWithLocalName(rdsr, "DocumentRequest")) {
-			OMElement doc_uid_ele = MetadataSupport.firstChildWithLocalName(document_request, "DocumentUniqueId"); 
+		for (OMElement document_request : XmlUtil.childrenWithLocalName(rdsr, "DocumentRequest")) {
+			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(document_request, "DocumentUniqueId");
 			String doc_uid = doc_uid_ele.getText();
 
-			OMElement rep_uid_ele = MetadataSupport.firstChildWithLocalName(document_request, "RepositoryUniqueId") ;
+			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(document_request, "RepositoryUniqueId") ;
 			String rep_uid = rep_uid_ele.getText();
 			map.put(doc_uid, rep_uid);
 		}
@@ -323,13 +313,13 @@ public class RetrieveTransaction extends BasicTransaction {
 	private HashMap<String, RetInfo> build_request_info(OMElement metadata_ele) throws XdsException {
 		HashMap<String, RetInfo> request;
 		request = new HashMap<String, RetInfo>();
-		for (OMElement document_request : MetadataSupport.childrenWithLocalName(metadata_ele, "DocumentRequest")) {
+		for (OMElement document_request : XmlUtil.childrenWithLocalName(metadata_ele, "DocumentRequest")) {
 			//			request_list.add(document_request);
 
-			OMElement doc_uid_ele = MetadataSupport.firstChildWithLocalName(document_request, "DocumentUniqueId"); 
+			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(document_request, "DocumentUniqueId");
 			String doc_uid = doc_uid_ele.getText();
 
-			OMElement rep_uid_ele = MetadataSupport.firstChildWithLocalName(document_request, "RepositoryUniqueId") ;
+			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(document_request, "RepositoryUniqueId") ;
 			String rep_uid = rep_uid_ele.getText();
 
 			RetInfo rqst = new RetInfo();
@@ -339,7 +329,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			//			if (reference_metadata != null) {
 			//			HashMap<String, OMElement> uid_doc_map = reference_metadata.getDocumentUidMap();
 			//			OMElement eo = uid_doc_map.get(doc_uid);
-			//			if (eo == null) 
+			//			if (eo == null)
 			//			throw new XdsInternalException("RetrieveTransaction: build_request_info: reference document " + doc_uid + " not available");
 			//			rqst.setHash(reference_metadata.getSlotValue(eo, "hash", 0));
 			//			rqst.setSize(reference_metadata.getSlotValue(eo, "size", 0));
@@ -368,10 +358,10 @@ public class RetrieveTransaction extends BasicTransaction {
 				} catch (Exception e) {
 					throw new XdsInternalException("Cannot read ReferenceDocument: " + filename);
 				}
-			} 
+			}
 			//			else {
 			//				throw new XdsInternalException("referenced_documents does not contain " + doc_uid +
-			//						"\nit has only " + referenced_documents + 
+			//						"\nit has only " + referenced_documents +
 			//						"\nand linkage contains " + linkage);
 			//			}
 		}
@@ -432,7 +422,7 @@ public class RetrieveTransaction extends BasicTransaction {
 //				throw new XdsInternalException(ExceptionUtil.exception_details(e, "Sha1 computation failed"));
 //			}
 //
-//			if (!docDetails.size.equals(size)) 
+//			if (!docDetails.size.equals(size))
 //				fail("Size does not match, from query = " + docDetails.size + " and from retrieve = " + size);
 //
 //			if (!docDetails.hash.equals(hash))
@@ -453,7 +443,7 @@ public class RetrieveTransaction extends BasicTransaction {
 //			}
 //
 //			if (expected_mime_type != null && !expected_mime_type.equals(content_type))
-//				fail("Expected mime type of " + expected_mime_type + 
+//				fail("Expected mime type of " + expected_mime_type +
 //						" but got " + content_type);
 //
 //			s_ctx.add_name_value(instruction_output, "mimetype", content_type);
@@ -480,13 +470,13 @@ public class RetrieveTransaction extends BasicTransaction {
 //					byte[] in_bytes = Io.getBytesFromInputStream(fis);
 //					String reference_document_hash = sha1(in_bytes);
 //
-//					if ( !returned_doc_hash.equals(reference_document_hash)) 
-//						fail("Hash does not match: submitted document has hash of " + 
-//								reference_document_hash + 
+//					if ( !returned_doc_hash.equals(reference_document_hash))
+//						fail("Hash does not match: submitted document has hash of " +
+//								reference_document_hash +
 //								" and returned document has hash of " +
 //								returned_doc_hash);
 //
-//				} 
+//				}
 //				catch (IOException e) {
 //					fail("Cannot read ReferenceDocument: " + filename);
 //				}
@@ -503,22 +493,22 @@ public class RetrieveTransaction extends BasicTransaction {
 		if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + part.getText();
 			testLog.add_name_value(instruction_output, "MetadataFile", metadata_filename);
-		} 
-//		else if (part_name.equals("Metadata")) { 
+		}
+//		else if (part_name.equals("Metadata")) {
 //			metadata_filename = "";
 //			request_ele = part.getFirstElement();
-//		} 
+//		}
 		else if (part_name.equals("ExpectedContents")) {
 			expected_contents = part;
 			testLog.add_name_value(instruction_output, "ExpectedContents", part);
-		} 
+		}
 		else if (part_name.equals("ExpectedMimeType")) {
 			expected_mime_type = part.getText();
 			testLog.add_name_value(instruction_output, "ExpectedMimeType", part);
-		} 
+		}
 		else if (part_name.equals("RemoveHomeFromRequest")) {
 			removeHomeFromRequest = true;
-		} 
+		}
 		else if (part_name.equals("ReferenceDocument")) {
 			String filename = null;
 			String uid = null;
@@ -526,7 +516,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			uid = part.getAttributeValue(new QName("uid"));
 			referenced_documents.put(uid, filename);
 			testLog.add_name_value(instruction_output, "ReferenceDocument", part);
-		} 
+		}
 		else if (part_name.equals("ReferenceMetadata")) {
 			String testdir = part.getAttributeValue(new QName("testdir"));
 			String step = part.getAttributeValue(new QName("step"));
@@ -548,20 +538,20 @@ public class RetrieveTransaction extends BasicTransaction {
 		}
 //		else if (part_name.equals("Assertions")) {
 //			parse_assertion_instruction(part);
-//		} 
+//		}
 		else if (part_name.equals("XDSb")) {
 			xds_version = BasicTransaction.xds_b;
-		} 
+		}
 		else if (part_name.equals("SOAP11")) {
 			soap_1_2 = false;
 			testLog.add_simple_element(this.instruction_output, "SOAP11");
-		} 
+		}
 		else if (part_name.equals("URI")) {
 			uri = part.getText();
-		} 
+		}
 		else if (part_name.equals("URIRef")) {
 			uri_ref = part;
-		} 
+		}
 		else if (part_name.equals("CleanParams")) {
 			clean_params = true;
 			testLog.add_name_value(instruction_output, "CleanParams", part);
@@ -575,7 +565,7 @@ public class RetrieveTransaction extends BasicTransaction {
 		}
 	}
 
-	//	private String compute_hash(InputStream is) 
+	//	private String compute_hash(InputStream is)
 	//	throws MetadataException, XdsIOException, XdsInternalException, XdsConfigurationException, XdsException {
 	//	ByteBuffer buffer = new ByteBuffer();
 	//	int length = 4000;
@@ -611,7 +601,7 @@ public class RetrieveTransaction extends BasicTransaction {
 
 
 
-	//	private String validate_expected_contents(StepContext s_ctx, OMElement result, OMElement instruction_output, int metadata_type, OMElement expected_contents) 
+	//	private String validate_expected_contents(StepContext s_ctx, OMElement result, OMElement instruction_output, int metadata_type, OMElement expected_contents)
 	//	throws XdsInternalException, MetadataException, MetadataValidationException {
 	//	return "";
 	//	}

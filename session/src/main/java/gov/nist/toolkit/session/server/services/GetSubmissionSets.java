@@ -1,9 +1,10 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GetSubmissionSets extends CommonServiceManager {
+public class GetSubmissionSets extends CommonService {
 	String returnType = "LeafClass";
 	Session session;
 	
@@ -30,7 +31,7 @@ public class GetSubmissionSets extends CommonServiceManager {
 			}
 			session.setSiteSpec(site);
 
-			String testName = "GetSubmissionSets";
+			TestInstance testInstance = new TestInstance("GetSubmissionSets");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			
@@ -59,12 +60,12 @@ public class GetSubmissionSets extends CommonServiceManager {
 				} 
 				else{
 					sections.add("XDS");
-					return asList(session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, false));
+					return asList(session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, false));
 				}
 			} catch (Exception e) {
 				return buildResultList(e);
 			}
-			List<Result> results = session.queryServiceManager().perCommunityQuery(aids, testName, sections, params);
+			List<Result> results = session.queryServiceManager().perCommunityQuery(aids, testInstance, sections, params);
 			return results;
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

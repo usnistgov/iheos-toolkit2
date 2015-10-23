@@ -31,11 +31,11 @@ public class Util {
 
 
 	public static OMElement parse_xml(Object o) throws FactoryConfigurationError, XdsInternalException {
-		if (o instanceof String) 
+		if (o instanceof String)
 			return parse_xml((String) o);
-		if (o instanceof InputStream) 
+		if (o instanceof InputStream)
 			return parse_xml((InputStream) o);
-		if (o instanceof File) 
+		if (o instanceof File)
 			return parse_xml((File) o);
 		throw new XdsInternalException("Util.parse_xml(): do not understand input format " + o.getClass().getName());
 	}
@@ -49,18 +49,18 @@ public class Util {
 			parser = XMLInputFactory.newInstance().createXMLStreamReader(is);
 		} catch (XMLStreamException e) {
 			throw new XdsInternalException("Could not create XMLStreamReader from InputStream");
-		} 
+		}
 
 		//		create the builder
 		StAXOMBuilder builder = new StAXOMBuilder(parser);
 
 		//		get the root element (in this case the envelope)
-		OMElement documentElement =  builder.getDocumentElement();	
+		OMElement documentElement =  builder.getDocumentElement();
 		if (documentElement == null)
 			throw new XdsInternalException("No document element");
 		return documentElement;
 	}
-	
+
 	public static void write_xml(File outfile, OMElement ele) throws IOException {
 		Io.stringToFile(outfile, new OMFormatter(ele).toString());
 	}
@@ -82,7 +82,7 @@ public class Util {
 		StAXOMBuilder builder = new StAXOMBuilder(parser);
 
 		//		get the root element (in this case the envelope)
-		OMElement documentElement =  builder.getDocumentElement();	
+		OMElement documentElement =  builder.getDocumentElement();
 		if (documentElement == null)
 			throw new XdsInternalException("No document element");
 		return documentElement;
@@ -97,7 +97,7 @@ public class Util {
 			parser = XMLInputFactory.newInstance().createXMLStreamReader(new ByteArrayInputStream(input.getBytes()));
 		} catch (Exception e) {
 			throw new XdsInternalException("Could not create XMLStreamReader from string: " + input.substring(0, 100) + "...");
-		} 
+		}
 
 		//		create the builder
 		StAXOMBuilder builder = null;
@@ -105,18 +105,18 @@ public class Util {
 			builder = new StAXOMBuilder(parser);
 		} catch (Exception e) {
 			throw new XdsInternalException("Util.parse_xml(): Could not create StAXOMBuilder from parser");
-		} 
+		}
 
-		OMElement documentElement = null; 
+		OMElement documentElement = null;
 		try {
 			//			get the root element (in this case the envelope)
-			documentElement =  builder.getDocumentElement();	
+			documentElement =  builder.getDocumentElement();
 			if (documentElement == null)
 				throw new XdsInternalException("No document element");
 		} catch (Exception e) {
-			throw new XdsInternalException("Could not create XMLStreamReader: " +  e.getMessage() + "  (in Util.parse_xml()) from string: " + 
+			throw new XdsInternalException("Could not create XMLStreamReader: " +  e.getMessage() + "  (in Util.parse_xml()) from string: " +
 //					input.substring(0, (input.length() < 100) ? input.length() : 100) +
-					input.replaceAll("<", "&lt;") 
+					input.replaceAll("<", "&lt;")
 //			"..."
 					);
 		}
@@ -132,7 +132,7 @@ public class Util {
 //			return null;
 //
 //		in.build();
-//		
+//
 //		// Remove processing instructions from front
 //		StringBuffer buf;
 //		try {
@@ -145,7 +145,7 @@ public class Util {
 //
 //		return parse_xml(buf.toString());
 //	}
-	
+
 	public static OMElement deep_copy(OMElement in) throws XdsInternalException {
 		String str = new OMFormatter(in).toString();
 //		String str = in.toString();
@@ -166,7 +166,7 @@ public class Util {
 			}
 		}
 	}
-	
+
 	static void test1() throws XdsInternalException, FactoryConfigurationError {
 		String x = "<foo/>";
 		OMElement x_ele = Util.parse_xml(x);
@@ -177,7 +177,7 @@ public class Util {
 		z_ele.addChild(y_ele);
 		System.out.println("test1: " + z_ele.toString());
 	}
-	
+
 	static void test2() throws XdsInternalException, FactoryConfigurationError {
 		String x = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <foo/>";
 		OMElement x_ele = Util.parse_xml(x);
@@ -188,7 +188,7 @@ public class Util {
 		z_ele.addChild(y_ele);
 		System.out.println("test2: " + z_ele.toString());
 	}
-	
+
 	public static void main(String[] args) {
 		try {
 		test1();

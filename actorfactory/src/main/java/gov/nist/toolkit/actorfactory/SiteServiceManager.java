@@ -1,7 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
@@ -10,15 +10,13 @@ import gov.nist.toolkit.sitemanagement.TransactionOfferingFactory;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.log4j.Logger;
 
 /**
  * Top level site management API referenced by calls from the GUI.  One
@@ -29,7 +27,7 @@ import org.apache.log4j.Logger;
  * @author bill
  *
  */
-public class SiteServiceManager extends CommonServiceManager {
+public class SiteServiceManager {
 	static SiteServiceManager siteServiceManager = null;
 	Sites commonSites = null; // these are the common sites. The simulator based
 	// sites are kept in Session.sites.
@@ -45,19 +43,19 @@ public class SiteServiceManager extends CommonServiceManager {
 		return siteServiceManager;
 	}
 
-	public void setCommonSites(Sites commonSites) {
-		this.commonSites = commonSites;
-	}
-	
-	public Sites getSimSites(String sessionId) throws Exception {
-		return new SimCache().getSimManagerForSession(sessionId).getAllSites();
-	}
+//	public void setCommonSites(Sites commonSites) {
+//		this.commonSites = commonSites;
+//	}
+//
+//	public Sites getSimSites(String sessionId) throws Exception {
+//		return new SimCache().getSimManagerForSession(sessionId).getAllSites();
+//	}
 
 	public List<Site> getAllSites(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getAllSites");
-		ArrayList<Site> sites = new ArrayList<Site>();   //getCommonSites().asCollection());
+		ArrayList<Site> sites = new ArrayList<>();   //getCommonSites().asCollection());
 		sites.addAll(new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection());
-		List<String> names = new ArrayList<String>();
+		List<String> names = new ArrayList<>();
 		for (Site s : sites)
 			names.add(s.getName());
 		logger.debug(names);
@@ -66,7 +64,7 @@ public class SiteServiceManager extends CommonServiceManager {
 
 	public List<String> getSiteNamesWithRG(String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRG");
-		List<String> ss = new ArrayList<String>();
+		List<String> ss = new ArrayList<>();
 		for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
 			if (s.hasActor(ActorType.RESPONDING_GATEWAY))
 				ss.add(s.getName());
@@ -82,12 +80,12 @@ public class SiteServiceManager extends CommonServiceManager {
 
 		try {
 			if (returnSimAlso) {
-				List<String> names = new ArrayList<String>();
+				List<String> names = new ArrayList<>();
 				for (Site s : getAllSites(sessionId))
 					names.add(s.getName());
 				return names;
 			} else {
-				List<String> names = new ArrayList<String>();
+				List<String> names = new ArrayList<>();
 				Sites sites = getCommonSites();
 				for (Site s : sites.asCollection())
 					names.add(s.getName());
@@ -96,20 +94,23 @@ public class SiteServiceManager extends CommonServiceManager {
 		} catch (Exception e) {
 			String msg = "Error collection site names for " + ((returnSimAlso) ? "common sites and simulators" : "common sites");
 			logger.error(msg);
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 	}
 
+	// Statically defined sites (does not include simulators)
 	public Sites getCommonSites() throws FactoryConfigurationError,
 			Exception {
 		if (commonSites == null) {
 			if (!useActorsFile()) {
-				File dir = Installation.installation().propertyServiceManager().getActorsDirName();
+				File dir = Installation.installation().getActorsDirName();
+				logger.debug("loading sites from " + dir);
 				commonSites = new SeparateSiteLoader().load(dir, commonSites);
 			} else {
 				File loc = Installation.installation().propertyServiceManager().configuredActorsFile(true);
 				if (loc == null)
 					loc = Installation.installation().propertyServiceManager().internalActorsFile();
+				logger.debug("loading sites from " + loc);
 				commonSites = new CombinedSiteLoader().load(loc, commonSites);
 			}
 		}
@@ -148,7 +149,7 @@ public class SiteServiceManager extends CommonServiceManager {
 					ActorType.REGISTRY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -161,7 +162,7 @@ public class SiteServiceManager extends CommonServiceManager {
 					TransactionType.UPDATE);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -173,7 +174,7 @@ public class SiteServiceManager extends CommonServiceManager {
 			return new SimCache().getSimManagerForSession(sessionId).getAllSites().getSiteNamesWithRepository();
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -186,7 +187,7 @@ public class SiteServiceManager extends CommonServiceManager {
 					.getSiteNamesWithActor(ActorType.RESPONDING_GATEWAY);
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e, 10));
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -229,7 +230,7 @@ public class SiteServiceManager extends CommonServiceManager {
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
-				new SeparateSiteLoader().saveToFile(Installation.installation().propertyServiceManager()
+				new SeparateSiteLoader().saveToFile(Installation.installation()
 						.getActorsDirName(), site);
 			else {
 				CombinedSiteLoader loader = new CombinedSiteLoader();
@@ -250,7 +251,7 @@ public class SiteServiceManager extends CommonServiceManager {
 		try {
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
-				new SeparateSiteLoader().delete(Installation.installation().propertyServiceManager()
+				new SeparateSiteLoader().delete(Installation.installation()
 						.getActorsDirName(), siteName);
 			else
 				new CombinedSiteLoader().saveToFile(Installation.installation().propertyServiceManager()
@@ -293,9 +294,7 @@ public class SiteServiceManager extends CommonServiceManager {
 			getAllSites(sessionId);
 			Sites sits = new SimCache().getSimManagerForSession(sessionId).getAllSites();
 			logger.debug("site Names: " + sits.getSiteNames());
-			TransactionOfferings to = new TransactionOfferingFactory(sits).get();
-//			logger.debug(sessionId + ":\n" + to);
-			return to;
+			return new TransactionOfferingFactory(sits).get();
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e));
 			throw new Exception("getTransactionOfferings() failed", e);

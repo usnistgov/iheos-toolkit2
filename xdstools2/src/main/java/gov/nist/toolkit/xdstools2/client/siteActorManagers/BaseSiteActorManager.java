@@ -19,6 +19,6 @@ public abstract class BaseSiteActorManager {
 	public abstract String getEndpointSelectionHelp();
 	
 
-	abstract public SiteSpec verifySiteSelection(); 
+	abstract public SiteSpec verifySiteSelection();
 
 }

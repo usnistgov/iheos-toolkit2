@@ -1,38 +1,32 @@
 package gov.nist.toolkit.xdstools2.scripts;
 
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.LogMap;
-import gov.nist.toolkit.testengine.LogMapItem;
-import gov.nist.toolkit.testengine.TransactionSettings;
-import gov.nist.toolkit.testengine.Xdstest2;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
+import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.testenginelogging.LogMap;
+import gov.nist.toolkit.testenginelogging.LogMapItem;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.axiom.om.OMElement;
+import java.util.*;
 
 public class DashboardDaemon {
 //	ToolkitServiceImpl toolkit = new ToolkitServiceImpl();
@@ -49,7 +43,7 @@ public class DashboardDaemon {
 	public File getDashboardDirectory() {
 		return new File(output);
 	}
-	
+
 	public Session getSession() {
 		return s;
 	}
@@ -135,7 +129,7 @@ public class DashboardDaemon {
 			List<String> sections = new ArrayList<String>();
 			sections.add("XDS");
 			try {
-				xdstest.setTest("GetDocuments", sections, areas);
+				xdstest.addTest(new TestInstance("GetDocuments"), sections, areas);
 			} catch (Exception e1) {
 				regStatus.status = false;
 				regStatus.fatalError = e1.getMessage();
@@ -155,7 +149,7 @@ public class DashboardDaemon {
 			ts.assignPatientId = false;
 			ts.siteSpec = new SiteSpec();
 			ts.siteSpec.isAsync = false;
-			ts.securityParams = s; 
+			ts.securityParams = s;
 			try {
 				xdstest.run(parms, null, true, ts);
 			} catch (Exception e1) {
@@ -188,7 +182,7 @@ public class DashboardDaemon {
 
 			try {
 				OMElement ele = tsl.getRawResult();
-				List<OMElement> objrefs = MetadataSupport.decendentsWithLocalName(ele, "ObjectRef");
+				List<OMElement> objrefs = XmlUtil.decendentsWithLocalName(ele, "ObjectRef");
 				Metadata m = new Metadata();
 				for (OMElement objref : objrefs) {
 					String id = m.getId(objref);
@@ -251,7 +245,7 @@ public class DashboardDaemon {
 				repositorySave(rstatus);
 				continue;
 			}
-			
+
 			System.out.println("PnR endpoint: " + rstatus.endpoint);
 
 			Xdstest2 xdstest;
@@ -268,7 +262,7 @@ public class DashboardDaemon {
 			xdstest.setSecure(true);
 			String[] areas = {"testdata-repository"};
 			try {
-				xdstest.setTest("SingleDocument", null, areas);
+				xdstest.addTest(new TestInstance("SingleDocument"), null, areas);
 			} catch (Exception e1) {
 				rstatus.status = false;
 				rstatus.fatalError = e1.getMessage();
@@ -281,7 +275,7 @@ public class DashboardDaemon {
 			ts.siteSpec = new SiteSpec();
 			ts.assignPatientId = false;
 			ts.siteSpec.isAsync = false;
-			ts.securityParams = s; 
+			ts.securityParams = s;
 			try {
 				xdstest.run(parms, null, true, ts);
 			} catch (Exception e1) {
@@ -324,7 +318,7 @@ public class DashboardDaemon {
 
 			rstatus.status = logFile.isSuccess();
 			rstatus.fatalError = logFile.getFatalError();
-			
+
 			System.out.println("Fatal error is " + rstatus.fatalError);
 
 			try {
@@ -364,7 +358,7 @@ public class DashboardDaemon {
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
 
-		try{ 
+		try{
 			fos = new FileOutputStream(filename);
 			out = new ObjectOutputStream(fos);
 			out.writeObject(regStat);

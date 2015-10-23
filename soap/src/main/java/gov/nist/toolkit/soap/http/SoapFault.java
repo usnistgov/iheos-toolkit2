@@ -1,11 +1,10 @@
 package gov.nist.toolkit.soap.http;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 public class SoapFault {
 	String faultCode = null;
@@ -18,7 +17,7 @@ public class SoapFault {
 		faultCode = getCodeString(code);
 		faultReason = reason;
 	}
-	
+
 	public void addDetail(String adetail) {
 		details.add(adetail);
 	}
@@ -40,6 +39,17 @@ public class SoapFault {
 		return "Unknown";
 	}
 
+	String formattedDetails() {
+		StringBuilder buf = new StringBuilder();
+		boolean first = true;
+		for (String d : details) {
+			if (!first) buf.append('\n');
+			first = false;
+			buf.append(d);
+		}
+		return buf.toString();
+	}
+
 	public OMElement getXML() {
 		OMElement root = MetadataSupport.om_factory.createOMElement(MetadataSupport.fault_qnamens);
 
@@ -53,22 +63,22 @@ public class SoapFault {
 		OMElement reason = MetadataSupport.om_factory.createOMElement(MetadataSupport.fault_reason_qnamens);
 		OMElement text = MetadataSupport.om_factory.createOMElement(MetadataSupport.fault_text_qnamens);
 		text.addAttribute("lang", "en", MetadataSupport.xml_namespace);
-		text.setText(faultReason + details);
+		text.setText(faultReason + "\n" + formattedDetails());
 		reason.addChild(text);
 		root.addChild(reason);
 
 //		if (details.size() > 0) {
 //			OMElement detail = MetadataSupport.om_factory.createOMElement(MetadataSupport.fault_detail_qnamens);
-//			
+//
 //			for (String d : details) {
 //				OMElement r = MetadataSupport.om_factory.createOMElement("Nit", null);
 //				r.setText(d);
 //				detail.addChild(r);
 //			}
-//			
+//
 //			root.addChild(detail);
 //		}
-		
+
 		return root;
 	}
 }

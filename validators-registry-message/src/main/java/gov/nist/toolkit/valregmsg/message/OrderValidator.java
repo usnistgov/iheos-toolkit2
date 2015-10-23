@@ -6,14 +6,13 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMNode;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNode;
 
 /**
  * An abstract class that performs XML Element order checking.  The
@@ -21,7 +20,7 @@ import org.apache.axiom.om.OMNode;
  * @author bill
  *
  */
-public abstract class OrderValidator extends MessageValidator {
+public abstract class OrderValidator extends AbstractMessageValidator {
 	OMElement xml = null;
 	protected List<String> elementOrder = new ArrayList<String>();
 	String reference;
@@ -41,6 +40,7 @@ public abstract class OrderValidator extends MessageValidator {
 	@Override
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		if (xml == null) {
 			MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
 			xml = cont.getBody();
@@ -48,10 +48,12 @@ public abstract class OrderValidator extends MessageValidator {
 
 		if (xml == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "No content present", this, "");
+            er.unRegisterValidator(this);
 			return;
 		}
 
 		checkElementOrder(xml);
+        er.unRegisterValidator(this);
 	}
 
 	public void setBody(OMElement xml) {

@@ -6,11 +6,10 @@ import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.Logger;
 
 
 public class GwtErrorRecorder implements ErrorRecorder  {
@@ -69,7 +68,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		return codes;
 	}
 		
-	public List<ValidatorErrorItem> getValidatorErrorInfo() {
+	public List<ValidatorErrorItem> getValidatorErrorItems() {
 		return errMsgs;
 	}
 	
@@ -79,16 +78,22 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	public boolean hasErrors() {
 		for (ValidatorErrorItem vei : errMsgs) {
-			if ((vei.level == ValidatorErrorItem.ReportingLevel.ERROR) || (vei.level == ValidatorErrorItem.ReportingLevel.D_ERROR))
-				return true;
+			if (vei.isError()) return true;
 		}
 		return false;
 	}
-	
+
+	public boolean hasErrorsOrContext() {
+		for (ValidatorErrorItem vei : errMsgs) {
+			if (vei.isErrorOrContext()) return true;
+		}
+		return false;
+	}
+
 	public void err(Code code, String msg, String location, String resource) {
 		if (msg == null || msg.trim().equals(""))
 			return;
-		logger.debug(ExceptionUtil.here("err - " + msg));
+//		logger.debug(ExceptionUtil.here("err - " + msg));
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.ERROR;
 		ei.msg = msg;
@@ -98,13 +103,23 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
 		errMsgs.add(ei);
 		lastErrCount++;
-		for (int i=errMsgs.size()-1; i>0; i--) {
-			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
-				break;
-			if (ei.level == ValidatorErrorItem.ReportingLevel.CHALLENGE) {
-				ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
+		propagateError();
+	}
+
+	// propogate error labeling to previous CHALLENGE
+	// so context of error is sent/viewed
+	private void propagateError() {
+		logger.debug("propagating errors");
+		for (int i=errMsgs.size()-2; i>=0; i--) {
+			ValidatorErrorItem ei = errMsgs.get(i);
+			if (ei.level == ReportingLevel.SECTIONHEADING)
+				break;  // too far
+			if (ei.level == ReportingLevel.CHALLENGE) {
+				ei.completion = ReportingCompletionType.ERROR;
+				break; // done
 			}
 		}
+		logger.debug("Results\n" + toString());
 	}
 
 	public void err(Code code, Exception e) {
@@ -169,7 +184,12 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		errMsgs.add(ei);
 	}
 
-	public void externalChallenge(String msg) {
+    @Override
+    public void report(String name, String found) {
+        detail(name + ": " + found);
+    }
+
+    public void externalChallenge(String msg) {
 		tagLastInfo2();
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.EXTERNALCHALLENGE;
@@ -248,17 +268,17 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 
 	@Override
 	public ErrorRecorder buildNewErrorRecorder() {
-		return errorRecorderBuilder.buildNewErrorRecorder(this);
-		//return this;
+		ErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
+        children.add(er);
+        return er;
 	}
 
-    @Override
-    public ErrorRecorder buildNewErrorRecorder(ErrorRecorder er) {
-        return errorRecorderBuilder.buildNewErrorRecorder(er);
-        //return this;
-    }
+	@Override
+	public ErrorRecorder buildNewErrorRecorder(Object o) {
+		return null;
+	}
 
-    @Override
+	@Override
 	public int getNbErrors() {
 		int nbErrors = 0;
 		for (ValidatorErrorItem vei : errMsgs) {
@@ -275,12 +295,6 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 	
 	public List<ValidatorErrorItem> getErrMsgs() {
 		return this.errMsgs;
-	}
-
-	@Override
-	public ErrorRecorderBuilder getErrorRecorderBuilder() {
-		// TODO Auto-generated method stub
-		return errorRecorderBuilder;
 	}
 
 	@Override
@@ -304,9 +318,6 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 
 	@Override
 	public void error(String dts, String name, String found, String expected,String RFC) {
-		if (dts == null || dts.trim().equals(""))
-			return;
-		logger.debug(ExceptionUtil.here("err - " + dts));
 		ValidatorErrorItem ei = new ValidatorErrorItem();
 		ei.level = ValidatorErrorItem.ReportingLevel.D_ERROR;
 		ei.dts = dts;
@@ -318,14 +329,15 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
 		errMsgs.add(ei);
 		lastErrCount++;
-		for (int i=errMsgs.size()-1; i>0; i--) {
-			if (ei.level == ValidatorErrorItem.ReportingLevel.SECTIONHEADING)
-				break;
-			if (ei.level == ValidatorErrorItem.ReportingLevel.CHALLENGE) {
-				ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
-			}
-		}
-		
+		// propagate error labeling so context is given
+		propagateError();
+
+	}
+
+	@Override
+	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
+		if (good) success(dts, name, found, expected, RFC);
+		else error(dts, name, found, expected, RFC);
 	}
 
 	@Override
@@ -394,6 +406,16 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		}
 
 		return depth + maxChildDepth;
+	}
+
+	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
 	}
 
 }

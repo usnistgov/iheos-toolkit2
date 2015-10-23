@@ -1,22 +1,20 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryRegistryActorFactory extends ActorFactory {
-	String newID = null;
+public class RepositoryRegistryActorFactory extends AbstractActorFactory {
 
-	RegistryActorFactory registryActorFactory;
-	RepositoryActorFactory repositoryActorFactory;
-
-	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws Exception {
-		this.newID = newID;
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
+		RegistryActorFactory registryActorFactory;
+		RepositoryActorFactory repositoryActorFactory;
 		ActorType actorType = ActorType.REPOSITORY_REGISTRY;
 		SimulatorConfig sc;
 		if (configureBase)
@@ -24,7 +22,7 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		String simId = sc.getId();
+		SimId simId = sc.getId();
 		// This needs to be grouped with a Document Registry
 		registryActorFactory = new RegistryActorFactory();
 		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);
@@ -32,7 +30,8 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 		// This needs to be grouped with a Document Repository also
 		repositoryActorFactory = new RepositoryActorFactory();
 		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).getConfig(0);
-		
+
+		// two combined simulators do not have separate lives
 		sc.add(registryConfig);
 		sc.add(repositoryConfig);
 		
@@ -49,6 +48,7 @@ public class RepositoryRegistryActorFactory extends ActorFactory {
 
 		if (site == null)
 			site = new Site(siteName);
+		site.user = sc.getId().user;  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 

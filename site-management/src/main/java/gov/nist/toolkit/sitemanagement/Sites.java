@@ -1,7 +1,7 @@
 package gov.nist.toolkit.sitemanagement;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
@@ -227,7 +227,8 @@ public class Sites {
 
 	public List<String> getSiteNames() {
 		List<String> lst = new ArrayList<String>();
-		lst.addAll(siteMap.keySet());
+		if (siteMap != null)
+			lst.addAll(siteMap.keySet());
 		return lst;
 	}
 

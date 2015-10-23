@@ -11,14 +11,14 @@ import gov.nist.toolkit.http.PartBa;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MtomMessageValidator extends MessageValidator {
+public class MtomMessageValidator extends AbstractMessageValidator {
 	HttpParserBa headers;
 	ErrorRecorderBuilder erBuilder;
 	MessageValidatorEngine mvc;
@@ -37,6 +37,7 @@ public class MtomMessageValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		headers.setErrorRecorder(er);
 		try {
 			
@@ -52,6 +53,7 @@ public class MtomMessageValidator extends MessageValidator {
 			er.detail("Multipart contains " + mp.getPartCount() + " parts");
 			if (mp.getPartCount() == 0) {
 				er.err(XdsErrorCode.Code.NoCode, "Cannot continue parsing, no Parts found", this, "");
+				er.unRegisterValidator(this);
 				return;
 			}
 			
@@ -69,6 +71,7 @@ public class MtomMessageValidator extends MessageValidator {
 				er.detail("Found start part - " + startPart.getContentId());
 			else {
 				er.err(XdsErrorCode.Code.NoCode, "Start part [" + mp.getStartPartId() + "] not found", this, Mtom.XOP_example2);
+				er.unRegisterValidator(this);
 				return;
 			}
 				
@@ -87,7 +90,13 @@ public class MtomMessageValidator extends MessageValidator {
 		} catch (HttpParseException e) {
 			er.err(XdsErrorCode.Code.NoCode, e);
 		}
+        finally {
+            er.unRegisterValidator(this);
+        }
 
 	}
+
+	@Override
+	public boolean isSystemValidator() { return true; }
 
 }

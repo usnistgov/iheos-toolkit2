@@ -8,12 +8,11 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.valregmetadata.field.SubmissionStructure;
 import gov.nist.toolkit.xdsexception.MetadataException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 	static Logger log = Logger.getLogger(ProcessMetadataForRegister.class);
@@ -27,6 +26,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 		this.delta = delta;
 	}
 
+	// TODO - duplicates within submission can be checked without registry context
 	public void checkUidUniqueness(Metadata m) {
 		List<String> submittedUIDs = new ArrayList<String>();
 		for (OMElement ele : m.getMajorObjects()) {
@@ -128,9 +128,11 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 		}
 	}
 
+	// TODO - checking that a symbolic reference is held within submission can be done without registry context
 	// verify that no associations are being added that:
 	//     reference a non-existant object in submission or registry
 	//     reference a Deprecated object in registry
+	//     link objects with different patient ids (except for special cases)
 	public void verifyAssocReferences(Metadata m) {
 		for (OMElement assocEle : m.getAssociations()) {
 			String source = m.getAssocSource(assocEle);
@@ -153,12 +155,14 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 							" references an object with its sourceObject attribute that does not exist in submission or registry. " +
 							"Object is " + source
 							, this, null);
-				} else if (ro.getAvailabilityStatus() == RegIndex.StatusValue.DEPRECATED) {
-					er.err(Code.XDSRegistryError, "Association " + 
-							type + "(" + m.getId(assocEle) + ")" +
-							" references an object with its sourceObject attribute that has status Deprecated in the registry. " +
-							"Object is " + source
-							, this, null);
+				} else {
+					if (ro.getAvailabilityStatus() == RegIndex.StatusValue.DEPRECATED) {
+						er.err(Code.XDSRegistryError, "Association " +
+								type + "(" + m.getId(assocEle) + ")" +
+								" references an object with its sourceObject attribute that has status Deprecated in the registry. " +
+								"Object is " + source
+								, this, null);
+					}
 				}
 			}
 
@@ -180,10 +184,45 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 							, this, null);
 				}
 			}
-
-
 		}
 	}
+
+	// verify that no associations are being added that:
+	//     link objects with different patient ids (except for special cases)
+	public void associationPatientIdRules() {
+		log.debug("Checking Association PID rules for " + delta.assocCollection.assocs);
+		for (Assoc a : delta.assocCollection.assocs) {
+			String fromId = a.getFrom();
+			String toId = a.getTo();
+
+			Ro sourceObject = delta.getObjectById(fromId);
+			if (sourceObject == null) sourceObject = mc.getObjectById(fromId);
+
+			Ro targetObject = delta.getObjectById(toId);
+			if (targetObject == null) targetObject = mc.getObjectById(toId);
+
+			if (sourceObject == null || targetObject == null) continue;  // checked elsewhere
+
+			PatientObject src = null;
+			if (sourceObject instanceof PatientObject) src = (PatientObject) sourceObject;
+			PatientObject tgt = null;
+			if (targetObject instanceof PatientObject) tgt = (PatientObject) targetObject;
+
+			if (src == null || tgt == null) continue;
+
+			if (src.pid != null && src.pid.equals(tgt.pid)) continue;  // all is good
+
+			// if is Reference type HasMember then ok
+			if (a.isReference) continue;
+			er.err(Code.XDSPatientIdDoesNotMatch, "Association " +
+					a.getType() + "(" + a.getId() + ")" +
+					" links two objects with different Patient IDs: " +
+					src.getType() + "(" + src.getId() + ") and " +
+					tgt.getType() + "(" + tgt.getId() + ") "
+					, this, null);
+		}
+	}
+
 
 	// check for RPLC and RPLC_XFRM and do the deprecation
 	public  void doRPLCDeprecations(Metadata m) {

@@ -2,11 +2,12 @@ package gov.nist.toolkit.soap.wsseToolkitAdapter;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.TextErrorRecorder;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderForErrorRecorder;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.wsseTool.api.WsseHeaderValidator;
 import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
@@ -18,33 +19,32 @@ import java.util.List;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LoggerFactory;
 import org.w3c.dom.Element;
 
 /**
  * Temporary adapter between toolkit legacy validation code and the wsse module
  * validation code.
- * 
+ *
  * TODO: check with Bill. In my own opinion, the design of the message validator
  * interface is flawed. As a first shot and since the goal is to enforce an
  * contract, an interface Validator with a run() method seems more appropriate.
  * ValidationContext could be push as a parameter of this method.
- * 
+ *
  * NOTE : CustomLogger is a quick way to log stuff from the wsse module without
  * having to define an object model of what is "logging"!
- * 
+ *
  * TODO clarify what vc , err, mvc are doing! How comes the element to validate
  * on in not part of the run() params?
- * 
+ *
  * TODO why should we pass the envelope in the constructor? Confusing.
- * 
+ *
  * TODO field er in MessageValidator is not initialized!
- * 
+ *
  * @author gerardin
- * 
+ *
  */
 
-public class WsseHeaderValidatorAdapter extends MessageValidator {
+public class WsseHeaderValidatorAdapter extends AbstractMessageValidator {
 
 	private static Logger log = Logger.getLogger(WsseHeaderValidatorAdapter.class);
 
@@ -64,7 +64,7 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 		Element wsseHeader = WsseHeaderGeneratorAdapter.buildHeader(context);
 
 		WsseHeaderValidatorAdapter validator = new WsseHeaderValidatorAdapter(
-				new ValidationContext(), wsseHeader);
+				DefaultValidationContextFactory.validationContext(), wsseHeader);
 		ErrorRecorder er = new TextErrorRecorder();
 		MessageValidatorEngine mvc = new MessageValidatorEngine();
 		validator.run(er, mvc);
@@ -82,14 +82,14 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 		// TODO need to check how to get information to put in the context!!
 		// patientId, homeCommunityId, endpoint url..
 	}
-	
+
 	//One quick to passing soap info to the library
 	public WsseHeaderValidatorAdapter(ValidationContext vc, Element wsseHeader,
 			OMElement soapHeader) {
 		this(vc, wsseHeader);
-		
-		List<OMElement> to = MetadataSupport.childrenWithLocalName(soapHeader, "To");
-		
+
+		List<OMElement> to = XmlUtil.childrenWithLocalName(soapHeader, "To");
+
 		context.setParam("To", to.get(0));
 	}
 
@@ -110,7 +110,7 @@ public class WsseHeaderValidatorAdapter extends MessageValidator {
 			logVal.addAppender(wsseLogApp);
 			logMainVal.addAppender(wsseLogApp);
 
-			
+
 
 			val.validate(header, context);
 		} catch (Exception e) {

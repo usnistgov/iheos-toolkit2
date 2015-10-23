@@ -1,10 +1,11 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
@@ -20,8 +21,8 @@ import java.util.List;
 
 
 
-public class RGActorFactory extends ActorFactory {
-	String newID = null;
+public class RGActorFactory extends AbstractActorFactory {
+	SimId newID = null;
 
 	static final String homeCommunityIdBase = "urn:oid:1.1.4567334.1.";
 	static int homeCommunityIdIncr = 1;
@@ -39,7 +40,7 @@ public class RGActorFactory extends ActorFactory {
 //	RegistryActorFactory registryActorFactory;
 //	RepositoryActorFactory repositoryActorFactory;
 
-	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
 		this.newID = newID;
 		ActorType actorType = ActorType.RESPONDING_GATEWAY;
 		SimulatorConfig sc; 
@@ -48,7 +49,7 @@ public class RGActorFactory extends ActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		String simId = sc.getId();
+		SimId simId = sc.getId();
 
 		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
 		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
@@ -91,6 +92,7 @@ public class RGActorFactory extends ActorFactory {
 
 			if (site == null)
 				site = new Site(siteName);
+			site.user = sc.getId().user;  // labels this site as coming from a sim
 
 			boolean isAsync = false;
 

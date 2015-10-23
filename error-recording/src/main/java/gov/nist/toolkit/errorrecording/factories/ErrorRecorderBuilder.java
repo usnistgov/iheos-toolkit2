@@ -9,6 +9,6 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
  */
 public interface ErrorRecorderBuilder {
 
-	public ErrorRecorder buildNewErrorRecorder();
-	public ErrorRecorder buildNewErrorRecorder(ErrorRecorder parent);
+	public ErrorRecorder buildNewErrorRecorder();  // Used by V2
+	public ErrorRecorder buildNewErrorRecorder(Object o); // Used by V3
 }

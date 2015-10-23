@@ -1,9 +1,10 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FindFolders extends CommonServiceManager {
+public class FindFolders extends CommonService {
 	Session session;
 	
 	public FindFolders(Session session) throws XdsException {
@@ -23,7 +24,7 @@ public class FindFolders extends CommonServiceManager {
 		try {
 			session.setSiteSpec(site);
 			session.transactionSettings.assignPatientId = false;
-			String testName = "FindFolders";
+			TestInstance testInstance = new TestInstance("FindFolders");
 			List<String> sections = new ArrayList<String>();
 
 			Map<String, String> params = new HashMap<String, String>();
@@ -41,7 +42,7 @@ public class FindFolders extends CommonServiceManager {
 			}
 			params.put("$patient_id$", pid);
 
-			Result r = session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, true);
+			Result r = session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, true);
 			return asList(r);
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

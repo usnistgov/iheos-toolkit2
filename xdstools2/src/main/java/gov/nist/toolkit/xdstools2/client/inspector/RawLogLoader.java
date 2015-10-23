@@ -1,28 +1,24 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestLog;
-import gov.nist.toolkit.results.client.TestLogs;
-import gov.nist.toolkit.results.client.XdstestLogId;
-
-import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TreeItem;
+import gov.nist.toolkit.results.client.*;
+
+import java.util.List;
 
 class RawLogLoader implements ClickHandler {
 	/**
 	 * 
 	 */
 	private final MetadataInspectorTab metadataInspectorTab;
-	XdstestLogId logId;
+	TestInstance logId;
 	TreeItem loadLogsTreeItem;
 	List<StepResult> stepResults;
 
-	RawLogLoader(MetadataInspectorTab metadataInspectorTab, XdstestLogId logId, List<StepResult> stepResults) {
+	RawLogLoader(MetadataInspectorTab metadataInspectorTab, TestInstance logId, List<StepResult> stepResults) {
 		this.metadataInspectorTab = metadataInspectorTab;
 		this.logId = logId;
 		this.stepResults = stepResults;

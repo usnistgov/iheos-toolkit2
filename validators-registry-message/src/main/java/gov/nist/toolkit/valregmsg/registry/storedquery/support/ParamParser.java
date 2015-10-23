@@ -3,6 +3,7 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 import gov.nist.toolkit.docref.EbRim;
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
@@ -25,26 +26,26 @@ public class ParamParser {
 	String queryid;
 	OMElement query;
 	SqParams params;
-	
+
 	QName name_qname = new QName("name");
 	QName valuelist_qname = new QName("ValueList");
-	
+
 	public ParamParser() {
 		this.queryid = null;
 		this.query = null;
 	}
-	
+
 	public ParamParser(OMElement query) throws MetadataValidationException, XdsInternalException {
 		this.queryid = null;
 		this.query = query;
-		
+
 		parse(query);
 	}
-	
+
 	public boolean isSQ() {
 		return MetadataSupport.isSQId(queryid);
 	}
-	
+
 	public boolean isMPQ() {
 		return MetadataSupport.isMPQId(queryid);
 	}
@@ -67,7 +68,7 @@ public class ParamParser {
 					} else
 						names.add(name);
 				}
-				
+
 			}
 		}
 
@@ -88,7 +89,7 @@ public class ParamParser {
 		} else if (existing_value instanceof ArrayList) {
 			@SuppressWarnings("rawtypes")
 			ArrayList a = (ArrayList) existing_value;
-			if (value instanceof ArrayList) 
+			if (value instanceof ArrayList)
 				a.addAll((ArrayList) value);
 			else
 				a.add(value);
@@ -105,10 +106,10 @@ public class ParamParser {
 		public List<String> errs = new ArrayList<String>();
 	}
 
-	/*
+	/**
 	 * slot  the XML of the SQ parameter being parsed
 	 * parms resulting structure describing parsed parameters
-	 * 
+	 *
 	 * The resulting value of the value in parms is either
 	 * 		a List of acceptable values (input for an SQL OR)
 	 * 		a List of And structures. An And structure is a list of values, all of which must be present to satisfy the query (AND logic). Each of
@@ -116,28 +117,28 @@ public class ParamParser {
 	 * 		This AND logic is nested inside the OR logic to get the needed AND/OR logic required by the Stored Query specification.
 	 * A Slot, representing a SQ parameter, holds a list of acceptable values for a parameter (OR logic).  If multiple Slots of the
 	 * same name are present in the query request, then each must be satisfied by the query (AND logic).
-	 * 
+	 *
 	 *  When reading parms later, if the value is either instanceof And (interpreted as AND) or not (interpreted as OR).  An OR
 	 *  is a List of values.  An AND is always a List of ORs.
-	 *  
+	 *
 	 *  This proves that Stored Query has gotten way too complicated!
 	 */
 	String parse_slot(OMElement slot, HashMap<String, Object> parms) throws MetadataValidationException, XdsInternalException {
 		String name = slot.getAttributeValue(name_qname);
-		
+
 		SlotParse sp = parse_slot(slot);
-		
+
 		addToParmMap(sp, parms);
-		
+
 //		if (SQCodedTerm.isCodeParameter(name)) {
 //			parse_code_param(name, sp, parms);
 //		} else {
 //			parse_noncode_param(name, sp, parms);
 //		}
-		
+
 		return name;
 	}
-	
+
 	public void addToParmMap(SlotParse sp, Map<String, Object> parms) throws MetadataValidationException, XdsInternalException {
 		if (SQCodedTerm.isCodeParameter(sp.name)) {
 			parse_code_param(sp.name, sp, parms);
@@ -145,15 +146,15 @@ public class ParamParser {
 			parse_noncode_param(sp.name, sp, parms);
 		}
 	}
-	
+
 	void parse_code_param(String name, SlotParse sp, Map<String, Object> parms) throws MetadataValidationException, XdsInternalException {
 		// all values must be strings
 		for (Object o : sp.values) {
 			if (! (o instanceof String))
-				throw new MetadataValidationException("Parameter " + name + " is a code type parameter and has non-string type value of " + 
+				throw new MetadataValidationException("Parameter " + name + " is a code type parameter and has non-string type value of " +
 						o + " which is of type " + o.getClass().getName(), SqDocRef.Request_parms);
 		}
-		
+
 		// build OR structure to represent the values in this parameter slot
 		SQCodeOr or = new SQCodeOr(name, SQCodedTerm.codeUUID(name));
 		for (Object o : sp.values) {
@@ -162,7 +163,7 @@ public class ParamParser {
 		}
 
 		Object current = parms.get(name);
-		
+
 		if (current == null) {
 			parms.put(name, or);
 		} else if (current instanceof SQCodeOr) {
@@ -176,22 +177,22 @@ public class ParamParser {
 			and.add(or);
 		}
 	}
-	
+
 	void parse_noncode_param(String name, SlotParse sp, Map<String, Object> parms) throws MetadataValidationException {
-		if (parms.containsKey(name)) 
+		if (parms.containsKey(name))
 			throw new MetadataValidationException("Stored Query parameter " + name + " defined multiple times", EbRim.Slot_name_unique);
-		
+
 		// this is necessary so that formatting mistakes can be detected
 		if (sp.isList)
 			parms.put(name, sp.values);
 		else
 			parms.put(name, sp.values.get(0));
 	}
-	
+
 	List<String> getRawSlotValues(OMElement slot) {
 		List<String> values = new ArrayList<String>();
 
-		OMElement value_list = MetadataSupport.firstChildWithLocalName(slot, "ValueList"); 
+		OMElement value_list = XmlUtil.firstChildWithLocalName(slot, "ValueList");
 		for (@SuppressWarnings("rawtypes")
 		Iterator it=value_list.getChildElements(); it.hasNext(); ) {
 			OMElement value_element = (OMElement) it.next();
@@ -200,19 +201,19 @@ public class ParamParser {
 
 			values.add(value_element.getText());
 		}
-		
+
 		return values;
 	}
-	
+
 	String asString(List<String> in) {
 		StringBuffer buf = new StringBuffer();
-		
+
 		String sep = "";
 		for (String s : in) {
 			buf.append(sep).append(s);
 			sep = "\n";
 		}
-		
+
 		return buf.toString();
 	}
 
@@ -222,7 +223,7 @@ public class ParamParser {
 			throw new MetadataValidationException(asString(sp.errs), SqDocRef.Request_parms);
 		return sp;
 	}
-	
+
 	public SlotParse parseSingleSlot(OMElement slot)  {
 		String name = slot.getAttributeValue(name_qname);
 
@@ -234,7 +235,7 @@ public class ParamParser {
 		sp.rawValues.addAll(raw_slot_values);
 		for (String value_string : raw_slot_values) {
 			SlotParse sp2 = parse_slot(name, value_string);
-			
+
 			if (first) {
 				sp.isList = sp2.isList;
 			} else {
@@ -243,13 +244,13 @@ public class ParamParser {
 			}
 			sp.values.addAll(sp2.values);
 			sp.errs.addAll(sp2.errs);
-			
+
 			first = false;
 		}
-		
+
 		return sp;
 	}
-	
+
 	SlotParse parse_slot(String name, String value_string) {
 		SlotParse sp = new SlotParse();
 		try {
@@ -283,7 +284,7 @@ public class ParamParser {
 				value_string.charAt(value_string.length()-1) == ')') {
 			String val_list = value_string.substring(1, value_string.length()-1);
 			String[] vals = val_list.split(",");
-			
+
 			sp.isList = true;
 
 			for (int i=0; i<vals.length; i++ ) {
@@ -299,14 +300,14 @@ public class ParamParser {
 					// Strings - could be codes
 					String v = value_string1.substring(1, value_string1.length()-1);
 					if (v.indexOf("'") != -1) {
-						sp.errs.add("Could not decode the value " + 
+						sp.errs.add("Could not decode the value " +
 								value_string1 + " of Slot " + name + " as part of Stored Query parameter value " +
 								value_string +
 								"\nEach value must be integer (no quotes) or 'string' (in quotes)" +
 								"\nExample for parameter " + name + " is " + new ParameterExamples().getExample(name));
 						return sp;
 					}
-					
+
 					sp.values.add(v);
 
 				} else {
@@ -316,7 +317,7 @@ public class ParamParser {
 						Integer value_int = Integer.decode(value_string1);
 						sp.values.add(value_int);
 					} catch (NumberFormatException e) {
-						sp.errs.add("Could not decode the value " + 
+						sp.errs.add("Could not decode the value " +
 								value_string1 + " of Slot " + name + " as part of Stored Query parameter value " +
 								value_string +
 								"\nEach value must be integer (no quotes) or 'string' (in quotes)" +
@@ -339,7 +340,7 @@ public class ParamParser {
 
 	//	String parse_slot(OMElement slot, HashMap<String, Object> parms) throws MetadataValidationException, XdsInternalException {
 	//		String name = slot.getAttributeValue(name_qname);
-	//		
+	//
 	//		ArrayList<Object> newHome;  // where to stuff new values
 	//		if (parms.containsKey(name)) {
 	//			// this is not first slot with this name - AND logic applies here
@@ -358,8 +359,8 @@ public class ParamParser {
 	//				and.add(newHome);
 	//				parms.put(name, and);  // replace old ArrayList with And
 	//			} else {
-	//				throw new XdsInternalException("ParamParser:parse_slot(): unknown data type in parms database: " + 
-	//						value.getClass().getName() + 
+	//				throw new XdsInternalException("ParamParser:parse_slot(): unknown data type in parms database: " +
+	//						value.getClass().getName() +
 	//						" found while parsing slot " +
 	//						slot.toString());
 	//			}
@@ -367,8 +368,8 @@ public class ParamParser {
 	//			newHome = null;
 	//			parms.put(name, newHome);
 	//		}
-	//		
-	//		OMElement value_list = MetadataSupport.firstChildWithLocalName(slot, "ValueList"); 
+	//
+	//		OMElement value_list = MetadataSupport.firstChildWithLocalName(slot, "ValueList");
 	//		for (Iterator it=value_list.getChildElements(); it.hasNext(); ) {
 	//			OMElement value_element = (OMElement) it.next();
 	//			if (!value_element.getLocalName().equals("Value"))
@@ -377,34 +378,34 @@ public class ParamParser {
 	//			try {
 	//				Integer value_int = Integer.decode(value_string);
 	//				//add_parm(parms, name, value_int);
-	//				
+	//
 	//				if (newHome == null) parms.put(name, value_int);
 	//				else newHome.add(value_int);
-	//				
+	//
 	//				continue;
 	//			} catch (NumberFormatException e) {
 	//			}
-	//			
+	//
 	//			// date strings are technically numeric but too large to be parsed as integers
 	//			try {
 	//				BigInteger value_int = new BigInteger(value_string);
 	//				//add_parm(parms, name, value_int);
-	//				
+	//
 	//				if (newHome == null) parms.put(name, value_int);
 	//				else newHome.add(value_int);
-	//				
+	//
 	//				continue;
 	//			} catch (NumberFormatException e) {
 	//			}
-	//			
+	//
 	//			if (value_string.charAt(0) == '\'' &&
 	//					value_string.charAt(value_string.length()-1) == '\'') {
 	//				String val = value_string.substring(1, value_string.length()-1);
 	//				//add_parm(parms, name, val);
-	//				
+	//
 	//				if (newHome == null) parms.put(name, val);
 	//				else newHome.add(val);
-	//				
+	//
 	//				continue;
 	//			}
 	//			if (value_string.charAt(0) == '(' &&
@@ -421,12 +422,12 @@ public class ParamParser {
 	//							value_string1.charAt(value_string1.length()-1) == '\'') {
 	//						String v = value_string1.substring(1, value_string1.length()-1);
 	//						if (v.indexOf("'") != -1)
-	//							throw new MetadataValidationException("Could not decode the value " + 
+	//							throw new MetadataValidationException("Could not decode the value " +
 	//									value_string1 + " of Slot " + name + " as part of Stored Query parameter value " +
 	//									value_string);
 	//						if (newHome == null) {
 	//							newHome = new ArrayList<Object>();
-	//							parms.put(name, newHome);  
+	//							parms.put(name, newHome);
 	//						}
 	//						newHome.add(v);
 	//					} else {
@@ -434,7 +435,7 @@ public class ParamParser {
 	//							Integer value_int = Integer.decode(value_string1);
 	//							newHome.add(value_int);
 	//						} catch (NumberFormatException e) {
-	//							throw new MetadataValidationException("Could not decode the value " + 
+	//							throw new MetadataValidationException("Could not decode the value " +
 	//									value_string1 + " of Slot " + name + " as part of Stored Query parameter value " +
 	//									value_string);
 	//						}

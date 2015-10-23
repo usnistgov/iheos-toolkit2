@@ -127,7 +127,7 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 		if (query_id.equals(MetadataSupport.SQ_FindDocuments)) {
 			setTestMessage("FindDocuments");
 			storedQueryImpl = new ValidationFindDocuments(sqs);
-		} 
+		}
 		else if (query_id.equals(MetadataSupport.SQ_FindSubmissionSets)) {
 			setTestMessage("FindSubmissionSets");
 			storedQueryImpl = new ValidationFindSubmissionSets(sqs);
@@ -138,7 +138,7 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 		}
 		else if (query_id.equals(MetadataSupport.SQ_GetAll)) {
 			setTestMessage("GetAll");
-			er.err(XdsErrorCode.Code.XDSRegistryError, "UnImplemented Stored Query query id = " + query_id, "AdhocQueryRequest.java", null, log_message);
+			storedQueryImpl = new ValidationGetAll(sqs);
 		}
 		else if (query_id.equals(MetadataSupport.SQ_GetDocuments)) {
 			setTestMessage("GetDocuments");
@@ -186,7 +186,7 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 		}
 		else {
 			setTestMessage(query_id);
-			er.err(XdsErrorCode.Code.XDSRegistryError, "Unknown Stored Query query id = " + query_id, "AdhocQueryRequest.java", 
+			er.err(XdsErrorCode.Code.XDSRegistryError, "Unknown Stored Query query id = " + query_id, "AdhocQueryRequest.java",
 					"ITI TF-2a: 3.18.4.1.2.4 and ITI TF-2b: 3.51.4.1.2.2", log_message);
 		}
 

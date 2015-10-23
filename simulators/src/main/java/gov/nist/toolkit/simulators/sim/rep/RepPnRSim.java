@@ -1,16 +1,14 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
-import gov.nist.toolkit.actorfactory.ActorFactory;
+import gov.nist.toolkit.actorfactory.AbstractActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.simulators.support.MetadataGeneratingSim;
-import gov.nist.toolkit.simulators.support.SimCommon;
-import gov.nist.toolkit.simulators.support.StoredDocument;
-import gov.nist.toolkit.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.support.*;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.utilities.io.Hash;
 import gov.nist.toolkit.utilities.io.Io;
@@ -21,23 +19,23 @@ import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.XDSMissingDocumentException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
 public class RepPnRSim extends TransactionSimulator implements MetadataGeneratingSim {
+	DsSimCommon dsSimCommon;
 	Metadata m = null;
-	SimulatorConfig asc;
+//	SimulatorConfig simulatorConfig;
 	static Logger logger = Logger.getLogger(RepPnRSim.class);
 
-	public RepPnRSim(SimCommon common, SimulatorConfig asc) {
-		super(common);
-		this.asc = asc;
+	public RepPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(common, simulatorConfig);
+        this.dsSimCommon = dsSimCommon;
 	}
 
 	public Metadata getMetadata() {
@@ -156,15 +154,20 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					m.insertSlot(eo, slot);
 				}
 
-				String repUID = asc.get(ActorFactory.repositoryUniqueId).asString();
-				OMElement rid = m.mkSlot("repositoryUniqueId", repUID);
-				m.insertSlot(eo, rid);
+				SimulatorConfigElement sce = simulatorConfig.get(AbstractActorFactory.repositoryUniqueId);
+				if (sce != null) {
+					OMElement rid = m.mkSlot("repositoryUniqueId", sce.asString());
+					m.insertSlot(eo, rid);
+				}
 			}
+
+			if (er.hasErrors())
+				return;
 
 			// flush documents to repository
 			for (String uid : sdMap.keySet()) {
 				StoredDocument sd = sdMap.get(uid);
-				common.repIndex.getDocumentCollection().add(sd);
+				dsSimCommon.repIndex.getDocumentCollection().add(sd);
 				byte[] content = sdMap.get(uid).content;
 				Io.bytesToFile(sd.getPathToDocument(), content);
 				byte[] content2 = Io.bytesFromFile(sd.getPathToDocument());
@@ -183,19 +186,18 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					logger.error(e.getMessage());
 				}
 			}
-			
+
 			// issue soap call to registry
-			String endpoint = asc.get(ActorFactory.registerEndpoint).asString();
+			String endpoint = simulatorConfig.get(AbstractActorFactory.registerEndpoint).asString();
 			
 			Soap soap = new Soap();
 			try {
 				OMElement result = soap.soapCall(m.getV3SubmitObjectsRequest(), endpoint, false, true, true, SoapActionFactory.r_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.r_b_action));
-				ErrorRecorder rrEr = common.registryResponseAsErrorRecorder(result);
+				ErrorRecorder rrEr = dsSimCommon.registryResponseAsErrorRecorder(result);
 				mvc.addErrorRecorder("RegistryResponse", rrEr);
 			} catch (Exception e) {
 				er.err(Code.XDSRepositoryError, e);
 			}
-
 
 		}
 		// these are all un-recoverable errors

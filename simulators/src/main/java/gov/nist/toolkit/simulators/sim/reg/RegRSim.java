@@ -1,6 +1,8 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
-import gov.nist.toolkit.actorfactory.ActorFactory;
+import gov.nist.toolkit.actorfactory.AbstractActorFactory;
+import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.actorfactory.client.PidBuilder;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.common.datatypes.UuidValidator;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -10,10 +12,8 @@ import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataForRegister;
-import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataInterface;
-import gov.nist.toolkit.simulators.sim.reg.store.RegistryFactory;
+import gov.nist.toolkit.simulators.sim.reg.store.*;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.message.MetadataContainer;
@@ -24,6 +24,7 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,19 +33,19 @@ public class RegRSim extends TransactionSimulator   {
 	protected Metadata m = null;
 	public MetadataCollection mc;
 	public MetadataCollection delta;
-	protected SimulatorConfig asc;
 	protected MessageValidatorEngine mvc;
+    protected DsSimCommon dsSimCommon;
 
 	static Logger log = Logger.getLogger(RegRSim.class);
 
 
-	public RegRSim(SimCommon common, SimulatorConfig asc) {
-		super(common);
-		this.asc = asc;
+	public RegRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(common, simulatorConfig);
+        this.dsSimCommon = dsSimCommon;
 	}
 
 	public Map<String, String> UUIDToSymbolic = null;
-	Map<String, String> symbolicToUUID = null; 
+	Map<String, String> symbolicToUUID = null;
 	List<String> submittedUUIDs;
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -54,10 +55,36 @@ public class RegRSim extends TransactionSimulator   {
 		// These steps are common to Registry and Update.  They operate
 		// on the entire metadata collection in both transactions.
 		setup();
-		
+
+		// Verify patient id against patient identity feed
+		if (vc.validateAgainstPatientIdentityFeed) {
+			log.debug("validating patient id ");
+			// this MetadataCollection is separate from delta and only used for PID validation
+			MetadataCollection submission = new MetadataCollection();
+			try {
+				RegistryFactory.buildMetadataIndex(m, submission);
+			} catch (MetadataException e) {
+				er.err(Code.XDSRegistryMetadataError, e);
+				return;
+			}
+			if (submission.subSetCollection.size() > 0) {
+				SubSet ss = (SubSet) submission.subSetCollection.getAllRo().get(0);
+				Pid pid = PidBuilder.createPid(ss.pid);
+				try {
+					if (pid == null || !common.db.patientIdExists(pid)) {
+                        er.err(Code.XDSUnknownPatientId, "Patient ID " + ss.pid + " has not been received in a Patient Identity Feed", this, null);
+                    }
+				} catch (IOException e) {
+					er.err(Code.XDSUnknownPatientId, "Patient ID " + ss.pid + " has not been received in a Patient Identity Feed", this, null);
+				}
+			}
+		}
+
 		// Check whether Extra Metadata is present, is allowed, and is legal
+		// TODO - split into validation (as validator) and remover
 		extraMetadataCheck(m);
 
+		// TODO - some of the checks here can be done independent of the registry - move to validator
 		processMetadata(m, new ProcessMetadataForRegister(er, mc, delta));
 
 		// if errors then don't commit registry update
@@ -65,15 +92,17 @@ public class RegRSim extends TransactionSimulator   {
 			return;
 
 		// save metadata objects XML
-		saveMetadataXml(); 
+		saveMetadataXml();
 
-		// delta will be flushed to disk, assuming no errors, by caller 
+		// delta will be flushed to disk, assuming no errors, by caller
 
 	}
 
 	// These steps are common to Registry and Update.  They operate
 	// on the entire metadata collection in both transactions.
 	protected void setup() {
+
+		// Pull metadata container off validation stack
 		try {
 			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidatorIfAvailable(MetadataContainer.class);
 			m = metaCon.getMetadata();
@@ -82,7 +111,7 @@ public class RegRSim extends TransactionSimulator   {
 			er.err(Code.XDSRegistryError, "Internal Error: cannot access input metadata", this, null);
 		}
 
-		mc = common.regIndex.mc;
+		mc = dsSimCommon.regIndex.mc;
 
 		// this will hold our updates - transaction style
 		delta = mc.mkDelta();
@@ -103,16 +132,16 @@ public class RegRSim extends TransactionSimulator   {
 
 	// These steps are run on the entire metadata collection
 	// for the Register transaction but only on an operation
-	// for the Update transaction.  
+	// for the Update transaction.
 	public void processMetadata(Metadata m, ProcessMetadataInterface pmi) {
-		
+
 		// Are all UUIDs, submitted and generated, valid?
 		validateUUIDs();
-		
+
 		// MU will change
 		pmi.checkUidUniqueness(m);
 
-		// set logicalId to id 
+		// set logicalId to id
 		pmi.setLidToId(m);
 
 		// install version attribute in SubmissionSet, DocumentEntry and Folder objects
@@ -123,6 +152,9 @@ public class RegRSim extends TransactionSimulator   {
 		// this will later be committed
 		// This is done now because the operations below need this index
 		buildMetadataIndex(m);
+
+		// verify object/patient id linking rules are observed
+		pmi.associationPatientIdRules();
 
 		// set folder lastUpdateTime on folders in the submission
 		// must be done after metadata index built
@@ -200,10 +232,10 @@ public class RegRSim extends TransactionSimulator   {
 
 		UUIDToSymbolic = reverse(symbolicToUUID);
 	}
-	
+
 	void validateUUIDs() {
 		UuidValidator validator;
-		
+
 		validator = new UuidValidator(er, "Validating submitted UUID ");
 		for (String uuid : submittedUUIDs) {
 			validator.validateUUID(uuid);
@@ -215,12 +247,12 @@ public class RegRSim extends TransactionSimulator   {
 		}
 
 	}
-	
+
 	// check for Extra Metadata
 	void extraMetadataCheck(Metadata m) {
-		SimulatorConfigElement extraMetadataASCE = asc.get(ActorFactory.extraMetadataSupported);
+		SimulatorConfigElement extraMetadataASCE = simulatorConfig.get(AbstractActorFactory.extraMetadataSupported);
 		boolean isExtraMetadataSupported = extraMetadataASCE.asBoolean();
-		
+
 		for (OMElement ele : m.getMajorObjects()) {
 			String id = m.getId(ele);
 			try {
@@ -228,7 +260,7 @@ public class RegRSim extends TransactionSimulator   {
 					String slotName = m.getSlotName(slotEle);
 					if (!slotName.startsWith("urn:"))
 						continue;
-					if (slotName.equals("urn:ihe:iti:xds:2013:referenceIdList"))    // used by referenceIdList 
+					if (slotName.equals("urn:ihe:iti:xds:2013:referenceIdList"))    // used by referenceIdList
 						continue;
 					if (slotName.startsWith("urn:ihe:")) {
 						// there are no slots defined by ihe with this prefix - reserved for future
@@ -278,7 +310,7 @@ public class RegRSim extends TransactionSimulator   {
 		try {
 			if (m.getSubmissionSet() != null)
 				log.debug("Save SubmissionSet(" + m.getSubmissionSetId() + ")");
-			for (OMElement ele : m.getExtrinsicObjects()) 
+			for (OMElement ele : m.getExtrinsicObjects())
 				log.debug("Save DocEntry(" + m.getId(ele) + ")");
 			for (OMElement ele : m.getFolders())
 				log.debug("Save Folder(" + m.getId(ele) + ")");
@@ -300,6 +332,6 @@ public class RegRSim extends TransactionSimulator   {
 			delta.storeMetadata(m);
 		} catch (Exception e1) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e1);
-		} 
+		}
 	}
 }

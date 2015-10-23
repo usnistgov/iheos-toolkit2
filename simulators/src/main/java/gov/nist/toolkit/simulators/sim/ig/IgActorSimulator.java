@@ -3,34 +3,41 @@ package gov.nist.toolkit.simulators.sim.ig;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
-
-import java.io.IOException;
-
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
+
 public class IgActorSimulator extends GatewaySimulatorCommon {
+	DsSimCommon dsSimCommon;
 	SimDb db;
-	SimulatorConfig asc;
 	OMElement messageBody;
 	static Logger logger = Logger.getLogger(IgActorSimulator.class);
 	AdhocQueryResponseGenerator sqs;
 
-	public IgActorSimulator(SimCommon common, SimDb db, SimulatorConfig asc) {
-		super(common);
+	public IgActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
+		super(common, dsSimCommon);
 		this.db = db;
-		this.asc = asc;
+		setSimulatorConfig(simulatorConfig);
 	}
 
+	public IgActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+        setSimulatorConfig(simulatorConfig);
+	}
+
+	public void init() {}
 
 	// boolean => hasErrors?
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validationPattern) throws IOException {
@@ -46,19 +53,19 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 
 
 			
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+                dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 			
 			// extract query 
-			MessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
+			AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (mv == null || !(mv instanceof SoapMessageValidator)) {
 				er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
-				common.sendErrorsInRegistryResponse(er);
+                dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 			
@@ -69,19 +76,19 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 			if (!validateOk)
 				return false;
 
-			XcQuerySim xcqSim = new XcQuerySim(common, asc);
+			XcQuerySim xcqSim = new XcQuerySim(common, dsSimCommon, getSimulatorConfig());
 			mvc.addMessageValidator("XcQuerySim", xcqSim, er);
 
 			mvc.run();
 
 			// Add in errors
-			AdhocQueryResponseGenerator ahqrg = new AdhocQueryResponseGenerator(common, xcqSim);
+			AdhocQueryResponseGenerator ahqrg = new AdhocQueryResponseGenerator(common, dsSimCommon, xcqSim);
 			mvc.addMessageValidator("Attach Errors", ahqrg, er);
 			mvc.run();
 			sqs = ahqrg;
 
 			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, sqs), er);
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, sqs), er);
 
 			// this will only run the new validators
 			mvc.run();
@@ -94,7 +101,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 			
 		else {
 			er.err(Code.XDSRegistryError, "Don't understand transaction " + transactionType, "InitiatingGatewayActorSimulator", "");
-			common.sendFault("Don't understand transaction " + transactionType, null);
+            dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return true;
 		}
 		

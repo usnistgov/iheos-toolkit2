@@ -25,6 +25,7 @@
   <inherits name="gov.nist.toolkit.actortransaction.actorTransaction"/>
   <inherits name="gov.nist.toolkit.tk.tk"/>
   <inherits name="gov.nist.toolkit.results.results"/>
+    <inherits name="gov.nist.toolkit.services.services"/>
   <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
   <inherits name="gov.nist.toolkit.http.http"/>
 
@@ -40,9 +41,9 @@
   <set-property name="compiler.useSourceMaps" value="true"/>
 
   <!-- Only build for one browser - safari setting includes chrome -->
-  <set-property name="user.agent" value="safari" />
+  <!-- <set-property name="user.agent" value="safari" /> -->
 
-  <inherits name="com.google.gwt.logging.Logging"/>
+  <!-- <inherits name="com.google.gwt.logging.Logging"/> -->
 
 </module>
 

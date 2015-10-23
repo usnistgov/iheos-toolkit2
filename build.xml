@@ -18,16 +18,16 @@
                         The difference is the copy of war/WEB-INF/toolkit.properties installed
 
 	  The result is the file xdstools2/ttt.war (or xdstools2/xdstools2.war)
-	  If ant ttt is run then a second file is generated, listener.jar which contains the port 25 listener for T3
+	  If ant ttt is run then a second file is generated, patientIdentityFeed.jar which contains the port 25 patientIdentityFeed for T3
           It must be installed on hit-testing using scripts. The procedure is:
-		1) scp listener.jar bill@hit-testing
+		1) scp patientIdentityFeed.jar bill@hit-testing
 		2) ssh bill@hit-testing
 			3) cd bin
 			4) screen -ls    // to get id of service
 			5) screen -d -r <id>   // to bring service into foreground
 			6) ^c                  // to kill it
-			7) ./prep-listener.sh   // to build ~/bin/listener directory contents (port 25 listener)
-			8) ./start-screen.sh	// to start listener using screen(1) command
+			7) ./prep-patientIdentityFeed.sh   // to build ~/bin/patientIdentityFeed directory contents (port 25 patientIdentityFeed)
+			8) ./start-screen.sh	// to start patientIdentityFeed using screen(1) command
 			9) log4j output goes to ~/ttt/webapps/ROOT/direct/listener_log.txt
 
 -->

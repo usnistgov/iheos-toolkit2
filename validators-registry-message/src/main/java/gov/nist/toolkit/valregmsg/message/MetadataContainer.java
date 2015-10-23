@@ -4,7 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 /**
  * Empty shell of a validator that holds a copy of the pre-parsed 
@@ -12,7 +12,7 @@ import gov.nist.toolkit.valsupport.message.MessageValidator;
  * @author bill
  *   
  */
-public class MetadataContainer  extends MessageValidator {
+public class MetadataContainer  extends AbstractMessageValidator {
 	Metadata m;
 	
 	public MetadataContainer(ValidationContext vc, Metadata m) {
@@ -22,6 +22,8 @@ public class MetadataContainer  extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
+		er.unRegisterValidator(this);
 		
 	}
 	

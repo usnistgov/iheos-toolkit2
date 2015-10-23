@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.util.List;
 
 public class Installation {
 	File warHome = null;
@@ -18,6 +19,17 @@ public class Installation {
 	static Logger logger = Logger.getLogger(Installation.class);
 
 	static Installation me = null;
+
+    static {
+        // This works for unit tests if warhome.txt is installed as part of a unit test environment
+        String warhomeTxt = null;
+        try {
+            warhomeTxt = installation().getClass().getResource("/warhome/warhome.txt").getFile();
+        } catch (Throwable t) {}
+        if (warhomeTxt != null) {
+            installation().warHome = new File(warhomeTxt).getParentFile();
+        }
+    }
 
 	static public Installation installation() {
 		if (me == null)
@@ -38,13 +50,22 @@ public class Installation {
 	public File warHome() { 
 		return warHome; 
 		}
-	public void warHome(File warHome) { 
-		this.warHome = warHome; 
-		}
+	synchronized public void warHome(File warHome) {
+		if (warHome()!=null && warHome().equals(warHome))
+			return; /* already set */
+		logger.info("V2 - Installation - war home set to " + warHome);
+		this.warHome = warHome;
+		propertyServiceMgr = null;
+		if (externalCache == null) // this can be different in a unit test situation
+			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+        logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
+	}
+
 	public File externalCache() { return externalCache; }
-	public void externalCache(File externalCache) { 
-		this.externalCache = externalCache;
-        logger.info("In Installation: External Cache set to " + externalCache);
+	public void externalCache(File externalCache) {
+//		if (this.externalCache == null)
+			this.externalCache = externalCache;
+        logger.info("V2 Installation: External Cache set to " + externalCache);
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
@@ -53,7 +74,7 @@ public class Installation {
 		}
 
 	}
-	
+
 	public File getTkPropsFile() {
 		return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
 	}
@@ -65,15 +86,31 @@ public class Installation {
 			propertyServiceMgr = new PropertyServiceManager(warHome);
 		return propertyServiceMgr;
 	}
-	
+
+	public File getActorsDirName() {
+		File f = new File(externalCache() + File.separator + "actors");
+		f.mkdirs();
+		return f;
+	}
+
 	public File simDbFile() {
-		return propertyServiceManager().getSimDbDir();
+		return new File(externalCache(), "simdb");
+//		return propertyServiceManager().getSimDbDir();
+	}
+
+	public List<String> getListenerPortRange() {
+		return propertyServiceManager().getListenerPortRange();
 	}
 	
 	public File toolkitxFile() {
-		return new File(Installation.installation().warHome() + sep + "toolkitx");
+		return new File(warHome(), "toolkitx");
+	}
+	public File schemaFile() {
+		return new File(toolkitxFile(), "schema");
 	}
 	public File testkitFile() { return new File(toolkitxFile(), "testkit"); }
+
+    public String defaultEnvironmentName() { return propertyServiceManager().getDefaultEnvironment(); }
 	
 	public File environmentFile(String envName) {
 		return new File(externalCache + sep + "environment" + sep + envName);
@@ -82,7 +119,12 @@ public class Installation {
 	public File environmentFile() {
 		return new File(externalCache + sep + "environment");
 	}
-	
+
+	// Default codes.xml to use if no environments are configured
+	public File internalEnvironmentFile(String envName) {
+		return new File(new File(toolkitxFile(), "environment"), envName);
+	}
+
 	public File directSendLogFile(String userName) {
 		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
 	}
@@ -107,8 +149,19 @@ public class Installation {
 		return new File(warHome + sep + "SessionCache");
 	}
 
-	public File testLogFile() {
+	public File testLogCache() {
 		return new File(externalCache + sep + "TestLogCache");
 	}
 
+	public String defaultSessionName() { return "STANDALONE"; }
+    public String defaultServiceSessionName() { return "SERVICE"; }
+
+	/**
+	 * Queries the PropertyServiceManager to retrieve the Toolkit Properties as a File.
+	 * This function is called from within v3.
+	 * @return the toolkit properties file
+	 */
+	public File getToolkitPropertiesFile(){
+		return propertyServiceMgr.getPropertiesFile();
+	}
 }

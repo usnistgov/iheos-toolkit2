@@ -9,6 +9,7 @@ import gov.nist.toolkit.simulators.sim.reg.RegRSim;
 import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataForRegister;
 import gov.nist.toolkit.simulators.sim.reg.store.ProcessMetadataInterface;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.MetadataException;
@@ -20,15 +21,11 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 public class MuSim extends RegRSim {
-	Exception startUpException = null;
-//	public ErrorRecorder er;
-//	MessageValidatorContext mvc;
-//	public MetadataCollection delta;
 	static Logger log = Logger.getLogger(MuSim.class);
 	String ssId;
 
-	public MuSim(SimCommon common, SimulatorConfig asc) {
-		super(common, asc);
+	public MuSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
+		super(common, dsSimCommon, asc);
 	}
 
 
@@ -187,7 +184,7 @@ public class MuSim extends RegRSim {
 			operation.add_association(assoc);
 			
 			
-			new DocumentEntryStatusUpdate(common, er, asc).run(this, operation, assoc, delta.docEntryCollection.getById(targetId), originalStatus, newStatus);
+			new DocumentEntryStatusUpdate(common, dsSimCommon, er, simulatorConfig).run(this, operation, assoc, delta.docEntryCollection.getById(targetId), originalStatus, newStatus);
 
 		}
 	}

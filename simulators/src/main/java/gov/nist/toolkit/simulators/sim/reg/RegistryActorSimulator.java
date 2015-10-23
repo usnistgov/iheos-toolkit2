@@ -1,71 +1,120 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
-import gov.nist.toolkit.actorfactory.RegistryActorFactory;
-import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.mu.MuSim;
 import gov.nist.toolkit.simulators.sim.reg.sq.SqSim;
 import gov.nist.toolkit.simulators.sim.reg.store.Committer;
 import gov.nist.toolkit.simulators.sim.reg.store.MetadataCollection;
-import gov.nist.toolkit.simulators.support.ActorSimulator;
+import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
+import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-
-import java.io.IOException;
-
 import org.apache.log4j.Logger;
 
-public class RegistryActorSimulator extends ActorSimulator {
-	SimDb db;
-	SimulatorConfig asc;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class RegistryActorSimulator extends BaseDsActorSimulator {
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
 
-	public RegistryActorSimulator(SimCommon common, SimDb db, SimulatorConfig asc) {
-		super(common);
-		this.db = db;
-		this.asc = asc;
-		SimulatorConfigElement updateConfig = asc.get(RegistryActorFactory.update_metadata_option);
-		updateEnabled = updateConfig.asBoolean();
+	static List<TransactionType> transactions = new ArrayList<>();
+
+	static {
+		transactions.add(TransactionType.REGISTER);
+		transactions.add(TransactionType.STORED_QUERY);
+		transactions.add(TransactionType.UPDATE);
 	}
 
+	public boolean supports(TransactionType transactionType) {
+		return transactions.contains(transactionType);
+	}
 
-	public boolean run(ATFactory.TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+	public RegistryActorSimulator() {}
+
+	public boolean isPartOfRecipient() {
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorConfig.PART_OF_RECIPIENT);
+		return sce != null && sce.asBoolean();
+	}
+
+	public boolean isValidateCodes() {
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorConfig.VALIDATE_CODES);
+		return sce != null && sce.asBoolean();
+	}
+
+	public boolean validateAgainstPatientIdentityFeed() {
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorConfig.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED);
+		return sce != null && sce.asBoolean();
+	}
+
+	// this constructor must be used when running simulator
+	public RegistryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+		this.response = dsSimCommon.simCommon.response;
+		this.setSimulatorConfig(simulatorConfig);
+		init();
+	}
+
+	public void init() {
+		SimulatorConfigElement updateConfig = getSimulatorConfig().get(SimulatorConfig.UPDATE_METADATA_OPTION);
+		if (updateConfig != null)
+			updateEnabled = updateConfig.asBoolean();
+	}
+
+	// This constructor can be used to implement calls to onCreate(), onDelete(),
+	// onServiceStart(), onServiceStop()
+	public RegistryActorSimulator(SimulatorConfig simulatorConfig) {
+		setSimulatorConfig(simulatorConfig);
+	}
+
+	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		AdhocQueryResponseGenerator queryResponseGenerator;
 		RegistryResponseGeneratorSim registryResponseGenerator;		
 		
 		common.getValidationContext().updateEnabled = updateEnabled;
 		
-		if (transactionType.equals(ATFactory.TransactionType.REGISTER)) {
+		if (transactionType.equals(TransactionType.REGISTER)) {
 
 			common.vc.isR = true;
+
+			common.vc.isPartOfRecipient = isPartOfRecipient();   // part of implementation of Document Recipient
+			common.vc.isValidateCodes = isValidateCodes();
+			common.vc.validateAgainstPatientIdentityFeed = validateAgainstPatientIdentityFeed();
 			common.vc.xds_b = true;
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
 			
-			RegRSim rsim = new RegRSim(common, asc);
-			mvc.addMessageValidator("RegistryActor", rsim, er);
+			RegRSim rsim = new RegRSim(common, dsSimCommon, getSimulatorConfig());
+			mvc.addMessageValidator("Register Transaction", rsim, er);
 
-			registryResponseGenerator = new RegistryResponseGeneratorSim(common);
+			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
 
 			mvc.run();
 
 			// wrap in soap wrapper and http wrapper
 			mvc.addMessageValidator("ResponseInSoapWrapper", 
-					new SoapWrapperRegistryResponseSim(common, registryResponseGenerator), 
+					new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator),
 					er);
 
 			// catch up on validators to be run so we can judge whether to commit or not
@@ -78,7 +127,7 @@ public class RegistryActorSimulator extends ActorSimulator {
 			return !common.hasErrors();
 
 		}
-		else if (transactionType.equals(ATFactory.TransactionType.STORED_QUERY)) {
+		else if (transactionType.equals(TransactionType.STORED_QUERY)) {
 
 			common.vc.isSQ = true;
 			common.vc.xds_b = true;
@@ -86,27 +135,27 @@ public class RegistryActorSimulator extends ActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
 
-			SqSim sqsim = new SqSim(common);
+			SqSim sqsim = new SqSim(common, dsSimCommon);
 			mvc.addMessageValidator("SqSim", sqsim, er);
 
 			mvc.run();
 
 			// Add in errors
-			queryResponseGenerator = new AdhocQueryResponseGenerator(common, sqsim);
+			queryResponseGenerator = new AdhocQueryResponseGenerator(common, dsSimCommon, sqsim);
 			mvc.addMessageValidator("Attach Errors", queryResponseGenerator, er);
 			mvc.run();
 
 			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, queryResponseGenerator), er);
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, queryResponseGenerator), er);
 
 			// this will only run the new validators
 			mvc.run();
@@ -114,20 +163,23 @@ public class RegistryActorSimulator extends ActorSimulator {
 			return true; // no updates anyway
 
 		}
-		else if (transactionType.equals(ATFactory.TransactionType.UPDATE)) {
-
+		else if (transactionType.equals(TransactionType.UPDATE)) {
+			if (!updateEnabled) {
+				dsSimCommon.sendFault("Metadata Update not enabled on this actor ", null);
+				return false;
+			}
 			common.vc.isMU = true;
 			common.vc.isRequest = true;
 
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 
-			MuSim musim = new MuSim(common, asc);
+			MuSim musim = new MuSim(common, dsSimCommon, getSimulatorConfig());
 			mvc.addMessageValidator("MuSim", musim, er);
 			
 			mvc.run();
@@ -138,13 +190,13 @@ public class RegistryActorSimulator extends ActorSimulator {
 			mvc.run();
 			
 
-			registryResponseGenerator = new RegistryResponseGeneratorSim(common);
+			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
 
 			mvc.run();
 
 			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, registryResponseGenerator), er);
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator), er);
 
 			// run all the queued up validators so we can check for errors
 			mvc.run();
@@ -157,7 +209,7 @@ public class RegistryActorSimulator extends ActorSimulator {
 
 		}
 		else {
-			common.sendFault("Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("RegistryActorSimulator - Don't understand transaction " + transactionType, null);
 			return false;
 		}
 
@@ -178,7 +230,7 @@ public class RegistryActorSimulator extends ActorSimulator {
 
 		delta.mkDirty();
 
-		synchronized(common.regIndex) {
+		synchronized(dsSimCommon.regIndex) {
 			Committer com = new Committer(common, delta);
 
 			mvc.addMessageValidator("Commit", com, er);
@@ -186,8 +238,36 @@ public class RegistryActorSimulator extends ActorSimulator {
 			mvc.run();
 
 			if (!common.hasErrors()) {
-				common.regIndex.save();
+				dsSimCommon.regIndex.save();
 			}
 		}
+	}
+
+	static public SimulatorStats getSimulatorStats(SimId simId) throws IOException, NoSimException {
+		RegIndex regIndex = SimServlet.getRegIndex(simId);
+		return regIndex.getSimulatorStats();
+	}
+
+	@Override
+	public void onCreate(SimulatorConfig config) {
+		// When registry part of implementation of Document Recipient there is no patient feed necessary
+		SimulatorConfigElement pifPortConfigured = config.get(SimulatorConfig.PIF_PORT);
+		if (pifPortConfigured != null)
+			PatientIdentityFeedServlet.generateListener(config);
+	}
+
+	@Override
+	public void onDelete(SimulatorConfig config) {
+		PatientIdentityFeedServlet.deleteListener(config);
+	}
+
+	@Override
+	public void onServiceStart(SimulatorConfig config) {
+		PatientIdentityFeedServlet.generateListener(config);
+	}
+
+	@Override
+	public void onServiceStop(SimulatorConfig config) {
+		PatientIdentityFeedServlet.deleteListener(config);
 	}
 }

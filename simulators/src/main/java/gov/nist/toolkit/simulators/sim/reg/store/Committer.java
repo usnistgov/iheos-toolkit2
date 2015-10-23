@@ -3,9 +3,10 @@ package gov.nist.toolkit.simulators.sim.reg.store;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
-public class Committer extends MessageValidator {
+// This commits delta into in-memory store
+public class Committer extends AbstractMessageValidator {
 	SimCommon common;
 	MetadataCollection delta;
 	
@@ -19,11 +20,12 @@ public class Committer extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
 
 		// merge in changes
 		delta.mergeDelta(er);
-		
+		er.unRegisterValidator(this);
 	}
 
 }

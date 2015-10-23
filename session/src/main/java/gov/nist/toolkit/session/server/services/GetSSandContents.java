@@ -1,8 +1,9 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GetSSandContents extends CommonServiceManager {
+public class GetSSandContents extends CommonService {
 	Session session;
 	
 	public GetSSandContents(Session session) throws XdsException {
@@ -22,7 +23,7 @@ public class GetSSandContents extends CommonServiceManager {
 		try {
 			session.setSiteSpec(site);
 
-			String testName = "GetSubmissionSetAndContents";
+			TestInstance testInstance = new TestInstance("GetSubmissionSetAndContents");
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			try {
@@ -50,7 +51,7 @@ public class GetSSandContents extends CommonServiceManager {
 				return buildResultList(e);
 			}
 
-			List<Result> results = asList(session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, true));
+			List<Result> results = asList(session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, true));
 			return results;
 		} catch (Exception e) {
 			return buildExtendedResultList(e);

@@ -1,14 +1,14 @@
 package gov.nist.toolkit.session.server;
 
 import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.results.client.AssertionResults;
+import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
@@ -16,13 +16,14 @@ import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.TransactionSettings;
-import gov.nist.toolkit.testengine.Xdstest2;
+import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
+import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -53,7 +54,7 @@ public class Session implements SecurityParams {
 	public Xdstest2 xt;
 	public SiteSpec siteSpec = new SiteSpec();
 	public String repUid;
-	public AssertionResults res;
+	public AssertionResults assertionResults;
 	public TransactionSettings transactionSettings = new TransactionSettings();
 	public boolean isAdmin = false;
 	public boolean isSoap = true;
@@ -74,7 +75,7 @@ public class Session implements SecurityParams {
 	String serverIP = null;
 	String serverPort = null;
 	SimCache simCache = new SimCache();
-	String sessionId;
+	String sessionId = Installation.installation().defaultSessionName();
 	
 	File toolkit = null;
 	
@@ -86,6 +87,9 @@ public class Session implements SecurityParams {
 	XdsTestServiceManager xdsTestServiceManager = null;
 	QueryServiceManager queryServiceMgr = null;
 	static Map<String, Session> sessionMap = new HashMap<String, Session>();
+	// environment name ==> codes configuration
+	static Map<String, CodesConfiguration> codesConfigurations = new Hashtable<>();
+
 	static final Logger logger = Logger.getLogger(Session.class);
 	
 	public boolean isTls() {
@@ -207,6 +211,8 @@ public class Session implements SecurityParams {
 		mesaSessionCache.mkdirs();
 	}
 
+	public String getMesaSessionName() { return mesaSessionName; }
+
 	public void setSessionProperties(Map<String, String> m) {
 		SessionPropertyManager props = getSessionProperties();
 		if (props == null)
@@ -256,8 +262,8 @@ public class Session implements SecurityParams {
 		return ipAddr;
 	}
 	
-	public String getDefaultSimId() {
-		return ipAddr;
+	public SimId getDefaultSimId() {
+		return new SimId(ipAddr);
 	}
 	
 	public void setLastUpload(String filename, byte[] last, String filename2, byte[] last2) {
@@ -322,7 +328,7 @@ public class Session implements SecurityParams {
 	 */
 	public void clear() {
 		xt = null;
-		res = null;
+		assertionResults = null;
 	}
 
 	public Metadata getLastMetadata() {
@@ -416,7 +422,7 @@ public class Session implements SecurityParams {
 	public void setEnvironment(String name, String externalCache) {
 		File k = Installation.installation().environmentFile(name);
 		if (!k.exists() || !k.isDirectory())
-			k = null;
+			throw new ToolkitRuntimeException("Environment " + name + " does not exist");
 		currentEnvironmentName = name;
 		System.setProperty("XDSCodesFile", k.toString() + File.separator + "codes.xml");
 		new EnvSetting(sessionId, name, k);
@@ -456,11 +462,48 @@ public class Session implements SecurityParams {
 		return toolkit;
 	}
 
-	public String allocateNewPid(String assigningAuthority) {
-//		return new PidGenerator(assigningAuthority).get();
-		return "x";
+	public Pid allocateNewPid(String assigningAuthority) {
+		return PatientIdAllocator.getNew(assigningAuthority);
 	}
 
+	public Pid allocateNewPid() throws Exception {
+		return PatientIdAllocator.getNew(getAssigningAuthority());
+	}
 
+	public CodesConfiguration getCodesConfiguration(String environmentName) throws XdsInternalException {
+		CodesConfiguration config = codesConfigurations.get(environmentName);
+		if (config != null) return config;
+		File codesFile = getCodesFile();
+		if (!codesFile.exists()) throw new XdsInternalException("No code configuration defined for Environment " + environmentName +
+		" or that Environment does not exist");
+		CodesConfigurationBuilder builder = new CodesConfigurationBuilder(codesFile);
+		config = builder.get();
+		codesConfigurations.put(environmentName, config);
+		return config;
+	}
+
+	public CodesConfiguration getCodesConfiguration() throws XdsInternalException {
+		return getCodesConfiguration(getCurrentEnvironment());
+	}
+
+	public String getAssigningAuthority() throws Exception {
+		CodesConfiguration config = null;
+		try {
+			config = getCodesConfiguration();
+		} catch (XdsInternalException e) {
+			throw new Exception("Error loading current Assigning Authority", e);
+		}
+		return config.getAssigningAuthorityOid();
+	}
+
+	public List<String> getAssigningAuthorities() throws Exception {
+		CodesConfiguration config = null;
+		try {
+			config = getCodesConfiguration();
+		} catch (XdsInternalException e) {
+			throw new Exception("Error loading current Assigning Authority", e);
+		}
+		return config.getAssigningAuthorityOids();
+	}
 
 }

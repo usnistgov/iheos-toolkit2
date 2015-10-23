@@ -1,23 +1,19 @@
 package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.support.Callback;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 
+import javax.servlet.*;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
 
 public class SimServletFilter implements Filter {
 	static Logger logger = Logger.getLogger(SimServletFilter.class);
@@ -39,6 +35,11 @@ public class SimServletFilter implements Filter {
 			logger.error("SimServletFilter - request.getAttribute(\"SimDb\") failed");
 			return;
 		}
+        SimulatorConfig config = (SimulatorConfig) request.getAttribute("SimulatorConfig");
+        if (config == null) {
+            logger.error("SimServletFilter - request.getAttribute(\"SimulatorConfig\") failed");
+            return;
+        }
 		
 		Map<String, String> hdrs = wrapper.headers;
 		String contentType = wrapper.contentType;
@@ -61,7 +62,25 @@ public class SimServletFilter implements Filter {
 		}
 		
 		Io.stringToFile(db.getResponseHdrFile(), messageHeader);
-	}
+
+        // This parameter is the base address of a webservice, for example
+        // http://localhost:8080/xdstools2/rest/
+        SimulatorConfigElement callbackBaseAddressEle = config.get(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
+        SimulatorConfigElement callbackClassNameEle = config.get(SimulatorConfig.TRANSACTION_NOTIFICATION_CLASS);
+        if (callbackBaseAddressEle == null) return;
+        if (callbackClassNameEle == null) return;
+        String callbackClassName = callbackClassNameEle.asString();
+        String callbackBase = callbackBaseAddressEle.asString();
+        logger.info("Callback...\n...base address is " + callbackBase);
+        logger.info("...class name is " + callbackClassName);
+        if (callbackBase == null) return;
+        callbackBase = callbackBase.trim();
+        if (callbackBase.equals("")) return;
+        if (!callbackBase.endsWith("/")) callbackBase = callbackBase + "/";
+        String callbackURI = callbackBase + "toolkitcallback";
+        new Callback().callback(db, config.getId(), callbackURI, callbackClassName);
+        logger.info("...callback successful");
+    }
 
 	public void init(FilterConfig arg0) throws ServletException {
 		// TODO Auto-generated method stub

@@ -9,12 +9,10 @@ import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBody;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
-import org.apache.axiom.om.OMElement;
-
-public class MetadataMessageValidator extends MessageValidator {
+public class MetadataMessageValidator extends AbstractMessageValidator {
 //	OMElement xml;
 	Metadata m = null;
 	ErrorRecorderBuilder erBuilder;
@@ -39,9 +37,11 @@ public class MetadataMessageValidator extends MessageValidator {
 	
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
 		if (messageBody == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "MetadataMessageValidator: top element null", this, "");
+            er.unRegisterValidator(this);
 			return;
 		}
 		
@@ -65,6 +65,9 @@ public class MetadataMessageValidator extends MessageValidator {
 		} catch (Exception e) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e);
 		}
+        finally {
+            er.unRegisterValidator(this);
+        }
 
 		er.finish();
 

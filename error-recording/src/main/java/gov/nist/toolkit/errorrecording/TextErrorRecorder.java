@@ -121,6 +121,11 @@ public class TextErrorRecorder implements ErrorRecorder {
 		errMsgs.add(ei);
 	}
 
+	@Override
+	public void report(String name, String found) {
+
+	}
+
 	public void externalChallenge(String msg) {
 		tagLastInfo2();
 		ErrorInfo ei = new ErrorInfo();
@@ -215,7 +220,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public ErrorRecorder buildNewErrorRecorder(ErrorRecorder parent) {
+	public ErrorRecorder buildNewErrorRecorder(Object o) {
 		return null;
 	}
 
@@ -237,11 +242,6 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public ErrorRecorderBuilder getErrorRecorderBuilder() {
-		return errorRecorderBuilder;
-	}
-
-	@Override
 	public void success(String dts, String name, String found, String expected, String RFC) {
 		detail(dts + ": " + name + " " + found);		
 	}
@@ -249,6 +249,11 @@ public class TextErrorRecorder implements ErrorRecorder {
 	@Override
 	public void error(String dts, String name, String found, String expected, String RFC) {
 		err(dts, name, "", "", dts);
+	}
+
+	@Override
+	public void test(boolean good, String dts, String name, String found, String expected, String RFC) {
+
 	}
 
 	@Override
@@ -282,6 +287,16 @@ public class TextErrorRecorder implements ErrorRecorder {
 		}
 
 		return depth + maxChildDepth;
+	}
+
+	@Override
+	public void registerValidator(Object validator) {
+
+	}
+
+	@Override
+	public void unRegisterValidator(Object validator) {
+
 	}
 
 

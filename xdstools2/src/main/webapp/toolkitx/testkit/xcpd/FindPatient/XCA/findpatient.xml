@@ -1,0 +1,129 @@
+<PRPA_IN201305UV02 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 ../../xsd/NE2008/multicacheschemas/PRPA_IN201305UV02.xsd" xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0">
+	<id root="1.2.840.114350.1.13.0.1.7.1.1" extension="35423"/>
+	<creationTime value="20070428150301"/>
+	<interactionId root="2.16.840.1.113883.1.6" extension="PRPA_IN201305UV02"/>
+	<processingCode code="T"/>
+	<processingModeCode code="T"/>
+	<acceptAckCode code="NE"></acceptAckCode>
+	<receiver typeCode="RCV">
+		<device classCode="DEV" determinerCode="INSTANCE">
+			<id root="2.16.840.1.113883.3.72.6.5.100.154.75"/>
+			<asAgent classCode="AGNT">
+				<representedOrganization determinerCode="INSTANCE" classCode="ORG">
+					<id root="2.16.840.1.113883.3.72.6.1"/>
+				</representedOrganization>
+			</asAgent>
+		</device>
+	</receiver>
+	<sender typeCode="SND">
+		<device classCode="DEV" determinerCode="INSTANCE">
+			<id root="1.2.840.114350.1.13.99998.8735"/>
+			<asAgent classCode="AGNT">
+				<representedOrganization determinerCode="INSTANCE" classCode="ORG">
+					<id root="1.2.840.114350.1.13.99998"/>
+				</representedOrganization>
+			</asAgent>
+		</device>
+	</sender>
+	<controlActProcess classCode="CACT" moodCode="EVN">
+		<code code="PRPA_TE201305UV02" codeSystem="2.16.840.1.113883.1.6"/>
+		<authorOrPerformer typeCode="AUT"> 
+        	<assignedDevice classCode="ASSIGNED">
+        		<id root="1.2.3.4.5.1000"/>  
+        	</assignedDevice>
+        </authorOrPerformer>
+		<queryByParameter>
+			<queryId root="2.16.840.1.113883.3.72.6.5.100.154.75" extension="3809840989"/>
+			<statusCode code="new"/>
+			<responseModalityCode code="R"/>
+			<responsePriorityCode code="I"/>
+		    <parameterList>
+				<!-- 1) Gender (Required, one and unique)-->
+				<livingSubjectAdministrativeGender>
+					<value code="$gender_id$"/>
+					<semanticsText representation="TXT">LivingSubject.administrativeGender</semanticsText>
+				</livingSubjectAdministrativeGender>
+				<!-- 2) Birth Place Address (Not Required, one or multiple. If available, the streetAddressLine, city, state, postalCode shall be used for elements of the address. 
+				Multiple streetAddressLine elements may be used if necessary) -->
+				<livingSubjectBirthPlaceAddress>
+					<value>
+						<streetAddressLine partType="SAL">$pobAddress1_id$</streetAddressLine>
+						<streetAddressLine partType="SAL">$pobAddress2_id$</streetAddressLine>
+						<city partType="CTY">$pobCity_id$</city>
+						<state partType="STA">$pobState_id$</state>
+						<postalCode partType="ZIP">$pobZip_id$</postalCode>
+						<country partType="CNT">$pobCountry_id$</country>
+					</value>
+					<semanticsText  representation="TXT">LivingSubject.BirthPlace.Addr</semanticsText>
+				</livingSubjectBirthPlaceAddress>
+				<!-- 3) Birth Place Name (Not Required, one or multiple) -->
+				<livingSubjectBirthPlaceName>
+					<value>$pob_id$</value>
+					<semanticsText>LivingSubject.BirthPlace.Place.Name</semanticsText>
+				</livingSubjectBirthPlaceName>
+				<!-- 4) Birthday (Required, one and unique)-->
+				<livingSubjectBirthTime>
+					<value value="$dob_id$"/>
+					<semanticsText>LivingSubject.birthTime</semanticsText>
+				</livingSubjectBirthTime>
+				<!-- 5) Patient ID (Not required, livingSubjectId should be had one or multiple)-->
+				<livingSubjectId>
+					<value root="1.2.3.4.5.1000" extension="801" assigningAuthorityName="test"/>
+					<semanticsText representation="TXT">LivingSubject.id</semanticsText>
+				</livingSubjectId>
+				<!-- 6) SSN (Not required, SSN is designated using the OID 2.16.840.1.113883.4.1) -->
+				<livingSubjectId>
+					<value root="2.16.840.1.113883.4.1" extension="001111111"/>
+					<semanticsText representation="$ssn_id$">LivingSubject.id</semanticsText>
+				</livingSubjectId>
+				<!-- 7) Name (This element is required, one or multiple. The first given and family name is required, second given name is not required, neither suffix) -->
+				<livingSubjectName>
+					<value>
+						<given partType="GIV">$firstName_id$</given>
+						<given partType="GIV">$secondName_id$</given>
+						<family partType="FAM">$lastName_id$</family>
+						<suffix>$suffix_id$</suffix>
+					</value>
+					<semanticsText representation="TXT">LivingSubject.name</semanticsText>
+				</livingSubjectName>
+				<!-- 8) Mothers Maiden Name(Not required, one and unique. The first given and family name is required, second given name is not required, neither suffix) -->
+				<mothersMaidenName>
+					<value>
+						<given partType="GIV">$mothersFirstName_id$</given>
+						<given partType="GIV">$mothersSecondName_id$</given>
+						<family partType="FAM">$mothersLastName_id$</family>
+						<suffix>$mothersSuffix_id$</suffix>
+					</value>
+					<semanticsText>Person.MothersMaidenName</semanticsText>
+				</mothersMaidenName>
+				<!-- 9) Address (Not required, one or multiple addresses. If available, the streetAddressLine, city, state, postalCode shall be used for elements of the address. 
+				Multiple streetAddressLine elements may be used if necessary) -->
+				<patientAddress>
+					<value>
+						<streetAddressLine partType="SAL">$homeAddress1_id$</streetAddressLine>
+						<streetAddressLine partType="SAL">$homeAddress2_id$</streetAddressLine>
+						<city partType="CTY">$homeCity_id$</city>
+						<state partType="STA">$homeState_id$</state>
+						<postalCode partType="ZIP">$homeZip_id$</postalCode>
+						<country partType="CNT">$homeCountry_id$</country>
+					</value>
+					<semanticsText representation="TXT">Patient.addr</semanticsText>
+				</patientAddress>
+				<!-- 10) Telephone number (Not required, one or multiple telephone numbers) -->
+				<patientTelecom>
+					<value value="$homePhone_id$" use="HP"/>
+					<semanticsText representation="TXT">Patient.telecom</semanticsText>
+				</patientTelecom>
+				<patientTelecom>
+					<value value="$workPhone_id$" use="WP"/>
+					<semanticsText representation="TXT">Patient.telecom</semanticsText>
+				</patientTelecom>
+				<!-- 11) Principal Care ProviderId (Not required, one and unique) -->
+				<principalCareProviderId>
+					<value root="1.2.3.4.5.6" extension="$principleCareProvider_id$"/>
+					<semanticsText representation="TXT">AssignedProvider.id</semanticsText>
+				</principalCareProviderId>
+			</parameterList>
+		</queryByParameter>
+    </controlActProcess>
+</PRPA_IN201305UV02>      

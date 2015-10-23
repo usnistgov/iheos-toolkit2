@@ -2,6 +2,7 @@ package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.util.ArrayList;
@@ -16,11 +17,11 @@ public class RegistryErrorList {
 		if (xml == null || !"RegistryErrorList".equals(xml.getLocalName()))
 			return;
 
-		for (OMElement re : MetadataSupport.childrenWithLocalName(xml, "RegistryError")) {
+		for (OMElement re : XmlUtil.childrenWithLocalName(xml, "RegistryError")) {
 			errors.add(new RegistryError(re));
 		}
 	}
-	
+
 	public boolean hasError() {
 		for (RegistryError e : errors) {
 			if (e.isError())
@@ -28,7 +29,7 @@ public class RegistryErrorList {
 		}
 		return false;
 	}
-	
+
 	public void validate(ErrorRecorder er, ValidationContext vc) {
 		for (RegistryError re : errors) {
 			re.validate(er, vc);

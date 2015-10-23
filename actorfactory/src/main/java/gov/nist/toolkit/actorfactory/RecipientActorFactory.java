@@ -1,31 +1,28 @@
 package gov.nist.toolkit.actorfactory;
 
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ParamType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
-import gov.nist.toolkit.envSetting.EnvSetting;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.NoSessionException;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class RecipientActorFactory  extends ActorFactory {
-	String newID = null;
+public class RecipientActorFactory  extends AbstractActorFactory {
 
 	static final List<TransactionType> incomingTransactions = 
-		Arrays.asList(TransactionType.PROVIDE_AND_REGISTER);
+		Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER);
 
 
-	protected Simulator buildNew(SimManager simm, String newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
-		this.newID = newID;
+	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws EnvironmentNotSelectedException, NoSessionException {
+		RegistryActorFactory registryActorFactory;
+		RepositoryActorFactory repositoryActorFactory;
 
 		ActorType actorType = ActorType.DOCUMENT_RECIPIENT;
 		SimulatorConfig sc;
@@ -33,16 +30,21 @@ public class RecipientActorFactory  extends ActorFactory {
 			sc = configureBaseElements(actorType, newID);
 		else 
 			sc = new SimulatorConfig();
-		if (sc.getValidationContext() == null)
-			sc.setValidationContext(new ValidationContext());
-		
 
-		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+		SimId simId = sc.getId();
+		// This needs to be grouped with a Document Registry
+		registryActorFactory = new RegistryActorFactory();
+		registryActorFactory.asRecipient();
+		SimulatorConfig registryConfig = registryActorFactory.buildNew(simm, simId, true).getConfig(0);
 
-		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
-		
-		addEditableEndpoint(sc, pnrEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, false);
-		addEditableEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, true);
+		// This needs to be grouped with a Document Repository also
+		repositoryActorFactory = new RepositoryActorFactory();
+		repositoryActorFactory.asRecipient();  // behave like Document Recipient
+		SimulatorConfig repositoryConfig = repositoryActorFactory.buildNew(simm, simId, true).getConfig(0);
+
+		// two combined simulators do not have separate lives
+		sc.add(registryConfig);
+		sc.add(repositoryConfig);
 
 		return new Simulator(sc);
 	}
@@ -56,6 +58,8 @@ public class RecipientActorFactory  extends ActorFactory {
 
 		if (site == null)
 			site = new Site(siteName);
+
+		site.user = sc.getId().user;  // labels this site as coming from a sim
 
 		boolean isAsync = false;
 

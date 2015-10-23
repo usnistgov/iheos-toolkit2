@@ -9,6 +9,9 @@ import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XDSRegistryOutOfResourcesException;
 import gov.nist.toolkit.xdsexception.XdsException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * @author bill
@@ -54,6 +57,18 @@ abstract public class StoredQuery extends BasicQuery  {
 
 	// Generic Stored Query parameters (returnType etc)
 	protected StoredQuerySupport sqs;
+
+	static protected final String stableDocumentType = "urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
+	static protected final String onDemandDocumentType = "urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
+	static protected List<String> documentTypes;
+
+	static {
+		documentTypes = new ArrayList<>();
+		documentTypes.add(stableDocumentType);
+		documentTypes.add(onDemandDocumentType);
+	}
+
+	protected String validDocumentTypesString() { return "[" + stableDocumentType + ", " + onDemandDocumentType + "]"; }
 
 	static protected String QueryParmsErrorPresentErrMsg = "Query aborted, errors found parsing parameters";
 

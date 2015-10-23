@@ -2,30 +2,31 @@ package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	PropertyManager propertyManager = null;
 	File warHome = null;
-	
+    String TOOLKIT_PROPERTIES_PATH = "";
+    File propertiesFile = null;
+
 	static Logger logger = Logger.getLogger(PropertyServiceManager.class);
 	
 	public PropertyServiceManager(File warHome)  {
 		this.warHome = warHome;
 	}
 
-	public File getActorsDirName() {
-		File f = new File(getPropertyManager().getExternalCache() + File.separator + "actors");
-		f.mkdirs();
-		return f;
-	}
+	// this was removed force lookup through Installation.  Makes writing unit tests easier
+//	private File getActorsDirName() {
+//		File f = new File(getPropertyManager().getExternalCache() + File.separator + "actors");
+//		f.mkdirs();
+//		return f;
+//	}
 
 	// isRead - is the actors file about to be read? (as opposed to written)
 	public File configuredActorsFile(boolean isRead) throws IOException {
@@ -38,6 +39,11 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		if (!isRead && (loc.canWrite() || loc.createNewFile()))
 			return loc;
 		return null;
+	}
+
+	public boolean getCacheDisabled() {
+		logger.debug(": " + "getCacheDisabled");
+		return "true".equals(getPropertyManager().getCacheDisabled());
 	}
 
 	public String getAdminPassword() {
@@ -60,6 +66,11 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		return getPropertyManager().getToolkitTlsPort();
 	}
 
+	public List<String> getListenerPortRange() {
+		logger.debug(": " + "getListenerPortRange");
+		return getPropertyManager().getListenerPortRange();
+	}
+
 	public String getToolkitEnableAllCiphers() {
 		logger.debug(": " + "getToolkitEnableAllCiphers");
 		return getPropertyManager().getToolkitEnableAllCiphers();
@@ -67,17 +78,19 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 	public File getActorsFileName() {
 		logger.debug(": " + "getActorsFileName");
-		return new File(getPropertyManager().getExternalCache() + File.separator + "actors.xml");
+		return new File(Installation.installation().externalCache() + File.separator + "actors.xml");
 	}
 
-	// This now pulls from Installation so that external cache location can be overridden
-	public File getSimDbDir() {
-		logger.debug(": " + "getSimDbDir");
+
+
+//	// This now pulls from Installation so that external cache location can be overridden
+//	public File getSimDbDir() {
+//		logger.debug(": " + "getSimDbDir");
 //		File f = new File(getPropertyManager().getExternalCache() + File.separator + "simdb");
-		File f = new File(Installation.installation().externalCache() + File.separator + "simdb");
-		f.mkdirs();
-		return f;
-	}
+////		File f = new File(Installation.installation().externalCache() + File.separator + "simdb");
+//		f.mkdirs();
+//		return f;
+//	}
 
 	public String getDefaultEnvironmentName() {
 		logger.debug(": " + "getDefaultEnvironmentName");
@@ -98,7 +111,11 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		if (propertyManager != null)
 			return;
 
-		propertyManager = new PropertyManager(warHome + File.separator + "WEB-INF" + File.separator + "toolkit.properties");
+        // Create a File from the properties file in order to pass it to v3
+        TOOLKIT_PROPERTIES_PATH = warHome + File.separator + "WEB-INF" + File.separator + "toolkit.properties";
+        setPropertiesFile(TOOLKIT_PROPERTIES_PATH);
+
+        propertyManager = new PropertyManager(TOOLKIT_PROPERTIES_PATH);
 
 		// This removes the dependency that 
 		// gov.nist.registry.common2.xml.SchemaValidation
@@ -116,7 +133,7 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 
 	public File getTestLogCache() throws IOException {
-		String testLogCache = getPropertyManager().getExternalCache() + File.separator + "TestLogCache";
+		String testLogCache = Installation.installation().externalCache() + File.separator + "TestLogCache";
 		File f;
 		
 //		// internal is obsolete
@@ -155,7 +172,7 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	}
 	
 	File getAttributeCache(String username) throws Exception {
-		String attributeCache = getPropertyManager().getExternalCache() + File.separator + "Attributes" + File.separator + username;
+		String attributeCache = Installation.installation().externalCache() + File.separator + "Attributes" + File.separator + username;
 		File f = new File(attributeCache);
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
@@ -234,6 +251,23 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		logger.debug(": " + "getDefaultEnvironment()");
 		return getPropertyManager().getDefaultEnvironmentName();
 	}
+
+    /**
+     * Create a properties File based on v2 toolkit properties file location.
+     * @param path
+     */
+    public void setPropertiesFile(String path) {
+        propertiesFile = new File(path);
+    }
+
+    /**
+     * Getter used by v3 to obtain the Toolkit Properties file
+     * @return the toolkit properties file located in v2
+     */
+    public File getPropertiesFile(){
+        return propertiesFile;
+    }
+
 
 //	public void setSessionProperties(Map<String, String> props) {
 //		logger.debug(": " + "setSessionProperties()");

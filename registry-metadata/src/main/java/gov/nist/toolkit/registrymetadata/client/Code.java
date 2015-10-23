@@ -8,7 +8,7 @@ public class Code {
 	public Code(String codeDef) throws Exception {
 		String[] parts = codeDef.split("\\^");
 		if (parts.length != 3) 
-			throw new Exception("Code " + codeDef + " is not a valid code (format)");
+			throw new Exception("Code " + codeDef + " is not a valid code format");
 		code = parts[0];
 		display = parts[1];
 		system = parts[2];

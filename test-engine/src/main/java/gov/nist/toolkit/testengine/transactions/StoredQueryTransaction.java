@@ -1,8 +1,8 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -31,7 +31,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 
 		runSQ(request);
 	}
-	
+
 	// need to do this logging later - changes made in runSQ
 	protected void logInputMetadata(OMElement metadata) throws XdsInternalException {
 	}
@@ -49,11 +49,11 @@ public class StoredQueryTransaction extends QueryTransaction {
 	}
 
 	public void setIsXCA(boolean isXca) { is_xca = isXca; }
-	
+
 	public void initializeMtom() {
 		useMtom = false;
 	}
-	
+
 	protected int getMetadataType() {
 		return MetadataTypes.METADATA_TYPE_SQ;
 	}
@@ -77,14 +77,14 @@ public class StoredQueryTransaction extends QueryTransaction {
 				throw new XdsInternalException("Don't understand version of metadata (namespace on root element): " + ns_uri);
 			if (! ns_uri.equals("urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0")  )
 				throw new XdsInternalException("Don't understand version of metadata (namespace on root element): " + ns_uri);
-			if (! request.getLocalName().equals("AdhocQueryRequest")) 
-				throw new XdsInternalException("Stored Query Transaction (as coded in testplan step '" + s_ctx.get("step_id") + 
+			if (! request.getLocalName().equals("AdhocQueryRequest"))
+				throw new XdsInternalException("Stored Query Transaction (as coded in testplan step '" + s_ctx.get("step_id") +
 				"') must reference a file containing an AdhocQueryRequest");
 		}
 
 		if (clean_params)
 			cleanSqParams(request);
-		
+
 		try {
 			soapCall(request);
 			result = getSoapResult();
@@ -125,7 +125,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 		if (part_name.equals("ExpectedContents")) {
 			expected_contents = part;
 			testLog.add_name_value(instruction_output, "ExpectedContents", part);
-		} 
+		}
 		else if (part_name.equals("UseXPath")) {
 			use_xpath.add(part);
 			testLog.add_name_value(instruction_output, "UseXRef", part);
@@ -133,7 +133,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 		else if (part_name.equals("UseObjectRef")) {
 			use_object_ref.add(part);
 			testLog.add_name_value(instruction_output, "UseObjectRef", part);
-		} 
+		}
 		else if (part_name.equals("SOAP11")) {
 			soap_1_2 = false;
 			testLog.add_name_value(instruction_output, "SOAP11", part);
@@ -162,7 +162,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 			OMElement adhocQuery = (OMElement) xpathExpression.selectSingleNode(ele);
 			if (adhocQuery == null)
 				return;
-			
+
 			for (Iterator<OMAttribute> it=adhocQuery.getAllAttributes(); it.hasNext(); ) {
 				OMAttribute at = it.next();
 				System.out.println("attvalue is " + at.getAttributeValue());
@@ -170,9 +170,9 @@ public class StoredQueryTransaction extends QueryTransaction {
 					adhocQuery.removeAttribute(at);
 			}
 
-			for (OMElement slot : MetadataSupport.childrenWithLocalName(adhocQuery, "Slot")) {
-				OMElement valueList = MetadataSupport.firstChildWithLocalName(slot, "ValueList");
-				for (OMElement value : MetadataSupport.childrenWithLocalName(valueList, "Value")) {
+			for (OMElement slot : XmlUtil.childrenWithLocalName(adhocQuery, "Slot")) {
+				OMElement valueList = XmlUtil.firstChildWithLocalName(slot, "ValueList");
+				for (OMElement value : XmlUtil.childrenWithLocalName(valueList, "Value")) {
 					String valueStr = value.getText();
 					int i = valueStr.indexOf("$");
 					if (i == -1)

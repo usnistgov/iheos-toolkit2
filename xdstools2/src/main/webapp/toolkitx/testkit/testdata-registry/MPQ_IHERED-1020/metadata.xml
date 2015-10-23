@@ -100,9 +100,10 @@
           </rim:ValueList>
         </rim:Slot>
       </rim:Classification>
-      <rim:Classification classifiedObject="Document01" nodeRepresentation="DEMO-Referral" classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+      <rim:Classification classifiedObject="Document01" nodeRepresentation="DEMO-Consult"
+        classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
         <rim:Name>
-          <rim:LocalizedString value="Referral"/>
+          <rim:LocalizedString value="Consultation"/>
         </rim:Name>
         <rim:Slot name="codingScheme">
           <rim:ValueList>

@@ -3,6 +3,7 @@ package gov.nist.toolkit.testkitutilities;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -34,7 +35,7 @@ public class TestkitStructure extends TestkitWalker {
 	String serverVersion;
 	/**
 	 * Used when generating testkit structure
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public TestkitStructure() throws IOException {
 		testkitDesc = MetadataSupport.om_factory.createOMElement("testkit", null);
@@ -46,7 +47,7 @@ public class TestkitStructure extends TestkitWalker {
 	 * @param testkitStructFile
 	 * @throws XdsInternalException
 	 * @throws FactoryConfigurationError
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public TestkitStructure(File testkitStructFile, String testkitVersion) throws XdsInternalException, FactoryConfigurationError, IOException {
 		System.out.println("TestkitStructure: loading " + testkitStructFile);
@@ -64,10 +65,10 @@ public class TestkitStructure extends TestkitWalker {
 
 	public List<String> getSectionNames(String testnum) throws Exception {
 		OMElement testEle = getTest(testnum);
-		if (testEle == null) 
+		if (testEle == null)
 			throw new Exception("Test " + testnum + " not found in testkit structure database for testkit version " + testkitVersion);
 		List<String> names = new ArrayList<String>();
-		for (OMElement sectionEle : MetadataSupport.childrenWithLocalName(testEle, "section")) {
+		for (OMElement sectionEle : XmlUtil.childrenWithLocalName(testEle, "section")) {
 			names.add(sectionEle.getAttributeValue(MetadataSupport.id_qname));
 		}
 		return names;
@@ -75,20 +76,20 @@ public class TestkitStructure extends TestkitWalker {
 
 	public OMElement getSection(String testnum, String sectionId) throws Exception {
 		OMElement testEle = getTest(testnum);
-		if (testEle == null) 
+		if (testEle == null)
 			throw new Exception("Test " + testnum + " not found in testkit structure database");
 		if (sectionId == null)
 			return testEle;
 		return MetadataSupport.getChild(testEle, "section", sectionId);
 	}
-	
+
 	public boolean isServerTest(String testnum) throws Exception {
 		return "server".equals(getArea(testnum));
 	}
 
 	public String getArea(String testnum) throws Exception {
 		OMElement testEle = getTest(testnum);
-		if (testEle == null) 
+		if (testEle == null)
 			throw new Exception("Test " + testnum + " not found in testkit structure database");
 		System.out.println("found test " + testnum);
 		String area = testEle.getAttributeValue(new QName("area"));
@@ -100,20 +101,20 @@ public class TestkitStructure extends TestkitWalker {
 
 	public String getEndpoint(String testnum) throws Exception {
 		OMElement testEle = getTest(testnum);
-		if (testEle == null) 
+		if (testEle == null)
 			throw new Exception("Test " + testnum + " not found in testkit structure database");
 		String endpoint = testEle.getAttributeValue(new QName("endpoint"));
 		if (endpoint == null)
 			throw new Exception("Testkit structure error: test " + testnum + " has no endpoint declaration");
 		return endpoint;
 	}
-	
+
 	public List<String> getStepNames(String testnum) throws Exception {
 		OMElement testEle = getTest(testnum);
-		if (testEle == null) 
+		if (testEle == null)
 			throw new Exception("Test " + testnum + " not found in testkit structure database");
 		List<String> names = new ArrayList<String>();
-		for (OMElement stepEle : MetadataSupport.childrenWithLocalName(testEle, "step")) {
+		for (OMElement stepEle : XmlUtil.childrenWithLocalName(testEle, "step")) {
 			names.add(stepEle.getAttributeValue(MetadataSupport.id_qname));
 		}
 		return names;
@@ -121,13 +122,13 @@ public class TestkitStructure extends TestkitWalker {
 
 	public List<String> getStepNames(String testnum, String section) throws Exception {
 		OMElement testEle = getTest(testnum);
-		if (testEle == null) 
+		if (testEle == null)
 			throw new Exception("Test " + testnum + " not found in testkit structure database");
 		List<String> names = new ArrayList<String>();
-		for (OMElement sectionEle : MetadataSupport.childrenWithLocalName(testEle, "section")) {
+		for (OMElement sectionEle : XmlUtil.childrenWithLocalName(testEle, "section")) {
 			String sectionName = sectionEle.getAttributeValue(MetadataSupport.id_qname);
 			if (sectionName != null && sectionName.equals(section)) {
-				for (OMElement stepEle : MetadataSupport.childrenWithLocalName(sectionEle, "step")) {
+				for (OMElement stepEle : XmlUtil.childrenWithLocalName(sectionEle, "step")) {
 					names.add(stepEle.getAttributeValue(MetadataSupport.id_qname));
 				}
 			}
@@ -140,7 +141,7 @@ public class TestkitStructure extends TestkitWalker {
 		String[] filenameElements = testplan.toString().split("\\/");
 
 		if (testkitPathElementsToIgnore >= filenameElements.length) {
-			System.out.println("Cannot parse " + testplan.toString() + 
+			System.out.println("Cannot parse " + testplan.toString() +
 			" looking for testId");
 			System.exit(-1);
 		}
@@ -242,7 +243,7 @@ public class TestkitStructure extends TestkitWalker {
 			section.addAttribute("id", sectionId, null);
 			test.addChild(section);
 		}
-		
+
 		if (section != null) {
 			// check for endpoint.txt file
 			File endpointFile = new File(testplan.getParentFile() + File.separator + "endpoint.txt");
@@ -356,7 +357,7 @@ public class TestkitStructure extends TestkitWalker {
 
 		if (tst != null) {
 			System.err.println("Evaluated " + tst.testPlanCount + " testplans");
-		} 
+		}
 
 		System.exit(errors);
 	}
@@ -370,7 +371,7 @@ public class TestkitStructure extends TestkitWalker {
 		File versionFile = new File(testkit + File.separator + "admin" + File.separator + "server_version");
 		return Io.stringFromFile(versionFile).trim();
 	}
-	
+
 	public String getServerVersion() {
 		return serverVersion;
 	}
@@ -381,7 +382,7 @@ public class TestkitStructure extends TestkitWalker {
 	public void startServer(File testDir) throws Exception {
 		String testnum = testDir.getName();
 		File endpointFile = new File(testDir + File.separator + "endpoint.txt");
-		if ( !endpointFile.exists()) 
+		if ( !endpointFile.exists())
 			throw new Exception("No endpoint.txt file found in server test " + testDir);
 		String endpoint = Io.stringFromFile(endpointFile).trim();
 		if (endpoint == null || endpoint.equals(""))

@@ -2,22 +2,15 @@ package gov.nist.toolkit.valregmsg.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.utilities.xml.SchemaValidation;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
+
+import java.util.*;
 
 /**
  * Validate wrappers of a message.  Wrappers are the XML elements that wrap the metadata
@@ -25,7 +18,7 @@ import org.apache.axiom.om.OMNode;
  * @author bill
  *
  */
-public class WrapperValidator extends MessageValidator {
+public class WrapperValidator extends AbstractMessageValidator {
 	OMElement xml;
 	Map<String, List<String>> wrapperList = new HashMap<String, List<String>>();
 	List<String> elementOrder = new ArrayList<String>();
@@ -40,6 +33,8 @@ public class WrapperValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
+
 		MessageBodyContainer cont = (MessageBodyContainer) mvc.findMessageValidator("MessageBodyContainer");
 		xml = cont.getBody();
 		init();
@@ -48,17 +43,20 @@ public class WrapperValidator extends MessageValidator {
 
 		if (xml == null) {
 			err("No content present", "");
+            er.unRegisterValidator(this);
 			return;
 		}
 
 		if (expectedWrappers == null) {
 //			er.err("Do not have expected wrappers for validation type of " + vc.getTransactionName(), "Internal Error");
+            er.unRegisterValidator(this);
 			return;
 		}
 
 		validateWrappers(xml, expectedWrappers);
 
 //		checkElementOrder(xml);
+        er.unRegisterValidator(this);
 
 	}
 
@@ -75,7 +73,7 @@ public class WrapperValidator extends MessageValidator {
 		List<String> x;
 		ValidationContext v;
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("ProvideAndRegisterDocumentSetRequest");
 		x.add("SubmitObjectsRequest");
@@ -84,7 +82,7 @@ public class WrapperValidator extends MessageValidator {
 		v.isRequest = true;
 		wrapperList.put(v.getTransactionName(), x);
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("SubmitObjectsRequest");
 		x.add("RegistryObjectList");
@@ -96,7 +94,7 @@ public class WrapperValidator extends MessageValidator {
 		wrapperList.put(v.getTransactionName(), x);
 		v.isXDM = false;
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("AdhocQueryRequest");
 		v.isSQ = true;
@@ -105,7 +103,7 @@ public class WrapperValidator extends MessageValidator {
 		v.isXC = true;
 		wrapperList.put(v.getTransactionName(), x);
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("AdhocQueryResponse");
 		x.add("RegistryObjectList");
@@ -115,7 +113,7 @@ public class WrapperValidator extends MessageValidator {
 		v.isXC = true;
 		wrapperList.put(v.getTransactionName(), x);
 
-		v = new ValidationContext();
+		v = DefaultValidationContextFactory.validationContext();
 		x = new ArrayList<String>();
 		x.add("RetrieveDocumentSetRequest");
 		x.add("DocumentRequest");
@@ -126,73 +124,73 @@ public class WrapperValidator extends MessageValidator {
 		wrapperList.put(v.getTransactionName(), x);
 	}
 
-	@SuppressWarnings("unchecked")
-	void checkElementOrder(OMElement ele) {
-		if (ele == null)
-			return;
-		for (Iterator<OMElement> it = ele.getChildElements(); it.hasNext(); ) {
-			OMElement ele1 = it.next();
-			String ele1Name = ele1.getLocalName();
-			OMElement ele2 = getNextOMElementSibling(ele1);
-			if (ele2 != null) {
-				String ele2Name = ele2.getLocalName();
-				if (!canFollow(ele1Name, ele2Name))
-					err(
-							"Child elements of " + ele.getLocalName() + "(id=" + new Metadata().getId(ele) + ")" +
-							" are out of Schema required order:   " +
-							" element " + ele2.getLocalName() + " cannot follow element " + ele1.getLocalName() + 
-							". Elements must be in this order " + elementOrder
-							," ebRIM 3.0 Schema");
-			}
-			checkElementOrder(ele1);
-		}
-	}
+//	@SuppressWarnings("unchecked")
+//	void checkElementOrder(OMElement ele) {
+//		if (ele == null)
+//			return;
+//		for (Iterator<OMElement> it = ele.getChildElements(); it.hasNext(); ) {
+//			OMElement ele1 = it.next();
+//			String ele1Name = ele1.getLocalName();
+//			OMElement ele2 = getNextOMElementSibling(ele1);
+//			if (ele2 != null) {
+//				String ele2Name = ele2.getLocalName();
+//				if (!canFollow(ele1Name, ele2Name))
+//					err(
+//							"Child elements of " + ele.getLocalName() + "(id=" + new Metadata().getId(ele) + ")" +
+//							" are out of Schema required order:   " +
+//							" element " + ele2.getLocalName() + " cannot follow element " + ele1.getLocalName() +
+//							". Elements must be in this order " + elementOrder
+//							," ebRIM 3.0 Schema");
+//			}
+//			checkElementOrder(ele1);
+//		}
+//	}
 
-	boolean canFollow(String element, String nextElement) {
-		if (element == null || element.equals(""))
-			return false;
-		if (nextElement == null || nextElement.equals(""))
-			return false;
-		int elementI = elementOrder.indexOf(element);
-		int nextElementI = elementOrder.indexOf(nextElement);
-		return elementI == -1 || nextElementI == -1 || elementI <= nextElementI;
-	}
+//	boolean canFollow(String element, String nextElement) {
+//		if (element == null || element.equals(""))
+//			return false;
+//		if (nextElement == null || nextElement.equals(""))
+//			return false;
+//		int elementI = elementOrder.indexOf(element);
+//		int nextElementI = elementOrder.indexOf(nextElement);
+//		return elementI == -1 || nextElementI == -1 || elementI <= nextElementI;
+//	}
 
 	void init() {
 		initWrapperList();
 		initElementOrder();
 	}
 
-	OMElement getNextOMElementSibling(OMElement ele) {
-		OMNode n = null;
-		for (n = ele.getNextOMSibling(); n != null && !(n instanceof OMElement); n = n.getNextOMSibling())
-			;
-		return (OMElement) n; 
-	}
+//	OMElement getNextOMElementSibling(OMElement ele) {
+//		OMNode n = null;
+//		for (n = ele.getNextOMSibling(); n != null && !(n instanceof OMElement); n = n.getNextOMSibling())
+//			;
+//		return (OMElement) n;
+//	}
 
-	String schema_validate(OMElement ahqr, int metadata_type) throws XdsInternalException {
-		String schema_messages = null;
-		try {
-			schema_messages = SchemaValidation.validate(ahqr, metadata_type);
-			return schema_messages;
-		} catch (Exception e) {
-			throw new XdsInternalException("Schema Validation threw internal error: " + e.getMessage());
-		}
-	}
+//	String schema_validate(OMElement ahqr, int metadata_type) throws XdsInternalException {
+//		String schema_messages = null;
+//		try {
+//			schema_messages = SchemaValidation.validate(ahqr, metadata_type);
+//			return schema_messages;
+//		} catch (Exception e) {
+//			throw new XdsInternalException("Schema Validation threw internal error: " + e.getMessage());
+//		}
+//	}
 
 	boolean isSubmission() {
 		return vc.isSubmit();
 	}
 
-	boolean hasPeerElement(OMElement ele) {
-		OMNode next = ele.getNextOMSibling();
-		if (next != null && (next instanceof OMElement))
-			return true;
-		OMNode prev = ele.getPreviousOMSibling();
-		if (prev != null && (prev instanceof OMElement)) 
-			return true;
-		return false;
-	}
+//	boolean hasPeerElement(OMElement ele) {
+//		OMNode next = ele.getNextOMSibling();
+//		if (next != null && (next instanceof OMElement))
+//			return true;
+//		OMNode prev = ele.getPreviousOMSibling();
+//		if (prev != null && (prev instanceof OMElement))
+//			return true;
+//		return false;
+//	}
 	
 	OMElement findPeerWithName(OMElement ele, String name) {
 		if (name == null)
@@ -211,13 +209,32 @@ public class WrapperValidator extends MessageValidator {
 		return null;
 	}
 
+    OMElement findElement(Iterator<OMNode> it) {
+        while(it.hasNext()) {
+            OMNode n = it.next();
+            if (n instanceof OMElement)
+                return (OMElement) n;
+        }
+        return null;
+    }
+
+	List<String> firstNestedElements(OMElement ele, int depth) {
+        List<String> names = new ArrayList<>();
+        while(ele != null && names.size() < depth) {
+            String name = ele.getLocalName();
+            names.add(name);
+            ele = findElement(ele.getChildren());
+        }
+        return names;
+    }
+
 	void validateWrappers(OMElement ele, List<String> expectedWrappers) {
 		List<String> foundWrappers = new ArrayList<String>();
 		for (String wrapper : expectedWrappers) {
 			OMElement focus = findPeerWithName(ele, wrapper);
 			if (focus == null) {
 				err("Expected metadata wrappers " + expectedWrappers +
-						" but found " + foundWrappers + " but not " + wrapper, "ebRS 3.0");
+						" but found " + firstNestedElements(ele, 4) + " but not " + wrapper, "ebRS 3.0");
 				return;
 			}
 			foundWrappers.add(wrapper);

@@ -3,12 +3,14 @@ package gov.nist.toolkit.testengine.transactions;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.testengine.HomeAttribute;
-import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.testengine.engine.HomeAttribute;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
 import org.apache.axiom.om.OMElement;
+
+import java.util.List;
 
 public class XCQTransaction extends StoredQueryTransaction {
 	String expectedHomeCommunityId = null;
@@ -50,8 +52,8 @@ public class XCQTransaction extends StoredQueryTransaction {
 				failed();
 			}
 
-		
-			for (OMElement registryError : MetadataSupport.decendentsWithLocalName(result_ele, "RegistryError")) {
+
+			for (OMElement registryError : XmlUtil.decendentsWithLocalName(result_ele, "RegistryError")) {
 				String location = registryError.getAttributeValue(MetadataSupport.location_qname);
 				if (location == null || !location.equals(expectedHomeCommunityId)) {
 					s_ctx.set_error("location attribute on RegistryError must be set to homeCommunityId of the Responding Gateway, found instead " + location);
@@ -59,8 +61,8 @@ public class XCQTransaction extends StoredQueryTransaction {
 				}
 			}
 		}
-		
-		
+
+
 	}
 
 	protected void parseInstruction(OMElement part) throws XdsInternalException {
@@ -68,7 +70,7 @@ public class XCQTransaction extends StoredQueryTransaction {
 		if (part_name.equals("homeCommunityId")) {
 			expectedHomeCommunityId =  part.getText();
 			testLog.add_name_value(instruction_output, "homeCommunityId", expectedHomeCommunityId);
-		} 
+		}
 		else
 			super.parseInstruction(part);
 	}
@@ -83,7 +85,7 @@ public class XCQTransaction extends StoredQueryTransaction {
 	}
 
 	protected String getRequestAction() {
-		return "urn:ihe:iti:2007:CrossGatewayQuery"; 
+		return "urn:ihe:iti:2007:CrossGatewayQuery";
 	}
 
 

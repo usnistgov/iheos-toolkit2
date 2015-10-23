@@ -2,30 +2,40 @@ package gov.nist.toolkit.simulators.sim.recip;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratorSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.ActorSimulator;
+import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
-
-import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-public class RecipientActorSimulator extends ActorSimulator {
-	SimDb db;
-	HttpServletResponse response;
-	SimulatorConfig asc;
-	
-	public RecipientActorSimulator(SimCommon common, SimDb db, SimulatorConfig asc, HttpServletResponse response) {
-		super(common);
+@Deprecated  // Using RepositoryActorSimulator and RegistryActorSimulator via RepositoryRegistryActorFactory instead
+public class RecipientActorSimulator extends BaseDsActorSimulator {
+
+	public RecipientActorSimulator() {}
+
+	public RecipientActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response) {
+		super(common, dsSimCommon);
 		this.db = db;
 		this.response = response;
-		this.asc = asc;
+		setSimulatorConfig(simulatorConfig);
 	}
-	 
+
+	public RecipientActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+		this.response = dsSimCommon.simCommon.response;
+        setSimulatorConfig(simulatorConfig);
+		init();
+	}
+
+	public void init() {}
+
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 		
@@ -33,31 +43,30 @@ public class RecipientActorSimulator extends ActorSimulator {
 			
 			common.vc.isPnR = true;
 			common.vc.isXDR = true;
-//			common.vc.isXDRLimited = true;;
 			common.vc.xds_b = true;
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (asc.getValidationContext()  != null) {
-				common.vc.addInnerContext(asc.getValidationContext());
+			if (getSimulatorConfig().getValidationContext()  != null) {
+				common.vc.addInnerContext(getSimulatorConfig().getValidationContext());
 			}
 			
-			if (!common.runInitialValidations())
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;
 			
 			if (mvc.hasErrors()) {
-				common.sendErrorsInRegistryResponse(er);
+                dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 			
-			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common);
+			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
 			
 			mvc.addMessageValidator("Attach Errors", rrg, gerb.buildNewErrorRecorder());
 						
 			// wrap in soap wrapper and http wrapper
 			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, rrg), gerb.buildNewErrorRecorder());
+			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), gerb.buildNewErrorRecorder());
 			
 			mvc.run();
 			
@@ -65,7 +74,7 @@ public class RecipientActorSimulator extends ActorSimulator {
 			
 		}
 		else {
-			common.sendFault("Don't understand transaction " + transactionType, null);
+            dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return false;
 		} 
 

@@ -1,13 +1,17 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.ToolkitService;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -15,22 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 public class OnBoardingTestTab extends GenericQueryTab {
 	final protected ToolkitServiceAsync toolkitService = GWT
@@ -163,7 +151,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 	class SelectSectionViewButtonClickHandler implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
-			toolkitService.getTestplanAsText(selectedTest, selectedSection, new AsyncCallback<String>() {
+			toolkitService.getTestplanAsText(new TestInstance(selectedTest), selectedSection, new AsyncCallback<String>() {
 
 				public void onFailure(Throwable caught) {
 					new PopupMessage("getTestplanAsText: " + caught.getMessage());
@@ -420,7 +408,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 				parms.put("$patientid$", pid);
 			}
 			
-			toolkitService.runMesaTest(testSession, siteSpec, selectedTest, selectedSections, parms, true, queryCallback);
+			toolkitService.runMesaTest(testSession, siteSpec, new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
 			
 		}
 		

@@ -64,3 +64,6 @@ syntax: regexp
 ^xdstools2/\.project$
 syntax: regexp
 ^\.gwt
+
+#sunil
+sunil_ij/

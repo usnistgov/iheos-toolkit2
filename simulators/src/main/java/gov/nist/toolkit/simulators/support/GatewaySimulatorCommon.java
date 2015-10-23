@@ -11,10 +11,10 @@ import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySuppor
 
 import org.apache.axiom.om.OMElement;
 
-abstract public class GatewaySimulatorCommon extends ActorSimulator {
+abstract public class GatewaySimulatorCommon extends BaseDsActorSimulator {
 	
-	public GatewaySimulatorCommon(SimCommon common) {
-		super(common);
+	public GatewaySimulatorCommon(SimCommon common, DsSimCommon dsSimCommon) {
+		super(common, dsSimCommon);
 	}
 
 	public  boolean validateHomeCommunityId(ErrorRecorder er, OMElement query, boolean isRG) {
@@ -29,7 +29,7 @@ abstract public class GatewaySimulatorCommon extends ActorSimulator {
 			hasHome = fact.hasHome();
 		} catch (Exception e) {
 			er.err(Code.XDSRegistryError, e);
-			common.sendErrorsInRegistryResponse(er);
+			dsSimCommon.sendErrorsInRegistryResponse(er);
 			return false;
 		}
 		
@@ -40,7 +40,7 @@ abstract public class GatewaySimulatorCommon extends ActorSimulator {
 				throw new Exception("Stored Query not implemented");
 			} catch (Exception e1) {
 				er.err(Code.XDSRegistryError, e1);
-				common.sendErrorsInRegistryResponse(er);
+				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
 		StoredQuerySupport sqs = sq.getStoredQuerySupport();
@@ -51,7 +51,7 @@ abstract public class GatewaySimulatorCommon extends ActorSimulator {
 			er.err(Code.XDSMissingHomeCommunityId, "Non-PatientID query and home is not specified", 
 					(isRG) ? "RGActorSimulator" : "IGActorSimulator", 
 					"ITI TF-2b: 3.38.4.1");
-			common.sendErrorsInRegistryResponse(er);
+			dsSimCommon.sendErrorsInRegistryResponse(er);
 			return false;
 		}
 		

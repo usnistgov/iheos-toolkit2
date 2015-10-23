@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valsupport.client;
 
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.commondatatypes.client.SchematronMetadataTypes;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -8,8 +9,6 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 
 /**
@@ -27,7 +26,9 @@ public class ValidationContext  implements Serializable, IsSerializable {
 
 	public boolean xds_b     = false;
 
+	//
 	// primary transaction selection
+    //
 	public boolean isR       = false;
 	public boolean isPnR     = false;
 	public boolean isRet	 = false;
@@ -39,9 +40,23 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean isMU      = false;
 	public boolean isDIRECT  = false;
 	public boolean isCCDA	 = false;
+    //NHIN xcpd
+    public boolean isXcpd = false;
+    public boolean isNwHINxcpd = false;
+    public boolean isC32 = false;
+    //E-Priscription ncpdp/
+    public boolean isNcpdp = false;
+
+    //
+    // Modifiers
+    //
 
 	// is Cross Community - a modifier on other settings
 	public boolean isXC      = false;
+
+	public boolean isValidateCodes = true;
+	public boolean isPartOfRecipient = false;
+	public boolean validateAgainstPatientIdentityFeed = false;
 
 	// if neither set then context is not known
 	public boolean isRequest = false;
@@ -55,12 +70,6 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean updateable = true;
 
 	public boolean isEpsos = false;
-	//NHIN xcpd
-	public boolean isXcpd = false;
-	public boolean isNwHINxcpd = false;
-	public boolean isC32 = false;
-	//E-Priscription ncpdp/
-	public boolean isNcpdp = false;
 
 	//
 	// State maintained by various validators
@@ -89,7 +98,9 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public enum MetadataPattern { UpdateDocumentEntry, UpdateDocumentEntryStatus };
 
 	public List<MetadataPattern> metadataPatterns = new ArrayList<MetadataPattern>();
-	
+    public String wsAction;
+
+
 	// Since content can be nested (CCDA inside XDM inside ...) the context(s) for validation
 	// must also be nested.
 	// In the current code, a CCDA nested inside a Direct message is coded as isCCDA = true and ccdaType = ???
@@ -107,6 +118,24 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	// and XDM.  Provide & Register (XDS or XDR) could be considered a container as well. So
 	// far there is no requirement to deal with content validation in those areas.
 	List<ValidationContext> innerContexts = new ArrayList<ValidationContext>();
+
+    // Never never call this directly
+    // Should only be used by GWT compiler
+    public ValidationContext() {}
+
+    public ValidationContext(String codesFilename) {
+        this.codesFilename = codesFilename;
+    }
+
+    public void setDirection(MessageDirection dir) {
+        if (MessageDirection.REQUEST.equals(dir)) {
+            isRequest = true;
+            isResponse = false;
+        } else {
+            isRequest = false;
+            isResponse = true;
+        }
+    }
 
 	public void addInnerContext(ValidationContext ivc) {
 		innerContexts.add(ivc);
@@ -228,6 +257,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		leafClassWithDocumentOk = v.leafClassWithDocumentOk;
 		isNcpdp = v.isNcpdp;
 		ccdaType = v.ccdaType;
+		codesFilename = v.codesFilename;
 	}
 
 	public boolean hasMetadata() {
@@ -358,23 +388,27 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
+        buf.append("[");
+
 		if (isRequest) buf.append("Request");
 		else if (isResponse) buf.append("Response");
 		else buf.append("???");
+
+		if (isR) buf.append(";Register");
+		if (isMU) buf.append(";MU");
+		if (isPnR) buf.append(";PnR");
+		if (isRet) buf.append(";Retrieve");
+		if (isXDR) buf.append(";XDR");
+		if (isXDM) buf.append(";XDM");
+		if (isSQ) buf.append(";SQ");
+
 
 		if (hasHttp) buf.append(";HTTP");
 		if (hasSoap) buf.append(";SOAP");
 		if (hasSaml) buf.append(";SAML");
 		if (xds_b) buf.append(";xds.b");
-		if (isR) buf.append(";R");
-		if (isMU) buf.append(";MU");
-		if (isPnR) buf.append(";PnR");
-		if (isRet) buf.append(";Ret");
-		if (isXDR) buf.append(";XDR");
-		if (isXDM) buf.append(";XDM");
 		if (isDIRECT) buf.append(";DIRECT");
 		if (isCCDA) buf.append(";CCDA");
-		if (isSQ) buf.append(";SQ");
 		if (isXC) buf.append(";XC");
 		if (isEpsos) buf.append(";Epsos");
 		//NHIN xcpd and C32
@@ -388,10 +422,10 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		//			if (minMeta) buf.append(";MinMetadata");
 		if (isXDRLimited) buf.append(";XDRLimited");
 		if (isXDRMinimal) buf.append(";XDRMinimal");
-		if (updateable)
-			buf.append(";Updateable");
-		else
-			buf.append(";NotUpdateable");
+//		if (updateable)
+//			buf.append(";Updateable");
+//		else
+//			buf.append(";NotUpdateable");
 		if (!metadataPatterns.isEmpty()) 
 			buf.append(";MetadataPatterns:").append(metadataPatterns);
 		if (ccdaType != null)
@@ -402,7 +436,10 @@ public class ValidationContext  implements Serializable, IsSerializable {
 				buf.append("[").append(v.toString()).append("]");
 			}
 		}
+//		if (codesFilename != null)
+//			buf.append(";HasCodes");
 
+        buf.append("]");
 		return buf.toString();
 	}
 

@@ -1,5 +1,7 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -7,9 +9,6 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 
 public class TabLauncher implements ClickHandler {
 	TabContainer container;
@@ -26,19 +25,20 @@ public class TabLauncher implements ClickHandler {
 	final static public String getFolderAndContentsTabLabel = "GetFolderAndContents";
 	final static public String mpqFindDocumentsTabLabel = "MPQ-FindDocuments";
 	final static public String getSubmissionSetTabLabel = "GetSubmissionSetAndContents";
+	final static public String getAllTabLabel = "GetAll";
 	final static public String registryDoThisFirstTabLabel = "XDS.b_Registry_Do_This_First";
 	final static public String getRelatedTabLabel = "GetRelated";
 	final static public String connectathonTabLabel = "Connectathon Tools";
 	final static public String messageValidatorTabLabel = "Message Validator";
-	final static public String simulatorMessageViewTabLabel = "Simulator Message View";
-	final static public String simulatorControlTabLabel = "Simulator Control";
+	final static public String simulatorMessageViewTabLabel = "Simulator Log Viewer";
+	final static public String simulatorControlTabLabel = "Simulator Manager";
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
 	final static public String documentRetrieveTabLabel = "RetrieveDocument";
 	final static public String allocatePatientIdTabLabel = "Allocate Patient ID for the Public Registry";
-	final static public String registryTestDataTabLabel = "Registry Test Data";
+	final static public String registryTestDataTabLabel = "XDS Register";
 	final static public String dashboardTabLabel = "Dashboard";
-	final static public String repositoryTestDataTabLabel = "Repository Test Data";
-	final static public String recipientTestDataTabLabel = "XDR Send";
+	final static public String repositoryTestDataTabLabel = "XDS Provide & Register";
+	final static public String recipientTestDataTabLabel = "XDR Provide & Register";
 	final static public String repositoryDoThisFirstTabLabel = "XDS.b_Repository_Do_This_First";
 	final static public String registryLifecycleTabLabel = "XDS.b_Lifecycle";
 	final static public String registryFolderHandlingTabLabel = "XDS.b_Registry_Folder_Handling";
@@ -47,6 +47,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String mesaTabLabel = "Pre-Connectathon Tests";
 	final static public String testRunnerTabLabel = "Conformance Tests";
 	final static public String nwhinTabLabel = "Pre-OnBoarding Tests";
+	final static public String pidFavoritesLabel = "Manage Favorite Patient IDs";
 	
 	final static public String testLogLabel = "Test Log Listing";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";	
@@ -75,7 +76,9 @@ public class TabLauncher implements ClickHandler {
 			new RegisterAndQueryTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(getRelatedTabLabel)) 
 			new GetRelatedTab().onAbstractTabLoad(container, true, null);
-		else if (tabType.equals(connectathonTabLabel)) 
+		else if (tabType.equals(getAllTabLabel))
+			new GetAllTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(connectathonTabLabel))
 			new ConnectathonTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(srcStoresDocValTabLabel)) 
 			new SourceStoredDocValTab().onAbstractTabLoad(container, true, null);
@@ -107,9 +110,7 @@ public class TabLauncher implements ClickHandler {
 			new ToolConfigTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(mesaTabLabel)) 
 			new MesaTestTab().onAbstractTabLoad(container, true, "Pre-Con Tests");
-		else if (tabType.equals(testRunnerTabLabel)) 
-			new gov.nist.toolkit.xdstools2.client.tabs.testRunnerTab.TestRunnerTabController().onAbstractTabLoad(container, true, "Conformance Tests");
-		else if (tabType.equals(nwhinTabLabel)) 
+		else if (tabType.equals(nwhinTabLabel))
 			new MesaTestTab().onAbstractTabLoad(container, true, "On-Boarding Tests");
 		else if (tabType.equals(testLogLabel)) 
 			new TestLogListingTab().onAbstractTabLoad(container, true, null);
@@ -117,6 +118,8 @@ public class TabLauncher implements ClickHandler {
 			new DashboardTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(repositoryTabLabel)) 
 			new RepositoryListingTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(pidFavoritesLabel))
+			new PidFavoritesTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(metadataEditorTabLabel)) {
 			MetadataEditorTab t = new MetadataEditorTab();
 			t.setSiteSpec(siteSpec);

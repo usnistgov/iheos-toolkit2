@@ -1,9 +1,9 @@
 package gov.nist.toolkit.session.server.services;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.client.AnyId;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
@@ -19,7 +19,7 @@ import java.util.List;
  * @author bill
  *
  */
-public class DiscoverDocumentEntry extends CommonServiceManager {
+public class DiscoverDocumentEntry extends CommonService {
 	Session session;
 	
 	public DiscoverDocumentEntry(Session session) throws XdsException {

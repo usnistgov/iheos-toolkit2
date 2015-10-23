@@ -1,6 +1,14 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
@@ -10,19 +18,6 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActor
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 import java.util.List;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TestLogListingTab extends GenericQueryTab {
 	final protected ToolkitServiceAsync toolkitService = GWT
@@ -106,21 +101,21 @@ public class TestLogListingTab extends GenericQueryTab {
 	
 	
 	void loadTestNumbers() {
-		toolkitService.getTestlogListing(testSession, new AsyncCallback<List<String>>() {
+		toolkitService.getTestlogListing(testSession, new AsyncCallback<List<TestInstance>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestlogListing: " + caught.getMessage());			
 			}
 
-			public void onSuccess(List<String> result) {
+			public void onSuccess(List<TestInstance> result) {
 				int row=0;
 				
-				for (String tnum : result) {
+				for (TestInstance testInstance : result) {
 					HTML h = new HTML();
-					h.setText(tnum);
+					h.setText(testInstance.getId());
 					grid.setWidget(row, 0, h);
 					Button inspect = new Button("Inspect");
-					inspect.addClickHandler(new InspectButtonClickHandler(tnum));
+					inspect.addClickHandler(new InspectButtonClickHandler(testInstance));
 					grid.setWidget(row, 1, inspect);
 					
 					row++;
@@ -131,14 +126,14 @@ public class TestLogListingTab extends GenericQueryTab {
 	}
 	
 	class InspectButtonClickHandler implements ClickHandler {
-		String testName;
+		TestInstance testInstance;
 		
-		InspectButtonClickHandler(String testName) {
-			this.testName = testName;
+		InspectButtonClickHandler(TestInstance testInstance) {
+			this.testInstance = testInstance;
 		}
 
 		public void onClick(ClickEvent event) {
-			toolkitService.getLogContent(testSession, testName, new AsyncCallback<List<Result>>() {
+			toolkitService.getLogContent(testSession, testInstance, new AsyncCallback<List<Result>>() {
 
 				public void onFailure(Throwable caught) {
 					new PopupMessage("getLogsForTest: " + caught.getMessage());			

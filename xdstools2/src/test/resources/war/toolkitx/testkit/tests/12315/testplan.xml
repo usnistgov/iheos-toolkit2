@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12315</Test>
+  <TestStep id="retrieve_small">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+      <UseXPath testdir="../12311" symbol="$docuid$" step="getdocs">
+                //TestStep[@id='getdocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value            </UseXPath>
+      <UseXPath testdir="../12311" symbol="$repositoryuid$" step="getdocs">
+                /TestResults/TestStep[@id='getdocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value'][1]              </UseXPath>
+      <UseXPath testdir="../12311" symbol="$home$" step="getdocs">
+                /TestResults/TestStep[@id='getdocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/@home
+            </UseXPath>
+      <ExpectedMimeType>text/plain</ExpectedMimeType>
+      <ReferenceDocument uid="$docuid$">../12318/my_document.txt</ReferenceDocument>
+      <MetadataFile>query1.xml</MetadataFile>
+    </XCRTransaction>
+  </TestStep>
+  <TestStep id="retrieve_big">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+      <UseXPath testdir="../12311" symbol="$docuid$" step="getdocs">
+                //TestStep[@id='getdocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][2]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value            </UseXPath>
+      <UseXPath testdir="../12311" symbol="$repositoryuid$" step="getdocs">
+                /TestResults/TestStep[@id='getdocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][2]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value'][1]              </UseXPath>
+      <UseXPath testdir="../12311" symbol="$home$" step="getdocs">
+                /TestResults/TestStep[@id='getdocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][2]/@home
+            </UseXPath>
+      <ExpectedMimeType>text/xml</ExpectedMimeType>
+      <ReferenceDocument uid="$docuid$">../12318/summary.xml</ReferenceDocument>
+      <MetadataFile>query2.xml</MetadataFile>
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,8 +1,8 @@
 package gov.nist.toolkit.sitemanagement.client;
 
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
 import java.io.Serializable;
@@ -11,10 +11,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+
+/**
+ * A Site is the collection of endpoints and parameters for a single site or as Gazelle calls it a system.
+ * A Site references multiple actor types but it can hold only one copy of an actor type:
+ * one Registry, one Repository etc.
+ * A SiteSpec is a reference to a Site and a selection of one actor type. Having a SiteSpec you know
+ * exactly which transactions are possible.
+ *
+ * SiteSpec reference the Site through the name attribute.
+ * @author bill
+ *
+ */
 
 // Transaction names are listed in TransactionCollection.java
-
 
 public class Site  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
@@ -32,10 +42,21 @@ public class Site  implements IsSerializable, Serializable {
 
 	public String pidAllocateURI = null;
 	transient public boolean changed = false;
-	
-	public boolean equals(Site s) {
+	public String user = null;  // loaded from SimId - when non-null this site represents a sim
+
+	@Override
+	public int hashCode() {
+		return 41 + ((name == null) ? 0 : name.hashCode());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) return false;
+		if (!(o instanceof Site)) return false;
+		Site s = (Site) o;
 		return
 				((name == null) ? s.name == null : name.equals(s.name)) &&
+						((user == null) ? s.user == null : user.equals(s.user)) &&
 				((home == null) ? s.home == null : home.equals(s.home)) &&
 				((pifHost == null) ? s.pifHost == null : pifHost.equals(s.pifHost)) &&
 				((pifPort == null) ? s.pifPort == null : pifPort.equals(s.pifPort)) &&
@@ -251,14 +272,14 @@ public class Site  implements IsSerializable, Serializable {
 		return name;
 	}
 
-	public String getEndpoint(ATFactory.TransactionType transaction, boolean isSecure, boolean isAsync) throws Exception {
+	public String getEndpoint(TransactionType transaction, boolean isSecure, boolean isAsync) throws Exception {
 		String endpoint = getRawEndpoint(transaction, isSecure, isAsync);
 		if (endpoint == null) 
 			throw new Exception("Site#getEndpoint: no endpoint defined for site=" + name + " transaction=" + transaction + " secure=" + isSecure + " async=" + isAsync);
 		return endpoint;
 	}
 
-	public String getRawEndpoint(ATFactory.TransactionType transaction, boolean isSecure,
+	public String getRawEndpoint(TransactionType transaction, boolean isSecure,
 			boolean isAsync) {
 		return transactions.get(transaction, isSecure, isAsync);
 	}

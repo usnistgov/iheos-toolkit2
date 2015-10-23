@@ -23,7 +23,8 @@ import gov.nist.toolkit.saml.util.TimeStamp;
 import gov.nist.toolkit.saml.util.TimeStampValidate;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import org.opensaml.xml.validation.ValidationException;
 import sun.net.util.IPAddressUtil;
 
 
-public class SAMLMessageValidator extends MessageValidator {
+public class SAMLMessageValidator extends AbstractMessageValidator {
 	OMElement envlope ;
 	OMElement assertion;
 	OMElement header;
@@ -83,7 +84,7 @@ public class SAMLMessageValidator extends MessageValidator {
 	
 	// needed for junit testing
 	public SAMLMessageValidator(OMElement messagebody) {
-		super(new ValidationContext());
+		super(DefaultValidationContextFactory.validationContext());
 		this.messagebody = messagebody;
 	}
 	void err(String msg, String ref) {

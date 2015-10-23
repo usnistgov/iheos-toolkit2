@@ -1,23 +1,20 @@
 package gov.nist.toolkit.xdstools2.server.test.java.simulatorServiceManager;
 
 import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.SimManager;
-import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdstools2.server.serviceManager.SimulatorServiceManager;
-
-import java.io.File;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
 
 public class SimManagerTest {
 	static File warHome = new File("/home/bill/Documents/sf/toolkit/xdstools2/war");
@@ -41,7 +38,7 @@ public class SimManagerTest {
 	
 	public void createNewRegistry() {
 		try {
-			sim = ssm.getNewSimulator(ATFactory.ActorType.REGISTRY.getName(), null);
+			sim = ssm.getNewSimulator(ActorType.REGISTRY.getName(), null);
 		} catch (Exception e) {
 			Assert.fail(ExceptionUtil.exception_details(e));
 		}

@@ -12,7 +12,7 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
  * @author bill
  *
  */
-public class ServiceRequestContainer extends MessageValidator {
+public class ServiceRequestContainer extends AbstractMessageValidator {
 	
 	public ServiceRequestContainer(ValidationContext vc) {
 		super(vc);
@@ -20,6 +20,8 @@ public class ServiceRequestContainer extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+        er.registerValidator(this);
+        er.unRegisterValidator(this);
 	}
 
 }

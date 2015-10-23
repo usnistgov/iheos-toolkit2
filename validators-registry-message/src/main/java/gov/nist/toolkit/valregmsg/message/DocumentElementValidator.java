@@ -7,11 +7,11 @@ import gov.nist.toolkit.http.MultipartParserBa;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.MessageValidator;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 
 import java.util.List;
 
-public class DocumentElementValidator extends MessageValidator {
+public class DocumentElementValidator extends AbstractMessageValidator {
 	MessageValidatorEngine mvc;
 	
 	public DocumentElementValidator(ValidationContext vc, ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc) {
@@ -21,17 +21,20 @@ public class DocumentElementValidator extends MessageValidator {
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		this.er = er;
+		er.registerValidator(this);
 		
-		MessageValidator mcmv = mvc.findMessageValidator("MultipartContainer");
+		AbstractMessageValidator mcmv = mvc.findMessageValidator("MultipartContainer");
 		if (mcmv == null) {
 			er.detail("DocumentElementValidator: Document contents not available");
+            er.unRegisterValidator(this);
 			return;
 		}
 		MultipartContainer mpc = (MultipartContainer) mcmv;
 		
-		MessageValidator mmv = mvc.findMessageValidator("MetadataContainer");
+		AbstractMessageValidator mmv = mvc.findMessageValidator("MetadataContainer");
 		if (mmv == null) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, "DocumentElementValidator: cannot retrieve MetadataContainer class from validator stack", this, "Data not available");
+            er.unRegisterValidator(this);
 			return;
 		}
 		MetadataContainer mc = (MetadataContainer) mmv;
@@ -40,6 +43,8 @@ public class DocumentElementValidator extends MessageValidator {
 		Metadata m = mc.m;
 		
 		List<String> eoIds = m.getExtrinsicObjectIds();
+
+        er.unRegisterValidator(this);
 	}
 
 }

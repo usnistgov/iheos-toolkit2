@@ -1,9 +1,12 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
-import gov.nist.toolkit.actortransaction.client.ATFactory.TransactionType;
+import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
@@ -13,17 +16,14 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.log4j.Logger;
+import java.util.*;
 
 /**
  * Each simulator has an on-disk presence that keeps track of its long
@@ -34,7 +34,8 @@ import org.apache.log4j.Logger;
  * configurations are managed through ActorSimulatorConfig class.
  */
 public class SimDb {
-	String simId = null;    // ip is the simulator id
+	private final PidDb pidDb = new PidDb(this);
+	SimId simId = null;    // ip is the simulator id
 	File dbRoot = null;  // base of the simulator db
 	String event = null;
 	File simDir = null;   // directory within simdb that represents this event
@@ -44,56 +45,78 @@ public class SimDb {
 	static Logger logger = Logger.getLogger(SimDb.class);
 
 
-	static public SimDb mkSim(File dbRoot, String simid, String actor) throws IOException, NoSimException {
+	static public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
+		return mkSim(Installation.installation().simDbFile(), simid, actor);
+	}
+
+	static public SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
+		if (!dbRoot.exists())
+			dbRoot.mkdir();
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
 
-		simid = simid.replaceAll("\\.", "_");    // dir name that should be acceptable on all system types
+//		simid = simid.replaceAll("\\.", "_");    // dir name that should be acceptable on all system types
 		File simActorDir = new File(dbRoot.getAbsolutePath() + File.separatorChar + simid + File.separatorChar + actor);
 		simActorDir.mkdirs();
 		if (!simActorDir.exists()) {
 			logger.error("Simulator " + simid + ", " + actor + " cannot be created");
 			throw new IOException("Simulator " + simid + ", " + actor + " cannot be created");
 		}
-		
-		return new SimDb(dbRoot, simid, actor, null);
 
+		SimDb db = new SimDb(dbRoot, simid, actor, null);
+		db.setSimulatorType(actor);
+		return db;
 	}
 	
 	public SimDb() {
 		dbRoot = Installation.installation().simDbFile();
 	}
 	
-	public SimDb(String simulatorId) throws IOException, NoSimException {
+	public SimDb(SimId simulatorId) throws IOException, NoSimException {
 		this(Installation.installation().simDbFile(), simulatorId, null, null);
 	}
 
-	public boolean exists(String simId) {
-		return new File(Installation.installation().simDbFile(), simId).exists();
+	public boolean exists(SimId simId) {
+		return new File(Installation.installation().simDbFile(), simId.toString()).exists();
 	}
 
-
-	// ipAddr aka simid
-	public SimDb(File dbRoot, String simId, String actor, String transaction) throws IOException, NoSimException {
+	public SimDb(File dbRoot, SimId simId) throws IOException, NoSimException {
 		this.simId = simId;
-		this.actor = actor;
-		this.transaction = transaction;
+		if (simId == null)
+			throw new ToolkitRuntimeException("SimDb - cannot build SimDb with null simId");
 		this.dbRoot = dbRoot;
 
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
-			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
+			throw new IOException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
 
-		String ipdir = simId.replaceAll("\\.", "_");
+//		String ipdir = simId.replaceAll("\\.", "_");
+		String ipdir = simId.toString();
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
 		if (!simDir.exists()) {
-			logger.error("Simulator " + simId + " does not exist");
-			throw new NoSimException("Simulator " + simId + " does not exist");
+			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
+			throw new NoSimException("Simulator " + simId + " does not exist (" + simDir + ")");
 		}
-			
+
 		simDir.mkdirs();
 
 		if (!simDir.isDirectory())
 			throw new IOException("Cannot create content in Simulator database, creation of " + simDir.toString() + " failed");
+
+		// add this for safety when deleting simulators
+		Io.stringToFile(simSafetyFile(), simId.toString());
+	}
+
+	public PidDb getPidDb() { return pidDb; }
+
+	File simSafetyFile() { return new File(simDir, "simId.txt"); }
+	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
+
+	// ipAddr aka simid
+	public SimDb(File dbRoot, SimId simId, String actor, String transaction) throws IOException, NoSimException {
+		this(dbRoot, simId);
+
+		this.actor = actor;
+		this.transaction = transaction;
 
 		if (actor != null && transaction != null) {
 			String transdir = simDir + File.separator + actor + File.separator + transaction;
@@ -103,21 +126,54 @@ public class SimDb {
 				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
 		}
 
-		event = nowAsFilenameBase();
+		Date date = new Date();
+
+		event = asFilenameBase(date);
+
+		File eventDir = new File(transactionDir, event);
+		eventDir.mkdirs();
+		Serialize.out(new File(eventDir, "date.ser"), date);
 
 	}
+
+	public SimDb(TransactionInstance ti) throws IOException, NoSimException {
+		this(Installation.installation().simDbFile(), new SimId(ti.simId));
+
+		this.actor = ti.actorType.getShortName();
+		this.transaction = ti.name;
+
+		if (actor != null && transaction != null) {
+			String transdir = simDir + File.separator + actor + File.separator + transaction;
+			transactionDir = new File(transdir);
+			transactionDir.mkdirs();
+			if (!transactionDir.isDirectory())
+				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
+		}
+		event = ti.label;
+	}
+
+	// actor, transaction, and event must be filled in
+	public Date getEventDate() throws IOException, ClassNotFoundException {
+		if (transactionDir == null || event == null) return null;
+		File eventDir = new File(transactionDir, event);
+		return (Date) Serialize.in(new File(eventDir, "date.ser"));
+	}
+
+	public File getRoot() { return dbRoot; }
 	
 	public void delete() {
-		delete(simDir);
+		if (isSim())
+			delete(simDir);
 	}
 	
-	public String getActorForSimulator() {
+	public List<String> getActorsForSimulator() {
+		List<String> actors = new ArrayList<>();
 		File[] files = simDir.listFiles();
 		for (File file : files) {
 			if (file.isDirectory())
-				return file.getName();
+				actors.add(file.getName());
 		}
-		return null;
+		return actors;
 	}
 	
 	static public Date getNewExpiration(@SuppressWarnings("rawtypes") Class controllingClass)   {
@@ -135,25 +191,47 @@ public class SimDb {
 		return newExpiration.getTime();
 	}
 
-
+	static public void deleteAllSims() throws IOException, NoSimException {
+		SimDb simDb = new SimDb();
+		List<SimId> allSimIds = simDb.getAllSimIds();
+		for (SimId simId : allSimIds) {
+			SimDb db = new SimDb(simId);
+			db.delete();
+		}
+	}
 	
-	public List<String> getAllSimIds() {
+	public List<SimId> getAllSimIds() {
 		File[] files = dbRoot.listFiles();
-		List<String> ids = new ArrayList<String>();
+		List<SimId> ids = new ArrayList<>();
+		if (files == null) return ids;
 		
 		for (File sim : files) {
 			if (sim.isDirectory())
-				ids.add(sim.getName());
+				ids.add(new SimId(sim.getName()));
 		}
-		
 		return ids;
 	}
-	
+
+	/**
+	 * Get a simulator.
+	 * @return simulator if it exists or null
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public SimulatorConfig getSimulator(SimId simId) throws IOException, ClassNotFoundException {
+		SimulatorConfig config = null;
+		try {
+			config = GenericSimulatorFactory.loadSimulator(simId, true);
+		} catch (NoSimException e) { // cannot actually happen give parameters
+		}
+		return config;
+	}
+
 	public File getSimulatorControlFile() {
 		return new File(simDir.toString() + File.separatorChar + "simctl.ser");
 	}
 	
-	public static String getTransactionDirName(ATFactory.TransactionType tt)  {
+	public static String getTransactionDirName(TransactionType tt)  {
 		return tt.getShortName();
 	}
 	
@@ -207,6 +285,48 @@ public class SimDb {
 		return new File(regDir.toString() + File.separator + "rep_db.ser");
 	}
 
+	//
+	// Patient Id Feed support
+	//
+
+	// These next methods manage the storage of Patient IDs received through
+	// the Patient Identity Feed.
+	// All these require the new SimDb() be called with SimId parameter
+	// The other class that manages patient ids is PifHandler
+
+	public List<Pid> getAllPatientIds() {
+		return pidDb.getAllPatientIds();
+	}
+
+	String stripFileType(String filename, String filetype) {
+		int dot = filename.lastIndexOf("." + filetype);
+		if (dot == -1) return filename;
+		return filename.substring(0, dot);
+	}
+
+	public File getAffinityDomainDir(String adOid) {
+		return pidDb.getAffinityDomainDir(adOid);
+	}
+
+	public void addPatientId(Pid pid) throws IOException {
+		pidDb.addPatientId(pid);
+	}
+
+	public void addPatientId(String patientId) throws IOException {
+		pidDb.addPatientId(patientId);
+	}
+
+	public boolean deletePatientIds(List<Pid> toDelete) {
+		return pidDb.deletePatientIds(toDelete);
+	}
+
+	public boolean patientIdExists(Pid pid) throws IOException {
+		return pidDb.patientIdExists(pid);
+	}
+		//
+	//
+	//
+
 
 	//	public void setSimulatorType(String type) throws IOException {
 	//		File simType = new File(getDBFilePrefix(fileNameBase) + File.separator + "sim_type.txt");
@@ -214,18 +334,36 @@ public class SimDb {
 	//	}
 	
 	public ActorType getSimulatorActorType() {
-		File aDir = new File(simDir.toString());
-		for (File file : aDir.listFiles()) {
-			if (file.isDirectory()) {
-				String name = file.getName();
-				return ActorType.findActor(name);
-			}
+		File typeFile = new File(simDir, "sim_type.txt");
+		String name = null;
+		try {
+			name = Io.stringFromFile(typeFile).trim();
+		} catch (IOException e) {
+			return null;
 		}
-		return null;
+		return ActorType.findActor(name);
+	}
+
+	static public List<SimId> getSimulatorIdsforActorType(ActorType actorType) throws IOException, NoSimException {
+		SimDb db = new SimDb();
+		List<SimId> allSimIds = db.getAllSimIds();
+		List<SimId> simIdsOfType = new ArrayList<>();
+		for (SimId simId : allSimIds) {
+			if (actorType.equals(getSimulatorActorType(simId)))
+				simIdsOfType.add(simId);
+		}
+
+		return simIdsOfType;
+	}
+
+	static public ActorType getSimulatorActorType(SimId simId) throws IOException, NoSimException {
+		SimDb db = new SimDb(simId);
+		if (db == null) return null;
+		return db.getSimulatorActorType();
 	}
 	
 	public List<String> getTransactionsForSimulator() {
-		List<String> trans = new ArrayList<String>();
+		List<String> trans = new ArrayList<>();
 		
 		for (File actor : simDir.listFiles()) {
 			if (!actor.isDirectory())
@@ -240,11 +378,14 @@ public class SimDb {
 		return trans;
 	}
 
-	
-	// huh? nothing is creating this file
 	public String getSimulatorType() throws IOException {
-		File simType = new File(getDBFilePrefix(event) + File.separator + "sim_type.txt");
+		File simType = new File(simDir + File.separator + "sim_type.txt");
 		return Io.stringFromFile(simType).trim();
+	}
+
+	public void setSimulatorType(String type) throws IOException {
+		File simType = new File(simDir + File.separator + "sim_type.txt");
+		Io.stringToFile(simType, type);
 	}
 
 	public File getRepositoryDocumentFile(String documentId) {
@@ -278,8 +419,11 @@ public class SimDb {
 		return simDir;
 	}
 
-	public List<String> getTransInstances(String ignored_actor, String trans) {
+	public List<TransactionInstance> getTransInstances(String ignored_actor, String trans) {
+		String event_save = event;
+		File transDir_save = transactionDir;
 		List<String> names = new ArrayList<String>();
+		List<TransactionInstance> transList = new ArrayList<>();
 
 		for (File actor : simDir.listFiles()) {
 			if (!actor.isDirectory())
@@ -294,19 +438,44 @@ public class SimDb {
 					if (!inst.isDirectory())
 						continue;
 					names.add(inst.getName() + " " + name);
+					TransactionInstance t = new TransactionInstance();
+					t.simId = simId.toString();
+					t.actorType = ActorType.findActor(actor.getName());
+					t.label = inst.getName();
+					t.name = name;
+
+					transactionDir = new File(actor, name);
+					logger.debug("transaction dir is " + transactionDir);
+					event = t.label;
+					Date date = null;
+					try {
+						date = getEventDate();
+					} catch (IOException e) {
+					} catch (ClassNotFoundException e) {
+					}
+					if (date == null) continue;  // only interested in transactions that have dates
+					t.labelInterpretedAsDate = (date == null) ? "oops" : date.toString();
+					t.nameInterpretedAsTransactionType = TransactionType.find(t.name);
+					logger.debug("Found " + t);
+					transList.add(t);
 				}
 			}
 		}
-		
-		String[] nameArray = names.toArray(new String[0]);
-		java.util.Arrays.sort(nameArray);	
 
-		
-		List<String> returns = new ArrayList<String>();
-		for (int i=nameArray.length-1; i>=0; i--)
-			returns.add(nameArray[i]);
-		
-		return returns;
+		Collections.sort(transList, new ReverseTransactionInstanceComparator());
+
+		event = event_save;
+		transactionDir = transDir_save;
+		logger.debug("returning " + transList);
+		return transList;
+	}
+
+	// this cannot be stuffed into TransactionInstance since that is a client class
+	class ReverseTransactionInstanceComparator implements Comparator<TransactionInstance> {
+		@Override
+		public int compare(TransactionInstance s1, TransactionInstance s2) {
+			return -s1.label.compareTo(s2.label);
+		}
 	}
 	
 	public File[] getTransInstanceFiles(String actor, String trans) {
@@ -421,18 +590,6 @@ public class SimDb {
 
 	public void delete(File f) {
 		Io.delete(f);
-//		if (!f.exists())
-//			return;
-//		if (f.isDirectory()) {
-//			logger.debug("Delete dir " + f);
-//			String[] contents = f.list();
-//			for (int i=0; i<contents.length; i++) 
-//				delete(new File(f + File.separator + contents[i]));
-//			f.delete();
-//		} else if (f.isFile()){
-//			logger.debug("Delete file " + f);
-//			f.delete();
-//		}
 	}
 
 	public void rename(String fileNameBase, String newFileNameBase) throws IOException {
@@ -467,76 +624,35 @@ public class SimDb {
 		return dir;
 	}
 
-	public File getRequestHeaderFile(String simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "request_hdr.txt"
-//		);
-//
-//		return dir;
-		
+	public File getRequestHeaderFile(SimId simid, String actor, String trans, String event) {
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
 		return new File(dir + File.separator + "request_hdr.txt");
 	}
 
-	public File getResponseHeaderFile(String simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "response_hdr.txt"
-//		);
-//
-//		return dir;
+	public File getResponseHeaderFile(SimId simid, String actor, String trans, String event) {
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
 		return new File(dir + File.separator + "response_hdr.txt");
 	}
 
-	public File getRequestBodyFile(String simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "request_body.bin"
-//		);
-//
-//		return dir;
+	public File getRequestBodyFile(SimId simid, String actor, String trans, String event) {
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
 		return new File(dir + File.separator + "request_body.bin");
 	}
 
-	public File getResponseBodyFile(String simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "response_body.txt"
-//		);
-//
-//		return dir;
+	public File getResponseBodyFile(SimId simid, String actor, String trans, String event) {
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
 		return new File(dir + File.separator + "response_body.txt");
 	}
 
-	public File getLogFile(String simid, String actor, String trans, String event) {
-//		File dir = new File(ipDir 
-//				+ File.separator + actor
-//				+ File.separator + trans
-//				+ File.separator + event
-//				+ File.separator + "log.txt"
-//		);
-//
-//		return dir;
+	public File getLogFile(SimId simid, String actor, String trans, String event) {
 		File dir = findEventDir(trans, event);
 		if (dir == null)
 			return null;
@@ -571,8 +687,10 @@ public class SimDb {
 	}
 
 	public String nowAsFilenameBase() {
-		Date date = new Date();
-		
+		return asFilenameBase(new Date());
+	}
+
+	public String asFilenameBase(Date date) {
 		Calendar c  = Calendar.getInstance();
 		c.setTime(date);
 		

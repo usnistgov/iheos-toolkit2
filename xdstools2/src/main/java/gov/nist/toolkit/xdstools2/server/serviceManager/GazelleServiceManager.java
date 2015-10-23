@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.session.server.Session;
@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Properties;
 
-public class GazelleServiceManager extends CommonServiceManager {
+public class GazelleServiceManager extends CommonService {
 
     static Logger logger = Logger.getLogger(GazelleServiceManager.class);
 

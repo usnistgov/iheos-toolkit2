@@ -10,6 +10,8 @@ public class Assoc extends Ro implements Serializable {
 	public String from;
 	public String to;
 	public AssocType type;
+	public boolean isOriginal;  // these two only apply to SubmissionSet to DocEntry HasMember
+	public boolean isReference;
 	
 	public String getType() {
 		return "Association(" + type + ")";

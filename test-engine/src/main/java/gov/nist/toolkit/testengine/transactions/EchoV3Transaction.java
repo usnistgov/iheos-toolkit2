@@ -2,22 +2,17 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.testengine.StepContext;
+import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.util.Iterator;
-
+import gov.nist.toolkit.xdsexception.*;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+
+import java.io.File;
+import java.util.Iterator;
 
 public class EchoV3Transaction extends BasicTransaction {
 	
@@ -82,7 +77,7 @@ public class EchoV3Transaction extends BasicTransaction {
 			serviceClient.setOptions(options);
 			OMElement result = serviceClient.sendReceive(metadata.getRoot());
 
-			testLog.add_name_value(instruction_output, "Result", result);
+//			testLog.add_name_value(instruction_output, "Result", result);
 
 			validate_registry_response(result, MetadataTypes.METADATA_TYPE_SQ);
 

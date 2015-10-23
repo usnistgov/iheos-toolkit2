@@ -26,15 +26,15 @@ public class Classification extends AbstractRegistryObject {
 	}
 
 	public boolean equals(Classification c) {
-		if (!c.classification_scheme.equals(classification_scheme)) 
+		if (!c.classification_scheme.equals(classification_scheme))
 			return false;
-		if (!c.code_value.equals(code_value)) 
+		if (!c.code_value.equals(code_value))
 			return false;
-		if (!c.name.equals(name)) 
+		if (!c.name.equals(name))
 			return false;
-		//		if (!c.coding_scheme.equals(coding_scheme)) 
+		//		if (!c.coding_scheme.equals(coding_scheme))
 		//			return false;
-		if (!c.classification_node.equals(classification_node)) 
+		if (!c.classification_node.equals(classification_node))
 			return false;
 		return super.equals(c);
 	}
@@ -69,9 +69,9 @@ public class Classification extends AbstractRegistryObject {
 		//		try {
 		//			coding_scheme = getSlot("codingScheme").getValue(0);
 		//		} catch (Exception e) { }
-		//		
+		//
 		//		//name = getName();
-		//		
+		//
 		//		if (code_value == null) code_value = "";
 		//		//if (code_display_name == null) code_display_name = "";
 		//		if (coding_scheme == null) coding_scheme = "";
@@ -98,7 +98,7 @@ public class Classification extends AbstractRegistryObject {
 		try {
 			cs = getCodeScheme();
 		} catch (Exception e) {}
-		return "Classification (classificationScheme=" + classification_scheme + " codingScheme=" + cs + ") of object " + parent_id(); 
+		return "Classification (classificationScheme=" + classification_scheme + " codingScheme=" + cs + ") of object " + parent_id();
 	}
 
 	public String parent_id() {
@@ -115,7 +115,7 @@ public class Classification extends AbstractRegistryObject {
 		String classifiedObjectId = ro.getAttributeValue(MetadataSupport.classified_object_qname);
 
 		if (parentEle != null && !parentEleId.equals(classifiedObjectId))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of object " + parentEleId + " but the classifiedObject value is " + 
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of object " + parentEleId + " but the classifiedObject value is " +
 					classifiedObjectId + ", they must match", this, "ITI TF-3: 4.1.12.2");
 
 		if (getClassificationScheme() == null || getClassificationScheme().equals(""))
@@ -126,7 +126,7 @@ public class Classification extends AbstractRegistryObject {
 		if (getCodeValue().equals(""))
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": nodeRepresentation attribute is missing or empty", this, "ebRIM 3.0 section 4.3.1");
 
-		if (getCodeDisplayName().equals("")) 
+		if (getCodeDisplayName().equals(""))
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": no name attribute", this, "ITI TF-3: 4.1.12.2");
 
 		if (getCodeScheme().equals(""))
@@ -139,7 +139,7 @@ public class Classification extends AbstractRegistryObject {
 	}
 
 	public void validateRequiredSlotsPresent(ErrorRecorder er,
-			ValidationContext vc) {		
+			ValidationContext vc) {
 	}
 
 	public void validateSlotsCodedCorrectly(ErrorRecorder er,

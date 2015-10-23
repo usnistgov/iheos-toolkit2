@@ -12,6 +12,11 @@ public class TextErrorRecorderBuilder implements ErrorRecorderBuilder {
 		return rec;
 	}
 
+	@Override
+	public ErrorRecorder buildNewErrorRecorder(Object o) {
+		return null;
+	}
+
 	public TextErrorRecorder buildNewErrorRecorder(ErrorRecorder parent) {
 		TextErrorRecorder rec =  new TextErrorRecorder();
 		rec.errorRecorderBuilder = this;

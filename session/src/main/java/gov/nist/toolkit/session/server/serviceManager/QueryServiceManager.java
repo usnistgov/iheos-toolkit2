@@ -1,59 +1,26 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.CommonServiceManager;
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actortransaction.client.ATFactory.ActorType;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymetadata.client.AnyId;
-import gov.nist.toolkit.registrymetadata.client.AnyIds;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-import gov.nist.toolkit.registrymetadata.client.Uid;
-import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.registrymetadata.client.*;
+import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.services.FindDocuments;
-import gov.nist.toolkit.session.server.services.FindDocumentsByRefId;
-import gov.nist.toolkit.session.server.services.FindFolders;
-import gov.nist.toolkit.session.server.services.FindPatient;
-import gov.nist.toolkit.session.server.services.FolderValidation;
-import gov.nist.toolkit.session.server.services.GetAssociations;
-import gov.nist.toolkit.session.server.services.GetDocuments;
-import gov.nist.toolkit.session.server.services.GetFolderAndContents;
-import gov.nist.toolkit.session.server.services.GetFolders;
-import gov.nist.toolkit.session.server.services.GetFoldersForDocument;
-import gov.nist.toolkit.session.server.services.GetObjects;
-import gov.nist.toolkit.session.server.services.GetRelated;
-import gov.nist.toolkit.session.server.services.GetSSandContents;
-import gov.nist.toolkit.session.server.services.GetSubmissionSets;
-import gov.nist.toolkit.session.server.services.LifecycleValidation;
-import gov.nist.toolkit.session.server.services.MpqFindDocuments;
-import gov.nist.toolkit.session.server.services.ProvideAndRetrieve;
-import gov.nist.toolkit.session.server.services.RegisterAndQuery;
-import gov.nist.toolkit.session.server.services.RetrieveDocument;
-import gov.nist.toolkit.session.server.services.SrcStoresDocVal;
-import gov.nist.toolkit.session.server.services.SubmitRegistryTestdata;
-import gov.nist.toolkit.session.server.services.SubmitRepositoryTestdata;
-import gov.nist.toolkit.session.server.services.SubmitXDRTestdata;
+import gov.nist.toolkit.session.server.services.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-public class QueryServiceManager extends CommonServiceManager {
+public class QueryServiceManager extends CommonService {
 
 	static Logger logger = Logger.getLogger(QueryServiceManager.class);
 	Session session;
@@ -207,8 +174,8 @@ public class QueryServiceManager extends CommonServiceManager {
 	}
 
 	public List<Result> getObjects(SiteSpec site, ObjectRefs ids) {
-		logger.debug(session.id() + ": " + "getObjects");
-		if (site == null) site = session.siteSpec;
+		logger.debug(session.id() + ": " + "getObjects " + ids + " from " + site);
+		if (site == null) { site = session.siteSpec; logger.debug("default site is " + site); }
 		try {
 			return new GetObjects(session).run(site, ids);
 		} catch (XdsException e) {
@@ -293,11 +260,35 @@ public class QueryServiceManager extends CommonServiceManager {
 			return buildResultList(e);
 		}
 	}
-	
+
+	public List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
+		logger.debug(session.id() + ": " + "mpqFindDocuments");
+		List<String> classCodes = selectedCodes.get(CodesConfiguration.ClassCode);
+		List<String> hcftCodes = selectedCodes.get(CodesConfiguration.HealthcareFacilityTypeCode);
+		List<String> eventCodes = selectedCodes.get(CodesConfiguration.EventCodeList);
+
+		try {
+			return new MpqFindDocuments(session).run(site, pid, classCodes, hcftCodes,
+					eventCodes);
+		} catch (XdsException e) {
+			return buildResultList(e);
+		}
+	}
+
+	public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
+		logger.debug(session.id() + ": " + "getAll");
+
+		try {
+			return new GetAll(session).run(site, pid, selectedCodes);
+		} catch (XdsException e) {
+			return buildResultList(e);
+		}
+	}
+
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();
-		Result result = ResultBuilder.RESULT("getLastMetadata"); 
+		Result result = ResultBuilder.RESULT(new TestInstance("getLastMetadata"));
 		results.add(result);
 
 		try {
@@ -317,7 +308,7 @@ public class QueryServiceManager extends CommonServiceManager {
 	}
 
 
-	public List<Result> perRepositoryRetrieve(Uids uids, String testName,
+	public List<Result> perRepositoryRetrieve(Uids uids, TestInstance testInstance,
 			List<String> sections, Map<String, String> params) {
 		List<Result> results = new ArrayList<Result>();
 
@@ -337,14 +328,14 @@ public class QueryServiceManager extends CommonServiceManager {
 			} else {
 				Map<String, String> myparams = dup(params);
 				myparams.put("$home$", org.get(repuid).uids.get(0).home);
-				results.add(session.xdsTestServiceManager().xdstest(testName, sections, myparams, null, null, false));
+				results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
 			}
 		}
 		return results;
 	}
 
 	public List<Result> runPerCommunityQuery(AnyIds aids, Session s,
-			String testName, List<String> sections, Map<String, String> params)
+			TestInstance testInstance, List<String> sections, Map<String, String> params)
 					throws Exception {
 		if (s.siteSpec.isRG()) {
 			sections.add("XCA");
@@ -354,12 +345,12 @@ public class QueryServiceManager extends CommonServiceManager {
 		}
 		else {
 			sections.add("XDS");
-			return asList(session.xdsTestServiceManager().xdstest(testName, sections, params, null, null, false));
+			return asList(session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, false));
 		}
-		return perCommunityQuery(aids, testName, sections, params);
+		return perCommunityQuery(aids, testInstance, sections, params);
 	}
 
-	public List<Result> perCommunityQuery(AnyIds ids, String testName,
+	public List<Result> perCommunityQuery(AnyIds ids, TestInstance testInstance,
 			List<String> sections, Map<String, String> aparams) throws Exception {
 		List<Result> results = new ArrayList<Result>();
 
@@ -390,7 +381,7 @@ public class QueryServiceManager extends CommonServiceManager {
 			}
 			Map<String, String> myparams = dup(params);
 			myparams.put("$home$", home);
-			results.add(session.xdsTestServiceManager().xdstest(testName, sections, myparams, null, null, false));
+			results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
 		}
 		return results;
 	}
