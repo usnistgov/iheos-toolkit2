@@ -11,24 +11,27 @@ import java.util.Set;
  */
 @XmlRootElement
 public class SimConfigBean extends SimIdBean implements SimConfig {
-     List<Mapping> props = new ArrayList<Mapping>();
+     List<String> props = new ArrayList<>();
 
     public SimConfigBean() {}
 
     @Override
     public void setProperty(String name, String value) {
         rmProperty(name);
-        props.add(new Mapping(name, value));
+        props.add(new Mapping(name, value).asString());
     }
 
     private String getProperty(String name) {
         int index = findProperty(name);
         if (index == -1) return null;
-        return props.get(index).getValue();
+        return new Mapping(props.get(index)).getValue();
     }
 
     private int findProperty(String name) {
-        for (int i=0; i<props.size(); i++) if (props.get(i).getKey().equals(name)) return i;
+        for (int i=0; i<props.size(); i++) {
+            String keyvalue = props.get(i);
+            if (new Mapping(keyvalue).getKey().equals(name)) return i;
+        }
         return -1;
     }
 
@@ -40,8 +43,10 @@ public class SimConfigBean extends SimIdBean implements SimConfig {
     @Override
     public void setProperty(String name, boolean value) {
         rmProperty(name);
-        props.add(new Mapping(name, valueAsString(value)));
+        props.add(new Mapping(name, valueAsString(value)).asString());
     }
+
+    public List<String> getProperties() { return props; }
 
     @Override
     public boolean isBoolean(String name) {
@@ -59,22 +64,22 @@ public class SimConfigBean extends SimIdBean implements SimConfig {
         return valueAsBoolean(getProperty(name));
     }
 
-    public Set<String> getPropertyNames() {
+    public Set<String> propertyNames() {
         Set<String> names = new HashSet<>();
-        for (Mapping m : props) {
+        for (String s : props) {
+            Mapping m = new Mapping(s);
             names.add(m.getKey());
         }
         return names;
     }
 
-    @Override
-    public String toString() {
+    public String describe() {
         StringBuilder buf = new StringBuilder();
         buf.append("SimConfigBean...\n");
         buf.append("...id = ").append(id).append("\n");
         buf.append("...user = ").append(user).append("\n");
         buf.append("...type = ").append(actorType).append("\n");
-        for (String key : getPropertyNames()) {
+        for (String key : propertyNames()) {
             buf.append("...").append(key).append("=").append(getProperty(key)).append("\n");
         }
         return buf.toString();

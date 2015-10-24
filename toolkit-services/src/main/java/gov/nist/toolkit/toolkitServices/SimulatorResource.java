@@ -47,7 +47,7 @@ public class SimulatorResource {
             Simulator sim = api.createSimulator(simId);
 
             // override default values with any included in request
-            for (String propName : simConfigBean.getPropertyNames()) {
+            for (String propName : simConfigBean.propertyNames()) {
                 boolean valueIsBoolean = simConfigBean.isBoolean(propName);
                 boolean ignored = true;
                 for (SimulatorConfig config : sim.getConfigs()) {
@@ -67,7 +67,6 @@ public class SimulatorResource {
                     hdrs.add(Constants.TOOLKIT_ERROR, "Ignored " + propName);
             }
             return hdrs.addHeaders(Response.status(Response.Status.OK)).build();
-
         }
         catch (Exception e) {
             return SimulatorsResource.mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
@@ -80,6 +79,25 @@ public class SimulatorResource {
      * @param id
      * @return
      */
+//    @GET
+//    @Produces("application/json")
+//    @Path("/{id}")
+//    public SimConfigBean getSim(@PathParam("id") String id) {
+//        logger.info("GET simulator/" +  id);
+//        SimId simId = new SimId(id);
+//        try {
+//            ToolkitApi api = ToolkitApi.forServiceUse();
+//            SimulatorConfig config = api.getConfig(simId);
+//            if (config == null) throw new NoSimException("");
+//            SimConfigBean bean = ToolkitFactory.asSimConfigBean(config);
+//            logger.info("Returning " + bean.describe());
+//            return bean;
+//        } catch (Exception e) {
+//            SimulatorsResource.mapExceptionToResponse(e, simId, ResponseType.THROW);
+//        }
+//        return null;  // never reached
+//    }
+
     @GET
     @Produces("application/json")
     @Path("/{id}")
@@ -91,12 +109,11 @@ public class SimulatorResource {
             SimulatorConfig config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
             SimConfigBean bean = ToolkitFactory.asSimConfigBean(config);
-            logger.info("Returning " + bean.toString());
+            logger.info("Returning " + bean.describe());
             return Response.ok(bean).build();
         } catch (Exception e) {
             return SimulatorsResource.mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }
-//        return null;  // cannot reach
     }
 
 //    @GET

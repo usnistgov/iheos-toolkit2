@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -84,7 +85,7 @@ public class SimulatorsResource {
             status = Response.Status.NOT_FOUND;
         }
         if (status == null) {
-            logger.error("SPI Create simulator " + simId.toString() + " failed - " + e.getMessage());
+            logger.error("SPI Create simulator " + simId.toString() + " failed - " + ExceptionUtil.exception_details(e));
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
         if (responseType == ResponseType.THROW) throw new WebApplicationException(status);

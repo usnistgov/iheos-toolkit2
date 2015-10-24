@@ -5,11 +5,14 @@ import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 import org.apache.log4j.Logger;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -21,7 +24,10 @@ public class SimulatorBuilder {
     private WebTarget target;
 
     public SimulatorBuilder(String hostname, String port) {
-        Client c = ClientBuilder.newClient();
+        ClientConfig cc = new ClientConfig().register(new JacksonFeature());
+        Client c = ClientBuilder.newClient(cc);
+        Configuration conf = c.getConfiguration();
+        logger.info(conf.getPropertyNames());
         target = c.target("http://" + hostname + ":" + port + "/xdstools2/rest/");
     }
 
@@ -64,11 +70,17 @@ public class SimulatorBuilder {
         delete(parms.getId(), parms.getUser());
     }
 
+//    public SimConfigBean getSimConfig(SimId simId) throws ToolkitServiceException {
+//        ClientResponse response = target.path("simulator/" + simId.getFullId()).request().get(ClientResponse.class);
+//        if (response.getStatus() != 200)
+//            throw new ToolkitServiceException(response.getStatus());
+//        return (SimConfigBean) response.getEntity();
+//    }
+
     public SimConfigBean getSimConfig(SimId simId) throws ToolkitServiceException {
         Response response = target.path("simulator/" + simId.getFullId()).request().get();
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response.getStatus());
         return response.readEntity(SimConfigBean.class);
     }
-
 }

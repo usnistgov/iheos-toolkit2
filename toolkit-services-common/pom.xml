@@ -26,12 +26,10 @@
             <!-- if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core"  -->
             <artifactId>jersey-container-servlet</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.glassfish.jersey.media</groupId>-->
-            <!--<artifactId>jersey-media-json-jackson</artifactId>-->
-            <!--<scope>runtime</scope>-->
-            <!--<version>2.22.1</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

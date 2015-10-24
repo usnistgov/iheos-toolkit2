@@ -1,5 +1,4 @@
 package gov.nist.toolkit.restTest
-
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
 import gov.nist.toolkit.tookitApi.BasicSimParameters
@@ -11,10 +10,7 @@ import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
 import org.glassfish.grizzly.http.server.HttpServer
 import spock.lang.Specification
 
-import javax.ws.rs.client.Client
-import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.client.WebTarget
-
 /**
  *
  */
@@ -28,8 +24,8 @@ class CreateSimTest extends Specification {
 
     def setupGrizzly() {
         server = Main.startServer();
-        Client c = ClientBuilder.newClient();
-        target = c.target(Main.BASE_URI);
+//        Client c = ClientBuilder.newClient();
+//        target = c.target(Main.BASE_URI);
     }
 
     def setup() {
@@ -44,6 +40,7 @@ class CreateSimTest extends Specification {
 
     def 'Get Unknown SimId'() {
         when:
+        sleep(60*60)
        builder.getSimConfig(ToolkitFactory.newSimId('foo', 'bar', 'reg', 'default'))
 
         then:
@@ -68,7 +65,7 @@ class CreateSimTest extends Specification {
         when: 'retrieve full configuration'
         println 'STEP - RETRIEVE FULL CONFIGURATION'
         SimConfigBean config = builder.getSimConfig(simId)
-        println "Received " + config
+        println "Received " + config.describe()
 
         then: 'verify configuration'
         simId.getId() == config.getId()
