@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -190,7 +191,14 @@ public class TestsOverviewWidget extends CellTable<Test> {
      * Default options for the cell table
      */
     private void setDefaults() {
-        setWidth("100%");
+        setWidth("100%", true);
+        // Set the width of each column.
+        setColumnWidth(testnumberColumn, 30, com.google.gwt.dom.client.Style.Unit.PX);
+        setColumnWidth(descriptionColumn, 80, com.google.gwt.dom.client.Style.Unit.PX);
+        setColumnWidth(buttonsColumn, 80, com.google.gwt.dom.client.Style.Unit.PX);
+        setColumnWidth(timeColumn, 27, com.google.gwt.dom.client.Style.Unit.PX);
+        setColumnWidth(statusColumn, 15, com.google.gwt.dom.client.Style.Unit.PX);
+
         setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
         setDisplayStyle();
     }
