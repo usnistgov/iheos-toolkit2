@@ -11,7 +11,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>rest-test</artifactId>
+    <artifactId>sdk-test</artifactId>
     <properties>
         <jersey.version>2.22.1</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -128,7 +128,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>gov.nist.toolkit.restTest.Main</mainClass>
+                    <mainClass>gov.nist.toolkit.sdkTest.Main</mainClass>
                 </configuration>
             </plugin>
         </plugins>

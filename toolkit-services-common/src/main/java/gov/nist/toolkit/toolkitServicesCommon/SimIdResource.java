@@ -7,15 +7,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class SimIdBean implements gov.nist.toolkit.toolkitServicesCommon.SimId {
+public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.SimId {
     String user = null;
     String id = null;
     String actorType = null;
     String environmentName = null;
 
-    public SimIdBean() { }
+    public SimIdResource() { }
 
-    public SimIdBean(SimId simId) {
+    public SimIdResource(SimId simId) {
         user = simId.getUser();
         id = simId.getId();
         actorType = simId.getActorType();

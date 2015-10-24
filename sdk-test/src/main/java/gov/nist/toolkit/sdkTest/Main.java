@@ -1,4 +1,4 @@
-package gov.nist.toolkit.restTest;
+package gov.nist.toolkit.sdkTest;
 
 
 import org.apache.log4j.Logger;

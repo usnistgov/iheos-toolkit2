@@ -1,9 +1,6 @@
 package gov.nist.toolkit.tookitApi;
 
-import gov.nist.toolkit.toolkitServicesCommon.SimConfigBean;
-import gov.nist.toolkit.toolkitServicesCommon.SimId;
-import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;
-import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
+import gov.nist.toolkit.toolkitServicesCommon.*;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -42,14 +39,14 @@ public class SimulatorBuilder {
      */
     public SimId create(String id, String user, String actorType, String environmentName) throws ToolkitServiceException {
         SimId simId = ToolkitFactory.newSimId(id, user, actorType, environmentName);
-        SimIdBean bean = new SimIdBean(simId);
-        Response response = target.path("simulators").request(MediaType.APPLICATION_XML).post(Entity.xml(bean));
+        SimIdResource bean = new SimIdResource(simId);
+        Response response = target.path("simulators").request(MediaType.APPLICATION_JSON).post(Entity.json(bean));
         if (response.getStatus() != 200) {
             logger.error("status is " + response.getStatus());
             for (String key : response.getHeaders().keySet()) {
                 logger.error(key + ": " + response.getHeaderString(key));
             }
-            throw new ToolkitServiceException(response.getStatus());
+            throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
         }
         return simId;
     }
@@ -60,27 +57,20 @@ public class SimulatorBuilder {
 
     public void delete(String id, String user) throws ToolkitServiceException {
         SimId simId = ToolkitFactory.newSimId(id, user, null, null);
-        SimIdBean bean = new SimIdBean(simId);
-        Response response = target.path("simulators/_delete/" + user + "__" + id).request().post(Entity.xml(bean));
+        SimIdResource bean = new SimIdResource(simId);
+        Response response = target.path("simulators/" + user + "__" + id).request().delete();
         if (response.getStatus() != 200)
-            throw new ToolkitServiceException(response.getStatus());
+            throw new ToolkitServiceException(response);
     }
 
     public void delete(BasicSimParameters parms) throws ToolkitServiceException {
         delete(parms.getId(), parms.getUser());
     }
 
-//    public SimConfigBean getSimConfig(SimId simId) throws ToolkitServiceException {
-//        ClientResponse response = target.path("simulator/" + simId.getFullId()).request().get(ClientResponse.class);
-//        if (response.getStatus() != 200)
-//            throw new ToolkitServiceException(response.getStatus());
-//        return (SimConfigBean) response.getEntity();
-//    }
-
-    public SimConfigBean getSimConfig(SimId simId) throws ToolkitServiceException {
-        Response response = target.path("simulator/" + simId.getFullId()).request().get();
+    public SimConfigResource getSimConfig(SimId simId) throws ToolkitServiceException {
+        Response response = target.path("simulators/" + simId.getFullId()).request().get();
         if (response.getStatus() != 200)
-            throw new ToolkitServiceException(response.getStatus());
-        return response.readEntity(SimConfigBean.class);
+            throw new ToolkitServiceException(response);
+        return response.readEntity(SimConfigResource.class);
     }
 }

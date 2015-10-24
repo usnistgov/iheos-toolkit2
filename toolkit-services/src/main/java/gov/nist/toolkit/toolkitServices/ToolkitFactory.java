@@ -2,8 +2,8 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.toolkitServicesCommon.SimConfigBean;
-import gov.nist.toolkit.toolkitServicesCommon.SimIdBean;
+import gov.nist.toolkit.toolkitServicesCommon.SimConfigResource;
+import gov.nist.toolkit.toolkitServicesCommon.SimIdResource;
 import org.apache.log4j.Logger;
 
 /**
@@ -12,12 +12,12 @@ import org.apache.log4j.Logger;
 public class ToolkitFactory {
     static Logger logger = Logger.getLogger(ToolkitFactory.class);
 
-    static public gov.nist.toolkit.actorfactory.client.SimId asServerSimId(SimIdBean simId) {
+    static public gov.nist.toolkit.actorfactory.client.SimId asServerSimId(SimIdResource simId) {
         return new gov.nist.toolkit.actorfactory.client.SimId(simId.getUser(), simId.getId(), simId.getActorType(), simId.getEnvironmentName());
     }
 
-    static public SimIdBean asSimIdBean(gov.nist.toolkit.actorfactory.client.SimId simId) {
-        SimIdBean bean = new SimIdBean();
+    static public SimIdResource asSimIdBean(gov.nist.toolkit.actorfactory.client.SimId simId) {
+        SimIdResource bean = new SimIdResource();
         bean.setId(simId.getId());
         bean.setUser(simId.getUser());
         bean.setActorType(simId.getActorType());
@@ -25,8 +25,8 @@ public class ToolkitFactory {
         return bean;
     }
 
-    static public SimConfigBean asSimConfigBean(SimulatorConfig config) {
-        SimConfigBean bean = new SimConfigBean();
+    static public SimConfigResource asSimConfigBean(SimulatorConfig config) {
+        SimConfigResource bean = new SimConfigResource();
         bean.setId(config.getId().getId());
         bean.setUser(config.getId().getUser());
         bean.setActorType(config.getActorType());

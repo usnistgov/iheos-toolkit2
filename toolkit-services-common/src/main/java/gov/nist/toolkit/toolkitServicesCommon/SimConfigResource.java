@@ -10,10 +10,10 @@ import java.util.Set;
  *
  */
 @XmlRootElement
-public class SimConfigBean extends SimIdBean implements SimConfig {
+public class SimConfigResource extends SimIdResource implements SimConfig {
      List<String> props = new ArrayList<>();
 
-    public SimConfigBean() {}
+    public SimConfigResource() {}
 
     @Override
     public void setProperty(String name, String value) {

@@ -6,7 +6,7 @@ package gov.nist.toolkit.toolkitServicesCommon;
 public class ToolkitFactory {
 
     static public SimId newSimId(String id, String user, String actorType, String environmentName) {
-        SimIdBean bean =  new SimIdBean();
+        SimIdResource bean =  new SimIdResource();
         bean.setId(id);
         bean.setUser(user);
         bean.setActorType(actorType);
