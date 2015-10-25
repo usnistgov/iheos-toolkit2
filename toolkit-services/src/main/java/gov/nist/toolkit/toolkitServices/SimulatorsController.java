@@ -62,6 +62,11 @@ public class SimulatorsController {
         }
     }
 
+    @POST
+    @Path("{id}")
+    public Response update(final SimConfigResource config) {
+        return null;
+    }
 
     /**
      * Delete simulator with id

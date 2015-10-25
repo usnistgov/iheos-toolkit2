@@ -3,7 +3,7 @@ package gov.nist.toolkit.toolkitServicesCommon;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- *
+ * Not for Public Use.
  */
 @XmlType
 public class KeyValue {

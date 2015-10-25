@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 /**
- *
+ * Not for Public Use.
  */
 public class Adapter extends XmlAdapter<List<KeyValue>, Map<String, String>> {
 

@@ -25,13 +25,13 @@ class CreateSimTest extends Specification {
         server = Main.startServer();
     }
 
-    def setupSpec() {   // one time setup
+    def setupSpec() {   // one time setup done when class launched
         TestSession.setupToolkit()
         ToolkitApi.forServiceUse()
         setupGrizzly()
     }
 
-    def setup() {  // per test setup
+    def setup() {  // run before each test method
         params.id = 'reg'
         params.user = 'mike'
         params.actorType = 'reg'
@@ -50,7 +50,7 @@ class CreateSimTest extends Specification {
 
     def 'Get Unknown SimId'() {
         when:
-       builder.getSimConfig(ToolkitFactory.newSimId('foo', 'bar', 'reg', 'default'))
+       builder.get(ToolkitFactory.newSimId('foo', 'bar', 'reg', 'default'))
 
         then:
         ToolkitServiceException e = thrown()
@@ -83,11 +83,36 @@ class CreateSimTest extends Specification {
 
         when: 'retrieve full configuration'
         println 'STEP - RETRIEVE FULL CONFIGURATION'
-        SimConfigResource config = builder.getSimConfig(simId)
+        SimConfigResource config = builder.get(simId)
 
         then: 'verify configuration'
         simId.getId() == config.getId()
         config.asString('Name') == 'mike__reg'
     }
+
+    static final private parmName = "Validate_Codes"
+//    def 'Update sim config'() {
+//        when: 'Delete sim in case it exists'
+//        println 'STEP - DELETE SIM'
+//        builder.delete(params)
+//
+//        and: 'Create new sim'
+//        println 'STEP - CREATE NEW SIM'
+//        SimConfigResource config = builder.create(params)
+//        println config.describe()
+//
+//        then: 'verify sim built'
+//        config.getId() == 'reg'
+//
+//        when: 'Update Validate_Codes to false'
+//        config.setProperty(parmName, 'false')
+//        builder.update(config)
+//
+//        and: 'Get fresh copy of resource'
+//        SimConfigResource updatedConfig = builder.get(config) // extends SimId
+//
+//        then: 'Verify value updated'
+//        updatedConfig.asString(parmName) == 'false'
+//    }
 
 }

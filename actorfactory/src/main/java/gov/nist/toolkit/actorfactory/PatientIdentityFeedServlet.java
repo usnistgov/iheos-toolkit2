@@ -105,7 +105,7 @@ public class PatientIdentityFeedServlet extends HttpServlet {
     }
 
     static String portFromSimulatorConfig(SimulatorConfig simulatorConfig) {
-        SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.PIF_PORT);
+        SimulatorConfigElement sce = simulatorConfig.get(SimulatorProperties.PIF_PORT);
         SimId simId = simulatorConfig.getId();
         if (sce == null) return null;
 //            throw new ToolkitRuntimeException("Simulator " + simId + " is a Registry simulator but has no Patient ID Feed port configured");

@@ -4,7 +4,7 @@ package gov.nist.toolkit.toolkitServicesCommon;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Not for Public Use.
  */
 @XmlRootElement
 public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.SimId {
@@ -65,5 +65,29 @@ public class SimIdResource implements gov.nist.toolkit.toolkitServicesCommon.Sim
 
     public void setEnvironmentName(String environmentName) {
         this.environmentName = environmentName;
+    }
+
+    public String describe() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("{");
+        buf.append("user=");
+        buf.append("\"");
+        buf.append(user);
+        buf.append("\"");
+        buf.append(", id=");
+        buf.append("\"");
+        buf.append(id);
+        buf.append("\"");
+        buf.append(", actorType=");
+        buf.append("\"");
+        buf.append(actorType);
+        buf.append("\"");
+        buf.append(", environmentName=");
+        buf.append("\"");
+        buf.append(environmentName);
+        buf.append("\"");
+
+        buf.append("}");
+        return buf.toString();
     }
 }

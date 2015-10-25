@@ -1,7 +1,7 @@
 package gov.nist.toolkit.tookitApi;
 
 /**
- * Created by bill on 10/21/15.
+ * Not for Public Use.
  */
 public class BasicSimParameters {
     private String id;

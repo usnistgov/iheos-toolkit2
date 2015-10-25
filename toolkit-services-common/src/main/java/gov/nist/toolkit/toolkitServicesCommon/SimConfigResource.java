@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * Not for Public Use.
  */
 @XmlRootElement
 public class SimConfigResource extends SimIdResource implements SimConfig {
@@ -73,6 +73,10 @@ public class SimConfigResource extends SimIdResource implements SimConfig {
         return names;
     }
 
+    /**
+     * Verbose description of Simulator Configuration.
+     * @return description
+     */
     public String describe() {
         StringBuilder buf = new StringBuilder();
         buf.append("SimConfigBean...\n");

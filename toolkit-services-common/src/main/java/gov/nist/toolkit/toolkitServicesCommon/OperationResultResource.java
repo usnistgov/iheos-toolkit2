@@ -4,7 +4,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Not for Public Use.
  */
 @XmlRootElement
 public class OperationResultResource {
@@ -85,7 +85,7 @@ public class OperationResultResource {
                 append("\"").
                 append(", reason:").
                 append("\"").
-                append(reason.trim()).
+                append((reason == null) ? null : reason.trim()).
                 append("\"").
                 append(" }");
         return buf.toString();

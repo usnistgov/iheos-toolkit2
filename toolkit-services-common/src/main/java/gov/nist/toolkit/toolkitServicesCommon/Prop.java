@@ -3,7 +3,7 @@ package gov.nist.toolkit.toolkitServicesCommon;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Not for Public Use.
  */
 @XmlRootElement
 public class Prop {

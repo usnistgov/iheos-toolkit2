@@ -465,7 +465,7 @@ public class SimServlet  extends HttpServlet {
 
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 
-			SimulatorConfigElement asce = asc.get(AbstractActorFactory.codesEnvironment);
+			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 

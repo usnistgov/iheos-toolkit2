@@ -7,8 +7,9 @@ import gov.nist.toolkit.toolkitServicesCommon.SimIdResource;
 import org.apache.log4j.Logger;
 
 /**
- * Created by bill on 10/9/15.
+ * Not for public use.
  */
+
 public class ToolkitFactory {
     static Logger logger = Logger.getLogger(ToolkitFactory.class);
 
