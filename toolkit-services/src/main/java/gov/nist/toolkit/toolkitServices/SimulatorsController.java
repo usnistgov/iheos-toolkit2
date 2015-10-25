@@ -9,7 +9,9 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 /**
  *
@@ -23,7 +25,8 @@ public class SimulatorsController {
         resourceConfig.property(ServerProperties.TRACING, "ALL");
     }
 
-
+    @Context
+    private UriInfo _uriInfo;
 
     /**
      * Create new simulator with default settings.
@@ -32,24 +35,31 @@ public class SimulatorsController {
      *     Status.OK if successful
      *     Status.BAD_REQUEST if Simulator ID is invalid
      *     Status.INTERNAL_SERVER_ERROR if necessary
+     *     Simulator config if successful
      */
     @POST
     @Consumes("application/json")
     @Produces("application/json")
     public Response createSim(final SimIdResource simIdResource) {
         SimId simId = ToolkitFactory.asServerSimId(simIdResource);
-        logger.info(String.format("SPI Create simulator %s", simId.toString()));
+        logger.info(String.format("Create simulator %s", simId.toString()));
         try {
             String errors = simId.validateState();
             if (errors != null)
                 throw new BadSimConfigException(String.format("Create simulator %s - %s", simId.toString(), errors));
             ToolkitApi api = ToolkitApi.forServiceUse();
-            api.createSimulator(simId);
+            Simulator simulator = api.createSimulator(simId);
+            SimConfigResource bean = ToolkitFactory.asSimConfigBean(simulator.getConfig(0));
+            return Response
+                    .ok(bean)
+                    .header("Location",
+                            String.format("%s/%s", _uriInfo.getAbsolutePath().toString(),
+                                    simId.getId()))
+                    .build();
         }
         catch (Exception e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }
-        return Response.status(Response.Status.OK).build();
     }
 
 
