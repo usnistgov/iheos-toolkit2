@@ -4,7 +4,7 @@ import gov.nist.toolkit.session.server.TestSession
 import gov.nist.toolkit.tookitApi.BasicSimParameters
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
 import gov.nist.toolkit.tookitApi.ToolkitServiceException
-import gov.nist.toolkit.toolkitServicesCommon.SimConfigResource
+import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
 import org.glassfish.grizzly.http.server.HttpServer
@@ -83,7 +83,7 @@ class CreateSimTest extends Specification {
 
         when: 'retrieve full configuration'
         println 'STEP - RETRIEVE FULL CONFIGURATION'
-        SimConfigResource config = builder.get(simId)
+        SimConfig config = builder.get(simId)
 
         then: 'verify configuration'
         simId.getId() == config.getId()
@@ -91,28 +91,32 @@ class CreateSimTest extends Specification {
     }
 
     static final private parmName = "Validate_Codes"
-//    def 'Update sim config'() {
-//        when: 'Delete sim in case it exists'
-//        println 'STEP - DELETE SIM'
-//        builder.delete(params)
-//
-//        and: 'Create new sim'
-//        println 'STEP - CREATE NEW SIM'
-//        SimConfigResource config = builder.create(params)
-//        println config.describe()
-//
-//        then: 'verify sim built'
-//        config.getId() == 'reg'
-//
-//        when: 'Update Validate_Codes to false'
-//        config.setProperty(parmName, 'false')
-//        builder.update(config)
-//
-//        and: 'Get fresh copy of resource'
-//        SimConfigResource updatedConfig = builder.get(config) // extends SimId
-//
-//        then: 'Verify value updated'
-//        updatedConfig.asString(parmName) == 'false'
-//    }
+    def 'Update sim config'() {
+        when: 'Delete sim in case it exists'
+        println 'STEP - DELETE SIM'
+        builder.delete(params)
+
+        and: 'Create new sim'
+        println 'STEP - CREATE NEW SIM'
+        SimConfig config = (SimConfig) builder.create(params)
+        println config.describe()
+
+        then: 'verify sim built'
+        config.getId() == 'reg'
+
+        when: 'Update Validate_Codes to false'
+        config.setProperty(parmName, false)
+        SimConfig returnedConfig = builder.update(config)
+
+        then: 'Update should be reflected in returned config'
+        returnedConfig != null // null indicates no updates made
+        !returnedConfig.asBoolean(parmName)
+
+        and: 'Get fresh copy of resource'
+        SimConfig updatedConfig = builder.get(config) // extends SimId
+
+        then: 'Verify change was persisted'
+        !updatedConfig.asBoolean(parmName)
+    }
 
 }

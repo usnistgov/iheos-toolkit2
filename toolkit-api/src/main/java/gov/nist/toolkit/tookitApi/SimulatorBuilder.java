@@ -60,23 +60,37 @@ public class SimulatorBuilder {
         return config;
     }
 
-    protected SimId create(BasicSimParameters parms) throws ToolkitServiceException {
+    /**
+     * Not for Public Use.
+     * @param parms
+     * @return
+     * @throws ToolkitServiceException
+     */
+    public SimId create(BasicSimParameters parms) throws ToolkitServiceException {
         return create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
     }
 
     /**
      * Update the configuration of an existing Simulator. Any properties that are passed in SimConfig that are
-     * not recognized will be silently ignored. Expected usage is to retrieve the configuration using the get() method,
+     * not recognized will be silently ignored. Parameters passed with wrong type (String vs. boolean) will cause
+     * ToolkitServiceException.
+     *
+     * Expected usage is to retrieve the configuration using the get() method,
      * update the parameters, and then submit the update using this call.
      * @param config new configuration
+     * @return updated SimConfig if updates made or null if no changes accepted.
      * @throws ToolkitServiceException if anything goes wrong
      */
-    public void update(SimConfig config) throws ToolkitServiceException {
+    public SimConfig update(SimConfig config) throws ToolkitServiceException {
         Response response = target.path(String.format("simulators/%s", config.getId()))
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(config));
-        if (response.getStatus() != 200)
-            throw new ToolkitServiceException(response);
+        int status = response.getStatus();
+        if (status == Response.Status.ACCEPTED.getStatusCode())
+            return response.readEntity(SimConfigResource.class);
+        if (status == Response.Status.NOT_MODIFIED.getStatusCode())
+            return null;
+        throw new ToolkitServiceException(response);
     }
 
     /**
@@ -98,13 +112,17 @@ public class SimulatorBuilder {
      * @throws ToolkitServiceException if anything goes wrong
      */
     public void delete(SimId simId) throws ToolkitServiceException {
-        SimIdResource bean = new SimIdResource(simId);
         Response response = target.path("simulators/" + simId.getUser() + "__" + simId.getId()).request().delete();
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
     }
 
-    protected void delete(BasicSimParameters parms) throws ToolkitServiceException {
+    /**
+     * Not for Public Use.
+     * @param parms
+     * @throws ToolkitServiceException
+     */
+    public void delete(BasicSimParameters parms) throws ToolkitServiceException {
         delete(parms.getId(), parms.getUser());
     }
 

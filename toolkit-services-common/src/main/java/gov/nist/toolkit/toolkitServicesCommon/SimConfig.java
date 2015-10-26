@@ -39,4 +39,10 @@ public interface SimConfig extends SimId {
      * @return boolean value
      */
     boolean asBoolean(String name);
+
+    /**
+     * Describe Simulator Configuration.
+     * @return Description string.
+     */
+    String describe();
 }

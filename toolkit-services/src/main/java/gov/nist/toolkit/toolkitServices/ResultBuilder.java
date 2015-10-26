@@ -1,9 +1,6 @@
 package gov.nist.toolkit.toolkitServices;
 
-import gov.nist.toolkit.actorfactory.client.BadSimConfigException;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimExistsException;
-import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.toolkitServicesCommon.OperationResultResource;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -45,6 +42,10 @@ public class ResultBuilder {
             reason = "Sim " + simId + " does not exist";
             extendedCode = OperationResultResource.SIM_DOES_NOT_EXIST;
             status = Response.Status.NOT_FOUND;
+        }
+        if (e instanceof SimPropertyTypeConflictException) {
+            reason = e.getMessage();
+            status = Response.Status.CONFLICT;
         }
         if (e instanceof IOException) {
             reason = e.getMessage();

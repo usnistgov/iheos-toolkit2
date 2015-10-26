@@ -2,6 +2,7 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.services.server.ToolkitApi;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfigResource;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdResource;
 import org.apache.log4j.Logger;
@@ -18,9 +19,13 @@ import javax.ws.rs.core.UriInfo;
  */
 @Path("/simulators")
 public class SimulatorsController {
+    ToolkitApi api;
+
     static Logger logger = Logger.getLogger(SimulatorsController.class);
 
     public SimulatorsController() {
+        api = ToolkitApi.forServiceUse();
+
         ResourceConfig resourceConfig = new ResourceConfig(SimulatorsController.class);
         resourceConfig.property(ServerProperties.TRACING, "ALL");
     }
@@ -30,7 +35,7 @@ public class SimulatorsController {
 
     /**
      * Create new simulator with default settings.
-     * @param simId - Simulator ID
+     * @param simIdResource - Simulator ID
      * @return
      *     Status.OK if successful
      *     Status.BAD_REQUEST if Simulator ID is invalid
@@ -40,14 +45,13 @@ public class SimulatorsController {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response createSim(final SimIdResource simIdResource) {
+    public Response create(final SimIdResource simIdResource) {
         SimId simId = ToolkitFactory.asServerSimId(simIdResource);
         logger.info(String.format("Create simulator %s", simId.toString()));
         try {
             String errors = simId.validateState();
             if (errors != null)
                 throw new BadSimConfigException(String.format("Create simulator %s - %s", simId.toString(), errors));
-            ToolkitApi api = ToolkitApi.forServiceUse();
             Simulator simulator = api.createSimulator(simId);
             SimConfigResource bean = ToolkitFactory.asSimConfigBean(simulator.getConfig(0));
             return Response
@@ -62,10 +66,67 @@ public class SimulatorsController {
         }
     }
 
+    /**
+     * Update Simulator Configuration.
+     * @param config containing updates
+     * @return accepted (202) and full updated config if changes actually made, notModified (304) and no body if no
+     * actual changes made, Conflict (409) if boolean/String type is wrong on a property.
+     */
     @POST
+    @Consumes("application/json")
+    @Produces("application/json")
     @Path("{id}")
     public Response update(final SimConfigResource config) {
-        return null;
+        logger.info(String.format("Update request for %s", config.getFullId()));
+        SimId simId = null;
+        try {
+            simId = ToolkitFactory.asServerSimId(config);
+            SimulatorConfig currentConfig = api.getConfig(simId);
+            if (config == null) throw new NoSimException("");
+
+            boolean makeUpdate = false;
+            for (String propName : config.propertyNames()) {
+                if (!currentConfig.hasConfig(propName)) {
+                    logger.info(String.format("Property %s ignored - no such property", propName));
+                    continue;  // ignore
+                }
+                boolean currentIsBoolean = currentConfig.get(propName).isBoolean();
+                boolean updateIsBoolean = config.isBoolean(propName);
+                if (currentIsBoolean != updateIsBoolean)
+                    throw new SimPropertyTypeConflictException(propName,
+                            (currentIsBoolean) ? "boolean" : "String",
+                            (currentIsBoolean) ? "String" : "boolean");
+                SimulatorConfigElement ele = currentConfig.get(propName);
+                if (ele == null) continue;  // no such property
+                if (!ele.isEditable()) {
+                    continue;  // ignore
+                }
+                if (currentIsBoolean) {
+                    if (ele.asBoolean() == config.asBoolean(propName)) continue;  // no change
+                    if (!makeUpdate)  // first update
+                        logger.info(String.format("...property %s", propName));
+                    makeUpdate = true;
+                    logger.info(String.format("......%s ==> %s", ele.asBoolean(), config.asBoolean(propName)));
+                    ele.setValue(config.asBoolean(propName));
+                }
+                else {
+                    if (ele.asString().equals(config.asString(propName))) continue;  // no change
+                    if (!makeUpdate)  // first update
+                        logger.info(String.format("...property %s", propName));
+                    makeUpdate = true;
+                    logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
+                    ele.setValue(config.asString(propName));
+                }
+            }
+            if (makeUpdate) {
+                logger.info(String.format("Sim %s is updated", config.getFullId()));
+                SimConfigResource bean = ToolkitFactory.asSimConfigBean(currentConfig);
+                return Response.accepted(bean).build();
+            } else
+                return Response.notModified().build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
     }
 
     /**
@@ -75,9 +136,8 @@ public class SimulatorsController {
      */
     @DELETE
     @Path("{id}")
-    public Response deleteSim(@PathParam("id") String id) {
+    public Response delete(@PathParam("id") String id) {
         logger.info("Delete " + id);
-        ToolkitApi api = ToolkitApi.forServiceUse();
         SimId simId = new SimId(id);
         try {
             api.deleteSimulator(simId);
@@ -100,7 +160,6 @@ public class SimulatorsController {
         logger.info("GET simulator/" +  id);
         SimId simId = new SimId(id);
         try {
-            ToolkitApi api = ToolkitApi.forServiceUse();
             SimulatorConfig config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
             SimConfigResource bean = ToolkitFactory.asSimConfigBean(config);
