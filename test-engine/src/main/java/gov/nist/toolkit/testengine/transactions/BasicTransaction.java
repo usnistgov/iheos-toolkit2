@@ -890,11 +890,12 @@ public abstract class BasicTransaction  {
 	protected void parseBasicInstruction(OMElement part) throws XdsInternalException {
 		String part_name = part.getLocalName();
 
-		if (part_name.equals("Metadata")) {
-			metadata_filename = "";
-			request_element = part.getFirstElement();
-		}
-		else if (part_name.equals("MetadataFile")) {
+//		if (part_name.equals("Metadata")) {
+//			metadata_filename = "";
+//			request_element = part.getFirstElement();
+//		}
+//		else
+		if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + File.separator + part.getText();
 			testLog.add_name_value(this.instruction_output, "MetadataFile", metadata_filename);
 		}
