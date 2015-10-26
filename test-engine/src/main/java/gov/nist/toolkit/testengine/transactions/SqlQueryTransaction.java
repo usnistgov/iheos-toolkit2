@@ -8,15 +8,14 @@ import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
+
+import java.io.File;
 
 public class SqlQueryTransaction extends QueryTransaction {
 	OMElement expected_contents = null;
@@ -137,7 +136,6 @@ public class SqlQueryTransaction extends QueryTransaction {
 
 	@Override
 	protected String getRequestAction() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

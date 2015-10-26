@@ -106,7 +106,6 @@ public class PatternMatchTest {
 //			new PatternMatchTest().run();
 			new PatternMatchTest().run2();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("Done");

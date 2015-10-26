@@ -240,7 +240,6 @@ public class MetadataCollectionToMetadata {
 			m = MetadataParser.parseNonSubmission(infile);
 		} 
 		catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(0);
 		} 
@@ -254,7 +253,6 @@ public class MetadataCollectionToMetadata {
 		try {
 			eles = m2.getV3();
 		} catch (XdsInternalException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			System.exit(1);
 		}
@@ -267,7 +265,6 @@ public class MetadataCollectionToMetadata {
 		try {
 			Io.stringToFile(new File("/Users/bill/tmp/submission.xml"), new OMFormatter(x).toString());
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}

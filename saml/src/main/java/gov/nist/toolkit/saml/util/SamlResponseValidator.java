@@ -147,7 +147,7 @@ public class SamlResponseValidator {
         _chainingCredentialResolver =  
             new ChainingCredentialResolver();           
            
-        //TODO -MG: EVB, JRE, RDV: define order of credential resolvers and test
+        //  -MG: EVB, JRE, RDV: define order of credential resolvers and test
                      
         //Metadata credentials
         if(_organization != null)
@@ -288,7 +288,7 @@ public class SamlResponseValidator {
                 _profileValidator.validate(signature);                               
             }                                
             
-            //TODO -MG: EVB, JRE, RDV: define order of credential resolvers and test                        
+            // -MG: EVB, JRE, RDV: define order of credential resolvers and test
             if(_chainingCredentialResolver.getResolverChain().isEmpty())
             {
                 _logger.warn(
@@ -298,7 +298,7 @@ public class SamlResponseValidator {
             else
             {               
                 //Create trust engine                
-                //TODO -MG: EVB: trust engine and resolver creation can be placed in one-time init code (e.g. SAML2Requestor)
+                // -MG: EVB: trust engine and resolver creation can be placed in one-time init code (e.g. SAML2Requestor)
                 
                 
                 bValid = validateMessage(context, message);

@@ -20,8 +20,5 @@ public class LoggerException extends XdsInternalException
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	/**TODO :
-	 *   Define exception numbers 
-	 */
 
 }

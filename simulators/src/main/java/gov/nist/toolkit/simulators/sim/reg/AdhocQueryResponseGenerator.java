@@ -27,7 +27,6 @@ public class AdhocQueryResponseGenerator extends TransactionSimulator implements
 		try {
 			ahqr.add(dsSimCommon.getRegistryErrorList(), null);
 		} catch (XdsInternalException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

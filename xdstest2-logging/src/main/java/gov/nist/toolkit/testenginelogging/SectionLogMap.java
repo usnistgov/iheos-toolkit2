@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SectionLogMap {
-	// TODO - section name must expand to test/section so that test context is maintained
+	// - section name must expand to test/section so that test context is maintained
 	// section name => log
 	Map<String, LogFileContent> sectionLogs;
 	List<String> sectionNames;   // this dictates the order of the sections

@@ -67,10 +67,6 @@
       If included, the typeCode SHALL be 'SPRT'. 
    </assert>
 
-<!-- TODO: Second nested observation
-     TBD when issues from specification over "DRIV" typecode is cleared up.
-
- -->
 
  </rule> 
 </pattern>

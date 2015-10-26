@@ -163,7 +163,7 @@ public class Soap implements SoapInterface {
 			throw new XdsInternalException(
 					"Internal Error: Axis2 Repository not configured");
 
-		// TODO remove rl not use anywhere -Antoine
+		// - remove rl not use anywhere -Antoine
 		File rl = new File(repositoryLocation);
 		if (!rl.exists() || !rl.isDirectory())
 			throw new XdsInternalException("Axis2 repository location, "
@@ -186,7 +186,7 @@ public class Soap implements SoapInterface {
 			buf.append("Error loading Axis2 Repository: " + e.getMessage()
 					+ "\n");
 
-			// TODO REMOVE ?? exact same call = exact same result. I am puzzled
+			// - REMOVE ?? exact same call = exact same result. I am puzzled
 			// -Antoine
 			cc = ConfigurationContextFactory
 					.createConfigurationContextFromFileSystem(repositoryLocation);
@@ -341,9 +341,9 @@ public class Soap implements SoapInterface {
 		AxisFault lastFault = null;
 		boolean finished = false;
 
-		// TODO CHECK engaging the addressing module. Should it really be
+		// - CHECK engaging the addressing module. Should it really be
 		// engaged a each soap call? -Antoine
-		// TODO CHECK is the module engagement really asynchronous ?? -Antoine
+		// - CHECK is the module engagement really asynchronous ?? -Antoine
 		for (int i = 0; i < 10 && !finished; i++) {
 			// System.out.println("engageModule try " + i);
 			try {
@@ -378,7 +378,7 @@ public class Soap implements SoapInterface {
 			// operationClient =
 			// serviceClient.createClient(ServiceClient.ANON_OUT_IN_OP);
 
-			// TODO CHECK - This should not be necessary. This operation is
+			//  CHECK - This should not be necessary. This operation is
 			// already created by the serviceClient constructor! -Antoine
 			// vbeera: This is first fix found for MustUnderstand exception
 			operationClient = serviceClient
@@ -394,7 +394,7 @@ public class Soap implements SoapInterface {
 			// MessageContext outMsgCtx = new MessageContext();
 			outMsgCtx = cc.createMessageContext();
 		} else {
-			// TODO CHECK - This should not be necessary. This operation is
+			//  CHECK - This should not be necessary. This operation is
 			// already created by the serviceClient constructor! -Antoine
 			operationClient = serviceClient
 					.createClient(ServiceClient.ANON_OUT_IN_OP);
@@ -421,7 +421,7 @@ public class Soap implements SoapInterface {
 				// this is the overly heavy handed approach
 				// Protocol.registerProtocol("https", authhttps);
 
-				// TODO REMOVE - I guess this is dead code -Antoine
+				//  REMOVE - I guess this is dead code -Antoine
 				Protocol protocol = getAuthHttpsProtocol();
 				options.setProperty(HTTPConstants.CUSTOM_PROTOCOL_HANDLER,
 						protocol);
@@ -502,7 +502,7 @@ public class Soap implements SoapInterface {
 			if (async)
 				operationClient.complete(outMsgCtx);
 			
-			// TODO - null pointer exception here if port number in configuration is wrong
+			//  - null pointer exception here if port number in configuration is wrong
 			try {
 				inMsgCtx.getEnvelope().build();
 			} catch (NullPointerException e) {
@@ -575,10 +575,8 @@ public class Soap implements SoapInterface {
 			System.out.println(x.getClass().getName());
 			System.out.println("No Error");
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -663,8 +661,10 @@ public class Soap implements SoapInterface {
 	}
 
 	/*
-	 * Set options for the current message. TODO CHANGE this should be set once
-	 * for the execution! TODO CHANGE hardcoded parameters should be accessible
+	 * Set options for the current message.
+	 * CHANGE this should be set once
+	 * for the execution!
+	 * CHANGE hardcoded parameters should be accessible
 	 * in some easily identifiable place. What do they mean? -Antoine
 	 */
 	void setOptions(Options opts) throws AxisFault {
@@ -686,7 +686,7 @@ public class Soap implements SoapInterface {
 		opts.setProperty(Constants.Configuration.ENABLE_MTOM,
 				((mtom) ? Constants.VALUE_TRUE : Constants.VALUE_FALSE));
 
-		// TODO CHECK WS-Addressing Action / SOAP Action string - what does this
+		// CHECK WS-Addressing Action / SOAP Action string - what does this
 		// really mean? -Antoine
 		opts.setAction(action);
 

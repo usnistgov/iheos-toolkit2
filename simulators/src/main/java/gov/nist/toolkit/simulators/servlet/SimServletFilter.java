@@ -20,8 +20,7 @@ public class SimServletFilter implements Filter {
 	static Logger logger = Logger.getLogger(SimServletFilter.class);
 
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -84,8 +83,7 @@ public class SimServletFilter implements Filter {
     }
 
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 }

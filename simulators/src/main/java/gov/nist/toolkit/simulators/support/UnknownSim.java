@@ -31,7 +31,6 @@ public class UnknownSim extends TransactionSimulator implements RegistryResponse
 	}
 
 	public Response getResponse() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

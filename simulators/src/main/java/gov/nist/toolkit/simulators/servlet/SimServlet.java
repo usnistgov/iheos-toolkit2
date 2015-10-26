@@ -329,7 +329,6 @@ public class SimServlet  extends HttpServlet {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (NoSimException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

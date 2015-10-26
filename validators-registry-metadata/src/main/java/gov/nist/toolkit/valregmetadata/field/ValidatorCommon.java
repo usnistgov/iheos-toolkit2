@@ -215,27 +215,22 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	public void sectionHeading(String msg) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void challenge(String msg) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void finish() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void showErrorInfo() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void detail(String msg) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -245,39 +240,32 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	public void externalChallenge(String msg) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void err(String code, String msg, String location, String resource,
 			Object logMessage) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void err(Code code, String msg, String location, String resource,
 			Object log_message) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void err(Code code, String msg, String resource) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void err(Code code, Exception e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void err(Code code, String msg, String location, String resource) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void err(Code code, String msg, Object location, String resource) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -289,26 +277,22 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	public void err(String code, String msg, String location, String severity,
 			String resource) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void err(Code code, String msg, String location, String severity,
 			String resource) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void warning(String code, String msg, String location,
 			String resource) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void warning(Code code, String msg, String location, String resource) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -324,19 +308,16 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	@Override
 	public int getNbErrors() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void concat(ErrorRecorder er) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public List<ValidatorErrorItem> getErrMsgs() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -370,14 +351,12 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	@Override
 	public void success(String dts, String name, String found, String expected, String RFC) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void error(String dts, String name, String found, String expected, String RFC) {
-		// TODO Auto-generated method stub
-
+\
 	}
 
 	@Override
@@ -387,19 +366,16 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	@Override
 	public void warning(String dts, String name, String found, String expected, String RFC) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void info(String dts, String name, String found, String expected, String RFC) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void summary(String msg, boolean success, boolean part) {
-		// TODO Auto-generated method stub
 
 	}
 

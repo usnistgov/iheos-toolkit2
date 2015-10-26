@@ -3,7 +3,11 @@
  */
 package gov.nist.toolkit.saml.security;
 
-import java.util.Iterator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.MarshalException;
 import javax.xml.crypto.dsig.Reference;
@@ -11,13 +15,7 @@ import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureException;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import java.util.Iterator;
 
 /**
  * @author vbeera
@@ -89,11 +87,9 @@ public class XMLSignatureValidatorUtil
 				
 			}
 		} catch (MarshalException e) {
-			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 			// e.printStackTrace();
 		} catch (XMLSignatureException e) {
-			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 			// e.printStackTrace();
 		} 

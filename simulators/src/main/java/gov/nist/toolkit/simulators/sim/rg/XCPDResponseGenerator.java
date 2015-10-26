@@ -49,7 +49,6 @@ public class XCPDResponseGenerator extends TransactionSimulator implements XCPDR
 			try {			
 				xcpd_response = AXIOMUtil.stringToOM(my_response);
 			} catch (XMLStreamException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return xcpd_response;
