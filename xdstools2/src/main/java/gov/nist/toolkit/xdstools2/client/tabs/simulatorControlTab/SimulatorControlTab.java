@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -223,7 +224,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 						table.setText(row, nameColumn, config.getDefaultName());
 						table.setText(row, idColumn, config.getId().toString());
 						table.setText(row, typeColumn, ActorType.findActor(config.getActorType()).getName());
-						SimulatorConfigElement portConfig = config.get(SimulatorConfig.PIF_PORT);
+						SimulatorConfigElement portConfig = config.get(SimulatorProperties.PIF_PORT);
 						if (portConfig != null) {
 							String pifPort = portConfig.asString();
 							table.setText(row, pidPortColumn, pifPort);

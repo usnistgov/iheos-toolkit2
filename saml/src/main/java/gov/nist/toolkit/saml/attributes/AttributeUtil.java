@@ -348,7 +348,6 @@ public class AttributeUtil extends SamlConstants {
 				}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
 		

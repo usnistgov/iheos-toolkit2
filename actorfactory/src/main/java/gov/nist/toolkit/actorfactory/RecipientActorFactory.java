@@ -66,13 +66,13 @@ public class RecipientActorFactory  extends AbstractActorFactory {
 		site.addTransaction(new TransactionBean(
 				TransactionType.XDR_PROVIDE_AND_REGISTER.getCode(),
 				RepositoryType.NONE,
-				sc.get(pnrEndpoint).asString(), 
+				sc.get(SimulatorProperties.pnrEndpoint).asString(),
 				false, 
 				isAsync));
 		site.addTransaction(new TransactionBean(
 				TransactionType.XDR_PROVIDE_AND_REGISTER.getCode(),
 				RepositoryType.NONE,
-				sc.get(pnrTlsEndpoint).asString(), 
+				sc.get(SimulatorProperties.pnrTlsEndpoint).asString(),
 				true, 
 				isAsync));
 

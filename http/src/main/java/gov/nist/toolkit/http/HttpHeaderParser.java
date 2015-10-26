@@ -68,8 +68,7 @@ public class HttpHeaderParser {
 		if (token == null) {
 			return;
 		}
-		// TODO: validate as name syntax
-		if (token.isString())
+        if (token.isString())
 			name = token.getValue();
 
 		/**
@@ -104,7 +103,6 @@ public class HttpHeaderParser {
 				break;
 			if (token.isToken()) 
 				throw new ParseException("Expected Parameter name - found " + token + " in " + line);
-			// TODO: needs to be validated as having name syntax
 			String paramName = token.getValue();
 
 			/**

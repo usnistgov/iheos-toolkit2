@@ -591,7 +591,6 @@ public class RetrieveTransaction extends BasicTransaction {
 
 	@Override
 	protected String getRequestAction() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

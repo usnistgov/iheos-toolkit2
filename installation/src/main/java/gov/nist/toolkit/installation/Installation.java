@@ -3,6 +3,7 @@ package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -54,6 +55,8 @@ public class Installation {
 		if (warHome()!=null && warHome().equals(warHome))
 			return; /* already set */
 		logger.info("V2 - Installation - war home set to " + warHome);
+        if (warHome == null)
+            logger.error(ExceptionUtil.here("warhome is null"));
 		this.warHome = warHome;
 		propertyServiceMgr = null;
 		if (externalCache == null) // this can be different in a unit test situation

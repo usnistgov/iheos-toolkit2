@@ -56,6 +56,7 @@ public class EnvSetting {
     public EnvSetting(String envName) {
         this.envName = envName;
         this.envDir = Installation.installation().environmentFile(envName);
+        validateEnvironment();
     }
 	
 	private EnvSetting(String name, File dir) {
@@ -74,7 +75,7 @@ public class EnvSetting {
 	
 	public File getCodesFile() throws EnvironmentNotSelectedException {
 		if (envDir == null) 
-			throw new EnvironmentNotSelectedException("");
+			throw new EnvironmentNotSelectedException(String.format("Environment %s does not exist", envName));
 //			return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
 		File f = new File(envDir + File.separator + "codes.xml");
 		if (f.exists())
@@ -85,7 +86,7 @@ public class EnvSetting {
 
     void validateEnvironment() {
         if (getCodesFile() == null)
-            throw new EnvironmentNotSelectedException("Selected environment " + envName + " not valid - does not contain codex.xml file");
+            throw new EnvironmentNotSelectedException("Selected environment " + envName + " not valid - does not contain codes.xml file");
     }
 
 }

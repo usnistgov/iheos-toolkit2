@@ -471,8 +471,6 @@ public class DsSimCommon {
      * @return
      */
     SoapFault getSoapErrors() {
-        //TODO CHECK IF DESIRABLE: WE SEEMS TO RETURN ONLY THR FIRST ERROR FOUND
-        //TODO Should walk validator list instead
 
         SoapFault sf;
 

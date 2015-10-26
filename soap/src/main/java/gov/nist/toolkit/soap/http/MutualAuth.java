@@ -2,6 +2,7 @@ package gov.nist.toolkit.soap.http;
 
 import gov.nist.toolkit.utilities.io.Io;
 
+import javax.net.ssl.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,27 +11,10 @@ import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
-import java.security.PrivateKey;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509KeyManager;
 
 /* This was pulled together from Internet sources and doesn't yet do
  * anything useful.
@@ -123,7 +107,7 @@ public class MutualAuth {
         	if (debug)
         		System.out.println("Context built with SSLV3");
         }
-        //TODO investigate: could also be "SSLContext context = SSLContext.getInstance("TLS");" Why?
+        // investigate: could also be "SSLContext context = SSLContext.getInstance("TLS");" Why?
         context.init(keyManagers, trustManagers, null);
         SSLSocketFactory socketFactory = context.getSocketFactory();
         return socketFactory;

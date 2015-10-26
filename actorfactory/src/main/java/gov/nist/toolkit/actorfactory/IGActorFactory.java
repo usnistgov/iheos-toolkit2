@@ -30,10 +30,10 @@ public class IGActorFactory extends AbstractActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		addFixedEndpoint(sc, igqEndpoint, actorType, TransactionType.IG_QUERY, false);
-		addFixedEndpoint(sc, igqTlsEndpoint, actorType, TransactionType.IG_QUERY, true);
-		addFixedEndpoint(sc, igrEndpoint, actorType, TransactionType.IG_RETRIEVE, false);
-		addFixedEndpoint(sc, igrTlsEndpoint, actorType, TransactionType.IG_RETRIEVE, true);
+		addFixedEndpoint(sc, SimulatorProperties.igqEndpoint, actorType, TransactionType.IG_QUERY, false);
+		addFixedEndpoint(sc, SimulatorProperties.igqTlsEndpoint, actorType, TransactionType.IG_QUERY, true);
+		addFixedEndpoint(sc, SimulatorProperties.igrEndpoint, actorType, TransactionType.IG_RETRIEVE, false);
+		addFixedEndpoint(sc, SimulatorProperties.igrTlsEndpoint, actorType, TransactionType.IG_RETRIEVE, true);
 
 		sc.setRemoteSitesNecessary(true, "RGs");
 		
@@ -58,26 +58,26 @@ public class IGActorFactory extends AbstractActorFactory {
 		site.addTransaction(new TransactionBean(
 				TransactionType.IG_QUERY.getCode(),
 				RepositoryType.NONE,
-				sc.get(igqEndpoint).asString(), 
+				sc.get(SimulatorProperties.igqEndpoint).asString(),
 				false, 
 				isAsync));
 		site.addTransaction(new TransactionBean(
 				TransactionType.IG_QUERY.getCode(),
 				RepositoryType.NONE,
-				sc.get(igqTlsEndpoint).asString(), 
+				sc.get(SimulatorProperties.igqTlsEndpoint).asString(),
 				true, 
 				isAsync));
 		
 		site.addTransaction(new TransactionBean(
 				TransactionType.IG_RETRIEVE.getCode(),
 				RepositoryType.NONE,
-				sc.get(igrEndpoint).asString(), 
+				sc.get(SimulatorProperties.igrEndpoint).asString(),
 				false, 
 				isAsync));
 		site.addTransaction(new TransactionBean(
 				TransactionType.IG_RETRIEVE.getCode(),
 				RepositoryType.NONE,
-				sc.get(igrTlsEndpoint).asString(), 
+				sc.get(SimulatorProperties.igrTlsEndpoint).asString(),
 				true, 
 				isAsync));
 		

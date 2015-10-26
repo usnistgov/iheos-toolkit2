@@ -401,7 +401,6 @@ public class HomeTab extends GenericQueryTab {
 	@Override
 	public void onTabLoad(TabContainer container, boolean select,
 			String eventName) {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -42,17 +43,17 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	public RegistryActorSimulator() {}
 
 	public boolean isPartOfRecipient() {
-		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorConfig.PART_OF_RECIPIENT);
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.PART_OF_RECIPIENT);
 		return sce != null && sce.asBoolean();
 	}
 
 	public boolean isValidateCodes() {
-		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorConfig.VALIDATE_CODES);
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_CODES);
 		return sce != null && sce.asBoolean();
 	}
 
 	public boolean validateAgainstPatientIdentityFeed() {
-		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorConfig.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED);
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED);
 		return sce != null && sce.asBoolean();
 	}
 
@@ -66,7 +67,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	}
 
 	public void init() {
-		SimulatorConfigElement updateConfig = getSimulatorConfig().get(SimulatorConfig.UPDATE_METADATA_OPTION);
+		SimulatorConfigElement updateConfig = getSimulatorConfig().get(SimulatorProperties.UPDATE_METADATA_OPTION);
 		if (updateConfig != null)
 			updateEnabled = updateConfig.asBoolean();
 	}
@@ -251,7 +252,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	@Override
 	public void onCreate(SimulatorConfig config) {
 		// When registry part of implementation of Document Recipient there is no patient feed necessary
-		SimulatorConfigElement pifPortConfigured = config.get(SimulatorConfig.PIF_PORT);
+		SimulatorConfigElement pifPortConfigured = config.get(SimulatorProperties.PIF_PORT);
 		if (pifPortConfigured != null)
 			PatientIdentityFeedServlet.generateListener(config);
 	}

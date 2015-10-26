@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
@@ -19,8 +20,7 @@ public class SimServletFilter implements Filter {
 	static Logger logger = Logger.getLogger(SimServletFilter.class);
 
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -65,8 +65,8 @@ public class SimServletFilter implements Filter {
 
         // This parameter is the base address of a webservice, for example
         // http://localhost:8080/xdstools2/rest/
-        SimulatorConfigElement callbackBaseAddressEle = config.get(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
-        SimulatorConfigElement callbackClassNameEle = config.get(SimulatorConfig.TRANSACTION_NOTIFICATION_CLASS);
+        SimulatorConfigElement callbackBaseAddressEle = config.get(SimulatorProperties.TRANSACTION_NOTIFICATION_URI);
+        SimulatorConfigElement callbackClassNameEle = config.get(SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS);
         if (callbackBaseAddressEle == null) return;
         if (callbackClassNameEle == null) return;
         String callbackClassName = callbackClassNameEle.asString();
@@ -83,8 +83,7 @@ public class SimServletFilter implements Filter {
     }
 
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 }

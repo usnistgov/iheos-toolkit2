@@ -1,15 +1,11 @@
 package gov.nist.toolkit.session.server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.apache.log4j.Logger;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import org.apache.log4j.Logger;
 
 public class SessionPropertyManager {
 	static Logger logger = Logger.getLogger(SessionPropertyManager.class);
@@ -45,10 +41,8 @@ public class SessionPropertyManager {
 			fos.flush();
 			fos.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -60,10 +54,8 @@ public class SessionPropertyManager {
 			properties.load(new FileInputStream(propFile));
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

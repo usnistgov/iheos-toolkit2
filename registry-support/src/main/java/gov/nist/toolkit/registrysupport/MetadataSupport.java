@@ -392,7 +392,6 @@ public class MetadataSupport {
         return om_factory.createOMElement(localName, ns, parent);
     }
 
-    // TODO move
     public static OMElement getChild(OMElement ele, String localName, String id) {
         for (Iterator it=ele.getChildElements(); it.hasNext(); ) {
             OMElement child = (OMElement) it.next();

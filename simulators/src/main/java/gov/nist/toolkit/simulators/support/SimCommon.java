@@ -33,7 +33,7 @@ import java.util.List;
  *
  */
 
-// TODO: This should be limited to suporting functions for all simulators.
+// NOTE: This should be limited to suporting functions for all simulators.
     // References to Regindex, RepIndex, RegistryErrorListGenerator, documentsToAttach should be refactored out
 public class SimCommon {
 	public SimDb db = null;

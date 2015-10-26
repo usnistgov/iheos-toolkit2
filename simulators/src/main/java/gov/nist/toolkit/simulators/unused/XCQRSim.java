@@ -24,7 +24,6 @@ public class XCQRSim extends TransactionSimulator implements RegistryResponseGen
 
 	@Override
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
-		// TODO Auto-generated method stub
 
 	}
 

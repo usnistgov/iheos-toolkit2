@@ -1,9 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rg;
 
-import gov.nist.toolkit.actorfactory.AbstractActorFactory;
-import gov.nist.toolkit.actorfactory.RGActorFactory;
-import gov.nist.toolkit.actorfactory.RepositoryActorFactory;
-import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -84,7 +81,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
 
-			SimulatorConfigElement asce = getSimulatorConfig().getUserByName(AbstractActorFactory.homeCommunityId);
+			SimulatorConfigElement asce = getSimulatorConfig().getUserByName(SimulatorProperties.homeCommunityId);
 			if (asce == null) {
 				er.err(Code.XDSRepositoryError, "RG Internal Error - homeCommunityId not configured", this, "");
 				returnRetrieveError();
@@ -107,7 +104,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 
 			// get repository endpoint for retrieve
-			String endpoint = getSimulatorConfig().get(RepositoryActorFactory.retrieveEndpoint).asString();
+			String endpoint = getSimulatorConfig().get(SimulatorProperties.retrieveEndpoint).asString();
 
 			// issue soap call to repository
 			Soap soap = new Soap();
@@ -189,7 +186,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			m = rss.getMetadata();
 
-			String home = getSimulatorConfig().get(RGActorFactory.homeCommunityId).asString();
+			String home = getSimulatorConfig().get(SimulatorProperties.homeCommunityId).asString();
 
 			// add homeCommunityId
 			XCQHomeLabelSim xc = new XCQHomeLabelSim(common, this, home);
