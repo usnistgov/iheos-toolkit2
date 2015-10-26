@@ -3,6 +3,7 @@ package gov.nist.toolkit.toolkitServices;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.toolkitServicesCommon.OperationResultResource;
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
@@ -23,8 +24,14 @@ public class ResultBuilder {
         int extendedCode = 0;
 
         if (e instanceof EnvironmentNotSelectedClientException) {
-            reason = "Environment not selected - " + e.getMessage();
-            status = Response.Status.INTERNAL_SERVER_ERROR;
+            reason = "Environment does not exist - " + e.getMessage();
+            extendedCode = OperationResultResource.ENVIRONMENT_DOES_NOT_EXIST;
+            status = Response.Status.BAD_REQUEST;
+        }
+        if (e instanceof EnvironmentNotSelectedException) {
+            reason = "Environment does not exist - " + e.getMessage();
+            extendedCode = OperationResultResource.ENVIRONMENT_DOES_NOT_EXIST;
+            status = Response.Status.BAD_REQUEST;
         }
         if (e instanceof ThreadPoolExhaustedException) {
             reason = "Thread pool exhausted - " + e.getMessage();

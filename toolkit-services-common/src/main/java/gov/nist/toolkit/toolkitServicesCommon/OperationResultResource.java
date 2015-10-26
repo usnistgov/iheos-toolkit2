@@ -17,6 +17,8 @@ public class OperationResultResource {
 
     static final public int SIM_DOES_NOT_EXIST = Response.Status.NOT_FOUND.getStatusCode()*100+1;
 
+    static final public int ENVIRONMENT_DOES_NOT_EXIST = Response.Status.BAD_REQUEST.getStatusCode()*100+1;
+
     public OperationResultResource() {}
 
     public OperationResultResource(Response.Status status, String reason) {

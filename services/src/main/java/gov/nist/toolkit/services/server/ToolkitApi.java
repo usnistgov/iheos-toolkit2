@@ -109,6 +109,10 @@ public class ToolkitApi {
      */
     public boolean simulatorExists(SimId simId) { return new SimDb().exists(simId); }
 
+    public void saveSimulator(SimulatorConfig config) throws Exception {
+        simulatorServiceManager().saveSimConfig(config);
+    }
+
     /**
      * Delete a simulator
      * @param simId - id of the simulator

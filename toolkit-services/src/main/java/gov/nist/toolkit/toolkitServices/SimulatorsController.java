@@ -82,7 +82,7 @@ public class SimulatorsController {
         try {
             simId = ToolkitFactory.asServerSimId(config);
             SimulatorConfig currentConfig = api.getConfig(simId);
-            if (config == null) throw new NoSimException("");
+            if (currentConfig == null) throw new NoSimException("");
 
             boolean makeUpdate = false;
             for (String propName : config.propertyNames()) {
@@ -120,6 +120,7 @@ public class SimulatorsController {
             }
             if (makeUpdate) {
                 logger.info(String.format("Sim %s is updated", config.getFullId()));
+                api.saveSimulator(currentConfig);
                 SimConfigResource bean = ToolkitFactory.asSimConfigBean(currentConfig);
                 return Response.accepted(bean).build();
             } else
@@ -140,7 +141,7 @@ public class SimulatorsController {
         logger.info("Delete " + id);
         SimId simId = new SimId(id);
         try {
-            api.deleteSimulator(simId);
+            api.deleteSimulatorIfItExists(simId);
         }
         catch (Throwable e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.THROW);

@@ -8,6 +8,7 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
 import org.glassfish.grizzly.http.server.HttpServer
+import spock.lang.Shared
 import spock.lang.Specification
 
 import javax.ws.rs.core.Response
@@ -18,7 +19,7 @@ class CreateSimTest extends Specification {
     def host='localhost'
     def port = '8888'
     SimulatorBuilder builder = new SimulatorBuilder(host, port);
-    HttpServer server
+    @Shared HttpServer server
     BasicSimParameters params = new BasicSimParameters();
 
     def setupGrizzly() {
@@ -31,21 +32,38 @@ class CreateSimTest extends Specification {
         setupGrizzly()
     }
 
+    def cleanupSpec() {  // one time shutdown when everything is done
+        server.shutdownNow()
+    }
+
     def setup() {  // run before each test method
         params.id = 'reg'
         params.user = 'mike'
         params.actorType = 'reg'
-        params.environmentName = 'NA2015'
+        params.environmentName = 'test'
     }
 
     def 'Create sim with invalid config'() {
         when:
+        builder.delete(params)
         params.id = ''
         builder.create(params)
 
         then:
         ToolkitServiceException e = thrown()
         e.code == Response.Status.BAD_REQUEST.statusCode
+    }
+
+    def 'Create sim with bad environment'() {
+        when:
+        builder.delete(params)
+        params.environmentName = 'foo'
+        builder.create(params)
+
+        then:
+        ToolkitServiceException e = thrown()
+        e.code == Response.Status.BAD_REQUEST.statusCode
+        e.extendedCode == 40001
     }
 
     def 'Get Unknown SimId'() {
@@ -63,9 +81,7 @@ class CreateSimTest extends Specification {
         builder.delete(params)
 
         then:
-        ToolkitServiceException e = thrown()
-        println e
-        e.code == Response.Status.NOT_FOUND.statusCode
+        ToolkitServiceException e = notThrown()
     }
 
     // Create a simulator and retrieve all its parameters and settings
@@ -93,11 +109,9 @@ class CreateSimTest extends Specification {
     static final private parmName = "Validate_Codes"
     def 'Update sim config'() {
         when: 'Delete sim in case it exists'
-        println 'STEP - DELETE SIM'
         builder.delete(params)
 
         and: 'Create new sim'
-        println 'STEP - CREATE NEW SIM'
         SimConfig config = (SimConfig) builder.create(params)
         println config.describe()
 

@@ -45,7 +45,7 @@ public class SimulatorApi {
             return scl;
         } catch (EnvironmentNotSelectedException e) {
             logger.error("Environment Not Selected");
-            throw new Exception("Environment Not Selected", e);
+            throw e;
         } catch (Exception e) {
             logger.error("getNewSimulator:\n" + ExceptionUtil.exception_details(e));
             throw e;

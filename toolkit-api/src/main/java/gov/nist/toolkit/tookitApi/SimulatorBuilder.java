@@ -96,6 +96,7 @@ public class SimulatorBuilder {
     /**
      * Delete an existing simulator. There is another call available using the SimId parameter type.  This
      * parameter type contains the raw ID and USER that are used here.  The two calls function identically.
+     * If the simulator does not exist no error is returned.
      * @param id of simulator
      * @param user of simulator
      * @throws ToolkitServiceException if anything goes wrong.
@@ -108,6 +109,7 @@ public class SimulatorBuilder {
     /**
      * Delete an existing simulator. There is another call available using separate raw ID and USER parameters.
      * USER and ID are components of the more formal SimId type.  The two calls function identically.
+     * If the simulator does not exist no error is returned.
      * @param simId Simulator ID
      * @throws ToolkitServiceException if anything goes wrong
      */
