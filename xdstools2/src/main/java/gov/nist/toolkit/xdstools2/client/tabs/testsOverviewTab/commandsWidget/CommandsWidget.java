@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Utils;
 
 
 /**
@@ -35,16 +36,9 @@ public class CommandsWidget extends HorizontalPanel {
         FlowPanel spacer = new FlowPanel();
         spacer.setWidth("550px");
 
-        playAllButton = new Button();
-        playAllButton.setTitle(PLAY_ALL_ICON_HINT);
-        removeAllButton = new Button();
-        removeAllButton.setTitle(REMOVE_ALL_ICON_HINT);
-        refreshAllButton = new Button();
-        refreshAllButton.setTitle(REFRESH_ALL_ICON_HINT);
-
-        playAllButton.getElement().appendChild(PLAY_ALL_ICON.getElement());
-        removeAllButton.getElement().appendChild(REMOVE_ALL_ICON.getElement());
-        refreshAllButton.getElement().appendChild(REFRESH_ALL_ICON.getElement());
+        playAllButton = Utils.makeIconButton(PLAY_ALL_ICON_HINT, PLAY_ALL_ICON);
+        removeAllButton = Utils.makeIconButton(REMOVE_ALL_ICON_HINT, REMOVE_ALL_ICON);
+        refreshAllButton = Utils.makeIconButton(REFRESH_ALL_ICON_HINT, REFRESH_ALL_ICON);
 
         ButtonClickHandler clickHandler = new ButtonClickHandler(this);
         clickHandler.setViewUpdater(updater);
