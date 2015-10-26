@@ -61,7 +61,7 @@ public class TestsOverviewTab extends GenericQueryTab {
         // Also link in the Runner class (shown below) which is called when the user clicks on the Run button.
         // Since this call organizes the site selection grid, it needs the transactionTypes and couplings config
         // TODO adding this first messes up with the display of the rest of the tab
-        addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+        //addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 
 
         // ----- Create the data model -----
