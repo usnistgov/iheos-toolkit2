@@ -106,7 +106,7 @@ public class ParamParser {
 		public List<String> errs = new ArrayList<String>();
 	}
 
-	/*
+	/**
 	 * slot  the XML of the SQ parameter being parsed
 	 * parms resulting structure describing parsed parameters
 	 *

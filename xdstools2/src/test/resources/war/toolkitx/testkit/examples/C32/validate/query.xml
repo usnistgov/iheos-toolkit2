@@ -1,0 +1,7 @@
+
+<nns:validateDocument xmlns:nns="http://validation.hitsp.nist.gov">
+    <nns:specificationId>c32</nns:specificationId>
+    <nns:document>
+        <![CDATA[$content$]]>
+    </nns:document>
+</nns:validateDocument>
