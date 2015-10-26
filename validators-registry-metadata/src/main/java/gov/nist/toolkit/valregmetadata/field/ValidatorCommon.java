@@ -356,7 +356,7 @@ public class ValidatorCommon implements ErrorRecorder {
 
 	@Override
 	public void error(String dts, String name, String found, String expected, String RFC) {
-\
+
 	}
 
 	@Override

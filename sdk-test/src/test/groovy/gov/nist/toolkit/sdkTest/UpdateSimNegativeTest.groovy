@@ -40,7 +40,7 @@ class UpdateSimNegativeTest extends Specification {
         params.id = 'reg'
         params.user = 'mike'
         params.actorType = 'reg'
-        params.environmentName = 'NA2015'
+        params.environmentName = 'test'
 
         // establish test environment - newly created sim
         builder.delete(params)
