@@ -14,7 +14,7 @@ public class Installation {
 	File warHome = null;
 	File externalCache = null;
 	String sep = File.separator;
-	public TkProps tkProps;
+	public TkProps tkProps = new TkProps();
 
 	PropertyServiceManager propertyServiceMgr = null;
 	static Logger logger = Logger.getLogger(Installation.class);
@@ -65,14 +65,14 @@ public class Installation {
 	}
 
 	public File externalCache() { return externalCache; }
-	public void externalCache(File externalCache) {
+	protected void externalCache(File externalCache) {
 //		if (this.externalCache == null)
 			this.externalCache = externalCache;
-        logger.info("V2 Installation: External Cache set to " + externalCache);
+        logger.info(ExceptionUtil.here("V2 Installation: External Cache set to " + externalCache));
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
-			logger.warn("Cannot load tk_props.txt file from External Cache");
+//			logger.warn("Cannot load tk_props.txt file from External Cache");
 			tkProps = new TkProps();
 		}
 
