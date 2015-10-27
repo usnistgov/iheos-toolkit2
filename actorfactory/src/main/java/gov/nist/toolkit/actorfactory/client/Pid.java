@@ -12,7 +12,6 @@ public class Pid implements Serializable, IsSerializable {
     String id = null;
     String extra = null;
 
-    // TODO - need to test whether list.contains(pid) works with the code below - it must
     public Pid(String ad, String id) {
         if (ad == null) this.ad = ad;
         else if (ad.equals("null")) this.ad = null;

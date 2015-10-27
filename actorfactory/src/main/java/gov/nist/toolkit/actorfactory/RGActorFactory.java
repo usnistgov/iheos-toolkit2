@@ -52,13 +52,13 @@ public class RGActorFactory extends AbstractActorFactory {
 		SimId simId = sc.getId();
 
 		File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
-		addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
-		addEditableConfig(sc, homeCommunityId, ParamType.TEXT, getNewHomeCommunityId());
+		addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
+		addEditableConfig(sc, SimulatorProperties.homeCommunityId, ParamType.TEXT, getNewHomeCommunityId());
 
-		addFixedEndpoint(sc, xcqEndpoint, actorType, TransactionType.XC_QUERY, false);
-		addFixedEndpoint(sc, xcqTlsEndpoint, actorType, TransactionType.XC_QUERY, true);
-		addFixedEndpoint(sc, xcrEndpoint, actorType, TransactionType.XC_RETRIEVE, false);
-		addFixedEndpoint(sc, xcrTlsEndpoint, actorType, TransactionType.XC_RETRIEVE, true);
+		addFixedEndpoint(sc, SimulatorProperties.xcqEndpoint, actorType, TransactionType.XC_QUERY, false);
+		addFixedEndpoint(sc, SimulatorProperties.xcqTlsEndpoint, actorType, TransactionType.XC_QUERY, true);
+		addFixedEndpoint(sc, SimulatorProperties.xcrEndpoint, actorType, TransactionType.XC_RETRIEVE, false);
+		addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint, actorType, TransactionType.XC_RETRIEVE, true);
 		addFixedEndpoint(sc, xcpdEndpoint, actorType, TransactionType.XC_PATIENT_DISCOVERY, false);
 		addFixedEndpoint(sc, xcpdTlsEndpoint, actorType, TransactionType.XC_PATIENT_DISCOVERY, true);
 
@@ -99,26 +99,26 @@ public class RGActorFactory extends AbstractActorFactory {
 			site.addTransaction(new TransactionBean(
 					TransactionType.XC_QUERY.getCode(),
 					RepositoryType.NONE,
-					sc.get(xcqEndpoint).asString(), 
+					sc.get(SimulatorProperties.xcqEndpoint).asString(),
 					false, 
 					isAsync));
 			site.addTransaction(new TransactionBean(
 					TransactionType.XC_QUERY.getCode(),
 					RepositoryType.NONE,
-					sc.get(xcqTlsEndpoint).asString(), 
+					sc.get(SimulatorProperties.xcqTlsEndpoint).asString(),
 					true, 
 					isAsync));
 
 			site.addTransaction(new TransactionBean(
 					TransactionType.XC_RETRIEVE.getCode(),
 					RepositoryType.NONE,
-					sc.get(xcrEndpoint).asString(), 
+					sc.get(SimulatorProperties.xcrEndpoint).asString(),
 					false, 
 					isAsync));
 			site.addTransaction(new TransactionBean(
 					TransactionType.XC_RETRIEVE.getCode(),
 					RepositoryType.NONE,
-					sc.get(xcrTlsEndpoint).asString(), 
+					sc.get(SimulatorProperties.xcrTlsEndpoint).asString(),
 					true, 
 					isAsync));
 			site.addTransaction(new TransactionBean(
@@ -135,7 +135,7 @@ public class RGActorFactory extends AbstractActorFactory {
 					isAsync));
 
 
-			site.setHome(sc.get(homeCommunityId).asString());
+			site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());
 
 			new RegistryActorFactory().getActorSite(sc, site);
 			new RepositoryActorFactory().getActorSite(sc, site);

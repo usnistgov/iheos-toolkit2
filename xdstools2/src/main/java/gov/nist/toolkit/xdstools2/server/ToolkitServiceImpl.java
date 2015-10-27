@@ -5,6 +5,7 @@
     import gov.nist.toolkit.actorfactory.SiteServiceManager;
     import gov.nist.toolkit.actorfactory.client.*;
     import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+    import gov.nist.toolkit.installation.ExternalCacheManager;
     import gov.nist.toolkit.installation.Installation;
     import gov.nist.toolkit.installation.PropertyServiceManager;
     import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -157,13 +158,28 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testInstances, testSession); }
+    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
 	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
 	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
 	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
 	public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
 	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
 	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
+
+    /**
+     * Get list of section names defined for the test in the order they should be executed
+     * @param test test name
+     * @return list of sections
+     * @throws Exception if something goes wrong
+     */
 	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
+
+    /**
+     * Get map of (collection name, collection description) pairs contained in testkit
+     * @param collectionSetName the collection name
+     * @return the map
+     * @throws Exception is something goes wrong
+     */
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
 	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
@@ -174,10 +190,18 @@ ToolkitService {
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
 	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
 	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
+
+    /**
+     * Get test names and descriptions from a named test collection
+     * @param collectionSetName name of directory holding tc files (collection definitions)
+     * @param collectionName collection name within the directory
+     * @return testname ==> description mapping
+     * @throws Exception if something goes wrong
+     */
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
-	
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Gazelle Service
@@ -286,7 +310,8 @@ ToolkitService {
 		File warhome = Installation.installation().warHome();
 		new PropertyServiceManager(warhome).getPropertyManager().update(props);
 		reloadPropertyFile();
-		Installation.installation().externalCache(eCacheFile);
+//		Installation.installation().externalCache(eCacheFile);
+        ExternalCacheManager.reinitialize(eCacheFile);
 		try {
 			TkLoader.tkProps(Installation.installation().getTkPropsFile());
 		} catch (Throwable t) {

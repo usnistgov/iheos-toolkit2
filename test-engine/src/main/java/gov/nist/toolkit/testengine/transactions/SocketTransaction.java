@@ -1,17 +1,16 @@
 package gov.nist.toolkit.testengine.transactions;
 
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 public class SocketTransaction extends BasicTransaction {
 	static final Logger logger = Logger.getLogger(SocketTransaction.class);
@@ -67,19 +66,16 @@ public class SocketTransaction extends BasicTransaction {
 	@Override
 	protected void parseInstruction(OMElement part)
 			throws XdsInternalException, MetadataException {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected String getRequestAction() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected String getBasicTransactionName() {
-		// TODO Auto-generated method stub
 		return "Socket";
 	}
 

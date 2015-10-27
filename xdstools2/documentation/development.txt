@@ -1,6 +1,6 @@
 This file documents the development environment for the XDS Toolkit.
 
-Todo:  Since the environment described below will change over time, we need a label that ties a 
+Since the environment described below will change over time, we need a label that ties a
 particular release of the toolkit to a particular version of the environment.  For now
 I am going to label the environment with a version number. When the environment is updated
 it will be labeled with the first version of the toolkit that uses that environment.

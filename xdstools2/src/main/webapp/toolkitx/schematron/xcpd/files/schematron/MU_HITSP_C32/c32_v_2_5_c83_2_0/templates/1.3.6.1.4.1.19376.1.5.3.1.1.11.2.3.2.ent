@@ -24,10 +24,6 @@
         batteries SHALL be 'completed'.
     </assert>
 
-<!-- 
-     TODO: Determine if chart on http://wiki.ihe.net/index.php?title=1.3.6.1.4.1.19376.1.5.3.1.1.11.2.3.2 
-           can/should be encoded into schematron rules. 
--->
 
     </rule>
 

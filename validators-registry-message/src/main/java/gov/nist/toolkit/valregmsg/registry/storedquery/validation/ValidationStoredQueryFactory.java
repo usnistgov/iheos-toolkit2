@@ -20,13 +20,11 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 	public ValidationStoredQueryFactory(OMElement ahqr) throws XdsException,
 	LoggerException {
 		super(ahqr);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ValidationStoredQueryFactory(OMElement ahqr, Response response) throws XdsException,
 	LoggerException {
 		super(ahqr, response, null);
-		// TODO Auto-generated constructor stub
 	}
 
 	public ValidationStoredQueryFactory(OMElement ahqr, ErrorRecorder er) throws XdsException,
@@ -37,84 +35,72 @@ public class ValidationStoredQueryFactory extends StoredQueryFactory {
 	@Override
 	public Metadata FindDocuments(StoredQuerySupport sqs) throws XdsException,
 	LoggerException, XDSRegistryOutOfResourcesException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata FindFolders(StoredQuerySupport sqs) throws XdsException,
 	LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata FindSubmissionSets(StoredQuerySupport sqs)
 	throws XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetAssociations(StoredQuerySupport sqs)
 	throws XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetDocuments(StoredQuerySupport sqs) throws XdsException,
 	LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetDocumentsAndAssociations(StoredQuerySupport sqs)
 	throws XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetFolderAndContents(StoredQuerySupport sqs)
 	throws XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetFolders(StoredQuerySupport sqs) throws XdsException,
 	LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetFoldersForDocument(StoredQuerySupport sqs)
 	throws XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetRelatedDocuments(StoredQuerySupport sqs)
 	throws XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetSubmissionSetAndContents(StoredQuerySupport sqs)
 	throws XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Metadata GetSubmissionSets(StoredQuerySupport sqs)
 	throws XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -32,7 +32,6 @@ public class Main implements SecurityParams {
 		try {
 			engine = new Xdstest2(toolkit, me);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 //		engine.setLogdirLocation(me.logDir);
@@ -47,7 +46,6 @@ public class Main implements SecurityParams {
 			engine.addTest(testInstance);
 			engine.run(null, null, true, ts);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -142,7 +140,6 @@ public class Main implements SecurityParams {
 
 	@Override
 	public File getCodesFile() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

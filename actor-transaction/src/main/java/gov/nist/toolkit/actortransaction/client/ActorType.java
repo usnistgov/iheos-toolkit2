@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// This file must be kept up to date with SimulatorActorTypes.java
+
 /**
- * Created by bill on 9/10/15.
+ * Actor types defined by test engine.  A subset of these are available as simulators.
  */
 public enum ActorType implements IsSerializable, Serializable {
     REGISTRY(

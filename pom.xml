@@ -61,6 +61,7 @@
         <!--<module>toolkit-services-test</module>-->
         <module>toolkit-api</module>
         <module>transaction-notification-service</module>
+        <module>sdk-test</module>
     </modules>
 
 

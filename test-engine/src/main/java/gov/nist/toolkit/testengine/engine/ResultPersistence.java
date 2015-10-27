@@ -24,6 +24,11 @@ public class ResultPersistence {
 
 	}
 
+    public void delete(TestInstance testInstance, String testSession) throws IOException, XdsException {
+        File file = new File(getFilePath(testInstance, testSession, true));
+        if (file.exists()) file.delete();
+    }
+
 	public Result read(TestInstance testInstance, String testSession) throws XdsException  {
 		try {
 			FileInputStream fis = new FileInputStream(getFilePath(testInstance, testSession, false));

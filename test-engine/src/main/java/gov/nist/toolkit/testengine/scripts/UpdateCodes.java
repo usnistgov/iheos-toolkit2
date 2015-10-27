@@ -90,53 +90,6 @@ public class UpdateCodes {
 
     }
 
-    private void processTestplans(File testFile) {
-        try {
-            File[] dirs = testFile.listFiles();
-            if (dirs == null) {
-                System.out.println("No tests defined in " + dirs);
-                error = true;
-            }
-            for (int j = 0; j < dirs.length; j++) {
-                File testDir = dirs[j];
-                if (testDir.getName().equals(".svn"))
-                    continue;
-                if (testDir.isDirectory()) {
-                    processTestplans(testDir);
-                } else {
-                    if ("testplan.xml".equals(testDir.getName())) {
-                        // read testplan.xml
-                        String testplanContent = Io.stringFromFile(testDir);
-                        for (String oldCode : replacementMap.keySet()) {
-                            if(oldCode.contains("DEMO-Summary^^1.3.6.1.4.1.21367.100.1"))
-                            System.out.println(oldCode);
-                            String oldCodeSplit[] = oldCode.split("\\^");
-                            String code1 = oldCodeSplit[0];
-                            String scheme1 = oldCodeSplit[1];
-                            String name1 = oldCodeSplit[2];
-                            testplanContent.replaceAll(code1, replacementMap.get(oldCode).getCode());
-                            testplanContent.replaceAll(scheme1, replacementMap.get(oldCode).getScheme());
-                            testplanContent.replaceAll(name1, replacementMap.get(oldCode).getDisplay());
-                            if (testDir.getPath().contains("11897")&&testDir.getPath().contains("classcode_one")&&oldCode.contains("DEMO-Summary^^1.3.6.1.4.1.21367.100.1")) {
-                                System.out.println(testDir);
-                                System.out.println(testplanContent);
-                            }
-                        }
-                        File backupFile = new File(testDir.toString() + ".bak");
-                        if (!backupFile.exists()) {
-                            // backup the unmodified file before updating
-                            FileUtils.copyFile(testDir, backupFile);
-                        }
-                        Io.stringToFile(testDir, new OMFormatter(testplanContent).toString());
-                    }
-                }
-
-            }
-        }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-
     /**
      *  This method explores all the nodes under a set of nodes node in parameter to find MetadataFile nodes.
      *
@@ -172,6 +125,7 @@ public class UpdateCodes {
     private void processCodes() {
         try {
             for (String filePath:metadataFilesPaths){
+                // TODO how do I know if I am dealing with a xds or a query metadata file?
                 File file=new File(filePath);
                 if (file.exists()) {
                     File backupFile = new File(file.toString() + ".bak");
@@ -316,9 +270,6 @@ public class UpdateCodes {
             String section = sections[i];
 
             File sectionFile = new File(uc.testkit + File.separator + section);
-
-
-            uc.processTestplans(sectionFile);
         }
     }
 }

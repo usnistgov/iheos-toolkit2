@@ -124,7 +124,8 @@ public class SimDb {
 			transactionDir.mkdirs();
 			if (!transactionDir.isDirectory())
 				throw new IOException("Cannot create content in Simulator database, creation of " + transactionDir + " failed");
-		}
+		} else
+            return;
 
 		Date date = new Date();
 

@@ -26,7 +26,6 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 		this.delta = delta;
 	}
 
-	// TODO - duplicates within submission can be checked without registry context
 	public void checkUidUniqueness(Metadata m) {
 		List<String> submittedUIDs = new ArrayList<String>();
 		for (OMElement ele : m.getMajorObjects()) {
@@ -128,7 +127,6 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 		}
 	}
 
-	// TODO - checking that a symbolic reference is held within submission can be done without registry context
 	// verify that no associations are being added that:
 	//     reference a non-existant object in submission or registry
 	//     reference a Deprecated object in registry
