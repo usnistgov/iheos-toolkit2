@@ -12,6 +12,40 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sdk-test</artifactId>
+
+
+    <profiles>
+        <profile>
+            <id>Bill</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>Bill</build.profile.id>
+            </properties>
+        </profile>
+        <profile>
+            <id>Diane</id>
+            <properties>
+                <build.profile.id>Diane</build.profile.id>
+            </properties>
+        </profile>
+        <profile>
+            <id>Olivier</id>
+            <properties>
+                <build.profile.id>Olivier</build.profile.id>
+            </properties>
+        </profile>        
+        <profile>
+            <id>Sunil</id>
+            <properties>
+                <build.profile.id>Sunil</build.profile.id>
+            </properties>
+        </profile>
+    </profiles>
+
+
+
     <properties>
         <jersey.version>2.22.1</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -76,6 +110,46 @@
     </dependencies>
 
     <build>
+
+
+
+
+        <!-- See profiles stanza above -->
+        <!-- Begin profile part 1/2 -->    
+        <filters>
+                    <!--
+                        Ensures that an environment properties file is always loaded from the
+                        configuration directory of the active Maven profile.
+                    -->
+                <filter>../tk-deps/profiles/env/${build.profile.id}.properties</filter>
+        </filters>
+        <!-- End profile part 1/2 -->    
+
+
+<testResources>
+    <!-- Filter test resource files -->
+    <testResource>
+                        <filtering>true</filtering>
+                        <directory>src/test/resources</directory>   
+                        <includes>
+                            <include>war/WEB-INF/toolkit.properties</include>
+                        </includes>                
+
+    </testResource>
+	<testResource>
+                        <filtering>false</filtering>
+                        <directory>src/test/resources</directory>   
+						<includes>
+							<include>**/*</include>
+						</includes>
+                        <excludes>
+                            <exclude>war/WEB-INF/toolkit.properties</exclude>
+                        </excludes>                
+
+    </testResource>
+	
+</testResources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
