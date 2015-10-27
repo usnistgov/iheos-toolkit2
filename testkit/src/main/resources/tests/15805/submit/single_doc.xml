@@ -39,16 +39,6 @@
           <rim:Value>en-us</rim:Value>
         </rim:ValueList>
       </rim:Slot>
-      <rim:Slot name="size">
-        <rim:ValueList>
-          <rim:Value>4</rim:Value>
-        </rim:ValueList>
-      </rim:Slot>
-      <rim:Slot name="hash">
-        <rim:ValueList>
-          <rim:Value>e543712c0e10501972de13a5bfcbe826c49feb75</rim:Value>
-        </rim:ValueList>
-      </rim:Slot>
       <rim:Slot name="URI">
         <rim:ValueList>
           <rim:Value>http://</rim:Value>
