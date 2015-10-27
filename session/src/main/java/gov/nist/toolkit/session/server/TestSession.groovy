@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.server
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.envSetting.EnvSetting
+import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
 import org.apache.log4j.Logger
@@ -28,7 +29,8 @@ class TestSession {
 
         // Important to set this before war home since it is overriding contents of toolkit.properties
         if (!externalCache || !externalCache.isDirectory())throw new ToolkitRuntimeException('External Cache not found')
-        Installation.installation().externalCache(externalCache)
+        ExternalCacheManager.initialize(externalCache)
+//        Installation.installation().externalCache(externalCache)
 
         Session session = new Session(warHome, externalCache)
         String defaultEnvName = Installation.installation().defaultEnvironmentName();
