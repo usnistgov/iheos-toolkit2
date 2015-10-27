@@ -5,6 +5,7 @@
     import gov.nist.toolkit.actorfactory.SiteServiceManager;
     import gov.nist.toolkit.actorfactory.client.*;
     import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+    import gov.nist.toolkit.installation.ExternalCacheManager;
     import gov.nist.toolkit.installation.Installation;
     import gov.nist.toolkit.installation.PropertyServiceManager;
     import gov.nist.toolkit.registrymetadata.client.AnyIds;
@@ -309,7 +310,8 @@ ToolkitService {
 		File warhome = Installation.installation().warHome();
 		new PropertyServiceManager(warhome).getPropertyManager().update(props);
 		reloadPropertyFile();
-		Installation.installation().externalCache(eCacheFile);
+//		Installation.installation().externalCache(eCacheFile);
+        ExternalCacheManager.reinitialize(eCacheFile);
 		try {
 			TkLoader.tkProps(Installation.installation().getTkPropsFile());
 		} catch (Throwable t) {
