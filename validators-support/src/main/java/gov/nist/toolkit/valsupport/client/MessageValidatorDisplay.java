@@ -82,7 +82,7 @@ public class MessageValidatorDisplay {
 			for (ValidatorErrorItem er : ers)  {
 				
 				// Summary Detection
-				//TODO Need to change that
+				// - Need to change that
 				if(er.msg.contains("Message Content Summary")) {
 					isSummry = true;
 				} else if(er.msg.contains("Detailed Validation")) {

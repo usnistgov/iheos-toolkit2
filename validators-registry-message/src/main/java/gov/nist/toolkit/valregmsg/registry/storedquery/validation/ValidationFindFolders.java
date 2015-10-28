@@ -11,13 +11,11 @@ public class ValidationFindFolders extends FindFolders {
 
 	public ValidationFindFolders(StoredQuerySupport sqs) {
 		super(sqs);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected Metadata runImplementation() throws MetadataException,
 			XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

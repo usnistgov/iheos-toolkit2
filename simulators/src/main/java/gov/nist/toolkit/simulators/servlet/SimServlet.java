@@ -329,7 +329,6 @@ public class SimServlet  extends HttpServlet {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (NoSimException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -458,13 +457,14 @@ public class SimServlet  extends HttpServlet {
 			logRequest(request, db, actor, transaction);
 
 			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simDbDir, simid);
+            request.setAttribute("SimulatorConfig", asc);
 
 			regIndex = getRegIndex(simid);
 			repIndex = getRepIndex(simid);
 
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 
-			SimulatorConfigElement asce = asc.get(AbstractActorFactory.codesEnvironment);
+			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 
@@ -644,7 +644,7 @@ public class SimServlet  extends HttpServlet {
 //	public static BaseDsActorSimulator getSimulatorRuntime(String simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
 //		SimDb db = new SimDb();
 //		SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
-//		String actorTypeName = config.getType();
+//		String actorTypeName = config.getActorType();
 //		ActorType actorType = ActorType.findActor(actorTypeName);
 //		String actorSimClassName = actorType.getSimulatorClassName();
 //		logger.info("Starting sim " + simId + " of class " + actorSimClassName);

@@ -12,13 +12,11 @@ public class ValidationGetDocumentsAndAssociations extends
 
 	public ValidationGetDocumentsAndAssociations(StoredQuerySupport sqs) {
 		super(sqs);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected Metadata runImplementation() throws MetadataException,
 			XdsException, LoggerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

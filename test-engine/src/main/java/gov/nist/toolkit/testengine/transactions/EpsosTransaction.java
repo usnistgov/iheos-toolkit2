@@ -11,7 +11,6 @@ public class EpsosTransaction extends XCQTransaction{
 	public EpsosTransaction(StepContext s_ctx, OMElement instruction,
 			OMElement instruction_output) {
 		super(s_ctx, instruction, instruction_output);
-		// TODO Auto-generated constructor stub
 	}
 
 	protected String getBasicTransactionName() {

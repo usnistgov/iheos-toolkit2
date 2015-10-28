@@ -47,16 +47,7 @@
             <UseReport test="12300"  step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>   
             <ExpectedMimeType>text/xml</ExpectedMimeType>
             <ReferenceDocument uid="$docuid$">../../testdata/12318/summary.xml</ReferenceDocument>
-            <Metadata>
-<RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <DocumentRequest>
-        <HomeCommunityId>$home$</HomeCommunityId>
-        <RepositoryUniqueId>$repositoryuid$</RepositoryUniqueId>
-        <DocumentUniqueId>$docuid$</DocumentUniqueId>
-    </DocumentRequest>
-</RetrieveDocumentSetRequest>
-            </Metadata>
+            <MetadataFile>query.xml</MetadataFile>
         </XCRTransaction>
     </TestStep>
 </TestPlan>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11998/rplc</Test>
+  <TestStep id="init_patient_id">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <NewPatientId/>
+  </TestStep>
+  <TestStep id="rplc">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Issue RPLC</Assertion>
+    </Rule>
+    <RegisterTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="Document01" symbol="$rplc_doc_uuid$" step="submit" section="AssignedUuids"/>
+      <MetadataFile>rplc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

@@ -89,19 +89,16 @@ public class EchoV3Transaction extends BasicTransaction {
 
 	@Override
 	protected String getRequestAction() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected void parseInstruction(OMElement part) throws XdsInternalException {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected String getBasicTransactionName() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

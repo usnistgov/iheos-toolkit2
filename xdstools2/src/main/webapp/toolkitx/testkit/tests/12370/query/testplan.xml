@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12370/query</Test>
+  <TestStep id="validate">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../rplc" id="Document01" symbol="$docuuid$" step="rplc" section="AssignedUuids"/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:a7ae438b-4bc2-4642-93e9-be891f7bb155">
+            <tag0:Slot name="$uuid">
+              <tag0:ValueList>
+                <tag0:Value>('$docuuid$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="classification_present">
+     count(//*[local-name()='RegistryObjectList']/*[local-name()='Association']/*[local-name()='Classification'][@classificationScheme="urn:uuid:abd807a3-4432-4053-87b4-fd82c643d1f3"][@nodeRepresentation="Additional_Information"]) = 1
+    </Assert>
+      </Assertions>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

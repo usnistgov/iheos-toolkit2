@@ -1,14 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import gov.nist.toolkit.xdstools2.client.CookieManager;
-import gov.nist.toolkit.xdstools2.client.Panel;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
-import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
-
-import java.util.List;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Cookies;
@@ -16,6 +7,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+
+import java.util.List;
 
 public class EnvironmentManager {
 	TabContainer tabContainer;
@@ -146,8 +141,7 @@ public class EnvironmentManager {
 
 			@Override
 			public void onSuccess(Object result) {
-				// TODO Auto-generated method stub
-				
+
 			}
 			
 		});

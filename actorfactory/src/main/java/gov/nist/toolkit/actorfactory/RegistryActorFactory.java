@@ -43,25 +43,34 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			sc = new SimulatorConfig();
 
 		if (isRecipient) {  // part of recipient
-			addFixedConfig(sc, SimulatorConfig.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
-			addFixedConfig(sc, SimulatorConfig.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
-			addEditableConfig(sc, SimulatorConfig.VALIDATE_CODES, ParamType.BOOLEAN, false);
-			addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
-			addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
-			addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
+			addEditableConfig(sc, SimulatorProperties.VALIDATE_CODES, ParamType.BOOLEAN, false);
+			addEditableConfig(sc, SimulatorProperties.extraMetadataSupported, ParamType.BOOLEAN, true);
+			addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_URI, ParamType.TEXT, "");
+			addFixedConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addFixedConfig(sc, SimulatorProperties.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
+			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
+			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
 		} else {  // not part of recipient
-			File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
-			addEditableConfig(sc, codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            if (simId.getEnvironmentName() != null) {
+                EnvSetting es = new EnvSetting(simId.getEnvironmentName());
+                File codesFile = es.getCodesFile();
+                addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            } else {
+                File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+                addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
+            }
 
-			addEditableConfig(sc, SimulatorConfig.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
-			addEditableConfig(sc, SimulatorConfig.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
-			addFixedConfig(sc, SimulatorConfig.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
-			addEditableConfig(sc, extraMetadataSupported, ParamType.BOOLEAN, true);
-			addEditableConfig(sc, SimulatorConfig.VALIDATE_CODES, ParamType.BOOLEAN, true);
-			addFixedEndpoint(sc, registerEndpoint,       actorType, TransactionType.REGISTER,     false);
-			addFixedEndpoint(sc, registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
-			addFixedEndpoint(sc, storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
-			addFixedEndpoint(sc, storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
+			addEditableConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
+			addEditableConfig(sc, SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, ParamType.BOOLEAN, true);
+			addEditableConfig(sc, SimulatorProperties.extraMetadataSupported, ParamType.BOOLEAN, true);
+			addEditableConfig(sc, SimulatorProperties.VALIDATE_CODES, ParamType.BOOLEAN, true);
+			addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_URI, ParamType.TEXT, "");
+            addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
+			addFixedConfig(sc, SimulatorProperties.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
+			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
+			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
+			addFixedEndpoint(sc, SimulatorProperties.storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
+			addFixedEndpoint(sc, SimulatorProperties.storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
 		}
 
 		return new Simulator(sc);
@@ -70,25 +79,25 @@ public class RegistryActorFactory extends AbstractActorFactory {
 	public void asRecipient() { isRecipient = true; }
 
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) {
-		SimulatorConfigElement ele = config.get(SimulatorConfig.UPDATE_METADATA_OPTION);
+		SimulatorConfigElement ele = config.get(SimulatorProperties.UPDATE_METADATA_OPTION);
 		if (ele == null)
 			return;
 		Boolean optionOn = ele.asBoolean();
 				
-		SimulatorConfigElement updateEndpointEle = config.get(updateEndpoint); 
+		SimulatorConfigElement updateEndpointEle = config.get(SimulatorProperties.updateEndpoint);
 		
 		if (optionOn && updateEndpointEle == null) {
 			 //option is enabled but no endpoint present - create it
 			
 			updateEndpointEle = new SimulatorConfigElement();
-			updateEndpointEle.name = updateEndpoint;
+			updateEndpointEle.name = SimulatorProperties.updateEndpoint;
 			updateEndpointEle.type = ParamType.ENDPOINT;
 			updateEndpointEle.transType = TransactionType.UPDATE; 
 			updateEndpointEle.setValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), false)); 
 			addFixed(config, updateEndpointEle);
 			 
 			updateEndpointEle = new SimulatorConfigElement();
-			updateEndpointEle.name = updateTlsEndpoint;
+			updateEndpointEle.name = SimulatorProperties.updateTlsEndpoint;
 			updateEndpointEle.type = ParamType.ENDPOINT;
 			updateEndpointEle.transType = TransactionType.UPDATE; 
 			updateEndpointEle.setValue(mkEndpoint(config, updateEndpointEle, ActorType.REGISTRY.getShortName(), true)); 
@@ -98,7 +107,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		} else if (!optionOn && updateEndpointEle != null) {
 			// option is disabled but endpoint is present - delete it
 			
-			config.deleteFixedByName(updateEndpoint);
+			config.deleteFixedByName(SimulatorProperties.updateEndpoint);
 			
 		}
 	}
@@ -117,45 +126,45 @@ public class RegistryActorFactory extends AbstractActorFactory {
 		site.addTransaction(new TransactionBean(
 				TransactionType.REGISTER.getCode(),
 				RepositoryType.NONE,
-				asc.get(registerEndpoint).asString(), 
+				asc.get(SimulatorProperties.registerEndpoint).asString(),
 				false, 
 				isAsync));
 		site.addTransaction(new TransactionBean(
 				TransactionType.REGISTER.getCode(),
 				RepositoryType.NONE,
-				asc.get(registerTlsEndpoint).asString(), 
+				asc.get(SimulatorProperties.registerTlsEndpoint).asString(),
 				true, 
 				isAsync));
 
 		site.addTransaction(new TransactionBean(
 				TransactionType.STORED_QUERY.getCode(),
 				RepositoryType.NONE,
-				asc.get(storedQueryEndpoint).asString(), 
+				asc.get(SimulatorProperties.storedQueryEndpoint).asString(),
 				false, 
 				isAsync));
 		site.addTransaction(new TransactionBean(
 				TransactionType.STORED_QUERY.getCode(),
 				RepositoryType.NONE,
-				asc.get(storedQueryTlsEndpoint).asString(), 
+				asc.get(SimulatorProperties.storedQueryTlsEndpoint).asString(),
 				true, 
 				isAsync));
 		
-		SimulatorConfigElement updateElement = asc.get(SimulatorConfig.UPDATE_METADATA_OPTION);
+		SimulatorConfigElement updateElement = asc.get(SimulatorProperties.UPDATE_METADATA_OPTION);
 		if (updateElement.asBoolean()) {
 			site.addTransaction(new TransactionBean(
 					TransactionType.UPDATE.getCode(),
 					RepositoryType.NONE,
-					asc.get(updateEndpoint).asString(), 
+					asc.get(SimulatorProperties.updateEndpoint).asString(),
 					false, 
 					isAsync));
 			site.addTransaction(new TransactionBean(
 					TransactionType.UPDATE.getCode(),
 					RepositoryType.NONE,
-					asc.get(updateTlsEndpoint).asString(), 
+					asc.get(SimulatorProperties.updateTlsEndpoint).asString(),
 					true, 
 					isAsync));
 		}
-		SimulatorConfigElement pifPortElement = asc.get(SimulatorConfig.PIF_PORT);
+		SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
 		site.pifPort = pifPortElement.asString();
 		site.pifHost = Installation.installation().propertyServiceManager().getToolkitHost();
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12312/missing_home</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSMissingHomeCommunityId</ExpectedErrorCode>
+    <XCRTransaction>
+      <UseReport test="12311" reportName="$doc_uid_1$" step="getdocs" useAs="$docuid$"/>
+      <UseReport test="12311" reportName="$repositoryUniqueId$" step="getdocs" useAs="$repositoryuid$"/>
+      <Metadata>
+        <tag0:RetrieveDocumentSetRequest xmlns:tag0="urn:ihe:iti:xds-b:2007">
+          <tag0:DocumentRequest>
+            <tag0:RepositoryUniqueId>$repositoryuid$</tag0:RepositoryUniqueId>
+            <tag0:DocumentUniqueId>$docuid$</tag0:DocumentUniqueId>
+          </tag0:DocumentRequest>
+        </tag0:RetrieveDocumentSetRequest>
+      </Metadata>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="NoDocuments">
+              		count(//XCRTransaction/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "0"                    
+         		</Assert>
+      </Assertions>
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12368/doc_objectref</Test>
+  <Rule>XDSResultNotSinglePatient rule - should not fail since only ObjectRefs are requested</Rule>
+  <TestStep id="objectref">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion/>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4">
+            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
+              <tag0:ValueList>
+                <tag0:Value>('$uuid1$','$uuid2$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../../12346" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../../12374" id="Document01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <ObjectRefs count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

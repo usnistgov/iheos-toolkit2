@@ -1,11 +1,9 @@
 package gov.nist.toolkit.errorrecording.client;
 
+import org.apache.velocity.app.VelocityEngine;
+
 import java.io.File;
 import java.util.Properties;
-
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 public class VelocitySingleton {
 	private static VelocityEngine velocityEngine;
@@ -31,7 +29,6 @@ public class VelocitySingleton {
 		try {
 			velocityEngine.init(velocityProperties);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

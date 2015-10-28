@@ -3,14 +3,12 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.testkitutilities.TestkitWalker;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.JaxenException;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.File;
 
 /**
  * Scan testkit for problems.
@@ -36,37 +34,31 @@ public class ErrorScan extends TestkitWalker {
 
 	@Override
 	public void doStep(String step) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void endPart(File part) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void endSection(File section) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void endTest(File test) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void endTestPlan(File testplan) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void startPart(File part) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -93,14 +85,12 @@ public class ErrorScan extends TestkitWalker {
 
 	@Override
 	public void begin() throws Exception {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void end() throws Exception {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -132,14 +122,12 @@ public class ErrorScan extends TestkitWalker {
 
 	@Override
 	public void endServer(File test) throws Exception {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void startServer(File test) throws Exception {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 }

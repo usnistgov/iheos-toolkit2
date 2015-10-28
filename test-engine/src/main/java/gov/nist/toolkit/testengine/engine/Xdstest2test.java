@@ -19,7 +19,6 @@ public class Xdstest2test {
 		try {
 			t1();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

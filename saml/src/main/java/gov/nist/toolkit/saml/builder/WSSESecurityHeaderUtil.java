@@ -105,11 +105,9 @@ public class WSSESecurityHeaderUtil {
 	 * @throws Exception 
 	 */
 	public static OMElement getWSSecOMElement(SecurityParams securityParams) throws LoadKeystoreException {
-		// TODO Auto-generated method stub
-		
+
 		OMElement wsSecOMelemnt = null;
 		try {
-			//TODO passing security params is a hack to pass around security context info. 
 			//This might break other parts of the code that relies on the
 			//erroneous assumption of a global security context! -Antoine 
 			KeyStoreAccessObject ksAccessObj = KeyStoreAccessObject.getInstance(securityParams);
@@ -120,7 +118,6 @@ public class WSSESecurityHeaderUtil {
 		//Get WS Security OM Elemnt
 		wsSecOMelemnt = WSSESecurityHeaderUtil.getWSSecurityHeaders(pvtKey, pubKey);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			throw new LoadKeystoreException(e.getMessage(), null, e);
 		}		
 		return wsSecOMelemnt;

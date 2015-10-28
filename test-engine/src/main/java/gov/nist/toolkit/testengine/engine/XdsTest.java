@@ -699,7 +699,7 @@ public class XdsTest {
 
         this.status = true;
 		for (TestDetails testSpec : testSpecs) {
-			System.out.println("Test: " + testSpec.getTestInstance());
+			System.out.println("Test: " + testSpec.getTestInstance().getId());
 			// Changes made by a test should be isolated to that test
 			// They need to run independently
 			TransactionSettings ts = globalTransactionSettings.clone();

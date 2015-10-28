@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
-import gov.nist.toolkit.actorfactory.AbstractActorFactory;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -154,7 +154,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					m.insertSlot(eo, slot);
 				}
 
-				SimulatorConfigElement sce = simulatorConfig.get(AbstractActorFactory.repositoryUniqueId);
+				SimulatorConfigElement sce = simulatorConfig.get(SimulatorProperties.repositoryUniqueId);
 				if (sce != null) {
 					OMElement rid = m.mkSlot("repositoryUniqueId", sce.asString());
 					m.insertSlot(eo, rid);
@@ -188,7 +188,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 			}
 
 			// issue soap call to registry
-			String endpoint = simulatorConfig.get(AbstractActorFactory.registerEndpoint).asString();
+			String endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
 			
 			Soap soap = new Soap();
 			try {

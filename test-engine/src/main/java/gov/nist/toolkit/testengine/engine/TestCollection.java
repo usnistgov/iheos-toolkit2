@@ -84,8 +84,36 @@ public class TestCollection {
 		
 		return specs;
 	}
-	
-	List<String> tokenize(String str) {
+
+    public List<String> getTestIds() throws Exception {
+        List<String> ids = new ArrayList<>();
+
+        for (LinesOfFile lof=new LinesOfFile(collection); lof.hasNext(); ) {
+            String line = lof.next();
+            int commentStarts = line.indexOf('#');
+            if (commentStarts != -1)
+                line = line.substring(0, commentStarts);
+            if (line.length() == 0)
+                continue;
+            List<String> tokens = tokenize(line);
+            if (tokens.size() == 0)
+                continue;
+
+            ids.add(tokens.remove(0));
+
+            // This parser supports specifying specific sections of a test.  TestInstance does not support
+            // this yet.
+
+//            TestDetails ts = new TestDetails(testkit, testInstance);
+//            if (tokens.size() > 0)
+//                ts.selectSections(tokens);
+//            specs.add(ts);
+        }
+
+        return ids;
+    }
+
+    List<String> tokenize(String str) {
 		List<String> list = new ArrayList<String>();
 		
 		StringTokenizer st = new StringTokenizer(str);

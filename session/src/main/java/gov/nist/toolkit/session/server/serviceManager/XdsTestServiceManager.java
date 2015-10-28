@@ -119,6 +119,18 @@ public class XdsTestServiceManager extends CommonService {
 		return map;
 	}
 
+    public void delTestResults(List<TestInstance> testInstances, String testSession) {
+        logger.debug(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
+        ResultPersistence rp = new ResultPersistence();
+        for (TestInstance testInstance : testInstances) {
+            try {
+                rp.delete(testInstance, testSession);
+            }
+            catch (Exception e) {}
+        }
+
+    }
+
 	// this translates from the xds-common version of AssertionResults
 	// to the xdstools2.client version which is serializable and can be passed
 	// to the gui front end
@@ -320,8 +332,10 @@ public class XdsTestServiceManager extends CommonService {
 			testDetails.addTestPlanLog(section, ll);
 		}
 
-		// Save the created logs in the SessionCache
+		// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
 		TestInstance logid = newTestLogId();
+
+        //  -  why is a method named getLogContent doing a WRITE???????
 		session.transactionSettings.logRepository.logOut(logid, lm);
 //		session.saveLogMapInSessionCache(lm, logid);
 
