@@ -38,7 +38,6 @@ public class SiteSelectionWidget extends Composite   {
 	
 	/**
 	 * 
-	 * @param transactionOfferings
 	 * @param couplings - Coupled transactions. Pass null if none.
 	 * @param actorType
 	 */

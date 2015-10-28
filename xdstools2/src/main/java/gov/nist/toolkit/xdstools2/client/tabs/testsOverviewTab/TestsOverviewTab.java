@@ -4,12 +4,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
+import gov.nist.toolkit.xdstools2.client.widgets.SiteSelectionWidget.SiteSelectionWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +64,8 @@ public class TestsOverviewTab extends GenericQueryTab {
         // Since this call organizes the site selection grid, it needs the transactionTypes and couplings config
         // TODO adding this first messes up with the display of the rest of the tab
         //addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
+        //SiteSelectionWidget sites = new SiteSelectionWidget(couplings, ActorType.REGISTRY, null);
+        //topPanel.add(sites);
 
 
         // ----- Create the data model -----
