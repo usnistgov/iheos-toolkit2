@@ -1,19 +1,22 @@
 package gov.nist.toolkit.sdkTest
+
 import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.registrymsg.registry.RegistryError
+import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
 import gov.nist.toolkit.simulators.servlet.SimServlet
 import gov.nist.toolkit.tookitApi.BasicSimParameters
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
-import gov.nist.toolkit.toolkitServicesCommon.Document
-import gov.nist.toolkit.toolkitServicesCommon.SendRequestResource
-import gov.nist.toolkit.toolkitServicesCommon.SimConfig
-import gov.nist.toolkit.toolkitServicesCommon.SimId
+import gov.nist.toolkit.toolkitServicesCommon.*
+import gov.nist.toolkit.utilities.xml.Util
+import org.apache.axiom.om.OMElement
 import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.servlet.ServletRegistration
 import org.glassfish.grizzly.servlet.WebappContext
 import spock.lang.Shared
 import spock.lang.Specification
+
 /**
  *
  */
@@ -117,11 +120,18 @@ class XdrSrcTest extends Specification {
         req.id = recParams.id
         req.user = recParams.user
         req.transactionName = 'xdrpr'
-        req.metadata = '<hello id="foo"/>'
-        req.addDocument('foo', new Document('text/plain', 'Hello World!'.bytes))
-        builder.sendXdr(req)
+        req.metadata = this.getClass().getResource('/testdata/PnR1Doc.xml').text
+        req.addDocument('Document01', new Document('text/plain', 'Hello World!'.bytes))
+        SendResponseResource response = builder.sendXdr(req)
+        String responseSoapBody = response.responseSoapBody;
+        OMElement responseEle = Util.parse_xml(responseSoapBody)
+        RegistryErrorListParser rel = new RegistryErrorListParser(responseEle)
+        List<RegistryError> errors = rel.registryErrorList
+        errors.each { RegistryError err ->
+            println err.codeContext
+        }
 
         then:
-        true
+        errors.size() == 0
     }
 }

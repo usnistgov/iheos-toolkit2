@@ -422,6 +422,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		//			if (minMeta) buf.append(";MinMetadata");
 		if (isXDRLimited) buf.append(";XDRLimited");
 		if (isXDRMinimal) buf.append(";XDRMinimal");
+        if (isPartOfRecipient) buf.append(";partOfRecipient");
 //		if (updateable)
 //			buf.append(";Updateable");
 //		else
@@ -487,6 +488,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 	public boolean repositoryUniqueIdRequired() {
 		if (isXDM) return false;
+        if (isPartOfRecipient) return false;
 		if (isR && isRequest) return true;
 		if (isMU && isRequest) return true;
 		if (isSQ && isResponse) return true;

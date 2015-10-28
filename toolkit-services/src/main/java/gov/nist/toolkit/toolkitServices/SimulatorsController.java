@@ -1,15 +1,14 @@
 package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
-import gov.nist.toolkit.toolkitServicesCommon.SendRequestResource;
-import gov.nist.toolkit.toolkitServicesCommon.SendResponseResource;
-import gov.nist.toolkit.toolkitServicesCommon.SimConfigResource;
-import gov.nist.toolkit.toolkitServicesCommon.SimIdResource;
+import gov.nist.toolkit.soap.DocumentMap;
+import gov.nist.toolkit.toolkitServicesCommon.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import org.apache.axiom.om.OMElement;
@@ -204,9 +203,11 @@ public class SimulatorsController {
                 throw new BadSimRequestException("No message body provided in request.");
             OMElement messageBody = Util.parse_xml(request.getMetadata());
             sim.setMessageBody(messageBody);
+            sim.setDocumentMap(internalizeDocs(request));
             OMElement responseEle = sim.run(
                     config,
                     transactionType,
+                    internalizeDocs(request),
                     request.isTls()
             );
             SendResponseResource responseResource = new SendResponseResource();
@@ -215,6 +216,20 @@ public class SimulatorsController {
         } catch (Throwable e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }
+    }
+
+    DocumentMap internalizeDocs(SendRequestResource request) {
+        DocumentMap map = new DocumentMap();
+
+        for (String id : request.getDocuments().keySet()) {
+            Document requestDoc = request.getDocuments().get(id);
+            gov.nist.toolkit.soap.Document storedDoc = new gov.nist.toolkit.soap.Document();
+            storedDoc.setMimeType(requestDoc.getMimeType());
+            storedDoc.setContents(requestDoc.getContents());
+            map.addDocument(id, storedDoc);
+        }
+
+        return map;
     }
 
 }

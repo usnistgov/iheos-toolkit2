@@ -5,6 +5,8 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
+import gov.nist.toolkit.soap.DocumentMap;
+import gov.nist.toolkit.soap.axis2.MtomBuilder;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -28,7 +30,10 @@ import java.util.Map;
  */
 public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
     static final Logger logger = Logger.getLogger(XdrDocSrcActorSimulator.class);
-    OMElement messageBody;
+    OMElement messageBody = null;
+    DocumentMap documentMap = null;
+
+    // not used
     Map<String, ByteArrayDataSource> documents = new HashMap<>();
 
     static List<TransactionType> transactions = new ArrayList<>();
@@ -74,7 +79,7 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
      * @throws XdsFormatException
      * @throws XdsConfigurationException
      */
-    public OMElement run(SimulatorConfig config, TransactionType transactionType, boolean isTls) throws AxisFault, LoadKeystoreException, XdsInternalException, XdsFormatException, XdsConfigurationException {
+    public OMElement run(SimulatorConfig config, TransactionType transactionType, DocumentMap documentMap, boolean isTls) throws AxisFault, LoadKeystoreException, XdsInternalException, XdsFormatException, XdsConfigurationException {
         GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
         logger.debug("XDR Doc Src starting transaction " + transactionType);
@@ -90,8 +95,12 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
                     (isTls) ? SimulatorProperties.pnrTlsEndpoint : SimulatorProperties.pnrEndpoint
             ).asString();
 
+        MtomBuilder mtom = new MtomBuilder();
+        mtom.setMetadataEle(messageBody);
+        mtom.setDocumentMap(documentMap);
+
         Soap soap = new Soap();
-        return soap.soapCall(messageBody,
+        return soap.soapCall(mtom.getBody(),
                 endpoint,
                 true, // mtom
                 true, // addressing
@@ -110,5 +119,13 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
 
     public void setMessageBody(OMElement messageBody) {
         this.messageBody = messageBody;
+    }
+
+    public DocumentMap getDocumentMap() {
+        return documentMap;
+    }
+
+    public void setDocumentMap(DocumentMap documentMap) {
+        this.documentMap = documentMap;
     }
 }

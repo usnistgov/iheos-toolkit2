@@ -240,7 +240,7 @@ public class CodeValidationBase {
 		for (OMElement doc_ele : m.getExtrinsicObjects()) {
 			String mime_type = doc_ele.getAttributeValue(MetadataSupport.mime_type_qname);
 			if ( !isValidMimeType(mime_type)) {
-				if (vc.isXDM || vc.isXDR)
+				if (vc.isXDM || vc.isXDR || vc.isPartOfRecipient)
 					er.detail("Mime type, " + mime_type + ", is not available in this Affinity Domain");
 				else
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Mime type, " + mime_type + ", is not available in this Affinity Domain", this, ADConfigError);
@@ -331,7 +331,7 @@ public class CodeValidationBase {
 				owner = (OMElement) container;
 		}
 		if (vc.isValidateCodes) {
-			if (vc.isXDM || vc.isXDR)
+			if (vc.isXDM || vc.isXDR || vc.isPartOfRecipient)
 				er.detail(objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration");
 			else
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(owner) + ": the code " + coding_scheme + "(" + code + ") is not found in the Affinity Domain configuration", this, "ITI TF-3: 4.1.10");
