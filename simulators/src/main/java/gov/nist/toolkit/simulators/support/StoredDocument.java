@@ -16,7 +16,8 @@ public class StoredDocument implements Serializable {
 	public String mimeType;
 	public String charset;
 	public String hash;
-	public String size;
+
+    public String size;
 	
 	transient public String cid;
 	
@@ -77,5 +78,13 @@ public class StoredDocument implements Serializable {
 		File f = getPathToDocument();
 		return Io.bytesFromFile(f);
 	}
+
+    public byte[] getContent() {
+        return content;
+    }
+
+    public void setContent(byte[] content) {
+        this.content = content;
+    }
 
 }

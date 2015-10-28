@@ -7,14 +7,9 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.datatype.DtmFormat;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.axiom.om.OMElement;
+
+import java.util.*;
 
 public class Folder extends AbstractRegistryObject implements TopLevelObject {
 
@@ -148,7 +143,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 		if (vc.skipInternalStructure)
 			return;
 		
-		if (vc.isXDR)
+		if (vc.isXDR || vc.isPartOfRecipient)
 			vc.isXDRLimited = isMetadataLimited();
 		
 		if (vc.isXDRLimited)

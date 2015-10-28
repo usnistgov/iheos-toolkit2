@@ -72,6 +72,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			this.repositoryUniqueId = configEle.asString();
 	}
 
+    @Override
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
@@ -88,7 +89,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasSoap = true;
 
 			if (transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {
-				logger.debug("XDR style of PnR");
+				logger.info("XDR style of PnR");
 				common.vc.isXDR = true;
 			}
 

@@ -15,7 +15,7 @@ import spock.lang.Specification
  */
 class UpdateSimNegativeTest extends Specification {
     def host='localhost'
-    def port = '8888'
+    @Shared def port = '8889'
     SimulatorBuilder builder = new SimulatorBuilder(host, port);
     @Shared HttpServer server
     BasicSimParameters params = new BasicSimParameters();
@@ -23,7 +23,7 @@ class UpdateSimNegativeTest extends Specification {
     def parmName = "Validate_Codes"
 
     def setupGrizzly() {
-        server = Main.startServer();
+        server = Main.startServer(port);
     }
 
     def setupSpec() {   // one time setup done when class launched

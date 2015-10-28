@@ -80,7 +80,9 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		AdhocQueryResponseGenerator queryResponseGenerator;
-		RegistryResponseGeneratorSim registryResponseGenerator;		
+		RegistryResponseGeneratorSim registryResponseGenerator;
+
+        logger.info(getSimulatorConfig());
 		
 		common.getValidationContext().updateEnabled = updateEnabled;
 		
@@ -95,6 +97,13 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.isRequest = true;
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
+
+            // *********************************************
+            // Metadata is validated by the class MetadataMessageValidator
+            //
+            //  eventually.
+            //
+            // *********************************************
 
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
