@@ -69,28 +69,12 @@ public class ConfigPull {
 		try {
 			pa.pull();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
-//	public static void main(String[] argv) {
-//		try {
-//			OMElement ele = Util.parse_xml(new File("/Users/bill/tmp/alberto/regresp.xml"));
-//			System.out.println(new OMFormatter(ele).toString());
-//		} catch (XdsInternalException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (FactoryConfigurationError e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
 
 }

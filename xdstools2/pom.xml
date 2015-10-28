@@ -208,6 +208,18 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>transaction-notification-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>services</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>toolkit-services</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>rest-tools</artifactId>
         </dependency>
 
@@ -363,6 +375,27 @@
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.glassfish.jersey.containers</groupId>-->
+            <!--&lt;!&ndash; if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core"  &ndash;&gt;-->
+            <!--<artifactId>jersey-container-servlet</artifactId>-->
+            <!--<version>2.22.1</version>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>2.22.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>2.22.1</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.sun.jersey</groupId>-->
+            <!--<artifactId>jersey-server</artifactId>-->
+            <!--<version>1.9</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -378,7 +411,7 @@
                         Ensures that an environment properties file is always loaded from the
                         configuration directory of the active Maven profile.
                     -->
-                <filter>profiles/env/${build.profile.id}.properties</filter>
+                <filter>../tk-deps/profiles/env/${build.profile.id}.properties</filter>
         </filters>
         <!-- End profile part 1/2 -->    
         
@@ -464,6 +497,7 @@
                     <compileSourcesArtifacts>
                         <compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>

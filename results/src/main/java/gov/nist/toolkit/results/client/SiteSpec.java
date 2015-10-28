@@ -9,7 +9,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * A Site references multiple actor types but it can hold only one copy of an actor type:
  * one Registry, one Repository etc.
  * A SiteSpec is a reference to a Site and a selection of one actor type. Having a SiteSpec you know
- * exactly which transactions are possible.
+ * exactly which transactions are possible. The actorType parameter is the actor type of interest (personality
+ * to be used in an operation) and name is the site name.
  *
  * SiteSpec reference the Site through the name attribute.
  * @author bill
@@ -25,6 +26,13 @@ public class SiteSpec implements IsSerializable {
 	public boolean isSaml = false;
 	public boolean isAsync = false;
 
+    /**
+     * Create a site spec. This is a data transfer object (DTO) used to manage Sites in the UI.
+     * @param name name of the site
+     * @param actorType actor type of interest within the site
+     * @param toClone if set it is another SiteSpec to get the TLS, SAML, and ASYNC settings from.  If this
+     *                parameter is null then default values are used.
+     */
 	public SiteSpec(String name, ActorType actorType, SiteSpec toClone) {
 		this.name = name;
 		this.actorType = actorType;

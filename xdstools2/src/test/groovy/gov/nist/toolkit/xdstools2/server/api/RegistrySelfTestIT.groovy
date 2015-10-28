@@ -1,10 +1,10 @@
 package gov.nist.toolkit.xdstools2.server.api
-
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.services.server.ToolkitApi
 import spock.lang.Specification
 /**
  * Runs all Registry tests.
@@ -30,12 +30,14 @@ class RegistrySelfTestIT extends Specification {
     String testSession = 'mike';
 
     def setup() {
-        api = new ToolkitApi()
+        api = ToolkitApi.forInternalUse()
         println "EC is ${Installation.installation().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
-        if (!api.simulatorExists(simId))
+        if (!api.simulatorExists(simId)) {
+            println "Creating sim ${simId}"
             api.createSimulator(ActorType.REGISTRY, simId)
+        }
     }
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction

@@ -33,26 +33,22 @@ public class GenericSimulatorFactory extends AbstractActorFactory {
 	@Override
 	protected Simulator buildNew(SimManager simm, SimId newID, boolean configureBase) throws Exception {
 		this.newID = newID;
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
 	protected void verifyActorConfigurationOptions(SimulatorConfig config) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public Site getActorSite(SimulatorConfig asc, Site site) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<TransactionType> getIncomingTransactions() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

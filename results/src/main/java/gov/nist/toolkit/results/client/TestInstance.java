@@ -4,6 +4,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 
+/**
+ * Identify a test instance, the combination of a test definition and the state of the running test.
+ */
 public class TestInstance implements IsSerializable, Serializable {
 	String id = null;    //  id of the test
 	String event = null;
@@ -44,7 +47,19 @@ public class TestInstance implements IsSerializable, Serializable {
 		this.location = location;
 	}
 
-	public void setUser(String user) {
+    /**
+     * Get the test user, also known as testSession in the UI
+     * @return testSession as a string
+     */
+    public String getUser() {
+        return user;
+    }
+
+    /**
+     * Set the test user, also known as the testSession in the UI
+     * @param user testSession as a string
+     */
+    public void setUser(String user) {
 		this.user = user;
 	}
 
@@ -60,10 +75,6 @@ public class TestInstance implements IsSerializable, Serializable {
 		return location;
 	}
 
-	public String getUser() {
-		return user;
-	}
-
 	public LogIdIOFormat getFormat() {
 		return format;
 	}
@@ -77,11 +88,20 @@ public class TestInstance implements IsSerializable, Serializable {
 	}
 
 	public boolean isEmpty() { return id == null || id.equals(""); }
-	
+
+    /**
+     * Set the test identifier (11901 for example)
+     * @param id the identifier
+     */
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getId() {
+
+    /**
+     * Get the test identifier (11901 for example).
+     * @return identifier as a string
+     */
+    public String getId() {
 		return id;
 	}
 

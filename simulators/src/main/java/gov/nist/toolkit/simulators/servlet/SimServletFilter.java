@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.servlet;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
@@ -19,8 +20,7 @@ public class SimServletFilter implements Filter {
 	static Logger logger = Logger.getLogger(SimServletFilter.class);
 
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response,
@@ -63,19 +63,27 @@ public class SimServletFilter implements Filter {
 		
 		Io.stringToFile(db.getResponseHdrFile(), messageHeader);
 
-        SimulatorConfigElement callbackElement = config.get(SimulatorConfig.REST_CALLBACK_URI);
-        if (callbackElement != null) {
-            String callbackURI = callbackElement.asString();
-            if (callbackURI != null && !callbackURI.equals("")) {
-                new Callback().callback(db, config, callbackURI);
-            }
-        }
-
+        // This parameter is the base address of a webservice, for example
+        // http://localhost:8080/xdstools2/rest/
+        SimulatorConfigElement callbackBaseAddressEle = config.get(SimulatorProperties.TRANSACTION_NOTIFICATION_URI);
+        SimulatorConfigElement callbackClassNameEle = config.get(SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS);
+        if (callbackBaseAddressEle == null) return;
+        if (callbackClassNameEle == null) return;
+        String callbackClassName = callbackClassNameEle.asString();
+        String callbackBase = callbackBaseAddressEle.asString();
+        logger.info("Callback...\n...base address is " + callbackBase);
+        logger.info("...class name is " + callbackClassName);
+        if (callbackBase == null) return;
+        callbackBase = callbackBase.trim();
+        if (callbackBase.equals("")) return;
+        if (!callbackBase.endsWith("/")) callbackBase = callbackBase + "/";
+        String callbackURI = callbackBase + "toolkitcallback";
+        new Callback().callback(db, config.getId(), callbackURI, callbackClassName);
+        logger.info("...callback successful");
     }
 
 	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 }

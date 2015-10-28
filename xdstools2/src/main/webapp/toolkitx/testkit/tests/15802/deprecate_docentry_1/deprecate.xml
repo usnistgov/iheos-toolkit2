@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><rs:SubmitObjectsRequest xmlns:rs="urn:oasis:names:tc:ebxml-regrep:registry:xsd:3.0">
+  <rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:rim:xsd:3.0">
+    <rim:RegistryPackage id="SubmissionSet01">
+      <rim:Name>
+        <rim:LocalizedString value="Physical"/>
+      </rim:Name>
+      <rim:Description>
+        <rim:LocalizedString value="Annual physical"/>
+      </rim:Description>
+      <rim:Slot name="submissionTime">
+        <rim:ValueList>
+          <rim:Value>20041225235050</rim:Value>
+        </rim:ValueList>
+      </rim:Slot>
+      <rim:Classification classifiedObject="SubmissionSet01" nodeRepresentation="" classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d">
+        <rim:Slot name="authorPerson">
+          <rim:ValueList>
+            <rim:Value>^Dopplemeyer^Sherry^^^</rim:Value>
+          </rim:ValueList>
+        </rim:Slot>
+        <rim:Slot name="authorInstitution">
+          <rim:ValueList>
+            <rim:Value>Cleveland Clinic</rim:Value>
+            <rim:Value>Berea Community</rim:Value>
+          </rim:ValueList>
+        </rim:Slot>
+        <rim:Slot name="authorRole">
+          <rim:ValueList>
+            <rim:Value>Primary Surgon</rim:Value>
+          </rim:ValueList>
+        </rim:Slot>
+        <rim:Slot name="authorSpecialty">
+          <rim:ValueList>
+            <rim:Value>Orthopedic</rim:Value>
+          </rim:ValueList>
+        </rim:Slot>
+      </rim:Classification>
+      <rim:Classification classifiedObject="SubmissionSet01" nodeRepresentation="34133-9" classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500">
+        <rim:Name>
+          <rim:LocalizedString value="Summary of Episode Note"/>
+        </rim:Name>
+        <rim:Slot name="codingScheme">
+          <rim:ValueList>
+            <rim:Value>2.16.840.1.113883.6.1</rim:Value>
+          </rim:ValueList>
+        </rim:Slot>
+      </rim:Classification>
+      <rim:ExternalIdentifier value="SubmissionSet01" identificationScheme="urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8">
+        <rim:Name>
+          <rim:LocalizedString value="XDSSubmissionSet.uniqueId"/>
+        </rim:Name>
+      </rim:ExternalIdentifier>
+      <rim:ExternalIdentifier value="1.3.6.1.4.1.21367.2008.1.2.178" identificationScheme="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832">
+        <rim:Name>
+          <rim:LocalizedString value="XDSSubmissionSet.sourceId"/>
+        </rim:Name>
+      </rim:ExternalIdentifier>
+      <rim:ExternalIdentifier value="SELF-5^^^&amp;1.3.6.1.4.1.21367.2005.3.7&amp;ISO" identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446">
+        <rim:Name>
+          <rim:LocalizedString value="XDSSubmissionSet.patientId"/>
+        </rim:Name>
+      </rim:ExternalIdentifier>
+    </rim:RegistryPackage>
+    <rim:Classification classifiedObject="SubmissionSet01" classificationNode="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"/>
+    <rim:Association targetObject="$orig_docentry_uuid$" sourceObject="SubmissionSet01" associationType="urn:ihe:iti:2010:AssociationType:UpdateAvailabilityStatus">
+      <rim:Slot name="OriginalStatus">
+        <rim:ValueList>
+          <rim:Value>urn:oasis:names:tc:ebxml-regrep:StatusType:Approved</rim:Value>
+        </rim:ValueList>
+      </rim:Slot>
+      <rim:Slot name="NewStatus">
+        <rim:ValueList>
+          <rim:Value>urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated</rim:Value>
+        </rim:ValueList>
+      </rim:Slot>
+    </rim:Association>
+  </rim:LeafRegistryObjectList>
+</rs:SubmitObjectsRequest>

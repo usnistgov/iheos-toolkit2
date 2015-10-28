@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>FindPatient</Test>
+  <TestStep id="findpatient_dob_gender_name">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>Xcpd</Transaction>
+      <SQ>Test findpatient XGC</SQ>
+    </Rule>
+    <XcpdTransaction>
+      <ParseMetadata>False</ParseMetadata>
+      <MetadataFile>test1_findpatient_dob_gender_name.xml</MetadataFile>
+    </XcpdTransaction>
+  </TestStep>
+  <TestStep id="findpatient_dob_gender_name2">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>Xcpd</Transaction>
+      <SQ>Test findpatient XGC</SQ>
+    </Rule>
+    <XcpdTransaction>
+      <ParseMetadata>False</ParseMetadata>
+      <MetadataFile>test2_findpatient_dob_gender_name.xml</MetadataFile>
+    </XcpdTransaction>
+  </TestStep>
+  <TestStep id="findpatient_dob_gender_name_failure">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <Rule>
+      <Transaction>Xcpd</Transaction>
+      <SQ>Test findpatient XGC</SQ>
+    </Rule>
+    <XcpdTransaction>
+      <ParseMetadata>False</ParseMetadata>
+      <MetadataFile>test3_findpatient_dob_gender_name_failure.xml</MetadataFile>
+    </XcpdTransaction>
+  </TestStep>
+</TestPlan>

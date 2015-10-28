@@ -1,5 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.inspector;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.registrymetadata.client.Author;
 import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
@@ -7,18 +11,6 @@ import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.List;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class EditDisplay {
 	VerticalPanel detailPanel;
@@ -64,8 +56,7 @@ public class EditDisplay {
 	class SubmitClickHandler implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
-			// TODO Auto-generated method stub
-			
+
 		}
 		
 	}

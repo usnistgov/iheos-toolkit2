@@ -5,27 +5,26 @@ import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.soap.wsseToolkitAdapter.log4jToErrorRecorder.AppenderForErrorRecorder;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.wsseTool.api.WsseHeaderValidator;
 import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
 import gov.nist.toolkit.wsseTool.api.exceptions.GenerationException;
-
-import java.security.KeyStoreException;
-import java.util.List;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
+
+import java.security.KeyStoreException;
+import java.util.List;
 
 /**
  * Temporary adapter between toolkit legacy validation code and the wsse module
  * validation code.
  *
- * TODO: check with Bill. In my own opinion, the design of the message validator
+ *  check with Bill. In my own opinion, the design of the message validator
  * interface is flawed. As a first shot and since the goal is to enforce an
  * contract, an interface Validator with a run() method seems more appropriate.
  * ValidationContext could be push as a parameter of this method.
@@ -33,12 +32,12 @@ import org.w3c.dom.Element;
  * NOTE : CustomLogger is a quick way to log stuff from the wsse module without
  * having to define an object model of what is "logging"!
  *
- * TODO clarify what vc , err, mvc are doing! How comes the element to validate
+ *  clarify what vc , err, mvc are doing! How comes the element to validate
  * on in not part of the run() params?
  *
- * TODO why should we pass the envelope in the constructor? Confusing.
+ *  why should we pass the envelope in the constructor? Confusing.
  *
- * TODO field er in MessageValidator is not initialized!
+ *  field er in MessageValidator is not initialized!
  *
  * @author gerardin
  *
@@ -79,7 +78,7 @@ public class WsseHeaderValidatorAdapter extends AbstractMessageValidator {
 		val = new WsseHeaderValidator();
 		this.header = wsseHeader;
 		this.context = SecurityContextFactory.getInstance();
-		// TODO need to check how to get information to put in the context!!
+		//  need to check how to get information to put in the context!!
 		// patientId, homeCommunityId, endpoint url..
 	}
 

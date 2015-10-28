@@ -11,14 +11,7 @@
         <RegistryEndpoint>http://xreg2.nist.gov:8080/ws/services/ValidationWebService</RegistryEndpoint>
         <GenericTransaction>
             <!-- invoke C32 validator service -->
-            <Metadata>
-                <nns:validateDocument xmlns:nns="http://validation.hitsp.nist.gov">
-                    <nns:specificationId>c32</nns:specificationId>
-                    <nns:document>
-                        <![CDATA[$content$]]>
-                    </nns:document>
-                </nns:validateDocument>
-            </Metadata>
+            <MetadataFile>query.xml</MetadataFile>
             <UseXPath testdir="../retrieve" step="retrieve" symbol="$content$" decodebase64="true">
                 /TestResults/TestStep/RetrieveTransaction/Result/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']/*[local-name()='Document']
             </UseXPath>

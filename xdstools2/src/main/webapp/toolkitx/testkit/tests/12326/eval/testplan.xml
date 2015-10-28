@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12326/eval</Test>
+  <TestStep id="folder_and_contents">
+    <Goal>Issue a GetFolderAndContents query to show DocumentEntry is now in Folder</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="foluid" section="create_folder" step="submit_fol" useAs="$uniqueid$"/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:b909a503-523d-4517-8acf-8e5834dfc4c7">
+            <tag0:Slot name="$XDSFolderUniqueId">
+              <tag0:ValueList>
+                <tag0:Value>'$uniqueid$'</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

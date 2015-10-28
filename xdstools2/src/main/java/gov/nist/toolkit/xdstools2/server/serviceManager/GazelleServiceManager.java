@@ -148,7 +148,6 @@ public class GazelleServiceManager extends CommonService {
             gsm.reloadSystemFromGazelle("OTHER_NIST_RED_2015");
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

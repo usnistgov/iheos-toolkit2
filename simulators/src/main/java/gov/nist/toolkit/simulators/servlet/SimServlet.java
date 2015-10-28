@@ -329,7 +329,6 @@ public class SimServlet  extends HttpServlet {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (NoSimException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -465,7 +464,7 @@ public class SimServlet  extends HttpServlet {
 
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 
-			SimulatorConfigElement asce = asc.get(AbstractActorFactory.codesEnvironment);
+			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)
 				vc.setCodesFilename(asce.asString());
 

@@ -38,7 +38,6 @@ public class XCQHomeLabelSim extends TransactionSimulator implements MetadataGen
 	}
 
 	public Metadata getMetadata() {
-		// TODO Auto-generated method stub
 		return m;
 	}
 

@@ -64,7 +64,7 @@ public class UUIDGenerator {
             if (log.isDebugEnabled()) {
                 log.debug(e.getMessage(), e);
             }
-            //todo have to be properly handled
+            // have to be properly handled
         }
         md5.update(sb.toString().getBytes());
         byte[] array = md5.digest();

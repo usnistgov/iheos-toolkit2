@@ -165,7 +165,6 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 			}
 			
 	
-			// TODO Code Clean up
 			// SAMLAssertion samlasertn = new SAMLAssertion(assertion);
 			// validate(samlasertn, "", "");
 	
@@ -186,7 +185,7 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 	    		err("Attribute Oraganization is required.", "Attribute Oraganization");
 	    	}
 	    	
-	    	//TODO REMOVE THIS!!!
+	    	// - REMOVE THIS!!!
 	    	//OraganizationId Validation
 	    	er.challenge("Attribute OraganizationId Validation");
 	    	if( assertionType.getUserInfo().getOrg().getHomeCommunityId()!=null){
@@ -464,7 +463,6 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 			}
 
 	    	}catch (Exception e1) {
-				// TODO Auto-generated catch block
 				System.out.println(e1.getMessage());
 			} 
     	

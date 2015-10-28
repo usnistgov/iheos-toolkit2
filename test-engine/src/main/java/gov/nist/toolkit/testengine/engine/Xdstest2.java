@@ -74,15 +74,13 @@ public class Xdstest2 {
 								java.security.cert.X509Certificate[] arg0,
 								String arg1)
 								throws java.security.cert.CertificateException {
-							// TODO Auto-generated method stub
-							
+
 						}
 						public void checkServerTrusted(
 								java.security.cert.X509Certificate[] chain,
 								String authType)
 								throws java.security.cert.CertificateException {
-							// TODO Auto-generated method stub
-							
+
 						}
 		            }
 		    };

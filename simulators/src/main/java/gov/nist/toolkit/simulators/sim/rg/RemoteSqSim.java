@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rg;
 
-import gov.nist.toolkit.actorfactory.RegistryActorFactory;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -71,7 +71,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 			return;
 
 		// get configured endpoint for backend registry for SQ
-		String endpoint = simulatorConfig.get(RegistryActorFactory.storedQueryEndpoint).asString();
+		String endpoint = simulatorConfig.get(SimulatorProperties.storedQueryEndpoint).asString();
 
 		// issue soap call to registry
 		Soap soap = new Soap();

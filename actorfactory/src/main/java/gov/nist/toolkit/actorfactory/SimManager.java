@@ -47,7 +47,7 @@ public class SimManager {
 					simConfigs.add(db.getSimulator(simId));
 				}
 				catch (Exception e) {
-					throw new ToolkitRuntimeException("", e);
+					throw new ToolkitRuntimeException("Error loading sim " + simId.toString(), e);
 				}
 		}
 		return simIds;

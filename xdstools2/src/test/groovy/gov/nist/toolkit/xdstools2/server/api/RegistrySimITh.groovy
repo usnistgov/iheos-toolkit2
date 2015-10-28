@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.actortransaction.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
+import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.sitemanagement.client.Site
 import spock.lang.Specification
 /**

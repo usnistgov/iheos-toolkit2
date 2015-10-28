@@ -3,6 +3,7 @@ package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -13,7 +14,7 @@ public class Installation {
 	File warHome = null;
 	File externalCache = null;
 	String sep = File.separator;
-	public TkProps tkProps;
+	public TkProps tkProps = new TkProps();
 
 	PropertyServiceManager propertyServiceMgr = null;
 	static Logger logger = Logger.getLogger(Installation.class);
@@ -50,23 +51,28 @@ public class Installation {
 	public File warHome() { 
 		return warHome; 
 		}
-	public void warHome(File warHome) { 
+	synchronized public void warHome(File warHome) {
+		if (warHome()!=null && warHome().equals(warHome))
+			return; /* already set */
 		logger.info("V2 - Installation - war home set to " + warHome);
+        if (warHome == null)
+            logger.error(ExceptionUtil.here("warhome is null"));
 		this.warHome = warHome;
 		propertyServiceMgr = null;
 		if (externalCache == null) // this can be different in a unit test situation
 			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+        logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
 	}
 
 	public File externalCache() { return externalCache; }
-	public void externalCache(File externalCache) {
+	protected void externalCache(File externalCache) {
 //		if (this.externalCache == null)
 			this.externalCache = externalCache;
-        logger.info("V2 Installation: External Cache set to " + externalCache);
+        logger.info(ExceptionUtil.here("V2 Installation: External Cache set to " + externalCache));
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
-			logger.warn("Cannot load tk_props.txt file from External Cache");
+//			logger.warn("Cannot load tk_props.txt file from External Cache");
 			tkProps = new TkProps();
 		}
 
@@ -151,6 +157,7 @@ public class Installation {
 	}
 
 	public String defaultSessionName() { return "STANDALONE"; }
+    public String defaultServiceSessionName() { return "SERVICE"; }
 
 	/**
 	 * Queries the PropertyServiceManager to retrieve the Toolkit Properties as a File.

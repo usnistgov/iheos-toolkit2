@@ -51,18 +51,15 @@ public class HomeSoap implements SoapInterface {
 	}
 
 	public void soapCallWithWSSEC() throws XdsInternalException, AxisFault {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	public OMElement soapCall() throws XdsInternalException, AxisFault,
 			XdsFormatException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public OMElement getResult() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -70,7 +67,6 @@ public class HomeSoap implements SoapInterface {
 			boolean addressing, boolean soap12, String action,
 			String expected_return_action) throws XdsInternalException,
 			AxisFault, XdsFormatException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

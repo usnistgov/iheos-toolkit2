@@ -221,7 +221,6 @@ public class SAMLAssertionBuilder {
             for (AuthenticationStatementBean statementBean : authBeans) {
                 AuthnStatement authnStatement = authnStatementBuilder.buildObject();
                 //authnStatement.setAuthnInstant(statementBean.getAuthenticationInstant());
-//TODO::updates               
                 authnStatement.setAuthnInstant(new DateTime());
                 authnStatement.setSessionIndex("12345");
                 

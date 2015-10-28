@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12323/rplc</Test>
+  <TestStep id="rplc">
+    <Goal>Submit replacement DocumentEntry. Original DocumentEntry is in Folder</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <WaitBefore>4000</WaitBefore>
+      <XDSb/>
+      <UseReport reportName="docid" section="add_to_folder" step="add_to_folder" useAs="$rplc_doc_uuid$"/>
+      <MetadataFile>metadata.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>
