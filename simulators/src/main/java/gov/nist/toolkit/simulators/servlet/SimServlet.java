@@ -57,7 +57,6 @@ public class SimServlet  extends HttpServlet {
 	String bodyCharset;
 	File simDbDir;
 	MessageValidationResults mvr;
-	File warHome;
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
 
 
@@ -65,7 +64,7 @@ public class SimServlet  extends HttpServlet {
 		super.init(sConfig);
 		config = sConfig;
 		logger.info("Initializing toolkit");
-		warHome = new File(config.getServletContext().getRealPath("/"));
+		File warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
 		Installation.installation().warHome(warHome);
 		simDbDir = Installation.installation().simDbFile();
@@ -369,7 +368,7 @@ public class SimServlet  extends HttpServlet {
 		String uri  = request.getRequestURI().toLowerCase();
 		logger.info("+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ");
 		logger.info("uri is " + uri);
-		logger.info("warHome is " + warHome);
+		logger.info("warHome is " + Installation.installation().warHome());
 		RegIndex regIndex = null;
 		RepIndex repIndex = null;
 		ServletContext servletContext = config.getServletContext();

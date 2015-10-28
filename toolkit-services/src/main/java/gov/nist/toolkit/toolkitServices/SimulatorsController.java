@@ -1,10 +1,18 @@
 package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
+import gov.nist.toolkit.toolkitServicesCommon.SendRequestResource;
+import gov.nist.toolkit.toolkitServicesCommon.SendResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfigResource;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdResource;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Util;
+import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
@@ -170,6 +178,44 @@ public class SimulatorsController {
         }
     }
 
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/{id}/xdr")
+    public Response xdr(final SendRequestResource request)  {
+        logger.info(String.format("XDR Send request for %s", request.getFullId()));
+        SimId simId = null;
+        SimulatorConfig config;
+        try {
+            simId = ToolkitFactory.asServerSimId(request);
+            logger.info("simid is " + simId);
+            config = api.getConfig(simId);
+            if (config == null) throw new NoSimException("");
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+
+        try {
+            TransactionType transactionType = TransactionType.find(ActorType.XDR_DOC_SRC, request.getTransactionName());
+            if (transactionType == null)
+                throw new BadSimConfigException(String.format("Do not understand transaction %s", request.getTransactionName()));
+            XdrDocSrcActorSimulator sim = new XdrDocSrcActorSimulator();
+            if (request.getMetadata() == null)
+                throw new BadSimRequestException("No message body provided in request.");
+            OMElement messageBody = Util.parse_xml(request.getMetadata());
+            sim.setMessageBody(messageBody);
+            OMElement responseEle = sim.run(
+                    config,
+                    transactionType,
+                    request.isTls()
+            );
+            SendResponseResource responseResource = new SendResponseResource();
+            responseResource.setResponseSoapBody(new OMFormatter(responseEle).toString());
+            return Response.ok(responseResource).build();
+        } catch (Throwable e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
 
 }
 

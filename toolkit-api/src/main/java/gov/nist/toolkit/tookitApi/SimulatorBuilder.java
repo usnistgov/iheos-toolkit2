@@ -48,7 +48,10 @@ public class SimulatorBuilder {
     public SimConfig create(String id, String user, String actorType, String environmentName) throws ToolkitServiceException {
         SimId simId = ToolkitFactory.newSimId(id, user, actorType, environmentName);
         SimIdResource bean = new SimIdResource(simId);
-        Response response = target.path("simulators").request(MediaType.APPLICATION_JSON).post(Entity.json(bean));
+        Response response = target
+                .path("simulators")
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(bean));
         if (response.getStatus() != 200) {
             logger.error("status is " + response.getStatus());
             for (String key : response.getHeaders().keySet()) {
@@ -82,7 +85,8 @@ public class SimulatorBuilder {
      * @throws ToolkitServiceException if anything goes wrong
      */
     public SimConfig update(SimConfig config) throws ToolkitServiceException {
-        Response response = target.path(String.format("simulators/%s", config.getId()))
+        Response response = target
+                .path(String.format("simulators/%s", config.getId()))
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(config));
         int status = response.getStatus();
@@ -139,5 +143,15 @@ public class SimulatorBuilder {
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
         return response.readEntity(SimConfigResource.class);
+    }
+
+    public SendResponseResource sendXdr(SendRequest request) throws ToolkitServiceException {
+        Response response = target
+                .path(String.format("simulators/%s/xdr", request.getFullId()))
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(request));
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response);
+        return response.readEntity(SendResponseResource.class);
     }
 }
