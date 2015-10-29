@@ -1,6 +1,7 @@
 package gov.nist.toolkit.sdkTest
 
 import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.services.server.ToolkitApi
@@ -60,12 +61,12 @@ class XdrSrcTest extends Specification {
     def setup() {  // run before each test method
         srcParams.id = 'source'
         srcParams.user = 'mike'
-        srcParams.actorType = 'xdrsrc'
+        srcParams.actorType = SimulatorActorType.DOCUMENT_SOURCE
         srcParams.environmentName = 'test'
 
         recParams.id = 'recipient'
         recParams.user = 'mike'
-        recParams.actorType = 'rec'
+        recParams.actorType = SimulatorActorType.DOCUMENT_RECIPIENT
         recParams.environmentName = 'test'
     }
 
@@ -116,14 +117,12 @@ class XdrSrcTest extends Specification {
 
         when:
         println 'STEP - SEND XDR'
-        SendRequestResource req = new SendRequestResource()
-        req.id = recParams.id
-        req.user = recParams.user
+        SendRequest req = ToolkitFactory.newSendRequest(srcSimConfig)
         req.transactionName = 'xdrpr'
         req.metadata = this.getClass().getResource('/testdata/PnR1Doc.xml').text
         req.addDocument('Document01', new Document('text/plain', 'Hello World!'.bytes))
 
-        SendResponseResource response = builder.sendXdr(req)
+        SendResponse response = builder.sendXdr(req)
 
         String responseSoapBody = response.responseSoapBody;
         OMElement responseEle = Util.parse_xml(responseSoapBody)

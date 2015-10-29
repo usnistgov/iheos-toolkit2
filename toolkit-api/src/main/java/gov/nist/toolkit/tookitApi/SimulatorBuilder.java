@@ -1,5 +1,6 @@
 package gov.nist.toolkit.tookitApi;
 
+import gov.nist.toolkit.actortransaction.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.*;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
@@ -14,7 +15,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
- * Builder class for creating and updating Simulator configurations.  Includes create/delete/update/get operations
+ * Builder class for building and using Simulator configurations.  Simulators come in two flavors:
+ * client and server.  Client sims represent Actors that initiate transactions.  Server
+ * sims represent Actors that start their work by accepting transactions. Basic operations on simulators include
+ * create and delete sims; and getting and updating the configurations.
+ *
+ * There are a second set of operations that initiate specific transactions from Client sims.  An example is sendXdr()
+ * which initiates an XDR Provide and Register transaction from a Document Source sim.
  */
 public class SimulatorBuilder {
     static Logger logger = Logger.getLogger(SimulatorBuilder.class);
@@ -40,13 +47,14 @@ public class SimulatorBuilder {
      * returned and then issue an update(SimConfig) to update the simulator configuration.
      * @param id Simulator ID
      * @param user User creating Simulator.  Same as TestSession in Toolkit UI. The simulator ID must be unique for this user.
-     * @param actorType Simulator type. See {@link gov.nist.toolkit.actortransaction.SimulatorActorTypes} for valid values.
+     * @param actorType Simulator type. See {@link SimulatorActorType} for valid values.
      * @param environmentName Environment defines Affinity Domain coding schemes and TLS certificate for use with client.
      * @return Simulator configuration.
      * @throws ToolkitServiceException if anything goes wrong.
      */
-    public SimConfig create(String id, String user, String actorType, String environmentName) throws ToolkitServiceException {
-        SimId simId = ToolkitFactory.newSimId(id, user, actorType, environmentName);
+    public SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
+        String actorTypeString = actorType.getName();
+        SimId simId = ToolkitFactory.newSimId(id, user, actorTypeString, environmentName);
         SimIdResource bean = new SimIdResource(simId);
         Response response = target
                 .path("simulators")
@@ -69,7 +77,7 @@ public class SimulatorBuilder {
      * @return
      * @throws ToolkitServiceException
      */
-    public SimId create(BasicSimParameters parms) throws ToolkitServiceException {
+    public SimConfig create(BasicSimParameters parms) throws ToolkitServiceException {
         return create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
     }
 
@@ -145,7 +153,14 @@ public class SimulatorBuilder {
         return response.readEntity(SimConfigResource.class);
     }
 
-    public SendResponseResource sendXdr(SendRequest request) throws ToolkitServiceException {
+    /**
+     * Send an XDR Provide and Register transaction.  The engine is identified by parameters to the class
+     * constructor.  The simulator id is contained in the SendRequest object.
+     * @param request SendRequest object
+     * @return
+     * @throws ToolkitServiceException
+     */
+    public SendResponse sendXdr(SendRequest request) throws ToolkitServiceException {
         Response response = target
                 .path(String.format("simulators/%s/xdr", request.getFullId()))
                 .request(MediaType.APPLICATION_JSON)

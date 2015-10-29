@@ -3,10 +3,10 @@ package gov.nist.toolkit.toolkitServicesCommon;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Not for Public Use.
  */
 @XmlRootElement
-public class SendResponseResource {
+public class SendResponseResource implements SendResponse {
     String requestSoapHeader = null;
     String requestSoapBody = null;
     String responseSoapHeader = null;
@@ -14,34 +14,42 @@ public class SendResponseResource {
 
     public SendResponseResource() {}
 
+    @Override
     public String getRequestSoapHeader() {
         return requestSoapHeader;
     }
 
+    @Override
     public void setRequestSoapHeader(String requestSoapHeader) {
         this.requestSoapHeader = requestSoapHeader;
     }
 
+    @Override
     public String getRequestSoapBody() {
         return requestSoapBody;
     }
 
+    @Override
     public void setRequestSoapBody(String requestSoapBody) {
         this.requestSoapBody = requestSoapBody;
     }
 
+    @Override
     public String getResponseSoapHeader() {
         return responseSoapHeader;
     }
 
+    @Override
     public void setResponseSoapHeader(String responseSoapHeader) {
         this.responseSoapHeader = responseSoapHeader;
     }
 
+    @Override
     public String getResponseSoapBody() {
         return responseSoapBody;
     }
 
+    @Override
     public void setResponseSoapBody(String responseSoapBody) {
         this.responseSoapBody = responseSoapBody;
     }
