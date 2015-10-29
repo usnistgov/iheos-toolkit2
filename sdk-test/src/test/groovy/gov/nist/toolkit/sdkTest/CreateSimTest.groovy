@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response
  */
 class CreateSimTest extends Specification {
     def host='localhost'
-    def port = '8889'
+    @Shared def port = '8889'
     SimulatorBuilder builder = new SimulatorBuilder(host, port);
     @Shared HttpServer server
     BasicSimParameters params = new BasicSimParameters();

@@ -122,7 +122,9 @@ class XdrSrcTest extends Specification {
         req.transactionName = 'xdrpr'
         req.metadata = this.getClass().getResource('/testdata/PnR1Doc.xml').text
         req.addDocument('Document01', new Document('text/plain', 'Hello World!'.bytes))
+
         SendResponseResource response = builder.sendXdr(req)
+
         String responseSoapBody = response.responseSoapBody;
         OMElement responseEle = Util.parse_xml(responseSoapBody)
         RegistryErrorListParser rel = new RegistryErrorListParser(responseEle)
@@ -134,4 +136,5 @@ class XdrSrcTest extends Specification {
         then:
         errors.size() == 0
     }
+
 }

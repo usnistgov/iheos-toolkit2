@@ -411,7 +411,7 @@
                         Ensures that an environment properties file is always loaded from the
                         configuration directory of the active Maven profile.
                     -->
-                <filter>profiles/env/${build.profile.id}.properties</filter>
+                <filter>../tk-deps/profiles/env/${build.profile.id}.properties</filter>
         </filters>
         <!-- End profile part 1/2 -->    
         
