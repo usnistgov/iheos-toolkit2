@@ -13,15 +13,24 @@ import java.util.List;
  * Actor types defined by test engine.  A subset of these are available as simulators.
  */
 public enum ActorType implements IsSerializable, Serializable {
-    REGISTRY(
-            "Document Registry",
-			Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
-            "reg",
-            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
-			Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
-            true,
+    XDR_DOC_SRC(
+            "XDR Document Source",
+			Arrays.asList("XDR_Source"),
+            "xdrsrc",
+            "gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator",
+			Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
+            false,
             null
 	),
+    REGISTRY(
+            "Document Registry",
+            Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
+            "reg",
+            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
+            Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
+            true,
+            null
+    ),
 	// Update option on Document Registry
 	// this should be removed once implications are re-discovered
 //		UPDATE (

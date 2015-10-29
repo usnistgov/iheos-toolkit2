@@ -44,13 +44,18 @@ public class LogRepository  {
         return logDir().toString();
     }
 
-    public void logOut(TestInstance id, LogMap log)
+    public void logOut(TestInstance id, LogMap logMap)
             throws XdsException {
-        logger.logOut(id, log, logDir(id));
+        log.debug(String.format("Saving log for %s", id));
+        logger.logOut(id, logMap, logDir(id));
     }
 
-    public void logOutIfLinkedToUser(TestInstance id, LogMap log) throws XdsException {
-        if (idType == LogIdType.SPECIFIC_ID) logOut(id, log);
+    public void logOutIfLinkedToUser(TestInstance id, LogMap logMap) throws XdsException {
+//        if (idType == LogIdType.SPECIFIC_ID)
+            logOut(id, logMap);
+//        else {
+//            log.debug(String.format("Not saving log for %s - not tied to user", id));
+//        }
     }
 
 //	public LogMap logIn(TestId id) throws Exception {
@@ -67,8 +72,9 @@ public class LogRepository  {
                 testInstance.getFormat(),
                 testInstance.getIdType(),
                 testInstance);
-        log.debug("logIn - logDir is " + repo.logDir(testInstance));
-        return repo.logger.logIn(testInstance, repo.logDir(testInstance));
+        File dir = repo.logDir(testInstance);
+        log.debug(String.format("Loading LogMap for test %s from %s", testInstance, dir));
+        return repo.logger.logIn(testInstance, dir);
     }
 
 //    public LogMap logIn(File logDir) throws Exception {
@@ -95,9 +101,11 @@ public class LogRepository  {
         if (testInstance.linkedToLogRepository()) return;
         String event = new SimDb().nowAsFilenameBase();
         testInstance.setInternalEvent(event);
-        testInstance.setEventDir(new File(
+        File dir = new File(
                 location + File.separator + user +
-                        File.separator + event  ).toString());
+                        File.separator + event);
+        log.debug(String.format("Assigning Event Dir to test instance %s - %s", testInstance, dir));
+        testInstance.setEventDir(dir.toString());
         testInstance.setLocation(location.toString());
         testInstance.setUser(user);
         testInstance.setFormat(format);

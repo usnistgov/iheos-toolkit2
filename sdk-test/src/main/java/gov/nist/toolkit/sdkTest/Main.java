@@ -20,19 +20,20 @@ import java.net.URI;
 public class Main {
     static Logger logger = Logger.getLogger(Main.class);
     // Base URI the Grizzly HTTP server will listen on
-    public static final String BASE_URI = "http://localhost:8888/xdstools2/rest/";
+    public static final String BASE_URI = "http://localhost:%s/xdstools2/rest/";
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
      * @return Grizzly HTTP server.
      */
-    public static HttpServer startServer() {
+    public static HttpServer startServer(String port) {
         final ResourceConfig rc = new ResourceConfig().packages("gov.nist.toolkit.toolkitServices");
         rc.property(ServerProperties.TRACING, "ALL");
 
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
+        logger.info("Base URI - " + String.format(BASE_URI, port));
+        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(String.format(BASE_URI, port)), rc);
         boolean loaded = false;
         ServerConfig config = rc.getConfiguration();
         for (Resource r : config.getResources()) {
@@ -56,7 +57,7 @@ public class Main {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        final HttpServer server = startServer();
+        final HttpServer server = startServer("8888");
         System.out.println(String.format("Jersey app started with WADL available at "
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
