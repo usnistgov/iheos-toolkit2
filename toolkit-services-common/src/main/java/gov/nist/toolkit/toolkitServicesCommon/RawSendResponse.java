@@ -3,7 +3,7 @@ package gov.nist.toolkit.toolkitServicesCommon;
 /**
  *
  */
-public interface SendResponse {
+public interface RawSendResponse {
     String getRequestSoapHeader();
 
     void setRequestSoapHeader(String requestSoapHeader);

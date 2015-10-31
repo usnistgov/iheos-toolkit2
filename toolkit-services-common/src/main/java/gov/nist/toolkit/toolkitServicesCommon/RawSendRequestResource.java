@@ -7,16 +7,16 @@ import java.util.*;
  *
  */
 @XmlRootElement
-class SendRequestResource extends SimIdResource implements SendRequest {
+public class RawSendRequestResource extends SimIdResource implements RawSendRequest {
     String transactionName;
     boolean tls = false;
     String metadata;
     List<String> extraHeaders = new ArrayList<>();
     Map<String, Document> documents = new HashMap<>();
 
-    public SendRequestResource() {}
+    public RawSendRequestResource() {}
 
-    public SendRequestResource(SimId simId) {
+    public RawSendRequestResource(SimId simId) {
         setUser(simId.getUser());
         setId(simId.getId());
         setActorType(simId.getActorType());

@@ -6,13 +6,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Not for Public Use.
  */
 @XmlRootElement
-public class SendResponseResource implements SendResponse {
+public class RawSendResponseResource implements RawSendResponse {
     String requestSoapHeader = null;
     String requestSoapBody = null;
     String responseSoapHeader = null;
     String responseSoapBody = null;
 
-    public SendResponseResource() {}
+    public RawSendResponseResource() {}
 
     @Override
     public String getRequestSoapHeader() {

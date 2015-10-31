@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Created by bill on 10/28/15.
+ * Send Request.
+ * Raw means that the user provides the SOAP Header,
+ * SOAP Body and document map to send.  No updates are done the the metadata.  It is sent as provided.
  */
-public interface SendRequest  extends SimId {
+public interface RawSendRequest extends SimId {
     /**
      * Add a Document to the send request. The id must match the id attribute on an ExtrinsicObject
      * in the metadata.
@@ -47,6 +49,10 @@ public interface SendRequest  extends SimId {
      */
     void addExtraHeader(String extraHeader);
 
+    /**
+     * Get map of id to Document.  The id is the is attribute value in a Document Sharing ExtrinsicObject.
+     * @return the map.
+     */
     Map<String, Document> getDocuments();
 
 //    void setDocuments(Map<String, Document> documents);

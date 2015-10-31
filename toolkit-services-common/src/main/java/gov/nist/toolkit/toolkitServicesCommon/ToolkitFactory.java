@@ -14,5 +14,5 @@ public class ToolkitFactory {
         return bean;
     }
 
-    static public SendRequest newSendRequest(SimId simId) { return new SendRequestResource(simId); }
+    static public RawSendRequest newSendRequest(SimId simId) { return new RawSendRequestResource(simId); }
 }
