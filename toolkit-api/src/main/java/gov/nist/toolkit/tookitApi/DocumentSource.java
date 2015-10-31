@@ -17,5 +17,7 @@ public interface DocumentSource extends AbstractActorInterface {
      * @throws ToolkitServiceException if something goes wrong in the sending of the transaction. If the transaction
      * return errors those are reflected in the RegistryResponse returned.
      */
-    RawSendResponse sendRawProvideAndRegister(RawSendRequest request) throws ToolkitServiceException;
+    RawSendResponse sendProvideAndRegister(RawSendRequest request) throws ToolkitServiceException;
+
+    RawSendRequest newRawSendRequest();
 }

@@ -122,7 +122,7 @@ class XdrSrcTest extends Specification {
         documentSource.getId() == srcParams.id
 
         when:
-        println 'STEP - UPDATE SET DOC REC ENDPOINTS INTO DOC SRC'
+        println 'STEP - UPDATE - SET DOC REC ENDPOINTS INTO DOC SRC'
         documentSource.setProperty(SimulatorProperties.pnrEndpoint, documentRecipient.asString(SimulatorProperties.pnrEndpoint))
         SimConfig updatedVersion = documentSource.update(documentSource.getConfig())
         println "Updated Src Sim config is ${updatedVersion.describe()}"
@@ -132,12 +132,12 @@ class XdrSrcTest extends Specification {
 
         when:
         println 'STEP - SEND XDR'
-        RawSendRequest req = ToolkitFactory.newSendRequest(documentSource.getConfig())
+        RawSendRequest req = documentSource.newRawSendRequest()
 
         req.metadata = this.getClass().getResource('/testdata/PnR1Doc.xml').text
         req.addDocument('Document01', new Document('text/plain', 'Hello World!'.bytes))
 
-        RawSendResponse response = documentSource.sendRawProvideAndRegister(req)
+        RawSendResponse response = documentSource.sendProvideAndRegister(req)
 
         String responseSoapBody = response.responseSoapBody;
         OMElement responseEle = Util.parse_xml(responseSoapBody)

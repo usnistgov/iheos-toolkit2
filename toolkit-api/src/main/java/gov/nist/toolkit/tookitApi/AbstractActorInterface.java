@@ -11,6 +11,10 @@ public interface AbstractActorInterface {
 
      SimConfig update(SimConfig config) throws ToolkitServiceException;
 
+    /**
+     * Delete the actor.
+     * @throws ToolkitServiceException if something goes wrong.
+     */
      void delete() throws ToolkitServiceException ;
 
     /**

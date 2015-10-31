@@ -5,7 +5,7 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 /**
  *
  */
-abstract public class AbstractActor {
+abstract class AbstractActor {
     EngineSpi engine;
     SimConfig config;
 
