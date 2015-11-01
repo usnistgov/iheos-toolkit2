@@ -22,8 +22,7 @@ import java.util.Map;
 /**
  * Created by Diane Azais local on 11/1/2015.
  */
-public class SiteSelectionWidget extends Widget {
-	HorizontalPanel panel;
+public class SiteSelectionWidget extends HorizontalPanel {
 	ListBox selectActorList = new ListBox();
 	final protected ToolkitServiceAsync toolkitService = GWT.create(ToolkitService.class);
 	Map<String, String> actorCollectionMap;  // name => description
@@ -38,9 +37,8 @@ public class SiteSelectionWidget extends Widget {
 
 
 	public SiteSelectionWidget(){
-		panel = new HorizontalPanel();
 
-		panel.add(selectActorList);
+		add(selectActorList);
 		loadActorNames();
 		selectActorList.addChangeHandler(new ActorSelectionChangeHandler());
 	}

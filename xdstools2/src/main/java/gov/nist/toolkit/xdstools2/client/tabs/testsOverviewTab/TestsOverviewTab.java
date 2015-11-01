@@ -11,7 +11,7 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
-import gov.nist.toolkit.xdstools2.client.widgets.SiteSelectionWidget.SiteSelectionWidget;
+import gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget.SiteSelectionWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,13 +59,9 @@ public class TestsOverviewTab extends GenericQueryTab {
         title.setHTML("<h2>Tests Overview</h2>");
         topPanel.add(title);
 
-        // add below-the-line-stuff (PatientId, site selection etc.)
-        // Also link in the Runner class (shown below) which is called when the user clicks on the Run button.
-        // Since this call organizes the site selection grid, it needs the transactionTypes and couplings config
-        // TODO adding this first messes up with the display of the rest of the tab
-        //addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
-        //SiteSelectionWidget sites = new SiteSelectionWidget(couplings, ActorType.REGISTRY, null);
-        //topPanel.add(sites);
+        // TODO add the Site Selection Widget
+        SiteSelectionWidget siteWidget = new SiteSelectionWidget();
+         topPanel.add(siteWidget);
 
 
         // ----- Create the data model -----
