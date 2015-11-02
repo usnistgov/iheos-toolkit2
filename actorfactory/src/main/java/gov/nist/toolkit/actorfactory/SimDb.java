@@ -123,6 +123,7 @@ public class SimDb {
 
 	File simSafetyFile() { return new File(simDir, "simId.txt"); }
 	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
+    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
 	// ipAddr aka simid
 	public SimDb(File dbRoot, SimId simId, String actor, String transaction) throws IOException, NoSimException {
@@ -218,10 +219,10 @@ public class SimDb {
 		File[] files = dbRoot.listFiles();
 		List<SimId> ids = new ArrayList<>();
 		if (files == null) return ids;
-		
-		for (File sim : files) {
-			if (sim.isDirectory())
-				ids.add(new SimId(sim.getName()));
+
+		for (File dir : files) {
+			if (isSimDir(dir))
+				ids.add(new SimId(dir.getName()));
 		}
 		return ids;
 	}

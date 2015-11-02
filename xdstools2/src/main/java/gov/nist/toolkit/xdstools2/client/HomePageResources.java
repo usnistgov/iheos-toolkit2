@@ -9,9 +9,9 @@ import com.google.gwt.resources.client.TextResource;
  * tab of toolkit.
  */
 public interface HomePageResources extends ClientBundle {
-    public static final HomePageResources INSTANCE = GWT.create(HomePageResources.class);
+    HomePageResources INSTANCE = GWT.create(HomePageResources.class);
 
     @ClientBundle.Source("doc/howto/index.html")
-    public TextResource getIntroHtml();
+    TextResource getIntroHtml();
 
 }
