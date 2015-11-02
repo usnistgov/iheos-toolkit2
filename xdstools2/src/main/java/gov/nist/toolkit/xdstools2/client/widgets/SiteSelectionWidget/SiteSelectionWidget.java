@@ -3,6 +3,8 @@ package gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -11,11 +13,17 @@ import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
+import org.junit.runner.Runner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,14 +37,15 @@ public class SiteSelectionWidget extends HorizontalPanel {
 	String selectedActor;
 	protected QueryBoilerplate queryBoilerplate = null;
 	public VerticalPanel resultPanel = new VerticalPanel();
-
-
+	GenericQueryTab parent;
 
 	final String allSelection = "-- All --";
 	final String chooseSelection = "-- Choose --";
 
 
-	public SiteSelectionWidget(){
+
+	public SiteSelectionWidget(GenericQueryTab _parent){
+		parent = _parent;
 
 		add(selectActorList);
 		loadActorNames();
@@ -65,6 +74,9 @@ public class SiteSelectionWidget extends HorizontalPanel {
 		});
 	}
 
+    /**
+     * Loads the list of actors for the current parameters
+     */
 	class ActorSelectionChangeHandler implements ChangeHandler {
 
 		public void onChange(ChangeEvent event) {
@@ -75,45 +87,33 @@ public class SiteSelectionWidget extends HorizontalPanel {
 			if ("".equals(selectedActor))
 				return;
 			String sel = selectedActor;
-			//loadTestsForActor();
-
-			//readmeBox.clear();
 
 			// these names are found in war/toolkit/testkit/actorcollections/xxxx.tc
-
 			// list all sites
-
 			ActorType act = ActorType.findActor(sel);
 			if (act == null)
 				return;
 
 			List<TransactionType> tt = act.getTransactions();
 
-			// TODO Add queryboilerplate
-          /*  queryBoilerplate = addQueryBoilerplate(
-                    new Runner(),
-                    tt,
-                    new CoupledTransactions(),
-                    true);
-        }
-        */
-
-
+			parent.addQueryBoilerplate(
+					new Runner(),
+					tt,
+					new CoupledTransactions(),
+					true);
 		}
-	}
-
-
-	protected boolean verifySiteProvided() {
-		SiteSpec siteSpec = getSiteSelection();
-		if (siteSpec == null) {
-			new PopupMessage("You must select a site first");
-			return false;
-		}
-		return true;
 	}
 
 
 	protected SiteSpec getSiteSelection() { return queryBoilerplate.getSiteSelection(); }
 
+
+	class Runner implements ClickHandler {
+
+		public void onClick(ClickEvent event) {
+			resultPanel.clear();
+			new PopupMessage("Run the clickhandler actions");
+		}
+	}
 
 }

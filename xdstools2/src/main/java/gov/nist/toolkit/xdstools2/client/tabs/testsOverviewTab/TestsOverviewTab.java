@@ -59,10 +59,18 @@ public class TestsOverviewTab extends GenericQueryTab {
         title.setHTML("<h2>Tests Overview</h2>");
         topPanel.add(title);
 
-        // TODO add the Site Selection Widget
-        SiteSelectionWidget siteWidget = new SiteSelectionWidget();
-         topPanel.add(siteWidget);
 
+        // TODO add the Site Selection Widget
+        // -------------------------------------------
+        // ---------- Site Selection Widget-----------
+        // -------------------------------------------
+        SiteSelectionWidget siteWidget = new SiteSelectionWidget(this);
+        topPanel.add(siteWidget);
+
+
+        // -------------------------------------------
+        // ------------Tests Overview Widget----------
+        // -------------------------------------------
 
         // ----- Create the data model -----
         dataModel = new TestsWidgetDataModel();
@@ -88,7 +96,6 @@ public class TestsOverviewTab extends GenericQueryTab {
         // Process the run button click
         public void onClick(ClickEvent event) {
             resultPanel.clear();
-
         }
     }
 
@@ -105,4 +112,5 @@ public class TestsOverviewTab extends GenericQueryTab {
     public String getWindowShortName() {
         return "testsoverview";
     }
+
 }

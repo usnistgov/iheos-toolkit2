@@ -210,7 +210,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 	}
 
-	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, 
+	public QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,
 			CoupledTransactions couplings, boolean hasPatientIdParam) {
 		if (queryBoilerplate != null) {
 			queryBoilerplate.remove();
