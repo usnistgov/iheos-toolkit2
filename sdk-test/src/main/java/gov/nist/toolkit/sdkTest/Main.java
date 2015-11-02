@@ -27,7 +27,7 @@ public class Main {
      * @return Grizzly HTTP server.
      */
     public static HttpServer startServer(String port) {
-        final ResourceConfig rc = new ResourceConfig().packages("gov.nist.toolkit.toolkitServices");
+        final ResourceConfig rc = new ResourceConfig().packages("gov.nist.toolkit.toolkitServices, gov.nist.toolkit.transactionNotificationService");
         rc.property(ServerProperties.TRACING, "ALL");
 
         // create and start a new instance of grizzly http server

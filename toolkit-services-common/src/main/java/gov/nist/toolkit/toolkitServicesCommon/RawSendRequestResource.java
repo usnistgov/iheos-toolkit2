@@ -1,59 +1,76 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
  */
 @XmlRootElement
-public class SendRequestResource extends SimIdResource implements SendRequest {
+public class RawSendRequestResource extends SimIdResource implements RawSendRequest {
     String transactionName;
     boolean tls = false;
     String metadata;
-    String extraHeaders = null;
+    List<String> extraHeaders = new ArrayList<>();
     Map<String, Document> documents = new HashMap<>();
 
-    public SendRequestResource() {}
+    public RawSendRequestResource() {}
 
+    public RawSendRequestResource(SimId simId) {
+        setUser(simId.getUser());
+        setId(simId.getId());
+        setActorType(simId.getActorType());
+        setEnvironmentName(simId.getEnvironmentName());
+    }
 
+    @Override
     public void addDocument(String id, Document doc) {
         documents.put(id, doc);
     }
 
+    @Override
     public String getTransactionName() {
         return transactionName;
     }
 
+    @Override
     public void setTransactionName(String transactionName) {
         this.transactionName = transactionName;
     }
 
+    @Override
     public boolean isTls() {
         return tls;
     }
 
+    @Override
     public void setTls(boolean tls) {
         this.tls = tls;
     }
 
+    @Override
     public String getMetadata() {
         return metadata;
     }
 
+    @Override
     public void setMetadata(String metadata) {
         this.metadata = metadata;
     }
 
-    public String getExtraHeaders() {
+    @Override
+    public List<String> getExtraHeaders() {
         return extraHeaders;
     }
 
-    public void setExtraHeaders(String extraHeaders) {
+    @Override
+    public void addExtraHeader(String header) { extraHeaders.add(header); }
+
+    public void setExtraHeaders(List<String> extraHeaders) {
         this.extraHeaders = extraHeaders;
     }
 
+    @Override
     public Map<String, Document> getDocuments() {
         return documents;
     }
