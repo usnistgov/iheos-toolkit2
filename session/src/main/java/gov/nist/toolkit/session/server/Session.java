@@ -397,9 +397,9 @@ public class Session implements SecurityParams {
 			return names;
 		File[] files = k.listFiles();
 		for (File file : files)
-			if (file.isDirectory())
+			if (file.isDirectory() && !(file.getName().equals("TestLogCache"))) {
 				names.add(file.getName());
-		
+			}
 		return names;
 	}
 	
