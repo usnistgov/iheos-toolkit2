@@ -33,13 +33,13 @@ public class EngineSpi {
      * @param hostname where test engine runs
      * @param port where test engin runs
      */
-    public EngineSpi(String hostname, String port) {
+    public EngineSpi(String urlRoot) {
         ClientConfig cc = new ClientConfig().register(new JacksonFeature());
         Client c = ClientBuilder.newClient(cc);
         Configuration conf = c.getConfiguration();
         logger.info(conf.getPropertyNames());
-        logger.info("target is " + "http://" + hostname + ":" + port + "/xdstools2/rest/");
-        target = c.target("http://" + hostname + ":" + port + "/xdstools2/rest/");
+        logger.info("target is " + urlRoot + "/rest/");
+        target = c.target(urlRoot + "/rest/");
     }
 
     public SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
@@ -67,8 +67,8 @@ public class EngineSpi {
      * @return
      * @throws ToolkitServiceException
      */
-    public void create(BasicSimParameters parms) throws ToolkitServiceException {
-        create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
+    public SimConfig create(BasicSimParameters parms) throws ToolkitServiceException {
+        return create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
     }
 
     public SimConfig update(SimConfig config) throws ToolkitServiceException {

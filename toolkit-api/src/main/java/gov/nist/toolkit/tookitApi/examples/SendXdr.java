@@ -8,7 +8,7 @@ import gov.nist.toolkit.tookitApi.SimulatorBuilder;
 public class SendXdr {
 
     public static void main(String[] args) {
-        SimulatorBuilder builder = new SimulatorBuilder("localhost", "8888");
+        SimulatorBuilder builder = new SimulatorBuilder("http://localhost:8888/xdstools2");
 
     }
 

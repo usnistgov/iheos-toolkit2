@@ -8,21 +8,18 @@ import gov.nist.toolkit.toolkitServicesCommon.SimId;
  * Build/modify a collection of different Actors.
  */
 public class SimulatorBuilder {
-    String host;
-    String port;
+    String urlRoot;
     EngineSpi engine;
 
 
     /**
      * This will initialize the API to contact the test engine at
      * http://hostname:port/xdstools2
-     * @param host where engine is running
-     * @param port where engine is running
+     * @param urlRoot where engine is running - typical value would be http://localhost:8080/xdstools2
      */
-    public SimulatorBuilder(String host, String port) {
-        this.host = host;
-        this.port = port;
-        engine = new EngineSpi(host, port);
+    public SimulatorBuilder(String urlRoot) {
+        this.urlRoot = urlRoot;
+        engine = new EngineSpi(urlRoot);
     }
 
     private SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {

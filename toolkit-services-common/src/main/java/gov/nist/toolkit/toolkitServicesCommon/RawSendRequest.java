@@ -36,7 +36,9 @@ public interface RawSendRequest extends SimId {
     String getMetadata();
 
     /**
-     * Metadata as a String.  It must be well formed XML (pass an XML parse).
+     * Metadata as a String.  It must be well formed XML (pass an XML parse). This will be the XML child element of
+     * the SOAPBody element.  For a Provide and Register transaction the top element will be
+     * the ProvideAndRegisterDocumentSetRequest element.
      * @param metadata XML
      */
     void setMetadata(String metadata);

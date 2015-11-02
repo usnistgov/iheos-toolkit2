@@ -204,6 +204,10 @@ public class SimulatorsController {
             OMElement messageBody = Util.parse_xml(request.getMetadata());
             sim.setMessageBody(messageBody);
             sim.setDocumentMap(internalizeDocs(request));
+            for (String extraHeader : request.getExtraHeaders()) {
+                OMElement ele = Util.parse_xml(extraHeader);
+                sim.addSoapHeaderElement(ele);
+            }
             OMElement responseEle = sim.run(
                     config,
                     transactionType,

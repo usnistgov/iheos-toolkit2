@@ -32,6 +32,7 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
     static final Logger logger = Logger.getLogger(XdrDocSrcActorSimulator.class);
     OMElement messageBody = null;
     DocumentMap documentMap = null;
+    List<OMElement> extraSoapHeaderElements = new ArrayList<>();
 
     // not used
     Map<String, ByteArrayDataSource> documents = new HashMap<>();
@@ -100,6 +101,9 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
         mtom.setDocumentMap(documentMap);
 
         Soap soap = new Soap();
+        for (OMElement ele : extraSoapHeaderElements) {
+            soap.addHeader(ele);
+        }
         return soap.soapCall(mtom.getBody(),
                 endpoint,
                 true, // mtom
@@ -128,4 +132,6 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
     public void setDocumentMap(DocumentMap documentMap) {
         this.documentMap = documentMap;
     }
+
+    public void addSoapHeaderElement(OMElement ele) { extraSoapHeaderElements.add(ele); }
 }

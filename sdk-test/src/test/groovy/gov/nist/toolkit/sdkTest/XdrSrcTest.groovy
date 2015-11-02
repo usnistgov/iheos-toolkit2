@@ -1,4 +1,5 @@
 package gov.nist.toolkit.sdkTest
+
 import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.registrymsg.registry.RegistryError
@@ -6,12 +7,10 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
 import gov.nist.toolkit.simulators.servlet.SimServlet
-import gov.nist.toolkit.tookitApi.BasicSimParameters
-import gov.nist.toolkit.tookitApi.DocumentRecipient
-import gov.nist.toolkit.tookitApi.DocumentSource
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
-import gov.nist.toolkit.tookitApi.ToolkitServiceException
+import gov.nist.toolkit.tookitApi.*
 import gov.nist.toolkit.toolkitServicesCommon.*
+import gov.nist.toolkit.transactionNotificationService.TransactionLog
+import gov.nist.toolkit.transactionNotificationService.TransactionNotification
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
 import org.glassfish.grizzly.http.server.HttpServer
@@ -19,14 +18,16 @@ import org.glassfish.grizzly.servlet.ServletRegistration
 import org.glassfish.grizzly.servlet.WebappContext
 import spock.lang.Shared
 import spock.lang.Specification
+
 /**
  *
  */
-class XdrSrcTest extends Specification {
+class XdrSrcTest extends Specification implements TransactionNotification {
     def host='localhost'
     @Shared String port = '8889'
+    @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", port)
 //    EngineSpi engine = new EngineSpi(host, port);
-    SimulatorBuilder builder = new SimulatorBuilder(host, port)
+    SimulatorBuilder builder = new SimulatorBuilder(urlRoot)
     @Shared HttpServer server
     BasicSimParameters srcParams = new BasicSimParameters()
     BasicSimParameters recParams = new BasicSimParameters()
@@ -103,6 +104,13 @@ class XdrSrcTest extends Specification {
                 recParams.environmentName
         )
 
+        and:  'This is un-verifiable since notifications are handled through the servlet filter chain which is not configured here'
+        println 'STEP - UPDATE - REGISTER NOTIFICATION'
+        documentRecipient.setProperty(SimulatorProperties.TRANSACTION_NOTIFICATION_URI, urlRoot + '/rest/toolkitcallback')
+        documentRecipient.setProperty(SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, 'gov.nist.toolkit.sdkTest.XdrSrcTest')
+        SimConfig withRegistration = documentRecipient.update(documentRecipient.getConfig())
+        println "Updated Src Sim config is ${withRegistration.describe()}"
+
         then: 'verify sim built'
         documentRecipient.getId() == recParams.id
 
@@ -151,6 +159,8 @@ class XdrSrcTest extends Specification {
         errors.size() == 0
     }
 
+
+
     def 'Try to reate sim with bad id'() {
         when:
         SimConfig recSimConfig = builder.create(
@@ -163,5 +173,10 @@ class XdrSrcTest extends Specification {
         then:
         ToolkitServiceException e = thrown()
         e.code == 500
+    }
+
+    @Override
+    void notify(TransactionLog log) {
+        println "NOTIFICATION RECEIVED"
     }
 }

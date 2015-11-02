@@ -198,7 +198,7 @@ public class SimDb {
 		
 		String dayOffset = ExtendedPropertyManager.getProperty(controllingClass, "expiration");
 		if (dayOffset == null) {
-			logger.error("Extended Property expiration of class " + controllingClass + " is not defined");
+//			logger.error("Extended Property expiration of class " + controllingClass + " is not defined");
 			dayOffset = "1";
 		}
 		newExpiration.add(Calendar.DAY_OF_MONTH, Integer.parseInt(dayOffset));

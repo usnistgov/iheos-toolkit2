@@ -46,6 +46,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			addEditableConfig(sc, SimulatorProperties.VALIDATE_CODES, ParamType.BOOLEAN, false);
 			addEditableConfig(sc, SimulatorProperties.extraMetadataSupported, ParamType.BOOLEAN, true);
 			addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_URI, ParamType.TEXT, "");
+            addEditableConfig(sc, SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, ParamType.TEXT, "");
 			addFixedConfig(sc, SimulatorProperties.UPDATE_METADATA_OPTION, ParamType.BOOLEAN, false);
 			addFixedConfig(sc, SimulatorProperties.PART_OF_RECIPIENT, ParamType.BOOLEAN, true);
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);

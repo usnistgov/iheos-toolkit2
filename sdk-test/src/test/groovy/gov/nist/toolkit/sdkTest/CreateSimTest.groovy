@@ -1,4 +1,6 @@
 package gov.nist.toolkit.sdkTest
+
+import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
 import gov.nist.toolkit.tookitApi.BasicSimParameters
@@ -18,7 +20,7 @@ import javax.ws.rs.core.Response
 class CreateSimTest extends Specification {
     def host='localhost'
     @Shared def port = '8889'
-    EngineSpi builder = new EngineSpi(host, port);
+    EngineSpi builder = new EngineSpi(String.format('http://localhost:%s/xdstools2', port));
     @Shared HttpServer server
     BasicSimParameters params = new BasicSimParameters();
 
@@ -39,7 +41,7 @@ class CreateSimTest extends Specification {
     def setup() {  // run before each test method
         params.id = 'reg'
         params.user = 'mike'
-        params.actorType = 'reg'
+        params.actorType = SimulatorActorType.REGISTRY
         params.environmentName = 'test'
     }
 
