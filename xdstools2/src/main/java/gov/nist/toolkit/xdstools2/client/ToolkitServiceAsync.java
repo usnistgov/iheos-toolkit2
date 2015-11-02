@@ -54,7 +54,7 @@ public interface ToolkitServiceAsync {
 
 	void getTransactionsForSimulator(SimId simid, AsyncCallback<List<String>> callback);
 
-//	void getActorNames(AsyncCallback<List<String>> callback);
+//	void getActorNames(AsyncCallback<List<String>> notify);
 
 	void executeSimMessage(String simFileSpec, AsyncCallback<MessageValidationResults> callback);
 
@@ -70,7 +70,7 @@ public interface ToolkitServiceAsync {
 	@Deprecated
 	void getClientIPAddress(AsyncCallback<String> callback);
 
-//	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> callback);
+//	void  validateMessage(ValidationContext vc, String simFileName, AsyncCallback<MessageValidationResults> notify);
 
 	void  getTransInstances(SimId simid, String actor, String trans, AsyncCallback<List<TransactionInstance>> callback);
   
@@ -126,7 +126,7 @@ public interface ToolkitServiceAsync {
 	void lifecycleValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 
-//	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> callback);
+//	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> notify);
 	void mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes, AsyncCallback<List<Result>> callback);
 	void getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
 
@@ -145,7 +145,7 @@ public interface ToolkitServiceAsync {
 	void putSimConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void deleteConfig(SimulatorConfig config, AsyncCallback<String> callback);
 	void getActorSimulatorNameMap(AsyncCallback<Map<String, SimId>> callback);
-//	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> callback);
+//	void getSimulatorTransactionNames(String simid, AsyncCallback<List<String>> notify);
 	void removeOldSimulators(AsyncCallback<Integer> callback);
 	void getSimulatorStats(List<SimId> simid, AsyncCallback<List<SimulatorStats>> callback) throws Exception;
 	void getPatientIds(SimId simId, AsyncCallback<List<Pid>> callback) throws Exception;
@@ -170,5 +170,5 @@ public interface ToolkitServiceAsync {
 
 
 	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
-//	void getToolkitEnableNwHIN(AsyncCallback<String> callback);
+//	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
 }

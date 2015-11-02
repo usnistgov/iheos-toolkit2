@@ -2,7 +2,6 @@ package gov.nist.toolkit.actorfactory.client;
 
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -27,7 +26,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	 * Globally unique id for this simulator
 	 */
 	SimId id;
-	String type;
+	String actorType;
 //	String[] values;   // these are possible values
 	Date expires;
 	boolean isExpired = false;
@@ -46,13 +45,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	ValidationContext vc = null;
 	transient CcdaTypeSelection docTypeSelector;
 
-	public static final String UPDATE_METADATA_OPTION = "Update_Metadata_Option";
-	public static final String PIF_PORT = "Patient_Identity_Feed_Port";
-	public static final String PART_OF_RECIPIENT = "Part_of_Recipient";
-	public static final String VALIDATE_CODES = "Validate_Codes";
-	public static final String VALIDATE_AGAINST_PATIENT_IDENTITY_FEED = "Validate_Against_Patient_Identity_Feed";
-
-	public boolean isExpired() { return isExpired; }
+    public boolean isExpired() { return isExpired; }
 	public void isExpired(boolean is) { isExpired = is; }
 
 	public boolean checkExpiration() {
@@ -99,7 +92,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		
 		buf.append("ActorSimulatorConfig:");
 		buf.append(" id=").append(id);
-		buf.append(" type=").append(type);
+		buf.append(" type=").append(actorType);
 		buf.append("\n\telements=[");
 		for (SimulatorConfigElement asce : elements) {
 			buf.append("\n\t\t").append(asce);
@@ -116,9 +109,9 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		
 	}
 	
-	public SimulatorConfig(SimId id, String type, Date expiration) {
+	public SimulatorConfig(SimId id, String actorType, Date expiration) {
 		this.id = id;
-		this.type = type;
+		this.actorType = actorType;
 		expires = expiration;
 	}
 	
@@ -165,7 +158,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		}
 		return user;
 	}
-	
+
+    @Deprecated
 	public SimulatorConfigElement	getUserByName(String name) {
 		if (name == null)
 			return null;
@@ -176,7 +170,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		}
 		return null;
 	}
-	
+
+    @Deprecated
 	public SimulatorConfigElement	getFixedByName(String name) {
 		if (name == null)
 			return null;
@@ -187,8 +182,19 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		}
 		return null;
 	}
-	
-	public void deleteFixedByName(String name) {
+
+    public SimulatorConfigElement getConfigEle(String name) {
+        if (name == null)
+            return null;
+
+        for (SimulatorConfigElement ele : elements) {
+            if (name.equals(ele.name))
+                return ele;
+        }
+        return null;
+    }
+
+    public void deleteFixedByName(String name) {
 		SimulatorConfigElement ele = getFixedByName(name);
 		if (ele != null)
 			elements.remove(ele);
@@ -199,14 +205,18 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		if (ele != null)
 			elements.remove(ele);
 	}
+
+    public boolean hasConfig(String name) {
+        return getFixedByName(name) != null;
+    }
 	
 	
 	public SimId getId() {
 		return id;
 	}
 	
-	public String getType() {
-		return type;
+	public String getActorType() {
+		return actorType;
 	}
 	
 	public SimulatorConfigElement get(String name) {
@@ -218,7 +228,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	}
 		
 	public String getDefaultName() {
-		return get("Name").asString(); // + "." + getType();
+		return get("Name").asString(); // + "." + getActorType();
 	}
 	
 	public ValidationContext getValidationContext() {
@@ -231,7 +241,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 
 
 //	public ActorFactory getActorFactory() throws Exception {
-//		String simtype = getType();
+//		String simtype = getActorType();
 //		ActorType at = ActorType.findActor(simtype);
 //		ActorFactory af = ActorFactory.getActorFactory(at);
 //		return af;

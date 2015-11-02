@@ -1,13 +1,13 @@
 package gov.nist.toolkit.testengine.scripts;
 
-import static org.junit.Assert.assertTrue;
-import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.testengine.engine.XdsTest;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 public class TtkTest {
 //	String toolkit = "/Users/bill/v3workspace/toolkit2/xdstools2/war";
@@ -40,7 +40,8 @@ public class TtkTest {
 	public void init() {
 		System.setProperty("XDSSchemaDir", "file://" + toolkit + "/toolkitx/schema");
 		System.setProperty("XDSCodesFile", toolkit + "/toolkitx/codes/codes.xml");
-		Installation.installation().externalCache(new File(toolkit + "/toolkitx/logs"));
+//		Installation.installation().externalCache(new File(toolkit + "/toolkitx/logs"));
+        ExternalCacheManager.initialize(new File(toolkit + "/toolkitx/logs"));
 	}
 	
 //	@Test

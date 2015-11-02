@@ -40,16 +40,16 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 			sc = new SimulatorConfig();
 
 		if (isRecipient) {
-			addFixedEndpoint(sc, pnrEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, false);
-			addFixedEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, true);
+			addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, false);
+			addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.XDR_PROVIDE_AND_REGISTER, true);
 		} else {   // Repository
-			addEditableConfig(sc, repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
-			addFixedEndpoint(sc, pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
-			addFixedEndpoint(sc, pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
-			addFixedEndpoint(sc, retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
-			addFixedEndpoint(sc, retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
-			addFixedEndpoint(sc, registerEndpoint, actorType, TransactionType.REGISTER, false);
-			addFixedEndpoint(sc, registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+			addEditableConfig(sc, SimulatorProperties.repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
+			addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
+			addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
+			addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.RETRIEVE, false);
+			addFixedEndpoint(sc, SimulatorProperties.retrieveTlsEndpoint, actorType, TransactionType.RETRIEVE, true);
+			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint, actorType, TransactionType.REGISTER, false);
+			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
 		}
 
 		return new Simulator(sc);
@@ -76,26 +76,26 @@ public class RepositoryActorFactory extends AbstractActorFactory {
 		site.addTransaction(new TransactionBean(
 				TransactionType.PROVIDE_AND_REGISTER.getCode(),
 				RepositoryType.NONE,
-				asc.get(pnrEndpoint).asString(), 
+				asc.get(SimulatorProperties.pnrEndpoint).asString(),
 				false, 
 				isAsync));
 		site.addTransaction(new TransactionBean(
 				TransactionType.PROVIDE_AND_REGISTER.getCode(),
 				RepositoryType.NONE,
-				asc.get(pnrTlsEndpoint).asString(), 
+				asc.get(SimulatorProperties.pnrTlsEndpoint).asString(),
 				true, 
 				isAsync));
 
 		site.addRepository(new TransactionBean(
-				asc.get(AbstractActorFactory.repositoryUniqueId).asString(),
+				asc.get(SimulatorProperties.repositoryUniqueId).asString(),
 				RepositoryType.REPOSITORY,
-				asc.get(retrieveEndpoint).asString(), 
+				asc.get(SimulatorProperties.retrieveEndpoint).asString(),
 				false, 
 				isAsync));
 		site.addRepository(new TransactionBean(
-				asc.get(AbstractActorFactory.repositoryUniqueId).asString(),
+				asc.get(SimulatorProperties.repositoryUniqueId).asString(),
 				RepositoryType.REPOSITORY,
-				asc.get(retrieveTlsEndpoint).asString(), 
+				asc.get(SimulatorProperties.retrieveTlsEndpoint).asString(),
 				true, 
 				isAsync));
 

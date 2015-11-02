@@ -119,9 +119,6 @@ public class SimCache {
 		}
 		SimulatorConfig config = getSimulatorConfig(simId);
 
-		// TODO - this doesn't work because delete hook for listener is hung off RegistrySimulatorFactory and not
-		// GenericSimulatorFactory - need to move the hook mechanism. Maybe to SimulatorConfig or Simulator classes.
-		// In general it should be attached to a run class and not a factory class
 		GenericSimulatorFactory.delete(config);
 	}
 }

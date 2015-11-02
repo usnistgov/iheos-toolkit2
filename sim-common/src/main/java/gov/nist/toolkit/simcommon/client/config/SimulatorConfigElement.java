@@ -1,12 +1,11 @@
 package gov.nist.toolkit.simcommon.client.config;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ParamType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
 
 public class SimulatorConfigElement implements Serializable,IsSerializable {
 
@@ -53,7 +52,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 		return Boolean.toString(false);
 	}
 
-	public Boolean asBoolean() { 
+	public Boolean asBoolean() {
 		if (valueType == ValueType.STRING) {
 			String v = stringValue;
 			v = v.toLowerCase();
@@ -81,9 +80,9 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 		buf.append(" type=").append(type);
 		buf.append(" transType=").append(transType);
 		if (valueType == ValueType.BOOLEAN)
-			buf.append(" value=").append(booleanValue);
+			buf.append(" boolean value=").append(booleanValue);
 		else
-			buf.append(" value=").append(stringValue);
+			buf.append(" string value=").append(stringValue);
 
 		buf.append(" values=").append(values);
 

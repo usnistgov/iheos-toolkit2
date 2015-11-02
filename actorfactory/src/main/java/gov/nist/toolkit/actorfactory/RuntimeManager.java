@@ -20,7 +20,7 @@ public class RuntimeManager {
     public static BaseActorSimulator getSimulatorRuntime(SimId simId) throws NoSimException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
         SimDb db = new SimDb();
         SimulatorConfig config = GenericSimulatorFactory.getSimConfig(db.getRoot(), simId);
-        String actorTypeName = config.getType();
+        String actorTypeName = config.getActorType();
         ActorType actorType = ActorType.findActor(actorTypeName);
         String actorSimClassName = actorType.getSimulatorClassName();
         logger.info("Loading runtime for sim " + simId + " of type " + actorTypeName + " of class " + actorSimClassName);
@@ -41,7 +41,7 @@ public class RuntimeManager {
             throw new ToolkitRuntimeException("Cannot find no-argument constructor for " + actorSimClassName);
         Object obj = constructor.newInstance();
         if (!(obj instanceof BaseActorSimulator)) {
-            throw new ToolkitRuntimeException("Received message for actor type " + actorTypeName + " which has a handler/simulator that does not extend AbstractDsActorSimulator");
+            throw new ToolkitRuntimeException("Received message for actor type " + actorTypeName + " which has a handler/simulator that does not extend BaseActorSimulator");
         }
         return (BaseActorSimulator) obj;
     }

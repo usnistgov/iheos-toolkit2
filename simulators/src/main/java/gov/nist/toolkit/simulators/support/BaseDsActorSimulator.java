@@ -19,11 +19,10 @@ import java.io.IOException;
  *
  */
 public abstract class BaseDsActorSimulator extends BaseActorSimulator {
-	protected SimDb db;
+    protected SimDb db;
 	protected SimCommon common = null;
 	protected DsSimCommon dsSimCommon = null;
 	protected ErrorRecorder er = null;
-	protected SimulatorConfig simulatorConfig = null;
 	public HttpServletResponse response;
 
 	/**
@@ -54,10 +53,12 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 		common = c.simCommon;
 		er = common.getCommonErrorRecorder();
 		db = c.simCommon.db;
-		simulatorConfig = config;
+		dsSimCommon.setSimulatorConfig(config);
 		response = dsSimCommon.simCommon.response;
 		init();
 	}
+
+
 
 	public ValidationContext getValidationContext() {
 		return common.getValidationContext();
@@ -67,4 +68,6 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 		return new GwtErrorRecorderBuilder().buildNewErrorRecorder();
 	}
 
+    public SimulatorConfig getSimulatorConfig() { return dsSimCommon.simulatorConfig; }
+    public void setSimulatorConfig(SimulatorConfig config) { dsSimCommon.simulatorConfig = config; }
 }

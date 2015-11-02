@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.envSetting.EnvSetting;
+import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -168,12 +169,13 @@ public class Session implements SecurityParams {
 		ExtendedPropertyManager.load(warHome);
 		System.out.print("warHome[Session]: " + warHome + "\n");
 
-		File externalCache = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
-        System.out.println("External Cache from WAR set to " + externalCache.toString());
-		Installation.installation().externalCache(externalCache);
-		if (externalCache == null || !externalCache.exists() || !externalCache.isDirectory())
-			externalCache = null;
-		Installation.installation().externalCache(externalCache);
+        ExternalCacheManager.initialize();
+//		File externalCache = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
+//        System.out.println("External Cache from WAR set to " + externalCache.toString());
+//		Installation.installation().externalCache(externalCache);
+//		if (externalCache == null || !externalCache.exists() || !externalCache.isDirectory())
+//			externalCache = null;
+//		Installation.installation().externalCache(externalCache);
 	}
 
 	public Session(File warHome, File externalCache) {
@@ -181,8 +183,9 @@ public class Session implements SecurityParams {
 		ExtendedPropertyManager.load(warHome);
 		System.out.print("warHome[Session]: " + warHome + "\n");
 
-		System.out.println("External Cache set to " + externalCache.toString());
-		Installation.installation().externalCache(externalCache);
+//		System.out.println("External Cache set to " + externalCache.toString());
+//		Installation.installation().externalCache(externalCache);
+        ExternalCacheManager.initialize(externalCache);
 	}
 
 	public QueryServiceManager queryServiceManager() {
@@ -394,9 +397,9 @@ public class Session implements SecurityParams {
 			return names;
 		File[] files = k.listFiles();
 		for (File file : files)
-			if (file.isDirectory())
+			if (file.isDirectory() && !(file.getName().equals("TestLogCache"))) {
 				names.add(file.getName());
-		
+			}
 		return names;
 	}
 	

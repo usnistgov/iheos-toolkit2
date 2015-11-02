@@ -57,7 +57,6 @@ public class XdmDecoder extends AbstractMessageValidator {
 			xd.showContents = true;
 			xd.run(er, mvc);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

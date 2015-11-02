@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -42,17 +43,17 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	public RegistryActorSimulator() {}
 
 	public boolean isPartOfRecipient() {
-		SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.PART_OF_RECIPIENT);
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.PART_OF_RECIPIENT);
 		return sce != null && sce.asBoolean();
 	}
 
 	public boolean isValidateCodes() {
-		SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.VALIDATE_CODES);
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_CODES);
 		return sce != null && sce.asBoolean();
 	}
 
 	public boolean validateAgainstPatientIdentityFeed() {
-		SimulatorConfigElement sce = simulatorConfig.get(SimulatorConfig.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED);
+		SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED);
 		return sce != null && sce.asBoolean();
 	}
 
@@ -61,12 +62,12 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		super(dsSimCommon.simCommon, dsSimCommon);
 		this.db = dsSimCommon.simCommon.db;
 		this.response = dsSimCommon.simCommon.response;
-		this.simulatorConfig = simulatorConfig;
+		this.setSimulatorConfig(simulatorConfig);
 		init();
 	}
 
 	public void init() {
-		SimulatorConfigElement updateConfig = simulatorConfig.get(SimulatorConfig.UPDATE_METADATA_OPTION);
+		SimulatorConfigElement updateConfig = getSimulatorConfig().get(SimulatorProperties.UPDATE_METADATA_OPTION);
 		if (updateConfig != null)
 			updateEnabled = updateConfig.asBoolean();
 	}
@@ -74,12 +75,14 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	// This constructor can be used to implement calls to onCreate(), onDelete(),
 	// onServiceStart(), onServiceStop()
 	public RegistryActorSimulator(SimulatorConfig simulatorConfig) {
-		this.simulatorConfig = simulatorConfig;
+		setSimulatorConfig(simulatorConfig);
 	}
 
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		AdhocQueryResponseGenerator queryResponseGenerator;
-		RegistryResponseGeneratorSim registryResponseGenerator;		
+		RegistryResponseGeneratorSim registryResponseGenerator;
+
+        logger.info(getSimulatorConfig());
 		
 		common.getValidationContext().updateEnabled = updateEnabled;
 		
@@ -95,6 +98,13 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 
+            // *********************************************
+            // Metadata is validated by the class MetadataMessageValidator
+            //
+            //  eventually.
+            //
+            // *********************************************
+
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
 				return false;  // returns if SOAP Fault was generated
 			
@@ -104,7 +114,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 			}
 
 			
-			RegRSim rsim = new RegRSim(common, dsSimCommon, simulatorConfig);
+			RegRSim rsim = new RegRSim(common, dsSimCommon, getSimulatorConfig());
 			mvc.addMessageValidator("Register Transaction", rsim, er);
 
 			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
@@ -179,7 +189,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 				return false;
 			}
 
-			MuSim musim = new MuSim(common, dsSimCommon, simulatorConfig);
+			MuSim musim = new MuSim(common, dsSimCommon, getSimulatorConfig());
 			mvc.addMessageValidator("MuSim", musim, er);
 			
 			mvc.run();
@@ -251,7 +261,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	@Override
 	public void onCreate(SimulatorConfig config) {
 		// When registry part of implementation of Document Recipient there is no patient feed necessary
-		SimulatorConfigElement pifPortConfigured = config.get(SimulatorConfig.PIF_PORT);
+		SimulatorConfigElement pifPortConfigured = config.get(SimulatorProperties.PIF_PORT);
 		if (pifPortConfigured != null)
 			PatientIdentityFeedServlet.generateListener(config);
 	}

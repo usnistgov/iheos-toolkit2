@@ -108,7 +108,6 @@ public class ProcessMetadataForDocumentEntryUpdate implements ProcessMetadataInt
 	}
 
 	@Override
-	// TODO - this was copied from ProcessMetadataForRegister - may be some rules that are not appropriate for update
 	// verify that no associations are being added that:
 	//     link objects with different patient ids (except for special cases)
 	public void associationPatientIdRules() {

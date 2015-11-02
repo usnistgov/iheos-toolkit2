@@ -1,0 +1,176 @@
+
+xx yy ZZZZ
+
+Fixed sourcePatientInfo sourcePatientId so they contain valid
+CX datatypes
+
+
+
+Version 7.03
+
+Test 11880 generates XDS.b instead of XDS.a - the testplan language allowed 
+XDS.a/XDS.b to be specified at the plan, step or transaction level 
+which made the xdstest tool implementation complicated.  Removed the 
+XDS.a/XDS.b tag from the plan and step levels as part of the cleanup.
+Required minor updates to a half dozen testplan files in the testkit.
+
+
+On tests 12320 and 12320, added validation to show that MTOM requests return MTOM and SIMPLE SOAP requests
+return SIMPLE SOAP. Change was made in MswTransaction class.
+
+--------------------------------
+Starting here, log is in reverse chronologicial order
+--------------------------------
+
+Version 6.0
+Oct 29, 2007
+
+First release for 2007 - 2008 testing season.
+See http://ihewiki.wustl.edu/wiki/index.php/XDS_Test_Kit_2007-2008_Test_Requirements for documentation on individual tests.
+
+Version 6.1
+Oct 31, 2007
+
+Added material for 11710 which was forgotten in 6.0
+
+Version 6.2
+Nov 9, 2007
+
+Updates made to test 11966 to support MTOM/XOP testing
+
+Version 6.3
+Nov 26, 2007
+
+Added Following tests
+11890 - test data for following Stored Query tests
+11897 - FindDocuments
+11903 - GetAssociations
+11901 - GetDocuments
+11904 - GetDocumentsAndAssociations
+11905 - GetSubmissionSets
+
+Version 6.4
+Nov ??, 2007
+Added Following tests
+11873 - Accept Document Addendum (XDS.a)
+11993 - Accept Document Addendum (XDS.b)
+11879  - Accept Create Folder (XDS.a)
+11999 -  Accept Create Folder (XDS.b) 
+
+Version 6.5
+Dec 2, 2007
+Added Following tests
+    11909  (GetRelatedDocuments)
+    11906 (GetSubmissionSetAndContents)
+    11880,  12000	Accept Create Folder with Initial Document (XDS.a, XDS.b)
+     11908 GetFoldersForDocument Stored Query
+
+Version 6.6
+December 5, 2007
+Updated all Submission Set and Document metadata to correct authorPerson format. It must be in XCN format.
+
+Version 6.6
+December 9, 2007
+Test 11906 has been repaired.  The formatCode testStep was incorrect and the confidentialityCode step was missing.
+
+The following new tests have been added to the testkit
+11902 GetFolders Stored Query
+11728/11969  Create Folder
+11729/11970   Create Folder with Initial Document
+
+Version 6.8
+11906 GetSubmissionSetAndContents - updated to not require Assoc between folder and document.
+
+11898 FindSubmissionSets - updated value of XDSSubmissionSet.sourceId to make it a valid OID.
+
+11880 Accept Create Folder with Initial Document - the eval phase now also uses the GetFolderAndContents stored query to help with the evaluation.
+
+12000 Accept Create Folder with Initial Document - the eval phase now also uses the GetFolderAndContents stored query to help with the evaluation.
+
+Added tests
+ 11876  	 11996  	Reject Submission of Invalid Patient ID
+ 11982  	 11983  	Reject submissions where metadata and documents do not match
+ 11877  	 11997  	Reject Submission Set, Patient ID does not match Document
+ 11885  	 12004  	Reject Duplicate Document uniqueID with Different Hash
+12024    Accept Retrieve Document
+ 12028  	Accept Retrieve Document Set with Mutual TLS
+ 11887  	 11986  	Return Errors from Registry
+ 11883  	 12084  	Submission Stored - All or Nothing
+
+--------------------------
+
+Fixed missing repositoryUniqueId in test 11997
+
+These were left out of the last distribution
+ 11980  	 11981  	Accept Document with size, hash and URI attributes
+
+11890 (testdata) -  URI attribute has been added so it works with XDS.a as well.  This URI points to a document on the Public Registry server.  Two testplan.xml files are included (XDS.a and XDS.b).
+
+11909 GetRelated Stored Query - test incorrectly required original document to be returned when no matching Associations were found.  
+
+11880 - updated evaluation to correspond to fix in GetSubmissionSetAndContents stored query
+
+Released as Version 6.9
+----------------------------------
+
+Fixed test 11885 which expected wrong error code when document uniqueId
+already present in registry and hash does not match.  Correct error code
+is XDSNonIdenticalHash
+
+Fixed test 12004 so it expects XDSNonIdenticalHash.
+
+Fixed test 11905 so it requires Association objects
+
+Added 12045 for Integrated Source/Repositories
+
+Released as Version 6.10
+---------------------------------
+
+Added 11874 and 11994 - Accept Document Transformation
+
+Added 11875 and 11995 - Accept Document Transformation/Replacement
+
+Fixed all hash attributes so they are consistently 40 characters.
+
+Fixed all repositoryUniqueId attributes so they are valid oids
+
+Release as Version 6.11
+--------------------------------
+
+Updated Stored Query tests 11897, 11903, 11901, 11904, 11905, 11906, 11909, 11898 to have
+separate sections for SOAP 1.1 and SOAP 1.2. 
+
+Release as Version 6.14
+--------------------------------
+
+New command line interface for xdstest (name xdstest2 dropped)
+
+Removed direct support for Windows. Unix shell bash is now required
+
+Added tests to test the basic WS patterns:
+12320 SIMPLE SOAP against Registry/SQ interface
+12321 MTOM/XOP and un-optimized MTOM/XOP against Repository.b/PnR
+No support for XDS.a was added
+
+Implemented CP 237 and 278 which detail the now required linking
+of Folder-Document Associations to the controlling Submission Set
+with a secondary Association.  This forced changes to the following
+tests:
+11890, 11880, 11881, 11882, 12022
+
+Implemented CP 349 which requires SSandContents SQ to return
+the Assoc between Folder and Document.  This forced changes to tests:
+12000, 11906, 12022
+
+Implemented CP 357 which adds the authorPerson parameter to the 
+FindDocuments stored query.  this forced changes to the following tests:
+11897
+
+CP 303 - 
+Created new test 12322 to test XDSFolder.lastUpdateTime changes.
+Proper implementation of lastUpdateTime forced changes to the 
+implementation of the following tests:
+11899
+
+
+

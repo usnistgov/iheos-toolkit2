@@ -28,7 +28,6 @@ public class RegistryResponseGeneratorSim extends TransactionSimulator implement
 		try {
 			response = dsSimCommon.getRegistryResponse();
 		} catch (XdsInternalException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

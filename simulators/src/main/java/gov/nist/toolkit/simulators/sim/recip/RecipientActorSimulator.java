@@ -23,14 +23,14 @@ public class RecipientActorSimulator extends BaseDsActorSimulator {
 		super(common, dsSimCommon);
 		this.db = db;
 		this.response = response;
-		this.simulatorConfig = simulatorConfig;
+		setSimulatorConfig(simulatorConfig);
 	}
 
 	public RecipientActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(dsSimCommon.simCommon, dsSimCommon);
 		this.db = dsSimCommon.simCommon.db;
 		this.response = dsSimCommon.simCommon.response;
-		this.simulatorConfig = simulatorConfig;
+        setSimulatorConfig(simulatorConfig);
 		init();
 	}
 
@@ -48,8 +48,8 @@ public class RecipientActorSimulator extends BaseDsActorSimulator {
 			common.vc.hasHttp = true;
 			common.vc.hasSoap = true;
 			
-			if (simulatorConfig.getValidationContext()  != null) {
-				common.vc.addInnerContext(simulatorConfig.getValidationContext());
+			if (getSimulatorConfig().getValidationContext()  != null) {
+				common.vc.addInnerContext(getSimulatorConfig().getValidationContext());
 			}
 			
 			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())

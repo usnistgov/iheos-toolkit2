@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -41,6 +42,7 @@ import java.util.*;
  * Created by bill on 7/1/15.
  */
 public class DsSimCommon {
+    SimulatorConfig simulatorConfig = null;
     public RegIndex regIndex = null;
     public RepIndex repIndex = null;
     public SimCommon simCommon;
@@ -67,6 +69,9 @@ public class DsSimCommon {
     public DsSimCommon(SimCommon simCommon) {
         this.simCommon = simCommon;
     }
+
+    public void setSimulatorConfig(SimulatorConfig config) { this.simulatorConfig = config; }
+    public SimulatorConfig getSimulatorConfig() { return simulatorConfig; }
 
     /**
      * Starts the validation process by scheduling the HTTP parser. This is called
@@ -378,6 +383,13 @@ public class DsSimCommon {
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
             simCommon.generateLog();
+//            SimulatorConfigElement callbackElement = getSimulatorConfig().get(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
+//            if (callbackElement != null) {
+//                String callbackURI = callbackElement.asString();
+//                if (callbackURI != null && !callbackURI.equals("")) {
+//                    new Callback().notify(simCommon.db, getSimulatorConfig(), callbackURI);
+//                }
+//            }
         } catch (IOException e) {
             logger.fatal(ExceptionUtil.exception_details(e));
         }
@@ -459,8 +471,6 @@ public class DsSimCommon {
      * @return
      */
     SoapFault getSoapErrors() {
-        //TODO CHECK IF DESIRABLE: WE SEEMS TO RETURN ONLY THR FIRST ERROR FOUND
-        //TODO Should walk validator list instead
 
         SoapFault sf;
 

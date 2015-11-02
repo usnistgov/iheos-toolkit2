@@ -74,15 +74,13 @@ public class Xdstest2 {
 								java.security.cert.X509Certificate[] arg0,
 								String arg1)
 								throws java.security.cert.CertificateException {
-							// TODO Auto-generated method stub
-							
+
 						}
 						public void checkServerTrusted(
 								java.security.cert.X509Certificate[] chain,
 								String authType)
 								throws java.security.cert.CertificateException {
-							// TODO Auto-generated method stub
-							
+
 						}
 		            }
 		    };
@@ -300,7 +298,7 @@ public class Xdstest2 {
 	 */
 	public boolean run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
-		logger.debug("Running " + testInstance);
+		logger.debug("Running " + testInstance.getId());
 		testDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
 		if (testDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");

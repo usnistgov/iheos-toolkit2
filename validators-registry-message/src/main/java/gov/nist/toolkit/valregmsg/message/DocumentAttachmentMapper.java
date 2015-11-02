@@ -72,7 +72,6 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 
 	public DocumentAttachmentMapper(ValidationContext vc) {
 		super(vc);
-		// TODO Auto-generated constructor stub
 	}
 
 	public DocumentAttachmentMapper(ValidationContext vc, OMElement xml) {

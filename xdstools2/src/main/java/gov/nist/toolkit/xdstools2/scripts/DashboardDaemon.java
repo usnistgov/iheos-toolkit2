@@ -386,7 +386,6 @@ public class DashboardDaemon {
 			DashboardDaemon dd = new DashboardDaemon(warhom, outdir, env, externalCache);
 			dd.run(pid);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

@@ -17,15 +17,15 @@ public class LogRepository  {
 
     // Both of these are initialized by LogRepositoryFactory
 //	File logDir;
-	ILoggerIO logger;
+    ILoggerIO logger;
     File location;
     String user;
     TestInstance id;
     LogIdIOFormat format;
     LogIdType idType;
 
-	// Create through LogRepositoryFactory only
-	LogRepository(File location, String user, LogIdIOFormat format, LogIdType idType, TestInstance id) {
+    // Create through LogRepositoryFactory only
+    LogRepository(File location, String user, LogIdIOFormat format, LogIdType idType, TestInstance id) {
         this.location = location;
         this.user = user;
         this.format = format;
@@ -39,16 +39,25 @@ public class LogRepository  {
 //            log.debug(ExceptionUtil.exception_details(e, "id is " + id));
 //        }
     }
-	
-	public String toString() {
-		return logDir().toString();
-	}
 
-    public void logOut(TestInstance id, LogMap log)
-			throws XdsException {
-		logger.logOut(id, log, logDir(id));
-	}
-	
+    public String toString() {
+        return logDir().toString();
+    }
+
+    public void logOut(TestInstance id, LogMap logMap)
+            throws XdsException {
+        log.debug(String.format("Saving log for %s", id));
+        logger.logOut(id, logMap, logDir(id));
+    }
+
+    public void logOutIfLinkedToUser(TestInstance id, LogMap logMap) throws XdsException {
+//        if (idType == LogIdType.SPECIFIC_ID)
+            logOut(id, logMap);
+//        else {
+//            log.debug(String.format("Not saving log for %s - not tied to user", id));
+//        }
+    }
+
 //	public LogMap logIn(TestId id) throws Exception {
 //		return logger.logIn(id, logDir());
 //	}
@@ -63,8 +72,9 @@ public class LogRepository  {
                 testInstance.getFormat(),
                 testInstance.getIdType(),
                 testInstance);
-        log.debug("logIn - logDir is " + repo.logDir(testInstance));
-        return repo.logger.logIn(testInstance, repo.logDir(testInstance));
+        File dir = repo.logDir(testInstance);
+        log.debug(String.format("Loading LogMap for test %s from %s", testInstance, dir));
+        return repo.logger.logIn(testInstance, dir);
     }
 
 //    public LogMap logIn(File logDir) throws Exception {
@@ -72,44 +82,49 @@ public class LogRepository  {
 //    }
 
     public File logDir() {
-        File dir = getLogDir(location, user, idType, id);
+        File dir = getLogDir(/*location, user, idType,*/ id);
         if (dir.toString().contains("tc:")) throw new ToolkitRuntimeException("Bad LogDir - " + dir);
 //        log.debug(ExceptionUtil.here("LogRepository at " + dir));
         return dir;
     }
 
     public File logDir(TestInstance id) {
-        File dir = getLogDir(location, user, idType, id);
+        File dir = getLogDir(/*location, user, idType,*/ id);
         if (dir.toString().contains("tc:")) throw new ToolkitRuntimeException("Bad LogDir - " + dir);
 //        log.debug(ExceptionUtil.here("LogRepository at " + dir));
         return dir;
     }
 
-    File getLogDir(File location, String user, LogIdType idType, TestInstance id) {
+    // assign event including filenames - do not touch file system in case the event is never used
+    void assignEvent(TestInstance testInstance) {
+        if (idType != LogIdType.TIME_ID) return;  // doesnt use event structure
+        if (testInstance.linkedToLogRepository()) return;
+        String event = new SimDb().nowAsFilenameBase();
+        testInstance.setInternalEvent(event);
+        File dir = new File(
+                location + File.separator + user +
+                        File.separator + event);
+        log.debug(String.format("Assigning Event Dir to test instance %s - %s", testInstance, dir));
+        testInstance.setEventDir(dir.toString());
+        testInstance.setLocation(location.toString());
+        testInstance.setUser(user);
+        testInstance.setFormat(format);
+        testInstance.setIdType(idType);
+    }
+
+    // same event - new test id
+    static public TestInstance cloneTestInstance(TestInstance testInstance, String newId) {
+        TestInstance ti = testInstance.copy();
+        ti.setId(newId);
+        return ti;
+    }
+
+    File getLogDir(/*File location, String user, LogIdType idType,*/ TestInstance id) {
         if (location == null) throw new ToolkitRuntimeException("Internal Error: location is null");
         if (user == null) throw new ToolkitRuntimeException("Internal Error: user is null");
+        assignEvent(id);
         if (idType == LogIdType.TIME_ID) {
-            // here user is the session id probably
-
-            String event;
-            if (id.linkedToLogRepository())
-                event = id.getEvent();
-            else
-                event = new SimDb().nowAsFilenameBase();
-            File logDir = new File(
-                    location + File.separator + user +
-                            File.separator + event  );
-
-            // save enough in TestId so log can be retrieved by logIn above
-            if (!id.linkedToLogRepository()) {
-                id.setInternalEvent(event);
-                id.setEventDir(logDir.toString());
-                id.setLocation(location.toString());
-                id.setUser(user);
-                id.setFormat(format);
-                id.setIdType(idType);
-            }
-
+            File logDir = new File(id.getEventDir());
             logDir.mkdirs();
             if (!logDir.exists())
                 throw new ToolkitRuntimeException("Cannot create log directory " + logDir.toString());
