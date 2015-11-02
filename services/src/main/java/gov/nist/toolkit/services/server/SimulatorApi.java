@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Created by bill on 6/15/15.
+ * API for working with simulators.
  */
 public class SimulatorApi {
     Session session;

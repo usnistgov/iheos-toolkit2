@@ -3,7 +3,7 @@ package gov.nist.toolkit.toolkitServicesCommon;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * Definition of a Document contents.
  */
 @XmlRootElement
 public class Document {

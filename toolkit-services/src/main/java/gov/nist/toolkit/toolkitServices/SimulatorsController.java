@@ -181,7 +181,7 @@ public class SimulatorsController {
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/{id}/xdr")
-    public Response xdr(final SendRequestResource request)  {
+    public Response xdr(final RawSendRequestResource request)  {
         logger.info(String.format("XDR Send request for %s", request.getFullId()));
         SimId simId = null;
         SimulatorConfig config;
@@ -204,13 +204,17 @@ public class SimulatorsController {
             OMElement messageBody = Util.parse_xml(request.getMetadata());
             sim.setMessageBody(messageBody);
             sim.setDocumentMap(internalizeDocs(request));
+            for (String extraHeader : request.getExtraHeaders()) {
+                OMElement ele = Util.parse_xml(extraHeader);
+                sim.addSoapHeaderElement(ele);
+            }
             OMElement responseEle = sim.run(
                     config,
                     transactionType,
                     internalizeDocs(request),
                     request.isTls()
             );
-            SendResponseResource responseResource = new SendResponseResource();
+            RawSendResponseResource responseResource = new RawSendResponseResource();
             responseResource.setResponseSoapBody(new OMFormatter(responseEle).toString());
             return Response.ok(responseResource).build();
         } catch (Throwable e) {
@@ -218,12 +222,16 @@ public class SimulatorsController {
         }
     }
 
-    DocumentMap internalizeDocs(SendRequestResource request) {
+    DocumentMap internalizeDocs(RawSendRequestResource request) throws BadSimRequestException {
         DocumentMap map = new DocumentMap();
 
         for (String id : request.getDocuments().keySet()) {
             Document requestDoc = request.getDocuments().get(id);
             gov.nist.toolkit.soap.Document storedDoc = new gov.nist.toolkit.soap.Document();
+            if (requestDoc.getMimeType() == null)
+                throw new BadSimRequestException("Null mimeType not acceptable.");
+            if (requestDoc.getContents() == null)
+                throw new BadSimRequestException("Null contents not acceptable.");
             storedDoc.setMimeType(requestDoc.getMimeType());
             storedDoc.setContents(requestDoc.getContents());
             map.addDocument(id, storedDoc);
@@ -231,6 +239,7 @@ public class SimulatorsController {
 
         return map;
     }
+
 
 }
 

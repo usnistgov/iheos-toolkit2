@@ -84,6 +84,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>simulators</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>transaction-notification-service</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
