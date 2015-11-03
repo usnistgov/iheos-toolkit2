@@ -131,7 +131,11 @@ public class Installation {
 		return new File(new File(toolkitxFile(), "environment"), envName);
 	}
 
-	public File directSendLogFile(String userName) {
+    public File internalEnvironmentsFile() {
+        return new File(toolkitxFile(), "environment");
+    }
+
+    public File directSendLogFile(String userName) {
 		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
 	}
 
