@@ -50,14 +50,16 @@ public class ExternalCacheManager {
 
     public static String validate() {
         File location = Installation.installation().externalCache();
-        if (!location.exists()) return String.format("External Cache location %s does not exist", location);
-        if (!location.isDirectory()) return String.format("External Cache location %s is not a directory", location);
-        if (!location.canWrite()) return String.format("External Cache location %s cannot be written", location);
+        if (!location.exists()) return String.format("External Cache location %s does not exist. " + HOW_TO_FIX, location);
+        if (!location.isDirectory()) return String.format("External Cache location %s is not a directory. " + HOW_TO_FIX, location);
+        if (!location.canWrite()) return String.format("External Cache location %s cannot be written. " + HOW_TO_FIX, location);
         File defEnv = Installation.installation().environmentFile("default");
         if (!defEnv.exists()) return String.format("Default Environment (default) not found in External Cache (%s). " +
-                "Open Toolkit Configuration, edit External Cache location (if necessary) and save. If your External Cache location is ok " +
-                " you may only need to update your External Cache.  The SAVE will do that update.",
+                        HOW_TO_FIX,
                 location);
         return null;
     }
+
+    static final String HOW_TO_FIX = "Open Toolkit Configuration, edit External Cache location (if necessary) and save. If your External Cache location is ok " +
+            " you may only need to update your External Cache.  The SAVE will do that update.";
 }
