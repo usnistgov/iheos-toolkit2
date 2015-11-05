@@ -11,7 +11,7 @@ import com.google.gwt.resources.client.TextResource;
 public interface HomePageResources extends ClientBundle {
     HomePageResources INSTANCE = GWT.create(HomePageResources.class);
 
-    @ClientBundle.Source("doc/howto/index.html")
+    @ClientBundle.Source("site/index.html")
     TextResource getIntroHtml();
 
 }

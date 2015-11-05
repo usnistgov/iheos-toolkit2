@@ -8,9 +8,15 @@ Toolkit is downloaded as a single WAR file for installation under Tomcat.
 
 ## External Cache ##
 
-The External Cache holds local system data. It is external to the WAR
+The External Cache holds local user data. It is external to the WAR
 installation so that updating the WAR file inside Tomcat does not disrupt
-the data stored here.
+the data stored here. The major components are:
+
+* actors/ - list of sites and their endpoints, OIDs
+* environment/ - each environment contains an Affinity Domain configuration and a client
+certificate for TLS for use with the test client.
+* simdb/ - collection of simulator configurations and data
+* testLogCache/ - logs for the Conformance Test Tool
 
 ## Toolkit Properties ##
 
@@ -19,6 +25,10 @@ Tomcat installation an to the External Cache.  These properties are
 housed in the file toolkit.properties which resides in the WEB-INF
 directory created when the WAR file is expanded. This file will be updated
 to reflect your local installation.
+
+This file is usually edited from the toolkit Home window by following the link
+
+    [Toolkit Configuration]
 
 ## Environment Definition(s) ##
 

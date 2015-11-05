@@ -16,6 +16,8 @@ public class Installation {
 	String sep = File.separator;
 	public TkProps tkProps = new TkProps();
 
+    public final static String DEFAULT_ENVIRONMENT_NAME = "default";
+
 	PropertyServiceManager propertyServiceMgr = null;
 	static Logger logger = Logger.getLogger(Installation.class);
 

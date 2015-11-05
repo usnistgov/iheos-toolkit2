@@ -388,8 +388,8 @@ public class Session implements SecurityParams {
 		return p.getProperty("keyStorePassword");
 	}
 	
-	public List<String> getEnvironmentNames() {
-		logger.debug(getId() + ": " + "getEnvironmentNames");
+	static public List<String> getEnvironmentNames() {
+		logger.debug( ": " + "getEnvironmentNames");
 		List<String> names = new ArrayList<String>();
 		
 		File k = Installation.installation().environmentFile();     //propertyServiceManager().getPropertyManager().getExternalCache() + File.separator + "environment");
@@ -402,6 +402,10 @@ public class Session implements SecurityParams {
 			}
 		return names;
 	}
+
+    static public boolean environmentExists(String environmentName) {
+        return getEnvironmentNames().contains(environmentName);
+    }
 	
 	public TkProps tkProps() {
 		try {

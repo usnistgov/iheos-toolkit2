@@ -29,7 +29,7 @@ public class ExternalCacheManager {
         if (error != null) throw new XdsException(error, "");
         File environment = Installation.installation().environmentFile();
         // initialize environment
-        if (!environment.exists() || !Installation.installation().environmentFile("default").exists()) {
+        if (!environment.exists() || !Installation.installation().environmentFile(Installation.DEFAULT_ENVIRONMENT_NAME).exists()) {
             logger.info("Initializing environments in " + location);
             try {
                 FileUtils.copyDirectory(Installation.installation().internalEnvironmentsFile(), new File(location, "environment"));
