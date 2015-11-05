@@ -133,7 +133,7 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 
 	public File getTestLogCache() throws IOException {
-		String testLogCache = Installation.installation().externalCache() + File.separator + "TestLogCache";
+		File testLogCache = Installation.installation().testLogCache();
 		File f;
 		
 //		// internal is obsolete
@@ -147,11 +147,19 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 //			return f;
 //		}
 
-		f = new File(testLogCache);
-		f.mkdirs();
+		f = testLogCache;
+
+        // First make sure EC is workable
+        String excuse = ExternalCacheManager.validate();
+        if (excuse != null) {
+            logger.error(excuse);
+            throw new IOException(excuse);
+        }
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
-			String msg = "Cannot access Test Log Cache [" + testLogCache + "] - either it doesn't exist, isn't a directory or isn't writable";
+			String msg = "Cannot access Test Log Cache [" + testLogCache + "] - either it doesn't exist, isn't a directory or isn't writable. " +
+                    "Open Toolkit Configuration, edit External Cache location (if necessary) and save. If your External Cache location is ok " +
+                    " you may only need to update your External Cache.  The SAVE will do that update.";
 			logger.warn(msg);
 			throw new IOException(msg);
 		}

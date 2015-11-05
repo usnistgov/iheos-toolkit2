@@ -492,13 +492,14 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			byActorButtons = siteLoader.addSitesForActor(selectByActor, row);
 			row++;
 		} else if (transactionTypes != null){    // most queries and retrieves use this
-			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("Via"));
+			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("To"));
 			FlexTable siteGrid = new FlexTable();
 			commonParamGrid.setWidget(commonGridRow++, contentsColumn, siteGrid);
 			int siteGridRow = 0;
 			for (TransactionType tt : transactionTypes) {
 				ActorType at = ActorType.getActorType(tt);
-				siteGrid.setWidget(siteGridRow, 0, new HTML(tt.getName()));
+				siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
+//                siteGrid.setWidget(siteGridRow, 0, new HTML(tt.getName()));
 				siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
 			}
 		}
