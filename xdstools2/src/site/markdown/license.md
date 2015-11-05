@@ -8,4 +8,3 @@ Maryland for use by the community.
 This toolkit and it sources and data are in the Public Domain and may be used and redistributed without restriction.
 No copyright restrictions are held by the developers.
 
-## Project

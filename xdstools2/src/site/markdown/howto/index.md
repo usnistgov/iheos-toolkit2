@@ -1,3 +1,3 @@
-# How to ...
+# How to ... #
 
 <a href="site/howto/install.html" target="_blank">Install</a>
