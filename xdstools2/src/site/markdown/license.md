@@ -1,6 +1,7 @@
 # About XDS Toolkit #
 
-This toolkit is developed and maintained by the [nist.gov](National Institute of Standards and Technology) in Gaithersburg
+This toolkit is developed and maintained by the
+<a href="http://nist.gov/index.html" target="_blank" >National Institute of Standards and Technology</a> in Gaithersburg
 Maryland for use by the community.
 
 ## License ##

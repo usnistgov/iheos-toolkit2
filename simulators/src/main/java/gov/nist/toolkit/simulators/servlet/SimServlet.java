@@ -89,7 +89,7 @@ public class SimServlet  extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) {
 		String uri = request.getRequestURI();
-
+        logger.info("SIMSERVLET GET " + uri);
 		String[] parts;
 		try {
 			int in = uri.indexOf("/del/");
@@ -110,15 +110,18 @@ public class SimServlet  extends HttpServlet {
 				handleMsgDownload(response, parts);
 				return;
 			}
-			in = uri.indexOf("/site/");
+			in = uri.indexOf("/siteconfig/");
+            logger.info("siteconfig in is " + in);
 			if (in != -1) {
-				parts = uri.substring(in + "/site/".length()).split("\\/");
+                logger.info("working on siteconfig");
+				parts = uri.substring(in + "/siteconfig/".length()).split("\\/");
 				handleSiteDownload(response, parts);
 				return;
 			}
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		} catch (Exception e) {
+            logger.error(ExceptionUtil.exception_details(e));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}

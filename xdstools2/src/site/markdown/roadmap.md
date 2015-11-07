@@ -14,6 +14,10 @@ but not yet ready for distribution.
 * Run all defined tests for a given system/actor
 * Delete one or all logs for a given system/actor
 
+**More** bug fixes.
+
+**Integrate** support for the Delete transaction into the Document Registry simulator.
+
 This tool is in development but not yet ready for distribution.
 
 **Service interface**. A callable interface has been created to allow toolkit functionality to be integrated into other projects.
