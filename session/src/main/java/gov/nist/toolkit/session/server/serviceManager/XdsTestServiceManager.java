@@ -86,7 +86,6 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param params
 	 * @param sections
 	 * @param testInstance
-	 * @param areas
 	 * @param stopOnFirstFailure
 	 * @return
 	 */

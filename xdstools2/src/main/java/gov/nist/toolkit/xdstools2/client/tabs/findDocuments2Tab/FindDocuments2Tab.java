@@ -6,7 +6,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -20,6 +19,8 @@ import java.util.Map;
 
 /**
  * Created by Diane Azais local on 9/23/2015.
+ * This is the new Find Documents tab which should ultimately replace the old one. This one is programmed to handle all
+ * existing parameters of the Find Documents query.
  */
 public class FindDocuments2Tab extends GenericQueryTab {
 
@@ -27,8 +28,11 @@ public class FindDocuments2Tab extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
     static {
         transactionTypes.add(TransactionType.STORED_QUERY);
-        transactionTypes.add(TransactionType.IG_QUERY);
-        transactionTypes.add(TransactionType.XC_QUERY);
+        // TODO complete supported transactions
+        // the following two types are not supported at the moment. Their testplan section needs to be added
+        // under webapp/toolkitx/testkit/utilities/FindDocuments2
+        //transactionTypes.add(TransactionType.IG_QUERY);
+        //transactionTypes.add(TransactionType.XC_QUERY);
     }
     static CoupledTransactions couplings = new CoupledTransactions();
 
@@ -79,32 +83,28 @@ class Runner implements ClickHandler {
     public void onClick(ClickEvent clickEvent) {
         resultPanel.clear();
 
-        SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-        if (siteSpec == null) {
-            new PopupMessage("You must select a site first");
-            return;
-        }
-
-        if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
-            new PopupMessage("You must enter a Patient ID first");
-            return;
-        }
+        if (!verifySiteProvided()) return;
+        if (!verifyPidProvided()) return;
 
         // Where the bottom-of-screen listing from server goes
-        addStatusBox();
+        //addStatusBox();
 
-        getGoButton().setEnabled(false);
-        getInspectButton().setEnabled(false);
+       // getGoButton().setEnabled(false);
+       //getInspectButton().setEnabled(false);
 
         // Capture the query-specific parameter details.  They have been generated in
         // sqParams and here they are formatted in the codeSpec layout which the server requires
-        Map<String, List<String>> codeSpec = new HashMap<>();
-        sqParams.addToCodeSpec(codeSpec);
+        Map<String, List<String>> codeSpec = new HashMap<String, List<String>>();
+        new PopupMessage("Running findDocuments2 tab");
+
+        sqParams.addToCodeSpec(codeSpec); //TODO issue is here
+
+
 
         // tell the server to run the query. The display is handled by GenericQueryTab which
         // is linked in via the queryCallback parameter
         rigForRunning();
-        toolkitService.findDocuments2(siteSpec, pidTextBox.getValue().trim(), codeSpec, queryCallback);
+        toolkitService.findDocuments2(getSiteSelection(), pidTextBox.getValue().trim(), codeSpec, queryCallback);
     }
     }
 

@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.AuthorPicker;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class AuthorFilter extends Widget implements QueryFilter {
                             new AuthorPicker(inputAuthorList).show();
                         } catch (Exception e) {
                             //TODO genericquerytab not accessible from here
+                            new PopupMessage(e.getMessage());
                             //genericQueryTab.setStatus(e.getMessage(), false);
                         }
                     }
