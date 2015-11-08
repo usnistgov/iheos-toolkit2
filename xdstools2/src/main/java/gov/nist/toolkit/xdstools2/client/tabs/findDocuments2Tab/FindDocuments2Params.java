@@ -133,6 +133,7 @@ public class FindDocuments2Params {
 
         onDemandFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryType);
         returnFilter.addToCodeSpec(codeSpec, CodesConfiguration.ReturnsType);
+
     }
 
     public Widget asWidget() { return paramGrid; }

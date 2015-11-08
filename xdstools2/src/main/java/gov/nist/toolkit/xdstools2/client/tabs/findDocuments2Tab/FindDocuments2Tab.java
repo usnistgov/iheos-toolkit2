@@ -95,8 +95,6 @@ class Runner implements ClickHandler {
         // Capture the query-specific parameter details.  They have been generated in
         // sqParams and here they are formatted in the codeSpec layout which the server requires
         Map<String, List<String>> codeSpec = new HashMap<String, List<String>>();
-        new PopupMessage("Running findDocuments2 tab");
-
         sqParams.addToCodeSpec(codeSpec); //TODO issue is here
 
 

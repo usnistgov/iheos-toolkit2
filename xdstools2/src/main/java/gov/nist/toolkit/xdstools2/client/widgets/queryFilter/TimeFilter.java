@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,17 +48,21 @@ public class TimeFilter extends Widget implements QueryFilter {
     List<String> getValues() {
         List<String> times = new ArrayList<>();
 
-        Date date = box.getValue();
-        DateTimeFormat hl7DTM = DateTimeFormat.getFormat("yyyyMMddHHmm");
-        String dateStr = hl7DTM.format(date);
+        if (box.getValue() == null) { return times; }
+        else {
+            Date date = box.getValue();
+            DateTimeFormat hl7DTM = DateTimeFormat.getFormat("yyyyMMddHHmm");
+            String dateStr = hl7DTM.format(date);
 
-        // TODO Check the format of the Date entered by the user, use regex in Shared classes (not supported in client)
-        // , use the DocEntryEditor Shared Model classes
+            // TODO Check the format of the Date entered by the user, use regex in Shared classes (not supported in client)
+            // , use the DocEntryEditor Shared Model classes
 
-        // TODO Display an error, later, when date validation is added
-        //errorLabel.setText(e.getMessage());
+            // TODO Display an error, later, when date validation is added
+            //errorLabel.setText(e.getMessage());
 
-        times.add(dateStr);
-        return times;
+            times.add(dateStr);
+            return times;
+        }
     }
+
 }
