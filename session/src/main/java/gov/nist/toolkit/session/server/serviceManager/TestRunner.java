@@ -36,7 +36,7 @@ public class TestRunner {
             // for the individual test - no logRepository should be created for the test collection
             // itself
             if (session.transactionSettings.logRepository == null && !testInstance.getId().startsWith("tc:")) {
-                session.transactionSettings.logRepository = new LogRepositoryFactory().
+                session.transactionSettings.logRepository = LogRepositoryFactory.
                         getRepository(
                                 Installation.installation().testLogCache(),
                                 mesaTestSession,

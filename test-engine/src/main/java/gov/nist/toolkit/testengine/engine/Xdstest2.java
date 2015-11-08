@@ -375,7 +375,11 @@ public class Xdstest2 {
 						res.add(formatGoal(goal), true);
 					}
 
-					List<String> faults = stepLog.getSoapFaults();
+                    for (String detail : stepLog.getDetails()) {
+                        res.add("Detail: " + detail);
+                    }
+
+                    List<String> faults = stepLog.getSoapFaults();
 					for (String fault : faults) 
 						res.add("SOAPFault: " + fault, false);
 					if (!faults.isEmpty())
@@ -388,10 +392,6 @@ public class Xdstest2 {
 
 					res.add("Status: " + ((stepLog.isSuccess()) ? "Pass" : "Fail"), stepLog.isSuccess());
 					
-					for (String detail : stepLog.getDetails()) {
-						res.add("Detail: " + detail);
-					}
-
 					for (String report : stepLog.getReports()) {
 						res.add("Report: " + report);
 					}
