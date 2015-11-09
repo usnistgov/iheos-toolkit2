@@ -45,7 +45,7 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 		addCloseButton(container,topPanel, null);
 
 		HTML title = new HTML();
-		title.setHTML("<h2>Find Documents by Reference ID</h2>");
+		title.setHTML("<h2>Find Documents by Reference ID Stored Query</h2>");
 		topPanel.add(title);
 
 		mainGrid = new FlexTable();

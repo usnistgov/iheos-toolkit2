@@ -1,7 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
@@ -36,33 +34,33 @@ public class HomeTab extends GenericQueryTab {
 		select = true;
 		myContainer.addTab(topPanel, "Home", select);
 
-		HTML title = new HTML();
-		title.setHTML("<h2>Home</h2>");
-		topPanel.add(title);
+//		HTML title = new HTML();
+//		title.setHTML("<h2>Home</h2>");
+//		topPanel.add(title);
 
-		HTML docLink = new HTML();
-		docLink.setHTML("<a href=\"" + "doc/home.html" + "\" target=\"_blank\">" +  "[help]" + "</a>");
+//		HTML docLink = new HTML();
+//		docLink.setHTML("<a href=\"" + "site/home.html" + "\" target=\"_blank\">" +  "[help]" + "</a>");
 		//		topPanel.add(docLink);
 
-		HTML about = new HTML();
-		about.setHTML("<a href=\"" + "doc/about.html" + "\" target=\"_blank\">" +  "[about]" + "</a>");
+//		HTML about = new HTML();
+//		about.setHTML("<a href=\"" + "site/about.html" + "\" target=\"_blank\">" +  "[about]" + "</a>");
 		//		topPanel.add(docLink);
 		
-		Hyperlink h = HyperlinkFactory.link("&nbsp;&nbsp;[about version]&nbsp;&nbsp;", new ClickHandler() {
+//		Hyperlink h = HyperlinkFactory.link("&nbsp;&nbsp;[about version]&nbsp;&nbsp;", new ClickHandler() {
+//
+//			public void onClick(ClickEvent event) {
+//				new PopupMessage(aboutMessage);
+//			}
+//
+//		});
 
-			public void onClick(ClickEvent event) {
-				new PopupMessage(aboutMessage);
-			}
+//		menubar.add(docLink);
+//		menubar.add(h);
+//		menubar.add(about);
 
-		});
-
-		menubar.add(docLink);
-		menubar.add(h);
-		menubar.add(about);
-
-		HTML instLink = new HTML();
-		instLink.setHTML("<a href=\"" + "doc/install.html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
-		menubar.add(instLink);
+//		HTML instLink = new HTML();
+//		instLink.setHTML("<a href=\"" + "site/install.html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
+//		menubar.add(instLink);
 
 		topPanel.add(menubar);
 
@@ -79,10 +77,14 @@ public class HomeTab extends GenericQueryTab {
 
 //		topPanel.add(new HTML("<a href=\"doc/howto/index.html\">How to...</a>"));
 
-		HTML howtoPanel = new HTML();
-		String html = HomePageResources.INSTANCE.getIntroHtml().getText();
-		howtoPanel.setHTML(html);
-		topPanel.add(howtoPanel);
+//		HTML howtoPanel = new HTML();
+//		String html = HomePageResources.INSTANCE.getIntroHtml().getText();
+//		howtoPanel.setHTML(html);
+//		topPanel.add(howtoPanel);
+
+        Frame frame = new Frame("site/index.html");
+        frame.setSize("100em", "100em");
+        topPanel.add(frame);
 
 		new MainGridLoader().featuresLoadedCallback();
 	}

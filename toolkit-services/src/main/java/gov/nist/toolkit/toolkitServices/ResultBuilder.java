@@ -3,9 +3,8 @@ package gov.nist.toolkit.toolkitServices;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.toolkitServicesCommon.OperationResultResource;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
+import gov.nist.toolkit.xdsexception.*;
+import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
 
 import javax.ws.rs.WebApplicationException;
@@ -28,35 +27,59 @@ public class ResultBuilder {
             extendedCode = OperationResultResource.ENVIRONMENT_DOES_NOT_EXIST;
             status = Response.Status.BAD_REQUEST;
         }
-        if (e instanceof EnvironmentNotSelectedException) {
+        else if (e instanceof EnvironmentNotSelectedException) {
             reason = "Environment does not exist - " + e.getMessage();
             extendedCode = OperationResultResource.ENVIRONMENT_DOES_NOT_EXIST;
             status = Response.Status.BAD_REQUEST;
         }
-        if (e instanceof ThreadPoolExhaustedException) {
+        else if (e instanceof ThreadPoolExhaustedException) {
             reason = "Thread pool exhausted - " + e.getMessage();
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
-        if (e instanceof BadSimConfigException) {
+        else if (e instanceof BadSimConfigException) {
             reason = e.getMessage();
             status = Response.Status.BAD_REQUEST;
         }
-        if (e instanceof SimExistsException) {
+        else if (e instanceof BadSimRequestException) {
+            reason = e.getMessage();
+            status = Response.Status.BAD_REQUEST;
+        }
+        else if (e instanceof SimExistsException) {
             reason = "Sim " + simId + " already exists";
             status = Response.Status.FOUND;
         }
-        if (e instanceof NoSimException) {
+        else if (e instanceof NoSimException) {
             reason = "Sim " + simId + " does not exist";
             extendedCode = OperationResultResource.SIM_DOES_NOT_EXIST;
             status = Response.Status.NOT_FOUND;
         }
-        if (e instanceof SimPropertyTypeConflictException) {
+        else if (e instanceof SimPropertyTypeConflictException) {
             reason = e.getMessage();
             status = Response.Status.CONFLICT;
         }
-        if (e instanceof IOException) {
+        else if (e instanceof IOException) {
             reason = e.getMessage();
             status = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+        else if (e instanceof AxisFault) {
+            reason = e.getMessage();
+            status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
+        }
+        else if (e instanceof XdsConfigurationException) {
+            reason = e.getMessage();
+            status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
+        }
+        else if (e instanceof LoadKeystoreException) {
+            reason = e.getMessage();
+            status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
+        }
+        else if (e instanceof XdsFormatException) {
+            reason = e.getMessage();
+            status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
+        }
+        else if (e instanceof XdsInternalException) {
+            reason = e.getMessage();
+            status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
         }
         if (status == null) {
             reason = "Create simulator " + simId.toString() + " failed - " + ExceptionUtil.exception_details(e);

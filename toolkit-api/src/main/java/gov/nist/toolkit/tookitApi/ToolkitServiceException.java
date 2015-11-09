@@ -9,6 +9,8 @@ import javax.ws.rs.core.Response;
  */
 public class ToolkitServiceException extends Exception {
     OperationResultResource result = null;
+    int code = 0;
+    String reason = null;
 
     protected ToolkitServiceException(OperationResultResource result) {
         super(result.getReason());
@@ -19,12 +21,17 @@ public class ToolkitServiceException extends Exception {
         result = new OperationResultResource(response);
     }
 
+    protected ToolkitServiceException(int code, String reason) {
+        this.code = code;
+        this.reason = reason;
+    }
+
     /**
      * Get HTTP status code
      * @return HTTP status code
      */
     public int getCode() {
-        return result.getStatus().getStatusCode();
+        return (result == null) ? code : result.getStatus().getStatusCode();
     }
 
     /**
@@ -32,7 +39,7 @@ public class ToolkitServiceException extends Exception {
      * @return Extended status code defined by test engine for the call that failed.
      */
     public int getExtendedCode() {
-        return result.getExtendedCode();
+        return (result == null) ? 0 : result.getExtendedCode();
     }
 
     /**
@@ -40,7 +47,7 @@ public class ToolkitServiceException extends Exception {
      * @return  Description of error.
      */
     public String getReason() {
-        return result.getReason();
+        return (result == null) ? reason : result.getReason();
     }
 
     protected OperationResultResource getResult() {

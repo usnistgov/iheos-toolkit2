@@ -10,20 +10,7 @@
       <ExpectedMimeType>text/plain</ExpectedMimeType>
       <ReferenceDocument uid="$docuid1$">../12318/my_document.txt</ReferenceDocument>
       <ReferenceDocument uid="$docuid2$">../12318/my_document2.txt</ReferenceDocument>
-      <Metadata>
-        <tag0:RetrieveDocumentSetRequest xmlns:tag0="urn:ihe:iti:xds-b:2007">
-          <tag0:DocumentRequest>
-            <tag0:HomeCommunityId>$home$</tag0:HomeCommunityId>
-            <tag0:RepositoryUniqueId>$repositoryuid$</tag0:RepositoryUniqueId>
-            <tag0:DocumentUniqueId>$docuid1$</tag0:DocumentUniqueId>
-          </tag0:DocumentRequest>
-          <tag0:DocumentRequest>
-            <tag0:HomeCommunityId>$home$</tag0:HomeCommunityId>
-            <tag0:RepositoryUniqueId>$repositoryuid$</tag0:RepositoryUniqueId>
-            <tag0:DocumentUniqueId>$docuid2$</tag0:DocumentUniqueId>
-          </tag0:DocumentRequest>
-        </tag0:RetrieveDocumentSetRequest>
-      </Metadata>
+      <MetadataFile>query.xml</MetadataFile>
       <Assertions>
         <DataRef file="THIS" as="output"/>
         <Assert id="TwoDocuments">

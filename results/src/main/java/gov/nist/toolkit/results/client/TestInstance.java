@@ -19,9 +19,20 @@ public class TestInstance implements IsSerializable, Serializable {
 	LogIdType idType = null;
 	
 	public TestInstance() {
-		
 	}
 
+    public String describe() {
+        StringBuilder buf = new StringBuilder();
+        buf
+                .append("TestInstance...\n")
+                .append("...id = ").append(id).append("\n")
+                .append("...event = ").append(event).append("\n")
+                .append("...eventDir = ").append(eventDir).append("\n")
+                .append("...location = ").append(location).append("\n")
+                .append("...user = ").append(user).append("\n")
+                .append("...type = ").append(idType).append("\n");
+        return buf.toString();
+    }
 
     public TestInstance copy() {
         TestInstance x = new TestInstance();

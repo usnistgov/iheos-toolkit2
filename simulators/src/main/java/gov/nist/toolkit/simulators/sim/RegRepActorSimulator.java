@@ -7,6 +7,7 @@ import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
  */
 
 public class RegRepActorSimulator extends BaseDsActorSimulator {
+    static final Logger logger = Logger.getLogger(RegRepActorSimulator.class);
     RegistryActorSimulator reg;
     RepositoryActorSimulator rep;
 
@@ -35,8 +37,9 @@ public class RegRepActorSimulator extends BaseDsActorSimulator {
 
     @Override
     public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
-        if (rep.supports(transactionType) || transactionType.isIdentifiedBy("xdrpr"))
+        if (rep.supports(transactionType) || transactionType.isIdentifiedBy("xdrpr")) {
             return rep.run(transactionType, mvc, validation);
+        }
         return reg.run(transactionType, mvc, validation);
     }
 

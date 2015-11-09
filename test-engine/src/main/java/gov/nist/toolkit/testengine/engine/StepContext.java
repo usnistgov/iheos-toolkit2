@@ -104,6 +104,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		return status;
 	}
 
+    public void addDetail(String name, String value) {
+        addDetail(test_step_output, name, value);
+    }
+
 	public  void set_error(String msg) throws XdsInternalException {
 		setStatus(false);
 		error(test_step_output, msg);

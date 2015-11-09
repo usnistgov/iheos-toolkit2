@@ -238,7 +238,7 @@ public class Xdstest2 {
 	 * might collect all Stored Query tests to completely exercise the Stored Query 
 	 * interface of a Document Registry.
 	 * 
-	 * @param collection - collection name.  Collections are stored in the collections subdirectory 
+	 * @param collectionName - collection name.  Collections are stored in the collections subdirectory
 	 * of the testkit.
 	 * @throws Exception - If the collection does not exist.
 	 */
@@ -342,6 +342,7 @@ public class Xdstest2 {
 
 		res.add(dashes);
 		for (TestDetails testSpec : testDetails) {
+            logger.info("Scanning Test: " + testSpec.getTestInstance());
 			res.add("Test: " + testSpec.getTestInstance());
 			res.add(dashes);
 			Collection<String> sections;
@@ -374,7 +375,11 @@ public class Xdstest2 {
 						res.add(formatGoal(goal), true);
 					}
 
-					List<String> faults = stepLog.getSoapFaults();
+                    for (String detail : stepLog.getDetails()) {
+                        res.add("Detail: " + detail);
+                    }
+
+                    List<String> faults = stepLog.getSoapFaults();
 					for (String fault : faults) 
 						res.add("SOAPFault: " + fault, false);
 					if (!faults.isEmpty())
@@ -387,10 +392,6 @@ public class Xdstest2 {
 
 					res.add("Status: " + ((stepLog.isSuccess()) ? "Pass" : "Fail"), stepLog.isSuccess());
 					
-					for (String detail : stepLog.getDetails()) {
-						res.add("Detail: " + detail);
-					}
-
 					for (String report : stepLog.getReports()) {
 						res.add("Report: " + report);
 					}

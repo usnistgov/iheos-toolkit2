@@ -1,0 +1,11 @@
+
+<query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+    <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:51224314-5390-4169-9b91-b1980040715a">
+        <tag0:Slot name="$uuid">
+            <tag0:ValueList>
+                <tag0:Value>('$ss_uuid$')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+    </tag0:AdhocQuery>
+</query:AdhocQueryRequest>

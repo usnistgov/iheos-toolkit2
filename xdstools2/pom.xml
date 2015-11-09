@@ -73,6 +73,9 @@
                     <name>site</name>
                 </property>
             </activation>
+            <properties>
+                <build.profile.id>site</build.profile.id>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -104,11 +107,11 @@
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration>
                             <webResources>
-                                <resource>
+                                <webResource>
                                     <!-- this is relative to the pom.xml directory -->
                                     <directory>${project.build.directory}/site</directory>
-                                    <targetPath>doc</targetPath>
-                                </resource>
+                                    <targetPath>site</targetPath>
+                                </webResource>
                             </webResources>
                         </configuration>
                     </plugin>
@@ -186,12 +189,18 @@
     <mailingLists>
         <mailingList>
             <name>XDS Implementers</name>
+            <subscribe>http://groups.google.com/group/ihe-xds-implementors</subscribe>
+            <archive>http://groups.google.com/group/ihe-xds-implementors</archive>
         </mailingList>
     </mailingLists>
-    <organization>
-        <name>National Institute of Standards and Technology</name>
-        <url>http://nist.gov</url>
-    </organization>
+    <issueManagement>
+        <system>BitBucket</system>
+        <url>https://bitbucket.org/bmajur/toolkit2/issues</url>
+    </issueManagement>
+    <!--<organization>-->
+        <!--<name>National Institute of Standards and Technology</name>-->
+        <!--<url>http://nist.gov</url>-->
+    <!--</organization>-->
 
     <artifactId>xdstools2</artifactId>
     <packaging>war</packaging>
@@ -599,7 +608,8 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>${gwtVersion}</version>
+                <!--<version>2.5.1</version>-->
                 <dependencies>
                     <dependency>
                         <groupId>com.google.gwt</groupId>

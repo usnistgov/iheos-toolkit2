@@ -16,6 +16,8 @@ public class Installation {
 	String sep = File.separator;
 	public TkProps tkProps = new TkProps();
 
+    public final static String DEFAULT_ENVIRONMENT_NAME = "default";
+
 	PropertyServiceManager propertyServiceMgr = null;
 	static Logger logger = Logger.getLogger(Installation.class);
 
@@ -46,14 +48,18 @@ public class Installation {
 		return me;
 	}
 
-	private Installation() {   }
+	private Installation() {
+        logger.info(String.format("Installation rooted at %s", toString()));
+    }
 	
 	public File warHome() { 
 		return warHome; 
 		}
 	synchronized public void warHome(File warHome) {
-		if (warHome()!=null && warHome().equals(warHome))
-			return; /* already set */
+		if (warHome()!=null /* && warHome().equals(warHome) */) {
+            logger.info("... oops - warHome already initialized");
+            return; /* already set */
+        }
 		logger.info("V2 - Installation - war home set to " + warHome);
         if (warHome == null)
             logger.error(ExceptionUtil.here("warhome is null"));
@@ -66,9 +72,8 @@ public class Installation {
 
 	public File externalCache() { return externalCache; }
 	protected void externalCache(File externalCache) {
-//		if (this.externalCache == null)
 			this.externalCache = externalCache;
-        logger.info(ExceptionUtil.here("V2 Installation: External Cache set to " + externalCache));
+        logger.info("V2 Installation: External Cache set to " + externalCache);
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {
@@ -128,7 +133,11 @@ public class Installation {
 		return new File(new File(toolkitxFile(), "environment"), envName);
 	}
 
-	public File directSendLogFile(String userName) {
+    public File internalEnvironmentsFile() {
+        return new File(toolkitxFile(), "environment");
+    }
+
+    public File directSendLogFile(String userName) {
 		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
 	}
 
