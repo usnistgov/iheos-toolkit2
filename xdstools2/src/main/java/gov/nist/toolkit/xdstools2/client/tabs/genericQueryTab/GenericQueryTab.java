@@ -393,7 +393,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 				public void onFailure(Throwable caught) {
 					resultPanel.clear();
-					resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + caught.getMessage() + "</font>"));
+					resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + caught.getMessage() + " Your external cache may be corrupted." +"</font>"));
 				}
 
 				public void onSuccess(TransactionOfferings to) {
@@ -404,7 +404,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			});
 		} catch (Exception e) {
 			resultPanel.clear();
-			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + e.getMessage() + "</font>"));
+			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + e.getMessage() + " Your external cache may be corrupted." +"</font>"));
 		}
 	}
 

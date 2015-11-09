@@ -7,6 +7,8 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
+import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
+import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
@@ -19,6 +21,7 @@ public class TabLauncher implements ClickHandler {
 	
 	final static public String findDocumentsTabLabel = "FindDocuments";
 	final static public String findDocumentsByRefIdTabLabel = "FindDocumentsByRefId";
+	final static public String findDocumentsAllParametersTabLabel = "Find Documents (All Parameters)";
 	final static public String findPatientTabLabel = "XCPD-FindPatient";
 	final static public String findFoldersTabLabel = "FindFolders";
 	final static public String getDocumentsTabLabel = "GetDocuments";
@@ -52,6 +55,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String testsOverviewTabLabel = "Tests Overview";
 
 
+
 	final static public String testLogLabel = "Test Log Listing";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";	
 	final static public String metadataEditorTabLabel = "Action: Edit";
@@ -61,6 +65,8 @@ public class TabLauncher implements ClickHandler {
 			new FindDocumentsTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(findDocumentsByRefIdTabLabel)) 
 			new FindDocumentsByRefIdTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(findDocumentsAllParametersTabLabel))
+			new FindDocuments2Tab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(findPatientTabLabel)) 
 			new FindPatientTab().onAbstractTabLoad(container, true, null);		
 		else if (tabType.equals(findFoldersTabLabel)) 

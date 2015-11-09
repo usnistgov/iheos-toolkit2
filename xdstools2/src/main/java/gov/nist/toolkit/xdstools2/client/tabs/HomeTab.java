@@ -175,6 +175,9 @@ public class HomeTab extends GenericQueryTab {
 			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsTabLabel)));
 			row++;
 
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsAllParametersTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsAllParametersTabLabel)));
+			row++;
+
 //			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findDocumentsByRefIdTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsByRefIdTabLabel)));
 			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsByRefIdTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsByRefIdTabLabel)));
 			row++;

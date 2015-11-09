@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.tabs;
+package gov.nist.toolkit.xdstools2.client.tabs.getAllTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,7 +10,6 @@ import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.GetAllParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
