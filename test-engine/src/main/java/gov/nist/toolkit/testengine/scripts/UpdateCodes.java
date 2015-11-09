@@ -8,6 +8,11 @@ import gov.nist.toolkit.valregmetadata.coding.AllCodes;
 import gov.nist.toolkit.valregmetadata.coding.Code;
 import gov.nist.toolkit.valregmetadata.coding.CodesFactory;
 import gov.nist.toolkit.valregmetadata.coding.Uuid;
+import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
+import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
+import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser;
+import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams;
+import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQueryGenerator;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -30,6 +35,7 @@ public class UpdateCodes {
     boolean error;
     static String sections[] = { "testdata", "tests", "examples"/*, "selftest"*/ };
     List<String> metadataFilesPaths=new ArrayList<String>();
+    List<String> queryFilesPaths=new ArrayList<String>();
     Map<String,Code> replacementMap= new HashMap<String,Code>();
 
     /**
@@ -108,7 +114,11 @@ public class UpdateCodes {
                 // get metadata file(s) name
                 OMElement metadataFile=transaction.getFirstChildWithName(new QName("MetadataFile"));
                 if (metadataFile!=null) {
-                    metadataFilesPaths.add(testFile + "/" + metadataFile.getText());
+                    if (transaction.getLocalName().contains("StoredQueryTransaction")) {
+                        queryFilesPaths.add(testFile + "/" + metadataFile.getText());
+                    }else {
+                        metadataFilesPaths.add(testFile + "/" + metadataFile.getText());
+                    }
                 }
             }
             // the following is probably useless
@@ -125,7 +135,6 @@ public class UpdateCodes {
     private void processCodes() {
         try {
             for (String filePath:metadataFilesPaths){
-                // TODO how do I know if I am dealing with a xds or a query metadata file?
                 File file=new File(filePath);
                 if (file.exists()) {
                     File backupFile = new File(file.toString() + ".bak");
@@ -145,6 +154,31 @@ public class UpdateCodes {
                     System.err.println("WARNING: "+filePath+" file does not exist in Testkit where it should be.");
                 }
             }
+            for (String filePath:queryFilesPaths){
+                File file=new File(filePath);
+                if (file.exists()) {
+                    File backupFile = new File(file.toString() + ".bak");
+                    if (!backupFile.exists()) {
+                        // backup the unmodified file before updating
+                        FileUtils.copyFile(file, backupFile);
+                    }
+                    // read the file
+                    OMElement queryElement = Util.parse_xml(file);
+                    System.out.println(queryElement);
+                    ParamParser parser = new ParamParser();
+                    SqParams params=parser.parse(queryElement);
+//                    params
+                    List<SQCodedTerm> badCodes = findNonConformingCodes(params);
+                    System.out.println(badCodes.size() + " bad codes to update in " + filePath);
+                    // update bad codes
+                    updateCode(badCodes);
+                    // update the file itself
+                    Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(params)).toString());
+                }else{
+                    System.err.println("WARNING: "+filePath+" file does not exist in Testkit where it should be.");
+                }
+            }
+            // TODO process queryfilespaths
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -168,6 +202,26 @@ public class UpdateCodes {
             Code code = getCode(classification);
             if (!allCodes.exists(classificationUuid, code))
                 badCodes.add(classification);
+        }
+        return badCodes;
+    }
+
+    private List<SQCodedTerm> findNonConformingCodes(SqParams params){
+        List<SQCodedTerm> badCodes = new ArrayList<SQCodedTerm>();
+        Map<String,SQCodedTerm> codes=params.getCodedParms();
+        for (String key:codes.keySet()){
+            if (codes.get(key) instanceof SQCodeOr){
+                List<SQCodeOr.CodeLet> codesList=((SQCodeOr) codes.get(key)).getCodeValues();
+                for (SQCodeOr.CodeLet c:codesList){
+                    Code tmpCode=new Code(c.code,c.scheme,"");
+                    Uuid classificationUuid=new Uuid(key);
+                    if (!allCodes.isKnownClassification(classificationUuid))
+                        continue;
+                    if (!allCodes.exists(classificationUuid,tmpCode)){
+                        badCodes.add(codes.get(key));
+                    }
+                }
+            }
         }
         return badCodes;
     }
@@ -218,6 +272,25 @@ public class UpdateCodes {
         }
     }
 
+    void updateCode(List<SQCodedTerm> badCodes){
+        for (SQCodedTerm sqCodedTerm:badCodes){
+            if (sqCodedTerm instanceof SQCodeOr){
+                for (SQCodeOr.CodeLet code:((SQCodeOr) sqCodedTerm).getCodeValues()){
+                    Code tmpCode=new Code(code.code,code.scheme,"");
+                    Code newCode;
+                    if (replacementMap.containsKey(tmpCode.toString())){
+                        newCode=replacementMap.get(tmpCode.toString());
+                    }else{
+                        newCode=allCodes.pick(new Uuid(((SQCodeOr) sqCodedTerm).classification));
+                        replacementMap.put(tmpCode.toString(),newCode);
+                    }
+                    code.code=newCode.getCode();
+                    code.scheme=newCode.getScheme();
+                }
+            }
+        }
+    }
+
     /**
      * This method updates the classification of the metadata element itself.
      * @param classification classification to update.
@@ -238,7 +311,7 @@ public class UpdateCodes {
         OMElement localizedStringElement = MetadataSupport.firstChildWithLocalName(nameElement, "LocalizedString");
         if (localizedStringElement == null) return;
         OMAttribute nameToReplace = localizedStringElement.getAttribute(MetadataSupport.value_qname);
-        Code oldCode=new Code(codeToReplace.getAttributeValue(),valueToReplace.getText(),nameToReplace.getAttributeValue());
+        Code oldCode=new Code(codeToReplace.getAttributeValue(),valueToReplace.getText(),""/*nameToReplace.getAttributeValue()*/);
         // check if the code to be replaced as already been changed before.
         Code replacementCode=replacementMap.get(oldCode.toString());
         if (replacementCode==null){

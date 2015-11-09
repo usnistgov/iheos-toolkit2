@@ -11,7 +11,7 @@ public class SQCodeOr extends SQCodedTerm {
 		public String code;
 		public String scheme;
 		public String coded_term;
-		
+
 		public CodeLet(String value) throws XdsInternalException {
 			String[] a = value.split("\\^");
 			if (a.length != 3 || a[0] == null || a[0].equals("") || a[2] == null || a[2].equals("") )
@@ -20,20 +20,21 @@ public class SQCodeOr extends SQCodedTerm {
 			scheme = a[2];
 			coded_term = value;
 		}
-		
+
 		public String toString() {
-			return coded_term;
+			/*return coded_term;*/
+            return code+"^^"+scheme;
 		}
 	}
-	
-	
-	
+
+
+
 	String varname;
 	int index;   // used to make varname unique
 	public List<CodeLet> values;
 	public String classification;   // uuid
 	public List<String> coded_terms;
-	
+
 	public SQCodeOr(String varname, String classification) {
 		this.varname = varname;
 		this.classification = classification;
@@ -41,7 +42,7 @@ public class SQCodeOr extends SQCodedTerm {
 		values = new ArrayList<CodeLet>();
 		coded_terms = new ArrayList<String>();
 	}
-	
+
 	public String toString() {
 		return "SQCodeOr: [\n" +
 		"varname=" + varname + "\n" +
@@ -50,26 +51,26 @@ public class SQCodeOr extends SQCodedTerm {
 		"classification=" + classification + "\n" +
 		"]\n";
 	}
-	
-	
+
+
 	public void setIndex(int i) {  // so unique names can be generated
 		index = i;
 	}
-	
+
 	public void addValue(String value) throws XdsInternalException {
 		values.add(new CodeLet(value));
 		coded_terms.add(value);
 	}
-	
+
 	public void addValues(List<String> values) throws XdsInternalException {
 		for (String value : values) {
 			addValue(value);
 		}
 	}
-	
+
 	public List<String> getCodes() {
 		List<String> a = new ArrayList<String>();
-		
+
 		for (CodeLet cl : values) {
 			a.add(cl.code);
 		}
@@ -78,23 +79,27 @@ public class SQCodeOr extends SQCodedTerm {
 
 	public List<String> getSchemes() {
 		List<String> a = new ArrayList<String>();
-		
+
 		for (CodeLet cl : values) {
 			a.add(cl.scheme);
 		}
 		return a;
 	}
-	
+
 	public String getCodeVarName() {
 		if (index == 0)
 			return codeVarName(varname) + "_code";
 		return codeVarName(varname) + "_code_" + index;
 	}
-	
+
 	public String getSchemeVarName() {
 		if (index == 0)
 			return codeVarName(varname) + "_scheme";
 		return codeVarName(varname) + "_scheme_" + index;
+	}
+
+	public List<CodeLet> getCodeValues(){
+		return values;
 	}
 
 	public boolean isEmpty() {
@@ -104,7 +109,7 @@ public class SQCodeOr extends SQCodedTerm {
 	public boolean isMatch(String coded_value) {
 		return coded_terms.contains(coded_value);
 	}
-	
+
 	public boolean isMatch(List<String> coded_values) {
 		for (String coded_value : coded_values) {
 			if ( isMatch(coded_value))
@@ -112,5 +117,5 @@ public class SQCodeOr extends SQCodedTerm {
 		}
 		return false;
 	}
-	
+
 }
