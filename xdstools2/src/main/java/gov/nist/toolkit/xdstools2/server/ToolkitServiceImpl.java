@@ -221,7 +221,12 @@ ToolkitService {
 	public List<String> getEnvironmentNames() throws NoServletSessionException { return session().getEnvironmentNames(); }
 	public String setEnvironment(String name) throws NoServletSessionException { session().setEnvironment(name); return name; }
 	public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
-	public String getDefaultEnvironment()  throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getDefaultEnvironment(); }
+	public String getDefaultEnvironment()  throws NoServletSessionException  {
+        String defaultEnvironment = Installation.installation().propertyServiceManager().getDefaultEnvironment();
+        if (Session.environmentExists(defaultEnvironment))
+            return defaultEnvironment;
+        return Installation.DEFAULT_ENVIRONMENT_NAME;
+    }
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

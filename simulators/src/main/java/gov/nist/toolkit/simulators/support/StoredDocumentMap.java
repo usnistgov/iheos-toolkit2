@@ -32,6 +32,12 @@ public class StoredDocumentMap {
 		}
 	}
 
+    public StoredDocumentMap() {}
+
+    public void addDoc(StoredDocument sd) { docs.add(sd); }
+
+    public List<StoredDocument> getDocs() { return docs; }
+
 	int id = 1;
 	String mkCid() {
 		return "doc" + id++ + "@toolkit.info";

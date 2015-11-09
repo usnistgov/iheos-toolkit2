@@ -60,6 +60,8 @@ public class SectionLogMap {
 		sectionLogs.remove(sectionName);
 	}
 
+    public String describe() { return "SectionLogMap...\n" + reportsToString(); }
+
 	public String reportsToString()  {
 		StringBuffer buf = new StringBuffer();
 		buf.append('[');

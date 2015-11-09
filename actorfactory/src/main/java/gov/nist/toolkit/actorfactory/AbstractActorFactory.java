@@ -51,6 +51,7 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), new RepositoryRegistryActorFactory());
 		factories.put(ActorType.INITIATING_GATEWAY.getName(),  new IGActorFactory());
 		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  new RGActorFactory());
+        factories.put(ActorType.XDR_DOC_SRC.getName(), new XdrDocSrcActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
@@ -134,7 +135,7 @@ public abstract class AbstractActorFactory {
 		AbstractActorFactory af = factories.get(at.getName());
 
 		if (af == null)
-			throw new ToolkitRuntimeException("Cannot build simulator for unknown type: " + at.getName());
+			throw new ToolkitRuntimeException(String.format("Cannot build simulator of type %s - cannot find ActorType", at.getName()));
 
 		af.setSimManager(simm);
 

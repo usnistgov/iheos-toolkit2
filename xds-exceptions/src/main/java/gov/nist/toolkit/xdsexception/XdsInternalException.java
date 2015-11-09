@@ -1,12 +1,17 @@
 package gov.nist.toolkit.xdsexception;
 
-public class XdsInternalException extends XdsException {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.io.Serializable;
+
+public class XdsInternalException extends XdsException implements Serializable, IsSerializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
+    public XdsInternalException() { super("", ""); }
 
 	public XdsInternalException(String reason) {
 		super(reason, "Internal Error");

@@ -57,7 +57,6 @@ public class SimServlet  extends HttpServlet {
 	String bodyCharset;
 	File simDbDir;
 	MessageValidationResults mvr;
-	File warHome;
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
 
 
@@ -65,7 +64,7 @@ public class SimServlet  extends HttpServlet {
 		super.init(sConfig);
 		config = sConfig;
 		logger.info("Initializing toolkit");
-		warHome = new File(config.getServletContext().getRealPath("/"));
+		File warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
 		Installation.installation().warHome(warHome);
 		simDbDir = Installation.installation().simDbFile();
@@ -90,7 +89,7 @@ public class SimServlet  extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) {
 		String uri = request.getRequestURI();
-
+        logger.info("SIMSERVLET GET " + uri);
 		String[] parts;
 		try {
 			int in = uri.indexOf("/del/");
@@ -111,15 +110,18 @@ public class SimServlet  extends HttpServlet {
 				handleMsgDownload(response, parts);
 				return;
 			}
-			in = uri.indexOf("/site/");
+			in = uri.indexOf("/siteconfig/");
+            logger.info("siteconfig in is " + in);
 			if (in != -1) {
-				parts = uri.substring(in + "/site/".length()).split("\\/");
+                logger.info("working on siteconfig");
+				parts = uri.substring(in + "/siteconfig/".length()).split("\\/");
 				handleSiteDownload(response, parts);
 				return;
 			}
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		} catch (Exception e) {
+            logger.error(ExceptionUtil.exception_details(e));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -369,7 +371,7 @@ public class SimServlet  extends HttpServlet {
 		String uri  = request.getRequestURI().toLowerCase();
 		logger.info("+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ");
 		logger.info("uri is " + uri);
-		logger.info("warHome is " + warHome);
+		logger.info("warHome is " + Installation.installation().warHome());
 		RegIndex regIndex = null;
 		RepIndex repIndex = null;
 		ServletContext servletContext = config.getServletContext();

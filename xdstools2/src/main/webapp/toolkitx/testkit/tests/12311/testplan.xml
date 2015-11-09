@@ -8,18 +8,7 @@
       <Assertion>LeafClass return</Assertion>
     </Rule>
     <XCQTransaction>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4" home="$home$">
-            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
-              <tag0:ValueList>
-                <tag0:Value>('$doc_uuid_1$', '$doc_uuid_2$')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
+      <MetadataFile>query.xml</MetadataFile>
       <UseXPath testdir="../12309" symbol="$home$" step="finddocs">
                 //TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ObjectRef'][1]/@home</UseXPath>
       <UseObjectRef testdir="../12309" index="0" symbol="$doc_uuid_1$" step="finddocs"/>

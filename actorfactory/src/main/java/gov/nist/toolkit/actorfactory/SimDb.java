@@ -16,6 +16,7 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -46,16 +47,17 @@ public class SimDb {
 
 
 	static public SimDb mkSim(SimId simid, String actor) throws IOException, NoSimException {
+        validateSimId(simid);
 		return mkSim(Installation.installation().simDbFile(), simid, actor);
 	}
 
 	static public SimDb mkSim(File dbRoot, SimId simid, String actor) throws IOException, NoSimException {
+        validateSimId(simid);
 		if (!dbRoot.exists())
 			dbRoot.mkdir();
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, " + dbRoot.toString() + " is not a directory or cannot be written to");
 
-//		simid = simid.replaceAll("\\.", "_");    // dir name that should be acceptable on all system types
 		File simActorDir = new File(dbRoot.getAbsolutePath() + File.separatorChar + simid + File.separatorChar + actor);
 		simActorDir.mkdirs();
 		if (!simActorDir.exists()) {
@@ -82,6 +84,7 @@ public class SimDb {
 
 	public SimDb(File dbRoot, SimId simId) throws IOException, NoSimException {
 		this.simId = simId;
+        validateSimId();
 		if (simId == null)
 			throw new ToolkitRuntimeException("SimDb - cannot build SimDb with null simId");
 		this.dbRoot = dbRoot;
@@ -89,11 +92,10 @@ public class SimDb {
 		if (!dbRoot.canWrite() || !dbRoot.isDirectory())
 			throw new IOException("Simulator database location, [" + dbRoot.toString() + "] is not a directory or cannot be written to");
 
-//		String ipdir = simId.replaceAll("\\.", "_");
 		String ipdir = simId.toString();
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
 		if (!simDir.exists()) {
-			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
+			logger.error(ExceptionUtil.here("Simulator " + simId + " does not exist (" + simDir + ")"));
 			throw new NoSimException("Simulator " + simId + " does not exist (" + simDir + ")");
 		}
 
@@ -108,8 +110,21 @@ public class SimDb {
 
 	public PidDb getPidDb() { return pidDb; }
 
+    static void validateSimId(SimId simId) throws IOException {
+        String badChars = " \t\n<>{}.";
+        for (int i=0; i<badChars.length(); i++) {
+            char c = badChars.charAt(i);
+            int ind = -1;
+            if ((ind = simId.getId().indexOf(c)) != -1) throw new IOException(String.format("Simulator ID contains bad character at position %s", ind));
+            if ((ind = simId.getId().indexOf(c)) != -1) throw new IOException(String.format("Simulator User (testSession) contains bad character at position %s", i));
+        }
+    }
+
+    void validateSimId() throws IOException { validateSimId(simId);}
+
 	File simSafetyFile() { return new File(simDir, "simId.txt"); }
 	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
+    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
 	// ipAddr aka simid
 	public SimDb(File dbRoot, SimId simId, String actor, String transaction) throws IOException, NoSimException {
@@ -185,7 +200,7 @@ public class SimDb {
 		
 		String dayOffset = ExtendedPropertyManager.getProperty(controllingClass, "expiration");
 		if (dayOffset == null) {
-			logger.error("Extended Property expiration of class " + controllingClass + " is not defined");
+//			logger.error("Extended Property expiration of class " + controllingClass + " is not defined");
 			dayOffset = "1";
 		}
 		newExpiration.add(Calendar.DAY_OF_MONTH, Integer.parseInt(dayOffset));
@@ -205,10 +220,10 @@ public class SimDb {
 		File[] files = dbRoot.listFiles();
 		List<SimId> ids = new ArrayList<>();
 		if (files == null) return ids;
-		
-		for (File sim : files) {
-			if (sim.isDirectory())
-				ids.add(new SimId(sim.getName()));
+
+		for (File dir : files) {
+			if (isSimDir(dir))
+				ids.add(new SimId(dir.getName()));
 		}
 		return ids;
 	}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12346/two_doc_w_fol</Test>
+    <Rule>Submit data to XDS.b registry to support SQ testing</Rule>
+    <TestStep id="submit_2doc_w_fol">
+        <Rule>
+            <Transaction>R</Transaction>
+            <Assertion>Two documents in a folder submission supports various query
+                testing</Assertion>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <MetadataFile>two_doc_w_fol.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

@@ -59,6 +59,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 			throw new XdsInternalException("No MetadataFile element found for RegisterTransaction instruction within step " + this.s_ctx.get("step_id"));
 
 
+        // This should be rewritten to use MtomBuilder
 		OMElement body = null;
 		if (xds_version == BasicTransaction.xds_b) {
 			OMElement pnr = MetadataSupport.om_factory.createOMElement("ProvideAndRegisterDocumentSetRequest", MetadataSupport.xdsB);
