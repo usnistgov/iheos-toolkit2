@@ -1,7 +1,7 @@
 # Toolkit Installation #
 
 This tool is downloadable from
-[http://ihexds.nist.gov/downloads.html](http://ihexds.nist.gov/downloads.html).
+<a href="http://ihexds.nist.gov/downloads.html" target="_blank" >here</a>.
 Always grab the latest release.
 
 1. Choose a Servlet container to run the toolkit. It is known to run well in Tomcat versions 7*.  Others will

@@ -31,13 +31,14 @@ public class LogRepository  {
         this.format = format;
         this.idType = idType;
         this.id = id;
-//        log.debug("LogRepository Constructor");
-//        try {
-//            logDir();
-//            log.debug("LogRepository  - LogDir ok");
-//        } catch (ToolkitRuntimeException e) {
-//            log.debug(ExceptionUtil.exception_details(e, "id is " + id));
-//        }
+
+        if (id != null) {
+            if (location != null)
+                id.setLocation(location.toString());
+            id.setUser(user);
+            id.setFormat(format);
+            id.setIdType(idType);
+        }
     }
 
     public String toString() {
@@ -67,14 +68,19 @@ public class LogRepository  {
             log.error(ExceptionUtil.here("testId is null"));
             return null;
         }
-        LogRepository repo = LogRepositoryFactory.getRepository(new File(testInstance.getLocation()),
-                testInstance.getUser(),
-                testInstance.getFormat(),
-                testInstance.getIdType(),
-                testInstance);
-        File dir = repo.logDir(testInstance);
-        log.debug(String.format("Loading LogMap for test %s from %s", testInstance, dir));
-        return repo.logger.logIn(testInstance, dir);
+        try {
+            LogRepository repo = LogRepositoryFactory.getRepository(new File(testInstance.getLocation()),
+                    testInstance.getUser(),
+                    testInstance.getFormat(),
+                    testInstance.getIdType(),
+                    testInstance);
+            File dir = repo.logDir(testInstance);
+            log.debug(String.format("Loading LogMap for test %s from %s", testInstance, dir));
+            return repo.logger.logIn(testInstance, dir);
+        } catch (Exception e) {
+            log.error("Cannot load " + testInstance.describe());
+            throw e;
+        }
     }
 
 //    public LogMap logIn(File logDir) throws Exception {

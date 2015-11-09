@@ -12,16 +12,14 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.axiom.om.OMElement;
 
 public class TestStepLogContent  implements Serializable {
 	/**
@@ -88,13 +86,13 @@ public class TestStepLogContent  implements Serializable {
 		}
 		parseGoals();
 		parseEndpoint();
+        parseDetails();
 		parseErrors();
 		parseInHeader();
 		parseOutHeader();
 		parseResult();
 		parseInputMetadata();
 		parseRoot();
-		parseDetails();
 		parseReports();
 	}
 

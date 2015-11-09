@@ -4,20 +4,11 @@
 
 [System Components](systemComponents.html)
 
-[Installation](howto/install.html)
+[Installation](install.html)
 
-Capabilities
+[Licencing](license.html)
 
-Test Architecture
-
-Testkit
-
-Build from Sources
-
-Licencing - This toolkit is developed by [NIST](http://nist.gov) a part of the US Government as as such carries a
-non-restrictive licencse.  We hold no rights we levy no restrictions.
-
-Release Notes
+[Release Notes](releasenotes/index.html)
 
 [Tool documentation organized by tool](tools/index.html)
 
