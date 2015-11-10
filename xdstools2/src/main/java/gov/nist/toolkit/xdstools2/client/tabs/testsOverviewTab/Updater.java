@@ -11,26 +11,20 @@ import java.util.ArrayList;
  */
 public class Updater {
     private static TestsOverviewWidget testsOverviewWidget;
-    private static Updater singleton;
 
-    protected Updater(){
-        // singleton empty constructor
+    public Updater() {
     }
 
-    public static Updater getUpdater(TestsOverviewWidget _testsOverviewWidget){
-        if (singleton == null){
-            testsOverviewWidget = _testsOverviewWidget;
-            singleton = new Updater();
-        }
-        return singleton;
-    }
-
-
-    public void updateTestView(){
+    public void updateTestView() {
         testsOverviewWidget.refreshUIData();
     }
 
-    public void updateTestViewData(ArrayList<Test> dataArray){
+    public void updateTestData(ArrayList<Test> dataArray) {
         testsOverviewWidget.getDataModel().setData(dataArray);
     }
+
+    public void setTestsOverviewWidget(TestsOverviewWidget _testsOverviewWidget) {
+        testsOverviewWidget = _testsOverviewWidget;
+    }
+
 }

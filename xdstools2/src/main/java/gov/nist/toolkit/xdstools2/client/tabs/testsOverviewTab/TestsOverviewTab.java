@@ -75,11 +75,12 @@ public class TestsOverviewTab extends GenericQueryTab {
         // ----- Create the data model -----
         dataModel = new TestsWidgetDataModel();
 
-        // ----- Tests View -----
-        TestsOverviewWidget testWidget = new TestsOverviewWidget(dataModel);
-
         // ----- View Updater ----
-        Updater updater = Updater.getUpdater(testWidget);
+        Updater updater = new Updater();
+
+        // ----- Tests View -----
+        TestsOverviewWidget testWidget = new TestsOverviewWidget(dataModel, updater);
+        updater.setTestsOverviewWidget(testWidget);//TODO this is weird, not sure if there is a better solution
 
         // ----- Upper row of widgets -----
         CommandsWidget commands = new CommandsWidget(updater);

@@ -27,13 +27,13 @@ public class TestsOverviewWidget extends CellTable<Test> {
     TextColumn<Test> testnumberColumn, descriptionColumn, timeColumn, statusColumn;
     TestButtonsColumn<Test> buttonsColumn;
     TestsWidgetDataModel dataModel;
+    Updater updater;
 
 
 
-    public TestsOverviewWidget(TestsWidgetDataModel _dataModel) {
+    public TestsOverviewWidget(TestsWidgetDataModel _dataModel, Updater _updater) {
         dataModel = _dataModel;
-        Updater updater = Updater.getUpdater(this);
-
+        updater = _updater;
 
         // --------------------------------------------------------------
         // ------------------------- Create the UI ----------------------

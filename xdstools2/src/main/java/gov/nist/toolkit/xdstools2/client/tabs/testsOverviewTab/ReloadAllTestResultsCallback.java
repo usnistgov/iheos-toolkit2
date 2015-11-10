@@ -27,7 +27,7 @@ public class ReloadAllTestResultsCallback implements AsyncCallback<List<Test>> {
     public void onSuccess(List<Test> result) {
         ArrayList<Test> res = new ArrayList<Test>();
         res.addAll(result);
-        updater.updateTestViewData(res);
+        updater.updateTestData(res);
         updater.updateTestView();
     }
 

@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import gov.nist.toolkit.results.shared.Test;
@@ -12,7 +11,6 @@ import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.ReloadAllTestResultsCallback;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
-import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +71,7 @@ public class ButtonClickHandler implements ClickHandler {
             {
                 ArrayList<Test> array = new ArrayList<Test>();
                 array.addAll(result);
-                updater.updateTestViewData(array);
+                updater.updateTestData(array);
                 updater.updateTestView();
             }
         };
@@ -95,7 +93,7 @@ public class ButtonClickHandler implements ClickHandler {
         {
             ArrayList<Test> array = new ArrayList<Test>();
             array.addAll(result);
-            updater.updateTestViewData(array);
+            updater.updateTestData(array);
             updater.updateTestView();
         }
     };
