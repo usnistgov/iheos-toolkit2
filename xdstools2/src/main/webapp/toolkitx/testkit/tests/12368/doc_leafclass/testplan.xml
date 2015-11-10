@@ -12,7 +12,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query.xml</MetadataFile>
-      <UseId testdir="../../12346" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../../12346/single_doc" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
       <UseId testdir="../../12374" id="Document01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
       <ExpectedContents>
         <Documents count="0"/>

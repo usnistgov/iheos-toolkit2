@@ -10,7 +10,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query1.xml</MetadataFile>
-      <UseId testdir="../12346" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
       <ExpectedContents>
         <Associations count="1"/>
       </ExpectedContents>
@@ -26,7 +26,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query2.xml</MetadataFile>
-      <UseId testdir="../12346" id="Document01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346/doc_w_fol" id="Document01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
       <ExpectedContents>
         <Associations count="2"/>
       </ExpectedContents>
@@ -42,7 +42,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query3.xml</MetadataFile>
-      <UseId testdir="../12346" id="SubmissionSet01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346/doc_w_fol" id="SubmissionSet01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
       <ExpectedContents>
         <Associations count="3"/>
       </ExpectedContents>
@@ -58,8 +58,8 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query4.xml</MetadataFile>
-      <UseId testdir="../12346" id="SubmissionSet01" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
-      <UseId testdir="../12346" id="SubmissionSet01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../12346/doc_w_fol" id="SubmissionSet01" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
       <ExpectedContents>
         <Associations count="4"/>
       </ExpectedContents>

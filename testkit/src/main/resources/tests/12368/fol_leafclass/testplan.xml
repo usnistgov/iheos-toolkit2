@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
   <Test>12368/fol_leafclass</Test>
   <Rule>XDSResultNotSinglePatient rule</Rule>
   <TestStep id="leafclass">
@@ -12,7 +13,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query.xml</MetadataFile>
-      <UseId testdir="../../12346" id="Folder" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../../12346/doc_w_fol" id="Folder" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
       <UseId testdir="../../12374" id="Folder" symbol="$uuid2$" step="submit_doc_w_fol" section="AssignedUuids"/>
       <ExpectedContents>
         <Documents count="0"/>
