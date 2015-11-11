@@ -39,6 +39,7 @@ public class FindDocuments2Tab extends GenericQueryTab {
     GenericQueryTab genericQueryTab;
     FindDocuments2Params sqParams;
 
+
     public FindDocuments2Tab() {
         super(new FindDocumentsSiteActorManager());
     }

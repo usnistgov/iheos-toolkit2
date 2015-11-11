@@ -20,6 +20,7 @@ import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 import org.junit.runner.Runner;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 		add(selectActorList);
 		loadActorNames();
 		selectActorList.addChangeHandler(new ActorSelectionChangeHandler());
-	}
+    }
 
 	/**
 	 * Loads the list of actor types from the back-end and populates the display on the UI
@@ -100,9 +101,9 @@ public class SiteSelectionWidget extends HorizontalPanel {
 
 			parent.addQueryBoilerplate(
 					new Runner(),
-					transactionTypes,
-					new CoupledTransactions(),
-					true);
+					TestsOverviewTab.transactionTypes,
+					TestsOverviewTab.couplings,
+					false); // not using a PID in this tab
 		}
 	}
 
@@ -113,7 +114,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 	class Runner implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
-			resultPanel.clear();
+			//resultPanel.clear();
 			//TODO Run the clickhandler actions
 		}
 	}

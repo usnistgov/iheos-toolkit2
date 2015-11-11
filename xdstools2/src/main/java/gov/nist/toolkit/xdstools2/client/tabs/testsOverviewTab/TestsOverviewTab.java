@@ -26,7 +26,7 @@ public class TestsOverviewTab extends GenericQueryTab {
 
 
 
-    static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+    public static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
     static {
         transactionTypes.add(TransactionType.STORED_QUERY);
         transactionTypes.add(TransactionType.IG_QUERY);
@@ -34,7 +34,7 @@ public class TestsOverviewTab extends GenericQueryTab {
     }
 
     // TODO - add proper transaction couplings
-    static CoupledTransactions couplings = new CoupledTransactions();
+    public static CoupledTransactions couplings = new CoupledTransactions();
 
 
     // this super is kinda useless now - was a good idea for documentation at one time
@@ -46,11 +46,10 @@ public class TestsOverviewTab extends GenericQueryTab {
     @Override
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         myContainer = container;
+        genericQueryTab = this;
 
         // Panel to build inside of
         topPanel = new VerticalPanel();
-
-        genericQueryTab = this;   // share with other methods
 
         container.addTab(topPanel, "Tests Overview", select);  // link into container/tab management
         addCloseButton(container, topPanel, null);   // add the close button
