@@ -47,12 +47,16 @@ public class SiteSelectionWidget extends HorizontalPanel {
 	public SiteSelectionWidget(GenericQueryTab _parent){
 		parent = _parent;
 
+		// Load and display the actor types
 		add(selectActorList);
 		loadActorNames();
 		selectActorList.addChangeHandler(new ActorSelectionChangeHandler());
 	}
 
-	void loadActorNames() {
+	/**
+	 * Loads the list of actor types from the back-end and populates the display on the UI
+	 */
+	private void loadActorNames() {
 		toolkitService.getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
@@ -68,8 +72,6 @@ public class SiteSelectionWidget extends HorizontalPanel {
 					String description = actorCollectionMap.get(name);
 					selectActorList.addItem(description, name);
 				}
-
-
 			}
 		});
 	}
@@ -80,25 +82,25 @@ public class SiteSelectionWidget extends HorizontalPanel {
 	class ActorSelectionChangeHandler implements ChangeHandler {
 
 		public void onChange(ChangeEvent event) {
+			// Retrieve the type of actor chosen by the user
 			int selectedI = selectActorList.getSelectedIndex();
 			selectedActor = selectActorList.getValue(selectedI);
 			if (selectedActor == null)
 				return;
 			if ("".equals(selectedActor))
 				return;
-			String sel = selectedActor;
 
-			// these names are found in war/toolkit/testkit/actorcollections/xxxx.tc
-			// list all sites
-			ActorType act = ActorType.findActor(sel);
+			// Find a match in the system for that category of actor
+			ActorType act = ActorType.findActor(selectedActor);
 			if (act == null)
 				return;
 
-			List<TransactionType> tt = act.getTransactions();
+			// Populate the list of transaction types
+			List<TransactionType> transactionTypes = act.getTransactions();
 
 			parent.addQueryBoilerplate(
 					new Runner(),
-					tt,
+					transactionTypes,
 					new CoupledTransactions(),
 					true);
 		}
@@ -112,7 +114,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
-			new PopupMessage("Run the clickhandler actions");
+			//TODO Run the clickhandler actions
 		}
 	}
 

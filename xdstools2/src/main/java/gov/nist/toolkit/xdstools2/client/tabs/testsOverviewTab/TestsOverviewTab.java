@@ -60,7 +60,6 @@ public class TestsOverviewTab extends GenericQueryTab {
         topPanel.add(title);
 
 
-        // TODO add the Site Selection Widget
         // -------------------------------------------
         // ---------- Site Selection Widget-----------
         // -------------------------------------------
@@ -80,7 +79,7 @@ public class TestsOverviewTab extends GenericQueryTab {
 
         // ----- Tests View -----
         TestsOverviewWidget testWidget = new TestsOverviewWidget(dataModel, updater);
-        updater.setTestsOverviewWidget(testWidget);//TODO this is weird, not sure if there is a better solution
+        updater.setTestsOverviewWidget(testWidget);
 
         // ----- Upper row of widgets -----
         CommandsWidget commands = new CommandsWidget(updater);
