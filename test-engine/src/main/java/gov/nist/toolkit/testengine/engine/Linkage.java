@@ -278,11 +278,11 @@ public class Linkage extends BasicLinkage {
 		if (this.use_xpath != null)
 			result.putAll(compileUseXPath());
 		if (this.use_repository_unique_id != null)
-			result.putAll(this.compileUseRepostoryUniqueId());
+			result.putAll(this.compileUseRepositoryUniqueId());
 		return result;
 	}
 
-	HashMap<String, String> compileUseRepostoryUniqueId() throws XdsInternalException, MetadataException {
+	HashMap<String, String> compileUseRepositoryUniqueId() throws XdsInternalException, MetadataException {
 		HashMap<String, String> result = new HashMap<String, String>();
 
 		OMElement metadata_ele = (m == null) ? null : m.getRoot();
