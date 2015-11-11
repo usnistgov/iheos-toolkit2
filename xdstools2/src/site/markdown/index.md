@@ -10,7 +10,8 @@
 
 [Release Notes](releasenotes/index.html)
 
+<a href="https://bitbucket.org/bmajur/toolkit2/issues" target="_blank" >Bug/Issue tracker</a>
+
 [Tool documentation organized by tool](tools/index.html)
 
-[Tool documentation organized by How To topic](howto/index.html)
 

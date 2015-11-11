@@ -335,6 +335,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 	
 
 	public String getWindowShortName() {
-		return "simcontrol";
+		return "simmgr";
 	}
 }

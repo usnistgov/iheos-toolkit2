@@ -500,13 +500,14 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			int siteGridRow = 0;
             Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
 			for (TransactionType tt : transactionTypes) {
-				ActorType at = ActorType.getActorType(tt);
-                String actorTypeName = at.getName();
-                if (!actorTypeNamesAlreadyDisplayed.contains(actorTypeName) && at.showInConfig()) {
-                    actorTypeNamesAlreadyDisplayed.add(actorTypeName);
-                    siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
-//                siteGrid.setWidget(siteGridRow, 0, new HTML(tt.getName()));
-                    siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+				Set<ActorType> ats = ActorType.getActorTypes(tt);
+                for (ActorType at : ats) {
+                    String actorTypeName = at.getName();
+                    if (!actorTypeNamesAlreadyDisplayed.contains(actorTypeName) && at.showInConfig()) {
+                        actorTypeNamesAlreadyDisplayed.add(actorTypeName);
+                        siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
+                        siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+                    }
                 }
 			}
 		}
