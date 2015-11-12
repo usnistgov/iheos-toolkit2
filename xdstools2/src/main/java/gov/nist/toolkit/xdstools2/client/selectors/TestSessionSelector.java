@@ -64,7 +64,7 @@ public class TestSessionSelector {
 
         panel = new HorizontalPanel();
 
-        panel.add(new HTML("TestSession: "));
+        panel.add(new HTML("Test Session: "));
 
         //
         // List Box
