@@ -269,6 +269,7 @@ public class PlanContext extends BasicContext {
 		catch (XdsException e) {  
 			String errorDetails = ExceptionUtil.exception_details(e);
 			testLog.add_name_value(results_document, "FatalError", errorDetails);
+            logger.error(errorDetails);
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
