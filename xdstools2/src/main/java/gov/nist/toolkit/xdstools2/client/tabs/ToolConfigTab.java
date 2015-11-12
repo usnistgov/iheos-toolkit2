@@ -14,7 +14,6 @@ public class ToolConfigTab extends GenericQueryTab {
 	
 	FlexTable grid = new FlexTable();
 	Map<String, String> props;
-	Button rmOldSims = new Button("Delete old simulators");
 	Button loadAllGazelleConfigs = new Button("Load all Gazelle configs");
 	int gridRow;
 
@@ -99,11 +98,8 @@ public class ToolConfigTab extends GenericQueryTab {
 		topPanel.add(separator);
 
 		HTML subtitle2 = new HTML();
-		subtitle2.setHTML("<h3>Cleanup & Refresh</h3>");
+		subtitle2.setHTML("<br/><br/>");
 		topPanel.add(subtitle2);
-
-		topPanel.add(rmOldSims);
-		rmOldSims.addClickHandler(new RmOldSimsClickHandler());
 
 		topPanel.add(loadAllGazelleConfigs);
 		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(toolkitService, myContainer, "ALL"));
@@ -126,14 +122,41 @@ public class ToolConfigTab extends GenericQueryTab {
 				}
 //				TextBox tb = (TextBox) grid.getWidget(row, 1);
 //				String value = tb.getText();
+                name = name.replace(' ', '_');
 				props.put(name, value);
 			}
 			savePropertyFile();
 		}
 		
 	}
-	
-	void savePropertyFile() {
+
+    /**
+     * Build the grid of toolkit properties for display. The property names (keys) will be correctly formatted for
+     * display here as long as underscores are used in the toolkit properties file.
+     */
+    void loadPropertyGrid() {
+        grid.clear();
+        gridRow = 0;
+        for (String key : props.keySet()) {
+
+            // create the label for each row
+            String formattedKey = key.trim().replace('_', ' ');
+            grid.setText(gridRow, 0, formattedKey);
+
+            // create the boxed value for each row
+            TextBox tb = new TextBox();
+            tb.setWidth("600px");
+            String value = props.get(key);
+            tb.setText(value);
+            grid.setWidget(gridRow, 1, tb);
+
+            gridRow++;
+        }
+    }
+
+
+
+    void savePropertyFile() {
 		toolkitService.setToolkitProperties(props, savePropertiesCallback);
 	}
 	
@@ -183,30 +206,6 @@ public class ToolConfigTab extends GenericQueryTab {
 		gridRow++;
 	}
 
-	/**
-	 * Build the grid of toolkit properties for display. The property names (keys) will be correctly formatted for
-	 * display here as long as underscores are used in the toolkit properties file.
-	 */
-	void loadPropertyGrid() {
-		grid.clear();
-		gridRow = 0;
-		for (String key : props.keySet()) {
-
-			// create the label for each row
-			String formattedKey = key.replace('_', ' ');
-			grid.setText(gridRow, 0, formattedKey);
-
-			// create the boxed value for each row
-			TextBox tb = new TextBox();
-			tb.setWidth("600px");
-			String value = props.get(key);
-			tb.setText(value);
-			grid.setWidget(gridRow, 1, tb);
-
-			gridRow++;
-		}
-	}
-	
 
 	public String getWindowShortName() {
 		return "toolconfig";

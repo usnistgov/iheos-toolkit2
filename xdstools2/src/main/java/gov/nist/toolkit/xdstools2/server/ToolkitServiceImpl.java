@@ -25,6 +25,7 @@
     import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
     import gov.nist.toolkit.valsupport.client.MessageValidationResults;
     import gov.nist.toolkit.valsupport.client.ValidationContext;
+    import gov.nist.toolkit.xdsexception.ExceptionUtil;
     import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
     import gov.nist.toolkit.xdstools2.client.RegistryStatus;
     import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
@@ -303,28 +304,39 @@ ToolkitService {
 	public String setToolkitPropertiesImpl(Map<String, String> props)
 			throws Exception {
 		logger.debug(": " + "setToolkitProperties");
+        logger.debug(describeProperties(props));
+        try {
+            // verify External_Cache points to a writable directory
+            String eCache = props.get("External_Cache");
+            File eCacheFile = new File(eCache);
+            if (!eCacheFile.exists() || !eCacheFile.isDirectory())
+                throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
+            if (!eCacheFile.canWrite())
+                throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
 
-		// verify External_Cache points to a writable directory
-		String eCache = props.get("External_Cache");
-		File eCacheFile = new File(eCache);
-		if (!eCacheFile.exists() || !eCacheFile.isDirectory()) 
-			throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
-		if (!eCacheFile.canWrite())
-			throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
-
-		File warhome = Installation.installation().warHome();
-		new PropertyServiceManager(warhome).getPropertyManager().update(props);
-		reloadPropertyFile();
+            File warhome = Installation.installation().warHome();
+            new PropertyServiceManager(warhome).getPropertyManager().update(props);
+            reloadPropertyFile();
 //		Installation.installation().externalCache(eCacheFile);
-        ExternalCacheManager.reinitialize(eCacheFile);
-		try {
-			TkLoader.tkProps(Installation.installation().getTkPropsFile());
-		} catch (Throwable t) {
-			
-		}
+            ExternalCacheManager.reinitialize(eCacheFile);
+            try {
+                TkLoader.tkProps(Installation.installation().getTkPropsFile());
+            } catch (Throwable t) {
+
+            }
+        } catch (Exception e) {
+            throw new Exception(ExceptionUtil.exception_details(e));
+        }
 		return "";
 	}
 
+    String describeProperties(Map<String, String> props) {
+        StringBuilder buf = new StringBuilder();
+
+        for (String key : props.keySet()) buf.append(key).append(" = ").append(props.get(key)).append("\n");
+
+        return buf.toString();
+    }
 
 	public ServletContext servletContext() {
 		// this gets called from the initialization section of SimServlet
