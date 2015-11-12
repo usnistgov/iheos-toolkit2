@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RetrieveTransaction extends BasicTransaction {
-	String metadata_filename = null;
+//	String metadata_filename = null;
 //	OMElement request_ele = null;
 	OMElement expected_contents = null;   // never actually used - should remove
 	String expected_mime_type = null;
@@ -76,6 +76,9 @@ public class RetrieveTransaction extends BasicTransaction {
 
 	public void run(OMElement request_ele)
 	throws Exception {
+
+        if (request_ele == null)
+            fatal("Retrieve transaction - request is null");
 
 		validate_xds_version();
 
@@ -493,7 +496,7 @@ public class RetrieveTransaction extends BasicTransaction {
 	protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
 		String part_name = part.getLocalName();
 		if (part_name.equals("MetadataFile")) {
-			metadata_filename = testConfig.testplanDir + part.getText();
+			metadata_filename = testConfig.testplanDir + File.separator + part.getText();
 			testLog.add_name_value(instruction_output, "MetadataFile", metadata_filename);
 		}
 //		else if (part_name.equals("Metadata")) {
