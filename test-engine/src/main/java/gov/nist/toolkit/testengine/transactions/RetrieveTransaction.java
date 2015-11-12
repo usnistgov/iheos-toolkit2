@@ -4,6 +4,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.Sha1Bean;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.*;
@@ -119,7 +120,8 @@ public class RetrieveTransaction extends BasicTransaction {
 					AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='RepositoryUniqueId']");
 					repositoryUniqueId = xpathExpression.stringValueOf(request_ele);
 				} catch (Exception e) {
-					fatal(e.getMessage());
+					fatal("Error extracting repositoryUniqueId from Retrieve request - " + e.getMessage() + "\nRequest is..." +
+                    new OMFormatter(request_ele).toString() + "\n...End of Request");
 				}
 			}
 
