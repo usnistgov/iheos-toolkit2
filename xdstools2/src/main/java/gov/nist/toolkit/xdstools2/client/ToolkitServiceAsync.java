@@ -23,10 +23,8 @@ public interface ToolkitServiceAsync {
 	
 
 	void getTkProps(AsyncCallback<TkProps> callback);
-	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
 	void setSessionProperties(Map<String, String> props, AsyncCallback callback);
-	void setMesaTestSession(String sessionName, AsyncCallback callback);
 	void getNewPatientId(String assigningAuthority, AsyncCallback<String> callback);
 	
 	void getDefaultAssigningAuthority(AsyncCallback<String> callback);
@@ -46,7 +44,6 @@ public interface ToolkitServiceAsync {
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
 	void getLogContent(String sessionName, TestInstance testInstance, AsyncCallback<List<Result>> callback);
-	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
@@ -160,7 +157,6 @@ public interface ToolkitServiceAsync {
 	void getTestIndex(String test, AsyncCallback<List<String>> callback);
 	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
-	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void createPid(String assigningAuthority, AsyncCallback<Pid> callback) throws NoServletSessionException;
@@ -176,16 +172,17 @@ public interface ToolkitServiceAsync {
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	// Tests Overview Tab
+	// Test Services
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
+	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
+	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
+	void setMesaTestSession(String sessionName, AsyncCallback callback);
+	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
+	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
+	void deleteSingleTestResult(Site site, String testNumber, AsyncCallback<Test> callback);
 	void reloadAllTestResults(Site site, AsyncCallback<List<Test>> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
-	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, String testNumber, AsyncCallback<Test> callback);
-	//void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
-
-	void deleteSingleTestResult(Site site, String testNumber, AsyncCallback<Test> callback);
-
 
 }
