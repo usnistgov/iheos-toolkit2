@@ -7,18 +7,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <UseReport reportName="folid" section="has_time" step="has_time" useAs="$uuid1$"/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5737b14c-8a1a-4539-b659-e03a34a5e1e4">
-            <tag0:Slot name="$XDSFolderEntryUUID">
-              <tag0:ValueList>
-                <tag0:Value>('$uuid1$')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
+      <MetadataFile>query.xml</MetadataFile>
       <Report name="original_time" section="Result">
 //*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='lastUpdateTime']/*[local-name()='ValueList']/*[local-name()='Value']
             </Report>

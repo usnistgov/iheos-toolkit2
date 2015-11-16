@@ -11,15 +11,20 @@
         <!--</links>-->
 
         <menu name="Toolkit">
-            <item name="Introduction" href="index.html"/>
+            <item name="System Requirements" href="systemRequirements.html"/>
+            <item name="System Components" href="systemComponents.html"/>
             <item name="Download" href="download.html"/>
-            <item name="Release Notes" href="release-notes.html" />
-            <item name="General Information" href="about.html"/>
-            <item name="For Maven 1.x Users" href="maven1.html"/>
+            <item name="Installation" href="install.html"/>
+            <item name="Release Notes" href="releasenotes/index.html" />
+            <item name="HowTo" href="howto/index.html"/>
+            <item name="Tools" href="tools/index.html"/>
+            <item name="License" href="license.html"/>
+            <item name="Issue/big tracker" href="issues.html"/>
             <item name="Road Map" href="roadmap.html" />
+            <item name="On-line Documentation" href="online.html" />
         </menu>
 
-        <menu ref="reports"/>
+        <!--<menu ref="reports"/>-->
 
 
     </body>

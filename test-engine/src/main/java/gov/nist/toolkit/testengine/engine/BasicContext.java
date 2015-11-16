@@ -31,8 +31,10 @@ public class BasicContext  {
 	public Object getObj(String attname) {
 		if (atts == null) atts = new HashMap();
 		Object value = atts.get(attname);
-		if (value != null)
-			return value;
+		if (value != null) {
+            logger.debug("BasicContext get " + attname + " ==> " + value);
+            return value;
+        }
 		if (parent_context != null)
 			return parent_context.getObj(attname);
 		return null;
@@ -121,6 +123,10 @@ public class BasicContext  {
 		error(msg);
 //		throw new XdsInternalException("Error " + msg);
 	}
+
+    void addDetail(OMElement test_step_output, String label, String detail) {
+        testLog.add_name_value(test_step_output, "Detail", label + " = " + detail);
+    }
 
 	void fault(OMElement test_step_output, String code, String msg) throws XdsInternalException {
 		testLog.add_name_value(test_step_output, "SOAPFault", code + ": " + msg);

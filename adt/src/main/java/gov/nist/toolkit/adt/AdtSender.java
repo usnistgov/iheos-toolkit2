@@ -41,11 +41,13 @@ public class AdtSender {
             logger.debug("...no errors");
         } catch (UnknownHostException e) {
             logger.error("Don't know about host: " + server);
-            return;
+            throw e;
+//            return;
         } catch (IOException e) {
             logger.error("Couldn't get I/O for "
                     + "the connection to: " + server, e);
-            return;
+            throw e;
+//            return;
         }
 
         char c;

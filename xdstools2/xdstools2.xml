@@ -1,0 +1,7 @@
+<!--
+
+This file lives in tomcat/conf/Catalina/localhost
+and allows tomcat to run exploded war from the location it is built in.
+-->
+
+<Context docBase="/Users/bill/dev/toolkit2/xdstools2/target/xdstools2-2.202.0" debug="0"/>
