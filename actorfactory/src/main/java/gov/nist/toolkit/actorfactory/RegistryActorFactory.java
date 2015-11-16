@@ -72,6 +72,9 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
 			addFixedEndpoint(sc, SimulatorProperties.storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
 			addFixedEndpoint(sc, SimulatorProperties.storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
+
+            addFixedEndpoint(sc, SimulatorProperties.updateEndpoint,       actorType, TransactionType.UPDATE,     false);
+            addFixedEndpoint(sc, SimulatorProperties.updateTlsEndpoint,    actorType, TransactionType.UPDATE,     true);
 		}
 
 		return new Simulator(sc);
@@ -150,8 +153,8 @@ public class RegistryActorFactory extends AbstractActorFactory {
 				true, 
 				isAsync));
 		
-		SimulatorConfigElement updateElement = asc.get(SimulatorProperties.UPDATE_METADATA_OPTION);
-		if (updateElement.asBoolean()) {
+//		SimulatorConfigElement updateElement = asc.get(SimulatorProperties.UPDATE_METADATA_OPTION);
+//		if (updateElement.asBoolean()) {
 			site.addTransaction(new TransactionBean(
 					TransactionType.UPDATE.getCode(),
 					RepositoryType.NONE,
@@ -164,7 +167,7 @@ public class RegistryActorFactory extends AbstractActorFactory {
 					asc.get(SimulatorProperties.updateTlsEndpoint).asString(),
 					true, 
 					isAsync));
-		}
+//		}
 		SimulatorConfigElement pifPortElement = asc.get(SimulatorProperties.PIF_PORT);
 		site.pifPort = pifPortElement.asString();
 		site.pifHost = Installation.installation().propertyServiceManager().getToolkitHost();
