@@ -8,7 +8,7 @@
       <UseReport test="12311" reportName="$repositoryUniqueId$" step="getdocs" useAs="$repositoryuid$"/>
       <ExpectedMimeType>text/plain</ExpectedMimeType>
       <ReferenceDocument uid="$docuid$">../../12318/my_document.txt</ReferenceDocument>
-      <Metadata>query1.xml</Metadata>
+      <MetadataFile>query1.xml</MetadataFile>
       <Assertions>
         <DataRef file="THIS" as="output"/>
         <Assert id="OneDocument">

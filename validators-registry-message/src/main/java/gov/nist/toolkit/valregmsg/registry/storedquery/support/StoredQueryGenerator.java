@@ -2,38 +2,52 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
+import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
+import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Created by onh2 on 10/27/2015.
  */
 public class StoredQueryGenerator {
+    static OMFactory factory = OMAbstractFactory.getOMFactory();
+    static OMNamespace tagNS = MetadataSupport.ebRIMns3;
+
+
     public static OMElement generateQueryFile(SqParams query) {
-        OMFactory factory = OMAbstractFactory.getOMFactory();
 
         OMNamespace queryNS = MetadataSupport.ebQns3;
         OMElement root = factory.createOMElement("AdhocQueryRequest",queryNS);
 
         OMElement responseOption=factory.createOMElement("ResponseOption",queryNS);
         responseOption.addAttribute("returnComposedObjects","true",null);
-        responseOption.addAttribute("returnType","leafClass",null);
+//        responseOption.addAttribute("returnType","leafClass",null);
+        responseOption.addAttribute("returnType","ObjectRef",null);
 
-        OMNamespace tagNS = MetadataSupport.ebRIMns3;
         OMElement adhocQuery = factory.createOMElement("AdhocQuery",tagNS);
         adhocQuery.addAttribute("id", query.getQueryId(), null);
 
         for (String key:query.params.keySet()){
-            OMElement slot = factory.createOMElement("Slot",tagNS);
-            slot.addAttribute("name",key,null);
-            OMElement valuelist=factory.createOMElement("ValueList",tagNS);
-            OMElement value=factory.createOMElement("Value",tagNS);
-            value.addChild(factory.createOMText(query.getStringParm(key)));
-            valuelist.addChild(value);
-            slot.addChild(valuelist);
-            adhocQuery.addChild(slot);
+            Object codeValue=query.getParm(key);
+            if (codeValue instanceof SQCodeOr){
+                addParamSlot(adhocQuery,key,codeValue);
+            }else if (codeValue instanceof SQCodeAnd){
+                SQCodeAnd sqCodeAnd=(SQCodeAnd) codeValue;
+                Iterator<SQCodeOr> iterator=sqCodeAnd.codeOrs.iterator();
+                while(iterator.hasNext()){
+                    SQCodeOr c =iterator.next();
+                    addParamSlot(adhocQuery,key,c);
+                }
+            }else {
+                addParamSlot(adhocQuery,key,query.getParm(key));
+            }
         }
 
         root.addChild(responseOption);
@@ -43,4 +57,59 @@ public class StoredQueryGenerator {
 
     }
 
+    static OMElement addParamSlot(OMElement parent,String slotName, Object object){
+        OMElement slot = factory.createOMElement("Slot",tagNS);
+        slot.addAttribute("name",slotName,null);
+        OMElement valuelist=factory.createOMElement("ValueList",tagNS);
+        if (object instanceof SQCodeOr){
+            SQCodeOr sqCodeOr=(SQCodeOr) object;
+            for (SQCodeOr.CodeLet c:sqCodeOr.getCodeValues()) {
+                OMElement value=factory.createOMElement("Value", tagNS);
+                value.addChild(factory.createOMText("('"+c.toString()+"')"));
+                valuelist.addChild(value);
+            }
+        }else {
+            OMElement value = factory.createOMElement("Value", tagNS);
+            String stringValue = new String();
+            if (object instanceof List) {
+                stringValue = "(";
+                if (((List) object).get(0) instanceof String) {
+                    boolean first = true;
+                    for (String s : ((List<String>) object)) {
+                        if (!first) {
+                            stringValue += ",";
+                        }
+                        stringValue += "'" + s + "'";
+                        first = false;
+                    }
+                } else if (((List) object).get(0) instanceof Integer) {
+                    boolean first = true;
+                    // build string value
+                    for (Integer i : ((List<Integer>) object)) {
+                        if (!first) {
+                            stringValue += ",";
+                        }
+                        stringValue += i;
+                        first = false;
+                    }
+                }
+                stringValue += ")";
+            } else {
+                if (object instanceof String) {
+//                    if (((String) object).startsWith("$") && ((String) object).endsWith("$")) {
+//                        stringValue = (String) object;
+//                    } else {
+                        stringValue = "'" + object + "'";
+//                    }
+                } else if (object instanceof Integer) {
+                    stringValue = object.toString();
+                }
+            }
+            value.addChild(factory.createOMText(stringValue));
+            valuelist.addChild(value);
+        }
+        slot.addChild(valuelist);
+        parent.addChild(slot);
+        return parent;
+    }
 }

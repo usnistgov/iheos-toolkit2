@@ -35,11 +35,11 @@ public class ParamParser {
 		this.query = null;
 	}
 
-	public ParamParser(OMElement query) throws MetadataValidationException, XdsInternalException {
+	public ParamParser(OMElement query,boolean isValidationStrict) throws MetadataValidationException, XdsInternalException {
 		this.queryid = null;
 		this.query = query;
 
-		parse(query);
+		parse(query,isValidationStrict);
 	}
 
 	public boolean isSQ() {
@@ -50,7 +50,7 @@ public class ParamParser {
 		return MetadataSupport.isMPQId(queryid);
 	}
 
-	public SqParams parse(OMElement query)  throws MetadataValidationException, XdsInternalException {
+	public SqParams parse(OMElement query,boolean isValidationStrict)  throws MetadataValidationException, XdsInternalException {
 		HashMap<String, Object> parms = new HashMap<String, Object>();
 
 		for (@SuppressWarnings("rawtypes")
@@ -62,7 +62,7 @@ public class ParamParser {
 				for (@SuppressWarnings("rawtypes")
 				Iterator it2=child1.getChildElements(); it2.hasNext(); ) {
 					OMElement slot = (OMElement) it2.next();
-					String name = parse_slot(slot, parms);
+					String name = parse_slot(slot, parms, isValidationStrict);
 					if (names.contains(name)) {
 						//throw new MetadataValidationException("Parameter " + name + " is defined in multiple Slots");
 					} else
@@ -123,10 +123,10 @@ public class ParamParser {
 	 *
 	 *  This proves that Stored Query has gotten way too complicated!
 	 */
-	String parse_slot(OMElement slot, HashMap<String, Object> parms) throws MetadataValidationException, XdsInternalException {
+	String parse_slot(OMElement slot, HashMap<String, Object> parms, boolean isValidationStrict) throws MetadataValidationException, XdsInternalException {
 		String name = slot.getAttributeValue(name_qname);
 
-		SlotParse sp = parse_slot(slot);
+		SlotParse sp = parse_slot(slot,isValidationStrict);
 
 		addToParmMap(sp, parms);
 
@@ -217,14 +217,14 @@ public class ParamParser {
 		return buf.toString();
 	}
 
-	SlotParse parse_slot(OMElement slot) throws MetadataValidationException {
-		SlotParse sp = parseSingleSlot(slot);
+	SlotParse parse_slot(OMElement slot,boolean isValidationStrict) throws MetadataValidationException {
+		SlotParse sp = parseSingleSlot(slot,isValidationStrict);
 		if (sp.errs.size() > 0)
 			throw new MetadataValidationException(asString(sp.errs), SqDocRef.Request_parms);
 		return sp;
 	}
 
-	public SlotParse parseSingleSlot(OMElement slot)  {
+	public SlotParse parseSingleSlot(OMElement slot, boolean isValidationStrict)  {
 		String name = slot.getAttributeValue(name_qname);
 
 		List<String> raw_slot_values = getRawSlotValues(slot);
@@ -234,7 +234,7 @@ public class ParamParser {
 		sp.name = name;
 		sp.rawValues.addAll(raw_slot_values);
 		for (String value_string : raw_slot_values) {
-			SlotParse sp2 = parse_slot(name, value_string);
+			SlotParse sp2 = parse_slot(name, value_string, isValidationStrict);
 
 			if (first) {
 				sp.isList = sp2.isList;
@@ -251,7 +251,7 @@ public class ParamParser {
 		return sp;
 	}
 
-	SlotParse parse_slot(String name, String value_string) {
+	SlotParse parse_slot(String name, String value_string,boolean isValidationStrict) {
 		SlotParse sp = new SlotParse();
 		try {
 			Integer value_int = Integer.decode(value_string);
@@ -272,8 +272,9 @@ public class ParamParser {
 
 		// Strings
 
-		if (value_string.charAt(0) == '\'' &&
-				value_string.charAt(value_string.length()-1) == '\'') {
+		if ((value_string.charAt(0) == '\'' && value_string.charAt(value_string.length()-1) == '\'') ||
+				(value_string.charAt(0)=='$' && value_string.charAt(value_string.length()-1)=='$'
+						&& !isValidationStrict)) {
 			String val = value_string.substring(1, value_string.length()-1);
 			sp.values.add(val);
 			return sp;
@@ -294,9 +295,8 @@ public class ParamParser {
 					return sp;
 				}
 				// each value could be 'string' or int
-				if (value_string1.charAt(0) == '\'' &&
-						value_string1.charAt(value_string1.length()-1) == '\'') {
-
+				if ((value_string1.charAt(0) == '\'' && value_string1.charAt(value_string1.length()-1) == '\'') ||
+                        (value_string1.charAt(0)=='$' && value_string1.charAt(value_string1.length()-1)=='$' && !isValidationStrict)) {
 					// Strings - could be codes
 					String v = value_string1.substring(1, value_string1.length()-1);
 					if (v.indexOf("'") != -1) {

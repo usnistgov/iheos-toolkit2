@@ -62,12 +62,13 @@ class RegistrySelfTestIT extends Specification {
 
 
 
-//    def 'Run 11990'() {
+//    def 'Run 11897'() {
 //        when:
-//        String testSession = null;  // use default
+//        String testSession = "";  // use default
 //        String siteName = 'mike__reg'
-//        String testId = "11990"
+//        TestInstance testId = new TestInstance("11897")
 //        List<String> sections = new ArrayList<>()
+//        sections.add("classcode_two")
 //        Map<String, String> params = new HashMap<>()
 //        params.put('$patientid$', patientId)
 //        boolean stopOnFirstError = true

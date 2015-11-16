@@ -8,6 +8,7 @@ import gov.nist.toolkit.valregmetadata.coding.AllCodes;
 import gov.nist.toolkit.valregmetadata.coding.Code;
 import gov.nist.toolkit.valregmetadata.coding.CodesFactory;
 import gov.nist.toolkit.valregmetadata.coding.Uuid;
+import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser;
@@ -21,7 +22,9 @@ import org.apache.commons.io.FileUtils;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -133,9 +136,10 @@ public class UpdateCodes {
      * This method method reads the different files found previously in the testkit to update non-conforming codes.
      */
     private void processCodes() {
+        File file=null;
         try {
             for (String filePath:metadataFilesPaths){
-                File file=new File(filePath);
+                file=new File(filePath);
                 if (file.exists()) {
                     File backupFile = new File(file.toString() + ".bak");
                     if (!backupFile.exists()) {
@@ -155,31 +159,42 @@ public class UpdateCodes {
                 }
             }
             for (String filePath:queryFilesPaths){
-                File file=new File(filePath);
-                if (file.exists()) {
-                    File backupFile = new File(file.toString() + ".bak");
-                    if (!backupFile.exists()) {
-                        // backup the unmodified file before updating
-                        FileUtils.copyFile(file, backupFile);
+                file=new File(filePath);
+                File errorsFile=new File(filePath.split(file.getName())[0]+"errors.properties");
+                boolean testsFails=false;
+                if (errorsFile.exists()) {
+                    Properties errorsProperties=new Properties();
+                    errorsProperties.load(FileUtils.openInputStream(errorsFile));
+                    if (errorsProperties.get("not_in_CE_format")!=null) {
+                        testsFails = true;
                     }
+                }
+                if (file.exists() && !testsFails) {
                     // read the file
                     OMElement queryElement = Util.parse_xml(file);
-                    System.out.println(queryElement);
                     ParamParser parser = new ParamParser();
-                    SqParams params=parser.parse(queryElement);
-//                    params
+                    SqParams params = parser.parse(queryElement,false);
                     List<SQCodedTerm> badCodes = findNonConformingCodes(params);
-                    System.out.println(badCodes.size() + " bad codes to update in " + filePath);
-                    // update bad codes
-                    updateCode(badCodes);
-                    // update the file itself
-                    Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(params)).toString());
-                }else{
-                    System.err.println("WARNING: "+filePath+" file does not exist in Testkit where it should be.");
+                    System.out.println(badCodes.size() + " bad codes to update in query file: " + filePath);
+                    if (!badCodes.isEmpty()) {
+                        File backupFile = new File(file.toString() + ".bak");
+                        if (!backupFile.exists()) {
+                            // backup the unmodified file before updating
+                            FileUtils.copyFile(file, backupFile);
+                        }
+                        // update bad codes
+                        updateCode(badCodes);
+                        // update the file itself
+                        Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(params)).toString());
+                    }
+                } else {
+                    System.err.println("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
                 }
             }
-            // TODO process queryfilespaths
         } catch (Exception e) {
+            if (e.getMessage().contains("Could not decode the value")){
+                System.err.println("Error parsing the following file: "+file);
+            }
             throw new RuntimeException(e.getMessage(), e);
         }
     }
@@ -214,16 +229,37 @@ public class UpdateCodes {
                 List<SQCodeOr.CodeLet> codesList=((SQCodeOr) codes.get(key)).getCodeValues();
                 for (SQCodeOr.CodeLet c:codesList){
                     Code tmpCode=new Code(c.code,c.scheme,"");
-                    Uuid classificationUuid=new Uuid(key);
-                    if (!allCodes.isKnownClassification(classificationUuid))
+                    Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(key));
+                    if (!allCodes.isKnownClassification(classificationUuid)) {
+                        System.err.println("Error: Unknown classification");
                         continue;
-                    if (!allCodes.exists(classificationUuid,tmpCode)){
+                    }
+                    if (!allCodes.exists(classificationUuid, tmpCode)){
                         badCodes.add(codes.get(key));
+                    }
+                }
+            }else if(codes.get(key) instanceof SQCodeAnd){
+                for (SQCodeOr sqCodeOr:((SQCodeAnd) codes.get(key)).codeOrs){
+                    List<SQCodeOr.CodeLet> codesList=sqCodeOr.getCodeValues();
+                    for (SQCodeOr.CodeLet c:codesList){
+                        Code tmpCode=new Code(c.code,c.scheme,"");
+                        Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(key));
+                        if (!allCodes.isKnownClassification(classificationUuid)) {
+                            System.err.println("Error: Unknown classification");
+                            continue;
+                        }
+                        if (!allCodes.exists(classificationUuid, tmpCode)){
+                            badCodes.add(codes.get(key));
+                        }
                     }
                 }
             }
         }
         return badCodes;
+    }
+
+    private void gatherBadCodes(SQCodeOr sqCodeOr){
+
     }
 
     /**
@@ -275,19 +311,27 @@ public class UpdateCodes {
     void updateCode(List<SQCodedTerm> badCodes){
         for (SQCodedTerm sqCodedTerm:badCodes){
             if (sqCodedTerm instanceof SQCodeOr){
-                for (SQCodeOr.CodeLet code:((SQCodeOr) sqCodedTerm).getCodeValues()){
-                    Code tmpCode=new Code(code.code,code.scheme,"");
-                    Code newCode;
-                    if (replacementMap.containsKey(tmpCode.toString())){
-                        newCode=replacementMap.get(tmpCode.toString());
-                    }else{
-                        newCode=allCodes.pick(new Uuid(((SQCodeOr) sqCodedTerm).classification));
-                        replacementMap.put(tmpCode.toString(),newCode);
-                    }
-                    code.code=newCode.getCode();
-                    code.scheme=newCode.getScheme();
+                changeCodeOR(((SQCodeOr) sqCodedTerm));
+            }else if (sqCodedTerm instanceof SQCodeAnd){
+                for (SQCodeOr sqCodeOr:((SQCodeAnd) sqCodedTerm).codeOrs){
+                    changeCodeOR(sqCodeOr);
                 }
             }
+        }
+    }
+
+    private void changeCodeOR(SQCodeOr sqCodedTerm) {
+        for (SQCodeOr.CodeLet code:sqCodedTerm.getCodeValues()){
+            Code tmpCode=new Code(code.code,code.scheme,"");
+            Code newCode;
+            if (replacementMap.containsKey(tmpCode.toString())){
+                newCode=replacementMap.get(tmpCode.toString());
+            }else{
+                newCode=allCodes.pick(new Uuid(sqCodedTerm.classification));
+                replacementMap.put(tmpCode.toString(),newCode);
+            }
+            code.code=newCode.getCode();
+            code.scheme=newCode.getScheme();
         }
     }
 

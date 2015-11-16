@@ -168,7 +168,7 @@ public class SqParams {
 	public Map<String, SQCodedTerm> getCodedParms() {
 		Map<String,SQCodedTerm> codes=new HashMap<String,SQCodedTerm>();
 		for (String key:params.keySet()){
-			if (key.contains("Code")){
+			if (key.endsWith("Code")){
                 codes.put(key,((SQCodedTerm) params.get(key)));
             }
 		}
