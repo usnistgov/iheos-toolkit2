@@ -167,7 +167,7 @@ public abstract class TabbedWindow {
 
 
 		HTML help = new HTML();
-		help.setHTML("<a href=\"" + "doc/" +  getWindowShortName()  + ".html" + "\" target=\"_blank\">" +  "[" + "help" + "]" + "</a>");
+		help.setHTML("<a href=\"" + "site/tools/" +  getWindowShortName()  + ".html" + "\" target=\"_blank\">" +  "[" + "help" + "]" + "</a>");
 		//		topPanel.add(docLink);
 
 

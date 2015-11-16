@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12346/doc_for_rplc</Test>
+    <Rule>Submit data to XDS.b registry to support SQ testing</Rule>
+    <TestStep id="doc_for_rplc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>R</Transaction>
+            <Assertion>Single document submission supports RPLC</Assertion>
+        </Rule>
+        <RegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <MetadataFile>single_doc_for_rplc.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

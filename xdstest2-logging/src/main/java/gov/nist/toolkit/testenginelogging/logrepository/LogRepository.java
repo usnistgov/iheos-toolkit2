@@ -31,26 +31,32 @@ public class LogRepository  {
         this.format = format;
         this.idType = idType;
         this.id = id;
-//        log.debug("LogRepository Constructor");
-//        try {
-//            logDir();
-//            log.debug("LogRepository  - LogDir ok");
-//        } catch (ToolkitRuntimeException e) {
-//            log.debug(ExceptionUtil.exception_details(e, "id is " + id));
-//        }
+
+        if (id != null) {
+            if (location != null)
+                id.setLocation(location.toString());
+            id.setUser(user);
+            id.setFormat(format);
+            id.setIdType(idType);
+        }
     }
 
     public String toString() {
         return logDir().toString();
     }
 
-    public void logOut(TestInstance id, LogMap log)
+    public void logOut(TestInstance id, LogMap logMap)
             throws XdsException {
-        logger.logOut(id, log, logDir(id));
+        log.debug(String.format("Saving log for %s", id));
+        logger.logOut(id, logMap, logDir(id));
     }
 
-    public void logOutIfLinkedToUser(TestInstance id, LogMap log) throws XdsException {
-        if (idType == LogIdType.SPECIFIC_ID) logOut(id, log);
+    public void logOutIfLinkedToUser(TestInstance id, LogMap logMap) throws XdsException {
+//        if (idType == LogIdType.SPECIFIC_ID)
+            logOut(id, logMap);
+//        else {
+//            log.debug(String.format("Not saving log for %s - not tied to user", id));
+//        }
     }
 
 //	public LogMap logIn(TestId id) throws Exception {
@@ -62,13 +68,19 @@ public class LogRepository  {
             log.error(ExceptionUtil.here("testId is null"));
             return null;
         }
-        LogRepository repo = LogRepositoryFactory.getRepository(new File(testInstance.getLocation()),
-                testInstance.getUser(),
-                testInstance.getFormat(),
-                testInstance.getIdType(),
-                testInstance);
-        log.debug("logIn - logDir is " + repo.logDir(testInstance));
-        return repo.logger.logIn(testInstance, repo.logDir(testInstance));
+        try {
+            LogRepository repo = LogRepositoryFactory.getRepository(new File(testInstance.getLocation()),
+                    testInstance.getUser(),
+                    testInstance.getFormat(),
+                    testInstance.getIdType(),
+                    testInstance);
+            File dir = repo.logDir(testInstance);
+            log.debug(String.format("Loading LogMap for test %s from %s", testInstance, dir));
+            return repo.logger.logIn(testInstance, dir);
+        } catch (Exception e) {
+            log.error("Cannot load " + testInstance.describe());
+            throw e;
+        }
     }
 
 //    public LogMap logIn(File logDir) throws Exception {
@@ -95,9 +107,11 @@ public class LogRepository  {
         if (testInstance.linkedToLogRepository()) return;
         String event = new SimDb().nowAsFilenameBase();
         testInstance.setInternalEvent(event);
-        testInstance.setEventDir(new File(
+        File dir = new File(
                 location + File.separator + user +
-                        File.separator + event  ).toString());
+                        File.separator + event);
+        log.debug(String.format("Assigning Event Dir to test instance %s - %s", testInstance, dir));
+        testInstance.setEventDir(dir.toString());
         testInstance.setLocation(location.toString());
         testInstance.setUser(user);
         testInstance.setFormat(format);

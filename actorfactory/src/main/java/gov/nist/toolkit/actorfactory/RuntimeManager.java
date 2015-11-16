@@ -41,7 +41,7 @@ public class RuntimeManager {
             throw new ToolkitRuntimeException("Cannot find no-argument constructor for " + actorSimClassName);
         Object obj = constructor.newInstance();
         if (!(obj instanceof BaseActorSimulator)) {
-            throw new ToolkitRuntimeException("Received message for actor type " + actorTypeName + " which has a handler/simulator that does not extend AbstractDsActorSimulator");
+            throw new ToolkitRuntimeException("Received message for actor type " + actorTypeName + " which has a handler/simulator that does not extend BaseActorSimulator");
         }
         return (BaseActorSimulator) obj;
     }

@@ -9,12 +9,7 @@ import spock.lang.Specification
 /**
  * Runs all Registry tests.
  * To run:
- *    Start toolkit from IntelliJ.  This will establish the EC at a location something like
- *       /Users/bill/dev/toolkit2/xdstools2/target/test-classes/external_cache
- *    On startup this will be echoed in the log window
- *    Using the toolkit [Toolkit Configuration] tool, save this location as the external cache location
- *    Shutdown toolkit
- *    Start toolkit - this will recognize the EC location change
+ *    Start toolkit from IntelliJ.
  *    Open Simulation Manager
  *    Select test session named mike (create it if it doesn't exist)
  *    Create a Registry simulator named reg - the full id will be mike__reg

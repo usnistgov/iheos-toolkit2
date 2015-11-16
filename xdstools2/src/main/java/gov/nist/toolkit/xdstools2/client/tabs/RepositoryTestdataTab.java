@@ -26,7 +26,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 
-	TextBox pid;
+	//TextBox pid;
 	ListBox testlistBox;
 	
 	String help = "Submit selected test data set to the selected Repository " +
@@ -44,7 +44,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 		
 		
-		container.addTab(topPanel, "RepositoryTestdata", select);
+		container.addTab(topPanel, "XDS PnR", select);
 		addCloseButton(container, topPanel, help);
 
 		// Build UI content of tab
@@ -108,7 +108,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 			// Initiate the transaction
 			// queryCallback comes out of GenericQueryTab, the super class of the main class of this tab.
 			rigForRunning();
-			toolkitService.submitRepositoryTestdata(getSiteSelection(), testdataSetName, pid.getValue().trim(), queryCallback);
+			toolkitService.submitRepositoryTestdata(getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

@@ -86,7 +86,6 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param params
 	 * @param sections
 	 * @param testInstance
-	 * @param areas
 	 * @param stopOnFirstFailure
 	 * @return
 	 */
@@ -155,43 +154,31 @@ public class XdsTestServiceManager extends CommonService {
 	 * separate from the current GUI session.
 	 */
 	public TestLogs getRawLogs(TestInstance testInstance) {
-		logger.debug(session.id() + ": " + "getRawLogs " + testInstance);
-		TestLogs testLogs = new TestLogs();
-		testLogs.testInstance = testInstance;
+		logger.debug(session.id() + ": " + "getRawLogs for " + testInstance.describe());
 
-		try {
-			LogMap logMap = findRawLogs(testInstance);
-			if (logMap == null) {
-				String msg = "Internal Server Error: Cannot find logs for TestId "
-						+ testInstance;
-				testLogs.assertionResult = new AssertionResult(msg, false);
-				ExceptionUtil.here(msg);
-				return testLogs;
-			}
+        LogMap logMap;
+        try {
+            logMap = LogRepository.logIn(testInstance);
+        } catch (Exception e) {
+            logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + testInstance));
+            TestLogs testLogs = new TestLogs();
+            testLogs.testInstance = testInstance;
+            testLogs.assertionResult = new AssertionResult(
+                    String.format("Internal Server Error: Cannot find logs for Test %s", testInstance),
+                    false);
+            return testLogs;
+        }
 
-			testLogs = getRawLogs(logMap);
+        try {
+			TestLogs testLogs = TestLogsBuilder.build(logMap);
 			testLogs.testInstance = testInstance;
-
+            return testLogs;
 		} catch (Exception e) {
+            TestLogs testLogs = new TestLogs();
 			testLogs.assertionResult = new AssertionResult(
 					ExceptionUtil.exception_details(e), false);
+            return testLogs;
 		}
-
-		return testLogs;
-
-	}
-
-	LogMap findRawLogs(TestInstance testInstance) {
-		try {
-			return LogRepository.logIn(testInstance);
-		} catch (Exception e) {
-			logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + testInstance));
-		}
-		return null;
-	}
-
-	TestLogs getRawLogs(LogMap logMap) throws Exception {
-		return TestLogsBuilder.build(logMap);
 	}
 
 	TestKit getTestKit() {
@@ -529,8 +516,8 @@ public class XdsTestServiceManager extends CommonService {
 										"RetrieveDocumentSetResponse"))
 									rdsr = XmlUtil
 											.firstDecendentWithLocalName(
-													response,
-													"RetrieveDocumentSetResponse");
+                                                    response,
+                                                    "RetrieveDocumentSetResponse");
 								if (rdsr != null) {
 									RetrieveB rb = new RetrieveB();
 									Map<String, RetInfo> resMap = rb
@@ -551,11 +538,13 @@ public class XdsTestServiceManager extends CommonService {
 											stepResult.documents = new ArrayList<Document>();
 										stepResult.documents.add(doc);
 
-										File localFile = new File(
-												Installation.installation().warHome() + File.separator +
-														"xdstools2" + File.separator + "DocumentCache" + File.separator
-														+ doc.uid
-														+ getRepositoryCacheFileExtension(doc.mimeType));
+										File localFile = new File(getRepositoryCache(), doc.uid + getRepositoryCacheFileExtension(doc.mimeType));
+
+//                                                new File(
+//												Installation.installation().warHome() + File.separator +
+//														"xdstools2" + File.separator + "DocumentCache" + File.separator
+//														+ doc.uid
+//														+ getRepositoryCacheFileExtension(doc.mimeType));
 
 										Io.bytesToFile(localFile,
 												ri.getContents());
@@ -582,8 +571,14 @@ public class XdsTestServiceManager extends CommonService {
 		String toolkitPort = session.getServerPort();
 		// context.getInitParameter("toolkit-port").trim();
 		return "http://" + toolkitHost + ":" + toolkitPort
-				+ "/xdstools2/xdstools2/DocumentCache/";
+				+ "/xdstools2/DocumentCache/";
 	}
+
+    File getRepositoryCache() {
+        File cache = new File(Installation.installation().warHome(), "DocumentCache");
+        cache.mkdirs();
+        return cache;
+    }
 
 	String getRepositoryCacheFileExtension(String mimetype) {
 		if (mimetype == null)

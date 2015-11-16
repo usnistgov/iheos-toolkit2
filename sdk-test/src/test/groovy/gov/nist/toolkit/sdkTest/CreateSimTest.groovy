@@ -1,8 +1,10 @@
 package gov.nist.toolkit.sdkTest
+
+import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
 import gov.nist.toolkit.tookitApi.BasicSimParameters
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.tookitApi.EngineSpi
 import gov.nist.toolkit.tookitApi.ToolkitServiceException
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.SimId
@@ -17,13 +19,13 @@ import javax.ws.rs.core.Response
  */
 class CreateSimTest extends Specification {
     def host='localhost'
-    def port = '8888'
-    SimulatorBuilder builder = new SimulatorBuilder(host, port);
+    @Shared def port = '8889'
+    EngineSpi builder = new EngineSpi(String.format('http://localhost:%s/xdstools2', port));
     @Shared HttpServer server
     BasicSimParameters params = new BasicSimParameters();
 
     def setupGrizzly() {
-        server = Main.startServer();
+        server = Main.startServer(port);
     }
 
     def setupSpec() {   // one time setup done when class launched
@@ -39,7 +41,7 @@ class CreateSimTest extends Specification {
     def setup() {  // run before each test method
         params.id = 'reg'
         params.user = 'mike'
-        params.actorType = 'reg'
+        params.actorType = SimulatorActorType.REGISTRY
         params.environmentName = 'test'
     }
 

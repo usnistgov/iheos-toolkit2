@@ -225,7 +225,7 @@ public class ActorConfigTab extends GenericQueryTab {
 			}
 
 			if (ActorType.REPOSITORY.equals(actorType)) {
-				Label repuidLabel = new Label("repostoryUniqueId");
+				Label repuidLabel = new Label("repositoryUniqueId");
 				actorEditGrid.setWidget(row, 0, repuidLabel);
 
 				TextBox repuidBox = new TextBox();

@@ -12,6 +12,40 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sdk-test</artifactId>
+
+
+    <profiles>
+        <profile>
+            <id>Bill</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>Bill</build.profile.id>
+            </properties>
+        </profile>
+        <profile>
+            <id>Diane</id>
+            <properties>
+                <build.profile.id>Diane</build.profile.id>
+            </properties>
+        </profile>
+        <profile>
+            <id>Olivier</id>
+            <properties>
+                <build.profile.id>Olivier</build.profile.id>
+            </properties>
+        </profile>        
+        <profile>
+            <id>Sunil</id>
+            <properties>
+                <build.profile.id>Sunil</build.profile.id>
+            </properties>
+        </profile>
+    </profiles>
+
+
+
     <properties>
         <jersey.version>2.22.1</jersey.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,11 +80,42 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>simulators</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>transaction-notification-service</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-grizzly2-http</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.grizzly</groupId>
+            <artifactId>grizzly-http-servlet-server</artifactId>
+            <version>2.3.22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.grizzly</groupId>
+            <artifactId>grizzly-framework</artifactId>
+            <version>2.3.22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.grizzly</groupId>
+            <artifactId>grizzly-http-server-core</artifactId>
+            <version>2.3.22</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>javax.servlet</groupId>-->
+            <!--<artifactId>javax.servlet-api</artifactId>-->
+            <!--<version>3.1.0</version>-->
+            <!--<scope>runtime</scope>-->
+        <!--</dependency>-->
+
+
         <!--<dependency>-->
             <!--<groupId>org.glassfish.jersey.containers</groupId>-->
             <!--&lt;!&ndash; if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core"  &ndash;&gt;-->
@@ -73,9 +138,76 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-http</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-tcp</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-transport-local</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-adb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2-kernel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2</groupId>
+            <artifactId>axis2</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
+
+
+
+
+        <!-- See profiles stanza above -->
+        <!-- Begin profile part 1/2 -->    
+        <filters>
+                    <!--
+                        Ensures that an environment properties file is always loaded from the
+                        configuration directory of the active Maven profile.
+                    -->
+                <filter>../tk-deps/profiles/env/${build.profile.id}.properties</filter>
+        </filters>
+        <!-- End profile part 1/2 -->    
+
+
+<testResources>
+    <!-- Filter test resource files -->
+    <testResource>
+                        <filtering>true</filtering>
+                        <directory>src/test/resources</directory>   
+                        <includes>
+                            <include>war/WEB-INF/toolkit.properties</include>
+                        </includes>                
+
+    </testResource>
+	<testResource>
+                        <filtering>false</filtering>
+                        <directory>src/test/resources</directory>   
+						<includes>
+							<include>**/*</include>
+						</includes>
+                        <excludes>
+                            <exclude>war/WEB-INF/toolkit.properties</exclude>
+                        </excludes>                
+
+    </testResource>
+	
+</testResources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

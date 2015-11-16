@@ -4,6 +4,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.Sha1Bean;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.*;
@@ -20,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RetrieveTransaction extends BasicTransaction {
-	String metadata_filename = null;
+//	String metadata_filename = null;
 //	OMElement request_ele = null;
 	OMElement expected_contents = null;   // never actually used - should remove
 	String expected_mime_type = null;
@@ -76,6 +77,9 @@ public class RetrieveTransaction extends BasicTransaction {
 	public void run(OMElement request_ele)
 	throws Exception {
 
+        if (request_ele == null)
+            fatal("Retrieve transaction - request is null");
+
 		validate_xds_version();
 
 		if (xds_version == BasicTransaction.xds_a) {
@@ -119,7 +123,8 @@ public class RetrieveTransaction extends BasicTransaction {
 					AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='RepositoryUniqueId']");
 					repositoryUniqueId = xpathExpression.stringValueOf(request_ele);
 				} catch (Exception e) {
-					fatal(e.getMessage());
+					fatal("Error extracting repositoryUniqueId from Retrieve request - " + e.getMessage() + "\nRequest is..." +
+                    new OMFormatter(request_ele).toString() + "\n...End of Request");
 				}
 			}
 
@@ -491,7 +496,7 @@ public class RetrieveTransaction extends BasicTransaction {
 	protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
 		String part_name = part.getLocalName();
 		if (part_name.equals("MetadataFile")) {
-			metadata_filename = testConfig.testplanDir + part.getText();
+			metadata_filename = testConfig.testplanDir + File.separator + part.getText();
 			testLog.add_name_value(instruction_output, "MetadataFile", metadata_filename);
 		}
 //		else if (part_name.equals("Metadata")) {

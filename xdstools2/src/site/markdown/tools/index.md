@@ -1,7 +1,14 @@
 # Tools in toolkit
 
-### Simulator Manager
+[**Simulator Manager**](simmgr.html)
 
-A simulator is a test-oriented implementation of a IHE Actor. Most simulators are servers in the classic client-server
-sense. The Simulator Manager tool is used to create, configure, manager, and delete simulators within toolkit.
-([More...](simmgr.html))
+[**Find Documents Stored Query tool**](finddocuments.html)
+
+[**Get All Stored Query tool**](getall.html)
+
+[**Manage Patient IDs tool**](pidfavorites.html)
+
+[**Toolkit Configuration tool**](toolconfig.html)
+
+[**Pre-Connectathon Tests tool**](mesatest.html)
+

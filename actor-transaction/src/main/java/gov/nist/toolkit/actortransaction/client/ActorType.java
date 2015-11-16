@@ -3,9 +3,7 @@ package gov.nist.toolkit.actortransaction.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 // This file must be kept up to date with SimulatorActorTypes.java
 
@@ -13,15 +11,24 @@ import java.util.List;
  * Actor types defined by test engine.  A subset of these are available as simulators.
  */
 public enum ActorType implements IsSerializable, Serializable {
-    REGISTRY(
-            "Document Registry",
-			Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
-            "reg",
-            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
-			Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
-            true,
+    XDR_DOC_SRC(
+            "XDR Document Source",
+			Arrays.asList("XDR_Source"),
+            "xdrsrc",
+            "gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator",
+			Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
+            false,
             null
 	),
+    REGISTRY(
+            "Document Registry",
+            Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
+            "reg",
+            "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
+            Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
+            true,
+            null
+    ),
 	// Update option on Document Registry
 	// this should be removed once implications are re-discovered
 //		UPDATE (
@@ -175,6 +182,17 @@ public enum ActorType implements IsSerializable, Serializable {
                 return at;
         }
         return null;
+    }
+
+    static public Set<ActorType> getActorTypes(TransactionType tt) {
+        Set<ActorType> types = new HashSet<>();
+        if (tt == null)
+            return types;
+        for (ActorType at : values()) {
+            if (at.hasTransaction(tt))
+                types.add(at);
+        }
+        return types;
     }
 
 	static public ActorType findActor(String name) {

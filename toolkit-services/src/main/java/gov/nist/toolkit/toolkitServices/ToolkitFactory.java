@@ -3,6 +3,7 @@ package gov.nist.toolkit.toolkitServices;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfigResource;
+import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.SimIdResource;
 import org.apache.log4j.Logger;
 
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
 public class ToolkitFactory {
     static Logger logger = Logger.getLogger(ToolkitFactory.class);
 
-    static public gov.nist.toolkit.actorfactory.client.SimId asServerSimId(SimIdResource simId) {
+    static public gov.nist.toolkit.actorfactory.client.SimId asServerSimId(SimId simId) {
         return new gov.nist.toolkit.actorfactory.client.SimId(simId.getUser(), simId.getId(), simId.getActorType(), simId.getEnvironmentName());
     }
 

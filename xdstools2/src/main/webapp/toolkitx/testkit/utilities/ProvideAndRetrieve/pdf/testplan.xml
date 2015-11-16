@@ -23,15 +23,7 @@
 			<UseReport section="THIS" step="submit" reportName="Document01_uid" useAs="$docuid$"/>
 			<UseReport section="THIS" step="submit" reportName="$repositoryUniqueId$" useAs="$repuid$"/>
             <XDSb/>
-            <Metadata>
-<RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <DocumentRequest>
-        <RepositoryUniqueId>$repuid$</RepositoryUniqueId>
-        <DocumentUniqueId>$docuid$</DocumentUniqueId>
-    </DocumentRequest>
-</RetrieveDocumentSetRequest>
-            </Metadata>
+            <MetadataFile>retrieve.xml</MetadataFile>
 			<Assertions>
 			<Assert id="origDocHashMatchesRetrieve">'3ad444d5852bd602d94d28f416250ee16148b80e' = '$hash_doc1$'</Assert>
 			<Assert id="repositoryUniqueIdMatches">'$repuid$' = '$repuid_doc1$'</Assert>
