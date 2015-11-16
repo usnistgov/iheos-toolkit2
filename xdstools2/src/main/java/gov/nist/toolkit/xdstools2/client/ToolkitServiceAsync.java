@@ -183,6 +183,8 @@ public interface ToolkitServiceAsync {
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
 	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, String testNumber, AsyncCallback<Test> callback);
+	//void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
+
 	void deleteSingleTestResult(Site site, String testNumber, AsyncCallback<Test> callback);
 
 

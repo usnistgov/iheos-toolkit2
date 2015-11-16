@@ -195,7 +195,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         // Set the width of each column.
         setColumnWidth(testnumberColumn, 30, com.google.gwt.dom.client.Style.Unit.PX);
         setColumnWidth(descriptionColumn, 80, com.google.gwt.dom.client.Style.Unit.PX);
-        setColumnWidth(buttonsColumn, 80, com.google.gwt.dom.client.Style.Unit.PX);
+        setColumnWidth(buttonsColumn, 60, com.google.gwt.dom.client.Style.Unit.PX);
         setColumnWidth(timeColumn, 27, com.google.gwt.dom.client.Style.Unit.PX);
         setColumnWidth(statusColumn, 15, com.google.gwt.dom.client.Style.Unit.PX);
 
