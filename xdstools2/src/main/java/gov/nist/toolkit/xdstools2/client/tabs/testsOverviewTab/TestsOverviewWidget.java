@@ -45,7 +45,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
                 return object.getNumber();
             }
         };
-        addColumn(testnumberColumn, "Test Number");
+        addColumn(testnumberColumn, "Test Instance");
 
         descriptionColumn = new TextColumn<Test>() {
             @Override
