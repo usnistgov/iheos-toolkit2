@@ -102,6 +102,13 @@ public class XdsTestServiceManager extends CommonService {
 		return new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 
+	/**
+	 * Original Xdstools2 function to retrieve test results based on the current Session by providing a list of
+	 * TestInstance numbers / Test Ids.
+	 * @param testInstances
+	 * @param testSession
+	 * @return
+	 */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) {
 		logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
 
@@ -116,7 +123,6 @@ public class XdsTestServiceManager extends CommonService {
 			}
 			catch (Exception e) {}
 		}
-
 		return map;
 	}
 
@@ -413,7 +419,7 @@ public class XdsTestServiceManager extends CommonService {
 	//	Result mkResult() {
 	//		Result r = new Result();
 	//		Calendar calendar = Calendar.getInstance();
-	//		r.timestamp = calendar.getTime().toString();
+	//		r.timestamp = calendar.getTimestamp().toString();
 	//
 	//		return r;
 	//	}
@@ -702,19 +708,61 @@ public class XdsTestServiceManager extends CommonService {
 	// TODO To complete
 
 	/**
-	 * A Test needs a Number, Short Description, Time and Status. The Commands parameter will eventually disappear.
-	 * Create the Tests object using the Test class I created inside the package Results, or replace Test with a similar
+	 * A Test object includes a Test Id or Instance Number, a Short Description, a Time and a Status. This object is used
+	 * for display purposes only. Build similar objects using the package Results, or replace Test with a similar
 	 * existing object.
-	 * @return
 	 */
-	public List<Test> reloadAllTestResults(String sessionName, Site site){
-	// Test data
-		return Arrays.asList(
+	public List<Test> reloadAllTestResults(String sessionName) throws Exception {
+		List<TestInstance> testList = null;
+		Map<String, Result> results = null;
+		List<Test> display = new ArrayList<Test>();
+
+		// ----- Retrieve list of test instance numbers -----
+		// TODO is there a case where sessionName might not be found in the system (bug?)
+		if (sessionName == null) {
+			logger.error("Could not retrieve the list of test instance numbers");
+			// TODO throw new TestRetrievalException
+		}
+		else { testList = getTestlogListing(sessionName); }
+		System.out.println("arrived here");
+
+		// ----- Retrieve test log results for each test instance -----
+		if (testList == null){
+			logger.error("Could not retrieve the log results");
+			// TODO throw new TestRetrievalException
+			}
+		else {
+			results = getTestResults(testList, sessionName);
+			String testId;
+			Result res;
+			List<StepResult> sectionList;
+			boolean hasSections = false;
+
+			// Use the set of Results to build the data for display
+			for (Map.Entry<String, Result> entry: results.entrySet()){
+				testId = entry.getKey();
+				res = entry.getValue();
+				sectionList = res.getStepResults();
+
+				// Check whether the test has sections
+				if (sectionList == null || (sectionList.size() == 0)) { hasSections = true; }
+
+				// TODO commands parameters should go away, see Test class comments
+				// TODO not sure what the test status is
+				display.add(new Test(testId, res.getText(), "", res.getTimestamp(), "status", false));
+				//String _number, String _description, String _commands, String _time, String _status, boolean _isSection){
+			}
+		}
+		return display;
+
+		// Test data
+		/**return Arrays.asList(
 				new Test("10891", "test 1", " ", "04:10 PM EST", "failed", false),
 				new Test("10891 section a", "test 1", " ", "04:10 PM EST", "pass", true),
 				new Test("10891 section b", "test 1", " ", "04:12 PM EST", "failed", true),
 				new Test("17685", "test 2", " ", "04:10 PM EST", "not run", false)
 		);
+		 */
 	}
 
 	public List<Test> runAllTests(String sessionName, Site site){

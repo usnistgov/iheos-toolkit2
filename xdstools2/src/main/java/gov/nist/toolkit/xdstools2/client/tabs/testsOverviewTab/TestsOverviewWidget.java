@@ -2,7 +2,6 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -42,7 +41,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         testnumberColumn = new TextColumn<Test>() {
             @Override
             public String getValue(Test object) {
-                return object.getNumber();
+                return object.getId();
             }
         };
         addColumn(testnumberColumn, "Test Instance");
@@ -71,9 +70,9 @@ public class TestsOverviewWidget extends CellTable<Test> {
             public void update(int index, Test object, String value) {
 
                 if (value == TestButtonsCell.PLAY_ICON_NAME) {
-                    runSingleTest(object.getNumber(), index);
+                    runSingleTest(object.getId(), index);
                 } else if (value == TestButtonsCell.REMOVE_ICON_NAME) {
-                    deleteSingleTestResults(object.getNumber());
+                    deleteSingleTestResults(object.getId());
                 } else if (value == TestButtonsCell.TEST_PLAN_BUTTON_NAME) {
                     //TODO retrieve test plan page based on Test or TestNumber and open link to that page
                     Window.open("link_to_HTML_page", "_blank", "");
@@ -91,7 +90,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         timeColumn = new TextColumn<Test>() {
             @Override
             public String getValue(Test object) {
-                return object.getTime();
+                return object.getTimestamp();
             }
         };
         addColumn(timeColumn, "Time");
@@ -124,8 +123,11 @@ public class TestsOverviewWidget extends CellTable<Test> {
      * @param testsListCallback
      */
     private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
-        // TODO the currently selected Site must be retrieved and passed as argument
-        service.reloadAllTestResults(new Site("testEHR"), testsListCallback);
+        try {
+            service.reloadAllTestResults(testsListCallback);
+        } catch (Exception e) {
+            LOGGER.warning("Failed to retrieve test results.");
+        }
     }
 
 

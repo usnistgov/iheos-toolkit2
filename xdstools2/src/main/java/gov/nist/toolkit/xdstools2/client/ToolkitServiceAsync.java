@@ -175,13 +175,13 @@ public interface ToolkitServiceAsync {
 	// Test Services
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
+	void reloadAllTestResults(AsyncCallback<List<Test>> callback) throws Exception;
 	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
 	void setMesaTestSession(String sessionName, AsyncCallback callback);
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
 	void deleteSingleTestResult(Site site, String testNumber, AsyncCallback<Test> callback);
-	void reloadAllTestResults(Site site, AsyncCallback<List<Test>> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, String testNumber, AsyncCallback<Test> callback);
 

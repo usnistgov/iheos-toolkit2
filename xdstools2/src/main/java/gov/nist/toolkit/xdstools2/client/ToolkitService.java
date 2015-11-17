@@ -181,7 +181,7 @@ public interface ToolkitService extends RemoteService  {
 	// Tests Overview Tab
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public List<Test> reloadAllTestResults(Site site) throws NoServletSessionException;
+	public List<Test> reloadAllTestResults() throws Exception;
 	public List<Test> runAllTests(Site site) throws NoServletSessionException;
 	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
 	public Test runSingleTest(Site site, String testNumber) throws NoServletSessionException;

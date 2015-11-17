@@ -47,7 +47,11 @@ public class ButtonClickHandler implements ClickHandler {
         else if (source == commandsWidget.getRefreshAllButton()){
             //TODO replace bogus site with actual site selected by user
             ReloadAllTestResultsCallback reloadAllTestResultsCallback = new ReloadAllTestResultsCallback(updater);
-            service.reloadAllTestResults(new Site("testEHR"), reloadAllTestResultsCallback);
+            try {
+                service.reloadAllTestResults(reloadAllTestResultsCallback);
+            } catch (Exception e) {
+                LOGGER.warning(e.getMessage());
+            }
         }
         else {
             // do nothing

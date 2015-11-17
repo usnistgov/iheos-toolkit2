@@ -162,6 +162,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	// Test Service
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
+	// New - Loads or reloads test data
+	public List<Test> reloadAllTestResults() throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(getSession().getMesaSessionName()); }
 	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
 	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
@@ -172,7 +174,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
 	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
 	public Test deleteSingleTestResult(Site site, String testNumber) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testNumber); }
-	public List<Test> reloadAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().reloadAllTestResults(getSession().getMesaSessionName(), site); }
 	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
 	public Test runSingleTest(Site site, String testNumber) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testNumber); }
 

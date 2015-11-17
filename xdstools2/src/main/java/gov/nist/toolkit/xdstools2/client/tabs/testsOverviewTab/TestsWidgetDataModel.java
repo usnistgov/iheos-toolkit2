@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 
-import com.google.gwt.user.client.Window;
 import gov.nist.toolkit.results.shared.Test;
 
 import java.util.*;
@@ -35,14 +34,14 @@ public class TestsWidgetDataModel {
     }
 
     private int findTestIndex(Test result){
-        String testNumberToReplace = result.getNumber();
+        String testNumberToReplace = result.getId();
         String currentTestNumber = "";
         int index = 0;
 
         Iterator it = data.iterator();
         while(it.hasNext()){
             Test t = (Test) it.next();
-            currentTestNumber = t.getNumber();
+            currentTestNumber = t.getId();
             if (currentTestNumber.equals(testNumberToReplace)){
                return index;
             }

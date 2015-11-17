@@ -3,17 +3,20 @@ package gov.nist.toolkit.results.shared;
 import java.io.Serializable;
 
 /**
+ * This object exists for display purposes. It provides data to a grid of tests located inside TestsOverviewWidget.
  * Created by Diane Azais local on 10/11/2015.
+ *
  */
 public class Test implements Serializable {
 
     private static final long serialVersionUID = 7526472295622776147L;
 
-
-    String number;
+    // TODO the commands parameter should ultimately go away. An empty space in the data is needed for display but
+    // should be built automatically.
+    String id;
     String description;
     String commands;
-    String time;
+    String timestamp;
     String status;
     boolean isSection;
 
@@ -21,17 +24,17 @@ public class Test implements Serializable {
     }
 
 
-    public Test(String _number, String _description, String _commands, String _time, String _status, boolean _isSection){
-        number = _number;
+    public Test(String _id, String _description, String _commands, String _timestamp, String _status, boolean _isSection){
+        id = _id;
         description = _description;
         commands = _commands;
-        time = _time;
+        timestamp = _timestamp;
         status = _status;
         isSection = _isSection;
     }
 
-    public String getNumber() {
-        return number;
+    public String getId() {
+        return id;
     }
 
     public String getDescription() {
@@ -42,8 +45,8 @@ public class Test implements Serializable {
         return commands;
     }
 
-    public String getTime() {
-        return time;
+    public String getTimestamp() {
+        return timestamp;
     }
 
     public String getStatus() {
