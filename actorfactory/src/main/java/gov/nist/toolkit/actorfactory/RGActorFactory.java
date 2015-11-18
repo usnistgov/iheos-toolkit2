@@ -59,8 +59,8 @@ public class RGActorFactory extends AbstractActorFactory {
 		addFixedEndpoint(sc, SimulatorProperties.xcqTlsEndpoint, actorType, TransactionType.XC_QUERY, true);
 		addFixedEndpoint(sc, SimulatorProperties.xcrEndpoint, actorType, TransactionType.XC_RETRIEVE, false);
 		addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint, actorType, TransactionType.XC_RETRIEVE, true);
-		addFixedEndpoint(sc, xcpdEndpoint, actorType, TransactionType.XC_PATIENT_DISCOVERY, false);
-		addFixedEndpoint(sc, xcpdTlsEndpoint, actorType, TransactionType.XC_PATIENT_DISCOVERY, true);
+//		addFixedEndpoint(sc, xcpdEndpoint, actorType, TransactionType.XC_PATIENT_DISCOVERY, false);
+//		addFixedEndpoint(sc, xcpdTlsEndpoint, actorType, TransactionType.XC_PATIENT_DISCOVERY, true);
 
 		// This needs to be grouped with a Document Registry
 //		registryActorFactory = new RegistryActorFactory();
@@ -121,18 +121,18 @@ public class RGActorFactory extends AbstractActorFactory {
 					sc.get(SimulatorProperties.xcrTlsEndpoint).asString(),
 					true, 
 					isAsync));
-			site.addTransaction(new TransactionBean(
-					TransactionType.XC_PATIENT_DISCOVERY.getCode(),
-					RepositoryType.NONE,
-					sc.get(xcpdEndpoint).asString(), 
-					false, 
-					isAsync));
-			site.addTransaction(new TransactionBean(
-					TransactionType.XC_PATIENT_DISCOVERY.getCode(),
-					RepositoryType.NONE,
-					sc.get(xcpdTlsEndpoint).asString(), 
-					true, 
-					isAsync));
+//			site.addTransaction(new TransactionBean(
+//					TransactionType.XC_PATIENT_DISCOVERY.getCode(),
+//					RepositoryType.NONE,
+//					sc.get(xcpdEndpoint).asString(),
+//					false,
+//					isAsync));
+//			site.addTransaction(new TransactionBean(
+//					TransactionType.XC_PATIENT_DISCOVERY.getCode(),
+//					RepositoryType.NONE,
+//					sc.get(xcpdTlsEndpoint).asString(),
+//					true,
+//					isAsync));
 
 
 			site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());

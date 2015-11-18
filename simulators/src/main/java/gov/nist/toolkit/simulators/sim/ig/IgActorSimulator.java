@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 public class IgActorSimulator extends GatewaySimulatorCommon {
-	DsSimCommon dsSimCommon;
-	SimDb db;
+//	DsSimCommon dsSimCommon;
+//	SimDb db;
 	OMElement messageBody;
 	static Logger logger = Logger.getLogger(IgActorSimulator.class);
 	AdhocQueryResponseGenerator sqs;
@@ -37,12 +37,16 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
         setSimulatorConfig(simulatorConfig);
 	}
 
+    public IgActorSimulator() {}
+
 	public void init() {}
 
 	// boolean => hasErrors?
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validationPattern) throws IOException {
 
-		if (transactionType.equals(TransactionType.IG_QUERY.getShortName())) {
+        logger.info("IgActorSimulator: run - transactionType is " + transactionType);
+
+		if (transactionType.equals(TransactionType.IG_QUERY)) {
 
 			common.vc.isSQ = true;
 			common.vc.isXC = false;
@@ -93,10 +97,13 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 			// this will only run the new validators
 			mvc.run();
 			
-			return true; // no updates anyway
+			return false; // no updates anyway
 
 		} 
-		else if (transactionType.equals(TransactionType.IG_RETRIEVE.getShortName())) {
+		else if (transactionType.equals(TransactionType.IG_RETRIEVE)) {
+            er.err(Code.XDSRegistryError, "Transaction not supported " + transactionType, "InitiatingGatewayActorSimulator", "");
+            dsSimCommon.sendFault("Transaction not supported " + transactionType, null);
+            return true;
 		}
 			
 		else {
@@ -104,11 +111,6 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
             dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return true;
 		}
-		
-
-
-
-		return false;
 	}
 
 

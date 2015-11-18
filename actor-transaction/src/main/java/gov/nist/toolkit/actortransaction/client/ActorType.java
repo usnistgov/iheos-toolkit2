@@ -88,7 +88,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Responding Gateway",
 			Arrays.asList("RESP_GATEWAY"),
             "rg",
-            "gov.nist.toolkit.simulators.sim.rg.RGActorSimulator",
+            "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
 			Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_PATIENT_DISCOVERY),
             true,
             null

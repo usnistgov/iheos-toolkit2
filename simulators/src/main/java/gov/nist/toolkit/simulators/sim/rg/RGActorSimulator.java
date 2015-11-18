@@ -45,6 +45,8 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
         setSimulatorConfig(simulatorConfig);
 	}
 
+    public RGActorSimulator() {}
+
 	public void init() {}
 
 
@@ -251,7 +253,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 			return true;
 		} else {
-			dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("RGActorSimulator: Don't understand transaction " + transactionType, null);
 			return true;
 		}
 

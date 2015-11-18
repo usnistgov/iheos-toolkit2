@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class XcQuerySim extends AbstractMessageValidator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
@@ -89,7 +90,12 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 			request = new AdhocQueryRequestParser(ahqr).getAdhocQueryRequest();
 
-			Sites remoteSites = new Sites(asc.remoteSites);
+            Collection<Site> sites = asc.remoteSites;
+            if (sites == null || sites.size() == 0) {
+                er.err(Code.XDSRegistryError, "No RespondingGateways configured", this, null);
+                return;
+            }
+			Sites remoteSites = new Sites(sites);
 
 
 			if (findQueryIds.contains(request.getQueryId())) {

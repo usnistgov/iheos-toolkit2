@@ -17,6 +17,8 @@ abstract public class GatewaySimulatorCommon extends BaseDsActorSimulator {
 		super(common, dsSimCommon);
 	}
 
+    public GatewaySimulatorCommon() {}
+
 	public  boolean validateHomeCommunityId(ErrorRecorder er, OMElement query, boolean isRG) {
 		// verify that if Patient ID param not present then homeCommunityId is in header
 		// and homeCommunityId is in proper format
