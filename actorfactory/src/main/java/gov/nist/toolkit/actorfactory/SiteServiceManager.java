@@ -226,8 +226,9 @@ public class SiteServiceManager {
 
 	public String saveSite(String sessionId, Site site) throws Exception {
 		logger.debug(sessionId + ": " + "saveSite");
-		commonSites.putSite(site);
 		try {
+            if (commonSites == null) commonSites = new Sites();
+            commonSites.putSite(site);
 			// sites.saveToFile(configuredActorsFile(false));
 			if (!useActorsFile())
 				new SeparateSiteLoader().saveToFile(Installation.installation()
@@ -240,8 +241,10 @@ public class SiteServiceManager {
 			addSimulatorSites(sessionId);
 		} catch (Exception e) {
 			logger.error("saveSite", e);
-			throw new Exception(e.getMessage());
-		}
+			throw new Exception(e.getMessage(), e);
+		} catch (Throwable t) {
+            logger.error(ExceptionUtil.exception_details(t));
+        }
 		return null;
 	}
 
@@ -283,7 +286,8 @@ public class SiteServiceManager {
 			Exception {
 		logger.debug("reloadCommonSites");
 		commonSites = null;
-		getCommonSites();
+		commonSites = getCommonSites();
+        if (commonSites == null) return new ArrayList<>();
 		return commonSites.getSiteNames();
 	}
 

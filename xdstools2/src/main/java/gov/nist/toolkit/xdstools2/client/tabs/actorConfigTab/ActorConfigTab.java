@@ -163,7 +163,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		final AsyncCallback<List<String>> loadSiteNamesCallback = new AsyncCallback<List<String>>() {
 			public void onFailure(Throwable caught) {
-				new PopupMessage(caught.getMessage());
+				new PopupMessage("Error loading external sites: " + caught.getMessage());
 			}
 
 			public void onSuccess(List<String> result) {
