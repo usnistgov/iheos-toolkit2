@@ -14,8 +14,8 @@ import java.util.Map;
 /**
  * Created by Diane Azais local on 9/24/2015.
  *
- * Widget for capturing the parameters for the full FindDocuments (incl. all parameters) query. This does not include PatientID
- * since that is handled elsewhere.
+ * Widget for capturing the parameters for the full FindDocuments (incl. all parameters) query. This does not include
+ * the PatientID which is handled elsewhere.
  */
 public class FindDocuments2Params {
 
@@ -23,6 +23,7 @@ public class FindDocuments2Params {
     FlexTable paramGrid = new FlexTable();
     int prow = 0;
 
+    StatusFilter deStatusFilter;
     OnDemandFilter onDemandFilter;
     TimeFilter creationTimeFromFilter;
     TimeFilter creationTimeToFilter;
@@ -45,6 +46,11 @@ public class FindDocuments2Params {
         paramGrid.setText(prow, 0, "Select search parameters:");
         prow++;
 
+        // DocumentEntry Status
+        paramGrid.setText(prow, 1, "DocumentEntry Status");
+        deStatusFilter = new StatusFilter("DocumentEntry Status");
+        paramGrid.setWidget(prow, 2, deStatusFilter.asWidget());
+        prow++;
 
         // On Demand
         paramGrid.setText(prow, 1, "On Demand / Stable");
@@ -68,6 +74,7 @@ public class FindDocuments2Params {
         creationTimeToFilter = new TimeFilter(errorLabel, "CreationTimeTo");
         paramGrid.setWidget(prow, 4, creationTimeToFilter.asWidget());
 
+        // TODO manage error display on UI
         paramGrid.setWidget(prow, 5, errorLabel);
         prow++;
 
@@ -98,8 +105,6 @@ public class FindDocuments2Params {
         // XDS Codes
         codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.DocumentEntryType);
         prow++;
-        codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.DocumentEntryStatus);
-        prow++;
         codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.ClassCode);
         prow++;
         codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.TypeCode);
@@ -129,11 +134,11 @@ public class FindDocuments2Params {
         serviceStopTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStopTimeFrom);
         serviceStopTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStopTimeTo);
         authorFilter.addToCodeSpec(codeSpec, CodesConfiguration.AuthorPerson);
-        codeFilterBank.addToCodeSpec(codeSpec);
-
+        deStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryStatus);
         onDemandFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryType);
         returnFilter.addToCodeSpec(codeSpec, CodesConfiguration.ReturnsType);
 
+        codeFilterBank.addToCodeSpec(codeSpec);
     }
 
     public Widget asWidget() { return paramGrid; }
