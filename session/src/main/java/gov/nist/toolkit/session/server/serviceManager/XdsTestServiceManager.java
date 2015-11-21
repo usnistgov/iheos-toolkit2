@@ -717,14 +717,15 @@ public class XdsTestServiceManager extends CommonService {
 		Map<String, Result> results = null;
 		List<Test> display = new ArrayList<Test>();
 
+		System.out.println("test session name: "+sessionName);
+
 		// ----- Retrieve list of test instance numbers -----
 		// TODO is there a case where sessionName might not be found in the system (bug?)
 		if (sessionName == null) {
-			logger.error("Could not retrieve the list of test instance numbers");
+			logger.error("Could not retrieve the list of test instance numbers because the user session is null");
 			// TODO throw new TestRetrievalException
 		}
 		else { testList = getTestlogListing(sessionName); }
-		System.out.println("arrived here");
 
 		// ----- Retrieve test log results for each test instance -----
 		if (testList == null){
@@ -738,6 +739,7 @@ public class XdsTestServiceManager extends CommonService {
 			List<StepResult> sectionList;
 			boolean hasSections = false;
 
+			System.out.println("building data for display");
 			// Use the set of Results to build the data for display
 			for (Map.Entry<String, Result> entry: results.entrySet()){
 				testId = entry.getKey();
@@ -749,7 +751,7 @@ public class XdsTestServiceManager extends CommonService {
 
 				// TODO commands parameters should go away, see Test class comments
 				// TODO not sure what the test status is
-				display.add(new Test(testId, res.getText(), "", res.getTimestamp(), "status", false));
+				display.add(new Test(testId, res.getText(), "", res.getTimestamp(), "pass", false));
 				//String _number, String _description, String _commands, String _time, String _status, boolean _isSection){
 			}
 		}
