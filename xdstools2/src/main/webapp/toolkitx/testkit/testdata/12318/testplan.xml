@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
   <Test>12318</Test>
   <TestStep id="init">
-    <NewPatientId/>
     <ExpectedStatus>Success</ExpectedStatus>
     <ProvideAndRegisterTransaction>
       <XDSb/>
@@ -12,6 +11,5 @@
   </TestStep>
   <TestStep id="reset_patient_id">
     <ExpectedStatus>Success</ExpectedStatus>
-    <NewPatientId/>
   </TestStep>
 </TestPlan>
