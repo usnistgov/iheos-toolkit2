@@ -2,7 +2,6 @@
   <Test>12345</Test>
   <Rule>Submit data to XDS.b repository to support SQ and Retrieve testing</Rule>
   <TestStep id="submit_doc">
-    <NewPatientId/>
     <ExpectedStatus>Success</ExpectedStatus>
     <ProvideAndRegisterTransaction>
       <XDSb/>
@@ -68,6 +67,5 @@
   </TestStep>
   <TestStep id="reset_patient_id">
     <ExpectedStatus>Success</ExpectedStatus>
-    <NewPatientId/>
   </TestStep>
 </TestPlan>
