@@ -46,6 +46,12 @@ public class FindDocuments2 extends CommonService {
             List<String> deStatus = selectedCodes.get(CodesConfiguration.DocumentEntryStatus);
             if (deStatus == null) deStatus = new ArrayList<String>();
 
+            List<String> fStatus = selectedCodes.get(CodesConfiguration.FolderStatus);
+            if (fStatus == null) fStatus = new ArrayList<String>();
+
+            List<String> sStatus = selectedCodes.get(CodesConfiguration.SubmissionSetStatus);
+            if (sStatus == null) sStatus = new ArrayList<String>();
+
             List<String> classCodes = selectedCodes.get(CodesConfiguration.ClassCode);
             if (classCodes == null) classCodes = new ArrayList<String>();
 
@@ -125,6 +131,20 @@ public class FindDocuments2 extends CommonService {
             i=0;
             for (String codeDef : deStatus) {
                 params.put("$dst" + String.valueOf(i) + "$", codeDef);
+                i++;
+            }
+
+            // FolderStatus
+            i=0;
+            for (String codeDef : fStatus) {
+                params.put("$fst" + String.valueOf(i) + "$", codeDef);
+                i++;
+            }
+
+            // SubmissionSetStatus
+            i=0;
+            for (String codeDef : sStatus) {
+                params.put("$sst" + String.valueOf(i) + "$", codeDef);
                 i++;
             }
 

@@ -26,6 +26,22 @@
                 <Value>('$dst3$')</Value>
             </ValueList>
         </Slot>
+        <Slot name="$XDSFolderStatus">
+            <ValueList>
+                <Value>('$fst0$')</Value>
+                <Value>('$fst1$')</Value>
+                <Value>('$fst2$')</Value>
+                <Value>('$fst3$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSSubmissionSetStatus">
+            <ValueList>
+                <Value>('$sst0$')</Value>
+                <Value>('$sst1$')</Value>
+                <Value>('$sst2$')</Value>
+                <Value>('$sst3$')</Value>
+            </ValueList>
+        </Slot>
         <Slot name="$XDSDocumentEntryClassCode">
             <ValueList>
                 <Value>('$clc0$')</Value>
