@@ -71,6 +71,28 @@ public class SimulatorBuilder {
     }
 
     /**
+     * Create new Document Registry/Repository simulator with default configuration.
+     * To create a simulator with
+     * custom configuration:
+     * <ol>
+     * <li>Create simulator with default configuration</li>
+     * <li>Update the local copy of the configuration</li>
+     * <li>Send the update via the update method</li>
+     * </ol>
+     * @param id Simulator ID
+     * @param user User creating Simulator.  Same as TestSession in Toolkit UI. The simulator ID must be unique for this user.
+     * @param environmentName Environment defines Affinity Domain coding schemes and TLS certificate for use with client.
+     * @return Simulator configuration.
+     * @throws ToolkitServiceException if anything goes wrong.
+     */
+    public DocumentRegRep createDocumentRegRep(String id, String user, String environmentName) throws ToolkitServiceException {
+        XdsDocumentRegRep act = new XdsDocumentRegRep();
+        act.engine = engine;
+        act.config = engine.create(id, user, SimulatorActorType.REPOSITORY_REGISTRY, environmentName);
+        return act;
+    }
+
+    /**
      * Update the configuration of a Simulator. Any properties that are passed in SimConfig that are
      * not recognized will be silently ignored. Parameters passed with wrong type (String vs. boolean) will cause
      * ToolkitServiceException.

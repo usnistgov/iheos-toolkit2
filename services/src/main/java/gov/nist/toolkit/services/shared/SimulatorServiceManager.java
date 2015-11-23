@@ -24,6 +24,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
+import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
@@ -458,5 +459,6 @@ public class SimulatorServiceManager extends CommonService {
 		}
 		return ResultBuilder.RESULT(m);
 	}
+
 
 }

@@ -3,6 +3,8 @@ package gov.nist.toolkit.simulators.sim.reg.store;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ro  implements Serializable  {
 	
@@ -52,4 +54,10 @@ public class Ro  implements Serializable  {
 	}
 
 	public String toString() { return id; }
+
+    static public List<String> getIds(List<Ro> ros) {
+        List<String> ids = new ArrayList<>();
+        for (Ro r : ros) ids.add(r.getId());
+        return ids;
+    }
 }

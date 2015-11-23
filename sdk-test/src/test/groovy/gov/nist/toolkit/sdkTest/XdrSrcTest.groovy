@@ -23,10 +23,8 @@ import spock.lang.Specification
  *
  */
 class XdrSrcTest extends Specification implements TransactionNotification {
-    def host='localhost'
     @Shared String port = '8889'
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", port)
-//    EngineSpi engine = new EngineSpi(host, port);
     SimulatorBuilder builder = new SimulatorBuilder(urlRoot)
     @Shared HttpServer server
     BasicSimParameters srcParams = new BasicSimParameters()

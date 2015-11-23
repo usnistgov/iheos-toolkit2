@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.services.server.RegistrySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
@@ -20,6 +21,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
 /**
  *
@@ -165,13 +167,52 @@ public class SimulatorsController {
     @Produces("application/json")
     @Path("/{id}")
     public Response getSim(@PathParam("id") String id) {
-        logger.info("GET simulator/" +  id);
+        logger.info("GET simulators/" +  id);
         SimId simId = new SimId(id);
         try {
             SimulatorConfig config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
             SimConfigResource bean = ToolkitFactory.asSimConfigBean(config);
             return Response.ok(bean).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    /**
+     * Get ids for all DocumentEntries for patient id
+     * @param id Simulator ID
+     * @param pid Patient ID
+     * @return DocumentEntry.ids
+     */
+    @GET
+    @Produces("application/json")
+    @Path("/{id}/xds/GetAllDocs/{pid}")
+    public Response getAllDocs(@PathParam("id") String id, @PathParam("pid") String pid) {
+        logger.info(String.format("GET simulators/%s/xds/GetAllDocs/%s", id, pid));
+        SimId simId = new SimId(id);
+        try {
+            RegistrySimApi api = new RegistrySimApi(simId);
+            List<String> objectRefs = api.findDocsByPidObjectRef(pid);
+            ObjectRefListResource or = new ObjectRefListResource();
+            or.setObjectRefs(objectRefs);
+            return Response.ok(or).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    @GET
+    @Produces("application/xml")
+    @Path("/{id}/xds/GetDoc/{docId}")
+    public Response getDoc(@PathParam("id") String id, @PathParam("docId") String docId) {
+        logger.info(String.format("GET simulators/%s/xds/GetDoc/%s", id, docId));
+        SimId simId = new SimId(id);
+        try {
+            RegistrySimApi api = new RegistrySimApi(simId);
+            OMElement ele = api.getDocEle(id);
+            String xml = new OMFormatter(ele).toString();
+            return Response.ok(xml).build();
         } catch (Exception e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }

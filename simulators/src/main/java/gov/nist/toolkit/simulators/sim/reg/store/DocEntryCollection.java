@@ -486,4 +486,10 @@ public class DocEntryCollection extends RegObCollection implements Serializable 
 		return ids;
 	}
 
+    static public List<String> getIds(List<DocEntry> ros) {
+        List<String> ids = new ArrayList<>();
+        for (Ro r : ros) ids.add(r.getId());
+        return ids;
+    }
+
 }
