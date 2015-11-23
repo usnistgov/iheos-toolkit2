@@ -23,7 +23,7 @@ public class FindDocuments2Params {
     FlexTable paramGrid = new FlexTable();
     int prow = 0;
 
-    StatusFilter deStatusFilter, folStatusFilter, ssStatusFilter;
+    StatusFilter deStatusFilter;
     OnDemandFilter onDemandFilter;
     TimeFilter creationTimeFromFilter;
     TimeFilter creationTimeToFilter;
@@ -50,18 +50,6 @@ public class FindDocuments2Params {
         paramGrid.setText(prow, 1, "DocumentEntries");
         deStatusFilter = new StatusFilter("DocumentEntries");
         paramGrid.setWidget(prow, 2, deStatusFilter.asWidget());
-        prow++;
-
-        // Folder Status
-        paramGrid.setText(prow, 1, "Folders");
-        folStatusFilter = new StatusFilter("Folders");
-        paramGrid.setWidget(prow, 2, folStatusFilter.asWidget());
-        prow++;
-
-        // SubmissionSet Status
-        paramGrid.setText(prow, 1, "SubmissionSets");
-        ssStatusFilter = new StatusFilter("SubmissionSets");
-        paramGrid.setWidget(prow, 2, ssStatusFilter.asWidget());
         prow++;
 
         // On Demand
@@ -140,8 +128,6 @@ public class FindDocuments2Params {
      */
     public void addToCodeSpec(Map<String, List<String>> codeSpec) {
         deStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryStatus);
-        folStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.FolderStatus);
-        ssStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.SubmissionSetStatus);
         creationTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.CreationTimeFrom);
         creationTimeToFilter.addToCodeSpec(codeSpec, CodesConfiguration.CreationTimeTo);
         serviceStartTimeFromFilter.addToCodeSpec(codeSpec, CodesConfiguration.ServiceStartTimeFrom);
