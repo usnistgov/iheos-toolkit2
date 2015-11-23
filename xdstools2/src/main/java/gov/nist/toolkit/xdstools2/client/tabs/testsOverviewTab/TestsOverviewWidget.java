@@ -124,7 +124,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
      */
     private void loadTestsData(AsyncCallback<List<Test>> testsListCallback) {
         try {
-            service.reloadAllTestResults(testsListCallback);
+            service.reloadAllTestResults(updater.getCurrentTestSession(), testsListCallback);
         } catch (Exception e) {
             LOGGER.warning("Failed to retrieve test results.");
         }

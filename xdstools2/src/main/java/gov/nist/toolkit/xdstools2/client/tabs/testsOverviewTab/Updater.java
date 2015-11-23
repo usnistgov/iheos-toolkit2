@@ -11,8 +11,10 @@ import java.util.ArrayList;
  */
 public class Updater {
     private static TestsOverviewWidget testsOverviewWidget;
+    private TestsOverviewTab testsTab;
 
-    public Updater() {
+    public Updater(TestsOverviewTab _testsTab) {
+        testsTab = _testsTab;
     }
 
     public void updateTestView() {
@@ -25,6 +27,14 @@ public class Updater {
 
     public void setTestsOverviewWidget(TestsOverviewWidget _testsOverviewWidget) {
         testsOverviewWidget = _testsOverviewWidget;
+    }
+
+    /**
+     * Accesses the Session object from inside the TabbedWindow contained of the Tab
+     * @return the current user session name
+     */
+    public String getCurrentTestSession(){
+        return testsTab.getCurrentTestSession();
     }
 
 }

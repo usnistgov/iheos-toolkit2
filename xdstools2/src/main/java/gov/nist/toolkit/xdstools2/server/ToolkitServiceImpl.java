@@ -163,7 +163,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// New - Loads or reloads test data
-	public List<Test> reloadAllTestResults() throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(getSession().getMesaSessionName()); }
+	public List<Test> reloadAllTestResults(String sessionName) throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(sessionName); }
 	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 	public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
 	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}

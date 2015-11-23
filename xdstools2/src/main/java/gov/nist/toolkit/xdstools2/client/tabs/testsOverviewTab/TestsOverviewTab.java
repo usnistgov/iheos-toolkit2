@@ -73,7 +73,7 @@ public class TestsOverviewTab extends GenericQueryTab {
         dataModel = new TestsWidgetDataModel();
 
         // ----- View Updater ----
-        Updater updater = new Updater();
+        Updater updater = new Updater(this);
 
         // ----- Tests View -----
         TestsOverviewWidget testWidget = new TestsOverviewWidget(dataModel, updater);

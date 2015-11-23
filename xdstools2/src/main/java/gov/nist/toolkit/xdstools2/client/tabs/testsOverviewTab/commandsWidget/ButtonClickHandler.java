@@ -48,7 +48,7 @@ public class ButtonClickHandler implements ClickHandler {
             //TODO replace bogus site with actual site selected by user
             ReloadAllTestResultsCallback reloadAllTestResultsCallback = new ReloadAllTestResultsCallback(updater);
             try {
-                service.reloadAllTestResults(reloadAllTestResultsCallback);
+                service.reloadAllTestResults(updater.getCurrentTestSession(), reloadAllTestResultsCallback);
             } catch (Exception e) {
                 LOGGER.warning(e.getMessage());
             }

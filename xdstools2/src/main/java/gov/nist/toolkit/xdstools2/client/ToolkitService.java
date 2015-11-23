@@ -11,6 +11,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -181,7 +182,7 @@ public interface ToolkitService extends RemoteService  {
 	// Tests Overview Tab
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public List<Test> reloadAllTestResults() throws Exception;
+	public List<Test> reloadAllTestResults(String sessionName) throws Exception;
 	public List<Test> runAllTests(Site site) throws NoServletSessionException;
 	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
 	public Test runSingleTest(Site site, String testNumber) throws NoServletSessionException;

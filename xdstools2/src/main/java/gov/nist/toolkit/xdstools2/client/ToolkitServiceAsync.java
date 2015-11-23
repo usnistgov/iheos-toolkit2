@@ -8,6 +8,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -175,7 +176,7 @@ public interface ToolkitServiceAsync {
 	// Test Services
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void reloadAllTestResults(AsyncCallback<List<Test>> callback) throws Exception;
+	void reloadAllTestResults(String sessionName, AsyncCallback<List<Test>> callback) throws Exception;
 	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
 	void setMesaTestSession(String sessionName, AsyncCallback callback);
