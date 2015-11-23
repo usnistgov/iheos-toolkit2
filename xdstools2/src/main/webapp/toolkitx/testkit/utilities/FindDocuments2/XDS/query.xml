@@ -5,7 +5,7 @@
     <query:ResponseOption returnComposedObjects="true" returnType="$rt0$"/>
     <!-- FindDocuments2 -->
     <AdhocQuery id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
-        <Slot name="$patientId">
+        <Slot name="$XDSDocumentEntryPatientId">
             <ValueList>
                 <Value>'$patient_id$'</Value>
             </ValueList>

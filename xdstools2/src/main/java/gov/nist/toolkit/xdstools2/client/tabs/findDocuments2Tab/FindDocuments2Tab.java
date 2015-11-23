@@ -84,21 +84,14 @@ class Runner implements ClickHandler {
     public void onClick(ClickEvent clickEvent) {
         resultPanel.clear();
 
+        // TODO check error message is sent to user
         if (!verifySiteProvided()) return;
         if (!verifyPidProvided()) return;
-
-        // Where the bottom-of-screen listing from server goes
-        //addStatusBox();
-
-       // getGoButton().setEnabled(false);
-       //getInspectButton().setEnabled(false);
 
         // Capture the query-specific parameter details.  They have been generated in
         // sqParams and here they are formatted in the codeSpec layout which the server requires
         Map<String, List<String>> codeSpec = new HashMap<String, List<String>>();
-        sqParams.addToCodeSpec(codeSpec); //TODO issue is here
-
-
+        sqParams.addToCodeSpec(codeSpec);
 
         // tell the server to run the query. The display is handled by GenericQueryTab which
         // is linked in via the queryCallback parameter

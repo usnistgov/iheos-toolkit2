@@ -101,9 +101,6 @@ public class FindDocuments2 extends CommonService {
             List<String> sections = new ArrayList<String>();
             if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
                 sections.add("XDS");
-            //TODO manage sections
-            //else
-            //    sections.add("XCA");
 
 
             // ----- Build the parameters map -----
