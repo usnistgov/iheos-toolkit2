@@ -47,13 +47,13 @@ public class FindDocuments2Params {
         prow++;
 
         // DocumentEntry Status
-        paramGrid.setText(prow, 1, "DocumentEntries");
+        paramGrid.setText(prow, 1, "DocumentEntry Status");
         deStatusFilter = new StatusFilter("DocumentEntries");
         paramGrid.setWidget(prow, 2, deStatusFilter.asWidget());
         prow++;
 
         // On Demand
-        paramGrid.setText(prow, 1, "On Demand / Stable");
+        paramGrid.setText(prow, 1, "DocumentEntry Type");
         onDemandFilter = new OnDemandFilter("Type");
         paramGrid.setWidget(prow, 2, onDemandFilter.asWidget());
         prow++;
@@ -103,8 +103,6 @@ public class FindDocuments2Params {
 
 
         // XDS Codes
-        codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.DocumentEntryType);
-        prow++;
         codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.ClassCode);
         prow++;
         codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.TypeCode);
