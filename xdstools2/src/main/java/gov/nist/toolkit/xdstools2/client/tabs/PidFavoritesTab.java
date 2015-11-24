@@ -114,7 +114,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
-        topPanel.add(new HTML("<h3>Generate Patient Identity Feed</h3><br />(From selection in Favorites)"));
+        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 
         panel.add(selectedPids);
@@ -224,7 +224,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
             toolkitService.getAssigningAuthorities(new AsyncCallback<List<String>>() {
                 @Override
                 public void onFailure(Throwable e) {
-                    new PopupMessage(e.getMessage());
+                    new PopupMessage("Error loading Assigning Authorities - usually caused by session timeout - " + e.getMessage());
                 }
 
                 @Override
@@ -257,7 +257,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
             return null;
         }
         if (pids.size() > 1) {
-            new PopupMessage("Nust select only one Patient ID");
+            new PopupMessage("Must select only one Patient ID");
             return null;
         }
         return pids.get(0);

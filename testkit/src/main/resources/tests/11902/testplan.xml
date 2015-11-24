@@ -10,8 +10,8 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query1.xml</MetadataFile>
-      <UseId testdir="../12346" id="Folder" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
-      <UseId testdir="../12346" id="Folder" symbol="$uuid2$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346/doc_w_fol" id="Folder" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346/two_doc_w_fol" id="Folder" symbol="$uuid2$" step="submit_2doc_w_fol" section="AssignedUuids"/>
       <ExpectedContents>
         <SubmissionSets count="0"/>
         <Associations count="0"/>
@@ -30,8 +30,8 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query2.xml</MetadataFile>
-      <UseId testdir="../12346" id="Folder" symbol="$uniqueid1$" step="submit_doc_w_fol" section="AssignedUids"/>
-      <UseId testdir="../12346" id="Folder" symbol="$uniqueid2$" step="submit_2doc_w_fol" section="AssignedUids"/>
+      <UseId testdir="../12346/doc_w_fol" id="Folder" symbol="$uniqueid1$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <UseId testdir="../12346/two_doc_w_fol" id="Folder" symbol="$uniqueid2$" step="submit_2doc_w_fol" section="AssignedUids"/>
       <ExpectedContents>
         <SubmissionSets count="0"/>
         <Associations count="0"/>

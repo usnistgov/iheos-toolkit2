@@ -524,8 +524,8 @@ public class XdsTestServiceManager extends CommonService {
 										"RetrieveDocumentSetResponse"))
 									rdsr = XmlUtil
 											.firstDecendentWithLocalName(
-													response,
-													"RetrieveDocumentSetResponse");
+                                                    response,
+                                                    "RetrieveDocumentSetResponse");
 								if (rdsr != null) {
 									RetrieveB rb = new RetrieveB();
 									Map<String, RetInfo> resMap = rb
@@ -546,11 +546,13 @@ public class XdsTestServiceManager extends CommonService {
 											stepResult.documents = new ArrayList<Document>();
 										stepResult.documents.add(doc);
 
-										File localFile = new File(
-												Installation.installation().warHome() + File.separator +
-														"xdstools2" + File.separator + "DocumentCache" + File.separator
-														+ doc.uid
-														+ getRepositoryCacheFileExtension(doc.mimeType));
+										File localFile = new File(getRepositoryCache(), doc.uid + getRepositoryCacheFileExtension(doc.mimeType));
+
+//                                                new File(
+//												Installation.installation().warHome() + File.separator +
+//														"xdstools2" + File.separator + "DocumentCache" + File.separator
+//														+ doc.uid
+//														+ getRepositoryCacheFileExtension(doc.mimeType));
 
 										Io.bytesToFile(localFile,
 												ri.getContents());
@@ -577,8 +579,14 @@ public class XdsTestServiceManager extends CommonService {
 		String toolkitPort = session.getServerPort();
 		// context.getInitParameter("toolkit-port").trim();
 		return "http://" + toolkitHost + ":" + toolkitPort
-				+ "/xdstools2/xdstools2/DocumentCache/";
+				+ "/xdstools2/DocumentCache/";
 	}
+
+    File getRepositoryCache() {
+        File cache = new File(Installation.installation().warHome(), "DocumentCache");
+        cache.mkdirs();
+        return cache;
+    }
 
 	String getRepositoryCacheFileExtension(String mimetype) {
 		if (mimetype == null)

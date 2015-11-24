@@ -51,7 +51,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String mesaTabLabel = "Pre-Connectathon Tests";
 	final static public String testRunnerTabLabel = "Conformance Tests";
 	final static public String nwhinTabLabel = "Pre-OnBoarding Tests";
-	final static public String pidFavoritesLabel = "Manage Favorite Patient IDs";
+	final static public String pidFavoritesLabel = "Manage Patient IDs";
 	final static public String testsOverviewTabLabel = "Tests Overview";
 
 

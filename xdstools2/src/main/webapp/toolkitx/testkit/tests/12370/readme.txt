@@ -1,4 +1,4 @@
-12370 R.b Accept association documenation classification
+R.b Accept association documenation classification
 
 Lifecycle management type associations may contain an optional classification labeling the
 reason for the update.  This association may be present on RPLC, APND, XFRM etc. assocations.

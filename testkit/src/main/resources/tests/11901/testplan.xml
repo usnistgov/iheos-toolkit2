@@ -11,7 +11,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query1.xml</MetadataFile>
-      <UseId testdir="../12346" id="Document01" symbol="$uid$" step="submit_doc" section="AssignedUids"/>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uid$" step="submit_doc" section="AssignedUids"/>
       <ExpectedContents>
         <Documents count="1"/>
       </ExpectedContents>
@@ -27,8 +27,8 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query2.xml</MetadataFile>
-      <UseId testdir="../12346" id="Document01" symbol="$uid1$" step="submit_doc" section="AssignedUids"/>
-      <UseId testdir="../12346" id="Document02" symbol="$uid2$" step="submit_2doc_w_fol" section="AssignedUids"/>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uid1$" step="submit_doc" section="AssignedUids"/>
+      <UseId testdir="../12346/two_doc_w_fol" id="Document02" symbol="$uid2$" step="submit_2doc_w_fol" section="AssignedUids"/>
       <ExpectedContents>
         <Documents count="2"/>
       </ExpectedContents>
@@ -44,7 +44,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query3.xml</MetadataFile>
-      <UseId testdir="../12346" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
       <ExpectedContents>
         <Documents count="1"/>
       </ExpectedContents>
@@ -60,8 +60,8 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query4.xml</MetadataFile>
-      <UseId testdir="../12346" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
-      <UseId testdir="../12346" id="Document02" symbol="$uuid2$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../12346/two_doc_w_fol" id="Document02" symbol="$uuid2$" step="submit_2doc_w_fol" section="AssignedUuids"/>
       <ExpectedContents>
         <Documents count="2"/>
       </ExpectedContents>
@@ -77,8 +77,8 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query5.xml</MetadataFile>
-      <UseId testdir="../12346" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
-      <UseId testdir="../12346" id="Document02" symbol="$uuid2$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../12346/two_doc_w_fol" id="Document02" symbol="$uuid2$" step="submit_2doc_w_fol" section="AssignedUuids"/>
       <ExpectedContents>
         <Documents count="2"/>
       </ExpectedContents>
@@ -94,7 +94,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <MetadataFile>query6.xml</MetadataFile>
-      <UseId testdir="../12346" id="Document01" symbol="$uid$" step="submit_doc" section="AssignedUids"/>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uid$" step="submit_doc" section="AssignedUids"/>
       <ExpectedContents>
         <Documents count="1"/>
       </ExpectedContents>

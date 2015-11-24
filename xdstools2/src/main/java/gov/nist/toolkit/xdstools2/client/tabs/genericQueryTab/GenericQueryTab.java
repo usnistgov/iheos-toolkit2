@@ -18,7 +18,9 @@ import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
@@ -496,11 +498,17 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			FlexTable siteGrid = new FlexTable();
 			commonParamGrid.setWidget(commonGridRow++, contentsColumn, siteGrid);
 			int siteGridRow = 0;
+            Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
 			for (TransactionType tt : transactionTypes) {
-				ActorType at = ActorType.getActorType(tt);
-				siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
-//                siteGrid.setWidget(siteGridRow, 0, new HTML(tt.getName()));
-				siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+				Set<ActorType> ats = ActorType.getActorTypes(tt);
+                for (ActorType at : ats) {
+                    String actorTypeName = at.getName();
+                    if (!actorTypeNamesAlreadyDisplayed.contains(actorTypeName) && at.showInConfig()) {
+                        actorTypeNamesAlreadyDisplayed.add(actorTypeName);
+                        siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
+                        siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+                    }
+                }
 			}
 		}
 
