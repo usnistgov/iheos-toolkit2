@@ -1,28 +1,27 @@
-package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
+package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget;
 
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safecss.shared.SafeStylesUtils;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Image;
 import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Utils;
+
 
 /**
  * Created by Diane Azais local on 10/12/2015. Inspired by ImagesCell.java by L.Pelov.
  *
  * Custom cell to display the TestButtonsWidget.
  */
-public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
+public class CommandsCell extends AbstractSafeHtmlCell<String> {
     TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
 
     public static String PLAY_ICON_NAME = "PLAY_BUTTON";
@@ -34,52 +33,22 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
     public static String PLAY_BUTTON_HINT = "Run test";
     public static String REMOVE_BUTTON_HINT = "Delete test results (cannot be undone!)";
 
-
-   // private Image PLAY_ICON = new Image(RESOURCES.getPlayIcon());
-    //private Image REMOVE_ICON = new Image(RESOURCES.getRemoveIcon());
-
-    //Button PLAY_BUTTON = Utils.makeIconButton(PLAY_BUTTON_HINT, PLAY_ICON);
-    //Button REMOVE_BUTTON = Utils.makeIconButton(REMOVE_BUTTON_HINT, REMOVE_ICON);
     SafeHtml PLAY_BUTTON = Utils.makeImage(RESOURCES.getPlayIcon());
     SafeHtml REMOVE_BUTTON = Utils.makeImage(RESOURCES.getRemoveIcon());
     Button TEST_PLAN_BUTTON = new Button("Test Plan");
     Button LOG_BUTTON = new Button("Log");
     Button TEST_DESCRIPTION_BUTTON = new Button("Description");
 
-    /**
-     * The HTML templates used to render the cell.
-     */
-    interface Templates extends SafeHtmlTemplates {
-        /**
-         * The template for this Cell, which includes styles and a value.
-         *
-         * @param styles
-         *            the styles to include in the style attribute of the div
-         * @param value
-         *            the safe value. Since the value type is {@link SafeHtml},
-         *            it will not be escaped before including it in the
-         *            template. Alternatively, you could make the value type
-         *            String, in which case the value would be escaped.
-         * @return a {@link SafeHtml} instance
-         */
-        @SafeHtmlTemplates.Template("<div name=\"{0}\" style=\"{1}\">{2}</div>")
-        SafeHtml cell(String name, SafeStyles styles, SafeHtml value);
-    }
 
-    public TestButtonsCell() {
+    public CommandsCell() {
         // declare the consumed events
         super(SimpleSafeHtmlRenderer.getInstance(), "click", "keydown");
     }
 
-    public TestButtonsCell(SafeHtmlRenderer<String> renderer) {
+    public CommandsCell(SafeHtmlRenderer<String> renderer) {
         // declare the consumed events
         super(renderer, "click", "keydown");
     }
-
-    /**
-     * Create a singleton instance of the templates used to render the cell.
-     */
-    private static Templates templates = GWT.create(Templates.class);
 
 
     @Override
@@ -91,19 +60,19 @@ public class TestButtonsCell extends AbstractSafeHtmlCell<String> {
         // ------ generate the composite cell -----
         SafeStyles style = SafeStylesUtils.fromTrustedString("float:left;cursor:pointer;margin:3px;");
 
-        SafeHtml rendered = templates.cell(PLAY_ICON_NAME, style, PLAY_BUTTON);
+        SafeHtml rendered = Utils.buildCustomIconCell(PLAY_ICON_NAME, style, PLAY_BUTTON);
         sb.append(rendered);
 
-        rendered = templates.cell(REMOVE_ICON_NAME, style, REMOVE_BUTTON);
+        rendered = Utils.buildCustomIconCell(REMOVE_ICON_NAME, style, REMOVE_BUTTON);
         sb.append(rendered);
 
-        rendered = templates.cell(TEST_PLAN_BUTTON_NAME, style, Utils.getButtonHtml(TEST_PLAN_BUTTON));
+        rendered = Utils.buildCustomIconCell(TEST_PLAN_BUTTON_NAME, style, Utils.getButtonHtml(TEST_PLAN_BUTTON));
         sb.append(rendered);
 
-        rendered = templates.cell(LOG_BUTTON_NAME, style, Utils.getButtonHtml(LOG_BUTTON));
+        rendered = Utils.buildCustomIconCell(LOG_BUTTON_NAME, style, Utils.getButtonHtml(LOG_BUTTON));
         sb.append(rendered);
 
-        rendered = templates.cell(TEST_DESCRIPTION_BUTTON_NAME, style, Utils.getButtonHtml(TEST_DESCRIPTION_BUTTON));
+        rendered = Utils.buildCustomIconCell(TEST_DESCRIPTION_BUTTON_NAME, style, Utils.getButtonHtml(TEST_DESCRIPTION_BUTTON));
         sb.append(rendered);
     }
 

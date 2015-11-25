@@ -11,6 +11,9 @@ import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsCell;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsColumn;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.statusCell.StatusColumn;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,8 +26,9 @@ public class TestsOverviewWidget extends CellTable<Test> {
     ToolkitServiceAsync service = (ToolkitServiceAsync) GWT.create(ToolkitService.class);
     Logger LOGGER = Logger.getLogger("TestsOverviewWidget");
 
-    TextColumn<Test> testnumberColumn, descriptionColumn, timeColumn, statusColumn;
-    TestButtonsColumn<Test> buttonsColumn;
+    TextColumn<Test> testnumberColumn, descriptionColumn, timeColumn;
+    StatusColumn<Test> statusColumn;
+    CommandsColumn<Test> buttonsColumn;
     TestsWidgetDataModel dataModel;
     Updater updater;
 
@@ -55,7 +59,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         addColumn(descriptionColumn, "Description");
 
         // Create custom TestButtonsCells
-        buttonsColumn = new TestButtonsColumn<Test>() {
+        buttonsColumn = new CommandsColumn<Test>() {
             @Override
             public String getValue(Test object) {
                 return object.getCommands();
@@ -69,17 +73,17 @@ public class TestsOverviewWidget extends CellTable<Test> {
              */
             public void update(int index, Test object, String value) {
 
-                if (value == TestButtonsCell.PLAY_ICON_NAME) {
+                if (value == CommandsCell.PLAY_ICON_NAME) {
                     runSingleTest(object.getId(), index);
-                } else if (value == TestButtonsCell.REMOVE_ICON_NAME) {
+                } else if (value == CommandsCell.REMOVE_ICON_NAME) {
                     deleteSingleTestResults(object.getId());
-                } else if (value == TestButtonsCell.TEST_PLAN_BUTTON_NAME) {
+                } else if (value == CommandsCell.TEST_PLAN_BUTTON_NAME) {
                     //TODO retrieve test plan page based on Test or TestNumber and open link to that page
                     Window.open("link_to_HTML_page", "_blank", "");
-                } else if (value == TestButtonsCell.LOG_BUTTON_NAME) {
+                } else if (value == CommandsCell.LOG_BUTTON_NAME) {
                     //TODO add link to log page
                     Window.open("link_to_HTML_page", "_blank", "");
-                } else if (value == TestButtonsCell.TEST_DESCRIPTION_BUTTON_NAME) {
+                } else if (value == CommandsCell.TEST_DESCRIPTION_BUTTON_NAME) {
                     //TODO add link to description page
                     Window.open("link_to_HTML_page", "_blank", "");
                 }
@@ -95,7 +99,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         };
         addColumn(timeColumn, "Time");
 
-        statusColumn = new TextColumn<Test>() {
+        statusColumn = new StatusColumn<Test>() {
             @Override
             public String getValue(Test object) {
                 return object.getStatus();

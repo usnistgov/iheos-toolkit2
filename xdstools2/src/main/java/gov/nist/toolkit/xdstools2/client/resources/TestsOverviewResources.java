@@ -24,4 +24,19 @@ public interface TestsOverviewResources extends ClientBundle {
         @Source("icons/blue_button_24x24.png")
         ImageResource getBlueRoundIcon();
 
+        @Source("icons/green_check_24x24.png")
+        ImageResource getGreenCheckIcon();
+
+        @Source("icons/round_gray_button_24x24.png")
+        ImageResource getRoundGrayButton();
+
+        @Source("icons/round_yellow_button_24x24.png")
+        ImageResource getRoundYellowButton();
+
+        @Source("icons/danger_24x24.png")
+        ImageResource getDangerIcon();
+
+
+
+
 }
