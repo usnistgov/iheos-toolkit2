@@ -30,8 +30,12 @@ public class CommandsCell extends AbstractSafeHtmlCell<String> {
     public static String LOG_BUTTON_NAME = "LOG_BUTTON";
     public static String TEST_DESCRIPTION_BUTTON_NAME = "TEST_DESCRIPTION_BUTTON";
 
-    public static String PLAY_BUTTON_HINT = "Run test";
-    public static String REMOVE_BUTTON_HINT = "Delete test results (cannot be undone!)";
+    public static String PLAY_BUTTON_TOOLTIP = "Run this test";
+    public static String REMOVE_BUTTON_TOOLTIP = "Delete test results (cannot be undone!)";
+    public static String TEST_PLAN_BUTTON_TOOLTIP = "Display test plan in new browser window";
+    public static String LOG_BUTTON_TOOLTIP = "Display log in new browser window";
+    public static String TEST_DESCRIPTION_BUTTON_TOOLTIP = "Display full test description in new browser window";
+
 
     SafeHtml PLAY_BUTTON = Utils.makeImage(RESOURCES.getPlayIcon());
     SafeHtml REMOVE_BUTTON = Utils.makeImage(RESOURCES.getRemoveIcon());
@@ -53,26 +57,26 @@ public class CommandsCell extends AbstractSafeHtmlCell<String> {
 
     @Override
     protected void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
-           if (data == null) {
+        if (data == null) {
             return;
-           }
+        }
 
         // ------ generate the composite cell -----
         SafeStyles style = SafeStylesUtils.fromTrustedString("float:left;cursor:pointer;margin:3px;");
 
-        SafeHtml rendered = Utils.buildCustomIconCell(PLAY_ICON_NAME, style, PLAY_BUTTON);
+        SafeHtml rendered = Utils.buildCustomIconCellWithTooltip(PLAY_ICON_NAME, style, PLAY_BUTTON, PLAY_BUTTON_TOOLTIP);
         sb.append(rendered);
 
-        rendered = Utils.buildCustomIconCell(REMOVE_ICON_NAME, style, REMOVE_BUTTON);
+        rendered = Utils.buildCustomIconCellWithTooltip(REMOVE_ICON_NAME, style, REMOVE_BUTTON, REMOVE_BUTTON_TOOLTIP);
         sb.append(rendered);
 
-        rendered = Utils.buildCustomIconCell(TEST_PLAN_BUTTON_NAME, style, Utils.getButtonHtml(TEST_PLAN_BUTTON));
+        rendered = Utils.buildCustomIconCellWithTooltip(TEST_PLAN_BUTTON_NAME, style, Utils.getButtonHtml(TEST_PLAN_BUTTON), TEST_PLAN_BUTTON_TOOLTIP);
         sb.append(rendered);
 
-        rendered = Utils.buildCustomIconCell(LOG_BUTTON_NAME, style, Utils.getButtonHtml(LOG_BUTTON));
+        rendered = Utils.buildCustomIconCellWithTooltip(LOG_BUTTON_NAME, style, Utils.getButtonHtml(LOG_BUTTON), LOG_BUTTON_TOOLTIP);
         sb.append(rendered);
 
-        rendered = Utils.buildCustomIconCell(TEST_DESCRIPTION_BUTTON_NAME, style, Utils.getButtonHtml(TEST_DESCRIPTION_BUTTON));
+        rendered = Utils.buildCustomIconCellWithTooltip(TEST_DESCRIPTION_BUTTON_NAME, style, Utils.getButtonHtml(TEST_DESCRIPTION_BUTTON), TEST_DESCRIPTION_BUTTON_TOOLTIP);
         sb.append(rendered);
     }
 
