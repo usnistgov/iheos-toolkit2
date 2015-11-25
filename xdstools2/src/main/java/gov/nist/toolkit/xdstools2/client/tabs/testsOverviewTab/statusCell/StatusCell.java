@@ -29,6 +29,10 @@ public class StatusCell extends AbstractSafeHtmlCell<String> {
     public static String PASSED_ICON_NAME = "PASSED_ICON";
     public static String FAILED_ICON_NAME = "FAILED_ICON";
 
+    public static String NOT_RUN_ICON_TOOLTIP = "Not run";
+    public static String HAS_WARNINGS_ICON_TOOLTIP = "Run with warnings";
+    public static String PASSED_ICON_TOOLTIP = "Passed";
+    public static String FAILED_ICON_TOOLTIP = "Failed";
 
 
     public StatusCell() {
@@ -49,22 +53,22 @@ public class StatusCell extends AbstractSafeHtmlCell<String> {
         }
         //TODO use common source for the labels Pass, Fail etc
         else if (data.asString() == "not run") {
-            SafeHtml rendered = Utils.buildCustomIconCell(NOT_RUN_ICON_NAME, style, NOT_RUN_ICON);
+            SafeHtml rendered = Utils.buildCustomIconCellWithTooltip(NOT_RUN_ICON_NAME, style, NOT_RUN_ICON, NOT_RUN_ICON_TOOLTIP);
             sb.append(rendered);
             return;
         }
         else if (data.asString() == "has warnings"){
-            SafeHtml rendered = Utils.buildCustomIconCell(HAS_WARNINGS_ICON_NAME, style, HAS_WARNINGS_ICON);
+            SafeHtml rendered = Utils.buildCustomIconCellWithTooltip(HAS_WARNINGS_ICON_NAME, style, HAS_WARNINGS_ICON, HAS_WARNINGS_ICON_TOOLTIP);
             sb.append(rendered);
             return;
         }
         else if (data.asString() == "pass"){
-            SafeHtml rendered = Utils.buildCustomIconCell(PASSED_ICON_NAME, style, PASSED_ICON);
+            SafeHtml rendered = Utils.buildCustomIconCellWithTooltip(PASSED_ICON_NAME, style, PASSED_ICON, PASSED_ICON_TOOLTIP);
             sb.append(rendered);
             return;
         }
         else if (data.asString() == "failed") {
-            SafeHtml rendered = Utils.buildCustomIconCell(FAILED_ICON_NAME, style, FAILED_ICON);
+            SafeHtml rendered = Utils.buildCustomIconCellWithTooltip(FAILED_ICON_NAME, style, FAILED_ICON, FAILED_ICON_TOOLTIP);
             sb.append(rendered);
             return;
         }

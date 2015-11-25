@@ -5,6 +5,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
@@ -68,13 +69,47 @@ public class Utils {
     }
 
     /**
-     * Create and return a custom SafeHtml template to display icons in table cells
-     * @return a custom SafeHtml template
+     * Creates a custom cell with icon
+     * @return a custom cell as SafeHtml
      */
     public static SafeHtml buildCustomIconCell(String name, SafeStyles styles, SafeHtml value){
         // Create a singleton instance of the templates used to render the cell.
         Templates templates = GWT.create(Templates.class);
         return templates.cell(name, styles, value);
+    }
+
+    /**
+     * Creates a custom cell with icon and tooltip
+     * @return a custom cell as SafeHtml
+     */
+    public static SafeHtml buildCustomIconCellWithTooltip(String name, SafeStyles styles, SafeHtml value, String tooltip){
+        // Create a singleton instance of the templates used to render the cell.
+        Templates templates = GWT.create(Templates.class);
+        SafeHtmlBuilder sb = new SafeHtmlBuilder();
+
+        // Build the cell and tooltip
+        SafeHtml hint = buildCellTooltip(tooltip);
+        sb.append(hint);
+        SafeHtml rendered = Utils.buildCustomIconCell(name, styles, value);
+        sb.append(rendered);
+        SafeHtml endTooltip = Utils.endCellTooltip();
+        sb.append(endTooltip);
+        return sb.toSafeHtml();
+    }
+
+    /**
+     * Builds a custom tooltip for a cell
+     * @param toolTipText the tooltip
+     * @return the cell tooltip
+     */
+    public static SafeHtml buildCellTooltip(String toolTipText){
+        Templates templates = GWT.create(Templates.class);
+        return templates.startToolTip(toolTipText);
+    }
+
+    public static SafeHtml endCellTooltip(){
+        Templates templates = GWT.create(Templates.class);
+        return templates.endToolTip();
     }
 
     /**
@@ -93,7 +128,14 @@ public class Utils {
          *            String, in which case the value would be escaped.
          * @return a {@link SafeHtml} instance
          */
-        @SafeHtmlTemplates.Template("<div name=\"{0}\" style=\"{1}\">{2}</div>") SafeHtml cell(String name, SafeStyles styles, SafeHtml value);
+        @SafeHtmlTemplates.Template("<div name=\"{0}\" style=\"{1}\">{2}</div>")
+        SafeHtml cell(String name, SafeStyles styles, SafeHtml value);
+
+        @Template("<div title=\"{0}\">")
+        SafeHtml startToolTip(String toolTipText);
+
+        @Template("</div>")
+        SafeHtml endToolTip();
     }
 
 
