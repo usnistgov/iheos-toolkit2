@@ -33,7 +33,6 @@ public class TestsOverviewWidget extends CellTable<Test> {
     Updater updater;
 
 
-
     public TestsOverviewWidget(TestsWidgetDataModel _dataModel, Updater _updater) {
         dataModel = _dataModel;
         updater = _updater;
