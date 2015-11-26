@@ -779,8 +779,8 @@ public class XdsTestServiceManager extends CommonService {
 		// Test data
 		return Arrays.asList(
 				new Test("10891", "re-run test 1", " ", "04:10 PM EST", "pass", false),
-				new Test("10891 section a", "re-run test 1", " ", "04:10 PM EST", "pass", true),
-				new Test("10891 section b", "re-run test 1", " ", "04:12 PM EST", "pass", true),
+				new Test("section a", "re-run test 1", " ", "04:10 PM EST", "pass", true),
+				new Test("section b", "re-run test 1", " ", "04:12 PM EST", "pass", true),
 				new Test("17685", "re-run test 2", " ", "04:10 PM EST", "failed", false)
 		);
 	}
@@ -789,8 +789,8 @@ public class XdsTestServiceManager extends CommonService {
         // Test data
         return Arrays.asList(
                 new Test("10891", "test 1", " ", "--", "not run", false),
-				new Test("10891 section a", "test 1", " ", "--", "not run", false),
-				new Test("10891 section b", "test 1", " ", "--", "not run", false),
+				new Test("section a", "test 1", " ", "--", "not run", false),
+				new Test("section b", "test 1", " ", "--", "not run", false),
                 new Test("17685", "test 2", " ", "--", "not run", false)
         );
     }
