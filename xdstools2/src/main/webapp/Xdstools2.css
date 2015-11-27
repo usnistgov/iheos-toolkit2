@@ -57,12 +57,18 @@ h1 {
 	background-color: #99FFFF
 }
 
-.test-row-lightblue {
-  background-color: #E7F1FA !important;
+.test-row-white {
+  background-color: #F2F2F2 !important;
 }
 
-.test-row-darkblue {
-  background-color: #BDD8F1 !important;
+.test-row-yellow {
+  background-color: #FFFFCC !important;
+}
+.test-row-green {
+  background-color: #99CC99 !important;
+}
+.test-row-red {
+  background-color: #FF7F7F !important;
 }
 
 .roundedButton1 {
