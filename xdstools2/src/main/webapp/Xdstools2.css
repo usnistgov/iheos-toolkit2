@@ -57,12 +57,12 @@ h1 {
 	background-color: #99FFFF
 }
 
-.test-section-row {
-  background-color: white !important;
+.test-row-lightblue {
+  background-color: #E7F1FA !important;
 }
 
-.test-row {
-  background-color: #E7F1FA !important;
+.test-row-darkblue {
+  background-color: #BDD8F1 !important;
 }
 
 .roundedButton1 {

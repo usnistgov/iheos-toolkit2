@@ -214,19 +214,30 @@ public class TestsOverviewWidget extends CellTable<Test> {
      */
     private void setDisplayStyle() {
         setRowStyles(new RowStyles<Test>() {
+
             @Override
             public String getStyleNames(Test rowObject, int rowIndex) {
-                boolean color = false;
+                Constants.RowColor tmp;
                 int previousTestNumber = 0;
+                Constants.RowColor color = Constants.RowColor.LIGHT_BLUE;
+
 
                 if (previousTestNumber == 0){
-                   // previousTestNumber = Integer.getInteger(rowObject.getId());
+                    // If this is the first entry, choose the default color
+                    color = Constants.RowColor.DARK_BLUE;
                 }
-                if (rowObject.isSection()) {
-                    return "test-section-row";
+
+               else if (rowObject.getId() != previousTestNumber) {
+                    // If the current test number differs from the previous one then display the test in another color
+                    Window.alert("testnumber: " +rowObject.getId() + " previoustest: " + previousTestNumber);
+                    previousTestNumber = rowObject.getId();
+                    tmp = color.next();
+                    color = tmp;
                 }
-                return "test-row";
+                // If this is a section of the same test, apply the same background color
+                return Constants.RowColor.getTestRowCss(color);
             }
+
         });
     }
 
