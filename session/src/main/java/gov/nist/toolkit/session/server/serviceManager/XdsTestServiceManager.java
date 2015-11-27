@@ -778,26 +778,26 @@ public class XdsTestServiceManager extends CommonService {
 	public List<Test> runAllTests(String sessionName, Site site){
 		// Test data
 		return Arrays.asList(
-				new Test("10891", "re-run test 1", " ", "04:10 PM EST", "pass", false),
-				new Test("section a", "re-run test 1", " ", "04:10 PM EST", "pass", true),
-				new Test("section b", "re-run test 1", " ", "04:12 PM EST", "pass", true),
-				new Test("17685", "re-run test 2", " ", "04:10 PM EST", "failed", false)
+				new Test("10891", "10891", "re-run test 1", "04:10 PM EST", "pass", false),
+				new Test("10891", "section a", "re-run test 1", "04:10 PM EST", "pass", true),
+				new Test("10891", "section b", "re-run test 1", "04:12 PM EST", "pass", true),
+				new Test("17685", "17685", "re-run test 2", "04:10 PM EST", "failed", false)
 		);
 	}
 
     public List<Test> deleteAllTestResults(String sessionName, Site site){
         // Test data
         return Arrays.asList(
-                new Test("10891", "test 1", " ", "--", "not run", false),
-				new Test("section a", "test 1", " ", "--", "not run", false),
-				new Test("section b", "test 1", " ", "--", "not run", false),
-                new Test("17685", "test 2", " ", "--", "not run", false)
+                new Test("10891", "10891", "test 1", "--", "not run", false),
+				new Test("10891", "section a", "test 1", "--", "not run", false),
+				new Test("10891", "section b", "test 1", "--", "not run", false),
+                new Test("17685", "17685", "test 2", "--", "not run", false)
         );
     }
 
 	public Test runSingleTest(String sessionName, Site site, String testNumber) {
 		// Test data
-		return new Test(testNumber, "returned result test", " ", "05:23 PM EST", "failed", false);
+		return new Test(testNumber, testNumber, "returned result test", "05:23 PM EST", "failed", false);
 	}
 
 	/**
@@ -809,7 +809,7 @@ public class XdsTestServiceManager extends CommonService {
 	 */
 	public Test deleteSingleTestResult(String sessionName, Site site, String testNumber) {
 		// Test data, status must be "NOT RUN"
-		return new Test(testNumber, "test description", " ", "10:20 PM EST", "not run", false);
+		return new Test(testNumber, testNumber, "test description", "10:20 PM EST", "not run", false);
 	}
 
 }

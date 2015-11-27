@@ -34,14 +34,14 @@ public class TestsWidgetDataModel {
     }
 
     private int findTestIndex(Test result){
-        String testNumberToReplace = result.getId();
+        String testNumberToReplace = result.getName();
         String currentTestNumber = "";
         int index = 0;
 
         Iterator it = data.iterator();
         while(it.hasNext()){
             Test t = (Test) it.next();
-            currentTestNumber = t.getId();
+            currentTestNumber = t.getName();
             if (currentTestNumber.equals(testNumberToReplace)){
                return index;
             }

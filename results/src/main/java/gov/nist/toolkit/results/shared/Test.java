@@ -11,9 +11,8 @@ public class Test implements Serializable {
 
     private static final long serialVersionUID = 7526472295622776147L;
 
-    // TODO the commands parameter should ultimately go away. An empty space in the data is needed for display but
-    // should be built automatically.
     String id;
+    String name;
     String description;
     String commands;
     String timestamp;
@@ -24,10 +23,11 @@ public class Test implements Serializable {
     }
 
 
-    public Test(String _id, String _description, String _commands, String _timestamp, String _status, boolean _isSection){
+    public Test(String _id, String _name, String _description, String _timestamp, String _status, boolean _isSection){
         id = _id;
+        name = _name;
         description = _description;
-        commands = _commands;
+        commands = "";
         timestamp = _timestamp;
         status = _status;
         isSection = _isSection;
@@ -35,6 +35,10 @@ public class Test implements Serializable {
 
     public String getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getDescription() {

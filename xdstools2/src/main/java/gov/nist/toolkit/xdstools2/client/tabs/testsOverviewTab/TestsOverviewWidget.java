@@ -44,7 +44,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         testnumberColumn = new TextColumn<Test>() {
             @Override
             public String getValue(Test object) {
-                return object.getId();
+                return object.getName();
             }
         };
         addColumn(testnumberColumn, "Test Instance");
@@ -73,9 +73,9 @@ public class TestsOverviewWidget extends CellTable<Test> {
             public void update(int index, Test object, String value) {
 
                 if (value == CommandsCell.PLAY_ICON_NAME) {
-                    runSingleTest(object.getId(), index);
+                    runSingleTest(object.getName(), index);
                 } else if (value == CommandsCell.REMOVE_ICON_NAME) {
-                    deleteSingleTestResults(object.getId());
+                    deleteSingleTestResults(object.getName());
                 } else if (value == CommandsCell.TEST_PLAN_BUTTON_NAME) {
                     //TODO retrieve test plan page based on Test or TestNumber and open link to that page
                     Window.open("link_to_HTML_page", "_blank", "");
@@ -216,6 +216,12 @@ public class TestsOverviewWidget extends CellTable<Test> {
         setRowStyles(new RowStyles<Test>() {
             @Override
             public String getStyleNames(Test rowObject, int rowIndex) {
+                boolean color = false;
+                int previousTestNumber = 0;
+
+                if (previousTestNumber == 0){
+                   // rowObject.getId();
+                }
                 if (rowObject.isSection()) {
                     return "test-section-row";
                 }
