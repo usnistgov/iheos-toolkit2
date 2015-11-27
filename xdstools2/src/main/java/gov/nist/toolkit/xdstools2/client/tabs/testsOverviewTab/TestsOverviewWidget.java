@@ -73,9 +73,9 @@ public class TestsOverviewWidget extends CellTable<Test> {
             public void update(int index, Test object, String value) {
 
                 if (value == CommandsCell.PLAY_ICON_NAME) {
-                    runSingleTest(object.getName(), index);
+                    runSingleTest(object.getId(), index);
                 } else if (value == CommandsCell.REMOVE_ICON_NAME) {
-                    deleteSingleTestResults(object.getName());
+                    deleteSingleTestResults(object.getId());
                 } else if (value == CommandsCell.TEST_PLAN_BUTTON_NAME) {
                     //TODO retrieve test plan page based on Test or TestNumber and open link to that page
                     Window.open("link_to_HTML_page", "_blank", "");
@@ -153,8 +153,8 @@ public class TestsOverviewWidget extends CellTable<Test> {
     };
 
     //TODO replace the hardcoded site name with the one retrieved from the UI
-    private void runSingleTest(String testNumber, int index){
-        service.runSingleTest(new Site("testEHR"), testNumber, runSingleTestCallback);
+    private void runSingleTest(int testId, int index){
+        service.runSingleTest(new Site("testEHR"), testId, runSingleTestCallback);
     }
 
 
@@ -177,8 +177,8 @@ public class TestsOverviewWidget extends CellTable<Test> {
     };
 
     //TODO replace the hardcoded site name with the one retrieved from the UI
-    private void deleteSingleTestResults(String testNumber){
-        service.deleteSingleTestResult(new Site("testEHR"), testNumber, deleteSingleLogCallback);
+    private void deleteSingleTestResults(int testId){
+        service.deleteSingleTestResult(new Site("testEHR"), testId, deleteSingleLogCallback);
     }
 
     /**
@@ -220,7 +220,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
                 int previousTestNumber = 0;
 
                 if (previousTestNumber == 0){
-                   // rowObject.getId();
+                   // previousTestNumber = Integer.getInteger(rowObject.getId());
                 }
                 if (rowObject.isSection()) {
                     return "test-section-row";

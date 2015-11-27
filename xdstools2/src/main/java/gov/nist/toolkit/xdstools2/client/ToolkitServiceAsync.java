@@ -182,8 +182,8 @@ public interface ToolkitServiceAsync {
 	void setMesaTestSession(String sessionName, AsyncCallback callback);
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
-	void deleteSingleTestResult(Site site, String testNumber, AsyncCallback<Test> callback);
+	void deleteSingleTestResult(Site site, int testId, AsyncCallback<Test> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
-	void runSingleTest(Site site, String testNumber, AsyncCallback<Test> callback);
+	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
 
 }
