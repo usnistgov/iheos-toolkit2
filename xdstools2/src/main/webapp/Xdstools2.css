@@ -56,6 +56,9 @@ h1 {
 .my-table-not-run {
 	background-color: #99FFFF
 }
+.test-table{
+    border-width: 0;
+}
 
 .test-row-white {
   background-color: #F2F2F2 !important;

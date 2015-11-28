@@ -209,10 +209,11 @@ public class TestsOverviewWidget extends CellTable<Test> {
     }
 
     /**
-     * Adjusts the display styles BY ROW on the table. Useful to differentiate display for tests and test sections.
+     * Adjusts the display styles BY ROW on the table, depending on the status of the current test.
      * If there is a need for cell or column styles one day, see commit #30b3bc81e441.
      */
     private void setDisplayStyle() {
+        setStyleName("test-table");
         setRowStyles(new RowStyles<Test>() {
 
             @Override

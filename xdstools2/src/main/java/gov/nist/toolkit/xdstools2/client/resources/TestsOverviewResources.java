@@ -12,28 +12,28 @@ public interface TestsOverviewResources extends ClientBundle {
         public static final TestsOverviewResources INSTANCE = GWT.create(TestsOverviewResources.class);
 
         // ----- Load icons -----//
-        @Source("icons/delete_24x24.png")
+        @Source("icons/Delete2-25.png")
         ImageResource getRemoveIcon();
 
-        @Source("icons/refresh_24x24.png")
+        @Source("icons/Synchronize-25.png")
         ImageResource getRefreshIcon();
 
-        @Source("icons/play_24x24.png")
+        @Source("icons/Play-25.png")
         ImageResource getPlayIcon();
 
-        @Source("icons/blue_button_24x24.png")
+        @Source("icons/button_round_yellow_24x24.png")
         ImageResource getBlueRoundIcon();
 
-        @Source("icons/green_check_24x24.png")
+        @Source("icons/Checkmark-25.png")
         ImageResource getGreenCheckIcon();
 
-        @Source("icons/round_gray_button_24x24.png")
+        @Source("icons/round_gray_24x24.png")
         ImageResource getRoundGrayButton();
 
-        @Source("icons/round_yellow_button_24x24.png")
+        @Source("icons/button_round_yellow_24x24.png")
         ImageResource getRoundYellowButton();
 
-        @Source("icons/danger_24x24.png")
+        @Source("icons/Error-25.png")
         ImageResource getDangerIcon();
 
 
