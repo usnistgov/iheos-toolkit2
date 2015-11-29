@@ -2,13 +2,11 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.statusCell;
 
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safecss.shared.SafeStyles;
 import com.google.gwt.safecss.shared.SafeStylesUtils;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Utils;
 
@@ -19,10 +17,10 @@ public class StatusCell extends AbstractSafeHtmlCell<String> {
 
     TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
 
-    private SafeHtml NOT_RUN_ICON = Utils.makeImage(RESOURCES.getRoundGrayButton());
-    private SafeHtml HAS_WARNINGS_ICON = Utils.makeImage(RESOURCES.getRoundYellowButton());
-    private SafeHtml PASSED_ICON = Utils.makeImage(RESOURCES.getGreenCheckIcon());
-    private SafeHtml FAILED_ICON = Utils.makeImage(RESOURCES.getDangerIcon());
+    private SafeHtml NOT_RUN_ICON = Utils.makeImage(RESOURCES.getCircleOutlineIconWhite());
+    private SafeHtml HAS_WARNINGS_ICON = Utils.makeImage(RESOURCES.getInfoIconWhite());
+    private SafeHtml PASSED_ICON = Utils.makeImage(RESOURCES.getCheckIconWhite());
+    private SafeHtml FAILED_ICON = Utils.makeImage(RESOURCES.getDangerIconWhite());
 
     public static String NOT_RUN_ICON_NAME = "NOT_RUN_ICON";
     public static String HAS_WARNINGS_ICON_NAME = "HAS_WARNINGS_ICON";
@@ -57,7 +55,7 @@ public class StatusCell extends AbstractSafeHtmlCell<String> {
             sb.append(rendered);
             return;
         }
-        else if (data.asString() == "has warnings"){
+        else if (data.asString() == "run with warnings"){
             SafeHtml rendered = Utils.buildCustomIconCellWithTooltip(HAS_WARNINGS_ICON_NAME, style, HAS_WARNINGS_ICON, HAS_WARNINGS_ICON_TOOLTIP);
             sb.append(rendered);
             return;

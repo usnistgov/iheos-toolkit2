@@ -18,9 +18,9 @@ public class CommandsWidget extends HorizontalPanel {
     public static String REMOVE_ALL_ICON_HINT = "Delete all test results (cannot be undone!)";
     public static String REFRESH_ALL_ICON_HINT = "Reload test results";
 
-    private Image PLAY_ALL_ICON = new Image(RESOURCES.getPlayIcon());
-    private Image REMOVE_ALL_ICON = new Image(RESOURCES.getRemoveIcon());
-    private Image REFRESH_ALL_ICON = new Image(RESOURCES.getRefreshIcon());
+    private Image PLAY_ALL_ICON = new Image(RESOURCES.getPlayIconBlack());
+    private Image REMOVE_ALL_ICON = new Image(RESOURCES.getDeleteIconBlack());
+    private Image REFRESH_ALL_ICON = new Image(RESOURCES.getRefreshIconBlack());
 
     private Button playAllButton, removeAllButton, refreshAllButton;
 

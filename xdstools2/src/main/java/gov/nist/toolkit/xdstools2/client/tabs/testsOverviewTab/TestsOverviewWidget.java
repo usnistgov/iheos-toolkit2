@@ -198,7 +198,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
     private void setDefaults() {
         setWidth("100%", true);
         // Set the width of each column.
-        setColumnWidth(testnumberColumn, 30, com.google.gwt.dom.client.Style.Unit.PX);
+        setColumnWidth(testnumberColumn, 20, com.google.gwt.dom.client.Style.Unit.PX);
         setColumnWidth(descriptionColumn, 80, com.google.gwt.dom.client.Style.Unit.PX);
         setColumnWidth(buttonsColumn, 60, com.google.gwt.dom.client.Style.Unit.PX);
         setColumnWidth(timeColumn, 27, com.google.gwt.dom.client.Style.Unit.PX);

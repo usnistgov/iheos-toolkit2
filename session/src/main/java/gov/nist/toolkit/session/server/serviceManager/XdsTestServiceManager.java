@@ -768,7 +768,8 @@ public class XdsTestServiceManager extends CommonService {
 				new Test(10891, false, "10891", "10891", "test 1", "04:10 PM EST", "failed"),
 				new Test(10891, true, "10891", "section a", "test 1", "04:10 PM EST", "failed"),
 				new Test(10891, true, "10891", "section b", "test 1", "04:12 PM EST", "pass"),
-				new Test(17685, false, "17685", "17685", "test 2", "04:10 PM EST", "not run")
+				new Test(17685, false, "17685", "17685", "test 2", "04:10 PM EST", "not run"),
+				new Test(17688, false, "17688", "17688", "test 3", "04:15 PM EST", "run with warnings")
 		);
 	}
 

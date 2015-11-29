@@ -12,31 +12,38 @@ public interface TestsOverviewResources extends ClientBundle {
         public static final TestsOverviewResources INSTANCE = GWT.create(TestsOverviewResources.class);
 
         // ----- Load icons -----//
-        @Source("icons/Delete2-25.png")
-        ImageResource getRemoveIcon();
+        @Source("icons/ic_delete_white_24dp_1x.png")
+        ImageResource getDeleteIconWhite();
 
-        @Source("icons/Synchronize-25.png")
-        ImageResource getRefreshIcon();
+        @Source("icons/ic_delete_black_24dp_1x.png")
+        ImageResource getDeleteIconBlack();
 
-        @Source("icons/Play-25.png")
-        ImageResource getPlayIcon();
+        @Source("icons/ic_refresh_white_24dp_1x.png")
+        ImageResource getRefreshIconWhite();
 
-        @Source("icons/button_round_yellow_24x24.png")
-        ImageResource getBlueRoundIcon();
+        @Source("icons/ic_refresh_black_24dp_1x.png")
+        ImageResource getRefreshIconBlack();
 
-        @Source("icons/Checkmark-25.png")
-        ImageResource getGreenCheckIcon();
+        @Source("icons/ic_play_arrow_white_24dp_1x.png")
+        ImageResource getPlayIconWhite();
 
-        @Source("icons/round_gray_24x24.png")
-        ImageResource getRoundGrayButton();
+        @Source("icons/ic_play_arrow_black_24dp_1x.png")
+        ImageResource getPlayIconBlack();
 
-        @Source("icons/button_round_yellow_24x24.png")
-        ImageResource getRoundYellowButton();
+        @Source("icons/ic_done_white_24dp_1x.png")
+        ImageResource getCheckIconWhite();
 
-        @Source("icons/Error-25.png")
-        ImageResource getDangerIcon();
+        @Source("icons/ic_done_black_24dp_1x.png")
+        ImageResource getCheckIconBlack();
 
+        @Source("icons/ic_circle_outline_white_24dp_1x.png")
+        ImageResource getCircleOutlineIconWhite();
 
+        @Source("icons/ic_info_outline_white_24dp_1x.png")
+        ImageResource getInfoIconWhite();
+
+        @Source("icons/ic_warning_white_24dp_1x.png")
+        ImageResource getDangerIconWhite();
 
 
 }
