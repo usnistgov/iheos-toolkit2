@@ -15,27 +15,13 @@
 /TestResults/TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/@home
             </UseXPath>
             -->
-            <UseReport test="12300"  step="finddocs" reportName="$doc_uid_1$" useAs="$docuid1$"/>   
-            <UseReport test="12300"  step="finddocs" reportName="$doc_uid_2$" useAs="$docuid2$"/>   
-            <UseReport test="12300"  step="finddocs" reportName="$home$" useAs="$home$"/>   
-            <UseReport test="12300"  step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>   
+            <UseReport test="12300" section="finddocs" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid1$"/>
+            <UseReport test="12300" section="finddocs" step="finddocs" reportName="$doc_uid_2$" useAs="$docuid2$"/>
+            <UseReport test="12300" section="finddocs" step="finddocs" reportName="$home$" useAs="$home$"/>
+            <UseReport test="12300" section="finddocs" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
             <ExpectedMimeType>text/plain</ExpectedMimeType>
             <ReferenceDocument uid="$docuid$">../../testdata/12318/my_document.txt</ReferenceDocument>
-            <Metadata>
-<RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <DocumentRequest>
-        <HomeCommunityId>$home$</HomeCommunityId>
-        <RepositoryUniqueId>$repositoryuid$</RepositoryUniqueId>
-        <DocumentUniqueId>$docuid1$</DocumentUniqueId>
-    </DocumentRequest>
-    <DocumentRequest>
-        <HomeCommunityId>$home$</HomeCommunityId>
-        <RepositoryUniqueId>$repositoryuid$</RepositoryUniqueId>
-        <DocumentUniqueId>$docuid2$</DocumentUniqueId>
-    </DocumentRequest>
-</RetrieveDocumentSetRequest>
-            </Metadata>
+            <MetadataFile>retrieve.xml</MetadataFile>
         </XCRTransaction>
     </TestStep>
 </TestPlan>

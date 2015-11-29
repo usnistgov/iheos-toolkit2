@@ -167,7 +167,9 @@ public class TestDetails  {
 			String msg = "TestSpec (testkit=" + testkit + " testId=" + testInstance + ", no " + testPlanFileName + " files found";
 			logger.error(msg);
 			throw new Exception(msg);
-		}
+		} else {
+            logger.info("Using (testkit=" + testkit + " testId=" + testInstance + ")");
+        }
 	}
 
 	static public void listTestKitContents(File testkit) throws Exception {
@@ -371,9 +373,9 @@ public class TestDetails  {
 		File logdir = logRepository.logDir();
 
 		if (section != null && !section.equals("") && !section.equals("None"))
-			path = new File(logdir + File.separator + ".." + File.separator + testInstance + File.separatorChar + section + File.separatorChar + "log.xml");
+			path = new File(logdir + File.separator + ".." + File.separator + testInstance.getId() + File.separatorChar + section + File.separatorChar + "log.xml");
 		else
-			path = new File(logdir + File.separator + ".." + File.separator + testInstance + File.separatorChar  + "log.xml");
+			path = new File(logdir + File.separator + ".." + File.separator + testInstance.getId() + File.separatorChar  + "log.xml");
 		return path;
 	}
 
