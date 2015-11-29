@@ -17,7 +17,7 @@ public class StatusCell extends AbstractSafeHtmlCell<String> {
 
     TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
 
-    private SafeHtml NOT_RUN_ICON = Utils.makeImage(RESOURCES.getCircleOutlineIconWhite());
+    private SafeHtml NOT_RUN_ICON = Utils.makeImage(RESOURCES.getRemoveIconWhite());
     private SafeHtml HAS_WARNINGS_ICON = Utils.makeImage(RESOURCES.getInfoIconWhite());
     private SafeHtml PASSED_ICON = Utils.makeImage(RESOURCES.getCheckIconWhite());
     private SafeHtml FAILED_ICON = Utils.makeImage(RESOURCES.getDangerIconWhite());

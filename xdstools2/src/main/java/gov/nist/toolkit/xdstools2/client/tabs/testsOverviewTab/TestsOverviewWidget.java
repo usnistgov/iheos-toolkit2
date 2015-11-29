@@ -11,6 +11,7 @@ import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
+import gov.nist.toolkit.xdstools2.client.resources.TableResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsCell;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsColumn;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.statusCell.StatusColumn;
@@ -34,8 +35,11 @@ public class TestsOverviewWidget extends CellTable<Test> {
 
 
     public TestsOverviewWidget(TestsWidgetDataModel _dataModel, Updater _updater) {
+        TableResources resources = GWT.create(TableResources.class);
+        this.setStyleName(resources.cellTableStyle().toString());
         dataModel = _dataModel;
         updater = _updater;
+
 
         // --------------------------------------------------------------
         // ------------------------- Create the UI ----------------------
@@ -213,7 +217,6 @@ public class TestsOverviewWidget extends CellTable<Test> {
      * If there is a need for cell or column styles one day, see commit #30b3bc81e441.
      */
     private void setDisplayStyle() {
-        setStyleName("test-table");
         setRowStyles(new RowStyles<Test>() {
 
             @Override

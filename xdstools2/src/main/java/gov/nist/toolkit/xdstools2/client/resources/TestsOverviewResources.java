@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.resources;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.cellview.client.CellTable;
 
 /**
  * Created by Diane Azais local on 10/13/2015.
@@ -39,11 +40,13 @@ public interface TestsOverviewResources extends ClientBundle {
         @Source("icons/ic_circle_outline_white_24dp_1x.png")
         ImageResource getCircleOutlineIconWhite();
 
+        @Source("icons/ic_remove_white_24dp_1x.png")
+        ImageResource getRemoveIconWhite();
+
         @Source("icons/ic_info_outline_white_24dp_1x.png")
         ImageResource getInfoIconWhite();
 
         @Source("icons/ic_warning_white_24dp_1x.png")
         ImageResource getDangerIconWhite();
-
 
 }
