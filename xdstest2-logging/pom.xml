@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>xdstest2-logging</artifactId>
+    <version>2.202.1</version>
 
     <dependencies>
         <dependency>

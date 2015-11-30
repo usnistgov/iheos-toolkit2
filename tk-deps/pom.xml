@@ -125,12 +125,12 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>actorfactory</artifactId>
-                <version>2.202.0</version>
+                <version>2.202.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>test-engine</artifactId>
-                <version>2.202.0</version>
+                <version>2.202.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
@@ -165,7 +165,7 @@
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
                 <artifactId>xdstest2-logging</artifactId>
-                <version>2.202.0</version>
+                <version>2.202.1</version>
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
