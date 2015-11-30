@@ -4,13 +4,14 @@ import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Updater;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.Utils;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.ButtonFactory;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.ButtonType;
 
 
 /**
  * Created by Diane Azais local on 10/15/2015.
  */
 public class CommandsWidget extends HorizontalPanel {
-    TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
     Updater updater;
 
 
@@ -18,12 +19,8 @@ public class CommandsWidget extends HorizontalPanel {
     public static String REMOVE_ALL_ICON_HINT = "Delete all test results (cannot be undone!)";
     public static String REFRESH_ALL_ICON_HINT = "Reload test results";
 
-    private Image PLAY_ALL_ICON = new Image(RESOURCES.getPlayIconBlack());
-    private Image REMOVE_ALL_ICON = new Image(RESOURCES.getDeleteIconBlack());
-    private Image REFRESH_ALL_ICON = new Image(RESOURCES.getRefreshIconBlack());
 
     private Button playAllButton, removeAllButton, refreshAllButton;
-
 
 
     public CommandsWidget(Updater _updater){
@@ -36,9 +33,9 @@ public class CommandsWidget extends HorizontalPanel {
         FlowPanel spacer = new FlowPanel();
         spacer.setWidth("550px");
 
-        playAllButton = Utils.makeIconButton(PLAY_ALL_ICON_HINT, PLAY_ALL_ICON);
-        removeAllButton = Utils.makeIconButton(REMOVE_ALL_ICON_HINT, REMOVE_ALL_ICON);
-        refreshAllButton = Utils.makeIconButton(REFRESH_ALL_ICON_HINT, REFRESH_ALL_ICON);
+        playAllButton = ButtonFactory.createIconButton(ButtonType.PLAY_BUTTON, PLAY_ALL_ICON_HINT);
+        removeAllButton = ButtonFactory.createIconButton(ButtonType.DELETE_BUTTON, REMOVE_ALL_ICON_HINT);
+        refreshAllButton = ButtonFactory.createIconButton(ButtonType.REFRESH_BUTTON, REFRESH_ALL_ICON_HINT);
 
         ButtonClickHandler clickHandler = new ButtonClickHandler(this);
         clickHandler.setViewUpdater(updater);

@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -12,6 +13,8 @@ import gov.nist.toolkit.xdstools2.client.resources.TableResources;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.ButtonFactory;
+import gov.nist.toolkit.xdstools2.client.widgets.buttons.ButtonType;
 import gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget.SiteSelectionWidget;
 
 import java.util.ArrayList;
