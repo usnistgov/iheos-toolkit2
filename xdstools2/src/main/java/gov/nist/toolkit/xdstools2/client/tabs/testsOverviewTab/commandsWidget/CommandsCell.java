@@ -37,8 +37,8 @@ public class CommandsCell extends AbstractSafeHtmlCell<String> {
     public static String TEST_DESCRIPTION_BUTTON_TOOLTIP = "Display full test description in new browser window";
 
 
-    SafeHtml PLAY_BUTTON = Utils.makeImage(RESOURCES.getPlayIconWhite());
-    SafeHtml REMOVE_BUTTON = Utils.makeImage(RESOURCES.getDeleteIconWhite());
+    SafeHtml PLAY_BUTTON = Utils.makeImage(RESOURCES.getPlayIconWhite24());
+    SafeHtml REMOVE_BUTTON = Utils.makeImage(RESOURCES.getDeleteIconWhite24());
     Button TEST_PLAN_BUTTON = new Button("Test Plan");
     Button LOG_BUTTON = new Button("Log");
     Button TEST_DESCRIPTION_BUTTON = new Button("Description");

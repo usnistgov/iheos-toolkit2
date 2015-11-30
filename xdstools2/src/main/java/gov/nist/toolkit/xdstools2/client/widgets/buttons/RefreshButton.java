@@ -8,7 +8,7 @@ import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
  */
 public class RefreshButton extends IconButton {
     TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
-    private Image REFRESH_ICON = new Image(RESOURCES.getRefreshIconBlack());
+    private Image REFRESH_ICON = new Image(RESOURCES.getRefreshIconBlack36());
 
 
     RefreshButton(String _tooltip){

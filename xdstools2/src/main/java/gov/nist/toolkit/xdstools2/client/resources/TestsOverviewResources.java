@@ -14,39 +14,59 @@ public interface TestsOverviewResources extends ClientBundle {
 
         // ----- Load icons -----//
         @Source("icons/ic_delete_white_24dp_1x.png")
-        ImageResource getDeleteIconWhite();
+        ImageResource getDeleteIconWhite24();
 
         @Source("icons/ic_delete_black_24dp_1x.png")
-        ImageResource getDeleteIconBlack();
+        ImageResource getDeleteIconBlack24();
+
+        @Source("icons/ic_delete_white_36dp_1x.png")
+        ImageResource getDeleteIconWhite36();
+
+        @Source("icons/ic_delete_black_36dp_1x.png")
+        ImageResource getDeleteIconBlack36();
 
         @Source("icons/ic_refresh_white_24dp_1x.png")
-        ImageResource getRefreshIconWhite();
+        ImageResource getRefreshIconWhite24();
+
+        @Source("icons/ic_refresh_white_36dp_1x.png")
+        ImageResource getRefreshIconWhite36();
 
         @Source("icons/ic_refresh_black_24dp_1x.png")
-        ImageResource getRefreshIconBlack();
+        ImageResource getRefreshIconBlack24();
+
+        @Source("icons/ic_refresh_black_36dp_1x.png")
+        ImageResource getRefreshIconBlack36();
 
         @Source("icons/ic_play_arrow_white_24dp_1x.png")
-        ImageResource getPlayIconWhite();
+        ImageResource getPlayIconWhite24();
+
+        @Source("icons/ic_play_arrow_white_36dp_1x.png")
+        ImageResource getPlayIconWhite36();
 
         @Source("icons/ic_play_arrow_black_24dp_1x.png")
-        ImageResource getPlayIconBlack();
+        ImageResource getPlayIconBlack24();
+
+        @Source("icons/ic_play_arrow_black_36dp_1x.png")
+        ImageResource getPlayIconBlack36();
 
         @Source("icons/ic_done_white_24dp_1x.png")
-        ImageResource getCheckIconWhite();
+        ImageResource getCheckIconWhite24();
 
         @Source("icons/ic_done_black_24dp_1x.png")
-        ImageResource getCheckIconBlack();
+        ImageResource getCheckIconBlack24();
 
         @Source("icons/ic_circle_outline_white_24dp_1x.png")
-        ImageResource getCircleOutlineIconWhite();
+        ImageResource getCircleOutlineIconWhite24();
 
         @Source("icons/ic_remove_white_24dp_1x.png")
-        ImageResource getRemoveIconWhite();
+        ImageResource getRemoveIconWhite24();
 
         @Source("icons/ic_info_outline_white_24dp_1x.png")
-        ImageResource getInfoIconWhite();
+        ImageResource getInfoIconWhite24();
 
         @Source("icons/ic_warning_white_24dp_1x.png")
-        ImageResource getDangerIconWhite();
+        ImageResource getDangerIconWhite24();
+
+
 
 }

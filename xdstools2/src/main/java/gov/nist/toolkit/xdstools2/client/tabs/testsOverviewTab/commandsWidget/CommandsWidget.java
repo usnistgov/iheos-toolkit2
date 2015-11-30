@@ -43,8 +43,7 @@ public class CommandsWidget extends HorizontalPanel {
         removeAllButton.addClickHandler(clickHandler);
         refreshAllButton.addClickHandler(clickHandler);
 
-        setWidth("100%");
-        setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        setDisplayProperties();
 
         add(spacer);
         add(playAllButton);
@@ -52,6 +51,12 @@ public class CommandsWidget extends HorizontalPanel {
         add(refreshAllButton);
     }
 
+
+    public void setDisplayProperties() {
+        setWidth("100%");
+        setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        setStyleName("testOverviewHeader");
+    }
 
     public Button getPlayAllButton() {
         return playAllButton;

@@ -8,7 +8,7 @@ import gov.nist.toolkit.xdstools2.client.resources.TestsOverviewResources;
  */
 public class DeleteButton extends IconButton {
     TestsOverviewResources RESOURCES = TestsOverviewResources.INSTANCE;
-    private Image REMOVE_ICON = new Image(RESOURCES.getDeleteIconBlack());
+    private Image REMOVE_ICON = new Image(RESOURCES.getDeleteIconBlack36());
 
 
     DeleteButton(String _tooltip){

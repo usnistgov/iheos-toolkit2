@@ -14,6 +14,7 @@ public abstract class IconButton extends Button {
         tooltip = _tooltip;
 
         setTitle(tooltip);
+        setStyleName("iconbutton");
     }
 
 

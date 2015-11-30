@@ -67,12 +67,25 @@ h1 {
 .test-row-yellow {
   background-color: #FFEE58 !important;
 }
+
 .test-row-green {
   background-color: #66BB6A !important;
 }
+
 .test-row-red {
   background-color: #EF5350 !important;
 }
+
+.iconbutton {
+  background-color: transparent !important;
+  opacity: 0.6;
+  border: 0;
+}
+
+.iconbutton:hover {
+  border: 0;
+}
+
 
 .roundedButton1 {
   margin: 0;
@@ -86,6 +99,11 @@ h1 {
   border-bottom: 1px solid #a0a0a0;
   border-radius: 16px;
  -moz-border-radius: 16px;
+}
+
+.testOverviewHeader {
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
 }
 
 .menuCollapse {
