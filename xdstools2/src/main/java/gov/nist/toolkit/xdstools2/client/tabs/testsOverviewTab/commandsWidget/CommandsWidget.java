@@ -30,8 +30,12 @@ public class CommandsWidget extends HorizontalPanel {
 
 
         //----- Create the widget -----
+        HTML header = new HTML();
+        String space = "&nbsp&nbsp&nbsp&nbsp&nbsp";
+        header.setHTML("<h3>Run: 4/6" + space + "Failed: 1/6" + space + "Passed: 1/6 (17%)</h3>");
+
         FlowPanel spacer = new FlowPanel();
-        spacer.setWidth("550px");
+        spacer.setWidth("500px");
 
         playAllButton = ButtonFactory.createIconButton(ButtonType.PLAY_BUTTON, PLAY_ALL_ICON_HINT);
         removeAllButton = ButtonFactory.createIconButton(ButtonType.DELETE_BUTTON, REMOVE_ALL_ICON_HINT);
@@ -45,6 +49,8 @@ public class CommandsWidget extends HorizontalPanel {
 
         setDisplayProperties();
 
+        //add(spacer);
+        add(header);
         add(spacer);
         add(playAllButton);
         add(removeAllButton);
