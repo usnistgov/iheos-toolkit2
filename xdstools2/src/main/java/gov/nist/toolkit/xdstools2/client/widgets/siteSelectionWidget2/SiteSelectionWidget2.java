@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget;
+package gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget2;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -9,29 +9,23 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
-import org.junit.runner.Runner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Diane Azais local on 11/1/2015.
  */
-public class SiteSelectionWidget extends HorizontalPanel {
+public class SiteSelectionWidget2 extends HorizontalPanel {
 	ListBox selectActorList = new ListBox();
 	final protected ToolkitServiceAsync toolkitService = GWT.create(ToolkitService.class);
 	Map<String, String> actorCollectionMap;  // name => description
@@ -45,7 +39,7 @@ public class SiteSelectionWidget extends HorizontalPanel {
 
 
 
-	public SiteSelectionWidget(GenericQueryTab _parent){
+	public SiteSelectionWidget2(GenericQueryTab _parent){
 		parent = _parent;
 
 		// Load and display the actor types
