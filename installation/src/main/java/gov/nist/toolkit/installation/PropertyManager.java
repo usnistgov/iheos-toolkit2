@@ -129,6 +129,16 @@ public class PropertyManager {
 		return (String) toolkitProperties.get("Default_Environment");
 	}
 
+    public String getTestkit() {
+        loadProperties();
+        String testkit = (String) toolkitProperties.get("Testkit");
+        if (testkit != null) {
+            testkit = testkit.trim();
+            if ("".equals(testkit)) testkit = null;
+        }
+        return testkit;
+    }
+
 	@Deprecated
 	public String getCurrentEnvironmentName() {
 		String cache = getExternalCache();

@@ -81,6 +81,13 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		return new File(Installation.installation().externalCache() + File.separator + "actors.xml");
 	}
 
+    public File getTestkit() {
+        String x = getPropertyManager().getTestkit();
+        if (x == null) return null;
+        File testkit = new File(x);
+        if (testkit.exists() && testkit.isDirectory()) return testkit;
+        return null;
+    }
 
 
 //	// This now pulls from Installation so that external cache location can be overridden
@@ -241,11 +248,11 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 //		return getSession().getEnvironmentNames();
 //	}
 
-	/**
-	 * Set environment name for current session
-	 * @param name
-	 * @throws
-	 */
+//	/**
+//	 * Set environment name for current session
+//	 * @param name
+//	 * @throws
+//	 */
 //	public void setEnvironment(String name)  {
 //		logger.debug(": " + "setEnvironment(" + name + ")");
 //		getSession().setEnvironment(name);
