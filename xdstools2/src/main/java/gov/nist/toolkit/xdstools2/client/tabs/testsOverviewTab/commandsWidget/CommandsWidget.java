@@ -49,12 +49,11 @@ public class CommandsWidget extends HorizontalPanel {
 
         setDisplayProperties();
 
-        //add(spacer);
         add(header);
         add(spacer);
         add(playAllButton);
-        add(removeAllButton);
         add(refreshAllButton);
+        add(removeAllButton);
     }
 
 

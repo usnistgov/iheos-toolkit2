@@ -18,9 +18,44 @@ h3 {
   text-align: left;
 }
 
+.sendButton, #closeButton, .iconbutton {
+  cursor: pointer;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+  margin: 15px 6px 6px;
+}
+
 .sendButton {
   display: block;
   font-size: 16pt;
+}
+
+.iconbutton {
+  background-color: transparent !important;
+  opacity: 0.6;
+  border: 0;
+}
+
+.iconbutton:hover {
+  border: 0;
+  opacity: .8;
+}
+
+.roundedButton1 {
+  margin: 0;
+  padding: 1px 3px;
+  text-decoration: none;
+  color:steel;
+  cursor: pointer;
+  cursor: hand;
+  font-weight:normal;font-size:smaller;
+  background: url("images/hborder.png") repeat-x 0px -2077px;
+  border:1px solid #bbb;
+  border-bottom: 1px solid #a0a0a0;
+  border-radius: 16px;
+  -moz-border-radius: 16px;
 }
 
 /** Most GWT widgets already have a style name defined */
@@ -34,11 +69,6 @@ h3 {
 
 .serverResponseLabelError {
   color: red;
-}
-
-/** Set ids using widget.getElement().setId("idOfElement") */
-#closeButton {
-  margin: 15px 6px 6px;
 }
 
 .requiredFieldLabel {
@@ -82,31 +112,6 @@ h3 {
 
 .test-row-red {
   background-color: #EF5350 !important;
-}
-
-.iconbutton {
-  background-color: transparent !important;
-  opacity: 0.6;
-  border: 0;
-}
-
-.iconbutton:hover {
-  border: 0;
-}
-
-
-.roundedButton1 {
-  margin: 0;
-  padding: 1px 3px;
-  text-decoration: none;
-  color:steel; cursor: pointer;
-  cursor: hand;
-  font-weight:normal;font-size:smaller;
-  background: url("images/hborder.png") repeat-x 0px -2077px;
-  border:1px solid #bbb;
-  border-bottom: 1px solid #a0a0a0;
-  border-radius: 16px;
- -moz-border-radius: 16px;
 }
 
 .testOverviewHeader {
