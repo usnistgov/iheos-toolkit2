@@ -10,7 +10,7 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
-import gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget2.SiteSelectionWidget2;
+import gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget.SiteSelectionWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +61,7 @@ public class TestsOverviewTab extends GenericQueryTab {
         // -------------------------------------------
         // ---------- Site Selection Widget-----------
         // -------------------------------------------
-        SiteSelectionWidget2 siteWidget = new SiteSelectionWidget2(this);
+        SiteSelectionWidget siteWidget = new SiteSelectionWidget(this);
         topPanel.add(siteWidget);
 
 

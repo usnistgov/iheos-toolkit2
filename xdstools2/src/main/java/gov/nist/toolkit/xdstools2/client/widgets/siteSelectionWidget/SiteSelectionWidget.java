@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget2;
+package gov.nist.toolkit.xdstools2.client.widgets.siteSelectionWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Created by Diane Azais local on 11/1/2015.
  */
-public class SiteSelectionWidget2 extends HorizontalPanel {
+public class SiteSelectionWidget extends HorizontalPanel {
 	ListBox selectActorList = new ListBox();
 	final protected ToolkitServiceAsync toolkitService = GWT.create(ToolkitService.class);
 	Map<String, String> actorCollectionMap;  // name => description
@@ -39,7 +39,7 @@ public class SiteSelectionWidget2 extends HorizontalPanel {
 
 
 
-	public SiteSelectionWidget2(GenericQueryTab _parent){
+	public SiteSelectionWidget(GenericQueryTab _parent){
 		parent = _parent;
 
 		// Load and display the actor types
