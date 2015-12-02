@@ -12,7 +12,6 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
@@ -225,16 +224,16 @@ public abstract class AbstractActorFactory {
 		// This statically links the IG to the CURRENT list of remote sites that it could possibly be a
 		// gateway to in the future.  BAD IDEA.  This list needs to be generated on the fly so it is current.
 		//
-		if (config.getActorType().equals(ActorType.INITIATING_GATEWAY.getName())) {
-			// must load up XCQ and XCR endpoints for simulator to use
-			config.remoteSites = new ArrayList<>();
-
-			Sites sites = simManager.getAllSites();
-			for (String remote : config.remoteSiteNames) {
-				Site site = sites.getSite(remote);
-				config.remoteSites.add(site);
-			}
-		}
+//		if (config.getActorType().equals(ActorType.INITIATING_GATEWAY.getName())) {
+//			// must load up XCQ and XCR endpoints for simulator to use
+//			config.remoteSites = new ArrayList<>();
+//
+//			Sites sites = simManager.getAllSites();
+//			for (String remote : config.remoteSiteNames) {
+//				Site site = sites.getSite(remote);
+//				config.remoteSites.add(site);
+//			}
+//		}
 		//
 		//
 

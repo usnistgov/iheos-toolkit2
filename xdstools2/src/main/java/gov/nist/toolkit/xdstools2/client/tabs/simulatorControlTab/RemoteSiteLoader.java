@@ -1,26 +1,29 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-
+/**
+ * Remote sites are sites that contain a RG in the configuration.  They can be
+ * static or simulators.
+ */
 class RemoteSiteLoader {
 	final SimulatorConfig config;
-	final HorizontalPanel boxes;
+	final HorizontalPanel checkBoxes;
 	SimulatorControlTab simulatorControlTab;
 	
 	RemoteSiteLoader(SimulatorControlTab simulatorControlTab, SimulatorConfig configs, HorizontalPanel hpanel) {
 		this.simulatorControlTab = simulatorControlTab;
 		this.config = configs;
-		this.boxes = hpanel;
+		this.checkBoxes = hpanel;
 		
 		
 		simulatorControlTab.toolkitService.getSiteNamesWithRG(new AsyncCallback<List<String>>() {
@@ -50,7 +53,7 @@ class RemoteSiteLoader {
 						}
 					});
 					
-					boxes.add(box);
+					checkBoxes.add(box);
 				}
 				
 				// if remote site names contains any entries not present in sites,

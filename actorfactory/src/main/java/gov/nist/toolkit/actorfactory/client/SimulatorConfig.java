@@ -3,7 +3,6 @@ package gov.nist.toolkit.actorfactory.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.io.Serializable;
@@ -37,7 +36,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	boolean remoteSitesNecessary = false;
 	String remoteSitesLabel;
 	// this is not a fixed attribute so it doesn't show in editor
-	public List<Site> remoteSites = null;
+//	public List<Site> remoteSites = null;
 	
 	// This is only used to record validation requirements for included document(s)
 	// vc != null triggers UI to display selections from tk_props and accept

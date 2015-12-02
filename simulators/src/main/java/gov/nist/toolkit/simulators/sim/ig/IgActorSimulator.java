@@ -19,9 +19,6 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 public class IgActorSimulator extends GatewaySimulatorCommon {
-//	DsSimCommon dsSimCommon;
-//	SimDb db;
-	OMElement messageBody;
 	static Logger logger = Logger.getLogger(IgActorSimulator.class);
 	AdhocQueryResponseGenerator sqs;
 

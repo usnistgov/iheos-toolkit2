@@ -481,12 +481,12 @@ public class Soap implements SoapInterface {
 			operationClient.setCallback(callback);
 
 		System.out
-				.println("******************************** BEFORE execute ****************************");
+				.println(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
 		try {
 			operationClient.execute(block); // execute sync or async
 		} finally {
 			System.out
-					.println("******************************** AFTER execute ****************************");
+					.println(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 
 			if (async)
 				waitTillDone();

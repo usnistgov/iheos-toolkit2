@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -28,7 +29,6 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class XcQuerySim extends AbstractMessageValidator implements MetadataGeneratingSim, AdhocQueryResponseGeneratingSim {
@@ -90,7 +90,9 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 			request = new AdhocQueryRequestParser(ahqr).getAdhocQueryRequest();
 
-            Collection<Site> sites = asc.remoteSites;
+            SimManager simMgr = new SimManager("ignored");
+            List<Site> sites = simMgr.getSites(asc.remoteSiteNames);
+
             if (sites == null || sites.size() == 0) {
                 er.err(Code.XDSRegistryError, "No RespondingGateways configured", this, null);
                 return;
@@ -108,7 +110,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 				// forward to all registered RGs
 				int forwards=0;
-				for (Site site : asc.remoteSites) {
+				for (Site site : sites) {
 					if (site.hasActor(ActorType.RESPONDING_GATEWAY)) {
 						// forward the query
 						forwards++;
