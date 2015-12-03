@@ -29,9 +29,15 @@ public class BuildCollections {
 			List<String> contents = collections.get(collectionName);
 			File collectionFile = new File(collectionsDir + File.separator + collectionName + ".tc");
 			StringBuffer buf = new StringBuffer();
+			// Debug output
+//			System.out.println(collectionName+":>>>");
 			for (String testnum : contents) {
 				buf.append(testnum).append("\n");
+//				System.out.print(testnum+" ");
+//				System.out.flush();
 			}
+//			System.out.println();
+
 			try {
 				Io.stringToFile(collectionFile, buf.toString());
 			} catch (IOException e) {

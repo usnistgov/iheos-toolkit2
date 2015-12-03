@@ -78,11 +78,16 @@ public class SimulatorProperties {
      */
     public static final String                       registerEndpoint = "Register_endpoint";
 
+    public static final String                       registerOddeEndpoint = "RegisterOdde_endpoint";
+
+
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
     public static final String                    registerTlsEndpoint = "Register_TLS_endpoint";
+
+    public static final String                    registerOddeTlsEndpoint = "RegisterOdde_TLS_endpoint";
 
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.

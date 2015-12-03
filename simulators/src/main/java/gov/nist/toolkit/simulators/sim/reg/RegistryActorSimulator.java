@@ -32,6 +32,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 	static {
 		transactions.add(TransactionType.REGISTER);
+		transactions.add(TransactionType.REGISTER_ODDE);
 		transactions.add(TransactionType.STORED_QUERY);
 		transactions.add(TransactionType.UPDATE);
 	}
@@ -87,7 +88,6 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 		common.getValidationContext().updateEnabled = updateEnabled;
 		
 		if (transactionType.equals(TransactionType.REGISTER)) {
-
 			common.vc.isR = true;
 
 			common.vc.isPartOfRecipient = isPartOfRecipient();   // part of implementation of Document Recipient
@@ -135,6 +135,59 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 				commit(mvc, common, rsim.delta);
 			
 			return !common.hasErrors();
+
+		}
+		if (transactionType.equals(TransactionType.REGISTER_ODDE)) { // ITI-61 is an optional implementation of the registry actor
+			System.out.flush();
+
+			common.vc.isRODDE = true;
+
+			common.vc.isPartOfRecipient = isPartOfRecipient();   // part of implementation of Document Recipient
+			common.vc.isValidateCodes = isValidateCodes();
+			common.vc.validateAgainstPatientIdentityFeed = validateAgainstPatientIdentityFeed();
+			common.vc.xds_b = true;
+			common.vc.isRequest = true;
+			common.vc.hasHttp = true;
+			common.vc.hasSoap = true;
+
+			// *********************************************
+			// Metadata is validated by the class MetadataMessageValidator
+			//
+			//  eventually.
+			//
+			// *********************************************
+
+			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
+				return false;  // returns if SOAP Fault was generated
+
+			if (mvc.hasErrors()) {
+				dsSimCommon.sendErrorsInRegistryResponse(er);
+				return false;
+			}
+
+
+			RegRSim rsim = new RegRSim(common, dsSimCommon, getSimulatorConfig());
+			mvc.addMessageValidator("Register Transaction", rsim, er);
+
+			registryResponseGenerator = new RegistryResponseGeneratorSim(common, dsSimCommon);
+			mvc.addMessageValidator("Attach Errors", registryResponseGenerator, er);
+
+			mvc.run();
+
+			// wrap in soap wrapper and http wrapper
+			mvc.addMessageValidator("ResponseInSoapWrapper",
+					new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator),
+					er);
+
+			// catch up on validators to be run so we can judge whether to commit or not
+			mvc.run();
+
+			// commit updates (delta) to registry database
+			if (!common.hasErrors())
+				commit(mvc, common, rsim.delta);
+
+			return !common.hasErrors();
+
 
 		}
 		else if (transactionType.equals(TransactionType.STORED_QUERY)) {

@@ -18,6 +18,8 @@ public class SoapActionFactory {
 
 	public final static String xcpd = "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery";
 
+	public final static String r_odde_action = "urn:ihe:iti:2010:RegisterOnDemandDocumentEntry";
+
 	private static final Map<String, String> actions =
 		new HashMap<String, String>()
 		{
@@ -47,6 +49,7 @@ public class SoapActionFactory {
 		    	 //put("urn:ihe:iti:2007:RegistryStoredQueryAsync",        "urn:ihe:iti:2007:RegistryStoredQueryResponse");
 		    	 //put("urn:ihe:iti:2007:CrossGatewayQueryAsync",          "urn:ihe:iti:2007:CrossGatewayQueryResponse");
 		    	 put("urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery");
+				 put(r_odde_action,										 "urn:ihe:iti:2010:RegisterOnDemandDocumentResponse");
 			}
 
 		};

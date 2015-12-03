@@ -37,6 +37,12 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 				"sourcePatientId"
 		);
 
+	static List<String> roddeRequiredSlots =
+			Arrays.asList(
+					"languageCode",
+					"sourcePatientId"
+			);
+
 	static List<String> directRequiredSlots =
 			Arrays.asList(
 			);
@@ -257,7 +263,9 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		verifyIdsUnique(er, knownIds);
 	}
 
-	static public String table415 = "ITI TF-3: Table 4.1-5, TF-2b: Table 3.41.4.1.2-2";
+	static public String table415 = "ITI TF-3: Table 4.2.3.2-1"; // Rev 12.1 Final Text
+	// TODO: Is it ok to leave off the TF-2b reference?
+	// Was "ITI TF-3: Table 4.1-5, TF-2b: Table 3.41.4.1.2-2"
 
 	// this takes in two circumstances:
 	//	Slots always required
@@ -271,7 +279,12 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
 			}
 		}
-		else if (!(vc.isXDM || vc.isXDRLimited)) {
+		else if (vc.isRODDE) {
+			for (String slotName : roddeRequiredSlots) {
+				if (getSlot(slotName) == null)
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
+			}
+		} else if (!(vc.isXDM || vc.isXDRLimited)) {
 			for (String slotName : requiredSlots) {
 				if (getSlot(slotName) == null)
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
@@ -358,7 +371,11 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
-		if (!MetadataSupport.XDSDocumentEntry_objectType_uuid.equals(objectType))
+		if(vc.isRODDE) {
+			if (!MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid.equals(objectType))
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": On-Demand objectType must be " + MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid + " (found " + objectType + ")", this, table415);
+
+		} else if (!MetadataSupport.XDSDocumentEntry_objectType_uuid.equals(objectType))
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": objectType must be " + MetadataSupport.XDSDocumentEntry_objectType_uuid + " (found " + objectType + ")", this, table415);
 
 		if (mimeType == null || mimeType.equals(""))

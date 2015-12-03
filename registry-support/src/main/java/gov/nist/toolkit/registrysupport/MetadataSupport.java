@@ -312,6 +312,7 @@ public class MetadataSupport {
 	public static String XDSSubmissionSet_sourceid_uuid="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832";
 
 	public static String XDSDocumentEntry_objectType_uuid="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
+	public static String XDSRODDEDocumentEntry_objectType_uuid="urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
 
 	public static String XDSSubmissionSet_classification_uuid = "urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd";
 	public static String XDSFolder_classification_uuid = "urn:uuid:d9d542f3-6cc4-48b6-8870-ea235fbc94c2";

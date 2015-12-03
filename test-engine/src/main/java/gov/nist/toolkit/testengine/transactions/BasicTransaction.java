@@ -367,7 +367,6 @@ public abstract class BasicTransaction  {
 		add_step_status_to_output();
 	}
 
-
 	void validate_registry_response_no_set_status(OMElement registry_result, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		if (registry_result == null) {
 			s_ctx.set_error("No Result message");
@@ -432,6 +431,7 @@ public abstract class BasicTransaction  {
 		if ("sq".equals(tname)) vc.isSQ = true;
 		if ("pr".equals(tname)) vc.isPnR = true;
 		if ("r".equals(tname)) vc.isR = true;
+		if ("rodde".equals(tname)) vc.isRODDE = true;
 
 		return vc;
 	}

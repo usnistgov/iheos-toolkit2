@@ -6,6 +6,7 @@ import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
 import spock.lang.Specification
+// TODO: skb, this file may not be needed since RegistrySelfTest should cover the ODDE type.
 /**
  * Runs all Registry tests.
  * To run:
@@ -23,11 +24,10 @@ import spock.lang.Specification
  */
 class RegistryOdSelfTestIT extends Specification {
     ToolkitApi api;
-    String patientId = 'BR14^^^&1.2.360&ISO'
-    String reg = 'mike__reg'
+    String patientId = 'OD14^^^&1.2.360&ISO'
+    String reg = 'sunil__reg'
     SimId simId = new SimId(reg)
-//    String regrep = 'mike__regrep'
-    String testSession = 'mike';
+    String testSession = 'sunil';
 
     def setup() {
         api = ToolkitApi.forInternalUse()
@@ -43,8 +43,8 @@ class RegistryOdSelfTestIT extends Specification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'mike__reg'
-        TestInstance testId = new TestInstance("15805")
+        String siteName = 'sunil__reg'
+        TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
         Map<String, String> params = new HashMap<>()
@@ -60,10 +60,11 @@ class RegistryOdSelfTestIT extends Specification {
         results.get(0).passed()
     }
 
+
     def 'Run all Register tests'() {
         when:
-        String siteName = 'mike__reg'
-        TestInstance testId = new TestInstance("tc:R.b")
+        String siteName = 'sunil__reg'
+        TestInstance testId = new TestInstance("15805") // ("tc:R.b")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
@@ -78,9 +79,10 @@ class RegistryOdSelfTestIT extends Specification {
         results.get(0).passed()
     }
 
+    /*
     def 'Run SQ initialization'() {
         when:
-        String siteName = 'mike__reg'
+        String siteName = 'sunil__reg'
         TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
@@ -98,7 +100,7 @@ class RegistryOdSelfTestIT extends Specification {
 
     def 'Run SQ tests'() {
         when:
-        String siteName = 'mike__reg'
+        String siteName = 'sunil__reg'
         TestInstance testId = new TestInstance("tc:SQ.b")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
@@ -113,6 +115,7 @@ class RegistryOdSelfTestIT extends Specification {
         results.size() == 1
         results.get(0).passed()
     }
+    */
 
 //    def 'Run all PnR tests'() {
 //        when:

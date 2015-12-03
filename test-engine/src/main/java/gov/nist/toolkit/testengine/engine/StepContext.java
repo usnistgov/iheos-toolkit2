@@ -283,7 +283,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				else if (instruction_name.equals("RegisterTransaction")) 
 				{
 					transaction = new RegisterTransaction(this, instruction, instruction_output);
-				} 
+				}
+				else if (instruction_name.equals("RegisterODDETransaction"))
+				{
+					transaction = new RegisterODDETransaction(this, instruction, instruction_output);
+				}
 				else if (instruction_name.equals("MuTransaction")) 
 				{
 					transaction = new MuTransaction(this, instruction, instruction_output);

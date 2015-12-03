@@ -22,10 +22,18 @@ import java.util.List;
 
 public class RegistryActorFactory extends AbstractActorFactory {
 	boolean isRecipient = false;  // used as part of Document Recipient
+	boolean isOnDemand = false;
+
+	public RegistryActorFactory() {
+		isRecipient = false;
+		isOnDemand = false;
+	}
+
 
 	static final List<TransactionType> incomingTransactions =
 		Arrays.asList(
 				TransactionType.REGISTER,
+				TransactionType.REGISTER_ODDE, // Optional ITI-61
 				TransactionType.STORED_QUERY,
 				TransactionType.UPDATE
 				);
@@ -69,6 +77,8 @@ public class RegistryActorFactory extends AbstractActorFactory {
 			addFixedConfig(sc, SimulatorProperties.PIF_PORT, ParamType.TEXT, Integer.toString(ListenerFactory.allocatePort(simId.toString())));
 			addFixedEndpoint(sc, SimulatorProperties.registerEndpoint,       actorType, TransactionType.REGISTER,     false);
 			addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint,    actorType, TransactionType.REGISTER,     true);
+			addFixedEndpoint(sc, SimulatorProperties.registerOddeEndpoint,       actorType, TransactionType.REGISTER_ODDE,     false);
+			addFixedEndpoint(sc, SimulatorProperties.registerOddeTlsEndpoint,    actorType, TransactionType.REGISTER_ODDE,     true);
 			addFixedEndpoint(sc, SimulatorProperties.storedQueryEndpoint,    actorType, TransactionType.STORED_QUERY, false);
 			addFixedEndpoint(sc, SimulatorProperties.storedQueryTlsEndpoint, actorType, TransactionType.STORED_QUERY, true);
 		}
@@ -134,6 +144,19 @@ public class RegistryActorFactory extends AbstractActorFactory {
 				RepositoryType.NONE,
 				asc.get(SimulatorProperties.registerTlsEndpoint).asString(),
 				true, 
+				isAsync));
+
+		site.addTransaction(new TransactionBean( // Optional ITI-61
+				TransactionType.REGISTER_ODDE.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.registerOddeEndpoint).asString(),
+				false,
+				isAsync));
+		site.addTransaction(new TransactionBean(
+				TransactionType.REGISTER_ODDE.getCode(),
+				RepositoryType.NONE,
+				asc.get(SimulatorProperties.registerOddeTlsEndpoint).asString(),
+				true,
 				isAsync));
 
 		site.addTransaction(new TransactionBean(

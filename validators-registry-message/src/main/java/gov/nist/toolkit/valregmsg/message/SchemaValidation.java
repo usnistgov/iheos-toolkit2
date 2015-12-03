@@ -8,16 +8,15 @@ import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.xml.MyErrorHandler;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.StringReader;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.apache.xerces.parsers.DOMParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.StringReader;
 
 public class SchemaValidation extends MetadataTypes {
 	static Logger logger = Logger.getLogger(SchemaValidation.class);
@@ -43,6 +42,7 @@ public class SchemaValidation extends MetadataTypes {
 		String schemaLocation;
 		switch (metadataType) {
 		case METADATA_TYPE_Rb:
+        case METADATA_TYPE_RODDE:
 			schemaLocation = "urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0 " + 
 			((localSchema == null) ? 
 					"http://" + host + ":" + portString + "/xdsref/schema/v3/lcm.xsd" :

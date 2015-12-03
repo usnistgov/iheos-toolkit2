@@ -441,7 +441,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 					return mvc;
 				}
 			}
-		} else if (vc.isR) {
+		} else if (vc.isR || vc.isRODDE) {
 			if (vc.isRequest) {
 				validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
 				mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
@@ -582,7 +582,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			return mvc;
 		} else if (rootElementName.equals("SubmitObjectsRequest")) {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Register request");
-			vc.isR = true;
+			vc.isR = true; // TODO: could be RODDE
 			vc.isRequest = true;
 			mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
 			mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());

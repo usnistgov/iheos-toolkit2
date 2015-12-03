@@ -1,10 +1,10 @@
 package gov.nist.toolkit.simulators.support;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 class ActorTransactionFactory implements Serializable,IsSerializable {
 
@@ -14,7 +14,7 @@ class ActorTransactionFactory implements Serializable,IsSerializable {
 	private static final long serialVersionUID = 1L;
 
 
-	static public enum TransactionType { PNR, XCQR, REGISTER, SQ, RETRIEVE, MU, XCQ, XCR, IGQ, IGR, UNKNOWN };
+	static public enum TransactionType { PNR, XCQR, REGISTER, REGISTER_ODDE, SQ, RETRIEVE, MU, XCQ, XCR, IGQ, IGR, UNKNOWN};
 
 
 	/********************************************************
@@ -32,6 +32,8 @@ class ActorTransactionFactory implements Serializable,IsSerializable {
 			return TransactionType.RETRIEVE;
 		if (name.equals("rb"))
 			return TransactionType.REGISTER;
+		if (name.equals("rodde"))
+			return TransactionType.REGISTER_ODDE;
 		if (name.equals("update"))
 			return TransactionType.MU;
 		if (name.equals("sq"))
@@ -61,6 +63,8 @@ class ActorTransactionFactory implements Serializable,IsSerializable {
 			return "ret";
 		case REGISTER:
 			return "rb";
+   		case REGISTER_ODDE:
+			return "rodde";
 		case PNR:
 			return "prb";
 		case XCQR:
@@ -93,6 +97,8 @@ class ActorTransactionFactory implements Serializable,IsSerializable {
 			return "igr";
 		case REGISTER:
 			return "r.b";
+        case REGISTER_ODDE:
+			return "rodde";
 		case RETRIEVE:
 			return "ret";
 		case SQ:
@@ -169,6 +175,7 @@ class ActorTransactionFactory implements Serializable,IsSerializable {
 //			break;
 		case REGISTRY:
 			trans.add(TransactionType.REGISTER);
+			trans.add(TransactionType.REGISTER_ODDE); // Optional ITI-61
 			trans.add(TransactionType.SQ);
 			trans.add(TransactionType.MU);
 			break;

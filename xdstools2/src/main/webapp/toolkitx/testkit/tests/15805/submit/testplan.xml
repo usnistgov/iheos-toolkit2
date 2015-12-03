@@ -3,9 +3,8 @@
   <Rule>R.b Accept register one on-demand document</Rule>
   <TestStep id="submit">
     <ExpectedStatus>Success</ExpectedStatus>
-    <RegisterTransaction>
-      <XDSb/>
+    <RegisterODDETransaction>
       <MetadataFile>single_doc.xml</MetadataFile>
-    </RegisterTransaction>
+    </RegisterODDETransaction>
   </TestStep>
 </TestPlan>
