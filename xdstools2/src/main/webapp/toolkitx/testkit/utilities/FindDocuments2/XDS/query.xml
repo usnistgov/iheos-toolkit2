@@ -126,32 +126,32 @@
         </Slot>
         <Slot name="$XDSDocumentEntryCreationTimeFrom">
             <ValueList>
-                <Value>('$ctf0$')</Value>
+                <Value>'$ctf0$'</Value>
             </ValueList>
         </Slot>
         <Slot name="$XDSDocumentEntryCreationTimeTo">
             <ValueList>
-                <Value>('$ctt0$')</Value>
+                <Value>'$ctt0$'</Value>
             </ValueList>
         </Slot>
         <Slot name="$XDSDocumentEntryServiceStartTimeFrom">
             <ValueList>
-                <Value>('$sstf0$')</Value>
+                <Value>'$sstf0$'</Value>
             </ValueList>
         </Slot>
         <Slot name="$XDSDocumentEntryServiceStartTimeTo">
             <ValueList>
-                <Value>('$sstt0$')</Value>
+                <Value>'$sstt0$'</Value>
             </ValueList>
         </Slot>
         <Slot name="$XDSDocumentEntryServiceStopTimeFrom">
             <ValueList>
-                <Value>('$sttf0$')</Value>
+                <Value>'$sttf0$'</Value>
             </ValueList>
         </Slot>
         <Slot name="$XDSDocumentEntryServiceStopTimeTo">
             <ValueList>
-                <Value>('$sttt0$')</Value>
+                <Value>'$sttt0$'</Value>
             </ValueList>
         </Slot>
         <Slot name="$XDSDocumentEntryAuthorPerson">
