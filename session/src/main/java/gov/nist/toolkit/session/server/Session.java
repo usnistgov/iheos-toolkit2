@@ -322,9 +322,9 @@ public class Session implements SecurityParams {
 		return lastUploadFilename2;
 	}
 		
-	public File getTestkitFile() {
-		return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "testkit");
-	}
+//	public File getTestkitFile() {
+//		return new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "testkit");
+//	}
 			
 	/**
 	 * Reset linkage to XdsTest

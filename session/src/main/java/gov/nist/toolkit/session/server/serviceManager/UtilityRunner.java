@@ -98,7 +98,7 @@ public class UtilityRunner {
                     // collection.  We replace it with a list of linked TestInstances, one for each
                     // contained test.
 
-                    TestCollection testCollection = new TestCollection(session.getTestkitFile(), collectionName);
+                    TestCollection testCollection = new TestCollection(Installation.installation().testkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();
                     TestInstance ti = null;
                     for (String id : testIds) {
