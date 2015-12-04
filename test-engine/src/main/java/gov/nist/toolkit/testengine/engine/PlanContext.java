@@ -192,12 +192,6 @@ public class PlanContext extends BasicContext {
 				l.addLinkage(externalLinkage);
 				l.apply(testplan);
 			}
-			
-			if (externalLinkage != null) {
-				Linkage l = new Linkage(testConfig);
-				l.addLinkage(externalLinkage);
-				l.apply(testplan);
-			}
 
 			Iterator elements = testplan.getChildElements();
 			while (elements.hasNext()) {
