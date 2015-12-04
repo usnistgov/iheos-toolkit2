@@ -207,8 +207,7 @@ public class Session implements SecurityParams {
 		try {
 			testLogCache = Installation.installation().propertyServiceManager().getTestLogCache();
 		} catch (Exception e) {
-			e.printStackTrace();
-			return; // TODO: is there an exception here that causes the old session name to hang around and not being reset?
+			return;
 		}
 		
 		mesaSessionCache = new File(testLogCache + File.separator + mesaSessionName);
