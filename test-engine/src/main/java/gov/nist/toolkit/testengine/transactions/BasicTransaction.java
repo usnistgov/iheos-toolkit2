@@ -66,6 +66,7 @@ public abstract class BasicTransaction  {
 	protected boolean assign_patient_id = true;
 	protected boolean soap_1_2 = true;
 	protected boolean async = false;
+	protected boolean isRegisterODDE = false;
 	boolean useMtom;
 	boolean useAddressing;
 	boolean isSQ;
@@ -386,6 +387,7 @@ public abstract class BasicTransaction  {
 		RegistryErrorListGenerator rel  = null;
 		ValidationContext vc = getValidationContextFromTransactionName();
 		vc.isResponse = true;
+		vc.isRODDE = isRegisterODDE;
 		try {
             SecurityParams sp = s_ctx.getTransactionSettings().securityParams;
 			logger.info("Codes file is " + sp.getCodesFile());
