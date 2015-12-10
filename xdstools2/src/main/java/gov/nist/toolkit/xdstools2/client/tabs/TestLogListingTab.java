@@ -101,6 +101,7 @@ public class TestLogListingTab extends GenericQueryTab {
 	
 	
 	void loadTestNumbers() {
+        grid.clear();
 		toolkitService.getTestlogListing(testSession, new AsyncCallback<List<TestInstance>>() {
 
 			public void onFailure(Throwable caught) {

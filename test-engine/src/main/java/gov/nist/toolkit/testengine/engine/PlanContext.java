@@ -49,6 +49,7 @@ public class PlanContext extends BasicContext {
 	
 	public void setPreviousSectionLogs(SectionLogMap previousLogs) {
 		previousSectionLogs = previousLogs;
+        logger.debug(previousLogs.describe());
 	}
 	
 	public SectionLogMap getPreviousSectionLogs() {
@@ -61,11 +62,17 @@ public class PlanContext extends BasicContext {
 	}
 	
 	public void setExtraLinkage(Map<String, String> linkage) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("ExtraLinkage...\n");
+        for (String key : linkage.keySet())
+            buf.append("...").append(key).append(" ==> ").append(linkage.get(key)).append("\n");
+        logger.debug(buf.toString());
 		externalLinkage = linkage;
 	}
 	
 	public void setExtraLinkage2(Map<String, Object> linkage) {
-		externalLinkage2 = linkage;
+
+        externalLinkage2 = linkage;
 	}
 	
 	public Map<String, String> getExtraLinkage() {
@@ -256,6 +263,7 @@ public class PlanContext extends BasicContext {
 		catch (XdsException e) {  
 			String errorDetails = ExceptionUtil.exception_details(e);
 			testLog.add_name_value(results_document, "FatalError", errorDetails);
+            logger.error(errorDetails);
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);

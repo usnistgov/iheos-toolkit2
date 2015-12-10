@@ -17,18 +17,7 @@
     <StoredQueryTransaction>
       <XDSb/>
       <UseId id="SubmissionSet01" symbol="$ssuid$" step="register" section="AssignedUids"/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:e8e3cb2c-e39c-46b9-99e4-c12f57260b83">
-            <tag0:Slot name="$XDSSubmissionSetUniqueId">
-              <tag0:ValueList>
-                <tag0:Value>'$ssuid$'</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
+      <MetadataFile>getss.xml</MetadataFile>
       <ExpectedContents>
         <SSwithOneDoc/>
       </ExpectedContents>
@@ -45,18 +34,7 @@
       <XDSb/>
       <CleanParams/>
       <UseReport reportName="docid" section="THIS" step="query" useAs="$id0$"/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4">
-            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
-              <tag0:ValueList>
-                <tag0:Value>('$id0$')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
+      <MetadataFile>getdocs.xml</MetadataFile>
       <ExpectedContents>
         <Associations count="0"/>
         <Documents count="1"/>

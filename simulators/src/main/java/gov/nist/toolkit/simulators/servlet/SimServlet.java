@@ -55,7 +55,7 @@ public class SimServlet  extends HttpServlet {
 	String contentType;
 	HttpHeader contentTypeHeader;
 	String bodyCharset;
-	File simDbDir;
+//	File simDbDir;
 	MessageValidationResults mvr;
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
 
@@ -67,8 +67,7 @@ public class SimServlet  extends HttpServlet {
 		File warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
 		Installation.installation().warHome(warHome);
-		simDbDir = Installation.installation().simDbFile();
-		logger.info("...simdb = " + simDbDir);
+		logger.info("...simdb = " + Installation.installation().simDbFile());
 
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);
@@ -89,7 +88,7 @@ public class SimServlet  extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) {
 		String uri = request.getRequestURI();
-
+        logger.info("SIMSERVLET GET " + uri);
 		String[] parts;
 		try {
 			int in = uri.indexOf("/del/");
@@ -110,15 +109,18 @@ public class SimServlet  extends HttpServlet {
 				handleMsgDownload(response, parts);
 				return;
 			}
-			in = uri.indexOf("/site/");
+			in = uri.indexOf("/siteconfig/");
+            logger.info("siteconfig in is " + in);
 			if (in != -1) {
-				parts = uri.substring(in + "/site/".length()).split("\\/");
+                logger.info("working on siteconfig");
+				parts = uri.substring(in + "/siteconfig/".length()).split("\\/");
 				handleSiteDownload(response, parts);
 				return;
 			}
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		} catch (Exception e) {
+            logger.error(ExceptionUtil.exception_details(e));
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
 		}
@@ -144,7 +146,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(simDbDir, new SimId(simid), null, null);
+				SimDb sdb = new SimDb(Installation.installation().simDbFile(), new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -161,7 +163,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(simDbDir, new SimId(simid), actor, transaction);
+			db = new SimDb(Installation.installation().simDbFile(), new SimId(simid), actor, transaction);
 		}
 		catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -238,7 +240,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(simDbDir, new SimId(simid), null, null);
+				SimDb sdb = new SimDb(Installation.installation().simDbFile(), new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -255,7 +257,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(simDbDir, new SimId(simid), actor, transaction);
+			db = new SimDb(Installation.installation().simDbFile(), new SimId(simid), actor, transaction);
 			response.setContentType("application/zip");
 			db.getMessageLogZip(response.getOutputStream(), message);
 			response.getOutputStream().close();
@@ -323,7 +325,7 @@ public class SimServlet  extends HttpServlet {
 
 		if (actor == null || actor.equals("null")) {
 			try {
-				SimDb sdb = new SimDb(simDbDir, new SimId(simid), null, null);
+				SimDb sdb = new SimDb(Installation.installation().simDbFile(), new SimId(simid), null, null);
 				actor = sdb.getActorsForSimulator().get(0);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -340,7 +342,7 @@ public class SimServlet  extends HttpServlet {
 
 		SimDb db;
 		try {
-			db = new SimDb(simDbDir, new SimId(simid), actor, transaction);
+			db = new SimDb(Installation.installation().simDbFile(), new SimId(simid), actor, transaction);
 		} catch (Exception e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			return;
@@ -450,12 +452,12 @@ public class SimServlet  extends HttpServlet {
 		try {
 
 			// DB space for this simulator
-			SimDb db = new SimDb(simDbDir, simid, actor, transaction);
+			SimDb db = new SimDb(Installation.installation().simDbFile(), simid, actor, transaction);
 			request.setAttribute("SimDb", db);
 
 			logRequest(request, db, actor, transaction);
 
-			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(simDbDir, simid);
+			SimulatorConfig asc = GenericSimulatorFactory.getSimConfig(Installation.installation().simDbFile(), simid);
             request.setAttribute("SimulatorConfig", asc);
 
 			regIndex = getRegIndex(simid);

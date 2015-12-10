@@ -4,7 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 
-public class XdsException extends Exception implements Serializable {
+public class XdsException extends Exception implements Serializable, IsSerializable {
 
 	/**
 	 *

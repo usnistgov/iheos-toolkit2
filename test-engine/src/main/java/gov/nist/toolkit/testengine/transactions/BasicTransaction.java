@@ -751,16 +751,17 @@ public abstract class BasicTransaction  {
 
 	Metadata prepareMetadata() throws XdsInternalException, XdsInternalException, MetadataException, FactoryConfigurationError {
 		Metadata metadata = null;
+        logger.debug("metadata_filename is " + metadata_filename);
+        if (metadata_filename != null && !metadata_filename.equals(""))
+            request_element = Util.parse_xml(new File(metadata_filename));
+
+//        if (request_element == null)
+//            fatal("BasicTransaction:prepare_metadata(): metadata_element is null");
 		if (noMetadataProcessing) {
 			reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 			return null;
 		}
 		try {
-			if (metadata_filename != null && !metadata_filename.equals(""))
-				request_element = Util.parse_xml(new File(metadata_filename));
-
-			if (request_element == null)
-				fatal("BasicTransaction:prepare_metadata(): metadata_element is null");
 
 			reportManagerPreRun(request_element);  // must run before prepareMetadata (assign uuids)
 

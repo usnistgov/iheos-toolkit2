@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
   <Test>11909</Test>
   <Rule>Test GetRelatedDocuments Stored Query</Rule>
   <TestStep id="no_initial_doc">
@@ -10,23 +11,7 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6">
-            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
-              <tag0:ValueList>
-                <tag0:Value>'urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6'</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-            <tag0:Slot name="$AssociationTypes">
-              <tag0:ValueList>
-                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', 'urn:ihe:iti:2007:AssociationType:RPLC')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
+      <MetadataFile>query1.xml</MetadataFile>
       <ExpectedContents>
         <Associations count="0"/>
         <Documents count="0"/>
@@ -42,24 +27,8 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6">
-            <tag0:Slot name="$XDSDocumentEntryUniqueId">
-              <tag0:ValueList>
-                <tag0:Value>'$uniqueid$'</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-            <tag0:Slot name="$AssociationTypes">
-              <tag0:ValueList>
-                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', 'urn:ihe:iti:2007:AssociationType:RPLC')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
-      <UseId testdir="../12346" id="Document01" symbol="$uniqueid$" step="submit_doc" section="AssignedUids"/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uniqueid$" step="submit_doc" section="AssignedUids"/>
       <ExpectedContents>
         <Associations count="0"/>
         <Documents count="0"/>
@@ -75,24 +44,8 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6">
-            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
-              <tag0:ValueList>
-                <tag0:Value>'$uuid$'</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-            <tag0:Slot name="$AssociationTypes">
-              <tag0:ValueList>
-                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', 'urn:ihe:iti:2007:AssociationType:RPLC')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
-      <UseId testdir="../12346" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+      <MetadataFile>query3.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
       <ExpectedContents>
         <Associations count="0"/>
         <Documents count="0"/>
@@ -108,24 +61,8 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6">
-            <tag0:Slot name="$XDSDocumentEntryUniqueId">
-              <tag0:ValueList>
-                <tag0:Value>'$uniqueid$'</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-            <tag0:Slot name="$AssociationTypes">
-              <tag0:ValueList>
-                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', 'urn:ihe:iti:2007:AssociationType:RPLC')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
-      <UseId testdir="../12346" id="Document01" symbol="$uniqueid$" step="submit_doc_for_rplc" section="AssignedUids"/>
+      <MetadataFile>query4.xml</MetadataFile>
+      <UseId testdir="../12346/doc_for_rplc" id="Document01" symbol="$uniqueid$" step="doc_for_rplc" section="AssignedUids"/>
       <ExpectedContents>
         <Associations count="1"/>
         <Documents count="2"/>
@@ -141,24 +78,8 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6">
-            <tag0:Slot name="$XDSDocumentEntryUniqueId">
-              <tag0:ValueList>
-                <tag0:Value>'$uniqueid$'</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-            <tag0:Slot name="$AssociationTypes">
-              <tag0:ValueList>
-                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', 'urn:ihe:iti:2007:AssociationType:RPLC')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
-      <UseId testdir="../12346" id="Document02" symbol="$uniqueid$" step="submit_2doc_w_fol" section="AssignedUids"/>
+      <MetadataFile>query5.xml</MetadataFile>
+      <UseId testdir="../12346/two_doc_w_fol" id="Document02" symbol="$uniqueid$" step="submit_2doc_w_fol" section="AssignedUids"/>
       <ExpectedContents>
         <Associations count="0"/>
         <Documents count="0"/>
@@ -174,24 +95,8 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
-      <Metadata>
-        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
-          <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6">
-            <tag0:Slot name="$XDSDocumentEntryEntryUUID">
-              <tag0:ValueList>
-                <tag0:Value>'$uuid$'</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-            <tag0:Slot name="$AssociationTypes">
-              <tag0:ValueList>
-                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember', 'urn:ihe:iti:2007:AssociationType:RPLC')</tag0:Value>
-              </tag0:ValueList>
-            </tag0:Slot>
-          </tag0:AdhocQuery>
-        </query:AdhocQueryRequest>
-      </Metadata>
-      <UseId testdir="../12346" id="Document02" symbol="$uuid$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <MetadataFile>query6.xml</MetadataFile>
+      <UseId testdir="../12346/two_doc_w_fol" id="Document02" symbol="$uuid$" step="submit_2doc_w_fol" section="AssignedUuids"/>
       <ExpectedContents>
         <Associations count="0"/>
         <Documents count="0"/>

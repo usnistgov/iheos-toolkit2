@@ -76,6 +76,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         VerticalPanel pidPanel = new VerticalPanel();
         panel.add(pidPanel);
 
+        pidPanel.add(new HTML("<h3>Add existing Patient ID(s)</h3>"));
         pidPanel.add(new HTML("Patient IDs (paste then Add to Favorites)"));
         pidBox.setCharacterWidth(50);
         pidBox.setVisibleLines(10);
@@ -88,6 +89,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         favoritesListPanel.add(favoritiesButtonPanel);
 
         pidPanel.add(new HTML("<br />"));
+        pidPanel.add(new HTML("<h3>Generate new Patient ID</h3>"));
         pidPanel.add(assigningAuthorityPanel);
 
         favoritiesButtonPanel.add(new HTML("Select Patient ID(s) then: "));
@@ -112,6 +114,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
+        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 
         panel.add(selectedPids);
@@ -221,7 +224,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
             toolkitService.getAssigningAuthorities(new AsyncCallback<List<String>>() {
                 @Override
                 public void onFailure(Throwable e) {
-                    new PopupMessage(e.getMessage());
+                    new PopupMessage("Error loading Assigning Authorities - usually caused by session timeout - " + e.getMessage());
                 }
 
                 @Override
@@ -254,7 +257,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
             return null;
         }
         if (pids.size() > 1) {
-            new PopupMessage("Nust select only one Patient ID");
+            new PopupMessage("Must select only one Patient ID");
             return null;
         }
         return pids.get(0);

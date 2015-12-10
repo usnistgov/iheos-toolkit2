@@ -16,6 +16,8 @@ public class Installation {
 	String sep = File.separator;
 	public TkProps tkProps = new TkProps();
 
+    public final static String DEFAULT_ENVIRONMENT_NAME = "default";
+
 	PropertyServiceManager propertyServiceMgr = null;
 	static Logger logger = Logger.getLogger(Installation.class);
 
@@ -114,7 +116,11 @@ public class Installation {
 	public File schemaFile() {
 		return new File(toolkitxFile(), "schema");
 	}
-	public File testkitFile() { return new File(toolkitxFile(), "testkit"); }
+	public File testkitFile() {
+        File testkit = propertyServiceManager().getTestkit();
+        if (testkit != null) return testkit;
+        return new File(toolkitxFile(), "testkit");
+    }
 
     public String defaultEnvironmentName() { return propertyServiceManager().getDefaultEnvironment(); }
 	
@@ -131,21 +137,25 @@ public class Installation {
 		return new File(new File(toolkitxFile(), "environment"), envName);
 	}
 
-	public File directSendLogFile(String userName) {
-		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
-	}
+    public File internalEnvironmentsFile() {
+        return new File(toolkitxFile(), "environment");
+    }
 
-	public File directSendLogs() {
-		return new File(externalCache + sep + "direct" + sep + "sendlog");
-	}
+//    public File directSendLogFile(String userName) {
+//		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
+//	}
 
-	public File directLogFile(String userName) {
-		return new File(externalCache + sep + "direct" + sep + "direct-logs" + sep + userName);
-	}
+//	public File directSendLogs() {
+//		return new File(externalCache + sep + "direct" + sep + "sendlog");
+//	}
 
-	public File directLogs() {
-		return new File(externalCache + sep + "direct" + sep + "direct-logs");
-	}
+//	public File directLogFile(String userName) {
+//		return new File(externalCache + sep + "direct" + sep + "direct-logs" + sep + userName);
+//	}
+
+//	public File directLogs() {
+//		return new File(externalCache + sep + "direct" + sep + "direct-logs");
+//	}
 
 	public File sessionLogFile(String sessionId) {
 		return new File(warHome + sep + "SessionCache" + sep + sessionId);
@@ -167,7 +177,7 @@ public class Installation {
 	 * This function is called from within v3.
 	 * @return the toolkit properties file
 	 */
-	public File getToolkitPropertiesFile(){
-		return propertyServiceMgr.getPropertiesFile();
-	}
+//	public File getToolkitPropertiesFile(){
+//		return propertyServiceMgr.getPropertiesFile();
+//	}
 }

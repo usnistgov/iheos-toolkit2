@@ -1,0 +1,26 @@
+
+<query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+    <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:14d4debf-8f97-4251-9a74-a90016b0af0d">
+        <tag0:Slot name="$XDSDocumentEntryPatientId">
+            <tag0:ValueList>
+                <tag0:Value>'$patient_id$'</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="$XDSDocumentEntryStatus">
+            <tag0:ValueList>
+                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="$XDSDocumentEntryPracticeSettingCode">
+            <tag0:ValueList>
+                <tag0:Value>('Dialysis')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="$XDSDocumentEntryPracticeSettingCodeScheme">
+            <tag0:ValueList>
+                <tag0:Value>('Connect-a-thon practiceSettingCodes')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+    </tag0:AdhocQuery>
+</query:AdhocQueryRequest>

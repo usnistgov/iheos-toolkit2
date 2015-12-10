@@ -11,20 +11,14 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.FactoryConfigurationError;
-
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+
+import javax.xml.namespace.QName;
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.File;
+import java.util.*;
 
 public class Linkage extends BasicLinkage {
 	OMElement instruction_output;
@@ -278,11 +272,11 @@ public class Linkage extends BasicLinkage {
 		if (this.use_xpath != null)
 			result.putAll(compileUseXPath());
 		if (this.use_repository_unique_id != null)
-			result.putAll(this.compileUseRepostoryUniqueId());
+			result.putAll(this.compileUseRepositoryUniqueId());
 		return result;
 	}
 
-	HashMap<String, String> compileUseRepostoryUniqueId() throws XdsInternalException, MetadataException {
+	HashMap<String, String> compileUseRepositoryUniqueId() throws XdsInternalException, MetadataException {
 		HashMap<String, String> result = new HashMap<String, String>();
 
 		OMElement metadata_ele = (m == null) ? null : m.getRoot();

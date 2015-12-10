@@ -3,9 +3,7 @@ package gov.nist.toolkit.actortransaction.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 // This file must be kept up to date with SimulatorActorTypes.java
 
@@ -184,6 +182,17 @@ public enum ActorType implements IsSerializable, Serializable {
                 return at;
         }
         return null;
+    }
+
+    static public Set<ActorType> getActorTypes(TransactionType tt) {
+        Set<ActorType> types = new HashSet<>();
+        if (tt == null)
+            return types;
+        for (ActorType at : values()) {
+            if (at.hasTransaction(tt))
+                types.add(at);
+        }
+        return types;
     }
 
 	static public ActorType findActor(String name) {

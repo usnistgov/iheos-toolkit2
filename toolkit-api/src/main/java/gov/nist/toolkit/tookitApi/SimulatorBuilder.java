@@ -1,80 +1,77 @@
 package gov.nist.toolkit.tookitApi;
 
-import gov.nist.toolkit.toolkitServicesCommon.*;
-import org.apache.log4j.Logger;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.jackson.JacksonFeature;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Configuration;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import gov.nist.toolkit.actortransaction.SimulatorActorType;
+import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
+import gov.nist.toolkit.toolkitServicesCommon.SimId;
 
 /**
- * Builder class for creating and updating Simulator configurations.  Includes create/delete/update/get operations
+ * Build/modify a collection of different Actors.
  */
 public class SimulatorBuilder {
-    static Logger logger = Logger.getLogger(SimulatorBuilder.class);
-    private WebTarget target;
+    String urlRoot;
+    EngineSpi engine;
+
 
     /**
-     *
-     * @param hostname where test engine runs
-     * @param port where test engin runs
+     * This will initialize the API to contact the test engine at
+     * http://hostname:port/xdstools2
+     * @param urlRoot where engine is running - typical value would be http://localhost:8080/xdstools2
      */
-    public SimulatorBuilder(String hostname, String port) {
-        ClientConfig cc = new ClientConfig().register(new JacksonFeature());
-        Client c = ClientBuilder.newClient(cc);
-        Configuration conf = c.getConfiguration();
-        logger.info(conf.getPropertyNames());
-        target = c.target("http://" + hostname + ":" + port + "/xdstools2/rest/");
+    public SimulatorBuilder(String urlRoot) {
+        this.urlRoot = urlRoot;
+        engine = new EngineSpi(urlRoot);
+    }
+
+    private SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
+        return engine.create(id, user, actorType, environmentName);
     }
 
     /**
-     * Create new simulator with default parameters. There is currently no way to create a simulator with
-     * custom parameters.  The parameters defining a simulator will change over time.  To create a custom
-     * configuration use this call to create the simulator with the default parameters.  Update the SimConfig
-     * returned and then issue an update(SimConfig) to update the simulator configuration.
+     * Create new Document Source simulator with default configuration.
+     * To create a simulator with
+     * custom configuration:
+     * <ol>
+     * <li>Create simulator with default configuration</li>
+     * <li>Update the local copy of the configuration</li>
+     * <li>Send the update via the update method</li>
+     * </ol>
      * @param id Simulator ID
      * @param user User creating Simulator.  Same as TestSession in Toolkit UI. The simulator ID must be unique for this user.
-     * @param actorType Simulator type. See {@link gov.nist.toolkit.actortransaction.SimulatorActorTypes} for valid values.
      * @param environmentName Environment defines Affinity Domain coding schemes and TLS certificate for use with client.
      * @return Simulator configuration.
      * @throws ToolkitServiceException if anything goes wrong.
      */
-    public SimConfig create(String id, String user, String actorType, String environmentName) throws ToolkitServiceException {
-        SimId simId = ToolkitFactory.newSimId(id, user, actorType, environmentName);
-        SimIdResource bean = new SimIdResource(simId);
-        Response response = target
-                .path("simulators")
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(bean));
-        if (response.getStatus() != 200) {
-            logger.error("status is " + response.getStatus());
-            for (String key : response.getHeaders().keySet()) {
-                logger.error(key + ": " + response.getHeaderString(key));
-            }
-            throw new ToolkitServiceException(response.readEntity(OperationResultResource.class));
-        }
-        SimConfigResource config = response.readEntity(SimConfigResource.class);
-        return config;
+    public DocumentSource createDocumentSource(String id, String user, String environmentName) throws ToolkitServiceException {
+        XdrDocumentSource src = new XdrDocumentSource();
+        src.engine = engine;
+        src.config =  engine.create(id, user, SimulatorActorType.DOCUMENT_SOURCE, environmentName);
+        return src;
     }
 
     /**
-     * Not for Public Use.
-     * @param parms
-     * @return
-     * @throws ToolkitServiceException
+     * Create new Document Recipient simulator with default configuration.
+     * To create a simulator with
+     * custom configuration:
+     * <ol>
+     * <li>Create simulator with default configuration</li>
+     * <li>Update the local copy of the configuration</li>
+     * <li>Send the update via the update method</li>
+     * </ol>
+     * @param id Simulator ID
+     * @param user User creating Simulator.  Same as TestSession in Toolkit UI. The simulator ID must be unique for this user.
+     * @param environmentName Environment defines Affinity Domain coding schemes and TLS certificate for use with client.
+     * @return Simulator configuration.
+     * @throws ToolkitServiceException if anything goes wrong.
      */
-    public SimId create(BasicSimParameters parms) throws ToolkitServiceException {
-        return create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
+    public DocumentRecipient createDocumentRecipient(String id, String user, String environmentName) throws ToolkitServiceException {
+        XdrDocumentRecipient act = new XdrDocumentRecipient();
+        act.engine = engine;
+        act.config = engine.create(id, user, SimulatorActorType.DOCUMENT_RECIPIENT, environmentName);
+        return act;
     }
 
     /**
-     * Update the configuration of an existing Simulator. Any properties that are passed in SimConfig that are
+     * Update the configuration of a Simulator. Any properties that are passed in SimConfig that are
      * not recognized will be silently ignored. Parameters passed with wrong type (String vs. boolean) will cause
      * ToolkitServiceException.
      *
@@ -84,21 +81,12 @@ public class SimulatorBuilder {
      * @return updated SimConfig if updates made or null if no changes accepted.
      * @throws ToolkitServiceException if anything goes wrong
      */
-    public SimConfig update(SimConfig config) throws ToolkitServiceException {
-        Response response = target
-                .path(String.format("simulators/%s", config.getId()))
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(config));
-        int status = response.getStatus();
-        if (status == Response.Status.ACCEPTED.getStatusCode())
-            return response.readEntity(SimConfigResource.class);
-        if (status == Response.Status.NOT_MODIFIED.getStatusCode())
-            return null;
-        throw new ToolkitServiceException(response);
+    private SimConfig update(SimConfig config) throws ToolkitServiceException {
+        return engine.update(config);
     }
 
     /**
-     * Delete an existing simulator. There is another call available using the SimId parameter type.  This
+     * Delete a simulator. There is another call available using the SimId parameter type.  This
      * parameter type contains the raw ID and USER that are used here.  The two calls function identically.
      * If the simulator does not exist no error is returned.
      * @param id of simulator
@@ -106,52 +94,28 @@ public class SimulatorBuilder {
      * @throws ToolkitServiceException if anything goes wrong.
      */
     public void delete(String id, String user) throws ToolkitServiceException {
-        SimId simId = ToolkitFactory.newSimId(id, user, null, null);
-        delete(simId);
+        engine.delete(id, user);
     }
 
     /**
-     * Delete an existing simulator. There is another call available using separate raw ID and USER parameters.
+     * Delete a simulator. There is another call available using separate raw ID and USER parameters.
      * USER and ID are components of the more formal SimId type.  The two calls function identically.
      * If the simulator does not exist no error is returned.
      * @param simId Simulator ID
      * @throws ToolkitServiceException if anything goes wrong
      */
     public void delete(SimId simId) throws ToolkitServiceException {
-        Response response = target.path("simulators/" + simId.getUser() + "__" + simId.getId()).request().delete();
-        if (response.getStatus() != 200)
-            throw new ToolkitServiceException(response);
+        engine.delete(simId);
     }
 
     /**
-     * Not for Public Use.
-     * @param parms
-     * @throws ToolkitServiceException
-     */
-    public void delete(BasicSimParameters parms) throws ToolkitServiceException {
-        delete(parms.getId(), parms.getUser());
-    }
-
-    /**
-     * Get full configuration of existing Simulator as defined by its Simulator ID
+     * Get configuration of a Simulator.
      * @param simId simulator ID
      * @return simulator configuration
      * @throws ToolkitServiceException if anything goes wrong
      */
     public SimConfig get(SimId simId) throws ToolkitServiceException {
-        Response response = target.path("simulators/" + simId.getFullId()).request().get();
-        if (response.getStatus() != 200)
-            throw new ToolkitServiceException(response);
-        return response.readEntity(SimConfigResource.class);
+        return engine.get(simId);
     }
 
-    public SendResponseResource sendXdr(SendRequest request) throws ToolkitServiceException {
-        Response response = target
-                .path(String.format("simulators/%s/xdr", request.getFullId()))
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(request));
-        if (response.getStatus() != 200)
-            throw new ToolkitServiceException(response);
-        return response.readEntity(SendResponseResource.class);
-    }
 }

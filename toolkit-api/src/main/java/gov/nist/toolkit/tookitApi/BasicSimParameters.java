@@ -1,12 +1,14 @@
 package gov.nist.toolkit.tookitApi;
 
+import gov.nist.toolkit.actortransaction.SimulatorActorType;
+
 /**
  * Not for Public Use.
  */
 public class BasicSimParameters {
     private String id;
     private String user;
-    private String actorType;
+    private SimulatorActorType actorType;
     private String environmentName;
 
     public String getId() {
@@ -25,11 +27,11 @@ public class BasicSimParameters {
         this.user = user;
     }
 
-    public String getActorType() {
+    public SimulatorActorType getActorType() {
         return actorType;
     }
 
-    public void setActorType(String actorType) {
+    public void setActorType(SimulatorActorType actorType) {
         this.actorType = actorType;
     }
 

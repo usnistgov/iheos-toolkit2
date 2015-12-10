@@ -320,7 +320,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 					buttonPanel.add(deleteButton);
 
 					String u = "<a href=\"" +
-							"/xdstools2/site/" + simId.toString() + "\"" +
+							"siteconfig/" + simId.toString() + "\"" +
  							" target=\"_blank\"" +
 							">Download Site File</a>";
 					HTML siteDownload = new HTML(u);
@@ -335,6 +335,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 	
 
 	public String getWindowShortName() {
-		return "simcontrol";
+		return "simmgr";
 	}
 }

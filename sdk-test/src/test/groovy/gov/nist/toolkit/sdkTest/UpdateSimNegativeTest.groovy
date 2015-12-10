@@ -1,9 +1,10 @@
 package gov.nist.toolkit.sdkTest
 
+import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
 import gov.nist.toolkit.tookitApi.BasicSimParameters
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.tookitApi.EngineSpi
 import gov.nist.toolkit.tookitApi.ToolkitServiceException
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import org.glassfish.grizzly.http.server.HttpServer
@@ -16,7 +17,7 @@ import spock.lang.Specification
 class UpdateSimNegativeTest extends Specification {
     def host='localhost'
     @Shared def port = '8889'
-    SimulatorBuilder builder = new SimulatorBuilder(host, port);
+    EngineSpi builder = new EngineSpi(String.format('http://localhost:%s/xdstools2', port));
     @Shared HttpServer server
     BasicSimParameters params = new BasicSimParameters();
     SimConfig config
@@ -39,7 +40,7 @@ class UpdateSimNegativeTest extends Specification {
     def setup() {  // run before each test method
         params.id = 'reg'
         params.user = 'mike'
-        params.actorType = 'reg'
+        params.actorType = SimulatorActorType.REGISTRY
         params.environmentName = 'test'
 
         // establish test environment - newly created sim

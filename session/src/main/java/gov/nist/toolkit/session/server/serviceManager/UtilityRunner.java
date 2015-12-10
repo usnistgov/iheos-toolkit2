@@ -69,7 +69,7 @@ public class UtilityRunner {
             if (session.transactionSettings.logRepository == null) {
                 if (testRunType == TestRunType.UTILITY) {
                     session.transactionSettings.logRepository =
-                            new LogRepositoryFactory().
+                            LogRepositoryFactory.
                                     getRepository(
                                             Installation.installation().sessionCache(),
                                             session.getId(),
@@ -78,7 +78,7 @@ public class UtilityRunner {
                                             null);
                 } else if (testRunType == TestRunType.TEST) {
                     session.transactionSettings.logRepository =
-                            new LogRepositoryFactory().
+                            LogRepositoryFactory.
                                     getRepository(
                                             Installation.installation().testLogCache(),
                                             session.getMesaSessionName(),
@@ -98,7 +98,7 @@ public class UtilityRunner {
                     // collection.  We replace it with a list of linked TestInstances, one for each
                     // contained test.
 
-                    TestCollection testCollection = new TestCollection(session.getTestkitFile(), collectionName);
+                    TestCollection testCollection = new TestCollection(Installation.installation().testkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();
                     TestInstance ti = null;
                     for (String id : testIds) {
@@ -211,6 +211,9 @@ public class UtilityRunner {
             logger.error(ExceptionUtil.exception_details(e));
             assertionResults.add(ExceptionUtil.exception_details(e), false);
             return ResultBuilder.RESULT(testInstance, assertionResults, null, null);
+        }
+        finally {
+            session.clear();
         }
     }
 
