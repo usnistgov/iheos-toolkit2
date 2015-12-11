@@ -49,3 +49,27 @@ The format is lowest_port_number, highest_lowest_port_number
 
 This is the URL for contacting Gazelle to automatically download system configurations.  It is only used at
 Connectathons.
+
+### Testkit
+
+By default the testkit, the definition of test templates and test collections,
+resides within the WAR file at WAR/toolkitx/testkit.  Occasionally there is a need to
+refer to an externally hosted copy of testkit.  This field configures toolkit to
+use a specific externally hosted copy of testkit.
+
+If this property is missing or has no value then the default testkit will
+be used. If this property is present and has a value it must be the full path
+to a valid copy of the testkit.  This testkit will be used instead of the one
+internal to toolkit.
+
+Note that the configuration editor cannot create new properties so if the
+toolkit installation you have does not have this property listed you will have
+to create it by hand.  To do this edit the file
+WAR/WEB-INF/toolkit.properties. The correct format for this property is
+
+Testkit=
+
+or
+
+Testkit=/full/path/to/testkit
+
