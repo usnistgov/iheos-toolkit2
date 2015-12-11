@@ -13,7 +13,10 @@ import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
 import gov.nist.toolkit.xdsexception.*;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.soap.*;
+import org.apache.axiom.soap.SOAP11Constants;
+import org.apache.axiom.soap.SOAP12Constants;
+import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
@@ -28,6 +31,9 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.log4j.Logger;
 
@@ -404,7 +410,8 @@ public class Soap implements SoapInterface {
 		// Boolean.TRUE);
 		// includes setting of endpoint
 		setOptions(options);
-		options.setProperty(
+        setMaxConnections();
+        options.setProperty(
 				AddressingConstants.ADD_MUST_UNDERSTAND_TO_ADDRESSING_HEADERS,
 				Boolean.TRUE);// vbeera:
 								// modified
@@ -480,13 +487,12 @@ public class Soap implements SoapInterface {
 		if (async)
 			operationClient.setCallback(callback);
 
-		System.out
-				.println(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
+        log.info(ExceptionUtil.here(""));
+		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
 		try {
 			operationClient.execute(block); // execute sync or async
 		} finally {
-			System.out
-					.println(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
+			log.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 
 			if (async)
 				waitTillDone();
@@ -713,7 +719,21 @@ public class Soap implements SoapInterface {
 
 	}
 
-	/*
+    // Set the max connections and timeout - needed because by default you can only have
+    // two connections to a single host.  This doesn't work with simulators in toolkit.
+    void setMaxConnections() {
+        MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager = new MultiThreadedHttpConnectionManager();
+        HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+        params.setDefaultMaxConnectionsPerHost(50);
+        params.setMaxTotalConnections(50);
+        params.setSoTimeout(20000);
+        params.setConnectionTimeout(20000);
+        multiThreadedHttpConnectionManager.setParams(params);
+        HttpClient httpClient = new HttpClient(multiThreadedHttpConnectionManager);
+        serviceClient.getServiceContext().getConfigurationContext().setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);
+    }
+
+    /*
 	 * (non-Javadoc)
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#getResult()

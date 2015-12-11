@@ -570,6 +570,7 @@ public class SimServlet  extends HttpServlet {
 				repIndex.save();
 			}
 
+            logger.info("Starting Reg/Rep Cache cleanout");
 			synchronized(this) {
 
 				// check for indexes that are old enough they should be removed from cache
@@ -597,7 +598,9 @@ public class SimServlet  extends HttpServlet {
 				}
 
 			}
+            logger.info("Done with Reg/Rep Cache cleanout");
 		} catch (IOException e) {
+            logger.info("Done with Reg/Rep Cache cleanout");
 			if (!responseSent)
 				sendSoapFault(response, ExceptionUtil.exception_details(e));
 			e.printStackTrace();
@@ -678,6 +681,7 @@ public class SimServlet  extends HttpServlet {
 		String registryIndexFile = db.getRegistryIndexFile().toString();
 		RegIndex regIndex;
 
+        logger.info("GetRegIndex");
 		synchronized(config) {
 			regIndex = (RegIndex) servletContext.getAttribute("Reg_" + simid);
 			if (regIndex == null) {
@@ -700,6 +704,7 @@ public class SimServlet  extends HttpServlet {
 		String repositoryIndexFile = db.getRepositoryIndexFile().toString();
 		RepIndex repIndex;
 
+        logger.info("GetRepIndex");
 		synchronized(config) {
 			repIndex = (RepIndex) servletContext.getAttribute("Rep_" + simid);
 			if (repIndex == null) {

@@ -4,6 +4,7 @@ package gov.nist.toolkit.installation;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
