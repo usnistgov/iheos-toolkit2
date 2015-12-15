@@ -43,15 +43,17 @@ public class UseReportManager  {
 			if (section != null && section.equals("THIS"))
 				continue;
 			if (config.verbose)
-				System.out.println("\tLoading logs for test " + testInstance + " section " + section);
+				System.out.println("\tLoading logs for test " + testInstance + " section " + section + "...");
 			TestDetails tspec = null;
 			try {
 				tspec = new TestDetails(config.altTestkitHome, testInstance);
 			} catch (Exception e) {
 				tspec = new TestDetails(config.testkitHome, testInstance);
 			}
+            System.out.println("TestDetails are: " + tspec.toString());
 			tspec.setLogRepository(config.logRepository);
 			File testlogFile = tspec.getTestLog(testInstance, section);
+            System.out.println("Loading log " + testlogFile);
 			if (testlogFile != null)
 				priorTests.put((section.equals("") ? "None" : section), new LogFileContent(testlogFile));
 		}

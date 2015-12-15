@@ -118,8 +118,13 @@ public class Installation {
 	}
 	public File testkitFile() {
         File testkit = propertyServiceManager().getTestkit();
-        if (testkit != null) return testkit;
-        return new File(toolkitxFile(), "testkit");
+        if (testkit != null) {
+            logger.info(String.format("Testkit source is %s", testkit));
+            return testkit;
+        }
+        testkit = new File(toolkitxFile(), "testkit");
+        logger.info(String.format("Testkit source is %s", testkit));
+        return testkit;
     }
 
     public String defaultEnvironmentName() { return propertyServiceManager().getDefaultEnvironment(); }
