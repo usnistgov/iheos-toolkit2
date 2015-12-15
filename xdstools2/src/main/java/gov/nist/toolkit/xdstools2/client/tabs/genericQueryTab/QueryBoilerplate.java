@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 import java.util.List;
 
@@ -31,12 +32,18 @@ public class QueryBoilerplate {
 	}
 
 	QueryBoilerplate(GenericQueryTab genericQueryTab, ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings, ActorType selectByActor) {
+
+
 		this.genericQueryTab = genericQueryTab;
 		genericQueryTab.selectByActor = selectByActor;
 		genericQueryTab.row_initial = genericQueryTab.mainGrid.getRowCount();
+		// TODO issue is here
+
 		genericQueryTab.runner = runner;
 		genericQueryTab.transactionTypes = transactionTypes;
 		genericQueryTab.couplings = couplings;
+
+
 
 //		genericQueryTab.resultPanel = new VerticalPanel();
 //		genericQueryTab.topPanel.add(genericQueryTab.resultPanel);
@@ -114,6 +121,5 @@ public class QueryBoilerplate {
 	}
 
 	public String getPatientId() { return genericQueryTab.getCommonPatientId(); }
-
 
 }

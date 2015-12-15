@@ -127,8 +127,6 @@ public class MesaTestTab extends GenericQueryTab {
 		mainGrid = new FlexTable();
 		
 		topPanel.add(mainGrid);
-
-
 	}
 
 	class Runner implements ClickHandler {
@@ -337,7 +335,7 @@ public class MesaTestTab extends GenericQueryTab {
 
 		
 	}
-	
+
 	void loadTestsForActor() {
 		toolkitService.getCollection("actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
 
@@ -354,12 +352,12 @@ public class MesaTestTab extends GenericQueryTab {
 				List<String> testNums = new ArrayList<String>();
 				testNums.addAll(testNumsSet);
 				testNums = new StringSort().sort(testNums);
-				
+
 				for (String name : testNums) {
 					String description = testCollectionMap.get(name);
 					selectTestList.addItem(name + " - " + description, name);
 				}
-}
+			}
 		});
 	}
 	
