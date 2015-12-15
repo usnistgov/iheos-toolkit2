@@ -37,7 +37,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	String remoteSitesLabel;
 	// this is not a fixed attribute so it doesn't show in editor
 //	public List<Site> remoteSites = null;
-	
+
 	// This is only used to record validation requirements for included document(s)
 	// vc != null triggers UI to display selections from tk_props and accept
 	// selection.
@@ -121,19 +121,19 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public void add(List<SimulatorConfigElement> elementList) {
 		elements.addAll(elementList);
 	}
-	
+
 	public boolean areRemoteSitesNecessary() { return remoteSitesNecessary; }
-	
+
 	public void setRemoteSitesNecessary(boolean value, String displayLabel) {
 		remoteSitesNecessary = value;
 		remoteSitesLabel = displayLabel;
 	}
-	
+
 	public String getRemoteSitesLabel() { return remoteSitesLabel; }
-			
+
 	public List<String> getRemoteSiteNames() { return remoteSiteNames; }
 	public void setRemoteSiteNames(List<String> siteNames) { remoteSiteNames = siteNames;  }
-	
+
 	public Date getExpiration() {
 		return expires;
 	}

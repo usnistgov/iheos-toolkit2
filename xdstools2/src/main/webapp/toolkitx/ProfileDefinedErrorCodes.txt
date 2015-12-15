@@ -1,0 +1,77 @@
+Transaction, Code, Severity, Text
+P, DocumentQueued, W, An XDR Recipient queued the document for future manual matching to a patient.
+P, InvalidDocumentContent, E, The recipient has rejected this submission because it detected that one of the documents does not match the metadata.
+P, PartialAppendContentNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Append semantics.
+P, PartialFolderContentNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Folder semantics.
+P, PartialReplaceContentNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Replacement semantics.
+P, PartialTransformNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Transform semantics.
+P, PartialTransformReplaceNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Transform and Replace semantics.
+RS, XDSDocumentUniqueIdError, E, The document associated with the uniqueId is not available. This could be because the document is not available. The requestor is not authorized to access that document or the document is no longer available.
+XGR, XDSDocumentUniqueIdError, E, The document associated with the uniqueId is not available. This could be because the document is not available. The requestor is not authorized to access that document or the document is no longer available.
+P, XDSDuplicateUniqueIdInRegistry, E, UniqueId received was not unique. UniqueId could have been attached to SubmissionSet or Folder. codeContext shall indicate which and the value of the non- unique uniqueId. This error cannot be thrown for DocumentEntry. See XDSNonIdenticalHash and XDSNonIdenticalSize.
+R, XDSDuplicateUniqueIdInRegistry, E, UniqueId received was not unique. UniqueId could have been attached to SubmissionSet or Folder. codeContext shall indicate which and the value of the non- unique uniqueId. This error cannot be thrown for DocumentEntry. See XDSNonIdenticalHash and XDSNonIdenticalSize.
+P, XDSExtraMetadataNotSaved, W, This warning is returned if extra metadata was present but not saved.
+R, XDSExtraMetadataNotSaved, W, This warning is returned if extra metadata was present but not saved.
+P, XDSMissingDocument, E, DocumentEntry exists in metadata with no corresponding attached document.
+P, XDSMissingDocumentMetadata, E, MIME package contains MIME part with Content-Id header not found in metadata.
+SQ, XDSMissingHomeCommunityId, E, A value for the homeCommunityId is required and has not been specified.
+XGQ, XDSMissingHomeCommunityId, E, A value for the homeCommunityId is required and has not been specified.
+RS, XDSMissingHomeCommunityId, E, A value for the homeCommunityId is required and has not been specified.
+XGR, XDSMissingHomeCommunityId, E, A value for the homeCommunityId is required and has not been specified.
+P, XDSNonIdenticalHash, E, Document being registered was a duplicate (uniqueId already in Document Registry) but hash does not match. codeContext indicates UniqueId.
+R, XDSNonIdenticalHash, E, Document being registered was a duplicate (uniqueId already in Document Registry) but hash does not match. codeContext indicates UniqueId.
+P, XDSNonIdenticalSize, E, Document being registered was a duplicate (uniqueId already in Document Registry) but size does not match. CodeContext indicates UniqueId.
+R, XDSNonIdenticalSize, E, Document being registered was a duplicate (uniqueId already in Document Registry) but size does not match. CodeContext indicates UniqueId.
+P, XDSPatientIdDoesNotMatch, E, This error is thrown when the patient Id is required to match and does not. The codeContext shall indicate the value of the Patient Id and the nature of the conflict.
+R, XDSPatientIdDoesNotMatch, E, This error is thrown when the patient Id is required to match and does not. The codeContext shall indicate the value of the Patient Id and the nature of the conflict.
+P, XDSRegistryBusy, E, Too much activity.
+R, XDSRegistryBusy, E, Too much activity.
+SQ, XDSRegistryBusy, E, Too much activity.
+XGQ, XDSRegistryBusy, E, Too much activity.
+P, XDSRepositoryBusy, E, Too much activity.
+RS, XDSRepositoryBusy, E, Too much activity.
+XGR, XDSRepositoryBusy, E, Too much activity.
+P, XDSRegistryDeprecatedDocumentError, E, The transaction was rejected because it submitted an Association referencing a deprecated document.
+R, XDSRegistryDeprecatedDocumentError, E, The transaction was rejected because it submitted an Association referencing a deprecated document.
+P, XDSRegistryDuplicateUniqueIdInMessage, E, A UniqueId value was found to be used more than once within the submission. Error code indicates where error was detected. codeContext shall indicate the duplicate UniqueId.
+R, XDSRegistryDuplicateUniqueIdInMessage, E, A UniqueId value was found to be used more than once within the submission. Error code indicates where error was detected. codeContext shall indicate the duplicate UniqueId.
+P, XDSRepositoryDuplicateUniqueIdInMessage, E, A UniqueId value was found to be used more than once within the submission. Error code indicates where error was detected. codeContext shall indicate the duplicate UniqueId.
+P, XDSRegistryError, E, Internal error.
+R, XDSRegistryError, E, Internal error.
+SQ, XDSRegistryError, E, Internal error.
+XGQ, XDSRegistryError, E, Internal error.
+P, XDSRepositoryError, E, Internal error.
+RS, XDSRepositoryError, E, Internal error.
+XGR, XDSRepositoryError, E, Internal error.
+P, XDSRegistryMetadataError, E, Error detected in metadata. Actor name indicates where error was detected.
+R, XDSRegistryMetadataError, E, Error detected in metadata. Actor name indicates where error was detected.
+P, XDSRepositoryMetadataError, E, Error detected in metadata. Actor name indicates where error was detected.
+P, XDSRegistryNotAvailable, E, Repository was unable to access the Registry.
+P, XDSRegistryOutOfResources, E, Resources are low.
+R, XDSRegistryOutOfResources, E, Resources are low.
+SQ, XDSRegistryOutOfResources, E, Resources are low.
+XGQ, XDSRegistryOutOfResources, E, Resources are low.
+P, XDSRepositoryOutOfResources, E, Resources are low.
+RS, XDSRepositoryOutOfResources, E, Resources are low.
+XGR, XDSRepositoryOutOfResources, E, Resources are low.
+SQ, XDSResultNotSinglePatient, E, This error signals that the single Stored Query would have returned metadata for multiple Patient Ids.
+RS, XDSResultNotSinglePatient, E, This error signals that the single Retrieve would have returned metadata for multiple Patient Ids.
+SQ, XDSStoredQueryMissingParam, E, A required parameter to a stored query is missing.
+XGQ, XDSStoredQueryMissingParam, E, A required parameter to a stored query is missing.
+SQ, XDSStoredQueryParamNumber, E, A parameter which only accepts a single value is coded with multiple values.
+XGQ, XDSStoredQueryParamNumber, E, A parameter which only accepts a single value is coded with multiple values.
+SQ, XDSTooManyResults, E, Query resulted in too many results. No results are returned.
+XGQ, XDSTooManyResults, E, Query resulted in too many results. No results are returned.
+SQ, XDSUnavailableCommunity, E, A community which would have been contacted was not available.
+RS, XDSUnavailableCommunity, E, A community which would have been contacted was not available.
+SQ, XDSUnknownCommunity, E, A value for the homeCommunityId is not recognized.
+XGQ, XDSUnknownCommunity, E, A value for the homeCommunityId is not recognized.
+RS, XDSUnknownCommunity, E, A value for the homeCommunityId is not recognized.
+XGR, XDSUnknownCommunity, E, A value for the homeCommunityId is not recognized.
+P, XDSUnknownPatientId, E, Patient Id referenced in metadata is not known by the receiving actor. The codeContext shall include the value of patient Id in question.
+R, XDSUnknownPatientId, E, Patient Id referenced in metadata is not known by the receiving actor. The codeContext shall include the value of patient Id in question.
+XGQ, XDSUnknownPatientId, E, Patient Id referenced in metadata is not known by the receiving actor. The codeContext shall include the value of patient Id in question.
+RS, XDSUnknownRepositoryId, E, The repositoryUniqueId value could not be resolved to a valid document repository or the value does not match the repositoryUniqueId.
+XGR, XDSUnknownRepositoryId, E, The repositoryUniqueId value could not be resolved to a valid document repository or the value does not match the repositoryUniqueId.
+SQ, XDSUnknownStoredQuery, E, The Query Id provided in the request is not recognized.
+XGQ, XDSUnknownStoredQuery, E, The Query Id provided in the request is not recognized.

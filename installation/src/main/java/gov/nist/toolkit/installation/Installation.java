@@ -4,7 +4,6 @@ package gov.nist.toolkit.installation;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
@@ -87,6 +86,8 @@ public class Installation {
 	public File getTkPropsFile() {
 		return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
 	}
+
+
 	
 	public boolean initialized() { return warHome != null && externalCache != null; }
 	
@@ -104,7 +105,6 @@ public class Installation {
 
 	public File simDbFile() {
 		return new File(externalCache(), "simdb");
-//		return propertyServiceManager().getSimDbDir();
 	}
 
 	public List<String> getListenerPortRange() {
@@ -147,22 +147,6 @@ public class Installation {
         return new File(toolkitxFile(), "environment");
     }
 
-//    public File directSendLogFile(String userName) {
-//		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
-//	}
-
-//	public File directSendLogs() {
-//		return new File(externalCache + sep + "direct" + sep + "sendlog");
-//	}
-
-//	public File directLogFile(String userName) {
-//		return new File(externalCache + sep + "direct" + sep + "direct-logs" + sep + userName);
-//	}
-
-//	public File directLogs() {
-//		return new File(externalCache + sep + "direct" + sep + "direct-logs");
-//	}
-
 	public File sessionLogFile(String sessionId) {
 		return new File(warHome + sep + "SessionCache" + sep + sessionId);
 	}
@@ -178,12 +162,4 @@ public class Installation {
 	public String defaultSessionName() { return "STANDALONE"; }
     public String defaultServiceSessionName() { return "SERVICE"; }
 
-	/**
-	 * Queries the PropertyServiceManager to retrieve the Toolkit Properties as a File.
-	 * This function is called from within v3.
-	 * @return the toolkit properties file
-	 */
-//	public File getToolkitPropertiesFile(){
-//		return propertyServiceMgr.getPropertiesFile();
-//	}
 }
