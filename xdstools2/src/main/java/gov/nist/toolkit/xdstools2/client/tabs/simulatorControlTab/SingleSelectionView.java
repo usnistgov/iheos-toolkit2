@@ -3,8 +3,8 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
@@ -13,17 +13,17 @@ import java.util.List;
 /**
  *
  */
-public class MultiSelectionView implements SelectionDisplay {
+public class SingleSelectionView implements SelectionDisplay {
     FlowPanel namesPanel = new FlowPanel();
-    List<CheckBox> selections = new ArrayList<>();
+    List<RadioButton> selections = new ArrayList<>();
 
-    public MultiSelectionView() {
+    public SingleSelectionView() {
     }
 
     @Override
     public void setData(List<String> data) {
         for (String value : data) {
-            CheckBox cb = new CheckBox(value);
+            RadioButton cb = new RadioButton(value);
             selections.add(cb);
             namesPanel.add(cb);
         }
@@ -32,7 +32,7 @@ public class MultiSelectionView implements SelectionDisplay {
     @Override
     public List<Integer> getSelectedRows() {
         List<Integer> rows = new ArrayList<>();
-        for (CheckBox box : selections) {
+        for (RadioButton box : selections) {
             if (box.getValue())
                 rows.add(selections.indexOf(box));
         }

@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
 import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -91,7 +92,8 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			request = new AdhocQueryRequestParser(ahqr).getAdhocQueryRequest();
 
             SimManager simMgr = new SimManager("ignored");
-            List<Site> sites = simMgr.getSites(asc.remoteSiteNames);
+//            List<Site> sites = simMgr.getSites(asc.rgSiteNames);
+            List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingGateways).asList());
 
             if (sites == null || sites.size() == 0) {
                 er.err(Code.XDSRegistryError, "No RespondingGateways configured", this, null);

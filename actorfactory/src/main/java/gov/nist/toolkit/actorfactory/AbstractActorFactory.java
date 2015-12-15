@@ -229,7 +229,7 @@ public abstract class AbstractActorFactory {
 //			config.remoteSites = new ArrayList<>();
 //
 //			Sites sites = simManager.getAllSites();
-//			for (String remote : config.remoteSiteNames) {
+//			for (String remote : config.rgSiteNames) {
 //				Site site = sites.getSite(remote);
 //				config.remoteSites.add(site);
 //			}
@@ -422,7 +422,11 @@ public abstract class AbstractActorFactory {
 		addUser(sc, new SimulatorConfigElement(name, type, value));
 	}
 
-	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
+    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
+        addUser(sc, new SimulatorConfigElement(name, type, values, isMultiSelect));
+    }
+
+    public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
 	}
 

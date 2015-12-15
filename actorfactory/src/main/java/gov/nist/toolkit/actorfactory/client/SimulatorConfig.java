@@ -26,17 +26,15 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	 */
 	SimId id;
 	String actorType;
-//	String[] values;   // these are possible values
 	Date expires;
 	boolean isExpired = false;
 	List<SimulatorConfigElement> elements  = new ArrayList<SimulatorConfigElement>();
 	
 	// used to record RGs for use with an IG
-	public List<String> remoteSiteNames = new ArrayList<String>();
-	boolean remoteSitesNecessary = false;
-	String remoteSitesLabel;
-	// this is not a fixed attribute so it doesn't show in editor
-//	public List<Site> remoteSites = null;
+//	public List<String> rgSiteNames = new ArrayList<String>();
+//	boolean rgSitesNecessary = false;
+
+
 
 	// This is only used to record validation requirements for included document(s)
 	// vc != null triggers UI to display selections from tk_props and accept
@@ -122,17 +120,11 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		elements.addAll(elementList);
 	}
 
-	public boolean areRemoteSitesNecessary() { return remoteSitesNecessary; }
-
-	public void setRemoteSitesNecessary(boolean value, String displayLabel) {
-		remoteSitesNecessary = value;
-		remoteSitesLabel = displayLabel;
-	}
-
-	public String getRemoteSitesLabel() { return remoteSitesLabel; }
-
-	public List<String> getRemoteSiteNames() { return remoteSiteNames; }
-	public void setRemoteSiteNames(List<String> siteNames) { remoteSiteNames = siteNames;  }
+//	public boolean areRGSitesNecessary() { return rgSitesNecessary; }
+//
+//	public void setRGSitesNecessary(boolean value) {
+//		rgSitesNecessary = value;
+//	}
 
 	public Date getExpiration() {
 		return expires;
@@ -237,6 +229,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public void setValidationContext(ValidationContext vc) {
 		this.vc = vc;
 	}
+
+
 
 
 //	public ActorFactory getActorFactory() throws Exception {

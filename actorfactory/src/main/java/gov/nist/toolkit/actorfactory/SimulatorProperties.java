@@ -196,4 +196,6 @@ public class SimulatorProperties {
      * Updates to this property are ignored.
      */
     public static final String                           creationTime = "Creation Time";
+
+    public static final String                           respondingGateways = "Responding Gateways";
 }
