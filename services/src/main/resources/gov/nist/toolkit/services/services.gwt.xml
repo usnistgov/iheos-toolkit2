@@ -7,4 +7,6 @@
     <inherits name='com.google.gwt.user.User' />
     <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
       <source path="client" />
+      <source path="shared" />
+
 </module>

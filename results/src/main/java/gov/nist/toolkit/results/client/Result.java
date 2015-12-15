@@ -115,5 +115,8 @@ public class Result  implements IsSerializable, Serializable {
 	public String getText() {
 		return text;
 	}
-	
+
+	public String getTimestamp() {
+		return timestamp;
+	}
 }

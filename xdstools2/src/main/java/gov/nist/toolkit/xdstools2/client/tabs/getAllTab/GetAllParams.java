@@ -1,10 +1,14 @@
-package gov.nist.toolkit.xdstools2.client.widgets.queryFilter;
+package gov.nist.toolkit.xdstools2.client.tabs.getAllTab;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.CodeFilterBank;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.OnDemandFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.ReturnTypeFilter;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.StatusFilter;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +16,7 @@ import java.util.Map;
 /**
  * Widget for capturing the parameters for the GetAll query. This does not include PatientID
  * since that is handled elsewhere.
+ * Use codeFilterBank.addFilter(paramGrid, prow, 1, CodesConfiguration.***Code); to add XDS codes as widgets
  */
 public class GetAllParams {
     // container for the composite widget being built
@@ -79,9 +84,12 @@ public class GetAllParams {
 
     }
 
+    /**
+     * Assemble all this detail into the codeSpec format for passing to the server
+     * @param codeSpec includes the name of a parameter as a String and the acceptable values of that parameter
+     *                 as a List<String>.
+     */
     public void addToCodeSpec(Map<String, List<String>> codeSpec) {
-        // Assemble all this detail into the codeSpec format for passing to the server
-        // {DocumentEntry, SubmissionSet, Folder}.availabilityStatus
         deStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryStatus);
         folStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.FolderStatus);
         ssStatusFilter.addToCodeSpec(codeSpec, CodesConfiguration.SubmissionSetStatus);

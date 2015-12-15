@@ -22,6 +22,7 @@ public class CodesConfiguration implements IsSerializable {
 	static public String FolderCodeList = "folderCodeList";
 	static public String AssociationDocumentation = "associationDocumentation";
 
+
 	// Technically these are not codes but they are carried around like they are
 	// in some secondary uses of this class
 	static public String SubmissionSetStatus = "submissionSetStatus";
@@ -29,6 +30,14 @@ public class CodesConfiguration implements IsSerializable {
 	static public String FolderStatus = "folderStatus";
 	static public String DocumentEntryType = "documentEntryType";
 	static public String ReturnsType = "returnsType";
+	static public String CreationTimeFrom = "creationTimeFrom";
+	static public String CreationTimeTo = "creationTimeTo";
+	static public String ServiceStartTimeFrom = "serviceStartTimeFrom";
+	static public String ServiceStartTimeTo = "serviceStartTimeTo";
+	static public String ServiceStopTimeFrom = "serviceStopTimeFrom";
+	static public String ServiceStopTimeTo = "serviceStopTimeTo";
+	static public String AuthorPerson = "authorPerson";
+
 
 	static public Map<String, String> titles = new HashMap<String, String>();
 
@@ -48,6 +57,14 @@ public class CodesConfiguration implements IsSerializable {
 		titles.put(FolderStatus, "Folder Status");
 		titles.put(DocumentEntryType, "DocumentEntry Type");
 		titles.put(ReturnsType, "Returns Type");
+		titles.put(CreationTimeFrom, "Creation Time From");
+		titles.put(CreationTimeTo, "Creation Time To");
+		titles.put(ServiceStartTimeFrom, "Service Start Time From");
+		titles.put(ServiceStartTimeTo, "Service Start Time To");
+		titles.put(ServiceStopTimeFrom, "Service Stop Time From");
+		titles.put(ServiceStopTimeTo, "Service Stop Time To");
+		titles.put(AuthorPerson, "Author Person");
+
 	}
 
 	static public String getTitle(String codeName) { return titles.get(codeName);}

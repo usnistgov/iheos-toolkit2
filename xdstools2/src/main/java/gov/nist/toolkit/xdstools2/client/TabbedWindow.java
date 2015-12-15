@@ -30,7 +30,8 @@ public abstract class TabbedWindow {
 	public TabbedWindow() {
 	}
 
-	protected String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
+	// Used to be protected but impractical for use with the new widget-based architecture in for ex. TestsOverviewTab
+	public String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
 
 	abstract public void onTabLoad(TabContainer container, boolean select, String eventName);
 
