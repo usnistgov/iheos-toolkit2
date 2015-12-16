@@ -5,12 +5,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -42,7 +37,7 @@ public class Xdstools2 implements EntryPoint, TabContainer {
 
 	TabContainer getTabContainer() { return this;}
 
-	static TkProps props = new TkProps();
+    static TkProps props = new TkProps();
 
 	static EventBus eventBus = new SimpleEventBus();
 	// This bus is used for v2 v3 integration that signals v2 launch tab event inside the v3 environment

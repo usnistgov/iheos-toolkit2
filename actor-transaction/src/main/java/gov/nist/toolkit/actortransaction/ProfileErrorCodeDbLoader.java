@@ -8,6 +8,7 @@ import gov.nist.toolkit.installation.Installation;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -16,22 +17,34 @@ import java.nio.charset.Charset;
  * The table loaded here contains all the errors defined by profiles.
  */
 public class ProfileErrorCodeDbLoader {
+    static Logger logger = Logger.getLogger(ProfileErrorCodeDbLoader.class);
 
     static public ProfileErrorCodesDb LOAD() throws Exception {
         File file = new File(Installation.installation().toolkitxFile(), "ProfileDefinedErrorCodes.txt");
+        return LOAD(file);
+    }
+
+    static public ProfileErrorCodesDb LOAD(File db) throws Exception {
         ProfileErrorCodesDb codes = new ProfileErrorCodesDb();
 
-        CSVParser parser = CSVParser.parse(file, Charset.defaultCharset(),CSVFormat.RFC4180);
+        CSVParser parser;
+        try {
+            parser = CSVParser.parse(db, Charset.defaultCharset(), CSVFormat.RFC4180.withHeader());
+        } catch (Exception e) {
+            logger.error("ProfileErrorCodesDb.LOAD: " + e.getMessage());
+            throw e;
+        }
         for (CSVRecord record : parser) {
-            if (record.size() < 4) throw new Exception(String.format("Error parsing %s, first 4 fields are required", file));
+            if (record.size() < 4) throw new Exception(String.format("Error parsing %s, first 4 fields are required", db));
             ErrorCode code = new ErrorCode();
-            code.setTransaction(mapType(record.get("Transaction")));
-            code.setCode(record.get("Code"));
-            String severityString = record.get("Severity");
+            code.setTransaction(mapType(record.get("Transaction").trim()));
+            code.setCode(record.get("Code").trim());
+            String severityString = record.get("Severity").trim();
             if (severityString.equals("E")) code.setSeverity(Severity.Error);
             else if (severityString.equals("W")) code.setSeverity(Severity.Warning);
             else throw new Exception("Error loading ProfileDefinedErrorCodes.txt. Unknown severity code " + severityString);
-            code.setText(record.get("Text"));
+            code.setText(record.get("Text").trim());
+            codes.add(code);
         }
 
         return codes;

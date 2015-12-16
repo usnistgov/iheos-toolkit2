@@ -4,6 +4,7 @@ package gov.nist.toolkit.xdstools2.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
@@ -24,9 +25,8 @@ import java.util.Map;
 
 @RemoteServiceRelativePath("toolkit")
 public interface ToolkitService extends RemoteService  {
-	
 
-	public TkProps getTkProps() throws NoServletSessionException;
+    public TkProps getTkProps() throws NoServletSessionException;
 	
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
@@ -142,35 +142,35 @@ public interface ToolkitService extends RemoteService  {
 	
 	String getTestplanAsText(TestInstance testInstance, String section) throws Exception;
 	
-	public String getImplementationVersion() throws NoServletSessionException ;
+	 String getImplementationVersion() throws NoServletSessionException ;
 	
-	public List<String> getUpdateNames() throws NoServletSessionException ;
-	public List<TestInstance> getTestlogListing(String sessionName) throws Exception;
-	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception;
+	 List<String> getUpdateNames() throws NoServletSessionException ;
+	 List<TestInstance> getTestlogListing(String sessionName) throws Exception;
+	 List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception;
 	
-	public List<RegistryStatus> getDashboardRegistryData() throws Exception;
-	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
+	 List<RegistryStatus> getDashboardRegistryData() throws Exception;
+	 List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
 	
-	public List<String> getSiteNamesWithRG() throws Exception;
+	 List<String> getSiteNamesWithRG() throws Exception;
 
-	public String reloadSystemFromGazelle(String systemName) throws Exception;
-	public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
-	public List<String> getEnvironmentNames() throws NoServletSessionException;
-	public String setEnvironment(String name) throws NoServletSessionException;
-	public String getCurrentEnvironment() throws NoServletSessionException;
-	public String getDefaultEnvironment() throws NoServletSessionException ;
-//	public String getToolkitEnableNwHIN();
-	public String getDefaultAssigningAuthority() throws NoServletSessionException ;
-	public String getAttributeValue(String username, String attName) throws Exception;
-	public void setAttributeValue(String username, String attName, String attValue) throws Exception;
+	 String reloadSystemFromGazelle(String systemName) throws Exception;
+	 boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
+	 List<String> getEnvironmentNames() throws NoServletSessionException;
+	 String setEnvironment(String name) throws NoServletSessionException;
+	 String getCurrentEnvironment() throws NoServletSessionException;
+	 String getDefaultEnvironment() throws NoServletSessionException ;
+	 String getDefaultAssigningAuthority() throws NoServletSessionException ;
+	 String getAttributeValue(String username, String attName) throws Exception;
+	 void setAttributeValue(String username, String attName, String attValue) throws Exception;
 	
-	public Map<String, String> getSessionProperties() throws NoServletSessionException;
-	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
+	 Map<String, String> getSessionProperties() throws NoServletSessionException;
+	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
 	Pid createPid(String assigningAuthority) throws NoServletSessionException;
 	String getAssigningAuthority() throws Exception;
 	List<String> getAssigningAuthorities() throws Exception;
 	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
 
-	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
-	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
+	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
+	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
+    List<String> getProfileErrorCodeRefs(String transactionName, Severity severity) throws Exception;
 }

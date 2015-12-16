@@ -22,8 +22,9 @@ public class SingleSelectionView implements SelectionDisplay {
 
     @Override
     public void setData(List<String> data) {
+        String group = "MyGroup";
         for (String value : data) {
-            RadioButton cb = new RadioButton(value);
+            RadioButton cb = new RadioButton(group, value);
             selections.add(cb);
             namesPanel.add(cb);
         }

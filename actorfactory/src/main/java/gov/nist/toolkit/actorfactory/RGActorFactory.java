@@ -56,8 +56,10 @@ public class RGActorFactory extends AbstractActorFactory {
 		addFixedEndpoint(sc, SimulatorProperties.xcqTlsEndpoint, actorType, TransactionType.XC_QUERY, true);
 		addFixedEndpoint(sc, SimulatorProperties.xcrEndpoint, actorType, TransactionType.XC_RETRIEVE, false);
 		addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint, actorType, TransactionType.XC_RETRIEVE, true);
+        addEditableConfig(sc, SimulatorProperties.errors, ParamType.SELECTION, new ArrayList<String>(), false);
 
-		// This needs to be grouped with a Document Registry
+
+        // This needs to be grouped with a Document Registry
 		SimulatorConfig registryConfig = new RegistryActorFactory().buildNew(simm, simId, true).getConfig(0);   // was false
 
 		// This needs to be grouped with a Document Repository also

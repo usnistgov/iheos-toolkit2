@@ -11,6 +11,9 @@ public class ProfileErrorCodesDb implements Serializable {
     List<ErrorCode> errorCodes = new ArrayList<>();
 
     public ProfileErrorCodesDb() {}
+
+    public void add(ErrorCode code) { errorCodes.add(code);}
+
     public ProfileErrorCodesDb(List<ErrorCode> errorCodes) {
         this.errorCodes = errorCodes;
     }
@@ -23,15 +26,15 @@ public class ProfileErrorCodesDb implements Serializable {
         this.errorCodes = errorCodes;
     }
 
-    public ProfileErrorCodesDb getByTransaction(TransactionType tt) {
-        List<ErrorCode> codes = new ArrayList<>();
+    public List<String> getRefsByTransaction(TransactionType tt, Severity severity) {
+        List<String> refs = new ArrayList<>();
 
         for(ErrorCode code : errorCodes) {
-            if (tt.equals(code.getTransaction()))
-                codes.add(code);
+            if (tt.equals(code.getTransaction()) && severity.equals(code.getSeverity()))
+                refs.add(code.getCode());
         }
 
-        return new ProfileErrorCodesDb(codes);
+        return refs;
     }
 
     public ProfileErrorCodesDb getBySeverity(Severity s) {

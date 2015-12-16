@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
@@ -19,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface ToolkitServiceAsync {
-	
 
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
@@ -171,4 +171,5 @@ public interface ToolkitServiceAsync {
 
 	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
+    void  getProfileErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
 }

@@ -4,7 +4,10 @@
     import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
     import gov.nist.toolkit.actorfactory.SiteServiceManager;
     import gov.nist.toolkit.actorfactory.client.*;
+    import gov.nist.toolkit.actortransaction.ProfileErrorCodeDbLoader;
+    import gov.nist.toolkit.actortransaction.client.Severity;
     import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+    import gov.nist.toolkit.actortransaction.client.TransactionType;
     import gov.nist.toolkit.installation.ExternalCacheManager;
     import gov.nist.toolkit.installation.Installation;
     import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -73,7 +76,7 @@ ToolkitService {
 				MessageValidatorFactoryFactory.messageValidatorFactory2I = new MessageValidatorFactory("a");
 			}
 	}
-	
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Site Services
@@ -291,6 +294,11 @@ ToolkitService {
 	public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
 		return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
 	}
+    public List<String> getProfileErrorCodeRefs(String transactionName, Severity severity) throws Exception {
+        List<String> refs = ProfileErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(transactionName), severity);
+        logger.info(": getProfileErrorCodeRefs(" + transactionName + ") => " + refs.size() + " codes");
+        return refs;
+    }
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Dashboard Service

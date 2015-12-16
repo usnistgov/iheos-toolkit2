@@ -1,4 +1,4 @@
-Transaction, Code, Severity, Text
+Transaction,Code,Severity,Text
 P, DocumentQueued, W, An XDR Recipient queued the document for future manual matching to a patient.
 P, InvalidDocumentContent, E, The recipient has rejected this submission because it detected that one of the documents does not match the metadata.
 P, PartialAppendContentNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Append semantics.

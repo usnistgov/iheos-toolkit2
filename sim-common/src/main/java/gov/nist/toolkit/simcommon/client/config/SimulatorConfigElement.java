@@ -27,8 +27,8 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	boolean booleanValue = false;
 	String  stringValue = "";
     List<String> listValue = new ArrayList<>();
+    String extraValue;
 
-//	public List<String> values = null;
 	boolean editable = false;
 	
 	public SimulatorConfigElement() {   }
@@ -49,6 +49,14 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
         this.name = name;
         this.type = type;
         setValue(values, ((isMultiSelect) ? ValueType.MULTI_SELECT_LIST : ValueType.SINGLE_SELECT_LIST));
+    }
+
+    public String getExtraValue() {
+        return extraValue;
+    }
+
+    public void setExtraValue(String extraValue) {
+        this.extraValue = extraValue;
     }
 
     public boolean isEditable() { return editable; }
