@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,23 +13,29 @@ import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
-import gov.nist.toolkit.xdstools2.client.tabs.*;
+import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
+import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
+import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
+import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 
+import java.util.logging.Logger;
 
-public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabContainer, AcceptsOneWidget, IsWidget {
+
+public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 	public static final int TRAY_SIZE = 190;
 	public static final int TRAY_CTL_BTN_SIZE = 9; // 23
-	static Xdstools2 ME = null;
-    static ClientFactory clientFactory = GWT.create(ClientFactory.class);
+
+    private static Xdstools2 ME = null;
+    private static final ClientFactory clientFactory = GWT.create(ClientFactory.class);
+	private final static Logger logger=Logger.getLogger(Xdstools2.class.getName());
 
 	public SplitLayoutPanel mainSplitPanel = new SplitLayoutPanel(3);
 	private VerticalPanel mainMenuPanel = new VerticalPanel();
 	HomeTab ht = null;
 
 	private static TabPanel tabPanel = new TabPanel();
-    private String tabId;
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
 
@@ -83,11 +88,6 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 			spTabPanel.setAlwaysShowScrollBars(false);
 			mainSplitPanel.add(spTabPanel);
 
-//			RootPanel.get().insert(mainSplitPanel, 0);
-//            topContainer.add(mainSplitPanel);
-
-//			RootLayoutPanel.get().add(mainSplitPanel);
-
 			Window.addResizeHandler(new ResizeHandler() {
 				@Override
 				public void onResize(ResizeEvent event) {
@@ -115,12 +115,10 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 		menuTrayStateToBe.setTitle("Collapse");
 
 		// Make it rounded
-//		menuTrayStateToBe.setStyleName("roundedButton1");
 		menuTrayStateToBe.setStyleName("menuCollapse");
 		menuTrayStateToBe.setWidth("15px");
 		menuTrayStateToBe.setWidth("100%");
 
-//		vpCollapsible.setBorderWidth(1);
 		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		vpCollapsible.add(menuTrayStateToBe);
 		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
@@ -153,21 +151,23 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 		return spMenu;
 	}
 
-	private void resizeToolkit() {
+	public void resizeToolkit() {
         try {
-            long containerWidth = mainSplitPanel.getParent().getElement().getClientWidth();
-            long containerHeight = mainSplitPanel.getParent().getElement().getClientHeight() - 42; /* compensate for tab bar height, which is a fixed size */
+			if (mainSplitPanel.getParent()!=null) {
+				long containerWidth = mainSplitPanel.getParent().getElement().getClientWidth();
+				long containerHeight = mainSplitPanel.getParent().getElement().getClientHeight() - 42; /* compensate for tab bar height, which is a fixed size */
 
-            int selectedTabIndex = tabPanel.getTabBar().getSelectedTab();
+				int selectedTabIndex = tabPanel.getTabBar().getSelectedTab();
 
-            if (selectedTabIndex >= 0) {
-//			tabPanel.setWidth("100%");
-//			tabPanel.getWidget(selectedTabIndex).setWidth("100%");
-                tabPanel.getWidget(selectedTabIndex).setHeight(containerHeight + "px");
-            }
-        }catch (NullPointerException e){
-
-        }
+				if (selectedTabIndex >= 0) {
+					tabPanel.getWidget(selectedTabIndex).setHeight(containerHeight + "px");
+				}
+			}else{
+				logger.fine("mainSplitPanel parent is null");
+			}
+        }catch (Throwable t) {
+			logger.warning("Window resize failed:" + t.toString());
+		}
 	}
 
     TabContainer getTabContainer() { return this;}
@@ -229,8 +229,6 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
             @Override
             public void onSuccess(TkProps arg0) {
                 props = arg0;
-//				if (props.isEmpty())
-//					new PopupMessage("Load of TkProps failed");
                 if (newHomeTab) {
                     onModuleLoad2();
                     ht.toolkitService.getDefaultEnvironment(new AsyncCallback<String>() {
@@ -240,6 +238,8 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 
                         @Override
                         public void onSuccess(String s) {
+                            // FIXME What is the purpose of the call if nothing happens? There should be comments
+                            // or logs of what's going on
                             ht.toolkitService.setEnvironment(s, new AsyncCallback() {
                                 @Override
                                 public void onFailure(Throwable throwable) {
@@ -254,8 +254,6 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
                 }
             }
         });
-//		if (newHomeTab)
-//			onModuleLoad2();
 	}
 
 	final ListBox debugMessages = new ListBox();
@@ -265,9 +263,9 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 	}
 
     /**
-     * This is the entry point method.
+     * This is the old entry point method.
+	 * It's now being used as an initialization method the GUI and the environment
      */
-//    @SuppressWarnings("deprecation")
     public void run() {
         loadTkProps();
         testSessionManager.load();
@@ -293,9 +291,6 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 
 		ht.onTabLoad(this, false, null);
 
-		//		new MessageValidatorTab().onTabLoad(this, false);
-
-
 		new TabManager().reset();
 
 		// only one panel, it's all done in tabs
@@ -310,14 +305,6 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 			}
 
 		});
-		/*
-
-	        public void onSelection(SelectionEvent<Integer> event) {
-//	          History.newItem("page" + event.getSelectedItem());
-	        // this was to do startup via the history mechanism
-	        }});
-
-		 */
 
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
             public void onValueChange(ValueChangeEvent<String> event) {
@@ -327,11 +314,6 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
                 try {
                     if (historyToken.equals("mv")) {
                         new MessageValidatorTab().onTabLoad(getTabContainer(), true, null);
-                        //	            	tabPanel.selectTab(0);
-                        //	              String tabIndexToken = historyToken.substring(4, 5);
-                        //	              int tabIndex = Integer.parseInt(tabIndexToken);
-                        //	              // Select the specified tab panel
-                        //	              tabPanel.selectTab(tabIndex);
                     }
 
                 } catch (IndexOutOfBoundsException e) {
@@ -348,14 +330,6 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 		return tabPanel;
 	}
 
-    /**
-     * Method to set open Tab's ID (or to open)
-     * @param tabId
-     */
-    public void setTabId(String tabId) {
-        this.tabId = tabId;
-    }
-
 
 	static public EventBus getEventBus() {
 		return clientFactory.getEventBus();
@@ -370,19 +344,7 @@ public class Xdstools2  extends AbstractActivity implements /*EntryPoint,*/ TabC
 		return v2V3IntegrationEventBus;
 	}
 
-    @Override
-    public void start(AcceptsOneWidget acceptsOneWidget, com.google.gwt.event.shared.EventBus eventBus) {
-        if(tabId!=null ) {
-            // Open required tab
-            // TODO fire V2TabOpenedEvent
-            System.out.println("GO TO");
-            if (tabId.equals("1234"))
-                new FindDocumentsTab().onAbstractTabLoad(getTabContainer(), true, null);
-            resizeToolkit();
-//            getEventBus().fireEvent(new V2TabOpenedEvent(null, TabLauncher.findDocumentsByRefIdTabLabel,0));
-            // Manager.EVENT_BUS.fireEvent(new OpenTabEvent(tabId));
-        }
-    }
+
 
     @Override
     public void setWidget(IsWidget isWidget) {
