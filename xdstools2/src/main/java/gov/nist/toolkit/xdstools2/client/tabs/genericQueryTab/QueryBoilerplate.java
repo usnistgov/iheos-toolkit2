@@ -37,17 +37,13 @@ public class QueryBoilerplate {
 		this.genericQueryTab = genericQueryTab;
 		genericQueryTab.selectByActor = selectByActor;
 		genericQueryTab.row_initial = genericQueryTab.mainGrid.getRowCount();
-		// TODO issue is here
 
 		genericQueryTab.runner = runner;
 		genericQueryTab.transactionTypes = transactionTypes;
 		genericQueryTab.couplings = couplings;
 
-
-
 //		genericQueryTab.resultPanel = new VerticalPanel();
 //		genericQueryTab.topPanel.add(genericQueryTab.resultPanel);
-
 
 		genericQueryTab.addActorReloader();
 

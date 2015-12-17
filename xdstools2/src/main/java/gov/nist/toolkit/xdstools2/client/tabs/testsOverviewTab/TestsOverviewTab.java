@@ -6,10 +6,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.*;
@@ -83,7 +80,8 @@ public class TestsOverviewTab extends GenericQueryTab {
         siteWidget.add(selectActorList);
         loadActorNames();
         selectActorList.addChangeHandler(new ActorSelectionChangeHandler());
-        topPanel.add(siteWidget);
+        mainGrid = new FlexTable();
+        topPanel.add(mainGrid);
 
 
         // -------------------------------------------
@@ -106,7 +104,10 @@ public class TestsOverviewTab extends GenericQueryTab {
         topPanel.add(commands.asWidget());
         topPanel.add(testWidget.asWidget());
 
+        topPanel.add(siteWidget);
+
         setDefaults();
+
     }
 
 
@@ -183,6 +184,7 @@ public class TestsOverviewTab extends GenericQueryTab {
 
             // Populate the list of transaction types
             List<TransactionType> transactionTypes = act.getTransactions();
+            new PopupMessage(transactionTypes.toString());
 
             queryBoilerplate = addQueryBoilerplate(
                     new Runner(),
