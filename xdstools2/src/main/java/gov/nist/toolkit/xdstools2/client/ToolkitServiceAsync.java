@@ -8,11 +8,13 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.results.shared.Test;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,10 +24,8 @@ public interface ToolkitServiceAsync {
 	
 
 	void getTkProps(AsyncCallback<TkProps> callback);
-	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
 	void setSessionProperties(Map<String, String> props, AsyncCallback callback);
-	void setMesaTestSession(String sessionName, AsyncCallback callback);
 	void getNewPatientId(String assigningAuthority, AsyncCallback<String> callback);
 	
 	void getDefaultAssigningAuthority(AsyncCallback<String> callback);
@@ -45,7 +45,6 @@ public interface ToolkitServiceAsync {
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
 	void getLogContent(String sessionName, TestInstance testInstance, AsyncCallback<List<Result>> callback);
-	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
@@ -129,6 +128,7 @@ public interface ToolkitServiceAsync {
 //	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> notify);
 	void mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes, AsyncCallback<List<Result>> callback);
 	void getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
+	void findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
 
 	void getAdminPassword(AsyncCallback<String> callback);
 	
@@ -158,7 +158,6 @@ public interface ToolkitServiceAsync {
 	void getTestIndex(String test, AsyncCallback<List<String>> callback);
 	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
-	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void createPid(String assigningAuthority, AsyncCallback<Pid> callback) throws NoServletSessionException;
@@ -171,4 +170,20 @@ public interface ToolkitServiceAsync {
 
 	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Test Services
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void reloadAllTestResults(String sessionName, AsyncCallback<List<Test>> callback) throws Exception;
+	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
+	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
+	void setMesaTestSession(String sessionName, AsyncCallback callback);
+	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
+	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
+	void deleteSingleTestResult(Site site, int testId, AsyncCallback<Test> callback);
+	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
+	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
+
 }

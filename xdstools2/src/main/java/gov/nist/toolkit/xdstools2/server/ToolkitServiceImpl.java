@@ -1,53 +1,54 @@
 	package gov.nist.toolkit.xdstools2.server;
 
-    import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-    import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-    import gov.nist.toolkit.actorfactory.SiteServiceManager;
-    import gov.nist.toolkit.actorfactory.client.*;
-    import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-    import gov.nist.toolkit.installation.ExternalCacheManager;
-    import gov.nist.toolkit.installation.Installation;
-    import gov.nist.toolkit.installation.PropertyServiceManager;
-    import gov.nist.toolkit.registrymetadata.client.AnyIds;
-    import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-    import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-    import gov.nist.toolkit.registrymetadata.client.Uids;
-    import gov.nist.toolkit.results.client.*;
-    import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-    import gov.nist.toolkit.services.shared.SimulatorServiceManager;
-    import gov.nist.toolkit.session.server.Session;
-    import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
-    import gov.nist.toolkit.sitemanagement.client.Site;
-    import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-    import gov.nist.toolkit.tk.TkLoader;
-    import gov.nist.toolkit.tk.client.TkProps;
-    import gov.nist.toolkit.valregmsg.message.SchemaValidation;
-    import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
-    import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-    import gov.nist.toolkit.valsupport.client.ValidationContext;
+	import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+	import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+	import gov.nist.toolkit.actorfactory.SiteServiceManager;
+	import gov.nist.toolkit.actorfactory.client.*;
+	import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+	import gov.nist.toolkit.installation.ExternalCacheManager;
+	import gov.nist.toolkit.installation.Installation;
+	import gov.nist.toolkit.installation.PropertyServiceManager;
+	import gov.nist.toolkit.registrymetadata.client.AnyIds;
+	import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+	import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+	import gov.nist.toolkit.registrymetadata.client.Uids;
+	import gov.nist.toolkit.results.client.*;
+	import gov.nist.toolkit.results.shared.Test;
+	import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+	import gov.nist.toolkit.services.shared.SimulatorServiceManager;
+	import gov.nist.toolkit.session.server.Session;
+	import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+	import gov.nist.toolkit.sitemanagement.client.Site;
+	import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+	import gov.nist.toolkit.tk.TkLoader;
+	import gov.nist.toolkit.tk.client.TkProps;
+	import gov.nist.toolkit.valregmsg.message.SchemaValidation;
+	import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+	import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+	import gov.nist.toolkit.valsupport.client.ValidationContext;
     import gov.nist.toolkit.xdsexception.ExceptionUtil;
-    import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
-    import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-    import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-    import gov.nist.toolkit.xdstools2.client.ToolkitService;
-    import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-    import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
-    import org.apache.log4j.Logger;
+	import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
+	import gov.nist.toolkit.xdstools2.client.RegistryStatus;
+	import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
+	import gov.nist.toolkit.xdstools2.client.ToolkitService;
+	import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
+	import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+	import org.apache.log4j.Logger;
 
-    import javax.servlet.ServletContext;
-    import javax.servlet.http.HttpServletRequest;
-    import javax.servlet.http.HttpSession;
-    import javax.xml.parsers.FactoryConfigurationError;
-    import java.io.File;
-    import java.io.IOException;
-    import java.util.Collection;
-    import java.util.Date;
-    import java.util.List;
-    import java.util.Map;
+	import javax.servlet.ServletContext;
+	import javax.servlet.http.HttpServletRequest;
+	import javax.servlet.http.HttpSession;
+	import javax.xml.parsers.FactoryConfigurationError;
+	import java.io.File;
+	import java.io.IOException;
+	import java.util.Collection;
+	import java.util.Date;
+	import java.util.List;
+	import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
-ToolkitService {
+		ToolkitService {
 	static String schematronHome = null;
 	ServletContext context = null;
 //	static File warHome = null;
@@ -124,6 +125,10 @@ ToolkitService {
 	public List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception { return session().queryServiceManager().retrieveDocument(site, uids); }
 	public List<Result> getRelated(SiteSpec site, ObjectRef or,	List<String> assocs) throws NoServletSessionException  { return session().queryServiceManager().getRelated(site, or, assocs); }
 	public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  { return session().queryServiceManager().getAll(site, pid, codesSpec); }
+	public List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  {
+		System.out.println("Running findDocuments2 service");
+		return session().queryServiceManager().findDocuments2(site, pid, codesSpec); }
+
 
 	public List<Result> findPatient(SiteSpec site, String firstName,
 			String secondName, String lastName, String suffix, String gender,
@@ -158,13 +163,21 @@ ToolkitService {
 	// Test Service
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testInstances, testSession); }
-    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
+	// New - Loads or reloads test data
+	public List<Test> reloadAllTestResults(String sessionName) throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(sessionName); }
+	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
+	public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
 	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
 	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
 	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
 	public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
 	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
+	public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
+	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
+	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testId); }
+	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
+	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
+
 	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
 
     /**
@@ -190,7 +203,6 @@ ToolkitService {
 	public List<String> getTestdataSetListing(String testdataSetName)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestdataSetListing(testdataSetName); }
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
 	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
-	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
 
     /**
      * Get test names and descriptions from a named test collection
@@ -291,6 +303,7 @@ ToolkitService {
 	public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
 		return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
 	}
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Dashboard Service
@@ -298,6 +311,7 @@ ToolkitService {
 	//------------------------------------------------------------------------
 	public List<RegistryStatus> getDashboardRegistryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRegistryData(); }
 	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRepositoryData(); }
+
 
 	// Other support calls
 	
