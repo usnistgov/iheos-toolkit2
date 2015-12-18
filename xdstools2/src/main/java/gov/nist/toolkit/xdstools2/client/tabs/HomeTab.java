@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.resources.HomePageResources;
 
 public class HomeTab extends GenericQueryTab {
 	//	private static final String Container = null;
@@ -174,6 +175,9 @@ public class HomeTab extends GenericQueryTab {
 			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsTabLabel)));
 			row++;
 
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsAllParametersTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsAllParametersTabLabel)));
+			row++;
+
 //			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findDocumentsByRefIdTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsByRefIdTabLabel)));
 			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsByRefIdTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsByRefIdTabLabel)));
 			row++;
@@ -253,6 +257,9 @@ public class HomeTab extends GenericQueryTab {
 //		mainGrid.setWidget(row, col, addHTML("<b>Tools</b>"));
 		Xdstools2.addtoMainMenu(addHTML("<h3>Tools</h3>"));
 		row++;
+
+		//Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.testsOverviewTabLabel, new TabLauncher(myContainer, TabLauncher.testsOverviewTabLabel)));
+		//row++;
 
 //		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.pidFavoritesLabel, new TabLauncher(myContainer, TabLauncher.pidFavoritesLabel)));
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.pidFavoritesLabel, new TabLauncher(myContainer, TabLauncher.pidFavoritesLabel)));

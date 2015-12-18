@@ -30,7 +30,7 @@ public class SchemaValidation extends MetadataTypes {
 	// empty string as result means no errors
 	static private String validate(String metadata, int metadataType) throws XdsInternalException {
         String localSchema = Installation.installation().schemaFile().toString();
-        localSchema = localSchema.replaceAll(" ", "%20");
+		localSchema = localSchema.replaceAll(" ", "%20");
 		MyErrorHandler errors = null;
 		DOMParser p = null;
 

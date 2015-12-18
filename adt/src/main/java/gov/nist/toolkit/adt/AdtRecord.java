@@ -32,7 +32,7 @@ public class AdtRecord implements Serializable {
      * Creates a new instance of AdtRecord, using parameters for patient ID
      * and patient name.
      * @param patientId The patient ID to set.
-     * @param patientName The patient name to set.
+     * @param patientNames The patient name to set.
      */
     public AdtRecord(String patientId, Collection patientNames) {
         setPatientId(patientId);
@@ -86,7 +86,7 @@ public class AdtRecord implements Serializable {
 
     /**
      * Setter for property patientName.
-     * @param patientName New value of property patientName.
+     * @param patientNames New value of property patientName.
      */
     public void setPatientNames(Collection patientNames) {
         this.patientNames = patientNames;
