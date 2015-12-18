@@ -71,7 +71,8 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 			return;
 
 		// get configured endpoint for backend registry for SQ
-		String endpoint = simulatorConfig.get(SimulatorProperties.storedQueryEndpoint).asString();
+        String endpointLabel = (common.isTls()) ? SimulatorProperties.storedQueryTlsEndpoint : SimulatorProperties.storedQueryEndpoint;
+		String endpoint = simulatorConfig.get(endpointLabel).asString();
 
 		// issue soap call to registry
 		Soap soap = new Soap();

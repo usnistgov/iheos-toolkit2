@@ -106,7 +106,8 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			}
 
 			// get repository endpoint for retrieve
-			String endpoint = getSimulatorConfig().get(SimulatorProperties.retrieveEndpoint).asString();
+            String endpointLabel = (common.isTls()) ? SimulatorProperties.retrieveTlsEndpoint : SimulatorProperties.retrieveEndpoint;
+			String endpoint = getSimulatorConfig().get(endpointLabel).asString();
 
 			// issue soap call to repository
 			Soap soap = new Soap();
