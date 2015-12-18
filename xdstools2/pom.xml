@@ -535,7 +535,7 @@
                     <execution>
                         <phase>prepare-package</phase>
                         <configuration>
-                            <!-- build collections section of testkit -->
+                            <!-- build actorcollections section of testkit -->
                             <target>
                                 <mkdir dir="${testkitOut}/collections" />
 
@@ -558,22 +558,7 @@
                                 <copy file="${testkitOut}/collections/RG.tc" tofile="${testkitOut}/actorcollections/rg.tc" />
                                 <copy file="${testkitOut}/collections/IG.tc" tofile="${testkitOut}/actorcollections/ig.tc" />
                                 <copy file="${testkitOut}/collections/Initialize_for_Stored_Query.tc" tofile="${testkitOut}/actorcollections/Initialize_for_Stored_Query.tc" />
-
-                                <!-- Copy contents from module testkit -->
-                                <!--<copy todir="${testkitOut}/tests">-->
-                                    <!--<fileset dir="${testkitIn}/tests"/>-->
-                                <!--</copy>-->
-                                <!--<copy todir="${testkitOut}/testdata">-->
-                                    <!--<fileset dir="${testkitIn}/testdata"/>-->
-                                <!--</copy>-->
-                                <!--<copy todir="${testkitOut}/examples">-->
-                                    <!--<fileset dir="${testkitIn}/examples"/>-->
-                                <!--</copy>-->
-                                <!--<copy todir="${testkitOut}/actorcollections">-->
-                                    <!--<fileset dir="${testkitIn}/actorcollections"/>-->
-                                <!--</copy>-->
                             </target>
-
                         </configuration>
                         <goals>
                             <goal>run</goal>
