@@ -71,6 +71,12 @@
 	<listener>
    		<listener-class>gov.nist.toolkit.xdstools2.server.MyServletContextListener</listener-class>
 	</listener>
+    
+    <servlet>
+        <servlet-name>buildCollectionsServlet</servlet-name>
+        <servlet-class>gov.nist.toolkit.testengine.scripts.BuildCollections</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
  
 	<servlet>
 		<servlet-name>toolkitServlet</servlet-name>
@@ -162,6 +168,11 @@
 		<servlet-name>simulatorServlet</servlet-name>
 		<url-pattern>/xdstools2/sim/*</url-pattern>
 	</servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>buildCollectionsServlet</servlet-name>
+        <url-pattern>/mapping</url-pattern>
+    </servlet-mapping>
 
     <!-- ============== Jersey import for REST ==============
     -->
