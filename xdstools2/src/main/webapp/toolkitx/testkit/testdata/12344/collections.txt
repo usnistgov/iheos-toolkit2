@@ -1,4 +1,4 @@
-IGQ
-IGR
+igq
+igR
 SQ.b
 TestData

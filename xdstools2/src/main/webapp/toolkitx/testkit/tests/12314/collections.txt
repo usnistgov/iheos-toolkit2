@@ -1,2 +1,2 @@
 XCQ
-RG
+rg
