@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15805/QueryStable</Test>
+  <Rule></Rule>
+  <TestStep id="by_uid">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+	  <isRegisterODDE/>
+
+<!--
+I think submission set validation is required here?
+-->
+      <UseId testdir="../SubmitTestData" id="SubmissionSet01" symbol="$ssuid$" step="SubmitStableDocumentEntry" section="AssignedUids"/>
+
+      <UseReport reportName="docid" section="SubmitTestData" step="SubmitStableDocumentEntry" useAs="$id0$"/>
+
+      <MetadataFile>Stable_doc_query.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>
