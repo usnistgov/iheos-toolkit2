@@ -8,7 +8,7 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
-import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TabPlace;
+import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.TestInstance;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.Xdstools2ActivityMapper;
 import gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces.Xdstools2PlaceHistoryMapper;
 
@@ -39,7 +39,7 @@ public class Xdstools2EP implements EntryPoint{
         Xdstools2PlaceHistoryMapper historyMapper = GWT.create(Xdstools2PlaceHistoryMapper.class);
         PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
 
-        historyHandler.register(placeController, CLIENT_FACTORY.getEventBus(), new TabPlace("HOME"));
+        historyHandler.register(placeController, CLIENT_FACTORY.getEventBus(), new TestInstance("HOME"));
 
         RootLayoutPanel.get().add(xdstools2Activity.getView());
 
