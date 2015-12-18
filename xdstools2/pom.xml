@@ -526,46 +526,46 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-antrun-plugin</artifactId>-->
+                <!--<version>1.8</version>-->
 
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <!-- build actorcollections section of testkit -->
-                            <target>
-                                <mkdir dir="${testkitOut}/collections" />
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<phase>prepare-package</phase>-->
+                        <!--<configuration>-->
+                            <!--&lt;!&ndash; build actorcollections section of testkit &ndash;&gt;-->
+                            <!--<target>-->
+                                <!--<mkdir dir="${testkitOut}/collections" />-->
 
-                                <java classname="gov.nist.toolkit.testengine.scripts.BuildCollections" fork="true" failonerror="true">
-                                    <arg value="${testkitIn}"/>
-                                    <arg value="${testkitOut}" />
-                                    <classpath>
-                                        <path refid="maven.runtime.classpath" />
-                                    </classpath>
-                                </java>
-                                <copy todir="${testkitOut}/collections">
-                                    <fileset dir="${testkitIn}/static.collections"/>
-                                </copy>
+                                <!--<java classname="gov.nist.toolkit.testengine.scripts.BuildCollections" fork="true" failonerror="true">-->
+                                    <!--<arg value="${testkitIn}"/>-->
+                                    <!--<arg value="${testkitOut}" />-->
+                                    <!--<classpath>-->
+                                        <!--<path refid="maven.runtime.classpath" />-->
+                                    <!--</classpath>-->
+                                <!--</java>-->
+                                <!--<copy todir="${testkitOut}/collections">-->
+                                    <!--<fileset dir="${testkitIn}/static.collections"/>-->
+                                <!--</copy>-->
 
-                                <copy file="${testkitOut}/collections/repositoryb.tc" tofile="${testkitOut}/actorcollections/rep.tc" />
-                                <concat destfile="${testkitOut}/actorcollections/reg.tc">
-                                    <filelist dir="${testkitOut}/collections" files="registryb.tc, update.tc" />
-                                </concat>
-                                <copy file="${testkitOut}/collections/Document_Recipient.tc" tofile="${testkitOut}/actorcollections/rec.tc" />
-                                <copy file="${testkitOut}/collections/RG.tc" tofile="${testkitOut}/actorcollections/rg.tc" />
-                                <copy file="${testkitOut}/collections/IG.tc" tofile="${testkitOut}/actorcollections/ig.tc" />
-                                <copy file="${testkitOut}/collections/Initialize_for_Stored_Query.tc" tofile="${testkitOut}/actorcollections/Initialize_for_Stored_Query.tc" />
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                                <!--<copy file="${testkitOut}/collections/repositoryb.tc" tofile="${testkitOut}/actorcollections/rep.tc" />-->
+                                <!--<concat destfile="${testkitOut}/actorcollections/reg.tc">-->
+                                    <!--<filelist dir="${testkitOut}/collections" files="registryb.tc, update.tc" />-->
+                                <!--</concat>-->
+                                <!--<copy file="${testkitOut}/collections/Document_Recipient.tc" tofile="${testkitOut}/actorcollections/rec.tc" />-->
+                                <!--<copy file="${testkitOut}/collections/RG.tc" tofile="${testkitOut}/actorcollections/rg.tc" />-->
+                                <!--<copy file="${testkitOut}/collections/IG.tc" tofile="${testkitOut}/actorcollections/ig.tc" />-->
+                                <!--<copy file="${testkitOut}/collections/Initialize_for_Stored_Query.tc" tofile="${testkitOut}/actorcollections/Initialize_for_Stored_Query.tc" />-->
+                            <!--</target>-->
+                        <!--</configuration>-->
+                        <!--<goals>-->
+                            <!--<goal>run</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
