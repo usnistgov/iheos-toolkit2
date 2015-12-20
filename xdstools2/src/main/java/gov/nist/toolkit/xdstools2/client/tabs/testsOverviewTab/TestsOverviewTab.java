@@ -45,10 +45,6 @@ public class TestsOverviewTab extends GenericQueryTab {
         transactionTypes.add(TransactionType.XC_QUERY);
     }
 
-    // TODO - add proper transaction couplings
-    //public static CoupledTransactions couplings = new CoupledTransactions();
-
-
     // this super is kinda useless now - was a good idea for documentation at one time
     public TestsOverviewTab(){
         super(new FindDocumentsSiteActorManager());
