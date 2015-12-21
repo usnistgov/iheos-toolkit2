@@ -1,13 +1,12 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
-
-import java.util.HashMap;
-
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import org.apache.axiom.om.OMElement;
 
 public class RetContext {
-	HashMap<String, RetInfo> request_info, response_info;
+    RetrievedDocumentsModel request_info, response_info;
 	OMElement request, result;
 	RegistryResponseParser rrp;
 	String expectedError;
@@ -21,18 +20,18 @@ public class RetContext {
 		expectedError = null;
 	}
 	
-	public HashMap<String, RetInfo> getRequestInfo() {
+	public RetrievedDocumentsModel getRequestInfo() {
 		return request_info;
 	}
-	public void setRequestInfo(HashMap<String, RetInfo> request_info) {
+	public void setRequestInfo(RetrievedDocumentsModel request_info) {
 		this.request_info = request_info;
 	}
-	public void addRequestInfo(String uid, RetInfo ri) {
+	public void addRequestInfo(String uid, RetrievedDocumentModel ri) {
 		if (request_info == null)
-			request_info = new HashMap<String, RetInfo>();
+			request_info = new RetrievedDocumentsModel();
 		request_info.put(uid, ri);
 	}
-	public HashMap<String, RetInfo> getResponseInfo() {
+	public RetrievedDocumentsModel getResponseInfo() {
 		return response_info;
 	}
 	
@@ -40,7 +39,7 @@ public class RetContext {
 		expectedError = msg;
 	}
 	public String getExpectedError() { return expectedError; }
-	public void setResponseInfo(HashMap<String, RetInfo> response_info) {
+	public void setResponseInfo(RetrievedDocumentsModel response_info) {
 		this.response_info = response_info;
 	}
 	public OMElement getResult() {

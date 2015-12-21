@@ -18,14 +18,14 @@ import org.apache.axiom.om.OMElement;
 import java.util.Collection;
 import java.util.List;
 
-public class DocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
+public class RetrieveDocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
 	DsSimCommon dsSimCommon;
 	List<String> documentUids;
 	RetrieveMultipleResponse response;
 	RepIndex repIndex;
 	String repositoryUniqueId;
 
-	public DocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
+	public RetrieveDocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
 		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		this.documentUids = documentUids;

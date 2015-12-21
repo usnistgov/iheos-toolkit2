@@ -12,7 +12,7 @@ import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.support.*;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testengine.engine.RetInfo;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
@@ -130,7 +130,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
 
 			RetrieveB retb = new RetrieveB(null);
-			Map<String, RetInfo> docMap = null;
+			Map<String, RetrievedDocumentModel> docMap = null;
 
 			try {
 				docMap = retb.parse_rep_response(result);

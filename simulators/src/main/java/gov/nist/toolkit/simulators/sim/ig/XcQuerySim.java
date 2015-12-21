@@ -61,7 +61,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e));
 			startUpException = e;
-			return;
 		}
 	}
 
@@ -76,8 +75,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
 
-
-
 		try {
 			// if request didn't validate, return so errors can be reported
 			if (common.hasErrors()) {
@@ -85,7 +82,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				return;
 			}
 
-			// Get body of SQ
+			// Get body of request
 			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			OMElement ahqr = smv.getMessageBody();
 

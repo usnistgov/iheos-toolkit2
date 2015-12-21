@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.Sha1Bean;
@@ -202,7 +203,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			try {
 				// map from doc uid -> info about doc
 				// RetInfo holds size, hash, home etc
-				HashMap<String, RetInfo> request_info = build_request_info(request_ele /* retrieve request */);
+				HashMap<String, RetrievedDocumentModel> request_info = build_request_info(request_ele /* retrieve request */);
 
 				// Bean that holds the context of the retrieve operation
 				r_ctx = new RetContext();
@@ -315,9 +316,9 @@ public class RetrieveTransaction extends BasicTransaction {
 
 
 
-	private HashMap<String, RetInfo> build_request_info(OMElement metadata_ele) throws XdsException {
-		HashMap<String, RetInfo> request;
-		request = new HashMap<String, RetInfo>();
+	private HashMap<String, RetrievedDocumentModel> build_request_info(OMElement metadata_ele) throws XdsException {
+		HashMap<String, RetrievedDocumentModel> request;
+		request = new HashMap<String, RetrievedDocumentModel>();
 		for (OMElement document_request : XmlUtil.childrenWithLocalName(metadata_ele, "DocumentRequest")) {
 			//			request_list.add(document_request);
 
@@ -327,7 +328,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(document_request, "RepositoryUniqueId") ;
 			String rep_uid = rep_uid_ele.getText();
 
-			RetInfo rqst = new RetInfo();
+			RetrievedDocumentModel rqst = new RetrievedDocumentModel();
 			rqst.setDoc_uid(doc_uid);
 			rqst.setRep_uid(rep_uid);
 

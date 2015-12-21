@@ -146,7 +146,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 				docUids.add(uid);
 			}
 
-			DocumentResponseSim dms = new DocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
+			RetrieveDocumentResponseSim dms = new RetrieveDocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
 			mvc.addMessageValidator("Generate DocumentResponse", dms, gerb.buildNewErrorRecorder());
 
 			mvc.run();

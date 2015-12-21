@@ -1,11 +1,13 @@
-package gov.nist.toolkit.testengine.engine;
+package gov.nist.toolkit.registrymsg.repository;
 
 import gov.nist.toolkit.utilities.io.Sha1Bean;
 
 import org.apache.log4j.Logger;
 
-public class RetInfo {
-	static Logger logger = Logger.getLogger(RetInfo.class);
+import java.util.Arrays;
+
+public class RetrievedDocumentModel {
+	static Logger logger = Logger.getLogger(RetrievedDocumentModel.class);
 
 	protected String doc_uid;
 	protected String rep_uid;
@@ -15,22 +17,33 @@ public class RetInfo {
 	protected String hash;
 	protected String  home;
 	protected int size;
+    private String cid = null;
 	
 	protected StringBuffer errors;
 
-	public RetInfo() { doc_uid = ""; rep_uid = ""; content_type = ""; hash = null; size=-1; contents = null; errors = new StringBuffer();}
+	public RetrievedDocumentModel() { doc_uid = ""; rep_uid = ""; content_type = ""; hash = null; size=-1; contents = null; errors = new StringBuffer();}
 
 	public String toString() {
 		return "RetInfo:\ndoc_uid=" + doc_uid + 
 		"\nrep_uid=" + rep_uid + 
 		"\ncontents has " + ((contents != null) ? contents.length : "(no contents)") + 
 		" bytes\nhash=" + hash + 
-		"\nsize=" + size  + 
-		"\nerrors=" + errors.toString() + 
+		"\nsize=" + size  +
+                "\nhome=" + home  +
+                "\ncontentType=" + content_type  +
+                "\nerrors=" + errors.toString() +
 		"\n";
 	}
-	
-	public String getHome() {
+
+    public String getCid() {
+        return cid;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+
+    public String getHome() {
 		return home;
 	}
 	
@@ -103,4 +116,30 @@ public class RetInfo {
 
 	public void addError(String msg) { errors.append(msg + "\n"); }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RetrievedDocumentModel that = (RetrievedDocumentModel) o;
+
+        if (size != that.size) return false;
+        if (doc_uid != null ? !doc_uid.equals(that.doc_uid) : that.doc_uid != null) return false;
+        if (rep_uid != null ? !rep_uid.equals(that.rep_uid) : that.rep_uid != null) return false;
+        if (!Arrays.equals(contents, that.contents)) return false;
+        if (content_type != null ? !content_type.equals(that.content_type) : that.content_type != null) return false;
+        return home != null ? home.equals(that.home) : that.home == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = doc_uid != null ? doc_uid.hashCode() : 0;
+        result = 31 * result + (rep_uid != null ? rep_uid.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(contents);
+        result = 31 * result + (content_type != null ? content_type.hashCode() : 0);
+        result = 31 * result + (home != null ? home.hashCode() : 0);
+        result = 31 * result + size;
+        return result;
+    }
 }

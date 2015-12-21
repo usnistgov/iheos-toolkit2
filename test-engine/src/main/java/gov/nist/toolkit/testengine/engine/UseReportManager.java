@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.*;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class UseReportManager  {
 	List<UseReport> useReports;
-	RetInfo retInfo;
+	RetrievedDocumentModel retrievedDocumentModel;
 	ReportManager reportManager; // things reported from query results
 	TestConfig testConfig;
 	SectionLogMap priorTests = new SectionLogMap();
@@ -126,8 +127,8 @@ public class UseReportManager  {
 		useReports.add(r);
 	}
 
-	public void setRetInfo(RetInfo ri, int docIndex) {
-		retInfo = ri;
+	public void setRetInfo(RetrievedDocumentModel ri, int docIndex) {
+		retrievedDocumentModel = ri;
 
 		add("$repuid_doc" + Integer.toString(docIndex)  + "$", ri.getRep_uid());
 		add("$mimetype_doc" + Integer.toString(docIndex)  + "$", ri.getContent_type());

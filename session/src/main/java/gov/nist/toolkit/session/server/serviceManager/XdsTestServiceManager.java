@@ -6,6 +6,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
@@ -520,10 +521,10 @@ public class XdsTestServiceManager extends CommonService {
                                                     "RetrieveDocumentSetResponse");
 								if (rdsr != null) {
 									RetrieveB rb = new RetrieveB();
-									Map<String, RetInfo> resMap = rb
+									Map<String, RetrievedDocumentModel> resMap = rb
 											.parse_rep_response(response);
 									for (String docUid : resMap.keySet()) {
-										RetInfo ri = resMap.get(docUid);
+										RetrievedDocumentModel ri = resMap.get(docUid);
 										Document doc = new Document();
 										doc.uid = ri.getDoc_uid();
 										doc.repositoryUniqueId = ri
