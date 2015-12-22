@@ -84,7 +84,8 @@ abstract public class FindDocuments extends StoredQuery {
 		//                         param name,                                 required?, multiple?, is string?,   is code?,      support AND/OR                          alternative
 		sqs.validate_parm("$XDSDocumentEntryPatientId",                         true,      false,     true,         false,           false,                             (String[])null												);
 		sqs.validate_parm("$XDSDocumentEntryClassCode",                         false,     true,      true,         true,            false,                              (String[])null												);
-		sqs.validate_parm("$XDSDocumentEntryTypeCode",                         false,     true,      true,         true,             false,                             (String[])null												);
+		sqs.validate_parm("$XDSDocumentEntryType",                         		false,     true,      true,         false,           false,                             (String[])null												);
+		sqs.validate_parm("$XDSDocumentEntryTypeCode",                          false,     true,      true,         true,            false,                             (String[])null												);
 		sqs.validate_parm("$XDSDocumentEntryPracticeSettingCode",               false,     true,      true,         true,            false,                              (String[])null												);
 		sqs.validate_parm("$XDSDocumentEntryCreationTimeFrom",                  false,     false,     true,         false,           false,                               (String[])null												);
 		sqs.validate_parm("$XDSDocumentEntryCreationTimeTo",                    false,     false,     true,         false,           false,                               (String[])null												);
@@ -114,6 +115,7 @@ abstract public class FindDocuments extends StoredQuery {
 	protected SQCodedTerm format_codes;
 	protected List<String> status;
 	protected List<String> author_person;
+	protected List<String> entry_type;
 
 	protected SQCodedTerm class_codes;
 	protected SQCodedTerm type_codes;
@@ -153,7 +155,8 @@ abstract public class FindDocuments extends StoredQuery {
 
 		patient_id                        = sqs.params.getStringParm   ("$XDSDocumentEntryPatientId");
 		class_codes                       = sqs.params.getCodedParm("$XDSDocumentEntryClassCode");
-		type_codes                       = sqs.params.getCodedParm("$XDSDocumentEntryTypeCode");
+		entry_type                        = sqs.params.getListParm("$XDSDocumentEntryType");
+		type_codes                        = sqs.params.getCodedParm("$XDSDocumentEntryTypeCode");
 		practice_setting_codes            = sqs.params.getCodedParm("$XDSDocumentEntryPracticeSettingCode");
 		creation_time_from                = sqs.params.getIntParm      ("$XDSDocumentEntryCreationTimeFrom");
 		creation_time_to                  = sqs.params.getIntParm      ("$XDSDocumentEntryCreationTimeTo");
@@ -167,7 +170,6 @@ abstract public class FindDocuments extends StoredQuery {
 		format_codes                      = sqs.params.getCodedParm("$XDSDocumentEntryFormatCode");
 		status                            = sqs.params.getListParm("$XDSDocumentEntryStatus");
 		author_person                     = sqs.params.getListParm("$XDSDocumentEntryAuthorPerson");
-
 
 		String status_ns_prefix = MetadataSupport.status_type_namespace;
 
