@@ -8,21 +8,25 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import org.apache.axiom.om.OMElement;
 
 import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class Validator {
 	Metadata m;
 	StringBuffer errs = new StringBuffer();
 	boolean error = false;
 	OMElement test_assertions;
+	ArrayList<OMElement> use_id = new ArrayList<OMElement>();;
+
+
+	TestConfig testConfig = null;
+	protected OMElement instruction_output;
 
 	public Validator(Metadata m) {
 		this.m = m;
@@ -501,11 +505,78 @@ public class Validator {
 				int count = Integer.parseInt(ec.getAttributeValue(new QName("count")));
 				hasAssociations(count);
 			}
-			else {
+			else if (ec_name.equals("DocumentEntries")) {
+				verifySubmittedEOIdInRegistryResponse(m, ec);
+			} else {
 				throw new XdsInternalException("QueryTransaction: validate_expected_contents(): don't understand verification request " + ec_name);
 			}
 
 		}
+	}
+
+	private boolean verifySubmittedEOIdInRegistryResponse(Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
+		for (Iterator deIt = ec.getChildElements(); deIt.hasNext(); ) {
+
+            OMElement dePart = (OMElement) deIt.next();
+            String dePartLocalName = dePart.getLocalName();
+            if ("DocumentEntry".equals(dePartLocalName)) {
+				OMElement eoInResponse = null;
+                for (Iterator dePartChildElementsIt = dePart.getChildElements(); dePartChildElementsIt.hasNext(); ) {
+
+                    OMElement dePartInstruction = (OMElement) dePartChildElementsIt.next();
+                    String instructionLocalName = dePartInstruction.getLocalName();
+
+                    if ("UseId".equals(instructionLocalName)) {
+
+                        use_id.add(dePartInstruction);
+
+                        Linkage l = new Linkage(testConfig, instruction_output, m, use_id);
+                        HashMap<String, String> myMap = l.compile();
+
+                        if (myMap!=null && myMap.containsKey("$docid$")) {
+                            // Iterate the registry response to see if this docid, the one that was previously submitted, exists in the collection!
+                            String submittedIdValue = myMap.get("$docid$");
+
+                            if (submittedIdValue==null || "".equals(submittedIdValue)) {
+								err("ExtrinsicObject " + "Submitted Id value cannot be null.");
+								return false;
+                            }
+
+                            boolean found = false;
+                            for (OMElement eo : m.getExtrinsicObjects()) {
+                                String eoIdValue  = eo.getAttributeValue(new QName("id")); // UUID should be all lower cased. See Vol 3. 4.2.3.1.5.
+                                if (eoIdValue.equals(submittedIdValue)) {
+									found = true;
+									eoInResponse = eo;
+								}
+                            }
+                            if (!found) {
+								err("The submitted id ["+ submittedIdValue +"] was not found in the registry response!");
+								return false;
+                            }
+                        }
+                    } else if ("DocumentEntryType".equals(instructionLocalName)) {
+						String documentEntryType = dePartInstruction.getText();
+						if (eoInResponse!=null) {
+							String objectType = eoInResponse.getAttributeValue(new QName("objectType"));
+							if (documentEntryType==null || "".equals(documentEntryType)) {
+								err("DocumentEntryType does not have a value in the testplan.");
+								return false;
+							} else {
+								if (!documentEntryType.equals(objectType)) {
+									err("Submitted objectType ["+ documentEntryType +"]does not match with the objectType ["+ objectType +"] in response.");
+									return false;
+								}
+							}
+						} else {
+							err("eoInResponse is null!");
+							return false;
+						}
+                    }
+                }
+            }
+        }
+		return true;
 	}
 
 	public boolean docRplcDoc() throws MetadataException {
@@ -934,6 +1005,22 @@ public class Validator {
 		}
 
 		return current_ele;
+	}
+
+	public TestConfig getTestConfig() {
+		return testConfig;
+	}
+
+	public void setTestConfig(TestConfig testConfig) {
+		this.testConfig = testConfig;
+	}
+
+	public OMElement getInstruction_output() {
+		return instruction_output;
+	}
+
+	public void setInstruction_output(OMElement instruction_output) {
+		this.instruction_output = instruction_output;
 	}
 
 }

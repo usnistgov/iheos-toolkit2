@@ -5,6 +5,7 @@
     <ExpectedStatus>Success</ExpectedStatus>
 	 <RegisterTransaction>
       <XDSb/>
+	  <AssignUuids/>
 	        <Report name="docid" section="Result">
 //*[local-name()='ExtrinsicObject']/@id
 			</Report>

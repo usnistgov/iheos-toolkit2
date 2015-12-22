@@ -10,11 +10,13 @@
                             </ValueList>
                         </Slot>
 
+<!--
         <Slot name="$XDSSubmissionSetUniqueId">
             <ValueList>
                 <Value>'$ssuid$'</Value>
             </ValueList>
         </Slot>
+-->
 
         	<Slot name="$XDSDocumentEntryType">
             	<ValueList>

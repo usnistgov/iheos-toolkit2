@@ -1315,6 +1315,8 @@ public abstract class BasicTransaction  {
 		Metadata m = MetadataParser.parseNonSubmission(result);
 
 		Validator v = new Validator(test_assertions);
+		v.setInstruction_output(instruction_output);
+		v.setTestConfig(testConfig);
 		v.run_test_assertions(m);
 
 		return v.getErrors();
