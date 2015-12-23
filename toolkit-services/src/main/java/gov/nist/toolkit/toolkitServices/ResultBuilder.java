@@ -28,6 +28,7 @@ public class ResultBuilder {
             status = Response.Status.BAD_REQUEST;
         }
         else if (e instanceof EnvironmentNotSelectedException) {
+            logger.info(ExceptionUtil.exception_details(e));
             reason = "Environment does not exist - " + e.getMessage();
             extendedCode = OperationResultResource.ENVIRONMENT_DOES_NOT_EXIST;
             status = Response.Status.BAD_REQUEST;

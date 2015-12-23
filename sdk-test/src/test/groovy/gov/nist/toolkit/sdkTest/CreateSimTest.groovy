@@ -25,7 +25,7 @@ class CreateSimTest extends Specification {
     BasicSimParameters params = new BasicSimParameters();
 
     def setupGrizzly() {
-        server = Main.startServer(port);
+        server = GrizzlyController.startServer(port);
     }
 
     def setupSpec() {   // one time setup done when class launched

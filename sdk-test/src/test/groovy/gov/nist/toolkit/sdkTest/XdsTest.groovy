@@ -24,7 +24,7 @@ class XdsTest extends Specification {
     BasicSimParameters recParams = new BasicSimParameters()
 
     def setupGrizzly() {
-        server = Main.startServer(port);
+        server = GrizzlyController.startServer(port);
     }
 
     def loadAxis2() {

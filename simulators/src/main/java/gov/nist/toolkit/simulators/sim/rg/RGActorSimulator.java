@@ -133,7 +133,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			Map<String, RetrievedDocumentModel> docMap = null;
 
 			try {
-				docMap = retb.parse_rep_response(result);
+				docMap = retb.parse_rep_response(result).getMap();
 			} catch (Exception e) {
 				er.err(Code.XDSRegistryError, e);
 				returnRetrieveError();

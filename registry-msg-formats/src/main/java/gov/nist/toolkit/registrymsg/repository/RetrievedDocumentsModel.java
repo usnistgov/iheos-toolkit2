@@ -15,8 +15,9 @@ public class RetrievedDocumentsModel {
         return map;
     }
 
-    public void setMap(Map<String, RetrievedDocumentModel> map) {
+    public RetrievedDocumentsModel setMap(Map<String, RetrievedDocumentModel> map) {
         this.map = map;
+        return this;
     }
 
     public void put(String id, RetrievedDocumentModel item) {

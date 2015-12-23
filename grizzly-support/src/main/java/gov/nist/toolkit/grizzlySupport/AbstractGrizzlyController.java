@@ -1,4 +1,4 @@
-package gov.nist.toolkit.sdkTest;
+package gov.nist.toolkit.grizzlySupport;
 
 
 import org.apache.log4j.Logger;
@@ -10,24 +10,39 @@ import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
 
-import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 /**
  * Main class.
  *
  */
-public class Main {
-    static Logger logger = Logger.getLogger(Main.class);
+abstract public class AbstractGrizzlyController {
+    static Logger logger = Logger.getLogger(AbstractGrizzlyController.class);
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:%s/xdstools2/rest/";
+
+    public abstract List<String> getPackages();
+
+
+    String asCommaSeparatedList(List<String> names) {
+        StringBuilder buf = new StringBuilder();
+
+        for (String name : names) {
+            if (buf.length() != 0) buf.append(", ");
+            buf.append(name);
+        }
+
+        return buf.toString();
+    }
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
      * @return Grizzly HTTP server.
      */
-    public static HttpServer startServer(String port) {
-        final ResourceConfig rc = new ResourceConfig().packages("gov.nist.toolkit.toolkitServices, gov.nist.toolkit.transactionNotificationService");
+    public HttpServer startServer(String port) {
+        String packages = asCommaSeparatedList(getPackages());
+        final ResourceConfig rc = new ResourceConfig().packages(packages);
         rc.property(ServerProperties.TRACING, "ALL");
 
         // create and start a new instance of grizzly http server
@@ -51,17 +66,17 @@ public class Main {
         return server;
     }
 
-    /**
-     * Main method.
-     * @param args
-     * @throws IOException
-     */
-    public static void main(String[] args) throws IOException {
-        final HttpServer server = startServer("8888");
-        System.out.println(String.format("Jersey app started with WADL available at "
-                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
-        System.in.read();
-        server.stop();
-    }
+//    /**
+//     * Main method.
+//     * @param args
+//     * @throws IOException
+//     */
+//    public static void main(String[] args) throws IOException {
+//        final HttpServer server = startServer("8888");
+//        System.out.println(String.format("Jersey app started with WADL available at "
+//                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
+//        System.in.read();
+//        server.stop();
+//    }
 }
 

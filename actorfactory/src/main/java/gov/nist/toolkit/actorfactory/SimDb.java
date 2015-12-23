@@ -16,7 +16,6 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -95,7 +94,7 @@ public class SimDb {
 		String ipdir = simId.toString();
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
 		if (!simDir.exists()) {
-			logger.error(ExceptionUtil.here("Simulator " + simId + " does not exist (" + simDir + ")"));
+			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
 			throw new NoSimException("Simulator " + simId + " does not exist (" + simDir + ")");
 		}
 

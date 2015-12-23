@@ -24,7 +24,7 @@ class UpdateSimNegativeTest extends Specification {
     def parmName = "Validate_Codes"
 
     def setupGrizzly() {
-        server = Main.startServer(port);
+        server = GrizzlyController.startServer(port);
     }
 
     def setupSpec() {   // one time setup done when class launched

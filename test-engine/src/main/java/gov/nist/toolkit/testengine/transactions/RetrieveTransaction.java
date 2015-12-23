@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.Sha1Bean;
@@ -207,7 +208,7 @@ public class RetrieveTransaction extends BasicTransaction {
 
 				// Bean that holds the context of the retrieve operation
 				r_ctx = new RetContext();
-				r_ctx.setRequestInfo(request_info);
+				r_ctx.setRequestInfo(new RetrievedDocumentsModel().setMap(request_info));
 				r_ctx.setRequest(request_ele);
 				r_ctx.setExpectedError(s_ctx.getExpectedErrorMessage());
 

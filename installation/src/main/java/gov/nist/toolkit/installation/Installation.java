@@ -159,7 +159,7 @@ public class Installation {
 		return new File(externalCache + sep + "TestLogCache");
 	}
 
-	public String defaultSessionName() { return "STANDALONE"; }
-    public String defaultServiceSessionName() { return "SERVICE"; }
+	public static String defaultSessionName() { return "STANDALONE"; }
+    public static String defaultServiceSessionName() { return "SERVICE"; }
 
 }

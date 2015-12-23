@@ -29,7 +29,11 @@ public enum SimulatorActorType {
     /**
      * Document Source.
      */
-    DOCUMENT_SOURCE("xdrsrc");
+    DOCUMENT_SOURCE("xdrsrc"),
+    /**
+     * Responding Gateway
+     */
+    RESPONDING_GATEWAY("rg");
 
     String name;  // name that matches ActorType.java
 

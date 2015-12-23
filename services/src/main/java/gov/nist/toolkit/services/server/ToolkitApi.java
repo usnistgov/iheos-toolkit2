@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
@@ -57,9 +58,10 @@ public class ToolkitApi {
     public static ToolkitApi forServiceUse() {
         if (api == null) {
             api = new ToolkitApi();
+            EnvSetting.installDefaultEnvironment();
             api.session = new Session(
                     Installation.installation().warHome(),
-                    Installation.installation().defaultServiceSessionName());
+                    Installation.defaultServiceSessionName());
             api.internalUse = false;
             return api;
         }

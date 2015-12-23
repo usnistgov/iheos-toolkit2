@@ -31,7 +31,7 @@ class XdrSrcTest extends Specification implements TransactionNotification {
     BasicSimParameters recParams = new BasicSimParameters()
 
     def setupGrizzly() {
-        server = Main.startServer(port);
+        server = new GrizzlyController().startServer(port);
     }
 
     def loadAxis2() {

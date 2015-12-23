@@ -92,6 +92,13 @@ public class SimulatorBuilder {
         return act;
     }
 
+    public RespondingGateway createRespondingGateway(String id, String user, String environmentName) throws ToolkitServiceException {
+        XcaRespondingGateway act = new XcaRespondingGateway();
+        act.engine = engine;
+        act.config = engine.create(id, user, SimulatorActorType.RESPONDING_GATEWAY, environmentName);
+        return act;
+    }
+
     /**
      * Update the configuration of a Simulator. Any properties that are passed in SimConfig that are
      * not recognized will be silently ignored. Parameters passed with wrong type (String vs. boolean) will cause

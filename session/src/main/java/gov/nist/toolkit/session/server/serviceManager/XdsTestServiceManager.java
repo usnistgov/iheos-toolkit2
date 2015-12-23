@@ -522,7 +522,7 @@ public class XdsTestServiceManager extends CommonService {
 								if (rdsr != null) {
 									RetrieveB rb = new RetrieveB();
 									Map<String, RetrievedDocumentModel> resMap = rb
-											.parse_rep_response(response);
+											.parse_rep_response(response).getMap();
 									for (String docUid : resMap.keySet()) {
 										RetrievedDocumentModel ri = resMap.get(docUid);
 										Document doc = new Document();
