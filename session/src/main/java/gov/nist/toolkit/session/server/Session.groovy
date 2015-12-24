@@ -1,37 +1,31 @@
-package gov.nist.toolkit.session.server;
-
-import gov.nist.toolkit.actorfactory.SimCache;
-import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.envSetting.EnvSetting;
-import gov.nist.toolkit.installation.ExternalCacheManager;
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.installation.PropertyServiceManager;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
-import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
-import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
-import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
-import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testengine.engine.Xdstest2;
-import gov.nist.toolkit.tk.TkLoader;
-import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-import org.apache.log4j.Logger;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.*;
-
+package gov.nist.toolkit.session.server
+import gov.nist.toolkit.actorfactory.SimCache
+import gov.nist.toolkit.actorfactory.client.Pid
+import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.envSetting.EnvSetting
+import gov.nist.toolkit.installation.ExternalCacheManager
+import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.installation.PropertyServiceManager
+import gov.nist.toolkit.registrymetadata.Metadata
+import gov.nist.toolkit.results.client.AssertionResults
+import gov.nist.toolkit.results.client.CodesConfiguration
+import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.securityCommon.SecurityParams
+import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager
+import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
+import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager
+import gov.nist.toolkit.sitemanagement.Sites
+import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.testengine.engine.PatientIdAllocator
+import gov.nist.toolkit.testengine.engine.TransactionSettings
+import gov.nist.toolkit.testengine.engine.Xdstest2
+import gov.nist.toolkit.tk.TkLoader
+import gov.nist.toolkit.tk.client.TkProps
+import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
+import gov.nist.toolkit.xdsexception.XdsInternalException
+import groovy.transform.TypeChecked
+import org.apache.log4j.Logger
 /**
  * The session object is used in one of four ways depending on the context:
  * 
@@ -50,6 +44,7 @@ import java.util.*;
  * @author bill
  *
  */
+@TypeChecked
 public class Session implements SecurityParams {
 	
 	public Xdstest2 xt;
@@ -210,7 +205,7 @@ public class Session implements SecurityParams {
 			return;
 		}
 		
-		mesaSessionCache = new File(testLogCache + File.separator + mesaSessionName);
+		mesaSessionCache = new File(testLogCache, mesaSessionName);
 		mesaSessionCache.mkdirs();
 	}
 
@@ -360,14 +355,14 @@ public class Session implements SecurityParams {
 	public File getCodesFile() throws EnvironmentNotSelectedException {
 		if (getEnvironmentDir() == null) 
 			return null; // new File(Installation.installation().warHome() + File.separator + "toolkitx" + File.separator + "codes" + File.separator + "codes.xml");
-		File f = new File(getEnvironmentDir() + File.separator + "codes.xml");
+		File f = new File(getEnvironmentDir(), "codes.xml");
 		if (f.exists())
 			return f;
 		return null;
 	}
 	
 	public File getKeystoreDir() throws EnvironmentNotSelectedException {
-		File f = new File(getEnvironmentDir() + File.separator + "keystore");
+		File f = new File(getEnvironmentDir(), "keystore");
 		if (f.exists() && f.isDirectory())
 			return f;
 		throw new EnvironmentNotSelectedException("");
@@ -375,12 +370,12 @@ public class Session implements SecurityParams {
 	
 	public File getKeystore() throws EnvironmentNotSelectedException {
 		File kd = getKeystoreDir();
-		return new File(kd + File.separator + "keystore");
+		return new File(kd, "keystore");
 	}
 	
 	public String getKeystorePassword() throws IOException, EnvironmentNotSelectedException {
 		Properties p = new Properties();
-		File f = new File(getKeystoreDir() + File.separator + "keystore.properties");
+		File f = new File(getKeystoreDir(), "keystore.properties");
 		if (!f.exists())
 			return "";
 		FileInputStream fis = new FileInputStream(f);
@@ -478,14 +473,20 @@ public class Session implements SecurityParams {
 	}
 
 	public CodesConfiguration getCodesConfiguration(String environmentName) throws XdsInternalException {
+        assert environmentName
+        assert codesConfiguration
+
 		CodesConfiguration config = codesConfigurations.get(environmentName);
 		if (config != null) return config;
+
 		File codesFile = getCodesFile();
 		if (!codesFile.exists()) throw new XdsInternalException("No code configuration defined for Environment " + environmentName +
 		" or that Environment does not exist");
 		CodesConfigurationBuilder builder = new CodesConfigurationBuilder(codesFile);
 		config = builder.get();
 		codesConfigurations.put(environmentName, config);
+
+        assert config
 		return config;
 	}
 
