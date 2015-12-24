@@ -5,13 +5,25 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.valregmetadata.datatype.*;
+import gov.nist.toolkit.valregmetadata.datatype.AnyFormat;
+import gov.nist.toolkit.valregmetadata.datatype.CxFormat;
+import gov.nist.toolkit.valregmetadata.datatype.DtmFormat;
+import gov.nist.toolkit.valregmetadata.datatype.HashFormat;
+import gov.nist.toolkit.valregmetadata.datatype.IntFormat;
+import gov.nist.toolkit.valregmetadata.datatype.OidFormat;
+import gov.nist.toolkit.valregmetadata.datatype.Rfc3066Format;
+import gov.nist.toolkit.valregmetadata.datatype.SourcePatientInfoFormat;
+import gov.nist.toolkit.valregmetadata.datatype.XcnFormat;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 public class DocumentEntry extends AbstractRegistryObject implements TopLevelObject {
 	static List<String> definedSlots =
@@ -235,6 +247,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	public void validate(ErrorRecorder er, ValidationContext vc, Set<String> knownIds) {
+
 		if (vc.skipInternalStructure)
 			return;
 
@@ -243,6 +256,11 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 
 		if (vc.isXDRLimited)
 			er.sectionHeading("is labeled as Limited Metadata");
+
+		// A registry response can contain both stable and on-demand object types. Use the object type to prepare the validation context at runtime.
+		if (vc.isResponse && vc.isStableOrODDE) {
+			vc.isRODDE = MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid.equals(objectType);
+		}
 
 		validateTopAtts(er, vc);
 
@@ -261,6 +279,11 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 			validateExternalIdentifiers(er, vc, externalIdentifierDescription, table415);
 
 		verifyIdsUnique(er, knownIds);
+
+		// Restore the dynamic validation flag
+		if (vc.isResponse && vc.isStableOrODDE) {
+			vc.isRODDE = false;
+		}
 	}
 
 	static public String table415 = "ITI TF-3: Table 4.2.3.2-1"; // Rev 12.1 Final Text
@@ -279,7 +302,9 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
 			}
 		}
-		else if (vc.isRODDE) {
+		else if (vc.isStableOrODDE) {
+
+		} else if (vc.isRODDE) {
 			for (String slotName : roddeRequiredSlots) {
 				if (getSlot(slotName) == null)
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
@@ -384,6 +409,5 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		validateTopAtts(er, vc, table415, statusValues);
 
 	}
-
 
 }

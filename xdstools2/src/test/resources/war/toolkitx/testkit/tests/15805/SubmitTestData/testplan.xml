@@ -9,16 +9,14 @@
 	        <Report name="docid" section="Result">
 //*[local-name()='ExtrinsicObject']/@id
 			</Report>
-
       <MetadataFile>single_stable_doc.xml</MetadataFile>
     </RegisterTransaction>
   </TestStep>
-<!--
   <TestStep id="SubmitOnDemandDocumentEntry">
   <ExpectedStatus>Success</ExpectedStatus>
     <RegisterODDETransaction>
+	  <AssignUuids/>
       <MetadataFile>single_ondemand_doc.xml</MetadataFile>
     </RegisterODDETransaction>
   </TestStep>
--->
 </TestPlan>

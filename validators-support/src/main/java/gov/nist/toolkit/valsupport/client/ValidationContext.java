@@ -31,6 +31,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
     //
 	public boolean isR       = false;
 	public boolean isRODDE 	 = false;
+	public boolean isStableOrODDE = false;
 	public boolean isPnR     = false;
 	public boolean isRet	 = false;
 	public boolean isXDR	 = false;

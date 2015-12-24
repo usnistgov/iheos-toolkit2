@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>15805/QueryStable</Test>
+  <Test>15805/QueryOnDemand</Test>
   <Rule></Rule>
   <TestStep id="by_uid">
     <ExpectedStatus>Success</ExpectedStatus>
     <StoredQueryTransaction>
       <XDSb/>
-	  <isRegisterODDE/>
 
-<!--
-I think submission set validation is required here?
--->
-      <UseId testdir="../SubmitTestData" id="SubmissionSet01" symbol="$ssuid$" step="SubmitStableDocumentEntry" section="AssignedUids"/>
+      <MetadataFile>OnDemand_doc_query.xml</MetadataFile>
 
-      <UseReport reportName="docid" section="SubmitTestData" step="SubmitStableDocumentEntry" useAs="$id0$"/>
-
-      <MetadataFile>Stable_doc_query.xml</MetadataFile>
-      <ExpectedContents>
-        <SSwithOneDoc/>
+	  <ExpectedContents>
+	   <DocumentEntries>
+	    <DocumentEntryType>urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248</DocumentEntryType>
+		<Include>
+		<DocumentEntry>
+		 <UseId testdir="../SubmitTestData" id="Document01" symbol="$docid$" step="SubmitOnDemandDocumentEntry" section="AssignedUuids"/> 
+	     <DocumentEntryType>urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248</DocumentEntryType>
+		</DocumentEntry>
+		</Include>
+	   <Exclude>
+		<DocumentEntry>
+	  	 <UseId testdir="../SubmitTestData" id="Document01" symbol="$docid$" step="SubmitStableDocumentEntry" section="AssignedUuids"/> 
+		</DocumentEntry>
+	   </Exclude>
+	   </DocumentEntries>
       </ExpectedContents>
     </StoredQueryTransaction>
   </TestStep>

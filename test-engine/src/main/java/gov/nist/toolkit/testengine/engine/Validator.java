@@ -506,7 +506,7 @@ public class Validator {
 				hasAssociations(count);
 			}
 			else if (ec_name.equals("DocumentEntries")) {
-				verifySubmittedEOIdInRegistryResponse(m, ec);
+				verifyDocumentEntries(m, ec);
 			} else {
 				throw new XdsInternalException("QueryTransaction: validate_expected_contents(): don't understand verification request " + ec_name);
 			}
@@ -514,11 +514,54 @@ public class Validator {
 		}
 	}
 
-	private boolean verifySubmittedEOIdInRegistryResponse(Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
+	private boolean verifyDocumentEntries(Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
+		for (Iterator selectiveIt = ec.getChildElements(); selectiveIt.hasNext(); ) {
+			OMElement selectionPart = (OMElement) selectiveIt.next();
+			String selectionLocalName = selectionPart.getLocalName();
+
+			if ("Include".equals(selectionLocalName)) {
+				verifySubmittedEOIdInRegistryResponse(true,m,selectionPart);
+			} else if ("Exclude".equals(selectionLocalName)) {
+				verifySubmittedEOIdInRegistryResponse(false,m,selectionPart);
+			} else if ("DocumentEntryType".equals(selectionLocalName)) {
+				verifyAllEntries(m, selectionPart, "objectType");
+			}
+		}
+		return true;
+	}
+
+	private boolean verifyAllEntries(Metadata m, OMElement ec, String attributeName) throws XdsInternalException, MetadataException {
+		String expectedValue = ec.getText();
+
+		if (expectedValue==null || "".equals(expectedValue)) {
+			err("The expected value cannot be null for: " + attributeName);
+			return false;
+		}
+		for (OMElement eo : m.getExtrinsicObjects()) {
+			String attributeValue  = eo.getAttributeValue(new QName(attributeName));
+			if (!expectedValue.equals(attributeValue)) {
+				String eoIdValue  = eo.getAttributeValue(new QName("id"));
+				err("Metadata " + attributeName + "=" + attributeValue + " does not match the expected value: " + expectedValue + ". ExtrinsicObject Id=" + eoIdValue);
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 *
+	 * @param include Verify whether an EO should be included (True) or excluded (False) in the registry response
+	 * @param m
+	 * @param ec
+	 * @return
+	 * @throws XdsInternalException
+	 * @throws MetadataException
+	 */
+	private boolean verifySubmittedEOIdInRegistryResponse(boolean include, Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
 		for (Iterator deIt = ec.getChildElements(); deIt.hasNext(); ) {
 
             OMElement dePart = (OMElement) deIt.next();
             String dePartLocalName = dePart.getLocalName();
+
             if ("DocumentEntry".equals(dePartLocalName)) {
 				OMElement eoInResponse = null;
                 for (Iterator dePartChildElementsIt = dePart.getChildElements(); dePartChildElementsIt.hasNext(); ) {
@@ -550,10 +593,14 @@ public class Validator {
 									eoInResponse = eo;
 								}
                             }
-                            if (!found) {
-								err("The submitted id ["+ submittedIdValue +"] was not found in the registry response!");
+                            if (include && !found) {
+								err("The submitted id ["+ submittedIdValue +"] was not found in the registry response.");
 								return false;
                             }
+							if (!include && found) {
+								err("This id ["+ submittedIdValue +"] is not supposed to included in the registry response but it was found.");
+								return false;
+							}
                         }
                     } else if ("DocumentEntryType".equals(instructionLocalName)) {
 						String documentEntryType = dePartInstruction.getText();

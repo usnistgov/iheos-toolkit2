@@ -10,28 +10,12 @@
                             </ValueList>
                         </Slot>
 
-<!--
-        <Slot name="$XDSSubmissionSetUniqueId">
-            <ValueList>
-                <Value>'$ssuid$'</Value>
-            </ValueList>
-        </Slot>
--->
 
         	<Slot name="$XDSDocumentEntryType">
             	<ValueList>
                 	<Value>('urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1')</Value>
     	        </ValueList>
 	        </Slot>
-
-
-     
-        <Slot name="$XDSDocumentEntryEntryUUID">
-            <ValueList>
-                <Value>('$id0$')</Value>
-            </ValueList>
-        </Slot>
-
 
 
                         <Slot name="$XDSDocumentEntryStatus">
