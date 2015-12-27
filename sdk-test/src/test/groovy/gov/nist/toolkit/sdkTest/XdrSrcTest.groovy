@@ -5,15 +5,12 @@ import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
-import gov.nist.toolkit.simulators.servlet.SimServlet
 import gov.nist.toolkit.tookitApi.*
 import gov.nist.toolkit.toolkitServicesCommon.*
 import gov.nist.toolkit.transactionNotificationService.TransactionLog
 import gov.nist.toolkit.transactionNotificationService.TransactionNotification
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
-import org.glassfish.grizzly.servlet.ServletRegistration
-import org.glassfish.grizzly.servlet.WebappContext
 import spock.lang.Shared
 import spock.lang.Specification
 /**
@@ -27,30 +24,13 @@ class XdrSrcTest extends Specification implements TransactionNotification {
     BasicSimParameters srcParams = new BasicSimParameters()
     BasicSimParameters recParams = new BasicSimParameters()
 
-    def setupGrizzly() {
-        server = new GrizzlyController()
-        server.start(port);
-    }
-
-    def loadAxis2() {
-        File axis2 = new File(getClass().getResource('/axis2.xml').file)
-        System.getProperties().setProperty('axis2.xml', axis2.toString())
-        System.getProperties().setProperty('axis2.repo', axis2.parentFile.toString())
-    }
-
-    def initializeSimServlet() {
-        final WebappContext tools2 = new WebappContext("xdstools2","")
-        final ServletRegistration sims = tools2.addServlet("xdstools2",new SimServlet());
-        sims.addMapping('/xdstools2/sim/*')
-        tools2.deploy(server.getHttpServer())
-    }
-
     def setupSpec() {   // one time setup done when class launched
         TestSession.setupToolkit()
         ToolkitApi.forServiceUse()
-        setupGrizzly()
-        loadAxis2()
-        initializeSimServlet()
+
+        server = new GrizzlyController()
+        server.start(port);
+        server.withToolkit()
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done

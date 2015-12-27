@@ -1,8 +1,11 @@
 package gov.nist.toolkit.grizzlySupport
 
+import gov.nist.toolkit.simulators.servlet.SimServlet
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 import org.glassfish.grizzly.http.server.HttpServer
+import org.glassfish.grizzly.servlet.ServletRegistration
+import org.glassfish.grizzly.servlet.WebappContext
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory
 import org.glassfish.jersey.server.ResourceConfig
 import org.glassfish.jersey.server.ServerConfig
@@ -56,6 +59,25 @@ abstract public class AbstractGrizzlyController {
         if (server) server.shutdown()
     }
 
+    AbstractGrizzlyController withAxis2() {
+        File axis2 = new File(getClass().getResource('/axis2.xml').file)
+        System.getProperties().setProperty('axis2.xml', axis2.toString())
+        System.getProperties().setProperty('axis2.repo', axis2.parentFile.toString())
+        this
+    }
+
+    AbstractGrizzlyController withSimServlet() {
+        final WebappContext tools2 = new WebappContext("xdstools2","")
+        final ServletRegistration sims = tools2.addServlet("xdstools2",new SimServlet());
+        sims.addMapping('/xdstools2/sim/*')
+        tools2.deploy(getHttpServer())
+        this
+    }
+
+    AbstractGrizzlyController withToolkit() {
+        withAxis2().withSimServlet()
+    }
+
     static String asCommaSeparatedList(List<String> names) {
         StringBuilder buf = new StringBuilder();
 
@@ -69,39 +91,5 @@ abstract public class AbstractGrizzlyController {
 
     public HttpServer getHttpServer() { return server }
 
-//    public GrizzlyWebServer startServer(String port) {
-//        GrizzlyWebServer ws = new GrizzlyWebServer(Integer.parseInt(port), Installation.installation().toolkitxFile().toString());
-//        try{
-////            // Sim Servlet
-////            ServletAdapter sa = new ServletAdapter(new SimServlet());
-////            ws.addGrizzlyAdapter(sa, new String[]{"/xdstools2"});
-//
-//            // Jersey web resources
-//            ServletAdapter jerseyAdapter = new ServletAdapter();
-//            logger.info("Initializing jersey with " + getPackages());
-//            jerseyAdapter.addInitParameter("com.sun.jersey.config.property.packages",
-//                    asCommaSeparatedList(getPackages()));
-//            jerseyAdapter.setContextPath("/xdstools2/rest/");
-//            jerseyAdapter.setServletInstance(new ServletContainer());
-//            jerseyAdapter.addInitParameter(ServerProperties.TRACING, "ALL");
-//            ws.start();
-//        } catch (IOException ex){
-//            logger.fatal("Grizzly server adaptor failed startup", ex);
-//        }
-//        return ws;
-//    }
-
-//    /**
-//     * Main method.
-//     * @param args
-//     * @throws IOException
-//     */
-//    public static void main(String[] args) throws IOException {
-//        final HttpServer server = startServer("8888");
-//        System.out.println(String.format("Jersey app started with WADL available at "
-//                + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
-//        System.in.read();
-//        server.stop();
-//    }
 }
 

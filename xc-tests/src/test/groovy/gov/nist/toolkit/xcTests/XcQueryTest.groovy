@@ -31,17 +31,13 @@ class XcQueryTest extends Specification {
     @Shared  apiEnvironment = 'test'
     @Shared  spiEnvironment = 'test'
 
-    def setupGrizzly() {
-        server = new GrizzlyController().start(port);
-    }
-
     def setupSpec() {   // one time setup done when class launched
-        TestSession.setupToolkit(apiEnvironment)
+        TestSession.setupToolkit()
+        ToolkitApi.forServiceUse()
 
-        api = ToolkitApi.forServiceUse()
-//        api = ToolkitApi.forInternalUse()
-
-        setupGrizzly()
+        server = new GrizzlyController()
+        server.start(port);
+        server.withToolkit()
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
@@ -57,10 +53,10 @@ class XcQueryTest extends Specification {
 
     def 'Create Responding Gateway' () {
         when:
-//        println 'STEP - DELETE RESPONDING GATEWAY SIM'
-//        spi.delete(params.id, params.user)
-//
-//        and:
+        println 'STEP - DELETE RESPONDING GATEWAY SIM'
+        spi.delete(params.id, params.user)
+
+        and:
         println 'STEP - CREATE RESPONDING GATEWAY SIM'
         SimId simId = spi.create(
                 params.id,
