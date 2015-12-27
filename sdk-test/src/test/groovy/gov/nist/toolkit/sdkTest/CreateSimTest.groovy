@@ -1,5 +1,4 @@
 package gov.nist.toolkit.sdkTest
-
 import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
@@ -9,7 +8,6 @@ import gov.nist.toolkit.tookitApi.ToolkitServiceException
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory
-import org.glassfish.grizzly.http.server.HttpServer
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -21,11 +19,12 @@ class CreateSimTest extends Specification {
     def host='localhost'
     @Shared def port = '8889'
     EngineSpi builder = new EngineSpi(String.format('http://localhost:%s/xdstools2', port));
-    @Shared HttpServer server
+    @Shared GrizzlyController server
     BasicSimParameters params = new BasicSimParameters();
 
     def setupGrizzly() {
-        server = GrizzlyController.startServer(port);
+        server = new GrizzlyController()
+        server.start(port);
     }
 
     def setupSpec() {   // one time setup done when class launched
@@ -35,7 +34,7 @@ class CreateSimTest extends Specification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        server.shutdownNow()
+        server.stop()
     }
 
     def setup() {  // run before each test method

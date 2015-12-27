@@ -35,7 +35,7 @@
             <properties>
                 <build.profile.id>Olivier</build.profile.id>
             </properties>
-        </profile>        
+        </profile>
         <profile>
             <id>Sunil</id>
             <properties>
@@ -160,40 +160,40 @@
 
 
         <!-- See profiles stanza above -->
-        <!-- Begin profile part 1/2 -->    
+        <!-- Begin profile part 1/2 -->
         <filters>
-                    <!--
-                        Ensures that an environment properties file is always loaded from the
-                        configuration directory of the active Maven profile.
-                    -->
-                <filter>../tk-deps/profiles/env/${build.profile.id}.properties</filter>
+            <!--
+                Ensures that an environment properties file is always loaded from the
+                configuration directory of the active Maven profile.
+            -->
+            <filter>../tk-deps/profiles/env/${build.profile.id}.properties</filter>
         </filters>
-        <!-- End profile part 1/2 -->    
+        <!-- End profile part 1/2 -->
 
 
-<testResources>
-    <!-- Filter test resource files -->
-    <testResource>
-                        <filtering>true</filtering>
-                        <directory>src/test/resources</directory>   
-                        <includes>
-                            <include>war/WEB-INF/toolkit.properties</include>
-                        </includes>                
+        <testResources>
+            <!-- Filter test resource files -->
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>war/WEB-INF/toolkit.properties</include>
+                </includes>
 
-    </testResource>
-	<testResource>
-                        <filtering>false</filtering>
-                        <directory>src/test/resources</directory>   
-						<includes>
-							<include>**/*</include>
-						</includes>
-                        <excludes>
-                            <exclude>war/WEB-INF/toolkit.properties</exclude>
-                        </excludes>                
+            </testResource>
+            <testResource>
+                <filtering>false</filtering>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+                <excludes>
+                    <exclude>war/WEB-INF/toolkit.properties</exclude>
+                </excludes>
 
-    </testResource>
-	
-</testResources>
+            </testResource>
+
+        </testResources>
 
         <plugins>
             <plugin>

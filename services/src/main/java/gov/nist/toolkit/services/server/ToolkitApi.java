@@ -26,7 +26,11 @@ import java.util.Properties;
 /**
  * This is a second attempt to start a real API.  ClientAPI has not
  * been very useful so far. This one is based on the service managers used by the UI
+ *
+ * This class must stay written in Java.  SimulatorsController references it
+ * and the Jersey stuff won't recognize it if it is converted to Groovy.
  */
+
 public class ToolkitApi {
     static Logger logger = Logger.getLogger(ToolkitApi.class);
     private Session session;
@@ -58,7 +62,7 @@ public class ToolkitApi {
     public static ToolkitApi forServiceUse() {
         if (api == null) {
             api = new ToolkitApi();
-            EnvSetting.installDefaultEnvironment();
+            EnvSetting.installServiceEnvironment();
             api.session = new Session(
                     Installation.installation().warHome(),
                     Installation.defaultServiceSessionName());
@@ -80,6 +84,7 @@ public class ToolkitApi {
 
     private ToolkitApi(Session session) {
         this.session = session;
+        logger.info("ToolkitApi using session " + session.id());
     }
 
 
@@ -174,7 +179,7 @@ public class ToolkitApi {
      * @return - list of Result objects - one per test step (transaction) run
      * @throws Exception if testSession could not be created
      */
-    public List<Result> runTest(String testSession, String siteName, TestInstance testInstance, List<String> sections,  Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+    public List<Result> runTest(String testSession, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
         if (testSession == null) {
             testSession = "API";
             xdsTestServiceManager().addMesaTestSession(testSession);

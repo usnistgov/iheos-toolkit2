@@ -72,6 +72,7 @@
         <module>sdk-test</module>
         <module>xc-tests</module>
         <module>grizzly-support</module>
+        <module>sim-test-servlet</module>
     </modules>
 
 

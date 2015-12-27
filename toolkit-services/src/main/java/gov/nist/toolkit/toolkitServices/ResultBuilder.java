@@ -25,42 +25,42 @@ public class ResultBuilder {
         if (e instanceof EnvironmentNotSelectedClientException) {
             reason = "Environment does not exist - " + e.getMessage();
             extendedCode = OperationResultResource.ENVIRONMENT_DOES_NOT_EXIST;
-            status = Response.Status.BAD_REQUEST;
+            status = Response.Status.BAD_REQUEST;   // 400
         }
         else if (e instanceof EnvironmentNotSelectedException) {
             logger.info(ExceptionUtil.exception_details(e));
             reason = "Environment does not exist - " + e.getMessage();
             extendedCode = OperationResultResource.ENVIRONMENT_DOES_NOT_EXIST;
-            status = Response.Status.BAD_REQUEST;
+            status = Response.Status.BAD_REQUEST;   // 400
         }
         else if (e instanceof ThreadPoolExhaustedException) {
             reason = "Thread pool exhausted - " + e.getMessage();
-            status = Response.Status.INTERNAL_SERVER_ERROR;
+            status = Response.Status.INTERNAL_SERVER_ERROR;   // 500
         }
         else if (e instanceof BadSimConfigException) {
             reason = e.getMessage();
-            status = Response.Status.BAD_REQUEST;
+            status = Response.Status.BAD_REQUEST;   // 400
         }
         else if (e instanceof BadSimRequestException) {
             reason = e.getMessage();
-            status = Response.Status.BAD_REQUEST;
+            status = Response.Status.BAD_REQUEST;   // 400
         }
         else if (e instanceof SimExistsException) {
             reason = "Sim " + simId + " already exists";
-            status = Response.Status.FOUND;
+            status = Response.Status.FOUND;   // 302
         }
         else if (e instanceof NoSimException) {
             reason = "Sim " + simId + " does not exist";
             extendedCode = OperationResultResource.SIM_DOES_NOT_EXIST;
-            status = Response.Status.NOT_FOUND;
+            status = Response.Status.NOT_FOUND;    // 404
         }
         else if (e instanceof SimPropertyTypeConflictException) {
             reason = e.getMessage();
-            status = Response.Status.CONFLICT;
+            status = Response.Status.CONFLICT;   // 409
         }
         else if (e instanceof IOException) {
             reason = e.getMessage();
-            status = Response.Status.INTERNAL_SERVER_ERROR;
+            status = Response.Status.INTERNAL_SERVER_ERROR;   // 500
         }
         else if (e instanceof AxisFault) {
             reason = e.getMessage();

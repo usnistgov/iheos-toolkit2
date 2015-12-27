@@ -408,9 +408,6 @@
     </dependencies>
 
     <build>
-   
-  
-        
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
         <!-- See profiles stanza above -->

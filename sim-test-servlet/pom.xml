@@ -10,39 +10,38 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>toolkit-services</artifactId>
+    <artifactId>sim-test-servlet</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <testkitOut>${project.basedir}/target/${project.build.finalName}/toolkitx/testkit</testkitOut>
+        <testkitIn>${project.basedir}/src/main/webapp/toolkitx/testkit</testkitIn>
+        <!--<testkitIn>${project.basedir}/../testkit/src/main/resources</testkitIn>-->
+    </properties>
 
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>services</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>toolkit-services-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>soap</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <!-- if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core"  -->
-            <artifactId>jersey-container-servlet</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>simulators</artifactId>
         </dependency>
     </dependencies>
 
     <build>
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+
         <plugins>
+
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
@@ -69,7 +68,25 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <!-- Begin profile part 2/2 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <filtering>true</filtering>
+                            <directory>src/main/webapp</directory>
+                            <includes>
+                                <include>WEB-INF/toolkit.properties</include>
+                            </includes>
+                        </resource>
+                    </webResources>
+                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 </project>

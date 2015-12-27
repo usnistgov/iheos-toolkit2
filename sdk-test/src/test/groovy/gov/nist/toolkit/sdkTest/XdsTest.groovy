@@ -1,17 +1,14 @@
 package gov.nist.toolkit.sdkTest
-
 import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.session.server.TestSession
 import gov.nist.toolkit.simulators.servlet.SimServlet
 import gov.nist.toolkit.tookitApi.BasicSimParameters
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
-import org.glassfish.grizzly.http.server.HttpServer
 import org.glassfish.grizzly.servlet.ServletRegistration
 import org.glassfish.grizzly.servlet.WebappContext
 import spock.lang.Shared
 import spock.lang.Specification
-
 /**
  *
  */
@@ -19,12 +16,13 @@ class XdsTest extends Specification {
     @Shared String port = '8889'
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", port)
     SimulatorBuilder builder = new SimulatorBuilder(urlRoot)
-    @Shared HttpServer server
+    @Shared GrizzlyController server
     BasicSimParameters srcParams = new BasicSimParameters()
     BasicSimParameters recParams = new BasicSimParameters()
 
     def setupGrizzly() {
-        server = GrizzlyController.startServer(port);
+        server = new GrizzlyController()
+        server.start(port);
     }
 
     def loadAxis2() {
@@ -37,7 +35,7 @@ class XdsTest extends Specification {
         final WebappContext tools2 = new WebappContext("xdstools2","")
         final ServletRegistration sims = tools2.addServlet("xdstools2",new SimServlet());
         sims.addMapping('/xdstools2/sim/*')
-        tools2.deploy(server)
+        tools2.deploy(server.getHttpServer())
     }
 
     def setupSpec() {   // one time setup done when class launched
@@ -49,7 +47,7 @@ class XdsTest extends Specification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        server.shutdownNow()
+        server.stop()
     }
 
     def setup() {  // run before each test method

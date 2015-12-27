@@ -47,7 +47,8 @@ public class XdsTestServiceManager extends CommonService {
 	static boolean allCiphersEnabled = false;
 
 	public XdsTestServiceManager(Session session)  {
-		this.session = session;
+        this.session = session;
+        logger.info("XdsTestServiceManager: using session " + session.getId());
 	}
 
 	public static Logger getLogger() {

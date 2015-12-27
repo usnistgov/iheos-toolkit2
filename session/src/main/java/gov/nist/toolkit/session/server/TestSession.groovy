@@ -12,6 +12,12 @@ import org.apache.log4j.Logger
 class TestSession {
     static Logger logger = Logger.getLogger(TestSession.class);
 
+    static public Session setupToolkit(String environmentName) {
+        Session session = setupToolkit()
+        new EnvSetting(session.getId(), environmentName, Installation.installation().environmentFile(environmentName))
+        return session
+    }
+
     static public Session setupToolkit() {
         URL warMarker = getClass().getResource('/war/war.txt');
         if (warMarker == null) {

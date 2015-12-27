@@ -487,11 +487,14 @@ public class Soap implements SoapInterface {
 		if (async)
 			operationClient.setCallback(callback);
 
-        log.info(ExceptionUtil.here(""));
 		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
+        Exception soapFault = null;
 		try {
 			operationClient.execute(block); // execute sync or async
-		} finally {
+		} catch (Exception e) {
+            soapFault = e;
+        }
+        finally {
 			log.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 
 			if (async)
@@ -504,7 +507,12 @@ public class Soap implements SoapInterface {
 
 			if (async)
 				operationClient.complete(outMsgCtx);
-			
+
+            loadOutHeader();
+
+            if (soapFault != null) {
+                throw new XdsInternalException("SOAP Fault", soapFault);
+            }
 			//  - null pointer exception here if port number in configuration is wrong
 			try {
 				inMsgCtx.getEnvelope().build();
@@ -522,7 +530,6 @@ public class Soap implements SoapInterface {
 			// channel is closed
 			// removing it breaks the reading of MTOM formatted responses
 
-			loadOutHeader();
 			loadInHeader();
 
 			serviceClient.cleanupTransport();

@@ -75,7 +75,7 @@ public class Session implements SecurityParams {
 	
 	File toolkit = null;
 	
-	String currentEnvironmentName = null;
+	String currentEnvName = null;
 	
 	String mesaSessionName = null;
 	SessionPropertyManager sessionProperties = null;
@@ -415,9 +415,11 @@ public class Session implements SecurityParams {
 	 * @throws 
 	 */
 	public void setEnvironment(String name) {
-		if (name == null || name.equals(""))
-			return;
-		logger.debug(getId() + ": " + " Environment set to " + name);
+		if (name == null || name.equals("")) {
+            logger.info("Session set environment - null ignored")
+            return;
+        }
+		logger.info("Session: " + getId() + ": " + " Environment set to " + name);
 		setEnvironment(name, Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
 	}
 	
@@ -425,14 +427,16 @@ public class Session implements SecurityParams {
 		File k = Installation.installation().environmentFile(name);
 		if (!k.exists() || !k.isDirectory())
 			throw new ToolkitRuntimeException("Environment " + name + " does not exist");
-		currentEnvironmentName = name;
+		currentEnvName = name;
 		System.setProperty("XDSCodesFile", k.toString() + File.separator + "codes.xml");
 		new EnvSetting(sessionId, name, k);
 		logger.debug(getId() + ": " + "Environment set to " + k);
 	}
 	
 	public String getCurrentEnvironment() {
-		return currentEnvironmentName;
+        if (!currentEnvName)
+            currentEnvName = Installation.installation().defaultEnvironmentName()
+		return currentEnvName;
 	}
 	
 	public SessionPropertyManager getSessionProperties() {
@@ -474,7 +478,6 @@ public class Session implements SecurityParams {
 
 	public CodesConfiguration getCodesConfiguration(String environmentName) throws XdsInternalException {
         assert environmentName
-        assert codesConfiguration
 
 		CodesConfiguration config = codesConfigurations.get(environmentName);
 		if (config != null) return config;

@@ -48,7 +48,13 @@ public class EnvSetting {
         File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
         if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(DEFAULTSESSIONID, DEFAULTENVIRONMENTNAME, envFile);
-        new EnvSetting(Installation.defaultSessionName(), DEFAULTENVIRONMENTNAME, envFile);
+//        new EnvSetting(Installation.defaultSessionName(), DEFAULTENVIRONMENTNAME, envFile);
+//        new EnvSetting(Installation.defaultServiceSessionName(), DEFAULTENVIRONMENTNAME, envFile);
+    }
+
+    public static void installServiceEnvironment() {
+        File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
+        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(Installation.defaultServiceSessionName(), DEFAULTENVIRONMENTNAME, envFile);
     }
 
