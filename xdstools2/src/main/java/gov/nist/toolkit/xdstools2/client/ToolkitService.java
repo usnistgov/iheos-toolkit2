@@ -11,6 +11,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
@@ -135,6 +136,7 @@ public interface ToolkitService extends RemoteService  {
 //	List<Result> mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes) throws NoServletSessionException;
 	List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) throws NoServletSessionException;
 	List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
+	List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
 
 	TestLogs getRawLogs(TestInstance logId) throws NoServletSessionException ;
 	
@@ -169,6 +171,17 @@ public interface ToolkitService extends RemoteService  {
 	String getAssigningAuthority() throws Exception;
 	List<String> getAssigningAuthorities() throws Exception;
 	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Tests Overview Tab
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public List<Test> reloadAllTestResults(String sessionName) throws Exception;
+	public List<Test> runAllTests(Site site) throws NoServletSessionException;
+	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
+	public Test runSingleTest(Site site, int testId) throws NoServletSessionException;
+	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException;
 
 	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;

@@ -13,6 +13,7 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
+import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.LogMap;
@@ -29,11 +30,12 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
-
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import gov.nist.toolkit.results.shared.Test;
+
 
 public class XdsTestServiceManager extends CommonService {
 //	private final UtilityRunner utilityRunner = new UtilityRunner(this);
@@ -102,6 +104,13 @@ public class XdsTestServiceManager extends CommonService {
 		return new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 
+	/**
+	 * Original Xdstools2 function to retrieve test results based on the current Session by providing a list of
+	 * TestInstance numbers / Test Ids.
+	 * @param testInstances
+	 * @param testSession
+	 * @return
+	 */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) {
 		logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
 
@@ -116,7 +125,6 @@ public class XdsTestServiceManager extends CommonService {
 			}
 			catch (Exception e) {}
 		}
-
 		return map;
 	}
 
@@ -413,7 +421,7 @@ public class XdsTestServiceManager extends CommonService {
 	//	Result mkResult() {
 	//		Result r = new Result();
 	//		Calendar calendar = Calendar.getInstance();
-	//		r.timestamp = calendar.getTime().toString();
+	//		r.timestamp = calendar.getTimestamp().toString();
 	//
 	//		return r;
 	//	}
@@ -699,6 +707,110 @@ public class XdsTestServiceManager extends CommonService {
 		params.put("$pid$", pid.asString());
 		TestInstance testInstance = new TestInstance("PidFeed");
 		return asList(new UtilityRunner(this, TestRunType.UTILITY).run(session, params, null, null, testInstance, null, true));
+	}
+
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Tests Overview Tab
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// TODO To complete
+
+	/**
+	 * A Test object includes a Test Id or Instance Number, a Short Description, a Time and a Status. This object is used
+	 * for display purposes only. Build similar objects using the package Results, or replace Test with a similar
+	 * existing object.
+	 */
+	public List<Test> reloadAllTestResults(String sessionName) throws Exception {
+//		List<TestInstance> testList = null;
+//		Map<String, Result> results = null;
+//		List<Test> display = new ArrayList<Test>();
+//
+//		System.out.println("test session name: "+sessionName);
+//
+//		// ----- Retrieve list of test instance numbers -----
+//		// TODO is there a case where sessionName might not be found in the system (bug?)
+//		if (sessionName == null) {
+//			logger.error("Could not retrieve the list of test instance numbers because the user session is null");
+//			// TODO throw new TestRetrievalException
+//		}
+//		else { testList = getTestlogListing(sessionName); }
+//
+//		// ----- Retrieve test log results for each test instance -----
+//		if (testList == null){
+//			logger.error("Could not retrieve the log results");
+//			// TODO throw new TestRetrievalException
+//			}
+//		else {
+//			results = getTestResults(testList, sessionName);
+//			String testId;
+//			Result res;
+//			List<StepResult> sectionList;
+//			boolean hasSections = false;
+//
+//			System.out.println("building data for display");
+//			// Use the set of Results to build the data for display
+//			for (Map.Entry<String, Result> entry: results.entrySet()){
+//				testId = entry.getKey();
+//				res = entry.getValue();
+//				sectionList = res.getStepResults();
+//
+//				// Check whether the test has sections
+//				if (sectionList == null || (sectionList.size() == 0)) { hasSections = true; }
+//
+//				// TODO not sure what the test status is
+//				display.add(new Test(10500, false, z"", "", res.getText(), res.getTimestamp(), "pass"));
+//			}
+//		}
+//		return display;
+
+		// Test data
+		return Arrays.asList(
+				new Test(10891, false, "10891", "10891", "test 1", "04:10 PM EST", "failed"),
+				new Test(10891, true, "10891", "section a", "test 1", "04:10 PM EST", "failed"),
+				new Test(10891, true, "10891", "section b", "test 1", "04:12 PM EST", "pass"),
+				new Test(17685, false, "17685", "17685", "test 2", "04:10 PM EST", "not run"),
+				new Test(17688, false, "17688", "17688", "test 3", "04:15 PM EST", "run with warnings")
+		);
+	}
+
+	public List<Test> runAllTests(String sessionName, Site site){
+		// Test data
+		return Arrays.asList(
+				new Test(10891, false, "10891", "10891", "re-run test 1", "04:10 PM EST", "pass"),
+				new Test(10891, true, "10891a", "section a", "re-run test 1", "04:10 PM EST", "pass"),
+				new Test(10891, true, "10891b", "section b", "re-run test 1", "04:12 PM EST", "pass"),
+				new Test(17685, false, "17685", "17685", "re-run test 2", "04:10 PM EST", "failed")
+		);
+		//    public Test(int _id, boolean _isSection, String _idWithSection, String _name, String _description, String _timestamp, String _status){
+	}
+
+    public List<Test> deleteAllTestResults(String sessionName, Site site){
+        // Test data
+        return Arrays.asList(
+                new Test(10891, false, "10891", "10891", "test 1", "--", "not run"),
+				new Test(10891, true, "10891a", "section a", "test 1", "--", "not run"),
+				new Test(10891, true, "10891b", "section b", "test 1", "--", "not run"),
+                new Test(17685, false, "17685", "17685", "test 2", "--", "not run")
+        );
+    }
+
+	public Test runSingleTest(String sessionName, Site site, int testId) {
+		// Test data
+		return new Test(testId, false, "test#", "test name", "returned result test", "05:23 PM EST", "failed");
+	}
+
+	/**
+	 * Delete logs for a single test
+	 * @param sessionName
+	 * @param site
+	 * @param testId
+	 * @return
+	 */
+	public Test deleteSingleTestResult(String sessionName, Site site, int testId) {
+		// Test data, status must be "NOT RUN"
+		return new Test(testId, false, "test#", "test name", "test description", "10:20 PM EST", "not run");
 	}
 
 }

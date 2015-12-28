@@ -285,6 +285,23 @@ public class QueryServiceManager extends CommonService {
 		}
 	}
 
+    /**
+     * Service manager function for the new Find Documents tab
+     * @param site the site selected by the user
+     * @param pid the PID entered by the user
+     * @param selectedCodes the other parameters of the query
+     * @return a list of documents
+     */
+	public List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
+		logger.debug(session.id() + ": " + "findDocuments2");
+
+		try {
+			return new FindDocuments2(session).run(site, pid, selectedCodes);
+		} catch (XdsException e) {
+			return buildResultList(e);
+		}
+	}
+
 	public List<Result> getLastMetadata() {
 		logger.debug(session.id() + ": " + "getLastMetadata");
 		List<Result> results = new ArrayList<Result>();

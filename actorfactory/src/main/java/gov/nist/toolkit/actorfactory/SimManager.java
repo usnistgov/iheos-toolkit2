@@ -197,6 +197,7 @@ public class SimManager {
 
 	private boolean hasSim(SimId simId) {
 		for (SimulatorConfig config : simConfigs) {
+			if (config.getId() == null) continue;
 			if (config.getId().equals(simId)) return true;
 		}
 		return false;

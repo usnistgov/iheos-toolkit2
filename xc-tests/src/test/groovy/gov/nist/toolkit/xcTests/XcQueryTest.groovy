@@ -141,7 +141,7 @@ class XcQueryTest extends Specification {
         then:
         updatedIGConfig.asList(SimulatorProperties.respondingGateways) == [ RGSimId.getFullId() ]
 
-        when: 'send stored query to IG'
+//        when: 'send stored query to IG'
 
     }
 
