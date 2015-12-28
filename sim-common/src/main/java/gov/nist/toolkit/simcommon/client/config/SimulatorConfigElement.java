@@ -92,6 +92,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	public boolean isString() { return valueType == ValueType.STRING;  }
     public boolean isSingleList() { return valueType == ValueType.SINGLE_SELECT_LIST; }
     public boolean isMultiList() { return valueType == ValueType.MULTI_SELECT_LIST; }
+    public boolean isList() { return isSingleList() || isMultiList(); }
 
 	public String toString() {
 		StringBuffer buf = new StringBuffer();

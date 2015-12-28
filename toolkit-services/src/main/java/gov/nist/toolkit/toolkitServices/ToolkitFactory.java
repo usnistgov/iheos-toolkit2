@@ -38,6 +38,8 @@ public class ToolkitFactory {
                 bean.setProperty(ele.name, ele.asBoolean());
             } else if (ele.isString()) {
                 bean.setProperty(ele.name, ele.asString());
+            } else if (ele.isList()) {
+                bean.setProperty(ele.name, ele.asList());
             }
         }
         return bean;

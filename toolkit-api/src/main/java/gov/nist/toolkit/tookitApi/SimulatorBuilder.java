@@ -110,7 +110,7 @@ public class SimulatorBuilder {
      * @return updated SimConfig if updates made or null if no changes accepted.
      * @throws ToolkitServiceException if anything goes wrong
      */
-    private SimConfig update(SimConfig config) throws ToolkitServiceException {
+    public SimConfig update(SimConfig config) throws ToolkitServiceException {
         return engine.update(config);
     }
 

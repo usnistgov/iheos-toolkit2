@@ -21,7 +21,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -75,6 +77,21 @@ public class SimulatorsController {
         }
     }
 
+    enum PropType {STRING, BOOLEAN, LIST};
+    PropType propType(SimulatorConfigElement config) {
+        if (config.isList()) return PropType.LIST;
+        if (config.isBoolean()) return PropType.BOOLEAN;
+        if (config.isString()) return PropType.STRING;
+        return null;
+    }
+
+    PropType propType(SimConfigResource res, String name) {
+        if (res.isList(name)) return PropType.LIST;
+        if (res.isBoolean(name)) return PropType.BOOLEAN;
+        if (res.isString(name)) return PropType.STRING;
+        return null;
+    }
+
     /**
      * Update Simulator Configuration.
      * @param config containing updates
@@ -95,22 +112,18 @@ public class SimulatorsController {
 
             boolean makeUpdate = false;
             for (String propName : config.propertyNames()) {
-                if (!currentConfig.hasConfig(propName)) {
-                    logger.info(String.format("Property %s ignored - no such property", propName));
-                    continue;  // ignore
-                }
-                boolean currentIsBoolean = currentConfig.get(propName).isBoolean();
-                boolean updateIsBoolean = config.isBoolean(propName);
-                if (currentIsBoolean != updateIsBoolean)
-                    throw new SimPropertyTypeConflictException(propName,
-                            (currentIsBoolean) ? "boolean" : "String",
-                            (currentIsBoolean) ? "String" : "boolean");
                 SimulatorConfigElement ele = currentConfig.get(propName);
                 if (ele == null) continue;  // no such property
                 if (!ele.isEditable()) {
                     continue;  // ignore
                 }
-                if (currentIsBoolean) {
+
+                PropType currentType = propType(ele);
+                PropType updateType = propType(config, propName);
+                if (currentType != updateType)
+                    throw new SimPropertyTypeConflictException(propName, currentType.name(), updateType.name());
+
+                if (propType(ele) == PropType.BOOLEAN) {
                     if (ele.asBoolean() == config.asBoolean(propName)) continue;  // no change
                     if (!makeUpdate)  // first update
                         logger.info(String.format("...property %s", propName));
@@ -118,13 +131,21 @@ public class SimulatorsController {
                     logger.info(String.format("......%s ==> %s", ele.asBoolean(), config.asBoolean(propName)));
                     ele.setValue(config.asBoolean(propName));
                 }
-                else {
+                else if (propType(ele) == PropType.STRING) {
                     if (ele.asString().equals(config.asString(propName))) continue;  // no change
                     if (!makeUpdate)  // first update
                         logger.info(String.format("...property %s", propName));
                     makeUpdate = true;
                     logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
                     ele.setValue(config.asString(propName));
+                }
+                else if (propType(ele) == PropType.LIST) {
+                    if (listCompare(ele.asList(), config.asList(propName))) continue; // no change
+                    if (!makeUpdate)  // first update
+                        logger.info(String.format("...property %s", propName));
+                    makeUpdate = true;
+                    logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
+                    ele.setValue(config.asList(propName));
                 }
             }
             if (makeUpdate) {
@@ -137,6 +158,12 @@ public class SimulatorsController {
         } catch (Exception e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }
+    }
+
+    boolean listCompare(List<String> a, List<String> b) {
+        Set<String> aSet = new HashSet<>(a);
+        Set<String> bSet = new HashSet<>(b);
+        return a.equals(b);
     }
 
     /**

@@ -33,7 +33,11 @@ public enum SimulatorActorType {
     /**
      * Responding Gateway
      */
-    RESPONDING_GATEWAY("rg");
+    RESPONDING_GATEWAY("rg"),
+    /**
+     * Initiating Gateway
+     */
+    INITIATING_GATEWAY("ig");
 
     String name;  // name that matches ActorType.java
 

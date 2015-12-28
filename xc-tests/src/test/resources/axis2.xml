@@ -60,7 +60,7 @@
 
 
 
-    <!--Following params will set the proper context paths for invocations. All the endpoints will have a commons context-->
+    <!--Following RGParams will set the proper context paths for invocations. All the endpoints will have a commons context-->
     <!--root which can configured using the following contextRoot parameter-->
     <!--<parameter name="contextRoot">axis2</parameter>-->
 

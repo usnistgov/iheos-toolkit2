@@ -21,6 +21,12 @@ public class SimConfigResource extends SimIdResource implements SimConfig {
         props.add(new Mapping(name, value).asString());
     }
 
+    @Override
+    public void setProperty(String name, List<String> values) {
+        rmProperty(name);
+        props.add(new Mapping(name, values).asString());
+    }
+
     private String getProperty(String name) {
         int index = findProperty(name);
         if (index == -1) return null;
@@ -55,8 +61,32 @@ public class SimConfigResource extends SimIdResource implements SimConfig {
     }
 
     @Override
+    public boolean isString(String name) {
+        if (isBoolean(name)) return false;
+        String p = getProperty(name);
+        if (p == null) return false;
+        if (p.startsWith("[")) return false;
+        return true;
+    }
+
+    @Override
+    public boolean isList(String name) {
+        if (isBoolean(name)) return false;
+        String p = getProperty(name);
+        if (p == null) return false;
+        if (p.startsWith("[")) return true;
+        return false;
+    }
+
+    @Override
     public String asString(String name) {
         return getProperty(name);
+    }
+
+    @Override
+    public List<String> asList(String name) {
+        String p = getProperty(name);
+        return Mapping.asList(p);
     }
 
     @Override
