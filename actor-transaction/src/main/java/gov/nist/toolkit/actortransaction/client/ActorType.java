@@ -25,7 +25,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
             "reg",
             "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
-            Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
+            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
             true,
             null
     ),

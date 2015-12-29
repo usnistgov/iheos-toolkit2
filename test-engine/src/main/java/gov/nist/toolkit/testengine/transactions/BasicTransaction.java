@@ -66,6 +66,7 @@ public abstract class BasicTransaction  {
 	protected boolean assign_patient_id = true;
 	protected boolean soap_1_2 = true;
 	protected boolean async = false;
+	protected boolean isStableOrODDE = false;
 	boolean useMtom;
 	boolean useAddressing;
 	boolean isSQ;
@@ -367,7 +368,6 @@ public abstract class BasicTransaction  {
 		add_step_status_to_output();
 	}
 
-
 	void validate_registry_response_no_set_status(OMElement registry_result, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		if (registry_result == null) {
 			s_ctx.set_error("No Result message");
@@ -387,6 +387,7 @@ public abstract class BasicTransaction  {
 		RegistryErrorListGenerator rel  = null;
 		ValidationContext vc = getValidationContextFromTransactionName();
 		vc.isResponse = true;
+		vc.isStableOrODDE = isStableOrODDE;
 		try {
             SecurityParams sp = s_ctx.getTransactionSettings().securityParams;
 			logger.info("Codes file is " + sp.getCodesFile());
@@ -432,6 +433,7 @@ public abstract class BasicTransaction  {
 		if ("sq".equals(tname)) vc.isSQ = true;
 		if ("pr".equals(tname)) vc.isPnR = true;
 		if ("r".equals(tname)) vc.isR = true;
+		if ("rodde".equals(tname)) vc.isRODDE = true;
 
 		return vc;
 	}
@@ -1313,6 +1315,8 @@ public abstract class BasicTransaction  {
 		Metadata m = MetadataParser.parseNonSubmission(result);
 
 		Validator v = new Validator(test_assertions);
+		v.setInstruction_output(instruction_output);
+		v.setTestConfig(testConfig);
 		v.run_test_assertions(m);
 
 		return v.getErrors();

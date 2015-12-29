@@ -177,6 +177,12 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         } else if (wsaction.equals("urn:ihe:iti:2007:RegisterDocumentSet-bResponse")) {
             vc.isResponse = true;
             vc.isR = true;
+        } else if (wsaction.equals("urn:ihe:iti:2010:RegisterOnDemandDocumentEntry")) {
+            vc.isRequest = true;
+            vc.isRODDE = true;
+        } else if (wsaction.equals("urn:ihe:iti:2010:RegisterOnDemandDocumentResponse")) {
+            vc.isResponse = true;
+            vc.isRODDE = true;
         } else if (wsaction.equals("urn:ihe:iti:2007:RegistryStoredQuery")) {
             vc.isRequest = true;
             vc.isSQ = true;

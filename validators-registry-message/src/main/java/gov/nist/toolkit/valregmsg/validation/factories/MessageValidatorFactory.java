@@ -441,7 +441,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 					return mvc;
 				}
 			}
-		} else if (vc.isR) {
+		} else if (vc.isR || vc.isRODDE) {
 			if (vc.isRequest) {
 				validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
 				mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
@@ -582,6 +582,9 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			return mvc;
 		} else if (rootElementName.equals("SubmitObjectsRequest")) {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Register request");
+			// TODO: In this case, it could be a Register On-Demand Document Entry (RODDE) type so we need to dig a little deeper.
+			// Will this work?
+			// new AXIOMXPath("/SubmitObjectsRequest/LeafRegistryObjectList[1]/ExtrinsicObject[1][@objectType='urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248']")
 			vc.isR = true;
 			vc.isRequest = true;
 			mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());

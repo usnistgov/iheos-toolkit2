@@ -151,7 +151,7 @@ public class AdtSocketListener implements Runnable{
                 try {
                     String patientId = message.getPatientId();
                     String patientName = message.getPatientName();
-                    logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName);
+                    logger.info("Incoming PatientID = " + patientId + "  Patient Name = " + patientName + " SimId = " + threadPoolItem.simId);
                     threadPoolItem.pifCallback.addPatient(threadPoolItem.simId, patientId);
 //                    Adt.addPatientId(threadPoolItem.simId, patientId);
                 } catch (AdtMessageParseException e) {

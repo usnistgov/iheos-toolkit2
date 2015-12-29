@@ -6,16 +6,14 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.Iterator;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.jaxen.JaxenException;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import java.util.Iterator;
 
 
 public class StoredQueryTransaction extends QueryTransaction {
@@ -70,6 +68,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 		String ns_uri = (ns != null) ? ns.getNamespaceURI() : null;
 		int metadata_type = getMetadataType();
 
+		isStableOrODDE = true; // A registry response can include both object types
 
 		// verify input is correct top-level request
 		if (parse_metadata) {

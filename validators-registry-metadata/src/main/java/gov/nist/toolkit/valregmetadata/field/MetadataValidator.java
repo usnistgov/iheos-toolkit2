@@ -11,11 +11,10 @@ import gov.nist.toolkit.valregmetadata.object.SubmissionSet;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.axiom.om.OMElement;
 
 public class MetadataValidator {
 	Metadata m;

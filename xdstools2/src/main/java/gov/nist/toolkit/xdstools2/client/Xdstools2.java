@@ -110,7 +110,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		// Make it Collapsible
 
 		final HTML menuTrayStateToBe = new HTML("&laquo;");
-		menuTrayStateToBe.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		menuTrayStateToBe.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT); // Right alignment causes a problem where it is cut off (non-intuitively hidden over current view but still accessible by the horizontal scrollbar) by longer menu item labels that wrap in a smaller-sized browser window
 		menuTrayStateToBe.getElement().getStyle().setFontSize(14, Style.Unit.PX);
 		menuTrayStateToBe.setTitle("Collapse");
 
