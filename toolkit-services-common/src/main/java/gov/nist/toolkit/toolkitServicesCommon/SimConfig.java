@@ -1,5 +1,6 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -63,4 +64,6 @@ public interface SimConfig extends SimId {
      * @return Description string.
      */
     String describe();
+
+    Collection<String> getPropertyNames();
 }

@@ -94,7 +94,7 @@ public class SimConfigResource extends SimIdResource implements SimConfig {
         return valueAsBoolean(getProperty(name));
     }
 
-    public Set<String> propertyNames() {
+    public Set<String> getPropertyNames() {
         Set<String> names = new HashSet<>();
         for (String s : props) {
             Mapping m = new Mapping(s);
@@ -113,7 +113,7 @@ public class SimConfigResource extends SimIdResource implements SimConfig {
         buf.append("...id = ").append(id).append("\n");
         buf.append("...user = ").append(user).append("\n");
         buf.append("...type = ").append(actorType).append("\n");
-        for (String key : propertyNames()) {
+        for (String key : getPropertyNames()) {
             buf.append("...").append(key).append("=").append(getProperty(key)).append("\n");
         }
         return buf.toString();
@@ -121,4 +121,5 @@ public class SimConfigResource extends SimIdResource implements SimConfig {
 
     private String valueAsString(boolean b) { return (b) ? "true" : "false"; }
     private boolean valueAsBoolean(String v) { return v.equals("true"); }
+
 }

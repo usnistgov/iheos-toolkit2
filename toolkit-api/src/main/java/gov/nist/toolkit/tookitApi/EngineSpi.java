@@ -82,6 +82,7 @@ public class EngineSpi {
             return response.readEntity(SimConfigResource.class);
         if (status == Response.Status.NOT_MODIFIED.getStatusCode())
             return null;
+        logger.error("Update returned " + response.getStatusInfo());
         throw new ToolkitServiceException(response);
     }
 

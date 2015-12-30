@@ -13,6 +13,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSession;
+import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
@@ -211,4 +212,11 @@ public class ToolkitApi {
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }
     private XdsTestServiceManager xdsTestServiceManager() { return session.xdsTestServiceManager(); }
     private SiteServiceManager siteServiceManager() { return SiteServiceManager.getSiteServiceManager(); }
+
+    public List<Result> findDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
+        return new QueryServiceManager(session).findDocuments2(site, pid, selectedCodes);
+    }
+
 }
+
+

@@ -6,7 +6,7 @@ import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
-import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory.QueryReturnType;
+import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 
 import java.util.ArrayList;
 

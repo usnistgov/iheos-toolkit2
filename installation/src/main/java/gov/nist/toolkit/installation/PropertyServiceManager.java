@@ -14,8 +14,14 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	File warHome = null;
     String TOOLKIT_PROPERTIES_PATH = "";
     File propertiesFile = null;
+    String overrideToolkitPort = null;
 
-	static Logger logger = Logger.getLogger(PropertyServiceManager.class);
+    public void setOverrideToolkitPort(String overrideToolkitPort) {
+        logger.info("Override toolkit port to " + overrideToolkitPort);
+        this.overrideToolkitPort = overrideToolkitPort;
+    }
+
+    static Logger logger = Logger.getLogger(PropertyServiceManager.class);
 	
 	public PropertyServiceManager(File warHome)  {
 		this.warHome = warHome;
@@ -58,6 +64,10 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 	public String getToolkitPort() {
 		logger.debug(": " + "getToolkitPort");
+        if (overrideToolkitPort != null) {
+            logger.info("Overriding toolkit port -> " + overrideToolkitPort);
+            return overrideToolkitPort;
+        }
 		return getPropertyManager().getToolkitPort();
 	}
 
@@ -164,7 +174,12 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
         }
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
-			String msg = "Cannot access Test Log Cache [" + testLogCache + "] - either it doesn't exist, isn't a directory or isn't writable. " +
+            // first try initializing it
+            f.mkdirs();
+        }
+
+        if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
+            String msg = "Cannot access Test Log Cache [" + testLogCache + "] - either it doesn't exist, isn't a directory or isn't writable. " +
                     "Open Toolkit Configuration, edit External Cache location (if necessary) and save. If your External Cache location is ok " +
                     " you may only need to update your External Cache.  The SAVE will do that update.";
 			logger.warn(msg);

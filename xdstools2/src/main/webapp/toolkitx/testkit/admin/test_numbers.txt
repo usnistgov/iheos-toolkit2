@@ -115,8 +115,9 @@ Summer 2015 development
 
 15803 - GetAll Stored Query
 15804 - Simple Patient Identity Feed
+
 15805 - On Demand DocumentEntry Submit
-15806 - On Demand DocumentEntry Retrieve
+15806 - On Demand Stable DocumentEntry Submit
 
 
 

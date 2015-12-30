@@ -97,7 +97,7 @@ public class RetrieveTransaction extends BasicTransaction {
 //				metadata_ele = Util.parse_xml(new File(metadata_filename));
 
 //			if (metadata_filename == null && metadata_element == null)
-//				throw new XdsInternalException("No MetadataFile element or Metadata element found for RetrieveDocumentSetRequest Transaction instruction within step " + s_ctx.get("step_id"));
+//				throw new XdsInternalException("No MetadataFile element or Metadata element found for RetrieveDocumentSetRequest Transaction instruction within step " + s_ctx.getRetrievedDocumentsModel("step_id"));
 //
 //			if (metadata_filename != null)
 //				request_ele = Util.parse_xml(new File(metadata_filename));
@@ -242,7 +242,7 @@ public class RetrieveTransaction extends BasicTransaction {
 			if (expErrorCode != null && !expErrorCode.equals("")) {
 				List<String> errCodesReturned = r_ctx.getRrp().get_error_codes();
 				if ( !errCodesReturned.contains(expErrorCode)) {
-					s_ctx.set_error("Expected errorCode of " + expErrorCode + "\nDid get errorCodes of " +
+					s_ctx.set_error("Expected errorCode of " + expErrorCode + "\nDid getRetrievedDocumentsModel errorCodes of " +
 							errCodesReturned);
 					step_failure = true;
 				}
@@ -330,12 +330,12 @@ public class RetrieveTransaction extends BasicTransaction {
 			String rep_uid = rep_uid_ele.getText();
 
 			RetrievedDocumentModel rqst = new RetrievedDocumentModel();
-			rqst.setDoc_uid(doc_uid);
-			rqst.setRep_uid(rep_uid);
+			rqst.setDocUid(doc_uid);
+			rqst.setRepUid(rep_uid);
 
 			//			if (reference_metadata != null) {
 			//			HashMap<String, OMElement> uid_doc_map = reference_metadata.getDocumentUidMap();
-			//			OMElement eo = uid_doc_map.get(doc_uid);
+			//			OMElement eo = uid_doc_map.getRetrievedDocumentsModel(doc_uid);
 			//			if (eo == null)
 			//			throw new XdsInternalException("RetrieveTransaction: build_request_info: reference document " + doc_uid + " not available");
 			//			rqst.setHash(reference_metadata.getSlotValue(eo, "hash", 0));
@@ -379,7 +379,7 @@ public class RetrieveTransaction extends BasicTransaction {
 //	throws XdsInternalException, FactoryConfigurationError,
 //	MetadataException, MetadataValidationException, XdsException {
 //		if ( uri == null && uri_ref == null)
-//			throw new XdsInternalException("No URI or URIRef element within step " + s_ctx.get("step_id"));
+//			throw new XdsInternalException("No URI or URIRef element within step " + s_ctx.getRetrievedDocumentsModel("step_id"));
 //
 //		s_ctx.add_name_value(instruction_output, "URIRef", uri_ref);
 //
@@ -468,7 +468,7 @@ public class RetrieveTransaction extends BasicTransaction {
 //
 //			if ( !referenced_documents.isEmpty()) {
 //				String key = referenced_documents.keySet().iterator().next();
-//				String filename = referenced_documents.get(key);
+//				String filename = referenced_documents.getRetrievedDocumentsModel(key);
 //
 //
 //

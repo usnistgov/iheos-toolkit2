@@ -28,13 +28,13 @@ public class RetrieveResponseParser {
             RetrievedDocumentModel rr = new RetrievedDocumentModel();
 
             OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "DocumentUniqueId");
-            rr.setDoc_uid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
+            rr.setDocUid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
 
             OMElement home_ele = XmlUtil.firstChildWithLocalName(doc_response, "HomeCommunityId");
             rr.setHome((home_ele != null) ? home_ele.getText() : null);
 
             OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "RepositoryUniqueId");
-            rr.setRep_uid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
+            rr.setRepUid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
 
             OMElement mime_type_ele = XmlUtil.firstChildWithLocalName(doc_response, "mimeType");
             rr.setContent_type((mime_type_ele != null) ? mime_type_ele.getText() : null);
@@ -55,10 +55,10 @@ public class RetrieveResponseParser {
                     rr.addError("Mime Type attribute (" + rr.getContent_type() + ") does not match Content-Type (" + mtom_mime + ")");
                 rr.setContents(mtom.getContents());
 
-            if (rr.getDoc_uid() == null)
+            if (rr.getDocUid() == null)
                 throw new MetadataException("parse_rep_result(): Document uniqueId not found in response", null);
 
-            model.put(rr.getDoc_uid(), rr);
+            model.put(rr.getDocUid(), rr);
         }
 
     }

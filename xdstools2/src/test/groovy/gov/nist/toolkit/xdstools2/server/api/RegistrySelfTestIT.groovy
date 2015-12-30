@@ -1,10 +1,14 @@
 package gov.nist.toolkit.xdstools2.server.api
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
+import gov.nist.toolkit.session.server.TestSession
+import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import spock.lang.Shared
 import spock.lang.Specification
 /**
  * Runs all Registry tests.
@@ -17,15 +21,39 @@ import spock.lang.Specification
  *    All the self tests will run
  */
 class RegistrySelfTestIT extends Specification {
-    ToolkitApi api;
+    @Shared server
+    @Shared def port = '8889'
+    @Shared ToolkitApi api;
+    @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", port)
+    @Shared SimulatorBuilder spi = new SimulatorBuilder(urlRoot)
     String patientId = 'BR14^^^&1.2.360&ISO'
     String reg = 'mike__reg'
     SimId simId = new SimId(reg)
-//    String regrep = 'mike__regrep'
-    String testSession = 'mike';
+    @Shared String testSession = 'mike';
+
+    def setupSpec() {   // one time setup done when class launched
+        TestSession.setupToolkit()
+        api = ToolkitApi.forServiceUse()
+
+        server = new GrizzlyController()
+        server.start(port);
+        server.withToolkit()
+
+        spi.delete('reg', testSession)
+
+        spi.create(
+                'reg',
+                testSession,
+                SimulatorActorType.REGISTRY,
+                'test')
+
+    }
+
+    def cleanupSpec() {  // one time shutdown when everything is done
+        server.stop()
+    }
 
     def setup() {
-        api = ToolkitApi.forInternalUse()
         println "EC is ${Installation.installation().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
@@ -73,7 +101,7 @@ class RegistrySelfTestIT extends Specification {
 //        then:
 //        true
 //        results.size() == 1
-//        results.get(0).passed()
+//        results.getRetrievedDocumentsModel(0).passed()
 //    }
 
 //    def 'Run test under debug'() {
@@ -92,7 +120,7 @@ class RegistrySelfTestIT extends Specification {
 //        then:
 //        true
 //        results.size() == 1
-//        results.get(0).passed()
+//        results.getRetrievedDocumentsModel(0).passed()
 //    }
 
     def 'Run all Register tests'() {
@@ -165,7 +193,7 @@ class RegistrySelfTestIT extends Specification {
 //        then:
 //        true
 //        results.size() == 1
-//        results.get(0).passed()
+//        results.getRetrievedDocumentsModel(0).passed()
 //    }
 
 }

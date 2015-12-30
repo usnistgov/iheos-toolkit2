@@ -44,7 +44,7 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 
 	// For a particular document, either:
 	//    its id will show up in docIds because it was an XOP optimized attachment
-	//    to get the content you need the map of content ids to contents in class MultipartContainer
+	//    to getRetrievedDocumentsModel the content you need the map of content ids to contents in class MultipartContainer
 	// OR
 	//    its id will show up in docContents because it was an XOP un-optimized content
 	//    and docContents has the content

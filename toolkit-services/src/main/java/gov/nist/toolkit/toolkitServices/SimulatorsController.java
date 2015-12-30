@@ -12,10 +12,9 @@ import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.ServerProperties;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -37,8 +36,12 @@ public class SimulatorsController {
     public SimulatorsController() {
         api = ToolkitApi.forServiceUse();
 
-        ResourceConfig resourceConfig = new ResourceConfig(SimulatorsController.class);
-        resourceConfig.property(ServerProperties.TRACING, "ALL");
+        // This is commented out because when running inside Jetty there is a maximum
+        // header size.  If you hit it with TRACING ALL you will see the error in the Jetty logs
+        // header full: java.lang.RuntimeException: Header>6144
+        // note this is also set in web.xml
+//        ResourceConfig resourceConfig = new ResourceConfig(SimulatorsController.class);
+//        resourceConfig.property(ServerProperties.TRACING, "ALL");
     }
 
     @Context
@@ -111,7 +114,7 @@ public class SimulatorsController {
             if (currentConfig == null) throw new NoSimException("");
 
             boolean makeUpdate = false;
-            for (String propName : config.propertyNames()) {
+            for (String propName : config.getPropertyNames()) {
                 SimulatorConfigElement ele = currentConfig.get(propName);
                 if (ele == null) continue;  // no such property
                 if (!ele.isEditable()) {
@@ -149,13 +152,15 @@ public class SimulatorsController {
                 }
             }
             if (makeUpdate) {
-                logger.info(String.format("Sim %s is updated", config.getFullId()));
+                logger.info(String.format("Updating Sim %s", config.getFullId()));
                 api.saveSimulator(currentConfig);
                 SimConfigResource bean = ToolkitFactory.asSimConfigBean(currentConfig);
+                logger.info("Returning updated bean");
                 return Response.accepted(bean).build();
             } else
                 return Response.notModified().build();
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            logger.error(ExceptionUtil.exception_details(e));
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }
     }

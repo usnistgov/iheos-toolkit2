@@ -45,7 +45,7 @@ abstract public class StoredQueryFactory {
 
 	OMElement ahqr;
 
-	public enum QueryReturnType  { OBJECTREF, LEAFCLASS, LEAFCLASSWITHDOCUMENT };
+    ;
 
 
 	QueryReturnType returnType = QueryReturnType.OBJECTREF;

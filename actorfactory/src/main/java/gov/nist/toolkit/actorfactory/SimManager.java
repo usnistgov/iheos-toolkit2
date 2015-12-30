@@ -41,6 +41,7 @@ public class SimManager {
 		for (SimId simId : simIds) {
 			if (!hasSim(simId))
 				try {
+                    logger.info("Load sim " + simId);
 					simConfigs.add(db.getSimulator(simId));
 				}
 				catch (Exception e) {
@@ -87,18 +88,21 @@ public class SimManager {
 	}
 	
 	public void addSimConfigs(Simulator s) {
+        logger.info("addSimConfigs: " + s);
 		for (SimulatorConfig config : s.getConfigs()) {
 			addSimConfig(config);
 		}
 	}
 	
 	public void addSimConfig(SimulatorConfig config) {
+        logger.info("addSimConfig: " + config);
 		delSimConfig(config.getId());
 		simConfigs.add(config);
 	}
 	
 	public void setSimConfigs(List<SimulatorConfig> configs) {
-		simConfigs = configs;
+		logger.info("setSimConfigs: " + configs);
+        simConfigs = configs;
 	}
 
 	public void delSimConfig(SimId simId) {

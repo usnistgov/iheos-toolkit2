@@ -551,7 +551,7 @@ public class SimServlet  extends HttpServlet {
 		// this should go away after repository code made to use deltas
 		if (!transactionOk) {
 			synchronized(this) {
-				// delete memory copy of indexes so they don't get written out
+				// delete memory copy of indexes so they don't getRetrievedDocumentsModel written out
 				servletContext.setAttribute("Rep_" + simid, null);
 				repIndex = null;
 			}

@@ -67,7 +67,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public GazelleServiceManager gazelleServiceManager;
 
 	// Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
-	// a reference to an instance of this class. This is necessary to get around a circular
+	// a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
 	// reference in the build tree
 	
 	public ToolkitServiceImpl() {

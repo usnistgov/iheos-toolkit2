@@ -45,8 +45,8 @@ class RetrieveResponseParserTest extends Specification {
 
         then:
         model.home == 'urn:oid:1.2.3.4'
-        model.rep_uid == '1.3.6.1.4...1000'
-        model.doc_uid == '1.3.6.1.4...2300'
+        model.repUid == '1.3.6.1.4...1000'
+        model.docUid == '1.3.6.1.4...2300'
         model.content_type == 'text/xml'
         model.contents != null
     }
@@ -110,14 +110,14 @@ class RetrieveResponseParserTest extends Specification {
 
         then:
         model1.home == 'urn:oid:1.2.3.4'
-        model1.rep_uid == '1.3.6.1.4...1000'
-        model1.doc_uid == '1.3.6.1.4...2300'
+        model1.repUid == '1.3.6.1.4...1000'
+        model1.docUid == '1.3.6.1.4...2300'
         model1.content_type == 'text/xml'
         model1.contents != null
 
         model2.home == 'urn:oid:1.2.3.5'
-        model2.rep_uid == '1.3.6.1.4...2000'
-        model2.doc_uid == '1.3.6.1.4...2301'
+        model2.repUid == '1.3.6.1.4...2000'
+        model2.docUid == '1.3.6.1.4...2301'
         model2.content_type == 'text/xml'
         model2.contents != null
     }

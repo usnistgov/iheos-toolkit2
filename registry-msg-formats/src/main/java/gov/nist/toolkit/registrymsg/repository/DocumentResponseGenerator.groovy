@@ -22,11 +22,11 @@ public class DocumentResponseGenerator {
         response.addChild(homeId);
 
         OMElement repId = MetadataSupport.om_factory.createOMElement(MetadataSupport.repository_unique_id_qnamens);
-        repId.setText(model.getRep_uid());
+        repId.setText(model.getRepUid());
         response.addChild(repId);
 
         OMElement docId = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_unique_id_qnamens);
-        docId.setText(model.getDoc_uid());
+        docId.setText(model.getDocUid());
         response.addChild(docId);
 
         OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);

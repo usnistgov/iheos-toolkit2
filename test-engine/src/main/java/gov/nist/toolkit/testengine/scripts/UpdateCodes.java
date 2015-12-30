@@ -152,7 +152,7 @@ public class UpdateCodes {
                 transaction=node;
             }
             if (transaction!=null) {
-                // get metadata file(s) name
+                // getRetrievedDocumentsModel metadata file(s) name
                 OMElement metadataFile=transaction.getFirstChildWithName(new QName("MetadataFile"));
                 if (metadataFile!=null) {
                     metadataFilesPaths.add(testFile + "/" + metadataFile.getText());
@@ -224,17 +224,17 @@ public class UpdateCodes {
      * @return code object
      */
     public Code getCode(OMElement classificationElement){
-        // get coding scheme
+        // getRetrievedDocumentsModel coding scheme
         String value = classificationElement.getAttributeValue(MetadataSupport.noderepresentation_qname);
 
-        // get display name
+        // getRetrievedDocumentsModel display name
         String displayName = null;
         OMElement nameElement = MetadataSupport.firstChildWithLocalName(classificationElement, "Name");
         OMElement localizedStringElement = MetadataSupport.firstChildWithLocalName(nameElement, "LocalizedString");
         if (nameElement == null || localizedStringElement == null) displayName="";
         displayName=localizedStringElement.getAttributeValue(MetadataSupport.value_qname);
 
-        // get code
+        // getRetrievedDocumentsModel code
         String codeSystem = "";
         OMElement codeSystemElement;
         OMElement slot = MetadataSupport.firstChildWithLocalName(classificationElement, "Slot");

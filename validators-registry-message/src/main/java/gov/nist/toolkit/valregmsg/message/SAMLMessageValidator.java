@@ -202,7 +202,7 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 	    		err("Attribute HomeCommunityId is required.", "Attribute HomeCommunityId");
 	    	}
 	    	
-	    	//needs CodeUtils to get access to codes.xml
+	    	//needs CodeUtils to getRetrievedDocumentsModel access to codes.xml
 	    	CodesUtil codesUtil = new CodesUtil(vc);
 	    	
 	    	
@@ -542,7 +542,7 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 		}
 
 		//		if (action.size() > 0) {
-		//			OMElement a = action.get(0);
+		//			OMElement a = action.getRetrievedDocumentsModel(0);
 		//			String mu = a.getAttributeValue(MetadataSupport.must_understand_qname);
 		//			if (!"1".equals(mu))
 		//				er.err("The WS-Action SOAP header element must have attribute wsa:mustUnderstand=\"1\"","ITI TF-2x: V.3.2.2");

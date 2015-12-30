@@ -20,7 +20,7 @@ public class XCQTransaction extends StoredQueryTransaction {
 	}
 
 	public void run(OMElement metadata_element) throws XdsException {
-//		expectedHomeCommunityId = s_ctx.get("homeCommunityId");
+//		expectedHomeCommunityId = s_ctx.getRetrievedDocumentsModel("homeCommunityId");
 		this.xds_version = BasicTransaction.xds_b;
 
 		// manual linkage

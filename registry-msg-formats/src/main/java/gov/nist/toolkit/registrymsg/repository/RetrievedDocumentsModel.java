@@ -37,7 +37,7 @@ public class RetrievedDocumentsModel {
     }
 
     public void add(RetrievedDocumentModel item) {
-        put(item.getDoc_uid(), item);
+        put(item.getDocUid(), item);
     }
 
     void assignCids() {

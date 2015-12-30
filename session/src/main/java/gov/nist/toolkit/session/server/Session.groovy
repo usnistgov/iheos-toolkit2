@@ -139,6 +139,8 @@ public class Session implements SecurityParams {
 			try {
 				Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites();
 				Site st = sites.getSite(siteSpec.name);
+                logger.info("site is " + st);
+                logger.info(st.describe());
 				repUid = st.getRepositoryUniqueId();
 			} catch (Exception e) {
 			}
@@ -493,14 +495,14 @@ public class Session implements SecurityParams {
 		return config;
 	}
 
-	public CodesConfiguration getCodesConfiguration() throws XdsInternalException {
+	public CodesConfiguration currentCodesConfiguration() throws XdsInternalException {
 		return getCodesConfiguration(getCurrentEnvironment());
 	}
 
 	public String getAssigningAuthority() throws Exception {
 		CodesConfiguration config = null;
 		try {
-			config = getCodesConfiguration();
+			config = currentCodesConfiguration();
 		} catch (XdsInternalException e) {
 			throw new Exception("Error loading current Assigning Authority", e);
 		}
@@ -510,7 +512,7 @@ public class Session implements SecurityParams {
 	public List<String> getAssigningAuthorities() throws Exception {
 		CodesConfiguration config = null;
 		try {
-			config = getCodesConfiguration();
+			config = currentCodesConfiguration();
 		} catch (XdsInternalException e) {
 			throw new Exception("Error loading current Assigning Authority", e);
 		}

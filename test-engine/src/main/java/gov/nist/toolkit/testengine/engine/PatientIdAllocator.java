@@ -104,7 +104,7 @@ public class PatientIdAllocator extends IdAllocator {
 		try {
 		return loadAltPatientId();
 		} catch (IOException e) {
-			throw new XdsInternalException("Cannot get alternate patient id", e);
+			throw new XdsInternalException("Cannot getRetrievedDocumentsModel alternate patient id", e);
 		}
 	}
 

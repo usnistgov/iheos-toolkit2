@@ -417,7 +417,7 @@ public abstract class BasicTransaction  {
 		if (expectedErrorCode != null && !expectedErrorCode.equals("")) {
 			List<String> errorCodes = registry_response.get_error_codes();
 			if ( ! errorCodes.contains(expectedErrorCode)) {
-				s_ctx.set_error("Expected errorCode of " + expectedErrorCode + "\nDid get errorCodes of " +
+				s_ctx.set_error("Expected errorCode of " + expectedErrorCode + "\nDid getRetrievedDocumentsModel errorCodes of " +
 						errorCodes);
 				step_failure = true;
 			}
@@ -787,7 +787,7 @@ public abstract class BasicTransaction  {
 			TestMgmt tm = new TestMgmt(testConfig);
 			if ( assign_patient_id ) {
 //				System.out.println("============================= assign_patient_id  in BasicTransaction#prepareMetadata()==============================");
-				// get and insert PatientId
+				// getRetrievedDocumentsModel and insert PatientId
 				String forced_patient_id = s_ctx.get("PatientId");
 //                System.out.println("    to " + forced_patient_id)
 //              s_ctx.dumpContextRecursive();
@@ -849,7 +849,7 @@ public abstract class BasicTransaction  {
 	//		if (externalLinkage != null) {
 	//			Linkage linkage = new Linkage(testConfig);
 	//			for (String key : externalLinkage.keySet()) {
-	//				linkage.addLinkage(key, externalLinkage.get(key));
+	//				linkage.addLinkage(key, externalLinkage.getRetrievedDocumentsModel(key));
 	//			}
 	//			linkage.compileLinkage();
 	//		}

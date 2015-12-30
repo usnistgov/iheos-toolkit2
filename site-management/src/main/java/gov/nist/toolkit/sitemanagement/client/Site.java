@@ -256,6 +256,13 @@ public class Site  implements IsSerializable, Serializable {
 		return buf.toString();
 	}
 
+    public String describe() {
+        StringBuffer buf = new StringBuffer();
+        buf.append(toString()).append("\n");
+        buf.append(transactions.describe());
+        return buf.toString();
+    }
+
 	public Site() {}
 
 	public Site(String name) {

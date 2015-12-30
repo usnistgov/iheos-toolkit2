@@ -383,7 +383,7 @@ public class DsSimCommon {
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
             simCommon.generateLog();
-//            SimulatorConfigElement callbackElement = getSimulatorConfig().get(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
+//            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {
 //                String callbackURI = callbackElement.asString();
 //                if (callbackURI != null && !callbackURI.equals("")) {

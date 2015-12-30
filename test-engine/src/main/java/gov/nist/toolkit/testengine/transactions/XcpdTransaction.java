@@ -44,7 +44,7 @@ public class XcpdTransaction extends BasicTransaction {
 			if (result != null) {
 //				testLog.add_name_value(instruction_output, "Result", result);
 
-				// here get validation call and put here
+				// here getRetrievedDocumentsModel validation call and put here
 
 
 				validate_response(result);

@@ -119,6 +119,7 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public void add(List<SimulatorConfigElement> elementList) {
 		elements.addAll(elementList);
 	}
+    public void add(SimulatorConfigElement ele) { elements.add(ele); }
 
 //	public boolean areRGSitesNecessary() { return rgSitesNecessary; }
 //
@@ -205,10 +206,12 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public SimId getId() {
 		return id;
 	}
+    public void setId(SimId simId) { id = simId; }
 	
 	public String getActorType() {
 		return actorType;
 	}
+    public void setActorType(String type) { actorType = type; }
 	
 	public SimulatorConfigElement get(String name) {
 		for (SimulatorConfigElement ele : elements) {

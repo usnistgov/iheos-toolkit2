@@ -10,11 +10,15 @@ import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.engine.*;
+import gov.nist.toolkit.testengine.engine.ResultPersistence;
+import gov.nist.toolkit.testengine.engine.RetrieveB;
+import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
+import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.LogMap;
 import gov.nist.toolkit.testenginelogging.TestDetails;
@@ -30,11 +34,11 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import gov.nist.toolkit.results.shared.Test;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -373,7 +377,7 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public CodesResult getCodesConfiguration() {
-		logger.debug(session.id() + ": " + "getCodesConfiguration");
+		logger.debug(session.id() + ": " + "currentCodesConfiguration");
 
 		CodesResult codesResult = new CodesResult();
 
@@ -535,9 +539,9 @@ public class XdsTestServiceManager extends CommonService {
 									for (String docUid : resMap.keySet()) {
 										RetrievedDocumentModel ri = resMap.get(docUid);
 										Document doc = new Document();
-										doc.uid = ri.getDoc_uid();
+										doc.uid = ri.getDocUid();
 										doc.repositoryUniqueId = ri
-												.getRep_uid();
+												.getRepUid();
 										doc.mimeType = ri.getContent_type();
 										doc.homeCommunityId = ri.getHome();
 										doc.cacheURL = getRepositoryCacheWebPrefix()

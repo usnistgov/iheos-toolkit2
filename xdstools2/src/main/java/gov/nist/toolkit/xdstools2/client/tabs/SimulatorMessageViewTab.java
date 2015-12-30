@@ -206,7 +206,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 //
 //				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), simidFinal);
 //				transactionRadButtons.addButton("All");
-//				transactionRadButtons.buttons.get(0).setValue(true);
+//				transactionRadButtons.buttons.getRetrievedDocumentsModel(0).setValue(true);
 //
 //				// translate transNames into full descriptive names
 //				List<String> fullNames = new ArrayList<>();
@@ -286,7 +286,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 				transInstanceListBox.clear();
 				
 //				for (int i=result.size()-1; i >= 0; i--)
-//					transInstanceListBox.addItem(result.get(i));
+//					transInstanceListBox.addItem(result.getRetrievedDocumentsModel(i));
 				for (TransactionInstance x : result) {
 					transInstanceListBox.addItem(x.labelInterpretedAsDate + " " + x.nameInterpretedAsTransactionType, x.label);
 				}
@@ -491,7 +491,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 	// several background operations need to make sure the 
 	// SimServlet has initialized since that is where the servlet initialization
 	// parameters are read.  Issue a HTTP Get for something that is known to fail
-	// just to get the servlet to initialize
+	// just to getRetrievedDocumentsModel the servlet to initialize
 	public void initSimServlet() {
 
 		String url = GWT.getModuleBaseURL() + "simulator/del"; 

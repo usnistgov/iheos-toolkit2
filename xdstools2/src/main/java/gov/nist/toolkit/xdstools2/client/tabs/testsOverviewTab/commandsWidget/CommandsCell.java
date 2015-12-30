@@ -103,7 +103,7 @@ public class CommandsCell extends AbstractSafeHtmlCell<String> {
             EventTarget eventTarget = event.getEventTarget();
             if (parent.isOrHasChild(Element.as(eventTarget))) {
 
-                // use this to get the selected element!!
+                // use this to getRetrievedDocumentsModel the selected element!!
                 Element el = Element.as(eventTarget);
 
                 // check if we really click on the image

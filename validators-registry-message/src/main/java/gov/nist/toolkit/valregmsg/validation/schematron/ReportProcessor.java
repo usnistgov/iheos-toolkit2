@@ -30,7 +30,7 @@ public class ReportProcessor {
     private ArrayList<String> schemaRptErrors = null;
     private ArrayList<HashMap> schematronRptErrors = null;
 
-    //creates of hashmap to get the header information
+    //creates of hashmap to getRetrievedDocumentsModel the header information
     public HashMap loadHeaderValues(NodeList header) {
         HashMap<String, String> headerMap = new HashMap<String, String>();
 

@@ -131,7 +131,7 @@ class SimConfigMgr {
             }
 
             public void onSuccess(String result) {
-                // reload simulators to get updates
+                // reload simulators to getRetrievedDocumentsModel updates
                 new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
             }
         });

@@ -43,7 +43,7 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 	"text into the chat window in Kudu and mark the test Partially Verified. " +
 	"If all the text is black then the monitor must " +
 	"check to see that the Repository listed in the test results matches " +
-	"the Repository claimed in Kudu so the correct vendors get credit. " +
+	"the Repository claimed in Kudu so the correct vendors getRetrievedDocumentsModel credit. " +
 	"If Repository is wrong then the test should be labeled Failed in Kudu. " +
 	"If none of these problems are evident then mark the test Passed in Kudu.\n\n" +
 	"The most common error is to have the query complete with complaints of not " +

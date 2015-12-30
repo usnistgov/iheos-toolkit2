@@ -57,7 +57,7 @@ public class UtilityRunner {
             }
 
             // depending on the configuration, this could be null
-            session.transactionSettings.patientIdAssigningAuthorityOid = session.getCodesConfiguration().getAssigningAuthorityOid();
+            session.transactionSettings.patientIdAssigningAuthorityOid = session.currentCodesConfiguration().getAssigningAuthorityOid();
 
             if (session.xt == null)
                 session.xt = xdsTestServiceManager.getNewXt();
@@ -125,6 +125,7 @@ public class UtilityRunner {
                     Site site = theSites.getSite(session.siteSpec.name);
                     if (site == null)
                         throw new Exception("Cannot find site " + session.siteSpec.name);
+                    logger.info("Using site: " + site.describe());
                     session.xt.setSite(site);
                     session.xt.setSites(theSites);
                 } else if (session.repUid != null) {

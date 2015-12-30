@@ -4,6 +4,7 @@ package gov.nist.toolkit.actorfactory;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.*;
@@ -17,10 +18,11 @@ import java.util.*;
  *
  */
 public class SimCache {
+    static Logger logger = Logger.getLogger(SimCache.class);
 	static Map<String, SimManager> mgrs = new HashMap<String, SimManager>(); // sessionID => SimManager (sims for a session)
 
-	public void put(String sessionId, SimManager sim) {
-		mgrs.put(sessionId, sim);
+	static public void put(String sessionId, SimManager sim) {
+        mgrs.put(sessionId, sim);
 	}
 
 	static public Collection<Site> getAllSites() throws Exception {
@@ -36,7 +38,8 @@ public class SimCache {
 	 * @param sessionId
 	 * @param sc
 	 */
-	public void update(String sessionId, SimulatorConfig sc) {
+	static public void update(String sessionId, SimulatorConfig sc) {
+        logger.info("SimCache#update1");
 		SimManager sm = mgrs.get(sessionId);
 		if (sm == null) {
 			sm = new SimManager(sessionId);
@@ -45,21 +48,23 @@ public class SimCache {
 		SimId simId = sc.getId();
 		SimulatorConfig sc1 = sm.getSimulatorConfig(simId);
 		if (sc1 == null) {
+            logger.info("adding sim to configuration: " + sc);
 			sm.addSimConfig(sc);
 		}
 	}
 
-	public void update(String sessionId, List<SimulatorConfig> configs) {
+	static public void update(String sessionId, List<SimulatorConfig> configs) {
+        logger.info("SimCache#update2");
 		for (SimulatorConfig config : configs) {
 			update(sessionId, config);
 		}
 	}
 	
-	public SimManager getSimManagerForSession(String sessionId) {
+	static public SimManager getSimManagerForSession(String sessionId) {
 		return getSimManagerForSession(sessionId, false);
 	}
 
-	public SimManager getSimManagerForSession(String sessionId, boolean create) {
+	static public SimManager getSimManagerForSession(String sessionId, boolean create) {
 		SimManager s =  mgrs.get(sessionId);
 		if (s == null) {
 			s = new SimManager(sessionId);
@@ -77,7 +82,7 @@ public class SimCache {
 	 * @return
 	 * @throws IOException
 	 */
-	public Set<SimManager> getSimManagersForSim(SimId simId) throws IOException {
+	static public Set<SimManager> getSimManagersForSim(SimId simId) throws IOException {
 		Set<SimManager> smans = new HashSet<SimManager>();
 		for (SimManager sman : mgrs.values()) {
 			SimulatorConfig sconf = sman.getSimulatorConfig(simId);
@@ -112,7 +117,7 @@ public class SimCache {
 		return null;
 	}
 
-	public void deleteSimConfig(SimId simId) throws IOException {
+	static public void deleteSimConfig(SimId simId) throws IOException {
 		// remove from cache
 		for (SimManager sman : mgrs.values()) {
 			sman.removeSimulatorConfig(simId);

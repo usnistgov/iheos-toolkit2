@@ -83,6 +83,10 @@ public class Installation {
 
 	}
 
+    public void overrideToolkitPort(String port) {
+        propertyServiceManager().setOverrideToolkitPort(port);
+    }
+
 	public File getTkPropsFile() {
 		return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
 	}

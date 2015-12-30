@@ -65,7 +65,7 @@ public class TestSessionManager2 {
     void toCookie(String value) { Cookies.setCookie(CookieManager.TESTSESSIONCOOKIENAME, value);}
     void deleteCookie() { Cookies.removeCookie(CookieManager.TESTSESSIONCOOKIENAME);}
 
-    // get sessionNames from server and broadcast to all tabs
+    // getRetrievedDocumentsModel sessionNames from server and broadcast to all tabs
     public void load() { load(fromCookie()); }
     public void load(final String initialSelection) {
 //        Xdstools2.DEBUG("initialSelection is " + initialSelection + ".  currentTestSession is " + currentTestSession);
@@ -146,7 +146,7 @@ public class TestSessionManager2 {
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                load(sessionName);  // get full list and update all tabs
+                load(sessionName);  // getRetrievedDocumentsModel full list and update all tabs
             }
         });
     }
@@ -161,7 +161,7 @@ public class TestSessionManager2 {
 
             @Override
             public void onSuccess(Boolean aBoolean) {
-                load();  // get full list and update all tabs
+                load();  // getRetrievedDocumentsModel full list and update all tabs
             }
         });
     }

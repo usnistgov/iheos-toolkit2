@@ -51,19 +51,19 @@ public class RetrievedDocumentModel {
 		this.home = home;
 	}
 
-	public String getDoc_uid() {
+	public String getDocUid() {
 		return doc_uid;
 	}
 
-	public void setDoc_uid(String doc_uid) {
+	public void setDocUid(String doc_uid) {
 		this.doc_uid = doc_uid;
 	}
 
-	public String getRep_uid() {
+	public String getRepUid() {
 		return rep_uid;
 	}
 
-	public void setRep_uid(String rep_uid) {
+	public void setRepUid(String rep_uid) {
 		this.rep_uid = rep_uid;
 	}
 

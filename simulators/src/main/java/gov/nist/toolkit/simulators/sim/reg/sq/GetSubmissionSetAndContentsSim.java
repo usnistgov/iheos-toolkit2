@@ -11,7 +11,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.reg.store.Ro;
 import gov.nist.toolkit.simulators.sim.reg.store.SubSet;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetSubmissionSetAndContents;
-import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory.QueryReturnType;
+import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;

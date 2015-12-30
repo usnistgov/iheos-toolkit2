@@ -94,11 +94,11 @@ public class RetrieveB {
 			}
 
 			OMElement ruid = MetadataSupport.om_factory.createOMElement(new QName(	ns, "RepositoryUniqueId"));
-			ruid.setText(ri.getRep_uid());
+			ruid.setText(ri.getRepUid());
 			dr.addChild(ruid);
 
 			OMElement duid = MetadataSupport.om_factory.createOMElement(new QName(	ns, "DocumentUniqueId"));
-			duid.setText(ri.getDoc_uid());
+			duid.setText(ri.getDocUid());
 			dr.addChild(duid);
 		}
 		return rdsr;
@@ -231,10 +231,10 @@ public class RetrieveB {
 //			RetInfo rr = new RetInfo();
 //
 //			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "DocumentUniqueId") ;
-//			rr.setDoc_uid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
+//			rr.setDocUid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
 //
 //			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "RepositoryUniqueId") ;
-//			rr.setRep_uid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
+//			rr.setRepUid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
 //
 //			OMElement mime_type_ele = XmlUtil.firstChildWithLocalName(doc_response, "mimeType") ;
 //			rr.setContent_type((mime_type_ele != null) ? mime_type_ele.getText() : null);
@@ -260,10 +260,10 @@ public class RetrieveB {
 //				rr.addError("Mime Type attribute (" + rr.getContent_type() + ") does not match Content-Type (" + mtom_mime + ")");
 //			rr.setContents(mtom.getContents());
 //
-//			if (rr.getDoc_uid() == null)
+//			if (rr.getDocUid() == null)
 //				throw new MetadataException("parse_rep_result(): Document uniqueId not found in response", null);
 //
-//			map.put(rr.getDoc_uid(), rr);
+//			map.put(rr.getDocUid(), rr);
 //
 //			if (useReportManager != null) {
 //				useReportManager.setRetInfo(rr, docIndex);
@@ -289,7 +289,7 @@ public class RetrieveB {
 			RetrievedDocumentModel req = request.get(req_doc);
 			RetrievedDocumentModel rsp = response.get(req_doc);
 
-			String doc_uid = req.getDoc_uid();
+			String doc_uid = req.getDocUid();
 			OMElement eo = null;
 			if (uid_doc_map != null)
 				eo = uid_doc_map.get(doc_uid);
@@ -319,13 +319,13 @@ public class RetrieveB {
 			//			errors.append("Request:\n" + req.toString() + "\n");
 			//			errors.append("Response:\n" + rsp.toString() + "\n");
 
-			if (req.getRep_uid() == null) {
+			if (req.getRepUid() == null) {
 				errors.append("Request repositoryUniqueId is null\n");
 				continue;
 			}
 
-			if ( !req.getRep_uid().equals(rsp.getRep_uid()))
-				errors.append("Request repositoryUniqueId does not match response - [" + req.getRep_uid() + "] vs [" + rsp.getRep_uid() + "]\n");
+			if ( !req.getRepUid().equals(rsp.getRepUid()))
+				errors.append("Request repositoryUniqueId does not match response - [" + req.getRepUid() + "] vs [" + rsp.getRepUid() + "]\n");
 
 			if (rsp.getContents() == null || req.getContents() == null) {
 				boolean err = false;

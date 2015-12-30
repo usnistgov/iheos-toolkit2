@@ -32,7 +32,7 @@ public class BasicContext  {
 		if (atts == null) atts = new HashMap();
 		Object value = atts.get(attname);
 		if (value != null) {
-            logger.debug("BasicContext get " + attname + " ==> " + value);
+            logger.debug("BasicContext getRetrievedDocumentsModel " + attname + " ==> " + value);
             return value;
         }
 		if (parent_context != null)
