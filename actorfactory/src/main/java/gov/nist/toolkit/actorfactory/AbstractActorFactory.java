@@ -243,16 +243,23 @@ public abstract class AbstractActorFactory {
 	}
 
 	static public void delete(SimulatorConfig config) throws IOException {
-		logger.info("delete simulator" + config.getId());
+        delete(config.getId());
+    }
+
+    static public void delete(SimId simId) throws IOException {
+        logger.info("delete simulator" + simId);
 		SimDb simdb;
 		try {
-			BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(config.getId());
-			sim.onDelete(config);
+			BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(simId);
+            SimulatorConfig config = loadSimulator(simId, true);
+            if (config != null)
+			    sim.onDelete(config);
 
-			simdb = new SimDb(config.getId());
+			simdb = new SimDb(simId);
 			File simDir = simdb.getSimDir();
 			simdb.delete(simDir);
-		} catch (NoSimException e) {
+
+        } catch (NoSimException e) {
 			return;		
 		} catch (ClassNotFoundException e) {
 			logger.error(ExceptionUtil.exception_details(e));
@@ -337,6 +344,14 @@ public abstract class AbstractActorFactory {
 
 		return configs;
 	}
+
+//    public SimulatorConfig loadSimulator(SimId simId) throws IOException, ClassNotFoundException {
+//        List<SimId> ids = new ArrayList<>();
+//        ids.add(simId);
+//        List<SimulatorConfig> configs = loadAvailableSimulators(ids);
+//        if (configs.size() == 0) return null;
+//        return configs.get(0);
+//    }
 
 	/**
 	 * Load simulators - ignore sims not found (length(simlist) < length(idlist))

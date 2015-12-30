@@ -35,7 +35,7 @@ import spock.lang.Specification
  */
 class XcQueryTest extends Specification {
     @Shared ToolkitApi api;
-    @Shared def port = '8888'
+    @Shared def port = '8889'
     @Shared def externalPort = '8888'
     @Shared String urlRoot  // = String.format("http://localhost:%s/xdstools2", port)
     @Shared SimulatorBuilder spi  // = new SimulatorBuilder(urlRoot)
@@ -52,7 +52,6 @@ class XcQueryTest extends Specification {
     boolean stopOnFirstError = true
     List<Result> results
     String RGSiteName = 'mike__rg1'
-    String IGSiteName = 'mike__ig'
 
     // test with (or not) with toolkit launched in Grizzly
     // if not then toolkit must be launched externally and the above port # changed to match
@@ -74,8 +73,8 @@ class XcQueryTest extends Specification {
             server.withToolkit()
         } else {
             port = externalPort
-            Installation.installation().overrideToolkitPort(port)  // ignore toolkit.properties
         }
+        Installation.installation().overrideToolkitPort(port)  // ignore toolkit.properties
         urlRoot = String.format("http://localhost:%s/xdstools2", port)
         spi = new SimulatorBuilder(urlRoot)
     }
@@ -90,6 +89,7 @@ class XcQueryTest extends Specification {
         RGParams.user = testSession
         RGParams.actorType = SimulatorActorType.RESPONDING_GATEWAY
         RGParams.environmentName = spiEnvironment
+        RGSiteName = RGParams.user + '__' + RGParams.id
 
         IGParams.id = 'ig'
         IGParams.user = testSession
@@ -118,24 +118,25 @@ class XcQueryTest extends Specification {
         SimConfig RGConfig = spi.get(RGSimId)
         RGConfig.setProperty(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED, false)
         RGConfig = spi.update(RGConfig)
-        println RGConfig.describe()
+        println 'Updated rg config\n' + RGConfig.describe()
 
         and: 'create local site so test engine can reference it'
         SimulatorConfig rgSimConfig = ToolkitFactory.asSimulatorConfig(RGConfig)
         println "local simconfig"
-        println rgSimConfig.toString()
+        println 'local rg site\n' + rgSimConfig.toString()
         SimCache.getSimManagerForSession(Installation.defaultSessionName(), true).addSimConfig(rgSimConfig)
 
         and: 'Submit one Document to Rep/Reg behind RG'
 //        String testSession = testSession;  // use default
-        testId = new TestInstance("12318")   //11966
+        testId = new TestInstance("12318")
         sections = null
         qparams = new HashMap<>()
         qparams.put('$patientid$', patientId)
 
-        and: 'Run Register test'
+        and: 'execute submit to reg/rep'
         println 'STEP - LOAD REGISTRY'
         results = api.runTest(testSession, RGSiteName, testId, sections, qparams, stopOnFirstError)
+        println 'registry load complete'
 
         then:  'verify register worked'
         results.size() == 1

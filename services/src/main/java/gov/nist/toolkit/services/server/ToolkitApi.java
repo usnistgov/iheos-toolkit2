@@ -127,7 +127,9 @@ public class ToolkitApi {
      * @throws IOException - probably a bad configuration for toolkit
      * @throws NoSimException - simulator doesn't exist
      */
-    public void deleteSimulator(SimId simId) throws IOException, NoSimException { SimDb db = new SimDb(simId); db.delete(); }
+    public void deleteSimulator(SimId simId) throws IOException, NoSimException {
+        simulatorServiceManager().deleteConfig(simId);
+    }
 
     /**
      * Delete as simulator. No error if it doesnt exist.
