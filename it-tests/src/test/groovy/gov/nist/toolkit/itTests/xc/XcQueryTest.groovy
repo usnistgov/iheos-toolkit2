@@ -1,5 +1,4 @@
 package gov.nist.toolkit.itTests.xc
-
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
@@ -7,6 +6,7 @@ import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.itTests.support.TestSupport
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentManager
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
@@ -16,7 +16,7 @@ import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
+import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.tookitApi.BasicSimParameters
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
@@ -35,10 +35,13 @@ import spock.lang.Specification
  * and referenced through the variable api.
  */
 class XcQueryTest extends Specification {
-    @Shared ToolkitApi api;
+    @Shared ToolkitApi api
+    @Shared Session session
     @Shared def remoteToolkitPort = '8889'
     @Shared SimulatorBuilder spi
     @Shared server
+
+
     BasicSimParameters RGParams = new BasicSimParameters();
     BasicSimParameters IGParams = new BasicSimParameters();
     String patientId = 'BR14^^^&1.2.360&ISO'
@@ -54,9 +57,7 @@ class XcQueryTest extends Specification {
 
 
     def setupSpec() {   // one time setup done when class launched
-        // Setup local toolkit / test client
-        UnitTestEnvironmentManager.setupLocalToolkit()
-        api = UnitTestEnvironmentManager.localToolkitApi() // ToolkitApi.forServiceUse()
+        (session, api) = TestSupport.INIT()
 
         // Start up a full copy of toolkit, running on top of Grizzly instead of Tomcat
         // on port remoteToolkitPort
@@ -92,16 +93,11 @@ class XcQueryTest extends Specification {
     def 'Test Responding Gateway' () {
         when:
         println 'STEP - DELETE RESPONDING GATEWAY SIM'
-        spi.delete(RGParams.id, RGParams.user)
+        spi.delete(RGParams)
 
         and:
         println 'STEP - CREATE RESPONDING GATEWAY SIM'
-        SimId RGSimId = spi.create(
-                RGParams.id,
-                RGParams.user,
-                RGParams.actorType,
-                RGParams.environmentName
-        )
+        SimId RGSimId = spi.create(RGParams)
 
         then: 'verify sim built'
         RGSimId.getId() == RGParams.id

@@ -22,6 +22,10 @@ public class SimulatorBuilder {
         engine = new EngineSpi(urlRoot);
     }
 
+    private SimConfig create(BasicSimParameters p) throws ToolkitServiceException {
+        return create(p.getId(), p.getUser(), p.getActorType(), p.getEnvironmentName());
+    }
+
     private SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
         return engine.create(id, user, actorType, environmentName);
     }
@@ -125,6 +129,11 @@ public class SimulatorBuilder {
     public void delete(String id, String user) throws ToolkitServiceException {
         engine.delete(id, user);
     }
+
+    private void delete(BasicSimParameters p) throws ToolkitServiceException {
+        delete(p.getId(), p.getUser());
+    }
+
 
     /**
      * Delete a simulator. There is another call available using separate raw ID and USER parameters.
