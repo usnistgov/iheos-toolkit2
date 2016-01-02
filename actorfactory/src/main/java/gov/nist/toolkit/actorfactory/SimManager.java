@@ -58,6 +58,7 @@ public class SimManager {
 //*****************************************
 	static public Site getSite(SimulatorConfig config) throws Exception {
 		AbstractActorFactory af = getActorFactory(config);
+        logger.info("Getting original actor factory to generate site - " + af.getClass().getName());
 		return af.getActorSite(config, null);
 	}
 
@@ -160,8 +161,11 @@ public class SimManager {
 			sites = commonSites.clone();
 		
 		for (SimulatorConfig asc : simConfigs) {
-			if (!asc.isExpired())
-				sites.putSite(getSite(asc));
+			if (!asc.isExpired()) {
+                Site site = getSite(asc);
+                if (site != null) // not all sims can generate a site
+                    sites.putSite(site);
+            }
 		}
 		
 		sites.buildRepositoriesSite();

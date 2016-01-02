@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.TestSupport
@@ -74,7 +75,8 @@ class XcQueryTest extends Specification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-            server.stop()
+        server.stop()
+        ListenerFactory.terminateAll()
     }
 
     def setup() {  // run before each test method
@@ -82,7 +84,7 @@ class XcQueryTest extends Specification {
         RGParams.user = testSession
         RGParams.actorType = SimulatorActorType.RESPONDING_GATEWAY
         RGParams.environmentName = spiEnvironment
-        RGSiteName = RGParams.user + '__' + RGParams.id
+//        RGSiteName = RGParams.user + '__' + RGParams.id
 
         IGParams.id = 'ig'
         IGParams.user = testSession

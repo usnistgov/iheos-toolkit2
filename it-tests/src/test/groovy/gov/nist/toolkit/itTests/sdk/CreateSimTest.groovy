@@ -1,5 +1,6 @@
 package gov.nist.toolkit.itTests.sdk
 import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.TestSupport
@@ -47,6 +48,7 @@ class CreateSimTest extends Specification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
         server.stop()
+        ListenerFactory.terminateAll()
     }
 
     def setup() {  // run before each test method

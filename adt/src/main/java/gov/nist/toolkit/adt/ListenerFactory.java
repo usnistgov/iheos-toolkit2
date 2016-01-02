@@ -100,6 +100,15 @@ public class ListenerFactory {
         tpi.thread.interrupt();
     }
 
+    public static void terminateAll() {
+        for (ThreadPoolItem tpi : threadPool) {
+            if (tpi.getInUse()) {
+                tpi.thread.interrupt();
+                tpi.release();
+            }
+        }
+    }
+
     public static ThreadPoolItem getItem(String simId) {
         for (ThreadPoolItem tpi : threadPool) {
             if (tpi.simId != null && tpi.simId.equals(simId))

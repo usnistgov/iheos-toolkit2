@@ -1,10 +1,14 @@
-package gov.nist.toolkit.sdkTest
+package gov.nist.toolkit.itTests.xdr
 import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.adt.ListenerFactory
+import gov.nist.toolkit.grizzlySupport.GrizzlyController
+import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.itTests.support.TestSupport
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
+import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.tookitApi.*
 import gov.nist.toolkit.toolkitServicesCommon.*
 import gov.nist.toolkit.transactionNotificationService.TransactionLog
@@ -17,24 +21,38 @@ import spock.lang.Specification
  *
  */
 class XdrSrcTest extends Specification implements TransactionNotification {
-    @Shared String port = '8889'
-    @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", port)
-    SimulatorBuilder builder = new SimulatorBuilder(urlRoot)
-    @Shared GrizzlyController server
+    @Shared ToolkitApi api
+    @Shared Session session
+    @Shared def remoteToolkitPort = '8889'
+    @Shared SimulatorBuilder spi
+    @Shared server
+
+
+
+    @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     BasicSimParameters srcParams = new BasicSimParameters()
     BasicSimParameters recParams = new BasicSimParameters()
 
     def setupSpec() {   // one time setup done when class launched
-        UnitTestEnvironmentManager.setupLocalToolkit()
-        ToolkitApi.forServiceUse()
+        (session, api) = TestSupport.INIT()
 
+        // Start up a full copy of toolkit, running on top of Grizzly instead of Tomcat
+        // on port remoteToolkitPort
         server = new GrizzlyController()
-        server.start(port);
+        server.start(remoteToolkitPort);
         server.withToolkit()
+
+        // Is this still needed?
+        Installation.installation().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
+
+        // Initialze remote api for talking to toolkit on Grizzly
+//        String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
+        spi = new SimulatorBuilder(urlRoot)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
         server.stop()
+        ListenerFactory.terminateAll()
     }
 
     def setup() {  // run before each test method
@@ -52,16 +70,11 @@ class XdrSrcTest extends Specification implements TransactionNotification {
     def 'Create DocSrc'() {
         when:
         println 'STEP - DELETE DOCSRC SIM'
-        builder.delete(srcParams.id, srcParams.user)
+        spi.delete(srcParams)
 
         and:
         println 'STEP - CREATE DOCSRC SIM'
-        SimId simId = builder.create(
-                srcParams.id,
-                srcParams.user,
-                srcParams.actorType,
-                srcParams.environmentName
-        )
+        SimId simId = spi.create(srcParams)
 
         then: 'verify sim built'
         simId.getId() == srcParams.id
@@ -70,11 +83,11 @@ class XdrSrcTest extends Specification implements TransactionNotification {
     def 'Send XDR'() {
         when:
         println 'STEP - DELETE DOCREC SIM'
-        builder.delete(recParams.id, recParams.user)
+        spi.delete(recParams)
 
         and:
         println 'STEP - CREATE DOCREC SIM'
-        DocumentRecipient documentRecipient = builder.createDocumentRecipient(
+        DocumentRecipient documentRecipient = spi.createDocumentRecipient(
                 recParams.id,
                 recParams.user,
                 recParams.environmentName
@@ -83,7 +96,7 @@ class XdrSrcTest extends Specification implements TransactionNotification {
         and:  'This is un-verifiable since notifications are handled through the servlet filter chain which is not configured here'
         println 'STEP - UPDATE - REGISTER NOTIFICATION'
         documentRecipient.setProperty(SimulatorProperties.TRANSACTION_NOTIFICATION_URI, urlRoot + '/rest/toolkitcallback')
-        documentRecipient.setProperty(SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, 'gov.nist.toolkit.sdkTest.XdrSrcTest')
+        documentRecipient.setProperty(SimulatorProperties.TRANSACTION_NOTIFICATION_CLASS, 'gov.nist.toolkit.itTests.xdr.XdrSrcTest')
         SimConfig withRegistration = documentRecipient.update(documentRecipient.getConfig())
         println "Updated Src Sim config is ${withRegistration.describe()}"
 
@@ -92,11 +105,11 @@ class XdrSrcTest extends Specification implements TransactionNotification {
 
         when:
         println 'STEP - DELETE DOCSRC SIM'
-        builder.delete(srcParams.id, srcParams.user)
+        spi.delete(srcParams.id, srcParams.user)
 
         and:
         println 'STEP - CREATE DOCSRC SIM'
-        DocumentSource documentSource = builder.createDocumentSource(
+        DocumentSource documentSource = spi.createDocumentSource(
                 srcParams.id,
                 srcParams.user,
                 srcParams.environmentName
@@ -139,7 +152,7 @@ class XdrSrcTest extends Specification implements TransactionNotification {
 
     def 'Try to reate sim with bad id'() {
         when:
-        SimConfig recSimConfig = builder.create(
+        SimConfig recSimConfig = spi.create(
                 'has spaces',
                 recParams.user,
                 recParams.actorType,
