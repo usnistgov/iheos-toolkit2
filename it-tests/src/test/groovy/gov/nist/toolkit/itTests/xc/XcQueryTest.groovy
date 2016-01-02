@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xcTests
+package gov.nist.toolkit.itTests.xc
 
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.SimulatorProperties
