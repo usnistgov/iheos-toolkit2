@@ -50,7 +50,8 @@ abstract public class GatewaySimulatorCommon extends BaseDsActorSimulator {
 		boolean hasPatientIdParm = sqs.hasPatientIdParameter();
 		
 		if (!hasPatientIdParm && !hasHome) {
-			er.err(Code.XDSMissingHomeCommunityId, "Non-PatientID query and home is not specified", 
+			er.err(Code.XDSMissingHomeCommunityId, "Non-PatientID query and home is not specified. " +
+                    "Params found were " + sqs.getParams().getNames(),
 					(isRG) ? "RGActorSimulator" : "IGActorSimulator", 
 					"ITI TF-2b: 3.38.4.1");
 			dsSimCommon.sendErrorsInRegistryResponse(er);

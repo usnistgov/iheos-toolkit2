@@ -39,7 +39,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 	Metadata m = new Metadata();
 	Exception startUpException = null;
 	Logger logger = Logger.getLogger(XcQuerySim.class);
-	static List<String> findQueryIds = Arrays.asList(MetadataSupport.SQ_FindDocuments, MetadataSupport.SQ_FindFolders, MetadataSupport.SQ_FindSubmissionSets);
+	static List<String> findQueryIds = Arrays.asList(MetadataSupport.SQ_FindDocuments, MetadataSupport.SQ_FindFolders, MetadataSupport.SQ_FindSubmissionSets, MetadataSupport.SQ_GetAll);
 	boolean isSecure;
 	boolean isAsync;
 	AdhocQueryRequest request;

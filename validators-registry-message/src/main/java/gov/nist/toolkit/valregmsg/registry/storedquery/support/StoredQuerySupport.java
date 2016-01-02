@@ -307,7 +307,8 @@ public class StoredQuerySupport {
 	static final String[] patientIdParms = {
 		"$XDSDocumentEntryPatientId",
 		"$XDSSubmissionSetPatientId",
-		"$XDSFolderPatientId"
+		"$XDSFolderPatientId",
+            "$patientId"
 	};
 	
 	public boolean hasPatientIdParameter() {

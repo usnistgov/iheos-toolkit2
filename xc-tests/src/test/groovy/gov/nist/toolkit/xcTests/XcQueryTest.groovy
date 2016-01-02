@@ -57,10 +57,8 @@ class XcQueryTest extends Specification {
     // if not then toolkit must be launched externally and the above port # changed to match
     // You might want to do this to debug a particular simulator, the external toolkit
     // provides the full user interface
-    // BTW, for now it is also necessary to update toolkit.properties
-    // in this module to the port used by the external toolkit.  Otherwise
-    // it gets over written in a wierd way I cannot yet understand.
-    @Shared boolean useInternalToolkit = false
+    // BTW, for now only true works for this setting
+    @Shared boolean useInternalToolkit = true
 
 
     def setupSpec() {   // one time setup done when class launched

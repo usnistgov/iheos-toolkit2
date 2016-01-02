@@ -719,6 +719,7 @@ public class SimServlet  extends HttpServlet {
 
 	// remove the index(s)
 	static public void deleteSim(SimId simId) {
+        if (config == null) return;
 		ServletContext servletContext = config.getServletContext();
 		servletContext.removeAttribute("Reg_" + simId);
 		servletContext.removeAttribute("Rep_" + simId);
