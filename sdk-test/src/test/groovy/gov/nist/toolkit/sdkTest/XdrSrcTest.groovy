@@ -4,7 +4,7 @@ import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.session.server.TestSession
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.tookitApi.*
 import gov.nist.toolkit.toolkitServicesCommon.*
 import gov.nist.toolkit.transactionNotificationService.TransactionLog
@@ -25,7 +25,7 @@ class XdrSrcTest extends Specification implements TransactionNotification {
     BasicSimParameters recParams = new BasicSimParameters()
 
     def setupSpec() {   // one time setup done when class launched
-        TestSession.setupToolkit()
+        UnitTestEnvironmentManager.setupLocalToolkit()
         ToolkitApi.forServiceUse()
 
         server = new GrizzlyController()

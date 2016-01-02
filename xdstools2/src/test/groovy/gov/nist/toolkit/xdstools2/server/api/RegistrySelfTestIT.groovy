@@ -6,7 +6,7 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.session.server.TestSession
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
 import spock.lang.Shared
 import spock.lang.Specification
@@ -32,7 +32,7 @@ class RegistrySelfTestIT extends Specification {
     @Shared String testSession = 'mike';
 
     def setupSpec() {   // one time setup done when class launched
-        TestSession.setupToolkit()
+        UnitTestEnvironmentManager.setupLocalToolkit()
         api = ToolkitApi.forServiceUse()
 
         server = new GrizzlyController()

@@ -5,7 +5,7 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 
 /**
- * Build/modify a collection of different Actors.
+ * Build/modify a collection of different Actor simulators running in a remote copy of toolkit.
  */
 public class SimulatorBuilder {
     String urlRoot;

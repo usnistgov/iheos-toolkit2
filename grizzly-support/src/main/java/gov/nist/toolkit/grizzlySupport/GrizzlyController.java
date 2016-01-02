@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xcTests;
+package gov.nist.toolkit.grizzlySupport;
 
 
 import gov.nist.toolkit.grizzlySupport.AbstractGrizzlyController;

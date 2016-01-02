@@ -1,7 +1,7 @@
 package gov.nist.toolkit.sdkTest
 import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.session.server.TestSession
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.simulators.servlet.SimServlet
 import gov.nist.toolkit.tookitApi.BasicSimParameters
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
@@ -39,7 +39,7 @@ class XdsTest extends Specification {
     }
 
     def setupSpec() {   // one time setup done when class launched
-        TestSession.setupToolkit()
+        UnitTestEnvironmentManager.setupLocalToolkit()
         ToolkitApi.forServiceUse()
         setupGrizzly()
         loadAxis2()

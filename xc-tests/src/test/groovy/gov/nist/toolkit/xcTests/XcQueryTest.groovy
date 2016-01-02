@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentManager
@@ -15,7 +16,7 @@ import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.session.server.TestSession
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.tookitApi.BasicSimParameters
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
@@ -35,10 +36,8 @@ import spock.lang.Specification
  */
 class XcQueryTest extends Specification {
     @Shared ToolkitApi api;
-    @Shared def port = '8889'
-    @Shared def externalPort = '8888'
-    @Shared String urlRoot  // = String.format("http://localhost:%s/xdstools2", port)
-    @Shared SimulatorBuilder spi  // = new SimulatorBuilder(urlRoot)
+    @Shared def remoteToolkitPort = '8889'
+    @Shared SimulatorBuilder spi
     @Shared server
     BasicSimParameters RGParams = new BasicSimParameters();
     BasicSimParameters IGParams = new BasicSimParameters();
@@ -53,32 +52,27 @@ class XcQueryTest extends Specification {
     List<Result> results
     String RGSiteName = 'mike__rg1'
 
-    // test with (or not) with toolkit launched in Grizzly
-    // if not then toolkit must be launched externally and the above port # changed to match
-    // You might want to do this to debug a particular simulator, the external toolkit
-    // provides the full user interface
-    // BTW, for now only true works for this setting
-    @Shared boolean useInternalToolkit = true
-
 
     def setupSpec() {   // one time setup done when class launched
-        TestSession.setupToolkit()
-        api = ToolkitApi.forServiceUse()
+        // Setup local toolkit / test client
+        UnitTestEnvironmentManager.setupLocalToolkit()
+        api = UnitTestEnvironmentManager.localToolkitApi() // ToolkitApi.forServiceUse()
 
-        if (useInternalToolkit) {
-            server = new GrizzlyController()
-            server.start(port);
-            server.withToolkit()
-        } else {
-            port = externalPort
-        }
-        Installation.installation().overrideToolkitPort(port)  // ignore toolkit.properties
-        urlRoot = String.format("http://localhost:%s/xdstools2", port)
+        // Start up a full copy of toolkit, running on top of Grizzly instead of Tomcat
+        // on port remoteToolkitPort
+        server = new GrizzlyController()
+        server.start(remoteToolkitPort);
+        server.withToolkit()
+
+        // Is this still needed?
+        Installation.installation().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
+
+        // Initialze remote api for talking to toolkit on Grizzly
+        String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
         spi = new SimulatorBuilder(urlRoot)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        if (useInternalToolkit)
             server.stop()
     }
 

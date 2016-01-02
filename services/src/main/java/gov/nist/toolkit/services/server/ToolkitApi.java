@@ -12,7 +12,6 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.TestSession;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
@@ -44,7 +43,7 @@ public class ToolkitApi {
      */
     public static ToolkitApi forInternalUse() {
         if (api == null) {
-            api = new ToolkitApi(TestSession.setupToolkit());
+            api = new ToolkitApi(UnitTestEnvironmentManager.setupLocalToolkit());
             api.internalUse = true;
             return api;
         }
