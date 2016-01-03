@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11897/classcode_scheme_mismatch</Test>
+  <TestStep id="classcode_scheme_mismatch">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+      <Assertion>Classcode code and scheme number mismatch (second code has no scheme) which is invalid</Assertion>
+    </Rule>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <None/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

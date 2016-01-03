@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15802/update_docentry_2</Test>
+  <TestStep id="update_docentry_2">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+      <NoAssignUids id="Document01"/>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+      <UseId testdir="../load_docentry_2" id="Document01" symbol="$lid$" step="load_docentry_2" section="AssignedUuids"/>
+      <UseId testdir="../load_docentry_2" id="Document01" symbol="$Document01_uid$" step="load_docentry_2" section="AssignedUids"/>
+      <Report name="update_doc_uuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+        </Report>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

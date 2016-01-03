@@ -1,0 +1,7 @@
+
+<tag0:RetrieveDocumentSetRequest xmlns:tag0="urn:ihe:iti:xds-b:2007">
+    <tag0:DocumentRequest>
+        <tag0:RepositoryUniqueId>$repositoryuid$</tag0:RepositoryUniqueId>
+        <tag0:DocumentUniqueId>$docuid$</tag0:DocumentUniqueId>
+    </tag0:DocumentRequest>
+</tag0:RetrieveDocumentSetRequest>

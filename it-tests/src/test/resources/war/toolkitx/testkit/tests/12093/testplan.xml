@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12093</Test>
+  <Rule>Test FindDocuments Cross Gateway Query</Rule>
+  <TestStep id="objectref">
+    <Rule>
+      <Transaction>XGQ</Transaction>
+      <SQ>FindDocuments</SQ>
+      <Assertion>Basic operation with patient ID and status</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCQTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../12318" id="SubmissionSet01" symbol="$patient_id$" step="init" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <ObjectRefs count="2"/>
+      </ExpectedContents>
+    </XCQTransaction>
+  </TestStep>
+</TestPlan>

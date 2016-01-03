@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11899</Test>
+  <TestStep id="basic">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindFolders</SQ>
+      <Assertion>Basic operation based on Patient ID parameter</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <Folders count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="in_updatetime">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindFolders</SQ>
+      <Assertion>Filter with update time</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <Folders count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="out_updatetime">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindFolders</SQ>
+      <Assertion>Filter with update time</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query3.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <Folders count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="codelist">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindFolders</SQ>
+      <Assertion>query on folder codelist</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query4.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <Folders count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

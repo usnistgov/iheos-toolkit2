@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11906/uniqueid</Test>
+  <Rule>Test GetSubmissionSetAndContents Stored Query</Rule>
+  <TestStep id="uniqueid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetSubmissionSetAndContents</SQ>
+      <Assertion>Query based on uniqueId</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$uniqueid$" step="submit_doc" section="AssignedUids"/>
+      <ExpectedContents>
+        <SubmissionSets count="1"/>
+        <Associations count="1"/>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

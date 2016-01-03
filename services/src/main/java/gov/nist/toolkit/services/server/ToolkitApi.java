@@ -37,23 +37,23 @@ public class ToolkitApi {
     boolean internalUse = true;
     private static ToolkitApi api = null;
 
-    /**
-     * Use when running unit tests
-     * @return
-     */
-    public static ToolkitApi forInternalUse() {
-        if (api == null) {
-            api = new ToolkitApi(UnitTestEnvironmentManager.setupLocalToolkit());
-            api.internalUse = true;
-            return api;
-        }
-        if (!api.internalUse) {
-            String msg = "Engine initialized for Service Use - cannot reinitialize for Internal Use";
-            logger.fatal(msg);
-            throw new EngineInitializationException(msg);
-        }
-        return api;
-    }
+//    /**
+//     * Use when running unit tests
+//     * @return
+//     */
+//    public static ToolkitApi forInternalUse() {
+//        if (api == null) {
+//            api = new ToolkitApi(UnitTestEnvironmentManager.setupLocalToolkit());
+//            api.internalUse = true;
+//            return api;
+//        }
+//        if (!api.internalUse) {
+//            String msg = "Engine initialized for Service Use - cannot reinitialize for Internal Use";
+//            logger.fatal(msg);
+//            throw new EngineInitializationException(msg);
+//        }
+//        return api;
+//    }
 
     /**
      * Use to initialize when implementing a service

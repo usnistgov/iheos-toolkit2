@@ -65,12 +65,8 @@
         <module>toolkit-services</module>
         <module>services</module>
         <module>toolkit-services-common</module>
-        <!--<module>integration-tests</module>-->
-        <!--<module>toolkit-services-test</module>-->
         <module>toolkit-api</module>
         <module>transaction-notification-service</module>
-        <module>sdk-test</module>
-        <module>xc-tests</module>
         <module>grizzly-support</module>
         <module>sim-test-servlet</module>
     </modules>

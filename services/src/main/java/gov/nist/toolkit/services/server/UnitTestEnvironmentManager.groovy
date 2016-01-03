@@ -5,14 +5,16 @@ import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
+import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 
 /**
  * This is used to initialize parts of toolkit for internal unit tests.
  *
- * This should be renamed to UnitTestEnvironmentManager
+ *
  */
-class UnitTestEnvironmentManager {
+@TypeChecked
+public class UnitTestEnvironmentManager {
     static Logger logger = Logger.getLogger(UnitTestEnvironmentManager.class);
 
     static public Session setupLocalToolkit(String environmentName) {
@@ -22,14 +24,14 @@ class UnitTestEnvironmentManager {
     }
 
     static public Session setupLocalToolkit() {
-        URL warMarker = getClass().getResource('/war/war.txt');
+        URL warMarker = new UnitTestEnvironmentManager().getClass().getResource('/war/war.txt');
         if (warMarker == null) {
             logger.fatal("Cannot locate WAR root for test environment")
             throw new ToolkitRuntimeException("Cannot locate WAR root for test environment")
         }
         File warHome = new File(warMarker.toURI().path).parentFile
         if (!warHome || !warHome.isDirectory()) throw new ToolkitRuntimeException('WAR not found')
-        URL externalCacheMarker = getClass().getResource('/external_cache/external_cache.txt')
+        URL externalCacheMarker = new UnitTestEnvironmentManager().getClass().getResource('/external_cache/external_cache.txt')
         if (externalCacheMarker == null) {
             logger.fatal("Cannot locate external cache for test environment")
             throw new ToolkitRuntimeException("Cannot locate external cache for test environment")

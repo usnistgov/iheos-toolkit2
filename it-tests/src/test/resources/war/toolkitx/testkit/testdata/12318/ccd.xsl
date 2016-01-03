@@ -397,7 +397,7 @@
          this currently only handles GIF's and JPEG's.  It could, however,
 	 be extended by including other image MIME types in the predicate
 	 and/or by generating <object> or <applet> tag with the correct
-	 RGParams depending on the media type  @ID  =$imageRef     referencedObject
+	 params depending on the media type  @ID  =$imageRef     referencedObject
  -->
      <xsl:template match="n1:renderMultiMedia">
 		 <xsl:variable name="imageRef" select="@referencedObject"/>

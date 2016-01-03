@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>11906/objectrefs</Test>
+  <Rule>Test GetSubmissionSetAndContents Stored Query - Query based on uniqueId, but request ObjectRefs in return</Rule>
+  <TestStep id="objectrefs">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$uniqueid$" 
+        step="submit_doc" section="AssignedUids"/>
+      <ExpectedContents>
+        <ObjectRefs count="3"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>
