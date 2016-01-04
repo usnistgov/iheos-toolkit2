@@ -139,4 +139,8 @@ public class SimCache {
         if (config != null)
             GenericSimulatorFactory.delete(config);
     }
+
+    static public void addToSession(String sessionId, SimulatorConfig simulatorConfig) {
+        getSimManagerForSession(sessionId, true).addSimConfig(simulatorConfig);
+    }
 }

@@ -58,12 +58,12 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	}
 
 	public String getToolkitHost() {
-		logger.debug(": " + "getToolkitHost");
+//		logger.debug(": " + "getToolkitHost");
 		return getPropertyManager().getToolkitHost();
 	}
 
 	public String getToolkitPort() {
-		logger.debug(": " + "getToolkitPort");
+//		logger.debug(": " + "getToolkitPort");
         if (overrideToolkitPort != null) {
             logger.info("Overriding toolkit port -> " + overrideToolkitPort);
             return overrideToolkitPort;
@@ -72,12 +72,12 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	}
 
 	public String getToolkitTlsPort() {
-		logger.debug(": " + "getToolkitTlsPort");
+//		logger.debug(": " + "getToolkitTlsPort");
 		return getPropertyManager().getToolkitTlsPort();
 	}
 
 	public List<String> getListenerPortRange() {
-		logger.debug(": " + "getListenerPortRange");
+//		logger.debug(": " + "getListenerPortRange");
 		return getPropertyManager().getListenerPortRange();
 	}
 

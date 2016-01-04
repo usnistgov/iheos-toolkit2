@@ -30,7 +30,7 @@ import spock.lang.Shared
  * The second copy is referenced as the testclient and is run this is thread.  It is initialized
  * and referenced through the variable api.
  */
-class XcQuerySpec extends ToolkitSpecification {
+class QuerySpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
@@ -91,7 +91,7 @@ class XcQuerySpec extends ToolkitSpecification {
         SimulatorConfig rgSimConfig = ToolkitFactory.asSimulatorConfig(RGConfig)
         println "local simconfig"
         println 'local rg site\n' + rgSimConfig.toString()
-        SimCache.getSimManagerForSession(Installation.defaultSessionName(), true).addSimConfig(rgSimConfig)
+        SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig)
 
         and: 'Submit one Document to Rep/Reg behind RG'
 //        String testSession = testSession;  // use default

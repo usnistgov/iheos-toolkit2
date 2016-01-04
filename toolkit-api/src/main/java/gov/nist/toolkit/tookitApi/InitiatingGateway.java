@@ -6,6 +6,6 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 /**
  *
  */
-public interface RespondingGateway extends SimConfig {
+public interface InitiatingGateway extends SimConfig {
     LeafClassList FindDocuments(String patientId) throws ToolkitServiceException;
 }

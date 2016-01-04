@@ -2,6 +2,9 @@ package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  *
  */
@@ -40,6 +43,11 @@ abstract class AbstractActor {
      * @return boolean
      */
     public boolean isBoolean(String name) { return config.isBoolean(name);}
+
+    public boolean isString(String name) { return config.isString(name); }
+
+    public boolean isList(String name) { return config.isList(name); }
+
     /**
      * Return named property as a String
      * @param name property name. See {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property names.
@@ -52,6 +60,8 @@ abstract class AbstractActor {
      * @return boolean value
      */
     public boolean asBoolean(String name) { return config.asBoolean(name); }
+
+    public List<String> asList(String name) { return config.asList(name); }
     /**
      * Describe Simulator Configuration.
      * @return Description string.
@@ -59,4 +69,16 @@ abstract class AbstractActor {
     public String describe() { return config.describe(); }
 
     public String getId() { return config.getId(); }
+
+    public String getEnvironmentName() { return config.getEnvironmentName(); }
+
+    public String getActorType() { return config.getActorType(); }
+
+    public void setProperty(String name, List<String> value) { config.setProperty(name, value); }
+
+    public String getFullId() { return config.getFullId(); }
+
+    public String getUser() { return config.getUser(); }
+
+    public Collection<String> getPropertyNames() { return config.getPropertyNames(); }
 }

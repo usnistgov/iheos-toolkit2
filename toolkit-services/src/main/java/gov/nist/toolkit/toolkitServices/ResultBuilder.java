@@ -38,11 +38,11 @@ public class ResultBuilder {
             status = Response.Status.INTERNAL_SERVER_ERROR;   // 500
         }
         else if (e instanceof BadSimConfigException) {
-            reason = e.getMessage();
+            reason = "BadSimConfig " + e.getMessage();
             status = Response.Status.BAD_REQUEST;   // 400
         }
         else if (e instanceof BadSimRequestException) {
-            reason = e.getMessage();
+            reason = "BadSimRequest " + e.getMessage();
             status = Response.Status.BAD_REQUEST;   // 400
         }
         else if (e instanceof SimExistsException) {
@@ -55,31 +55,31 @@ public class ResultBuilder {
             status = Response.Status.NOT_FOUND;    // 404
         }
         else if (e instanceof SimPropertyTypeConflictException) {
-            reason = e.getMessage();
+            reason = "SimProperyTypeCohflict " + e.getMessage();
             status = Response.Status.CONFLICT;   // 409
         }
         else if (e instanceof IOException) {
-            reason = e.getMessage();
+            reason = "IOException " + e.getMessage();
             status = Response.Status.INTERNAL_SERVER_ERROR;   // 500
         }
         else if (e instanceof AxisFault) {
-            reason = e.getMessage();
+            reason = "AxisFault " + e.getMessage();
             status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
         }
         else if (e instanceof XdsConfigurationException) {
-            reason = e.getMessage();
+            reason = "XdsConfiguration error " + e.getMessage();
             status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
         }
         else if (e instanceof LoadKeystoreException) {
-            reason = e.getMessage();
+            reason = "LoadKeystore error " + e.getMessage();
             status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
         }
         else if (e instanceof XdsFormatException) {
-            reason = e.getMessage();
+            reason = "XdsFormat error " + e.getMessage();
             status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
         }
         else if (e instanceof XdsInternalException) {
-            reason = e.getMessage();
+            reason = "XdsInternal error " + e.getMessage();
             status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
         }
         if (status == null) {
