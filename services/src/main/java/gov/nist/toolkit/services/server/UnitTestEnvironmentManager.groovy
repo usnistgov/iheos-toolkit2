@@ -11,7 +11,8 @@ import org.apache.log4j.Logger
 /**
  * This is used to initialize parts of toolkit for internal unit tests.
  *
- *
+ * Should be incorporated into itTests.support.TestSupport when all
+ * Integration tests are moved to module it-tests
  */
 @TypeChecked
 public class UnitTestEnvironmentManager {

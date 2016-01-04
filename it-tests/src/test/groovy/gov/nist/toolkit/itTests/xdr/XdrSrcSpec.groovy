@@ -2,13 +2,9 @@ package gov.nist.toolkit.itTests.xdr
 import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actortransaction.SimulatorActorType
 import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.grizzlySupport.GrizzlyController
-import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.itTests.support.TestSupport
+import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
-import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.tookitApi.*
 import gov.nist.toolkit.toolkitServicesCommon.*
 import gov.nist.toolkit.transactionNotificationService.TransactionLog
@@ -16,16 +12,11 @@ import gov.nist.toolkit.transactionNotificationService.TransactionNotification
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement
 import spock.lang.Shared
-import spock.lang.Specification
 /**
  *
  */
-class XdrSrcSpec extends Specification implements TransactionNotification {
-    @Shared ToolkitApi api
-    @Shared Session session
-    @Shared def remoteToolkitPort = '8889'
+class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification {
     @Shared SimulatorBuilder spi
-    @Shared server
 
 
 
@@ -34,20 +25,11 @@ class XdrSrcSpec extends Specification implements TransactionNotification {
     BasicSimParameters recParams = new BasicSimParameters()
 
     def setupSpec() {   // one time setup done when class launched
-        (session, api) = TestSupport.INIT()
+        startGrizzly('8889')
 
-        // Start up a full copy of toolkit, running on top of Grizzly instead of Tomcat
-        // on port remoteToolkitPort
-        server = new GrizzlyController()
-        server.start(remoteToolkitPort);
-        server.withToolkit()
-
-        // Is this still needed?
-        Installation.installation().overrideToolkitPort(remoteToolkitPort)  // ignore toolkit.properties
-
-        // Initialze remote api for talking to toolkit on Grizzly
-//        String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-        spi = new SimulatorBuilder(urlRoot)
+        // Initialize remote api for talking to toolkit on Grizzly
+        // Needed to build simulators
+        spi = getSimulatorApi(remoteToolkitPort)
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
