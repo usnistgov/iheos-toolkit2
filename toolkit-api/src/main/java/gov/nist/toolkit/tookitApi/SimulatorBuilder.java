@@ -22,6 +22,7 @@ public class SimulatorBuilder {
         engine = new EngineSpi(urlRoot);
     }
 
+    // These are private because you should use the actor-specific call like createRespondingGateway
     private SimConfig create(BasicSimParameters p) throws ToolkitServiceException {
         return create(p.getId(), p.getUser(), p.getActorType(), p.getEnvironmentName());
     }
