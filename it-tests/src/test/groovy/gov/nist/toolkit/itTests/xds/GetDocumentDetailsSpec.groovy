@@ -2,6 +2,7 @@ package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.actortransaction.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
@@ -9,7 +10,7 @@ import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.tookitApi.DocumentRegRep
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
-import gov.nist.toolkit.toolkitServicesCommon.ObjectRefList
+import gov.nist.toolkit.toolkitServicesCommon.RefList
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
 /**
@@ -56,19 +57,33 @@ class GetDocumentDetailsSpec extends ToolkitSpecification {
         results.get(0).passed()
 
         when: 'query to get just references'
-        ObjectRefList objectRefList = regRep.findDocumentsForPatientID(patientId)
-        println objectRefList.getObjectRefs()
+        RefList objectRefList = regRep.findDocumentsForPatientID(patientId)
+        println objectRefList.getRefs()
 
         then:
-        objectRefList.getObjectRefs().size() == 2
+        objectRefList.getRefs().size() == 2
 
         when: 'get first DE details'
-        String deString = regRep.getDocEntry(objectRefList.getObjectRefs().get(0))
+        String deString = regRep.getDocEntry(objectRefList.getRefs().get(0))
         println "Full Metadata:"
         println deString
 
         then:
         deString
         deString?.trim()?.startsWith('<')
+
+        when: 'get event ids for the register transactions this simulator'
+        RefList eventIds = regRep.getEventIds(regRep.getFullId(), TransactionType.REGISTER)
+        println 'Event id: ' + eventIds.refs.get(0)
+
+        then:
+        eventIds.refs.size() == 1
+
+        when: 'retrieve event'
+        RefList events = regRep.getEvent(regRep.getFullId(), TransactionType.REGISTER, eventIds.refs.get(0))
+        println "Event: " + events.refs.get(0)
+
+        then:
+        events.refs.size() == 1
     }
 }

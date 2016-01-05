@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.Result;
@@ -19,6 +20,7 @@ import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -216,6 +218,18 @@ public class ToolkitApi {
 
     public List<Result> findDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
         return new QueryServiceManager(session).findDocuments2(site, pid, selectedCodes);
+    }
+
+    public List<String> getSimulatorEventIds(SimId simId, String transaction) throws Exception {
+        List<String> ids = new ArrayList<>();
+        for (TransactionInstance ti : new SimulatorServiceManager(session).getTransInstances(simId, "", transaction)) {
+            ids.add(ti.label);
+        }
+        return ids;
+    }
+
+    public String getSimulatorEvent(SimId simId, String transaction, String eventId) throws Exception {
+        return new SimulatorServiceManager(session).getTransactionLog(simId, null, transaction, eventId);
     }
 
 }

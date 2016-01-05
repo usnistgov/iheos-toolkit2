@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>C32/query</Test>
+    <TestStep id="uniqueid">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <StoredQueryTransaction>
+		<XDSb/>
+            <MetadataFile>query.xml</MetadataFile>
+            <UseId testdir="../submit" id="Document01" step="submit"
+                section="AssignedUids" symbol="$uid$"/>
+            <ExpectedContents>
+                <Documents count="1"/>
+            </ExpectedContents>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>

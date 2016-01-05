@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class PropertyServiceManager  /*extends CommonServiceManager*/ {
+public class PropertyServiceManager {
 	PropertyManager propertyManager = null;
 	File warHome = null;
     String TOOLKIT_PROPERTIES_PATH = "";
@@ -26,13 +26,6 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 	public PropertyServiceManager(File warHome)  {
 		this.warHome = warHome;
 	}
-
-	// this was removed force lookup through Installation.  Makes writing unit tests easier
-//	private File getActorsDirName() {
-//		File f = new File(getPropertyManager().getExternalCache() + File.separator + "actors");
-//		f.mkdirs();
-//		return f;
-//	}
 
 	// isRead - is the actors file about to be read? (as opposed to written)
 	public File configuredActorsFile(boolean isRead) throws IOException {
@@ -100,15 +93,6 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
     }
 
 
-//	// This now pulls from Installation so that external cache location can be overridden
-//	public File getSimDbDir() {
-//		logger.debug(": " + "getSimDbDir");
-//		File f = new File(getPropertyManager().getExternalCache() + File.separator + "simdb");
-////		File f = new File(Installation.installation().externalCache() + File.separator + "simdb");
-//		f.mkdirs();
-//		return f;
-//	}
-
 	public String getDefaultEnvironmentName() {
 		logger.debug(": " + "getDefaultEnvironmentName");
 		return getPropertyManager().getDefaultEnvironmentName();
@@ -153,17 +137,6 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		File testLogCache = Installation.installation().testLogCache();
 		File f;
 		
-//		// internal is obsolete
-//		if ("internal".equals(testLogCache)) {
-//			testLogCache = getWarHome() + "SessionCache" + 
-//					File.separator +
-//					getSession().getId() + File.separator + 
-//					"TestLog";
-//			f = new File(testLogCache);
-//			f.mkdirs();
-//			return f;
-//		}
-
 		f = testLogCache;
 
         // First make sure EC is workable
@@ -218,9 +191,6 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		return getPropertyManager().getPropertyMap();
 	}
 
-
-
-
 	public boolean reloadPropertyFile() {
 		logger.debug(": " + "reloadPropertyFile");
 		propertyManager = null;
@@ -231,8 +201,6 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 
 	public boolean isTestLogCachePrivate() {
 		return true;
-//		String testLogCache = getPropertyManager().getExternalCache() + File.separator + "TestLogCache";
-//		return !"internal".equals(testLogCache);
 	}
 
 	public String getImplementationVersion() {
@@ -247,35 +215,6 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
 		}
 		return ver.substring(ver.indexOf("\n"));
 	}
-
-//	public boolean isGazelleConfigFeedEnabled() {
-//		logger.debug(": " + "isGazelleConfigFeedEnabled");
-//		return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(session);
-//	}
-
-//	public String getInitParameter(String parmName) {
-//		logger.debug(getSessionIdIfAvailable() + ": " + "getInitParameter(" + parmName + ")");
-//		return tsi.servletContext().getInitParameter(parmName);
-//	}
-
-//	public List<String> getEnvironmentNames() {
-//		logger.debug(": " + "getEnvironmentNames()");
-//		return getSession().getEnvironmentNames();
-//	}
-
-//	/**
-//	 * Set environment name for current session
-//	 * @param name
-//	 * @throws
-//	 */
-//	public void setEnvironment(String name)  {
-//		logger.debug(": " + "setEnvironment(" + name + ")");
-//		getSession().setEnvironment(name);
-//	}
-
-//	public String getCurrentEnvironment() {
-//		return getPropertyManager().getCurrentEnvironmentName();
-//	}
 
 	public String getDefaultEnvironment() {
 		logger.debug(": " + "getDefaultEnvironment()");
@@ -297,13 +236,4 @@ public class PropertyServiceManager  /*extends CommonServiceManager*/ {
     public File getPropertiesFile(){
         return propertiesFile;
     }
-
-
-//	public void setSessionProperties(Map<String, String> props) {
-//		logger.debug(": " + "setSessionProperties()");
-//		Session s = getSession();
-//		if (s == null)
-//			return;
-//		s.setSessionProperties(props);
-//	}
 }

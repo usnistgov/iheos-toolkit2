@@ -32,6 +32,13 @@ public class Installation {
         if (warhomeTxt != null) {
             installation().warHome = new File(warhomeTxt).getParentFile();
         }
+        String warTxt = null;
+        try {
+            warTxt = installation().getClass().getResource("/war/war.txt").getFile();
+        } catch (Throwable t) {}
+        if (warTxt != null) {
+            installation().warHome = new File(warTxt).getParentFile();
+        }
     }
 
 	static public Installation installation() {

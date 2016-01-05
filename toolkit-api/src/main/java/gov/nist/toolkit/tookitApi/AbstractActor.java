@@ -1,14 +1,18 @@
 package gov.nist.toolkit.tookitApi;
 
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.toolkitServicesCommon.RefList;
+import gov.nist.toolkit.toolkitServicesCommon.RefListResource;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 
+import javax.ws.rs.core.Response;
 import java.util.Collection;
 import java.util.List;
 
 /**
  *
  */
-abstract class AbstractActor {
+abstract class AbstractActor implements AbstractActorInterface {
     EngineSpi engine;
     SimConfig config;
 
@@ -81,4 +85,24 @@ abstract class AbstractActor {
     public String getUser() { return config.getUser(); }
 
     public Collection<String> getPropertyNames() { return config.getPropertyNames(); }
+
+    public RefList getEventIds(String simId, TransactionType transaction) throws ToolkitServiceException {
+        Response response = engine.getTarget()
+                .path(String.format("simulators/%s/events/%s", getConfig().getFullId(), transaction.getShortName()))
+                .request().get();
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response);
+        return response.readEntity(RefListResource.class);
+    }
+
+    public RefList getEvent(String simId, TransactionType transaction, String eventId) throws ToolkitServiceException {
+        Response response = engine.getTarget()
+                .path(String.format("simulators/%s/event/%s/%s", getConfig().getFullId(), transaction.getShortName(), eventId))
+                .request().get();
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response);
+        return response.readEntity(RefListResource.class);
+
+    }
+
 }

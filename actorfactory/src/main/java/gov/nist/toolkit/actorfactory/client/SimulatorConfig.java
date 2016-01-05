@@ -29,12 +29,6 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	Date expires;
 	boolean isExpired = false;
 	List<SimulatorConfigElement> elements  = new ArrayList<SimulatorConfigElement>();
-	
-	// used to record RGs for use with an IG
-//	public List<String> rgSiteNames = new ArrayList<String>();
-//	boolean rgSitesNecessary = false;
-
-
 
 	// This is only used to record validation requirements for included document(s)
 	// vc != null triggers UI to display selections from tk_props and accept
@@ -60,10 +54,6 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 			if (getFixedByName(ele.name) == null)
 				elements.add(ele);
 		}
-//		for (ActorSimulatorConfigElement ele : asc.user) {
-//			if (getUserByName(ele.name) == null)
-//				user.add(ele);
-//		}
 	}
 	
 	/**
@@ -120,12 +110,6 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		elements.addAll(elementList);
 	}
     public void add(SimulatorConfigElement ele) { elements.add(ele); }
-
-//	public boolean areRGSitesNecessary() { return rgSitesNecessary; }
-//
-//	public void setRGSitesNecessary(boolean value) {
-//		rgSitesNecessary = value;
-//	}
 
 	public Date getExpiration() {
 		return expires;
@@ -232,15 +216,5 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public void setValidationContext(ValidationContext vc) {
 		this.vc = vc;
 	}
-
-
-
-
-//	public ActorFactory getActorFactory() throws Exception {
-//		String simtype = getActorType();
-//		ActorType at = ActorType.findActor(simtype);
-//		ActorFactory af = ActorFactory.getActorFactory(at);
-//		return af;
-//	}
 
 }

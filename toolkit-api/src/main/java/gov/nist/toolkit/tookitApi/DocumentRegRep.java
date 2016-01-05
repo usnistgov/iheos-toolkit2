@@ -1,13 +1,12 @@
 package gov.nist.toolkit.tookitApi;
 
-import gov.nist.toolkit.toolkitServicesCommon.ObjectRefList;
-import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
+import gov.nist.toolkit.toolkitServicesCommon.RefList;
 
 /**
  *
  */
-public interface DocumentRegRep  extends SimConfig {
+public interface DocumentRegRep  extends AbstractActorInterface /*SimConfig*/ {
 
-    ObjectRefList findDocumentsForPatientID(String patientID) throws ToolkitServiceException;
+    RefList findDocumentsForPatientID(String patientID) throws ToolkitServiceException;
     String getDocEntry(String id) throws ToolkitServiceException;
 }

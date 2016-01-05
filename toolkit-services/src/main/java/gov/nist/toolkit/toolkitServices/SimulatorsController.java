@@ -226,8 +226,8 @@ public class SimulatorsController {
         try {
             RegistrySimApi api = new RegistrySimApi(simId);
             List<String> objectRefs = api.findDocsByPidObjectRef(pid);
-            ObjectRefListResource or = new ObjectRefListResource();
-            or.setObjectRefs(objectRefs);
+            RefListResource or = new RefListResource();
+            or.setRefs(objectRefs);
             return Response.ok(or).build();
         } catch (Exception e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
@@ -245,6 +245,38 @@ public class SimulatorsController {
             OMElement ele = api.getDocEle(docId);
             String xml = new OMFormatter(ele).toString();
             return Response.ok(xml).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/{id}/events/{transaction}")
+    public Response getEventIds(@PathParam("id") String id, @PathParam("transaction") String transaction) {
+        logger.info(String.format("GET simulators/%s/events", id));
+        SimId simId = new SimId(id);
+        try {
+            List<String> eventIds = api.getSimulatorEventIds(simId, transaction);
+            RefListResource resource = new RefListResource();
+            resource.setRefs(eventIds);
+            return Response.ok(resource).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    @GET
+    @Produces("applicaiton/json")
+    @Path("/{id}/event/{transaction}/{eventid}")
+    public Response getEvent(@PathParam("id") String id, @PathParam("transaction") String transaction, @PathParam("eventid") String eventid) {
+        logger.info(String.format("GET simulators/%s/event/%s/%s", id, transaction, eventid));
+        SimId simId = new SimId(id);
+        try {
+            String event = api.getSimulatorEvent(simId, transaction, eventid);
+            RefListResource resource = new RefListResource();
+            resource.addRef(event);
+            return Response.ok(resource).build();
         } catch (Exception e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }

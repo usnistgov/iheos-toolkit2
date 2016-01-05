@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12327</Test>
+  <TestStep id="submit_doc_w_fol">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Accept Create Folder with Initial Document</Assertion>
+    </Rule>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc_w_fol.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="verify_submission">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetSubmissionSetAndContents</SQ>
+      <Assertion>Query based on uniqueId</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <UseId id="SubmissionSet01" symbol="$uniqueid$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <SubmissionSets count="1"/>
+        <Associations count="4"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+        <SSwithOneDocOneFol/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="rplc">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Issue RPLC</Assertion>
+    </Rule>
+    <RegisterTransaction>
+      <XDSb/>
+      <UseId id="Document01" symbol="$rplc_doc_uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <MetadataFile>rplc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="verify_folder_contents">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderAndContents</SQ>
+      <Assertion>Evaluate association between folder and document</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <UseId id="Folder" symbol="$uniqueid$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="2"/>
+        <Documents count="2"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

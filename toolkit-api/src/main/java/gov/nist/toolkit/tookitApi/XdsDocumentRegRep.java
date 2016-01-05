@@ -1,7 +1,7 @@
 package gov.nist.toolkit.tookitApi;
 
-import gov.nist.toolkit.toolkitServicesCommon.ObjectRefList;
-import gov.nist.toolkit.toolkitServicesCommon.ObjectRefListResource;
+import gov.nist.toolkit.toolkitServicesCommon.RefList;
+import gov.nist.toolkit.toolkitServicesCommon.RefListResource;
 
 import javax.ws.rs.core.Response;
 
@@ -10,13 +10,13 @@ import javax.ws.rs.core.Response;
  */
 public class XdsDocumentRegRep extends AbstractActor implements DocumentRegRep {
     @Override
-    public ObjectRefList findDocumentsForPatientID(String patientID) throws ToolkitServiceException {
+    public RefList findDocumentsForPatientID(String patientID) throws ToolkitServiceException {
         Response response = engine.getTarget()
                 .path(String.format("simulators/%s/xds/GetAllDocs/%s", getConfig().getFullId(), patientID))
                 .request().get();
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
-        return response.readEntity(ObjectRefListResource.class);
+        return response.readEntity(RefListResource.class);
     }
 
     @Override
@@ -28,6 +28,5 @@ public class XdsDocumentRegRep extends AbstractActor implements DocumentRegRep {
             throw new ToolkitServiceException(response);
         return response.readEntity(String.class);
     }
-
 
 }

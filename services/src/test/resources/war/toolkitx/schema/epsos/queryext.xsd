@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="unqualified">
+    <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0" schemaLocation="query.xsd"/>
+    <xs:import namespace="urn:ihe:iti:xds-ebrim:extensions:2010" schemaLocation="rimext.xsd"/>
+    <xs:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" schemaLocation="rim.xsd"/>
+    
+</xs:schema>
