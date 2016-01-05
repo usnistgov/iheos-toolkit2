@@ -45,14 +45,12 @@ class GatewayBuilder {
 
             rgConfigs << rgSimConfig
 
-            // load the reg/rep with one document
+            // load the reg/rep with two documents
             TestInstance testId = new TestInstance("12318")
             List<String> sections = null
             Map<String, String> qparams = new HashMap<>()
             qparams.put('$patientid$', patientId)
 
-            and: 'execute submit to reg/rep'
-            println 'STEP - LOAD REGISTRY'
             List<Result> results = api.runTest(userName, respondingGateway.getFullId(), testId, sections, qparams, true)
             assert results.get(0).passed()
         }

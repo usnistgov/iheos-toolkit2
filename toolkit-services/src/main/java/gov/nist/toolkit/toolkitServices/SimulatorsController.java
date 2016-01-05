@@ -242,7 +242,7 @@ public class SimulatorsController {
         SimId simId = new SimId(id);
         try {
             RegistrySimApi api = new RegistrySimApi(simId);
-            OMElement ele = api.getDocEle(id);
+            OMElement ele = api.getDocEle(docId);
             String xml = new OMFormatter(ele).toString();
             return Response.ok(xml).build();
         } catch (Exception e) {

@@ -9,6 +9,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
  */
 public class RegistrySimApi {
     SimId simId;
+    static Logger logger = Logger.getLogger(RegistrySimApi.class);
 
     public RegistrySimApi(SimId simId) {
         this.simId = simId;
@@ -36,9 +38,8 @@ public class RegistrySimApi {
     }
 
     public OMElement getDocEle(String id) throws IOException, NoSimException, MetadataException, XdsInternalException {
-        List<OMElement> eles = regIndex().mc.loadRo(id).getAllObjects();
-        if (eles.size() == 1) return eles.get(0);
-        if (eles.size() == 0) return null;
-        throw new MetadataException(String.format("Multiple DocumentEntries with id = %s", id), "");
+        DocEntry de = regIndex().mc.docEntryCollection.getById(id);
+        if (de == null) return null;
+        return de.getFullMetadata();
     }
 }
