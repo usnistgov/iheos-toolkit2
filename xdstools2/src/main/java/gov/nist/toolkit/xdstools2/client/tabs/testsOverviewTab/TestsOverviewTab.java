@@ -176,22 +176,20 @@ public class TestsOverviewTab extends GenericQueryTab {
                 return;
             if ("".equals(selectedActor))
                 return;
-            //loadTestsForActor();
 
             // Find a match in the system for that category of actor
-            ActorType act = ActorType.findActor(selectedActor); // should also work with selectedActor
+            ActorType act = ActorType.findActor(selectedActor);
             if (act == null)
                 return;
 
             // Populate the list of transaction types
             List<TransactionType> transactionTypes = act.getTransactions();
-            new PopupMessage(transactionTypes.toString());
 
             queryBoilerplate = addQueryBoilerplate(
                     new Runner(),
                     transactionTypes,
-                    new CoupledTransactions(), //TestsOverviewTab.couplings,
-                    false); // not using a PID in this tab, should be false
+                    new CoupledTransactions(),
+                    false); // not using a PID
         }
     }
 
