@@ -22,7 +22,7 @@ public enum ActorType implements IsSerializable, Serializable {
 	),
     REGISTRY(
             "Document Registry",
-            Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
+            Arrays.asList("DOC_REGISTRY", "registryb"),
             "reg",
             "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
             Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
@@ -41,7 +41,7 @@ public enum ActorType implements IsSerializable, Serializable {
 //				),
     REPOSITORY(
             "Document Repository",
-			Arrays.asList("DOC_REPOSITORY"),
+			Arrays.asList("DOC_REPOSITORY", "repositoryb"),
             "rep",
             "gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator",
 			Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
@@ -101,7 +101,16 @@ public enum ActorType implements IsSerializable, Serializable {
 			Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
             null
-	)
+	),
+    INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
+            "Initialize for Stored Query",
+            new ArrayList<String>(),
+            "initialize_for_stored_query",
+            null,
+            new ArrayList<TransactionType>(),
+            false,
+            null
+    )
     ;
 
 	private static final long serialVersionUID = 1L;

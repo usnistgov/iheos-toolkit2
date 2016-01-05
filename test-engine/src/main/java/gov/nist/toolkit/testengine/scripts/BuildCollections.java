@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testengine.scripts;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.io.Io;
 import org.apache.log4j.Logger;
@@ -26,29 +27,62 @@ public class BuildCollections extends HttpServlet {
         run();
     }
 
+    String listAsFileContents(List<String> list) {
+        StringBuilder buf = new StringBuilder();
+        for (String ele : list) {
+            buf.append(ele).append("\n");
+        }
+        return buf.toString();
+    }
+
     void write() throws IOException {
         File collectionsDir = new File(testkitOut + File.separator + "collections");
         File actorCollectionsDir = new File(testkitOut + File.separator + "actorcollections");
+        // ActorType => list of test names
+        // This layer is necessary because multiple collectionNames can map to single
+        // actorCollection since some collections are based on the actor and some on transactions
+        Map<ActorType, List<String>> actorTestMap = new HashMap<>();
 
         collectionsDir.mkdir();  // create if doesn't exist
 
+        logger.info("Collections found:\n" + collections.keySet());
+
         for (Iterator<String> it = collections.keySet().iterator(); it.hasNext(); ) {
             String collectionName = it.next();
+            ActorType actorType = findActorType(collectionName);
+
             List<String> contents = collections.get(collectionName);
-            StringBuffer buf = new StringBuffer();
-            for (String testnum : contents) {
-                buf.append(testnum).append("\n");
+            if (actorType != null) {
+                if (actorTestMap.get(actorType) == null) {
+                    actorTestMap.put(actorType, new ArrayList<String>());
+                }
+                actorTestMap.get(actorType).addAll(contents);
             }
             File collectionFile = new File(collectionsDir + File.separator + collectionName + ".tc");
             logger.info(String.format("Writing %s", collectionFile));
-            Io.stringToFile(collectionFile, buf.toString());
-            if (ActorType.findActor(collectionName) != null) {
-                File actorCollectionFile = new File(actorCollectionsDir + File.separator + collectionName + ".tc");
-                logger.info(String.format("Writing %s", actorCollectionFile));
-                Io.stringToFile(actorCollectionFile, buf.toString());
-            }
+            Io.stringToFile(collectionFile, listAsFileContents(contents));
         }
 
+        for (ActorType actorType : actorTestMap.keySet()) {
+            String name = actorType.getShortName();
+            String descriptiveName = actorType.getName();
+            Io.stringToFile(new File(actorCollectionsDir + File.separator + name + ".tc"), listAsFileContents(actorTestMap.get(actorType)));
+            Io.stringToFile(new File(actorCollectionsDir, name + ".txt"), descriptiveName);
+        }
+    }
+
+    ActorType findActorType(String collectionName) {
+        ActorType at;
+
+        collectionName = collectionName.toLowerCase();
+
+        at = ActorType.findActor(collectionName.toLowerCase());
+        if (at != null) return at;
+
+        TransactionType tt = TransactionType.find(collectionName);
+        if (tt == null) return null;
+        at = ActorType.getActorType(tt);
+        return at;
     }
 
     void add(String collection, String testnum) {
@@ -141,16 +175,4 @@ public class BuildCollections extends HttpServlet {
             logger.error(String.format("Cannot write built collections - %s", e.getMessage()));
         }
     }
-
-//    public static void main(String[] args) {
-//        BuildCollections bc = new BuildCollections();
-//        bc.testkitIn = new File(args[0]);
-//        bc.testkitOut = new File(args[1]);
-//        System.out.println("Testkit being scanned: " + bc.testkitIn);
-//        System.out.println("Collections will be written to " + bc.testkitOut);
-//        bc.scan();
-////		bc.delete();
-//        bc.write();
-//    }
-
 }
