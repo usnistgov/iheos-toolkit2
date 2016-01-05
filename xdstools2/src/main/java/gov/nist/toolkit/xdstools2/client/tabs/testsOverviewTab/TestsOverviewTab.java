@@ -70,12 +70,15 @@ public class TestsOverviewTab extends GenericQueryTab {
         // -------------------------------------------
         // ---------- Site Selection Widget-----------
         // -------------------------------------------
+        // TODO replace the design with externalized widget
         //SiteSelectionWidget siteWidget = new SiteSelectionWidget(this);
 
         HorizontalPanel siteWidget = new HorizontalPanel();
         siteWidget.add(selectActorList);
         loadActorNames();
         selectActorList.addChangeHandler(new ActorSelectionChangeHandler());
+
+        // Add the grid displaying the choice of sites
         mainGrid = new FlexTable();
         topPanel.add(mainGrid);
 
@@ -94,16 +97,18 @@ public class TestsOverviewTab extends GenericQueryTab {
         TestsOverviewWidget testWidget = new TestsOverviewWidget(dataModel, updater);
         updater.setTestsOverviewWidget(testWidget);
 
-        // ----- Upper row of widgets -----
+        // ----- Upper row of commands widgets -----
         CommandsWidget commands = new CommandsWidget(updater);
 
+
+        // -------------------------------------------
+        // -------------- Add widgets ----------------
+        // -------------------------------------------
         topPanel.add(commands.asWidget());
+        topPanel.add(siteWidget);
         topPanel.add(testWidget.asWidget());
 
-        topPanel.add(siteWidget);
-
         setDefaults();
-
     }
 
 

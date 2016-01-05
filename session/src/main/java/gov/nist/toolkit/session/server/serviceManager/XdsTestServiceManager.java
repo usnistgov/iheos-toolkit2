@@ -723,56 +723,58 @@ public class XdsTestServiceManager extends CommonService {
 	public List<Test> reloadAllTestResults(String sessionName) throws Exception {
 
 	//	getCollection("actorcollections", selectedActor);
-//		List<TestInstance> testList = null;
-//		Map<String, Result> results = null;
-//		List<Test> display = new ArrayList<Test>();
-//
-//		System.out.println("test session name: "+sessionName);
-//
-//		// ----- Retrieve list of test instance numbers -----
-//		// TODO is there a case where sessionName might not be found in the system (bug?)
-//		if (sessionName == null) {
-//			logger.error("Could not retrieve the list of test instance numbers because the user session is null");
-//			// TODO throw new TestRetrievalException
-//		}
-//		else { testList = getTestlogListing(sessionName); }
-//
-//		// ----- Retrieve test log results for each test instance -----
-//		if (testList == null){
-//			logger.error("Could not retrieve the log results");
-//			// TODO throw new TestRetrievalException
-//			}
-//		else {
-//			results = getTestResults(testList, sessionName);
-//			String testId;
-//			Result res;
-//			List<StepResult> sectionList;
-//			boolean hasSections = false;
-//
-//			System.out.println("building data for display");
-//			// Use the set of Results to build the data for display
-//			for (Map.Entry<String, Result> entry: results.entrySet()){
-//				testId = entry.getKey();
-//				res = entry.getValue();
-//				sectionList = res.getStepResults();
-//
-//				// Check whether the test has sections
-//				if (sectionList == null || (sectionList.size() == 0)) { hasSections = true; }
-//
-//				// TODO not sure what the test status is
-//				display.add(new Test(10500, false, z"", "", res.getText(), res.getTimestamp(), "pass"));
-//			}
-//		}
-//		return display;
+		List<TestInstance> testList = null;
+		Map<String, Result> results = null;
+		List<Test> display = new ArrayList<Test>();
+
+		System.out.println("test session name: "+sessionName);
+
+		// ----- Retrieve list of test instance numbers -----
+		// TODO is there a case where sessionName might not be found in the system (bug?)
+		if (sessionName == null) {
+			logger.error("Could not retrieve the list of test instance numbers because the user session is null");
+			// TODO throw new TestRetrievalException
+		}
+		else { testList = getTestlogListing(sessionName); }
+
+		// ----- Retrieve test log results for each test instance -----
+		if (testList == null){
+			logger.error("Could not retrieve the log results");
+			// TODO throw new TestRetrievalException
+			}
+		else {
+			results = getTestResults(testList, sessionName);
+			String testId;
+			Result res;
+			List<StepResult> sectionList;
+			boolean hasSections = false;
+
+			System.out.println("building data for display");
+			// Use the set of Results to build the data for display
+			for (Map.Entry<String, Result> entry: results.entrySet()){
+				testId = entry.getKey();
+				res = entry.getValue();
+				sectionList = res.getStepResults();
+
+				// Check whether the test has sections
+				if (sectionList == null || (sectionList.size() == 0)) { hasSections = true; }
+
+				// TODO not sure what the test status is
+				display.add(new Test(10500, false, z"", "", res.getText(), res.getTimestamp(), "pass"));
+			}
+		}
+		return display;
+
 
 		// Test data
-		return Arrays.asList(
+	/*	return Arrays.asList(
 				new Test(10891, false, "10891", "10891", "test 1", "04:10 PM EST", "failed"),
 				new Test(10891, true, "10891", "section a", "test 1", "04:10 PM EST", "failed"),
 				new Test(10891, true, "10891", "section b", "test 1", "04:12 PM EST", "pass"),
 				new Test(17685, false, "17685", "17685", "test 2", "04:10 PM EST", "not run"),
 				new Test(17688, false, "17688", "17688", "test 3", "04:15 PM EST", "run with warnings")
 		);
+		*/
 	}
 
 	public List<Test> runAllTests(String sessionName, Site site){
