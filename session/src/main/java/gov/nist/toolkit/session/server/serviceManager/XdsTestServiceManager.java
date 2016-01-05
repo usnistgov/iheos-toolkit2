@@ -721,6 +721,8 @@ public class XdsTestServiceManager extends CommonService {
 	 * existing object.
 	 */
 	public List<Test> reloadAllTestResults(String sessionName) throws Exception {
+
+	//	getCollection("actorcollections", selectedActor);
 //		List<TestInstance> testList = null;
 //		Map<String, Result> results = null;
 //		List<Test> display = new ArrayList<Test>();

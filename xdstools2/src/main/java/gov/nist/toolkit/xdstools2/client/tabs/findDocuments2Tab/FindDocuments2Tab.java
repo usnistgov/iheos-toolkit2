@@ -61,7 +61,7 @@ public class FindDocuments2Tab extends GenericQueryTab {
         title.setHTML("<h2>Find Documents (All Parameters)</h2>");
         topPanel.add(title);
 
-        // Generate the composite widget that allows selection of all the GetAll query parameters. Below is the call
+        // Generate the composite widget that allows selection of all the Find Documents query parameters. Below is the call
         // sqParams.asWidget() which gets the actual Widget.
         sqParams = new FindDocuments2Params(toolkitService, genericQueryTab);
 
