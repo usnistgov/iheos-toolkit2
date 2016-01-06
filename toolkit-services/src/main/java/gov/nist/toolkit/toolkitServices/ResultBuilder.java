@@ -54,6 +54,11 @@ public class ResultBuilder {
             extendedCode = OperationResultResource.SIM_DOES_NOT_EXIST;
             status = Response.Status.NOT_FOUND;    // 404
         }
+        else if (e instanceof NoContentException) {
+            reason =  "Content does not exist";
+            extendedCode = OperationResultResource.CONTENT_DOES_NOT_EXIST;
+            status = Response.Status.NOT_FOUND;    // 404
+        }
         else if (e instanceof SimPropertyTypeConflictException) {
             reason = "SimProperyTypeCohflict " + e.getMessage();
             status = Response.Status.CONFLICT;   // 409

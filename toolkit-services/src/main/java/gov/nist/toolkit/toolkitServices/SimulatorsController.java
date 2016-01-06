@@ -5,9 +5,11 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.services.server.RegistrySimApi;
+import gov.nist.toolkit.services.server.RepositorySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
+import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -262,6 +264,25 @@ public class SimulatorsController {
             resource.setRefs(eventIds);
             return Response.ok(resource).build();
         } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/{id}/document/{uniqueid}")
+    public Response getDocument(@PathParam("id") String id, @PathParam("uniqueid") String uniqueId) {
+        logger.info(String.format("GET simulators/%s/document/%s", id, uniqueId));
+        SimId simId = new SimId(id);
+        try {
+            DocumentContentResource resource = new DocumentContentResource();
+            RepositorySimApi repoApi = new RepositorySimApi(simId);
+            StoredDocument document = repoApi.getDocument(uniqueId);
+            if (document == null) throw new NoContentException("Document " + uniqueId);
+            resource.setContent(document.getContent());
+            resource.setUniqueId(uniqueId);
+            return Response.ok(resource).build();
+        } catch (Throwable e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }
     }

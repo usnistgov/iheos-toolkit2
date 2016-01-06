@@ -5,11 +5,14 @@ import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actortransaction.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.registrymetadata.Metadata
+import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.tookitApi.DocumentRegRep
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
+import gov.nist.toolkit.toolkitServicesCommon.DocumentContent
 import gov.nist.toolkit.toolkitServicesCommon.RefList
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
@@ -20,7 +23,7 @@ class GetDocumentDetailsSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
     def setupSpec() {   // one time setup done when class launched
-        startGrizzly('8889')
+        startGrizzly('8889')  // start toolkit on port 8889
 
         // Initialize remote api for talking to toolkit on Grizzly
         // Needed to build simulators
@@ -85,5 +88,30 @@ class GetDocumentDetailsSpec extends ToolkitSpecification {
 
         then:
         events.refs.size() == 1
+
+        when: 'parse returned metadata'
+        Metadata m = MetadataParser.parseNonSubmission(deString)
+
+        then: 'verify it contains one DocumentEntry object'
+        m.getExtrinsicObjects().size() == 1
+
+        when: 'extract uniqueId for one DocumentEntry'
+        String uniqueId = m.getUniqueIdValue(m.getExtrinsicObject(0))
+        println "uniqueId is " + uniqueId
+
+        then: 'verify has a value'
+        uniqueId
+
+        when: 'retrieve document'
+        DocumentContent documentContent = regRep.getDocument(uniqueId)
+
+        then:
+        documentContent.uniqueId == uniqueId
+
+        when: 'display document'
+        println new String(documentContent.content)
+
+        then:
+        true
     }
 }

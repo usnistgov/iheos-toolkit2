@@ -9,7 +9,6 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,13 +18,12 @@ import java.util.List;
  */
 public class RegistrySimApi {
     SimId simId;
-    static Logger logger = Logger.getLogger(RegistrySimApi.class);
 
     public RegistrySimApi(SimId simId) {
         this.simId = simId;
     }
 
-    RegIndex regIndex() throws IOException, NoSimException {
+    private RegIndex regIndex() throws IOException, NoSimException {
         return SimServlet.getRegIndex(simId);
     }
 

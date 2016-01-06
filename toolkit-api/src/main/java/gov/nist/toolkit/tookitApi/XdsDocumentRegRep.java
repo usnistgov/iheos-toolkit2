@@ -1,5 +1,7 @@
 package gov.nist.toolkit.tookitApi;
 
+import gov.nist.toolkit.toolkitServicesCommon.DocumentContent;
+import gov.nist.toolkit.toolkitServicesCommon.DocumentContentResource;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
 import gov.nist.toolkit.toolkitServicesCommon.RefListResource;
 
@@ -27,6 +29,16 @@ public class XdsDocumentRegRep extends AbstractActor implements DocumentRegRep {
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
         return response.readEntity(String.class);
+    }
+
+    @Override
+    public DocumentContent getDocument(String uniqueId) throws ToolkitServiceException {
+        Response response = engine.getTarget()
+                .path(String.format("simulators/%s/document/%s", getConfig().getFullId(), uniqueId))
+                .request().get();
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response);
+        return response.readEntity(DocumentContentResource.class);
     }
 
 }

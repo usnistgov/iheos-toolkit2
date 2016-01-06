@@ -16,6 +16,7 @@ public class OperationResultResource {
     static final public String REASON_HEADER = "X-REASON";
 
     static final public int SIM_DOES_NOT_EXIST = Response.Status.NOT_FOUND.getStatusCode()*100+1;
+    static final public int CONTENT_DOES_NOT_EXIST = Response.Status.NOT_FOUND.getStatusCode()*100+2;
 
     static final public int ENVIRONMENT_DOES_NOT_EXIST = Response.Status.BAD_REQUEST.getStatusCode()*100+1;
 
