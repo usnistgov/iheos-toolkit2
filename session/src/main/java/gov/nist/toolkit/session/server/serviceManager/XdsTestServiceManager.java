@@ -722,12 +722,12 @@ public class XdsTestServiceManager extends CommonService {
 	 */
 	public List<Test> reloadAllTestResults(String sessionName) throws Exception {
 
-	//	getCollection("actorcollections", selectedActor);
+		//getCollection("actorcollections", selectedActor);
 		List<TestInstance> testList = null;
 		Map<String, Result> results = null;
 		List<Test> display = new ArrayList<Test>();
 
-		System.out.println("test session name: "+sessionName);
+		System.out.println("test session name: "+sessionName); //ok
 
 		// ----- Retrieve list of test instance numbers -----
 		// TODO is there a case where sessionName might not be found in the system (bug?)
@@ -735,7 +735,9 @@ public class XdsTestServiceManager extends CommonService {
 			logger.error("Could not retrieve the list of test instance numbers because the user session is null");
 			// TODO throw new TestRetrievalException
 		}
-		else { testList = getTestlogListing(sessionName); }
+		else { testList = getTestlogListing(sessionName);
+			System.out.println("testlist size: " + testList.size());
+		}
 
 		// ----- Retrieve test log results for each test instance -----
 		if (testList == null){
@@ -752,15 +754,19 @@ public class XdsTestServiceManager extends CommonService {
 			System.out.println("building data for display");
 			// Use the set of Results to build the data for display
 			for (Map.Entry<String, Result> entry: results.entrySet()){
+				System.out.println(entry.getKey() + "/" + entry.getValue());
 				testId = entry.getKey();
 				res = entry.getValue();
 				sectionList = res.getStepResults();
+
+				System.out.println("DATA testId: " + testId + " value: " + res + " text: " + res.getText());
+
 
 				// Check whether the test has sections
 				if (sectionList == null || (sectionList.size() == 0)) { hasSections = true; }
 
 				// TODO not sure what the test status is
-				display.add(new Test(10500, false, z"", "", res.getText(), res.getTimestamp(), "pass"));
+				display.add(new Test(10500, false, "10500", "10500", res.getText(), res.getTimestamp(), "pass"));
 			}
 		}
 		return display;

@@ -9,6 +9,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolkitService;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 import gov.nist.toolkit.xdstools2.client.resources.TableResources;
@@ -115,6 +116,7 @@ public class TestsOverviewWidget extends CellTable<Test> {
         // ----- Retrieve test results and set data into the widget -----
         // --------------------------------------------------------------
 
+        // TODO the call needs to be moved after the site is selected by the user
         ReloadAllTestResultsCallback testsListCallback = new ReloadAllTestResultsCallback(updater);
         loadTestsData(testsListCallback);
 
