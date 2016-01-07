@@ -6,7 +6,6 @@ import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
 import spock.lang.Specification
-
 /**
  * Runs all Registry tests.
  * To run:
@@ -22,9 +21,9 @@ import spock.lang.Specification
  *    Come back to this file in IntelliJ and click right on the class name and select Run RegistrySelfTestIT
  *    All the self tests will run
  */
-class RegistryOdSelfTestIT extends Specification {
+class RegistryOdIsSnapshotOfSelfTestIT extends Specification {
     ToolkitApi api;
-    String patientId = 'OD14^^^&1.2.360&ISO'
+    String patientId = 'OD14^^^&1.2.460&ISO'
     String reg = 'sunil__reg'
     SimId simId = new SimId(reg)
     String testSession = 'sunil';
@@ -40,10 +39,12 @@ class RegistryOdSelfTestIT extends Specification {
         }
     }
 
+
+
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__reg'
+        String siteName = 'sunil__rr'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -60,11 +61,10 @@ class RegistryOdSelfTestIT extends Specification {
         results.get(0).passed()
     }
 
-
-    def 'Run all Register tests'() {
+    def 'Run all tests'() {
         when:
-        String siteName = 'sunil__reg'
-        TestInstance testId = new TestInstance("15805") // ("tc:R.b")
+        String siteName = 'sunil__rr'
+        TestInstance testId = new TestInstance("15806")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
@@ -78,62 +78,13 @@ class RegistryOdSelfTestIT extends Specification {
         results.size() == 1
         results.get(0).passed()
     }
+
+
 
     /*
-    def 'Run SQ initialization'() {
-        when:
-        String siteName = 'sunil__reg'
-        TestInstance testId = new TestInstance("tc:Initialize_for_Stored_Query")
-        List<String> sections = new ArrayList<>()
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)
-        boolean stopOnFirstError = true
+    def 'Run SQ test'() {
 
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-
-        then:
-        true
-        results.size() == 1
-        results.get(0).passed()
-    }
-
-    def 'Run SQ tests'() {
-        when:
-        String siteName = 'sunil__reg'
-        TestInstance testId = new TestInstance("tc:SQ.b")
-        List<String> sections = new ArrayList<>()
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)   // not used
-        boolean stopOnFirstError = true
-
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-
-        then:
-        true
-        results.size() == 1
-        results.get(0).passed()
     }
     */
-
-//    def 'Run all PnR tests'() {
-//        when:
-//        String testSession = null;  // use default
-//        String siteName = 'mike__regrep'
-//        String testId = "tc:PR.b"
-//        List<String> sections = new ArrayList<>()
-//        Map<String, String> params = new HashMap<>()
-//        params.put('$patientid$', patientId)
-//        boolean stopOnFirstError = true
-//
-//        and: 'Run'
-//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-//
-//        then:
-//        true
-//        results.size() == 1
-//        results.get(0).passed()
-//    }
 
 }

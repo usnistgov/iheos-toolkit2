@@ -6,12 +6,11 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 public class SubmissionStructure {
 	Metadata m;
@@ -39,7 +38,7 @@ public class SubmissionStructure {
 			all_docs_linked_to_ss(er, vc);
 			all_fols_linked_to_ss(er, vc);
 			symbolic_refs_not_in_submission(er);
-			eval_assocs(er);
+			eval_assocs(er); // Verifications from ITI TF-3 4.2.2.2.6 Rev. 12.1 are in the ProcessMetadataForRegister class
 
 			ss_status_single_value(er, vc);
 
@@ -411,7 +410,7 @@ public class SubmissionStructure {
 		if (!isDocumentEntry(source))
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in submission with its sourceObject attribute, it references " + objectDescription(source), this, "ITI TF-3: 4.1.6.1");
 
-		if (containsObject(target)) {
+		if (containsObject(target)) { // This only checks for a circular reference but not the registry collection
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is in the submission", this, "ITI TF-3: 4.1.6.1");
 		}
 
@@ -420,9 +419,7 @@ public class SubmissionStructure {
 		}
 	}
 
-	void evalSigns(ErrorRecorder er, OMElement assoc) {
 
-	}
 
 	static List<String> relationships =
 		Arrays.asList(
@@ -430,7 +427,9 @@ public class SubmissionStructure {
 				"RPLC",
 				"XFRM",
 				"XFRM_RPLC",
-				"APND"
+				"APND",
+				"IsSnapshotOf",
+				"signs"
 		);
 
 	void eval_assocs(ErrorRecorder er) {
@@ -443,10 +442,9 @@ public class SubmissionStructure {
 				evalHasMember(er, assoc);
 			} else if(relationships.contains(type)) {
 				evalRelationship(er, assoc);
-			} else if (type.equals("signs")) {
-				evalSigns(er, assoc);
+			} else {
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Don't understand association type: " + type, this, "ITI TF-3: Table 4.2.2-1"); // Rev 12.1
 			}
-
 		}
 	}
 
