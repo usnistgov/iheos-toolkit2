@@ -26,7 +26,7 @@ class UpdateSimNegativeSpec extends ToolkitSpecification {
 
     def setup() {  // run before each test method
         params.id = 'reg'
-        params.user = 'mike'
+        params.user = 'bill'
         params.actorType = SimulatorActorType.REGISTRY
         params.environmentName = 'test'
 

@@ -21,7 +21,11 @@ public class Installation {
 	PropertyServiceManager propertyServiceMgr = null;
 	static Logger logger = Logger.getLogger(Installation.class);
 
-	static Installation me = null;
+	static Installation me = new Installation();
+
+    public String toString() {
+        return String.format("warHome=%s externalCache=%s", warHome, externalCache);
+    }
 
     static {
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
@@ -30,28 +34,24 @@ public class Installation {
             warhomeTxt = installation().getClass().getResource("/warhome/warhome.txt").getFile();
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
-            installation().warHome = new File(warhomeTxt).getParentFile();
+            installation().warHome(new File(warhomeTxt).getParentFile());
         }
-        String warTxt = null;
-        try {
-            warTxt = installation().getClass().getResource("/war/war.txt").getFile();
-        } catch (Throwable t) {}
-        if (warTxt != null) {
-            installation().warHome = new File(warTxt).getParentFile();
-        }
+//        String warTxt = null;
+//        try {
+//            warTxt = installation().getClass().getResource("/war/war.txt").getFile();
+//        } catch (Throwable t) {}
+//        if (warTxt != null) {
+//            installation().warHome(new File(warTxt).getParentFile());
+//        }
     }
 
 	static public Installation installation() {
-		if (me == null)
-			me = new Installation();
 		return me;
 	}
 	
 	static public Installation installation(ServletContext servletContext) {
-		if (me == null)
-			me = new Installation();
 		if (me.warHome == null)
-			me.warHome = new File(servletContext.getRealPath("/"));
+			me.warHome(new File(servletContext.getRealPath("/")));
 		return me;
 	}
 
@@ -60,11 +60,20 @@ public class Installation {
     }
 	
 	public File warHome() { 
-		return warHome; 
-		}
+	    if (warHome == null) {
+            String warTxt = null;
+            try {
+                warTxt = installation().getClass().getResource("/war/war.txt").getFile();
+            } catch (Throwable t) {}
+            if (warTxt != null) {
+                installation().warHome(new File(warTxt).getParentFile());
+            }
+        }
+        return warHome;
+    }
 	synchronized public void warHome(File warHome) {
-		if (warHome()!=null /* && warHome().equals(warHome) */) {
-            logger.info("... oops - warHome already initialized");
+		if (this.warHome != null /* && warHome().equals(warHome) */) {
+            logger.info("... oops - warHome already initialized to " + warHome);
             return; /* already set */
         }
 		logger.info("V2 - Installation - war home set to " + warHome);
@@ -72,6 +81,7 @@ public class Installation {
             logger.error(ExceptionUtil.here("warhome is null"));
 		this.warHome = warHome;
 		propertyServiceMgr = null;
+        propertyServiceManager();  // initialize
 		if (externalCache == null) // this can be different in a unit test situation
 			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
         logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
@@ -104,7 +114,7 @@ public class Installation {
 	
 	public PropertyServiceManager propertyServiceManager() {
 		if (propertyServiceMgr == null)
-			propertyServiceMgr = new PropertyServiceManager(warHome);
+			propertyServiceMgr = new PropertyServiceManager();
 		return propertyServiceMgr;
 	}
 

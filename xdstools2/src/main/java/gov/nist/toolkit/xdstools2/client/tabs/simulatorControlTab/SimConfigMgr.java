@@ -121,6 +121,16 @@ class SimConfigMgr {
         hpanel.add(saveButton);
         hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
         panel.add(HtmlMarkup.html("<br />"));
+
+        saveButton.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        saveSimConfig();
+                    }
+                }
+        );
+
     }
 
     void saveSimConfig() {

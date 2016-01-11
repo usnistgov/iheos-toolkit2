@@ -7,7 +7,10 @@ import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
+import gov.nist.toolkit.registrymetadata.client.Uid
+import gov.nist.toolkit.registrymetadata.client.Uids
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentManager
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
 import gov.nist.toolkit.registrysupport.MetadataSupport
 import gov.nist.toolkit.results.client.CodesConfiguration
@@ -37,7 +40,7 @@ class QuerySpec extends ToolkitSpecification {
     BasicSimParameters RGParams = new BasicSimParameters();
     BasicSimParameters IGParams = new BasicSimParameters();
     String patientId = 'BR14^^^&1.2.360&ISO'
-    String testSession = 'mike'
+    String testSession = 'bill'
     @Shared  apiEnvironment = 'test'
     @Shared  spiEnvironment = 'test'
     TestInstance testId
@@ -45,7 +48,7 @@ class QuerySpec extends ToolkitSpecification {
     Map<String, String> qparams
     boolean stopOnFirstError = true
     List<Result> results
-    String RGSiteName = 'mike__rg1'
+    String RGSiteName = 'bill__rg1'
 
 
     def setupSpec() {   // one time setup done when class launched
@@ -173,9 +176,18 @@ class QuerySpec extends ToolkitSpecification {
 
         when: ''
         RetrievedDocumentsModel retModels = RetrievedDocumentManager.getRetrievedDocumentsModel(metadataCollections.get(0))
+        RetrievedDocumentModel retModel = retModels.values().first()
+        println ("ret model is " + retModel)
+        Uid uid = new Uid(retModels.keySet().first())
+        uid.home = retModel.home
+        println "uid is " + uid
+        Uids uids = new Uids()
+        uids.add(uid)
+        results = api.retrieveDocuments(site, uids)
 
         then:
-        true
+        results.size() == 1
+        results.get(0).passed()
     }
 
 }

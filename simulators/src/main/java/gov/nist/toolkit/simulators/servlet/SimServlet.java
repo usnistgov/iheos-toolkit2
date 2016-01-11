@@ -63,11 +63,11 @@ public class SimServlet  extends HttpServlet {
 	public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
 		config = sConfig;
-		logger.info("Initializing toolkit");
+		logger.info("Initializing toolkit in SimServlet");
 		File warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
 		Installation.installation().warHome(warHome);
-		logger.info("...simdb = " + Installation.installation().simDbFile());
+        logger.info("...warHome initialized to " + Installation.installation().warHome());
 
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);

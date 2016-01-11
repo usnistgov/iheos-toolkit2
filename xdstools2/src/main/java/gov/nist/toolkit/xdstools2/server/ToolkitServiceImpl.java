@@ -336,8 +336,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             if (!eCacheFile.canWrite())
                 throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
 
-            File warhome = Installation.installation().warHome();
-            new PropertyServiceManager(warhome).getPropertyManager().update(props);
+//            File warhome = Installation.installation().warHome();
+            new PropertyServiceManager().getPropertyManager().update(props);
             reloadPropertyFile();
 //		Installation.installation().externalCache(eCacheFile);
             ExternalCacheManager.reinitialize(eCacheFile);

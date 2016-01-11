@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -218,6 +219,10 @@ public class ToolkitApi {
 
     public List<Result> findDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
         return new QueryServiceManager(session).findDocuments2(site, pid, selectedCodes);
+    }
+
+    public List<Result> retrieveDocuments(SiteSpec site, Uids uids) throws Exception {
+        return new QueryServiceManager(session).retrieveDocument(site, uids);
     }
 
     public List<String> getSimulatorEventIds(SimId simId, String transaction) throws Exception {

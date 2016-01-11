@@ -29,7 +29,7 @@ class CreateSimSpec extends ToolkitSpecification {
 
     def setup() {  // run before each test method
         params.id = 'reg'
-        params.user = 'mike'
+        params.user = 'bill'
         params.actorType = SimulatorActorType.REGISTRY
         params.environmentName = 'test'
     }
@@ -94,7 +94,7 @@ class CreateSimSpec extends ToolkitSpecification {
 
         then: 'verify configuration'
         simId.getId() == config.getId()
-        config.asString('Name') == 'mike__reg'
+        config.asString('Name') == 'bill__reg'
     }
 
     static final private parmName = "Validate_Codes"

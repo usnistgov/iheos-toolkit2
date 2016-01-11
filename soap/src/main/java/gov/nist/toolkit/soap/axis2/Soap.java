@@ -52,6 +52,7 @@ import java.util.*;
  */
 
 public class Soap implements SoapInterface {
+    static Logger logger = Logger.getLogger(Soap.class);
 
 	private static Logger log = Logger.getLogger(Soap.class);
 
@@ -534,6 +535,7 @@ public class Soap implements SoapInterface {
 
 			serviceClient.cleanupTransport();
 			serviceClient.cleanup();
+            logger.info("soapCallWithWSSEC done");
 		}
 	}
 
@@ -608,6 +610,7 @@ public class Soap implements SoapInterface {
 
 		// operationClient.reset();
 
+        logger.info("soepCall done");
 		return result;
 
 	}
@@ -841,6 +844,7 @@ public class Soap implements SoapInterface {
 			return;
 
 		inHeader = Util.deep_copy(in.getEnvelope().getHeader());
+        logger.info("incoming header loaded");
 	}
 
 	void loadOutHeader() throws XdsInternalException {

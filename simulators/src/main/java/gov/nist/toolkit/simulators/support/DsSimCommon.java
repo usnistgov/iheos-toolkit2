@@ -268,7 +268,7 @@ public class DsSimCommon {
         }
 
         for (String cid : documentsToAttach.keySet()) {
-            String uid = documentsToAttach.get(cid).uid;
+            String uid = documentsToAttach.get(cid).getUid();
             OMElement docResp = uidToDocResp.get(uid);
             if (docResp == null) {
                 er.err(XdsErrorCode.Code.XDSRepositoryError, "Internal Error: response does not have Document for " + uid, "SimCommon#insertDocumentIncludes", null);
@@ -326,16 +326,16 @@ public class DsSimCommon {
                 StoredDocument sd = documentsToAttach.get(cid);
 
                 body.append("--").append(boundary).append(rn);
-                body.append("Content-Type: ").append(sd.mimeType).append(rn);
+                body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
                 body.append("Content-Transfer-Encoding: binary").append(rn);
                 body.append("Content-ID: <" + cid + ">").append(rn);
                 body.append(rn);
                 try {
                     String contents;
-                    if (sd.charset != null) {
-                        contents = new String(sd.getDocumentContents(), sd.charset);
+                    if (sd.getCharset() != null) {
+                        contents = new String(sd.getContent(), sd.getCharset());
                     } else {
-                        contents = new String(sd.getDocumentContents());
+                        contents = new String(sd.getContent());
                     }
                     body.append(contents);
                 } catch (Exception e) {
@@ -455,7 +455,7 @@ public class DsSimCommon {
     }
 
     public void intallDocumentsToAttach(StoredDocumentMap docmap) {
-        documentsToAttach = new HashMap<String, StoredDocument>();
+        documentsToAttach = new HashMap<>();
         for (StoredDocument stor : docmap.docs) {
             documentsToAttach.put(stor.cid, stor);
         }

@@ -17,7 +17,7 @@ import gov.nist.toolkit.toolkitServicesCommon.RefList
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
 /**
- * Test Registry API for direct retrieval of DocumentEntry references and details.
+ * Test Registry API for direct retrieval of DocumentEntry, Document, and evnet log
  */
 class GetDocumentDetailsSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi

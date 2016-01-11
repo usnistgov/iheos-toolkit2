@@ -43,7 +43,8 @@ public class BuildCollections extends HttpServlet {
         // actorCollection since some collections are based on the actor and some on transactions
         Map<ActorType, List<String>> actorTestMap = new HashMap<>();
 
-        collectionsDir.mkdir();  // create if doesn't exist
+        collectionsDir.mkdirs();  // create if doesn't exist
+        actorCollectionsDir.mkdirs();
 
         logger.info("Collections found:\n" + collections.keySet());
 
@@ -66,6 +67,7 @@ public class BuildCollections extends HttpServlet {
         for (ActorType actorType : actorTestMap.keySet()) {
             String name = actorType.getShortName();
             String descriptiveName = actorType.getName();
+            logger.info(String.format("Writing %s", new File(actorCollectionsDir + File.separator + name + ".tc")));
             Io.stringToFile(new File(actorCollectionsDir + File.separator + name + ".tc"), listAsFileContents(actorTestMap.get(actorType)));
             Io.stringToFile(new File(actorCollectionsDir, name + ".txt"), descriptiveName);
         }

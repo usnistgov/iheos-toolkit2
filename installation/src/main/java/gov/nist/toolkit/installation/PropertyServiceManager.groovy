@@ -1,18 +1,15 @@
-package gov.nist.toolkit.installation;
+package gov.nist.toolkit.installation
 
-import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.log4j.Logger;
+import gov.nist.toolkit.utilities.io.Io
+import gov.nist.toolkit.xdsexception.ExceptionUtil
+import groovy.transform.TypeChecked
+import org.apache.log4j.Logger
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+@TypeChecked
 public class PropertyServiceManager {
 	PropertyManager propertyManager = null;
-	File warHome = null;
-    String TOOLKIT_PROPERTIES_PATH = "";
+//	File warHome = null;
+//    String TOOLKIT_PROPERTIES_PATH = "";
     File propertiesFile = null;
     String overrideToolkitPort = null;
 
@@ -23,9 +20,9 @@ public class PropertyServiceManager {
 
     static Logger logger = Logger.getLogger(PropertyServiceManager.class);
 	
-	public PropertyServiceManager(File warHome)  {
-		this.warHome = warHome;
-	}
+//	public PropertyServiceManager(File warHome)  {
+//		this.warHome = warHome;
+//	}
 
 	// isRead - is the actors file about to be read? (as opposed to written)
 	public File configuredActorsFile(boolean isRead) throws IOException {
@@ -81,7 +78,7 @@ public class PropertyServiceManager {
 
 	public File getActorsFileName() {
 		logger.debug(": " + "getActorsFileName");
-		return new File(Installation.installation().externalCache() + File.separator + "actors.xml");
+		return new File(Installation.installation().externalCache(), "actors.xml");
 	}
 
     public File getTestkit() {
@@ -113,23 +110,24 @@ public class PropertyServiceManager {
 			return;
 
         // Create a File from the properties file in order to pass it to v3
-        TOOLKIT_PROPERTIES_PATH = warHome + File.separator + "WEB-INF" + File.separator + "toolkit.properties";
-        setPropertiesFile(TOOLKIT_PROPERTIES_PATH);
+        assert Installation.installation().warHome()
+        File propPath = new File(new File(Installation.installation().warHome(), "WEB-INF"), "toolkit.properties");
+        setPropertiesFile(propPath.toString());
 
-        propertyManager = new PropertyManager(TOOLKIT_PROPERTIES_PATH);
+        propertyManager = new PropertyManager(propPath.toString());
 
 		// This removes the dependency that 
 		// gov.nist.registry.common2.xml.SchemaValidation
 		// has on port 9080
 		// Schema references will be made directly through the file system and not
 		// via "system" references (via a URI)
-		System.setProperty("XDSSchemaDir", warHome + File.separator + "toolkitx" + File.separator + "schema");
+		System.setProperty("XDSSchemaDir", new File(new File(Installation.installation().warHome(), "toolkitx"), "schema").toString());
 	}
 
 
 	public File internalActorsFile() {
-		return new File(warHome + File.separator + 
-				"toolkitx" + File.separator + "xdstest" + File.separator + "actors.xml");
+        assert Installation.installation().warHome()
+		return new File(new File(new File(Installation.installation().warHome(), "toolkitx"),  "xdstest"), "actors.xml");
 	}
 
 
@@ -171,11 +169,11 @@ public class PropertyServiceManager {
 	}
 	
 	File getAttributeFile(String username, String attName) throws Exception {
-		return new File(getAttributeCache(username) + File.separator + attName + ".txt");
+		return new File(getAttributeCache(username), attName + ".txt");
 	}
 	
 	File getAttributeCache(String username) throws Exception {
-		String attributeCache = Installation.installation().externalCache() + File.separator + "Attributes" + File.separator + username;
+		String attributeCache = new File(new File(Installation.installation().externalCache(), "Attributes"), username);
 		File f = new File(attributeCache);
 
 		if (!( f.exists() && f.isDirectory() && f.canWrite()  )) {
@@ -205,8 +203,8 @@ public class PropertyServiceManager {
 
 	public String getImplementationVersion() {
 		logger.debug(": " + "getImplementationVersion");
-
-		File f = new File(warHome + File.separator + "build.num");
+        assert Installation.installation().warHome()
+		File f = new File(Installation.installation().warHome(), "build.num");
 		String ver = null;
 		try {
 			ver = Io.stringFromFile(f);

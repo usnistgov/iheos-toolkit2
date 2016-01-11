@@ -9,6 +9,7 @@ import java.util.Set;
  *
  */
 public class RetrievedDocumentsModel {
+    // uid ==> model
     Map<String, RetrievedDocumentModel> map = new HashMap<>();
 
     public Map<String, RetrievedDocumentModel> getMap() {

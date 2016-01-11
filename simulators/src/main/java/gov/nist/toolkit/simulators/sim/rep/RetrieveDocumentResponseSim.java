@@ -44,7 +44,7 @@ public class RetrieveDocumentResponseSim extends TransactionSimulator implements
 			OMElement root = response.getRoot();
 
 			for (StoredDocument document : documents) {
-				String uid = document.uid;
+				String uid = document.getUid();
 
 				StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
 
@@ -55,11 +55,11 @@ public class RetrieveDocumentResponseSim extends TransactionSimulator implements
 				docResponse.addChild(repId);
 
 				OMElement docId = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_unique_id_qnamens);
-				docId.setText(sd.uid);
+				docId.setText(sd.getUid());
 				docResponse.addChild(docId);
 
 				OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);
-				mimeType.setText(sd.mimeType);
+				mimeType.setText(sd.getMimeType());
 				docResponse.addChild(mimeType);
 
 				OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);

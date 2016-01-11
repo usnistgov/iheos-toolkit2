@@ -39,12 +39,12 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
 
     def setup() {  // run before each test method
         srcParams.id = 'source'
-        srcParams.user = 'mike'
+        srcParams.user = 'bill'
         srcParams.actorType = SimulatorActorType.DOCUMENT_SOURCE
         srcParams.environmentName = 'test'
 
         recParams.id = 'recipient'
-        recParams.user = 'mike'
+        recParams.user = 'bill'
         recParams.actorType = SimulatorActorType.DOCUMENT_RECIPIENT
         recParams.environmentName = 'test'
     }

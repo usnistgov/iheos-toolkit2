@@ -140,6 +140,8 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 				return false;
 			}
 
+            logger.info("Retrieved content is " + docMap);
+
 			StoredDocumentMap stdocmap = new StoredDocumentMap(docMap);
 			dsSimCommon.intallDocumentsToAttach(stdocmap);
 
