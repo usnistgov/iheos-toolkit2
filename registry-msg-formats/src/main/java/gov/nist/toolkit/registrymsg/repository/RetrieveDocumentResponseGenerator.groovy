@@ -20,6 +20,11 @@ public class RetrieveDocumentResponseGenerator {
         this.registryErrorListGenerator = registryErrorListGenerator
     }
 
+    public RetrieveDocumentResponseGenerator(RetrievedDocumentsModel model) {
+        this.model = model
+        this.registryErrorListGenerator = null
+    }
+
     public OMElement get() {
         return generate();
     }
@@ -30,7 +35,7 @@ public class RetrieveDocumentResponseGenerator {
         OMElement rdsr = MetadataSupport.om_factory.createOMElement("RetrieveDocumentSetResponse", MetadataSupport.xdsB);
         rdsr.addChild(response);
 
-        if (registryErrorListGenerator.hasErrors()) {
+        if (registryErrorListGenerator && registryErrorListGenerator.hasErrors()) {
             statusAtt = MetadataSupport.om_factory.createOMAttribute("status", null, MetadataSupport.status_failure);
             response.addChild(registryErrorListGenerator.registryErrorList)
         } else {
