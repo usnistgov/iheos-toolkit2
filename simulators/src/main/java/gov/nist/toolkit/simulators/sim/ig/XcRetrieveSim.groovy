@@ -92,11 +92,12 @@ public class XcRetrieveSim extends AbstractMessageValidator {
 
                 RetrievedDocumentsModel retDocs = forwardRetrieve(site, requestModel.getItemsForCommunity(homeId));
                 for (RetrievedDocumentModel item : retDocs.values()) {
+                    logger.info("XC retrieve returned " + item)
                     retrievedDocs.add(item);
                 }
             }
 
-            result = new RetrieveDocumentResponseGenerator(retrievedDocs).get();
+            result = new RetrieveDocumentResponseGenerator(retrievedDocs, dsSimCommon.registryErrorList).get();
 
         } catch (Exception e) {
             logException(er, e);
@@ -111,7 +112,9 @@ public class XcRetrieveSim extends AbstractMessageValidator {
         String endpoint = site.getEndpoint(TransactionType.XC_RETRIEVE, isSecure, isAsync);
         er.detail("Forwarding retrieve request to " + endpoint);
 
-        return retrieveCall(items, endpoint);
+        RetrievedDocumentsModel models = retrieveCall(items, endpoint);
+        validateXcRetrieveResponse(models)
+        return models
     }
 
     RetrievedDocumentsModel retrieveCall(List<RetrieveItemRequestModel> items, String endpoint) throws Exception {
@@ -137,6 +140,17 @@ public class XcRetrieveSim extends AbstractMessageValidator {
         OMElement result = soap.getResult();
 
         return new RetrieveResponseParser(result).get();
+    }
+
+    void validateXcRetrieveResponse(RetrievedDocumentsModel models) {
+        models.values().each { RetrievedDocumentModel model ->
+            model.with {
+                if (!docUid) er.err(XdsErrorCode.Code.XDSRegistryMetadataError, 'Responding Gateway returned no Document.uniqueId', this, null)
+                if (!repUid) er.err(XdsErrorCode.Code.XDSRegistryMetadataError, 'Responding Gateway returned no repositoryUniqueId', this, null)
+                if (!content_type) er.err(XdsErrorCode.Code.XDSRegistryMetadataError, 'Responding Gateway returned no mimeType', this, null)
+                if (!home) er.err(XdsErrorCode.Code.XDSRegistryMetadataError, 'Responding Gateway returned no homeCommunityId', this, null)
+            }
+        }
     }
 
 

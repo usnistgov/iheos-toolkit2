@@ -1,32 +1,33 @@
-package gov.nist.toolkit.simulators.sim.rg;
+package gov.nist.toolkit.simulators.sim.rg
 
-import gov.nist.toolkit.actorfactory.*;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator;
-import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
-import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
-import gov.nist.toolkit.simulators.support.*;
-import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
-import gov.nist.toolkit.testengine.engine.RetrieveB;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
-import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
+import gov.nist.toolkit.actorfactory.SimDb
+import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig
+import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
+import gov.nist.toolkit.registrymetadata.Metadata
+import gov.nist.toolkit.registrymsg.registry.Response
+import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
+import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
+import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator
+import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
+import gov.nist.toolkit.simulators.support.*
+import gov.nist.toolkit.soap.axis2.Soap
+import gov.nist.toolkit.testengine.engine.RetrieveB
+import gov.nist.toolkit.utilities.xml.XmlUtil
+import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
+import gov.nist.toolkit.valregmsg.service.SoapActionFactory
+import gov.nist.toolkit.valsupport.client.ValidationContext
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
+import groovy.transform.TypeChecked
+import org.apache.axiom.om.OMElement
+import org.apache.log4j.Logger
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
+@TypeChecked
 public class RGActorSimulator extends GatewaySimulatorCommon implements MetadataGeneratingSim {
 	SimDb db;
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
@@ -140,13 +141,21 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 				return false;
 			}
 
+            RetrievedDocumentsModel models = new RetrievedDocumentsModel(docMap)
+
+            String home = getSimulatorConfig().get(SimulatorProperties.homeCommunityId).asString();
+            models.values().each { RetrievedDocumentModel model -> model.home = home }
+
             logger.info("Retrieved content is " + docMap);
 
-			StoredDocumentMap stdocmap = new StoredDocumentMap(docMap);
+            StoredDocumentMap stdocmap = new StoredDocumentMap(docMap);
 			dsSimCommon.intallDocumentsToAttach(stdocmap);
 
 			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, result), er);
+//			mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, result), er);
+
+            OMElement responseEle = new RetrieveDocumentResponseGenerator(models, dsSimCommon.registryErrorList).get()
+            mvc.addMessageValidator("SendResponseInSoapWrapper", new SoapWrapperResponseSim(common, dsSimCommon, responseEle), er);
 
 			mvc.run();
 

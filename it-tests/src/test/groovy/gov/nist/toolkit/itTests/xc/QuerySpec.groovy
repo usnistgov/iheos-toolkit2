@@ -174,7 +174,8 @@ class QuerySpec extends ToolkitSpecification {
         metadataCollections.size() == 1
         metadataCollections.get(0).docEntries.size() == 2
 
-        when: ''
+        when: 'retrieve'
+        println 'STEP - SEND RETRIEVES TO IG'
         RetrievedDocumentsModel retModels = RetrievedDocumentManager.getRetrievedDocumentsModel(metadataCollections.get(0))
         RetrievedDocumentModel retModel = retModels.values().first()
         println ("ret model is " + retModel)

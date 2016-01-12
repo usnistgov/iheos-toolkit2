@@ -480,6 +480,8 @@ public class XdsTestServiceManager extends CommonService {
 						stepResult.status = tsLog.getStatus();
 						stepPass = stepResult.status;
 
+                        logger.info("test section " + section + " has status " + stepPass);
+
 						// a transaction can have metadata in the request OR
 						// the response
 						// look in both places and save

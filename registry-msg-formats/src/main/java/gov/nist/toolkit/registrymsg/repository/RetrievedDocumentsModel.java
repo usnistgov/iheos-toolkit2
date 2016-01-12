@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Class StoredDocumentMap should be merged into this one.  They are redundant.
  */
 public class RetrievedDocumentsModel {
     // uid ==> model
@@ -14,6 +14,12 @@ public class RetrievedDocumentsModel {
 
     public Map<String, RetrievedDocumentModel> getMap() {
         return map;
+    }
+
+    public RetrievedDocumentsModel() {}
+
+    public RetrievedDocumentsModel(Map<String, RetrievedDocumentModel> map) {
+        setMap(map);
     }
 
     public RetrievedDocumentsModel setMap(Map<String, RetrievedDocumentModel> map) {

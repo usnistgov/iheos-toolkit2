@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Created by bill on 7/1/15.
+ *
  */
 public class DsSimCommon {
     SimulatorConfig simulatorConfig = null;
@@ -47,7 +47,7 @@ public class DsSimCommon {
     public RepIndex repIndex = null;
     public SimCommon simCommon;
     Map<String, StoredDocument> documentsToAttach = null;  // cid => document
-    RegistryErrorListGenerator relGen = null;
+    RegistryErrorListGenerator registryErrorListGenerator = null;
 
     static Logger logger = Logger.getLogger(DsSimCommon.class);
 
@@ -165,12 +165,12 @@ public class DsSimCommon {
     }
 
     public void setRegistryErrorListGenerator(RegistryErrorListGenerator relg) {
-        relGen = relg;
+        registryErrorListGenerator = relg;
     }
 
     public RegistryErrorListGenerator getRegistryErrorList(List<ValidationStepResult> results) throws XdsInternalException {
         try {
-            RegistryErrorListGenerator rel = relGen;
+            RegistryErrorListGenerator rel = registryErrorListGenerator;
             if (rel == null)
                 rel = new RegistryErrorListGenerator(Response.version_3, false);
 
@@ -193,7 +193,7 @@ public class DsSimCommon {
             return rel;
         }
         finally {
-            relGen = null;
+            registryErrorListGenerator = null;
         }
     }
 

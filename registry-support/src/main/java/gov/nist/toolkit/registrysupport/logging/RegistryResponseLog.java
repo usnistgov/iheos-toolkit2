@@ -2,19 +2,21 @@ package gov.nist.toolkit.registrysupport.logging;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import org.apache.axiom.om.OMElement;
 
 public class RegistryResponseLog {
 	OMElement resp;
 	boolean success;
 	List<RegistryErrorLog> errors;
+    static Logger logger = Logger.getLogger(RegistryResponseLog.class);
 
-	public RegistryResponseLog(OMElement res) throws Exception {
+
+    public RegistryResponseLog(OMElement res) throws Exception {
 		this.resp = res;
 		if (res == null)
 			throw new Exception("null response");
@@ -90,7 +92,9 @@ public class RegistryResponseLog {
 				errs.add(re);
 		}
 
-		return errs;
+        logger.info("Found Errors " + errs);
+
+        return errs;
 	}
 
 	String lastPart(String stringToBeParsed, String separator) {

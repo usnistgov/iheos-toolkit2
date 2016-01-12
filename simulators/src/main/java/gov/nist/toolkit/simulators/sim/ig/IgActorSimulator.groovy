@@ -125,6 +125,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
             // wrap in soap wrapper and http wrapper
             er.detail("Wrapping response in SOAP Message and sending");
             OMElement env = dsSimCommon.wrapResponseInSoapEnvelope(retSim.getResult());
+            assert env
             dsSimCommon.sendHttpResponse(env, er);
 
             mvc.run()
