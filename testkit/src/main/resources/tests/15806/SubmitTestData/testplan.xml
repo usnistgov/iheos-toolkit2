@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15806/SubmitTestData</Test>
+  <Rule>desc todo</Rule>
+  <TestStep id="SubmitOnDemandDocumentEntry">
+  <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterODDETransaction>
+	  <AssignUuids/>
+      <MetadataFile>single_ondemand_doc.xml</MetadataFile>
+	        <Report name="oddocid" section="InputMetadata">
+//*[local-name()='ExtrinsicObject']/@id
+			</Report>
+    </RegisterODDETransaction>
+  </TestStep>
+</TestPlan>

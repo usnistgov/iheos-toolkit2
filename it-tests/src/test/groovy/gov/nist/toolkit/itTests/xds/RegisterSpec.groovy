@@ -81,10 +81,29 @@ class RegisterSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'Run all Register tests'() {
+//    def 'Run all Register tests'() {
+//        when:
+//        String siteName = 'bill__reg'
+//        TestInstance testId = new TestInstance("tc:R.b")
+//        List<String> sections = new ArrayList<>()
+//        Map<String, String> params = new HashMap<>()
+//        params.put('$patientid$', patientId)
+//        boolean stopOnFirstError = true
+//
+//        and: 'Run'
+//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+//
+//        then:
+//        true
+//        results.size() == 1
+//        results.get(0).passed()
+//    }
+
+
+    def 'Run a failed test'() {
         when:
         String siteName = 'bill__reg'
-        TestInstance testId = new TestInstance("tc:R.b")
+        TestInstance testId = new TestInstance("11993")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)

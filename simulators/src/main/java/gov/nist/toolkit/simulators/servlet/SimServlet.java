@@ -690,7 +690,7 @@ public class SimServlet  extends HttpServlet {
 				regIndex.setSimDb(db);
 				servletContext.setAttribute("Reg_" + simid, regIndex);
 			} else
-				logger.debug("Using cached RegIndex");
+				logger.debug("Using cached RegIndex: " + simid + " db loc:" + regIndex.getSimDb().getRegistryIndexFile().toString());
 
 			regIndex.cacheExpires = getNewExpiration();
 		}

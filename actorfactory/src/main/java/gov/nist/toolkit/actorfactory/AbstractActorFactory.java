@@ -128,7 +128,7 @@ public abstract class AbstractActorFactory {
 	}
 
 	public Simulator buildNewSimulator(SimManager simm, ActorType at, SimId simID, boolean save) throws Exception {
-		logger.info("Build new Simulator of type " + getClass().getSimpleName());
+		logger.info("Build new Simulator of type " + getClass().getSimpleName() + " simID: " + simID);
 
 		// This is the simulator-specific factory
 		AbstractActorFactory af = factories.get(at.getName());
@@ -147,6 +147,7 @@ public abstract class AbstractActorFactory {
 				saveConfiguration(conf);
 
 				BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(conf.getId());
+				logger.info("calling onCreate:" + conf.getId().toString());
 				sim.onCreate(conf);
 			}
 		}

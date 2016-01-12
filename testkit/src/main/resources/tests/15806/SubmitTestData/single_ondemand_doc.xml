@@ -24,11 +24,6 @@
         <rim:LocalizedString value="Physical"/>
       </rim:Name>
       <rim:Description/>
-      <rim:Slot name="creationTime">
-        <rim:ValueList>
-          <rim:Value>20051224</rim:Value>
-        </rim:ValueList>
-      </rim:Slot>
       <rim:Slot name="repositoryUniqueId">
         <rim:ValueList>
           <rim:Value>1.19.6.24.109.42.1</rim:Value>
@@ -46,12 +41,12 @@
       </rim:Slot>
       <rim:Slot name="serviceStartTime">
         <rim:ValueList>
-          <rim:Value>200412230800</rim:Value>
+          <rim:Value>201510230800</rim:Value>
         </rim:ValueList>
       </rim:Slot>
       <rim:Slot name="serviceStopTime">
         <rim:ValueList>
-          <rim:Value>200412230801</rim:Value>
+          <rim:Value>201510230801</rim:Value>
         </rim:ValueList>
       </rim:Slot>
       <rim:Slot name="sourcePatientId">

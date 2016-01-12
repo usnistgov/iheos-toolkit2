@@ -11,6 +11,7 @@ public enum TransactionType implements Serializable {
     PROVIDE_AND_REGISTER("ITI-41", "Provide and Register", "prb", "pr.b", "pr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse"),
     XDR_PROVIDE_AND_REGISTER("ITI-41", "XDR Provide and Register", "xdrpr", "xdrpr", "xdrpr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse"),
     REGISTER("ITI-42", "Register", "rb", "r.b", "r.as", false, "urn:ihe:iti:2007:RegisterDocumentSet-b", "urn:ihe:iti:2007:RegisterDocumentSet-bResponse"),
+    REGISTER_ODDE("ITI-61","Register On-Demand Document Entry", "rodde", "rodde", "rodde.as", false, "urn:ihe:iti:2010:RegisterOnDemandDocumentEntry", "urn:ihe:iti:2010:RegisterOnDemandDocumentResponse"),
     RETRIEVE("ITI-43", "Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse"),
     IG_RETRIEVE("ITI-43", "Initiating Gateway Retrieve", "igr", "igr", "igr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse"),
     ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "odds", "odds", "odds.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse"),

@@ -78,7 +78,7 @@ public class RegisterTransaction extends BasicTransaction {
 
 	protected String getRequestAction() {
 		if (xds_version == BasicTransaction.xds_b) {
-			if (async) 
+			if (async)
 				return "urn:ihe:iti:2007:RegisterDocumentSet-b";
 			else
 				return "urn:ihe:iti:2007:RegisterDocumentSet-b";

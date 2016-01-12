@@ -1,2 +1,4 @@
-submit
-eval
+SubmitTestData
+QueryStable
+QueryOnDemand
+QueryBoth
