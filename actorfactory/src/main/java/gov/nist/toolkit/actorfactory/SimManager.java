@@ -12,10 +12,7 @@ import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Maintains the list of loaded SimulatorConfig objects for a
@@ -26,7 +23,7 @@ import java.util.Map;
 
 public class SimManager {
 	List<SimulatorConfig> simConfigs = new ArrayList<>();  // for this session
-	String sessionId;
+	String sessionId;  // this is never used internally.  Other classes use it through the getter.
 	static Logger logger = Logger.getLogger(SimManager.class);
 
 
@@ -44,6 +41,7 @@ public class SimManager {
 		for (SimId simId : simIds) {
 			if (!hasSim(simId))
 				try {
+                    logger.info("Load sim " + simId);
 					simConfigs.add(db.getSimulator(simId));
 				}
 				catch (Exception e) {
@@ -60,6 +58,7 @@ public class SimManager {
 //*****************************************
 	static public Site getSite(SimulatorConfig config) throws Exception {
 		AbstractActorFactory af = getActorFactory(config);
+        logger.info("Getting original actor factory to generate site - " + af.getClass().getName());
 		return af.getActorSite(config, null);
 	}
 
@@ -90,18 +89,21 @@ public class SimManager {
 	}
 	
 	public void addSimConfigs(Simulator s) {
+        logger.info("addSimConfigs: " + s);
 		for (SimulatorConfig config : s.getConfigs()) {
 			addSimConfig(config);
 		}
 	}
 	
 	public void addSimConfig(SimulatorConfig config) {
+        logger.info("addSimConfig: " + config);
 		delSimConfig(config.getId());
 		simConfigs.add(config);
 	}
 	
 	public void setSimConfigs(List<SimulatorConfig> configs) {
-		simConfigs = configs;
+		logger.info("setSimConfigs: " + configs);
+        simConfigs = configs;
 	}
 
 	public void delSimConfig(SimId simId) {
@@ -135,6 +137,18 @@ public class SimManager {
 	public Sites getAllSites() throws Exception {
 		return getAllSites(SiteServiceManager.getSiteServiceManager().getCommonSites());
 	}
+
+    public List<Site> getSites(List<String> siteNames) throws Exception {
+        List<Site> siteList = new ArrayList<>();
+
+        Collection<Site> sites = getAllSites().asCollection();
+        for (Site site : sites) {
+            if (siteNames.contains(site.getName()))
+                siteList.add(site);
+        }
+
+        return siteList;
+    }
 	
 	public Sites getAllSites(Sites commonSites)  throws Exception{
 		Sites sites;
@@ -147,8 +161,11 @@ public class SimManager {
 			sites = commonSites.clone();
 		
 		for (SimulatorConfig asc : simConfigs) {
-			if (!asc.isExpired())
-				sites.putSite(getSite(asc));
+			if (!asc.isExpired()) {
+                Site site = getSite(asc);
+                if (site != null) // not all sims can generate a site
+                    sites.putSite(site);
+            }
 		}
 		
 		sites.buildRepositoriesSite();

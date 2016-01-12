@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>11906/conf_code</Test>
+  <Rule>Test GetSubmissionSetAndContents Stored Query - Filter the documents via Confidentiality code</Rule>
+  <TestStep id="conf_code">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/two_doc_w_fol" id="SubmissionSet01" symbol="$uniqueid$" 
+        step="submit_2doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <SSwithOneDocOneFol/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

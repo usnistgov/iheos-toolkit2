@@ -4,11 +4,13 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,9 +36,8 @@ public class IGActorFactory extends AbstractActorFactory {
 		addFixedEndpoint(sc, SimulatorProperties.igqTlsEndpoint, actorType, TransactionType.IG_QUERY, true);
 		addFixedEndpoint(sc, SimulatorProperties.igrEndpoint, actorType, TransactionType.IG_RETRIEVE, false);
 		addFixedEndpoint(sc, SimulatorProperties.igrTlsEndpoint, actorType, TransactionType.IG_RETRIEVE, true);
+        addEditableConfig(sc, SimulatorProperties.respondingGateways, ParamType.SELECTION, new ArrayList<String>(), true);
 
-		sc.setRemoteSitesNecessary(true, "RGs");
-		
 		return new Simulator(sc);
 	}
 

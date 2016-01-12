@@ -30,6 +30,7 @@ public interface SimId {
 
     /**
      * Internal representation of Simulator ID.  This may change at any time.
+     * This is used as the Site name
      * @return value
      */
     String getFullId();

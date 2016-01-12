@@ -26,8 +26,8 @@ public class UserConfigEditor {
 	void update() {
 		// this should be obsolete
 //		for (int i=0; i<eles.size(); i++) {
-//			ActorSimulatorConfigElement ele = eles.get(i);
-//			TextBox tb = boxes.get(i);
+//			ActorSimulatorConfigElement ele = eles.getRetrievedDocumentsModel(i);
+//			TextBox tb = checkBoxes.getRetrievedDocumentsModel(i);
 //			String tbText = tb.getText();
 //			if (tbText == null)
 //				tbText = "";

@@ -1,6 +1,8 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -45,4 +47,40 @@ class Mapping {
     private static String pad(String in) { return in + " "; }
 
     public Mapping() {}
+
+    // handling of value when it is a list strings
+
+    public Mapping(String key, List<String> values) {
+        this.key = key;
+        this.value = encodeList(values);
+    }
+
+    static public List<String> asList(String value) {
+        return decodeList(value);
+    }
+
+    private String encodeList(List<String> lst) {
+        StringBuilder buf = new StringBuilder();
+        for (String x : lst) {
+            if (buf.length() > 0) buf.append(',');
+            buf.append(x);
+        }
+        return String.format("[%s]", buf);
+    }
+
+    static private List<String> decodeList(String value) {
+        List<String> lst = new ArrayList<>();
+        value = value.trim();
+        if (value.charAt(0) != '[' || value.charAt(value.length()-1) != ']')
+            return lst;
+        value = value.substring(1, value.length()-1);
+        String values[] = value.split(",");
+        if (values.length == 0) return lst;
+        for (int i=0; i<values.length; i++) {
+            String x = values[i];
+            if (x.length() > 0)
+                lst.add(values[i]);
+        }
+        return lst;
+    }
 }

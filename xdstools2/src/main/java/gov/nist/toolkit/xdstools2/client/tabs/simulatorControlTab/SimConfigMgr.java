@@ -1,14 +1,18 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import gov.nist.toolkit.actorfactory.client.CcdaTypeSelection;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.xdstools2.client.Xdstools2;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 
 /**
  * Manages the content of a single Simulator on the screen
@@ -16,107 +20,131 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
  *
  */
 class SimConfigMgr {
-	/**
-	 *
-	 */
-	private SimulatorControlTab simulatorControlTab;
-	VerticalPanel panel;
-	HorizontalPanel hpanel;
-	SimulatorConfig config;
-	String testSession;
-	FlexTable tbl = new FlexTable();
+    /**
+     *
+     */
+    private SimulatorControlTab simulatorControlTab;
+    VerticalPanel panel;
+    HorizontalPanel hpanel;
+    SimulatorConfig config;
+    String testSession;
+    FlexTable tbl = new FlexTable();
+    Button saveButton = new Button("Save");
 
-	SimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
-		this.simulatorControlTab = simulatorControlTab;
-		this.panel = panel;
-		this.config = config;
-		this.testSession = testSession;
+    SimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
+        this.simulatorControlTab = simulatorControlTab;
+        this.panel = panel;
+        this.config = config;
+        this.testSession = testSession;
+    }
 
-//			tbl.setCellPadding(2);
-//			tbl.setCellSpacing(2);
-//			tbl.setBorderWidth(1);
-	}
+    void removeFromPanel() {
+        if (hpanel != null) {
+            panel.remove(hpanel);
+            hpanel = null;
+        }
+    }
 
-	void removeFromPanel() {
-		if (hpanel != null) {
-			panel.remove(hpanel);
-			hpanel = null;
-		}
-	}
+    void displayInPanel() {
+        tbl.clear();
+        int row = 0;
 
-	void displayInPanel() {
-		tbl.clear();
-		int row = 0;
+        tbl.setWidget(row, 0, HtmlMarkup.html("Simulator Type"));
+        tbl.setWidget(row, 1, HtmlMarkup.html(config.getActorType()));
 
-		tbl.setWidget(row, 0, HtmlMarkup.html("Simulator Type"));
-		tbl.setWidget(row, 1, HtmlMarkup.html(config.getActorType()));
+        row++;
 
-		row++;
+        tbl.setWidget(row, 0, HtmlMarkup.html("Simulator ID"));
+        tbl.setWidget(row, 1, HtmlMarkup.html(config.getId().toString()));
 
-		tbl.setWidget(row, 0, HtmlMarkup.html("Simulator ID"));
-		tbl.setWidget(row, 1, HtmlMarkup.html(config.getId().toString()));
+        row++;
 
-		row++;
+        for (SimulatorConfigElement ele : config.getElements()) {
+            if (ele.isString()) {
+                if (ele.isEditable()) {
+                    new ConfigEditBox(ele, tbl, row);
+                } else {
+                    new ConfigTextDisplayBox(ele, tbl, row);
+                }
+                row++;
+            } else if (ele.isBoolean()) {
+                new ConfigBooleanBox(ele, tbl, row);
+                row++;
+            }
 
-		tbl.setWidget(row, 0, HtmlMarkup.html("Expiration"));
-		tbl.setWidget(row, 1, HtmlMarkup.html(config.getExpiration().toString()));
+            // Selecting RGs for the IG
+            else if (SimulatorProperties.respondingGateways.equals(ele.name)) {
+                final SimulatorConfigElement configEle = ele;
+                HorizontalPanel rgBoxes = new HorizontalPanel();
+                final RGSelectionPresenter rgSelectionPresenter = new RGSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), rgBoxes);
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 1, rgBoxes);
+                saveButton.addClickHandler(
+                        new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                configEle.setValue(rgSelectionPresenter.getSelected());
+                                config.updateDocTypeSelection();
+                                saveSimConfig();
+                            }
+                        }
+                );
+                row++;
+            }
 
-		row++;
+            // Should the RG return an error instead of content?
+            else if (SimulatorProperties.errors.equals(ele.name)) {
+                final SimulatorConfigElement configEle = ele;
+                HorizontalPanel erBoxes = new HorizontalPanel();
+                final ErrorSelectionPresenter erSelectionPresenter = new ErrorSelectionPresenter(simulatorControlTab.toolkitService, TransactionType.XC_QUERY.getName(), configEle.asList(), erBoxes);
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 1, erBoxes);
+                saveButton.addClickHandler(
+                        new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                configEle.setValue(erSelectionPresenter.getSelected());
+                                config.updateDocTypeSelection();
+                                saveSimConfig();
+                            }
+                        }
+                );
+                row++;
+            }
+        }
 
-		for (SimulatorConfigElement ele : config.getElements()) {
-			if (ele.isString()) {
-				if (ele.isEditable()) {
-					new ConfigEditBox(ele, tbl, row);
-				} else {
-					new ConfigTextDisplayBox(ele, tbl, row);
-				}
-				row++;
-			} else if (ele.isBoolean()) {
-				new ConfigBooleanBox(ele, tbl, row);
-				row++;
-			}
-		}
+        hpanel = new HorizontalPanel();
 
-		// display document types if configured
-		if (config.getValidationContext() != null) {
-			CcdaTypeSelection cts = new CcdaTypeSelection(Xdstools2.tkProps(), config.getValidationContext());
-			config.setDocTypeSelector(cts);
-			VerticalPanel ccdaSelection = new VerticalPanel();
-			cts.addCcdaTypesRadioGroup(ccdaSelection, null, "Expected CCDA Type for XDR content", true);
-			tbl.setWidget(row, 1, ccdaSelection);
-		}
+        panel.add(hpanel);
+        hpanel.add(tbl);
 
-		if (config.areRemoteSitesNecessary()) {
-			tbl.setWidget(row, 0, HtmlMarkup.html(config.getRemoteSitesLabel()));
-			HorizontalPanel boxes = new HorizontalPanel();
-			tbl.setWidget(row, 1, boxes);
+        hpanel.add(saveButton);
+        hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+        panel.add(HtmlMarkup.html("<br />"));
 
-			new RemoteSiteLoader(simulatorControlTab, config, boxes);
+        saveButton.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        saveSimConfig();
+                    }
+                }
+        );
 
-		}
+    }
 
-		hpanel = new HorizontalPanel();
+    void saveSimConfig() {
+        simulatorControlTab.toolkitService.putSimConfig(config, new AsyncCallback<String>() {
 
-		panel.add(hpanel);
-		hpanel.add(tbl);
+            public void onFailure(Throwable caught) {
+                new PopupMessage("saveSimConfig:" + caught.getMessage());
+            }
 
-		Button saveButton = new Button("Save");
-		saveButton.addClickHandler(new SaveButtonClickHandler(simulatorControlTab, config, testSession));
-		hpanel.add(saveButton);
-
-		hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
-
-
-//		Button deleteButton = new Button("Delete");
-//		deleteButton.addClickHandler(new DeleteButtonClickHandler(simulatorControlTab, config));
-//		hpanel.add(deleteButton);
-
-		panel.add(HtmlMarkup.html("<br />"));
-	}
-
-
-
-
-
+            public void onSuccess(String result) {
+                // reload simulators to getRetrievedDocumentsModel updates
+                new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
+            }
+        });
+    }
 
 }

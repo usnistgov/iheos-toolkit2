@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><tag0:PRPA_IN201305UV02 xmlns:tag0="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ITSVersion="XML_1.0" xsi:schemaLocation="urn:hl7-org:v3  ../PerformanceTest/xsd/NE2008/multicacheschemas/PRPA_IN201305UV02.xsd">
+  <tag0:id extension="35423" root="1.2.840.114350.1.13.0.1.7.1.1"/>
+  <tag0:creationTime value="20070428150301"/>
+  <tag0:interactionId extension="PRPA_IN201305UV02" root="2.16.840.1.113883.1.6"/>
+  <tag0:processingCode code="T"/>
+  <tag0:processingModeCode code="T"/>
+  <tag0:acceptAckCode code="NE"/>
+  <tag0:receiver typeCode="RCV">
+    <tag0:device determinerCode="INSTANCE" classCode="DEV">
+      <tag0:id root="2.16.840.1.113883.3.72.6.5.100.155.1"/>
+      <tag0:asAgent classCode="AGNT">
+        <tag0:representedOrganization determinerCode="INSTANCE" classCode="ORG">
+          <tag0:id root="2.16.840.1.113883.3.72.6.1"/>
+        </tag0:representedOrganization>
+      </tag0:asAgent>
+    </tag0:device>
+  </tag0:receiver>
+  <tag0:sender typeCode="SND">
+    <tag0:device determinerCode="INSTANCE" classCode="DEV">
+      <tag0:id root="1.2.840.114350.1.13.99998.8735"/>
+      <tag0:asAgent classCode="AGNT">
+        <tag0:representedOrganization determinerCode="INSTANCE" classCode="ORG">
+          <tag0:id root="1.2.840.114350.1.13.99998"/>
+        </tag0:representedOrganization>
+      </tag0:asAgent>
+    </tag0:device>
+  </tag0:sender>
+  <tag0:controlActProcess classCode="CACT" moodCode="EVN">
+    <tag0:code codeSystem="2.16.840.1.113883.1.6" code="PRPA_TE201305UV02"/>
+    <tag0:queryByParameter>
+      <tag0:queryId extension="3809840989" root="1.2.840.114350.1.13.28.1.18.5.999"/>
+      <tag0:statusCode code="new"/>
+      <tag0:responseModalityCode code="R"/>
+      <tag0:responsePriorityCode code="I"/>
+      <tag0:parameterList>
+        <tag0:livingSubjectAdministrativeGender>
+          <tag0:value code="M"/>
+          <tag0:semanticsText representation="TXT">LivingSubject.administrativeGender</tag0:semanticsText>
+        </tag0:livingSubjectAdministrativeGender>
+        <tag0:livingSubjectBirthTime>
+          <tag0:value value="19849711"/>
+          <tag0:semanticsText>LivingSubject.birthTime</tag0:semanticsText>
+        </tag0:livingSubjectBirthTime>
+        <tag0:livingSubjectName>
+          <tag0:value>
+            <tag0:given partType="GIV">Chip</tag0:given>
+            <tag0:family partType="FAM">Moore</tag0:family>
+          </tag0:value>
+          <tag0:semanticsText representation="TXT">LivingSubject.name</tag0:semanticsText>
+        </tag0:livingSubjectName>
+      </tag0:parameterList>
+    </tag0:queryByParameter>
+  </tag0:controlActProcess>
+</tag0:PRPA_IN201305UV02>

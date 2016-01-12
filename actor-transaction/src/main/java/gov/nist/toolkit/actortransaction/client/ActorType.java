@@ -22,7 +22,7 @@ public enum ActorType implements IsSerializable, Serializable {
 	),
     REGISTRY(
             "Document Registry",
-            Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
+            Arrays.asList("DOC_REGISTRY", "registryb", "initialize_for_stored_query"),
             "reg",
             "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
             Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
@@ -41,7 +41,7 @@ public enum ActorType implements IsSerializable, Serializable {
 //				),
     REPOSITORY(
             "Document Repository",
-			Arrays.asList("DOC_REPOSITORY"),
+			Arrays.asList("DOC_REPOSITORY", "repositoryb"),
             "rep",
             "gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator",
 			Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
@@ -88,7 +88,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "Responding Gateway",
 			Arrays.asList("RESP_GATEWAY"),
             "rg",
-            "gov.nist.toolkit.simulators.sim.rg.RGActorSimulator",
+            "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
 			Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_PATIENT_DISCOVERY),
             true,
             null
@@ -100,6 +100,15 @@ public enum ActorType implements IsSerializable, Serializable {
             "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
 			Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
+            null
+	),
+    INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
+            "Initialize for Stored Query",
+            new ArrayList<String>(),
+            "initialize_for_stored_query",
+            null,
+            new ArrayList<TransactionType>(),
+            false,
             null
 	)
     ;

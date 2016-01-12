@@ -183,10 +183,13 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>gov.nist.toolkit</param-value>
         </init-param>
-        <init-param>  <!-- returns debug info in X-JERSEY-* headers -->
-            <param-name>jersey.config.server.tracing.type</param-name>
-            <param-value>ALL</param-value>
-        </init-param>
+        <!--This can be too much for Jetty, will return error-->
+        <!--  header full: java.lang.RuntimeException: Header>6144  -->
+        <!-- returns debug info in X-JERSEY-* headers -->
+        <!--<init-param> -->
+            <!--<param-name>jersey.config.server.tracing.type</param-name>-->
+            <!--<param-value>ALL</param-value>-->
+        <!--</init-param>-->
         <init-param>
             <param-name>jersey.config.server.tracing.threshold</param-name>
             <param-value>VERBOSE</param-value>

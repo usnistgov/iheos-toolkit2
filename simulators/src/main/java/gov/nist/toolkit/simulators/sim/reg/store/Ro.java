@@ -1,8 +1,16 @@
 package gov.nist.toolkit.simulators.sim.reg.store;
 
 
+import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Ro  implements Serializable  {
 	
@@ -29,6 +37,14 @@ public class Ro  implements Serializable  {
 	}
 
 	public void setFile(String file) { pathToMetadata = file; }
+
+    public String getFullMetadataAsString() throws IOException {
+        return Io.stringFromFile(getFile());
+    }
+
+    public OMElement getFullMetadata() throws XdsInternalException {
+        return Util.parse_xml(getFile());
+    }
 	
 	public boolean metadataExists() {
 		File f = getFile();
@@ -52,4 +68,10 @@ public class Ro  implements Serializable  {
 	}
 
 	public String toString() { return id; }
+
+    static public List<String> getIds(List<Ro> ros) {
+        List<String> ids = new ArrayList<>();
+        for (Ro r : ros) ids.add(r.getId());
+        return ids;
+    }
 }

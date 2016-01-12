@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11983/submit_no_doc</Test>
+  <TestStep id="doc_missing">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorMessage>XDSMissingDocument</ExpectedErrorMessage>
+    <ProvideAndRegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </ProvideAndRegisterTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12326/add_to_folder</Test>
+  <TestStep id="add">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <UseReport reportName="folid" section="create_folder" step="submit_fol" useAs="$Folder$"/>
+      <UseReport reportName="docid" section="create_folder" step="submit_fol" useAs="$Document$"/>
+      <MetadataFile>metadata.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

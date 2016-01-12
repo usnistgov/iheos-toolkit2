@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>12368/fol_objectref</Test>
+  <Rule>XDSResultNotSinglePatient rule</Rule>
+  <TestStep id="leafclass">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolders</SQ>
+      <Assertion>Test data from 12346 and 12344 have different patient ids - should not generate error
+            since only ObjectRefs are returned</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/doc_w_fol" id="Folder" symbol="$uid1$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <UseId testdir="../../12374" id="Folder" symbol="$uid2$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <ObjectRefs count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

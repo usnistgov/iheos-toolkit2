@@ -55,8 +55,8 @@ public class TestSpecTest {
 //			TestSpec ts = new TestSpec(testKitDir, "11733");
 //			List<File> testplans = ts.getTestPlans();
 //			assert testplans.size() == 2;
-//			assert "/Users/bill/dev/testkit/tests/11733/submit/testplan.xml".equals(testplans.get(0).toString());
-//			assert "/Users/bill/dev/testkit/tests/11733/eval/testplan.xml".equals(testplans.get(1).toString());
+//			assert "/Users/bill/dev/testkit/tests/11733/submit/testplan.xml".equals(testplans.getRetrievedDocumentsModel(0).toString());
+//			assert "/Users/bill/dev/testkit/tests/11733/eval/testplan.xml".equals(testplans.getRetrievedDocumentsModel(1).toString());
 //		} catch (Exception e) {
 //			System.out.println(ExceptionUtil.exception_details(e));
 //			assert false;
@@ -87,7 +87,7 @@ public class TestSpecTest {
 //			TestSpec ts = new TestSpec(testKitDir, "11801");
 //			List<File> testplans = ts.getTestPlans();
 //			assert testplans.size() == 1;
-//			assert "/Users/bill/dev/testkit/tests/11801/testplan.xml".equals(testplans.get(0).toString());
+//			assert "/Users/bill/dev/testkit/tests/11801/testplan.xml".equals(testplans.getRetrievedDocumentsModel(0).toString());
 //		} catch (Exception e) {
 //			System.out.println(ExceptionUtil.exception_details(e));
 //			assert false;

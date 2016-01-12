@@ -82,7 +82,7 @@ class ActorTransactionFactory implements Serializable,IsSerializable {
 		}
 	}
 	
-	// get transaction name used in actors.xml file (site definition)
+	// getRetrievedDocumentsModel transaction name used in actors.xml file (site definition)
 	static public String getSiteTransactionName(TransactionType transaction) {
 		switch (transaction) {
 		case PNR:

@@ -25,7 +25,7 @@ public class DocumentCollection implements Serializable {
 	public void delete(String uid) {
 		StoredDocument toDelete = null;
 		for (StoredDocument sd : documents) {
-			if (sd.uid.equals(uid)) {
+			if (sd.getUid().equals(uid)) {
 				toDelete = sd;
 				break;
 			}
@@ -40,14 +40,14 @@ public class DocumentCollection implements Serializable {
 		if (uid == null)
 			return null;
 		for (StoredDocument sd : documents) {
-			if (uid.equals(sd.uid))
+			if (uid.equals(sd.getUid()))
 				return sd;
 		}
 		return null;
 	}
 	
 	public void init() {
-		documents = new ArrayList<StoredDocument>();
+		documents = new ArrayList<>();
 	}
 
 	public int size() { return documents.size(); }

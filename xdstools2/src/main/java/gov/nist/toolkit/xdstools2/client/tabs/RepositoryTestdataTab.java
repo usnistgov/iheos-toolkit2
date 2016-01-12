@@ -95,7 +95,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 			if (!verifySiteProvided()) return;
 			if (!verifyPidProvided()) return;
 
-			// get selected data set
+			// getRetrievedDocumentsModel selected data set
 			int selected = testlistBox.getSelectedIndex();
 			if (selected < 1 || selected >= testlistBox.getItemCount()) {
 				new PopupMessage("You must select Test Data Set first");

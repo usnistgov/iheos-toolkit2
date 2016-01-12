@@ -150,18 +150,20 @@ public class RegistryActorFactory extends AbstractActorFactory {
 				true, 
 				isAsync));
 
-		site.addTransaction(new TransactionBean( // Optional ITI-61
-				TransactionType.REGISTER_ODDE.getCode(),
-				RepositoryType.NONE,
-				asc.get(SimulatorProperties.registerOddeEndpoint).asString(),
-				false,
-				isAsync));
-		site.addTransaction(new TransactionBean(
-				TransactionType.REGISTER_ODDE.getCode(),
-				RepositoryType.NONE,
-				asc.get(SimulatorProperties.registerOddeTlsEndpoint).asString(),
-				true,
-				isAsync));
+        if (asc.get(SimulatorProperties.registerOddeEndpoint) != null) {
+            site.addTransaction(new TransactionBean( // Optional ITI-61
+                    TransactionType.REGISTER_ODDE.getCode(),
+                    RepositoryType.NONE,
+                    asc.get(SimulatorProperties.registerOddeEndpoint).asString(),
+                    false,
+                    isAsync));
+            site.addTransaction(new TransactionBean(
+                    TransactionType.REGISTER_ODDE.getCode(),
+                    RepositoryType.NONE,
+                    asc.get(SimulatorProperties.registerOddeTlsEndpoint).asString(),
+                    true,
+                    isAsync));
+        }
 
 		site.addTransaction(new TransactionBean(
 				TransactionType.STORED_QUERY.getCode(),

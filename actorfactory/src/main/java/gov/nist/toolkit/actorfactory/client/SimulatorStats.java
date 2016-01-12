@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by bill on 9/15/15.
+ *
  */
 public class SimulatorStats implements Serializable, IsSerializable {
     public SimId simId;
@@ -32,6 +32,12 @@ public class SimulatorStats implements Serializable, IsSerializable {
         displayOrder.add(FOLDER_COUNT);
         displayOrder.add(DOCUMENT_COUNT);
         displayOrder.add(PATIENT_ID_COUNT);
+    }
+
+    public SimulatorStats() {}
+
+    public SimulatorStats(SimId simId) {
+        this.simId = simId;
     }
 
     public void put(String name, String value) {

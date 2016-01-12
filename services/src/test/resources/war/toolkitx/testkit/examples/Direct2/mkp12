@@ -1,0 +1,3 @@
+#!/bin/sh
+
+keytool -importkeystore -srcstorepass changeit -deststorepass changeit -srckeystore keystore.jks -srcstoretype JKS -deststoretype PKCS12 -destkeystore keystore.p12

@@ -6,14 +6,19 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.engine.*;
+import gov.nist.toolkit.testengine.engine.ResultPersistence;
+import gov.nist.toolkit.testengine.engine.RetrieveB;
+import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
+import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.LogMap;
 import gov.nist.toolkit.testenginelogging.TestDetails;
@@ -29,11 +34,11 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
+
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import gov.nist.toolkit.results.shared.Test;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -48,7 +53,8 @@ public class XdsTestServiceManager extends CommonService {
 	static boolean allCiphersEnabled = false;
 
 	public XdsTestServiceManager(Session session)  {
-		this.session = session;
+        this.session = session;
+        logger.info("XdsTestServiceManager: using session " + session.getId());
 	}
 
 	public static Logger getLogger() {
@@ -371,7 +377,7 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public CodesResult getCodesConfiguration() {
-		logger.debug(session.id() + ": " + "getCodesConfiguration");
+		logger.debug(session.id() + ": " + "currentCodesConfiguration");
 
 		CodesResult codesResult = new CodesResult();
 
@@ -474,6 +480,8 @@ public class XdsTestServiceManager extends CommonService {
 						stepResult.status = tsLog.getStatus();
 						stepPass = stepResult.status;
 
+                        logger.info("test section " + section + " has status " + stepPass);
+
 						// a transaction can have metadata in the request OR
 						// the response
 						// look in both places and save
@@ -528,14 +536,14 @@ public class XdsTestServiceManager extends CommonService {
                                                     "RetrieveDocumentSetResponse");
 								if (rdsr != null) {
 									RetrieveB rb = new RetrieveB();
-									Map<String, RetInfo> resMap = rb
-											.parse_rep_response(response);
+									Map<String, RetrievedDocumentModel> resMap = rb
+											.parse_rep_response(response).getMap();
 									for (String docUid : resMap.keySet()) {
-										RetInfo ri = resMap.get(docUid);
+										RetrievedDocumentModel ri = resMap.get(docUid);
 										Document doc = new Document();
-										doc.uid = ri.getDoc_uid();
+										doc.uid = ri.getDocUid();
 										doc.repositoryUniqueId = ri
-												.getRep_uid();
+												.getRepUid();
 										doc.mimeType = ri.getContent_type();
 										doc.homeCommunityId = ri.getHome();
 										doc.cacheURL = getRepositoryCacheWebPrefix()

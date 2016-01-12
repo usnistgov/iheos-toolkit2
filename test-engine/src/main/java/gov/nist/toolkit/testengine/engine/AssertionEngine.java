@@ -68,7 +68,7 @@ public class AssertionEngine {
 
 			OMElement file_root = null;
 			if (ref.file.equals("THIS")) {
-				// output holds output of this step.  Here we get the output of
+				// output holds output of this step.  Here we getRetrievedDocumentsModel the output of
 				// the entire test plan (entire contents of log.xml)
 				// because some test scripts make reference to previous steps
 				file_root = (OMElement)((OMElement) output.getParent()).getParent();

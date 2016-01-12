@@ -53,7 +53,7 @@ public class SiteSelectionWidget extends Composite   {
 		if (this.couplings == null)
 			this.couplings = new CoupledTransactions();
 		
-		reloadTransactionOfferings();  // get transactionOfferings from server
+		reloadTransactionOfferings();  // getRetrievedDocumentsModel transactionOfferings from server
 		
 		panel.add(selectGrid);
 		panel.add(siteContainer);

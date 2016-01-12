@@ -1,50 +1,53 @@
 	package gov.nist.toolkit.xdstools2.server;
 
-	import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-	import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-	import gov.nist.toolkit.actorfactory.SiteServiceManager;
-	import gov.nist.toolkit.actorfactory.client.*;
-	import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-	import gov.nist.toolkit.installation.ExternalCacheManager;
-	import gov.nist.toolkit.installation.Installation;
-	import gov.nist.toolkit.installation.PropertyServiceManager;
-	import gov.nist.toolkit.registrymetadata.client.AnyIds;
-	import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-	import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-	import gov.nist.toolkit.registrymetadata.client.Uids;
-	import gov.nist.toolkit.results.client.*;
-	import gov.nist.toolkit.results.shared.Test;
-	import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-	import gov.nist.toolkit.services.shared.SimulatorServiceManager;
-	import gov.nist.toolkit.session.server.Session;
-	import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
-	import gov.nist.toolkit.sitemanagement.client.Site;
-	import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-	import gov.nist.toolkit.tk.TkLoader;
-	import gov.nist.toolkit.tk.client.TkProps;
-	import gov.nist.toolkit.valregmsg.message.SchemaValidation;
-	import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
-	import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-	import gov.nist.toolkit.valsupport.client.ValidationContext;
-    import gov.nist.toolkit.xdsexception.ExceptionUtil;
-	import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
-	import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-	import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-	import gov.nist.toolkit.xdstools2.client.ToolkitService;
-	import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-	import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
-	import org.apache.log4j.Logger;
+    import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.ProfileErrorCodeDbLoader;
+import gov.nist.toolkit.actortransaction.client.Severity;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.installation.ExternalCacheManager;
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.shared.SimulatorServiceManager;
+import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.tk.TkLoader;
+import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.valregmsg.message.SchemaValidation;
+import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
+import gov.nist.toolkit.xdstools2.client.RegistryStatus;
+import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
+import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
+import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+import org.apache.log4j.Logger;
 
-	import javax.servlet.ServletContext;
-	import javax.servlet.http.HttpServletRequest;
-	import javax.servlet.http.HttpSession;
-	import javax.xml.parsers.FactoryConfigurationError;
-	import java.io.File;
-	import java.io.IOException;
-	import java.util.Collection;
-	import java.util.Date;
-	import java.util.List;
-	import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -64,7 +67,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public GazelleServiceManager gazelleServiceManager;
 
 	// Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
-	// a reference to an instance of this class. This is necessary to get around a circular
+	// a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
 	// reference in the build tree
 	
 	public ToolkitServiceImpl() {
@@ -74,7 +77,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 				MessageValidatorFactoryFactory.messageValidatorFactory2I = new MessageValidatorFactory("a");
 			}
 	}
-	
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Site Services
@@ -303,6 +306,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
 		return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
 	}
+    public List<String> getProfileErrorCodeRefs(String transactionName, Severity severity) throws Exception {
+        List<String> refs = ProfileErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(transactionName), severity);
+        logger.info(": getProfileErrorCodeRefs(" + transactionName + ") => " + refs.size() + " codes");
+        return refs;
+    }
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -328,8 +336,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
             if (!eCacheFile.canWrite())
                 throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
 
-            File warhome = Installation.installation().warHome();
-            new PropertyServiceManager(warhome).getPropertyManager().update(props);
+//            File warhome = Installation.installation().warHome();
+            new PropertyServiceManager().getPropertyManager().update(props);
             reloadPropertyFile();
 //		Installation.installation().externalCache(eCacheFile);
             ExternalCacheManager.reinitialize(eCacheFile);
