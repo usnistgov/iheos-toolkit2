@@ -194,7 +194,7 @@ public class TestStepLogContent  implements Serializable {
 			}
 		} catch (Exception e) {}
 		errors.addAll(getAssertionErrors());
-        if (errors.size() > 0) success = false;
+//        if (errors.size() > 0) success = false;
 	}
 
 
