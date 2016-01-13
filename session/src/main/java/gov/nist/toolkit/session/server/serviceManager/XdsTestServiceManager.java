@@ -300,7 +300,7 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	/**
-	 * Return the contents of all the log.xml files found under external_cache/TestLogCache/<sessionName>.  If there
+	 * Return the contents of all the log.xml files found under external_cache/TestLogCache/&lt;sessionName&gt;.  If there
 	 * are multiple sections to the test then load them all. Each element of the
 	 * returned list (Result object) represents the output of all steps in a single section of the test.
 	 * @param sessionName - not the servlet session but instead the dir name

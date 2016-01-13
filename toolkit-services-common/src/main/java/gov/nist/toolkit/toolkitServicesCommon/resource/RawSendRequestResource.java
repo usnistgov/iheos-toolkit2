@@ -1,4 +1,8 @@
-package gov.nist.toolkit.toolkitServicesCommon;
+package gov.nist.toolkit.toolkitServicesCommon.resource;
+
+import gov.nist.toolkit.toolkitServicesCommon.Document;
+import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
+import gov.nist.toolkit.toolkitServicesCommon.SimId;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.*;
@@ -11,8 +15,8 @@ public class RawSendRequestResource extends SimIdResource implements RawSendRequ
     String transactionName;
     boolean tls = false;
     String metadata;
-    List<String> extraHeaders = new ArrayList<>();
-    Map<String, Document> documents = new HashMap<>();
+    List<String> extraHeaders = new ArrayList<String>();
+    Map<String, Document> documents = new HashMap<String, Document>();
 
     public RawSendRequestResource() {}
 

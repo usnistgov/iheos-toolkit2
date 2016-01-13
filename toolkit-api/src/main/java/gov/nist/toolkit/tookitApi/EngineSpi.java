@@ -2,6 +2,10 @@ package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.actortransaction.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.*;
+import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;

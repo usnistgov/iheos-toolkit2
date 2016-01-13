@@ -4,55 +4,30 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
-import gov.nist.toolkit.saml.bean.AssertionType;
-import gov.nist.toolkit.saml.bean.CeType;
-import gov.nist.toolkit.saml.bean.SamlAuthnStatementType;
-import gov.nist.toolkit.saml.bean.SamlAuthzDecisionStatementEvidenceAssertionType;
-import gov.nist.toolkit.saml.bean.SamlAuthzDecisionStatementEvidenceConditionsType;
-import gov.nist.toolkit.saml.bean.SamlAuthzDecisionStatementEvidenceType;
-import gov.nist.toolkit.saml.bean.SamlAuthzDecisionStatementType;
-import gov.nist.toolkit.saml.bean.SamlUtil;
+import gov.nist.toolkit.saml.bean.*;
 import gov.nist.toolkit.saml.security.XMLSignatureValidatorUtil;
 import gov.nist.toolkit.saml.subject.HolderOfKeySubjectConfirmationValidator;
-import gov.nist.toolkit.saml.util.CodeBean;
-import gov.nist.toolkit.saml.util.CodeTypeBean;
-import gov.nist.toolkit.saml.util.CodesUtil;
-import gov.nist.toolkit.saml.util.SamlConstants;
-import gov.nist.toolkit.saml.util.SamlTokenExtractor;
-import gov.nist.toolkit.saml.util.TimeStamp;
-import gov.nist.toolkit.saml.util.TimeStampValidate;
+import gov.nist.toolkit.saml.util.*;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-import javax.xml.validation.Schema;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.util.XMLUtils;
 import org.joda.time.DateTime;
 import org.opensaml.common.SAMLVersion;
-import org.opensaml.saml2.core.Assertion;
-import org.opensaml.saml2.core.Attribute;
-import org.opensaml.saml2.core.AttributeStatement;
-import org.opensaml.saml2.core.Audience;
-import org.opensaml.saml2.core.AudienceRestriction;
-import org.opensaml.saml2.core.AuthnContext;
-import org.opensaml.saml2.core.AuthnContextClassRef;
-import org.opensaml.saml2.core.AuthnStatement;
-import org.opensaml.saml2.core.SubjectConfirmation;
-import org.opensaml.saml2.core.SubjectConfirmationData;
+import org.opensaml.saml2.core.*;
 import org.opensaml.xml.validation.ValidationException;
-
 import sun.net.util.IPAddressUtil;
+
+import javax.xml.namespace.QName;
+import javax.xml.validation.Schema;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class SAMLMessageValidator extends AbstractMessageValidator {
@@ -805,7 +780,7 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 
 	/**
 	 * Check whether an assertion contains an expired sessionIndex within a
-	 * AuthnStatement (i.e. AuthnStatement@SessionNotOnOrAfter >= now)
+	 * AuthnStatement (i.e. AuthnStatement@SessionNotOnOrAfter &lt;= now)
 	 * 
 	 * @return <code>true</code>, if the assertion has expired. <code>false</code>
 	 *         otherwise.
@@ -830,7 +805,7 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 	 * Return the value of the /AuthnStatement/AuthnContext/AuthnContextClassRef
 	 * element in an assertion
 	 * 
-	 * @return The value. <code>null</code>, if the assertion does not
+	 * @return The value. null, if the assertion does not
 	 *         contain the element.
 	 */
 	public String getAuthnContextClassRef(Assertion assertion) {
@@ -852,7 +827,6 @@ public class SAMLMessageValidator extends AbstractMessageValidator {
 	}
 	/**
      * Validate whether a SAML assertion contains the expected elements
-     * @param validator The validator to use forassertion validation. Can be <code>null</code>.
      * @param spEntityID The entityID of the service provider
      * @param spAssertionConsumerURL The assertion consumer URL of the service provider
 	 * @throws Exception 

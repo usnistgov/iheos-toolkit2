@@ -355,7 +355,7 @@ public abstract class AbstractActorFactory {
 //    }
 
 	/**
-	 * Load simulators - ignore sims not found (length(simlist) < length(idlist))
+	 * Load simulators - ignore sims not found (length(simlist) &lt; length(idlist))
 	 * @param ids
 	 * @return
 	 * @throws IOException

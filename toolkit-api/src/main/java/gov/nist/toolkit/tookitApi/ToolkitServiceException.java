@@ -1,6 +1,6 @@
 package gov.nist.toolkit.tookitApi;
 
-import gov.nist.toolkit.toolkitServicesCommon.OperationResultResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
 
 import javax.ws.rs.core.Response;
 

@@ -2,7 +2,7 @@ package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
-import gov.nist.toolkit.toolkitServicesCommon.RefListResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 
 import javax.ws.rs.core.Response;

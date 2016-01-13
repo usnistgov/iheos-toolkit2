@@ -1,7 +1,7 @@
 package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.toolkitServicesCommon.LeafClassList;
-import gov.nist.toolkit.toolkitServicesCommon.LeafClassListResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassListResource;
 
 import javax.ws.rs.core.Response;
 

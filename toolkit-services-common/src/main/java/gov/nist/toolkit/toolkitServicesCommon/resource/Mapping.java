@@ -1,4 +1,4 @@
-package gov.nist.toolkit.toolkitServicesCommon;
+package gov.nist.toolkit.toolkitServicesCommon.resource;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ class Mapping {
     }
 
     static private List<String> decodeList(String value) {
-        List<String> lst = new ArrayList<>();
+        List<String> lst = new ArrayList<String>();
         value = value.trim();
         if (value.charAt(0) != '[' || value.charAt(value.length()-1) != ']')
             return lst;

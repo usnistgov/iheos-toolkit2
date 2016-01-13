@@ -2,7 +2,7 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.toolkitServicesCommon.OperationResultResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
 import gov.nist.toolkit.xdsexception.*;
 import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;

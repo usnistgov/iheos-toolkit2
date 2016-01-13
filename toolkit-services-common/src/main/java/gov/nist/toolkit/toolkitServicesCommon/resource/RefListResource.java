@@ -1,4 +1,6 @@
-package gov.nist.toolkit.toolkitServicesCommon;
+package gov.nist.toolkit.toolkitServicesCommon.resource;
+
+import gov.nist.toolkit.toolkitServicesCommon.RefList;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.List;
  */
 @XmlRootElement
 public class RefListResource implements RefList {
-    List<String> refs = new ArrayList<>();
+    List<String> refs = new ArrayList<String>();
 
     public List<String> getRefs() {
         return refs;
