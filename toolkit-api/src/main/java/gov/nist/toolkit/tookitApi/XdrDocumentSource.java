@@ -1,7 +1,7 @@
 package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
-import gov.nist.toolkit.toolkitServicesCommon.RawSendRequestResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse;
 
 /**

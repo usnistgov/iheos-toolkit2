@@ -1,4 +1,4 @@
-package gov.nist.toolkit.toolkitServicesCommon;
+package gov.nist.toolkit.toolkitServicesCommon.resource;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;

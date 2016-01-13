@@ -3,7 +3,6 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
-import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
@@ -30,7 +29,6 @@ public class StoredQuerySupport {
 	 * Constructor
 	 * @param response
 	 * @param log_message
-	 * @throws LoggerException 
 	 */
 	public StoredQuerySupport(ErrorRecorder response, LogMessage log_message)  {
 		this.er = response;

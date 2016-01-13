@@ -8,20 +8,14 @@ package gov.nist.toolkit.utilities.xsl;
 
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * A class for handling XSL transforms.
@@ -144,7 +138,7 @@ public class Transform {
 	/**
 	 * Set the transform by providing a String representing a URI.
 	 * @param systemId The URI location of a transform.
-	 * @throws java.lang.Exception Thrown if there is a problem accessing the URI.
+	 * @throws TransformerConfigurationException Thrown if there is a problem accessing the URI.
 	 */
 	public void setTransform(String systemId) throws TransformerConfigurationException {
 		System.out.println("Transform:setTransform: " + systemId);
@@ -185,7 +179,7 @@ public class Transform {
 
 	/**
 	 * Run the transform.
-	 * @throws java.lang.Exception Throws an exception if there is a problem using the input or output
+	 * @throws XdsInternalException Throws an exception if there is a problem using the input or output
 	 * sources.
 	 */
 	public void run() throws XdsInternalException {

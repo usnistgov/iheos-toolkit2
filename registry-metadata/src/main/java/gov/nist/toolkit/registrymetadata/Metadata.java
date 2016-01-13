@@ -314,6 +314,7 @@ public class Metadata {
 	 * Classification object can be top-level objects or nested inside the
 	 * objects they classify. Move all top-level classifications under the
 	 * objects they classify.
+     * @throws MetadataException
 	 */
 	public void embedClassifications() throws MetadataException {
 		for (OMElement classification : classifications) {
@@ -2768,7 +2769,7 @@ public class Metadata {
 	 * @param classification_schemes
 	 *            - list of UUIDs representing the classification schemes of
 	 *            interest
-	 * @return map from classification scheme UUID => code values where a code
+	 * @return map from classification scheme UUID - code values where a code
 	 *         value is code^^code_set.
 	 * @throws MetadataException
 	 */

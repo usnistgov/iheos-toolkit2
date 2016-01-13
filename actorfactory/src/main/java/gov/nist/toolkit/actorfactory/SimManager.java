@@ -174,7 +174,7 @@ public class SimManager {
 	}
 
 	/**
-	 * Return map from simName => simId
+	 * Return map from simName = simId
 	 * @return
 	 */
 	public Map<String, SimId> getNameMap() {

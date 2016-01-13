@@ -1,5 +1,8 @@
-package gov.nist.toolkit.toolkitServicesCommon;
+package gov.nist.toolkit.toolkitServicesCommon.resource;
 
+
+import gov.nist.toolkit.toolkitServicesCommon.SimId;
+import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

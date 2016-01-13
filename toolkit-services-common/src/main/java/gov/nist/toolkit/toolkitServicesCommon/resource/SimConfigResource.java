@@ -1,4 +1,6 @@
-package gov.nist.toolkit.toolkitServicesCommon;
+package gov.nist.toolkit.toolkitServicesCommon.resource;
+
+import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ import java.util.Set;
  */
 @XmlRootElement
 public class SimConfigResource extends SimIdResource implements SimConfig {
-     List<String> props = new ArrayList<>();
+     List<String> props = new ArrayList<String>();
 
     public SimConfigResource() {}
 
@@ -95,7 +97,7 @@ public class SimConfigResource extends SimIdResource implements SimConfig {
     }
 
     public Set<String> getPropertyNames() {
-        Set<String> names = new HashSet<>();
+        Set<String> names = new HashSet<String>();
         for (String s : props) {
             Mapping m = new Mapping(s);
             names.add(m.getKey());
