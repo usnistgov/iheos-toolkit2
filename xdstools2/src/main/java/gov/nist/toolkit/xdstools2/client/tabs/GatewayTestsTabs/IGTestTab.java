@@ -7,6 +7,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -18,6 +19,7 @@ import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
@@ -46,6 +48,7 @@ public class IGTestTab extends GenericQueryTab {
     List<String> assigningAuthorities = null;
     Pid patientId;
     List<SimulatorConfig> rgConfigs;
+    GenericQueryTab genericQueryTab;
 
     public IGTestTab() {
         super(new GetDocumentsSiteActorManager());
@@ -57,6 +60,7 @@ public class IGTestTab extends GenericQueryTab {
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         myContainer = container;
         topPanel = new VerticalPanel();
+        genericQueryTab = this;
 
         container.addTab(topPanel, eventName, select);
         addCloseButton(container,topPanel, null);
@@ -92,14 +96,23 @@ public class IGTestTab extends GenericQueryTab {
                 "</p>"
         ));
 
-        topPanel.add(new HTML("<h2>Build Test Environment</h2>" +
+        topPanel.add(new HTML(
+                "<hr />" +
+                "<h2>Build Test Environment</h2>" +
                 "<p>" +
-                "This will delete the contents of your current test session and initialize it." +
+                "This will delete the contents of your current test session and initialize it. " +
+                "Test Environment will create the necessary simulators to test your Initiating Gateway.  " +
+                "Demonstration Environment will also build an Initiating Gateway for " +
+                "demonstration and training purposes. Only one can be used." +
                 "</p>"
         ));
 
-        new BuildTestOrchestrationButton(topPanel, "Build Test Environment");
+        HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
+        topPanel.add(testEnvironmentsPanel);
 
+        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Test Environment", false);
+
+        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Demonstration Environment", true);
 
         // Query boilerplate
         ActorType act = ActorType.findActor(selectedActor);
@@ -141,15 +154,18 @@ public class IGTestTab extends GenericQueryTab {
     }
 
     class BuildTestOrchestrationButton extends ReportableButton {
-        BuildTestOrchestrationButton(VerticalPanel topPanel, String label) {
+        boolean includeIG;
+
+        BuildTestOrchestrationButton(Panel topPanel, String label, boolean includeIG) {
             super(topPanel, label);
+            this.includeIG = includeIG;
         }
 
         public void handleClick(ClickEvent event) {
             IgOrchestationManagerRequest request = new IgOrchestationManagerRequest();
             request.setUserName(getCurrentTestSession());
             request.setPatientId(patientId);
-            request.setIncludeLinkedIG(true);
+            request.setIncludeLinkedIG(includeIG);
             toolkitService.buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
                 @Override
                 public void onFailure(Throwable throwable) { handleError(throwable); }
@@ -163,7 +179,7 @@ public class IGTestTab extends GenericQueryTab {
 
                     rgConfigs = orchResponse.getSimulatorConfigs();
 
-                    panel().add(new HTML("<h3>Generated Test Environment</h3>"));
+                    panel().add(new HTML("<h2>Generated Environment</h2>"));
                     FlexTable table = new FlexTable();
                     panel().add(table);
                     int row = 0;
@@ -201,14 +217,29 @@ public class IGTestTab extends GenericQueryTab {
                     }
 
                     // generate log launcher buttons
-                    HorizontalPanel logLauncherButtons = new HorizontalPanel();
-                    for (SimulatorConfig config : rgConfigs) {
-                        Button button = new Button(config.getId().toString() + " Log");
-                        logLauncherButtons.add(button);
-                    }
+                    panel().add(buildLogLauncher(rgConfigs));
+
+                    genericQueryTab.reloadTransactionOfferings();
                 }
             });
         }
+    }
+
+    Panel buildLogLauncher(List<SimulatorConfig> simConfigs) {
+        HorizontalPanel panel = new HorizontalPanel();
+        for (SimulatorConfig config : simConfigs) {
+            final String simIdString = config.getId().toString();
+            Button button = new Button("Launch " + simIdString + " Log");
+            panel.add(button);
+            button.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent clickEvent) {
+                    SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
+                    viewTab.onTabLoad(myContainer, true, simIdString);
+                }
+            });
+        }
+        return panel;
     }
 
     class Runner implements ClickHandler {
@@ -243,7 +274,8 @@ public class IGTestTab extends GenericQueryTab {
             Map<String, String> parms = new HashMap<>();
             parms.put("$patientid$", pidTextBox.getValue().trim());
 
-            rigForRunning();
+            Panel runPanel = rigForRunning();
+            runPanel.add(buildLogLauncher(rgConfigs));
             toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
         }
 
@@ -370,7 +402,7 @@ public class IGTestTab extends GenericQueryTab {
         topPanel.add(selectSectionPanel);
 
         HTML selectSectionLabel = new HTML();
-        selectSectionLabel.setText("Select Section: ");
+        selectSectionLabel.setText("Select test section to run: ");
         selectSectionPanel.add(selectSectionLabel);
 
         selectSectionPanel.add(testSelectionContext.selectSectionList);
@@ -381,18 +413,18 @@ public class IGTestTab extends GenericQueryTab {
     }
 
     VerticalPanel buildTestSelector(VerticalPanel topPanel, TestSelectionContext testSelectionContext) {
-//        ListBox selectTestList = new ListBox();
-//        HTML documentation = new HTML();
-        HorizontalPanel hPanel = new HorizontalPanel();
+        FlexTable table = new FlexTable();
+        topPanel.add(table);
 
-        topPanel.add(new HTML("<h2>Select Test to run</h2>"));
-        topPanel.add(hPanel);
+        table.setWidget(0, 0, new HTML("<h2>Select Test to run</h2>"));
         VerticalPanel selectionPanel = new VerticalPanel();
-        hPanel.add(selectionPanel);
+        table.setWidget(1, 0, selectionPanel);
+
+        table.setWidget(0, 1, new HTML("<h3>Test Documentation</h3>"));
 
         SimplePanel documentationPanel = new ScrollPanel();
         documentationPanel.add(testSelectionContext.documentation);
-        hPanel.add(documentationPanel);
+        table.setWidget(1, 1, documentationPanel);
 
         documentationPanel.setHeight("450px");
 
@@ -471,9 +503,9 @@ public class IGTestTab extends GenericQueryTab {
 
 
 
-    String htmlize(String in) {
-        return "<br />" +
-//                        "<b>" + header + "</b><br /><br />" +
+    String htmlize(String header, String in) {
+        return
+                        "<h2>" + header + "</h2>" +
 
                         in.replaceAll("<", "&lt;")
                                 .replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
@@ -481,6 +513,13 @@ public class IGTestTab extends GenericQueryTab {
                                 .replaceAll("\n", "<br />");
     }
 
+    String htmlize(String in) {
+        return
+                        in.replaceAll("<", "&lt;")
+                                .replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
+                                .replaceAll(" ", "&nbsp;")
+                                .replaceAll("\n", "<br />");
+    }
 
     public String getWindowShortName() {
         return "igtests";

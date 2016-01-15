@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.widgets.buttons;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.ErrorHandler;
@@ -13,7 +14,7 @@ import gov.nist.toolkit.xdstools2.client.ErrorHandler;
 abstract public class ReportableButton implements ClickHandler {
     final VerticalPanel panel = new VerticalPanel();
 
-    public ReportableButton(VerticalPanel topPanel, String label) {
+    public ReportableButton(Panel topPanel, String label) {
         final Button button = new Button(label);
         panel.add(button);
         topPanel.add(panel);

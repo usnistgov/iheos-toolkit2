@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
@@ -47,6 +48,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	public boolean runEnabled = true;
 	ClickHandler runner;
 	String runButtonText = "Run";
+    HorizontalPanel runnerPanel = new HorizontalPanel();
 
 	public VerticalPanel resultPanel = new VerticalPanel();
     // if false then tool takes responsibliity for placing it
@@ -395,7 +397,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	// so it can be overloaded
 	public void onReload() {}
 
-	void reloadTransactionOfferings() {
+	public void reloadTransactionOfferings() {
 		try {
 			toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings> () {
 
@@ -528,12 +530,11 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	}
 
     public void addRunnerButtons(VerticalPanel panel) {
-        HorizontalPanel runnerButtons = new HorizontalPanel();
 //		commonParamGrid.setWidget(commonGridRow++, 1, runnerButtons);
-        panel.add(runnerButtons);
+        panel.add(runnerPanel);
         if (runEnabled) {
             setGoButton(new Button(runButtonText));
-            runnerButtons.add(getGoButton());
+            runnerPanel.add(getGoButton());
         }
 
         try {
@@ -543,14 +544,14 @@ public abstract class GenericQueryTab  extends TabbedWindow {
         if (enableInspectResults) {
             setInspectButton(new Button("Inspect Results"));
             getInspectButton().setEnabled(false);
-            runnerButtons.add(getInspectButton());
+            runnerPanel.add(getInspectButton());
         }
 
         if (getInspectButton() != null)
             getInspectButton().addClickHandler(new InspectorLauncher(me));
 
         resultsShortDescription.setHTML("");
-        runnerButtons.add(resultsShortDescription);
+        runnerPanel.add(resultsShortDescription);
     }
 
 	public void setRunButtonText(String label) {
@@ -628,11 +629,12 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return true;
 	}
 
-	protected void rigForRunning() {
+	protected Panel rigForRunning() {
 		resultPanel.clear();
 		// Where the bottom-of-screen listing from server goes
 		addStatusBox();
 		getGoButton().setEnabled(false);
 		getInspectButton().setEnabled(false);
+        return runnerPanel;
 	}
 }
