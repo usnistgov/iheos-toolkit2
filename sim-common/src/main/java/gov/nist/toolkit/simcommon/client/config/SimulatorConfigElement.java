@@ -102,6 +102,10 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 		buf.append(" transType=").append(transType);
 		if (valueType == ValueType.BOOLEAN)
 			buf.append(" boolean value=").append(booleanValue);
+        else if (valueType == ValueType.MULTI_SELECT_LIST)
+            buf.append(" multiSelectList=").append(listValue);
+        else if (valueType == ValueType.SINGLE_SELECT_LIST)
+            buf.append(" singleSelectList=").append(listValue);
 		else
 			buf.append(" string value=").append(stringValue);
 

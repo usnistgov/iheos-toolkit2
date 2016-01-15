@@ -21,7 +21,7 @@ class OrchestrationManager {
             // remove IG config
             if (request.includeLinkedIG)
                 allConfigs.remove(0)
-            return new IgOrchestrationResponse(allConfigs)
+            return new IgOrchestrationResponse(allConfigs, request.patientId)
         } catch (Exception e) {
             return RawResponseBuilder.build(e);
         }

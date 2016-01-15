@@ -1,9 +1,11 @@
 package gov.nist.toolkit.services.server.orchestration
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet
 import gov.nist.toolkit.actorfactory.SimDb
+import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.PidBuilder
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.services.server.ToolkitApi
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import spock.lang.Shared
 import spock.lang.Specification
 /**
@@ -33,6 +35,16 @@ class IgTestBuilderSpec extends Specification {
 
         then:
         configs
-        configs.size() == 1
+        configs.size() == 2
+
+        when:
+        def igConfig = configs.get(0)
+        println igConfig
+        SimulatorConfigElement rgs = igConfig.getConfigEle(SimulatorProperties.respondingGateways)
+        println 'LINKED RESPONDING GATEWAYS'
+        println rgs
+
+        then:
+        true
     }
 }

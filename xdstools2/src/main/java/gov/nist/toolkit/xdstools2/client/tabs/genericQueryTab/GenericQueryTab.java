@@ -49,6 +49,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	String runButtonText = "Run";
 
 	public VerticalPanel resultPanel = new VerticalPanel();
+    // if false then tool takes responsibliity for placing it
+    public boolean addResultsPanel = true;
 	public TabContainer myContainer;
 	CheckBox doTls = new CheckBox("TLS?");
 	ListBox samlListBox = new ListBox();
@@ -75,7 +77,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 
 	HTML statusBox = new HTML();
-	public TextBox pidTextBox;
+	public TextBox pidTextBox = new TextBox();
 
 
 	public GenericQueryTab(BaseSiteActorManager siteActorManager) {
@@ -230,7 +232,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			topPanel.add(mainConfigPanel);
 			topPanel.add(new HTML("<hr />"));
 		}
-		topPanel.add(resultPanel);
+        if (addResultsPanel)
+		    topPanel.add(resultPanel);
 		queryBoilerplate = new QueryBoilerplate(
 				this, runner, transactionTypes,
 				couplings

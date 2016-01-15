@@ -61,6 +61,7 @@ public class IGTestTab extends GenericQueryTab {
         container.addTab(topPanel, eventName, select);
         addCloseButton(container,topPanel, null);
 
+        // customization of GenericQueryTab
         autoAddRunnerButtons = false;  // want them in a different place
         genericQueryTitle = "Select System Under Test";
         genericQueryInstructions = new HTML(
@@ -68,6 +69,9 @@ public class IGTestTab extends GenericQueryTab {
                         "Initiating Gateway " +
                         "selected below to initiate the test.</p>"
         );
+        addResultsPanel = false;  // manually done below
+
+
 
         loadAssigningAuthorities();
 
@@ -132,6 +136,8 @@ public class IGTestTab extends GenericQueryTab {
         ));
 
         addRunnerButtons(topPanel);
+
+        topPanel.add(resultPanel);
     }
 
     class BuildTestOrchestrationButton extends ReportableButton {
@@ -151,10 +157,20 @@ public class IGTestTab extends GenericQueryTab {
                 @Override
                 public void onSuccess(RawResponse rawResponse) {
                     if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
-                    rgConfigs = ((IgOrchestrationResponse)rawResponse).getSimulatorConfigs();
+                    IgOrchestrationResponse orchResponse = (IgOrchestrationResponse)rawResponse;
+
+                    pidTextBox.setValue(orchResponse.getPatientId().asString());
+
+                    rgConfigs = orchResponse.getSimulatorConfigs();
+
+                    panel().add(new HTML("<h3>Generated Test Environment</h3>"));
                     FlexTable table = new FlexTable();
                     panel().add(table);
                     int row = 0;
+
+                    table.setText(row, 0, "Patient ID");
+                    table.setText(row++, 1, orchResponse.getPatientId().asString());
+
                     table.setText(row++, 0, "Simulators");
 
                     for (SimulatorConfig config : rgConfigs) {
@@ -183,6 +199,13 @@ public class IGTestTab extends GenericQueryTab {
                         table.setText(row++, 2, config.getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
 
                     }
+
+                    // generate log launcher buttons
+                    HorizontalPanel logLauncherButtons = new HorizontalPanel();
+                    for (SimulatorConfig config : rgConfigs) {
+                        Button button = new Button(config.getId().toString() + " Log");
+                        logLauncherButtons.add(button);
+                    }
                 }
             });
         }
@@ -193,10 +216,10 @@ public class IGTestTab extends GenericQueryTab {
         public void onClick(ClickEvent event) {
             resultPanel.clear();
 
-//			if (!getCurrentTestSession().isEmpty()) {
-//				new PopupMessage("Test Session must be selected");
-//				return;
-//			}
+			if (getCurrentTestSession().isEmpty()) {
+				new PopupMessage("Test Session must be selected");
+				return;
+			}
 
             if (!verifySiteProvided()) return;
             if (!verifyPidProvided()) return;
@@ -207,14 +230,9 @@ public class IGTestTab extends GenericQueryTab {
 //				return;
 //			}
 
-            if (selectedTest == null) {
-                new PopupMessage("Test must be selected");
-                return;
-            }
-
-//			addStatusBox();
-//			getGoButton().setEnabled(false);
-//			getInspectButton().setEnabled(false);
+			addStatusBox();
+			getGoButton().setEnabled(false);
+			getInspectButton().setEnabled(false);
 
             List<String> selectedSections = new ArrayList<String>();
             if (selectedSection.equals(allSelection)) {
@@ -225,21 +243,8 @@ public class IGTestTab extends GenericQueryTab {
             Map<String, String> parms = new HashMap<>();
             parms.put("$patientid$", pidTextBox.getValue().trim());
 
-//			String pid = patientIdBox.getText();
-//			if (pid != null && !pid.equals("")) {
-//				pid = pid.trim();
-//				parms.put("$patientid$", pid);
-//			}
-
-            String altPid = altPatientIdBox.getText();
-            if (altPid != null && !altPid.equals("")) {
-                altPid = altPid.trim();
-                parms.put("$altpatientid$", altPid);
-            }
-
             rigForRunning();
             toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
-
         }
 
     }

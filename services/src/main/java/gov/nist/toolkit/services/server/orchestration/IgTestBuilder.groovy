@@ -57,10 +57,9 @@ class IgTestBuilder {
             SimulatorConfig igConfig = api.createSimulator(igSimId).getConfig(0);
 
             // link all responding gateways to initiating gateway
-            List<String> rgConfigIds = rgConfigs.collect() { it.toString() }
+            List<String> rgConfigIds = rgConfigs.collect() { SimulatorConfig rg -> rg.id.toString() }
             SimulatorConfigElement rgs = igConfig.getConfigEle(SimulatorProperties.respondingGateways)
             rgs.setValue(rgConfigIds)
-            println rgs
             api.saveSimulator(igConfig)
 
             configs << igConfig
