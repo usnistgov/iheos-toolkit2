@@ -38,7 +38,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	int row;
 
 	public boolean tlsEnabled = true;
-	public boolean samlEnabled = true;
+	public boolean samlEnabled = false;
 	ActorType selectByActor = null;
 	List<TransactionType> transactionTypes;
 	public TransactionSelectionManager transactionSelectionManager = null;
@@ -65,6 +65,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	BaseSiteActorManager siteActorManager;// = new SiteActorManager(this);
 	boolean hasPatientIdParam = false;
 	HTML resultsShortDescription = new HTML();
+    public boolean autoAddRunnerButtons = true;
+    public String genericQueryTitle = null;
+    public HTML genericQueryInstructions = null;
 
 	static TransactionOfferings transactionOfferings = null;  // Loaded from server
 
@@ -430,15 +433,21 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			resultPanel.clear();
 		initMainGrid();
 
-		//			genericQueryTab.perTransTypeRadioButtons = new HashMap<TransactionType, List<RadioButton>>();
-
 		mainConfigPanel.clear();
-
 
 		// two columns - title and contents
 		final int titleColumn = 0;
 		final int contentsColumn = 1;
 		int commonGridRow = 0;
+
+        if (genericQueryTitle != null) {
+            mainConfigPanel.add(new HTML("<h2>" + genericQueryTitle + "</h2>"));
+        }
+
+        if (genericQueryInstructions != null) {
+            mainConfigPanel.add(genericQueryInstructions);
+        }
+
 		FlexTable commonParamGrid = new FlexTable();
 		mainConfigPanel.add(commonParamGrid);
 
@@ -511,31 +520,35 @@ public abstract class GenericQueryTab  extends TabbedWindow {
                 }
 			}
 		}
-
-		HorizontalPanel runnerButtons = new HorizontalPanel();
-		commonParamGrid.setWidget(commonGridRow++, 1, runnerButtons);
-		if (runEnabled) {
-			setGoButton(new Button(runButtonText));
-			runnerButtons.add(getGoButton());
-//			mainGrid.setWidget(row++, 1, getGoButton());
-		}
-
-		try {
-			getGoButton().addClickHandler(runner);
-		} catch (Exception e) {}
-
-		if (enableInspectResults) {
-			setInspectButton(new Button("Inspect Results"));
-			getInspectButton().setEnabled(false);
-			runnerButtons.add(getInspectButton());
-		}
-
-		if (getInspectButton() != null)
-			getInspectButton().addClickHandler(new InspectorLauncher(me));
-
-		resultsShortDescription.setHTML("");
-		runnerButtons.add(resultsShortDescription);
+        if (autoAddRunnerButtons)
+            addRunnerButtons(mainConfigPanel);
 	}
+
+    public void addRunnerButtons(VerticalPanel panel) {
+        HorizontalPanel runnerButtons = new HorizontalPanel();
+//		commonParamGrid.setWidget(commonGridRow++, 1, runnerButtons);
+        panel.add(runnerButtons);
+        if (runEnabled) {
+            setGoButton(new Button(runButtonText));
+            runnerButtons.add(getGoButton());
+        }
+
+        try {
+            getGoButton().addClickHandler(runner);
+        } catch (Exception e) {}
+
+        if (enableInspectResults) {
+            setInspectButton(new Button("Inspect Results"));
+            getInspectButton().setEnabled(false);
+            runnerButtons.add(getInspectButton());
+        }
+
+        if (getInspectButton() != null)
+            getInspectButton().addClickHandler(new InspectorLauncher(me));
+
+        resultsShortDescription.setHTML("");
+        runnerButtons.add(resultsShortDescription);
+    }
 
 	public void setRunButtonText(String label) {
 		runButtonText = label;

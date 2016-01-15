@@ -1,13 +1,11 @@
 package gov.nist.toolkit.actorfactory.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 
 /**
- * Created by bill on 9/21/15.
+ *
  */
-public class Pid implements Serializable, IsSerializable {
+public class Pid implements Serializable {
     String ad = null;
     String id = null;
     String extra = null;

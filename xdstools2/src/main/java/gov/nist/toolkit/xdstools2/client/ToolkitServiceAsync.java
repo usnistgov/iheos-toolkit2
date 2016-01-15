@@ -10,6 +10,8 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.IgOrchestationManagerRequest;
+import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -185,5 +187,6 @@ public interface ToolkitServiceAsync {
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
     void getProfileErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
+    void buildIgTestOrchestration(IgOrchestationManagerRequest request, AsyncCallback<RawResponse> callback);
 
 }

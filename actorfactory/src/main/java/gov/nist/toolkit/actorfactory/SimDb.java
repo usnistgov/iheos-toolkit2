@@ -214,6 +214,16 @@ public class SimDb {
 			db.delete();
 		}
 	}
+
+    static public void deleteSims(List<SimId> simIds) throws IOException {
+        for (SimId simId : simIds) {
+            logger.info("Deleting sim " + simId);
+            try {
+                SimDb db = new SimDb(simId);
+                db.delete();
+            } catch (NoSimException e) { } // ignore
+        }
+    }
 	
 	public List<SimId> getAllSimIds() {
 		File[] files = dbRoot.listFiles();
@@ -226,6 +236,16 @@ public class SimDb {
 		}
 		return ids;
 	}
+
+    public List<SimId> getSimIdsForUser(String user) {
+        List<SimId> ids = getAllSimIds();
+        List<SimId> selectedIds = new ArrayList<>();
+        for (SimId id : ids) {
+            if (user.equals(id.getUser()))
+                selectedIds.add(id);
+        }
+        return selectedIds;
+    }
 
 	/**
 	 * Get a simulator.

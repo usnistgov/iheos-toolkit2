@@ -13,6 +13,8 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.client.IgOrchestationManagerRequest;
+import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -164,8 +166,9 @@ public interface ToolkitService extends RemoteService  {
 	 String getDefaultAssigningAuthority() throws NoServletSessionException ;
 	 String getAttributeValue(String username, String attName) throws Exception;
 	 void setAttributeValue(String username, String attName, String attValue) throws Exception;
-	
-	 Map<String, String> getSessionProperties() throws NoServletSessionException;
+    RawResponse buildIgTestOrchestration(IgOrchestationManagerRequest request);
+
+        Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
 	Pid createPid(String assigningAuthority) throws NoServletSessionException;
 	String getAssigningAuthority() throws Exception;

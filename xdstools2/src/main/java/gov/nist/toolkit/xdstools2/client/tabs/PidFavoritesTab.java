@@ -18,7 +18,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import java.util.*;
 
 /**
- * Created by bill on 9/23/15.
+ *
  */
 public class PidFavoritesTab  extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();

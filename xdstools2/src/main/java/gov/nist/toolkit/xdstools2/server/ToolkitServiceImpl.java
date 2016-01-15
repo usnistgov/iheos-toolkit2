@@ -18,6 +18,10 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+    import gov.nist.toolkit.services.client.IgOrchestationManagerRequest;
+    import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.server.RawResponseBuilder;
+import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
@@ -182,6 +186,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
 
 	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
+    public RawResponse buildIgTestOrchestration(IgOrchestationManagerRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIgTestEnvironment(request);
+    }
 
     /**
      * Get list of section names defined for the test in the order they should be executed
