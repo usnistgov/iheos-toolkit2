@@ -195,7 +195,7 @@ public class UseReportManager  {
                     logger.info("Skipping UseReport " + ur);
                     continue;
                 }
-                logger.info(String.format("Apply %s to %s", ur, new OMFormatter(xml).toString()));
+//                logger.info(String.format("Apply %s to %s", ur, new OMFormatter(xml).toString()));
 				l.replace_string_in_text_and_attributes(xml, ur.useAs, ur.value);
 			} catch (Exception e) {
 				throw new XdsInternalException("UseReportManager#apply: error applying reported value " + ur.useAs + " = " + ur.value + "\n" + useReportsToString(), e);

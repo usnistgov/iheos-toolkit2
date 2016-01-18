@@ -46,8 +46,9 @@ class IgTestBuilder {
 
             buildRGs()
 
-            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc', oneDocPid)
-            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'twodoc', twoDocPid)
+            String home = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
+            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc', oneDocPid, home)
+            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'twodoc', twoDocPid, home)
 
             IgOrchestrationResponse response = new IgOrchestrationResponse()
             response.oneDocPid = oneDocPid
@@ -61,11 +62,12 @@ class IgTestBuilder {
         }
     }
 
-    void submit(String userName, SimId simId, TestInstance testId, String section, Pid patientId) {
+    void submit(String userName, SimId simId, TestInstance testId, String section, Pid patientId, String home) {
         // load the reg/rep with two documents
         List<String> sections = [ section ]
         Map<String, String> qparams = new HashMap<>()
         qparams.put('$patientid$', patientId.asString())
+        qparams.put('$testdata_home$', home);
 
         List<Result> results = api.runTest(userName, simId.toString(), testId, sections, qparams, true)
         if (!results.get(0).passed())

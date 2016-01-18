@@ -3,7 +3,7 @@
                          xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
                          xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
     <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
-    <AdhocQuery id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4" home="$home">
+    <AdhocQuery id="urn:uuid:5c4f972b-d56b-40ac-a5fc-c8ca9b40b9d4" home="$home$">
         <Slot name="$XDSDocumentEntryEntryUUID">
             <ValueList>
                 <Value>('$doc_uuid_1$')</Value>
