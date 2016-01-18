@@ -84,11 +84,13 @@ public class IGTestTab extends GenericQueryTab {
         topPanel.add(new HTML("<p>" +
                 "This tool tests an Initiating Gateway with Affinity Domain option by surrounding it with " +
                 "a Document Consumer simulator and a Responding Gateway simulator. The Responding Gateway has " +
-                "a Document Registry simulator and Document Repository simulator behind it. These simualtors and " +
+                "a Document Registry simulator and Document Repository simulator behind it. " +
+                "These simulators are created by this tool." +
+                "<h2>Select testSession</h2>" +
+                "These simulators and " +
                 "their logs will be maintained in a test session you create for this test. At the top of the window, " +
-                "create a new test session - name it for your company (lower case characters only). " +
-                "When this is done continue. When the test begins, any data currently in that test session will " +
-                "be deleted." +
+                "create a new test session and select it - name it for your company (lower case characters only). " +
+                "This tool deletes all logs in the selected test session.  " +
                 "</p>" +
                 "<p>" +
                 "Build test environment using the button below.  This will create the simulators and populate " +
@@ -164,7 +166,6 @@ public class IGTestTab extends GenericQueryTab {
         public void handleClick(ClickEvent event) {
             IgOrchestationManagerRequest request = new IgOrchestationManagerRequest();
             request.setUserName(getCurrentTestSession());
-            request.setPatientId(patientId);
             request.setIncludeLinkedIG(includeIG);
             toolkitService.buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
                 @Override
@@ -175,8 +176,6 @@ public class IGTestTab extends GenericQueryTab {
                     if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
                     IgOrchestrationResponse orchResponse = (IgOrchestrationResponse)rawResponse;
 
-                    pidTextBox.setValue(orchResponse.getPatientId().asString());
-
                     rgConfigs = orchResponse.getSimulatorConfigs();
 
                     panel().add(new HTML("<h2>Generated Environment</h2>"));
@@ -184,14 +183,22 @@ public class IGTestTab extends GenericQueryTab {
                     panel().add(table);
                     int row = 0;
 
-                    table.setText(row, 0, "Patient ID");
-                    table.setText(row++, 1, orchResponse.getPatientId().asString());
+                    table.setHTML(row++, 0, "<h3>Patient IDs</h3>");
 
-                    table.setText(row++, 0, "Simulators");
+                    table.setText(row, 0, "Single document Patient ID");
+                    table.setText(row++, 1, orchResponse.getOneDocPid().asString());
+
+                    table.setText(row, 0, "Two document Patient ID");
+                    table.setText(row++, 1, orchResponse.getTwoDocPid().asString());
+
+                    table.setHTML(row++, 0, "<h3>Simulators</h3>");
 
                     for (SimulatorConfig config : rgConfigs) {
-                        table.setText(row, 0, "ID");
+                        table.setText(row, 0, "Simulator ID");
                         table.setWidget(row++, 1, new HTML(config.getId().toString()));
+
+                        table.setText(row, 0, "homeCommunityId");
+                        table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.homeCommunityId).asString()));
 
                         table.setText(row, 0, "Responding Gateway");
                         table.setText(row, 1, "Query");
@@ -253,13 +260,6 @@ public class IGTestTab extends GenericQueryTab {
 			}
 
             if (!verifySiteProvided()) return;
-            if (!verifyPidProvided()) return;
-
-//			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-//			if (siteSpec == null) {
-//				new PopupMessage("Site must be selected");
-//				return;
-//			}
 
 			addStatusBox();
 			getGoButton().setEnabled(false);
@@ -272,10 +272,11 @@ public class IGTestTab extends GenericQueryTab {
                 selectedSections.add(selectedSection);
 
             Map<String, String> parms = new HashMap<>();
-            parms.put("$patientid$", pidTextBox.getValue().trim());
+            parms.put("$testdata_home$", rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString());
 
-            Panel runPanel = rigForRunning();
-            runPanel.add(buildLogLauncher(rgConfigs));
+            Panel logLaunchButtonPanel = rigForRunning();
+            logLaunchButtonPanel.clear();
+            logLaunchButtonPanel.add(buildLogLauncher(rgConfigs));
             toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
         }
 
@@ -437,10 +438,10 @@ public class IGTestTab extends GenericQueryTab {
 
     void loadTestsForActor(VerticalPanel topPanel, final TestSelectionContext testSelectionContext) {
 
-        toolkitService.getCollection("actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
+        toolkitService.getCollection("collections", "igtool1rg", new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
-                new PopupMessage("getCollection(actorcollections): " + selectedActor + " -----  " + caught.getMessage());
+                new PopupMessage("getCollection(igtool1rg): " +  " -----  " + caught.getMessage());
             }
 
             public void onSuccess(Map<String, String> result) {

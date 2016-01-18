@@ -7,33 +7,47 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XMLParserException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Formatter;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
+
+import javax.xml.namespace.QName;
+import java.util.*;
 
 public class AssertionEngine {
+    private final static Logger logger = Logger.getLogger(AssertionEngine.class);
 	ArrayList<OMElement> raw_data_refs = null;
 	ArrayList<OMElement> raw_assertions = null;
 	Linkage linkage = null;
 	OMElement output = null;
-	OMElement data = null;
+	OMElement data = null;  // data store - copy of data referenced by DataRef
 	TestConfig testConfig;
+    ArrayList<Assertion> assertions = new ArrayList<Assertion>();
+    ArrayList<DataRef> refs = new ArrayList<DataRef>();
 
-	class DataRef {
+    class DataRef {
 		String file;
+        // special files
+        //  MGMT - testConfig.testmgmt_dir
+        //  THIS - output of current step
 		String as;
+        // name to use in data store
 		DataRef(String file, String as) { this.file = file; this.as = as; }
+        public String toString() { return String.format("DataRef: file:%s as:%s", file, as); }
 	}
 
-	ArrayList<DataRef> refs = new ArrayList<DataRef>();
+    class Assertion {
+        String id;
+        String xpath;
+        Assertion(String id, String xpath) {
+            this.id = id;
+            this.xpath = xpath.replaceAll("SITE", testConfig.siteXPath);
+        }
+
+        public String toString() {
+            return "[Assertion: id=" +id + " xpath=" + xpath + "]";
+        }
+    }
 
 	public void setTestConfig(TestConfig config) {
 		testConfig = config;
@@ -91,20 +105,6 @@ public class AssertionEngine {
 		}
 	}
 
-	class Assertion {
-		String id;
-		String xpath;
-		Assertion(String id, String xpath) {
-			this.id = id;
-			this.xpath = xpath.replaceAll("SITE", testConfig.siteXPath);
-		}
-
-		public String toString() {
-			return "[Assertion: id=" +id + " xpath=" + xpath + "]";
-		}
-	}
-
-	ArrayList<Assertion> assertions = new ArrayList<Assertion>();
 
 	String date() {  // return date in 20081009 format
 		StringBuilder sb = new StringBuilder();
@@ -141,22 +141,24 @@ public class AssertionEngine {
 	}
 
 	public void run(ErrorReportingInterface err, OMElement assertion_output) throws XdsInternalException {
-		ILogger logger = new TestLogFactory().getLogger();
+		ILogger testLogger = new TestLogFactory().getLogger();
 		try {
 			parseDataRefs();
 			buildDataModel();
 			parseAssertions();
 		}
 		catch (Exception e) {
-			err.fail("AssertionEngine Error: " + e.getMessage());
+			err.fail("AssertionEngine Error: " + ExceptionUtil.exception_details(e));
 			return;
 		}
 
 
-		logger.add_name_value(assertion_output, "CompiledAssertion", assertions.toString());
-		logger.add_name_value(assertion_output,"RawAssertionData", data);
-		logger.add_name_value(assertion_output, "AssertionCount", Integer.toString(assertions.size()));
+		testLogger.add_name_value(assertion_output, "CompiledAssertion", assertions.toString());
+		testLogger.add_name_value(assertion_output,"RawAssertionData", data);
+		testLogger.add_name_value(assertion_output, "AssertionCount", Integer.toString(assertions.size()));
 
+//        logger.info("Compiled Assertions: " + assertions.toString());
+//        logger.info("RawAssertionData: " + data);
 
 		try {
 			for (Assertion assertion : assertions) {
@@ -192,10 +194,10 @@ public class AssertionEngine {
 								"AssertionEngine: assertion " + assertion.id + " right side value is " + right_side_value + "\n"+
 								"AssertionEngine: operator is " + tokenAt(assertion.xpath, equals_index));
 					}
-					logger.add_name_value_with_id(assertion_output, "AssertionStatus", assertion.id, "fail");
+					testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", assertion.id, "fail");
 					err.fail(errs.toString());
 				} else {
-					logger.add_name_value_with_id(assertion_output, "AssertionStatus", assertion.id, "pass");
+					testLogger.add_name_value_with_id(assertion_output, "AssertionStatus", assertion.id, "pass");
 					err.setInContext("AssertionEngine: assertion " + assertion.id, "pass");
 				}
 			}

@@ -69,7 +69,6 @@
         <module>transaction-notification-service</module>
         <module>grizzly-support</module>
         <module>sim-test-servlet</module>
-        <module>orchestration</module>
     </modules>
 
 

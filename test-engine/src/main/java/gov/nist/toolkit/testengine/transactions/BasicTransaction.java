@@ -13,6 +13,7 @@ import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
+import gov.nist.toolkit.testenginelogging.Report;
 import gov.nist.toolkit.testenginelogging.SectionLogMap;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -145,7 +146,8 @@ public abstract class BasicTransaction  {
 	}
 
 	public void doRun() throws Exception {
-		Iterator<OMElement> elements = instruction.getChildElements();
+
+        Iterator<OMElement> elements = instruction.getChildElements();
 		while (elements.hasNext()) {
 			OMElement part = (OMElement) elements.next();
 			parseInstruction(part);
@@ -202,11 +204,17 @@ public abstract class BasicTransaction  {
 		if ( ! step_failure ) {
 
 			if (reportManager != null ) {
+                //reportStepParameters();
+
 				reportManager.setXML(instruction_output);
+                logger.info("Reporting run parameters: " + getPlan().getExtraLinkage());
+                reportManager.report(getPlan().getExtraLinkage());
 				reportManager.generate();
-				reportManager.report(getPlan().getExtraLinkage());
+                // report run parameters as Reports
+
 				testLog.add_name_value(instruction_output, reportManager.toXML());
-			}
+
+            }
 
 		}
 	}
@@ -214,7 +222,7 @@ public abstract class BasicTransaction  {
 	protected void reportManagerPreRun(OMElement metadata_element) throws XdsInternalException,
 	XdsInternalException {
 
-		compileExtraLinkage(metadata_element);
+        compileExtraLinkage(metadata_element);
 
 		if (useReportManager != null) {
 
@@ -327,7 +335,7 @@ public abstract class BasicTransaction  {
 		local_linkage_data = new HashMap<String, String>();
 		isSQ = false;
 
-	}
+    }
 
 	String xds_version_name() {
 		if (xds_version == xds_a)
@@ -868,7 +876,7 @@ public abstract class BasicTransaction  {
 
 			if (reportManager == null)
 				reportManager = new ReportManager(testConfig);
-			reportManager.report(externalLinkage);
+//			reportManager.report(externalLinkage);
 		}
 	}
 
@@ -890,8 +898,26 @@ public abstract class BasicTransaction  {
 		}
 	}
 
+    // report the parameters to the request as Reports so they can be referenced
+    // in assertions
+    void reportStepParameters() {
+        logger.info("generating linkageAsReports");
+        if (reportManager == null)
+            reportManager = new ReportManager(testConfig);
+        Map<String, String> params = getStep().getPlan().getExtraLinkage();
+        logger.info("transaction: " + params);
+        for (String name : params.keySet()) {
+            String value = params.get(name);
+            Report report = new Report(name, value);
+            logger.info("adding Report " + report);
+            reportManager.addReport(report);
+            logger.info("Report manager has " + reportManager.toString());
+        }
+    }
+
 	protected void parseBasicInstruction(OMElement part) throws XdsInternalException {
 		String part_name = part.getLocalName();
+
 
 //		if (part_name.equals("Metadata")) {
 //			metadata_filename = "";
@@ -1080,7 +1106,8 @@ public abstract class BasicTransaction  {
 	}
 
 	public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
-		AssertionEngine engine = new AssertionEngine();
+
+        AssertionEngine engine = new AssertionEngine();
 		engine.setDataRefs(data_refs);
 
 		if (useReportManager != null) {

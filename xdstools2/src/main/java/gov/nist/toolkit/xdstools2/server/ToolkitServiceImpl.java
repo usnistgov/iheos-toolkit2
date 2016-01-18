@@ -189,7 +189,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public RawResponse buildIgTestOrchestration(IgOrchestationManagerRequest request) {
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildIgTestEnvironment(request);
+        return new OrchestrationManager().buildIgTestEnvironment(s, request);
     }
 
     /**

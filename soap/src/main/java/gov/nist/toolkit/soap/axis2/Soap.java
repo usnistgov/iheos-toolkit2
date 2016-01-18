@@ -489,10 +489,10 @@ public class Soap implements SoapInterface {
 			operationClient.setCallback(callback);
 
 		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
-        Exception soapFault = null;
+        AxisFault soapFault = null;
 		try {
 			operationClient.execute(block); // execute sync or async
-		} catch (Exception e) {
+		} catch (AxisFault e) {
             soapFault = e;
         }
         finally {
@@ -512,7 +512,7 @@ public class Soap implements SoapInterface {
             loadOutHeader();
 
             if (soapFault != null) {
-                throw new XdsInternalException("SOAP Fault", soapFault);
+                throw new XdsInternalException("SOAP Fault: " + soapFault.getReason(), soapFault);
             }
 			//  - null pointer exception here if port number in configuration is wrong
 			try {

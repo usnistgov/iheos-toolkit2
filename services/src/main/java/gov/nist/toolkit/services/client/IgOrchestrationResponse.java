@@ -11,28 +11,41 @@ import java.util.List;
  */
 public class IgOrchestrationResponse extends RawResponse {
     List<SimulatorConfig> simulatorConfigs = new ArrayList<>();
-    Pid patientId;
+    SimulatorConfig igSimulatorConfig;
+    Pid oneDocPid;
+    Pid twoDocPid;
 
-    IgOrchestrationResponse() {}
-
-    public IgOrchestrationResponse(List<SimulatorConfig> simulatorConfigs, Pid patientId) {
-        this.simulatorConfigs = simulatorConfigs;
-        this.patientId = patientId;
-    }
+    public IgOrchestrationResponse() {}
 
     public List<SimulatorConfig> getSimulatorConfigs() {
         return simulatorConfigs;
     }
 
-    public Pid getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(Pid patientId) {
-        this.patientId = patientId;
-    }
-
     public void setSimulatorConfigs(List<SimulatorConfig> simulatorConfigs) {
         this.simulatorConfigs = simulatorConfigs;
+    }
+
+    public Pid getOneDocPid() {
+        return oneDocPid;
+    }
+
+    public void setOneDocPid(Pid oneDocPid) {
+        this.oneDocPid = oneDocPid;
+    }
+
+    public Pid getTwoDocPid() {
+        return twoDocPid;
+    }
+
+    public void setTwoDocPid(Pid twoDocPid) {
+        this.twoDocPid = twoDocPid;
+    }
+
+    public SimulatorConfig getIgSimulatorConfig() {
+        return igSimulatorConfig;
+    }
+
+    public void setIgSimulatorConfig(SimulatorConfig igSimulatorConfig) {
+        this.igSimulatorConfig = igSimulatorConfig;
     }
 }

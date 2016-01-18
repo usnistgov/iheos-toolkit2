@@ -289,7 +289,7 @@ public class SimulatorServiceManager extends CommonService {
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "saveSimConfig");
 		try {
-			SimManager simManager = new SimCache().getSimManagerForSession(session.id(), true);
+			SimManager simManager = SimCache.getSimManagerForSession(session.id(), true);
 			new GenericSimulatorFactory(simManager).saveConfiguration(config);
 		} catch (IOException e) {
 			logger.error("saveSimConfig", e);

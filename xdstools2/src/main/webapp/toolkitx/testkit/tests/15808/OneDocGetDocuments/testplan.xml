@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>15808/OneDocGetDocuments</Test>
+    <TestStep id="getdocs">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>XGQ</Transaction>
+            <SQ>Test GetDocuments XGQ</SQ>
+            <Assertion>LeafClass return</Assertion>
+        </Rule>
+        <IGQTransaction>
+            <MetadataFile>query.xml</MetadataFile>
+            <UseId testdir="../../15807/onedoc" id="Document01" step="submit_single_doc"
+                   section="AssignedUuids" symbol="$doc_uuid_1$"/>
+            <Assertions>
+               <DataRef file="THIS" as="output"/>
+               <Assert id="ExtrinsicObjectCount"> 
+count(//IGQTransaction[@step="getdocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ExtrinsicObject']) = 1
+               </Assert>
+            </Assertions>
+        </IGQTransaction>
+    </TestStep>
+    <TestStep id="validation">
+        <Goal>Verify returned homeCommunityId is correct.</Goal>
+        <NullTransaction>
+            <UseReport reportName="submitted_home" section=""
+        </NullTransaction>
+    </TestStep>
+</TestPlan>

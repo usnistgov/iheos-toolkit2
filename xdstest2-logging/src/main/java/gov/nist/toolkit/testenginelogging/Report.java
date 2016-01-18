@@ -1,16 +1,13 @@
 package gov.nist.toolkit.testenginelogging;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
 
 public class Report implements Serializable {
 	/**
@@ -72,7 +69,9 @@ public class Report implements Serializable {
 		}
 	}
 
-	public String getSection() { return section; }
+	public String getSection() {
+        return section;
+    }
 
 	public void setSection(String section) { this.section = section; }
 

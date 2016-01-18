@@ -750,6 +750,7 @@ public class SimServlet  extends HttpServlet {
 			SimCommon c = new SimCommon(response);
 			DsSimCommon dsSimCommon = new DsSimCommon(c);
 			OMElement faultEle = sf.getXML();
+            logger.info("Sending SOAP Fault:\n" + new OMFormatter(faultEle).toString());
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);
 			dsSimCommon.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
 		} catch (Exception e) {

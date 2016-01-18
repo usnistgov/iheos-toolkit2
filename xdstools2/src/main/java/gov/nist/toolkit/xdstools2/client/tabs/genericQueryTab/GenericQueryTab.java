@@ -529,6 +529,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
             addRunnerButtons(mainConfigPanel);
 	}
 
+    HorizontalPanel logLaunchButtonPanel = new HorizontalPanel();
+
     public void addRunnerButtons(VerticalPanel panel) {
 //		commonParamGrid.setWidget(commonGridRow++, 1, runnerButtons);
         panel.add(runnerPanel);
@@ -549,6 +551,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
         if (getInspectButton() != null)
             getInspectButton().addClickHandler(new InspectorLauncher(me));
+
+        runnerPanel.add(logLaunchButtonPanel);
 
         resultsShortDescription.setHTML("");
         runnerPanel.add(resultsShortDescription);
@@ -635,6 +639,6 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		addStatusBox();
 		getGoButton().setEnabled(false);
 		getInspectButton().setEnabled(false);
-        return runnerPanel;
+        return logLaunchButtonPanel;
 	}
 }

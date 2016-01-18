@@ -1,11 +1,13 @@
 package gov.nist.toolkit.services.server.orchestration
+
 import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet
 import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.SimulatorProperties
-import gov.nist.toolkit.actorfactory.client.PidBuilder
+import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.services.client.IgOrchestationManagerRequest
+import gov.nist.toolkit.services.client.IgOrchestrationResponse
+import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import spock.lang.Shared
 import spock.lang.Specification
 /**
@@ -21,7 +23,8 @@ class IgTestBuilderSpec extends Specification {
 
     def setupSpec() {
         new PatientIdentityFeedServlet().initPatientIdentityFeed()
-        Installation.installation().overrideToolkitPort('8888')
+        Installation.installation().overrideToolkitPort('8888')  // match toolkit
+        ExternalCacheManager.reinitialize(new File('/Users/bill/tmp/toolkit2a'))  // match toolkit
     }
 
     def setup() {
@@ -31,20 +34,15 @@ class IgTestBuilderSpec extends Specification {
 
     def 'create sims for user'() {
         when:
-        def configs = IgTestBuilder.build(api, 1, user, environmentName, PidBuilder.createPid(patientId), true)
+        def request = new IgOrchestationManagerRequest()
+        request.environmentName = environmentName
+        request.includeLinkedIG = true
+        request.userName = user
+        IgTestBuilder builder = new IgTestBuilder(api, api.session, request)
+
+        RawResponse rawResponse = builder.buildTestEnvironment()
 
         then:
-        configs
-        configs.size() == 2
-
-        when:
-        def igConfig = configs.get(0)
-        println igConfig
-        SimulatorConfigElement rgs = igConfig.getConfigEle(SimulatorProperties.respondingGateways)
-        println 'LINKED RESPONDING GATEWAYS'
-        println rgs
-
-        then:
-        true
+        rawResponse instanceof IgOrchestrationResponse
     }
 }

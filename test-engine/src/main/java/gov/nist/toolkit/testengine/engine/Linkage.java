@@ -4,6 +4,7 @@ import gov.nist.toolkit.common.coder.Base64Coder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Parse;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -14,6 +15,7 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.util.*;
 
 public class Linkage extends BasicLinkage {
+    private final static Logger logger = Logger.getLogger(Linkage.class);
 	OMElement instruction_output;
 	Metadata m;
 
@@ -199,6 +202,14 @@ public class Linkage extends BasicLinkage {
 	}
 
 	public void replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text) throws XdsInternalException {
+        if (root == null)
+            return;
+        if ("TestPlan".equals(root.getLocalName())) return;  // don't touch test plan
+        logger.info(String.format("Replacing %s with %s starting with element %s", old_text, new_text, root.getLocalName()));
+        private_replace_string_in_text_and_attributes(root, old_text, new_text);
+    }
+
+    void private_replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text) throws XdsInternalException {
 
 		if (root == null)
 			return;
@@ -224,7 +235,7 @@ public class Linkage extends BasicLinkage {
 			}
 
 			// recurse
-			replace_string_in_text_and_attributes(e, old_text, new_text);
+			private_replace_string_in_text_and_attributes(e, old_text, new_text);
 		}
 
 	}
@@ -577,6 +588,7 @@ public class Linkage extends BasicLinkage {
 	public void apply(OMElement root) throws XdsInternalException {
 		for (String key : linkage.keySet()) {
 			String value = linkage.get(key);
+            logger.info(String.format("apply %s:%s to %s", key, value,new OMFormatter(root).toString()));
 			replace_string_in_text_and_attributes(root, key, value);
 		}
 	}
