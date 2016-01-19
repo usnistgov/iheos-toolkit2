@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
-import gov.nist.toolkit.testengine.engine.RetInfo;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +13,17 @@ public class StoredDocumentMap {
 	 * Build StoredDocumentMap from RetInfo struct.  String in map is uid.
 	 * @param retmap
 	 */
-	public StoredDocumentMap(Map<String, RetInfo> retmap) {
+	public StoredDocumentMap(Map<String, RetrievedDocumentModel> retmap) {
 		for (String uid : retmap.keySet()) {
-			RetInfo ri = retmap.get(uid);
+			RetrievedDocumentModel ri = retmap.get(uid);
 			
 			StoredDocument doc = new StoredDocument();
 
-			doc.pathToDocument = null;
-			doc.uid = uid;
-			doc.mimeType = ri.getContent_type();
-			doc.charset = null;
-			doc.hash = ri.getHash();
+			doc.setPathToDocument(null);
+			doc.setUid(uid);
+			doc.setMimeType(ri.getContent_type());
+			doc.setCharset(null);
+			doc.setHash(ri.getHash());
 			doc.size = Integer.toString(ri.getSize());
 			doc.cid = mkCid();
 			doc.content = ri.getContents();

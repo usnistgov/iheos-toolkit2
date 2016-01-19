@@ -166,6 +166,7 @@ public class MetadataSupport {
 	public static QName retrieve_document_set_response_qnamens = new QName(xdsB.getNamespaceURI(), "RetrieveDocumentSetResponse", "xdsb");
 	public static QName repository_unique_id_qnamens = new QName(xdsB.getNamespaceURI(), "RepositoryUniqueId", "xdsb");
 	public static QName document_unique_id_qnamens = new QName(xdsB.getNamespaceURI(), "DocumentUniqueId", "xdsb");
+	public static QName newDocumentUniqueId = new QName(xdsB.getNamespaceURI(), "NewDocumentUniqueId", "xdsb");
 	public static QName mimetype_qnamens = new QName(xdsB.getNamespaceURI(), "mimeType", "xdsb");
 	public static QName document_qnamens = new QName(xdsB.getNamespaceURI(), "Document", "xdsb");
 

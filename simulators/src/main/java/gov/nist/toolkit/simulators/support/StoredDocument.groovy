@@ -1,21 +1,19 @@
-package gov.nist.toolkit.simulators.support;
+package gov.nist.toolkit.simulators.support
+import gov.nist.toolkit.utilities.io.Io
+import gov.nist.toolkit.valregmsg.message.StoredDocumentInt
+import groovy.transform.TypeChecked
 
-import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-
+@TypeChecked
 public class StoredDocument implements Serializable {
 
 	
 	private static final long serialVersionUID = 1L;
-	public String pathToDocument;
-	public String uid;
-	public String mimeType;
-	public String charset;
-	public String hash;
+
+    String pathToDocument;
+	String uid;
+	String mimeType;
+	String charset;
+	String hash;
 
     public String size;
 	
@@ -24,6 +22,7 @@ public class StoredDocument implements Serializable {
 	transient public byte[] content;
 	
 	public StoredDocument(StoredDocumentInt sdi) {
+        assert sdi
 		pathToDocument = sdi.pathToDocument;
 		uid = sdi.uid;
 		mimeType = sdi.mimeType;
@@ -31,7 +30,11 @@ public class StoredDocument implements Serializable {
 		hash = sdi.hash;
 		size = sdi.size;
 	}
-	
+
+    void setPathToDocument(String pathToDocument) {
+        this.pathToDocument = pathToDocument
+    }
+
 	public StoredDocumentInt getStoredDocumentInt() {
 		StoredDocumentInt sdi = new StoredDocumentInt();
 		
@@ -71,16 +74,28 @@ public class StoredDocument implements Serializable {
 	}
 		
 	public File getPathToDocument() {
-		return new File(pathToDocument);
-	}
-	
-	public byte[] getDocumentContents() throws IOException {
-		File f = getPathToDocument();
-		return Io.bytesFromFile(f);
+        return new File(pathToDocument);
 	}
 
+	/**
+	 * This method will reload the contents from the file path.
+	 * @return
+	 * @throws IOException
+	 */
+	public byte[] getDocumentContents() throws IOException {
+		File f = getPathToDocument();
+		setContent(Io.bytesFromFile(f));
+		return content;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
     public byte[] getContent() {
-        return content;
+        if (content) return content;
+        if (pathToDocument) return getDocumentContents();
+        return null;
     }
 
     public void setContent(byte[] content) {
