@@ -13,11 +13,14 @@ import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.IgOrchestationManagerRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
@@ -30,7 +33,7 @@ public class IGTestTab extends GenericQueryTab {
     final protected ToolkitServiceAsync toolkitService = GWT
             .create(ToolkitService.class);
 
-    final String allSelection = "-- All --";
+    final static String ALL_SELECTION = "-- All --";
     final String chooseSelection = "-- Choose --";
 
     Button selectSectionViewButton = new Button("View this section's testplan");
@@ -39,8 +42,7 @@ public class IGTestTab extends GenericQueryTab {
     TextBox altPatientIdBox = new TextBox();
     Map<String, String> actorCollectionMap;  // name => description
     String selectedActor = ActorType.INITIATING_GATEWAY.getShortName();
-    String selectedTest;
-    String selectedSection = allSelection;
+    String selectedSection = ALL_SELECTION;
     Map<String, String> testCollectionMap;  // name => description for selected actor
     List<String> sections = new ArrayList<String>();
     int row = 0;
@@ -49,6 +51,8 @@ public class IGTestTab extends GenericQueryTab {
     Pid patientId;
     List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
+    static final String ALL = "All";
+    static final String COLLECTION_NAME =  "igtool1rg";
 
     public IGTestTab() {
         super(new GetDocumentsSiteActorManager());
@@ -65,13 +69,17 @@ public class IGTestTab extends GenericQueryTab {
         container.addTab(topPanel, eventName, select);
         addCloseButton(container,topPanel, null);
 
+        genericQueryTab.reloadTransactionOfferings();
+
         // customization of GenericQueryTab
         autoAddRunnerButtons = false;  // want them in a different place
         genericQueryTitle = "Select System Under Test";
         genericQueryInstructions = new HTML(
-                "<p>When test is run a Stored Query or Retrieve transaction will be sent to the " +
+                "<p>When the test is run a Stored Query or Retrieve transaction will be sent to the " +
                         "Initiating Gateway " +
-                        "selected below to initiate the test.</p>"
+                        "selected below. This will start the test. Before running a test, make sure your " +
+                        "Initiating Gateway is configured to send to the Responding Gateway above.  This " +
+                        "test only uses non-TLS endpoints (for now).</p>"
         );
         addResultsPanel = false;  // manually done below
 
@@ -86,11 +94,11 @@ public class IGTestTab extends GenericQueryTab {
                 "a Document Consumer simulator and a Responding Gateway simulator. The Responding Gateway has " +
                 "a Document Registry simulator and Document Repository simulator behind it. " +
                 "These simulators are created by this tool." +
-                "<h2>Select testSession</h2>" +
+                "<h2>Create testSession</h2>" +
                 "These simulators and " +
                 "their logs will be maintained in a test session you create for this test. At the top of the window, " +
-                "create a new test session and select it - name it for your company (lower case characters only). " +
-                "This tool deletes all logs in the selected test session.  " +
+                "create a new test session and select it - name it for your company. " +
+                "This tool deletes all logs and simulators in the selected test session.  " +
                 "</p>" +
                 "<p>" +
                 "Build test environment using the button below.  This will create the simulators and populate " +
@@ -102,10 +110,14 @@ public class IGTestTab extends GenericQueryTab {
                 "<hr />" +
                 "<h2>Build Test Environment</h2>" +
                 "<p>" +
-                "This will delete the contents of your current test session and initialize it. " +
-                "Test Environment will create the necessary simulators to test your Initiating Gateway.  " +
-                "Demonstration Environment will also build an Initiating Gateway for " +
+                "This will delete the contents of the selected test session and initialize it. " +
+                "The Build Test Environment button will create the necessary simulators to test your Initiating Gateway.  " +
+                "the Build Demonstration Environment button will also build an Initiating Gateway for " +
                 "demonstration and training purposes. Only one can be used." +
+                        "The generated test environment will be displayed below. " +
+                        "Once the test environment is built, configure your Initiating Gateway to forward requests " +
+                        "to the generated Responding Gateway simulator. The Demonstration Environment builds this " +
+                        "configuration automatically." +
                 "</p>"
         ));
 
@@ -165,6 +177,10 @@ public class IGTestTab extends GenericQueryTab {
 
         public void handleClick(ClickEvent event) {
             IgOrchestationManagerRequest request = new IgOrchestationManagerRequest();
+            if (empty(getCurrentTestSession())) {
+                new PopupMessage("Must select test session first");
+                return;
+            }
             request.setUserName(getCurrentTestSession());
             request.setIncludeLinkedIG(includeIG);
             toolkitService.buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
@@ -224,6 +240,7 @@ public class IGTestTab extends GenericQueryTab {
                     }
 
                     // generate log launcher buttons
+                    panel().add(addTestEnvironmentInspectorButton(rgConfigs.get(0).getId().toString()));
                     panel().add(buildLogLauncher(rgConfigs));
 
                     genericQueryTab.reloadTransactionOfferings();
@@ -266,7 +283,7 @@ public class IGTestTab extends GenericQueryTab {
 			getInspectButton().setEnabled(false);
 
             List<String> selectedSections = new ArrayList<String>();
-            if (selectedSection.equals(allSelection)) {
+            if (selectedSection.equals(ALL_SELECTION)) {
                 selectedSections.addAll(sections);
             } else
                 selectedSections.add(selectedSection);
@@ -277,7 +294,14 @@ public class IGTestTab extends GenericQueryTab {
             Panel logLaunchButtonPanel = rigForRunning();
             logLaunchButtonPanel.clear();
             logLaunchButtonPanel.add(buildLogLauncher(rgConfigs));
-            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
+            String testToRun = selectedTest;
+            if (ALL.equals(testToRun)) {
+                testToRun = "tc:" + COLLECTION_NAME;
+            }
+
+            TestInstance testInstance = new TestInstance(testToRun);
+            testInstance.setUser(getCurrentTestSession());
+            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), selectedSections, parms, true, queryCallback);
         }
 
     }
@@ -316,7 +340,7 @@ public class IGTestTab extends GenericQueryTab {
                     selectSectionViewButton.setEnabled(false);
                 } else {
                     sections.addAll(result);
-                    testSelectionContext.selectSectionList.addItem(allSelection, allSelection);
+                    testSelectionContext.selectSectionList.addItem(ALL_SELECTION, ALL_SELECTION);
                     for (String section : result) {
                         testSelectionContext.selectSectionList.addItem(section, section);
                     }
@@ -365,9 +389,14 @@ public class IGTestTab extends GenericQueryTab {
             selectedTest = testSelectionContext.selectTestList.getValue(selectedI);
             if ("".equals(selectedTest))
                 return;
+            if (ALL.equals(selectedTest)) {
+                testSelectionContext.documentation.setText("");
+                sections.clear();
+                return;
+            }
             loadTestReadme(testSelectionContext.documentation);
             loadSectionNames(testSelectionContext);
-            selectedSection = allSelection;
+            selectedSection = ALL_SELECTION;
         }
 
     }
@@ -433,15 +462,91 @@ public class IGTestTab extends GenericQueryTab {
 
         testSelectionContext.selectTestList.clear();
         testSelectionContext.selectTestList.addChangeHandler(new TestSelectionChangeHandler(testSelectionContext));
+
+        selectionPanel.add(addResultsInspectorButton());
         return selectionPanel;
+    }
+
+    Button addTestEnvironmentInspectorButton(final String siteName) {
+        Button button = new Button("Inspect Test Data");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                List<TestInstance> tests = new ArrayList<TestInstance>();
+                tests.add(new TestInstance("15807"));
+                toolkitService.getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        new PopupMessage(throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(Map<String, Result> stringResultMap) {
+                        Result result = stringResultMap.get("15807");
+                        if (result == null) {
+                            new PopupMessage("Results not available");
+                            return;
+                        }
+                        SiteSpec siteSpec = new SiteSpec(siteName, ActorType.RESPONDING_GATEWAY, null);
+
+                        MetadataInspectorTab itab = new MetadataInspectorTab();
+                        List<Result> results = new ArrayList<Result>();
+                        results.add(result);
+                        itab.setResults(results);
+                        itab.setSiteSpec(siteSpec);
+                        itab.setToolkitService(toolkitService);
+                        itab.onTabLoad(myContainer, true, null);
+                    }
+                });
+            }
+        });
+        return button;
+    }
+
+    Button addResultsInspectorButton() {
+        Button button = new Button("Inspect Results");
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                List<TestInstance> tests = new ArrayList<TestInstance>();
+                tests.add(new TestInstance(selectedTest));
+                toolkitService.getTestResults(tests, getCurrentTestSession(), new AsyncCallback<Map<String, Result>>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        new PopupMessage(throwable.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(Map<String, Result> stringResultMap) {
+                        Result result = stringResultMap.get(selectedTest);
+                        if (result == null) {
+                            new PopupMessage("Results not available");
+                            return;
+                        }
+                        if (!verifySiteProvided()) return;
+
+                        SiteSpec siteSpec = getSiteSelection();
+
+                        MetadataInspectorTab itab = new MetadataInspectorTab();
+                        List<Result> results = new ArrayList<Result>();
+                        results.add(result);
+                        itab.setResults(results);
+                        itab.setSiteSpec(siteSpec);
+                        itab.setToolkitService(toolkitService);
+                        itab.onTabLoad(myContainer, true, null);
+                    }
+                });
+            }
+        });
+        return button;
     }
 
     void loadTestsForActor(VerticalPanel topPanel, final TestSelectionContext testSelectionContext) {
 
-        toolkitService.getCollection("collections", "igtool1rg", new AsyncCallback<Map<String, String>>() {
+        toolkitService.getCollection("collections", COLLECTION_NAME, new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
-                new PopupMessage("getCollection(igtool1rg): " +  " -----  " + caught.getMessage());
+                new PopupMessage("getCollection(" + COLLECTION_NAME + "): " +  " -----  " + caught.getMessage());
             }
 
             public void onSuccess(Map<String, String> result) {
@@ -456,6 +561,7 @@ public class IGTestTab extends GenericQueryTab {
                     String description = testCollectionMap.get(name);
                     testSelectionContext.selectTestList.addItem(name + " - " + description, name);
                 }
+//                testSelectionContext.selectTestList.addItem(ALL);  does not work yet
                 testSelectionContext.selectTestList.setVisibleItemCount(testSelectionContext.selectTestList.getItemCount());
                 if (testSelectionContext.selectTestList.getItemCount() > 0) {
                     testSelectionContext.selectTestList.setSelectedIndex(0);

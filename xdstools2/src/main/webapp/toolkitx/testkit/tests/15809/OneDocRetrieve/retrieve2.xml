@@ -1,0 +1,8 @@
+<RetrieveDocumentSetRequest xmlns="urn:ihe:iti:xds-b:2007"
+                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <DocumentRequest>
+        <HomeCommunityId>$home$</HomeCommunityId>
+        <RepositoryUniqueId>$repositoryuid$</RepositoryUniqueId>
+        <DocumentUniqueId>$docuid$</DocumentUniqueId>
+    </DocumentRequest>
+</RetrieveDocumentSetRequest>

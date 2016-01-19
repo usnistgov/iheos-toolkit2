@@ -1,5 +1,7 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
+import gov.nist.toolkit.actorfactory.SimCache;
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.Pid;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -661,6 +663,11 @@ public class XdsTestServiceManager extends CommonService {
 		}
 		File dir = new File(cache.toString() + File.separator + name);
 		Io.delete(dir);
+
+        // also delete simulators owned by this test session
+
+        SimDb.deleteSims(new SimDb().getSimIdsForUser(name));
+        SimCache.clear();
 		return true;
 	}
 

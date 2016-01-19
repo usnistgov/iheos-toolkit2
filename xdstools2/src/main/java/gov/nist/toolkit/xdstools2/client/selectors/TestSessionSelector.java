@@ -1,9 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.selectors;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
@@ -15,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by bill on 9/16/15.
+ *
  */
 public class TestSessionSelector {
     ListBox listBox = new ListBox();
@@ -86,6 +83,18 @@ public class TestSessionSelector {
         });
 
         panel.add(textBox);
+        textBox.addKeyPressHandler(new KeyPressHandler()
+        {
+            @Override
+            public void onKeyPress(KeyPressEvent event_)
+            {
+                boolean enterPressed = KeyCodes.KEY_ENTER == event_
+                        .getNativeEvent().getKeyCode();
+                if (enterPressed) {
+                    add();
+                }
+            }
+        });
 
         //
         // Add Button
@@ -114,6 +123,14 @@ public class TestSessionSelector {
                 Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.DELETE, value));
             }
         });
+    }
+
+    void add() {
+        String value = textBox.getValue().trim();
+        value = value.replaceAll(" ", "_");
+        textBox.setValue("");
+        if ("".equals(value)) return;
+        Xdstools2.getEventBus().fireEvent(new TestSessionChangedEvent(TestSessionChangedEvent.ChangeType.ADD, value));
     }
 
     public Widget asWidget() { return panel; }

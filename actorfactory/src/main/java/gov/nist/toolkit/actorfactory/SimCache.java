@@ -21,6 +21,10 @@ public class SimCache {
     static Logger logger = Logger.getLogger(SimCache.class);
     static Map<String, SimManager> mgrs = new HashMap<String, SimManager>(); // sessionID => SimManager (sims for a session)
 
+    static public void clear() {
+        mgrs.clear();
+    }
+
     static public void put(String sessionId, SimManager sim) {
         mgrs.put(sessionId, sim);
     }

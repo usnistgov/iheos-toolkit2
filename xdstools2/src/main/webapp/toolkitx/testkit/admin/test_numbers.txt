@@ -121,7 +121,7 @@ Summer 2015 development
 
 15807 - Submit test data to support test 15808
 15808 - FindDocuments for LeafClass to IG - one RG
-
+15809 - Retrieve to IG - one RG
 
 
 

@@ -40,7 +40,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 	public boolean tlsEnabled = true;
 	public boolean samlEnabled = false;
-	ActorType selectByActor = null;
+	public ActorType selectByActor = null;
 	List<TransactionType> transactionTypes;
 	public TransactionSelectionManager transactionSelectionManager = null;
 	public boolean enableInspectResults = true;
@@ -72,8 +72,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
     public boolean autoAddRunnerButtons = true;
     public String genericQueryTitle = null;
     public HTML genericQueryInstructions = null;
+    public String selectedTest;
 
-	static TransactionOfferings transactionOfferings = null;  // Loaded from server
+    static TransactionOfferings transactionOfferings = null;  // Loaded from server
 
 	protected QueryBoilerplate queryBoilerplate = null;
 
@@ -207,15 +208,16 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	}
 
 	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
-		if (queryBoilerplate != null) {
-			queryBoilerplate.remove();
-			queryBoilerplate = null;
-		}
-		queryBoilerplate = new QueryBoilerplate(
-				this, runner, transactionTypes,
-				couplings
-				);
-		return queryBoilerplate;
+        return addQueryBoilerplate(runner, transactionTypes, couplings, true);
+//		if (queryBoilerplate != null) {
+//			queryBoilerplate.remove();
+//			queryBoilerplate = null;
+//		}
+//		queryBoilerplate = new QueryBoilerplate(
+//				this, runner, transactionTypes,
+//				couplings
+//				);
+//		return queryBoilerplate;
 
 	}
 
@@ -641,4 +643,10 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		getInspectButton().setEnabled(false);
         return logLaunchButtonPanel;
 	}
+
+    public static boolean empty(String x) {
+        if (x == null) return true;
+        if (x.equals("")) return true;
+        return false;
+    }
 }
