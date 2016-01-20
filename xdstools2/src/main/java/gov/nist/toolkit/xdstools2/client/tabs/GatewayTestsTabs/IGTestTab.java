@@ -87,6 +87,7 @@ public class IGTestTab extends GenericQueryTab {
 
         loadAssigningAuthorities();
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         topPanel.add(new HTML("<h1>Initiating Gateway Test Tool</h1>"));
 
         topPanel.add(new HTML("<p>" +
@@ -106,6 +107,7 @@ public class IGTestTab extends GenericQueryTab {
                 "</p>"
         ));
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         topPanel.add(new HTML(
                 "<hr />" +
                 "<h2>Build Test Environment</h2>" +
@@ -128,6 +130,7 @@ public class IGTestTab extends GenericQueryTab {
 
         new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Demonstration Environment", true);
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         // Query boilerplate
         ActorType act = ActorType.findActor(selectedActor);
 
@@ -153,6 +156,7 @@ public class IGTestTab extends GenericQueryTab {
 
         topPanel.add(mainGrid);
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         topPanel.add(new HTML(
                 "<hr />" +
                         "<h2>Run Test</h2>" +

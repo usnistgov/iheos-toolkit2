@@ -12,7 +12,8 @@ class TlsSelector implements ClickHandler {
 	}
 
 	public void onClick(ClickEvent event) {
-		tab.getCommonSiteSpec().setTls(((CheckBox) event.getSource()).getValue());
+        boolean value = ((CheckBox) event.getSource()).getValue();
+		tab.getCommonSiteSpec().setTls(value);
 		tab.redisplay(true);
 	}
 

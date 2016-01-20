@@ -487,8 +487,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 		if (tlsEnabled) {
 			doTls = new CheckBox("");
-			if (commonSiteSpec != null)
-				doTls.setValue(getCommonSiteSpec().isTls());
+			if (getCommonSiteSpec() != null) {
+                doTls.setValue(getCommonSiteSpec().isTls());
+            }
 			doTls.addClickHandler(new TlsSelector(this));
 			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("TLS"));
 			commonParamGrid.setWidget(commonGridRow++, contentsColumn, doTls);
@@ -533,20 +534,28 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
     HorizontalPanel logLaunchButtonPanel = new HorizontalPanel();
 
+    Button runButton = new Button(runButtonText);
+    Button inspectButon = new Button("Inspect Results");
+
     public void addRunnerButtons(VerticalPanel panel) {
-//		commonParamGrid.setWidget(commonGridRow++, 1, runnerButtons);
+        boolean hasRunButton = runnerPanel.getWidgetIndex(runButton) > -1;
+
+        // messed normal query tools
+//        if (hasRunButton) { new PopupMessage("already has run button"); return; }
+
         panel.add(runnerPanel);
         if (runEnabled) {
-            setGoButton(new Button(runButtonText));
+            setGoButton(runButton);
             runnerPanel.add(getGoButton());
         }
+
 
         try {
             getGoButton().addClickHandler(runner);
         } catch (Exception e) {}
 
         if (enableInspectResults) {
-            setInspectButton(new Button("Inspect Results"));
+            setInspectButton(inspectButon);
             getInspectButton().setEnabled(false);
             runnerPanel.add(getInspectButton());
         }
