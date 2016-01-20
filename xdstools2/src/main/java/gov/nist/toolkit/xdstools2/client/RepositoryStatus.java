@@ -1,10 +1,10 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class RepositoryStatus implements Serializable, IsSerializable  {
 	/**
@@ -31,13 +31,19 @@ public class RepositoryStatus implements Serializable, IsSerializable  {
 			return "";
 		}
 	}
+
+    public void setFatalError(String e) {
+        fatalError = e;
+    }
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
-		buf.append("[");
+		buf.append("[RepositoryStatus ");
 		buf.append("name=").append(name);
 		buf.append(" status=").append(status);
+        if (fatalError != null && !fatalError.equals("")) buf.append(" fatalError=").append(fatalError);
+        buf.append(" errors=").append(errors);
 		buf.append("]");
 		
 		return buf.toString();

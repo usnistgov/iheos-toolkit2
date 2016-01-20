@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>SourceStoresDocumentValidation/query</Test>
+    <Rule>Test GetSubmissionSetAndContents Stored Query</Rule>
+    <TestStep id="query">
+    	<Goal>Given SubmissionSet UniqueId provided by Document Source</Goal>
+    	<Goal>   Send GetSubmissionSetAndContents query to Registry</Goal>
+    	<Goal>   Verify SubmissionSet, DocumentEntry, and a HasMember Assocation returned</Goal>
+    	<Goal>   Verify these elements are properly connected</Goal>
+    	<Goal>   Verify the RegistryResponse message passes XML Schema validation</Goal>
+    	<Goal>   Verify the returned metadata validates against XDS rules and Affinity Domain configuration</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+	<StoredQueryTransaction>
+	<Report name="docuid" section="Result">
+//*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+	</Report>
+	<Report name="hash" section="Result">
+//*[local-name()='Slot'][@name='hash']/*[local-name()='ValueList']/*[local-name()='Value']
+	</Report>
+	<Report name="size" section="Result">
+//*[local-name()='Slot'][@name='size']/*[local-name()='ValueList']/*[local-name()='Value']
+	</Report>
+	<Report name="repuid" section="Result">
+//*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+	</Report>
+	<Report name="mimetype" section="Result">
+//*[local-name()='ExtrinsicObject']/@mimeType
+	</Report>
+	<Report name="SourceId" section="Result">
+//*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832']/@value
+	</Report>
+	    <XDSb/>
+	    <CleanParams/>
+	    <MetadataFile>query.xml</MetadataFile>
+            <ExpectedContents>
+                <SSwithOneDoc/>
+            </ExpectedContents>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>
