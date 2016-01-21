@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.SiteSpec;
@@ -31,8 +30,7 @@ public class FolderTab extends GenericQueryTab {
 		couplings.add(TransactionType.IG_QUERY, TransactionType.XC_QUERY);
 	}
 
-	TextBox pid;
-	String help = ""; 
+	String help = "";
 
 	public FolderTab() {
 		super(new GetDocumentsSiteActorManager());
@@ -54,16 +52,7 @@ public class FolderTab extends GenericQueryTab {
 		
 		topPanel.add(mainGrid);
 
-		HTML pidLabel = new HTML();
-		pidLabel.setText("Patient ID");
-		mainGrid.setWidget(row,0, pidLabel);
-
-		pid = new TextBox();
-		pid.setWidth("500px");
-		mainGrid.setWidget(row, 1, pid);
-		row++;
-
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings);
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 
 	}
 
@@ -72,19 +61,21 @@ public class FolderTab extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null)
-				return;
+            SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
+            if (siteSpec == null) {
+                new PopupMessage("You must select a site first");
+                return;
+            }
 
-			if (pid.getValue() == null || pid.getValue().equals("")) {
-				new PopupMessage("You must enter a Patient ID first");
-				return;
-			}
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+            if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
+                new PopupMessage("You must enter a Patient ID first");
+                return;
+            }
+            addStatusBox();
+            getGoButton().setEnabled(false);
+            getInspectButton().setEnabled(false);
 
-			toolkitService.folderValidation(siteSpec, pid.getValue().trim(), queryCallback);
+			toolkitService.folderValidation(siteSpec, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

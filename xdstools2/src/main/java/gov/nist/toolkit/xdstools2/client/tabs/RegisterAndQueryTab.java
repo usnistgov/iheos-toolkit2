@@ -51,16 +51,7 @@ public class RegisterAndQueryTab extends GenericQueryTab {
 		
 		topPanel.add(mainGrid);
 
-		HTML pidLabel = new HTML();
-		pidLabel.setText("Patient ID");
-		mainGrid.setWidget(row,0, pidLabel);
-
-		pid = new TextBox();
-		pid.setWidth("500px");
-		mainGrid.setWidget(row, 1, pid);
-		row++;
-
-		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings);
+		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 
 	}
 
@@ -69,19 +60,21 @@ public class RegisterAndQueryTab extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null)
-				return;
+            SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
+            if (siteSpec == null) {
+                new PopupMessage("You must select a site first");
+                return;
+            }
 
-			if (pid.getValue() == null || pid.getValue().equals("")) {
-				new PopupMessage("You must enter a Patient ID first");
-				return;
-			}
+            if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
+                new PopupMessage("You must enter a Patient ID first");
+                return;
+            }
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.registerAndQuery(siteSpec, pid.getValue().trim(), queryCallback);
+			toolkitService.registerAndQuery(siteSpec, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}
