@@ -13,6 +13,7 @@ import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 
@@ -42,7 +43,7 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 
 			// At this point, there are no documents in this repository, so insert a fake one here.
 			// Begin insert a fake document here
-			String dynamicDocumentUuid = "urn:uuid:od-doc_private-uid-1";
+			String dynamicDocumentUuid = "od-doc-uid";
 			StoredDocument storedDocument = repIndex.getDocumentCollection().getStoredDocument(dynamicDocumentUuid);
 			if (storedDocument==null) {
 				storedDocument =  new StoredDocument("nonexistent-od-file-path",dynamicDocumentUuid);
@@ -58,15 +59,22 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 				dynamicDocumentUuids.add(dynamicDocumentUuid);
 			}
 
-			dsSimCommon.addDocumentAttachments(dynamicDocumentUuids, er);
+			dsSimCommon.addDocumentAttachments(dynamicDocumentUuids, er); // Old param was (documentUids)
 			// End On-Demand update block
 
 			Collection<StoredDocument> documents = dsSimCommon.getAttachments();
 
 			OMElement root = response.getRoot();
 
+			if (documents!= null && documentUids!=null)
+			if (documents.size() != documentUids.size()) {// This should always be equal in this case and only for OD where documents are bogus
+				er.err(Code.XDSRepositoryError, new ToolkitRuntimeException("The On-Demand StoredDocument collection size does not match with the requested number of Uids."));
+				return;
+			}
+
+			int cx = 0;
 			for (StoredDocument document : documents) {
-				String uid = document.getUid();
+				String uid = document.uid;
 
 				StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
 
@@ -77,12 +85,16 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 				docResponse.addChild(repId);
 
 				OMElement docId = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_unique_id_qnamens);
-				docId.setText(sd.getUid());
+				docId.setText(documentUids.get(cx++));
+				/* "sd.uid" is the value of the bogus StoredDocument inserted above.
+				We are restoring the original promise Id. This is because OD changes are temporary in this class and changes elsewhere should not be needed.
+				The order of the collection iterator doesn't matter here because the bogus content is exactly the same for any OD promise (for now).
+				* */
 				docResponse.addChild(docId);
 
 				// Begin On-Demand
 				OMElement newDocId = MetadataSupport.om_factory.createOMElement(MetadataSupport.newDocumentUniqueId);
-				newDocId.setText(sd.getUid() + ".1"); // TODO: Find out what needs to go here.
+				newDocId.setText(sd.uid + ".111"); // TODO: Find out what needs to go here.
 				docResponse.addChild(newDocId);
 
 				// TODO: Find out if the NewRepositoryUniqueId needs to be added in. (Vol. 2b, 3.43.5.1.3).
@@ -90,7 +102,7 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 				// End On-Demand
 
 				OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);
-				mimeType.setText(sd.getMimeType());
+				mimeType.setText(sd.mimeType);
 				docResponse.addChild(mimeType);
 
 				OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
