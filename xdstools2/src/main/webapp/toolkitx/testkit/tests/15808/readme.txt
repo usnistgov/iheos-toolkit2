@@ -1,8 +1,9 @@
-FindDocuments for LeafClass to IG - one RG
+FindDocuments for LeafClass request to IG (one RG)
 
 The System Under Test (SUT) is an Initiating Gateway (IG) with Affinity Domain
-option. The test environment, provided by Toolkit, is a Docuemnt Consumer (DC)
-and a Responding Gateway (RG).
+option. The test environment, provided by Toolkit, is a Document Consumer (DC)
+initiating the requests
+and a Responding Gateway (RG) responding to requests coming out of the Initiating Gateway.
 
 The SUT IG shall be configured to forward query and retrieve requests to the
 Responding Gateway provided by the test. The test is driven by the Document

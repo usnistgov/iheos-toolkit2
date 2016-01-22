@@ -22,6 +22,9 @@
             <Report name="$repositoryUniqueId$" section="Result">
                 //*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
             </Report>
+            <Report name="$mimeType$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/@mimeType
+            </Report>
             <Assertions>
                 <DataRef file="THIS" as="output"/>
                 <Assert id="ExtrinsicObjectCount">

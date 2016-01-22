@@ -1,8 +1,13 @@
-Retrieve to IG - one RG
+Retrieve request to IG (one RG)
 
-From your Initiating Gateway, generate request for the retrieval of a single document based on
-metadata returned in test 12300.
+The System Under Test (SUT) is an Initiating Gateway (IG) with Affinity Domain
+option. The test environment, provided by Toolkit, is a Document Consumer (DC)
+initiating the requests
+and a Responding Gateway (RG) responding to requests coming out of the Initiating Gateway.
 
-Based on the XDSDocument.uniqueId, repositoryUniqueId, and homeCommunityId returned
-in test 12300, issue a RetrieveDocumentSet transaction to retrieve a document.
+This test contains the following sections:
 
+OneDocRetrieve - toolkit's Document Consumer issues a Retrieve request to the IG
+for the Document corresponding to the DocumentEntry returned in test 15808/OneDocFindDocuments.
+The homeCommunityId, repositoryId, documentUniqueId, and the mimeType from the response
+are validated.

@@ -95,7 +95,8 @@ public class IGTestTab extends GenericQueryTab {
                 "a Document Consumer simulator and a Responding Gateway simulator. The Responding Gateway has " +
                 "a Document Registry simulator and Document Repository simulator behind it. " +
                 "These simulators are created by this tool." +
-                "<h2>Create testSession</h2>" +
+
+                "<h2>Create supporting test session</h2>" +
                 "These simulators and " +
                 "their logs will be maintained in a test session you create for this test. At the top of the window, " +
                 "create a new test session and select it - name it for your company. " +
@@ -114,7 +115,7 @@ public class IGTestTab extends GenericQueryTab {
                 "<p>" +
                 "This will delete the contents of the selected test session and initialize it. " +
                 "The Build Test Environment button will create the necessary simulators to test your Initiating Gateway.  " +
-                "the Build Demonstration Environment button will also build an Initiating Gateway for " +
+                "the Build Demonstration Environment button will do the same and also build an Initiating Gateway for " +
                 "demonstration and training purposes. Only one can be used." +
                         "The generated test environment will be displayed below. " +
                         "Once the test environment is built, configure your Initiating Gateway to forward requests " +
