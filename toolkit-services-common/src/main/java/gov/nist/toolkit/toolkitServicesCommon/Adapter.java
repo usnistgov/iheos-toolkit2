@@ -13,7 +13,7 @@ public class Adapter extends XmlAdapter<List<KeyValue>, Map<String, String>> {
 
     @Override
     public Map<String, String> unmarshal(List<KeyValue> v) throws Exception {
-        Map<String, String> map = new HashMap<>(v.size());
+        Map<String, String> map = new HashMap<String, String>(v.size());
         for (KeyValue keyValue : v) {
             map.put(keyValue.key, keyValue.value);
         }
@@ -23,7 +23,7 @@ public class Adapter extends XmlAdapter<List<KeyValue>, Map<String, String>> {
     @Override
     public List<KeyValue> marshal(Map<String, String> v) throws Exception {
         Set<String> keys = v.keySet();
-        List<KeyValue> results = new ArrayList<>(v.size());
+        List<KeyValue> results = new ArrayList<KeyValue>(v.size());
         for (String key : keys) {
             results.add(new KeyValue(key, v.get(key)));
         }

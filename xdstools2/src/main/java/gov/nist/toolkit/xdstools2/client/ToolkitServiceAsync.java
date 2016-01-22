@@ -2,26 +2,25 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
-import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.results.shared.Test;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public interface ToolkitServiceAsync {
-	
 
 	void getTkProps(AsyncCallback<TkProps> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
@@ -185,5 +184,6 @@ public interface ToolkitServiceAsync {
 	void deleteSingleTestResult(Site site, int testId, AsyncCallback<Test> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
+    void getProfileErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
 
 }

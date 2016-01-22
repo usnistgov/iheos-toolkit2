@@ -1,5 +1,7 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
+
 /**
  *
  */

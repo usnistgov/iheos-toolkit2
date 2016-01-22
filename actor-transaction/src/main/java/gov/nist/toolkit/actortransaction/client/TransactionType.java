@@ -1,15 +1,13 @@
 package gov.nist.toolkit.actortransaction.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by bill on 9/10/15.
+ *
  */
-public enum TransactionType implements IsSerializable, Serializable {
+public enum TransactionType implements Serializable {
     PROVIDE_AND_REGISTER("ITI-41", "Provide and Register", "prb", "pr.b", "pr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse"),
     XDR_PROVIDE_AND_REGISTER("ITI-41", "XDR Provide and Register", "xdrpr", "xdrpr", "xdrpr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse"),
     REGISTER("ITI-42", "Register", "rb", "r.b", "r.as", false, "urn:ihe:iti:2007:RegisterDocumentSet-b", "urn:ihe:iti:2007:RegisterDocumentSet-bResponse"),

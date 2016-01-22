@@ -12,7 +12,6 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
@@ -227,16 +226,16 @@ public abstract class AbstractActorFactory {
 		// This statically links the IG to the CURRENT list of remote sites that it could possibly be a
 		// gateway to in the future.  BAD IDEA.  This list needs to be generated on the fly so it is current.
 		//
-		if (config.getActorType().equals(ActorType.INITIATING_GATEWAY.getName())) {
-			// must load up XCQ and XCR endpoints for simulator to use
-			config.remoteSites = new ArrayList<>();
-
-			Sites sites = simManager.getAllSites();
-			for (String remote : config.remoteSiteNames) {
-				Site site = sites.getSite(remote);
-				config.remoteSites.add(site);
-			}
-		}
+//		if (config.getActorType().equals(ActorType.INITIATING_GATEWAY.getName())) {
+//			// must load up XCQ and XCR endpoints for simulator to use
+//			config.remoteSites = new ArrayList<>();
+//
+//			Sites sites = simManager.getAllSites();
+//			for (String remote : config.rgSiteNames) {
+//				Site site = sites.getSite(remote);
+//				config.remoteSites.add(site);
+//			}
+//		}
 		//
 		//
 
@@ -246,16 +245,23 @@ public abstract class AbstractActorFactory {
 	}
 
 	static public void delete(SimulatorConfig config) throws IOException {
-		logger.info("delete simulator" + config.getId());
+        delete(config.getId());
+    }
+
+    static public void delete(SimId simId) throws IOException {
+        logger.info("delete simulator" + simId);
 		SimDb simdb;
 		try {
-			BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(config.getId());
-			sim.onDelete(config);
+			BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(simId);
+            SimulatorConfig config = loadSimulator(simId, true);
+            if (config != null)
+			    sim.onDelete(config);
 
-			simdb = new SimDb(config.getId());
+			simdb = new SimDb(simId);
 			File simDir = simdb.getSimDir();
 			simdb.delete(simDir);
-		} catch (NoSimException e) {
+
+        } catch (NoSimException e) {
 			return;		
 		} catch (ClassNotFoundException e) {
 			logger.error(ExceptionUtil.exception_details(e));
@@ -341,8 +347,16 @@ public abstract class AbstractActorFactory {
 		return configs;
 	}
 
+//    public SimulatorConfig loadSimulator(SimId simId) throws IOException, ClassNotFoundException {
+//        List<SimId> ids = new ArrayList<>();
+//        ids.add(simId);
+//        List<SimulatorConfig> configs = loadAvailableSimulators(ids);
+//        if (configs.size() == 0) return null;
+//        return configs.get(0);
+//    }
+
 	/**
-	 * Load simulators - ignore sims not found (length(simlist) < length(idlist))
+	 * Load simulators - ignore sims not found (length(simlist) &lt; length(idlist))
 	 * @param ids
 	 * @return
 	 * @throws IOException
@@ -425,7 +439,11 @@ public abstract class AbstractActorFactory {
 		addUser(sc, new SimulatorConfigElement(name, type, value));
 	}
 
-	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
+    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
+        addUser(sc, new SimulatorConfigElement(name, type, values, isMultiSelect));
+    }
+
+    public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
 	}
 

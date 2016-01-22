@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11990/eval</Test>
+  <Rule>Evaluate register one document with SubmissionSetAndContents SQ</Rule>
+  <TestStep id="by_uid">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$ssuid$" step="submit" section="AssignedUids"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

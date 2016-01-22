@@ -45,7 +45,7 @@ public class FolderValidator extends ValidatorCommon {
 	void validate_folder_slots()  {
 		List<String> fol_ids = m.getFolderIds();
 		for (int i=0; i<fol_ids.size(); i++) {
-//			String id = (String) fol_ids.get(i);
+//			String id = (String) fol_ids.getRetrievedDocumentsModel(i);
 //			try {
 //			List<OMElement> slots = m.getSlots(id);
 

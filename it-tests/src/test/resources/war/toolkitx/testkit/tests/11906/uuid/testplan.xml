@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>11906/uuid</Test>
+  <Rule>Test GetSubmissionSetAndContents Stored Query - based on UUID</Rule>
+  <TestStep id="uuid">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$uuid$" 
+        step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <SubmissionSets count="1"/>
+        <Associations count="1"/>
+        <Documents count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

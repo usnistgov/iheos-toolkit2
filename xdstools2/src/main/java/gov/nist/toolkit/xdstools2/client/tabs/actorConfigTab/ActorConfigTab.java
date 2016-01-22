@@ -200,7 +200,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		for (ActorType actorType : TransactionCollection.getActorTypes()) {
 			
-			// These get configed in other ways
+			// These getRetrievedDocumentsModel configed in other ways
 			if (!actorType.showInConfig())
 				continue;
 			

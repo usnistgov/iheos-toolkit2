@@ -3,7 +3,7 @@ import gov.nist.toolkit.errorrecording.TextErrorRecorder
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.simulators.sim.reg.sq.GetAllSim
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex
-import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory
+import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.SqParams
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport
 import gov.nist.toolkit.xdsexception.MetadataValidationException
@@ -34,7 +34,7 @@ class GetAllTest extends Specification {
         parms.addListParm('$XDSSubmissionSetStatus', ['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
         parms.addListParm('$XDSFolderStatus', ['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
 
-        StoredQuerySupport sqs = new StoredQuerySupport(parms, StoredQueryFactory.QueryReturnType.LEAFCLASS, er, null, false)
+        StoredQuerySupport sqs = new StoredQuerySupport(parms, QueryReturnType.LEAFCLASS, er, null, false)
         GetAllSim sim = new GetAllSim(sqs)
         sim.setRegIndex(regIndex)
         Metadata m
@@ -64,7 +64,7 @@ class GetAllTest extends Specification {
         parms.addListParm('$XDSSubmissionSetStatus', ['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
         parms.addListParm('$XDSFolderStatus',['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
 
-        StoredQuerySupport sqs = new StoredQuerySupport(parms, StoredQueryFactory.QueryReturnType.LEAFCLASS, er, null, false)
+        StoredQuerySupport sqs = new StoredQuerySupport(parms, QueryReturnType.LEAFCLASS, er, null, false)
         GetAllSim sim = new GetAllSim(sqs)
         sim.setRegIndex(regIndex)
         Metadata m
@@ -94,7 +94,7 @@ class GetAllTest extends Specification {
         parms.addListParm('$XDSSubmissionSetStatus', ['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
         parms.addListParm('$XDSFolderStatus',['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
 
-        StoredQuerySupport sqs = new StoredQuerySupport(parms, StoredQueryFactory.QueryReturnType.LEAFCLASS, er, null, false)
+        StoredQuerySupport sqs = new StoredQuerySupport(parms, QueryReturnType.LEAFCLASS, er, null, false)
         GetAllSim sim = new GetAllSim(sqs)
         sim.setRegIndex(regIndex)
         Metadata m
@@ -129,7 +129,7 @@ class GetAllTest extends Specification {
         parms.addListParm('$XDSSubmissionSetStatus', ['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
         parms.addListParm('$XDSFolderStatus',['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
 
-        StoredQuerySupport sqs = new StoredQuerySupport(parms, StoredQueryFactory.QueryReturnType.LEAFCLASS, er, null, false)
+        StoredQuerySupport sqs = new StoredQuerySupport(parms, QueryReturnType.LEAFCLASS, er, null, false)
         GetAllSim sim = new GetAllSim(sqs)
         sim.setRegIndex(regIndex)
         Metadata m
@@ -165,7 +165,7 @@ class GetAllTest extends Specification {
         parms.addListParm('$XDSSubmissionSetStatus', ['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
         parms.addListParm('$XDSFolderStatus',['urn:oasis:names:tc:ebxml-regrep:StatusType:Approved'])
 
-        StoredQuerySupport sqs = new StoredQuerySupport(parms, StoredQueryFactory.QueryReturnType.LEAFCLASS, er, null, false)
+        StoredQuerySupport sqs = new StoredQuerySupport(parms, QueryReturnType.LEAFCLASS, er, null, false)
         GetAllSim sim = new GetAllSim(sqs)
         sim.setRegIndex(regIndex)
         Metadata m

@@ -1,0 +1,18 @@
+ 
+<TestPlan>
+  <Test>PifFeed</Test>
+  <Rule>Simple Patient Identity Feed</Rule>
+  <TestStep id="step">
+    <Rule>
+      <Transaction>Patient Identity Feed</Transaction>
+      <Assertion>Send to Registry</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <PatientIdentityFeedTransaction>
+      <XDSb/>
+      <NoMetadata/>
+      <PatientID>$pid$</PatientID>
+    </PatientIdentityFeedTransaction>
+  </TestStep>
+</TestPlan>
+

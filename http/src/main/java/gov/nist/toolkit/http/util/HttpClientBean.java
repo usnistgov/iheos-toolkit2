@@ -12,19 +12,14 @@ import gov.nist.toolkit.http.httpclient.HttpClientInfo;
 import gov.nist.toolkit.xdsexception.HttpClientException;
 import gov.nist.toolkit.xdsexception.HttpCodeException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Map;
+import org.xml.sax.SAXException;
 
 import javax.mail.MessagingException;
 import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -134,11 +129,17 @@ public class HttpClientBean extends Object implements Serializable {
 	/**
 	 * Getter for property registryResponse.
 	 * @return Value of property registryResponse.
-	 * @throws java.lang.Exception Thrown if servletRequest not set or if there is a problem communicating
+	 * @throws HttpClientException
+     * @throws HttpCodeException
+     * @throws IOException
+     * @throws XdsInternalException
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     * @throws MessagingException
 	 * between HttpClient and registry.
 	 */
 	public boolean isRegistryResponse() 
-	throws HttpClientException, MalformedURLException, HttpCodeException, IOException, XdsInternalException, 
+	throws HttpClientException, HttpCodeException, IOException, XdsInternalException,
 	ParserConfigurationException, SAXException, MessagingException {
 		HttpClient sl = HttpClient.getConnection(this.getHost(),this.getPort(), this.getService(), false, username, password);
 		String registryStatus;

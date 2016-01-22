@@ -253,12 +253,12 @@ public class SimulatorServiceManager extends CommonService {
 	public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception  {
 		logger.debug(session.id() + ": " + "getSimConfigs " + ids);
 
-		GenericSimulatorFactory simFact = new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
+		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 		List<SimulatorConfig> configs = simFact.loadAvailableSimulators(ids);
 //		List<SimulatorConfig> configs = simServices.getSimConfigs(ids);
 
 		// update cache
-		new SimCache().update(session.id(), configs);
+		SimCache.update(session.id(), configs);
 		
 		return configs;
 	}
@@ -281,7 +281,7 @@ public class SimulatorServiceManager extends CommonService {
 		List<SimulatorConfig> configs = simFact.loadSimulators(userSimIds);
 
 		// update cache
-		new SimCache().update(session.id(), configs);
+		SimCache.update(session.id(), configs);
 
 		return configs;
 	}
@@ -291,17 +291,25 @@ public class SimulatorServiceManager extends CommonService {
 		try {
 			SimManager simManager = new SimCache().getSimManagerForSession(session.id(), true);
 			new GenericSimulatorFactory(simManager).saveConfiguration(config);
-
 		} catch (IOException e) {
 			logger.error("saveSimConfig", e);
-			throw new Exception(e.getMessage());
+			throw e;
 		}
+        logger.debug("save complete");
 		return "";
 	}
 
-	public String deleteConfig(SimulatorConfig config) throws Exception  {
+    public String deleteConfig(SimId simId) throws IOException {
+        SimulatorConfig config = SimCache.getSimulatorConfig(simId);
+        if (config != null)
+            return deleteConfig(config);
+        return "";
+    }
+
+	public String deleteConfig(SimulatorConfig config) throws IOException  {
 		logger.debug(session.id() + ": " + "deleteConfig " + config.getId());
-		new SimulatorApi(session).delete(config.getId());
+        GenericSimulatorFactory.delete(config.getId());
+        new SimulatorApi(session).delete(config.getId());
 		SimServlet.deleteSim(config.getId());
 		return "";
 //		try {
@@ -319,7 +327,7 @@ public class SimulatorServiceManager extends CommonService {
 	 */
 	public Map<String, SimId> getSimulatorNameMap() {
 		logger.debug(session.id() + ": " + "getActorSimulatorNameMap");
-		return new SimCache().getSimManagerForSession(session.id(), true).getNameMap();
+		return SimCache.getSimManagerForSession(session.id(), true).getNameMap();
 	}
 
 	public int removeOldSimulators() {
@@ -389,7 +397,14 @@ public class SimulatorServiceManager extends CommonService {
 					rep.add(reg);
 					stats.add(rep);
 				}
+                else if (db.getSimulatorActorType() == ActorType.RESPONDING_GATEWAY) {
+                    SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
+                    SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
+                    rep.add(reg);
+                    stats.add(rep);
+                }
 				else {
+                    stats.add(new SimulatorStats(simId));
 					logger.debug("Don't recognize actorType - " + db.getSimulatorActorType());
 				}
 			}
@@ -451,5 +466,6 @@ public class SimulatorServiceManager extends CommonService {
 		}
 		return ResultBuilder.RESULT(m);
 	}
+
 
 }

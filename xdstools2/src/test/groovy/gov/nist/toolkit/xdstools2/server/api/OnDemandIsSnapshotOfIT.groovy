@@ -29,7 +29,8 @@ class OnDemandIsSnapshotOfIT extends Specification {
     String testSession = 'sunil';
 
     def setup() {
-        api = ToolkitApi.forInternalUse()
+        //api = ToolkitApi.forInternalUse()
+        api = new ToolkitApi()
         println "EC is ${Installation.installation().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)

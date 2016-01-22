@@ -63,11 +63,11 @@ public class SimServlet  extends HttpServlet {
 	public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
 		config = sConfig;
-		logger.info("Initializing toolkit");
+		logger.info("Initializing toolkit in SimServlet");
 		File warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
 		Installation.installation().warHome(warHome);
-		logger.info("...simdb = " + Installation.installation().simDbFile());
+        logger.info("...warHome initialized to " + Installation.installation().warHome());
 
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);
@@ -551,7 +551,7 @@ public class SimServlet  extends HttpServlet {
 		// this should go away after repository code made to use deltas
 		if (!transactionOk) {
 			synchronized(this) {
-				// delete memory copy of indexes so they don't get written out
+				// delete memory copy of indexes so they don't getRetrievedDocumentsModel written out
 				servletContext.setAttribute("Rep_" + simid, null);
 				repIndex = null;
 			}
@@ -570,6 +570,7 @@ public class SimServlet  extends HttpServlet {
 				repIndex.save();
 			}
 
+            logger.info("Starting Reg/Rep Cache cleanout");
 			synchronized(this) {
 
 				// check for indexes that are old enough they should be removed from cache
@@ -597,7 +598,9 @@ public class SimServlet  extends HttpServlet {
 				}
 
 			}
+            logger.info("Done with Reg/Rep Cache cleanout");
 		} catch (IOException e) {
+            logger.info("Done with Reg/Rep Cache cleanout");
 			if (!responseSent)
 				sendSoapFault(response, ExceptionUtil.exception_details(e));
 			e.printStackTrace();
@@ -678,6 +681,7 @@ public class SimServlet  extends HttpServlet {
 		String registryIndexFile = db.getRegistryIndexFile().toString();
 		RegIndex regIndex;
 
+        logger.info("GetRegIndex");
 		synchronized(config) {
 			regIndex = (RegIndex) servletContext.getAttribute("Reg_" + simid);
 			if (regIndex == null) {
@@ -700,6 +704,7 @@ public class SimServlet  extends HttpServlet {
 		String repositoryIndexFile = db.getRepositoryIndexFile().toString();
 		RepIndex repIndex;
 
+        logger.info("GetRepIndex");
 		synchronized(config) {
 			repIndex = (RepIndex) servletContext.getAttribute("Rep_" + simid);
 			if (repIndex == null) {
@@ -714,6 +719,7 @@ public class SimServlet  extends HttpServlet {
 
 	// remove the index(s)
 	static public void deleteSim(SimId simId) {
+        if (config == null) return;
 		ServletContext servletContext = config.getServletContext();
 		servletContext.removeAttribute("Reg_" + simId);
 		servletContext.removeAttribute("Rep_" + simId);

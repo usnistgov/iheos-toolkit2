@@ -3,6 +3,9 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
+import gov.nist.toolkit.registrymsg.repository.RetrieveResponseParser;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.transactions.BasicTransaction;
@@ -79,7 +82,7 @@ public class RetrieveB {
 		String ns = MetadataSupport.xdsB.getNamespaceURI();
 		OMElement rdsr = MetadataSupport.om_factory.createOMElement(new QName(	ns, "RetrieveDocumentSetRequest"));
 		for (String uid : rc.getRequestInfo().keySet()) {
-			RetInfo ri = rc.getRequestInfo().get(uid);
+			RetrievedDocumentModel ri = rc.getRequestInfo().get(uid);
 
 			OMElement dr = MetadataSupport.om_factory.createOMElement(new QName(	ns, "DocumentRequest"));
 			rdsr.addChild(dr);
@@ -91,11 +94,11 @@ public class RetrieveB {
 			}
 
 			OMElement ruid = MetadataSupport.om_factory.createOMElement(new QName(	ns, "RepositoryUniqueId"));
-			ruid.setText(ri.getRep_uid());
+			ruid.setText(ri.getRepUid());
 			dr.addChild(ruid);
 
 			OMElement duid = MetadataSupport.om_factory.createOMElement(new QName(	ns, "DocumentUniqueId"));
-			duid.setText(ri.getDoc_uid());
+			duid.setText(ri.getDocUid());
 			dr.addChild(duid);
 		}
 		return rdsr;
@@ -212,59 +215,66 @@ public class RetrieveB {
 
 
 	// map key is docUid
-	public HashMap<String, RetInfo> parse_rep_response(OMElement response) throws IOException, MetadataException, Exception {
-		HashMap<String, RetInfo> map = new HashMap<String, RetInfo>();
+	public RetrievedDocumentsModel parse_rep_response(OMElement response) throws IOException, MetadataException, Exception {
 
-		int docIndex = 1;
-		for (OMElement doc_response : XmlUtil.childrenWithLocalName(response, "DocumentResponse")) {
-			RetInfo rr = new RetInfo();
+        RetrievedDocumentsModel map = new RetrieveResponseParser(response).get();
+        for (RetrievedDocumentModel retrievedDocumentModel : map.values()) {
+            if (useReportManager != null) {
+                useReportManager.setRetInfo(retrievedDocumentModel, 1);
+            }
+        }
+        return map;
 
-			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "DocumentUniqueId") ;
-			rr.setDoc_uid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
 
-			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "RepositoryUniqueId") ;
-			rr.setRep_uid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
-
-			OMElement mime_type_ele = XmlUtil.firstChildWithLocalName(doc_response, "mimeType") ;
-			rr.setContent_type((mime_type_ele != null) ? mime_type_ele.getText() : null);
-
-			OMElement document_content_ele = XmlUtil.firstChildWithLocalName(doc_response, "Document") ;
-
-			Mtom mtom = new Mtom();
-			mtom.decode(document_content_ele);
-//			if ( !mtom.isOptimized()) {
-//				throw new XdsFormatException("Response to RetrieveDocumentSet is not in MTOM format");
+//		int docIndex = 1;
+//		for (OMElement doc_response : XmlUtil.childrenWithLocalName(response, "DocumentResponse")) {
+//			RetInfo rr = new RetInfo();
+//
+//			OMElement doc_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "DocumentUniqueId") ;
+//			rr.setDocUid((doc_uid_ele != null) ? doc_uid_ele.getText() : null);
+//
+//			OMElement rep_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "RepositoryUniqueId") ;
+//			rr.setRepUid((rep_uid_ele != null) ? rep_uid_ele.getText() : null);
+//
+//			OMElement mime_type_ele = XmlUtil.firstChildWithLocalName(doc_response, "mimeType") ;
+//			rr.setContent_type((mime_type_ele != null) ? mime_type_ele.getText() : null);
+//
+//			OMElement document_content_ele = XmlUtil.firstChildWithLocalName(doc_response, "Document") ;
+//
+//			Mtom mtom = new Mtom();
+//			mtom.decode(document_content_ele);
+////			if ( !mtom.isOptimized()) {
+////				throw new XdsFormatException("Response to RetrieveDocumentSet is not in MTOM format");
+////			}
+//
+//			String mtom_mime = mtom.getContent_type();
+//			boolean isOptimized = mtom.isOptimized();
+//			if (this.log_parent != null)
+//				testLog.add_simple_element_with_id(log_parent, "IsOptimized", (isOptimized) ? "true" : "false");
+//
+//			// MTOM encoding does not require correct/accurate content type.  If MTOM package punted
+//			// and used application/octet-stream then take mime type from retrieve response metadata
+//			if (mtom_mime != null && mtom_mime.equals("application/octet-stream") && isOptimized)
+//				mtom_mime = rr.getContent_type();
+//			else if (mtom_mime != null && rr.getContent_type() != null && !rr.getContent_type().equals(mtom_mime))
+//				rr.addError("Mime Type attribute (" + rr.getContent_type() + ") does not match Content-Type (" + mtom_mime + ")");
+//			rr.setContents(mtom.getContents());
+//
+//			if (rr.getDocUid() == null)
+//				throw new MetadataException("parse_rep_result(): Document uniqueId not found in response", null);
+//
+//			map.put(rr.getDocUid(), rr);
+//
+//			if (useReportManager != null) {
+//				useReportManager.setRetInfo(rr, docIndex);
 //			}
-
-			String mtom_mime = mtom.getContent_type();
-			boolean isOptimized = mtom.isOptimized();
-			if (this.log_parent != null)
-				testLog.add_simple_element_with_id(log_parent, "IsOptimized", (isOptimized) ? "true" : "false");
-
-			// MTOM encoding does not require correct/accurate content type.  If MTOM package punted
-			// and used application/octet-stream then take mime type from retrieve response metadata
-			if (mtom_mime != null && mtom_mime.equals("application/octet-stream") && isOptimized)
-				mtom_mime = rr.getContent_type();
-			else if (mtom_mime != null && rr.getContent_type() != null && !rr.getContent_type().equals(mtom_mime))
-				rr.addError("Mime Type attribute (" + rr.getContent_type() + ") does not match Content-Type (" + mtom_mime + ")");
-			rr.setContents(mtom.getContents());
-
-			if (rr.getDoc_uid() == null)
-				throw new MetadataException("parse_rep_result(): Document uniqueId not found in response", null);
-
-			map.put(rr.getDoc_uid(), rr);
-
-			if (useReportManager != null) {
-				useReportManager.setRetInfo(rr, docIndex);
-			}
-		}
-
-		return map;
+//		}
+//
 	}
 
 	protected String validate_retrieve() throws MetadataException {
-		HashMap<String, RetInfo> request = r_ctx.getRequestInfo();
-		HashMap<String, RetInfo> response = r_ctx.getResponseInfo();
+        RetrievedDocumentsModel request = r_ctx.getRequestInfo();
+        RetrievedDocumentsModel response = r_ctx.getResponseInfo();
 		StringBuffer errors = new StringBuffer();
 		HashMap<String, OMElement> uid_doc_map = null;   // UUID -> ExtrinsicObject
 
@@ -276,10 +286,10 @@ public class RetrieveB {
 
 		for (String req_doc : request.keySet()) {
 			//System.out.println("validating " + req_doc);
-			RetInfo req = request.get(req_doc);
-			RetInfo rsp = response.get(req_doc);
+			RetrievedDocumentModel req = request.get(req_doc);
+			RetrievedDocumentModel rsp = response.get(req_doc);
 
-			String doc_uid = req.getDoc_uid();
+			String doc_uid = req.getDocUid();
 			OMElement eo = null;
 			if (uid_doc_map != null)
 				eo = uid_doc_map.get(doc_uid);
@@ -309,13 +319,13 @@ public class RetrieveB {
 			//			errors.append("Request:\n" + req.toString() + "\n");
 			//			errors.append("Response:\n" + rsp.toString() + "\n");
 
-			if (req.getRep_uid() == null) {
+			if (req.getRepUid() == null) {
 				errors.append("Request repositoryUniqueId is null\n");
 				continue;
 			}
 
-			if ( !req.getRep_uid().equals(rsp.getRep_uid()))
-				errors.append("Request repositoryUniqueId does not match response - [" + req.getRep_uid() + "] vs [" + rsp.getRep_uid() + "]\n");
+			if ( !req.getRepUid().equals(rsp.getRepUid()))
+				errors.append("Request repositoryUniqueId does not match response - [" + req.getRepUid() + "] vs [" + rsp.getRepUid() + "]\n");
 
 			if (rsp.getContents() == null || req.getContents() == null) {
 				boolean err = false;

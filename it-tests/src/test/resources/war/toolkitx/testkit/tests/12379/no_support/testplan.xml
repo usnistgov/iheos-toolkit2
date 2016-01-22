@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12379/no_support</Test>
+  <Rule>XDSExtraMetadataNotSaved rule</Rule>
+  <TestStep id="no_support">
+    <Rule>
+      <Assertion>This step should pass with a warning if Extra Metadata cannot be saved.</Assertion>
+    </Rule>
+    <ExpectedStatus>Warning</ExpectedStatus>
+    <ExpectedErrorCode>XDSExtraMetadataNotSaved</ExpectedErrorCode>
+    <RegisterTransaction>
+      <XDSb/>
+      <MetadataFile>metadata.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

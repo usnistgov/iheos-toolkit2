@@ -15,7 +15,7 @@ public class HeaderList {
     public List<String> values(String key) {
         List<String> vals = hdrs.get(key);
         if (vals == null) {
-            vals = new ArrayList<>();
+            vals = new ArrayList<String>();
             hdrs.put(key, vals);
         }
         return vals;

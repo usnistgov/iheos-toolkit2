@@ -1,0 +1,1 @@
+GetAll Stored Query

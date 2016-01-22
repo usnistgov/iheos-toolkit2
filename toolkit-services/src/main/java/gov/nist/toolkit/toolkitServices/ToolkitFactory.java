@@ -1,10 +1,12 @@
 package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.toolkitServicesCommon.SimConfigResource;
+import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
-import gov.nist.toolkit.toolkitServicesCommon.SimIdResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,9 +40,34 @@ public class ToolkitFactory {
                 bean.setProperty(ele.name, ele.asBoolean());
             } else if (ele.isString()) {
                 bean.setProperty(ele.name, ele.asString());
+            } else if (ele.isList()) {
+                bean.setProperty(ele.name, ele.asList());
             }
         }
         return bean;
     }
+
+    static public SimulatorConfig asSimulatorConfig(SimConfig res) {
+        SimulatorConfig config = new SimulatorConfig();
+        config.setId(new gov.nist.toolkit.actorfactory.client.SimId(res.getFullId()));
+        config.setActorType(res.getActorType());
+
+        for (String propName : res.getPropertyNames()) {
+            if (res.isString(propName)) {
+                if (propName.endsWith("endpoint")) {
+                    config.add(new SimulatorConfigElement(propName, ParamType.ENDPOINT, res.asString(propName)));
+                } else {
+                    config.add(new SimulatorConfigElement(propName, ParamType.TEXT, res.asString(propName)));
+                }
+            } else if (res.isBoolean(propName)){
+                config.add(new SimulatorConfigElement(propName, ParamType.BOOLEAN, res.asBoolean(propName)));
+            } else if (res.isList(propName)) {
+                config.add(new SimulatorConfigElement(propName, ParamType.SELECTION, res.asList(propName), false));
+            }
+        }
+
+        return config;
+    }
+
 
 }

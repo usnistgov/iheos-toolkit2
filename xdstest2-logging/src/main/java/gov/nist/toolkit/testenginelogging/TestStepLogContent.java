@@ -13,6 +13,7 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -26,6 +27,7 @@ public class TestStepLogContent  implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = 2676088682465214583L;
+    static Logger logger = Logger.getLogger(TestStepLogContent.class);
 	String id;
 	boolean success;
 	boolean expectedSuccess;
@@ -182,7 +184,7 @@ public class TestStepLogContent  implements Serializable {
 	}
 
 	void parseErrors() throws Exception {
-		errors = new ArrayList<String>();
+		errors = new ArrayList<>();
 
 		try {
 			RegistryResponseLog rrl = getUnexpectedErrors();
@@ -192,7 +194,7 @@ public class TestStepLogContent  implements Serializable {
 			}
 		} catch (Exception e) {}
 		errors.addAll(getAssertionErrors());
-
+//        if (errors.size() > 0) success = false;
 	}
 
 
@@ -271,9 +273,7 @@ public class TestStepLogContent  implements Serializable {
 
 	void parseResult() {
 		try {
-			//			result =  xmlFormat(MetadataSupport.firstDecendentWithLocalName(root, "Result").getFirstElement());
 			OMElement copy = Util.deep_copy(XmlUtil.firstDecendentWithLocalName(root, "Result").getFirstElement());
-			//OMElement resultEle = MetadataSupport.firstDecendentWithLocalName(root, "Result").getFirstElement();
 			for (OMElement ele : XmlUtil.decendentsWithLocalName(copy, "Document", 4)) {
 				String original = ele.getText();
 				int size = (original == null || original.equals("")) ? 0 : original.length();

@@ -6,25 +6,16 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.registrymetadata.client.Document;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.AssertionResult;
-import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.results.client.CodesConfiguration;
-import gov.nist.toolkit.results.client.CodesResult;
-import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
-import gov.nist.toolkit.results.client.Result;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.StepResult;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.results.client.TestLogs;
+import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
-import gov.nist.toolkit.testengine.engine.RetInfo;
 import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
@@ -47,12 +38,7 @@ import org.apache.log4j.Logger;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -67,7 +53,8 @@ public class XdsTestServiceManager extends CommonService {
 	static boolean allCiphersEnabled = false;
 
 	public XdsTestServiceManager(Session session)  {
-		this.session = session;
+        this.session = session;
+        logger.info("XdsTestServiceManager: using session " + session.getId());
 	}
 
 	public static Logger getLogger() {
@@ -313,7 +300,7 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	/**
-	 * Return the contents of all the log.xml files found under external_cache/TestLogCache/<sessionName>.  If there
+	 * Return the contents of all the log.xml files found under external_cache/TestLogCache/&lt;sessionName&gt;.  If there
 	 * are multiple sections to the test then load them all. Each element of the
 	 * returned list (Result object) represents the output of all steps in a single section of the test.
 	 * @param sessionName - not the servlet session but instead the dir name
@@ -390,7 +377,7 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public CodesResult getCodesConfiguration() {
-		logger.debug(session.id() + ": " + "getCodesConfiguration");
+		logger.debug(session.id() + ": " + "currentCodesConfiguration");
 
 		CodesResult codesResult = new CodesResult();
 
@@ -493,6 +480,8 @@ public class XdsTestServiceManager extends CommonService {
 						stepResult.status = tsLog.getStatus();
 						stepPass = stepResult.status;
 
+                        logger.info("test section " + section + " has status " + stepPass);
+
 						// a transaction can have metadata in the request OR
 						// the response
 						// look in both places and save
@@ -547,14 +536,14 @@ public class XdsTestServiceManager extends CommonService {
                                                     "RetrieveDocumentSetResponse");
 								if (rdsr != null) {
 									RetrieveB rb = new RetrieveB();
-									Map<String, RetInfo> resMap = rb
-											.parse_rep_response(response);
+									Map<String, RetrievedDocumentModel> resMap = rb
+											.parse_rep_response(response).getMap();
 									for (String docUid : resMap.keySet()) {
-										RetInfo ri = resMap.get(docUid);
+										RetrievedDocumentModel ri = resMap.get(docUid);
 										Document doc = new Document();
-										doc.uid = ri.getDoc_uid();
+										doc.uid = ri.getDocUid();
 										doc.repositoryUniqueId = ri
-												.getRep_uid();
+												.getRepUid();
 										doc.mimeType = ri.getContent_type();
 										doc.homeCommunityId = ri.getHome();
 										doc.cacheURL = getRepositoryCacheWebPrefix()
@@ -565,7 +554,6 @@ public class XdsTestServiceManager extends CommonService {
 											stepResult.documents = new ArrayList<Document>();
 										stepResult.documents.add(doc);
 
-										// The colon ":" character is illegal on a Windows FS.
 										File localFile = new File(getRepositoryCache(), doc.uid.replace(":","") + getRepositoryCacheFileExtension(doc.mimeType));
 
 //                                                new File(

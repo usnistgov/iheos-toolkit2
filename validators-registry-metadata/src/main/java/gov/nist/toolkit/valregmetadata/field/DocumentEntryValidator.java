@@ -56,14 +56,14 @@ public class DocumentEntryValidator extends ValidatorCommon {
 //		List<String> doc_ids = m.getExtrinsicObjectIds();
 //
 //		for (int i=0; i<doc_ids.size(); i++) {
-//			String id = (String) doc_ids.get(i);
+//			String id = (String) doc_ids.getRetrievedDocumentsModel(i);
 //			try {
 //			List<OMElement> slots = m.getSlots(id);
 //
 //
 //
 //			for (int s=0; s<slots.size(); s++) {
-//				OMElement slot = (OMElement) slots.get(s);
+//				OMElement slot = (OMElement) slots.getRetrievedDocumentsModel(s);
 //				String slot_name = slot.getAttributeValue(MetadataSupport.slot_name_qname);
 //
 //				if (slot_name == null)

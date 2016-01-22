@@ -126,7 +126,7 @@ public class Attribute extends ValidatorCommon {
 //			List<OMElement> classs = m.getClassifications();
 //
 //			for (int i=0; i<classs.size(); i++) {
-//				OMElement class_ele = (OMElement) classs.get(i);
+//				OMElement class_ele = (OMElement) classs.getRetrievedDocumentsModel(i);
 //				String class_scheme = class_ele.getAttributeValue(MetadataSupport.classificationscheme_qname);
 //				String classified_object_id = class_ele.getAttributeValue(MetadataSupport.classified_object_qname);
 //				OMElement classified_object_ele = m.getObjectById(classified_object_id);
@@ -192,14 +192,14 @@ public class Attribute extends ValidatorCommon {
 //		List<String> rp_ids = m.getRegistryPackageIds();
 //
 //		for (int i=0; i<rp_ids.size(); i++) {
-//			String id = (String) rp_ids.get(i);
+//			String id = (String) rp_ids.getRetrievedDocumentsModel(i);
 //
 //			int ss_class_count = 0;
 //			int fol_class_count = 0;
 //
 //			List<OMElement> ext_classs = m.getClassifications();
 //			for (int c=0; c<ext_classs.size(); c++) {
-//				OMElement class_ele = ext_classs.get(c);
+//				OMElement class_ele = ext_classs.getRetrievedDocumentsModel(c);
 //				String classified_id = class_ele.getAttributeValue(MetadataSupport.classified_object_qname);
 //				if ( classified_id == null || !id.equals(classified_id))
 //					continue;

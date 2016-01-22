@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    
+    This extended version of the OASIS ebRIM schema was created in support of the European EPSOS project.
+    It adds the ability to include the Document contents inside a Document element which is a
+    child of ExtrinsicObject (DocumentEntry in XDS-speak).
+    
+-->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="urn:ihe:iti:xds-ebrim:extensions:2010"
+    xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+    xmlns:rimext="urn:ihe:iti:xds-ebrim:extensions:2010"
+    xmlns:tns="urn:ihe:iti:xds-ebrim:extensions:2010"
+    xmlns="urn:ihe:iti:xds-ebrim:extensions:2010"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified"> 
+    
+    <xsd:import namespace="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" schemaLocation="rim.xsd"/>
+    
+    <xsd:complexType name="ExtrinsicObjectType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Extends rim:ExtrinsicObjectType to add MTOM/XOP based attachment support.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="rim:ExtrinsicObjectType">
+                <xsd:choice minOccurs="0" maxOccurs="1">
+                    <xsd:element name="Document" type="xsd:base64Binary"/>
+                </xsd:choice>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="ExtrinsicObject" type="rimext:ExtrinsicObjectType" substitutionGroup="rim:Identifiable"/>
+
+</xsd:schema>

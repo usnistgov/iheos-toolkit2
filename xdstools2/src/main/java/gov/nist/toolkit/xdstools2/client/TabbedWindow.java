@@ -134,7 +134,7 @@ public abstract class TabbedWindow {
 	//		});
 	//	}
 
-	// all panels get a close button except the home panel
+	// all panels getRetrievedDocumentsModel a close button except the home panel
 	protected void addCloseButton(TabContainer container, VerticalPanel topPanel, String helpHTML) {
 
 		final VerticalPanel myPanel = topPanel;

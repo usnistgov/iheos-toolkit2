@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
- * issue a transaction, get back results, 
+ * issue a transaction, getRetrievedDocumentsModel back results,
  * and allow the results to be inspected
  * @author bill
  *

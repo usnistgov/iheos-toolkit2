@@ -5,7 +5,7 @@ import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 
 /**
- * Build/modify a collection of different Actors.
+ * Build/modify a collection of different Actor simulators running in a remote copy of toolkit.
  */
 public class SimulatorBuilder {
     String urlRoot;
@@ -20,6 +20,11 @@ public class SimulatorBuilder {
     public SimulatorBuilder(String urlRoot) {
         this.urlRoot = urlRoot;
         engine = new EngineSpi(urlRoot);
+    }
+
+    // These are private because you should use the actor-specific call like createRespondingGateway
+    private SimConfig create(BasicSimParameters p) throws ToolkitServiceException {
+        return create(p.getId(), p.getUser(), p.getActorType(), p.getEnvironmentName());
     }
 
     private SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
@@ -71,6 +76,42 @@ public class SimulatorBuilder {
     }
 
     /**
+     * Create new Document Registry/Repository simulator with default configuration.
+     * To create a simulator with
+     * custom configuration:
+     * <ol>
+     * <li>Create simulator with default configuration</li>
+     * <li>Update the local copy of the configuration</li>
+     * <li>Send the update via the update method</li>
+     * </ol>
+     * @param id Simulator ID
+     * @param user User creating Simulator.  Same as TestSession in Toolkit UI. The simulator ID must be unique for this user.
+     * @param environmentName Environment defines Affinity Domain coding schemes and TLS certificate for use with client.
+     * @return Simulator configuration.
+     * @throws ToolkitServiceException if anything goes wrong.
+     */
+    public DocumentRegRep createDocumentRegRep(String id, String user, String environmentName) throws ToolkitServiceException {
+        XdsDocumentRegRep act = new XdsDocumentRegRep();
+        act.engine = engine;
+        act.config = engine.create(id, user, SimulatorActorType.REPOSITORY_REGISTRY, environmentName);
+        return act;
+    }
+
+    public RespondingGateway createRespondingGateway(String id, String user, String environmentName) throws ToolkitServiceException {
+        XcaRespondingGateway act = new XcaRespondingGateway();
+        act.engine = engine;
+        act.config = engine.create(id, user, SimulatorActorType.RESPONDING_GATEWAY, environmentName);
+        return act;
+    }
+
+    public InitiatingGateway createInitiatingGateway(String id, String user, String environmentName) throws ToolkitServiceException {
+        XcaInitiatingGateway act = new XcaInitiatingGateway();
+        act.engine = engine;
+        act.config = engine.create(id, user, SimulatorActorType.INITIATING_GATEWAY, environmentName);
+        return act;
+    }
+
+    /**
      * Update the configuration of a Simulator. Any properties that are passed in SimConfig that are
      * not recognized will be silently ignored. Parameters passed with wrong type (String vs. boolean) will cause
      * ToolkitServiceException.
@@ -81,7 +122,7 @@ public class SimulatorBuilder {
      * @return updated SimConfig if updates made or null if no changes accepted.
      * @throws ToolkitServiceException if anything goes wrong
      */
-    private SimConfig update(SimConfig config) throws ToolkitServiceException {
+    public SimConfig update(SimConfig config) throws ToolkitServiceException {
         return engine.update(config);
     }
 
@@ -96,6 +137,11 @@ public class SimulatorBuilder {
     public void delete(String id, String user) throws ToolkitServiceException {
         engine.delete(id, user);
     }
+
+    private void delete(BasicSimParameters p) throws ToolkitServiceException {
+        delete(p.getId(), p.getUser());
+    }
+
 
     /**
      * Delete a simulator. There is another call available using separate raw ID and USER parameters.

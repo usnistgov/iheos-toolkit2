@@ -86,7 +86,7 @@ public class UriTest extends TestCase {
 //
 //	private void rmURI() {
 //		try {
-//			m.rmSlot(m.getExtrinsicObjectIds().get(0), "URI");
+//			m.rmSlot(m.getExtrinsicObjectIds().getRetrievedDocumentsModel(0), "URI");
 //		} catch (MetadataException e) {
 //			fail("Exception: " + ExceptionUtil.exception_details(e));
 //		}
@@ -170,7 +170,7 @@ public class UriTest extends TestCase {
 //		
 //		OMElement slot = null;
 //		try {
-//			slot = m.getSlot(m.getExtrinsicObjectIds().get(0), "URI");
+//			slot = m.getSlot(m.getExtrinsicObjectIds().getRetrievedDocumentsModel(0), "URI");
 //		} catch (MetadataException e) {
 //			fail(ExceptionUtil.exception_details(e));
 //		}

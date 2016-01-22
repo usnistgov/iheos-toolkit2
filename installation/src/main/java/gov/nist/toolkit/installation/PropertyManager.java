@@ -15,7 +15,7 @@ public class PropertyManager {
 	Properties toolkitProperties = null;
 	
 	public PropertyManager(String propFile) {
-		this.propFile = propFile;
+        this.propFile = propFile;
 	}
 	
 	public void update(Map<String, String> props) throws Exception {

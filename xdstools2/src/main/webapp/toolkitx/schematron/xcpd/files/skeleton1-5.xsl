@@ -223,7 +223,7 @@ This program implements schematron 1.5 with some 1.6 extensions -->
 
 	<!-- KEY -->
 	<!-- do we need something to test uniqueness too? --> 
-	<!-- NOTE: if you get complaint about "key" here (e.g. Xalan4C 1.0) replace
+	<!-- NOTE: if you getRetrievedDocumentsModel complaint about "key" here (e.g. Xalan4C 1.0) replace
 		"key" with "$hiddenKey" -->
 	<xsl:template  match="sch:key | key " mode="do-keys" >
                 <xsl:if test="not(@name)">

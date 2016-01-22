@@ -1,11 +1,13 @@
 package gov.nist.toolkit.tookitApi;
 
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.toolkitServicesCommon.RefList;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 
 /**
- * Created by bill on 10/31/15.
+ *
  */
-public interface AbstractActorInterface {
+public interface AbstractActorInterface extends SimConfig {
 
     SimConfig getConfig();
 
@@ -54,4 +56,9 @@ public interface AbstractActorInterface {
      String describe();
 
      String getId();
+
+    RefList getEventIds(String simId, TransactionType transaction) throws ToolkitServiceException;
+
+    RefList getEvent(String simId, TransactionType transaction, String eventId) throws ToolkitServiceException;
+
 }

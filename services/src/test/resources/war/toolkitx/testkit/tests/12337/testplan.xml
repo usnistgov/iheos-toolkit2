@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12337</Test>
+  <TestStep id="retrieve_small">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+      <ASync/>
+      <UseXPath testdir="../12310" symbol="$docuid$" step="finddocs">
+                //TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value            </UseXPath>
+      <UseXPath testdir="../12310" symbol="$repositoryuid$" step="finddocs">
+                /TestResults/TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value'][1]              </UseXPath>
+      <UseXPath testdir="../12310" symbol="$home$" step="finddocs">
+                /TestResults/TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ExtrinsicObject'][1]/@home
+            </UseXPath>
+      <ExpectedMimeType>text/plain</ExpectedMimeType>
+      <ReferenceDocument uid="$docuid$">../12318/my_document.txt</ReferenceDocument>
+      <MetadataFile>query.xml</MetadataFile>
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

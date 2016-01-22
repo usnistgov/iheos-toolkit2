@@ -85,10 +85,10 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				StoredDocument storedDocument = null;
 				try {
 					storedDocument = new StoredDocument(dam.getStoredDocumentForDocumentId(eoId));  // exception if not found
-					storedDocument.pathToDocument = common.db.getRepositoryDocumentFile(uid).toString();
+					storedDocument.setPathToDocument(common.db.getRepositoryDocumentFile(uid).toString());
 					sdMap.put(uid, storedDocument);
-					storedDocument.pathToDocument = repositoryFile.toString();
-					storedDocument.uid = uid;
+					storedDocument.setPathToDocument(repositoryFile.toString());
+					storedDocument.setUid(uid);
 					byte[] contents = storedDocument.content;
 
 					size = contents.length;
@@ -104,8 +104,8 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 					StoredDocumentInt sdi = mc.getContent(docContentId);
 					if (sdi != null) {
 						storedDocument = new StoredDocument(sdi);
-						storedDocument.uid = uid;
-						storedDocument.pathToDocument = common.db.getRepositoryDocumentFile(uid).toString();
+						storedDocument.setUid(uid);
+						storedDocument.setPathToDocument(common.db.getRepositoryDocumentFile(uid).toString());
 						storedDocument.content = mc.getContent(docContentId).content;
 						sdMap.put(uid, storedDocument);
 						size = storedDocument.content.length;

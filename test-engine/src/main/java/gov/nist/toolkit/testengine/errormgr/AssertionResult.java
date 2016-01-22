@@ -9,7 +9,6 @@ public class AssertionResult {
 	 * Use for assertions that fail
 	 * @param assertion
 	 * @param info
-	 * @param status
 	 */
 	public AssertionResult(String assertion, String info) {
 		this.assertion = assertion;
@@ -20,7 +19,6 @@ public class AssertionResult {
 	/**
 	 * Use for assertions that pass
 	 * @param assertion
-	 * @param status
 	 */
 	public AssertionResult(String assertion) {
 		this.assertion = assertion;

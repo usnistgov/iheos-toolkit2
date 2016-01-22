@@ -9,6 +9,7 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.xdsexception.XdsException;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Map;
  * Service class for the new Find Documents tab.
  */
 public class FindDocuments2 extends CommonService {
+    static Logger logger = Logger.getLogger(FindDocuments2.class);
     Session session;
 
     public FindDocuments2(Session session) throws XdsException {
@@ -33,7 +35,7 @@ public class FindDocuments2 extends CommonService {
             session.transactionSettings.assignPatientId = false;
             TestInstance testInstance = new TestInstance("FindDocuments2");
 
-            System.out.println("FindDocuments2:  " + selectedCodes);
+            logger.info("FindDocuments2:  " + selectedCodes);
 
 
             // XDS Codes
@@ -99,13 +101,24 @@ public class FindDocuments2 extends CommonService {
             }
 
             List<String> sections = new ArrayList<String>();
-            if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
-                sections.add("XDS");
-
 
             // ----- Build the parameters map -----
             // Codes are generated using: new Code(codeDef).getNoDisplay());   ||    Other parameters are simply copied.
             Map<String, String> params = new HashMap<String, String>();
+
+            if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
+                sections.add("XDS");
+            else if (session.siteSpec.actorType.equals(ActorType.INITIATING_GATEWAY))
+                sections.add("IG");
+            else {
+                sections.add("XCA");
+                String home = site.homeId;
+                if (home != null && !home.equals("")) {
+                    params.put("$home$", home);
+                }
+            }
+
+
 
             // PID
             if (pid != null && !pid.equals(""))
@@ -230,6 +243,7 @@ public class FindDocuments2 extends CommonService {
                 i++;
             }
 
+            logger.info("Starting FindDocuments query");
             Result r = session.xdsTestServiceManager().xdstest(testInstance, sections, params, null, null, true);
             return asList(r);
         } catch (Exception e) {

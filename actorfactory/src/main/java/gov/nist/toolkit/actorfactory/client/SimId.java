@@ -1,13 +1,11 @@
 package gov.nist.toolkit.actorfactory.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 
 /**
- * Created by bill on 9/15/15.
+ *
  */
-public class SimId  implements Serializable, IsSerializable {
+public class SimId  implements Serializable {
 
     static final String DEFAULT_USER = "nouser";
     static final String SEPARATOR = "__";

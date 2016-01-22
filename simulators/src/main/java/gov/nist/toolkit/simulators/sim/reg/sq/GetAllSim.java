@@ -6,7 +6,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.*;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetAll;
-import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory;
+import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsException;
@@ -128,7 +128,7 @@ public class GetAllSim extends GetAll {
 
         Metadata m = new Metadata();
         m.setVersion3();
-        if (sqs.returnType == StoredQueryFactory.QueryReturnType.LEAFCLASS || sqs.returnType == StoredQueryFactory.QueryReturnType.LEAFCLASSWITHDOCUMENT) {
+        if (sqs.returnType == QueryReturnType.LEAFCLASS || sqs.returnType == QueryReturnType.LEAFCLASSWITHDOCUMENT) {
             m = mc.loadRo(uuids);
         } else {
             m.mkObjectRefs(uuids);

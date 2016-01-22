@@ -148,7 +148,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 			}
 		}
 		
-		// duplicate uids get sad face
+		// duplicate uids getRetrievedDocumentsModel sad face
 		for (int r=1; r<byUidTable.getRowCount()-1; r++) {
 			if (byUidTable.getText(r, 1).equals(byUidTable.getText(r+1, 1))) {
 				byUidTable.setHTML(r, 0, sadHtml);

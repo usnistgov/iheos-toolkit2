@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15800/no_orig_docentry</Test>
+  <Rule>an update is submitted but no original DocumentEntry exists</Rule>
+  <TestStep id="update_to_no_orig">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSMetadataUpdateError</ExpectedErrorCode>
+    <MuTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

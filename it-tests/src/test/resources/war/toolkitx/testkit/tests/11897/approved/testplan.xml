@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11897/approved</Test>
+  <Rule>Test FindDocuments Stored Query over SOAP12</Rule>
+  <TestStep id="leafclass">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+      <Assertion>Basic operation with patient ID and status</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" 
+        step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <Documents count="5"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

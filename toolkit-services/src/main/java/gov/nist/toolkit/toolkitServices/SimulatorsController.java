@@ -1,25 +1,30 @@
 package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.*;
-import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.services.server.RegistrySimApi;
+import gov.nist.toolkit.services.server.RepositorySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
+import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.soap.DocumentMap;
-import gov.nist.toolkit.toolkitServicesCommon.*;
+import gov.nist.toolkit.toolkitServicesCommon.Document;
+import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.ServerProperties;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -33,8 +38,12 @@ public class SimulatorsController {
     public SimulatorsController() {
         api = ToolkitApi.forServiceUse();
 
-        ResourceConfig resourceConfig = new ResourceConfig(SimulatorsController.class);
-        resourceConfig.property(ServerProperties.TRACING, "ALL");
+        // This is commented out because when running inside Jetty there is a maximum
+        // header size.  If you hit it with TRACING ALL you will see the error in the Jetty logs
+        // header full: java.lang.RuntimeException: Header>6144
+        // note this is also set in web.xml
+//        ResourceConfig resourceConfig = new ResourceConfig(SimulatorsController.class);
+//        resourceConfig.property(ServerProperties.TRACING, "ALL");
     }
 
     @Context
@@ -73,6 +82,21 @@ public class SimulatorsController {
         }
     }
 
+    enum PropType {STRING, BOOLEAN, LIST};
+    PropType propType(SimulatorConfigElement config) {
+        if (config.isList()) return PropType.LIST;
+        if (config.isBoolean()) return PropType.BOOLEAN;
+        if (config.isString()) return PropType.STRING;
+        return null;
+    }
+
+    PropType propType(SimConfigResource res, String name) {
+        if (res.isList(name)) return PropType.LIST;
+        if (res.isBoolean(name)) return PropType.BOOLEAN;
+        if (res.isString(name)) return PropType.STRING;
+        return null;
+    }
+
     /**
      * Update Simulator Configuration.
      * @param config containing updates
@@ -92,23 +116,19 @@ public class SimulatorsController {
             if (currentConfig == null) throw new NoSimException("");
 
             boolean makeUpdate = false;
-            for (String propName : config.propertyNames()) {
-                if (!currentConfig.hasConfig(propName)) {
-                    logger.info(String.format("Property %s ignored - no such property", propName));
-                    continue;  // ignore
-                }
-                boolean currentIsBoolean = currentConfig.get(propName).isBoolean();
-                boolean updateIsBoolean = config.isBoolean(propName);
-                if (currentIsBoolean != updateIsBoolean)
-                    throw new SimPropertyTypeConflictException(propName,
-                            (currentIsBoolean) ? "boolean" : "String",
-                            (currentIsBoolean) ? "String" : "boolean");
+            for (String propName : config.getPropertyNames()) {
                 SimulatorConfigElement ele = currentConfig.get(propName);
                 if (ele == null) continue;  // no such property
                 if (!ele.isEditable()) {
                     continue;  // ignore
                 }
-                if (currentIsBoolean) {
+
+                PropType currentType = propType(ele);
+                PropType updateType = propType(config, propName);
+                if (currentType != updateType)
+                    throw new SimPropertyTypeConflictException(propName, currentType.name(), updateType.name());
+
+                if (propType(ele) == PropType.BOOLEAN) {
                     if (ele.asBoolean() == config.asBoolean(propName)) continue;  // no change
                     if (!makeUpdate)  // first update
                         logger.info(String.format("...property %s", propName));
@@ -116,7 +136,7 @@ public class SimulatorsController {
                     logger.info(String.format("......%s ==> %s", ele.asBoolean(), config.asBoolean(propName)));
                     ele.setValue(config.asBoolean(propName));
                 }
-                else {
+                else if (propType(ele) == PropType.STRING) {
                     if (ele.asString().equals(config.asString(propName))) continue;  // no change
                     if (!makeUpdate)  // first update
                         logger.info(String.format("...property %s", propName));
@@ -124,17 +144,33 @@ public class SimulatorsController {
                     logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
                     ele.setValue(config.asString(propName));
                 }
+                else if (propType(ele) == PropType.LIST) {
+                    if (listCompare(ele.asList(), config.asList(propName))) continue; // no change
+                    if (!makeUpdate)  // first update
+                        logger.info(String.format("...property %s", propName));
+                    makeUpdate = true;
+                    logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
+                    ele.setValue(config.asList(propName));
+                }
             }
             if (makeUpdate) {
-                logger.info(String.format("Sim %s is updated", config.getFullId()));
+                logger.info(String.format("Updating Sim %s", config.getFullId()));
                 api.saveSimulator(currentConfig);
                 SimConfigResource bean = ToolkitFactory.asSimConfigBean(currentConfig);
+                logger.info("Returning updated bean");
                 return Response.accepted(bean).build();
             } else
                 return Response.notModified().build();
-        } catch (Exception e) {
+        } catch (Throwable e) {
+            logger.error(ExceptionUtil.exception_details(e));
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }
+    }
+
+    boolean listCompare(List<String> a, List<String> b) {
+        Set<String> aSet = new HashSet<>(a);
+        Set<String> bSet = new HashSet<>(b);
+        return a.equals(b);
     }
 
     /**
@@ -165,13 +201,103 @@ public class SimulatorsController {
     @Produces("application/json")
     @Path("/{id}")
     public Response getSim(@PathParam("id") String id) {
-        logger.info("GET simulator/" +  id);
+        logger.info("GET simulators/" +  id);
         SimId simId = new SimId(id);
         try {
             SimulatorConfig config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
             SimConfigResource bean = ToolkitFactory.asSimConfigBean(config);
             return Response.ok(bean).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    /**
+     * Get ids for all DocumentEntries for patient id
+     * @param id Simulator ID
+     * @param pid Patient ID
+     * @return DocumentEntry.ids
+     */
+    @GET
+    @Produces("application/json")
+    @Path("/{id}/xds/GetAllDocs/{pid}")
+    public Response getAllDocs(@PathParam("id") String id, @PathParam("pid") String pid) {
+        logger.info(String.format("GET simulators/%s/xds/GetAllDocs/%s", id, pid));
+        SimId simId = new SimId(id);
+        try {
+            RegistrySimApi api = new RegistrySimApi(simId);
+            List<String> objectRefs = api.findDocsByPidObjectRef(pid);
+            RefListResource or = new RefListResource();
+            or.setRefs(objectRefs);
+            return Response.ok(or).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    @GET
+    @Produces("application/xml")
+    @Path("/{id}/xds/GetDoc/{docId}")
+    public Response getDoc(@PathParam("id") String id, @PathParam("docId") String docId) {
+        logger.info(String.format("GET simulators/%s/xds/GetDoc/%s", id, docId));
+        SimId simId = new SimId(id);
+        try {
+            RegistrySimApi api = new RegistrySimApi(simId);
+            OMElement ele = api.getDocEle(docId);
+            String xml = new OMFormatter(ele).toString();
+            return Response.ok(xml).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/{id}/events/{transaction}")
+    public Response getEventIds(@PathParam("id") String id, @PathParam("transaction") String transaction) {
+        logger.info(String.format("GET simulators/%s/events", id));
+        SimId simId = new SimId(id);
+        try {
+            List<String> eventIds = api.getSimulatorEventIds(simId, transaction);
+            RefListResource resource = new RefListResource();
+            resource.setRefs(eventIds);
+            return Response.ok(resource).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    @GET
+    @Produces("application/json")
+    @Path("/{id}/document/{uniqueid}")
+    public Response getDocument(@PathParam("id") String id, @PathParam("uniqueid") String uniqueId) {
+        logger.info(String.format("GET simulators/%s/document/%s", id, uniqueId));
+        SimId simId = new SimId(id);
+        try {
+            DocumentContentResource resource = new DocumentContentResource();
+            RepositorySimApi repoApi = new RepositorySimApi(simId);
+            StoredDocument document = repoApi.getDocument(uniqueId);
+            if (document == null) throw new NoContentException("Document " + uniqueId);
+            resource.setContent(document.getContent());
+            resource.setUniqueId(uniqueId);
+            return Response.ok(resource).build();
+        } catch (Throwable e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+        }
+    }
+
+    @GET
+    @Produces("applicaiton/json")
+    @Path("/{id}/event/{transaction}/{eventid}")
+    public Response getEvent(@PathParam("id") String id, @PathParam("transaction") String transaction, @PathParam("eventid") String eventid) {
+        logger.info(String.format("GET simulators/%s/event/%s/%s", id, transaction, eventid));
+        SimId simId = new SimId(id);
+        try {
+            String event = api.getSimulatorEvent(simId, transaction, eventid);
+            RefListResource resource = new RefListResource();
+            resource.addRef(event);
+            return Response.ok(resource).build();
         } catch (Exception e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
         }

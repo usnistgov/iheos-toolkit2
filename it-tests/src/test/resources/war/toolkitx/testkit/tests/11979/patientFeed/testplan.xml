@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11966/patientFeed</Test>
+  <TestStep id="register_new_patient_id">
+    <Rule>
+      <Transaction>Patient Identity Feed</Transaction>
+      <Assertion>Send to Registry</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <PatientIdentityFeedTransaction>
+      <XDSb/>
+      <NoMetadata/>
+    </PatientIdentityFeedTransaction>
+  </TestStep>
+</TestPlan>
