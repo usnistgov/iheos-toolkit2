@@ -123,7 +123,7 @@ public class SimDb {
 
 	File simSafetyFile() { return new File(simDir, "simId.txt"); }
 	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
-    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
+    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); /*&& new File(simDir, "simctl.ser").exists();*/ }
 
 	// ipAddr aka simid
 	public SimDb(File dbRoot, SimId simId, String actor, String transaction) throws IOException, NoSimException {

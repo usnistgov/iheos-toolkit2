@@ -22,7 +22,7 @@ import spock.lang.Specification
  *    Come back to this file in IntelliJ and click right on the class name and select Run RegistrySelfTestIT
  *    All the self tests will run
  */
-class RegistryOdSelfTestIT extends Specification {
+class OnDemandRegisterIT extends Specification {
     ToolkitApi api;
     String patientId = 'OD14^^^&1.2.360&ISO'
     String reg = 'sunil__reg'

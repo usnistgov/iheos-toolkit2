@@ -554,7 +554,7 @@ public class XdsTestServiceManager extends CommonService {
 											stepResult.documents = new ArrayList<Document>();
 										stepResult.documents.add(doc);
 
-										File localFile = new File(getRepositoryCache(), doc.uid + getRepositoryCacheFileExtension(doc.mimeType));
+										File localFile = new File(getRepositoryCache(), doc.uid.replace(":","") + getRepositoryCacheFileExtension(doc.mimeType));
 
 //                                                new File(
 //												Installation.installation().warHome() + File.separator +

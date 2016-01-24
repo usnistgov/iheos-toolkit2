@@ -31,6 +31,14 @@ public enum SimulatorActorType {
      */
     DOCUMENT_SOURCE("xdrsrc"),
     /**
+     * On-Demand Document Source
+     */
+    ONDEMAND_DOCUMENT_SOURCE("odds"),
+    /**
+     * Integrated Source/Repository
+     */
+    ISR("isr"),
+    /**
      * Responding Gateway
      */
     RESPONDING_GATEWAY("rg"),

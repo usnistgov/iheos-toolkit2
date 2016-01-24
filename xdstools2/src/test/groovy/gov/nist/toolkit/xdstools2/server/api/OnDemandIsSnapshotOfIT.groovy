@@ -21,7 +21,7 @@ import spock.lang.Specification
  *    Come back to this file in IntelliJ and click right on the class name and select Run RegistrySelfTestIT
  *    All the self tests will run
  */
-class RegistryOdIsSnapshotOfSelfTestIT extends Specification {
+class OnDemandIsSnapshotOfIT extends Specification {
     ToolkitApi api;
     String patientId = 'OD14^^^&1.2.460&ISO'
     String reg = 'sunil__reg'
@@ -29,7 +29,8 @@ class RegistryOdIsSnapshotOfSelfTestIT extends Specification {
     String testSession = 'sunil';
 
     def setup() {
-        api = ToolkitApi.forInternalUse()
+        //api = ToolkitApi.forInternalUse()
+        api = new ToolkitApi()
         println "EC is ${Installation.installation().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)
@@ -79,7 +80,27 @@ class RegistryOdIsSnapshotOfSelfTestIT extends Specification {
         results.get(0).passed()
     }
 
+    /**
+     * This section is here, with the other reg/rep tests, because the Retrieve needs the document entry id and the repository id from the previous PnR section.
+     * @return
+     */
+    def 'Run retrieve tests'() {
+        when:
+        String siteName = 'sunil__odds'
+        TestInstance testId = new TestInstance("15806")
+        List<String> sections = ["Retrieve"]
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', patientId)
+        boolean stopOnFirstError = true
 
+        and: 'Run'
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+
+        then:
+        true
+        results.size() == 1
+        results.get(0).passed()
+    }
 
     /*
     def 'Run SQ test'() {

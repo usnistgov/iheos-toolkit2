@@ -114,7 +114,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		final HTML menuTrayStateToBe = new HTML("&laquo;");
 		menuTrayStateToBe.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT); // Right alignment causes a problem where it is cut off (non-intuitively hidden over current view but still accessible by the horizontal scrollbar) by longer menu item labels that wrap in a smaller-sized browser window
 		menuTrayStateToBe.getElement().getStyle().setFontSize(14, Style.Unit.PX);
-		menuTrayStateToBe.setTitle("Collapse");
+		menuTrayStateToBe.setTitle("Minimize Toolkit Menu");
 
 		// Make it rounded
 		menuTrayStateToBe.setStyleName("menuCollapse");
@@ -134,7 +134,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 			public void onClick(ClickEvent event) {
 				if (menuTrayStateToBe.getHTML().hashCode()==171) {
 					menuTrayStateToBe.setHTML("&raquo;");
-					menuTrayStateToBe.setTitle("Expand");
+					menuTrayStateToBe.setTitle("Expand Toolkit Menu");
 					mainMenuPanel.setVisible(false);
 					menuTrayStateToBe.setWidth("");
 					menuTrayStateToBe.setHeight(mainSplitPanel.getElement().getClientHeight()+"px");
