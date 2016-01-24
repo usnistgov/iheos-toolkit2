@@ -68,6 +68,7 @@ public class IGTestTab extends GenericQueryTab {
 
         container.addTab(topPanel, eventName, select);
         addCloseButton(container,topPanel, null);
+        tlsOptionEnabled = false;
 
         genericQueryTab.reloadTransactionOfferings();
 
@@ -212,10 +213,13 @@ public class IGTestTab extends GenericQueryTab {
                     table.setText(row, 0, "Two document Patient ID");
                     table.setText(row++, 1, orchResponse.getTwoDocPid().asString());
 
+                    table.setText(row, 0, "Two RGs Patient ID");
+                    table.setText(row++, 1, orchResponse.getTwoRgPid().asString());
+
                     table.setHTML(row++, 0, "<h3>Simulators</h3>");
 
                     for (SimulatorConfig config : rgConfigs) {
-                        table.setText(row, 0, "Simulator ID");
+                        table.setWidget(row, 0, new HTML("<h3>Simulator ID</h3>"));
                         table.setWidget(row++, 1, new HTML(config.getId().toString()));
 
                         table.setText(row, 0, "homeCommunityId");

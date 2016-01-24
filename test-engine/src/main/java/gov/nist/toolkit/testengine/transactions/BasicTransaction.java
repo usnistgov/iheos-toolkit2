@@ -1110,9 +1110,13 @@ public abstract class BasicTransaction  {
         AssertionEngine engine = new AssertionEngine();
 		engine.setDataRefs(data_refs);
 
-		if (useReportManager != null) {
-			useReportManager.apply(assertions);
-		}
+        try {
+            if (useReportManager != null) {
+                useReportManager.apply(assertions);
+            }
+        } catch (Exception e) {
+            failed();
+        }
 
 		engine.setAssertions(assertions);
 		engine.setLinkage(linkage);

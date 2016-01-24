@@ -37,8 +37,8 @@
 
   <!-- DEBUG STUFF -->
   <!-- Use Super Dev Mode -->
-  <!-- <add-linker name="xsiframe"/> -->
-  <!-- <set-configuration-property name="devModeRedirectEnabled" value="true"/> -->
+   <add-linker name="xsiframe"/>
+   <set-configuration-property name="devModeRedirectEnabled" value="true"/>
    <set-property name="compiler.useSourceMaps" value="true"/>
   
   <!-- Only build for one browser - safari setting includes chrome -->

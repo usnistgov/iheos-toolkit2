@@ -120,8 +120,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 					er.err(Code.XDSRegistryError, "No RGs configured", this, null);
 					return;
 				}
-
-
 			} else {
 				// look at home to see where to route this message
 				if (request.getHomeAtt() == null) {
@@ -131,6 +129,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				Site site = remoteSites.getSiteForHome(request.getHome());
 
 				if (site == null) {
+                    response.add_error(Code.XDSRegistryError.name(), "Don't have configuration for RG with homeCommunityId " + request.getHome(), this.getClass().getName(), null, null);
 					er.err(Code.XDSRegistryError, "Don't have configuration for RG with homeCommunityId " + request.getHome(), this, null);
 					return;
 				}
@@ -143,8 +142,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				// forward the query
 				forwardQuery(site);
 			}
-
-
 
 			List<OMElement> results = m.getAllObjects(); // everything but ObjectRefs
 			results.addAll(m.getObjectRefs());

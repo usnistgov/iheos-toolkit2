@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>15807/onedoc</Test>
+  <Test>15807/twodoc</Test>
   <Rule>Submit two documents to a XDS.b repository</Rule>
   <TestStep id="submit">
     <Rule>

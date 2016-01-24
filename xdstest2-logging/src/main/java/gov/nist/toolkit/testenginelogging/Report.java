@@ -17,7 +17,7 @@ public class Report implements Serializable {
 	public String name;
 	String section;
 	String xpath;
-	String value;
+	String value = "Unavailable";
 
 	static QName name_qname = new QName("name");
 
@@ -27,8 +27,7 @@ public class Report implements Serializable {
 		r.name = rep.getAttributeValue(name_qname);
 		r.value = rep.getText();
 
-		if (r.name == null || r.name.equals("") ||
-				r.value == null || r.value.equals(""))
+		if (r.name == null || r.name.equals(""))
 			throw new XdsInternalException("Cannot parse Report: " + rep.toString());
 
 		return r;

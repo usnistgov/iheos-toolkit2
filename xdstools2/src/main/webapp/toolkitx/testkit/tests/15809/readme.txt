@@ -10,4 +10,4 @@ This test contains the following sections:
 OneDocRetrieve - toolkit's Document Consumer issues a Retrieve request to the IG
 for the Document corresponding to the DocumentEntry returned in test 15808/OneDocFindDocuments.
 The homeCommunityId, repositoryId, documentUniqueId, and the mimeType from the response
-are validated.
+are validated against the metadata returned by 15808/OneDocFindDocuments.

@@ -16,7 +16,7 @@ with Document.
 
 The test contains the following sections:
 
-OneDocQuery - sends a FindDocuments stored query to the Initiating Gateway with
+OneDocFindDocuments - sends a FindDocuments stored query to the Initiating Gateway with
 the Patient ID for the single document submission.  It shall return one DocumentEntry.
 The returned DocumentEntry.homeCommunityId shall match the configured value in the RG.
 
@@ -24,7 +24,7 @@ OneDocGetDocuments - Depends on output of OneDocQuery. Send GetDocuments query p
 DocumentEntry.entryUUID returned by OneDocQuery. The returned DocumentEntry.homeCommunityId
 shall match the configured value in the RG.
 
-TwoDocQuery - sends a FindDocuments stored query to the Initiating Gateway with
+TwoDocFindDocuments - sends a FindDocuments stored query to the Initiating Gateway with
 the Patient ID for the two document submission.  It shall return two DocumentEntries.
 Both of the returned DocumentEntry.homeCommunityId
 shall match the configured value in the RG.

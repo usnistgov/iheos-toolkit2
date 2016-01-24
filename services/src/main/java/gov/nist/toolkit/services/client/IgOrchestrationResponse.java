@@ -14,6 +14,7 @@ public class IgOrchestrationResponse extends RawResponse {
     SimulatorConfig igSimulatorConfig;
     Pid oneDocPid;
     Pid twoDocPid;
+    Pid twoRgPid;
 
     public IgOrchestrationResponse() {}
 
@@ -39,6 +40,14 @@ public class IgOrchestrationResponse extends RawResponse {
 
     public void setTwoDocPid(Pid twoDocPid) {
         this.twoDocPid = twoDocPid;
+    }
+
+    public Pid getTwoRgPid() {
+        return twoRgPid;
+    }
+
+    public void setTwoRgPid(Pid twoRgPid) {
+        this.twoRgPid = twoRgPid;
     }
 
     public SimulatorConfig getIgSimulatorConfig() {

@@ -87,15 +87,20 @@ public class ReportManager {
 					try {
 						val = xpathExpression.stringValueOf(section);
 					} catch (Exception e) {
-						throw new XdsInternalException("Error evaluating XPath expression [" +
-								report.getXpath() + "] against output of section [" + report.getSection() + "]");
+                        val = String.format("Error generating report: %s", e.getMessage());
+//						throw new XdsInternalException("Error evaluating XPath expression [" +
+//								report.getXpath() + "] against output of section [" + report.getSection() + "]");
 					}
 					report.setValue(val);
 					if (val == null || val.equals(""))
-						throw new XdsInternalException("Report " + report.name +
+						val = "Report " + report.name +
 								" which has XPath " + report.getXpath() +
 								" evaluates to [" + val + "] when evaluated " +
-								"against section " + report.getSection());
+								"against section " + report.getSection();
+//                    throw new XdsInternalException("Report " + report.name +
+//                            " which has XPath " + report.getXpath() +
+//                            " evaluates to [" + val + "] when evaluated " +
+//                            "against section " + report.getSection());
 				}
 			}
 			catch (JaxenException e) {

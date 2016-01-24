@@ -10,7 +10,7 @@
         </Rule>
         <IGQTransaction>
             <MetadataFile>query.xml</MetadataFile>
-            <UseId testdir="../../15807/onedoc" id="SubmissionSet01" step="submit_single_doc"
+            <UseId testdir="../../15807/onedoc1" id="SubmissionSet01" step="submit_single_doc"
                    section="AssignedPatientId" symbol="$patient_id$"/>
 
             <Report name="$home$" section="Result">
@@ -24,6 +24,9 @@
             </Report>
             <Report name="$mimeType$" section="Result">
                 //*[local-name()='ExtrinsicObject'][1]/@mimeType
+            </Report>
+            <Report name="$patientid$" section="InputMetadata">
+                translate(//*[local-name()='Slot'][@name='$XDSDocumentEntryPatientId']/*[local-name()='ValueList']/*[local-name()='Value'], "'", "")
             </Report>
             <Assertions>
                 <DataRef file="THIS" as="output"/>

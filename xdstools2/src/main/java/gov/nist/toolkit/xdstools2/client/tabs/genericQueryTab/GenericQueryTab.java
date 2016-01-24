@@ -39,6 +39,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	int row;
 
 	public boolean tlsEnabled = true;
+    public boolean tlsOptionEnabled = true;
 	public boolean samlEnabled = false;
 	public ActorType selectByActor = null;
 	List<TransactionType> transactionTypes;
@@ -487,6 +488,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 		if (tlsEnabled) {
 			doTls = new CheckBox("");
+            doTls.setEnabled(tlsOptionEnabled);
 			if (getCommonSiteSpec() != null) {
                 doTls.setValue(getCommonSiteSpec().isTls());
             }
