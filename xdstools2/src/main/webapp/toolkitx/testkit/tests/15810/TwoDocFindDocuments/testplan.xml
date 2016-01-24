@@ -5,12 +5,12 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>
             <Transaction>XGQ</Transaction>
-            <SQ>Test FindDocuments XGC</SQ>
+            <SQ>XC FindDocuments to two RGs through IG SUT</SQ>
             <Assertion>LeafClass return</Assertion>
         </Rule>
         <IGQTransaction>
             <MetadataFile>query.xml</MetadataFile>
-            <UseId testdir="../../15807/twodoc" id="SubmissionSet01" step="submit"
+            <UseId testdir="../../15807/onedoc2" id="SubmissionSet01" step="submit_single_doc"
                    section="AssignedPatientId" symbol="$patient_id$"/>
 
             <Report name="$home1$" section="Result">
