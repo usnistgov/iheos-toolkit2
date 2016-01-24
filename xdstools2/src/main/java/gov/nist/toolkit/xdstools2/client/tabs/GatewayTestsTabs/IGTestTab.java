@@ -246,10 +246,11 @@ public class IGTestTab extends GenericQueryTab {
                         table.setText(row, 1, "Query");
                         table.setText(row++, 2, config.getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
 
+                        panel().add(addTestEnvironmentInspectorButton(config.getId().toString()));
                     }
 
                     // generate log launcher buttons
-                    panel().add(addTestEnvironmentInspectorButton(rgConfigs.get(0).getId().toString()));
+//                    panel().add(addTestEnvironmentInspectorButton(rgConfigs.get(0).getId().toString()));
                     panel().add(buildLogLauncher(rgConfigs));
 
                     genericQueryTab.reloadTransactionOfferings();
@@ -477,7 +478,7 @@ public class IGTestTab extends GenericQueryTab {
     }
 
     Button addTestEnvironmentInspectorButton(final String siteName) {
-        Button button = new Button("Inspect Test Data");
+        Button button = new Button("Inspect Test Data - " + siteName);
         button.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {

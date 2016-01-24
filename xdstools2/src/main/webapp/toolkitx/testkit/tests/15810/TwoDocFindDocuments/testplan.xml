@@ -2,6 +2,7 @@
 <TestPlan>
     <Test>15808/TwoDocQuery</Test>
     <TestStep id="finddocs">
+        <Goal>FindDocuments query to IG (forwarded to two RGs), each should return 1 DocumentEntry</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>
             <Transaction>XGQ</Transaction>
@@ -37,25 +38,21 @@
         </IGQTransaction>
     </TestStep>
     <TestStep id="homeValidation1">
-        <Goal>Validate homeCommunityId returned in first returned DocumentEntry matches test configuration</Goal>
+        <Goal>Validate one DocumentEntry received from each community - homeCommunityIds align with community configurations</Goal>
         <NullTransaction>
-            <UseReport reportName="$testdata_home$" section="THIS" step="finddocs" useAs="submittedValue"/>
-            <UseReport reportName="$home1$"          section="THIS" step="finddocs" useAs="returnedValue"/>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$home1$"          section="THIS" step="finddocs" useAs="returnedValue1"/>
+            <UseReport reportName="$home2$"          section="THIS" step="finddocs" useAs="returnedValue2"/>
             <Assertions>
-                <Assert id="homeCommunityId returned must match RG simulator configuration">
-                    'submittedValue' = 'returnedValue'
+                <Assert id="">
+                    'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
                 </Assert>
-            </Assertions>
-        </NullTransaction>
-    </TestStep>
-    <TestStep id="homeValidation2">
-        <Goal>Validate homeCommunityId returned in second returned DocumentEntry matches test configuration</Goal>
-        <NullTransaction>
-            <UseReport reportName="$testdata_home$" section="THIS" step="finddocs" useAs="submittedValue"/>
-            <UseReport reportName="$home2$"          section="THIS" step="finddocs" useAs="returnedValue"/>
-            <Assertions>
-                <Assert id="homeCommunityId returned must match RG simulator configuration">
-                    'submittedValue' = 'returnedValue'
+                <Assert id="">
+                    'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
+                </Assert>
+                <Assert id="">
+                    'returnedValue1' != 'returnedValue2'
                 </Assert>
             </Assertions>
         </NullTransaction>

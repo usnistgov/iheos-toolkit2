@@ -80,6 +80,10 @@ public class ToolkitApi {
         return api;
     }
 
+    public static ToolkitApi forNormalUse(Session session) {
+        return new ToolkitApi(session);
+    }
+
     /**
      * Constructor
      */

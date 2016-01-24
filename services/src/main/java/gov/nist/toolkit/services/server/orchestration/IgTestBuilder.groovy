@@ -40,7 +40,7 @@ class IgTestBuilder {
 
     RawResponse buildTestEnvironment() {
         try {
-            new SimDb().getSimIdsForUser(request.userName).each { api.deleteSimulator(it) }
+            new SimDb().getSimIdsForUser(request.userName).each { SimId simId -> api.deleteSimulator(simId) }
 
             oneDocPid = session.allocateNewPid()
             twoDocPid = session.allocateNewPid()
@@ -48,12 +48,13 @@ class IgTestBuilder {
 
             buildRGs()
 
-            String home = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
-            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc1', oneDocPid, home)
-            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'twodoc', twoDocPid, home)
+            String home1 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
+            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc1', oneDocPid, home1)
+            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'twodoc', twoDocPid, home1)
+            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc2', twoRgPid, home1)
 
-            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc2', twoRgPid, home)
-            submit(request.userName, rgConfigs.get(1).id, new TestInstance("15807"), 'onedoc3', twoRgPid, home)
+            String home2 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
+            submit(request.userName, rgConfigs.get(1).id, new TestInstance("15807"), 'onedoc3', twoRgPid, home2)
 
             IgOrchestrationResponse response = new IgOrchestrationResponse()
             response.oneDocPid = oneDocPid
