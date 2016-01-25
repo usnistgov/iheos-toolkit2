@@ -79,8 +79,8 @@ public class IGTestTab extends GenericQueryTab {
                 "<p>When the test is run a Stored Query or Retrieve transaction will be sent to the " +
                         "Initiating Gateway " +
                         "selected below. This will start the test. Before running a test, make sure your " +
-                        "Initiating Gateway is configured to send to the Responding Gateway above.  This " +
-                        "test only uses non-TLS endpoints (for now).</p>"
+                        "Initiating Gateway is configured to send to the Responding Gateways above.  This " +
+                        "test only uses non-TLS endpoints (for now). TLS selection is disabled.</p>"
         );
         addResultsPanel = false;  // manually done below
 
@@ -101,11 +101,8 @@ public class IGTestTab extends GenericQueryTab {
                 "These simulators and " +
                 "their logs will be maintained in a test session you create for this test. At the top of the window, " +
                 "create a new test session and select it - name it for your company. " +
-                "This tool deletes all logs and simulators in the selected test session.  " +
-                "</p>" +
-                "<p>" +
-                "Build test environment using the button below.  This will create the simulators and populate " +
-                "the Registry/Repository with test data" +
+                "Don't use a double underscore (__) in the name (bug I discovered this week)" +
+                "This tool deletes all logs and simulators in the selected test session in the next step below.  " +
                 "</p>"
         ));
 
@@ -116,13 +113,21 @@ public class IGTestTab extends GenericQueryTab {
                 "<p>" +
                 "This will delete the contents of the selected test session and initialize it. " +
                 "The Build Test Environment button will create the necessary simulators to test your Initiating Gateway.  " +
-                "the Build Demonstration Environment button will do the same and also build an Initiating Gateway for " +
+                "The Build Demonstration Environment button will do the same and also build an Initiating Gateway for " +
                 "demonstration and training purposes. Only one can be used." +
+                        "To test your Initiating Gateway you shoud use Build Test Environment." +
                         "The generated test environment will be displayed below. " +
                         "Once the test environment is built, configure your Initiating Gateway to forward requests " +
-                        "to the generated Responding Gateway simulator. The Demonstration Environment builds this " +
+                        "to the two generated Responding Gateway simulators. The Demonstration Environment builds this " +
                         "configuration automatically." +
-                "</p>"
+                "</p>" +
+                        "<p>Note that the generated Patient IDs are in the Red Affinity Domain.  These will be used " +
+                        "even if your Initiating Gateway is in the Blue or Green domain." +
+                        "</p>" +
+                        "<p>Buttons to launch two different types of logs will be displayed.  The Inspect Test Data " +
+                        "logs show the raw submissions sent to the supporting Affinity Domains behind the RGs. " +
+                        "The Launch X__rg* logs show the actual traffic in and out of the Responding Gateways." +
+                        "</p>"
         ));
 
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
