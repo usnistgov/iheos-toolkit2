@@ -24,12 +24,12 @@
       <ExtrinsicObject id="Document01" mimeType="text/plain"
             objectType="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1">
          <Name>
-            <LocalizedString value="Physical"/>
+            <LocalizedString value="DocA"/>
          </Name>
          <Description/>
-         <Slot name="creationTime">
+         <Slot name="size">
             <ValueList>
-               <Value>20110124</Value>
+               <Value>4</Value>
             </ValueList>
          </Slot>
          <Slot name="repositoryUniqueId">
@@ -37,61 +37,56 @@
                <Value>1.19.6.24.109.42.1</Value>
             </ValueList>
          </Slot>
-         <Slot name="languageCode">
-            <ValueList>
-               <Value>en-us</Value>
-            </ValueList>
-         </Slot>
-         <Slot name="size">
-            <ValueList>
-               <Value>4</Value>
-            </ValueList>
-         </Slot>
          <Slot name="hash">
             <ValueList>
                <Value>e543712c0e10501972de13a5bfcbe826c49feb75</Value>
             </ValueList>
          </Slot>
-         <Slot name="URI">
+         <Slot name="creationTime">
             <ValueList>
-               <Value>http://</Value>
+               <Value>20151224</Value>
+            </ValueList>
+         </Slot>
+         <Slot name="languageCode">
+            <ValueList>
+               <Value>en-us</Value>
             </ValueList>
          </Slot>
          <Slot name="serviceStartTime">
             <ValueList>
-               <Value>201101230800</Value>
+               <Value>201512230800</Value>
             </ValueList>
          </Slot>
          <Slot name="serviceStopTime">
             <ValueList>
-               <Value>201101230801</Value>
+               <Value>201512230900</Value>
             </ValueList>
          </Slot>
          <Slot name="sourcePatientId">
             <ValueList>
-               <Value>PHN-18905^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
+               <Value>IHEFACILITY-2340^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
             </ValueList>
          </Slot>
          <Slot name="sourcePatientInfo">
             <ValueList>
-               <Value>PID-3|PHN-18905^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
-               <Value>PID-5|XPID^Peter^^^</Value>
-               <Value>PID-7|19600412</Value>
+               <Value>PID-3|IHEFACILITY-2340^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
+               <Value>PID-5|XPID^Pedro^^^</Value>
+               <Value>PID-7|20010323</Value>
                <Value>PID-8|M</Value>
-               <Value>PID-11|1290 Scenic Drive^St Louis^MO^63101^USA</Value>
+               <Value>PID-11|South Elmwood Avenue ^^Buffalo^New York^14201^USA</Value>
             </ValueList>
          </Slot>
          <Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d"
                classifiedObject="Document01" nodeRepresentation="">
             <Slot name="authorPerson">
                <ValueList>
-                  <Value>^Wilson^Author-One^^^</Value>
+                  <Value>^Smitty^Gerald^^^</Value>
                </ValueList>
             </Slot>
             <Slot name="authorInstitution">
                <ValueList>
-                  <Value>Cleveland Clinic^^^^^&amp;1.2.3&amp;ISO^^^^CleveClin</Value>
-                  <Value>Parma Community^^^^^^^^^1.2.3</Value>
+                  <Value>Cleveland Clinic</Value>
+                  <Value>Parma Community</Value>
                </ValueList>
             </Slot>
             <Slot name="authorRole">
@@ -109,7 +104,7 @@
                classifiedObject="Document01" nodeRepresentation="">
             <Slot name="authorPerson">
                <ValueList>
-                  <Value>^Wilson^Author-One^^^</Value>
+                  <Value>^Dopplemeyer^Sherry^^^</Value>
                </ValueList>
             </Slot>
             <Slot name="authorInstitution">
@@ -130,9 +125,9 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a"
-               classifiedObject="Document01" nodeRepresentation="*">
+               classifiedObject="Document01" nodeRepresentation="DEMO-Procedure">
             <Name>
-               <LocalizedString value="*"/>
+               <LocalizedString value="Procedure"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
@@ -140,32 +135,10 @@
                </ValueList>
             </Slot>
          </Classification>
-         <Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
-               classifiedObject="Document01" nodeRepresentation="Colonoscopy">
-            <Name>
-               <LocalizedString value="Colonoscopy"/>
-            </Name>
-            <Slot name="codingScheme">
-               <ValueList>
-                  <Value>Connect-a-thon eventCodeList</Value>
-               </ValueList>
-            </Slot>
-         </Classification>
-         <Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
-               classifiedObject="Document01" nodeRepresentation="T-D8800">
-            <Name>
-               <LocalizedString value="Finger"/>
-            </Name>
-            <Slot name="codingScheme">
-               <ValueList>
-                  <Value>SNM3</Value>
-               </ValueList>
-            </Slot>
-         </Classification>
          <Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
-               classifiedObject="Document01" nodeRepresentation="V">
+               classifiedObject="Document01" nodeRepresentation="N">
             <Name>
-               <LocalizedString value="very restricted"/>
+               <LocalizedString value="Normal"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
@@ -174,9 +147,9 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d"
-               classifiedObject="Document01" nodeRepresentation="urn:ihe:pcc:nn:2007">
+               classifiedObject="Document01" nodeRepresentation="urn:ihe:iti:bppc:2007">
             <Name>
-               <LocalizedString value="urn:ihe:pcc:nn:2007"/>
+               <LocalizedString value="urn:ihe:iti:bppc:2007"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
@@ -191,14 +164,14 @@
             </Name>
             <Slot name="codingScheme">
                <ValueList>
-                  <Value>Connect-a-thon healthcareFacilityTypeCodes</Value>
+                  <Value>Connect-a-thon healthcareFacilityTypeCodes 2</Value>
                </ValueList>
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead"
-               classifiedObject="Document01" nodeRepresentation="General Medicine">
+               classifiedObject="Document01" nodeRepresentation="Dialysis">
             <Name>
-               <LocalizedString value="General Medicine"/>
+               <LocalizedString value="Dialysis"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
@@ -206,10 +179,32 @@
                </ValueList>
             </Slot>
          </Classification>
-         <Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
-               classifiedObject="Document01" nodeRepresentation="11369-6">
+         <Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
+               classifiedObject="Document01" nodeRepresentation="T-D4909">
             <Name>
-               <LocalizedString value="HISTORY OF IMMUNIZATIONS"/>
+               <LocalizedString value="Kidney"/>
+            </Name>
+            <Slot name="codingScheme">
+               <ValueList>
+                  <Value>SNM3</Value>
+               </ValueList>
+            </Slot>
+         </Classification>
+         <Classification classificationScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4"
+               classifiedObject="Document01" nodeRepresentation="T-62002">
+            <Name>
+               <LocalizedString value="Liver"/>
+            </Name>
+            <Slot name="codingScheme">
+               <ValueList>
+                  <Value>SNM3</Value>
+               </ValueList>
+            </Slot>
+         </Classification>
+         <Classification classificationScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983"
+               classifiedObject="Document01" nodeRepresentation="11502-2">
+            <Name>
+               <LocalizedString value="LABORATORY REPORT.TOTAL"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
@@ -218,7 +213,7 @@
             </Slot>
          </Classification>
          <ExternalIdentifier identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427"
-               value="$patientid$">
+               value="IHEGREEN-2340^^^&amp;1.3.6.1.4.1.21367.13.20.2000&amp;ISO" >
             <Name>
                <LocalizedString value="XDSDocumentEntry.patientId"/>
             </Name>
@@ -239,14 +234,14 @@
          </Description>
          <Slot name="submissionTime">
             <ValueList>
-               <Value>20110125235050</Value>
+               <Value>20151225235050</Value>
             </ValueList>
          </Slot>
          <Classification classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"
                classifiedObject="SubmissionSet01" nodeRepresentation="">
             <Slot name="authorPerson">
                <ValueList>
-                  <Value>^Wilson^Author-One^^^</Value>
+                  <Value>^Dopplemeyer^Sherry^^^</Value>
                </ValueList>
             </Slot>
             <Slot name="authorInstitution">
@@ -267,9 +262,9 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500"
-               classifiedObject="SubmissionSet01" nodeRepresentation="11369-6">
+               classifiedObject="SubmissionSet01" nodeRepresentation="11502-2">
             <Name>
-               <LocalizedString value="HISTORY OF IMMUNIZATIONS"/>
+               <LocalizedString value="LABORATORY REPORT.TOTAL"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
@@ -290,7 +285,7 @@
             </Name>
          </ExternalIdentifier>
          <ExternalIdentifier identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446"
-               value="$patientid$">
+               value="IHEGREEN-2340^^^&amp;1.3.6.1.4.1.21367.13.20.2000&amp;ISO" >
             <Name>
                <LocalizedString value="XDSSubmissionSet.patientId"/>
             </Name>
