@@ -464,6 +464,7 @@ public class SimServlet  extends HttpServlet {
 			repIndex = getRepIndex(simid);
 
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
+            vc.forceMtom = transactionType.isRequiresMtom();
 
 			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)
