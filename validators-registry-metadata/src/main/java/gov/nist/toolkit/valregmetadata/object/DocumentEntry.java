@@ -39,7 +39,8 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 				"size",
 				"URI",
 				"repositoryUniqueId",
-				"documentAvailability"
+				"documentAvailability",
+                "urn:ihe:iti:xds:2013:referenceIdList"
 		);
 
 	static List<String> requiredSlots =
