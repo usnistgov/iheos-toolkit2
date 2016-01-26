@@ -101,7 +101,9 @@ public abstract class AbstractActorFactory {
 		ele.setValue(sc.getId().toString());
 		addUser(sc, ele);
 
-		return sc;
+        addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
+
+        return sc;
 	}
 
 	protected AbstractActorFactory() {}

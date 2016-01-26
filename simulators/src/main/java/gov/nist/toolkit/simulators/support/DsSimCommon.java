@@ -351,7 +351,7 @@ public class DsSimCommon {
         return body;
     }
 
-    void sendFault(SoapFault fault) {
+    public void sendFault(SoapFault fault) {
         OMElement env = wrapResponseInSoapEnvelope(fault.getXML());
         sendHttpResponse(env, simCommon.getUnconnectedErrorRecorder(), false);
     }
