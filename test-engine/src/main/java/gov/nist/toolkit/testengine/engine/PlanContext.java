@@ -46,6 +46,7 @@ public class PlanContext extends BasicContext {
 	public void setCurrentSection(String sectionName) {
 		currentSection = sectionName;
 	}
+    public String getCurrentSection() { return currentSection; }
 	
 	public void setPreviousSectionLogs(SectionLogMap previousLogs) {
 		previousSectionLogs = previousLogs;
