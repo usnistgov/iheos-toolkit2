@@ -18,7 +18,8 @@ public class Configuration {
     static {
         InputStream is = Configuration.class.getResourceAsStream("/config.properties");
         try {
-            properties.load(is);
+            if (is != null)
+                properties.load(is);
         } catch (IOException e) {
             logger.info("Cannot load config.properties");
         }
