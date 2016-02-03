@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>GetRelated/byuuid</Test>
+    <Rule>Test GetRelatedDocuments Stored Query</Rule>
+    
+    <TestStep id="QueryByUUID">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <StoredQueryTransaction>
+	    <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </StoredQueryTransaction>
+    </TestStep>
+    
+</TestPlan>

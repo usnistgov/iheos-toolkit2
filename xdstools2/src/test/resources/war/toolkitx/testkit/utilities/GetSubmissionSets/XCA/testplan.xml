@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>GetSubmissionSetsByUUID</Test>
+    
+    <TestStep id="GetSubmissionSetsByUUID">
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>GetSubmissionSets</SQ>
+            <Assertion>Document or Folder UUID as parameter</Assertion>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XCQTransaction>
+	    <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </XCQTransaction>
+    </TestStep>
+    
+</TestPlan>

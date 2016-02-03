@@ -42,7 +42,12 @@ public class LogRepository  {
     }
 
     public String toString() {
-        return logDir().toString();
+        try {
+            String s = logDir().toString();
+            return s;
+        } catch (Exception e) {
+            return "LogRepository: bad log directory";
+        }
     }
 
     public void logOut(TestInstance id, LogMap logMap)
@@ -102,7 +107,7 @@ public class LogRepository  {
     }
 
     // assign event including filenames - do not touch file system in case the event is never used
-    void assignEvent(TestInstance testInstance) {
+    public void assignEvent(TestInstance testInstance) {
         if (idType != LogIdType.TIME_ID) return;  // doesnt use event structure
         if (testInstance.linkedToLogRepository()) return;
         String event = new SimDb().nowAsFilenameBase();

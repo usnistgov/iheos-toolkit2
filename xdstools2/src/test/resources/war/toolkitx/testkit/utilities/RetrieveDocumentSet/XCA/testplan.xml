@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>RetrieveDocumentSet</Test>
+    <TestStep id="retrieve">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XCRTransaction>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+            <XDSb/>
+        </XCRTransaction>
+    </TestStep>
+</TestPlan>

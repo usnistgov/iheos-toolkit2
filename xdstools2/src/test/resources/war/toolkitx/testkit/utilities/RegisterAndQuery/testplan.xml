@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>RegisterAndQuery</Test>
+  <TestStep id="register">
+    <Goal>Send a single DocumentEntry to a Registry</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <NoPatientId/>
+      <XDSb/>
+      <MetadataFile>metadata.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="query">
+    <Goal>Send GetSubmissionSetAndContents query</Goal>
+    <Goal>   Verify SubmissionSet, DocumentEntry, and HasMember Assocation returned</Goal>
+    <Goal>   Verify the above parts are properly connected</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId id="SubmissionSet01" symbol="$ssuid$" step="register" section="AssignedUids"/>
+      <MetadataFile>getss.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+      </ExpectedContents>
+      <Report name="docid" section="Result">
+//*[local-name()='ExtrinsicObject']/@id
+			</Report>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="GetDocumentsByUUID">
+    <Goal>Send GetDocuments query</Goal>
+    <Goal>   Verify single DocumentEntry returned</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <CleanParams/>
+      <UseReport reportName="docid" section="THIS" step="query" useAs="$id0$"/>
+      <MetadataFile>getdocs.xml</MetadataFile>
+      <ExpectedContents>
+        <Associations count="0"/>
+        <Documents count="1"/>
+        <Folders count="0"/>
+        <SubmissionSets count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

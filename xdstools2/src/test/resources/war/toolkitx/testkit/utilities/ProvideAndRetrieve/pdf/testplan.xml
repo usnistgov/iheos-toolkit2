@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>ProvideAndRetrieve/pdf</Test>
+    <TestStep id="submit">
+    	<Goal>Submit PDF Document to Repository</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <NoPatientId/>
+            <MetadataFile>metadata.xml</MetadataFile>
+            <Document id="Document01">my_document.pdf</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+    <TestStep id="retrieve">
+    	<Goal>Retrieve PDF Document From Repository</Goal>
+    	<Goal>   Perform the following comparisions between submitted document and retrieved document</Goal>
+    	<Goal>      Hash matches</Goal>
+    	<Goal>      MimeType matches</Goal>
+    	<Goal>      Size matches</Goal>
+    	<Goal>   Verify Repository Unique ID matches</Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RetrieveTransaction>
+			<UseReport section="THIS" step="submit" reportName="Document01_uid" useAs="$docuid$"/>
+			<UseReport section="THIS" step="submit" reportName="$repositoryUniqueId$" useAs="$repuid$"/>
+            <XDSb/>
+            <MetadataFile>retrieve.xml</MetadataFile>
+			<Assertions>
+			<Assert id="origDocHashMatchesRetrieve">'3ad444d5852bd602d94d28f416250ee16148b80e' = '$hash_doc1$'</Assert>
+			<Assert id="repositoryUniqueIdMatches">'$repuid$' = '$repuid_doc1$'</Assert>
+			<Assert id="origDocMimetypeMatchesRetrieve">'application/pdf' = '$mimetype_doc1$'</Assert>
+			<Assert id="origSizeMatchesRetrieve">'14226' = '$size_doc1$'</Assert>
+			</Assertions>
+        </RetrieveTransaction>
+    </TestStep>
+</TestPlan>

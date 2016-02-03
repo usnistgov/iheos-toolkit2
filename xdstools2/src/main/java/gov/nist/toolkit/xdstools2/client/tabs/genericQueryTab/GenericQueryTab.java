@@ -38,7 +38,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	int row;
 
 	public boolean tlsEnabled = true;
-	public boolean samlEnabled = true;
+	public boolean samlEnabled = false;
 	ActorType selectByActor = null;
 	List<TransactionType> transactionTypes;
 	public TransactionSelectionManager transactionSelectionManager = null;
@@ -453,10 +453,10 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		}
 
 		SiteSpec commonSiteSpec = null;
+        commonSiteSpec = getCommonSiteSpec();
 		if (samlEnabled) {
 			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("SAML"));
 
-			commonSiteSpec = getCommonSiteSpec();
 
 			samlListBox = new ListBox();
 			samlListBox.addItem("SAML OFF", "0");

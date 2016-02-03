@@ -49,6 +49,8 @@ public class ValidationContext  implements Serializable, IsSerializable {
     //E-Priscription ncpdp/
     public boolean isNcpdp = false;
 
+    public boolean forceMtom = false;
+
     //
     // Modifiers
     //
@@ -180,7 +182,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	}
 
 	public boolean requiresMtom() {
-		return isPnR || isRet || isXDR || (isSQ && isEpsos);
+		return isPnR || isRet || isXDR || (isSQ && isEpsos) || forceMtom ;
 	}
 
 	public boolean containsDocuments() {
@@ -216,6 +218,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 				//			minMeta == v.minMeta &&
 				leafClassWithDocumentOk == v.leafClassWithDocumentOk &&
 				isNcpdp == v.isNcpdp &&
+                        forceMtom == v.forceMtom &&
 				((ccdaType == null) ?  v.ccdaType == null   :  ccdaType.equals(v.ccdaType))   
 				;
 	}
@@ -262,6 +265,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		isNcpdp = v.isNcpdp;
 		ccdaType = v.ccdaType;
 		codesFilename = v.codesFilename;
+        forceMtom = v.forceMtom;
 	}
 
 	public boolean hasMetadata() {
@@ -456,6 +460,8 @@ public class ValidationContext  implements Serializable, IsSerializable {
 		}
 //		if (codesFilename != null)
 //			buf.append(";HasCodes");
+
+        if (forceMtom) buf.append(";forceMtom");
 
         buf.append("]");
 		return buf.toString();

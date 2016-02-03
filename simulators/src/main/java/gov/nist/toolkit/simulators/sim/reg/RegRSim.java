@@ -263,7 +263,6 @@ public class RegRSim extends TransactionSimulator   {
 					if (slotName.equals("urn:ihe:iti:xds:2013:referenceIdList"))    // used by referenceIdList
 						continue;
 					if (slotName.startsWith("urn:ihe:")) {
-						// there are no slots defined by ihe with this prefix - reserved for future
 						er.err(XdsErrorCode.Code.XDSRegistryError, "Illegal Slot name - " + slotName, "RegRSim.java", MetadataSupport.error_severity, "ITI-TF3:4.1.14");
 						continue;
 					}
