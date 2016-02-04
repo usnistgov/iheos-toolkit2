@@ -137,20 +137,20 @@ class StoredQuerySpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'Run 11897/approved tests'() {
-        when:
-        TestInstance testId = new TestInstance("11897")
-        List<String> sections = ['approved']
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId2)   // not used
-        boolean stopOnFirstError = true
-
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-
-        then:
-        results.size() == 1
-        results.get(0).passed()
-    }
+//    def 'Run 11897/approved tests'() {
+//        when:
+//        TestInstance testId = new TestInstance("11897")
+//        List<String> sections = ['approved']
+//        Map<String, String> params = new HashMap<>()
+//        params.put('$patientid$', patientId2)   // not used
+//        boolean stopOnFirstError = true
+//
+//        and: 'Run'
+//        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+//
+//        then:
+//        results.size() == 1
+//        results.get(0).passed()
+//    }
 
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+	<Test>SourceStoresDocumentValidation/retrieve</Test>
+	<TestStep id="retrieve">
+		<Goal>Retrieve the Document from the Repository</Goal>
+    	<Goal>Verify the response message passes XML Schema validation</Goal>
+		<Goal>Verify the following aspects of the Document match the values recorded in metadata</Goal>
+		<Goal>   Repository Unique ID</Goal>
+		<Goal>   Document Hash</Goal>
+		<Goal>   Document MimeType</Goal>
+		<Goal>   Document size</Goal>
+		<ExpectedStatus>Success</ExpectedStatus>
+		<RetrieveTransaction>
+			<CleanParams />
+			<XDSb />
+			<MetadataFile>retrieve.xml</MetadataFile>
+			<UseReport section="query" step="query" reportName="hash" useAs="$hash$"/>
+			<UseReport section="query" step="query" reportName="size" useAs="$size$"/>
+			<UseReport section="query" step="query" reportName="mimetype" useAs="$mimetype$"/>
+			<UseReport section="query" step="query" reportName="docuid" useAs="$docuid$"/>
+			<UseReport section="query" step="query" reportName="repuid" useAs="$repuid$"/>
+			
+			<Assertions>
+			<Assert id="hashMatches">'$hash$' = '$hash_doc1$'</Assert>
+			<Assert id="repositoryUniqueIdMatches">'$repuid$' = '$repuid_doc1$'</Assert>
+			<Assert id="mimetypeMatches">
+			translate('$mimetype$','ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')
+			 =
+			translate('$mimetype_doc1$','ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')</Assert>
+			<!-- <Assert id="homeMatches">'$home$' = '$home_doc1$'</Assert>  -->
+			<Assert id="sizeMatches">'$size$' = '$size_doc1$'</Assert>
+			</Assertions>
+		</RetrieveTransaction>
+	</TestStep>
+</TestPlan>

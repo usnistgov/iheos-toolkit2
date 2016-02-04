@@ -1,33 +1,36 @@
-package gov.nist.toolkit.xdstools2.scripts;
+package gov.nist.toolkit.xdstools2.scripts
 
-import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.results.client.SiteSpec;
-import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
-import gov.nist.toolkit.sitemanagement.Sites;
-import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.testengine.engine.TransactionSettings;
-import gov.nist.toolkit.testengine.engine.Xdstest2;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.LogMap;
-import gov.nist.toolkit.testenginelogging.LogMapItem;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-import org.apache.axiom.om.OMElement;
+import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.registrymetadata.Metadata
+import gov.nist.toolkit.registrymetadata.MetadataParser
+import gov.nist.toolkit.results.client.LogIdIOFormat
+import gov.nist.toolkit.results.client.LogIdType
+import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.sitemanagement.SeparateSiteLoader
+import gov.nist.toolkit.sitemanagement.Sites
+import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.testengine.engine.TransactionSettings
+import gov.nist.toolkit.testengine.engine.Xdstest2
+import gov.nist.toolkit.testenginelogging.LogFileContent
+import gov.nist.toolkit.testenginelogging.LogMap
+import gov.nist.toolkit.testenginelogging.LogMapItem
+import gov.nist.toolkit.testenginelogging.TestStepLogContent
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepository
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory
+import gov.nist.toolkit.utilities.xml.XmlUtil
+import gov.nist.toolkit.xdsexception.ExceptionUtil
+import gov.nist.toolkit.xdstools2.client.RegistryStatus
+import gov.nist.toolkit.xdstools2.client.RepositoryStatus
+import groovy.transform.TypeChecked
+import org.apache.axiom.om.OMElement
 
-import javax.xml.parsers.FactoryConfigurationError;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.*;
+import javax.xml.parsers.FactoryConfigurationError
 
+@TypeChecked
 public class DashboardDaemon {
 //	ToolkitServiceImpl toolkit = new ToolkitServiceImpl();
 	String pid = "a1e4655b50754a2^^^&1.3.6.1.4.1.21367.2005.3.7&ISO";
@@ -36,9 +39,10 @@ public class DashboardDaemon {
 	Session s;
 	String environmentName;
 	String warHome;
-	String externalCache;
+	File externalCache;
 	List<RepositoryStatus> repositories = new ArrayList<RepositoryStatus>();
 	Date date = new Date();
+    static final int exceptionReportingDepth = 15
 
 	public File getDashboardDirectory() {
 		return new File(output);
@@ -51,7 +55,7 @@ public class DashboardDaemon {
 	public DashboardDaemon(String warHome, String outputDirStr, String environment, String externalCache)  {
 		this.environmentName = environment;
 		this.warHome = warHome;
-		this.externalCache = externalCache;
+		this.externalCache = new File(externalCache)
 //		toolkit.setWarHome(warHome);
 		s = new Session(new File(warHome));
 		try {
@@ -63,13 +67,14 @@ public class DashboardDaemon {
 		output = outputDirStr;
 	}
 
-	private void run(String pid) throws FactoryConfigurationError, Exception, IOException {
+	public void run(String pid) throws FactoryConfigurationError, Exception, IOException {
 		this.pid = pid;
 		new File(output).mkdirs();
 //		SiteServiceManager siteServiceManager = new SiteServiceManager(null);
 //		siteServiceManager.loadExternalSites();
 		sites = null;
-		sites = new SeparateSiteLoader().load(new File(externalCache + File.separator + "actors"), sites);
+		sites = new SeparateSiteLoader().load(new File(externalCache, "actors"), sites);
+        println 'sites are ' + sites
 //		sites = siteServiceManager.getSites();
 		// experimental
 //		s = toolkit.getSession();
@@ -99,8 +104,8 @@ public class DashboardDaemon {
 				site = sites.getSite(siteSpec.name);
 			} catch (Exception e1) {
 				regStatus.status = false;
-				regStatus.fatalError = e1.getMessage();
-				registrySave(regStatus, dir + File.separator + regSiteName + ".ser");
+				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
+				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
 			boolean isSecure = true;
@@ -108,8 +113,8 @@ public class DashboardDaemon {
 				regStatus.endpoint = site.getEndpoint(TransactionType.STORED_QUERY, isSecure, false);
 			} catch (Exception e1) {
 				regStatus.status = false;
-				regStatus.fatalError = e1.getMessage();
-				registrySave(regStatus, dir + File.separator + regSiteName + ".ser");
+				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
+				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
 
@@ -118,31 +123,32 @@ public class DashboardDaemon {
 				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), null);
 			} catch (Exception e) {
 				regStatus.status = false;
-				regStatus.fatalError = e.getMessage();
-				registrySave(regStatus, dir + File.separator + regSiteName + ".ser");
+				regStatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth);
+				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
 			xdstest.setSites(sites);
 			xdstest.setSite(site);
 			xdstest.setSecure(true);
-			String[] areas = {"utilities"};
+            TestInstance testInstance = new TestInstance("GetDocuments")
+			List<String> areas = ['utilities'];
 			List<String> sections = new ArrayList<String>();
 			sections.add("XDS");
 			try {
-				xdstest.addTest(new TestInstance("GetDocuments"), sections, areas);
+				xdstest.addTest(testInstance, sections, (String[]) areas.toArray());
 			} catch (Exception e1) {
 				regStatus.status = false;
-				regStatus.fatalError = e1.getMessage();
-				registrySave(regStatus, dir + File.separator + regSiteName + ".ser");
+				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
+				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
 			Map<String, String> parms = new HashMap<String, String>();
-			parms.put("$returnType$", "ObjectRef");
+			parms.put('$returnType$', "ObjectRef");
 			int idx=0;
 			for (RepositoryStatus repStat : repositories) {
 				if (repStat.docId == null)
 					continue;
-				parms.put("$id" + String.valueOf(idx) + "$", repStat.docId);
+				parms.put('$id' + String.valueOf(idx) + '$', repStat.docId);
 				idx++;
 			}
 			TransactionSettings ts = new TransactionSettings();
@@ -150,12 +156,21 @@ public class DashboardDaemon {
 			ts.siteSpec = new SiteSpec();
 			ts.siteSpec.isAsync = false;
 			ts.securityParams = s;
-			try {
+            ts.logRepository =
+            LogRepositoryFactory.
+                    getRepository(
+                            Installation.installation().sessionCache(),
+                            session.getId(),
+                            LogIdIOFormat.JAVA_SERIALIZATION,
+                            LogIdType.TIME_ID,
+                            null)
+            xdstest.setLogRepository(ts.logRepository)
+            try {
 				xdstest.run(parms, null, true, ts);
 			} catch (Exception e1) {
 				regStatus.status = false;
-				regStatus.fatalError = e1.getMessage();
-				registrySave(regStatus, dir + File.separator + regSiteName + ".ser");
+				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
+				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
 			LogMap logMap;
@@ -163,8 +178,8 @@ public class DashboardDaemon {
 				logMap = xdstest.getLogMap();
 			} catch (Exception e1) {
 				regStatus.status = false;
-				regStatus.fatalError = e1.getMessage();
-				registrySave(regStatus, dir + File.separator + regSiteName + ".ser");
+				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth)
+				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
 			LogMapItem item = logMap.getItems().get(0);
@@ -174,8 +189,8 @@ public class DashboardDaemon {
 				testStepLogs = logFile.getStepLogs();
 			} catch (Exception e1) {
 				regStatus.status = false;
-				regStatus.fatalError = e1.getMessage();
-				registrySave(regStatus, dir + File.separator + regSiteName + ".ser");
+				regStatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth)
+				registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 				continue;
 			}
 			TestStepLogContent tsl = testStepLogs.get(0);
@@ -206,7 +221,7 @@ public class DashboardDaemon {
 			} catch (Exception e) {
 			}
 
-			registrySave(regStatus, dir + File.separator + regSiteName + ".ser");
+			registrySave(regStatus, new File(dir, regSiteName + ".ser"))
 
 
 		}
@@ -232,7 +247,7 @@ public class DashboardDaemon {
 				site = sites.getSite(siteSpec.name);
 			} catch (Exception e1) {
 				rstatus.status = false;
-				rstatus.fatalError = e1.getMessage();
+				rstatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth);
 				repositorySave(rstatus);
 				continue;
 			}
@@ -241,7 +256,7 @@ public class DashboardDaemon {
 				rstatus.endpoint = site.getEndpoint(TransactionType.PROVIDE_AND_REGISTER, isSecure, false);
 			} catch (Exception e) {
 				rstatus.status = false;
-				rstatus.fatalError = e.getMessage();
+				rstatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth)
 				repositorySave(rstatus);
 				continue;
 			}
@@ -253,34 +268,45 @@ public class DashboardDaemon {
 				xdstest = new Xdstest2(new File(warHome + File.separator + "toolkitx"), null);
 			} catch (Exception e) {
 				rstatus.status = false;
-				rstatus.fatalError = e.getMessage();
+				rstatus.fatalError = ExceptionUtil.exception_details(e, exceptionReportingDepth)
 				repositorySave(rstatus);
 				continue;
 			}
 			xdstest.setSites(sites);
 			xdstest.setSite(site);
 			xdstest.setSecure(true);
-			String[] areas = {"testdata-repository"};
+            TestInstance testInstance = new TestInstance("SingleDocument")
+            LogRepository logRepository = LogRepositoryFactory.
+                    getRepository(
+                            Installation.installation().sessionCache(),
+                            session.getId(),
+                            LogIdIOFormat.JAVA_SERIALIZATION,
+                            LogIdType.TIME_ID,
+                            null)
+            xdstest.setLogRepository(logRepository)
+            println logRepository
+            List<String> areas = ['testdata-repository']
 			try {
-				xdstest.addTest(new TestInstance("SingleDocument"), null, areas);
+				xdstest.addTest(testInstance, null, (String[]) areas.toArray());
 			} catch (Exception e1) {
 				rstatus.status = false;
-				rstatus.fatalError = e1.getMessage();
+				rstatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth)
 				repositorySave(rstatus);
 				continue;
 			}
 			Map<String, String> parms = new HashMap<String, String>();
-			parms.put("$patientid$", pid);
+			parms.put('$patientid$', pid);
 			TransactionSettings ts = new TransactionSettings();
 			ts.siteSpec = new SiteSpec();
 			ts.assignPatientId = false;
 			ts.siteSpec.isAsync = false;
 			ts.securityParams = s;
+            ts.logRepository = logRepository
 			try {
 				xdstest.run(parms, null, true, ts);
 			} catch (Exception e1) {
 				rstatus.status = false;
-				rstatus.fatalError = e1.getMessage();
+				rstatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth)
 				repositorySave(rstatus);
 				continue;
 			}
@@ -289,7 +315,7 @@ public class DashboardDaemon {
 				logMap = xdstest.getLogMap();
 			} catch (Exception e1) {
 				rstatus.status = false;
-				rstatus.fatalError = e1.getMessage();
+				rstatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth)
 				repositorySave(rstatus);
 				continue;
 			}
@@ -300,7 +326,7 @@ public class DashboardDaemon {
 				testStepLogs = logFile.getStepLogs();
 			} catch (Exception e1) {
 				rstatus.status = false;
-				rstatus.fatalError = e1.getMessage();
+				rstatus.fatalError = ExceptionUtil.exception_details(e1, exceptionReportingDepth)
 				repositorySave(rstatus);
 				continue;
 			}
@@ -333,12 +359,13 @@ public class DashboardDaemon {
 	}
 
 	void repositorySave(RepositoryStatus repStat)  {
+        println repStat
 		File dir = new File(output + "/Repository");
 		dir.mkdirs();
 
 		String repSiteName = repStat.name;
 
-		String filename = dir + File.separator + repSiteName + ".ser";
+		String filename = new File(dir, repSiteName + ".ser");
 
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
@@ -354,12 +381,13 @@ public class DashboardDaemon {
 
 	}
 
-	void registrySave(RegistryStatus regStat, String filename)  {
+	void registrySave(RegistryStatus regStat, File outputFile)  {
+        println regStat
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
 
 		try{
-			fos = new FileOutputStream(filename);
+			fos = new FileOutputStream(outputFile);
 			out = new ObjectOutputStream(fos);
 			out.writeObject(regStat);
 			out.close();

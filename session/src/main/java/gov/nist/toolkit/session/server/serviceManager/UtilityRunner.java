@@ -92,7 +92,7 @@ public class UtilityRunner {
             try {
                 if (testInstance.getId().startsWith("tc:")) {
                     String collectionName = testInstance.getId().split(":")[1];
-                    session.xt.addTestCollection(collectionName);
+//                    session.xt.addTestCollection(collectionName);
                     // all tests in the collection must be linked so the logs are linked
                     // we don't use the TestInstance we were given because it references a test
                     // collection.  We replace it with a list of linked TestInstances, one for each

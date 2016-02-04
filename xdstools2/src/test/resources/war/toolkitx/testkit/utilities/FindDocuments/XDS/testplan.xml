@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>FindDocuments/XDS</Test>
+    <TestStep id="FindDocumentsbyObjectRef">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>FindDocuments</SQ>
+            <Assertion>Basic ObjectRef return</Assertion>
+        </Rule>
+        <StoredQueryTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>

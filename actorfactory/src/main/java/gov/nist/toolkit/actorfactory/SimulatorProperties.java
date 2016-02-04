@@ -205,4 +205,7 @@ public class SimulatorProperties {
     public static final String                           respondingGateways = "Responding Gateways";
 
     public static final String                          errors = "Throw Error";
+
+    public static final String                         FORCE_FAULT = "Force Fault";
+
 }

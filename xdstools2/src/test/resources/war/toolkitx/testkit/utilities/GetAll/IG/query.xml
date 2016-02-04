@@ -1,0 +1,74 @@
+<query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                         xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                         xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="$rt0$"/>
+    <!-- GetAll -->
+    <AdhocQuery id="urn:uuid:10b545ea-725c-446d-9b95-8aeb444eddf3" home="$home$">
+        <Slot name="$patientId">
+            <ValueList>
+                <Value>'$patient_id$'</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryFormatCode">
+            <ValueList>
+                <Value>('$fc0$')</Value>
+                <Value>('$fc1$')</Value>
+                <Value>('$fc2$')</Value>
+                <Value>('$fc3$')</Value>
+                <Value>('$fc4$')</Value>
+                <Value>('$fc5$')</Value>
+                <Value>('$fc6$')</Value>
+                <Value>('$fc7$')</Value>
+                <Value>('$fc8$')</Value>
+                <Value>('$fc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryConfidentialityCode">
+            <ValueList>
+                <Value>('$cc0$')</Value>
+                <Value>('$cc1$')</Value>
+                <Value>('$cc2$')</Value>
+                <Value>('$cc3$')</Value>
+                <Value>('$cc4$')</Value>
+                <Value>('$cc5$')</Value>
+                <Value>('$cc6$')</Value>
+                <Value>('$cc7$')</Value>
+                <Value>('$cc8$')</Value>
+                <Value>('$cc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryStatus">
+            <ValueList>
+                <Value>('$dst0$')</Value>
+                <Value>('$dst1$')</Value>
+                <Value>('$dst2$')</Value>
+                <Value>('$dst3$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSFolderStatus">
+            <ValueList>
+                <Value>('$fst0$')</Value>
+                <Value>('$fst1$')</Value>
+                <Value>('$fst2$')</Value>
+                <Value>('$fst3$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSSubmissionSetStatus">
+            <ValueList>
+                <Value>('$sst0$')</Value>
+                <Value>('$sst1$')</Value>
+                <Value>('$sst2$')</Value>
+                <Value>('$sst3$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryType">
+            <ValueList>
+                <Value>('$ot0$')</Value>
+                <Value>('$ot1$')</Value>
+                <Value>('$ot2$')</Value>
+                <Value>('$ot3$')</Value>
+            </ValueList>
+        </Slot>
+    </AdhocQuery>
+</query:AdhocQueryRequest>
