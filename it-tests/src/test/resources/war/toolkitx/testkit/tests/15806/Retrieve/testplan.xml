@@ -5,9 +5,9 @@
     <RetrieveTransaction>
 
       <UseReport reportName="repuid" section="SubmitTestData" step="SubmitOnDemandDocumentEntry" useAs="$repuid$"/>
-	  <UseReport reportName="oddocid" section="SubmitTestData" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uuid$"/>
-    
+	  <UseReport reportName="Document01_uid" section="SubmitTestData" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uid$"/>
 <!--
+	  <UseReport reportName="oddocid" section="SubmitTestData" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uuid$"/>
       <UseId testdir="../SubmitTestData" id="Document01" symbol="$od_doc_uuid$" step="SubmitOnDemandDocumentEntry" section="AssignedUuids"/>
       <UseReport reportName="repuid" section="query" step="by_uid" useAs="$repuid$"/>
       <UseReport reportName="Document01_uid" section="submit" step="submit" useAs="$docuid1$"/>
