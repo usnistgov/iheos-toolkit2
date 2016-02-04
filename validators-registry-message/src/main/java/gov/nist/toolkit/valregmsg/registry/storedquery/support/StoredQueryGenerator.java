@@ -21,7 +21,7 @@ public class StoredQueryGenerator {
     static OMNamespace tagNS = MetadataSupport.ebRIMns3;
 
 
-    public static OMElement generateQueryFile(SqParams query) {
+    public static OMElement generateQueryFile(String returnType, SqParams query) {
 
         OMNamespace queryNS = MetadataSupport.ebQns3;
         OMElement root = factory.createOMElement("AdhocQueryRequest",queryNS);
@@ -29,7 +29,7 @@ public class StoredQueryGenerator {
         OMElement responseOption=factory.createOMElement("ResponseOption",queryNS);
         responseOption.addAttribute("returnComposedObjects","true",null);
 //        responseOption.addAttribute("returnType","leafClass",null);
-        responseOption.addAttribute("returnType","ObjectRef",null);
+        responseOption.addAttribute("returnType",returnType,null);
 
         OMElement adhocQuery = factory.createOMElement("AdhocQuery",tagNS);
         adhocQuery.addAttribute("id", query.getQueryId(), null);

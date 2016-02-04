@@ -18,7 +18,8 @@ import spock.lang.Specification
  */
 class RegistrySelfTestIT extends Specification {
     ToolkitApi api;
-    String patientId = 'BR14^^^&1.2.360&ISO'
+//    String patientId = 'BR14^^^&1.2.360&ISO'
+    String patientId = 'AF24^^^&1.2.3.360&ISO'
     String reg = 'mike__reg'
     SimId simId = new SimId(reg)
 //    String regrep = 'mike__regrep'

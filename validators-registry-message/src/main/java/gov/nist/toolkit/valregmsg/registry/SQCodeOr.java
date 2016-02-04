@@ -1,5 +1,6 @@
 package gov.nist.toolkit.valregmsg.registry;
 
+import gov.nist.toolkit.valregmetadata.coding.Uuid;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class SQCodeOr extends SQCodedTerm {
 		public String code;
 		public String scheme;
 		public String coded_term;
+		private Uuid classificationUUID;
 
 		public CodeLet(String value) throws XdsInternalException {
 			String[] a = value.split("\\^");
@@ -24,6 +26,14 @@ public class SQCodeOr extends SQCodedTerm {
 		public String toString() {
 			/*return coded_term;*/
             return code+"^^"+scheme;
+		}
+
+		public void setClassificationUUID(Uuid classificationUUID) {
+			this.classificationUUID = classificationUUID;
+		}
+
+		public Uuid getClassificationUUID(){
+			return classificationUUID;
 		}
 	}
 
