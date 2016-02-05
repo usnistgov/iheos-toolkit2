@@ -24,7 +24,7 @@ import java.util.List;
 public class DocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
 	DsSimCommon dsSimCommon;
 	List<String> documentUids;
-	List<String> dynamicDocumentUuids = new ArrayList<String>();
+	List<String> dynamicDocumentUids = new ArrayList<String>();
 	RetrieveMultipleResponse response;
 	RepIndex repIndex;
 	String repositoryUniqueId;
@@ -56,10 +56,10 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 
 			// Replace all OD promise Uuids with fake dynamic contents
 			for (String uid : documentUids) {
-				dynamicDocumentUuids.add(dynamicDocumentUuid);
+				dynamicDocumentUids.add(dynamicDocumentUuid);
 			}
 
-			dsSimCommon.addDocumentAttachments(dynamicDocumentUuids, er); // Old param was (documentUids)
+			dsSimCommon.addDocumentAttachments(dynamicDocumentUids, er); // Old param was (documentUids)
 			// End On-Demand update block
 
 			Collection<StoredDocument> documents = dsSimCommon.getAttachments();

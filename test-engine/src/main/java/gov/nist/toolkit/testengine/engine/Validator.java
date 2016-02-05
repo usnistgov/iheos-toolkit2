@@ -24,9 +24,14 @@ public class Validator {
 	OMElement test_assertions;
 	ArrayList<OMElement> use_id = new ArrayList<OMElement>();;
 
-
 	TestConfig testConfig = null;
 	protected OMElement instruction_output;
+
+	private enum DocumentEntryFilter {
+		MUST_ONLY_INCLUDE,
+		INCLUDE,
+		EXCLUDE
+	};
 
 	public Validator(Metadata m) {
 		this.m = m;
@@ -519,18 +524,22 @@ public class Validator {
 			OMElement selectionPart = (OMElement) selectiveIt.next();
 			String selectionLocalName = selectionPart.getLocalName();
 
-			if ("Include".equals(selectionLocalName)) {
-				verifySubmittedEOIdInRegistryResponse(true,m,selectionPart);
+			// TODO: Implement MustOnlyInclude here.
+
+			if ("MustOnlyInclude".equals(selectionLocalName)) {
+				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.MUST_ONLY_INCLUDE, m, selectionPart);
+			} else if ("Include".equals(selectionLocalName)) {
+				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.INCLUDE, m, selectionPart);
 			} else if ("Exclude".equals(selectionLocalName)) {
-				verifySubmittedEOIdInRegistryResponse(false,m,selectionPart);
-			} else if ("DocumentEntryType".equals(selectionLocalName)) {
-				verifyAllEntries(m, selectionPart, "objectType");
+				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.EXCLUDE,m,selectionPart);
+			} else if ("DocumentEntryType".equals(selectionLocalName)) { // Looks to see if all EOs in the metadata collection are of this type. The EO Id matching is not used in this case.
+				verifyAllEntriesByAttribute("objectType", m, selectionPart);
 			}
 		}
 		return true;
 	}
 
-	private boolean verifyAllEntries(Metadata m, OMElement ec, String attributeName) throws XdsInternalException, MetadataException {
+	private boolean verifyAllEntriesByAttribute(String attributeName, Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
 		String expectedValue = ec.getText();
 
 		if (expectedValue==null || "".equals(expectedValue)) {
@@ -549,14 +558,15 @@ public class Validator {
 	}
 	/**
 	 *
-	 * @param include Verify whether an EO should be included (True) or excluded (False) in the registry response
+	 * @param def Verify whether an EO should be included (True) or excluded (False) in the registry response
 	 * @param m
 	 * @param ec
 	 * @return
 	 * @throws XdsInternalException
 	 * @throws MetadataException
 	 */
-	private boolean verifySubmittedEOIdInRegistryResponse(boolean include, Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
+	private boolean verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter def, Metadata m, OMElement ec) throws XdsInternalException, MetadataException {
+		int counter = 0;
 		for (Iterator deIt = ec.getChildElements(); deIt.hasNext(); ) {
 
             OMElement dePart = (OMElement) deIt.next();
@@ -591,13 +601,14 @@ public class Validator {
                                 if (eoIdValue.equals(submittedIdValue)) {
 									found = true;
 									eoInResponse = eo;
+									counter++;
 								}
                             }
-                            if (include && !found) {
+                            if ((DocumentEntryFilter.MUST_ONLY_INCLUDE.equals(def) || DocumentEntryFilter.INCLUDE.equals(def))
+									&& !found) {
 								err("The submitted id ["+ submittedIdValue +"] was not found in the registry response.");
 								return false;
-                            }
-							if (!include && found) {
+                            } else if (DocumentEntryFilter.EXCLUDE.equals(def) && found) {
 								err("This id ["+ submittedIdValue +"] is not supposed to included in the registry response but it was found.");
 								return false;
 							}
@@ -623,6 +634,16 @@ public class Validator {
                 }
             }
         }
+
+		if (DocumentEntryFilter.MUST_ONLY_INCLUDE.equals(def)) {
+			// Make sure that the requested Ids are all that were found in the registry metadata and nothing else.
+			int regEOSize = m.getExtrinsicObjects().size();
+			if (counter != regEOSize) {
+				err("Matched ExtrinsicObject (EO) Ids size ["+ counter +"] does not match with the Registry EO size ["+ regEOSize +"] in the response.");
+				return false;
+			}
+		}
+
 		return true;
 	}
 

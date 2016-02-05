@@ -37,7 +37,7 @@
         <repository>
             <id>gazelle-3rd-party</id>
             <name>gazelle nexus</name>
-            <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
+            <url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
         </repository>
         <repository>
             <id>repository.jboss.org-public</id>
@@ -641,12 +641,12 @@
         <repository>
             <id>deployment</id>
             <name>gazelle 3rd party</name>
-            <url>http://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
+            <url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
         </repository>
         <snapshotRepository>
             <id>internal</id>
             <name>Internal Releases</name>
-            <url>http://gazelle.ihe.net/nexus/content/repositories/snapshots/</url>
+            <url>https://gazelle.ihe.net/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
