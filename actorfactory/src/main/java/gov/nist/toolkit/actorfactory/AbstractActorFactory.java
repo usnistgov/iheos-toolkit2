@@ -44,13 +44,14 @@ public abstract class AbstractActorFactory {
 
 	static final Map<String /* ActorType.name */, AbstractActorFactory> factories = new HashMap<String, AbstractActorFactory>();
 	static {
-		factories.put(ActorType.REGISTRY.getName(),           new RegistryActorFactory());
-		factories.put(ActorType.REPOSITORY.getName(),         new RepositoryActorFactory());
-		factories.put(ActorType.DOCUMENT_RECIPIENT.getName(),  new RecipientActorFactory());
-		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), new RepositoryRegistryActorFactory());
-		factories.put(ActorType.INITIATING_GATEWAY.getName(),  new IGActorFactory());
-		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  new RGActorFactory());
-        factories.put(ActorType.XDR_DOC_SRC.getName(), new XdrDocSrcActorFactory());
+		factories.put(ActorType.REGISTRY.getName(),           		new RegistryActorFactory());
+		factories.put(ActorType.REPOSITORY.getName(),         		new RepositoryActorFactory());
+		factories.put(ActorType.ONDEMAND_DOCUMENT_SOURCE.getName(),	new OnDemandDocumentSourceActorFactory());
+		factories.put(ActorType.DOCUMENT_RECIPIENT.getName(),  		new RecipientActorFactory());
+		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), 		new RepositoryRegistryActorFactory());
+		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
+		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
+        factories.put(ActorType.XDR_DOC_SRC.getName(), 				new XdrDocSrcActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
@@ -101,7 +102,9 @@ public abstract class AbstractActorFactory {
 		ele.setValue(sc.getId().toString());
 		addUser(sc, ele);
 
-		return sc;
+        addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
+
+        return sc;
 	}
 
 	protected AbstractActorFactory() {}

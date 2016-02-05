@@ -79,7 +79,8 @@ public class StoredDocument implements Serializable {
 	
 	public byte[] getDocumentContents() throws IOException {
 		File f = getPathToDocument();
-		return Io.bytesFromFile(f);
+		setContent(Io.bytesFromFile(f));
+		return content;
 	}
 
     public byte[] getContent() {

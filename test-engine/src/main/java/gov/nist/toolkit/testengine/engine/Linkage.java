@@ -4,7 +4,6 @@ import gov.nist.toolkit.common.coder.Base64Coder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Parse;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -205,7 +204,7 @@ public class Linkage extends BasicLinkage {
         if (root == null)
             return;
         if ("TestPlan".equals(root.getLocalName())) return;  // don't touch test plan
-        logger.info(String.format("Replacing %s with %s starting with element %s", old_text, new_text, root.getLocalName()));
+//        logger.info(String.format("Replacing %s with %s starting with element %s", old_text, new_text, root.getLocalName()));
         private_replace_string_in_text_and_attributes(root, old_text, new_text);
     }
 
@@ -588,7 +587,7 @@ public class Linkage extends BasicLinkage {
 	public void apply(OMElement root) throws XdsInternalException {
 		for (String key : linkage.keySet()) {
 			String value = linkage.get(key);
-            logger.info(String.format("apply %s:%s to %s", key, value,new OMFormatter(root).toString()));
+//            logger.info(String.format("apply %s:%s to %s", key, value,new OMFormatter(root).toString()));
 			replace_string_in_text_and_attributes(root, key, value);
 		}
 	}

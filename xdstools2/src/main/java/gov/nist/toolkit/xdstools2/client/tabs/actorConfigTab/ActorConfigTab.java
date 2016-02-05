@@ -224,6 +224,11 @@ public class ActorConfigTab extends GenericQueryTab {
 				row++;
 			}
 
+			if (ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)) {
+				Label oddsRepositoryUniqueIdLabel = new Label("oddsRepositoryUniqueId");
+				actorEditGrid.setWidget(row, 0, oddsRepositoryUniqueIdLabel);
+			}
+
 			if (ActorType.REPOSITORY.equals(actorType)) {
 				Label repuidLabel = new Label("repositoryUniqueId");
 				actorEditGrid.setWidget(row, 0, repuidLabel);

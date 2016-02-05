@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>GetFoldersForDocument/XDS</Test>
+    <Rule>GetFoldersForDocument Stored Query</Rule>
+    <TestStep id="GetFoldersForDocument">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <StoredQueryTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>

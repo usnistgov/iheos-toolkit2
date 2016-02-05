@@ -52,7 +52,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "On-Demand Document Source",
 			Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
-            null,
+            "gov.nist.toolkit.simulators.sim.od.rep.RepositoryActorSimulator",
 			Arrays.asList(TransactionType.ODDS_RETRIEVE),
 			true,
             "odds"

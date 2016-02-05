@@ -82,7 +82,7 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 		row++;
 
 
-		queryBoilerplate = addQueryBoilerplate(new GetSSandContentsRunner(), transactionTypes, couplings);
+		queryBoilerplate = addQueryBoilerplate(new GetSSandContentsRunner(), transactionTypes, couplings, false);
 
 	}
 
@@ -91,9 +91,11 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null)
-				return;
+            SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
+            if (siteSpec == null) {
+                new PopupMessage("You must select a site first");
+                return;
+            }
 
 			if (ssid.getValue() == null || ssid.getValue().equals("")) {
 				new PopupMessage("You must enter a Submission Set id first");
@@ -103,9 +105,6 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-//			siteSpec.isTls = doTLS;
-//			siteSpec.isSaml = doSAML;
-//			siteSpec.isAsync = doASYNC;
 			toolkitService.srcStoresDocVal(siteSpec, ssid.getValue().trim(), queryCallback);
 		}
 		

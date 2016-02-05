@@ -25,7 +25,9 @@
             <XDSb/>
             <MetadataFile>retrieve.xml</MetadataFile>
 			<Assertions>
-			<Assert id="origDocHashMatchesRetrieve">'68cd6548363bdbc67444b18085cf3a2c3f082add' = '$hash_doc1$'</Assert>
+			<Assert id="origDocHashMatchesRetrieve">
+                '68cd6548363bdbc67444b18085cf3a2c3f082add' = '$hash_doc1$' or '68CD6548363BDBC67444B18085CF3A2C3F082ADD' = '$hash_doc1$'
+            </Assert>
 			<Assert id="repositoryUniqueIdMatches">'$repuid$' = '$repuid_doc1$'</Assert>
 			<Assert id="origDocMimetypeMatchesRetrieve">'text/plain' = '$mimetype_doc1$'</Assert>
 			<Assert id="origSizeMatchesRetrieve">'32' = '$size_doc1$'</Assert>

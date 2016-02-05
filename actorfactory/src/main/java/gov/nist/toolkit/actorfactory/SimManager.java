@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -38,17 +39,24 @@ public class SimManager {
 	public List<SimId> loadAllSims() {
 		SimDb db = new SimDb();
 		List<SimId> simIds = db.getAllSimIds();
+		List<SimId> loadedSimIds = new ArrayList<>();
 		for (SimId simId : simIds) {
-			if (!hasSim(simId))
-				try {
-                    logger.info("Load sim " + simId);
-					simConfigs.add(db.getSimulator(simId));
-				}
-				catch (Exception e) {
-					throw new ToolkitRuntimeException("Error loading sim " + simId.toString(), e);
-				}
+			try {
+				if (!hasSim(simId))
+					try {
+						logger.info("Load sim " + simId);
+						simConfigs.add(db.getSimulator(simId));
+						loadedSimIds.add(simId);
+					}
+					catch (Exception e) {
+						throw new ToolkitRuntimeException("Error loading sim " + simId.toString(), e);
+					}
+			} catch (ToolkitRuntimeException e) { // Need to catch the exception here?
+				logger.warn(ExceptionUtil.exception_details(e));
+			}
+
 		}
-		return simIds;
+		return loadedSimIds;
 	}
 	
 //*****************************************
@@ -58,7 +66,7 @@ public class SimManager {
 //*****************************************
 	static public Site getSite(SimulatorConfig config) throws Exception {
 		AbstractActorFactory af = getActorFactory(config);
-        logger.info("Getting original actor factory to generate site - " + af.getClass().getName());
+//        logger.info("Getting original actor factory to generate site - " + af.getClass().getName());
 		return af.getActorSite(config, null);
 	}
 

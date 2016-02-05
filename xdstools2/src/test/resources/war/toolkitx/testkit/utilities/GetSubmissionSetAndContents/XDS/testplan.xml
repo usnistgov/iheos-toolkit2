@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>GetSubmissionSetAndContents</Test>
+    <Rule>Test GetSubmissionSetAndContents Stored Query</Rule>
+    <TestStep id="query">
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>GetSubmissionSetAndContents</SQ>
+            <Assertion>Query based on uniqueId</Assertion>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+	<StoredQueryTransaction>
+	    <XDSb/>
+	    <CleanParams/>
+	    <MetadataFile>query.xml</MetadataFile>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>

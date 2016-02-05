@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>MPQ-FindDocs</Test>
+    <TestStep id="object_refs">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <MPQTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </MPQTransaction>
+    </TestStep>
+</TestPlan>

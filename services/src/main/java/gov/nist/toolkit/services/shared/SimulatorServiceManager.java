@@ -382,7 +382,8 @@ public class SimulatorServiceManager extends CommonService {
 				if (db.getSimulatorActorType() == ActorType.REGISTRY) {
 					stats.add(RegistryActorSimulator.getSimulatorStats(simId));
 				}
-				else if (db.getSimulatorActorType() == ActorType.REPOSITORY) {
+				else if (db.getSimulatorActorType() == ActorType.REPOSITORY ||
+                         db.getSimulatorActorType() == ActorType.ONDEMAND_DOCUMENT_SOURCE) {
 					stats.add(RepositoryActorSimulator.getSimulatorStats(simId));
 				}
 				else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {

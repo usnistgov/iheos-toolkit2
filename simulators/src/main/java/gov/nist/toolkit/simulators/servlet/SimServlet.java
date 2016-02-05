@@ -464,6 +464,7 @@ public class SimServlet  extends HttpServlet {
 			repIndex = getRepIndex(simid);
 
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
+            vc.forceMtom = transactionType.isRequiresMtom();
 
 			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)
@@ -489,10 +490,14 @@ public class SimServlet  extends HttpServlet {
 			BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simid);
 
 			sim.init(dsSimCommon, asc);
-			sim.onTransactionBegin(asc);
-			transactionOk = sim.run(transactionType, mvc, validation);
-			sim.onTransactionEnd(asc);
-
+            if (asc.getConfigEle(SimulatorProperties.FORCE_FAULT).asBoolean()) {
+                sendSoapFault(dsSimCommon, "Forced Fault");
+                responseSent = true;
+            } else {
+                sim.onTransactionBegin(asc);
+                transactionOk = sim.run(transactionType, mvc, validation);
+                sim.onTransactionEnd(asc);
+            }
 		}
 		catch (InvocationTargetException e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
@@ -758,7 +763,16 @@ public class SimServlet  extends HttpServlet {
 		}
 	}
 
-	void logRequest(HttpServletRequest request, SimDb db, String actor, String transaction)
+    private void sendSoapFault(DsSimCommon dsSimCommon, String message) {
+//        try {
+            SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
+            dsSimCommon.sendFault(sf);
+//        } catch (Exception e) {
+//            logger.error(ExceptionUtil.exception_details(e));
+//        }
+    }
+
+    void logRequest(HttpServletRequest request, SimDb db, String actor, String transaction)
 			throws FileNotFoundException, IOException, HttpHeaderParseException, ParseException {
 		StringBuffer buf = new StringBuffer();
 

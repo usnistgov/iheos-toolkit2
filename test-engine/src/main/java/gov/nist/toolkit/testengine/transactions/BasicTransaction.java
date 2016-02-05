@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
+import gov.nist.toolkit.installation.Configuration;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -837,6 +838,16 @@ public abstract class BasicTransaction  {
 				reportManager.report(nameUuidMap, "_uuid");
 			}
 
+            // Insert test/section/step into authorPerson.id
+            String stepId = getStep().getId();
+            String testId = getStep().getPlan().getTestNum();
+            String sectionId = getStep().getPlan().getCurrentSection();
+            String id = String.format("%s/%s/%s", testId, sectionId, stepId);
+
+            if ("true".equals(Configuration.getProperty("testclient.addTestAsAuthor"))) {
+                if (metadata != null)
+                    metadata.addAuthorPersonToAll(id);
+            }
 
 		}
 

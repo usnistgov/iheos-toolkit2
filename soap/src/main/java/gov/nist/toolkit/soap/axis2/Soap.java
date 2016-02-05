@@ -13,10 +13,7 @@ import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
 import gov.nist.toolkit.xdsexception.*;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.soap.SOAP11Constants;
-import org.apache.axiom.soap.SOAP12Constants;
-import org.apache.axiom.soap.SOAPEnvelope;
-import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.*;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
@@ -492,9 +489,19 @@ public class Soap implements SoapInterface {
         AxisFault soapFault = null;
 		try {
 			operationClient.execute(block); // execute sync or async
-		} catch (AxisFault e) {
-            soapFault = e;
+//		} catch (AxisFault e) {
+//            soapFault = e;
+//            operationClient.execute(block); // execute sync or async
+        } catch (AxisFault e) {
+            MessageContext inMsgCtx = getInputMessageContext();
+            OMElement soapBody = inMsgCtx.getEnvelope().getBody();
+            result = soapBody.getFirstElement();
+            logger.info(new OMFormatter(result).toString());
         }
+//        catch (Exception e) {
+//            soapFault = e;
+//            logger.info("SOAP Fault received - " + e.getClass().getName());
+//        }
         finally {
 			log.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 
@@ -518,7 +525,7 @@ public class Soap implements SoapInterface {
 			try {
 				inMsgCtx.getEnvelope().build();
 			} catch (NullPointerException e) {
-				throw new XdsInternalException("Port number may be configured wrong", e);
+				throw new XdsInternalException("Service not available on this host:port");
 			}
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
