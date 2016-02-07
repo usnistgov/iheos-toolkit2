@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IGTestTab extends GenericQueryTab implements GatewayTool {
+public class RGTestTab extends GenericQueryTab implements GatewayTool {
     final protected ToolkitServiceAsync toolkitService = GWT
             .create(ToolkitService.class);
 
@@ -38,7 +38,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
     static final String COLLECTION_NAME =  "igtool1rg";
     TestSelectionManager testSelectionManager;
 
-    public IGTestTab() {
+    public RGTestTab() {
         super(new GetDocumentsSiteActorManager());
         testSelectionManager = new TestSelectionManager(this);
     }
@@ -67,10 +67,10 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
         autoAddRunnerButtons = false;  // want them in a different place
         genericQueryTitle = "Select System Under Test";
         genericQueryInstructions = new HTML(
-                "<p>When the test is run a Stored Query or Retrieve transaction will be sent to the " +
-                        "Initiating Gateway " +
+                "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
+                        "Responding Gateway " +
                         "selected below. This will start the test. Before running a test, make sure your " +
-                        "Initiating Gateway is configured to send to the Responding Gateways above.  This " +
+                        "Responding Gateway is configured to forward requests to the Document Repository and Document Registry above.  This " +
                         "test only uses non-TLS endpoints (for now). TLS selection is disabled.</p>"
         );
         addResultsPanel = false;  // manually done below
@@ -79,12 +79,16 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML("<h1>Initiating Gateway Test Tool</h1>"));
+        topPanel.add(new HTML("<h1>Responding Gateway Test Tool</h1>"));
 
         topPanel.add(new HTML("<p>" +
-                "This tool tests an Initiating Gateway with Affinity Domain option by surrounding it with " +
-                "a Document Consumer simulator and a Responding Gateway simulator. The Responding Gateway has " +
-                "a Document Registry simulator and Document Repository simulator behind it. " +
+                "This tool tests a Responding Gateway in one of two configurations.  The first configuration choice " +
+                "is a Responding Gateway that includes an addressable Document Repository and Document Registry.  Addressable " +
+                "means that Provide and Register transactions can be sent to load test data into the Repository and Registry. " +
+                "The other configuration choice requires the Responding Gateway to be configurable to use an externally " +
+                "Registry/Repository pair." +
+                "An Initiating Gateway simulator will be used to send Cross Gateway Query and Cross Gateway Retrieve " +
+                "transactions. " +
                 "These simulators are created by this tool." +
 
                 "<h2>Create supporting test session</h2>" +

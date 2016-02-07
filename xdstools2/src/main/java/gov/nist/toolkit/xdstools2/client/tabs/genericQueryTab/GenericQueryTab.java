@@ -73,6 +73,15 @@ public abstract class GenericQueryTab  extends TabbedWindow {
     public boolean autoAddRunnerButtons = true;
     public String genericQueryTitle = null;
     public HTML genericQueryInstructions = null;
+
+    public String getSelectedTest() {
+        return selectedTest;
+    }
+
+    public void setSelectedTest(String selectedTest) {
+        this.selectedTest = selectedTest;
+    }
+
     public String selectedTest;
 
     static TransactionOfferings transactionOfferings = null;  // Loaded from server
@@ -627,7 +636,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return sites;
 	}
 
-	protected SiteSpec getSiteSelection() { return queryBoilerplate.getSiteSelection(); }
+	public SiteSpec getSiteSelection() { return queryBoilerplate.getSiteSelection(); }
 
 	protected boolean verifyPidProvided() {
 		if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
@@ -637,7 +646,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return true;
 	}
 
-	protected boolean verifySiteProvided() {
+	public boolean verifySiteProvided() {
 		SiteSpec siteSpec = getSiteSelection();
 		if (siteSpec == null) {
 			new PopupMessage("You must select a site first");
