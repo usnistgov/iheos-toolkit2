@@ -74,8 +74,14 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 
-		if (simIdString != null)
-			simid = new SimId(simIdString);
+		if (simIdString != null) {
+            try {
+                simid = new SimId(simIdString);
+            } catch (Exception e) {
+                new PopupMessage(e.getMessage());
+                return;
+            }
+        }
 
 		container.addTab(topPanel, simIdString + " Logs", select);
 		addCloseButton(container, topPanel, null);

@@ -8,7 +8,7 @@ import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 /**
- * Created by bill on 9/1/15.
+ *
  */
 public class PifHandler implements PifCallback {
     static Logger logger = Logger.getLogger(PifHandler.class);

@@ -1,9 +1,6 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -151,7 +148,7 @@ public class SimDb {
 
 	}
 
-	public SimDb(TransactionInstance ti) throws IOException, NoSimException {
+	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
 		this(Installation.installation().simDbFile(), new SimId(ti.simId));
 
 		this.actor = ti.actorType.getShortName();
@@ -225,7 +222,7 @@ public class SimDb {
         }
     }
 	
-	public List<SimId> getAllSimIds() {
+	public List<SimId> getAllSimIds() throws BadSimIdException {
 		File[] files = dbRoot.listFiles();
 		List<SimId> ids = new ArrayList<>();
 		if (files == null) return ids;
@@ -237,7 +234,7 @@ public class SimDb {
 		return ids;
 	}
 
-    public List<SimId> getSimIdsForUser(String user) {
+    public List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
         List<SimId> ids = getAllSimIds();
         List<SimId> selectedIds = new ArrayList<>();
         for (SimId id : ids) {

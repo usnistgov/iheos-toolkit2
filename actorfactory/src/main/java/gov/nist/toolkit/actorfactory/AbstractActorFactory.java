@@ -193,7 +193,12 @@ public abstract class AbstractActorFactory {
 		id = parts[2];
 		//		id = id.replaceAll("-", "_");
 
-		return new SimId(id);
+        try {
+            return new SimId(id);
+        }
+        catch (Exception e) {
+            throw new ToolkitRuntimeException("Internal error: " + e.getMessage(), e);
+        }
 	}
 
 	String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) {

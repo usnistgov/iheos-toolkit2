@@ -87,6 +87,8 @@ class IgTestBuilder {
         String id2 = 'rg2'
         SimId rgSimId1 = new SimId(request.userName, id1, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
         SimId rgSimId2 = new SimId(request.userName, id2, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
+        if (rgSimId1.validate()) throw new Exception(rgSimId1.validate())
+        if (rgSimId2.validate()) throw new Exception(rgSimId2.validate())
         println "creating rg1 sim"
         SimulatorConfig rgSimConfig1 = api.createSimulator(rgSimId1).getConfig(0)
         println "creating rg2 sim"

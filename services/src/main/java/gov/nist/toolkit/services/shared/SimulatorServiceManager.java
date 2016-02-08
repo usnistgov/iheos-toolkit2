@@ -303,6 +303,13 @@ public class SimulatorServiceManager extends CommonService {
         SimulatorConfig config = SimCache.getSimulatorConfig(simId);
         if (config != null)
             return deleteConfig(config);
+        if (new SimDb().exists(simId)) {
+            try {
+                new SimDb(simId).delete();
+            } catch (Exception e) {
+                // ignore
+            }
+        }
         return "";
     }
 
