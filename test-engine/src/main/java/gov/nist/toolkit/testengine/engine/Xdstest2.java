@@ -342,7 +342,7 @@ public class Xdstest2 {
 
 		res.add(dashes);
 		for (TestDetails testSpec : testDetails) {
-            logger.info("Scanning Test: " + testSpec.getTestInstance());
+//            logger.info("Scanning Test: " + testSpec.getTestInstance());
 			res.add("Test: " + testSpec.getTestInstance());
 			res.add(dashes);
 			Collection<String> sections;
