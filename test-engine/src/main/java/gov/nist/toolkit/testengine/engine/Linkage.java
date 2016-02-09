@@ -203,7 +203,7 @@ public class Linkage extends BasicLinkage {
 	public void replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text) throws XdsInternalException {
         if (root == null)
             return;
-        if ("TestPlan".equals(root.getLocalName())) return;  // don't touch test plan
+//        if ("TestPlan".equals(root.getLocalName())) return;  // don't touch test plan
 //        logger.info(String.format("Replacing %s with %s starting with element %s", old_text, new_text, root.getLocalName()));
         private_replace_string_in_text_and_attributes(root, old_text, new_text);
     }
@@ -212,6 +212,13 @@ public class Linkage extends BasicLinkage {
 
 		if (root == null)
 			return;
+
+        if (root.getLocalName().equals("Report"))
+            return;
+        if (root.getLocalName().equals("UseReport"))
+            return;
+        if (root.getLocalName().equals("UseId"))
+            return;
 
 		// don't look inside document contents
 		try {
