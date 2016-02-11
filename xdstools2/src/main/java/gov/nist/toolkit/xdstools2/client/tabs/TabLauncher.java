@@ -7,6 +7,7 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
@@ -55,6 +56,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String pidFavoritesLabel = "Manage Patient IDs";
 	final static public String testsOverviewTabLabel = "Tests Overview";
     final static public String igTestsTabLabel = "Initiating Gateway Tests";
+    final static public String rgTestsTabLabel = "Responding Gateway Tests";
 
 
 
@@ -67,6 +69,8 @@ public class TabLauncher implements ClickHandler {
 			new FindDocumentsTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(igTestsTabLabel))
 			new IGTestTab().onAbstractTabLoad(container, true, "IG Tests");
+        else if (tabType.equals(rgTestsTabLabel))
+            new RGTestTab().onAbstractTabLoad(container, true, "RG Tests");
         else if (tabType.equals(findDocumentsByRefIdTabLabel))
             new FindDocumentsByRefIdTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(findDocumentsAllParametersTabLabel))

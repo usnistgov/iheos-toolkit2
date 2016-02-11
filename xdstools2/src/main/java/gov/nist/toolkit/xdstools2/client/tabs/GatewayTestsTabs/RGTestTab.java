@@ -16,6 +16,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.IgOrchestationManagerRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;
 import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
@@ -31,12 +32,15 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     final protected ToolkitServiceAsync toolkitService = GWT
             .create(ToolkitService.class);
 
-//    TextBox patientIdBox = new TextBox();
-    String selectedActor = ActorType.INITIATING_GATEWAY.getShortName();
+    static CoupledTransactions couplings = new CoupledTransactions();
+
+    //    TextBox patientIdBox = new TextBox();
+    String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
     List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "igtool1rg";
     TestSelectionManager testSelectionManager;
+    Panel siteSelectionPanel = new VerticalPanel();
 
     public RGTestTab() {
         super(new GetDocumentsSiteActorManager());
@@ -132,6 +136,14 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Demonstration Environment", true);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
+        topPanel.add(new HTML("<hr />"));
+
+        topPanel.add(siteSelectionPanel);
+
+        new SiteTransactionConfigLoader(toolkitService).load(new SiteDisplayer());
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         // Query boilerplate
         ActorType act = ActorType.findActor(selectedActor);
 
@@ -171,6 +183,32 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         addRunnerButtons(topPanel);
 
         topPanel.add(resultPanel);
+    }
+
+    class SiteDisplayer implements CompletionHandler<TransactionOfferings> {
+
+        @Override
+        public void OnCompletion(TransactionOfferings transactionOfferings) {
+            siteSelectionPanel.add(new HTML("<h2>Responding Gateway support actors</h2>" +
+            "The Responding Gateway (system under test) must be supported by a Document Repository and Document Registry " +
+            "that are publicly accessible so that test data can be loaded into them. Select the Repository and Registry " +
+            "supporting your Responding Gateway. If they are not on this selection list then update toolkit adding " +
+                    "their configurations."
+            ));
+
+
+
+            siteSelectionPanel.add(new HTML("<h3>Repository Selection</h3>"));
+            List<TransactionType> transactionTypes1 = new ArrayList<TransactionType>();
+            transactionTypes1.add(TransactionType.PROVIDE_AND_REGISTER);
+            siteSelectionPanel.add(new SiteSelectionWidget(transactionOfferings, transactionTypes1, couplings, getCurrentTestSession()).build(null));
+
+
+            siteSelectionPanel.add(new HTML("<h3>Registry Selection</h3>"));
+            List<TransactionType> transactionTypes2 = new ArrayList<TransactionType>();
+            transactionTypes2.add(TransactionType.REGISTER);
+            siteSelectionPanel.add(new SiteSelectionWidget(transactionOfferings, transactionTypes2, couplings, getCurrentTestSession()).build(null));
+        }
     }
 
     class BuildTestOrchestrationButton extends ReportableButton {

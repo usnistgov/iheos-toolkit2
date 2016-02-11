@@ -552,7 +552,10 @@ public abstract class GenericQueryTab  extends TabbedWindow {
         boolean hasRunButton = runnerPanel.getWidgetIndex(runButton) > -1;
 
         // messed normal query tools
-//        if (hasRunButton) { new PopupMessage("already has run button"); return; }
+//        if (hasRunButton) {
+//            new PopupMessage("already has run button");
+//            return;
+//        }
 
         panel.add(runnerPanel);
         if (runEnabled) {
@@ -562,7 +565,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 
         try {
-            getGoButton().addClickHandler(runner);
+            if (!hasRunButton)
+                getGoButton().addClickHandler(runner);
         } catch (Exception e) {}
 
         if (enableInspectResults) {
