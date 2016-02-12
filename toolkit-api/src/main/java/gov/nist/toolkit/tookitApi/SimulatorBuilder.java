@@ -3,6 +3,7 @@ package gov.nist.toolkit.tookitApi;
 import gov.nist.toolkit.actortransaction.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 
 /**
  * Build/modify a collection of different Actor simulators running in a remote copy of toolkit.
@@ -162,6 +163,13 @@ public class SimulatorBuilder {
      */
     public SimConfig get(SimId simId) throws ToolkitServiceException {
         return engine.get(simId);
+    }
+
+    public SimId get(String user, String id) {
+        SimIdResource simId = new SimIdResource();
+        simId.setUser(user);
+        simId.setId(id);
+        return simId;
     }
 
 }
