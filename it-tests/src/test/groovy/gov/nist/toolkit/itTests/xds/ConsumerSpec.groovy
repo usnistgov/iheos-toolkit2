@@ -67,12 +67,14 @@ class ConsumerSpec extends ToolkitSpecification {
     def 'find documents query - returns no patient id parameter error'() {
         when:
         QueryParametersResource parameters = new QueryParametersResource();
+
         StoredQueryRequestResource sqRequest = new StoredQueryRequestResource()
         sqRequest.id = 'dc'
         sqRequest.user = testSession
         sqRequest.queryId = DocumentConsumer.FindDocuments
         sqRequest.queryParameters = parameters
         sqRequest.tls = false
+
         LeafClassRegistryResponse response = docCons.queryForLeafClass(sqRequest)
         if (response.status != ResponseStatusType.SUCCESS) {
             println 'ErrorList is ' + response.errorList
@@ -89,16 +91,14 @@ class ConsumerSpec extends ToolkitSpecification {
         QueryParametersResource parameters = new QueryParametersResource();
         parameters.addParameter(QueryParametersValueSet.XDSDocumentEntryPatientId, pid.asString())
         parameters.addParameter(QueryParametersValueSet.XDSDocumentEntryStatus, MetadataSupport.statusType_approved)
-        println parameters
+
         StoredQueryRequestResource sqRequest = new StoredQueryRequestResource()
         sqRequest.id = 'dc'
         sqRequest.user = testSession
         sqRequest.queryId = DocumentConsumer.FindDocuments
-//        sqRequest.queryParameters = parameters
-//        sqRequest.key1 = QueryParametersValueSet.XDSDocumentEntryPatientId
-//        sqRequest.values1 = [pid.asString()]
         sqRequest.setQueryParameters(parameters)
         sqRequest.tls = false
+
         LeafClassRegistryResponse response = docCons.queryForLeafClass(sqRequest)
         if (response.status != ResponseStatusType.SUCCESS) {
             println 'ErrorList is ' + response.errorList
