@@ -55,6 +55,28 @@ public class SimulatorBuilder {
     }
 
     /**
+     * Create new Document Consumer simulator with default configuration.
+     * To create a simulator with
+     * custom configuration:
+     * <ol>
+     * <li>Create simulator with default configuration</li>
+     * <li>Update the local copy of the configuration</li>
+     * <li>Send the update via the update method</li>
+     * </ol>
+     * @param id Simulator ID
+     * @param user User creating Simulator.  Same as TestSession in Toolkit UI. The simulator ID must be unique for this user.
+     * @param environmentName Environment defines Affinity Domain coding schemes and TLS certificate for use with client.
+     * @return Simulator configuration.
+     * @throws ToolkitServiceException if anything goes wrong.
+     */
+    public DocumentConsumer createDocumentConsumer(String id, String user, String environmentName) throws ToolkitServiceException {
+        XdsDocumentConsumer cons = new XdsDocumentConsumer();
+        cons.engine = engine;
+        cons.config =  engine.create(id, user, SimulatorActorType.DOCUMENT_CONSUMER, environmentName);
+        return cons;
+    }
+
+    /**
      * Create new Document Recipient simulator with default configuration.
      * To create a simulator with
      * custom configuration:

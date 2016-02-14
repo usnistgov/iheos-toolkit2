@@ -3,14 +3,21 @@ package gov.nist.toolkit.toolkitServices;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
+import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.services.server.RegistrySimApi;
 import gov.nist.toolkit.services.server.RepositorySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.Document;
+import gov.nist.toolkit.toolkitServicesCommon.RegistryError;
+import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType;
 import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -22,6 +29,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -304,6 +312,56 @@ public class SimulatorsController {
     }
 
     @POST
+    @Produces("application/json")
+    @Path("/{id}/xds/QueryForLeafClass")
+    public Response queryForLeafClass(final StoredQueryRequestResource request) {
+        logger.info(String.format("POST simulators/%s/xds/QueryForLeafClass", request.getFullId()));
+        SimulatorConfig config;
+        SimId simId = ToolkitFactory.asServerSimId(request);
+        logger.info("simid is " + simId);
+        try {
+            config = api.getConfig(simId);
+            if (config == null) throw new NoSimException("");
+            String queryId = request.getQueryId();
+            String queryName = MetadataSupport.getSQName(queryId);
+            logger.info("Query is " + queryName);
+            if (queryName.equals(""))
+                throw new BadSimRequestException("Do not understand query ID " + queryId);
+            DocConsActorSimulator sim = new DocConsActorSimulator();
+
+            gov.nist.toolkit.simulators.sim.cons.QueryParameters queryParameters = new gov.nist.toolkit.simulators.sim.cons.QueryParameters();
+            queryParameters.addParameter(request.getKey1(), request.getValuea1());
+
+            OMElement responseEle = sim.query(config, queryId, queryParameters, true, request.isTls());
+//            OMElement responseEle = sim.query(config, queryId, QueryParametersManager.internalize(request.getQueryParameters()), true, request.isTls());
+            logger.info(new OMFormatter(responseEle).toString());
+            Metadata metadata = new Metadata(responseEle);
+            List<OMElement> objects = metadata.getNonObjectRefs();
+            LeafClassRegistryResponseResource returnResource = new LeafClassRegistryResponseResource();
+            for (OMElement e : objects) {
+                returnResource.addLeafClass(new OMFormatter(e).toString());
+            }
+
+            AdhocQueryResponse adhocQueryResponse = new AdhocQueryResponseParser(responseEle).getResponse();
+            returnResource.setStatus(ResponseStatusType.getStatus(adhocQueryResponse.getStatus()));
+            List<RegistryError> errors = new ArrayList<RegistryError>();
+            for (gov.nist.toolkit.registrymsg.registry.RegistryError error : adhocQueryResponse.getRegistryErrorList()) {
+                RegistryError error1 = new RegistryError();
+                error1.setErrorCode(error.errorCode);
+                error1.setErrorContext(error.codeContext);
+                error1.setLocation(error.location);
+                error1.setStatus((error.isWarning) ? ResponseStatusType.WARNING : ResponseStatusType.ERROR);
+                errors.add(error1);
+            }
+            returnResource.setErrorList(errors);
+
+            return Response.ok(returnResource).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
+        }
+    }
+
+    @POST
     @Consumes("application/json")
     @Produces("application/json")
     @Path("/{id}/xdr")
@@ -312,8 +370,8 @@ public class SimulatorsController {
         SimId simId = null;
         SimulatorConfig config;
         simId = ToolkitFactory.asServerSimId(request);
+        logger.info("simid is " + simId);
         try {
-            logger.info("simid is " + simId);
             config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
         } catch (Exception e) {

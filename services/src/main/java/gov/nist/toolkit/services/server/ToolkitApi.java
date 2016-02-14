@@ -112,6 +112,7 @@ public class ToolkitApi {
 
     public Simulator createSimulator(SimId simId) throws Exception {
         ActorType actorType = ActorType.findActor(simId.getActorType());
+        logger.info(String.format("Create sim %s of type %s", simId.toString(), simId.getActorType()));
         if (actorType == null) throw new BadSimConfigException("Simulator type " + simId.getActorType() + " does not exist");
         return createSimulator(actorType, simId);
     }

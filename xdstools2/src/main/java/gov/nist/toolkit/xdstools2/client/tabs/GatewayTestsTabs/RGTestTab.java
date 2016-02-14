@@ -201,13 +201,13 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
             siteSelectionPanel.add(new HTML("<h3>Repository Selection</h3>"));
             List<TransactionType> transactionTypes1 = new ArrayList<TransactionType>();
             transactionTypes1.add(TransactionType.PROVIDE_AND_REGISTER);
-            siteSelectionPanel.add(new SiteSelectionWidget(transactionOfferings, transactionTypes1, couplings, getCurrentTestSession()).build(null));
+            siteSelectionPanel.add(new SiteSelectionWidget(transactionOfferings, transactionTypes1, couplings, getCurrentTestSession()).build(null, ""));
 
 
             siteSelectionPanel.add(new HTML("<h3>Registry Selection</h3>"));
             List<TransactionType> transactionTypes2 = new ArrayList<TransactionType>();
             transactionTypes2.add(TransactionType.REGISTER);
-            siteSelectionPanel.add(new SiteSelectionWidget(transactionOfferings, transactionTypes2, couplings, getCurrentTestSession()).build(null));
+            siteSelectionPanel.add(new SiteSelectionWidget(transactionOfferings, transactionTypes2, couplings, getCurrentTestSession()).build(null, ""));
         }
     }
 

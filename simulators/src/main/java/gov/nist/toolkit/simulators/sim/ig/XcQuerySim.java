@@ -183,7 +183,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			er.challenge("Request to RG is");
 			er.detail(new OMFormatter(req).toString());
 
-			AdhocQueryResponseParser.AdhocQueryResponse rgResponse = sqCall(req, endpoint);
+			gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse rgResponse = sqCall(req, endpoint);
 
 			er.challenge("Response from RG is");
 			er.detail(new OMFormatter(rgResponse.getMessage()).toString());
@@ -262,7 +262,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		er.err(XdsErrorCode.Code.XDSRegistryError, msg, this, null);
 	}
 
-	AdhocQueryResponseParser.AdhocQueryResponse sqCall(OMElement request, String endpoint) throws Exception {
+	gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse sqCall(OMElement request, String endpoint) throws Exception {
 		Soap soap = new Soap();
 		soap.setAsync(false);
 		soap.setUseSaml(false);
@@ -286,7 +286,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			result = mockSoap.call(endpoint, request);
 		}
 
-		AdhocQueryResponseParser.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
+		gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
 
 		return response;
 	}

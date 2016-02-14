@@ -20,6 +20,15 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null
 	),
+    DOC_CONSUMER(
+            "XDS Document Consumer",
+            Arrays.asList("XDS_Consumer", "doccons"),
+            "cons",
+            "gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator",
+            Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE),
+            false,
+            null
+    ),
     REGISTRY(
             "Document Registry",
             Arrays.asList("DOC_REGISTRY", "registryb", "initialize_for_stored_query"),

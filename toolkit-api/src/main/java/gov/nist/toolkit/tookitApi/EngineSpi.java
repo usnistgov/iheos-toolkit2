@@ -2,10 +2,7 @@ package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.actortransaction.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.*;
-import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -133,6 +130,16 @@ public class EngineSpi {
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
         return response.readEntity(RawSendResponseResource.class);
+    }
+
+    public LeafClassRegistryResponse queryForLeafClass(StoredQueryRequest request) throws ToolkitServiceException {
+        Response response = target
+                .path(String.format("simulators/%s/xds/QueryForLeafClass", request.getFullId()))
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(request));
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response);
+        return response.readEntity(LeafClassRegistryResponseResource.class);
     }
 
 }

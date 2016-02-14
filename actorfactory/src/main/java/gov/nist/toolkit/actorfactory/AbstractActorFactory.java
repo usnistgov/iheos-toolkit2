@@ -52,6 +52,7 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
 		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
         factories.put(ActorType.XDR_DOC_SRC.getName(), 				new XdrDocSrcActorFactory());
+        factories.put(ActorType.DOC_CONSUMER.getName(), 			new ConsumerActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
@@ -120,7 +121,7 @@ public abstract class AbstractActorFactory {
 	// Returns list since multiple simulators could be built as a grouping/cluster
 	// only used by SimulatorFactory to offer a generic API for building sims
 	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID, boolean save) throws Exception {
-
+        logger.info("Build New Simulator " + simtype);
 		ActorType at = ActorType.findActor(simtype);
 
 		if (at == null)
@@ -134,10 +135,11 @@ public abstract class AbstractActorFactory {
 		logger.info("Build new Simulator of type " + getClass().getSimpleName() + " simID: " + simID);
 
 		// This is the simulator-specific factory
-		AbstractActorFactory af = factories.get(at.getName());
+        String actorTypeName = at.getName();
+		AbstractActorFactory af = factories.get(actorTypeName);
 
 		if (af == null)
-			throw new ToolkitRuntimeException(String.format("Cannot build simulator of type %s - cannot find ActorType", at.getName()));
+			throw new ToolkitRuntimeException(String.format("Cannot build simulator of type %s - cannot find Factor for ActorType [", actorTypeName) + "]");
 
 		af.setSimManager(simm);
 

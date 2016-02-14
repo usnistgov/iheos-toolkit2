@@ -42,11 +42,11 @@ public class SiteSelectionWidget {
         siteLoader = new SiteLoader(transactionOfferings, user);
     }
 
-    public Panel build(SiteSpec selectedSite) {
+    public Panel build(SiteSpec selectedSite, String displayLabel) {
         optionsPanel.add(tlsCheckBox);
         panel.add(optionsPanel);
 
-        sitePanel.add(new HTML("Send to"));
+        sitePanel.add(new HTML((displayLabel == null) ? "Send to" : displayLabel));
         sitePanel.add(siteGrid);
         panel.add(sitePanel);
 

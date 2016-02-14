@@ -5,7 +5,7 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse;
 
 /**
- * Created by bill on 10/31/15.
+ *
  */
 class XdrDocumentSource extends AbstractActor implements DocumentSource {
 
