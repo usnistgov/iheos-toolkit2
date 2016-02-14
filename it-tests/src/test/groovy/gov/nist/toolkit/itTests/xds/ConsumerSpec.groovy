@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.client.Pid
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.registrysupport.MetadataSupport
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.tookitApi.DocumentConsumer
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
@@ -85,16 +86,18 @@ class ConsumerSpec extends ToolkitSpecification {
 
     def 'find documents query - correctly'() {
         when:
-//        QueryParametersResource parameters = new QueryParametersResource();
-//        parameters.addParameter(QueryParametersValueSet.XDSDocumentEntryPatientId, pid.asString())
-//        println parameters
+        QueryParametersResource parameters = new QueryParametersResource();
+        parameters.addParameter(QueryParametersValueSet.XDSDocumentEntryPatientId, pid.asString())
+        parameters.addParameter(QueryParametersValueSet.XDSDocumentEntryStatus, MetadataSupport.statusType_approved)
+        println parameters
         StoredQueryRequestResource sqRequest = new StoredQueryRequestResource()
         sqRequest.id = 'dc'
         sqRequest.user = testSession
         sqRequest.queryId = DocumentConsumer.FindDocuments
 //        sqRequest.queryParameters = parameters
-        sqRequest.key1 = QueryParametersValueSet.XDSDocumentEntryPatientId
-        sqRequest.valuea1 = pid.asString()
+//        sqRequest.key1 = QueryParametersValueSet.XDSDocumentEntryPatientId
+//        sqRequest.values1 = [pid.asString()]
+        sqRequest.setQueryParameters(parameters)
         sqRequest.tls = false
         LeafClassRegistryResponse response = docCons.queryForLeafClass(sqRequest)
         if (response.status != ResponseStatusType.SUCCESS) {

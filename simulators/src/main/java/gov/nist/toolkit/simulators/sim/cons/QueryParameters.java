@@ -23,6 +23,7 @@ public class QueryParameters {
     }
 
     public void addParameter(String paramName, List<String> values) {
+        if (values == null) return;
         List<String> evalues = parms.get(paramName);
         if (evalues == null) {
             evalues = new ArrayList<String>();

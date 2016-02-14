@@ -1,65 +1,65 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
- *
+ * only used locally
  */
-@XmlRootElement
+
 public class QueryParametersResource {
-    String key1 = null;
-    List<String> values1 = new ArrayList<String>();
-//    String valuea1;
+    Map<String, List<String>> parms = new HashMap<>();
 
     public QueryParametersResource() {}
 
     public Set<String> getParameterNames() {
-        Set<String> names = new HashSet<String>();
-        if (key1 != null) names.add(key1);
-        return names;
+        return parms.keySet();
     }
 
     private List<String> getItem(String key) {
         if (key == null) return null;
-        if (key.equals(key1)) return values1;
-        return null;
+        List<String> values = parms.get(key);
+        if (values != null) return values;
+        return new ArrayList<String>();
     }
 
     public void addParameter(String paramName, String value) {
-        List<String> values = getItem(paramName);
-        if (values != null) { values.add(value); return; }
-        if (key1 == null) {
-            key1 = paramName;
-            values1.add(value);
-//            valuea1 = value;
-            return;
+        if (parms.containsKey(paramName)) {
+            List<String> values = getItem(paramName);
+            if (values == null) {
+                values = new ArrayList<String>();
+                parms.put(paramName, values);
+            }
+            values.add(value);
+        } else {
+            List<String> values = new ArrayList<>();
+            values.add(value);
+            parms.put(paramName, values);
         }
-        throw new RuntimeException("QueryParameters: out of space");
     }
 
-    // this doesn't merge lists as a set would - problem?
     public void addParameter(String paramName, List<String> values) {
         List<String> values2 = getItem(paramName);
-        if (values2 != null) { values2.addAll(values); return; }
-        if (key1 == null) { key1 = paramName; values1.addAll(values); return; }
-        throw new RuntimeException("QueryParameters: out of space");
+        if (values2 != null) {
+            values2.addAll(values);
+        } else {
+            parms.put(paramName, values);
+        }
     }
 
     public List<String> getValues(String paramName) {
         if (paramName == null) return new ArrayList<String>();
-        if (paramName.equals(key1)) return values1;
-        return new ArrayList<String>();
+        List<String> values = parms.get(paramName);
+        if (values == null) return new ArrayList<String>();
+        return values;
     }
 
     public String toString() {
         StringBuilder buf = new StringBuilder();
 
         buf.append("QueryParameters:\n");
-        buf.append("   ").append(key1).append(": ").append(values1).append("\n");
+        for (String key : parms.keySet()) {
+            buf.append("   ").append(key).append(": ").append(parms.get(key)).append("\n");
+        }
 
         return buf.toString();
     }

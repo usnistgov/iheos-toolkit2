@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
@@ -329,14 +330,34 @@ public class SimulatorsController {
                 throw new BadSimRequestException("Do not understand query ID " + queryId);
             DocConsActorSimulator sim = new DocConsActorSimulator();
 
-            gov.nist.toolkit.simulators.sim.cons.QueryParameters queryParameters = new gov.nist.toolkit.simulators.sim.cons.QueryParameters();
-            queryParameters.addParameter(request.getKey1(), request.getValuea1());
+            gov.nist.toolkit.simulators.sim.cons.QueryParameters queryParameters =
+                    new gov.nist.toolkit.simulators.sim.cons.QueryParameters();
+            queryParameters.addParameter(request.getKey1(), request.getValues1());
+            queryParameters.addParameter(request.getKey2(), request.getValues2());
+            queryParameters.addParameter(request.getKey3(), request.getValues3());
+            queryParameters.addParameter(request.getKey4(), request.getValues4());
+            queryParameters.addParameter(request.getKey5(), request.getValues5());
+            queryParameters.addParameter(request.getKey6(), request.getValues6());
+            queryParameters.addParameter(request.getKey7(), request.getValues7());
+            queryParameters.addParameter(request.getKey8(), request.getValues8());
+            queryParameters.addParameter(request.getKey9(), request.getValues9());
+            queryParameters.addParameter(request.getKey10(), request.getValues10());
+            queryParameters.addParameter(request.getKey11(), request.getValues11());
+            queryParameters.addParameter(request.getKey12(), request.getValues12());
+            queryParameters.addParameter(request.getKey13(), request.getValues13());
+            queryParameters.addParameter(request.getKey14(), request.getValues14());
+            queryParameters.addParameter(request.getKey15(), request.getValues15());
+            queryParameters.addParameter(request.getKey16(), request.getValues16());
+            queryParameters.addParameter(request.getKey17(), request.getValues17());
+            queryParameters.addParameter(request.getKey18(), request.getValues18());
+            queryParameters.addParameter(request.getKey19(), request.getValues19());
+            queryParameters.addParameter(request.getKey20(), request.getValues20());
 
             OMElement responseEle = sim.query(config, queryId, queryParameters, true, request.isTls());
 //            OMElement responseEle = sim.query(config, queryId, QueryParametersManager.internalize(request.getQueryParameters()), true, request.isTls());
-            logger.info(new OMFormatter(responseEle).toString());
-            Metadata metadata = new Metadata(responseEle);
-            List<OMElement> objects = metadata.getNonObjectRefs();
+//            logger.info(new OMFormatter(responseEle).toString());
+            Metadata metadata = MetadataParser.parseNonSubmission(responseEle);
+            List<OMElement> objects = metadata.getMajorObjects();
             LeafClassRegistryResponseResource returnResource = new LeafClassRegistryResponseResource();
             for (OMElement e : objects) {
                 returnResource.addLeafClass(new OMFormatter(e).toString());

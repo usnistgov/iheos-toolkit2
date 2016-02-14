@@ -97,7 +97,15 @@ public class DocConsActorSimulator extends BaseDsActorSimulator  {
             parameters.getValues(paramName).each { value ->
                 OMElement valueEle = XmlUtil.createElement('Value', MetadataSupport.ebRIMns3)
                 valueList.addChild(valueEle)
-                valueEle.setText("'" + value + "'")
+                StringBuffer formattedValue = new StringBuffer();
+                boolean multiValue = MultiValueParameters.supportsMultipleValues(paramName);
+                if (multiValue) formattedValue.append('(')
+                formattedValue.append("'")
+                formattedValue.append(value)
+                formattedValue.append("'")
+                if (multiValue) formattedValue.append(')')
+
+                valueEle.setText(formattedValue.toString())
             }
         }
 
