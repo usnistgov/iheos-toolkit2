@@ -85,7 +85,7 @@ public class DocConsActorSimulator extends BaseDsActorSimulator  {
 
         adhocQuery.addAttribute('id', queryId, null)
 
-        parameters.parameterNames.each { paramName ->
+        parameters.parameterNames.each { String paramName ->
             OMElement slot = XmlUtil.createElement('Slot', MetadataSupport.ebRIMns3)
             adhocQuery.addChild(slot)
 
