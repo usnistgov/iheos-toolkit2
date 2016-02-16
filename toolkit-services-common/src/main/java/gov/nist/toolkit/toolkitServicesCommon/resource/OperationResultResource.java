@@ -11,6 +11,7 @@ public class OperationResultResource {
     Response.Status status;
     int extendedCode = 0;
     String reason;
+    String reasonPhrase;
 
     static final public String EXTENDED_CODE_HEADER = "X-EXTENDED-CODE";
     static final public String REASON_HEADER = "X-REASON";
@@ -30,6 +31,7 @@ public class OperationResultResource {
 
     public OperationResultResource(Response response) {
         status = Response.Status.fromStatusCode(response.getStatus());
+        reasonPhrase = response.getStatusInfo().getReasonPhrase();
         String codeString = response.getHeaderString(EXTENDED_CODE_HEADER);
         if (codeString != null && !codeString.equals("")) extendedCode = Integer.parseInt(codeString);
         reason = response.getHeaderString(REASON_HEADER);
@@ -82,14 +84,22 @@ public class OperationResultResource {
                 append("\"").
                 append(status.getStatusCode()).
                 append("\"").
+
                 append(" extendedCode:").
                 append("\"").
                 append(extendedCode).
                 append("\"").
-                append(", reason:").
+
+                append(" reason:").
                 append("\"").
                 append((reason == null) ? null : reason.trim()).
                 append("\"").
+
+                append(" reasonPhrase:").
+                append("\"").
+                append((reasonPhrase == null) ? null : reasonPhrase.trim()).
+                append("\"").
+
                 append(" }");
         return buf.toString();
     }
