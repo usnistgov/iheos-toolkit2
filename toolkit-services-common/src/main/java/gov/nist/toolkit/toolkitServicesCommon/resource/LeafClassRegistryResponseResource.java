@@ -14,7 +14,7 @@ import java.util.List;
 @XmlRootElement
 public class LeafClassRegistryResponseResource implements LeafClassRegistryResponse {
     ResponseStatusType status;
-    List<RegistryError> registryErrorList = new ArrayList<RegistryError>();
+    List<RegistryErrorResource> registryErrorList = new ArrayList<RegistryErrorResource>();
     List<String> leafClassList = new ArrayList<String>();
 
     @Override
@@ -28,10 +28,14 @@ public class LeafClassRegistryResponseResource implements LeafClassRegistryRespo
 
     @Override
     public List<RegistryError> getErrorList() {
-        return registryErrorList;
+        // this copy is necessary because returning registryErrorList generates a type conflict
+        List<RegistryError> re = new ArrayList<RegistryError>();
+        for (RegistryError e : registryErrorList)
+            re.add(e);
+        return re;
     }
 
-    public void setErrorList(List<RegistryError> errorList) {
+    public void setErrorList(List<RegistryErrorResource> errorList) {
         this.registryErrorList = errorList;
     }
 

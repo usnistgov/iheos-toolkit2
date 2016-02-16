@@ -17,7 +17,6 @@ import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.Document;
-import gov.nist.toolkit.toolkitServicesCommon.RegistryError;
 import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType;
 import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -365,9 +364,9 @@ public class SimulatorsController {
 
             AdhocQueryResponse adhocQueryResponse = new AdhocQueryResponseParser(responseEle).getResponse();
             returnResource.setStatus(ResponseStatusType.getStatus(adhocQueryResponse.getStatus()));
-            List<RegistryError> errors = new ArrayList<RegistryError>();
+            List<RegistryErrorResource> errors = new ArrayList<RegistryErrorResource>();
             for (gov.nist.toolkit.registrymsg.registry.RegistryError error : adhocQueryResponse.getRegistryErrorList()) {
-                RegistryError error1 = new RegistryError();
+                RegistryErrorResource error1 = new RegistryErrorResource();
                 error1.setErrorCode(error.errorCode);
                 error1.setErrorContext(error.codeContext);
                 error1.setLocation(error.location);

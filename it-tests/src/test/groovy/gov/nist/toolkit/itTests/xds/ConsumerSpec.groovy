@@ -1,4 +1,5 @@
 package gov.nist.toolkit.itTests.xds
+
 import gov.nist.toolkit.actorfactory.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.Pid
 import gov.nist.toolkit.adt.ListenerFactory
@@ -8,13 +9,11 @@ import gov.nist.toolkit.registrysupport.MetadataSupport
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.tookitApi.DocumentConsumer
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
-import gov.nist.toolkit.toolkitServicesCommon.LeafClassRegistryResponse
-import gov.nist.toolkit.toolkitServicesCommon.QueryParametersValueSet
-import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType
-import gov.nist.toolkit.toolkitServicesCommon.SimConfig
+import gov.nist.toolkit.toolkitServicesCommon.*
 import gov.nist.toolkit.toolkitServicesCommon.resource.QueryParametersResource
 import gov.nist.toolkit.toolkitServicesCommon.resource.StoredQueryRequestResource
 import spock.lang.Shared
+
 /**
  *
  */
@@ -71,7 +70,7 @@ class ConsumerSpec extends ToolkitSpecification {
         StoredQueryRequestResource sqRequest = new StoredQueryRequestResource()
         sqRequest.id = 'dc'
         sqRequest.user = testSession
-        sqRequest.queryId = DocumentConsumer.FindDocuments
+        sqRequest.queryId = StoredQueryRequest.FindDocuments
         sqRequest.queryParameters = parameters
         sqRequest.tls = false
 
@@ -95,7 +94,7 @@ class ConsumerSpec extends ToolkitSpecification {
         StoredQueryRequestResource sqRequest = new StoredQueryRequestResource()
         sqRequest.id = 'dc'
         sqRequest.user = testSession
-        sqRequest.queryId = DocumentConsumer.FindDocuments
+        sqRequest.queryId = StoredQueryRequest.FindDocuments
         sqRequest.setQueryParameters(parameters)
         sqRequest.tls = false
 

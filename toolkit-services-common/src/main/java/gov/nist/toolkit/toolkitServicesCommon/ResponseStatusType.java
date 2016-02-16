@@ -5,7 +5,8 @@ import gov.nist.toolkit.xdsexception.XdsException;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * This includes values used on RegistryResponse messages (SUCCESS, FAILURE, PARTIAL_SUCCESS)
+ * and values used on individual RegistryError elements (ERROR, WARNING)
  */
 @XmlRootElement
 public enum ResponseStatusType {
