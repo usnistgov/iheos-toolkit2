@@ -50,13 +50,18 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 
 		// Repository
 		addEditableConfig(sc, SimulatorProperties.repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
-		// TODO: The PnR part will be added later
-//		addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
-//		addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
+		addEditableConfig(sc, SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, ParamType.BOOLEAN, true);
+
+		addEditableEndpoint(sc, SimulatorProperties.registerEndpoint, ActorType.REPOSITORY_REGISTRY, TransactionType.REGISTER, false); // This can be the Registry endpoint from the PnR
+		addEditableEndpoint(sc, SimulatorProperties.registerTlsEndpoint, ActorType.REPOSITORY_REGISTRY, TransactionType.REGISTER, true); // This can be the Registry endpoint from the PnR
+
 		addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.ODDS_RETRIEVE, false);
 		addFixedEndpoint(sc, SimulatorProperties.retrieveTlsEndpoint, actorType, TransactionType.ODDS_RETRIEVE, true);
-//		addFixedEndpoint(sc, SimulatorProperties.registerEndpoint, actorType, TransactionType.REGISTER, false);
-//		addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+
+		addEditableEndpoint(sc, SimulatorProperties.pnrEndpoint, ActorType.REPOSITORY_REGISTRY, TransactionType.PROVIDE_AND_REGISTER, false);
+		addEditableEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, ActorType.REPOSITORY_REGISTRY, TransactionType.PROVIDE_AND_REGISTER, true);
+
+		addEditableConfig(sc, SimulatorProperties.CONTENT_BUNDLE_ID, ParamType.TEXT, "");
 
 		return new Simulator(sc);
 	}

@@ -192,6 +192,17 @@ public class SimulatorProperties {
     public static final String                     repositoryUniqueId = "repositoryUniqueId";
 
     /**
+     * See  ITI Vol. 3, Rev. 12, 4.1.1, pg. 10, 350
+     */
+    public static final String                     PERSISTENCE_OF_RETRIEVED_DOCS = "Persistence of Retrieved Documents Option";
+
+    /**
+     * Content bundle
+     * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
+     */
+    public static final String                  CONTENT_BUNDLE_ID = "Content Bundle ID";
+
+    /**
      * String property controlling the definition of the Home Community ID of a Responding Gateway.
      */
     public static final String                        homeCommunityId = "homeCommunityId";
