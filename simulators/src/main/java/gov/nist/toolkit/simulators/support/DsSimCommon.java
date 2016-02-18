@@ -351,9 +351,9 @@ public class DsSimCommon {
         return body;
     }
 
-    void sendFault(SoapFault fault) {
+    public void sendFault(SoapFault fault) {
         OMElement env = wrapResponseInSoapEnvelope(fault.getXML());
-        sendHttpResponse(env, simCommon.getUnconnectedErrorRecorder(), false);
+        sendHttpResponse(env, simCommon.getUnconnectedErrorRecorder(), true);
     }
 
     /**
@@ -371,6 +371,8 @@ public class DsSimCommon {
         }
         simCommon.responseSent = true;
         String respStr;
+        logger.info("vc is " + simCommon.vc);
+        logger.info("multipartOk is " + multipartOk);
         if (simCommon.vc != null && simCommon.vc.requiresMtom() && multipartOk) {
             StringBuffer body = wrapSoapEnvelopeInMultipartResponse(env, er);
 

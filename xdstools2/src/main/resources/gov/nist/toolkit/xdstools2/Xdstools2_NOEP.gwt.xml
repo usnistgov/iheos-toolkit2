@@ -42,9 +42,9 @@
   <!-- <set-property name="compiler.useSourceMaps" value="true"/> -->
   
   <!-- Only build for one browser - safari setting includes chrome -->
-   <set-property name="user.agent" value="safari" />
+   <!--<set-property name="user.agent" value="safari" />-->
 
-  <inherits name="com.google.gwt.logging.Logging"/>
+  <!--<inherits name="com.google.gwt.logging.Logging"/>-->
 
   <source path="doc/howto/index.html"/>
 

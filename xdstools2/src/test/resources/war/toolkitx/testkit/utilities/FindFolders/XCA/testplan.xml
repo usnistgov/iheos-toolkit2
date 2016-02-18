@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>FindFolders/XCA</Test>
+    <TestStep id="FindFoldersbyLeafClass">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XCQTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <homeCommunityId>$home$</homeCommunityId>
+            <MetadataFile>query.xml</MetadataFile>
+        </XCQTransaction>
+    </TestStep>
+</TestPlan>

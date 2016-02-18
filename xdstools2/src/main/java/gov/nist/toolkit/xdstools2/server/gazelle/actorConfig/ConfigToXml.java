@@ -156,7 +156,7 @@ public class ConfigToXml {
 
 
 	public static void main(String[] args) {
-		File actorsDir = new File("/Users/bmajur/tmp/toolkit2/actors");
+		File actorsDir = new File("/Users/bill/tmp/toolkit2/actors");
 		String systemName = "ALL";   // "ALL";
 		GazelleConfigs gConfigs = null; 
 		OidConfigs oConfigs = null;

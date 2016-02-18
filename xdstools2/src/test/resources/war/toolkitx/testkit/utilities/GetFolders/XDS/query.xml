@@ -1,0 +1,36 @@
+<query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                         xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                         xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="$returnType$"/>
+    <AdhocQuery id="urn:uuid:5737b14c-8a1a-4539-b659-e03a34a5e1e4">
+        <Slot name="$XDSFolderEntryUUID">
+            <ValueList>
+                <Value>('$id0$')</Value>
+                <Value>('$id1$')</Value>
+                <Value>('$id2$')</Value>
+                <Value>('$id3$')</Value>
+                <Value>('$id4$')</Value>
+                <Value>('$id5$')</Value>
+                <Value>('$id6$')</Value>
+                <Value>('$id7$')</Value>
+                <Value>('$id8$')</Value>
+                <Value>('$id9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSFolderUniqueId">
+            <ValueList>
+                <Value>('$uid0$')</Value>
+                <Value>('$uid1$')</Value>
+                <Value>('$uid2$')</Value>
+                <Value>('$uid3$')</Value>
+                <Value>('$uid4$')</Value>
+                <Value>('$uid5$')</Value>
+                <Value>('$uid6$')</Value>
+                <Value>('$uid7$')</Value>
+                <Value>('$uid8$')</Value>
+                <Value>('$uid9$')</Value>
+            </ValueList>
+        </Slot>
+    </AdhocQuery>
+</query:AdhocQueryRequest>

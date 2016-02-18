@@ -89,7 +89,8 @@ public class PidFavoritesTab  extends GenericQueryTab {
         favoritesListPanel.add(favoritiesButtonPanel);
 
         pidPanel.add(new HTML("<br />"));
-        pidPanel.add(new HTML("<h3>Generate new Patient ID</h3>"));
+        pidPanel.add(new HTML("<h3>Generate new Patient ID</h3>"
+        ));
         pidPanel.add(assigningAuthorityPanel);
 
         favoritiesButtonPanel.add(new HTML("Select Patient ID(s) then: "));
@@ -114,7 +115,9 @@ public class PidFavoritesTab  extends GenericQueryTab {
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
-        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)"));
+        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
+                        "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
+                "for private testing only.</p>" ));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 
         panel.add(selectedPids);
