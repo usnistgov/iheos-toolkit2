@@ -201,24 +201,15 @@ public class Linkage extends BasicLinkage {
 	}
 
 	public void replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text) throws XdsInternalException {
-        if (root == null)
-            return;
-//        if ("TestPlan".equals(root.getLocalName())) return;  // don't touch test plan
-//        logger.info(String.format("Replacing %s with %s starting with element %s", old_text, new_text, root.getLocalName()));
         private_replace_string_in_text_and_attributes(root, old_text, new_text);
     }
 
     void private_replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text) throws XdsInternalException {
 
-		if (root == null)
-			return;
-
-        if (root.getLocalName().equals("Report"))
-            return;
-        if (root.getLocalName().equals("UseReport"))
-            return;
-        if (root.getLocalName().equals("UseId"))
-            return;
+		if (root == null) return;
+        if (root.getLocalName().equals("Report")) return;
+        if (root.getLocalName().equals("UseReport")) return;
+        if (root.getLocalName().equals("UseId")) return;
 
 		// don't look inside document contents
 		try {
@@ -232,15 +223,6 @@ public class Linkage extends BasicLinkage {
 		for (Iterator it=root.getChildElements(); it.hasNext(); ) {
 			OMElement e = (OMElement) it.next();
 
-			try {
-				replaceStringInElement(e, old_text, new_text);
-			} catch (Exception ex) {
-				throw new XdsInternalException("Error trying to replace [" + old_text + "] with [" +
-				new_text + "] in element " + e.getLocalName(), ex		);
-
-			}
-
-			// recurse
 			private_replace_string_in_text_and_attributes(e, old_text, new_text);
 		}
 
@@ -250,7 +232,7 @@ public class Linkage extends BasicLinkage {
 			String new_text) {
 		// text
 		String text = e.getText();
-		if (text.indexOf(old_text) != -1) {
+		if (text.contains(old_text)) {
 			text = text.replaceAll(escape_pattern(old_text), new_text);
 			e.setText(text);
 		}
@@ -259,7 +241,7 @@ public class Linkage extends BasicLinkage {
 		for (Iterator ita=e.getAllAttributes(); ita.hasNext(); ) {
 			OMAttribute att = (OMAttribute) ita.next();
 			String value = att.getAttributeValue();
-			if (value.indexOf(old_text) != -1) {
+			if (value.contains(old_text)) {
 				value = value.replaceAll(escape_pattern(old_text), new_text);
 				att.setAttributeValue(value);
 			}
