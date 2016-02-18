@@ -13,6 +13,7 @@ public class SoapActionFactory {
 	public final static String ret_b_action       = "urn:ihe:iti:2007:RetrieveDocumentSet";
 	public final static String ret_b_async_action = "urn:ihe:iti:2007:RetrieveDocumentSet";
 	public final static String anon_action        = "urn:anonOutInOp";
+	public final static String rad_69_action      = "urn:ihe:rad:2009:RetrieveImagingDocumentSet";
 
 	public final static String epsos_xcqr_action = "urn:epsos:xcqr";
 
@@ -37,6 +38,7 @@ public class SoapActionFactory {
 		    	 put("urn:ihe:iti:2010:UpdateDocumentSet",               "urn:ihe:iti:2010:UpdateDocumentSetResponse");
 		    	 put(r_b_action,                                         "urn:ihe:iti:2007:RegisterDocumentSet-bResponse");
 		    	 put(ret_b_action,                                       "urn:ihe:iti:2007:RetrieveDocumentSetResponse");
+		    	 put(rad_69_action,                                      "urn:ihe:rad:2009:RetrieveImagingDocumentSetResponse");
 		    	 put(MetadataSupport.SQ_action,                          MetadataSupport.SQ_response_action);
 		    	 put("urn:ihe:iti:2007:CrossGatewayRetrieve",            "urn:ihe:iti:2007:CrossGatewayRetrieveResponse");
 		    	 put("urn:ihe:iti:2007:CrossGatewayQuery",               "urn:ihe:iti:2007:CrossGatewayQueryResponse");

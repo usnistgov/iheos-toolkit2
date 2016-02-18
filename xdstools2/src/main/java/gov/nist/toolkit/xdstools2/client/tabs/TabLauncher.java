@@ -57,6 +57,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String testsOverviewTabLabel = "Tests Overview";
     final static public String igTestsTabLabel = "Initiating Gateway Tests";
     final static public String rgTestsTabLabel = "Responding Gateway Tests";
+	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
 
 
 
@@ -101,6 +102,8 @@ public class TabLauncher implements ClickHandler {
 			new SourceStoredDocValTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(documentRetrieveTabLabel)) 
 			new DocRetrieveTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(imagingDocumentSetRetrieveTabLabel)) 
+			new ImagingDocSetRetrieveTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(allocatePatientIdTabLabel)) 
 			new PidAllocateTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(registryTestDataTabLabel)) 

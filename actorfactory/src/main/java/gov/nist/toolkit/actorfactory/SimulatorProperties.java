@@ -208,4 +208,16 @@ public class SimulatorProperties {
 
     public static final String                         FORCE_FAULT = "Force Fault";
 
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                           idsrEndpoint = "IDSR_endpoint";
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                        idsrTlsEndpoint = "IDSR_TLS_endpoint";
+
 }

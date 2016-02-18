@@ -25,7 +25,8 @@ public enum TransactionType implements Serializable {
     MPQ("ITI-51", "Multi-Patient Query", "mpq", "mpq", "mpq.as", false, "urn:ihe:iti:2009:MultiPatientStoredQuery", "urn:ihe:iti:2009:MultiPatientStoredQueryResponse", false),
     XC_PATIENT_DISCOVERY("ITI-55", "Cross Community Patient Discovery", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery", false),
     DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", "", false),
-    PIF("PIF", "Patient Identity Feed", "pif", "pif", "pif", false, "", "", false);
+    PIF("PIF", "Patient Identity Feed", "pif", "pif", "pif", false, "", "", false),
+    RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:rad:2009:RetrieveImagingDocumentSetResponse", true);
 
 
 	private static final long serialVersionUID = 1L;

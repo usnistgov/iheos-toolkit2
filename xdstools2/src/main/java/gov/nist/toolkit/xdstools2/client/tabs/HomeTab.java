@@ -217,6 +217,13 @@ public class HomeTab extends GenericQueryTab {
 //			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.documentRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.documentRetrieveTabLabel)));
 			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.documentRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.documentRetrieveTabLabel)));
 			row++;
+
+//			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.imagingDocumentSetRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.imagingDocumentSetRetrieveTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.imagingDocumentSetRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.imagingDocumentSetRetrieveTabLabel)));
+			row++;
+
+
+
 		}
 
 		if (forNwHIN) {

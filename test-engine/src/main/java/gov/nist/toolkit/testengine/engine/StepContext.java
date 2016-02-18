@@ -328,6 +328,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				{
 					transaction = new SocketTransaction(this, instruction, instruction_output);
 				} 
+				else if (instruction_name.equals("RetrieveImagingDocSetTransaction")) 
+				{
+					transaction = new ImagingDocSetRetrieveTransaction(this, instruction, instruction_output);
+				} 
 				else 
 				{
 					dumpContextIntoOutput(test_step_output);

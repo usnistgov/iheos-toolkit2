@@ -119,6 +119,7 @@ public interface ToolkitServiceAsync {
 	void registerAndQuery(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void getRelated(SiteSpec site, ObjectRef or, List<String> assocs, AsyncCallback<List<Result>> callback);
 	void retrieveDocument(SiteSpec site, Uids uids, AsyncCallback<List<Result>> callback);
+	void retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax, AsyncCallback<List<Result>> callback);
 	void submitRegistryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
 	void submitRepositoryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
 	void submitXDRTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	

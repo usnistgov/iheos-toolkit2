@@ -13,8 +13,9 @@ public class MetadataTypes {
     final public static int METADATA_TYPE_REGISTRY_RESPONSE3 = 9;
     final public static int METADATA_TYPE_EPSOS      = 10;
 	final public static int METADATA_TYPE_RODDE		= 11;
+    final public static int METADATA_TYPE_RAD69      = 12;
 
-    static String[] names = new String[12];
+    static String[] names = new String[13];
     
     public static String getMetadataTypeName(int type) {
     	if (names[0] == null) {
@@ -30,6 +31,7 @@ public class MetadataTypes {
     		names[9] = "METADATA_TYPE_REGISTRY_RESPONSE3";
     		names[10] = "METADATA_TYPE_EPSOS";
 			names[11] = "METADATA_TYPE_RODDE";
+    		names[12] = "METADATA_TYPE_RAD69";
     	}
     	
     	if (type < names.length)
