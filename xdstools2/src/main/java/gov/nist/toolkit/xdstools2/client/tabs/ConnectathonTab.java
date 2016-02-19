@@ -41,19 +41,7 @@ public class ConnectathonTab extends GenericQueryTab {
 		row++;
 
         row = 0;
-        col = 1;
-
-        mainGrid.setWidget(row, col, addHTML("<b>Gateway Tests</b>"));
-        row++;
-
-        mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.igTestsTabLabel, new TabLauncher(container, TabLauncher.igTestsTabLabel)));
-        row++;
-
-        mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.rgTestsTabLabel, new TabLauncher(container, TabLauncher.rgTestsTabLabel)));
-        row++;
-
-        row = 0;
-		col = 2;
+		col = 1;
 		
 		mainGrid.setWidget(row, col, addHTML("<b>Registry Validations</b>"));
 		row++;
@@ -68,7 +56,7 @@ public class ConnectathonTab extends GenericQueryTab {
 		row++;
 		
 		row = 0;
-		col = 3;
+		col = 2;
 		
 		mainGrid.setWidget(row, col, addHTML("<b>Repository Validations</b>"));
 		row++;
@@ -77,7 +65,7 @@ public class ConnectathonTab extends GenericQueryTab {
 		row++;
 		
 		row = 0;
-		col = 4;
+		col = 3;
 		
 		mainGrid.setWidget(row, col, addHTML("<b>Load Test Data</b>"));
 		row++;
@@ -89,7 +77,7 @@ public class ConnectathonTab extends GenericQueryTab {
 		row++;
 		
 		row = 0;
-		col = 5;
+		col = 4;
 		
 		mainGrid.setWidget(row, col, addHTML("<b>Tools</b>"));
 		row ++;

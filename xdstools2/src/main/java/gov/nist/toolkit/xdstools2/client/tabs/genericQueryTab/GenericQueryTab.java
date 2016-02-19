@@ -84,7 +84,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
     public String selectedTest;
 
-    static TransactionOfferings transactionOfferings = null;  // Loaded from server
+    static public TransactionOfferings transactionOfferings = null;  // Loaded from server
 
 	protected QueryBoilerplate queryBoilerplate = null;
 

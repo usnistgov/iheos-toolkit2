@@ -1,4 +1,5 @@
 package gov.nist.toolkit.services.server.orchestration
+
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.SimulatorProperties
@@ -7,7 +8,6 @@ import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.IgOrchestationManagerRequest
 import gov.nist.toolkit.services.client.IgOrchestrationResponse
@@ -19,7 +19,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import groovy.transform.TypeChecked
 /**
  * Build environment for testing Initiating Gateway SUT.
- * Will not try to delete sims if they already exist - request will fail.
+ *
  */
 @TypeChecked
 class IgTestBuilder {
@@ -29,6 +29,7 @@ class IgTestBuilder {
     Pid twoDocPid
     Pid twoRgPid
     ToolkitApi api
+    Util util
     List<SimulatorConfig> rgConfigs = []
     SimulatorConfig igConfig = null
 
@@ -36,6 +37,7 @@ class IgTestBuilder {
         this.api = api
         this.session = session
         this.request = request
+        this.util = new Util(api)
     }
 
     RawResponse buildTestEnvironment() {
@@ -49,12 +51,14 @@ class IgTestBuilder {
             buildRGs()
 
             String home1 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
-            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc1', oneDocPid, home1)
-            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'twodoc', twoDocPid, home1)
-            submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc2', twoRgPid, home1)
+
+            // register patient ids with registry
+            util.submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc1', oneDocPid, home1)
+            util.submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'twodoc', twoDocPid, home1)
+            util.submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc2', twoRgPid, home1)
 
             String home2 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
-            submit(request.userName, rgConfigs.get(1).id, new TestInstance("15807"), 'onedoc3', twoRgPid, home2)
+            util.submit(request.userName, rgConfigs.get(1).id, new TestInstance("15807"), 'onedoc3', twoRgPid, home2)
 
             IgOrchestrationResponse response = new IgOrchestrationResponse()
             response.oneDocPid = oneDocPid
@@ -67,18 +71,6 @@ class IgTestBuilder {
         } catch (Exception e) {
             return RawResponseBuilder.build(e);
         }
-    }
-
-    void submit(String userName, SimId simId, TestInstance testId, String section, Pid patientId, String home) {
-        // load the reg/rep with two documents
-        List<String> sections = [ section ]
-        Map<String, String> qparams = new HashMap<>()
-        qparams.put('$patientid$', patientId.asString())
-        qparams.put('$testdata_home$', home);
-
-        List<Result> results = api.runTest(userName, simId.toString(), testId, sections, qparams, true)
-        if (!results.get(0).passed())
-            throw new Exception(results.get(0).toString())
     }
 
     void buildRGs() {
