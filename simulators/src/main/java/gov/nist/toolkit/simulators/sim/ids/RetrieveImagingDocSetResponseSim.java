@@ -41,17 +41,19 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
 		try {
 			response = new RetrieveMultipleResponse();
 
-			//dsSimCommon.addDocumentAttachments(documentUids, er);
+			dsSimCommon.addImagingDocumentAttachments(documentUids, er);
 
-			//Collection<StoredDocument> documents = dsSimCommon.getAttachments();
+			Collection<StoredDocument> documents = dsSimCommon.getAttachments();
+			OMElement root = response.getRoot();
+/*
 			ArrayList<StoredDocument> documents = new ArrayList<StoredDocument>();
 
-			OMElement root = response.getRoot();
 			for (String s : documentUids) {
 				StoredDocument sdx = getStoredImageDocument(s);
 				documents.add(sdx);
 				logger.debug("Adding a document to list of documents: " + s);
 			}
+*/
 
 			for (StoredDocument document : documents) {
 				String uid = document.getUid();
@@ -59,7 +61,8 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
 				logger.debug("Repository Unique ID: " + repositoryUniqueId);
 
 				//StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
-				StoredDocument sd = getStoredImageDocument(uid);
+				//StoredDocument sd = getStoredImageDocument(uid);
+				StoredDocument sd = dsSimCommon.getStoredImagingDocument(uid);
 
 				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
 
@@ -98,12 +101,12 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
 		return response;
 	}
 
+/*
 	private StoredDocument getStoredImageDocument(String uid) {
 		StoredDocumentInt sdi = new StoredDocumentInt();
 		sdi.pathToDocument = "/tmp/000000.dcm";
 		sdi.uid = uid;
 		sdi.mimeType = "application/dicom";
-		sdi.mimeType = "application/octet-stream";
 		sdi.charset = "UTF-8";
 		sdi.hash="0000";
 		sdi.size = "4";
@@ -113,7 +116,12 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
 		sdi.content[2] = 'c';
 		sdi.content[3] = 'd';
 		StoredDocument sd = new StoredDocument(sdi);
+		sd.cid = mkCid(5);
 		return sd;
 	}
+	private String mkCid(int i) {
+		return "doc" + i + "@wustl.edu";
+	}
+*/
 
 }
