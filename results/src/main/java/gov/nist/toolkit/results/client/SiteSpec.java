@@ -47,6 +47,10 @@ public class SiteSpec implements IsSerializable {
 			isAsync = toClone.isAsync;
 		}
 	}
+
+    public SiteSpec(String name) {
+        this(name, null, null);
+    }
 	
 	public SiteSpec() {
 		this("", null, null);

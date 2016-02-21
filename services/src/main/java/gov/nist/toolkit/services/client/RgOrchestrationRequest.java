@@ -7,14 +7,14 @@ import java.io.Serializable;
 /**
  *
  */
-public class RgOrchestrationManagerRequest implements Serializable {
+public class RgOrchestrationRequest implements Serializable {
     String userName;
     String environmentName;
     SiteSpec siteUnderTest;
     boolean useExposedRR;
     boolean useSimAsSUT;
 
-    public RgOrchestrationManagerRequest() {}
+    public RgOrchestrationRequest() {}
 
     public String getUserName() {
         return userName;

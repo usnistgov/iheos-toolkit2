@@ -8,8 +8,9 @@ import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.results.SiteBuilder
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.services.client.IgOrchestationManagerRequest
+import gov.nist.toolkit.services.client.IgOrchestrationRequest
 import gov.nist.toolkit.services.client.IgOrchestrationResponse
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.server.RawResponseBuilder
@@ -22,9 +23,9 @@ import groovy.transform.TypeChecked
  *
  */
 @TypeChecked
-class IgTestBuilder {
+class IgOrchestrationBuilder {
     Session session
-    IgOrchestationManagerRequest request
+    IgOrchestrationRequest request
     Pid oneDocPid
     Pid twoDocPid
     Pid twoRgPid
@@ -33,7 +34,7 @@ class IgTestBuilder {
     List<SimulatorConfig> rgConfigs = []
     SimulatorConfig igConfig = null
 
-    public IgTestBuilder(ToolkitApi api, Session session, IgOrchestationManagerRequest request) {
+    public IgOrchestrationBuilder(ToolkitApi api, Session session, IgOrchestrationRequest request) {
         this.api = api
         this.session = session
         this.request = request
@@ -52,13 +53,13 @@ class IgTestBuilder {
 
             String home1 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
 
-            // register patient ids with registry
-            util.submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc1', oneDocPid, home1)
-            util.submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'twodoc', twoDocPid, home1)
-            util.submit(request.userName, rgConfigs.get(0).id, new TestInstance("15807"), 'onedoc2', twoRgPid, home1)
+            // Submit test data
+            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc1', oneDocPid, home1)
+            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'twodoc', twoDocPid, home1)
+            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc2', twoRgPid, home1)
 
             String home2 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
-            util.submit(request.userName, rgConfigs.get(1).id, new TestInstance("15807"), 'onedoc3', twoRgPid, home2)
+            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'onedoc3', twoRgPid, home2)
 
             IgOrchestrationResponse response = new IgOrchestrationResponse()
             response.oneDocPid = oneDocPid
@@ -89,6 +90,7 @@ class IgTestBuilder {
         SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig1)
         SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig2)
 
+        // TODO - NO - won't work with real SUT
         // disable checking of Patient Identity Feed
         SimulatorConfigElement rgEle1 = rgSimConfig1.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
         rgEle1.setValue(false)

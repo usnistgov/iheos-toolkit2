@@ -72,7 +72,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	HTML resultsShortDescription = new HTML();
     public boolean autoAddRunnerButtons = true;
     public String genericQueryTitle = null;
-    public HTML genericQueryInstructions = null;
+    public Widget genericQueryInstructions = null;
 
     public String getSelectedTest() {
         return selectedTest;

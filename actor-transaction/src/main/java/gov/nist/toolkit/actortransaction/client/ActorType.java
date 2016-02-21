@@ -20,15 +20,6 @@ public enum ActorType implements IsSerializable, Serializable {
             false,
             null
 	),
-    DOC_CONSUMER(
-            "XDS Document Consumer",
-            Arrays.asList("XDS_Consumer", "doccons"),
-            "cons",
-            "gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator",
-            Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE),
-            false,
-            null
-    ),
     REGISTRY(
             "Document Registry",
             Arrays.asList("DOC_REGISTRY", "registryb", "initialize_for_stored_query"),
@@ -119,7 +110,23 @@ public enum ActorType implements IsSerializable, Serializable {
             new ArrayList<TransactionType>(),
             false,
             null
-	)
+	),
+
+    // TODO - actorType lookup problem
+    // This at the end of the list on purpose.  From the UI actor types are selected by the transactions they support.
+    // A problem came up in TransactionSelectionManager#generateSiteSpec() where this gets chosen instead of
+    // REGISTRY when searching on STORED_QUERY.  getSiteSpec() (and the stuff around it) needs to make decisions
+    // on more than just what transactions are offered.  Probably needs to maintain specific actor type so
+    // the lookup by transaction is not necessary
+    DOC_CONSUMER(
+            "XDS Document Consumer",
+            Arrays.asList("XDS_Consumer", "doccons"),
+            "cons",
+            "gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator",
+            Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE),
+            false,
+            null
+    )
     ;
 
 	private static final long serialVersionUID = 1L;

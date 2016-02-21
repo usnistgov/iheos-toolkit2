@@ -36,7 +36,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
     List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "igtool1rg";
+    static final String COLLECTION_NAME =  "rgtool";
     TestSelectionManager testSelectionManager;
     Panel siteSelectionPanel = new VerticalPanel();
 
@@ -44,6 +44,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
     RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
     boolean usingExposedRR() { return exposed.getValue(); }
+    boolean useSimAsSUT() { return !usingExposedRR(); }
 
     public RGTestTab() {
         super(new GetDocumentsSiteActorManager());
@@ -71,7 +72,18 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         // customization of GenericQueryTab
         autoAddRunnerButtons = false;  // want them in a different place
         genericQueryTitle = "Select System Under Test";
-        genericQueryInstructions = new HTML(
+        HTML instructions = new HTML(
+                "<p>" +
+                        "The system under test is a Responding Gateway. To be testable by this tool one of the following " +
+                        "configurations must be supported by your implementation. " +
+                        "<ul>" +
+                        "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
+                        "functionality and you expose the required endpoints for these actors." +
+                        "A single site (system configuration in toolkit) must contain the Responding Gateway " +
+                        "(system under test), and the related Registry and Repository configurations." +
+                        "<li>External Registry/Repository - your implementation can be configured to work with an " +
+                        "external Registry and Repository which will be selected below." +
+                        "</ul>" +
                 "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
                         "Responding Gateway " +
                         "selected below. This will start the test. Before running a test, make sure your " +
@@ -98,18 +110,21 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         "</p>"
         ));
 
-        topPanel.add(new HTML("<hr /><h2>System under test</h2>" +
-                "<p>" +
-                "The system under test is a Responding Gateway. To be testable by this tool one of the following " +
-                "configurations must be supported by your implementation. " +
-                "<ul>" +
-                "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
-                "functionality and you expose the required endpoints for these actors." +
-                "A single site (system configuration in toolkit) must contain the Responding Gateway " +
-                "(system under test), and the related Registry and Repository configurations." +
-                "<li>External Registry/Repository - your implementation can be configured to work with an " +
-                "external Registry and Repository which will be selected below." +
-                "</ul>"));
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+//        topPanel.add(new HTML(
+//                "<hr /><h2>System under test</h2>" +
+//                "<p>" +
+//                "The system under test is a Responding Gateway. To be testable by this tool one of the following " +
+//                "configurations must be supported by your implementation. " +
+//                "<ul>" +
+//                "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
+//                "functionality and you expose the required endpoints for these actors." +
+//                "A single site (system configuration in toolkit) must contain the Responding Gateway " +
+//                "(system under test), and the related Registry and Repository configurations." +
+//                "<li>External Registry/Repository - your implementation can be configured to work with an " +
+//                "external Registry and Repository which will be selected below." +
+//                "</ul>"
+//        ));
 
         Panel systemTypePanel = new HorizontalPanel();
         systemTypePanel.add(exposed);
@@ -159,11 +174,40 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
             }
         });
 
-        topPanel.add(systemTypePanel);
+
+        Panel instructionsPanel = new VerticalPanel();
+        instructionsPanel.add(instructions);
+        instructionsPanel.add(systemTypePanel);
+        genericQueryInstructions = instructionsPanel;
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        // Query boilerplate
+        ActorType act = ActorType.findActor(selectedActor);
+
+        List<TransactionType> tt = act.getTransactions();
+
+        // has to be before addQueryBoilerplate() which
+        // references mainGrid
+        mainGrid = new FlexTable();
+
+        queryBoilerplate = addQueryBoilerplate(
+                new Runner(),
+                tt,
+                new CoupledTransactions(),
+                false  /* display patient id param */);
+
+//        topPanel.add(systemTypePanel);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+//        // Select SUT
+//
+//        topPanel.add(new HTML("<hr />"));
+//
+//        topPanel.add(siteSelectionPanel);
+//
+//        new SiteTransactionConfigLoader(toolkitService).load(new SiteDisplayer());
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         topPanel.add(new HTML(
-                "<hr />" +
                         "<h2>Build Test Environment</h2>" +
                         "<p>" +
                         "This will delete the contents of the selected test session and initialize it. " +
@@ -181,33 +225,12 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
         topPanel.add(testEnvironmentsPanel);
 
-//        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Test Environment", false);
-//
-//        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Demonstration Environment", true);
+        new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment");
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         topPanel.add(new HTML("<hr />"));
 
-        topPanel.add(siteSelectionPanel);
+//        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Demonstration Environment", true);
 
-        new SiteTransactionConfigLoader(toolkitService).load(new SiteDisplayer());
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-        // Query boilerplate
-        ActorType act = ActorType.findActor(selectedActor);
-
-        List<TransactionType> tt = act.getTransactions();
-
-        // has to be before addQueryBoilerplate() which
-        // references mainGrid
-        mainGrid = new FlexTable();
-
-        queryBoilerplate = addQueryBoilerplate(
-                new Runner(),
-                tt,
-                new CoupledTransactions(),
-                false  /* display patient id param */);
 
         TestSelectionManager testSelectionManager = new TestSelectionManager(this);
 
@@ -234,6 +257,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 
         topPanel.add(resultPanel);
     }
+
 
     void buildExternalRegistryRepository() {
 

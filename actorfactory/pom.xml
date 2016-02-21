@@ -15,10 +15,6 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>adt</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>gov.nist.toolkit</groupId>-->
-            <!--<artifactId>results</artifactId>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>tk</artifactId>

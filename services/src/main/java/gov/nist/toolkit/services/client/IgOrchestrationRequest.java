@@ -5,12 +5,12 @@ import java.io.Serializable;
 /**
  *
  */
-public class IgOrchestationManagerRequest implements Serializable {
+public class IgOrchestrationRequest implements Serializable {
     String userName;
     String environmentName;
     boolean includeLinkedIG;
 
-    public IgOrchestationManagerRequest() {}
+    public IgOrchestrationRequest() {}
 
     public String getUserName() {
         return userName;

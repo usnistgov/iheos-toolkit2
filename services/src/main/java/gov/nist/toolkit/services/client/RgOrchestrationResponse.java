@@ -1,14 +1,16 @@
 package gov.nist.toolkit.services.client;
 
 import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.results.client.SiteSpec;
 
 /**
  *
  */
 public class RgOrchestrationResponse  extends RawResponse {
     Pid pid;
-    SimulatorConfig regrepConfig;
+    SiteSpec siteUnderTest;
+    SiteSpec regrepSite;
+    boolean sameSite;
 
     public RgOrchestrationResponse() {}
 
@@ -20,11 +22,27 @@ public class RgOrchestrationResponse  extends RawResponse {
         this.pid = pid;
     }
 
-    public SimulatorConfig getRegrepConfig() {
-        return regrepConfig;
+    public SiteSpec getSiteUnderTest() {
+        return siteUnderTest;
     }
 
-    public void setRegrepConfig(SimulatorConfig regrepConfig) {
-        this.regrepConfig = regrepConfig;
+    public void setSiteUnderTest(SiteSpec siteUnderTest) {
+        this.siteUnderTest = siteUnderTest;
+    }
+
+    public SiteSpec getRegrepSite() {
+        return regrepSite;
+    }
+
+    public void setRegrepSite(SiteSpec regrepSite) {
+        this.regrepSite = regrepSite;
+    }
+
+    public boolean isSameSite() {
+        return sameSite;
+    }
+
+    public void setSameSite(boolean sameSite) {
+        this.sameSite = sameSite;
     }
 }

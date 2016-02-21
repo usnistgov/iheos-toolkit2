@@ -13,14 +13,10 @@ import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.services.client.IgOrchestationManagerRequest;
-import gov.nist.toolkit.services.client.IgOrchestrationResponse;
-import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,9 +119,9 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
         topPanel.add(testEnvironmentsPanel);
 
-        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Test Environment", false);
+        new BuildIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
-        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Demonstration Environment", true);
+        new BuildIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         // Query boilerplate
@@ -167,92 +163,6 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
         addRunnerButtons(topPanel);
 
         topPanel.add(resultPanel);
-    }
-
-    class BuildTestOrchestrationButton extends ReportableButton {
-        boolean includeIG;
-
-        BuildTestOrchestrationButton(Panel topPanel, String label, boolean includeIG) {
-            super(topPanel, label);
-            this.includeIG = includeIG;
-        }
-
-        public void handleClick(ClickEvent event) {
-            IgOrchestationManagerRequest request = new IgOrchestationManagerRequest();
-            if (empty(getCurrentTestSession())) {
-                new PopupMessage("Must select test session first");
-                return;
-            }
-            request.setUserName(getCurrentTestSession());
-            request.setIncludeLinkedIG(includeIG);
-            toolkitService.buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
-                @Override
-                public void onFailure(Throwable throwable) { handleError(throwable); }
-
-                @Override
-                public void onSuccess(RawResponse rawResponse) {
-                    if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
-                    IgOrchestrationResponse orchResponse = (IgOrchestrationResponse)rawResponse;
-
-                    rgConfigs = orchResponse.getSimulatorConfigs();
-
-                    panel().add(new HTML("<h2>Generated Environment</h2>"));
-                    FlexTable table = new FlexTable();
-                    panel().add(table);
-                    int row = 0;
-
-                    table.setHTML(row++, 0, "<h3>Patient IDs</h3>");
-
-                    table.setText(row, 0, "Single document Patient ID");
-                    table.setText(row++, 1, orchResponse.getOneDocPid().asString());
-
-                    table.setText(row, 0, "Two document Patient ID");
-                    table.setText(row++, 1, orchResponse.getTwoDocPid().asString());
-
-                    table.setText(row, 0, "Two RGs Patient ID");
-                    table.setText(row++, 1, orchResponse.getTwoRgPid().asString());
-
-                    table.setHTML(row++, 0, "<h3>Simulators</h3>");
-
-                    for (SimulatorConfig config : rgConfigs) {
-                        table.setWidget(row, 0, new HTML("<h3>Simulator ID</h3>"));
-                        table.setWidget(row++, 1, new HTML(config.getId().toString()));
-
-                        table.setText(row, 0, "homeCommunityId");
-                        table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.homeCommunityId).asString()));
-
-                        table.setText(row, 0, "Responding Gateway");
-                        table.setText(row, 1, "Query");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.xcqEndpoint).asString());
-
-                        table.setText(row, 1, "Retrieve");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.xcrEndpoint).asString());
-
-                        table.setText(row, 0, "Repository");
-                        table.setText(row, 1, "Provide and Register");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.pnrEndpoint).asString());
-
-                        table.setText(row, 1, "Retrieve");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.retrieveEndpoint).asString());
-
-                        table.setText(row, 0, "Registry");
-                        table.setText(row, 1, "Register");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.registerEndpoint).asString());
-
-                        table.setText(row, 1, "Query");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
-
-                        panel().add(addTestEnvironmentInspectorButton(config.getId().toString()));
-                    }
-
-                    // generate log launcher buttons
-//                    panel().add(addTestEnvironmentInspectorButton(rgConfigs.get(0).getId().toString()));
-                    panel().add(testSelectionManager.buildLogLauncher(rgConfigs));
-
-                    genericQueryTab.reloadTransactionOfferings();
-                }
-            });
-        }
     }
 
     class Runner implements ClickHandler {
