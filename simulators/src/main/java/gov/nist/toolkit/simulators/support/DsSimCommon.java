@@ -24,6 +24,7 @@ import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
 import gov.nist.toolkit.valregmsg.message.MtomMessageValidator;
 import gov.nist.toolkit.valregmsg.message.SimpleSoapHttpHeaderValidator;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
+import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
@@ -36,6 +37,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -226,6 +228,19 @@ public class DsSimCommon {
         }
     }
 
+    public void addImagingDocumentAttachments(List<String> uids, ErrorRecorder er) {
+	logger.debug("DsSimComon#addImagingDocumentAttachments");
+        for (String uid : uids) {
+            //StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
+            StoredDocument sd = this.getStoredImagingDocument(uid);
+	    logger.debug(" uid=" + uid);
+            if (sd == null)
+                continue;
+            addDocumentAttachment(sd);
+	    logger.debug(" Added document for this uid");
+        }
+    }
+
     public Collection<StoredDocument> getAttachments() {
         if (documentsToAttach == null)
             return new ArrayList<StoredDocument>();
@@ -289,6 +304,7 @@ public class DsSimCommon {
      * @return
      */
     public StringBuffer wrapSoapEnvelopeInMultipartResponse(OMElement env, ErrorRecorder er) {
+	logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
 
         er.detail("Wrapping in Multipart");
 
@@ -337,6 +353,7 @@ public class DsSimCommon {
                     } else {
                         contents = new String(sd.getContent());
                     }
+		    logger.debug("Attaching " + cid + " length " + contents.length());
                     body.append(contents);
                 } catch (Exception e) {
                     er.err(XdsErrorCode.Code.XDSRepositoryError, e);
@@ -349,6 +366,86 @@ public class DsSimCommon {
         body.append("--").append(boundary).append("--").append(rn);
 
         return body;
+    }
+
+    /**
+     * Used to build RetrieveDocumentSetRespoinse
+     * @param env
+     * @param er
+     * @return
+     */
+    public StringBuffer wrapSoapEnvelopeInMultipartResponseBinary(OMElement env, ErrorRecorder er) {
+	logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
+
+        er.detail("Wrapping in Multipart");
+
+        // build body
+        String boundary = "MIMEBoundary112233445566778899";
+        StringBuffer contentTypeBuffer = new StringBuffer();
+        String rn = "\r\n";
+
+        contentTypeBuffer
+                .append("multipart/related")
+                .append("; boundary=")
+                .append(boundary)
+                .append(";  type=\"application/xop+xml\"")
+                .append("; start=\"<" + mkCid(0) + ">\"")
+                .append("; start-info=\"application/soap+xml\"");
+
+        simCommon.response.setHeader("Content-Type", contentTypeBuffer.toString());
+
+        StringBuffer body = new StringBuffer();
+
+        body.append("--").append(boundary).append(rn);
+        body.append("Content-Type: application/xop+xml; charset=UTF-8; type=\"application/soap+xml\"").append(rn);
+        body.append("Content-Transfer-Encoding: binary").append(rn);
+        body.append("Content-ID: <" + mkCid(0) + ">").append(rn);
+        body.append(rn);
+
+        body.append(env.toString());
+
+        body.append(rn);
+        body.append(rn);
+
+/*
+        if (documentsToAttach != null) {
+            er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
+            for (String cid : documentsToAttach.keySet()) {
+                StoredDocument sd = documentsToAttach.get(cid);
+
+                body.append("--").append(boundary).append(rn);
+                body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
+                body.append("Content-Transfer-Encoding: binary").append(rn);
+                body.append("Content-ID: <" + cid + ">").append(rn);
+                body.append(rn);
+                try {
+                    String contents;
+                    if (sd.getCharset() != null) {
+                        contents = new String(sd.getContent(), sd.getCharset());
+                    } else {
+                        contents = new String(sd.getContent());
+                    }
+		    logger.debug("Attaching " + cid + " length " + contents.length());
+                    body.append(contents);
+                } catch (Exception e) {
+                    er.err(XdsErrorCode.Code.XDSRepositoryError, e);
+                }
+                body.append(rn);
+            }
+        }
+*/
+
+
+//        body.append("--").append(boundary).append("--").append(rn);
+
+        return body;
+    }
+    public StringBuffer getTrailer() {
+        String rn = "\r\n";
+        String boundary = "MIMEBoundary112233445566778899";
+	StringBuffer body = new StringBuffer();
+        body.append("--").append(boundary).append("--").append(rn);
+	return body;
     }
 
     public void sendFault(SoapFault fault) {
@@ -374,7 +471,7 @@ public class DsSimCommon {
         logger.info("vc is " + simCommon.vc);
         logger.info("multipartOk is " + multipartOk);
         if (simCommon.vc != null && simCommon.vc.requiresMtom() && multipartOk) {
-            StringBuffer body = wrapSoapEnvelopeInMultipartResponse(env, er);
+            StringBuffer body = wrapSoapEnvelopeInMultipartResponseBinary(env, er);
 
             respStr = body.toString();
         } else {
@@ -384,6 +481,8 @@ public class DsSimCommon {
             if (simCommon.db != null)
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
+	    this.writeAttachments(simCommon.os, er);
+            simCommon.os.write(getTrailer().toString().getBytes());
             simCommon.generateLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {
@@ -395,6 +494,49 @@ public class DsSimCommon {
         } catch (IOException e) {
             logger.fatal(ExceptionUtil.exception_details(e));
         }
+    }
+    private void writeAttachments(OutputStream os, ErrorRecorder er) {
+        String boundary = "MIMEBoundary112233445566778899";
+        String rn = "\r\n";
+    try {
+
+        if (documentsToAttach != null) {
+            er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
+            for (String cid : documentsToAttach.keySet()) {
+		StringBuffer body = new StringBuffer();
+                StoredDocument sd = documentsToAttach.get(cid);
+
+                body.append("--").append(boundary).append(rn);
+                body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
+                body.append("Content-Transfer-Encoding: binary").append(rn);
+                body.append("Content-ID: <" + cid + ">").append(rn);
+                body.append(rn);
+		os.write(body.toString().getBytes());
+		os.write(sd.getContent());
+		os.write(rn.getBytes());
+/*
+                try {
+                    String contents = "ZZZ";
+
+                    if (sd.getCharset() != null) {
+                        contents = new String(sd.getContent(), sd.getCharset());
+                    } else {
+                        contents = new String(sd.getContent());
+                    }
+
+		    logger.debug("Attaching " + cid + " length " + contents.length());
+                    body.append(contents);
+                } catch (Exception e) {
+                    er.err(XdsErrorCode.Code.XDSRepositoryError, e);
+                }
+                body.append(rn);
+*/
+            }
+        }
+
+    } catch (Exception e) {
+            logger.fatal(ExceptionUtil.exception_details(e));
+    }
     }
 
     public ErrorRecorder registryResponseAsErrorRecorder(OMElement regResp) {
@@ -530,6 +672,25 @@ public class DsSimCommon {
         }
         return null;
     }
+
+	public StoredDocument getStoredImagingDocument(String uid) {
+		StoredDocumentInt sdi = new StoredDocumentInt();
+		sdi.pathToDocument = "/tmp/000000.dcm";
+		sdi.uid = uid;
+		sdi.mimeType = "application/dicom";
+		sdi.charset = "UTF-8";
+		sdi.hash="0000";
+		sdi.size = "4";
+		sdi.content = new byte[4];
+		sdi.content[0] = 'a';
+		sdi.content[1] = 'b';
+		sdi.content[2] = 'c';
+		sdi.content[3] = 'd';
+		StoredDocument sd = new StoredDocument(sdi);
+//		sd.cid = mkCid(5);
+		return sd;
+	}
+
 
 
 
