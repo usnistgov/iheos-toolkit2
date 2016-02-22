@@ -25,9 +25,14 @@ abstract public class ReportableButton implements ClickHandler {
 
     @Override
     public void onClick(ClickEvent clickEvent) {
+        clean();
+        handleClick(clickEvent);
+    }
+
+    // First element is button, rest is display material
+    public void clean() {
         while (panel.getWidgetCount() > 1)
             panel.remove(1);
-        handleClick(clickEvent);
     }
 
     public void handleError(Throwable throwable) {

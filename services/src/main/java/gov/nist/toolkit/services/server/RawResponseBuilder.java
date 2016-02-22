@@ -13,8 +13,12 @@ public class RawResponseBuilder {
     }
 
     public static RawResponse build(Exception e) {
-        return new RawResponse(e.getMessage()).setStackTrace(ExceptionUtil.stack_trace(e));
+        return new RawResponse(e.getMessage()).setStackTrace(translateNL(ExceptionUtil.stack_trace(e)));
     }
 
     public static RawResponse build() { return new RawResponse(); }
+
+    static String translateNL(String s) {
+        return s.replaceAll("\n", "<br />");
+    }
 }

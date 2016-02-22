@@ -8,13 +8,12 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Panel;
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
@@ -34,7 +33,6 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 
     //    TextBox patientIdBox = new TextBox();
     String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
-    List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "rgtool";
     TestSelectionManager testSelectionManager;
@@ -43,8 +41,10 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     String systemTypeGroup = "System Type Group";
     RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
     RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
+    boolean isExposed() { return exposed.getValue(); }
+    boolean isExternal() { return external.getValue(); }
     boolean usingExposedRR() { return exposed.getValue(); }
-    boolean useSimAsSUT() { return !usingExposedRR(); }
+    RgOrchestrationResponse orch;
 
     public RGTestTab() {
         super(new GetDocumentsSiteActorManager());
@@ -225,12 +225,15 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
         topPanel.add(testEnvironmentsPanel);
 
-        new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment");
+        BuildRGTestOrchestrationButton testEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
         topPanel.add(new HTML("<hr />"));
 
-//        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Demonstration Environment", true);
-
+//        BuildRGTestOrchestrationButton demoEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
+//
+//        // link the two buttons so clicking one clears text output of both
+//        testEnvButton.addLinkedOrchestrationButton(demoEnvButton);
+//        demoEnvButton.addLinkedOrchestrationButton(testEnvButton);
 
         TestSelectionManager testSelectionManager = new TestSelectionManager(this);
 
@@ -309,11 +312,10 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
             List<String> selectedSections = testSelectionManager.getSelectedSections();
 
             Map<String, String> parms = new HashMap<>();
-            parms.put("$testdata_home$", rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString());
+            parms.put("$testdata_home$", orch.getSiteUnderTest().homeId);
 
             Panel logLaunchButtonPanel = rigForRunning();
             logLaunchButtonPanel.clear();
-            logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(rgConfigs));
             String testToRun = selectedTest;
             if (TestSelectionManager.ALL.equals(testToRun)) {
                 testToRun = "tc:" + COLLECTION_NAME;

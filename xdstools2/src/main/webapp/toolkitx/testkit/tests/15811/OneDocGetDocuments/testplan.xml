@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>15808/OneDocGetDocuments</Test>
+    <Test>15811/OneDocGetDocuments</Test>
     <TestStep id="getdocs">
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>
@@ -8,7 +8,7 @@
             <SQ>Test GetDocuments Cross-Community</SQ>
             <Assertion>LeafClass return</Assertion>
         </Rule>
-        <IGQTransaction>
+        <XCQTransaction>
             <MetadataFile>query.xml</MetadataFile>
             <UseId testdir="../../15807/onedoc1" id="Document01" step="submit_single_doc"
                    section="AssignedUuids" symbol="$doc_uuid_1$"/>
@@ -19,10 +19,10 @@
             <Assertions>
                 <DataRef file="THIS" as="output"/>
                 <Assert id="ExtrinsicObjectCount">
-                    count(//IGQTransaction[@step="getdocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ExtrinsicObject']) = 1
+                    count(//XCQTransaction[@step="getdocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ExtrinsicObject']) = 1
                 </Assert>
             </Assertions>
-        </IGQTransaction>
+        </XCQTransaction>
     </TestStep>
     <TestStep id="homeCommunitIdValidation">
         <Goal>Verify returned homeCommunityId matches test configuration.</Goal>

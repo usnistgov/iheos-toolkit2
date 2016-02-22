@@ -1,0 +1,9 @@
+RG test ideas
+
+wrong home to RG
+finddocs - pid and status
+finddocs - more parameters
+finddocs - no matching
+single de return
+multiple de return
+
