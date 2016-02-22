@@ -1,12 +1,14 @@
 # XDS Toolkit #
 
-[Common Toolkit terms](../faq/toolkitterms.html)
+<a href="../site/faq/toolkitterms.html" target="_blank">Common Toolkit terms</a>
 
-[JavaDocs for API](../javadoc/index.html)
+
+<a href="../javadoc/index.html" target="_blank">JavaDocs for API</a>
 
 ## HOW TO
 
-[Send a Provide and Register to a simulator](../howto/pnrtosim.html)
+<a href="../site/howto/pnrtosim.html" target="_blank">Building and using a simulator</a>
 
-[Send a V2 Patient Identity Feed message](../howto/pif.html)
+<a href="../site/howto/pif.html" target="_blank">Send a V2 Patient Identity Feed message</a>
+
 

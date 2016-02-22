@@ -162,7 +162,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         exposed.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                editExposedSiteButton.setVisible(true);
+//                editExposedSiteButton.setVisible(true);
             }
         });
 
@@ -170,7 +170,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         external.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
-                editExposedSiteButton.setVisible(false);
+//                editExposedSiteButton.setVisible(false);
             }
         });
 

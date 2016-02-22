@@ -35,7 +35,7 @@ class TestSelectionManager {
     final static public String ALL = "All";
     final static public String ALL_SELECTION = "-- All --";
     List<String> sections = new ArrayList<String>();
-    String selectedSection = TestSelectionManager.ALL_SELECTION;
+//    String selectedSection = TestSelectionManager.ALL_SELECTION;
     ToolkitServiceAsync toolkitService;
     Map<String, String> testCollectionMap;  // name => description for selected actor
     List<String> assigningAuthorities = null;
@@ -46,6 +46,8 @@ class TestSelectionManager {
         this.tool = tool;
         toolkitService = tool.getToolkitService();
         loadAssigningAuthorities();
+
+        selectSectionList.addChangeHandler(new SectionSelectionChangeHandler());
     }
 
     void loadTestsFromCollection(final String testCollectionName) {
@@ -200,27 +202,37 @@ class TestSelectionManager {
 
     public List<String> getSelectedSections() {
         List<String> selectedSections = new ArrayList<String>();
-        if (selectedSection.equals(ALL_SELECTION)) {
-            selectedSections.addAll(sections);
-        } else
+        String selectedSection = selectSectionList.getSelectedItemText();
+        if (selectedSection != null) {
+            if (ALL_SELECTION.equals(selectedSection))
+                return selectedSections;
             selectedSections.add(selectedSection);
+        }
         return selectedSections;
     }
 
     class SelectSectionViewButtonClickHandler implements ClickHandler {
 
         public void onClick(ClickEvent event) {
-            toolkitService.getTestplanAsText(new TestInstance(tool.getSelectedTest()), selectedSection, new AsyncCallback<String>() {
+            toolkitService.getTestplanAsText(new TestInstance(tool.getSelectedTest()), selectSectionList.getSelectedItemText(), new AsyncCallback<String>() {
 
                 public void onFailure(Throwable caught) {
                     new PopupMessage("getTestplanAsText: " + caught.getMessage());
                 }
 
                 public void onSuccess(String result) {
-                    new TextViewerTab().onTabLoad(tool.getToolContainer(), true, result, tool.getSelectedTest() + "#" + selectedSection);
+                    new TextViewerTab().onTabLoad(tool.getToolContainer(), true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
                 }
 
             });
+        }
+    }
+
+    class SectionSelectionChangeHandler implements ChangeHandler {
+
+        @Override
+        public void onChange(ChangeEvent changeEvent) {
+            new PopupMessage("section changed - " + getSelectedSections());
         }
     }
 
@@ -243,7 +255,7 @@ class TestSelectionManager {
             }
             loadTestReadme(testSelectionManager.documentation);
             loadSectionNames();
-            selectedSection = ALL_SELECTION;
+//            selectedSection = ALL_SELECTION;
         }
     }
 

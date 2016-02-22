@@ -5,7 +5,7 @@
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>
             <Transaction>XGQ</Transaction>
-            <SQ>Test FindDocuments Cross-Gateway Query</SQ>
+            <SQ>Test FindDocuments Initiating-Gateway Query</SQ>
             <Assertion>LeafClass return</Assertion>
         </Rule>
         <IGQTransaction>

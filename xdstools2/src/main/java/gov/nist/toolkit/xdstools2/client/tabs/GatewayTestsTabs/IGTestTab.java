@@ -121,7 +121,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
 
         new BuildIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
-        new BuildIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
+//        new BuildIGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
         // Query boilerplate
@@ -181,8 +181,6 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-            List<String> selectedSections = testSelectionManager.getSelectedSections();
-
             Map<String, String> parms = new HashMap<>();
             parms.put("$testdata_home$", rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString());
 
@@ -196,7 +194,8 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
 
             TestInstance testInstance = new TestInstance(testToRun);
             testInstance.setUser(getCurrentTestSession());
-            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), selectedSections, parms, true, queryCallback);
+            new PopupMessage("Selected sections are " + testSelectionManager.getSelectedSections());
+            toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
         }
 
     }
