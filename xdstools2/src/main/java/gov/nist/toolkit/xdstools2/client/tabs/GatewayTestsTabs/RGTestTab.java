@@ -35,7 +35,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
     GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "rgtool";
-    TestSelectionManager testSelectionManager;
+    final TestSelectionManager testSelectionManager;
     Panel siteSelectionPanel = new VerticalPanel();
 
     String systemTypeGroup = "System Type Group";
@@ -235,8 +235,6 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 //        testEnvButton.addLinkedOrchestrationButton(demoEnvButton);
 //        demoEnvButton.addLinkedOrchestrationButton(testEnvButton);
 
-        TestSelectionManager testSelectionManager = new TestSelectionManager(this);
-
         topPanel.add(testSelectionManager.buildTestSelector());
 
         topPanel.add(testSelectionManager.buildSectionSelector());
@@ -296,6 +294,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     class Runner implements ClickHandler {
 
         public void onClick(ClickEvent event) {
+
             resultPanel.clear();
 
             if (getCurrentTestSession().isEmpty()) {

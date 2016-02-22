@@ -26,13 +26,11 @@ import java.util.Map;
 public class IGTestTab extends GenericQueryTab implements GatewayTool {
     final protected ToolkitServiceAsync toolkitService = GWT
             .create(ToolkitService.class);
-
-//    TextBox patientIdBox = new TextBox();
     String selectedActor = ActorType.INITIATING_GATEWAY.getShortName();
     List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
     static final String COLLECTION_NAME =  "igtool1rg";
-    TestSelectionManager testSelectionManager;
+    final TestSelectionManager testSelectionManager;
 
     public IGTestTab() {
         super(new GetDocumentsSiteActorManager());
@@ -139,8 +137,6 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
                 new CoupledTransactions(),
                 false  /* display patient id param */);
 
-        TestSelectionManager testSelectionManager = new TestSelectionManager(this);
-
         topPanel.add(testSelectionManager.buildTestSelector());
 
         topPanel.add(testSelectionManager.buildSectionSelector());
@@ -194,7 +190,6 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
 
             TestInstance testInstance = new TestInstance(testToRun);
             testInstance.setUser(getCurrentTestSession());
-            new PopupMessage("Selected sections are " + testSelectionManager.getSelectedSections());
             toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(testToRun), testSelectionManager.getSelectedSections(), parms, true, queryCallback);
         }
 

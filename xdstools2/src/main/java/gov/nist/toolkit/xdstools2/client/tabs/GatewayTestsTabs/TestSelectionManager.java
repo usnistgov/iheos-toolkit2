@@ -30,7 +30,7 @@ class TestSelectionManager {
     HTML documentation = new HTML();
     ListBox selectSectionList = new ListBox();
     Button selectSectionViewButton = new Button("View this section's testplan");
-
+    private List<String> selectedSections = new ArrayList<>();
     GatewayTool tool;
     final static public String ALL = "All";
     final static public String ALL_SELECTION = "-- All --";
@@ -196,12 +196,13 @@ class TestSelectionManager {
                     }
                     selectSectionViewButton.setEnabled(true);
                 }
+                selectedSections.clear();
             }
         });
     }
 
     public List<String> getSelectedSections() {
-        List<String> selectedSections = new ArrayList<String>();
+        selectedSections.clear();
         String selectedSection = selectSectionList.getSelectedItemText();
         if (selectedSection != null) {
             if (ALL_SELECTION.equals(selectedSection))
@@ -232,7 +233,8 @@ class TestSelectionManager {
 
         @Override
         public void onChange(ChangeEvent changeEvent) {
-            new PopupMessage("section changed - " + getSelectedSections());
+            selectedSections.clear();
+            selectedSections.add(selectSectionList.getSelectedValue());
         }
     }
 
