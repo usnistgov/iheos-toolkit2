@@ -18,6 +18,7 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
+import javax.xml.namespace.QName
 
 @TypeChecked
 public class IdsActorSimulator extends GatewaySimulatorCommon {
@@ -83,6 +84,22 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 				String uid = uidEle.getText();
 				docUids.add(uid);
 				logger.debug("Document UID: " + uid);
+			}
+
+			for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
+				String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
+				logger.debug("Study UID: " + studyUid);
+				Iterator<OMElement> seriesIterator = studyEle.getChildElements();
+				while (seriesIterator.hasNext()) {
+					OMElement seriesEle = (OMElement)seriesIterator.next();
+					String seriesUid = seriesEle.getAttributeValue(new QName("seriesInstanceUID"));
+					logger.debug(" Series UID: " + seriesUid);
+					for (OMElement instanceEle : XmlUtil.decendentsWithLocalName(seriesEle, "DocumentUniqueId")) {
+						String uid = instanceEle.getText();
+						String fullUid=studyUid + ":" + seriesUid + ":" + uid;
+						logger.debug(fullUid);
+					}
+				}
 			}
 
 			RetrieveImagingDocSetResponseSim dms = null;
