@@ -58,6 +58,7 @@ public class UpdateCodes {
             try {
                 exploreTests(sectionFile);
             } catch (IOException e) {
+                out+=e.getMessage();
                 e.printStackTrace();
             }
         }
@@ -83,23 +84,22 @@ public class UpdateCodes {
                 if (testDir.isDirectory()) {
                     exploreTests(testDir);
                 } else {
-//                    if (testFile.getPath().contains("12346") || testFile.getPath().contains("11903") )
-                        if ("testplan.xml".equals(testDir.getName())) {
-                            // read testplan.xml
-                            String testplanContent = Io.stringFromFile(testDir);
-                            OMElement testplanNode = Util.parse_xml(testplanContent);
-                            // retrieve the TestStep nodes
-                            Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
-                            while (steps.hasNext()) {
-                                // find transaction nodes among the nodes under exploration (Under a TestStep)
-                                Iterator<OMElement> children = steps.next().getChildElements();
-                                exploreChildren(children, testFile);
-                            }
+                    if ("testplan.xml".equals(testDir.getName())) {
+                        // read testplan.xml
+                        String testplanContent = Io.stringFromFile(testDir);
+                        OMElement testplanNode = Util.parse_xml(testplanContent);
+                        // retrieve the TestStep nodes
+                        Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
+                        while (steps.hasNext()) {
+                            // find transaction nodes among the nodes under exploration (Under a TestStep)
+                            Iterator<OMElement> children = steps.next().getChildElements();
+                            exploreChildren(children, testFile);
                         }
-
+                    }
                 }
             }
         }catch (Exception e){
+            out+=e.getMessage();
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -131,11 +131,6 @@ public class UpdateCodes {
                     }
                 }
             }
-            // the following is probably useless
-//            Iterator<OMElement> c = node.getChildElements();
-//            while (c.hasNext()){
-//                exploreChildren(c, testFile);
-//            }
         }
     }
 
@@ -183,7 +178,9 @@ public class UpdateCodes {
         }catch(Exception e){
             if (e.getMessage().contains("Could not decode the value")) {
                 System.err.println("Error parsing the following file: " + file);
+                out+="Error parsing the following file: " + file+"\n";
             }
+            out+=e.getMessage();
             throw new RuntimeException(e.getMessage(), e);
         }
     }
@@ -213,12 +210,15 @@ public class UpdateCodes {
                     filesTreated.add(filePath);
                 } else {
                     System.err.println("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
+                    out+="WARNING: " + filePath + " file does not exist in Testkit where it should be.\n";
                 }
             }
         } catch (Exception e) {
             if (e.getMessage().contains("Could not decode the value")){
                 System.err.println("Error parsing the following file: "+file);
+                out+="Error parsing the following file: "+file+"\n";
             }
+            out+=e.getMessage();
             throw new RuntimeException(e.getMessage(), e);
         }
     }
@@ -231,7 +231,6 @@ public class UpdateCodes {
             if (codes.get(key) instanceof SQCodeOr){
                 List<SQCodeOr.CodeLet> codesList=((SQCodeOr) codes.get(key)).getCodeValues();
                 for (SQCodeOr.CodeLet c:codesList){
-//                    System.out.println("CodeLetOR "+c);
                     Code tmpCode=new Code(c.code,c.scheme,"");
                     Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(key));
                     if (!allCodes.isKnownClassification(classificationUuid)) {
@@ -239,21 +238,20 @@ public class UpdateCodes {
                         continue;
                     }
                     if (!allCodes.exists(classificationUuid, tmpCode)){
-//                        System.out.println(c);
                         c.setClassificationUUID(classificationUuid);
                         badCodes.add(c);
-//                        System.out.println(codes.get(key));
                     }
                 }
             }else if(codes.get(key) instanceof SQCodeAnd){
                 for (SQCodeOr sqCodeOr:((SQCodeAnd) codes.get(key)).codeOrs){
                     List<SQCodeOr.CodeLet> codesList=sqCodeOr.getCodeValues();
                     for (SQCodeOr.CodeLet c:codesList){
-//                        System.out.println("CodeLetAND "+c);
                         Code tmpCode=new Code(c.code,c.scheme,"");
                         Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(key));
                         if (!allCodes.isKnownClassification(classificationUuid)) {
+                            // TODO Throw an exception?
                             System.err.println("Error: Unknown classification");
+                            out+="Error: Unknown classification\n";
                             continue;
                         }
                         if (!allCodes.exists(classificationUuid, tmpCode)){
@@ -328,7 +326,6 @@ public class UpdateCodes {
             replacementMap.put(tmpCode.toString(),newCode);
         }
         out+=tmpCode.toString() + " REPLACED BY "+newCode.toString()+" in " + filePath + "\n";
-//        System.out.println(newCode.toString());
         code.code=newCode.getCode();
         code.scheme=newCode.getScheme();
     }
@@ -352,9 +349,10 @@ public class UpdateCodes {
                 continue;
             Code code = getCode(classification);
             // check if the code exists in the environment codes.xml file
-            if (!allCodes.exists(classificationUuid, code))
+            if (!allCodes.exists(classificationUuid, code)) {
                 // if it does not add the code to the list of bad codes.
                 badCodes.add(classification);
+            }
         }
         return badCodes;
     }
@@ -367,14 +365,12 @@ public class UpdateCodes {
     public Code getCode(OMElement classificationElement){
         // get coding scheme
         String value = classificationElement.getAttributeValue(MetadataSupport.noderepresentation_qname);
-
         // get display name
         String displayName = null;
         OMElement nameElement = MetadataSupport.firstChildWithLocalName(classificationElement, "Name");
         OMElement localizedStringElement = MetadataSupport.firstChildWithLocalName(nameElement, "LocalizedString");
         if (nameElement == null || localizedStringElement == null) displayName="";
         displayName=localizedStringElement.getAttributeValue(MetadataSupport.value_qname);
-
         // get code
         String codeSystem = "";
         OMElement codeSystemElement;
