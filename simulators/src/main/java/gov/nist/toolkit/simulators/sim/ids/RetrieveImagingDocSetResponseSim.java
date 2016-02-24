@@ -20,28 +20,40 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.HashMap;
 
 public class RetrieveImagingDocSetResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
 	static Logger logger = Logger.getLogger(RetrieveImagingDocSetResponseSim.class);
 	DsSimCommon dsSimCommon;
-	List<String> documentUids;
+	//List<String> documentUids;
+	List<String> imagingDocumentUids;
+	List<String> transferSyntaxUids;
+	// This is a map from an image instance UID to the composite UID (study:series:instace)
+	HashMap<String, String> imagingUidMap;
 	RetrieveMultipleResponse response;
 	//RepIndex repIndex;
 	String repositoryUniqueId;
 
-	public RetrieveImagingDocSetResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
+	public RetrieveImagingDocSetResponseSim(ValidationContext vc, List<String> imagingDocumentUids, List<String> transferSyntaxUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
 		super(common, null);
 		this.dsSimCommon = dsSimCommon;
-		this.documentUids = documentUids;
+		this.imagingDocumentUids = imagingDocumentUids;
+		this.transferSyntaxUids = transferSyntaxUids;
+		//this.documentUids = documentUids;
 		//this.repIndex = dsSimCommon.repIndex;
 		this.repositoryUniqueId = repositoryUniqueId;
+		imagingUidMap = new HashMap<String, String>();
+		for (String compositeUid: imagingDocumentUids) {
+			String[] x = compositeUid.split(":");
+			imagingUidMap.put(x[2], compositeUid);
+		}
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		try {
 			response = new RetrieveMultipleResponse();
 
-			dsSimCommon.addImagingDocumentAttachments(documentUids, er);
+			dsSimCommon.addImagingDocumentAttachments(imagingDocumentUids, transferSyntaxUids, er);
 
 			Collection<StoredDocument> documents = dsSimCommon.getAttachments();
 			OMElement root = response.getRoot();
@@ -62,7 +74,8 @@ public class RetrieveImagingDocSetResponseSim extends TransactionSimulator imple
 
 				//StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
 				//StoredDocument sd = getStoredImageDocument(uid);
-				StoredDocument sd = dsSimCommon.getStoredImagingDocument(uid);
+				String compositeUid = imagingUidMap.get(uid);
+				StoredDocument sd = dsSimCommon.getStoredImagingDocument(compositeUid, transferSyntaxUids);
 
 				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
 

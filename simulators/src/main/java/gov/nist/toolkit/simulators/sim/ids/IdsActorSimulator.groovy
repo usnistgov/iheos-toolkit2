@@ -86,6 +86,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 				logger.debug("Document UID: " + uid);
 			}
 
+			List<String> imagingUids = new ArrayList<String>();
 			for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
 				String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
 				logger.debug("Study UID: " + studyUid);
@@ -97,16 +98,25 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 					for (OMElement instanceEle : XmlUtil.decendentsWithLocalName(seriesEle, "DocumentUniqueId")) {
 						String uid = instanceEle.getText();
 						String fullUid=studyUid + ":" + seriesUid + ":" + uid;
+						imagingUids.add(fullUid);
 						logger.debug(fullUid);
 					}
 				}
+			}
+			List<String> transferSyntaxUids = new ArrayList<String>();
+			for (OMElement transferSyntaxEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "TransferSyntaxUID")) {
+				String xferSyntaxUid = transferSyntaxEle.getText();
+				logger.debug("Transfer Syntax UID: " + xferSyntaxUid);
+				//logger.debug(" to string: " + transferSyntaxEle.toString());
+				transferSyntaxUids.add(xferSyntaxUid);
 			}
 
 			RetrieveImagingDocSetResponseSim dms = null;
 			String repositoryUniqueId="";
 			dms = new RetrieveImagingDocSetResponseSim(
 				common.vc,
-				docUids,
+				imagingUids,
+				transferSyntaxUids,
 				common,
 				dsSimCommon,
 				repositoryUniqueId);

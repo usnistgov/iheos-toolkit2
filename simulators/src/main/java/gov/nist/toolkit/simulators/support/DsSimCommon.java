@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -228,11 +229,11 @@ public class DsSimCommon {
         }
     }
 
-    public void addImagingDocumentAttachments(List<String> uids, ErrorRecorder er) {
+    public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
 	logger.debug("DsSimComon#addImagingDocumentAttachments");
-        for (String uid : uids) {
+        for (String uid : imagingDocumentUids) {
             //StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
-            StoredDocument sd = this.getStoredImagingDocument(uid);
+            StoredDocument sd = this.getStoredImagingDocument(uid, transferSyntaxUids);
 	    logger.debug(" uid=" + uid);
             if (sd == null)
                 continue;
@@ -673,24 +674,69 @@ public class DsSimCommon {
         return null;
     }
 
+	public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
+		logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
+		String[] uids = compositeUid.split(":");
+		String path = "/opt/xdsi/storage/ids-repository/" + uids[0] + "/" + uids[1] + "/" + uids[2];
+		logger.debug(" " + path);
+		File folder = new File(path);
+		if (!folder.exists()) {
+			logger.debug("Could not find file folder for composite UID: " + compositeUid);
+			return null;
+		}
+		boolean found = false;
+		Iterator<String> it = transferSyntaxUids.iterator();
+		String finalPath = null;
+		while (it.hasNext() && !found) {
+			String x = it.next();
+			finalPath = path + "/" + x;
+			File f = new File(finalPath);
+			if (f.exists()) {
+				found = true;
+			}
+		}
+		StoredDocument sd = null;
+		if (found) {
+			logger.debug("Found path to file: " + finalPath);
+			StoredDocumentInt sdi = new StoredDocumentInt();
+//			sdi.pathToDocument = "/tmp/000000.dcm";
+			sdi.pathToDocument = finalPath;
+			sdi.uid = uids[2];
+			logger.debug(" Instance UID: " + sdi.uid);
+			sdi.mimeType = "application/dicom";
+			sdi.charset = "UTF-8";
+//			sdi.hash="0000";
+//			sdi.size = "4";
+			sdi.content = null;
+			sd = new StoredDocument(sdi);
+//			sd.cid = mkCid(5);
+		} else {
+			logger.debug("Did not find an image file that matched transfer syntax");
+			logger.debug(" Composite UID: " + compositeUid);
+			it = transferSyntaxUids.iterator();
+			while (it.hasNext()) {
+				logger.debug("  Xfer syntax: " + it.next());
+			}
+		}
+		return sd;
+	}
+
+/*
 	public StoredDocument getStoredImagingDocument(String uid) {
+		logger.debug("DsSimCommon#getStoredImagingDocument(1 arg): " + uid);
 		StoredDocumentInt sdi = new StoredDocumentInt();
 		sdi.pathToDocument = "/tmp/000000.dcm";
 		sdi.uid = uid;
 		sdi.mimeType = "application/dicom";
 		sdi.charset = "UTF-8";
-		sdi.hash="0000";
-		sdi.size = "4";
-		sdi.content = new byte[4];
-		sdi.content[0] = 'a';
-		sdi.content[1] = 'b';
-		sdi.content[2] = 'c';
-		sdi.content[3] = 'd';
+//		sdi.hash="0000";
+//		sdi.size = "4";
+		sdi.content = null;
 		StoredDocument sd = new StoredDocument(sdi);
 //		sd.cid = mkCid(5);
 		return sd;
 	}
-
+*/
 
 
 
