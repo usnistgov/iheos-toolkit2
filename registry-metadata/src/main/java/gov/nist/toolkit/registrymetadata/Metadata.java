@@ -1082,11 +1082,13 @@ public class Metadata {
         List<OMElement> added = new ArrayList<>();
         for (OMElement docEle : getExtrinsicObjects()) {
             OMElement authorClassification = addExtClassification(docEle, MetadataSupport.XDSDocumentEntry_author_uuid);
+            authorClassification.addAttribute("nodeRepresentation", "", null);
             added.add(authorClassification);
             addSlot(authorClassification, "authorPerson", authorPersonValue);
         }
         for (OMElement docEle : getSubmissionSets()) {
             OMElement authorClassification = addExtClassification(docEle, MetadataSupport.XDSSubmissionSet_author_uuid);
+            authorClassification.addAttribute("nodeRepresentation", "", null);
             added.add(authorClassification);
             addSlot(authorClassification, "authorPerson", authorPersonValue);
         }

@@ -139,9 +139,12 @@ public abstract class AbstractActorFactory {
 		AbstractActorFactory af = factories.get(actorTypeName);
 
 		if (af == null)
-			throw new ToolkitRuntimeException(String.format("Cannot build simulator of type %s - cannot find Factor for ActorType [", actorTypeName) + "]");
+			throw new Exception(String.format("Cannot build simulator of type %s - cannot find Factory for ActorType [", actorTypeName) + "]");
 
 		af.setSimManager(simm);
+
+        if (simID.getId().contains("__"))
+            throw new Exception("Simulator ID cannot contain double underscore (__)");
 
 		Simulator simulator = af.buildNew(simm, simID, true);
 

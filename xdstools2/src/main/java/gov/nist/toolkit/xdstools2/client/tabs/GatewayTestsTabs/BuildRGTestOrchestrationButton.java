@@ -136,6 +136,7 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         row = displayPIDs(table, response, row);
 
         table.setHTML(row++, 0, "<h3>Simulators</h3>");
+        table.setText(row++, 1, "None");
 
         table.setWidget(row, 0, new HTML("<h3>System under test</h3>"));
         table.setText(row++, 1, response.getSiteUnderTest().getName());
