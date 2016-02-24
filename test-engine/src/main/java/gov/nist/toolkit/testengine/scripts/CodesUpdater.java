@@ -23,21 +23,23 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by oherrmann on 1/11/16.
  */
-public class UpdateCodes {
-    File testkit;
-    AllCodes allCodes=null;
-    boolean error;
-    static String sections[] = { "tests", "testdata",  "examples"/*, "selftest"*/ };
-    List<String> filesTreated = new ArrayList<String>();
-    List<String> metadataFilesPaths=new ArrayList<String>();
-    List<String> queryFilesPaths=new ArrayList<String>();
-    Map<String,Code> replacementMap= new HashMap<String,Code>();
-    String out=new String();
+public class CodesUpdater {
+    private static String TESTKIT_PATH="xdstools2"+File.separator+"src"+File.separator+"main"+File.separator+"webapp"+File.separator+"toolkitx"+File.separator+"testkit";
+    private File testkit;
+    private AllCodes allCodes=null;
+    private boolean error;
+    private static String sections[] = { "tests", "testdata",  "examples"/*, "selftest"*/ };
+    private List<String> filesTreated = new ArrayList<String>();
+    private List<String> metadataFilesPaths=new ArrayList<String>();
+    private List<String> queryFilesPaths=new ArrayList<String>();
+    private Map<String,Code> replacementMap= new HashMap<String,Code>();
+    private String out=new String();
 
     void reset(){
         filesTreated=new ArrayList<String>();
@@ -46,9 +48,10 @@ public class UpdateCodes {
     }
 
     /**
-     * This method scans the testkit for metadata files.
+     * This method scans the testkit for metadata files,
+     * which will result in the update itself.
      */
-    void scan() {
+    void execute() {
         error = false;
         for (int i=0; i<sections.length; i++) {
             String section = sections[i];
@@ -75,31 +78,35 @@ public class UpdateCodes {
             File[] dirs = testFile.listFiles();
             if (dirs == null) {
                 System.out.println("No tests defined in " + dirs);
+                // TODO throw an exception?!
+                out+="No tests defined in " + dirs +"\n";
                 error = true;
-            }
-            for (int i = 0; i < dirs.length; i++) {
-                File testDir = dirs[i];
-                if (testDir.getName().equals(".svn"))
-                    continue;
-                if (testDir.isDirectory()) {
-                    exploreTests(testDir);
-                } else {
-                    if ("testplan.xml".equals(testDir.getName())) {
-                        // read testplan.xml
-                        String testplanContent = Io.stringFromFile(testDir);
-                        OMElement testplanNode = Util.parse_xml(testplanContent);
-                        // retrieve the TestStep nodes
-                        Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
-                        while (steps.hasNext()) {
-                            // find transaction nodes among the nodes under exploration (Under a TestStep)
-                            Iterator<OMElement> children = steps.next().getChildElements();
-                            exploreChildren(children, testFile);
+            }else {
+                for (int i = 0; i < dirs.length; i++) {
+                    File testDir = dirs[i];
+                    if (testDir.getName().equals(".svn"))
+                        continue;
+                    if (testDir.isDirectory()) {
+                        exploreTests(testDir);
+                    } else {
+                        if ("testplan.xml".equals(testDir.getName())) {
+                            // read testplan.xml
+                            String testplanContent = Io.stringFromFile(testDir);
+                            OMElement testplanNode = Util.parse_xml(testplanContent);
+                            // retrieve the TestStep nodes
+                            Iterator<OMElement> steps = testplanNode.getChildrenWithName(new QName("TestStep"));
+                            while (steps.hasNext()) {
+                                // find transaction nodes among the nodes under exploration (Under a TestStep)
+                                Iterator<OMElement> children = steps.next().getChildElements();
+                                exploreChildren(children, testFile);
+                            }
                         }
                     }
                 }
             }
         }catch (Exception e){
             out+=e.getMessage();
+            error=true;
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -134,6 +141,12 @@ public class UpdateCodes {
         }
     }
 
+    /**
+     * This method process a query file found in a testplan by looking for non conforming codes
+     * and triggers the update when it find bad codes.
+     * @param folderPath path to the directory of the query file.
+     * @param fileName name of the query file to process.
+     */
     private void processQueryFile(File folderPath, String fileName) {
         File file=null;
         try {
@@ -152,30 +165,34 @@ public class UpdateCodes {
                     }
                 }
                 // TODO check this error and testsFails thing + add comments
-                if (file.exists() && !testsFails) {
-                    // read the file
-                    OMElement queryElement = Util.parse_xml(file);
-                    ParamParser parser = new ParamParser();
-                    SqParams params = parser.parse(queryElement, false);
-                    List<SQCodeOr.CodeLet> badCodes = findNonConformingCodes(params);
-                    System.out.println(badCodes.size() + " bad codes to update in query file: " + filePath);
-                    if (!badCodes.isEmpty()) {
-                        File backupFile = new File(file.toString() + ".bak");
-                        if (!backupFile.exists()) {
-                            // backup the unmodified file before updating
-                            FileUtils.copyFile(file, backupFile);
+                if (file.exists()) {
+                    if (!testsFails) {
+                        // read the file
+                        OMElement queryElement = Util.parse_xml(file);
+                        ParamParser parser = new ParamParser();
+                        SqParams params = parser.parse(queryElement, false);
+                        List<SQCodeOr.CodeLet> badCodes = findNonConformingCodes(params);
+                        if (!badCodes.isEmpty()) {
+                            System.out.println(badCodes.size() + " bad codes to update in query file: " + filePath);
+                            out += badCodes.size() + " bad codes to update in query file: " + filePath + "\n";
+                            File backupFile = new File(file.toString() + ".bak");
+                            if (!backupFile.exists()) {
+                                // backup the unmodified file before updating
+                                FileUtils.copyFile(file, backupFile);
+                            }
+                            // update bad codes
+                            updateCode(badCodes, filePath);
+                            // update the file itself
+                            String returnType = queryElement.getFirstElement().getAttributeValue(new QName("returnType"));
+                            Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(returnType, params)).toString());
                         }
-                        // update bad codes
-                        updateCode(badCodes, filePath);
-                        // update the file itself
-                        String returnType=queryElement.getFirstElement().getAttributeValue(new QName("returnType"));
-                        Io.stringToFile(file, new OMFormatter(StoredQueryGenerator.generateQueryFile(returnType,params)).toString());
                     }
                 } else {
                     System.err.println("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
                 }
             }
         }catch(Exception e){
+            error=true;
             if (e.getMessage().contains("Could not decode the value")) {
                 System.err.println("Error parsing the following file: " + file);
                 out+="Error parsing the following file: " + file+"\n";
@@ -185,35 +202,45 @@ public class UpdateCodes {
         }
     }
 
+    /**
+     *  This method process a metdata file found in a testplan by looking for non conforming codes
+     * and triggers the update when it find bad codes.
+     * @param folderPath path to the directory containing the metadata file.
+     * @param fileName name of the metadata file to process.
+     */
     private void processMetadataFile(File folderPath, String fileName) {
         File file=null;
         try {
             String filePath=folderPath+"/"+fileName;
             // test if the file being processed has been treated yet
             if (!filesTreated.contains(filePath)) {
+                filesTreated.add(filePath);
                 file = new File(filePath);
                 if (file.exists()) {
-                    File backupFile = new File(file.toString() + ".bak");
-                    if (!backupFile.exists()) {
-                        // backup the unmodified file before updating
-                        FileUtils.copyFile(file, backupFile);
-                    }
                     // TODO something is probably missing here (else?)
                     // read the file
                     OMElement metadataElement = Util.parse_xml(file);
                     List<OMElement> badCodes = findNonConformingCodes(metadataElement);
-                    System.out.println(badCodes.size() + " bad codes to update in " + filePath);
-                    // update bad codes
-                    updateCodes(badCodes, filePath);
-                    // update the file itself
-                    Io.stringToFile(file, new OMFormatter(metadataElement).toString());
-                    filesTreated.add(filePath);
+                    if (!badCodes.isEmpty()) {
+                        System.out.println(badCodes.size() + " bad codes to update in " + filePath);
+                        out += badCodes.size() + " bad codes to update in query file: " + filePath + '\n';
+                        File backupFile = new File(file.toString() + ".bak");
+                        if (!backupFile.exists()) {
+                            // backup the unmodified file before updating
+                            FileUtils.copyFile(file, backupFile);
+                        }
+                        // update bad codes
+                        updateCodes(badCodes, filePath);
+                        // update the file itself
+                        Io.stringToFile(file, new OMFormatter(metadataElement).toString());
+                    }
                 } else {
                     System.err.println("WARNING: " + filePath + " file does not exist in Testkit where it should be.");
                     out+="WARNING: " + filePath + " file does not exist in Testkit where it should be.\n";
                 }
             }
         } catch (Exception e) {
+            error=true;
             if (e.getMessage().contains("Could not decode the value")){
                 System.err.println("Error parsing the following file: "+file);
                 out+="Error parsing the following file: "+file+"\n";
@@ -223,7 +250,12 @@ public class UpdateCodes {
         }
     }
 
-    // FIXME this is the method causing the error (also see updateCode method)
+    /**
+     * This method scans the parameters of a query file for non conforming codes and returns
+     * those found.
+     * @param params parameters of a query file
+     * @return list of non conforming codes.
+     */
     private List<SQCodeOr.CodeLet> findNonConformingCodes(SqParams params){
         List<SQCodeOr.CodeLet> badCodes = new ArrayList<SQCodeOr.CodeLet>();
         Map<String,SQCodedTerm> codes=params.getCodedParms();
@@ -234,7 +266,10 @@ public class UpdateCodes {
                     Code tmpCode=new Code(c.code,c.scheme,"");
                     Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(key));
                     if (!allCodes.isKnownClassification(classificationUuid)) {
+                        error=true;
                         System.err.println("Error: Unknown classification");
+                        out+="Error: Unknown classification.\n";
+                        // TODO throw an exception?
                         continue;
                     }
                     if (!allCodes.exists(classificationUuid, tmpCode)){
@@ -250,6 +285,7 @@ public class UpdateCodes {
                         Uuid classificationUuid=new Uuid(SQCodedTerm.codeUUID(key));
                         if (!allCodes.isKnownClassification(classificationUuid)) {
                             // TODO Throw an exception?
+                            error=true;
                             System.err.println("Error: Unknown classification");
                             out+="Error: Unknown classification\n";
                             continue;
@@ -265,15 +301,35 @@ public class UpdateCodes {
         return badCodes;
     }
 
+    /**
+     * This method change a bad codes inside a query file.
+     * @param badCodes list of non conforming codes
+     * @param filePath path to the query file containing these non conforming codes.
+     */
     void updateCode(List<SQCodeOr.CodeLet> badCodes,String filePath){
         for (SQCodeOr.CodeLet sqCodedTerm:badCodes){
             changeCodeOR(sqCodedTerm,filePath);
         }
     }
 
+    private void changeCodeOR(SQCodeOr.CodeLet code,String filePath) {
+        Code tmpCode=new Code(code.code,code.scheme,"");
+        Code newCode;
+        if (replacementMap.containsKey(tmpCode.toString())){
+            newCode=replacementMap.get(tmpCode.toString());
+        }else{
+            newCode=allCodes.pick(code.getClassificationUUID());
+            replacementMap.put(tmpCode.toString(),newCode);
+        }
+        out+=tmpCode.toString() + " REPLACED BY "+newCode.toString()+" in " + filePath + "\n";
+        code.code=newCode.getCode();
+        code.scheme=newCode.getScheme();
+    }
+
     /**
-     * This method takes care of updating the non-conforming codes.
+     * This method takes care of updating the non-conforming codes inside a metadata file.
      * @param badCodes list of non-conforming codes to update.
+     * @param filePath path to the metadata file containing these non conforming codes
      * @throws XdsInternalException
      * @throws FactoryConfigurationError
      */
@@ -309,26 +365,10 @@ public class UpdateCodes {
             codeToReplace.setAttributeValue(replacementCode.getCode());
             nameToReplace.setAttributeValue(replacementCode.getDisplay());
             valueToReplace.setText(replacementCode.getScheme());
-            if (filePath.contains("11992")||filePath.contains("11993")||filePath.contains("11994")){
-                System.out.println(filePath+" : "+classification.getAttributeValue(MetadataSupport.classificationscheme_qname));
-            }
             out+=oldCode.toString() + " REPLACE BY "+replacementCode.toString()+" in "+filePath+"\n";
         }
     }
 
-    private void changeCodeOR(SQCodeOr.CodeLet code,String filePath) {
-        Code tmpCode=new Code(code.code,code.scheme,"");
-        Code newCode;
-        if (replacementMap.containsKey(tmpCode.toString())){
-            newCode=replacementMap.get(tmpCode.toString());
-        }else{
-            newCode=allCodes.pick(code.getClassificationUUID());
-            replacementMap.put(tmpCode.toString(),newCode);
-        }
-        out+=tmpCode.toString() + " REPLACED BY "+newCode.toString()+" in " + filePath + "\n";
-        code.code=newCode.getCode();
-        code.scheme=newCode.getScheme();
-    }
 
     /**
      * This method explore a parsed document and looks for non-conforming codes with codes.xml file.
@@ -362,7 +402,7 @@ public class UpdateCodes {
      * @param classificationElement classification element to extract
      * @return code object
      */
-    public Code getCode(OMElement classificationElement){
+    private Code getCode(OMElement classificationElement){
         // get coding scheme
         String value = classificationElement.getAttributeValue(MetadataSupport.noderepresentation_qname);
         // get display name
@@ -389,21 +429,58 @@ public class UpdateCodes {
         return new Code(value, codeSystem, displayName);
     }
 
-    public static void main(String[] args) {
-        UpdateCodes uc=new UpdateCodes();
+    /**
+     * The method run the code update procedure on a copied version of testkit in the environment specified
+     * in parameter.
+     * @param pathToEnvironment destination environment for the testkit (containing codes.xml).
+     * @return execution log.
+     */
+    public void run(String pathToEnvironment) {
+        // init environment dir
+        System.out.println(pathToEnvironment);
+        System.out.println(TESTKIT_PATH);
+        File environment = new File(pathToEnvironment);
+        // init testkit dir
+        testkit = new File(environment.getPath()+File.separator+"testkit");
         // init codes
-        uc.allCodes = new CodesFactory().load(new File(args[1]));
-        // init testkit
-        uc.testkit = new File(args[0]);
-        uc.scan();
-        uc.reset();
-        uc.scan();
-        File f = new File("xdstools2"+File.separator+"target"+File.separator+"CodeUpdateLog.out");
+        allCodes = new CodesFactory().load(new File(environment.getPath()+File.separator+"codes.xml"));
         try {
-            Io.stringToFile(f, uc.out);
+            System.out.println("Copying testkit to "+testkit+"...");
+            FileUtils.copyDirectory(new File(TESTKIT_PATH), testkit);
+            System.out.println("... testkit copied.");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(uc.out);
+        execute();
+        reset();
+        execute();
+        SimpleDateFormat dateFormatter=new SimpleDateFormat("yyyyMMddHHmmss");
+        File f = new File(testkit.getPath()+File.separator+"CodeUpdateLog"+File.separator+dateFormatter.format(new Date())+".out");
+        try {
+            System.out.println("Creating output log file in "+f.getPath()+"...");
+            Io.stringToFile(f, out);
+            System.out.println("... file created.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        return out;
+    }
+
+//    public static void main(String args[]){
+//        CodesUpdater.run(args[0]);
+//    }
+
+    /**
+     * @return execution output (log) of the update.
+     */
+    public String getOutput(){
+        return out;
+    }
+
+    /**
+     * @return if errors happened during the execution of the update.
+     */
+    public boolean hasErrors(){
+        return error;
     }
 }
