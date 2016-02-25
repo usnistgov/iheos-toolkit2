@@ -643,6 +643,10 @@ public class XdsTestServiceManager extends CommonService {
 				throw new Exception("Cannot add test session with no name");
             if (name.contains("__"))
                 throw new Exception("Cannot contain a double underscore (__)");
+            if (name.contains(" "))
+                throw new Exception("Cannot contain spaces");
+            if (name.contains("\t"))
+                throw new Exception("Cannot contain tabs");
 		} catch (Exception e) {
 			logger.error("addMesaTestSession", e);
 			throw new Exception(e.getMessage());

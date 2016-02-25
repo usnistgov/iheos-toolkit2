@@ -90,14 +90,21 @@ class IgOrchestrationBuilder {
         SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig1)
         SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig2)
 
-        // TODO - NO - won't work with real SUT
+        SimulatorConfigElement rgEle
         // disable checking of Patient Identity Feed
-        SimulatorConfigElement rgEle1 = rgSimConfig1.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
-        rgEle1.setValue(false)
+        rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
+        rgEle.setValue(false)
+        // set fixed homeCommunityId
+        rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.homeCommunityId)
+        rgEle.setValue('urn:oid:1.2.34.567.8.1')
         api.saveSimulator(rgSimConfig1)
 
-        SimulatorConfigElement rgEle2 = rgSimConfig2.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
-        rgEle2.setValue(false)
+        // disable checking of Patient Identity Feed
+        rgEle = rgSimConfig2.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
+        rgEle.setValue(false)
+        // set fixed homeCommunityId
+        rgEle = rgSimConfig2.getConfigEle(SimulatorProperties.homeCommunityId)
+        rgEle.setValue('urn:oid:1.2.34.567.8.2')
         api.saveSimulator(rgSimConfig2)
 
         rgConfigs << rgSimConfig1

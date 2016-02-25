@@ -275,19 +275,25 @@ class TestSelectionManager {
         });
     }
 
+    Button buildLogLauncher(final String simId, String label) {
+        Button button = new Button(label);
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
+                viewTab.onTabLoad(tool.getToolContainer(), true, simId);
+            }
+        });
+
+        return button;
+    }
+
     Panel buildLogLauncher(List<SimulatorConfig> simConfigs) {
         HorizontalPanel panel = new HorizontalPanel();
         for (SimulatorConfig config : simConfigs) {
             final String simIdString = config.getId().toString();
-            Button button = new Button("Launch " + simIdString + " Log");
+            Button button = buildLogLauncher(simIdString, "Launch " + simIdString + " Log");
             panel.add(button);
-            button.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                    viewTab.onTabLoad(tool.getToolContainer(), true, simIdString);
-                }
-            });
         }
         return panel;
     }
