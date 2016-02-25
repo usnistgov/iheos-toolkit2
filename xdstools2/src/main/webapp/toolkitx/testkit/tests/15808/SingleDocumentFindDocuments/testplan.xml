@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
+    <!-- Data for this test is loaded by 15807-->
     <Test>15808/OneDocFindDocuments</Test>
     <TestStep id="finddocs">
+        <Goal>FindDocuments returns one DocumentEntry</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>
             <Transaction>XGQ</Transaction>
@@ -37,7 +39,7 @@
         </IGQTransaction>
     </TestStep>
     <TestStep id="homeValidation">
-        <Goal>Validate homeCommunityId returned in FindDocuments matches test configuration</Goal>
+        <Goal>Home Community Id returned matches test configuration</Goal>
         <NullTransaction>
             <UseReport reportName="$testdata_home$" section="THIS" step="finddocs" useAs="submittedValue"/>
             <UseReport reportName="$home$"          section="THIS" step="finddocs" useAs="returnedValue"/>
