@@ -350,6 +350,7 @@ public class Xdstest2 {
 				sections = testSpec.getTestPlanLogs().keySet();
 			else
 				sections = sectionsToScan;
+
 			for (String section : sections) {
 				if (section.equals("THIS"))
 					continue;

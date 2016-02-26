@@ -153,7 +153,6 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			for (Result result : results) {
 				for (AssertionResult ar : result.assertions.assertions) {
 
-
                     if (ar.assertion.startsWith("Report") && detailsTree != null) {
                         detailsTree.add(ar.assertion);
                     } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
