@@ -58,7 +58,7 @@
         </NullTransaction>
     </TestStep>
     <TestStep id="Verify documentUniqueId">
-        <Goal>Validate repositoryUniqueId in Retrieve response against Retrieve request</Goal>
+        <Goal>Validate documentUniqueId in Retrieve response against Retrieve request</Goal>
         <NullTransaction>
             <UseReport reportName="$docuid_request$"  section="THIS" step="retrieve" useAs="requested"/>
             <UseReport reportName="$docuid_response$" section="THIS" step="retrieve" useAs="returned"/>

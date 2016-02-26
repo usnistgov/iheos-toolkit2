@@ -156,6 +156,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
                     if (ar.assertion.startsWith("Report") && detailsTree != null) {
                         detailsTree.add(ar.assertion);
+                    } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
+                            detailsTree.add(ar.assertion);
                     } else {
                         String assertion = ar.assertion.replaceAll("\n", "<br />");
                         if (ar.status) {
@@ -178,6 +180,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 				setStatus("Status: Success", true);
 			else
 				setStatus("Status: Failure", false);
+
+
 			getInspectButton().setEnabled(true);
 			getGoButton().setEnabled(true);
 		}

@@ -28,6 +28,7 @@ public class NullTransaction extends BasicTransaction {
 	}
 
 	protected void run(OMElement request) throws XdsException {
+        reportManagerPreRun(request);
 	}
 
 }

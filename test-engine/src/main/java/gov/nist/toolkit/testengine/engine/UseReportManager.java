@@ -93,7 +93,23 @@ public class UseReportManager  {
 		return  urm;
 	}
 
-	static QName test_qname = new QName("test");
+//    public OMElement toXML() {
+//        OMElement top = MetadataSupport.om_factory.createOMElement("UseReports", null);
+//
+//        for (UseReport report : useReports) {
+//            OMElement rep = MetadataSupport.om_factory.createOMElement("UseReport", null);
+//
+//            rep.addAttribute("name", report.reportName, null);
+//            rep.setText(report.value);
+//
+//            top.addChild(rep);
+//        }
+//
+//        return top;
+//    }
+
+
+    static QName test_qname = new QName("test");
 	static QName section_qname = new QName("section");
 	static QName step_qname = new QName("step");
 	static QName reportName_qname = new QName("reportName");
@@ -202,6 +218,7 @@ public class UseReportManager  {
 			}
 		}
 	}
+
 
 
 }

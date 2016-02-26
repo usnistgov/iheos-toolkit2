@@ -1,7 +1,7 @@
 Single Responding Gateway test
 
 <p>Although the Initiating Gateway is configured to forward requests to two
-Responding Gateways, all sections of this test return content from only a
+Responding Gateways, all sections of this test return content from a
 single Responding Gateway.</p>
 
 
@@ -10,6 +10,7 @@ single Responding Gateway.</p>
 A FindDocuments stored query is sent to the Initiating Gateway for the
 Single Document Patient ID. For this patient one Responding Gateway will return a single
 DocumentEntry.
+uid
 </p>
 
 <h2>SingleDocumentGetDocuments</h2>
