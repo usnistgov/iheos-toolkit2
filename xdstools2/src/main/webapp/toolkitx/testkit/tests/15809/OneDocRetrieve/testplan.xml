@@ -4,9 +4,9 @@
     <TestStep id="retrieve">
         <ExpectedStatus>Success</ExpectedStatus>
         <IGRTransaction>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid$"/>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$home$" useAs="$home$"/>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
+            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid$"/>
+            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$home$" useAs="$home$"/>
+            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
             <ExpectedMimeType>text/plain</ExpectedMimeType>
             <ReferenceDocument uid="$docuid$">../../15807/onedoc/my_document.txt</ReferenceDocument>
             <MetadataFile>retrieve.xml</MetadataFile>

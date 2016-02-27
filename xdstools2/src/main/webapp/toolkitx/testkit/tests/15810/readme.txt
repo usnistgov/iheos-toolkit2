@@ -1,23 +1,17 @@
-FindDocuments for LeafClass request to IG (two RGs)
+Two Responding Gateway Response test
 
-The System Under Test (SUT) is an Initiating Gateway (IG) with Affinity Domain
-option. The test environment, provided by Toolkit, is a Document Consumer (DC)
-initiating the requests
-and two Responding Gateways responding to requests coming out of the Initiating Gateway.
+<p>The Initiating Gateway is configured to forward requests to both
+Responding Gateways. This test expects content to be returned
+from both Responding Gateways.</p>
 
-The SUT IG shall be configured to forward query and retrieve requests to both of the
-Responding Gateways provided by the test. The test is driven by the Document
-Consumer.
-
-Each Responding Gateway is initialized with content for the same Patient ID. It
-has a single SubmissionSet containing a single DocumentEntry with Document.
-
-The test contains the following sections:
-
-TwoDocFindDocuments - sends a FindDocuments stored query to the Initiating Gateway with
-the Patient ID that matches a single DocumentEntry held behind each RG.
-Both of the returned DocumentEntry.homeCommunityId shall match the configured
-value for the RG that returned them.
+<h2>TwoRGFindDocuments</h2>
+<p>
+A FindDocuments stored query is sent to the Initiating Gateway with
+the Patient ID that matches a single DocumentEntry held behind each 
+Responding Gateway.
+The following attributes are verified in the two DocumentEntries: correct Home Community 
+ID, correct Mime Type, correct Repository Unique ID, and correct DocumentEntry Unique ID.
+</p>
 
 
 

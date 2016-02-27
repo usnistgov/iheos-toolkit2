@@ -166,8 +166,8 @@ public class AssertionEngine {
 				String result = xpathExpression.stringValueOf(data);
 				if (result == null || !result.toLowerCase().equals("true")) {
 					StringBuffer errs = new StringBuffer();
-					errs.append("AssertionEngine: assertion " + assertion.id + " failed - detailed result is " + result + "\n" +
-					      "Assertion is " + assertion.xpath);
+					errs.append("Failed Assertion:  " + assertion.id + "\n" +
+					      "Details " + assertion.xpath);
 					int equals_index = findNotEqualsNotInBrackets(assertion.xpath);
 					if (equals_index == -1)
 						equals_index = findEqualsNotInBrackets(assertion.xpath);

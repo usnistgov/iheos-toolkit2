@@ -172,14 +172,14 @@ public class UseReportManager  {
 			if (log == null)
 				log = priorTests.get(ur.section);
 			if (log == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find log for section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
+				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
 			TestStepLogContent stepLog = log.getStepLog(ur.step);
 			if (stepLog == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find log for step " + ur.step + " in section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
+                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
 
 			OMElement reportEles = stepLog.getRawReports();
 			if (reportEles == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find Reports section for step  " + ur.step + " in section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
+                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
 
 			String reportName = ur.reportName;
 			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {

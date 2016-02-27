@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <!-- Data for this test is loaded by 15807-->
-    <Test>15808/OneDocFindDocuments</Test>
+    <Test>15808/SingleDocumentFindDocuments</Test>
     <TestStep id="finddocs">
         <Goal>FindDocuments returns one DocumentEntry</Goal>
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>
-            <Transaction>XGQ</Transaction>
+            <Transaction>IGQ</Transaction>
             <SQ>Test FindDocuments Initiating-Gateway Query</SQ>
             <Assertion>LeafClass return</Assertion>
         </Rule>

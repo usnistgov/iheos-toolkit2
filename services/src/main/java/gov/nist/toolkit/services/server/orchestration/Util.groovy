@@ -28,4 +28,12 @@ class Util {
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }
+
+    public void submit(String userName, SiteSpec site, TestInstance testId, String section, Map<String, String> parameters) {
+        // load the reg/rep with two documents
+        List<String> sections = [ section ]
+        List<Result> results = api.runTest(userName, site.name, testId, sections, parameters, true)
+        if (!results.get(0).passed())
+            throw new Exception(results.get(0).toString())
+    }
 }

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
   <Test>15807/onedoc1</Test>
   <Rule>Submit single document to a XDS.b repository</Rule>
   <TestStep id="submit_single_doc">

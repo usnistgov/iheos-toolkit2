@@ -89,6 +89,10 @@ class BuildIGTestOrchestrationButton extends ReportableButton {
                     table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.xcrEndpoint).asString()));
 
                     table.setWidget(row, 0, new HTML("Repository"));
+
+                    table.setWidget(row, 0, new HTML("repositoryUniqueId"));
+                    table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.repositoryUniqueId).asString()));
+
                     table.setWidget(row, 1, new HTML("Provide and Register"));
                     table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.pnrEndpoint).asString()));
 

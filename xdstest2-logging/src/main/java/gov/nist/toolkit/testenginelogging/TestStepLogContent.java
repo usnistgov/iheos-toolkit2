@@ -255,7 +255,8 @@ public class TestStepLogContent  implements Serializable {
             String test = ele.getAttributeValue(testQname);
             String section = ele.getAttributeValue(sectionQname);
             String step = ele.getAttributeValue(stepQname);
-            map.put(name, String.format("%s  (/%s/%s/%s)", value, test, section, step));
+            String fullName = String.format("/%s/%s/%s/%s", test, section, step, name);
+            map.put(fullName, value);
         }
 
         for(String key : map.keySet()) {
