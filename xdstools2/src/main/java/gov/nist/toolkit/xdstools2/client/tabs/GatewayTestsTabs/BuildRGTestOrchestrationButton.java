@@ -44,7 +44,7 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         }
 
         if (!useSimAsSUT && !testTab.isExposed() && !testTab.isExternal()) {
-            new PopupMessage("Must select exposed or external Registry/Repositor");
+            new PopupMessage("Must select Exposed or External Registry/Repository");
             return;
         }
 
@@ -124,6 +124,15 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         row = displayPIDs(table, response, row);
 
         table.setHTML(row++, 0, "<h3>Simulators</h3>");
+        if (response.getRegrepConfig() == null)
+            table.setText(row++, 1, "None");
+        else {
+            table.setHTML(row++, 0, "<h3>Supporting Registry/Repository");
+            table.setText(row, 0, "Query");
+            table.setText(row++, 1, response.getRegrepConfig().getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
+            table.setText(row, 0, "Retrieve");
+            table.setText(row++, 1, response.getRegrepConfig().getConfigEle(SimulatorProperties.retrieveEndpoint).asString());
+        }
 
         table.setWidget(row, 0, new HTML("<h3>System under test</h3>"));
         table.setText(row++, 1, response.getSiteUnderTest().getName());
@@ -136,7 +145,7 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
         row = displayPIDs(table, response, row);
 
         table.setHTML(row++, 0, "<h3>Simulators</h3>");
-        table.setText(row++, 1, "None");
+        table.setText(row++, 1, response.getRegrepConfig().getId().toString());
 
         table.setWidget(row, 0, new HTML("<h3>System under test</h3>"));
         table.setText(row++, 1, response.getSiteUnderTest().getName());

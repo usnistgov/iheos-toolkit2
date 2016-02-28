@@ -78,11 +78,12 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         "configurations must be supported by your implementation. " +
                         "<ul>" +
                         "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
-                        "functionality and you expose the required endpoints for these actors." +
+                        "functionality and you expose the required endpoints for these actors. " +
                         "A single site (system configuration in toolkit) must contain the Responding Gateway " +
                         "(system under test), and the related Registry and Repository configurations." +
                         "<li>External Registry/Repository - your implementation can be configured to work with an " +
-                        "external Registry and Repository which will be selected below." +
+                        "external Registry and Repository which will be selected below. This tool will provide " +
+                        "these actors." +
                         "</ul>" +
                 "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
                         "Responding Gateway " +
@@ -99,13 +100,14 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         topPanel.add(new HTML("<h1>Responding Gateway Test Tool</h1>"));
 
         topPanel.add(new HTML(
+                "This tool tests a Responding Gateway that exposes endpoints for a Document Registry and" +
+                        "Document Repository or can be configured to use an external Registry/Repository pair." +
                 "<h2>Create supporting test session</h2>" +
                         "These simulators and " +
                         "their logs will be maintained in a test session you create for this test. At the top of the window, " +
                         "create a new test session and select it. " +
                         "All context for this test is kept within this test session - if multiple test sessions are " +
                         "created they do not interact." +
-                        "Don't use a double underscore (__) in the name (bug)." +
                         "WARNING - This tool deletes all logs and simulators in the selected test session when the test environment is built.  " +
                         "</p>"
         ));
@@ -211,14 +213,9 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         "<h2>Build Test Environment</h2>" +
                         "<p>" +
                         "This will delete the contents of the selected test session and initialize it. " +
-                        "The Build Test Environment button will create the necessary simulators to test your Responding Gateway.  " +
-                        "The Build Demonstration Environment button will do the same and also build a Responding Gateway for " +
-                        "demonstration and training purposes. Only one can be used." +
-                        "To test your Responding Gateway you should use Build Test Environment." +
                         "The generated test environment will be displayed below. " +
                         "Once the test environment is built, configure your Responding Gateway to forward requests " +
-                        "to the two generated Responding Gateway simulators. The Demonstration Environment builds this " +
-                        "configuration automatically." +
+                        "to the generated Registry/Repository simulators (if the External option is selected). " +
                         "</p>"
         ));
 

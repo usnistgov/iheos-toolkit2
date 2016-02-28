@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>15808/TwoDocQuery</Test>
+    <Test>15811/TwoDocFindDocuments</Test>
     <TestStep id="finddocs">
         <ExpectedStatus>Success</ExpectedStatus>
         <Rule>
@@ -18,6 +18,12 @@
             </Report>
             <Report name="$home2$" section="Result">
                 //*[local-name()='ExtrinsicObject'][2]/@home
+            </Report>
+            <Report name="$mimeType1$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/@mimeType
+            </Report>
+            <Report name="$mimeType2$" section="Result">
+                //*[local-name()='ExtrinsicObject'][2]/@mimeType
             </Report>
             <Report name="$doc_uid_1$" section="Result">
                 //*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value

@@ -1,4 +1,4 @@
-Retrieve request to IG (one RG)
+Retrieve Single Responding Gateway test
 
 <h2>OneDocRetrieve</h2>
 <p>
