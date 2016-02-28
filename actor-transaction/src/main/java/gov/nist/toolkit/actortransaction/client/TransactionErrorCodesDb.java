@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * All error codes defined by profile
+ * All error codes defined by transactions
  */
-public class ProfileErrorCodesDb implements Serializable {
+public class TransactionErrorCodesDb implements Serializable {
     List<ErrorCode> errorCodes = new ArrayList<>();
 
-    public ProfileErrorCodesDb() {}
+    public TransactionErrorCodesDb() {}
 
     public void add(ErrorCode code) { errorCodes.add(code);}
 
-    public ProfileErrorCodesDb(List<ErrorCode> errorCodes) {
+    public TransactionErrorCodesDb(List<ErrorCode> errorCodes) {
         this.errorCodes = errorCodes;
     }
 
@@ -37,7 +37,7 @@ public class ProfileErrorCodesDb implements Serializable {
         return refs;
     }
 
-    public ProfileErrorCodesDb getBySeverity(Severity s) {
+    public TransactionErrorCodesDb getBySeverity(Severity s) {
         List<ErrorCode> codes = new ArrayList<>();
 
         for(ErrorCode code : errorCodes) {
@@ -45,10 +45,10 @@ public class ProfileErrorCodesDb implements Serializable {
                 codes.add(code);
         }
 
-        return new ProfileErrorCodesDb(codes);
+        return new TransactionErrorCodesDb(codes);
     }
 
-    public ProfileErrorCodesDb getByCode(String c) {
+    public TransactionErrorCodesDb getByCode(String c) {
         List<ErrorCode> codes = new ArrayList<>();
 
         for(ErrorCode code : errorCodes) {
@@ -56,7 +56,7 @@ public class ProfileErrorCodesDb implements Serializable {
                 codes.add(code);
         }
 
-        return new ProfileErrorCodesDb(codes);
+        return new TransactionErrorCodesDb(codes);
     }
 
 }

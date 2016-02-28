@@ -190,5 +190,5 @@ public interface ToolkitService extends RemoteService  {
 
 	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
-    List<String> getProfileErrorCodeRefs(String transactionName, Severity severity) throws Exception;
+    List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception;
 }

@@ -187,7 +187,7 @@ public interface ToolkitServiceAsync {
 	void deleteSingleTestResult(Site site, int testId, AsyncCallback<Test> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
-    void getProfileErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
+    void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 

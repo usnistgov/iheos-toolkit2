@@ -60,6 +60,8 @@ class SimConfigMgr {
         row++;
 
         for (SimulatorConfigElement ele : config.getElements()) {
+
+            // String
             if (ele.isString()) {
                 if (ele.isEditable()) {
                     new ConfigEditBox(ele, tbl, row);
@@ -67,7 +69,10 @@ class SimConfigMgr {
                     new ConfigTextDisplayBox(ele, tbl, row);
                 }
                 row++;
-            } else if (ele.isBoolean()) {
+            }
+
+            // Boolean
+            else if (ele.isBoolean()) {
                 new ConfigBooleanBox(ele, tbl, row);
                 row++;
             }

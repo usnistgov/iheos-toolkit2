@@ -1,7 +1,7 @@
 package gov.nist.toolkit.actortransaction;
 
 import gov.nist.toolkit.actortransaction.client.ErrorCode;
-import gov.nist.toolkit.actortransaction.client.ProfileErrorCodesDb;
+import gov.nist.toolkit.actortransaction.client.TransactionErrorCodesDb;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
@@ -14,18 +14,18 @@ import java.io.File;
 import java.nio.charset.Charset;
 
 /**
- * The table loaded here contains all the errors defined by profiles.
+ * The table loaded here contains all the errors defined by transactions.
  */
-public class ProfileErrorCodeDbLoader {
-    static Logger logger = Logger.getLogger(ProfileErrorCodeDbLoader.class);
+public class TransactionErrorCodeDbLoader {
+    static Logger logger = Logger.getLogger(TransactionErrorCodeDbLoader.class);
 
-    static public ProfileErrorCodesDb LOAD() throws Exception {
-        File file = new File(Installation.installation().toolkitxFile(), "ProfileDefinedErrorCodes.txt");
+    static public TransactionErrorCodesDb LOAD() throws Exception {
+        File file = new File(Installation.installation().toolkitxFile(), "TransactionDefinedErrorCodes.txt");
         return LOAD(file);
     }
 
-    static public ProfileErrorCodesDb LOAD(File db) throws Exception {
-        ProfileErrorCodesDb codes = new ProfileErrorCodesDb();
+    static public TransactionErrorCodesDb LOAD(File db) throws Exception {
+        TransactionErrorCodesDb codes = new TransactionErrorCodesDb();
 
         CSVParser parser;
         try {
