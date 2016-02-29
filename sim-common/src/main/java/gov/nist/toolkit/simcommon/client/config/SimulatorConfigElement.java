@@ -22,11 +22,12 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	public TransactionType transType = null;
 
 	// cannot use Object class - will not serialize so tricks are necessary
-	public enum ValueType implements IsSerializable { BOOLEAN, STRING , SINGLE_SELECT_LIST, MULTI_SELECT_LIST };
+	public enum ValueType implements IsSerializable { BOOLEAN, STRING , SINGLE_SELECT_LIST, MULTI_SELECT_LIST, PATIENT_ERROR_LIST };
 	ValueType valueType = ValueType.STRING;
 	boolean booleanValue = false;
 	String  stringValue = "";
     List<String> listValue = new ArrayList<>();
+    List<PatientError> patientErrorList = new ArrayList<>();
     String extraValue;
 
 	boolean editable = false;
