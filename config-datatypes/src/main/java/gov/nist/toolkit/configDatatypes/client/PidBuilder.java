@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actorfactory.client;
+package gov.nist.toolkit.configDatatypes.client;
 
 /**
  * Created by bill on 9/21/15.

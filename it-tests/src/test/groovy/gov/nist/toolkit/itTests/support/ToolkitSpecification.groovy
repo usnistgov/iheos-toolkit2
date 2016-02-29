@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.support
 
-import gov.nist.toolkit.actorfactory.client.Pid
+import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation

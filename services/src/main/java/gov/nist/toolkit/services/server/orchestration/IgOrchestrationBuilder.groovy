@@ -3,7 +3,7 @@ package gov.nist.toolkit.services.server.orchestration
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.SimulatorProperties
-import gov.nist.toolkit.actorfactory.client.Pid
+import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType

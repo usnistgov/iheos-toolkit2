@@ -2,7 +2,7 @@ package gov.nist.toolkit.session.server.serviceManager;
 
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.services.server.orchestration
 
-import gov.nist.toolkit.actorfactory.client.Pid
+import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance

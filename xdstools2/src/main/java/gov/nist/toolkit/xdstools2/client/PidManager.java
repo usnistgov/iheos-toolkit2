@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 
 import java.util.HashSet;
 import java.util.Set;

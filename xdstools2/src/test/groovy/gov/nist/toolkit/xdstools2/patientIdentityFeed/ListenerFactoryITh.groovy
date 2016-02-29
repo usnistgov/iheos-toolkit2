@@ -1,8 +1,8 @@
 package gov.nist.toolkit.xdstools2.patientIdentityFeed
 import gov.nist.toolkit.actorfactory.PifHandler
 import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.Pid
-import gov.nist.toolkit.actorfactory.client.PidBuilder
+import gov.nist.toolkit.configDatatypes.client.Pid
+import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.AdtSender

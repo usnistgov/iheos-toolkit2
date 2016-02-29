@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actorfactory.client;
+package gov.nist.toolkit.configDatatypes.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

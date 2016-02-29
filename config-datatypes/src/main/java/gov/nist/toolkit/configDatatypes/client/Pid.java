@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actorfactory.client;
+package gov.nist.toolkit.configDatatypes.client;
 
 import java.io.Serializable;
 
