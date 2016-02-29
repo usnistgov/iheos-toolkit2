@@ -11,7 +11,7 @@ import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.configDatatypes.client.PatientError;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -93,8 +93,8 @@ class SimConfigMgr {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
                                 configEle.setValue(rgSelectionPresenter.getSelected());
-                                config.updateDocTypeSelection();
-                                saveSimConfig();
+//                                config.updateDocTypeSelection();
+//                                saveSimConfig();
                             }
                         }
                 );
@@ -113,8 +113,7 @@ class SimConfigMgr {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
                                 configEle.setValue(erSelectionPresenter.getSelected());
-                                config.updateDocTypeSelection();
-                                saveSimConfig();
+  //                              saveSimConfig();
                             }
                         }
                 );
@@ -122,26 +121,25 @@ class SimConfigMgr {
             }
 
             else if (SimulatorProperties.errorForPatient.equals(ele.name)) {
+                final SimulatorConfigElement configEle = ele;
                 List<TransactionType> transactionTypes = ActorType.findActor(config.getActorType()).getTransactions();
-                PatientErrorSelectionPresenter presenter = new PatientErrorSelectionPresenter(patientErrorList, simulatorControlTab.toolkitService, transactionType, new SaveHandler<List<PatientError>>() {
-                    @Override
-                    public void onSave(List<PatientError> var) {
-
-                    }
-                });
+                ActorType actorType = ActorType.findActor(config.getActorType());
+                final PatientErrorMap map = config.getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
+                final PatientErrorMapPresenter presenter = new PatientErrorMapPresenter(map, actorType, simulatorControlTab.toolkitService);
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 1, presenter.asWidget());
+                saveButton.addClickHandler(
+                        new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                configEle.setValue(map);
+//                                saveSimConfig();
+                            }
+                        }
+                );
+                row++;
             }
 
-//            Image img = new Image("icons/add-button.png");
-//            Anchor b = new Anchor();
-//            b.addClickHandler(new ClickHandler() {
-//                @Override
-//                public void onClick(ClickEvent clickEvent) {
-//                    new PopupMessage("Click");
-//                }
-//            });
-//            b.getElement().appendChild(img.getElement());
-//            tbl.setWidget(row, 0, new HTML("Button"));
-//            tbl.setWidget(row++, 1, b);
         }
 
         hpanel = new HorizontalPanel();
@@ -153,6 +151,7 @@ class SimConfigMgr {
         hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
         panel.add(HtmlMarkup.html("<br />"));
 
+        // this is added last so other internal saves (above) happen first
         saveButton.addClickHandler(
                 new ClickHandler() {
                     @Override

@@ -1,11 +1,13 @@
 package gov.nist.toolkit.configDatatypes.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 
 /**
  *
  */
-public class PatientError implements Serializable {
+public class PatientError implements Serializable, IsSerializable {
     Pid patientId;
     String errorCode;
 
@@ -25,5 +27,29 @@ public class PatientError implements Serializable {
 
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
+    }
+
+    @Override
+    public String toString() {
+        return patientId.asString() + " ==> " + errorCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PatientError that = (PatientError) o;
+
+        if (!patientId.equals(that.patientId)) return false;
+        return errorCode.equals(that.errorCode);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = patientId.hashCode();
+        result = 31 * result + errorCode.hashCode();
+        return result;
     }
 }

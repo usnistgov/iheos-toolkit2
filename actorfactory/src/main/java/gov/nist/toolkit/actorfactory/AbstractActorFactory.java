@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
@@ -453,6 +454,10 @@ public abstract class AbstractActorFactory {
 
     public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
         addUser(sc, new SimulatorConfigElement(name, type, values, isMultiSelect));
+    }
+
+    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, PatientErrorMap value) {
+        addUser(sc, new SimulatorConfigElement(name, type, value));
     }
 
     public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {

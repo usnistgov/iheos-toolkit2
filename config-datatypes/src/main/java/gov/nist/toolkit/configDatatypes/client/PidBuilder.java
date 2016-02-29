@@ -1,7 +1,7 @@
 package gov.nist.toolkit.configDatatypes.client;
 
 /**
- * Created by bill on 9/21/15.
+ *
  */
 public class PidBuilder {
 

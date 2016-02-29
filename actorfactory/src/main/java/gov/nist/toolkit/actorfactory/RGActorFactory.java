@@ -6,6 +6,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
@@ -57,6 +58,7 @@ public class RGActorFactory extends AbstractActorFactory {
 		addFixedEndpoint(sc, SimulatorProperties.xcrEndpoint, actorType, TransactionType.XC_RETRIEVE, false);
 		addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint, actorType, TransactionType.XC_RETRIEVE, true);
         addEditableConfig(sc, SimulatorProperties.errors, ParamType.SELECTION, new ArrayList<String>(), false);
+        addEditableConfig(sc, SimulatorProperties.errorForPatient, ParamType.SELECTION, new PatientErrorMap());
 
 
         // This needs to be grouped with a Document Registry
