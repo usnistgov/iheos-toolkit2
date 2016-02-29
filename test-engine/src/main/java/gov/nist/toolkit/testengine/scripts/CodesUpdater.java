@@ -18,6 +18,7 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -30,7 +31,6 @@ import java.util.*;
  * Created by oherrmann on 1/11/16.
  */
 public class CodesUpdater {
-    private static String TESTKIT_PATH="xdstools2"+File.separator+"src"+File.separator+"main"+File.separator+"webapp"+File.separator+"toolkitx"+File.separator+"testkit";
     private File testkit;
     private AllCodes allCodes=null;
     private boolean error;
@@ -435,10 +435,8 @@ public class CodesUpdater {
      * @param pathToEnvironment destination environment for the testkit (containing codes.xml).
      * @return execution log.
      */
-    public void run(String pathToEnvironment) {
+    public void run(String pathToEnvironment, String pathToTestkit) {
         // init environment dir
-        System.out.println(pathToEnvironment);
-        System.out.println(TESTKIT_PATH);
         File environment = new File(pathToEnvironment);
         // init testkit dir
         testkit = new File(environment.getPath()+File.separator+"testkit");
@@ -446,7 +444,7 @@ public class CodesUpdater {
         allCodes = new CodesFactory().load(new File(environment.getPath()+File.separator+"codes.xml"));
         try {
             System.out.println("Copying testkit to "+testkit+"...");
-            FileUtils.copyDirectory(new File(TESTKIT_PATH), testkit);
+            FileUtils.copyDirectory(new File(pathToTestkit), testkit);
             System.out.println("... testkit copied.");
         } catch (IOException e) {
             e.printStackTrace();
@@ -455,7 +453,7 @@ public class CodesUpdater {
         reset();
         execute();
         SimpleDateFormat dateFormatter=new SimpleDateFormat("yyyyMMddHHmmss");
-        File f = new File(testkit.getPath()+File.separator+"CodeUpdateLog"+File.separator+dateFormatter.format(new Date())+".out");
+        File f = new File(new File(pathToEnvironment),dateFormatter.format(new Date())+".out");
         try {
             System.out.println("Creating output log file in "+f.getPath()+"...");
             Io.stringToFile(f, out);
