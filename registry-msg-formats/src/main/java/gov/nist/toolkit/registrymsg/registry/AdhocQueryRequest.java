@@ -9,8 +9,9 @@ public class AdhocQueryRequest {
 	OMElement adhocQueryElement;
 	OMElement adhocQueryRequestElement;
 	OMAttribute homeAtt;
-	
-	public String getHome() {
+    String patientId = null;
+
+    public String getHome() {
 		return home;
 	}
 	public String getQueryId() {
@@ -25,6 +26,7 @@ public class AdhocQueryRequest {
 	public OMAttribute getHomeAtt() {
 		return homeAtt;
 	}
+    public String getPatientId() { return patientId; }
 	
 	public String toString() {
 		return "AdhocQueryRequest: queryId=" + queryId + " home=" + home;

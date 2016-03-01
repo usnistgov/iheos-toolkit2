@@ -1,5 +1,6 @@
 package gov.nist.toolkit.toolkitServices;
 
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -159,6 +160,12 @@ public class SimulatorsController {
                     makeUpdate = true;
                     logger.info(String.format("%s ==> %s", ele.asString(), config.asString(propName)));
                     ele.setValue(config.asList(propName));
+                }
+            }
+            if (config.getPatientErrorMap() != null) {
+                SimulatorConfigElement ele = currentConfig.get(SimulatorProperties.errorForPatient);
+                if (ele != null) {
+                    ele.setValue(config.getPatientErrorMap());
                 }
             }
             if (makeUpdate) {

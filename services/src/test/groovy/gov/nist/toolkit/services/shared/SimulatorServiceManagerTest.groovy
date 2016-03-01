@@ -5,6 +5,7 @@ import gov.nist.toolkit.actorfactory.client.BadSimIdException
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.Simulator
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.session.server.Session
 import spock.lang.Specification
@@ -14,6 +15,10 @@ import spock.lang.Specification
 class SimulatorServiceManagerTest extends Specification {
     Session session = new Session(Installation.installation().warHome(), Installation.defaultSessionName())
     SimulatorServiceManager mgr = new SimulatorServiceManager(session)
+
+    def setupSpec() {
+        ExternalCacheManager.initializeFromMarkerFile(new File(this.getClass().getResource('/external_cache/external_cache.txt').file))
+    }
 
     def setup() {
         mgr.deleteConfig(new SimId('bill', 'aa'))

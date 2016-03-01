@@ -30,6 +30,15 @@ public class PatientErrorList implements Serializable, IsSerializable {
 
     public List<PatientError> values() { return list; }
 
+    public String getErrorName(Pid pid) {
+        for (PatientError pe : list) {
+            if (pe.patientId.equals(pid)) return pe.errorCode;
+        }
+        return null;
+    }
+
+    public boolean isEmpty() { return list.isEmpty(); }
+
     @Override
     public String toString() {
         return list.toString();
