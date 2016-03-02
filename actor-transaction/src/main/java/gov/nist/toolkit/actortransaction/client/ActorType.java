@@ -126,7 +126,16 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE),
             false,
             null
-    )
+	),
+    IMAGING_DOC_SOURCE(
+            "Imaging Document Source",
+                        Arrays.asList("IMAGING_DOC_SOURCE"),
+            "ids",
+            "gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator",
+                        Arrays.asList(TransactionType.RET_IMG_DOC_SET),
+            true,
+            null
+        )
     ;
 
 	private static final long serialVersionUID = 1L;
@@ -173,6 +182,10 @@ public enum ActorType implements IsSerializable, Serializable {
 
 	public boolean isGW() {
         return isRGActor() || isIGActor();
+    }
+
+        public boolean isImagingDocumentSourceActor() {
+        return this.equals(IMAGING_DOC_SOURCE);
     }
 
     public String getSimulatorClassName() { return simulatorClassName; }

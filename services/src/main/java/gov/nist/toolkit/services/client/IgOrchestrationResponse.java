@@ -10,7 +10,7 @@ import java.util.List;
  *
  */
 public class IgOrchestrationResponse extends RawResponse {
-    List<SimulatorConfig> simulatorConfigs = new ArrayList<>();
+    List<SimulatorConfig> simulatorConfigs = new ArrayList<>()  ;
     SimulatorConfig igSimulatorConfig;
     Pid oneDocPid;
     Pid twoDocPid;

@@ -78,6 +78,10 @@ public class SiteSpec implements IsSerializable {
 		return (actorType != null) && actorType.isRGActor();
 	}
 	
+	public boolean isImagingDocumentSourceActor() {
+		return (actorType != null) && actorType.isImagingDocumentSourceActor();
+	}
+	
 	public String getTypeName() {
 		return actorType.getShortName();
 	}

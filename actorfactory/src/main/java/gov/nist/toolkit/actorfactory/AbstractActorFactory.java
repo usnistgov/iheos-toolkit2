@@ -54,6 +54,7 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
         factories.put(ActorType.XDR_DOC_SRC.getName(), 				new XdrDocSrcActorFactory());
         factories.put(ActorType.DOC_CONSUMER.getName(), 			new ConsumerActorFactory());
+        factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 			new ImagingDocSourceActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
