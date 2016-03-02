@@ -109,12 +109,13 @@ abstract class AbstractActor implements AbstractActorInterface {
 
     @Override
     public void setPatientErrorMap(PatientErrorMap errorMap) throws IOException {
-        config.setPatientErrorMap(errorMap);
+//        config.setPatientErrorMap(errorMap);
     }
 
     @Override
     public PatientErrorMap getPatientErrorMap() throws IOException {
-        return config.getPatientErrorMap();
+        return null;
+//        return config.getPatientErrorMap();
     }
 
 }

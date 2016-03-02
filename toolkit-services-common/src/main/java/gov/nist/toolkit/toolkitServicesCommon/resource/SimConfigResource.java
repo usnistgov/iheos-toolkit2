@@ -1,7 +1,6 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
-import gov.nist.toolkit.configDatatypes.server.PatientErrorMapIO;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -22,12 +21,13 @@ public class SimConfigResource extends SimIdResource implements SimConfig {
 
     @Override
     public void setPatientErrorMap(PatientErrorMap errorMap) throws IOException {
-        setProperty("PatientErrorMap", PatientErrorMapIO.marshal(errorMap));
+//        setProperty("PatientErrorMap", PatientErrorMapIO.marshal(errorMap));
     }
 
     @Override
     public PatientErrorMap getPatientErrorMap() throws IOException {
-        return PatientErrorMapIO.unmarshal(getProperty("PatientErrorMap"));
+        return null;
+//        return PatientErrorMapIO.unmarshal(getProperty("PatientErrorMap"));
     }
 
     @Override

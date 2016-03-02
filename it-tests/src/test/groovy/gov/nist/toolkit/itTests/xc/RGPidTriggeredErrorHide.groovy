@@ -21,7 +21,7 @@ import spock.lang.Shared
 /**
  *
  */
-class RGPidTriggeredErrorSpec extends ToolkitSpecification {
+class RGPidTriggeredErrorHide extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
     BasicSimParameters RGParams = new BasicSimParameters();
