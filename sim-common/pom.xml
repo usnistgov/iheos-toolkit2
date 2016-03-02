@@ -25,9 +25,9 @@
         </dependency>
     </dependencies>
 
-<build>
+    <build>
         <plugins>
-<plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>${maven-source-plugin.version}</version>
@@ -40,10 +40,10 @@
                     </execution>
                 </executions>
             </plugin>
- 	</plugins>
-</build>
+        </plugins>
+    </build>
 
-  <scm>
-    <tag>v3.0.2a</tag>
-  </scm>
+    <scm>
+        <tag>v3.0.2a</tag>
+    </scm>
 </project>
