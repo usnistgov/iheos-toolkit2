@@ -6,6 +6,7 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
@@ -755,6 +756,7 @@ public class SimServlet  extends HttpServlet {
 			SimCommon c = new SimCommon(response);
 			DsSimCommon dsSimCommon = new DsSimCommon(c);
 			OMElement faultEle = sf.getXML();
+            logger.info("Sending SOAP Fault:\n" + new OMFormatter(faultEle).toString());
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);
 			dsSimCommon.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
 		} catch (Exception e) {

@@ -4,15 +4,16 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 
-class TlsSelector implements ClickHandler {
+public class TlsSelector implements ClickHandler {
 	GenericQueryTab tab;
 
-	TlsSelector(GenericQueryTab tab) {
+	public TlsSelector(GenericQueryTab tab) {
 		this.tab = tab;
 	}
 
 	public void onClick(ClickEvent event) {
-		tab.getCommonSiteSpec().setTls(((CheckBox) event.getSource()).getValue());
+        boolean value = ((CheckBox) event.getSource()).getValue();
+		tab.getCommonSiteSpec().setTls(value);
 		tab.redisplay(true);
 	}
 

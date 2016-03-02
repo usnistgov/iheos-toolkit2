@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.adt.A01Sender;
 import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
 import gov.nist.toolkit.testengine.engine.StepContext;

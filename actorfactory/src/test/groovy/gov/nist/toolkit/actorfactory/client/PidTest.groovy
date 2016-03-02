@@ -1,5 +1,7 @@
 package gov.nist.toolkit.actorfactory.client
 
+import gov.nist.toolkit.configDatatypes.client.Pid
+import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import spock.lang.Specification
 
 /**

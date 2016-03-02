@@ -70,14 +70,20 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
+	public void onTabLoad(TabContainer container, boolean select, String simIdString) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 
-		if (eventName != null)
-			simid = new SimId(eventName);
+		if (simIdString != null) {
+            try {
+                simid = new SimId(simIdString);
+            } catch (Exception e) {
+                new PopupMessage(e.getMessage());
+                return;
+            }
+        }
 
-		container.addTab(topPanel, "Sim Logs", select);
+		container.addTab(topPanel, simIdString + " Logs", select);
 		addCloseButton(container, topPanel, null);
 
 		topPanel.add(simDisplayPanel);

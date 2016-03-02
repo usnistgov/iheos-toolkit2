@@ -225,6 +225,10 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>config-datatypes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-services</artifactId>
         </dependency>
         <dependency>
@@ -478,8 +482,11 @@
             </plugin> 
             <!-- End profile part 2/2 -->        
                 
-            
-            <!-- GWT Maven Plugin -->
+
+            <!--
+              There are two copies of this plugin - I have no idea which one is running.  I only
+              know it works for the moment!
+            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
@@ -492,22 +499,12 @@
                             <goal>resources</goal>
                         </goals>
                         <configuration>
-                            <!-- copyWebapp: Copies the contents of warSourceDirectory to hostedWebapp. -->
-                            <!-- warSourceDirectory : Location of the web application static resources
-                                (same as maven-war-plugin parameter) Default value is: ${basedir}/src/main/webapp. -->
-                            <!-- hostedWebapp: Location of the hosted-mode web application structure.
-                                Default: ${project.build.directory}/${project.build.finalName} -->
-                            <!-- no optimization takes place. Good for development -->
                             <optimizationLevel>0</optimizationLevel>
                         </configuration>
                     </execution>
 
                 </executions>
                 <configuration>
-                    <!-- begin repository related
-                     All modules listed in Xdstools2.gwt.xml must be listed here so mvn pulls the
-                     sources from the maven repository.
-                    -->
                     <compileSourcesArtifacts>
                         <compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
@@ -521,56 +518,55 @@
                         <compileSourcesArtifact>${project.groupId}:sim-common</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:error-recording</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:common-datatypes</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:config-datatypes</compileSourcesArtifact>
                     </compileSourcesArtifacts>
-                    <!-- end repository related -->
-
                     <runTarget>Xdstools2.html</runTarget>
                     <modules>
                         <module>${project.groupId}.xdstools2.Xdstools2</module>
                     </modules>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>${gwtVersion}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-user</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                </dependencies>
+                <!-- JS is only needed in the package phase, this speeds up testing -->
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
 
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-antrun-plugin</artifactId>-->
-                <!--<version>1.8</version>-->
-
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>prepare-package</phase>-->
-                        <!--<configuration>-->
-                            <!--&lt;!&ndash; build actorcollections section of testkit &ndash;&gt;-->
-                            <!--<target>-->
-                                <!--<mkdir dir="${testkitOut}/collections" />-->
-
-                                <!--<java classname="gov.nist.toolkit.testengine.scripts.BuildCollections" fork="true" failonerror="true">-->
-                                    <!--<arg value="${testkitIn}"/>-->
-                                    <!--<arg value="${testkitOut}" />-->
-                                    <!--<classpath>-->
-                                        <!--<path refid="maven.runtime.classpath" />-->
-                                    <!--</classpath>-->
-                                <!--</java>-->
-                                <!--<copy todir="${testkitOut}/collections">-->
-                                    <!--<fileset dir="${testkitIn}/static.collections"/>-->
-                                <!--</copy>-->
-
-                                <!--<copy file="${testkitOut}/collections/repositoryb.tc" tofile="${testkitOut}/actorcollections/rep.tc" />-->
-                                <!--<concat destfile="${testkitOut}/actorcollections/reg.tc">-->
-                                    <!--<filelist dir="${testkitOut}/collections" files="registryb.tc, update.tc" />-->
-                                <!--</concat>-->
-                                <!--<copy file="${testkitOut}/collections/Document_Recipient.tc" tofile="${testkitOut}/actorcollections/rec.tc" />-->
-                                <!--<copy file="${testkitOut}/collections/RG.tc" tofile="${testkitOut}/actorcollections/rg.tc" />-->
-                                <!--<copy file="${testkitOut}/collections/IG.tc" tofile="${testkitOut}/actorcollections/ig.tc" />-->
-                                <!--<copy file="${testkitOut}/collections/Initialize_for_Stored_Query.tc" tofile="${testkitOut}/actorcollections/Initialize_for_Stored_Query.tc" />-->
-                            <!--</target>-->
-                        <!--</configuration>-->
-                        <!--<goals>-->
-                            <!--<goal>run</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+                <!-- Plugin configuration. There are many available options,
+                     see gwt-maven-plugin documentation at codehaus.org -->
+                <configuration>
+                    <!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
+                    <runTarget>Xdstools2.html</runTarget>
+                    <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
+                    <compileReport>true</compileReport>
+                    <module>gov.nist.toolkit.xdstools2.Xdstools2</module>
+                    <!--<logLevel>INFO</logLevel>-->
+                    <!--<style>${gwt.style}</style>-->
+                    <copyWebapp>true</copyWebapp>
+                    <!-- <genParam>true</genParam> -->
+                </configuration>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -594,52 +590,6 @@
 
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <version>${gwtVersion}</version>
-                <!--<version>2.5.1</version>-->
-                <dependencies>
-                    <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-user</artifactId>
-                        <version>${gwtVersion}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-dev</artifactId>
-                        <version>${gwtVersion}</version>
-                    </dependency>
-                </dependencies>
-                <!-- JS is only needed in the package phase, this speeds up testing -->
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
-                <!-- Plugin configuration. There are many available options,
-                     see gwt-maven-plugin documentation at codehaus.org -->
-                <configuration>
-                    <!--<compileSourcesArtifacts>-->
-                    <!--<compileSourcesArtifact>gov.nist.hit.ds:repository-rpc</compileSourcesArtifact> &lt;!&ndash; gov.nist.hit.ds:repository &ndash;&gt;-->
-                    <!--<compileSourcesArtifact>gov.nist.hit.ds:repository-shared</compileSourcesArtifact>-->
-                    <!--</compileSourcesArtifacts>-->
-
-                    <!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
-                    <runTarget>Xdstools2.html</runTarget>
-                    <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
-                    <compileReport>false</compileReport>
-                    <module>gov.nist.toolkit.xdstools2.Xdstools2</module>
-                    <!--<logLevel>INFO</logLevel>-->
-                    <!--<style>${gwt.style}</style>-->
-                    <copyWebapp>true</copyWebapp>
-                    <!-- <genParam>true</genParam> -->
                 </configuration>
             </plugin>
         </plugins>

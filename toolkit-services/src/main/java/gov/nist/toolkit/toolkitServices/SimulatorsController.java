@@ -3,14 +3,21 @@ package gov.nist.toolkit.toolkitServices;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
+import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.services.server.RegistrySimApi;
 import gov.nist.toolkit.services.server.RepositorySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
+import gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.Document;
+import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType;
 import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -22,6 +29,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,7 +86,7 @@ public class SimulatorsController {
                     .build();
         }
         catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
     }
 
@@ -110,8 +118,8 @@ public class SimulatorsController {
     public Response update(final SimConfigResource config) {
         logger.info(String.format("Update request for %s", config.getFullId()));
         SimId simId = null;
+        simId = ToolkitFactory.asServerSimId(config);
         try {
-            simId = ToolkitFactory.asServerSimId(config);
             SimulatorConfig currentConfig = api.getConfig(simId);
             if (currentConfig == null) throw new NoSimException("");
 
@@ -153,6 +161,12 @@ public class SimulatorsController {
                     ele.setValue(config.asList(propName));
                 }
             }
+//            if (config.getPatientErrorMap() != null) {
+//                SimulatorConfigElement ele = currentConfig.get(SimulatorProperties.errorForPatient);
+//                if (ele != null) {
+//                    ele.setValue(config.getPatientErrorMap());
+//                }
+//            }
             if (makeUpdate) {
                 logger.info(String.format("Updating Sim %s", config.getFullId()));
                 api.saveSimulator(currentConfig);
@@ -163,7 +177,7 @@ public class SimulatorsController {
                 return Response.notModified().build();
         } catch (Throwable e) {
             logger.error(ExceptionUtil.exception_details(e));
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
     }
 
@@ -182,12 +196,12 @@ public class SimulatorsController {
     @Path("{id}")
     public Response delete(@PathParam("id") String id) {
         logger.info("Delete " + id);
-        SimId simId = new SimId(id);
         try {
+            SimId simId = new SimId(id);
             api.deleteSimulatorIfItExists(simId);
         }
         catch (Throwable e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.THROW);
+            return new ResultBuilder().mapExceptionToResponse(e, id, ResponseType.THROW);
         }
         return Response.status(Response.Status.OK).build();
     }
@@ -202,14 +216,14 @@ public class SimulatorsController {
     @Path("/{id}")
     public Response getSim(@PathParam("id") String id) {
         logger.info("GET simulators/" +  id);
-        SimId simId = new SimId(id);
         try {
+            SimId simId = new SimId(id);
             SimulatorConfig config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
             SimConfigResource bean = ToolkitFactory.asSimConfigBean(config);
             return Response.ok(bean).build();
         } catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, id, ResponseType.RESPONSE);
         }
     }
 
@@ -224,15 +238,15 @@ public class SimulatorsController {
     @Path("/{id}/xds/GetAllDocs/{pid}")
     public Response getAllDocs(@PathParam("id") String id, @PathParam("pid") String pid) {
         logger.info(String.format("GET simulators/%s/xds/GetAllDocs/%s", id, pid));
-        SimId simId = new SimId(id);
         try {
+            SimId simId = new SimId(id);
             RegistrySimApi api = new RegistrySimApi(simId);
             List<String> objectRefs = api.findDocsByPidObjectRef(pid);
             RefListResource or = new RefListResource();
             or.setRefs(objectRefs);
             return Response.ok(or).build();
         } catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, id, ResponseType.RESPONSE);
         }
     }
 
@@ -241,14 +255,14 @@ public class SimulatorsController {
     @Path("/{id}/xds/GetDoc/{docId}")
     public Response getDoc(@PathParam("id") String id, @PathParam("docId") String docId) {
         logger.info(String.format("GET simulators/%s/xds/GetDoc/%s", id, docId));
-        SimId simId = new SimId(id);
         try {
+            SimId simId = new SimId(id);
             RegistrySimApi api = new RegistrySimApi(simId);
             OMElement ele = api.getDocEle(docId);
             String xml = new OMFormatter(ele).toString();
             return Response.ok(xml).build();
         } catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, id, ResponseType.RESPONSE);
         }
     }
 
@@ -257,14 +271,14 @@ public class SimulatorsController {
     @Path("/{id}/events/{transaction}")
     public Response getEventIds(@PathParam("id") String id, @PathParam("transaction") String transaction) {
         logger.info(String.format("GET simulators/%s/events", id));
-        SimId simId = new SimId(id);
         try {
+            SimId simId = new SimId(id);
             List<String> eventIds = api.getSimulatorEventIds(simId, transaction);
             RefListResource resource = new RefListResource();
             resource.setRefs(eventIds);
             return Response.ok(resource).build();
         } catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, id, ResponseType.RESPONSE);
         }
     }
 
@@ -273,8 +287,8 @@ public class SimulatorsController {
     @Path("/{id}/document/{uniqueid}")
     public Response getDocument(@PathParam("id") String id, @PathParam("uniqueid") String uniqueId) {
         logger.info(String.format("GET simulators/%s/document/%s", id, uniqueId));
-        SimId simId = new SimId(id);
         try {
+            SimId simId = new SimId(id);
             DocumentContentResource resource = new DocumentContentResource();
             RepositorySimApi repoApi = new RepositorySimApi(simId);
             StoredDocument document = repoApi.getDocument(uniqueId);
@@ -283,7 +297,7 @@ public class SimulatorsController {
             resource.setUniqueId(uniqueId);
             return Response.ok(resource).build();
         } catch (Throwable e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, id, ResponseType.RESPONSE);
         }
     }
 
@@ -292,14 +306,84 @@ public class SimulatorsController {
     @Path("/{id}/event/{transaction}/{eventid}")
     public Response getEvent(@PathParam("id") String id, @PathParam("transaction") String transaction, @PathParam("eventid") String eventid) {
         logger.info(String.format("GET simulators/%s/event/%s/%s", id, transaction, eventid));
-        SimId simId = new SimId(id);
         try {
+            SimId simId = new SimId(id);
             String event = api.getSimulatorEvent(simId, transaction, eventid);
             RefListResource resource = new RefListResource();
             resource.addRef(event);
             return Response.ok(resource).build();
         } catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, id, ResponseType.RESPONSE);
+        }
+    }
+
+    @POST
+    @Produces("application/json")
+    @Path("/{id}/xds/QueryForLeafClass")
+    public Response queryForLeafClass(final StoredQueryRequestResource request) {
+        logger.info(String.format("POST simulators/%s/xds/QueryForLeafClass", request.getFullId()));
+        SimulatorConfig config;
+        SimId simId = ToolkitFactory.asServerSimId(request);
+        logger.info("simid is " + simId);
+        try {
+            config = api.getConfig(simId);
+            if (config == null) throw new NoSimException("");
+            String queryId = request.getQueryId();
+            String queryName = MetadataSupport.getSQName(queryId);
+            logger.info("Query is " + queryName);
+            if (queryName.equals(""))
+                throw new BadSimRequestException("Do not understand query ID " + queryId);
+            DocConsActorSimulator sim = new DocConsActorSimulator();
+
+            gov.nist.toolkit.simulators.sim.cons.QueryParameters queryParameters =
+                    new gov.nist.toolkit.simulators.sim.cons.QueryParameters();
+            queryParameters.addParameter(request.getKey1(), request.getValues1());
+            queryParameters.addParameter(request.getKey2(), request.getValues2());
+            queryParameters.addParameter(request.getKey3(), request.getValues3());
+            queryParameters.addParameter(request.getKey4(), request.getValues4());
+            queryParameters.addParameter(request.getKey5(), request.getValues5());
+            queryParameters.addParameter(request.getKey6(), request.getValues6());
+            queryParameters.addParameter(request.getKey7(), request.getValues7());
+            queryParameters.addParameter(request.getKey8(), request.getValues8());
+            queryParameters.addParameter(request.getKey9(), request.getValues9());
+            queryParameters.addParameter(request.getKey10(), request.getValues10());
+            queryParameters.addParameter(request.getKey11(), request.getValues11());
+            queryParameters.addParameter(request.getKey12(), request.getValues12());
+            queryParameters.addParameter(request.getKey13(), request.getValues13());
+            queryParameters.addParameter(request.getKey14(), request.getValues14());
+            queryParameters.addParameter(request.getKey15(), request.getValues15());
+            queryParameters.addParameter(request.getKey16(), request.getValues16());
+            queryParameters.addParameter(request.getKey17(), request.getValues17());
+            queryParameters.addParameter(request.getKey18(), request.getValues18());
+            queryParameters.addParameter(request.getKey19(), request.getValues19());
+            queryParameters.addParameter(request.getKey20(), request.getValues20());
+
+            OMElement responseEle = sim.query(config, queryId, queryParameters, true, request.isTls());
+//            OMElement responseEle = sim.query(config, queryId, QueryParametersManager.internalize(request.getQueryParameters()), true, request.isTls());
+//            logger.info(new OMFormatter(responseEle).toString());
+            Metadata metadata = MetadataParser.parseNonSubmission(responseEle);
+            List<OMElement> objects = metadata.getMajorObjects();
+            LeafClassRegistryResponseResource returnResource = new LeafClassRegistryResponseResource();
+            for (OMElement e : objects) {
+                returnResource.addLeafClass(new OMFormatter(e).toString());
+            }
+
+            AdhocQueryResponse adhocQueryResponse = new AdhocQueryResponseParser(responseEle).getResponse();
+            returnResource.setStatus(ResponseStatusType.getStatus(adhocQueryResponse.getStatus()));
+            List<RegistryErrorResource> errors = new ArrayList<RegistryErrorResource>();
+            for (gov.nist.toolkit.registrymsg.registry.RegistryError error : adhocQueryResponse.getRegistryErrorList()) {
+                RegistryErrorResource error1 = new RegistryErrorResource();
+                error1.setErrorCode(error.errorCode);
+                error1.setErrorContext(error.codeContext);
+                error1.setLocation(error.location);
+                error1.setStatus((error.isWarning) ? ResponseStatusType.WARNING : ResponseStatusType.ERROR);
+                errors.add(error1);
+            }
+            returnResource.setErrorList(errors);
+
+            return Response.ok(returnResource).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
     }
 
@@ -311,13 +395,13 @@ public class SimulatorsController {
         logger.info(String.format("XDR Send request for %s", request.getFullId()));
         SimId simId = null;
         SimulatorConfig config;
+        simId = ToolkitFactory.asServerSimId(request);
+        logger.info("simid is " + simId);
         try {
-            simId = ToolkitFactory.asServerSimId(request);
-            logger.info("simid is " + simId);
             config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
         } catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
 
         try {
@@ -344,7 +428,7 @@ public class SimulatorsController {
             responseResource.setResponseSoapBody(new OMFormatter(responseEle).toString());
             return Response.ok(responseResource).build();
         } catch (Throwable e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
     }
 

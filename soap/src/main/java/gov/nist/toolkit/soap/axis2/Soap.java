@@ -486,9 +486,12 @@ public class Soap implements SoapInterface {
 			operationClient.setCallback(callback);
 
 		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
-        Exception soapFault = null;
+        AxisFault soapFault = null;
 		try {
-            operationClient.execute(block); // execute sync or async
+			operationClient.execute(block); // execute sync or async
+//		} catch (AxisFault e) {
+//            soapFault = e;
+//            operationClient.execute(block); // execute sync or async
         } catch (AxisFault e) {
             MessageContext inMsgCtx = getInputMessageContext();
             OMElement soapBody = inMsgCtx.getEnvelope().getBody();
@@ -516,7 +519,7 @@ public class Soap implements SoapInterface {
             loadOutHeader();
 
             if (soapFault != null) {
-                throw new XdsInternalException("SOAP Fault", soapFault);
+                throw new XdsInternalException("SOAP Fault: " + soapFault.getReason(), soapFault);
             }
 			//  - null pointer exception here if port number in configuration is wrong
 			try {

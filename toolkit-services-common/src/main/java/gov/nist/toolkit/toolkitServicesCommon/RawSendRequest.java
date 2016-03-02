@@ -1,5 +1,7 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
+import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentResource;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ public interface RawSendRequest extends SimId {
      * @param id
      * @param doc
      */
-    void addDocument(String id, Document doc);
+    void addDocument(String id, DocumentResource doc);
 
     String getTransactionName();
 
@@ -55,7 +57,7 @@ public interface RawSendRequest extends SimId {
      * Get map of id to Document.  The id is the is attribute value in a Document Sharing ExtrinsicObject.
      * @return the map.
      */
-    Map<String, Document> getDocuments();
+    Map<String, DocumentResource> getDocuments();
 
 //    void setDocuments(Map<String, Document> documents);
 }

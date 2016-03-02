@@ -1,14 +1,14 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.PidBuilder;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.adt.PifCallback;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
 /**
- * Created by bill on 9/1/15.
+ *
  */
 public class PifHandler implements PifCallback {
     static Logger logger = Logger.getLogger(PifHandler.class);

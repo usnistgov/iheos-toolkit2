@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Uses SingleSelectionView to build specifics.
  */
 public class ErrorSelectionPresenter {
 
@@ -19,10 +19,10 @@ public class ErrorSelectionPresenter {
     final static String none = "None";
 
     public ErrorSelectionPresenter(ToolkitServiceAsync toolkitService, String transactionName, final List<String> selected, final Panel panel) {
-        toolkitService.getProfileErrorCodeRefs(transactionName, Severity.Error, new AsyncCallback<List<String>>() {
+        toolkitService.getTransactionErrorCodeRefs(transactionName, Severity.Error, new AsyncCallback<List<String>>() {
 
             public void onFailure(Throwable caught) {
-                new PopupMessage("getProfileErrorCodeRefs:" + caught.getMessage());
+                new PopupMessage("getTransactionErrorCodeRefs:" + caught.getMessage());
             }
 
             public void onSuccess(List<String> results) {

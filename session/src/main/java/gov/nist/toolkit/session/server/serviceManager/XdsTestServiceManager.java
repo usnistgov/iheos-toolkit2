@@ -1,6 +1,8 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
-import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.actorfactory.SimCache;
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -639,6 +641,12 @@ public class XdsTestServiceManager extends CommonService {
 
 			if (name == null || name.equals(""))
 				throw new Exception("Cannot add test session with no name");
+            if (name.contains("__"))
+                throw new Exception("Cannot contain a double underscore (__)");
+            if (name.contains(" "))
+                throw new Exception("Cannot contain spaces");
+            if (name.contains("\t"))
+                throw new Exception("Cannot contain tabs");
 		} catch (Exception e) {
 			logger.error("addMesaTestSession", e);
 			throw new Exception(e.getMessage());
@@ -661,6 +669,11 @@ public class XdsTestServiceManager extends CommonService {
 		}
 		File dir = new File(cache.toString() + File.separator + name);
 		Io.delete(dir);
+
+        // also delete simulators owned by this test session
+
+        SimDb.deleteSims(new SimDb().getSimIdsForUser(name));
+        SimCache.clear();
 		return true;
 	}
 
@@ -818,5 +831,6 @@ public class XdsTestServiceManager extends CommonService {
 		// Test data, status must be "NOT RUN"
 		return new Test(testId, false, "test#", "test name", "test description", "10:20 PM EST", "not run");
 	}
+
 
 }

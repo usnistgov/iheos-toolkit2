@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
@@ -289,7 +290,7 @@ public class SimulatorServiceManager extends CommonService {
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "saveSimConfig");
 		try {
-			SimManager simManager = new SimCache().getSimManagerForSession(session.id(), true);
+			SimManager simManager = SimCache.getSimManagerForSession(session.id(), true);
 			new GenericSimulatorFactory(simManager).saveConfiguration(config);
 		} catch (IOException e) {
 			logger.error("saveSimConfig", e);
@@ -303,6 +304,13 @@ public class SimulatorServiceManager extends CommonService {
         SimulatorConfig config = SimCache.getSimulatorConfig(simId);
         if (config != null)
             return deleteConfig(config);
+        if (new SimDb().exists(simId)) {
+            try {
+                new SimDb(simId).delete();
+            } catch (Exception e) {
+                // ignore
+            }
+        }
         return "";
     }
 

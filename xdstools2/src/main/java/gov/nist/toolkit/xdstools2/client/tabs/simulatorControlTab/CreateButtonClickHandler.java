@@ -31,7 +31,13 @@ class CreateButtonClickHandler implements ClickHandler {
 			new PopupMessage("Must Select a Test Session");
 			return;
 		}
-		SimId simId = new SimId(testSessionManager.getCurrentTestSession(), rawSimId);
+		SimId simId;
+        try {
+            simId = new SimId(testSessionManager.getCurrentTestSession(), rawSimId);
+        } catch (Exception e) {
+            new PopupMessage(e.getMessage());
+            return;
+        }
 		simulatorControlTab.createNewSimulator(actorTypeName, simId);
 	}
 	

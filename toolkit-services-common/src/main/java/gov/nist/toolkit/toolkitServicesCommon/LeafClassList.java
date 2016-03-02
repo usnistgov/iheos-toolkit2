@@ -6,6 +6,9 @@ import java.util.List;
  *
  */
 public interface LeafClassList {
-    List<String> getLeafClasses();
-
+    /**
+     *
+     * @return list of XML representation of all LeafClasses
+     */
+    List<String> getLeafClasses();   // XML text representing full object metadata
 }

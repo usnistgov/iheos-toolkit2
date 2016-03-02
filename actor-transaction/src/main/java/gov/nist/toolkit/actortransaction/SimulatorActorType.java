@@ -31,6 +31,10 @@ public enum SimulatorActorType {
      */
     DOCUMENT_SOURCE("xdrsrc"),
     /**
+     * Document Consumer.
+     */
+    DOCUMENT_CONSUMER("cons"),
+    /**
      * On-Demand Document Source
      */
     ONDEMAND_DOCUMENT_SOURCE("odds"),

@@ -2,8 +2,8 @@ package gov.nist.toolkit.results.client;
 
 
 import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.PidBuilder;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

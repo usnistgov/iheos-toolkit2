@@ -98,6 +98,7 @@ public class ListenerFactory {
         if (tpi == null) return;
         logger.info("...which is port " + tpi.port);
         tpi.thread.interrupt();
+        tpi.inUse = false;
     }
 
     public static void terminateAll() {
