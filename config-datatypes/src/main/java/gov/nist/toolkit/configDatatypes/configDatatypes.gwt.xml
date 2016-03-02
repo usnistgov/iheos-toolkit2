@@ -5,6 +5,5 @@
   can translate into JavaScript to use client side -->
 <module>
     <inherits name='com.google.gwt.user.User' />
-  <!--<inherits name="gov.nist.toolkit.actortransaction.actorTransaction"/>-->
-      <source path="client" />
+    <source path="client" />
 </module>
