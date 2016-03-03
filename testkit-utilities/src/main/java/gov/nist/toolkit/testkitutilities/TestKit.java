@@ -55,14 +55,16 @@ public class TestKit {
 	 * @throws Exception if test does not exist
 	 */
 	public File getTestDir(String testname) throws Exception {
-		
+
+		File testdir = null;
+
 		for (String section : testkitSections) {
-			File testdir = new File(testKit.toString() + File.separator + section + File.separator + testname);
+			testdir = new File(testKit.toString() + File.separator + section + File.separator + testname);
 			if (testdir.exists() && testdir.isDirectory())
 				return testdir;
 		}
 				
-		throw new Exception("test " + testname + " does not exist");
+		throw new Exception("test " + testdir + " does not exist");
 	}
 	
 	/**

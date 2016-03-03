@@ -7,6 +7,7 @@
 package gov.nist.toolkit.utilities.io;
 
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import org.apache.axiom.om.OMElement;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,8 +20,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import org.apache.axiom.om.OMElement;
 
 
 /**
@@ -122,8 +121,17 @@ public class Io {
 	static public String stringFromFile(File file) throws IOException {
 		if ( !file.exists())
 			throw new FileNotFoundException(file + " cannot be read");
-		FileInputStream is = new FileInputStream(file);
-		return getStringFromInputStream(is);
+		FileInputStream is = null;
+		try {
+			is = new FileInputStream(file);
+			String str = getStringFromInputStream(is);
+
+			return str;
+		} finally {
+			if (is!=null) {
+				is.close();
+			}
+		}
 
 	}
 	

@@ -71,6 +71,29 @@ public class SiteServiceManager {
 		}
 		return ss;
 	}
+
+	public List<String> getSiteNamesByTran(String tranTypeStr, String sessionId) throws Exception {
+		logger.debug(sessionId + ": " + "getSiteNamesWithRep");
+		List<String> pnrSites = null;
+		try {
+			Collection<Site> siteCollection = new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection();
+
+			Sites theSites = new Sites(siteCollection);
+
+			TransactionType transactionType = TransactionType.find(tranTypeStr);
+
+			if (transactionType!=null) {
+				pnrSites = theSites.getSiteNamesWithTransaction(transactionType);
+			} else {
+				logger.error("transactionType is null.");
+			}
+
+		} catch (Exception e) {
+			logger.error(e.toString());
+		}
+		return pnrSites;
+
+	}
 	
 	public List<String> getSiteNames(String sessionId, boolean reload, boolean returnSimAlso)   {
 		logger.debug(sessionId + ": " + "getSiteNames");
