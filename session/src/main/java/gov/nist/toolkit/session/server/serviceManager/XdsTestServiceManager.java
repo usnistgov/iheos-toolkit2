@@ -2,7 +2,7 @@ package gov.nist.toolkit.session.server.serviceManager;
 
 import gov.nist.toolkit.actorfactory.SimCache;
 import gov.nist.toolkit.actorfactory.SimDb;
-import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -641,6 +641,12 @@ public class XdsTestServiceManager extends CommonService {
 
 			if (name == null || name.equals(""))
 				throw new Exception("Cannot add test session with no name");
+            if (name.contains("__"))
+                throw new Exception("Cannot contain a double underscore (__)");
+            if (name.contains(" "))
+                throw new Exception("Cannot contain spaces");
+            if (name.contains("\t"))
+                throw new Exception("Cannot contain tabs");
 		} catch (Exception e) {
 			logger.error("addMesaTestSession", e);
 			throw new Exception(e.getMessage());

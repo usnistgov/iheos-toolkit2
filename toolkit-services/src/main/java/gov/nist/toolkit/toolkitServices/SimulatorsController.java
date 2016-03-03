@@ -161,6 +161,12 @@ public class SimulatorsController {
                     ele.setValue(config.asList(propName));
                 }
             }
+//            if (config.getPatientErrorMap() != null) {
+//                SimulatorConfigElement ele = currentConfig.get(SimulatorProperties.errorForPatient);
+//                if (ele != null) {
+//                    ele.setValue(config.getPatientErrorMap());
+//                }
+//            }
             if (makeUpdate) {
                 logger.info(String.format("Updating Sim %s", config.getFullId()));
                 api.saveSimulator(currentConfig);

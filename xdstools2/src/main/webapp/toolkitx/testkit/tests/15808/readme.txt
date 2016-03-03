@@ -1,33 +1,30 @@
-FindDocuments for LeafClass request to IG (one RG)
+Query Single Responding Gateway test
 
-The System Under Test (SUT) is an Initiating Gateway (IG) with Affinity Domain
-option. The test environment, provided by Toolkit, is a Document Consumer (DC)
-initiating the requests
-and a Responding Gateway (RG) responding to requests coming out of the Initiating Gateway.
+<p>Although the Initiating Gateway is configured to forward requests to two
+Responding Gateways, all sections of this test return content from a
+single Responding Gateway.</p>
 
-The SUT IG shall be configured to forward query and retrieve requests to the
-Responding Gateway provided by the test. The test is driven by the Document
-Consumer.
 
-The Responding Gateway is initialized with content for two Patient IDs. The first
-Patient ID has a single SubmissionSet containing a single DocumentEntry with Document.
-The second Patient ID has two SubmissionSets each containing a single DocumentEntry
-with Document.
+<h2>SingleDocumentFindDocuments</h2>
+<p>
+A FindDocuments stored query is sent to the Initiating Gateway for the
+Single Document Patient ID. For this patient one Responding Gateway will return a single
+DocumentEntry.
+uid
+</p>
 
-The test contains the following sections:
+<h2>SingleDocumentGetDocuments</h2>
+<p>
+The DocumentEntry.entryUUID attribute is extracted from the above test results
+and a GetDocuments stored query is sent to the Initiating Gateway.  The correct
+Home Community Id is included in the request.
+</p>
 
-OneDocFindDocuments - sends a FindDocuments stored query to the Initiating Gateway with
-the Patient ID for the single document submission.  It shall return one DocumentEntry.
-The returned DocumentEntry.homeCommunityId shall match the configured value in the RG.
-
-OneDocGetDocuments - Depends on output of OneDocQuery. Send GetDocuments query passing
-DocumentEntry.entryUUID returned by OneDocQuery. The returned DocumentEntry.homeCommunityId
-shall match the configured value in the RG.
-
-TwoDocFindDocuments - sends a FindDocuments stored query to the Initiating Gateway with
-the Patient ID for the two document submission.  It shall return two DocumentEntries.
-Both of the returned DocumentEntry.homeCommunityId
-shall match the configured value in the RG.
-
+<h2>TwoDocumentsFindDocuments</h2>
+<p>
+A FindDocuments stored query is sent to the Initiating Gateway for the
+Two Documents Patient ID. For this patient one Responding Gateway will return a two
+DocumentEntries.
+</p>
 
 

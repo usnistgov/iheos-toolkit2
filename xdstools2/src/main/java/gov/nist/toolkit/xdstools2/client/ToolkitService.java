@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
@@ -13,8 +14,9 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.services.client.IgOrchestationManagerRequest;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -167,7 +169,8 @@ public interface ToolkitService extends RemoteService  {
 	 String getDefaultAssigningAuthority() throws NoServletSessionException ;
 	 String getAttributeValue(String username, String attName) throws Exception;
 	 void setAttributeValue(String username, String attName, String attValue) throws Exception;
-    RawResponse buildIgTestOrchestration(IgOrchestationManagerRequest request);
+    RawResponse buildIgTestOrchestration(IgOrchestrationRequest request);
+    RawResponse buildRgTestOrchestration(RgOrchestrationRequest request);
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
@@ -189,5 +192,5 @@ public interface ToolkitService extends RemoteService  {
 
 	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
-    List<String> getProfileErrorCodeRefs(String transactionName, Severity severity) throws Exception;
+    List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception;
 }

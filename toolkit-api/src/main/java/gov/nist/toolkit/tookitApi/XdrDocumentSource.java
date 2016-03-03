@@ -1,8 +1,8 @@
 package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
-import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
 
 /**
  *
@@ -25,5 +25,4 @@ class XdrDocumentSource extends AbstractActor implements DocumentSource {
      * @return the empty request
      */
     public RawSendRequest newRawSendRequest() { return new RawSendRequestResource(config); }
-
 }

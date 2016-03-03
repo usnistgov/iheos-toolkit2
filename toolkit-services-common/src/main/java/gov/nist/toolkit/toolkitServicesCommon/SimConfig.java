@@ -1,5 +1,8 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,6 +31,15 @@ public interface SimConfig extends SimId {
      * @param value property value
      */
     void setProperty(String name, boolean value);
+
+    /**
+     * Set a property that takes a PatientErrorMap value
+     * @param name property name. See {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property names.
+     * @param value property value
+     */
+    void setPatientErrorMap(PatientErrorMap errorMap) throws IOException;
+
+    PatientErrorMap getPatientErrorMap() throws IOException;
 
     /**
      * Is named property a boolean value?

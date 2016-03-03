@@ -3,25 +3,22 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Panel;
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.services.client.IgOrchestationManagerRequest;
-import gov.nist.toolkit.services.client.IgOrchestrationResponse;
-import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationResponse;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataInspectorTab;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,11 +33,18 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 
     //    TextBox patientIdBox = new TextBox();
     String selectedActor = ActorType.RESPONDING_GATEWAY.getShortName();
-    List<SimulatorConfig> rgConfigs;
     GenericQueryTab genericQueryTab;
-    static final String COLLECTION_NAME =  "igtool1rg";
-    TestSelectionManager testSelectionManager;
+    static final String COLLECTION_NAME =  "rgtool";
+    final TestSelectionManager testSelectionManager;
     Panel siteSelectionPanel = new VerticalPanel();
+
+    String systemTypeGroup = "System Type Group";
+    RadioButton exposed = new RadioButton(systemTypeGroup, "Exposed Registry/Repository");
+    RadioButton external = new RadioButton(systemTypeGroup, "External Registry/Repository");
+    boolean isExposed() { return exposed.getValue(); }
+    boolean isExternal() { return external.getValue(); }
+    boolean usingExposedRR() { return exposed.getValue(); }
+    RgOrchestrationResponse orch;
 
     public RGTestTab() {
         super(new GetDocumentsSiteActorManager());
@@ -65,12 +69,22 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         addCloseButton(container,topPanel, null);
         tlsOptionEnabled = false;
 
-        genericQueryTab.reloadTransactionOfferings();
-
         // customization of GenericQueryTab
         autoAddRunnerButtons = false;  // want them in a different place
         genericQueryTitle = "Select System Under Test";
-        genericQueryInstructions = new HTML(
+        HTML instructions = new HTML(
+                "<p>" +
+                        "The system under test is a Responding Gateway. To be testable by this tool one of the following " +
+                        "configurations must be supported by your implementation. " +
+                        "<ul>" +
+                        "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
+                        "functionality and you expose the required endpoints for these actors. " +
+                        "A single site (system configuration in toolkit) must contain the Responding Gateway " +
+                        "(system under test), and the related Registry and Repository configurations." +
+                        "<li>External Registry/Repository - your implementation can be configured to work with an " +
+                        "external Registry and Repository which will be selected below. This tool will provide " +
+                        "these actors." +
+                        "</ul>" +
                 "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
                         "Responding Gateway " +
                         "selected below. This will start the test. Before running a test, make sure your " +
@@ -85,64 +99,88 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         ////////////////////////////////////////////////////////////////////////////////////////////////
         topPanel.add(new HTML("<h1>Responding Gateway Test Tool</h1>"));
 
-        topPanel.add(new HTML("<p>" +
-                "This tool tests a Responding Gateway in one of two configurations.  The first configuration choice " +
-                "is a Responding Gateway that includes an addressable Document Repository and Document Registry.  Addressable " +
-                "means that Provide and Register transactions can be sent to load test data into the Repository and Registry. " +
-                "The other configuration choice requires the Responding Gateway to be configurable to use an externally " +
-                "Registry/Repository pair." +
-                "An Initiating Gateway simulator will be used to send Cross Gateway Query and Cross Gateway Retrieve " +
-                "transactions. " +
-                "These simulators are created by this tool." +
-
-                "<h2>Create supporting test session</h2>" +
-                "These simulators and " +
-                "their logs will be maintained in a test session you create for this test. At the top of the window, " +
-                "create a new test session and select it - name it for your company. " +
-                "Don't use a double underscore (__) in the name (bug I discovered this week)" +
-                "This tool deletes all logs and simulators in the selected test session in the next step below.  " +
-                "</p>"
-        ));
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
         topPanel.add(new HTML(
-                "<hr />" +
-                "<h2>Build Test Environment</h2>" +
-                "<p>" +
-                "This will delete the contents of the selected test session and initialize it. " +
-                "The Build Test Environment button will create the necessary simulators to test your Initiating Gateway.  " +
-                "The Build Demonstration Environment button will do the same and also build an Initiating Gateway for " +
-                "demonstration and training purposes. Only one can be used." +
-                        "To test your Initiating Gateway you shoud use Build Test Environment." +
-                        "The generated test environment will be displayed below. " +
-                        "Once the test environment is built, configure your Initiating Gateway to forward requests " +
-                        "to the two generated Responding Gateway simulators. The Demonstration Environment builds this " +
-                        "configuration automatically." +
-                "</p>" +
-                        "<p>Note that the generated Patient IDs are in the Red Affinity Domain.  These will be used " +
-                        "even if your Initiating Gateway is in the Blue or Green domain." +
-                        "</p>" +
-                        "<p>Buttons to launch two different types of logs will be displayed.  The Inspect Test Data " +
-                        "logs show the raw submissions sent to the supporting Affinity Domains behind the RGs. " +
-                        "The Launch X__rg* logs show the actual traffic in and out of the Responding Gateways." +
+                "This tool tests a Responding Gateway that exposes endpoints for a Document Registry and" +
+                        "Document Repository or can be configured to use an external Registry/Repository pair." +
+                "<h2>Create supporting test session</h2>" +
+                        "These simulators and " +
+                        "their logs will be maintained in a test session you create for this test. At the top of the window, " +
+                        "create a new test session and select it. " +
+                        "All context for this test is kept within this test session - if multiple test sessions are " +
+                        "created they do not interact." +
+                        "WARNING - This tool deletes all logs and simulators in the selected test session when the test environment is built.  " +
                         "</p>"
         ));
 
-        HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
-        topPanel.add(testEnvironmentsPanel);
-
-        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Test Environment", false);
-
-        new BuildTestOrchestrationButton(testEnvironmentsPanel, "Build Demonstration Environment", true);
-
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML("<hr />"));
+//        topPanel.add(new HTML(
+//                "<hr /><h2>System under test</h2>" +
+//                "<p>" +
+//                "The system under test is a Responding Gateway. To be testable by this tool one of the following " +
+//                "configurations must be supported by your implementation. " +
+//                "<ul>" +
+//                "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
+//                "functionality and you expose the required endpoints for these actors." +
+//                "A single site (system configuration in toolkit) must contain the Responding Gateway " +
+//                "(system under test), and the related Registry and Repository configurations." +
+//                "<li>External Registry/Repository - your implementation can be configured to work with an " +
+//                "external Registry and Repository which will be selected below." +
+//                "</ul>"
+//        ));
 
-        topPanel.add(siteSelectionPanel);
+        Panel systemTypePanel = new HorizontalPanel();
+        systemTypePanel.add(exposed);
+        systemTypePanel.add(external);
+        Panel editExposedSystemConfigPanel = new HorizontalPanel();
+        systemTypePanel.add(editExposedSystemConfigPanel);
+        final Button editExposedSiteButton = new Button("Edit Site Configuration");
+        editExposedSystemConfigPanel.add(editExposedSiteButton);
+        editExposedSiteButton.setVisible(false);
+        editExposedSiteButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
 
-        new SiteTransactionConfigLoader(toolkitService).load(new SiteDisplayer());
+            }
+        });
+
+//        final Panel externalSystemSelectionPanel = new VerticalPanel();
+//        externalSystemSelectionPanel.setVisible(false);  // until needed
+//        topPanel.add(externalSystemSelectionPanel);
+//
+//        new TransactionOfferingsLoader(toolkitService).run(new ServiceCallCompletionHandler<TransactionOfferings>() {
+//            @Override
+//            public void onCompletion(TransactionOfferings to) {
+//                externalSystemSelectionPanel.add(new HTML("<h3>Registry/Repository Selection</h3>"));
+//                final List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+//                transactionTypes.add(TransactionType.PROVIDE_AND_REGISTER);
+//                transactionTypes.add(TransactionType.STORED_QUERY);
+//                transactionTypes.add(TransactionType.RETRIEVE);
+//                externalSystemSelectionPanel.add(new SiteSelectionWidget(to, transactionTypes, new CoupledTransactions(), getCurrentTestSession()).build(null, ""));
+//            }
+//        });
 
 
+        // exposed means using reg/rep from same site as RG
+        exposed.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+//                editExposedSiteButton.setVisible(true);
+            }
+        });
+
+        // external means using reg/rep from different site
+        external.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> valueChangeEvent) {
+//                editExposedSiteButton.setVisible(false);
+            }
+        });
+
+
+        Panel instructionsPanel = new VerticalPanel();
+        instructionsPanel.add(instructions);
+        instructionsPanel.add(systemTypePanel);
+        genericQueryInstructions = instructionsPanel;
         ////////////////////////////////////////////////////////////////////////////////////////////////
         // Query boilerplate
         ActorType act = ActorType.findActor(selectedActor);
@@ -159,7 +197,40 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                 new CoupledTransactions(),
                 false  /* display patient id param */);
 
-        TestSelectionManager testSelectionManager = new TestSelectionManager(this);
+//        topPanel.add(systemTypePanel);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+//        // Select SUT
+//
+//        topPanel.add(new HTML("<hr />"));
+//
+//        topPanel.add(siteSelectionPanel);
+//
+//        new SiteTransactionConfigLoader(toolkitService).load(new SiteDisplayer());
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////
+        topPanel.add(new HTML(
+                        "<h2>Build Test Environment</h2>" +
+                        "<p>" +
+                        "This will delete the contents of the selected test session and initialize it. " +
+                        "The generated test environment will be displayed below. " +
+                        "Once the test environment is built, configure your Responding Gateway to forward requests " +
+                        "to the generated Registry/Repository simulators (if the External option is selected). " +
+                        "</p>"
+        ));
+
+        HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
+        topPanel.add(testEnvironmentsPanel);
+
+        BuildRGTestOrchestrationButton testEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
+
+        topPanel.add(new HTML("<hr />"));
+
+//        BuildRGTestOrchestrationButton demoEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
+//
+//        // link the two buttons so clicking one clears text output of both
+//        testEnvButton.addLinkedOrchestrationButton(demoEnvButton);
+//        demoEnvButton.addLinkedOrchestrationButton(testEnvButton);
 
         topPanel.add(testSelectionManager.buildTestSelector());
 
@@ -185,14 +256,19 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         topPanel.add(resultPanel);
     }
 
+
+    void buildExternalRegistryRepository() {
+
+    }
+
     class SiteDisplayer implements CompletionHandler<TransactionOfferings> {
 
         @Override
         public void OnCompletion(TransactionOfferings transactionOfferings) {
             siteSelectionPanel.add(new HTML("<h2>Responding Gateway support actors</h2>" +
-            "The Responding Gateway (system under test) must be supported by a Document Repository and Document Registry " +
-            "that are publicly accessible so that test data can be loaded into them. Select the Repository and Registry " +
-            "supporting your Responding Gateway. If they are not on this selection list then update toolkit adding " +
+                    "The Responding Gateway (system under test) must be supported by a Document Repository and Document Registry " +
+                    "that are publicly accessible so that test data can be loaded into them. Select the Repository and Registry " +
+                    "supporting your Responding Gateway. If they are not on this selection list then update toolkit adding " +
                     "their configurations."
             ));
 
@@ -211,116 +287,31 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         }
     }
 
-    class BuildTestOrchestrationButton extends ReportableButton {
-        boolean includeIG;
-
-        BuildTestOrchestrationButton(Panel topPanel, String label, boolean includeIG) {
-            super(topPanel, label);
-            this.includeIG = includeIG;
-        }
-
-        public void handleClick(ClickEvent event) {
-            IgOrchestationManagerRequest request = new IgOrchestationManagerRequest();
-            if (empty(getCurrentTestSession())) {
-                new PopupMessage("Must select test session first");
-                return;
-            }
-            request.setUserName(getCurrentTestSession());
-            request.setIncludeLinkedIG(includeIG);
-            toolkitService.buildIgTestOrchestration(request, new AsyncCallback<RawResponse>() {
-                @Override
-                public void onFailure(Throwable throwable) { handleError(throwable); }
-
-                @Override
-                public void onSuccess(RawResponse rawResponse) {
-                    if (handleError(rawResponse, IgOrchestrationResponse.class)) return;
-                    IgOrchestrationResponse orchResponse = (IgOrchestrationResponse)rawResponse;
-
-                    rgConfigs = orchResponse.getSimulatorConfigs();
-
-                    panel().add(new HTML("<h2>Generated Environment</h2>"));
-                    FlexTable table = new FlexTable();
-                    panel().add(table);
-                    int row = 0;
-
-                    table.setHTML(row++, 0, "<h3>Patient IDs</h3>");
-
-                    table.setText(row, 0, "Single document Patient ID");
-                    table.setText(row++, 1, orchResponse.getOneDocPid().asString());
-
-                    table.setText(row, 0, "Two document Patient ID");
-                    table.setText(row++, 1, orchResponse.getTwoDocPid().asString());
-
-                    table.setText(row, 0, "Two RGs Patient ID");
-                    table.setText(row++, 1, orchResponse.getTwoRgPid().asString());
-
-                    table.setHTML(row++, 0, "<h3>Simulators</h3>");
-
-                    for (SimulatorConfig config : rgConfigs) {
-                        table.setWidget(row, 0, new HTML("<h3>Simulator ID</h3>"));
-                        table.setWidget(row++, 1, new HTML(config.getId().toString()));
-
-                        table.setText(row, 0, "homeCommunityId");
-                        table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.homeCommunityId).asString()));
-
-                        table.setText(row, 0, "Responding Gateway");
-                        table.setText(row, 1, "Query");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.xcqEndpoint).asString());
-
-                        table.setText(row, 1, "Retrieve");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.xcrEndpoint).asString());
-
-                        table.setText(row, 0, "Repository");
-                        table.setText(row, 1, "Provide and Register");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.pnrEndpoint).asString());
-
-                        table.setText(row, 1, "Retrieve");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.retrieveEndpoint).asString());
-
-                        table.setText(row, 0, "Registry");
-                        table.setText(row, 1, "Register");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.registerEndpoint).asString());
-
-                        table.setText(row, 1, "Query");
-                        table.setText(row++, 2, config.getConfigEle(SimulatorProperties.storedQueryEndpoint).asString());
-
-                        panel().add(addTestEnvironmentInspectorButton(config.getId().toString()));
-                    }
-
-                    // generate log launcher buttons
-//                    panel().add(addTestEnvironmentInspectorButton(rgConfigs.get(0).getId().toString()));
-                    panel().add(testSelectionManager.buildLogLauncher(rgConfigs));
-
-                    genericQueryTab.reloadTransactionOfferings();
-                }
-            });
-        }
-    }
 
     class Runner implements ClickHandler {
 
         public void onClick(ClickEvent event) {
+
             resultPanel.clear();
 
-			if (getCurrentTestSession().isEmpty()) {
-				new PopupMessage("Test Session must be selected");
-				return;
-			}
+            if (getCurrentTestSession().isEmpty()) {
+                new PopupMessage("Test Session must be selected");
+                return;
+            }
 
             if (!verifySiteProvided()) return;
 
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+            addStatusBox();
+            getGoButton().setEnabled(false);
+            getInspectButton().setEnabled(false);
 
             List<String> selectedSections = testSelectionManager.getSelectedSections();
 
             Map<String, String> parms = new HashMap<>();
-            parms.put("$testdata_home$", rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString());
+            parms.put("$testdata_home$", orch.getSiteUnderTest().homeId);
 
             Panel logLaunchButtonPanel = rigForRunning();
             logLaunchButtonPanel.clear();
-            logLaunchButtonPanel.add(testSelectionManager.buildLogLauncher(rgConfigs));
             String testToRun = selectedTest;
             if (TestSelectionManager.ALL.equals(testToRun)) {
                 testToRun = "tc:" + COLLECTION_NAME;

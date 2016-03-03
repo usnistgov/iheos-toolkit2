@@ -119,9 +119,15 @@ Summer 2015 development
 15805 - OD Registry test
 15806 - On Demand Stable DocumentEntry Submit
 
-15807 - Submit test data to support test 15808
+15807 - Submit test data to support test 15808 and 15811
 15808 - FindDocuments for LeafClass to IG - one RG
 15809 - Retrieve to IG - one RG
+15810 - FindDocuments for LeafClass request to IG (two RGs)
+
+15811 - FindDocuments for LeafClass RG test
+
+15812 - Consumer oriented OD tests
+15813 - Retrieve to RG
 
 
 

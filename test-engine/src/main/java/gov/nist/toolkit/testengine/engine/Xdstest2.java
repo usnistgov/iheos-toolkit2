@@ -350,6 +350,7 @@ public class Xdstest2 {
 				sections = testSpec.getTestPlanLogs().keySet();
 			else
 				sections = sectionsToScan;
+
 			for (String section : sections) {
 				if (section.equals("THIS"))
 					continue;
@@ -392,10 +393,12 @@ public class Xdstest2 {
 
 					res.add("Status: " + ((stepLog.isSuccess()) ? "Pass" : "Fail"), stepLog.isSuccess());
 					
-					for (String report : stepLog.getReports()) {
-						res.add("Report: " + report);
-					}
-
+                    for (String report : stepLog.getUseReports()) {
+                        res.add("UseReport: " + report);
+                    }
+                    for (String report : stepLog.getReports()) {
+                        res.add("Report: " + report);
+                    }
 					try {
 						Metadata m;
 						m = stepLog.getParsedInputMetadata();

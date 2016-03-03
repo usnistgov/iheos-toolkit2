@@ -93,7 +93,23 @@ public class UseReportManager  {
 		return  urm;
 	}
 
-	static QName test_qname = new QName("test");
+//    public OMElement toXML() {
+//        OMElement top = MetadataSupport.om_factory.createOMElement("UseReports", null);
+//
+//        for (UseReport report : useReports) {
+//            OMElement rep = MetadataSupport.om_factory.createOMElement("UseReport", null);
+//
+//            rep.addAttribute("name", report.reportName, null);
+//            rep.setText(report.value);
+//
+//            top.addChild(rep);
+//        }
+//
+//        return top;
+//    }
+
+
+    static QName test_qname = new QName("test");
 	static QName section_qname = new QName("section");
 	static QName step_qname = new QName("step");
 	static QName reportName_qname = new QName("reportName");
@@ -156,14 +172,14 @@ public class UseReportManager  {
 			if (log == null)
 				log = priorTests.get(ur.section);
 			if (log == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find log for section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
+				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
 			TestStepLogContent stepLog = log.getStepLog(ur.step);
 			if (stepLog == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find log for step " + ur.step + " in section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
+                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
 
 			OMElement reportEles = stepLog.getRawReports();
 			if (reportEles == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find Reports section for step  " + ur.step + " in section " + ur.section + "\n" + toString() + "\n" + previousLogs.toString() + "\n");
+                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
 
 			String reportName = ur.reportName;
 			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {
@@ -202,6 +218,7 @@ public class UseReportManager  {
 			}
 		}
 	}
+
 
 
 }

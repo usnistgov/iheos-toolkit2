@@ -4,9 +4,9 @@
     <TestStep id="retrieve">
         <ExpectedStatus>Success</ExpectedStatus>
         <IGRTransaction>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid$"/>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$home$" useAs="$home$"/>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
+            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid$"/>
+            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$home$" useAs="$home$"/>
+            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
             <ExpectedMimeType>text/plain</ExpectedMimeType>
             <ReferenceDocument uid="$docuid$">../../15807/onedoc/my_document.txt</ReferenceDocument>
             <MetadataFile>retrieve.xml</MetadataFile>
@@ -58,7 +58,7 @@
         </NullTransaction>
     </TestStep>
     <TestStep id="Verify documentUniqueId">
-        <Goal>Validate repositoryUniqueId in Retrieve response against Retrieve request</Goal>
+        <Goal>Validate documentUniqueId in Retrieve response against Retrieve request</Goal>
         <NullTransaction>
             <UseReport reportName="$docuid_request$"  section="THIS" step="retrieve" useAs="requested"/>
             <UseReport reportName="$docuid_response$" section="THIS" step="retrieve" useAs="returned"/>

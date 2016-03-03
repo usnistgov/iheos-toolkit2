@@ -30,12 +30,12 @@ class TestSelectionManager {
     HTML documentation = new HTML();
     ListBox selectSectionList = new ListBox();
     Button selectSectionViewButton = new Button("View this section's testplan");
-
+    private List<String> selectedSections = new ArrayList<>();
     GatewayTool tool;
     final static public String ALL = "All";
     final static public String ALL_SELECTION = "-- All --";
     List<String> sections = new ArrayList<String>();
-    String selectedSection = TestSelectionManager.ALL_SELECTION;
+//    String selectedSection = TestSelectionManager.ALL_SELECTION;
     ToolkitServiceAsync toolkitService;
     Map<String, String> testCollectionMap;  // name => description for selected actor
     List<String> assigningAuthorities = null;
@@ -46,6 +46,8 @@ class TestSelectionManager {
         this.tool = tool;
         toolkitService = tool.getToolkitService();
         loadAssigningAuthorities();
+
+        selectSectionList.addChangeHandler(new SectionSelectionChangeHandler());
     }
 
     void loadTestsFromCollection(final String testCollectionName) {
@@ -194,33 +196,45 @@ class TestSelectionManager {
                     }
                     selectSectionViewButton.setEnabled(true);
                 }
+                selectedSections.clear();
             }
         });
     }
 
     public List<String> getSelectedSections() {
-        List<String> selectedSections = new ArrayList<String>();
-        if (selectedSection.equals(ALL_SELECTION)) {
-            selectedSections.addAll(sections);
-        } else
+        selectedSections.clear();
+        String selectedSection = selectSectionList.getSelectedItemText();
+        if (selectedSection != null) {
+            if (ALL_SELECTION.equals(selectedSection))
+                return selectedSections;
             selectedSections.add(selectedSection);
+        }
         return selectedSections;
     }
 
     class SelectSectionViewButtonClickHandler implements ClickHandler {
 
         public void onClick(ClickEvent event) {
-            toolkitService.getTestplanAsText(new TestInstance(tool.getSelectedTest()), selectedSection, new AsyncCallback<String>() {
+            toolkitService.getTestplanAsText(new TestInstance(tool.getSelectedTest()), selectSectionList.getSelectedItemText(), new AsyncCallback<String>() {
 
                 public void onFailure(Throwable caught) {
                     new PopupMessage("getTestplanAsText: " + caught.getMessage());
                 }
 
                 public void onSuccess(String result) {
-                    new TextViewerTab().onTabLoad(tool.getToolContainer(), true, result, tool.getSelectedTest() + "#" + selectedSection);
+                    new TextViewerTab().onTabLoad(tool.getToolContainer(), true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
                 }
 
             });
+        }
+    }
+
+    class SectionSelectionChangeHandler implements ChangeHandler {
+
+        @Override
+        public void onChange(ChangeEvent changeEvent) {
+            selectedSections.clear();
+            selectedSections.add(selectSectionList.getSelectedValue());
         }
     }
 
@@ -243,7 +257,7 @@ class TestSelectionManager {
             }
             loadTestReadme(testSelectionManager.documentation);
             loadSectionNames();
-            selectedSection = ALL_SELECTION;
+//            selectedSection = ALL_SELECTION;
         }
     }
 
@@ -261,19 +275,25 @@ class TestSelectionManager {
         });
     }
 
+    Button buildLogLauncher(final String simId, String label) {
+        Button button = new Button(label);
+        button.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
+                viewTab.onTabLoad(tool.getToolContainer(), true, simId);
+            }
+        });
+
+        return button;
+    }
+
     Panel buildLogLauncher(List<SimulatorConfig> simConfigs) {
         HorizontalPanel panel = new HorizontalPanel();
         for (SimulatorConfig config : simConfigs) {
             final String simIdString = config.getId().toString();
-            Button button = new Button("Launch " + simIdString + " Log");
+            Button button = buildLogLauncher(simIdString, "Launch " + simIdString + " Log");
             panel.add(button);
-            button.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                    viewTab.onTabLoad(tool.getToolContainer(), true, simIdString);
-                }
-            });
         }
         return panel;
     }

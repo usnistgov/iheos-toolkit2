@@ -217,7 +217,7 @@ public class SiteServiceManager {
 		logger.debug(sessionId + ": " + "getSite");
 		try {
 			getAllSites(sessionId);
-			return new SimCache().getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
+			return SimCache.getSimManagerForSession(sessionId).getAllSites().getSite(siteName);
 		} catch (Exception e) {
 			logger.error("getSite", e);
 			throw new Exception(e.getMessage());

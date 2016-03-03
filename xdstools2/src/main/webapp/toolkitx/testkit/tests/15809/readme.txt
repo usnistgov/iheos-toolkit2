@@ -1,13 +1,17 @@
-Retrieve request to IG (one RG)
+Retrieve Single Responding Gateway test
 
-The System Under Test (SUT) is an Initiating Gateway (IG) with Affinity Domain
-option. The test environment, provided by Toolkit, is a Document Consumer (DC)
-initiating the requests
-and a Responding Gateway (RG) responding to requests coming out of the Initiating Gateway.
-
-This test contains the following sections:
-
-OneDocRetrieve - toolkit's Document Consumer issues a Retrieve request to the IG
-for the Document corresponding to the DocumentEntry returned in test 15808/OneDocFindDocuments.
+<h2>OneDocRetrieve</h2>
+<p>
+A Retrieve request is sent to the Initiating Gateway
+for the Document corresponding to the DocumentEntry queried in test 15808/SingleDocumentFindDocuments.
 The homeCommunityId, repositoryId, documentUniqueId, and the mimeType from the response
-are validated against the metadata returned by 15808/OneDocFindDocuments.
+are validated against the metadata returned by query.
+</p>
+
+<h2>TwoDocRetrieve</h2>
+<p>
+A Retrieve request is sent to the Initiating Gateway
+for the two Documents corresponding to the DocumentEntries queried in test 15808/TwoDocumentFindDocuments.
+The homeCommunityId, repositoryId, documentUniqueId, and the mimeType from the response
+are validated against the metadata returned by query.
+</p>

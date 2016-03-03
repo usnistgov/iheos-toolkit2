@@ -4,7 +4,7 @@ import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.installation.ExternalCacheManager
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.services.client.IgOrchestationManagerRequest
+import gov.nist.toolkit.services.client.IgOrchestrationRequest
 import gov.nist.toolkit.services.client.IgOrchestrationResponse
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.server.ToolkitApi
@@ -34,11 +34,11 @@ class IgTestBuilderSpec extends Specification {
 
     def 'create sims for user'() {
         when:
-        def request = new IgOrchestationManagerRequest()
+        def request = new IgOrchestrationRequest()
         request.environmentName = environmentName
         request.includeLinkedIG = true
         request.userName = user
-        IgTestBuilder builder = new IgTestBuilder(api, api.session, request)
+        IgOrchestrationBuilder builder = new IgOrchestrationBuilder(api, api.session, request)
 
         RawResponse rawResponse = builder.buildTestEnvironment()
 

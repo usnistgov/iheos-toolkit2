@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
   <Test>15807/onedoc3</Test>
   <Rule>Submit single document to a XDS.b repository</Rule>
   <TestStep id="submit_single_doc">
@@ -8,6 +9,12 @@
       <AssignUuids/>
       <MetadataFile>single_doc.xml</MetadataFile>
       <Document id="Document01">my_document.txt</Document>
+      <Report name="$mimeType$" section="InputMetadata">
+        //*[local-name()='ExtrinsicObject'][1]/@mimeType
+      </Report>
+      <Report name="$uid$" section="InputMetadata">
+        //*[local-name()='ExternalIdentifier' and @identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab'][1]/@value
+      </Report>
     </ProvideAndRegisterTransaction>
   </TestStep>
 </TestPlan>

@@ -4,14 +4,18 @@
     <TestStep id="retrieve">
         <ExpectedStatus>Success</ExpectedStatus>
         <IGRTransaction>
-            <UseReport test="15808"  section="TwoDocFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid1$"/>
-            <UseReport test="15808"  section="TwoDocFindDocuments" step="finddocs" reportName="$doc_uid_2$" useAs="$docuid2$"/>
-            <UseReport test="15808"  section="TwoDocFindDocuments" step="finddocs" reportName="$home1$" useAs="$home$"/>
-            <UseReport test="15808"  section="TwoDocFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
+            <UseReport test="15808"  section="TwoDocumentsFindDocuments" step="finddocs" reportName="$doc_uid_1$" useAs="$docuid1$"/>
+            <UseReport test="15808"  section="TwoDocumentsFindDocuments" step="finddocs" reportName="$doc_uid_2$" useAs="$docuid2$"/>
+            <UseReport test="15808"  section="TwoDocumentsFindDocuments" step="finddocs" reportName="$home1$" useAs="$home$"/>
+            <UseReport test="15808"  section="TwoDocumentsFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
+            
+            
             <ExpectedMimeType>text/plain</ExpectedMimeType>
             <ReferenceDocument uid="$docuid1$">../../15807/twodoc/my_document.txt</ReferenceDocument>
             <ReferenceDocument uid="$docuid2$">../../15807/twodoc/my_document2.txt</ReferenceDocument>
             <MetadataFile>retrieve.xml</MetadataFile>
+            
+            
             <!-- Document 1 Request-->
             <Report name="$home_request1$" section="InputMetadata">
                 //*[local-name()='RetrieveDocumentSetRequest']/*[local-name()='DocumentRequest'][1]/*[local-name()='HomeCommunityId']
@@ -156,8 +160,8 @@
     <TestStep id="Verify mimeType for Document 2">
         <Goal>Validate mimeType in Retrieve response against FindDocuments response</Goal>
         <NullTransaction>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$mimeType$" useAs="queryValue"/>
-            <UseReport reportName="$mimetype_response2$" section="THIS" step="retrieve" useAs="retrievedValue"/>
+            <UseReport test="15808" section="OneDocFindDocuments" step="finddocs" reportName="$mimeType$"           useAs="queryValue"/>
+            <UseReport              section="THIS"                step="retrieve" reportName="$mimetype_response2$" useAs="retrievedValue"/>
             <Assertions>
                 <Assert>
                     'queryValue' = 'retrievedValue'

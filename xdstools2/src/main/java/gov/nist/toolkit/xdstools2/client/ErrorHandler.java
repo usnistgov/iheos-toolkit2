@@ -12,7 +12,11 @@ public class ErrorHandler {
 
     public static boolean handleError(final VerticalPanel hPanel, final RawResponse rawResponse) {
         if (rawResponse.isError()) {
-            hPanel.add(new HTML(HtmlMarkup.red("<p>Error: " + rawResponse.getErrorMessage() + "</p>")));
+            hPanel.add(new HTML(HtmlMarkup.red(
+                    "<p>Error: " + rawResponse.getErrorMessage() + "</p></p>" +
+                    rawResponse.getStackTrace() +
+                            "</p>"
+            )));
             return true;
         }
         hPanel.add(new HTML("<p>Success</p>"));
@@ -20,6 +24,13 @@ public class ErrorHandler {
     }
 
     public static void handleError(final VerticalPanel hPanel, final Throwable e) {
+//        StackTraceElement[] trace = e.getStackTrace();
+//        StringBuilder buf = new StringBuilder();
+//        if (trace != null) {
+//            for (int i=0; i<trace.length; i++) {
+//                buf.append(trace[i].toString()).append("<br />");
+//            }
+//        }
         hPanel.add(new HTML(HtmlMarkup.red("<p>Error: " + e.getMessage() + "</p>")));
     }
 

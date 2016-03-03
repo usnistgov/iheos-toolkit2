@@ -204,7 +204,15 @@ public class SimulatorProperties {
 
     public static final String                           respondingGateways = "Responding Gateways";
 
+    /**
+     * Each transaction request throws this error.
+     */
     public static final String                          errors = "Throw Error";
+
+    /**
+     * Each transaction request for a particular patient throws this error.
+     */
+    public static final String                          errorForPatient = "Throw Error for Patient ID";
 
     public static final String                         FORCE_FAULT = "Force Fault";
 

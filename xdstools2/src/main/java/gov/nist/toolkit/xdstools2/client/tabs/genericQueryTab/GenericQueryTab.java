@@ -72,7 +72,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	HTML resultsShortDescription = new HTML();
     public boolean autoAddRunnerButtons = true;
     public String genericQueryTitle = null;
-    public HTML genericQueryInstructions = null;
+    public Widget genericQueryInstructions = null;
 
     public String getSelectedTest() {
         return selectedTest;
@@ -84,7 +84,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
     public String selectedTest;
 
-    static TransactionOfferings transactionOfferings = null;  // Loaded from server
+    static public TransactionOfferings transactionOfferings = null;  // Loaded from server
 
 	protected QueryBoilerplate queryBoilerplate = null;
 
@@ -136,7 +136,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		public void onSuccess(List<Result> theresult) {
 			resultsShortDescription.setText("");
 			try {
-				if (theresult.size() > 0) {
+				if (theresult.size() == 1) {
 					MetadataCollection mc = theresult.get(0).getStepResults().get(0).getMetadata();
 					StringBuilder buf = new StringBuilder();
 					buf.append("  ==> ");
@@ -147,33 +147,59 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 					resultsShortDescription.setText(buf.toString());
 				}
 			} catch (Exception e) {}
+            DetailsTree detailsTree = null;
 			boolean status = true;
 			results = theresult;
 			for (Result result : results) {
 				for (AssertionResult ar : result.assertions.assertions) {
-					String assertion = ar.assertion.replaceAll("\n", "<br />");
-					if (ar.status) {
-						resultPanel.add(addHTML(assertion));
-					} else {
-						if (assertion.contains("EnvironmentNotSelectedException"))
-							resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Environment Not Selected" + "</font>"));
-						else
-							resultPanel.add(addHTML("<font color=\"#FF0000\">" + assertion + "</font>"));
-						status = false;
-					}
+
+                    if (ar.assertion.startsWith("Report") && detailsTree != null) {
+                        detailsTree.add(ar.assertion);
+                    } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
+                            detailsTree.add(ar.assertion);
+                    } else {
+                        String assertion = ar.assertion.replaceAll("\n", "<br />");
+                        if (ar.status) {
+                            resultPanel.add(addHTML(assertion));
+                        } else {
+                            if (assertion.contains("EnvironmentNotSelectedException"))
+                                resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Environment Not Selected" + "</font>"));
+                            else
+                                resultPanel.add(addHTML("<font color=\"#FF0000\">" + assertion + "</font>"));
+                            status = false;
+                        }
+                    }
+                    if (ar.assertion.startsWith("Status")) {
+                        detailsTree = new DetailsTree();
+                        resultPanel.add(detailsTree.getWidget());
+                    }
 				}
 			}
 			if (status)
 				setStatus("Status: Success", true);
 			else
 				setStatus("Status: Failure", false);
+
+
 			getInspectButton().setEnabled(true);
 			getGoButton().setEnabled(true);
 		}
 
 	};
 
+    class DetailsTree {
+        TreeItem root;
+        Tree tree;
 
+        DetailsTree() {
+            tree = new Tree();
+            root = new TreeItem();
+            root.setText("Details...");
+            tree.addItem(root);
+        }
+        void add(String x) { root.addTextItem(x); }
+        Tree getWidget() { return tree; }
+    }
 
 	public void tabIsSelected() { 
 		System.out.println("tab selected: " + getCommonSiteSpec());

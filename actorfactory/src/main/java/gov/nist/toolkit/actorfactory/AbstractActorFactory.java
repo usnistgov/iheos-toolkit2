@@ -8,6 +8,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
@@ -140,9 +141,12 @@ public abstract class AbstractActorFactory {
 		AbstractActorFactory af = factories.get(actorTypeName);
 
 		if (af == null)
-			throw new ToolkitRuntimeException(String.format("Cannot build simulator of type %s - cannot find Factor for ActorType [", actorTypeName) + "]");
+			throw new Exception(String.format("Cannot build simulator of type %s - cannot find Factory for ActorType [", actorTypeName) + "]");
 
 		af.setSimManager(simm);
+
+        if (simID.getId().contains("__"))
+            throw new Exception("Simulator ID cannot contain double underscore (__)");
 
 		Simulator simulator = af.buildNew(simm, simID, true);
 
@@ -451,6 +455,10 @@ public abstract class AbstractActorFactory {
 
     public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
         addUser(sc, new SimulatorConfigElement(name, type, values, isMultiSelect));
+    }
+
+    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, PatientErrorMap value) {
+        addUser(sc, new SimulatorConfigElement(name, type, value));
     }
 
     public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {

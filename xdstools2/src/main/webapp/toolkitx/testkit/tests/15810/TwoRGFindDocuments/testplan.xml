@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>15810/TwoRGFindDocuments</Test>
+    <TestStep id="finddocs">
+        <Goal>FindDocuments query to IG (forwarded to two RGs), each should return 1 DocumentEntry.
+            The two DocumentEntries returned come from /15807/onedoc2/submit_single_doc and /15807/onedoc3/submit_single_doc
+        </Goal>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>IGQ</Transaction>
+            <SQ>XC FindDocuments to two RGs through IG SUT</SQ>
+            <Assertion>LeafClass return</Assertion>
+        </Rule>
+        <IGQTransaction>
+            <MetadataFile>query.xml</MetadataFile>
+            <UseId testdir="../../15807/onedoc2" id="SubmissionSet01" step="submit_single_doc"
+                   section="AssignedPatientId" symbol="$patient_id$"/>
+
+            <Report name="$count$" section="Result">
+                count(//*[local-name()='ExtrinsicObject'])
+            </Report>
+            <Report name="$home1$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/@home
+            </Report>
+            <Report name="$home2$" section="Result">
+                //*[local-name()='ExtrinsicObject'][2]/@home
+            </Report>
+            <Report name="$mimeType1$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/@mimeType
+            </Report>
+            <Report name="$mimeType2$" section="Result">
+                //*[local-name()='ExtrinsicObject'][2]/@mimeType
+            </Report>
+            <Report name="$uid_1$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+            </Report>
+            <Report name="$uid_2$" section="Result">
+                //*[local-name()='ExtrinsicObject'][2]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+            </Report>
+            <Report name="$returned_repositoryUniqueId1$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+            </Report>
+            <Report name="$returned_repositoryUniqueId2$" section="Result">
+                //*[local-name()='ExtrinsicObject'][2]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+            </Report>
+        </IGQTransaction>
+    </TestStep>
+    <TestStep id="Count">
+        <Goal>Verify two Document Entries returned</Goal>
+        <NullTransaction>
+            <UseReport reportName="$count$"          section="THIS" step="finddocs" useAs="count"/>
+            <Assertions>
+                <Assert id="">
+                    'count' = '2'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+  
+    <TestStep id="HomeCommunityId">
+        <Goal>Validate one DocumentEntry received from each community - homeCommunityIds align with community configurations</Goal>
+        <NullTransaction>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$home1$"                      section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$home2$"                      section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
+                <Assert id="">
+                    'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
+                </Assert>
+                <Assert id="">
+                    'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
+                </Assert>
+                <Assert id="">
+                    'returnedValue1' != 'returnedValue2'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    <TestStep id="MimeType">
+        <Goal>Verify mimeType on the two DocumentEntry returned in the query</Goal>
+        <NullTransaction>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_home$" test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$home1$"                      section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$home2$"                      section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
+                <Assert id="">
+                    'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
+                </Assert>
+                <Assert id="">
+                    'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
+                </Assert>
+                <Assert id="">
+                    'returnedValue1' != 'returnedValue2'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    <TestStep id="DocumentUniqueId">
+        <Goal>Verify uniqueId on the two DocumentEntry returned in the query</Goal>
+        <NullTransaction>
+            <UseReport reportName="$uid$"   test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$uid$"   test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$uid_1$"              section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$uid_2$"              section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
+                <Assert id="">
+                    'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
+                </Assert>
+                <Assert id="">
+                    'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
+                </Assert>
+                <Assert id="">
+                    'returnedValue1' != 'returnedValue2'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+    <!--
+        The two DocumentEntries returned come from /15807/onedoc2/submit_single_doc and /15807/onedoc3/submit_single_doc
+    -->
+    <TestStep id="RepositoryUniqueId">
+        <Goal>Verify Repository Unique ID on the two DocumentEntries returned in the query - one must be from each Community</Goal>
+        <NullTransaction>
+            <UseReport reportName="$testdata_repid$"      test="15807" section="onedoc2" step="submit_single_doc" useAs="submittedValue1"/>
+            <UseReport reportName="$testdata_repid$"      test="15807" section="onedoc3" step="submit_single_doc" useAs="submittedValue2"/>
+            <UseReport reportName="$returned_repositoryUniqueId1$"              section="THIS"    step="finddocs"          useAs="returnedValue1"/>
+            <UseReport reportName="$returned_repositoryUniqueId2$"              section="THIS"    step="finddocs"          useAs="returnedValue2"/>
+            <Assertions>
+                <Assert id="/15807/onedoc2/submit_single_doc repositoryUniqueId must be returned">
+                    'submittedValue1' = 'returnedValue1' or 'submittedValue1' = 'returnedValue2'
+                </Assert>
+                <Assert id="/15807/onedoc3/submit_single_doc repositoryUniqueId must be returned">
+                    'submittedValue2' = 'returnedValue1' or 'submittedValue2' = 'returnedValue2'
+                </Assert>
+                <Assert id="repositoryUniqueIds must be different">
+                    'returnedValue1' != 'returnedValue2'
+                </Assert>
+            </Assertions>
+        </NullTransaction>
+    </TestStep>
+</TestPlan>
