@@ -7,6 +7,10 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
+import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.services.server.RegistrySimApi;
 import gov.nist.toolkit.services.server.RepositorySimApi;
@@ -316,6 +320,41 @@ public class SimulatorsController {
             return new ResultBuilder().mapExceptionToResponse(e, id, ResponseType.RESPONSE);
         }
     }
+
+    @POST
+    @Produces("application/json")
+    @Path("/{id}/xds/retrieve")
+    public Response retrieve(final RetrieveRequestResource request) {
+        logger.info(String.format("POST simulators/%s/xds/retrieve", request.getFullId()));
+        SimulatorConfig config;
+        SimId simId = ToolkitFactory.asServerSimId(request);
+        logger.info("simid is " + simId);
+        RetrieveResponseResource returnResource = new RetrieveResponseResource();
+        try {
+            config = api.getConfig(simId);
+            if (config == null) throw new NoSimException("");
+
+            RetrieveRequestModel iModel = new RetrieveRequestModel();
+            RetrieveItemRequestModel rModel = new RetrieveItemRequestModel();
+            rModel.setHomeId(request.getHomeCommunityId());
+            rModel.setRepositoryId(request.getRepositoryUniqueId());
+            rModel.setDocumentId(request.getDocumentUniqueId());
+            iModel.add(rModel);
+
+            DocConsActorSimulator sim = new DocConsActorSimulator();
+            sim.setTls(request.isTls());
+            RetrievedDocumentsModel sModel = sim.retrieve(config, iModel);
+
+            RetrievedDocumentModel m = sModel.getMap().values().iterator().next();
+            returnResource.setDocumentContents(m.getContents());
+            returnResource.setMimeType(m.getContent_type());
+
+            return Response.ok(returnResource).build();
+        } catch (Exception e) {
+        return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
+    }
+
+}
 
     @POST
     @Produces("application/json")
