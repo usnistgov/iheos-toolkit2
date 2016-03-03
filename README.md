@@ -7,3 +7,5 @@ The focus of IheOs (toolkit) is to support testing of Document Sharing profiles 
 This work is done at NIST ([nist.gov](nist.gov)) and as such is in the public domain - it carries no restrictions on its usage. The closest common license is the Apache license ([http://opensource.org/licenses/Apache-2.0](http://opensource.org/licenses/Apache-2.0)).
 
 There is a separate wiki were we document internal stuff between developers it is found [https://bitbucket.org/iheos/toolkit/wiki/Home](https://bitbucket.org/iheos/toolkit/wiki/Home).
+
+On a more focused note, I keep a blog at [https://bitbucket.org/iheos/toolkit/wiki/blog/index](https://bitbucket.org/iheos/toolkit/wiki/blog/index) where I try to document things by focus topic.  
