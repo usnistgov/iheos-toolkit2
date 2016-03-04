@@ -1,16 +1,18 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
+import gov.nist.toolkit.toolkitServicesCommon.RetrieveRequest;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  */
 @XmlRootElement
-public class RetrieveRequestResource extends SimIdResource {
+public class RetrieveRequestResource  extends SimIdResource implements RetrieveRequest{
     String repositoryUniqueId = null;
     String documentUniqueId = null;
     String homeCommunityId = null;
-    RequestFlavorResource flavor;
+    RequestFlavorResource flavor = new RequestFlavorResource();
 
     public RetrieveRequestResource() {}
 

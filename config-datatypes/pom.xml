@@ -38,6 +38,11 @@
             <artifactId>jackson-xml-databind</artifactId>
             <version>0.6.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>2.7.0</version>
+        </dependency>
     </dependencies>
 
     <build>

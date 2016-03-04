@@ -19,6 +19,14 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
+            <artifactId>results</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>session</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-services</artifactId>
         </dependency>
         <dependency>

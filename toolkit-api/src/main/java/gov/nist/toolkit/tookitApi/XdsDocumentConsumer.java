@@ -1,6 +1,8 @@
 package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.toolkitServicesCommon.LeafClassRegistryResponse;
+import gov.nist.toolkit.toolkitServicesCommon.RetrieveRequest;
+import gov.nist.toolkit.toolkitServicesCommon.RetrieveResponse;
 import gov.nist.toolkit.toolkitServicesCommon.StoredQueryRequest;
 
 /**
@@ -18,7 +20,7 @@ public class XdsDocumentConsumer extends AbstractActor implements DocumentConsum
 //    }
 
     @Override
-    public RetrieveResponse retrieve(String repositoryUniqueId, String documentUniqueId) {
-        return null;
+    public RetrieveResponse retrieve(RetrieveRequest request) throws ToolkitServiceException {
+        return engine.retrieve(request);
     }
 }

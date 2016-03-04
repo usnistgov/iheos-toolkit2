@@ -1,19 +1,20 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actorfactory.SimulatorProperties
-import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.adt.ListenerFactory
+import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrysupport.MetadataSupport
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.results.client.TestLogs
 import gov.nist.toolkit.tookitApi.DocumentConsumer
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.*
 import gov.nist.toolkit.toolkitServicesCommon.resource.QueryParametersResource
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveRequestResource
 import gov.nist.toolkit.toolkitServicesCommon.resource.StoredQueryRequestResource
 import spock.lang.Shared
-
 /**
  *
  */
@@ -24,6 +25,7 @@ class ConsumerSpec extends ToolkitSpecification {
     @Shared String testSession = 'bill';
     @Shared String envName = 'test'
     @Shared DocumentConsumer docCons
+    @Shared TestLogs repTestLogs
 
 
     def setupSpec() {   // one time setup done when class launched
@@ -44,7 +46,7 @@ class ConsumerSpec extends ToolkitSpecification {
 
         initializeRegistryWithPatientId(testSession, rrConfig, pid)
 
-        initializeRepository(testSession, rrConfig, pid, new TestInstance('11966'))
+        repTestLogs = initializeRepository(testSession, rrConfig, pid, new TestInstance('11966'))
 
         // create document consumer sim
         simBuilder.delete('dc', testSession)
@@ -107,6 +109,26 @@ class ConsumerSpec extends ToolkitSpecification {
         response.getStatus() == ResponseStatusType.SUCCESS
         response.errorList.size() == 0
         response.leafClasses.size() == 1
+    }
+
+    def 'retrieve' () {
+        when:
+        def docUid = repTestLogs.getTestLog(1).assignedUids.get('Document01')
+        def repUid = rrConfig.asString(SimulatorProperties.repositoryUniqueId)
+
+        then:
+        docUid
+        repUid
+
+        when:
+        RetrieveRequestResource requestResource = new RetrieveRequestResource()
+        requestResource.repositoryUniqueId = repUid
+        requestResource.documentUniqueId = docUid
+
+        RetrieveResponse retResponse = docCons.retrieve(requestResource)
+
+        then:
+        true
     }
 
 }
