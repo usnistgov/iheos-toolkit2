@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by bmajur on 7/7/14.
+ *
  */
 
 public class MetadataSupport {
@@ -282,6 +282,8 @@ public class MetadataSupport {
 	public static String SQ_action = "urn:ihe:iti:2007:RegistryStoredQuery";
     public static String SQ_response_action = "urn:ihe:iti:2007:RegistryStoredQueryResponse";
 	public static String MPQ_action = "urn:ihe:iti:2009:MultiPatientStoredQuery";
+    public static String Retrieve_action = "urn:ihe:iti:2007:RetrieveDocumentSet";
+    public static String Retrieve_response_action = "urn:ihe:iti:2007:RetrieveDocumentSetResponse";
 
 	// multi-patient stored query ids
 	public static String SQ_FindDocumentsForMultiplePatients = "urn:uuid:3d1bdb10-39a2-11de-89c2-2f44d94eaa9f";

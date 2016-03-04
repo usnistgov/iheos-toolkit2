@@ -28,6 +28,8 @@ public class TestLogsBuilder {
 				testLog.outHeader = stepLog.getOutHeader();
 				testLog.result = stepLog.getResult();
 				testLog.status = stepLog.getStatus();
+                testLog.assignedIds  = stepLog.getAssignedIds();
+                testLog.assignedUids = stepLog.getAssignedUids();
 				testLog.errors = listAsString(stepLog.getErrors());
 
 				testLog.log = stepLog.getRoot();

@@ -1,7 +1,9 @@
 package gov.nist.toolkit.actorfactory;
 
 /**
- *
+ * These are properties to be used with gov.nist.toolkit.toolkitServicesCommon.SimConfig
+ * to control the operation of Simulators through the API.
+ * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#setProperty()
  */
 public class SimulatorProperties {
     /**

@@ -1,11 +1,18 @@
-package gov.nist.toolkit.tookitApi;
+package gov.nist.toolkit.toolkitServicesCommon.resource;
+
+import gov.nist.toolkit.toolkitServicesCommon.RetrieveResponse;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  */
-public class RetrieveResponse  {
+@XmlRootElement
+public class RetrieveResponseResource implements RetrieveResponse {
     String mimeType;
     byte[] documentContents;
+
+    public RetrieveResponseResource() {}
 
     public String getMimeType() {
         return mimeType;

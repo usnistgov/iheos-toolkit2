@@ -142,4 +142,14 @@ public class EngineSpi {
         return response.readEntity(LeafClassRegistryResponseResource.class);
     }
 
+    public RetrieveResponse retrieve(RetrieveRequest request) throws ToolkitServiceException {
+        Response response = target
+                .path(String.format("simulators/%s/xds/retrieve", request.getFullId()))
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(request));
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response);
+        return response.readEntity(RetrieveResponseResource.class);
+    }
+
 }
