@@ -75,7 +75,7 @@ public class DocConsActorSimulator extends BaseDsActorSimulator  {
 
         String endpoint =
                 config.get(
-                        (tls) ? SimulatorProperties.storedQueryTlsEndpoint : SimulatorProperties.storedQueryEndpoint
+                        (tls) ? SimulatorProperties.retrieveTlsEndpoint : SimulatorProperties.retrieveEndpoint
                 ).asString();
 
 

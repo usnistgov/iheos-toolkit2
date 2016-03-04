@@ -122,6 +122,8 @@ class ConsumerSpec extends ToolkitSpecification {
 
         when:
         RetrieveRequestResource requestResource = new RetrieveRequestResource()
+        requestResource.id = 'dc'
+        requestResource.user = testSession
         requestResource.repositoryUniqueId = repUid
         requestResource.documentUniqueId = docUid
 
