@@ -50,7 +50,7 @@ public class TransactionsController {
       TestInstance testInstance = new TestInstance("RetrieveImagingDocSet");
       Map<String, String> params = new HashMap<>();
       params.put("repuid", "1.5.3.12.543.167.12");
-      List<Result> results = api.runTest("ralph", "IDS", testInstance, null, params, true);
+      List<Result> results = api.runTest("xdsi01", "IDS", testInstance, null, params, true);
       return Response.ok(results).build();
       } catch (Exception e) {
          return new ResultBuilder().mapExceptionToResponse(e, "IDS", ResponseType.RESPONSE);
