@@ -90,11 +90,14 @@ public class SimulatorsController {
     @Produces("application/json")
     public Response retrieveImagingDocSet(@PathParam("id") String id) {
        try {
-          SimId simId = new SimId("ralph", id);
-          SimulatorConfig config = api.getConfig(simId);
           
+          boolean tls = false;
+          String user = "ralph";
+       
           ImgDocConsActorSimulator idc = new ImgDocConsActorSimulator();
-          RetrievedImgDocumentsModel docs = idc.retrieve(config, null);
+          idc.setTls(tls);
+         
+          RetrievedImgDocumentsModel docs = idc.retrieve(id, user, null);
        
        } catch (Exception e) {
           return new ResultBuilder().mapExceptionToResponse(e, "IDS", ResponseType.RESPONSE);
