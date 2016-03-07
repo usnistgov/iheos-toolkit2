@@ -1,26 +1,35 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
-import gov.nist.toolkit.testengine.engine.*;
-import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.io.Sha1Bean;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.*;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
-import org.jaxen.JaxenException;
-
-import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
+import org.jaxen.JaxenException;
+
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
+import gov.nist.toolkit.testengine.engine.Linkage;
+import gov.nist.toolkit.testengine.engine.Rad69;
+import gov.nist.toolkit.testengine.engine.RetContext;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.io.Sha1Bean;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.XdsPreparsedException;
 
 public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 //	String metadata_filename = null;
@@ -36,7 +45,8 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 	boolean removeHomeFromRequest = false;
 	boolean clean_params = false;
 	static Logger logger = Logger.getLogger(ImagingDocSetRetrieveTransaction.class);
-	public String toString() {
+	@Override
+   public String toString() {
 
 		return "ImagingDocSetRetrieveTransaction: *************" +
 		"\nmetadata_filename = " + metadata_filename +
@@ -76,7 +86,8 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 		noMetadataProcessing = true;
 	}
 
-	public void run(OMElement request_ele)
+	@Override
+   public void run(OMElement request_ele)
 	throws Exception {
 	logger.debug("ImagingDocSetRetrieveTransaction#run");
 	logger.debug(" Request Element: " + request_ele.getText());
@@ -89,7 +100,7 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 		if (xds_version == BasicTransaction.xds_a) {
 			throw new Exception("XDS.a no longer supported");
 //			retrieve_a(s_ctx, instruction_output);
-		} else {
+		} /* else */ {
 
 			// metadata should be RequestDocumentSetRequest
 //			OMElement metadata_ele = null;
@@ -505,7 +516,8 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 //		}
 //	}
 
-	protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
+	@Override
+   protected void parseInstruction(OMElement part) throws XdsInternalException, MetadataException {
 		String part_name = part.getLocalName();
 		if (part_name.equals("MetadataFile")) {
 			metadata_filename = testConfig.testplanDir + File.separator + part.getText();
@@ -611,7 +623,8 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 		return null;
 	}
 
-	protected String getBasicTransactionName() {
+	@Override
+   protected String getBasicTransactionName() {
 		return "ret";
 	}
 

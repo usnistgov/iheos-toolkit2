@@ -1,10 +1,37 @@
 package gov.nist.toolkit.toolkitServices;
 
-import gov.nist.toolkit.actorfactory.client.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
+import gov.nist.toolkit.actorfactory.client.BadSimConfigException;
+import gov.nist.toolkit.actorfactory.client.BadSimRequestException;
+import gov.nist.toolkit.actorfactory.client.NoContentException;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimPropertyTypeConflictException;
+import gov.nist.toolkit.actorfactory.client.Simulator;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.registrymsg.ids.RetrievedImgDocumentsModel;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
 import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
@@ -17,26 +44,26 @@ import gov.nist.toolkit.services.server.RepositorySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator;
+import gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.Document;
 import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType;
-import gov.nist.toolkit.toolkitServicesCommon.resource.*;
+import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentContentResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RegistryErrorResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveRequestResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.StoredQueryRequestResource;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -56,6 +83,23 @@ public class SimulatorsController {
         // note this is also set in web.xml
 //        ResourceConfig resourceConfig = new ResourceConfig(SimulatorsController.class);
 //        resourceConfig.property(ServerProperties.TRACING, "ALL");
+    }
+    
+    @GET
+    @Path("RetrieveImagingDocSet/{id}")
+    @Produces("application/json")
+    public Response retrieveImagingDocSet(@PathParam("id") String id) {
+       try {
+          SimId simId = new SimId("ralph", id);
+          SimulatorConfig config = api.getConfig(simId);
+          
+          ImgDocConsActorSimulator idc = new ImgDocConsActorSimulator();
+          RetrievedImgDocumentsModel docs = idc.retrieve(config, null);
+       
+       } catch (Exception e) {
+          return new ResultBuilder().mapExceptionToResponse(e, "IDS", ResponseType.RESPONSE);
+       }
+       return null;
     }
 
     @Context

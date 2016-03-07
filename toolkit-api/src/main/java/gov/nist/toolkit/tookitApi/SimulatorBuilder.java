@@ -11,6 +11,13 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 public class SimulatorBuilder {
     String urlRoot;
     EngineSpi engine;
+    
+    /**
+    * @return EngineSpi for this builder.
+    */
+   public EngineSpi getEngine() {
+       return engine;
+   }
 
 
     /**

@@ -47,6 +47,10 @@ public enum SimulatorActorType {
      */
     RESPONDING_GATEWAY("rg"),
     /**
+     * Image Document Source
+     */
+    IMAGE_DOCUMENT_SOURCE("ids"),
+    /**
      * Initiating Gateway
      */
     INITIATING_GATEWAY("ig");

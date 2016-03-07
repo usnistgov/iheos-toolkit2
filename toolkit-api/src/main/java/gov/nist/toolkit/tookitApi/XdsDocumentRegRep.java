@@ -1,11 +1,14 @@
 package gov.nist.toolkit.tookitApi;
 
-import gov.nist.toolkit.toolkitServicesCommon.DocumentContent;
-import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentContentResource;
-import gov.nist.toolkit.toolkitServicesCommon.RefList;
-import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
+import java.io.IOException;
 
 import javax.ws.rs.core.Response;
+
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+import gov.nist.toolkit.toolkitServicesCommon.DocumentContent;
+import gov.nist.toolkit.toolkitServicesCommon.RefList;
+import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentContentResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
 
 /**
  *
@@ -40,5 +43,23 @@ public class XdsDocumentRegRep extends AbstractActor implements DocumentRegRep {
             throw new ToolkitServiceException(response);
         return response.readEntity(DocumentContentResource.class);
     }
+
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#setPatientErrorMap(gov.nist.toolkit.configDatatypes.client.PatientErrorMap)
+    */
+   @Override
+   public void setPatientErrorMap(PatientErrorMap errorMap) throws IOException {
+      // TODO Auto-generated method stub
+      
+   }
+
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#getPatientErrorMap()
+    */
+   @Override
+   public PatientErrorMap getPatientErrorMap() throws IOException {
+      // TODO Auto-generated method stub
+      return null;
+   }
 
 }

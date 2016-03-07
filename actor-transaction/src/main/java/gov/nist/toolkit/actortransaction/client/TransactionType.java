@@ -83,8 +83,22 @@ public enum TransactionType implements Serializable {
         if (requestAction.equals("")) return false;
         return true;
     }
+    
+	/**
+    * @return the {@link #requestAction} value.
+    */
+   public String getRequestAction() {
+      return requestAction;
+   }
 
-	public boolean equals(TransactionType tt) {
+   /**
+    * @return the {@link #responseAction} value.
+    */
+   public String getResponseAction() {
+      return responseAction;
+   }
+
+   public boolean equals(TransactionType tt) {
         return name.equals(tt.name);
 	}
 
