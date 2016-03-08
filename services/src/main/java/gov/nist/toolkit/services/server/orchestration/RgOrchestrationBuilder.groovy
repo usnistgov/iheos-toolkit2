@@ -69,7 +69,7 @@ class RgOrchestrationBuilder {
                 supportId = new SimId(request.userName, supportIdName, ActorType.REPOSITORY_REGISTRY.name, request.environmentName)
                 supportSimConfig = api.createSimulator(supportId).getConfig(0)
                 rrSite = new SiteBuilder().siteSpecFromSimId(supportId)
-                response.siteUnderTest =request.siteUnderTest
+                response.siteUnderTest = request.siteUnderTest
                 response.regrepSite = rrSite
                 response.sameSite = false
                 response.regrepConfig = supportSimConfig;
@@ -83,12 +83,28 @@ class RgOrchestrationBuilder {
             twoDocPid = session.allocateNewPid()
 
             // register patient id with registry
-            util.submit(request.userName, rrSite, new TestInstance("15804"), 'section', oneDocPid, null)
-            util.submit(request.userName, rrSite, new TestInstance("15804"), 'section', twoDocPid, null)
+            try {
+                util.submit(request.userName, rrSite, new TestInstance("15804"), 'section', oneDocPid, null)
+            } catch (Exception e) {
+                response.addMessage("V2 Patient Identity Feed to " + rrSite.name + " failed");
+            }
+            try {
+                util.submit(request.userName, rrSite, new TestInstance("15804"), 'section', twoDocPid, null)
+            } catch (Exception e) {
+                response.addMessage("V2 Patient Identity Feed to " + rrSite.name + " failed");
+            }
 
             // Submit test data
-            util.submit(request.userName, rrSite, new TestInstance("15807"), 'onedoc1', oneDocPid, home)
-            util.submit(request.userName, rrSite, new TestInstance("15807"), 'twodoc', twoDocPid, home)
+            try {
+                util.submit(request.userName, rrSite, new TestInstance("15807"), 'onedoc1', oneDocPid, home)
+            } catch (Exception e) {
+                response.addMessage("Provide and Register to " + rrSite.name + " failed");
+            }
+            try {
+                util.submit(request.userName, rrSite, new TestInstance("15807"), 'twodoc', twoDocPid, home)
+            } catch (Exception e) {
+                response.addMessage("Provide and Register to " + rrSite.name + " failed");
+            }
 
             response.oneDocPid = oneDocPid
             response.twoDocPid = twoDocPid

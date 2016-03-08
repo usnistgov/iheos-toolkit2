@@ -197,14 +197,35 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 				return false;
 			}
 
-			SoapMessageValidator smv = (SoapMessageValidator) mv;
+            SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
+
+            SimulatorConfigElement asce = getSimulatorConfig().getUserByName(SimulatorProperties.homeCommunityId);
+            String configuredHomeCommunityId = null;
+            if (asce == null) {
+                er.err(Code.XDSRepositoryError, "RG Internal Error - homeCommunityId not configured", this, "");
+                dsSimCommon.sendErrorsInRegistryResponse(er);
+                return false;
+            }
+            configuredHomeCommunityId = asce.asString();
+            if (configuredHomeCommunityId == null || configuredHomeCommunityId.equals("")) {
+                er.err(Code.XDSRepositoryError, "RG Internal Error - homeCommunityId not configured", this, "");
+                dsSimCommon.sendErrorsInRegistryResponse(er);
+                return false;
+            }
+
+            AdhocQueryRequest queryRequest = new AdhocQueryRequestParser(query).getAdhocQueryRequest();
+            String homeInRequest = queryRequest.getHome();
+            if (!configuredHomeCommunityId.equals(homeInRequest)) {
+                er.err(Code.XDSRepositoryError, "HomeCommunityId in request (" +  homeInRequest + ") does not match configured value (" + configuredHomeCommunityId + ")", this, "");
+                dsSimCommon.sendErrorsInRegistryResponse(er);
+                return false;
+            }
 
             // Handle forced error
             PatientErrorMap patientErrorMap = getSimulatorConfig().getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
             PatientErrorList patientErrorList = patientErrorMap.get(transactionType.name);
             if (patientErrorList != null && !patientErrorList.isEmpty()) {
-                AdhocQueryRequest queryRequest = new AdhocQueryRequestParser(query).getAdhocQueryRequest();
                 String patientId = queryRequest.patientId;
                 if (patientId != null) {
                     Pid pid = PidBuilder.createPid(patientId);

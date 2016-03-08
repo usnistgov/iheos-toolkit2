@@ -1,4 +1,4 @@
-RG negative tests
+Initiating Gateway negative tests
 
 <h2>XDSRegistryError</h2>
 <p>

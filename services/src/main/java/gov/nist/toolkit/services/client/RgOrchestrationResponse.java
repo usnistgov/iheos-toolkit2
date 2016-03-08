@@ -14,6 +14,7 @@ public class RgOrchestrationResponse  extends RawResponse {
     SiteSpec regrepSite;
     SimulatorConfig regrepConfig;
     boolean sameSite;
+    String message = "";
 
     public RgOrchestrationResponse() {}
 
@@ -63,5 +64,14 @@ public class RgOrchestrationResponse  extends RawResponse {
 
     public void setRegrepConfig(SimulatorConfig regrepConfig) {
         this.regrepConfig = regrepConfig;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void addMessage(String message) {
+        if (this.message.length() > 0) this.message += "\n";
+        this.message += message;
     }
 }

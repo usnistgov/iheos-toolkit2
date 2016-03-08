@@ -481,7 +481,7 @@ public abstract class BasicTransaction  {
 				s_ctx.set_error("Status is " + status + " , expected status is " + MetadataSupport.response_status_type_namespace + getExpectedStatusString());
 				step_failure = true;
 			} else {
-				if ( currentStatus == expectedStatus) {
+				if ( !currentStatus.equals(expectedStatus)) {
 					s_ctx.set_error("Status is " + status + ", expected status is " + MetadataSupport.response_status_type_namespace + getExpectedStatusString());
 					step_failure = true;
 				}
