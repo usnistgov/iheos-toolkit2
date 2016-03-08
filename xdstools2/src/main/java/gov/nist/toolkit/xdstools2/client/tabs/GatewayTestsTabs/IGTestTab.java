@@ -94,16 +94,21 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
 
         topPanel.add(new HTML("<p>" +
                 "This tool tests an Initiating Gateway with Affinity Domain option.  The tests are driven by " +
-                "a Document Consumer as defined by the Affinity Domain option. The Initiating Gateway will " +
+                "a Document Consumer as defined by the Affinity Domain option. The Initiating Gateway " +
+                "(System Under Test) will " +
                 "be configured to relay requests to two Responding Gateways. This tool supplies the " +
-                "Responding Gateways." +
+                "Responding Gateways. " +
+                "Each of the Responding Gateways is backed by a Registry and a Repository which will be loaded " +
+                "with supporting test data. The test data patterns needed for testing are assigned to different " +
+                "Patient IDs so that once the Initiating Gateway SUT is configured, different test environments " +
+                "can be simulated by targeting different Patient IDs." +
                 "</p>" +
 
                 "<h2>Create supporting test session</h2>" +
                 "These simulators and " +
                 "their logs will be maintained in a test session you create for this test. At the top of the window, " +
                 "create a new test session and select it. " +
-                "This tool deletes all logs and simulators in the selected test session in the next step below.  " +
+                "<br /><br />WARNING - All logs and simulators in the selected test session will be deleted in the next step below.  " +
                 "</p>"
         ));
 
@@ -115,11 +120,11 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
                 "This will delete the contents of the selected test session and re-initialize it. " +
                 "The Build Test Environment button will create the necessary simulators to test your Initiating Gateway:  " +
                         "a Document Consumer to drive the test and two Responding Gateways to service requests from " +
-                        "your Initiating Gateway" +
+                        "your Initiating Gateway. " +
 
                         "The generated test configuration will be displayed below. " +
                         "Once the test environment is built, configure your Initiating Gateway to forward requests " +
-                        "to the two generated Responding Gateway. "
+                        "to the two generated Responding Gateways. "
 
         ));
 

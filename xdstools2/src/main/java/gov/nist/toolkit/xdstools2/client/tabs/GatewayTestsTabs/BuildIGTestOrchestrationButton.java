@@ -54,21 +54,22 @@ class BuildIGTestOrchestrationButton extends ReportableButton {
 
                 Widget w;
 
-                table.setWidget(row++, 0, new HTML("<h3>Patient IDs</h3>"));
+                table.setWidget(row, 0, new HTML("<h3>Test data pattern</h3>"));
+                table.setWidget(row++, 1, new HTML("<h3>Patient ID</h3>"));
 
-                table.setWidget(row++, 1, new HTML("Each Patient is configured with records to support a different test environment."));
+//                table.setWidget(row++, 0, new HTML("Each Patient is configured with records to support a different test environment."));
 
-                table.setWidget(row, 0, new HTML("Single document"));
-                table.setWidget(row++, 2, new HTML(orchResponse.getOneDocPid().asString()));
+                table.setWidget(row, 0, new HTML("Single document in Community 1"));
+                table.setWidget(row++, 1, new HTML(orchResponse.getOneDocPid().asString()));
 
-                table.setWidget(row, 0, new HTML("Two document"));
-                table.setWidget(row++, 2, new HTML(orchResponse.getTwoDocPid().asString()));
+                table.setWidget(row, 0, new HTML("Two documents in Community 1"));
+                table.setWidget(row++, 1, new HTML(orchResponse.getTwoDocPid().asString()));
 
-                table.setWidget(row, 0, new HTML("Two Responding Gateways with documents for a single Patient ID"));
-                table.setWidget(row++, 2, new HTML(orchResponse.getTwoRgPid().asString()));
+                table.setWidget(row, 0, new HTML("Both Communities have documents"));
+                table.setWidget(row++, 1, new HTML(orchResponse.getTwoRgPid().asString()));
 
                 table.setWidget(row, 0, new HTML("Community 1 returns XDSUnknownPatientId, Community 2 a single DocumentEntry"));
-                table.setWidget(row++, 2, new HTML(orchResponse.getUnknownPid().asString()));
+                table.setWidget(row++, 1, new HTML(orchResponse.getUnknownPid().asString()));
 
                 table.setWidget(row++, 0, new HTML("<h3>Simulators</h3>"));
 
@@ -84,6 +85,12 @@ class BuildIGTestOrchestrationButton extends ReportableButton {
                     table.setWidget(row, 0, new HTML("homeCommunityId"));
                     table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.homeCommunityId).asString()));
 
+                    table.setWidget(row, 0, new HTML("repositoryUniqueId"));
+                    table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.repositoryUniqueId).asString()));
+
+
+                    table.setWidget(row++, 0, new HTML("Endpoints"));
+
                     table.setWidget(row, 0, new HTML("Responding Gateway"));
                     table.setWidget(row, 1, new HTML("Query"));
                     table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.xcqEndpoint).asString()));
@@ -92,9 +99,6 @@ class BuildIGTestOrchestrationButton extends ReportableButton {
                     table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.xcrEndpoint).asString()));
 
                     table.setWidget(row, 0, new HTML("Repository"));
-
-                    table.setWidget(row, 0, new HTML("repositoryUniqueId"));
-                    table.setWidget(row++, 1, new HTML(config.get(SimulatorProperties.repositoryUniqueId).asString()));
 
                     table.setWidget(row, 1, new HTML("Provide and Register"));
                     table.setWidget(row++, 2, new HTML(config.getConfigEle(SimulatorProperties.pnrEndpoint).asString()));
