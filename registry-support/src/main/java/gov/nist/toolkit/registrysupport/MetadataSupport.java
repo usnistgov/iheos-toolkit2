@@ -243,6 +243,14 @@ public class MetadataSupport {
 	public static String SQ_GetFoldersForDocument = "urn:uuid:10cae35a-c7f9-4cf5-b61e-fc3278ffb578";
 	public static String SQ_GetRelatedDocuments = "urn:uuid:d90e5407-b356-4d91-a89f-873917b4b0e6";
 
+    public static boolean sqTakesPatientIdParam(String id) {
+        if (SQ_FindDocuments.equals(id)) return true;
+        if (SQ_FindSubmissionSets.equals(id)) return true;
+        if (SQ_FindFolders.equals(id)) return true;
+        if (SQ_GetAll.equals(id)) return true;
+        return false;
+    }
+
 	public static boolean isSQId(String id) {
 		if (id == null) return false;
 		if (id.equals(SQ_FindDocuments)) return true;

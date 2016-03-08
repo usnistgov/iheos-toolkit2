@@ -17,6 +17,7 @@ import gov.nist.toolkit.registrymsg.registry.Response
 import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
+import gov.nist.toolkit.registrysupport.MetadataSupport
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator
@@ -203,21 +204,31 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
             SimulatorConfigElement asce = getSimulatorConfig().getUserByName(SimulatorProperties.homeCommunityId);
             String configuredHomeCommunityId = null;
             if (asce == null) {
-                er.err(Code.XDSRepositoryError, "RG Internal Error - homeCommunityId not configured", this, "");
+                er.err(Code.XDSRegistryError, "RG Internal Error - homeCommunityId not configured", this, "");
                 dsSimCommon.sendErrorsInRegistryResponse(er);
                 return false;
             }
             configuredHomeCommunityId = asce.asString();
             if (configuredHomeCommunityId == null || configuredHomeCommunityId.equals("")) {
-                er.err(Code.XDSRepositoryError, "RG Internal Error - homeCommunityId not configured", this, "");
+                er.err(Code.XDSRegistryError, "RG Internal Error - homeCommunityId not configured", this, "");
                 dsSimCommon.sendErrorsInRegistryResponse(er);
                 return false;
             }
 
             AdhocQueryRequest queryRequest = new AdhocQueryRequestParser(query).getAdhocQueryRequest();
             String homeInRequest = queryRequest.getHome();
-            if (!configuredHomeCommunityId.equals(homeInRequest)) {
-                er.err(Code.XDSRepositoryError, "HomeCommunityId in request (" +  homeInRequest + ") does not match configured value (" + configuredHomeCommunityId + ")", this, "");
+
+            boolean homeRequired = !MetadataSupport.sqTakesPatientIdParam(queryRequest.queryId);
+            if (homeRequired) {
+                if (homeInRequest == null || homeInRequest.equals("")) {
+                    er.err(Code.XDSRegistryError, String.format("Query %s requires Home Community Id in request", MetadataSupport.getSQName(queryRequest.queryId)), this, "");
+                    dsSimCommon.sendErrorsInRegistryResponse(er);
+                    return false;
+                }
+            }
+
+            if (homeRequired && !configuredHomeCommunityId.equals(homeInRequest)) {
+                er.err(Code.XDSRegistryError, "HomeCommunityId in request (" +  homeInRequest + ") does not match configured value (" + configuredHomeCommunityId + ")", this, "");
                 dsSimCommon.sendErrorsInRegistryResponse(er);
                 return false;
             }
