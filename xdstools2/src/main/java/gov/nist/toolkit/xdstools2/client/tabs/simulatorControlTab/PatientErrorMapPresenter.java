@@ -7,6 +7,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorList;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.ArrayList;
@@ -31,6 +32,10 @@ public class PatientErrorMapPresenter {
 
         for (String transactionTypeName : map.keySet()) {
             TransactionType transactionType = TransactionType.find(actorType, transactionTypeName);
+            if (transactionType == null) {
+                new PopupMessage("Internal error: transactionType " + transactionTypeName + "  not defined by actor type " + actorType);
+                return;
+            }
             PatientErrorList patientErrorList = map.get(transactionTypeName);
 //            panel.add(new HTML("<h3>" + transactionTypeName + "</h3>"));
             PatientErrorSelectionPresenter patientErrorSelectionPresenter =

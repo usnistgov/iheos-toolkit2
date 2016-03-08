@@ -167,6 +167,8 @@ public class DsSimCommon {
         return getRegistryErrorList(simCommon.getErrors());
     }
 
+    public boolean hasErrors() { return simCommon.hasErrors(); }
+
     public void setRegistryErrorListGenerator(RegistryErrorListGenerator relg) {
         registryErrorListGenerator = relg;
     }

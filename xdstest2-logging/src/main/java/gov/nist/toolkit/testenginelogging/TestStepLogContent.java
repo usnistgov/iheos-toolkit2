@@ -84,6 +84,9 @@ public class TestStepLogContent  implements Serializable {
 			} else if ("Warning".equals(expStat)) {
 				expectedWarning = true;
 				expectedSuccess = false;
+            } else if ("PartialSuccess".equals(expStat)) {
+                expectedWarning = false;
+                expectedSuccess = false;
 			} else
 				throw new Exception("TestStep: Error parsing log.xml file: illegal value (" + expStat + ") for ExpectedStatus element of step " + id);
 		}

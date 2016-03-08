@@ -64,8 +64,11 @@ class BuildIGTestOrchestrationButton extends ReportableButton {
                 table.setWidget(row, 0, new HTML("Two document"));
                 table.setWidget(row++, 2, new HTML(orchResponse.getTwoDocPid().asString()));
 
-                table.setWidget(row, 0, new HTML("Two Responding Gateways"));
+                table.setWidget(row, 0, new HTML("Two Responding Gateways with documents for a single Patient ID"));
                 table.setWidget(row++, 2, new HTML(orchResponse.getTwoRgPid().asString()));
+
+                table.setWidget(row, 0, new HTML("Community 1 returns XDSUnknownPatientId, Community 2 a single DocumentEntry"));
+                table.setWidget(row++, 2, new HTML(orchResponse.getUnknownPid().asString()));
 
                 table.setWidget(row++, 0, new HTML("<h3>Simulators</h3>"));
 
