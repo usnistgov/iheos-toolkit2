@@ -173,4 +173,8 @@ public interface ToolkitService extends RemoteService  {
 
 	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
+
+	String configureTestkit(String selectedEnvironment);
+
+	boolean doesTestkitExist(String selectedEnvironment);
 }

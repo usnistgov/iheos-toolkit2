@@ -31,16 +31,22 @@ import java.util.*;
  * Created by oherrmann on 1/11/16.
  */
 public class CodesUpdater {
+    private final static String sections[] = { "tests", "testdata",  "examples"/*, "selftest"*/ };
+    private final String outputSeparator="----------------------------------------------------";
+
     private File testkit;
     private AllCodes allCodes=null;
-    private boolean error;
-    private static String sections[] = { "tests", "testdata",  "examples"/*, "selftest"*/ };
     private List<String> filesTreated = new ArrayList<String>();
     private List<String> metadataFilesPaths=new ArrayList<String>();
     private List<String> queryFilesPaths=new ArrayList<String>();
     private Map<String,Code> replacementMap= new HashMap<String,Code>();
-    private String out=new String();
 
+    private String out=new String();
+    private boolean error;
+
+    /**
+     * Reset the class variable to their initial state before the algorithm is run again.
+     */
     void reset(){
         filesTreated=new ArrayList<String>();
         metadataFilesPaths=new ArrayList<String>();
@@ -321,7 +327,7 @@ public class CodesUpdater {
             newCode=allCodes.pick(code.getClassificationUUID());
             replacementMap.put(tmpCode.toString(),newCode);
         }
-        out+=tmpCode.toString() + " REPLACED BY "+newCode.toString()+" in " + filePath + "\n";
+//        out+=tmpCode.toString() + " REPLACED BY "+newCode.toString()+" in " + filePath + "\n";
         code.code=newCode.getCode();
         code.scheme=newCode.getScheme();
     }
@@ -365,7 +371,7 @@ public class CodesUpdater {
             codeToReplace.setAttributeValue(replacementCode.getCode());
             nameToReplace.setAttributeValue(replacementCode.getDisplay());
             valueToReplace.setText(replacementCode.getScheme());
-            out+=oldCode.toString() + " REPLACE BY "+replacementCode.toString()+" in "+filePath+"\n";
+//            out+=oldCode.toString() + " REPLACE BY "+replacementCode.toString()+" in "+filePath+"\n";
         }
     }
 
@@ -446,27 +452,30 @@ public class CodesUpdater {
             System.out.println("Copying testkit to "+testkit+"...");
             FileUtils.copyDirectory(new File(pathToTestkit), testkit);
             System.out.println("... testkit copied.");
+            out+="Testkit of referenced copied successfully to "+testkit;
         } catch (IOException e) {
             e.printStackTrace();
         }
         execute();
         reset();
         execute();
-        SimpleDateFormat dateFormatter=new SimpleDateFormat("yyyyMMddHHmmss");
-        File f = new File(new File(pathToEnvironment),dateFormatter.format(new Date())+".out");
+        out=outputSeparator+outputSeparator+"\n"+"   SUCCESS on generating testkit in environment in " +
+                pathToEnvironment.split("/")[pathToEnvironment.split("/").length-1] + "\n" +
+                outputSeparator+outputSeparator +"\n\n"+out;
         try {
+            SimpleDateFormat dateFormatter=new SimpleDateFormat("yyyyMMddHHmmss");
+            File logDirectory=new File(pathToEnvironment,"Testkit update logs");
+            if (!logDirectory.exists()){
+                logDirectory.mkdir();
+            }
+            File f = new File(logDirectory,dateFormatter.format(new Date())+".out");
             System.out.println("Creating output log file in "+f.getPath()+"...");
             Io.stringToFile(f, out);
             System.out.println("... file created.");
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        return out;
     }
-
-//    public static void main(String args[]){
-//        CodesUpdater.run(args[0]);
-//    }
 
     /**
      * @return execution output (log) of the update.
