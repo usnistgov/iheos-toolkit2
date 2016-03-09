@@ -1,7 +1,7 @@
-package gov.nist.toolkit.configDatatypes.server;
+package gov.nist.toolkit.configDatatypesIo;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 

@@ -1,7 +1,5 @@
 package gov.nist.toolkit.configDatatypes.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +7,7 @@ import java.util.List;
 /**
  *
  */
-public class PatientErrorList implements Serializable, IsSerializable {
+public class PatientErrorList implements Serializable {
     List<PatientError> list = new ArrayList<>();
 
     public PatientErrorList() {}

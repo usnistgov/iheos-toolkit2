@@ -76,6 +76,7 @@
         <module>grizzly-support</module>
         <module>sim-test-servlet</module>
         <module>config-datatypes</module>
+        <module>config-datatypes-io</module>
         <module>it-tests</module>
     </modules>
 
