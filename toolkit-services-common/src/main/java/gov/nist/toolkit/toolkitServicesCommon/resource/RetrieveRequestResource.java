@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class RetrieveRequestResource  extends SimIdResource implements RetrieveRequest{
+public class RetrieveRequestResource  extends SimIdResource implements RetrieveRequest {
     String repositoryUniqueId = null;
     String documentUniqueId = null;
     String homeCommunityId = null;

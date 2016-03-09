@@ -3,15 +3,15 @@
  */
 package gov.nist.toolkit.tookitApi;
 
-import java.io.IOException;
-
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.toolkitServicesCommon.DcmImageSet;
+
+import java.io.IOException;
 
 /**
  * Implementation class for XDSI Image Document Source
  */
-public class XdsiImageDocumentSource extends AbstractActor implements ImageDocumentSource {
+public class XdsiImagingDocumentSource extends AbstractActor implements ImagingDocumentSource {
 
    /* (non-Javadoc)
     * @see gov.nist.toolkit.tookitApi.ImageDocumentSource#retrieveImagingDocumentSet(gov.nist.toolkit.toolkitServicesCommon.DcmImageSet)

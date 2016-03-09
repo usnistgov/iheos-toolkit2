@@ -3,28 +3,24 @@
  */
 package gov.nist.toolkit.simulators.sim.idc;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
-import gov.nist.toolkit.registrymsg.ids.RetrieveImgRequestModel;
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Image Document Consumer Actor Simulator.  PRELIMINARY
@@ -77,16 +73,21 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
    @Override
    public void init() { }
    
+   public ImgDocConsActorSimulator() {}
+   
    private String retrieveTemplate = 
       "<RetrieveImagingDocumentSetRequest " + 
       "xmlns:iherad=\"urn:ihe:rad:xdsi-b:2009\" " + 
       "xmlns:ihe=\"urn:ihe:iti:xds-b:2007\">";
    
-   public RetrievedDocumentsModel retrieve(String id, String user,
-      RetrieveImgRequestModel request) throws Exception {
-      
-      String endpoint = getEndpoint(id, user);
-      
+   public RetrievedDocumentsModel retrieve(SimulatorConfig config,
+                                           RetrieveImgRequestModel request) throws Exception {
+
+       String endpoint =
+               config.get(
+                       (isTls()) ? SimulatorProperties.idsrTlsEndpoint : SimulatorProperties.idsrEndpoint
+               ).asString();
+
       OMElement retrieveRequest = buildRetrieve(request);
       
       Soap soap = new Soap();
@@ -148,13 +149,9 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
 
    }
    
-   private RetrievedDocumentsModel parseResponse(OMElement result) throws Exception {
-      RetrieveB retb = new RetrieveB(null);
-      Map<String, RetrievedDocumentModel> docMap = retb.parse_rep_response(result).getMap();
-
-      RetrievedDocumentsModel out = new RetrievedDocumentsModel(docMap);
-      logger.info("parsed");
-      return out;
+   private RetrievedDocumentsModel parseResponse(OMElement result) {
+      // TODO write a real one
+      return null;
    }
 
 } // EO ImgDocConsActorSimulator class

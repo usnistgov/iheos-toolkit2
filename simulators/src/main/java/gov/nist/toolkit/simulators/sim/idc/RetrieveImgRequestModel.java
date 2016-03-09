@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gov.nist.toolkit.registrymsg.ids;
+package gov.nist.toolkit.simulators.sim.idc;
 
 /**
  *
