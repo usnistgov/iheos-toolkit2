@@ -6,6 +6,7 @@ package gov.nist.toolkit.simulators.sim.idc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
@@ -15,10 +16,12 @@ import org.apache.log4j.Logger;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymsg.ids.RetrieveImgRequestModel;
-import gov.nist.toolkit.registrymsg.ids.RetrievedImgDocumentsModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -74,14 +77,12 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
    @Override
    public void init() { }
    
-   public ImgDocConsActorSimulator() {}
-   
    private String retrieveTemplate = 
       "<RetrieveImagingDocumentSetRequest " + 
       "xmlns:iherad=\"urn:ihe:rad:xdsi-b:2009\" " + 
       "xmlns:ihe=\"urn:ihe:iti:xds-b:2007\">";
    
-   public RetrievedImgDocumentsModel retrieve(String id, String user,
+   public RetrievedDocumentsModel retrieve(String id, String user,
       RetrieveImgRequestModel request) throws Exception {
       
       String endpoint = getEndpoint(id, user);
@@ -144,27 +145,16 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
          "</iherad:TransferSyntaxUIDList>" +
       "</iherad:RetrieveImagingDocumentSetRequest>");
          
-//         "<iherad:RetrieveImagingDocumentSetRequest " +
-//                  "xmlns:iherad=\"urn:ihe:rad:xdsi-b:2009\" " +
-//                  "xmlns:ihe=\"urn:ihe:iti:xds-b:2007\" " +
-//                  "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" +
-//                     "<iherad:StudyRequest studyInstanceUID=\"1.3.6.1.4.1.21367.201599.1.201602100826039\">" +
-//                     "<iherad:SeriesRequest seriesInstanceUID=\"1.3.6.1.4.1.21367.201599.2.201602100826040\">" +
-//                     "<ihe:DocumentRequest>" +
-//                     "<ihe:RepositoryUniqueId>$repuid$</ihe:RepositoryUniqueId>" +
-//                     "<ihe:DocumentUniqueId>1.3.6.1.4.1.21367.201599.3.201602100826040.1</ihe:DocumentUniqueId>" +
-//                     "</ihe:DocumentRequest>" +
-//                     "</iherad:SeriesRequest>" +
-//                     "</iherad:StudyRequest>" +
-//                     "<iherad:TransferSyntaxUIDList>" +
-//                     "<iherad:TransferSyntaxUID>1.2.840.10008.1.2.1</iherad:TransferSyntaxUID>" +
-//                     "</iherad:TransferSyntaxUIDList>" +
-//                     "</iherad:RetrieveImagingDocumentSetRequest>");
+
    }
    
-   private RetrievedImgDocumentsModel parseResponse(OMElement result) {
-      // TODO write a real one
-      return null;
+   private RetrievedDocumentsModel parseResponse(OMElement result) throws Exception {
+      RetrieveB retb = new RetrieveB(null);
+      Map<String, RetrievedDocumentModel> docMap = retb.parse_rep_response(result).getMap();
+
+      RetrievedDocumentsModel out = new RetrievedDocumentsModel(docMap);
+      logger.info("parsed");
+      return out;
    }
 
 } // EO ImgDocConsActorSimulator class

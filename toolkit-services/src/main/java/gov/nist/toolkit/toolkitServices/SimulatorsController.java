@@ -31,7 +31,6 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymsg.ids.RetrievedImgDocumentsModel;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
 import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
@@ -97,12 +96,18 @@ public class SimulatorsController {
           ImgDocConsActorSimulator idc = new ImgDocConsActorSimulator();
           idc.setTls(tls);
          
-          RetrievedImgDocumentsModel docs = idc.retrieve(id, user, null);
+          RetrievedDocumentsModel sModel = idc.retrieve(id, user, null);
+          
+          RetrievedDocumentModel m = sModel.getMap().values().iterator().next();
+          RetrieveResponseResource returnResource = new RetrieveResponseResource();
+          returnResource.setDocumentContents(m.getContents());
+          returnResource.setMimeType(m.getContent_type());
+
+          return Response.ok(returnResource).build();
        
        } catch (Exception e) {
           return new ResultBuilder().mapExceptionToResponse(e, "IDS", ResponseType.RESPONSE);
        }
-       return null;
     }
 
     @Context
@@ -400,7 +405,6 @@ public class SimulatorsController {
         } catch (Exception e) {
         return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
     }
-
 }
 
     @POST
