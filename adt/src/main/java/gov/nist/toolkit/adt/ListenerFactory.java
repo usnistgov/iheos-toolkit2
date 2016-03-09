@@ -98,6 +98,16 @@ public class ListenerFactory {
         if (tpi == null) return;
         logger.info("...which is port " + tpi.port);
         tpi.thread.interrupt();
+        tpi.inUse = false;
+    }
+
+    public static void terminateAll() {
+        for (ThreadPoolItem tpi : threadPool) {
+            if (tpi.getInUse()) {
+                tpi.thread.interrupt();
+                tpi.release();
+            }
+        }
     }
 
     public static ThreadPoolItem getItem(String simId) {

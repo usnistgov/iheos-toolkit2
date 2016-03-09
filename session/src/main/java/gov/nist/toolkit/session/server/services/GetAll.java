@@ -60,12 +60,20 @@ public class GetAll extends CommonService {
             }
 
             List<String> sections = new ArrayList<String>();
+            Map<String, String> params = new HashMap<String, String>();
+
             if (session.siteSpec.actorType.equals(ActorType.REGISTRY))
                 sections.add("XDS");
-            else
+            else if (session.siteSpec.actorType.equals(ActorType.INITIATING_GATEWAY))
+                sections.add("IG");
+            else {
                 sections.add("XCA");
+                String home = site.homeId;
+                if (home != null && !home.equals("")) {
+                    params.put("$home$", home);
+                }
+            }
 
-            Map<String, String> params = new HashMap<String, String>();
             if (pid != null && !pid.equals(""))
                 params.put("$patient_id$", pid);
 

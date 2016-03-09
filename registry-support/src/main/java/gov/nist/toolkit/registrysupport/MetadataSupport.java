@@ -166,6 +166,7 @@ public class MetadataSupport {
 	public static QName retrieve_document_set_response_qnamens = new QName(xdsB.getNamespaceURI(), "RetrieveDocumentSetResponse", "xdsb");
 	public static QName repository_unique_id_qnamens = new QName(xdsB.getNamespaceURI(), "RepositoryUniqueId", "xdsb");
 	public static QName document_unique_id_qnamens = new QName(xdsB.getNamespaceURI(), "DocumentUniqueId", "xdsb");
+	public static QName newDocumentUniqueId = new QName(xdsB.getNamespaceURI(), "NewDocumentUniqueId", "xdsb");
 	public static QName mimetype_qnamens = new QName(xdsB.getNamespaceURI(), "mimeType", "xdsb");
 	public static QName document_qnamens = new QName(xdsB.getNamespaceURI(), "Document", "xdsb");
 
@@ -279,6 +280,7 @@ public class MetadataSupport {
 	}
 
 	public static String SQ_action = "urn:ihe:iti:2007:RegistryStoredQuery";
+    public static String SQ_response_action = "urn:ihe:iti:2007:RegistryStoredQueryResponse";
 	public static String MPQ_action = "urn:ihe:iti:2009:MultiPatientStoredQuery";
 
 	// multi-patient stored query ids
@@ -312,6 +314,7 @@ public class MetadataSupport {
 	public static String XDSSubmissionSet_sourceid_uuid="urn:uuid:554ac39e-e3fe-47fe-b233-965d2a147832";
 
 	public static String XDSDocumentEntry_objectType_uuid="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1";
+	public static String XDSRODDEDocumentEntry_objectType_uuid="urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248";
 
 	public static String XDSSubmissionSet_classification_uuid = "urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd";
 	public static String XDSFolder_classification_uuid = "urn:uuid:d9d542f3-6cc4-48b6-8870-ea235fbc94c2";

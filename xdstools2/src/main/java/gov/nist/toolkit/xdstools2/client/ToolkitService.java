@@ -4,13 +4,19 @@ package gov.nist.toolkit.xdstools2.client;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -24,9 +30,8 @@ import java.util.Map;
 
 @RemoteServiceRelativePath("toolkit")
 public interface ToolkitService extends RemoteService  {
-	
 
-	public TkProps getTkProps() throws NoServletSessionException;
+    public TkProps getTkProps() throws NoServletSessionException;
 	
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
@@ -125,6 +130,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> registerAndQuery(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> getRelated(SiteSpec site, ObjectRef or, List<String> assocs) throws NoServletSessionException ;
 	List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception;
+	List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception;
 	List<Result> submitRegistryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
 	List<Result> submitRepositoryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
 	List<Result> submitXDRTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
@@ -135,6 +141,7 @@ public interface ToolkitService extends RemoteService  {
 //	List<Result> mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes) throws NoServletSessionException;
 	List<Result> mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) throws NoServletSessionException;
 	List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
+	List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException;
 
 	TestLogs getRawLogs(TestInstance logId) throws NoServletSessionException ;
 	
@@ -142,39 +149,52 @@ public interface ToolkitService extends RemoteService  {
 	
 	String getTestplanAsText(TestInstance testInstance, String section) throws Exception;
 	
-	public String getImplementationVersion() throws NoServletSessionException ;
+	 String getImplementationVersion() throws NoServletSessionException ;
 	
-	public List<String> getUpdateNames() throws NoServletSessionException ;
-	public List<TestInstance> getTestlogListing(String sessionName) throws Exception;
-	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception;
+	 List<String> getUpdateNames() throws NoServletSessionException ;
+	 List<TestInstance> getTestlogListing(String sessionName) throws Exception;
+	 List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception;
 	
-	public List<RegistryStatus> getDashboardRegistryData() throws Exception;
-	public List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
+	 List<RegistryStatus> getDashboardRegistryData() throws Exception;
+	 List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
 	
-	public List<String> getSiteNamesWithRG() throws Exception;
+	 List<String> getSiteNamesWithRG() throws Exception;
 
-	public String reloadSystemFromGazelle(String systemName) throws Exception;
-	public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
-	public List<String> getEnvironmentNames() throws NoServletSessionException;
-	public String setEnvironment(String name) throws NoServletSessionException;
-	public String getCurrentEnvironment() throws NoServletSessionException;
-	public String getDefaultEnvironment() throws NoServletSessionException ;
-//	public String getToolkitEnableNwHIN();
-	public String getDefaultAssigningAuthority() throws NoServletSessionException ;
-	public String getAttributeValue(String username, String attName) throws Exception;
-	public void setAttributeValue(String username, String attName, String attValue) throws Exception;
-	
-	public Map<String, String> getSessionProperties() throws NoServletSessionException;
-	public void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
+	 String reloadSystemFromGazelle(String systemName) throws Exception;
+	 boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;
+	 List<String> getEnvironmentNames() throws NoServletSessionException;
+	 String setEnvironment(String name) throws NoServletSessionException;
+	 String getCurrentEnvironment() throws NoServletSessionException;
+	 String getDefaultEnvironment() throws NoServletSessionException ;
+	 String getDefaultAssigningAuthority() throws NoServletSessionException ;
+	 String getAttributeValue(String username, String attName) throws Exception;
+	 void setAttributeValue(String username, String attName, String attValue) throws Exception;
+    RawResponse buildIgTestOrchestration(IgOrchestrationRequest request);
+    RawResponse buildRgTestOrchestration(RgOrchestrationRequest request);
+
+        Map<String, String> getSessionProperties() throws NoServletSessionException;
+	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;
 	Pid createPid(String assigningAuthority) throws NoServletSessionException;
 	String getAssigningAuthority() throws Exception;
 	List<String> getAssigningAuthorities() throws Exception;
 	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
-
-	public String setMesaTestSession(String sessionName) throws NoServletSessionException ;
-	public String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
-
 	String configureTestkit(String selectedEnvironment);
 
 	boolean doesTestkitExist(String selectedEnvironment);
+
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Tests Overview Tab
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public List<Test> reloadAllTestResults(String sessionName) throws Exception;
+	public List<Test> runAllTests(Site site) throws NoServletSessionException;
+	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException;
+	public Test runSingleTest(Site site, int testId) throws NoServletSessionException;
+	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException;
+
+	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
+	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
+    List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception;
 }

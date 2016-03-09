@@ -2,10 +2,8 @@ package gov.nist.toolkit.soap.axis2;
 
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
-import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsFormatException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 
@@ -28,9 +26,6 @@ public interface SoapInterface {
 	 * of control, OperationClient must be used.  Reference:
 	 *    http://today.java.net/pub/a/today/2006/12/13/invoking-web-services-using-apache-axis2.html#working-with
 	 * This does not yet handle async.
-	 * @param bodyBytes
-	 * @return
-	 * @throws XdsException
 	 * @throws AxisFault
 	 * @throws EnvironmentNotSelectedException 
 	 */

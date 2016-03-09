@@ -47,6 +47,7 @@ public class QueryBoilerplate {
 		if (GenericQueryTab.transactionOfferings == null) {
 			genericQueryTab.reloadTransactionOfferings();
 		} else {
+            // TODO - this probablt needs to change to true
 			genericQueryTab.redisplay(false);
 		}
 	}
@@ -100,7 +101,7 @@ public class QueryBoilerplate {
 			genericQueryTab.setCommonSiteSpec(siteSpec);
 			return siteSpec;
 			//				for (TransactionType tt : genericQueryTab.perTransTypeRadioButtons.keySet()) {
-			//					for (RadioButton rb : genericQueryTab.perTransTypeRadioButtons.get(tt)) {
+			//					for (RadioButton rb : genericQueryTab.perTransTypeRadioButtons.getRetrievedDocumentsModel(tt)) {
 			//						if (rb.getValue()) {
 			//							genericQueryTab.getCommonSiteSpec().setName(rb.getText());
 			//							genericQueryTab.getCommonSiteSpec().setActorType(ActorType.getActorType(tt));

@@ -2,6 +2,7 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
+import gov.nist.toolkit.installation.Configuration;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
@@ -13,6 +14,7 @@ import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
+import gov.nist.toolkit.testenginelogging.Report;
 import gov.nist.toolkit.testenginelogging.SectionLogMap;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -66,6 +68,7 @@ public abstract class BasicTransaction  {
 	protected boolean assign_patient_id = true;
 	protected boolean soap_1_2 = true;
 	protected boolean async = false;
+	protected boolean isStableOrODDE = false;
 	boolean useMtom;
 	boolean useAddressing;
 	boolean isSQ;
@@ -144,7 +147,8 @@ public abstract class BasicTransaction  {
 	}
 
 	public void doRun() throws Exception {
-		Iterator<OMElement> elements = instruction.getChildElements();
+
+        Iterator<OMElement> elements = instruction.getChildElements();
 		while (elements.hasNext()) {
 			OMElement part = (OMElement) elements.next();
 			parseInstruction(part);
@@ -201,11 +205,17 @@ public abstract class BasicTransaction  {
 		if ( ! step_failure ) {
 
 			if (reportManager != null ) {
+                //reportStepParameters();
+
 				reportManager.setXML(instruction_output);
+                logger.info("Reporting run parameters: " + getPlan().getExtraLinkage());
+                reportManager.report(getPlan().getExtraLinkage());
 				reportManager.generate();
-				reportManager.report(getPlan().getExtraLinkage());
+                // report run parameters as Reports
+
 				testLog.add_name_value(instruction_output, reportManager.toXML());
-			}
+
+            }
 
 		}
 	}
@@ -213,7 +223,7 @@ public abstract class BasicTransaction  {
 	protected void reportManagerPreRun(OMElement metadata_element) throws XdsInternalException,
 	XdsInternalException {
 
-		compileExtraLinkage(metadata_element);
+        compileExtraLinkage(metadata_element);
 
 		if (useReportManager != null) {
 
@@ -326,7 +336,7 @@ public abstract class BasicTransaction  {
 		local_linkage_data = new HashMap<String, String>();
 		isSQ = false;
 
-	}
+    }
 
 	String xds_version_name() {
 		if (xds_version == xds_a)
@@ -367,7 +377,6 @@ public abstract class BasicTransaction  {
 		add_step_status_to_output();
 	}
 
-
 	void validate_registry_response_no_set_status(OMElement registry_result, int metadata_type) throws XdsInternalException, MetadataValidationException, MetadataException {
 		if (registry_result == null) {
 			s_ctx.set_error("No Result message");
@@ -387,6 +396,7 @@ public abstract class BasicTransaction  {
 		RegistryErrorListGenerator rel  = null;
 		ValidationContext vc = getValidationContextFromTransactionName();
 		vc.isResponse = true;
+		vc.isStableOrODDE = isStableOrODDE;
 		try {
             SecurityParams sp = s_ctx.getTransactionSettings().securityParams;
 			logger.info("Codes file is " + sp.getCodesFile());
@@ -417,7 +427,7 @@ public abstract class BasicTransaction  {
 		if (expectedErrorCode != null && !expectedErrorCode.equals("")) {
 			List<String> errorCodes = registry_response.get_error_codes();
 			if ( ! errorCodes.contains(expectedErrorCode)) {
-				s_ctx.set_error("Expected errorCode of " + expectedErrorCode + "\nDid get errorCodes of " +
+				s_ctx.set_error("Expected errorCode of " + expectedErrorCode + "\nDid getRetrievedDocumentsModel errorCodes of " +
 						errorCodes);
 				step_failure = true;
 			}
@@ -432,6 +442,7 @@ public abstract class BasicTransaction  {
 		if ("sq".equals(tname)) vc.isSQ = true;
 		if ("pr".equals(tname)) vc.isPnR = true;
 		if ("r".equals(tname)) vc.isR = true;
+		if ("rodde".equals(tname)) vc.isRODDE = true;
 
 		return vc;
 	}
@@ -703,6 +714,22 @@ public abstract class BasicTransaction  {
 		showEndpoint();
 	}
 
+	protected void parseIDSEndpoint(String home, boolean isSecure) throws Exception {
+		if (endpoint == null || endpoint.equals("")) {
+			if (s_ctx.getPlan().getRegistryEndpoint() != null)
+				endpoint = s_ctx.getPlan().getRegistryEndpoint();
+			else
+				try {
+					endpoint = testConfig.site.getEndpoint(TransactionType.RET_IMG_DOC_SET, isSecure, async);
+//					endpoint = testConfig.site.getIGRetrieve(home, isSecure, async);
+				} catch (XdsInternalException e) {
+					fatal(ExceptionUtil.exception_details(e, 5));
+				}
+		}
+		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
+		showEndpoint();
+	}
+
 	List<String> failMsgs = null;
 
 	public void fail(String msg) throws XdsInternalException {
@@ -787,7 +814,7 @@ public abstract class BasicTransaction  {
 			TestMgmt tm = new TestMgmt(testConfig);
 			if ( assign_patient_id ) {
 //				System.out.println("============================= assign_patient_id  in BasicTransaction#prepareMetadata()==============================");
-				// get and insert PatientId
+				// getRetrievedDocumentsModel and insert PatientId
 				String forced_patient_id = s_ctx.get("PatientId");
 //                System.out.println("    to " + forced_patient_id)
 //              s_ctx.dumpContextRecursive();
@@ -827,6 +854,16 @@ public abstract class BasicTransaction  {
 				reportManager.report(nameUuidMap, "_uuid");
 			}
 
+            // Insert test/section/step into authorPerson.id
+            String stepId = getStep().getId();
+            String testId = getStep().getPlan().getTestNum();
+            String sectionId = getStep().getPlan().getCurrentSection();
+            String id = String.format("%s/%s/%s", testId, sectionId, stepId);
+
+            if ("true".equals(Configuration.getProperty("testclient.addTestAsAuthor"))) {
+                if (metadata != null)
+                    metadata.addAuthorPersonToAll(id);
+            }
 
 		}
 
@@ -849,7 +886,7 @@ public abstract class BasicTransaction  {
 	//		if (externalLinkage != null) {
 	//			Linkage linkage = new Linkage(testConfig);
 	//			for (String key : externalLinkage.keySet()) {
-	//				linkage.addLinkage(key, externalLinkage.get(key));
+	//				linkage.addLinkage(key, externalLinkage.getRetrievedDocumentsModel(key));
 	//			}
 	//			linkage.compileLinkage();
 	//		}
@@ -866,7 +903,7 @@ public abstract class BasicTransaction  {
 
 			if (reportManager == null)
 				reportManager = new ReportManager(testConfig);
-			reportManager.report(externalLinkage);
+//			reportManager.report(externalLinkage);
 		}
 	}
 
@@ -888,8 +925,26 @@ public abstract class BasicTransaction  {
 		}
 	}
 
+    // report the parameters to the request as Reports so they can be referenced
+    // in assertions
+    void reportStepParameters() {
+        logger.info("generating linkageAsReports");
+        if (reportManager == null)
+            reportManager = new ReportManager(testConfig);
+        Map<String, String> params = getStep().getPlan().getExtraLinkage();
+        logger.info("transaction: " + params);
+        for (String name : params.keySet()) {
+            String value = params.get(name);
+            Report report = new Report(name, value);
+            logger.info("adding Report " + report);
+            reportManager.addReport(report);
+            logger.info("Report manager has " + reportManager.toString());
+        }
+    }
+
 	protected void parseBasicInstruction(OMElement part) throws XdsInternalException {
 		String part_name = part.getLocalName();
+
 
 //		if (part_name.equals("Metadata")) {
 //			metadata_filename = "";
@@ -1078,12 +1133,17 @@ public abstract class BasicTransaction  {
 	}
 
 	public void runAssertionEngine(OMElement step_output, ErrorReportingInterface eri, OMElement assertion_output) throws XdsInternalException {
-		AssertionEngine engine = new AssertionEngine();
+
+        AssertionEngine engine = new AssertionEngine();
 		engine.setDataRefs(data_refs);
 
-		if (useReportManager != null) {
-			useReportManager.apply(assertions);
-		}
+        try {
+            if (useReportManager != null) {
+                useReportManager.apply(assertions);
+            }
+        } catch (Exception e) {
+            failed();
+        }
 
 		engine.setAssertions(assertions);
 		engine.setLinkage(linkage);
@@ -1313,6 +1373,8 @@ public abstract class BasicTransaction  {
 		Metadata m = MetadataParser.parseNonSubmission(result);
 
 		Validator v = new Validator(test_assertions);
+		v.setInstruction_output(instruction_output);
+		v.setTestConfig(testConfig);
 		v.run_test_assertions(m);
 
 		return v.getErrors();

@@ -78,11 +78,16 @@ public class SimulatorProperties {
      */
     public static final String                       registerEndpoint = "Register_endpoint";
 
+    public static final String                       registerOddeEndpoint = "RegisterOdde_endpoint";
+
+
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
     public static final String                    registerTlsEndpoint = "Register_TLS_endpoint";
+
+    public static final String                    registerOddeTlsEndpoint = "RegisterOdde_TLS_endpoint";
 
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
@@ -196,4 +201,31 @@ public class SimulatorProperties {
      * Updates to this property are ignored.
      */
     public static final String                           creationTime = "Creation Time";
+
+    public static final String                           respondingGateways = "Responding Gateways";
+
+    /**
+     * Each transaction request throws this error.
+     */
+    public static final String                          errors = "Throw Error";
+
+    /**
+     * Each transaction request for a particular patient throws this error.
+     */
+    public static final String                          errorForPatient = "Throw Error for Patient ID";
+
+    public static final String                         FORCE_FAULT = "Force Fault";
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                           idsrEndpoint = "IDSR_endpoint";
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                        idsrTlsEndpoint = "IDSR_TLS_endpoint";
+
 }

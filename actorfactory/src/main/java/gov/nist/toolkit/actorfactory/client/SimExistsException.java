@@ -1,11 +1,11 @@
 package gov.nist.toolkit.actorfactory.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /**
- * Created by bill on 10/10/15.
+ *
  */
-public class SimExistsException extends Exception implements IsSerializable {
+public class SimExistsException extends Exception implements Serializable {
 
     public SimExistsException(String msg) {
         super(msg);

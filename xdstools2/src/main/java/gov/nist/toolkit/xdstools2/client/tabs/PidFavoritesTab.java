@@ -7,9 +7,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.PidBuilder;
-import gov.nist.toolkit.actorfactory.client.PidSet;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidBuilder;
+import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
@@ -18,7 +18,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import java.util.*;
 
 /**
- * Created by bill on 9/23/15.
+ *
  */
 public class PidFavoritesTab  extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
@@ -89,7 +89,8 @@ public class PidFavoritesTab  extends GenericQueryTab {
         favoritesListPanel.add(favoritiesButtonPanel);
 
         pidPanel.add(new HTML("<br />"));
-        pidPanel.add(new HTML("<h3>Generate new Patient ID</h3>"));
+        pidPanel.add(new HTML("<h3>Generate new Patient ID</h3>"
+        ));
         pidPanel.add(assigningAuthorityPanel);
 
         favoritiesButtonPanel.add(new HTML("Select Patient ID(s) then: "));
@@ -114,7 +115,9 @@ public class PidFavoritesTab  extends GenericQueryTab {
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
-        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)"));
+        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
+                        "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
+                "for private testing only.</p>" ));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 
         panel.add(selectedPids);

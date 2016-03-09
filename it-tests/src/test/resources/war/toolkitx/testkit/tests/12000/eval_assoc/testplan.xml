@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12000/eval_assoc</Test>
+  <TestStep id="eval_assoc">
+    <Goal>Evaluate association between folder and document</Goal>
+    <Goal>   Using GetFolderAndContents query</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="foluid" section="submit" step="submit_doc_w_fol" useAs="$foluid$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

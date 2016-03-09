@@ -57,7 +57,7 @@ public class UtilityRunner {
             }
 
             // depending on the configuration, this could be null
-            session.transactionSettings.patientIdAssigningAuthorityOid = session.getCodesConfiguration().getAssigningAuthorityOid();
+            session.transactionSettings.patientIdAssigningAuthorityOid = session.currentCodesConfiguration().getAssigningAuthorityOid();
 
             if (session.xt == null)
                 session.xt = xdsTestServiceManager.getNewXt();
@@ -92,13 +92,13 @@ public class UtilityRunner {
             try {
                 if (testInstance.getId().startsWith("tc:")) {
                     String collectionName = testInstance.getId().split(":")[1];
-                    session.xt.addTestCollection(collectionName);
+//                    session.xt.addTestCollection(collectionName);
                     // all tests in the collection must be linked so the logs are linked
                     // we don't use the TestInstance we were given because it references a test
                     // collection.  We replace it with a list of linked TestInstances, one for each
                     // contained test.
 
-                    TestCollection testCollection = new TestCollection(session.getTestkitFile(), collectionName);
+                    TestCollection testCollection = new TestCollection(Installation.installation().testkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();
                     TestInstance ti = null;
                     for (String id : testIds) {
@@ -118,13 +118,14 @@ public class UtilityRunner {
 
 //                Sites theSites = new Sites(SiteServiceManager.getSiteServiceManager().getAllSites(session.getId()));
                 Collection<Site> siteCollection = SimCache.getAllSites();
-                logger.debug("UtilityRunner - defined sites - " + siteCollection.toString());
+                logger.debug("UtilityRunner - defined sites - " + SimCache.describe());
                 Sites theSites = new Sites(siteCollection);
                 // Only for SOAP messages will siteSpec.name be filled in.  For Direct it is not expected
                 if (session.siteSpec != null && session.siteSpec.name != null && !session.siteSpec.name.equals("")) {
                     Site site = theSites.getSite(session.siteSpec.name);
                     if (site == null)
                         throw new Exception("Cannot find site " + session.siteSpec.name);
+                    logger.info("Using site: " + site.describe());
                     session.xt.setSite(site);
                     session.xt.setSites(theSites);
                 } else if (session.repUid != null) {

@@ -70,14 +70,20 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
+	public void onTabLoad(TabContainer container, boolean select, String simIdString) {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 
-		if (eventName != null)
-			simid = new SimId(eventName);
+		if (simIdString != null) {
+            try {
+                simid = new SimId(simIdString);
+            } catch (Exception e) {
+                new PopupMessage(e.getMessage());
+                return;
+            }
+        }
 
-		container.addTab(topPanel, "Sim Logs", select);
+		container.addTab(topPanel, simIdString + " Logs", select);
 		addCloseButton(container, topPanel, null);
 
 		topPanel.add(simDisplayPanel);
@@ -206,7 +212,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 //
 //				transactionRadButtons = new TransactionNamesRadioButtonGroup(new Panel(transactionNamesPanel), simidFinal);
 //				transactionRadButtons.addButton("All");
-//				transactionRadButtons.buttons.get(0).setValue(true);
+//				transactionRadButtons.buttons.getRetrievedDocumentsModel(0).setValue(true);
 //
 //				// translate transNames into full descriptive names
 //				List<String> fullNames = new ArrayList<>();
@@ -286,7 +292,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 				transInstanceListBox.clear();
 				
 //				for (int i=result.size()-1; i >= 0; i--)
-//					transInstanceListBox.addItem(result.get(i));
+//					transInstanceListBox.addItem(result.getRetrievedDocumentsModel(i));
 				for (TransactionInstance x : result) {
 					transInstanceListBox.addItem(x.labelInterpretedAsDate + " " + x.nameInterpretedAsTransactionType, x.label);
 				}
@@ -491,7 +497,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 	// several background operations need to make sure the 
 	// SimServlet has initialized since that is where the servlet initialization
 	// parameters are read.  Issue a HTTP Get for something that is known to fail
-	// just to get the servlet to initialize
+	// just to getRetrievedDocumentsModel the servlet to initialize
 	public void initSimServlet() {
 
 		String url = GWT.getModuleBaseURL() + "simulator/del"; 

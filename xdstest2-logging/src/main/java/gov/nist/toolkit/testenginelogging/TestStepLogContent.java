@@ -13,19 +13,19 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class TestStepLogContent  implements Serializable {
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 2676088682465214583L;
+    static Logger logger = Logger.getLogger(TestStepLogContent.class);
 	String id;
 	boolean success;
 	boolean expectedSuccess;
@@ -36,6 +36,7 @@ public class TestStepLogContent  implements Serializable {
 	List<String> errors;
 	List<String> details;
 	List<String> reports;
+    List<String> useReports;
 	String inputMetadata;
 	String result;
 	String inHeader = null;
@@ -93,7 +94,8 @@ public class TestStepLogContent  implements Serializable {
 		parseResult();
 		parseInputMetadata();
 		parseRoot();
-		parseReports();
+		parseUseReports();
+        parseReports();
 	}
 
 	public StepGoals getGoals() {
@@ -182,7 +184,7 @@ public class TestStepLogContent  implements Serializable {
 	}
 
 	void parseErrors() throws Exception {
-		errors = new ArrayList<String>();
+		errors = new ArrayList<>();
 
 		try {
 			RegistryResponseLog rrl = getUnexpectedErrors();
@@ -192,7 +194,7 @@ public class TestStepLogContent  implements Serializable {
 			}
 		} catch (Exception e) {}
 		errors.addAll(getAssertionErrors());
-
+//        if (errors.size() > 0) success = false;
 	}
 
 
@@ -218,23 +220,60 @@ public class TestStepLogContent  implements Serializable {
 	}
 
 	private static final QName nameQname = new QName("name");
+    private static final QName reportNameQname = new QName("reportName");
+    private static final QName valueQname = new QName("value");
+    private static final QName testQname = new QName("test");
+    private static final QName sectionQname = new QName("section");
+    private static final QName stepQname = new QName("step");
 
 	private void parseReports() {
 		reports = new ArrayList<String>();
 
+        // without use of the map we get duplicates because of the Assertions
+        // section of the log.xml file format
+        Map<String, String> map = new HashMap<>();
 		for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "Report")) {
 			String name = ele.getAttributeValue(nameQname);
 			String value = ele.getText();
-			reports.add(name + " = " + value);
+            map.put(name, value);
 		}
+        for(String key : map.keySet()) {
+            reports.add(key + " = " + map.get(key));
+        }
 
 	}
 
-	public List<String> getReports() {
+    private void parseUseReports() {
+        useReports = new ArrayList<String>();
+
+        // without use of the map we get duplicates because of the Assertions
+        // section of the log.xml file format
+        Map<String, String> map = new HashMap<>();
+        for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "UseReport")) {
+            String name = ele.getAttributeValue(reportNameQname);
+            String value = ele.getAttributeValue(valueQname);
+            String test = ele.getAttributeValue(testQname);
+            String section = ele.getAttributeValue(sectionQname);
+            String step = ele.getAttributeValue(stepQname);
+            String fullName = String.format("/%s/%s/%s/%s", test, section, step, name);
+            map.put(fullName, value);
+        }
+
+        for(String key : map.keySet()) {
+            useReports.add(key + " = " + map.get(key));
+        }
+
+    }
+
+    public List<String> getReports() {
 		return reports;
 	}
 
-	public List<String> getDetails() {
+    public List<String> getUseReports() {
+        return useReports;
+    }
+
+    public List<String> getDetails() {
 		return details;
 	}
 
@@ -271,9 +310,7 @@ public class TestStepLogContent  implements Serializable {
 
 	void parseResult() {
 		try {
-			//			result =  xmlFormat(MetadataSupport.firstDecendentWithLocalName(root, "Result").getFirstElement());
 			OMElement copy = Util.deep_copy(XmlUtil.firstDecendentWithLocalName(root, "Result").getFirstElement());
-			//OMElement resultEle = MetadataSupport.firstDecendentWithLocalName(root, "Result").getFirstElement();
 			for (OMElement ele : XmlUtil.decendentsWithLocalName(copy, "Document", 4)) {
 				String original = ele.getText();
 				int size = (original == null || original.equals("")) ? 0 : original.length();

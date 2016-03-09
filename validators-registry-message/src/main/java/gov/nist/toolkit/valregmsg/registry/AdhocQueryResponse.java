@@ -53,7 +53,7 @@ public class AdhocQueryResponse extends Response {
 		}
 	}
 
-	// called to get parent element of query results
+	// called to getRetrievedDocumentsModel parent element of query results
 
 	public OMElement getQueryResult() {
 		if (queryResult != null)

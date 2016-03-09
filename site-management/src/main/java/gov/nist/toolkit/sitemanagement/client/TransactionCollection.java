@@ -1,5 +1,6 @@
 package gov.nist.toolkit.sitemanagement.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -9,8 +10,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransactionCollection implements IsSerializable, Serializable {
 
@@ -242,5 +241,7 @@ public class TransactionCollection implements IsSerializable, Serializable {
 		}
 		return buf.toString();
 	}
+
+    public String describe() { return toString(); }
 
 }

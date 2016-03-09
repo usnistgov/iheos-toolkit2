@@ -1,5 +1,7 @@
 package gov.nist.toolkit.simulators.sim.ig;
 
+import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
@@ -37,7 +39,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 	Metadata m = new Metadata();
 	Exception startUpException = null;
 	Logger logger = Logger.getLogger(XcQuerySim.class);
-	static List<String> findQueryIds = Arrays.asList(MetadataSupport.SQ_FindDocuments, MetadataSupport.SQ_FindFolders, MetadataSupport.SQ_FindSubmissionSets);
+	static List<String> findQueryIds = Arrays.asList(MetadataSupport.SQ_FindDocuments, MetadataSupport.SQ_FindFolders, MetadataSupport.SQ_FindSubmissionSets, MetadataSupport.SQ_GetAll);
 	boolean isSecure;
 	boolean isAsync;
 	AdhocQueryRequest request;
@@ -59,7 +61,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		} catch (Exception e) {
 			System.out.println(ExceptionUtil.exception_details(e));
 			startUpException = e;
-			return;
 		}
 	}
 
@@ -74,8 +75,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		if (startUpException != null)
 			er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
 
-
-
 		try {
 			// if request didn't validate, return so errors can be reported
 			if (common.hasErrors()) {
@@ -83,13 +82,21 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				return;
 			}
 
-			// Get body of SQ
+			// Get body of request
 			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			OMElement ahqr = smv.getMessageBody();
 
 			request = new AdhocQueryRequestParser(ahqr).getAdhocQueryRequest();
 
-			Sites remoteSites = new Sites(asc.remoteSites);
+            SimManager simMgr = new SimManager("ignored");
+//            List<Site> sites = simMgr.getSites(asc.rgSiteNames);
+            List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingGateways).asList());
+
+            if (sites == null || sites.size() == 0) {
+                er.err(Code.XDSRegistryError, "No RespondingGateways configured", this, null);
+                return;
+            }
+			Sites remoteSites = new Sites(sites);
 
 
 			if (findQueryIds.contains(request.getQueryId())) {
@@ -102,7 +109,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 
 				// forward to all registered RGs
 				int forwards=0;
-				for (Site site : asc.remoteSites) {
+				for (Site site : sites) {
 					if (site.hasActor(ActorType.RESPONDING_GATEWAY)) {
 						// forward the query
 						forwards++;
@@ -113,8 +120,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 					er.err(Code.XDSRegistryError, "No RGs configured", this, null);
 					return;
 				}
-
-
 			} else {
 				// look at home to see where to route this message
 				if (request.getHomeAtt() == null) {
@@ -124,6 +129,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				Site site = remoteSites.getSiteForHome(request.getHome());
 
 				if (site == null) {
+                    response.add_error(Code.XDSRegistryError.name(), "Don't have configuration for RG with homeCommunityId " + request.getHome(), this.getClass().getName(), null, null);
 					er.err(Code.XDSRegistryError, "Don't have configuration for RG with homeCommunityId " + request.getHome(), this, null);
 					return;
 				}
@@ -136,8 +142,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				// forward the query
 				forwardQuery(site);
 			}
-
-
 
 			List<OMElement> results = m.getAllObjects(); // everything but ObjectRefs
 			results.addAll(m.getObjectRefs());
@@ -179,7 +183,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			er.challenge("Request to RG is");
 			er.detail(new OMFormatter(req).toString());
 
-			AdhocQueryResponseParser.AdhocQueryResponse rgResponse = sqCall(req, endpoint);
+			gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse rgResponse = sqCall(req, endpoint);
 
 			er.challenge("Response from RG is");
 			er.detail(new OMFormatter(rgResponse.getMessage()).toString());
@@ -258,7 +262,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		er.err(XdsErrorCode.Code.XDSRegistryError, msg, this, null);
 	}
 
-	AdhocQueryResponseParser.AdhocQueryResponse sqCall(OMElement request, String endpoint) throws Exception {
+	gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse sqCall(OMElement request, String endpoint) throws Exception {
 		Soap soap = new Soap();
 		soap.setAsync(false);
 		soap.setUseSaml(false);
@@ -282,7 +286,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			result = mockSoap.call(endpoint, request);
 		}
 
-		AdhocQueryResponseParser.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
+		gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
 
 		return response;
 	}

@@ -1,12 +1,10 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
@@ -16,7 +14,6 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
 
@@ -95,7 +92,7 @@ public class SimDb {
 		String ipdir = simId.toString();
 		simDir = new File(dbRoot.toString()  /*.getAbsolutePath()*/ + File.separatorChar + ipdir);
 		if (!simDir.exists()) {
-			logger.error(ExceptionUtil.here("Simulator " + simId + " does not exist (" + simDir + ")"));
+			logger.error("Simulator " + simId + " does not exist (" + simDir + ")");
 			throw new NoSimException("Simulator " + simId + " does not exist (" + simDir + ")");
 		}
 
@@ -124,7 +121,7 @@ public class SimDb {
 
 	File simSafetyFile() { return new File(simDir, "simId.txt"); }
 	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
-    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
+    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); /*&& new File(simDir, "simctl.ser").exists();*/ }
 
 	// ipAddr aka simid
 	public SimDb(File dbRoot, SimId simId, String actor, String transaction) throws IOException, NoSimException {
@@ -152,7 +149,7 @@ public class SimDb {
 
 	}
 
-	public SimDb(TransactionInstance ti) throws IOException, NoSimException {
+	public SimDb(TransactionInstance ti) throws IOException, NoSimException, BadSimIdException {
 		this(Installation.installation().simDbFile(), new SimId(ti.simId));
 
 		this.actor = ti.actorType.getShortName();
@@ -215,8 +212,18 @@ public class SimDb {
 			db.delete();
 		}
 	}
+
+    static public void deleteSims(List<SimId> simIds) throws IOException {
+        for (SimId simId : simIds) {
+            logger.info("Deleting sim " + simId);
+            try {
+                SimDb db = new SimDb(simId);
+                db.delete();
+            } catch (NoSimException e) { } // ignore
+        }
+    }
 	
-	public List<SimId> getAllSimIds() {
+	public List<SimId> getAllSimIds() throws BadSimIdException {
 		File[] files = dbRoot.listFiles();
 		List<SimId> ids = new ArrayList<>();
 		if (files == null) return ids;
@@ -227,6 +234,16 @@ public class SimDb {
 		}
 		return ids;
 	}
+
+    public List<SimId> getSimIdsForUser(String user) throws BadSimIdException {
+        List<SimId> ids = getAllSimIds();
+        List<SimId> selectedIds = new ArrayList<>();
+        for (SimId id : ids) {
+            if (user.equals(id.getUser()))
+                selectedIds.add(id);
+        }
+        return selectedIds;
+    }
 
 	/**
 	 * Get a simulator.

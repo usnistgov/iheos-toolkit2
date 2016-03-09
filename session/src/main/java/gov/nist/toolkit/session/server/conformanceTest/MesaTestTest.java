@@ -75,7 +75,7 @@ public class MesaTestTest {
 //
 //		TestResult(String testnum) { testId = testnum; }
 //
-//		public String toString() { return testId + ": " + lines(msgs.get(0).assertion, 1); }
+//		public String toString() { return testId + ": " + lines(msgs.getRetrievedDocumentsModel(0).assertion, 1); }
 //	}
 //
 //
@@ -160,7 +160,7 @@ public class MesaTestTest {
 //	void prTestResults(List<TestResult> testResults) {
 //		System.out.println("\n========================\n");
 //		for (TestResult tr : testResults) {
-//			System.out.println(tr.testId + ": " + lines(tr.msgs.get(0).assertion, 1));
+//			System.out.println(tr.testId + ": " + lines(tr.msgs.getRetrievedDocumentsModel(0).assertion, 1));
 //		}
 //		System.out.println("\n========================\n");
 //	}

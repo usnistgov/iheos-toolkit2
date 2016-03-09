@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11983/eval</Test>
+  <TestStep id="doc_missing">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../submit_no_doc" id="SubmissionSet01" symbol="$ss_uuid$" step="doc_missing" section="AssignedUuids"/>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,15 +22,15 @@ import java.util.List;
  */
 public class PatientIdentityFeedServlet extends HttpServlet {
     static Logger logger = Logger.getLogger(PatientIdentityFeedServlet.class);
-    File warHome;
+//    File warHome;
 //    File simDbDir;
 
     private static final long serialVersionUID = 1L;
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        warHome = new File(config.getServletContext().getRealPath("/"));
-        logger.info("...warHome is " + warHome);
+//        warHome = new File(config.getServletContext().getRealPath("/"));
+//        logger.info("PatientIdentityFeedServlet ...warHome is " + warHome);
         initPatientIdentityFeed();
     }
 

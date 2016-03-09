@@ -15,7 +15,7 @@ public class PropertyManager {
 	Properties toolkitProperties = null;
 	
 	public PropertyManager(String propFile) {
-		this.propFile = propFile;
+        this.propFile = propFile;
 	}
 	
 	public void update(Map<String, String> props) throws Exception {
@@ -128,6 +128,16 @@ public class PropertyManager {
 		loadProperties();
 		return (String) toolkitProperties.get("Default_Environment");
 	}
+
+    public String getTestkit() {
+        loadProperties();
+        String testkit = (String) toolkitProperties.get("Testkit");
+        if (testkit != null) {
+            testkit = testkit.trim();
+            if ("".equals(testkit)) testkit = null;
+        }
+        return testkit;
+    }
 
 	@Deprecated
 	public String getCurrentEnvironmentName() {

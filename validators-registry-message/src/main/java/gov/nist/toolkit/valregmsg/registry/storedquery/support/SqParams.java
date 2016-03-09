@@ -8,11 +8,7 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SqParams {
 	Map<String, Object> params;
@@ -42,6 +38,8 @@ public class SqParams {
 
 		return buf.toString();
 	}
+
+    public Set<String> getNames() { return params.keySet(); }
 
 	public int size() { return params.size(); }
 	public void addParm(String name, Object value) { params.put(name, value); }

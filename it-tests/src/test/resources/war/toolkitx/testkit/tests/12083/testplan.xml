@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12083</Test>
+  <RegistryEndpoint>ENDPOINT</RegistryEndpoint>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RetrieveTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents/>
+    </RetrieveTransaction>
+  </TestStep>
+</TestPlan>

@@ -43,7 +43,7 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 	"text into the chat window in Kudu and mark the test Partially Verified. " +
 	"If all the text is black then the monitor must " +
 	"check to see that the Repository listed in the test results matches " +
-	"the Repository claimed in Kudu so the correct vendors get credit. " +
+	"the Repository claimed in Kudu so the correct vendors getRetrievedDocumentsModel credit. " +
 	"If Repository is wrong then the test should be labeled Failed in Kudu. " +
 	"If none of these problems are evident then mark the test Passed in Kudu.\n\n" +
 	"The most common error is to have the query complete with complaints of not " +
@@ -82,7 +82,7 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 		row++;
 
 
-		queryBoilerplate = addQueryBoilerplate(new GetSSandContentsRunner(), transactionTypes, couplings);
+		queryBoilerplate = addQueryBoilerplate(new GetSSandContentsRunner(), transactionTypes, couplings, false);
 
 	}
 
@@ -91,9 +91,11 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null)
-				return;
+            SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
+            if (siteSpec == null) {
+                new PopupMessage("You must select a site first");
+                return;
+            }
 
 			if (ssid.getValue() == null || ssid.getValue().equals("")) {
 				new PopupMessage("You must enter a Submission Set id first");
@@ -103,9 +105,6 @@ public class SourceStoredDocValTab extends GenericQueryTab {
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-//			siteSpec.isTls = doTLS;
-//			siteSpec.isSaml = doSAML;
-//			siteSpec.isAsync = doASYNC;
 			toolkitService.srcStoresDocVal(siteSpec, ssid.getValue().trim(), queryCallback);
 		}
 		

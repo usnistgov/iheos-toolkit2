@@ -5,19 +5,23 @@ import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.session.server.TestSession;
+import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -25,7 +29,11 @@ import java.util.Properties;
 /**
  * This is a second attempt to start a real API.  ClientAPI has not
  * been very useful so far. This one is based on the service managers used by the UI
+ *
+ * This class must stay written in Java.  SimulatorsController references it
+ * and the Jersey stuff won't recognize it if it is converted to Groovy.
  */
+
 public class ToolkitApi {
     static Logger logger = Logger.getLogger(ToolkitApi.class);
     private Session session;
@@ -33,12 +41,12 @@ public class ToolkitApi {
     private static ToolkitApi api = null;
 
     /**
-     * Use when running unit tests
+     * Use when running unit tests or used in production
      * @return
      */
     public static ToolkitApi forInternalUse() {
         if (api == null) {
-            api = new ToolkitApi(TestSession.setupToolkit());
+            api = new ToolkitApi(UnitTestEnvironmentManager.setupLocalToolkit());
             api.internalUse = true;
             return api;
         }
@@ -57,9 +65,10 @@ public class ToolkitApi {
     public static ToolkitApi forServiceUse() {
         if (api == null) {
             api = new ToolkitApi();
+            EnvSetting.installServiceEnvironment();
             api.session = new Session(
                     Installation.installation().warHome(),
-                    Installation.installation().defaultServiceSessionName());
+                    Installation.defaultServiceSessionName());
             api.internalUse = false;
             return api;
         }
@@ -71,6 +80,10 @@ public class ToolkitApi {
         return api;
     }
 
+    public static ToolkitApi forNormalUse(Session session) {
+        return new ToolkitApi(session);
+    }
+
     /**
      * Constructor
      */
@@ -78,6 +91,7 @@ public class ToolkitApi {
 
     private ToolkitApi(Session session) {
         this.session = session;
+        logger.info("ToolkitApi using session " + session.id());
     }
 
 
@@ -98,6 +112,7 @@ public class ToolkitApi {
 
     public Simulator createSimulator(SimId simId) throws Exception {
         ActorType actorType = ActorType.findActor(simId.getActorType());
+        logger.info(String.format("Create sim %s of type %s", simId.toString(), simId.getActorType()));
         if (actorType == null) throw new BadSimConfigException("Simulator type " + simId.getActorType() + " does not exist");
         return createSimulator(actorType, simId);
     }
@@ -119,7 +134,9 @@ public class ToolkitApi {
      * @throws IOException - probably a bad configuration for toolkit
      * @throws NoSimException - simulator doesn't exist
      */
-    public void deleteSimulator(SimId simId) throws IOException, NoSimException { SimDb db = new SimDb(simId); db.delete(); }
+    public void deleteSimulator(SimId simId) throws IOException, NoSimException {
+        simulatorServiceManager().deleteConfig(simId);
+    }
 
     /**
      * Delete as simulator. No error if it doesnt exist.
@@ -172,7 +189,7 @@ public class ToolkitApi {
      * @return - list of Result objects - one per test step (transaction) run
      * @throws Exception if testSession could not be created
      */
-    public List<Result> runTest(String testSession, String siteName, TestInstance testInstance, List<String> sections,  Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+    public List<Result> runTest(String testSession, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
         if (testSession == null) {
             testSession = "API";
             xdsTestServiceManager().addMesaTestSession(testSession);
@@ -204,4 +221,30 @@ public class ToolkitApi {
     private SimulatorServiceManager simulatorServiceManager() { return  new SimulatorServiceManager(session); }
     private XdsTestServiceManager xdsTestServiceManager() { return session.xdsTestServiceManager(); }
     private SiteServiceManager siteServiceManager() { return SiteServiceManager.getSiteServiceManager(); }
+
+    public List<Result> findDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes) {
+        return new QueryServiceManager(session).findDocuments2(site, pid, selectedCodes);
+    }
+
+    public List<Result> retrieveDocuments(SiteSpec site, Uids uids) throws Exception {
+        return new QueryServiceManager(session).retrieveDocument(site, uids);
+    }
+
+    public List<String> getSimulatorEventIds(SimId simId, String transaction) throws Exception {
+        List<String> ids = new ArrayList<>();
+        for (TransactionInstance ti : new SimulatorServiceManager(session).getTransInstances(simId, "", transaction)) {
+            ids.add(ti.label);
+        }
+        return ids;
+    }
+
+    public String getSimulatorEvent(SimId simId, String transaction, String eventId) throws Exception {
+        return new SimulatorServiceManager(session).getTransactionLog(simId, null, transaction, eventId);
+    }
+
+    public Session getSession() {
+        return session;
+    }
 }
+
+

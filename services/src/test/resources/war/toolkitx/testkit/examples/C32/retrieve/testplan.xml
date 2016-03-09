@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>C32/retrieve</Test>
+    <TestStep id="retrieve">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RetrieveTransaction>
+            <UseId testdir="../submit" id="Document01" step="submit"
+                section="AssignedUids" symbol="$docuid$"/>
+            <UseRepositoryUniqueId testdir="../query" id="Document01" step="uniqueid"
+                symbol="$repuid$"/>
+            <ReferenceMetadata testdir="../query" step="uniqueid"/>
+            <XDSb/>
+            <MetadataFile>query.xml</MetadataFile>
+            <ExpectedContents>
+            </ExpectedContents>
+            <ReferenceDocument uid="$docuid$">../submit/my_document.txt</ReferenceDocument>
+        </RetrieveTransaction>
+    </TestStep>
+</TestPlan>

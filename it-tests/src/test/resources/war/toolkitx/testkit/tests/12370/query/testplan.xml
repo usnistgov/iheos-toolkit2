@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12370/query</Test>
+  <TestStep id="validate">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../rplc" id="Document01" symbol="$docuuid$" step="rplc" section="AssignedUuids"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="classification_present">
+     count(//*[local-name()='RegistryObjectList']/*[local-name()='Association']/*[local-name()='Classification'][@classificationScheme="urn:uuid:abd807a3-4432-4053-87b4-fd82c643d1f3"][@nodeRepresentation="Additional_Information"]) = 1
+    </Assert>
+      </Assertions>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

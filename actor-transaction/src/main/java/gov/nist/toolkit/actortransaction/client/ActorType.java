@@ -22,10 +22,10 @@ public enum ActorType implements IsSerializable, Serializable {
 	),
     REGISTRY(
             "Document Registry",
-            Arrays.asList("DOC_REGISTRY", "Initialize_for_Stored_Query"),
+            Arrays.asList("DOC_REGISTRY", "registryb", "initialize_for_stored_query"),
             "reg",
             "gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator",
-            Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
+            Arrays.asList(TransactionType.REGISTER, TransactionType.REGISTER_ODDE, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ),
             true,
             null
     ),
@@ -41,7 +41,7 @@ public enum ActorType implements IsSerializable, Serializable {
 //				),
     REPOSITORY(
             "Document Repository",
-			Arrays.asList("DOC_REPOSITORY"),
+			Arrays.asList("DOC_REPOSITORY", "repositoryb"),
             "rep",
             "gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator",
 			Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
@@ -52,7 +52,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "On-Demand Document Source",
 			Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
-            null,
+            "gov.nist.toolkit.simulators.sim.od.rep.RepositoryActorSimulator",
 			Arrays.asList(TransactionType.ODDS_RETRIEVE),
 			true,
             "odds"
@@ -88,8 +88,8 @@ public enum ActorType implements IsSerializable, Serializable {
             "Responding Gateway",
 			Arrays.asList("RESP_GATEWAY"),
             "rg",
-            "gov.nist.toolkit.simulators.sim.rg.RGActorSimulator",
-			Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_PATIENT_DISCOVERY),
+            "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
+			Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
             true,
             null
 	),
@@ -101,7 +101,41 @@ public enum ActorType implements IsSerializable, Serializable {
 			Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
             null
-	)
+	),
+    INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
+            "Initialize for Stored Query",
+            new ArrayList<String>(),
+            "initialize_for_stored_query",
+            null,
+            new ArrayList<TransactionType>(),
+            false,
+            null
+	),
+
+    // TODO - actorType lookup problem
+    // This at the end of the list on purpose.  From the UI actor types are selected by the transactions they support.
+    // A problem came up in TransactionSelectionManager#generateSiteSpec() where this gets chosen instead of
+    // REGISTRY when searching on STORED_QUERY.  getSiteSpec() (and the stuff around it) needs to make decisions
+    // on more than just what transactions are offered.  Probably needs to maintain specific actor type so
+    // the lookup by transaction is not necessary
+    DOC_CONSUMER(
+            "XDS Document Consumer",
+            Arrays.asList("XDS_Consumer", "doccons"),
+            "cons",
+            "gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator",
+            Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE),
+            false,
+            null
+	),
+    IMAGING_DOC_SOURCE(
+            "Imaging Document Source",
+                        Arrays.asList("IMAGING_DOC_SOURCE"),
+            "ids",
+            "gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator",
+                        Arrays.asList(TransactionType.RET_IMG_DOC_SET),
+            true,
+            null
+        )
     ;
 
 	private static final long serialVersionUID = 1L;
@@ -148,6 +182,10 @@ public enum ActorType implements IsSerializable, Serializable {
 
 	public boolean isGW() {
         return isRGActor() || isIGActor();
+    }
+
+        public boolean isImagingDocumentSourceActor() {
+        return this.equals(IMAGING_DOC_SOURCE);
     }
 
     public String getSimulatorClassName() { return simulatorClassName; }

@@ -36,8 +36,8 @@ public class SimulatorApi {
             if (db.exists(simID))
                 throw new SimExistsException("Simulator " + simID + " exists");
 
-            SimCache simCache = new SimCache();
-            SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
+//            SimCache simCache = new SimCache();
+            SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
 
             Simulator scl = new GenericSimulatorFactory(simMgr).buildNewSimulator(simMgr, actorTypeName, simID);
             simMgr.addSimConfigs(scl);
@@ -53,17 +53,16 @@ public class SimulatorApi {
         }
     }
 
-    public void delete(SimId simID) throws Exception {
-        SimulatorConfig config = new SimulatorConfig(simID, "", null);
-        SimCache simCache = new SimCache();
-        SimManager simMgr = simCache.getSimManagerForSession(session.id(), true);
-//        new SimulatorServiceManager(session).deleteConfig(config);
+    public void delete(SimId simID) throws IOException {
+        logger.info("Delete simulator " + simID + " from session " + session.id());
+//        SimulatorConfig config = new SimulatorConfig(simID, "", null);
+        SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
         try {
-            simCache.deleteSimConfig(config.getId());
+            SimCache.deleteSimConfig(simID);
             simMgr.purge();
         } catch (IOException e) {
             logger.error("deleteConfig", e);
-            throw new Exception(e.getMessage());
+            throw e;
         }
     }
 
@@ -72,7 +71,7 @@ public class SimulatorApi {
     }
 
     public void setConfig(SimulatorConfig config, String parameterName, String value) {
-        SimManager simMgr = new SimCache().getSimManagerForSession(session.id(), true);
+        SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
         new GenericSimulatorFactory(simMgr).setConfig(config, parameterName, value);
     }
 
@@ -82,7 +81,7 @@ public class SimulatorApi {
     }
 
     public void setConfig(SimulatorConfig config, Properties props) {
-        SimManager simMgr = new SimCache().getSimManagerForSession(session.id(), true);
+//        SimManager simMgr = SimCache.getSimManagerForSession(session.id(), true);
         for (Object okey : props.keySet()) {
             String key = (String) okey;
             Object ovalue = props.get(okey);

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12313</Test>
+  <TestStep id="retrieve_two">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <XCRTransaction>
+      <UseReport test="12311" reportName="$doc_uid_1$" step="getdocs" useAs="$docuid1$"/>
+      <UseReport test="12311" reportName="$doc_uid_2$" step="getdocs" useAs="$docuid2$"/>
+      <UseReport test="12311" reportName="$requestHome$" step="getdocs" useAs="$home$"/>
+      <UseReport test="12311" reportName="$repositoryUniqueId$" step="getdocs" useAs="$repositoryuid$"/>
+      <ExpectedMimeType>text/plain</ExpectedMimeType>
+      <ReferenceDocument uid="$docuid1$">../12318/my_document.txt</ReferenceDocument>
+      <ReferenceDocument uid="$docuid2$">../12318/my_document2.txt</ReferenceDocument>
+      <MetadataFile>query.xml</MetadataFile>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="TwoDocuments">
+              		count(//XCRTransaction/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "2"                    
+         		</Assert>
+      </Assertions>
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

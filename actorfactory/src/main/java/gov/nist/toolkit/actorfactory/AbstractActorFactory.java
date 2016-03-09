@@ -8,11 +8,11 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
@@ -45,13 +45,16 @@ public abstract class AbstractActorFactory {
 
 	static final Map<String /* ActorType.name */, AbstractActorFactory> factories = new HashMap<String, AbstractActorFactory>();
 	static {
-		factories.put(ActorType.REGISTRY.getName(),           new RegistryActorFactory());
-		factories.put(ActorType.REPOSITORY.getName(),         new RepositoryActorFactory());
-		factories.put(ActorType.DOCUMENT_RECIPIENT.getName(),  new RecipientActorFactory());
-		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), new RepositoryRegistryActorFactory());
-		factories.put(ActorType.INITIATING_GATEWAY.getName(),  new IGActorFactory());
-		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  new RGActorFactory());
-        factories.put(ActorType.XDR_DOC_SRC.getName(), new XdrDocSrcActorFactory());
+		factories.put(ActorType.REGISTRY.getName(),           		new RegistryActorFactory());
+		factories.put(ActorType.REPOSITORY.getName(),         		new RepositoryActorFactory());
+		factories.put(ActorType.ONDEMAND_DOCUMENT_SOURCE.getName(),	new OnDemandDocumentSourceActorFactory());
+		factories.put(ActorType.DOCUMENT_RECIPIENT.getName(),  		new RecipientActorFactory());
+		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), 		new RepositoryRegistryActorFactory());
+		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
+		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
+        factories.put(ActorType.XDR_DOC_SRC.getName(), 				new XdrDocSrcActorFactory());
+        factories.put(ActorType.DOC_CONSUMER.getName(), 			new ConsumerActorFactory());
+        factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 			new ImagingDocSourceActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
@@ -102,7 +105,9 @@ public abstract class AbstractActorFactory {
 		ele.setValue(sc.getId().toString());
 		addUser(sc, ele);
 
-		return sc;
+        addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
+
+        return sc;
 	}
 
 	protected AbstractActorFactory() {}
@@ -118,7 +123,7 @@ public abstract class AbstractActorFactory {
 	// Returns list since multiple simulators could be built as a grouping/cluster
 	// only used by SimulatorFactory to offer a generic API for building sims
 	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID, boolean save) throws Exception {
-
+        logger.info("Build New Simulator " + simtype);
 		ActorType at = ActorType.findActor(simtype);
 
 		if (at == null)
@@ -129,15 +134,19 @@ public abstract class AbstractActorFactory {
 	}
 
 	public Simulator buildNewSimulator(SimManager simm, ActorType at, SimId simID, boolean save) throws Exception {
-		logger.info("Build new Simulator of type " + getClass().getSimpleName());
+		logger.info("Build new Simulator of type " + getClass().getSimpleName() + " simID: " + simID);
 
 		// This is the simulator-specific factory
-		AbstractActorFactory af = factories.get(at.getName());
+        String actorTypeName = at.getName();
+		AbstractActorFactory af = factories.get(actorTypeName);
 
 		if (af == null)
-			throw new ToolkitRuntimeException(String.format("Cannot build simulator of type %s - cannot find ActorType", at.getName()));
+			throw new Exception(String.format("Cannot build simulator of type %s - cannot find Factory for ActorType [", actorTypeName) + "]");
 
 		af.setSimManager(simm);
+
+        if (simID.getId().contains("__"))
+            throw new Exception("Simulator ID cannot contain double underscore (__)");
 
 		Simulator simulator = af.buildNew(simm, simID, true);
 
@@ -148,6 +157,7 @@ public abstract class AbstractActorFactory {
 				saveConfiguration(conf);
 
 				BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(conf.getId());
+				logger.info("calling onCreate:" + conf.getId().toString());
 				sim.onCreate(conf);
 			}
 		}
@@ -190,7 +200,12 @@ public abstract class AbstractActorFactory {
 		id = parts[2];
 		//		id = id.replaceAll("-", "_");
 
-		return new SimId(id);
+        try {
+            return new SimId(id);
+        }
+        catch (Exception e) {
+            throw new ToolkitRuntimeException("Internal error: " + e.getMessage(), e);
+        }
 	}
 
 	String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) {
@@ -225,16 +240,16 @@ public abstract class AbstractActorFactory {
 		// This statically links the IG to the CURRENT list of remote sites that it could possibly be a
 		// gateway to in the future.  BAD IDEA.  This list needs to be generated on the fly so it is current.
 		//
-		if (config.getActorType().equals(ActorType.INITIATING_GATEWAY.getName())) {
-			// must load up XCQ and XCR endpoints for simulator to use
-			config.remoteSites = new ArrayList<>();
-
-			Sites sites = simManager.getAllSites();
-			for (String remote : config.remoteSiteNames) {
-				Site site = sites.getSite(remote);
-				config.remoteSites.add(site);
-			}
-		}
+//		if (config.getActorType().equals(ActorType.INITIATING_GATEWAY.getName())) {
+//			// must load up XCQ and XCR endpoints for simulator to use
+//			config.remoteSites = new ArrayList<>();
+//
+//			Sites sites = simManager.getAllSites();
+//			for (String remote : config.rgSiteNames) {
+//				Site site = sites.getSite(remote);
+//				config.remoteSites.add(site);
+//			}
+//		}
 		//
 		//
 
@@ -244,16 +259,23 @@ public abstract class AbstractActorFactory {
 	}
 
 	static public void delete(SimulatorConfig config) throws IOException {
-		logger.info("delete simulator" + config.getId());
+        delete(config.getId());
+    }
+
+    static public void delete(SimId simId) throws IOException {
+        logger.info("delete simulator" + simId);
 		SimDb simdb;
 		try {
-			BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(config.getId());
-			sim.onDelete(config);
+			BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(simId);
+            SimulatorConfig config = loadSimulator(simId, true);
+            if (config != null)
+			    sim.onDelete(config);
 
-			simdb = new SimDb(config.getId());
+			simdb = new SimDb(simId);
 			File simDir = simdb.getSimDir();
 			simdb.delete(simDir);
-		} catch (NoSimException e) {
+
+        } catch (NoSimException e) {
 			return;		
 		} catch (ClassNotFoundException e) {
 			logger.error(ExceptionUtil.exception_details(e));
@@ -339,8 +361,16 @@ public abstract class AbstractActorFactory {
 		return configs;
 	}
 
+//    public SimulatorConfig loadSimulator(SimId simId) throws IOException, ClassNotFoundException {
+//        List<SimId> ids = new ArrayList<>();
+//        ids.add(simId);
+//        List<SimulatorConfig> configs = loadAvailableSimulators(ids);
+//        if (configs.size() == 0) return null;
+//        return configs.get(0);
+//    }
+
 	/**
-	 * Load simulators - ignore sims not found (length(simlist) < length(idlist))
+	 * Load simulators - ignore sims not found (length(simlist) &lt; length(idlist))
 	 * @param ids
 	 * @return
 	 * @throws IOException
@@ -423,7 +453,15 @@ public abstract class AbstractActorFactory {
 		addUser(sc, new SimulatorConfigElement(name, type, value));
 	}
 
-	public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
+    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
+        addUser(sc, new SimulatorConfigElement(name, type, values, isMultiSelect));
+    }
+
+    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, PatientErrorMap value) {
+        addUser(sc, new SimulatorConfigElement(name, type, value));
+    }
+
+    public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {
 		addFixed(sc, new SimulatorConfigElement(name, type, value));
 	}
 

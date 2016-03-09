@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
@@ -24,7 +25,7 @@ import java.util.Set;
 
 /**
  * Infrastructure for any tab that will allow a site to be chosen,
- * issue a transaction, get back results, 
+ * issue a transaction, getRetrievedDocumentsModel back results,
  * and allow the results to be inspected
  * @author bill
  *
@@ -38,8 +39,9 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	int row;
 
 	public boolean tlsEnabled = true;
-	public boolean samlEnabled = true;
-	ActorType selectByActor = null;
+    public boolean tlsOptionEnabled = true;
+	public ActorType selectByActor = null;
+	public boolean samlEnabled = false;
 	List<TransactionType> transactionTypes;
 	public TransactionSelectionManager transactionSelectionManager = null;
 	public boolean enableInspectResults = true;
@@ -47,8 +49,11 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	public boolean runEnabled = true;
 	ClickHandler runner;
 	String runButtonText = "Run";
+    HorizontalPanel runnerPanel = new HorizontalPanel();
 
 	public VerticalPanel resultPanel = new VerticalPanel();
+    // if false then tool takes responsibliity for placing it
+    public boolean addResultsPanel = true;
 	public TabContainer myContainer;
 	CheckBox doTls = new CheckBox("TLS?");
 	ListBox samlListBox = new ListBox();
@@ -65,14 +70,27 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	BaseSiteActorManager siteActorManager;// = new SiteActorManager(this);
 	boolean hasPatientIdParam = false;
 	HTML resultsShortDescription = new HTML();
+    public boolean autoAddRunnerButtons = true;
+    public String genericQueryTitle = null;
+    public Widget genericQueryInstructions = null;
 
-	static TransactionOfferings transactionOfferings = null;  // Loaded from server
+    public String getSelectedTest() {
+        return selectedTest;
+    }
+
+    public void setSelectedTest(String selectedTest) {
+        this.selectedTest = selectedTest;
+    }
+
+    public String selectedTest;
+
+    static public TransactionOfferings transactionOfferings = null;  // Loaded from server
 
 	protected QueryBoilerplate queryBoilerplate = null;
 
 
 	HTML statusBox = new HTML();
-	public TextBox pidTextBox;
+	public TextBox pidTextBox = new TextBox();
 
 
 	public GenericQueryTab(BaseSiteActorManager siteActorManager) {
@@ -118,7 +136,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		public void onSuccess(List<Result> theresult) {
 			resultsShortDescription.setText("");
 			try {
-				if (theresult.size() > 0) {
+				if (theresult.size() == 1) {
 					MetadataCollection mc = theresult.get(0).getStepResults().get(0).getMetadata();
 					StringBuilder buf = new StringBuilder();
 					buf.append("  ==> ");
@@ -129,33 +147,59 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 					resultsShortDescription.setText(buf.toString());
 				}
 			} catch (Exception e) {}
+            DetailsTree detailsTree = null;
 			boolean status = true;
 			results = theresult;
 			for (Result result : results) {
 				for (AssertionResult ar : result.assertions.assertions) {
-					String assertion = ar.assertion.replaceAll("\n", "<br />");
-					if (ar.status) {
-						resultPanel.add(addHTML(assertion));
-					} else {
-						if (assertion.contains("EnvironmentNotSelectedException"))
-							resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Environment Not Selected" + "</font>"));
-						else
-							resultPanel.add(addHTML("<font color=\"#FF0000\">" + assertion + "</font>"));
-						status = false;
-					}
+
+                    if (ar.assertion.startsWith("Report") && detailsTree != null) {
+                        detailsTree.add(ar.assertion);
+                    } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
+                            detailsTree.add(ar.assertion);
+                    } else {
+                        String assertion = ar.assertion.replaceAll("\n", "<br />");
+                        if (ar.status) {
+                            resultPanel.add(addHTML(assertion));
+                        } else {
+                            if (assertion.contains("EnvironmentNotSelectedException"))
+                                resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Environment Not Selected" + "</font>"));
+                            else
+                                resultPanel.add(addHTML("<font color=\"#FF0000\">" + assertion + "</font>"));
+                            status = false;
+                        }
+                    }
+                    if (ar.assertion.startsWith("Status")) {
+                        detailsTree = new DetailsTree();
+                        resultPanel.add(detailsTree.getWidget());
+                    }
 				}
 			}
 			if (status)
 				setStatus("Status: Success", true);
 			else
 				setStatus("Status: Failure", false);
+
+
 			getInspectButton().setEnabled(true);
 			getGoButton().setEnabled(true);
 		}
 
 	};
 
+    class DetailsTree {
+        TreeItem root;
+        Tree tree;
 
+        DetailsTree() {
+            tree = new Tree();
+            root = new TreeItem();
+            root.setText("Details...");
+            tree.addItem(root);
+        }
+        void add(String x) { root.addTextItem(x); }
+        Tree getWidget() { return tree; }
+    }
 
 	public void tabIsSelected() { 
 		System.out.println("tab selected: " + getCommonSiteSpec());
@@ -200,19 +244,20 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	}
 
 	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
-		if (queryBoilerplate != null) {
-			queryBoilerplate.remove();
-			queryBoilerplate = null;
-		}
-		queryBoilerplate = new QueryBoilerplate(
-				this, runner, transactionTypes,
-				couplings
-				);
-		return queryBoilerplate;
+        return addQueryBoilerplate(runner, transactionTypes, couplings, true);
+//		if (queryBoilerplate != null) {
+//			queryBoilerplate.remove();
+//			queryBoilerplate = null;
+//		}
+//		queryBoilerplate = new QueryBoilerplate(
+//				this, runner, transactionTypes,
+//				couplings
+//				);
+//		return queryBoilerplate;
 
 	}
 
-	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, 
+	public QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,
 			CoupledTransactions couplings, boolean hasPatientIdParam) {
 		if (queryBoilerplate != null) {
 			queryBoilerplate.remove();
@@ -227,7 +272,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			topPanel.add(mainConfigPanel);
 			topPanel.add(new HTML("<hr />"));
 		}
-		topPanel.add(resultPanel);
+        if (addResultsPanel)
+		    topPanel.add(resultPanel);
 		queryBoilerplate = new QueryBoilerplate(
 				this, runner, transactionTypes,
 				couplings
@@ -389,13 +435,13 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 	// so it can be overloaded
 	public void onReload() {}
 
-	void reloadTransactionOfferings() {
+	public void reloadTransactionOfferings() {
 		try {
 			toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings> () {
 
 				public void onFailure(Throwable caught) {
 					resultPanel.clear();
-					resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + caught.getMessage() + "</font>"));
+					resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + caught.getMessage() + " Your external cache may be corrupted." +"</font>"));
 				}
 
 				public void onSuccess(TransactionOfferings to) {
@@ -406,7 +452,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			});
 		} catch (Exception e) {
 			resultPanel.clear();
-			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + e.getMessage() + "</font>"));
+			resultPanel.add(addHTML("<font color=\"#FF0000\">" + "Error: " + e.getMessage() + " Your external cache may be corrupted." +"</font>"));
 		}
 	}
 
@@ -430,15 +476,21 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			resultPanel.clear();
 		initMainGrid();
 
-		//			genericQueryTab.perTransTypeRadioButtons = new HashMap<TransactionType, List<RadioButton>>();
-
 		mainConfigPanel.clear();
-
 
 		// two columns - title and contents
 		final int titleColumn = 0;
 		final int contentsColumn = 1;
 		int commonGridRow = 0;
+
+        if (genericQueryTitle != null) {
+            mainConfigPanel.add(new HTML("<h2>" + genericQueryTitle + "</h2>"));
+        }
+
+        if (genericQueryInstructions != null) {
+            mainConfigPanel.add(genericQueryInstructions);
+        }
+
 		FlexTable commonParamGrid = new FlexTable();
 		mainConfigPanel.add(commonParamGrid);
 
@@ -453,10 +505,10 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		}
 
 		SiteSpec commonSiteSpec = null;
+        commonSiteSpec = getCommonSiteSpec();
 		if (samlEnabled) {
 			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("SAML"));
 
-			commonSiteSpec = getCommonSiteSpec();
 
 			samlListBox = new ListBox();
 			samlListBox.addItem("SAML OFF", "0");
@@ -471,8 +523,10 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 		if (tlsEnabled) {
 			doTls = new CheckBox("");
-			if (commonSiteSpec != null)
-				doTls.setValue(getCommonSiteSpec().isTls());
+            doTls.setEnabled(tlsOptionEnabled);
+			if (getCommonSiteSpec() != null) {
+                doTls.setValue(getCommonSiteSpec().isTls());
+            }
 			doTls.addClickHandler(new TlsSelector(this));
 			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("TLS"));
 			commonParamGrid.setWidget(commonGridRow++, contentsColumn, doTls);
@@ -511,31 +565,50 @@ public abstract class GenericQueryTab  extends TabbedWindow {
                 }
 			}
 		}
-
-		HorizontalPanel runnerButtons = new HorizontalPanel();
-		commonParamGrid.setWidget(commonGridRow++, 1, runnerButtons);
-		if (runEnabled) {
-			setGoButton(new Button(runButtonText));
-			runnerButtons.add(getGoButton());
-//			mainGrid.setWidget(row++, 1, getGoButton());
-		}
-
-		try {
-			getGoButton().addClickHandler(runner);
-		} catch (Exception e) {}
-
-		if (enableInspectResults) {
-			setInspectButton(new Button("Inspect Results"));
-			getInspectButton().setEnabled(false);
-			runnerButtons.add(getInspectButton());
-		}
-
-		if (getInspectButton() != null)
-			getInspectButton().addClickHandler(new InspectorLauncher(me));
-
-		resultsShortDescription.setHTML("");
-		runnerButtons.add(resultsShortDescription);
+        if (autoAddRunnerButtons)
+            addRunnerButtons(mainConfigPanel);
 	}
+
+    HorizontalPanel logLaunchButtonPanel = new HorizontalPanel();
+
+    Button runButton = new Button(runButtonText);
+    Button inspectButon = new Button("Inspect Results");
+
+    public void addRunnerButtons(VerticalPanel panel) {
+        boolean hasRunButton = runnerPanel.getWidgetIndex(runButton) > -1;
+
+        // messed normal query tools
+//        if (hasRunButton) {
+//            new PopupMessage("already has run button");
+//            return;
+//        }
+
+        panel.add(runnerPanel);
+        if (runEnabled) {
+            setGoButton(runButton);
+            runnerPanel.add(getGoButton());
+        }
+
+
+        try {
+            if (!hasRunButton)
+                getGoButton().addClickHandler(runner);
+        } catch (Exception e) {}
+
+        if (enableInspectResults) {
+            setInspectButton(inspectButon);
+            getInspectButton().setEnabled(false);
+            runnerPanel.add(getInspectButton());
+        }
+
+        if (getInspectButton() != null)
+            getInspectButton().addClickHandler(new InspectorLauncher(me));
+
+        runnerPanel.add(logLaunchButtonPanel);
+
+        resultsShortDescription.setHTML("");
+        runnerPanel.add(resultsShortDescription);
+    }
 
 	public void setRunButtonText(String label) {
 		runButtonText = label;
@@ -593,7 +666,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return sites;
 	}
 
-	protected SiteSpec getSiteSelection() { return queryBoilerplate.getSiteSelection(); }
+	public SiteSpec getSiteSelection() { return queryBoilerplate.getSiteSelection(); }
 
 	protected boolean verifyPidProvided() {
 		if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
@@ -603,7 +676,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return true;
 	}
 
-	protected boolean verifySiteProvided() {
+	public boolean verifySiteProvided() {
 		SiteSpec siteSpec = getSiteSelection();
 		if (siteSpec == null) {
 			new PopupMessage("You must select a site first");
@@ -612,11 +685,18 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 		return true;
 	}
 
-	protected void rigForRunning() {
+	protected Panel rigForRunning() {
 		resultPanel.clear();
 		// Where the bottom-of-screen listing from server goes
 		addStatusBox();
 		getGoButton().setEnabled(false);
 		getInspectButton().setEnabled(false);
+        return logLaunchButtonPanel;
 	}
+
+    public static boolean empty(String x) {
+        if (x == null) return true;
+        if (x.equals("")) return true;
+        return false;
+    }
 }

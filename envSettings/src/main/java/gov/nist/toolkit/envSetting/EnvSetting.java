@@ -20,9 +20,17 @@ public class EnvSetting {
 
 	static public EnvSetting getEnvSetting(String sessionId) throws EnvironmentNotSelectedException {
         EnvSetting s = getEnvSettingForSession(sessionId);
-        if (s == null) throw new EnvironmentNotSelectedException("");
+        if (s == null) {
+            logger.info(String.format("For session %s...", sessionId));
+            logger.info(String.format("Session/Env mapping table - %s", settings.toString()));
+            throw new EnvironmentNotSelectedException("");
+        }
 		return s;
 	}
+
+    public String toString() {
+        return String.format("ENV %s => %s", envName, envDir);
+    }
 
     static public EnvSetting getEnvSettingForSession(String sessionId) {
         EnvSetting s = settings.get(sessionId);
@@ -36,14 +44,22 @@ public class EnvSetting {
         return s;
     }
 
-    static void installDefaultEnvironment() {
+    public static void installDefaultEnvironment() {
         File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
         if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
         new EnvSetting(DEFAULTSESSIONID, DEFAULTENVIRONMENTNAME, envFile);
+//        new EnvSetting(Installation.defaultSessionName(), DEFAULTENVIRONMENTNAME, envFile);
+//        new EnvSetting(Installation.defaultServiceSessionName(), DEFAULTENVIRONMENTNAME, envFile);
+    }
+
+    public static void installServiceEnvironment() {
+        File envFile = Installation.installation().internalEnvironmentFile(DEFAULTENVIRONMENTNAME);
+        if (envFile == null || !envFile.exists()) throw new EnvironmentNotSelectedException("Default Environment not configured - file " + envFile + " not found.");
+        new EnvSetting(Installation.defaultServiceSessionName(), DEFAULTENVIRONMENTNAME, envFile);
     }
 
 	public EnvSetting(String sessionId, String name, File dir) {
-		logger.info("Session " + sessionId + " environment " + name + " ==> " + dir);
+		logger.info("Session " + sessionId + " uses environment " + name + " ==> " + dir);
 		settings.put(sessionId, new EnvSetting(name, dir));
 	}
 	

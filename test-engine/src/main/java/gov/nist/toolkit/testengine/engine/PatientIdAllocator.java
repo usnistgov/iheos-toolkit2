@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.http.httpclient.HttpClient;
 import gov.nist.toolkit.utilities.io.Io;
@@ -104,7 +104,7 @@ public class PatientIdAllocator extends IdAllocator {
 		try {
 		return loadAltPatientId();
 		} catch (IOException e) {
-			throw new XdsInternalException("Cannot get alternate patient id", e);
+			throw new XdsInternalException("Cannot getRetrievedDocumentsModel alternate patient id", e);
 		}
 	}
 

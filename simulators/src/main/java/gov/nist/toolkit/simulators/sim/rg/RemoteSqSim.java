@@ -70,8 +70,9 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 		if (!validateOk)
 			return;
 
-		// get configured endpoint for backend registry for SQ
-		String endpoint = simulatorConfig.get(SimulatorProperties.storedQueryEndpoint).asString();
+		// getRetrievedDocumentsModel configured endpoint for backend registry for SQ
+        String endpointLabel = (common.isTls()) ? SimulatorProperties.storedQueryTlsEndpoint : SimulatorProperties.storedQueryEndpoint;
+		String endpoint = simulatorConfig.get(endpointLabel).asString();
 
 		// issue soap call to registry
 		Soap soap = new Soap();
@@ -116,7 +117,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 	boolean passOnErrors(MessageValidatorEngine mvc, OMElement result) throws XdsInternalException {
 
 		AdhocQueryResponseParser aqrp = new AdhocQueryResponseParser(result);
-		AdhocQueryResponseParser.AdhocQueryResponse aqr = aqrp.getResponse();
+		gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse aqr = aqrp.getResponse();
 
 		if (!aqr.isSuccess()) {
 			RegistryErrorListGenerator relg = new RegistryErrorListGenerator();

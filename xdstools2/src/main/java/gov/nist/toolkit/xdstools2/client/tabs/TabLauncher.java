@@ -6,9 +6,14 @@ import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
+import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
+import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
+import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 
 public class TabLauncher implements ClickHandler {
 	TabContainer container;
@@ -18,6 +23,7 @@ public class TabLauncher implements ClickHandler {
 	
 	final static public String findDocumentsTabLabel = "FindDocuments";
 	final static public String findDocumentsByRefIdTabLabel = "FindDocumentsByRefId";
+	final static public String findDocumentsAllParametersTabLabel = "Find Documents (All Parameters)";
 	final static public String findPatientTabLabel = "XCPD-FindPatient";
 	final static public String findFoldersTabLabel = "FindFolders";
 	final static public String getDocumentsTabLabel = "GetDocuments";
@@ -48,7 +54,13 @@ public class TabLauncher implements ClickHandler {
 	final static public String testRunnerTabLabel = "Conformance Tests";
 	final static public String nwhinTabLabel = "Pre-OnBoarding Tests";
 	final static public String pidFavoritesLabel = "Manage Patient IDs";
-	
+	final static public String testsOverviewTabLabel = "Tests Overview";
+    final static public String igTestsTabLabel = "Initiating Gateway Tests";
+    final static public String rgTestsTabLabel = "Responding Gateway Tests";
+	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
+
+
+
 	final static public String testLogLabel = "Test Log Listing";
 	final static public String toolConfigTabLabel = "Toolkit Configuration";	
 	final static public String metadataEditorTabLabel = "Action: Edit";
@@ -56,8 +68,14 @@ public class TabLauncher implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		if (tabType.equals(findDocumentsTabLabel)) 
 			new FindDocumentsTab().onAbstractTabLoad(container, true, null);
-		else if (tabType.equals(findDocumentsByRefIdTabLabel)) 
-			new FindDocumentsByRefIdTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(igTestsTabLabel))
+			new IGTestTab().onAbstractTabLoad(container, true, "IG Tests");
+        else if (tabType.equals(rgTestsTabLabel))
+            new RGTestTab().onAbstractTabLoad(container, true, "RG Tests");
+        else if (tabType.equals(findDocumentsByRefIdTabLabel))
+            new FindDocumentsByRefIdTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(findDocumentsAllParametersTabLabel))
+			new FindDocuments2Tab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(findPatientTabLabel)) 
 			new FindPatientTab().onAbstractTabLoad(container, true, null);		
 		else if (tabType.equals(findFoldersTabLabel)) 
@@ -84,6 +102,8 @@ public class TabLauncher implements ClickHandler {
 			new SourceStoredDocValTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(documentRetrieveTabLabel)) 
 			new DocRetrieveTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(imagingDocumentSetRetrieveTabLabel)) 
+			new ImagingDocSetRetrieveTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(allocatePatientIdTabLabel)) 
 			new PidAllocateTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(registryTestDataTabLabel)) 
@@ -120,6 +140,8 @@ public class TabLauncher implements ClickHandler {
 			new RepositoryListingTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(pidFavoritesLabel))
 			new PidFavoritesTab().onAbstractTabLoad(container, true, null);
+		else if (tabType.equals(testsOverviewTabLabel))
+			new TestsOverviewTab().onAbstractTabLoad(container, true, null);
 		else if (tabType.equals(metadataEditorTabLabel)) {
 			MetadataEditorTab t = new MetadataEditorTab();
 			t.setSiteSpec(siteSpec);

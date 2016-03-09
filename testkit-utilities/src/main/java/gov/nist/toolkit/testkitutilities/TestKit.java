@@ -1,6 +1,7 @@
 package gov.nist.toolkit.testkitutilities;
 
 import gov.nist.toolkit.utilities.io.Io;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,8 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.log4j.Logger;
 
 /**
  * Tooling access to the embedded copy of the XDS testkit. 
@@ -70,7 +69,7 @@ public class TestKit {
 	 * Get test names and descriptions from a named test collection
 	 * @param collectionSetName name of directory holding tc files (collection definitions)
 	 * @param collectionName name of a collection 
-	 * @return list of test name => description
+	 * @return list of test name = description
 	 * @throws Exception oops - collection doesn't exist or cannot be read
 	 */
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception {

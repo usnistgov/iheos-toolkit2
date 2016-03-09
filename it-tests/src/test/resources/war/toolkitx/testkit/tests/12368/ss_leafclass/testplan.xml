@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12368/ss_leafclass</Test>
+  <TestStep id="ss_uuid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetSubmissionSets</SQ>
+      <Assertion>LeafClass return of two SubmissionSets with different PatientIds - error</Assertion>
+    </Rule>
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSResultNotSinglePatient</ExpectedErrorCode>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../../12374" id="Document01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

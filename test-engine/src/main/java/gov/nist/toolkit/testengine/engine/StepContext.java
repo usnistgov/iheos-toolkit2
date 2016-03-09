@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.actorfactory.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.testengine.transactions.*;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
@@ -287,7 +287,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				else if (instruction_name.equals("RegisterTransaction")) 
 				{
 					transaction = new RegisterTransaction(this, instruction, instruction_output);
-				} 
+				}
+				else if (instruction_name.equals("RegisterODDETransaction"))
+				{
+					transaction = new RegisterODDETransaction(this, instruction, instruction_output);
+				}
 				else if (instruction_name.equals("MuTransaction")) 
 				{
 					transaction = new MuTransaction(this, instruction, instruction_output);
@@ -323,6 +327,10 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				else if (instruction_name.equals("SocketTransaction")) 
 				{
 					transaction = new SocketTransaction(this, instruction, instruction_output);
+				} 
+				else if (instruction_name.equals("RetrieveImagingDocSetTransaction")) 
+				{
+					transaction = new ImagingDocSetRetrieveTransaction(this, instruction, instruction_output);
 				} 
 				else 
 				{

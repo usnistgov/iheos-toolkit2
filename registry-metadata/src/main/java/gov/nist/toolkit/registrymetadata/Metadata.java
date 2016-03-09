@@ -314,6 +314,7 @@ public class Metadata {
 	 * Classification object can be top-level objects or nested inside the
 	 * objects they classify. Move all top-level classifications under the
 	 * objects they classify.
+     * @throws MetadataException
 	 */
 	public void embedClassifications() throws MetadataException {
 		for (OMElement classification : classifications) {
@@ -1077,7 +1078,25 @@ public class Metadata {
 		return e;
 	}
 
-	public OMElement addIntClassification(OMElement ele, String uuid) {
+    public List<OMElement> addAuthorPersonToAll(String authorPersonValue) {
+        List<OMElement> added = new ArrayList<>();
+        for (OMElement docEle : getExtrinsicObjects()) {
+            OMElement authorClassification = addExtClassification(docEle, MetadataSupport.XDSDocumentEntry_author_uuid);
+            authorClassification.addAttribute("nodeRepresentation", "", null);
+            added.add(authorClassification);
+            addSlot(authorClassification, "authorPerson", authorPersonValue);
+        }
+        for (OMElement docEle : getSubmissionSets()) {
+            OMElement authorClassification = addExtClassification(docEle, MetadataSupport.XDSSubmissionSet_author_uuid);
+            authorClassification.addAttribute("nodeRepresentation", "", null);
+            added.add(authorClassification);
+            addSlot(authorClassification, "authorPerson", authorPersonValue);
+        }
+        return added;
+    }
+
+
+    public OMElement addIntClassification(OMElement ele, String uuid) {
 		OMElement e = MetadataSupport.om_factory.createOMElement(MetadataSupport.classification_qnamens);
 		ele.addChild(e);
 
@@ -2768,7 +2787,7 @@ public class Metadata {
 	 * @param classification_schemes
 	 *            - list of UUIDs representing the classification schemes of
 	 *            interest
-	 * @return map from classification scheme UUID => code values where a code
+	 * @return map from classification scheme UUID - code values where a code
 	 *         value is code^^code_set.
 	 * @throws MetadataException
 	 */

@@ -6,6 +6,7 @@ import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
@@ -63,11 +64,11 @@ public class SimServlet  extends HttpServlet {
 	public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
 		config = sConfig;
-		logger.info("Initializing toolkit");
+		logger.info("Initializing toolkit in SimServlet");
 		File warHome = new File(config.getServletContext().getRealPath("/"));
 		logger.info("...warHome is " + warHome);
 		Installation.installation().warHome(warHome);
-		logger.info("...simdb = " + Installation.installation().simDbFile());
+        logger.info("...warHome initialized to " + Installation.installation().warHome());
 
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);
@@ -464,6 +465,7 @@ public class SimServlet  extends HttpServlet {
 			repIndex = getRepIndex(simid);
 
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
+            vc.forceMtom = transactionType.isRequiresMtom();
 
 			SimulatorConfigElement asce = asc.get(SimulatorProperties.codesEnvironment);
 			if (asce != null)
@@ -489,10 +491,14 @@ public class SimServlet  extends HttpServlet {
 			BaseDsActorSimulator sim = (BaseDsActorSimulator) RuntimeManager.getSimulatorRuntime(simid);
 
 			sim.init(dsSimCommon, asc);
-			sim.onTransactionBegin(asc);
-			transactionOk = sim.run(transactionType, mvc, validation);
-			sim.onTransactionEnd(asc);
-
+            if (asc.getConfigEle(SimulatorProperties.FORCE_FAULT).asBoolean()) {
+                sendSoapFault(dsSimCommon, "Forced Fault");
+                responseSent = true;
+            } else {
+                sim.onTransactionBegin(asc);
+                transactionOk = sim.run(transactionType, mvc, validation);
+                sim.onTransactionEnd(asc);
+            }
 		}
 		catch (InvocationTargetException e) {
 			sendSoapFault(response, ExceptionUtil.exception_details(e));
@@ -551,7 +557,7 @@ public class SimServlet  extends HttpServlet {
 		// this should go away after repository code made to use deltas
 		if (!transactionOk) {
 			synchronized(this) {
-				// delete memory copy of indexes so they don't get written out
+				// delete memory copy of indexes so they don't getRetrievedDocumentsModel written out
 				servletContext.setAttribute("Rep_" + simid, null);
 				repIndex = null;
 			}
@@ -570,6 +576,7 @@ public class SimServlet  extends HttpServlet {
 				repIndex.save();
 			}
 
+            logger.info("Starting Reg/Rep Cache cleanout");
 			synchronized(this) {
 
 				// check for indexes that are old enough they should be removed from cache
@@ -597,7 +604,9 @@ public class SimServlet  extends HttpServlet {
 				}
 
 			}
+            logger.info("Done with Reg/Rep Cache cleanout");
 		} catch (IOException e) {
+            logger.info("Done with Reg/Rep Cache cleanout");
 			if (!responseSent)
 				sendSoapFault(response, ExceptionUtil.exception_details(e));
 			e.printStackTrace();
@@ -678,6 +687,7 @@ public class SimServlet  extends HttpServlet {
 		String registryIndexFile = db.getRegistryIndexFile().toString();
 		RegIndex regIndex;
 
+        logger.info("GetRegIndex");
 		synchronized(config) {
 			regIndex = (RegIndex) servletContext.getAttribute("Reg_" + simid);
 			if (regIndex == null) {
@@ -686,7 +696,7 @@ public class SimServlet  extends HttpServlet {
 				regIndex.setSimDb(db);
 				servletContext.setAttribute("Reg_" + simid, regIndex);
 			} else
-				logger.debug("Using cached RegIndex");
+				logger.debug("Using cached RegIndex: " + simid + " db loc:" + regIndex.getSimDb().getRegistryIndexFile().toString());
 
 			regIndex.cacheExpires = getNewExpiration();
 		}
@@ -700,6 +710,7 @@ public class SimServlet  extends HttpServlet {
 		String repositoryIndexFile = db.getRepositoryIndexFile().toString();
 		RepIndex repIndex;
 
+        logger.info("GetRepIndex");
 		synchronized(config) {
 			repIndex = (RepIndex) servletContext.getAttribute("Rep_" + simid);
 			if (repIndex == null) {
@@ -714,6 +725,7 @@ public class SimServlet  extends HttpServlet {
 
 	// remove the index(s)
 	static public void deleteSim(SimId simId) {
+        if (config == null) return;
 		ServletContext servletContext = config.getServletContext();
 		servletContext.removeAttribute("Reg_" + simId);
 		servletContext.removeAttribute("Rep_" + simId);
@@ -744,6 +756,7 @@ public class SimServlet  extends HttpServlet {
 			SimCommon c = new SimCommon(response);
 			DsSimCommon dsSimCommon = new DsSimCommon(c);
 			OMElement faultEle = sf.getXML();
+            logger.info("Sending SOAP Fault:\n" + new OMFormatter(faultEle).toString());
 			OMElement soapEnv = dsSimCommon.wrapResponseInSoapEnvelope(faultEle);
 			dsSimCommon.sendHttpResponse(soapEnv, SimCommon.getUnconnectedErrorRecorder(), false);
 		} catch (Exception e) {
@@ -751,7 +764,16 @@ public class SimServlet  extends HttpServlet {
 		}
 	}
 
-	void logRequest(HttpServletRequest request, SimDb db, String actor, String transaction)
+    private void sendSoapFault(DsSimCommon dsSimCommon, String message) {
+//        try {
+            SoapFault sf = new SoapFault(SoapFault.FaultCodes.Sender, message);
+            dsSimCommon.sendFault(sf);
+//        } catch (Exception e) {
+//            logger.error(ExceptionUtil.exception_details(e));
+//        }
+    }
+
+    void logRequest(HttpServletRequest request, SimDb db, String actor, String transaction)
 			throws FileNotFoundException, IOException, HttpHeaderParseException, ParseException {
 		StringBuffer buf = new StringBuffer();
 

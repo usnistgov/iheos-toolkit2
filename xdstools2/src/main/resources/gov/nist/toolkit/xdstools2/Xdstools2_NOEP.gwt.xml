@@ -28,6 +28,7 @@
     <inherits name="gov.nist.toolkit.services.services"/>
   <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
   <inherits name="gov.nist.toolkit.http.http"/>
+    <inherits name="gov.nist.toolkit.configDatatypes.configDatatypes"/>
 
 
   <!-- No EP -->
@@ -37,12 +38,12 @@
 
   <!-- DEBUG STUFF -->
   <!-- Use Super Dev Mode -->
-  <!-- <add-linker name="xsiframe"/> -->
-  <!-- <set-configuration-property name="devModeRedirectEnabled" value="true"/> -->
-  <!-- <set-property name="compiler.useSourceMaps" value="true"/> -->
+   <!--<add-linker name="xsiframe"/>-->
+   <!--<set-configuration-property name="devModeRedirectEnabled" value="true"/>-->
+   <!--<set-property name="compiler.useSourceMaps" value="true"/>-->
   
   <!-- Only build for one browser - safari setting includes chrome -->
-  <!-- <set-property name="user.agent" value="safari" /> -->
+   <set-property name="user.agent" value="safari" />
 
   <inherits name="com.google.gwt.logging.Logging"/>
 

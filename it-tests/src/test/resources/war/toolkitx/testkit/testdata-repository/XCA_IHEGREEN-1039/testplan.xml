@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>XCA_IHEGREEN-1039</Test>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>metadata.xml</MetadataFile>
+            <Document id="Document01">readme.txt</Document>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

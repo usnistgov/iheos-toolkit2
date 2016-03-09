@@ -114,7 +114,7 @@ public class ParamParser {
 	 * 		a List of acceptable values (input for an SQL OR)
 	 * 		a List of And structures. An And structure is a list of values, all of which must be present to satisfy the query (AND logic). Each of
 	 * 		the values is really a List of OR values.
-	 * 		This AND logic is nested inside the OR logic to get the needed AND/OR logic required by the Stored Query specification.
+	 * 		This AND logic is nested inside the OR logic to getRetrievedDocumentsModel the needed AND/OR logic required by the Stored Query specification.
 	 * A Slot, representing a SQ parameter, holds a list of acceptable values for a parameter (OR logic).  If multiple Slots of the
 	 * same name are present in the query request, then each must be satisfied by the query (AND logic).
 	 *
@@ -344,7 +344,7 @@ public class ParamParser {
 	//		ArrayList<Object> newHome;  // where to stuff new values
 	//		if (parms.containsKey(name)) {
 	//			// this is not first slot with this name - AND logic applies here
-	//			Object value = parms.get(name);
+	//			Object value = parms.getRetrievedDocumentsModel(name);
 	//			if (value instanceof And) {
 	//				// existing And - add to it
 	//				And and = (And) value;

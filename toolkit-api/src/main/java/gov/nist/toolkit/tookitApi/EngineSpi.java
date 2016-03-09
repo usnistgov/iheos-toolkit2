@@ -2,6 +2,7 @@ package gov.nist.toolkit.tookitApi;
 
 import gov.nist.toolkit.actortransaction.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.*;
+import gov.nist.toolkit.toolkitServicesCommon.resource.*;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -30,8 +31,7 @@ public class EngineSpi {
     /**
      * This will initialize the SPI to contact the test engine at
      * http://hostname:port/xdstools2
-     * @param hostname where test engine runs
-     * @param port where test engin runs
+     * @param urlRoot URL Root - http://hostname:port/xdstools2 for example
      */
     public EngineSpi(String urlRoot) {
         ClientConfig cc = new ClientConfig().register(new JacksonFeature());
@@ -41,6 +41,8 @@ public class EngineSpi {
         logger.info("target is " + urlRoot + "/rest/");
         target = c.target(urlRoot + "/rest/");
     }
+
+    public WebTarget getTarget() { return target; }
 
     public SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
         String actorTypeString = actorType.getName();
@@ -81,6 +83,7 @@ public class EngineSpi {
             return response.readEntity(SimConfigResource.class);
         if (status == Response.Status.NOT_MODIFIED.getStatusCode())
             return null;
+        logger.error("Update returned " + response.getStatusInfo());
         throw new ToolkitServiceException(response);
     }
 
@@ -127,6 +130,16 @@ public class EngineSpi {
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
         return response.readEntity(RawSendResponseResource.class);
+    }
+
+    public LeafClassRegistryResponse queryForLeafClass(StoredQueryRequest request) throws ToolkitServiceException {
+        Response response = target
+                .path(String.format("simulators/%s/xds/QueryForLeafClass", request.getFullId()))
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(request));
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response);
+        return response.readEntity(LeafClassRegistryResponseResource.class);
     }
 
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11903</Test>
+  <TestStep id="single_from_doc">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetAssociations</SQ>
+      <Assertion>Single association referencing document</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <UseId testdir="../12346/single_doc" id="Document01" symbol="$uuid$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="multiple_assoc_from_doc">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetAssociations</SQ>
+      <Assertion>multiple associations referencing document</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <UseId testdir="../12346/doc_w_fol" id="Document01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="multiple_assoc_from_ss">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetAssociations</SQ>
+      <Assertion>multiple associations referencing ss</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query3.xml</MetadataFile>
+      <UseId testdir="../12346/doc_w_fol" id="SubmissionSet01" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="3"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="multiple_doc">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetAssociations</SQ>
+      <Assertion>Input references multiple documents</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query4.xml</MetadataFile>
+      <UseId testdir="../12346/doc_w_fol" id="SubmissionSet01" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../12346/single_doc" id="SubmissionSet01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="4"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

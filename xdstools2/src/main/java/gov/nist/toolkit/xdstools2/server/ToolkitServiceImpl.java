@@ -4,7 +4,11 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.actorfactory.client.*;
+    import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
+    import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+    import gov.nist.toolkit.actortransaction.client.TransactionType;
+    import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -13,7 +17,13 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+    import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+    import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+    import gov.nist.toolkit.services.client.RawResponse;
+    import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+    import gov.nist.toolkit.services.server.RawResponseBuilder;
+    import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
@@ -64,6 +74,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
 
     // Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
     // a reference to an instance of this class. This is necessary to get around a circular
+	// a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
     // reference in the build tree
 
     public ToolkitServiceImpl() {
@@ -233,6 +244,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException {
         return session().queryServiceManager().getAll(site, pid, codesSpec);
     }
+    
+    public List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  {
+		System.out.println("Running findDocuments2 service");
+		return session().queryServiceManager().findDocuments2(site, pid, codesSpec);
+    }
+
+
 
     public List<Result> findPatient(SiteSpec site, String firstName,
                                     String secondName, String lastName, String suffix, String gender,
@@ -271,55 +289,33 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     // Test Service
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException {
-        return session().xdsTestServiceManager().getTestResults(testInstances, testSession);
+// New - Loads or reloads test data
+	public List<Test> reloadAllTestResults(String sessionName) throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(sessionName); }
+	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
+	public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
+	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
+	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
+	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
+	public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
+	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
+	public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
+	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
+	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testId); }
+	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
+	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
+
+	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
+    public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildIgTestEnvironment(s, request);
+    }
+    public RawResponse buildRgTestOrchestration(RgOrchestrationRequest request) {
+        Session s = getSession();
+        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+        return new OrchestrationManager().buildRgTestEnvironment(s, request);
     }
 
-    public String delTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException {
-        session().xdsTestServiceManager().delTestResults(testInstances, testSession);
-        return "";
-    }
-
-    public String setMesaTestSession(String sessionName) throws NoServletSessionException {
-        session().xdsTestServiceManager().setMesaTestSession(sessionName);
-        return sessionName;
-    }
-
-    public List<String> getMesaTestSessionNames() throws Exception {
-        return session().xdsTestServiceManager().getMesaTestSessionNames();
-    }
-
-    public boolean addMesaTestSession(String name) throws Exception {
-        return session().xdsTestServiceManager().addMesaTestSession(name);
-    }
-
-    public boolean delMesaTestSession(String name) throws Exception {
-        return session().xdsTestServiceManager().delMesaTestSession(name);
-    }
-
-    public String getNewPatientId(String assigningAuthority) throws NoServletSessionException {
-        return session().xdsTestServiceManager().getNewPatientId(assigningAuthority);
-    }
-
-    @Override
-    public String configureTestkit(String selectedEnvironmentName) {
-        File environmentFile = Installation.installation().environmentFile(selectedEnvironmentName);
-        File defaultTestkit = Installation.installation().testkitFile();
-        CodesUpdater updater = new CodesUpdater();
-        updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
-        return updater.getOutput();
-    }
-
-    @Override
-    public boolean doesTestkitExist(String selectedEnvironment) {
-        File environmentFile = Installation.installation().environmentFile(selectedEnvironment);
-        File testkit=new File(environmentFile,"testkit");
-        return testkit.exists();
-    }
-
-    public String getTestReadme(String test) throws Exception {
-        return session().xdsTestServiceManager().getTestReadme(test);
-    }
 
     /**
      * Get list of section names defined for the test in the order they should be executed
@@ -602,6 +598,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
         return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
     }
+    public List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception {
+        List<String> refs = TransactionErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(transactionName), severity);
+        logger.info(": getTransactionErrorCodeRefs(" + transactionName + ") => " + refs.size() + " codes");
+        return refs;
+    }
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
@@ -615,6 +616,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     public List<RepositoryStatus> getDashboardRepositoryData() throws Exception {
         return new DashboardServiceManager(session()).getDashboardRepositoryData();
     }
+
 
     // Other support calls
 
@@ -631,8 +633,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
             if (!eCacheFile.canWrite())
                 throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
 
-            File warhome = Installation.installation().warHome();
-            new PropertyServiceManager(warhome).getPropertyManager().update(props);
+//            File warhome = Installation.installation().warHome();
+            new PropertyServiceManager().getPropertyManager().update(props);
             reloadPropertyFile();
 //		Installation.installation().externalCache(eCacheFile);
             ExternalCacheManager.reinitialize(eCacheFile);

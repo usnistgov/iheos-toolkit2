@@ -30,7 +30,8 @@ public abstract class TabbedWindow {
 	public TabbedWindow() {
 	}
 
-	protected String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
+	// Used to be protected but impractical for use with the new widget-based architecture in for ex. TestsOverviewTab
+	public String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
 
 	abstract public void onTabLoad(TabContainer container, boolean select, String eventName);
 
@@ -134,7 +135,7 @@ public abstract class TabbedWindow {
 	//		});
 	//	}
 
-	// all panels get a close button except the home panel
+	// all panels getRetrievedDocumentsModel a close button except the home panel
 	protected void addCloseButton(TabContainer container, VerticalPanel topPanel, String helpHTML) {
 
 		final VerticalPanel myPanel = topPanel;

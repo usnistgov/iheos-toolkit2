@@ -1,16 +1,13 @@
 package gov.nist.toolkit.testenginelogging;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
 
 public class Report implements Serializable {
 	/**
@@ -20,7 +17,7 @@ public class Report implements Serializable {
 	public String name;
 	String section;
 	String xpath;
-	String value;
+	String value = "Unavailable";
 
 	static QName name_qname = new QName("name");
 
@@ -30,8 +27,7 @@ public class Report implements Serializable {
 		r.name = rep.getAttributeValue(name_qname);
 		r.value = rep.getText();
 
-		if (r.name == null || r.name.equals("") ||
-				r.value == null || r.value.equals(""))
+		if (r.name == null || r.name.equals(""))
 			throw new XdsInternalException("Cannot parse Report: " + rep.toString());
 
 		return r;
@@ -72,7 +68,9 @@ public class Report implements Serializable {
 		}
 	}
 
-	public String getSection() { return section; }
+	public String getSection() {
+        return section;
+    }
 
 	public void setSection(String section) { this.section = section; }
 

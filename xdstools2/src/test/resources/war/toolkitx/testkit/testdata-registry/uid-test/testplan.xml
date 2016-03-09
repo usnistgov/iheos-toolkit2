@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>uid-test</Test>
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <NoAssignUids id="Document01"/>
+             <XDSb/>
+            <MetadataFile>metadata.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

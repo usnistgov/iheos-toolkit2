@@ -258,7 +258,8 @@ public class Sites {
 
 
 	public void putSite(Site s) {
-		siteMap.put(s.getName(), s);
+        String name = s.getName();
+		siteMap.put(name, s);
 	}
 	
 	boolean isEmpty(String x) {

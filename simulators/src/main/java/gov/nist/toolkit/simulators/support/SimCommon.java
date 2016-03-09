@@ -73,6 +73,7 @@ public class SimCommon {
 		this.response = response;
 		if (response != null)
 			this.os = response.getOutputStream();
+        logger.info(String.format("Connection is %s secure", (tls) ? "" : "not"));
 	}
 
     /**

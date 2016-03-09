@@ -47,6 +47,10 @@ public class SiteSpec implements IsSerializable {
 			isAsync = toClone.isAsync;
 		}
 	}
+
+    public SiteSpec(String name) {
+        this(name, null, null);
+    }
 	
 	public SiteSpec() {
 		this("", null, null);
@@ -72,6 +76,10 @@ public class SiteSpec implements IsSerializable {
 	
 	public boolean isRG() {
 		return (actorType != null) && actorType.isRGActor();
+	}
+	
+	public boolean isImagingDocumentSourceActor() {
+		return (actorType != null) && actorType.isImagingDocumentSourceActor();
 	}
 	
 	public String getTypeName() {

@@ -9,7 +9,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.FindDocuments;
-import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory.QueryReturnType;
+import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
@@ -54,7 +54,10 @@ public class FindDocumentsSim extends FindDocuments {
 		
 		// filter on serviceStopTime
 		results = mc.docEntryCollection.filterByServiceStopTime(service_stop_time_from, service_stop_time_to, results);
-		
+
+		// filter on objectType
+		results = mc.docEntryCollection.filterByObjectType(entry_type, results);
+
 		// filter on formatCode
 		if (format_codes != null && !format_codes.isEmpty()) {
 			if (format_codes instanceof SQCodeOr) {

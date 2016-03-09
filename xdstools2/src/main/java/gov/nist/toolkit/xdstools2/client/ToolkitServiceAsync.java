@@ -2,12 +2,18 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -19,13 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface ToolkitServiceAsync {
-	
 
 	void getTkProps(AsyncCallback<TkProps> callback);
-	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
 	void getSessionProperties(AsyncCallback<Map<String, String>> callback);
 	void setSessionProperties(Map<String, String> props, AsyncCallback callback);
-	void setMesaTestSession(String sessionName, AsyncCallback callback);
 	void getNewPatientId(String assigningAuthority, AsyncCallback<String> callback);
 	
 	void getDefaultAssigningAuthority(AsyncCallback<String> callback);
@@ -45,7 +48,6 @@ public interface ToolkitServiceAsync {
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
 	void getLogContent(String sessionName, TestInstance testInstance, AsyncCallback<List<Result>> callback);
-	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
@@ -119,6 +121,7 @@ public interface ToolkitServiceAsync {
 	void registerAndQuery(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void getRelated(SiteSpec site, ObjectRef or, List<String> assocs, AsyncCallback<List<Result>> callback);
 	void retrieveDocument(SiteSpec site, Uids uids, AsyncCallback<List<Result>> callback);
+	void retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax, AsyncCallback<List<Result>> callback);
 	void submitRegistryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
 	void submitRepositoryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
 	void submitXDRTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
@@ -129,6 +132,7 @@ public interface ToolkitServiceAsync {
 //	void mpqFindDocuments(SiteSpec site, String pid, List<String> classCodes, List<String> hcftCodes, List<String> eventCodes, AsyncCallback<List<Result>> notify);
 	void mpqFindDocuments(SiteSpec site, String pid, Map<String, List<String>> selectedCodes, AsyncCallback<List<Result>> callback);
 	void getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
+	void findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec, AsyncCallback<List<Result>> callback);
 
 	void getAdminPassword(AsyncCallback<String> callback);
 	
@@ -158,7 +162,6 @@ public interface ToolkitServiceAsync {
 	void getTestIndex(String test, AsyncCallback<List<String>> callback);
 	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
-	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void createPid(String assigningAuthority, AsyncCallback<Pid> callback) throws NoServletSessionException;
@@ -176,4 +179,23 @@ public interface ToolkitServiceAsync {
 	void doesTestkitExist(String selectedEnvironment, AsyncCallback<Boolean> asyncCallback);
 
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Test Services
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void reloadAllTestResults(String sessionName, AsyncCallback<List<Test>> callback) throws Exception;
+	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
+	void getTestResults(List<TestInstance> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
+	void setMesaTestSession(String sessionName, AsyncCallback callback);
+	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
+	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
+	void deleteSingleTestResult(Site site, int testId, AsyncCallback<Test> callback);
+	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
+	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
+    void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
+    void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+
 }

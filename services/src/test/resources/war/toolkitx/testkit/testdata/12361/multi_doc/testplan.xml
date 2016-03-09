@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12361/multi_doc</Test>
+  <Rule>Submit data to XDS.b registry to support MPQ testing</Rule>
+  <TestStep id="multi_doc">
+    <NewPatientId/>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Multiple document submission supports various query testing</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>multi_doc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

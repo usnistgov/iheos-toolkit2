@@ -21,7 +21,11 @@ public class Installation {
 	PropertyServiceManager propertyServiceMgr = null;
 	static Logger logger = Logger.getLogger(Installation.class);
 
-	static Installation me = null;
+	static Installation me = new Installation();
+
+    public String toString() {
+        return String.format("warHome=%s externalCache=%s", warHome, externalCache);
+    }
 
     static {
         // This works for unit tests if warhome.txt is installed as part of a unit test environment
@@ -30,21 +34,24 @@ public class Installation {
             warhomeTxt = installation().getClass().getResource("/warhome/warhome.txt").getFile();
         } catch (Throwable t) {}
         if (warhomeTxt != null) {
-            installation().warHome = new File(warhomeTxt).getParentFile();
+            installation().warHome(new File(warhomeTxt).getParentFile());
         }
+//        String warTxt = null;
+//        try {
+//            warTxt = installation().getClass().getResource("/war/war.txt").getFile();
+//        } catch (Throwable t) {}
+//        if (warTxt != null) {
+//            installation().warHome(new File(warTxt).getParentFile());
+//        }
     }
 
 	static public Installation installation() {
-		if (me == null)
-			me = new Installation();
 		return me;
 	}
 	
 	static public Installation installation(ServletContext servletContext) {
-		if (me == null)
-			me = new Installation();
 		if (me.warHome == null)
-			me.warHome = new File(servletContext.getRealPath("/"));
+			me.warHome(new File(servletContext.getRealPath("/")));
 		return me;
 	}
 
@@ -53,11 +60,20 @@ public class Installation {
     }
 	
 	public File warHome() { 
-		return warHome; 
-		}
+	    if (warHome == null) {
+            String warTxt = null;
+            try {
+                warTxt = installation().getClass().getResource("/war/war.txt").getFile();
+            } catch (Throwable t) {}
+            if (warTxt != null) {
+                installation().warHome(new File(warTxt).getParentFile());
+            }
+        }
+        return warHome;
+    }
 	synchronized public void warHome(File warHome) {
-		if (warHome()!=null /* && warHome().equals(warHome) */) {
-            logger.info("... oops - warHome already initialized");
+		if (this.warHome != null /* && warHome().equals(warHome) */) {
+            logger.info("... oops - warHome already initialized to " + warHome);
             return; /* already set */
         }
 		logger.info("V2 - Installation - war home set to " + warHome);
@@ -65,6 +81,7 @@ public class Installation {
             logger.error(ExceptionUtil.here("warhome is null"));
 		this.warHome = warHome;
 		propertyServiceMgr = null;
+        propertyServiceManager();  // initialize
 		if (externalCache == null) // this can be different in a unit test situation
 			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
         logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
@@ -83,15 +100,21 @@ public class Installation {
 
 	}
 
+    public void overrideToolkitPort(String port) {
+        propertyServiceManager().setOverrideToolkitPort(port);
+    }
+
 	public File getTkPropsFile() {
 		return new File(Installation.installation().externalCache() + File.separator + "tk_props.txt");
 	}
+
+
 	
 	public boolean initialized() { return warHome != null && externalCache != null; }
 	
 	public PropertyServiceManager propertyServiceManager() {
 		if (propertyServiceMgr == null)
-			propertyServiceMgr = new PropertyServiceManager(warHome);
+			propertyServiceMgr = new PropertyServiceManager();
 		return propertyServiceMgr;
 	}
 
@@ -103,7 +126,6 @@ public class Installation {
 
 	public File simDbFile() {
 		return new File(externalCache(), "simdb");
-//		return propertyServiceManager().getSimDbDir();
 	}
 
 	public List<String> getListenerPortRange() {
@@ -116,7 +138,16 @@ public class Installation {
 	public File schemaFile() {
 		return new File(toolkitxFile(), "schema");
 	}
-	public File testkitFile() { return new File(toolkitxFile(), "testkit"); }
+	public File testkitFile() {
+        File testkit = propertyServiceManager().getTestkit();
+        if (testkit != null) {
+            logger.info(String.format("Testkit source is %s", testkit));
+            return testkit;
+        }
+        testkit = new File(toolkitxFile(), "testkit");
+        logger.info(String.format("Testkit source is %s", testkit));
+        return testkit;
+    }
 
     public String defaultEnvironmentName() { return propertyServiceManager().getDefaultEnvironment(); }
 	
@@ -137,22 +168,6 @@ public class Installation {
         return new File(toolkitxFile(), "environment");
     }
 
-    public File directSendLogFile(String userName) {
-		return new File(externalCache + sep + "direct" + sep + "sendlog" + sep + userName);
-	}
-
-	public File directSendLogs() {
-		return new File(externalCache + sep + "direct" + sep + "sendlog");
-	}
-
-	public File directLogFile(String userName) {
-		return new File(externalCache + sep + "direct" + sep + "direct-logs" + sep + userName);
-	}
-
-	public File directLogs() {
-		return new File(externalCache + sep + "direct" + sep + "direct-logs");
-	}
-
 	public File sessionLogFile(String sessionId) {
 		return new File(warHome + sep + "SessionCache" + sep + sessionId);
 	}
@@ -165,15 +180,7 @@ public class Installation {
 		return new File(externalCache + sep + "TestLogCache");
 	}
 
-	public String defaultSessionName() { return "STANDALONE"; }
-    public String defaultServiceSessionName() { return "SERVICE"; }
+	public static String defaultSessionName() { return "STANDALONE"; }
+    public static String defaultServiceSessionName() { return "SERVICE"; }
 
-	/**
-	 * Queries the PropertyServiceManager to retrieve the Toolkit Properties as a File.
-	 * This function is called from within v3.
-	 * @return the toolkit properties file
-	 */
-	public File getToolkitPropertiesFile(){
-		return propertyServiceMgr.getPropertiesFile();
-	}
 }

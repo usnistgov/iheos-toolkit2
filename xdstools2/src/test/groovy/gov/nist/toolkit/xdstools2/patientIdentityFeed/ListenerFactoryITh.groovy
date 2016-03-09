@@ -1,14 +1,14 @@
 package gov.nist.toolkit.xdstools2.patientIdentityFeed
 import gov.nist.toolkit.actorfactory.PifHandler
 import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.client.Pid
-import gov.nist.toolkit.actorfactory.client.PidBuilder
+import gov.nist.toolkit.configDatatypes.client.Pid
+import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.AdtSender
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.adt.ThreadPoolItem
-import gov.nist.toolkit.session.server.TestSession
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import org.apache.log4j.Logger
 import spock.lang.Specification
 /**
@@ -25,7 +25,7 @@ class ListenerFactoryITh extends Specification {
     SimDb db
 
     def setup() {
-        TestSession.setupToolkit()
+        UnitTestEnvironmentManager.setupLocalToolkit()
         ListenerFactory.init(firstPort, lastPort)
         SimDb.mkSim(simId1, ActorType.REGISTRY.shortName).delete()
         SimDb.mkSim(simId1, ActorType.REGISTRY.shortName)

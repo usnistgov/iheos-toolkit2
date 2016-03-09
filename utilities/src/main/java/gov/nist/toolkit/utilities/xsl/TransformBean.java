@@ -9,9 +9,8 @@ package gov.nist.toolkit.utilities.xsl;
 
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
-import java.io.File;
-
 import javax.xml.transform.TransformerConfigurationException;
+import java.io.File;
 
 /**
  * JavaBean wrapper around Transform class.  Allows JavaBean access to Transform
@@ -83,7 +82,7 @@ public class TransformBean {
 	/**
 	 * Getter for property output.
 	 * @return Value of property output.
-	 * @throws java.lang.Exception Thrown if there is a problem accessing input or output locations.
+	 * @throws XdsInternalException Thrown if there is a problem accessing input or output locations.
 	 */
 	public String getOutput() throws XdsInternalException {
 		tform.run();
@@ -111,7 +110,7 @@ public class TransformBean {
 	/**
 	 * Setter for property systemId.
 	 * @param systemId New value of property systemId.
-	 * @throws java.lang.Exception Thrown if there is a problem accessing URI.
+	 * @throws TransformerConfigurationException Thrown if there is a problem accessing URI.
 	 */
 	public void setSystemId(String systemId) throws TransformerConfigurationException {
 		tform.setTransform(systemId);

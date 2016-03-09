@@ -6,7 +6,6 @@ import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XDSRegistryOutOfResourcesException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -36,7 +35,6 @@ abstract public class GetFolders extends StoredQuery {
 	/**
 	 * Basic constructor
 	 * @param sqs
-	 * @throws MetadataValidationException
 	 */
 	public GetFolders(StoredQuerySupport sqs) {
 		super(sqs);
@@ -61,10 +59,8 @@ abstract public class GetFolders extends StoredQuery {
 
 	/**
 	 * Implementation of Stored Query specific logic including parsing and validating parameters.
-	 * @throws XdsInternalException
 	 * @throws XdsException
 	 * @throws LoggerException
-	 * @throws XDSRegistryOutOfResourcesException
 	 */
 	public Metadata runSpecific() throws XdsException, LoggerException {
 

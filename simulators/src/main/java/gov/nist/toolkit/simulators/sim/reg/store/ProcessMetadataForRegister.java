@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.valregmetadata.field.SubmissionStructure;
 import gov.nist.toolkit.xdsexception.MetadataException;
@@ -50,7 +51,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "UniqueID " + uid + "  is assigned to more than one object within the submission", this, null);
 			submittedUIDs.add(uid);
 			
-			// get object from registry
+			// getRetrievedDocumentsModel object from registry
 			Ro ro = mc.getObjectByUid(uid);
 			if (ro != null) {
 				// RegistryObject with this UID already in Registry
@@ -120,7 +121,7 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 						Fol f = delta.folCollection.getById(sourceId);  // will look in delta and main table
 						delta.labelFolderUpdated(f, new Hl7Date().now());
 					} catch (Exception e) {
-						er.err(XdsErrorCode.Code.XDSRegistryError, "Internal Registry error - folder known to exist cannot be accesed", this, null);
+						er.err(XdsErrorCode.Code.XDSRegistryError, "Internal Registry error - folder known to exist cannot be accessed", this, null);
 					}
 				}
 			}
@@ -182,8 +183,74 @@ public class ProcessMetadataForRegister implements ProcessMetadataInterface {
 							, this, null);
 				}
 			}
+
+			if (type.equals("signs")) {
+				evalSigns(er, m, source, target);
+			} else if (type.equals("IsSnapshotOf")) {
+				evalIsSnapshotOf(er, m, source, target);
+			}
+
 		}
 	}
+
+	/**
+	 * See ITI TF-3: 4.2.2.2.6
+	 * @param er
+	 * @param m
+	 * @param source
+	 * @param target
+	 */
+	void evalIsSnapshotOf(ErrorRecorder er, Metadata m, String source, String target) {
+
+
+		// Check sourceObject's objectType to see if it is of Stable type
+		// ITI TF-3: 4.2.2.2.6
+		// Bullet #1 The sourceObject references a DocumentEntry in the submission
+		try {
+			String sourceObjectType = m.getObjectTypeById(source);
+			// #4 Verify that the objectType attribute of the sourceObject DocumentEntry is (Stable)
+			if (!MetadataSupport.XDSDocumentEntry_objectType_uuid.equals(sourceObjectType)) {
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "sourceObject's DocumentEntry objectType ["+ sourceObjectType +"] is not of Stable type: " , this, "ITI TF-3: 4.2.2.2.6"); // Rev 12.1
+			}
+		} catch (MetadataException me) {
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Cannot retrieve the sourceObject's DocumentEntry objectType attribute" , this, "ITI TF-3: 4.2.2.2.6"); // Rev 12.1
+		}
+
+		// Check targetObject's objectType to see if it is of OD type
+		try {
+
+			// #2 The targetObject references a DocumentEntry in the Registry
+			if (m.getObjectById(target)==null) {
+
+				DocEntry de = ((DocEntry)delta.getObjectById(target));
+				// #3 The targetObject DocumentEntry has availabilityStatus of Approved
+				if (!RegIndex.StatusValue.APPROVED.equals(de.getAvailabilityStatus())) {
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "targetObject's DocumentEntry availabilityStatus is not Approved." , this, "ITI TF-3: 4.2.2.2.6"); // Rev 12.1
+				}
+				// #5 Verify that the objectType attribute of the targetObject DocumentEntry is (On-Demand)
+				String targetObjectType = de.objecttype;
+				if (!MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid.equals(targetObjectType)) {
+					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "targetObject's DocumentEntry objectType  ["+ targetObjectType +"] is not of On-Demand type." , this, "ITI TF-3: 4.2.2.2.6"); // Rev 12.1
+				}
+
+			} else {
+				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "targetObject's DocumentEntry seems be present in the submission. It's only expected to be in the Registry." , this, "ITI TF-3: 4.2.2.2.6"); // Rev 12.1
+			}
+
+		} catch (MetadataException me) {
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Cannot retrieve the targetObject's DocumentEntry objectType attribute" , this, "ITI TF-3: 4.2.2.2.6"); // Rev 12.1
+		}
+
+	}
+
+	/**
+	 * See ITI TF-3: 4.2.2.5 Rev 12.1
+	 * According to Bill, the content of the sourceObject is not checked at this point.
+	 */
+	void evalSigns(ErrorRecorder er, Metadata m, String source, String target) {
+		//
+	}
+
 
 	// verify that no associations are being added that:
 	//     link objects with different patient ids (except for special cases)

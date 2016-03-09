@@ -89,7 +89,7 @@ public class TransactionSelectionManager {
 //	List<TransactionType> selections() {
 //		List<TransactionType> selections = new ArrayList<TransactionType>();
 //		for (TransactionType t : perTransTypeRadioButtons.keySet()) {
-//			for (RadioButton rb : perTransTypeRadioButtons.get(t)) {
+//			for (RadioButton rb : perTransTypeRadioButtons.getRetrievedDocumentsModel(t)) {
 //				if (rb.getValue()) {
 //					selections.add(t);
 //					break;

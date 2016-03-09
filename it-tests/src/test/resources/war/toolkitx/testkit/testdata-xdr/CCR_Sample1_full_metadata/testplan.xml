@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>SingleDocument</Test>
+    <TestStep id="submit_doc">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XDRProvideAndRegisterTransaction>
+            <XDSb/>
+            <AssignUuids/>
+            <NoPatientId/>
+            <MetadataFile>single_doc.xml</MetadataFile>
+            <Document id="Document01">CCR_Sample1.xml</Document>
+            <SOAPHeader>
+            	<direct:metadata-level xmlns:direct="urn:direct:addressing">minimal</direct:metadata-level>
+            	<!-- This is used in SOAP to Direct transition only -->
+            	<!-- 
+            	  <direct:addressBlock xmlns:direct="urn:direct:addressing"
+						env:role="urn:direct:addressing:destination"
+						env:relay="true">
+					<direct:from>mailto:entity1@direct.example.org</direct:from>
+					<direct:to>mailto:entity2@direct.example.org</direct:to>
+				  </direct:addressBlock>
+				 -->
+            </SOAPHeader>
+        </XDRProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

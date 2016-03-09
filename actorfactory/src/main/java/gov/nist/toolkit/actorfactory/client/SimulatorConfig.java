@@ -2,8 +2,8 @@ package gov.nist.toolkit.actorfactory.client;
 
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.io.Serializable;
@@ -27,18 +27,10 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	 */
 	SimId id;
 	String actorType;
-//	String[] values;   // these are possible values
 	Date expires;
 	boolean isExpired = false;
 	List<SimulatorConfigElement> elements  = new ArrayList<SimulatorConfigElement>();
-	
-	// used to record RGs for use with an IG
-	public List<String> remoteSiteNames = new ArrayList<String>();
-	boolean remoteSitesNecessary = false;
-	String remoteSitesLabel;
-	// this is not a fixed attribute so it doesn't show in editor
-	public List<Site> remoteSites = null;
-	
+
 	// This is only used to record validation requirements for included document(s)
 	// vc != null triggers UI to display selections from tk_props and accept
 	// selection.
@@ -63,10 +55,6 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 			if (getFixedByName(ele.name) == null)
 				elements.add(ele);
 		}
-//		for (ActorSimulatorConfigElement ele : asc.user) {
-//			if (getUserByName(ele.name) == null)
-//				user.add(ele);
-//		}
 	}
 	
 	/**
@@ -122,19 +110,8 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public void add(List<SimulatorConfigElement> elementList) {
 		elements.addAll(elementList);
 	}
-	
-	public boolean areRemoteSitesNecessary() { return remoteSitesNecessary; }
-	
-	public void setRemoteSitesNecessary(boolean value, String displayLabel) {
-		remoteSitesNecessary = value;
-		remoteSitesLabel = displayLabel;
-	}
-	
-	public String getRemoteSitesLabel() { return remoteSitesLabel; }
-			
-	public List<String> getRemoteSiteNames() { return remoteSiteNames; }
-	public void setRemoteSiteNames(List<String> siteNames) { remoteSiteNames = siteNames;  }
-	
+    public void add(SimulatorConfigElement ele) { elements.add(ele); }
+
 	public Date getExpiration() {
 		return expires;
 	}
@@ -214,10 +191,19 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public SimId getId() {
 		return id;
 	}
+    public void setId(SimId simId) { id = simId; }
 	
 	public String getActorType() {
 		return actorType;
 	}
+    public void setActorType(String type) { actorType = type; }
+
+    public String getActorTypeFullName() {
+        String actorTypeName = getActorType();
+        ActorType type = ActorType.findActor(actorTypeName);
+        if (type == null) return actorTypeName;
+        return type.getName();
+    }
 	
 	public SimulatorConfigElement get(String name) {
 		for (SimulatorConfigElement ele : elements) {
@@ -238,13 +224,5 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 	public void setValidationContext(ValidationContext vc) {
 		this.vc = vc;
 	}
-
-
-//	public ActorFactory getActorFactory() throws Exception {
-//		String simtype = getActorType();
-//		ActorType at = ActorType.findActor(simtype);
-//		ActorFactory af = ActorFactory.getActorFactory(at);
-//		return af;
-//	}
 
 }

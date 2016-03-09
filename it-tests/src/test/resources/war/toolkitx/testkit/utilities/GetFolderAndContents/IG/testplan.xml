@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>GetFolderAndContents/IG</Test>
+    <Rule>GetFolderAndContents Stored Query</Rule>
+    <TestStep id="GetFolderAndContents">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <IGQTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </IGQTransaction>
+    </TestStep>
+</TestPlan>

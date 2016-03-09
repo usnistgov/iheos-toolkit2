@@ -41,6 +41,19 @@ public class StepResult implements IsSerializable, Serializable {
 		r.haveLogs = haveLogs;
 		return r;
 	}
+
+    public String toString() {
+        return
+                metadata.docEntries.size() +
+                " DocumentEntries  " +
+                        metadata.submissionSets.size() +
+                        " SubmissionSets  " +
+                        metadata.assocs.size() +
+                " Associations  " +
+                        metadata.folders.size() +
+                " Folders"
+                ;
+    }
 	
 	public boolean hasContent() {
 		if (metadata == null) 

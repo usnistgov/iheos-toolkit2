@@ -7,7 +7,7 @@ import gov.nist.toolkit.adt.AdtSender
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.adt.ThreadPoolItem
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.session.server.TestSession
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import org.apache.log4j.Logger
 import spock.lang.Specification
 
@@ -29,7 +29,7 @@ class PifITh extends Specification {
     String templateFile = getClass().getResource('/adt/A01.txt').file
 
     def setup() {
-        session = TestSession.setupToolkit()
+        session = UnitTestEnvironmentManager.setupLocalToolkit()
         simManager = new SimManager(session.getId())
         SimDb.deleteAllSims()
     }

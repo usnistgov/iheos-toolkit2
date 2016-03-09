@@ -30,7 +30,7 @@ public class SchemaValidation extends MetadataTypes {
 	// empty string as result means no errors
 	static private String validate(String metadata, int metadataType) throws XdsInternalException {
         String localSchema = Installation.installation().schemaFile().toString();
-        localSchema = localSchema.replaceAll(" ", "%20");
+		localSchema = localSchema.replaceAll(" ", "%20");
 		MyErrorHandler errors = null;
 		DOMParser p = null;
 
@@ -43,6 +43,7 @@ public class SchemaValidation extends MetadataTypes {
 		String schemaLocation;
 		switch (metadataType) {
 		case METADATA_TYPE_Rb:
+        case METADATA_TYPE_RODDE:
 			schemaLocation = "urn:oasis:names:tc:ebxml-regrep:xsd:lcm:3.0 " + 
 			((localSchema == null) ? 
 					"http://" + host + ":" + portString + "/xdsref/schema/v3/lcm.xsd" :
@@ -111,6 +112,17 @@ public class SchemaValidation extends MetadataTypes {
 			((localSchema == null) ?
 			"http://" + host + ":" + portString + "/xdsref/schema/audit/healthcare-security-audit.xsd " :
 				localSchema + "/audit/healthcare-security-audit.xsd ");
+			break;
+		case METADATA_TYPE_RAD69:
+			schemaLocation = "urn:ihe:rad:xdsi-b:2009 " + 
+			((localSchema == null) ?
+			"http://" + host + ":" + portString + "/xdsref/schema/v3/XDSI.b_ImagingDocumentSource.xsd " :
+				localSchema + "/v3/XDSI.b_ImagingDocumentSource.xsd ") +
+			
+			"urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0 " + 
+			((localSchema == null) ?
+			"http://" + host + ":" + portString + "/xdsref/schema/v3/rs.xsd" :
+			localSchema + "/v3/rs.xsd"	);
 			break;
 		default:
 			throw new XdsInternalException("SchemaValidation: invalid metadata type = " + metadataType);

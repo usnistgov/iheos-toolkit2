@@ -1,6 +1,7 @@
 package gov.nist.toolkit.results.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,6 +63,9 @@ public class Result  implements IsSerializable, Serializable {
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append(testInstance).append("\n");
+        for (StepResult sr : stepResults)
+            if (sr.hasContent())
+                buf.append(sr.toString());
 		buf.append(assertions.toString());
 		
 		return buf.toString();
@@ -90,6 +94,16 @@ public class Result  implements IsSerializable, Serializable {
 		}
 		return null;
 	}
+
+    public List<MetadataCollection> getMetadataContent() {
+        List<MetadataCollection> content = new ArrayList<>();
+        for (StepResult sr : stepResults) {
+            if (sr.hasContent()) {
+                content.add(sr.getMetadata());
+            }
+        }
+        return content;
+    }
 	
 	public void addAssertion(String text, boolean ok) {
 		if (assertions == null)
@@ -115,5 +129,8 @@ public class Result  implements IsSerializable, Serializable {
 	public String getText() {
 		return text;
 	}
-	
+
+	public String getTimestamp() {
+		return timestamp;
+	}
 }

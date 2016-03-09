@@ -28,6 +28,9 @@ import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.description.AxisService;
 import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.log4j.Logger;
 
@@ -46,6 +49,7 @@ import java.util.*;
  */
 
 public class Soap implements SoapInterface {
+    static Logger logger = Logger.getLogger(Soap.class);
 
 	private static Logger log = Logger.getLogger(Soap.class);
 
@@ -404,7 +408,8 @@ public class Soap implements SoapInterface {
 		// Boolean.TRUE);
 		// includes setting of endpoint
 		setOptions(options);
-		options.setProperty(
+        setMaxConnections();
+        options.setProperty(
 				AddressingConstants.ADD_MUST_UNDERSTAND_TO_ADDRESSING_HEADERS,
 				Boolean.TRUE);// vbeera:
 								// modified
@@ -480,13 +485,25 @@ public class Soap implements SoapInterface {
 		if (async)
 			operationClient.setCallback(callback);
 
-		System.out
-				.println("******************************** BEFORE execute ****************************");
+		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
+        AxisFault soapFault = null;
 		try {
 			operationClient.execute(block); // execute sync or async
-		} finally {
-			System.out
-					.println("******************************** AFTER execute ****************************");
+//		} catch (AxisFault e) {
+//            soapFault = e;
+//            operationClient.execute(block); // execute sync or async
+        } catch (AxisFault e) {
+            MessageContext inMsgCtx = getInputMessageContext();
+            OMElement soapBody = inMsgCtx.getEnvelope().getBody();
+            result = soapBody.getFirstElement();
+            logger.info(new OMFormatter(result).toString());
+        }
+//        catch (Exception e) {
+//            soapFault = e;
+//            logger.info("SOAP Fault received - " + e.getClass().getName());
+//        }
+        finally {
+			log.info(String.format("******************************** AFTER SOAP SEND to %s ****************************", endpoint));
 
 			if (async)
 				waitTillDone();
@@ -498,12 +515,17 @@ public class Soap implements SoapInterface {
 
 			if (async)
 				operationClient.complete(outMsgCtx);
-			
+
+            loadOutHeader();
+
+            if (soapFault != null) {
+                throw new XdsInternalException("SOAP Fault: " + soapFault.getReason(), soapFault);
+            }
 			//  - null pointer exception here if port number in configuration is wrong
 			try {
 				inMsgCtx.getEnvelope().build();
 			} catch (NullPointerException e) {
-				throw new XdsInternalException("Port number may be configured wrong", e);
+				throw new XdsInternalException("Service not available on this host:port");
 			}
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();
@@ -516,11 +538,11 @@ public class Soap implements SoapInterface {
 			// channel is closed
 			// removing it breaks the reading of MTOM formatted responses
 
-			loadOutHeader();
 			loadInHeader();
 
 			serviceClient.cleanupTransport();
 			serviceClient.cleanup();
+            logger.info("soapCallWithWSSEC done");
 		}
 	}
 
@@ -595,6 +617,7 @@ public class Soap implements SoapInterface {
 
 		// operationClient.reset();
 
+        logger.info("soepCall done");
 		return result;
 
 	}
@@ -713,7 +736,21 @@ public class Soap implements SoapInterface {
 
 	}
 
-	/*
+    // Set the max connections and timeout - needed because by default you can only have
+    // two connections to a single host.  This doesn't work with simulators in toolkit.
+    void setMaxConnections() {
+        MultiThreadedHttpConnectionManager multiThreadedHttpConnectionManager = new MultiThreadedHttpConnectionManager();
+        HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+        params.setDefaultMaxConnectionsPerHost(50);
+        params.setMaxTotalConnections(50);
+        params.setSoTimeout(20000);
+        params.setConnectionTimeout(20000);
+        multiThreadedHttpConnectionManager.setParams(params);
+        HttpClient httpClient = new HttpClient(multiThreadedHttpConnectionManager);
+        serviceClient.getServiceContext().getConfigurationContext().setProperty(HTTPConstants.CACHED_HTTP_CLIENT, httpClient);
+    }
+
+    /*
 	 * (non-Javadoc)
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#getResult()
@@ -814,6 +851,7 @@ public class Soap implements SoapInterface {
 			return;
 
 		inHeader = Util.deep_copy(in.getEnvelope().getHeader());
+        logger.info("incoming header loaded");
 	}
 
 	void loadOutHeader() throws XdsInternalException {

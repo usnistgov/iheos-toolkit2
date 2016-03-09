@@ -163,7 +163,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		final AsyncCallback<List<String>> loadSiteNamesCallback = new AsyncCallback<List<String>>() {
 			public void onFailure(Throwable caught) {
-				new PopupMessage(caught.getMessage());
+				new PopupMessage("Error loading external sites: " + caught.getMessage());
 			}
 
 			public void onSuccess(List<String> result) {
@@ -200,7 +200,7 @@ public class ActorConfigTab extends GenericQueryTab {
 
 		for (ActorType actorType : TransactionCollection.getActorTypes()) {
 			
-			// These get configed in other ways
+			// These getRetrievedDocumentsModel configed in other ways
 			if (!actorType.showInConfig())
 				continue;
 			
@@ -222,6 +222,11 @@ public class ActorConfigTab extends GenericQueryTab {
 				actorEditGrid.setWidget(row, 1, homeBox);
 
 				row++;
+			}
+
+			if (ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)) {
+				Label oddsRepositoryUniqueIdLabel = new Label("oddsRepositoryUniqueId");
+				actorEditGrid.setWidget(row, 0, oddsRepositoryUniqueIdLabel);
 			}
 
 			if (ActorType.REPOSITORY.equals(actorType)) {

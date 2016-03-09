@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>11973/existing_doc_to_fol</Test>
+    <Rule>Add Existing Document to Existing Folder</Rule>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/test11973</RegistryEndpoint>
+    <TestStep id="good">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <MetadataFile>metadata.xml</MetadataFile>
+            <UseId testdir="../create_fol" 
+                id="Folder" 
+                step="submit_fol" 
+                section="AssignedUuids"
+                symbol="$Folder$"/>
+            <UseId testdir="../submit_doc" 
+                id="Document01" 
+                step="good" 
+                section="AssignedUuids"
+                symbol="$Document$"/>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

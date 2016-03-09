@@ -16,22 +16,21 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.*;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-
-import java.io.File;
-import java.util.List;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * A collection of static methods for initiating validations where each method
@@ -69,7 +68,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	}
 
 	// Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
-	// a reference to an instance of this class. This is necessary to get around a circular
+	// a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
 	// reference in the build tree
 
 	public MessageValidatorFactory() {
@@ -259,8 +258,6 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	/**
 	 * Start a new validation on a pre-parsed XML
 	 * @param erBuilder ErrorRecorder factory. A new ErrorRecorder is allocated and used for each validation step.
-	 * @param input XML input string
-	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
 	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
@@ -307,7 +304,6 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	/**
 	 * Start a new validation on a pre-parsed XML
 	 * @param erBuilder ErrorRecorder factory. A new ErrorRecorder is allocated and used for each validation step.
-	 * @param input XML
 	 * @param mvc validation engine to use.  If null then create a new one
 	 * @param vc description of the validations to be performed
 	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
@@ -391,6 +387,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	public static MessageValidatorEngine validateBasedOnValidationContext(
 			ErrorRecorderBuilder erBuilder, OMElement xml,
 			MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+		logger.debug("messageValidatorEngine#validateBasedOnValidationContext");
+		logger.debug(" VC: " + vc.toString());
 
 		String rootElementName = null;
 
@@ -441,7 +439,7 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 					return mvc;
 				}
 			}
-		} else if (vc.isR) {
+		} else if (vc.isR || vc.isRODDE) {
 			if (vc.isRequest) {
 				validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
 				mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
@@ -472,6 +470,21 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 				mvc.addMessageValidator("RetrieveDocumentSetResponse", new RetrieveResponseValidator(vc, xml, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
 				return mvc;
 			}
+
+		} else if (vc.isRad69) {
+			if (vc.isRequest) {
+				mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
+				validateToplevelElement(erBuilder, mvc, "RetrieveImagingDocumentSetRequest", rootElementName);
+				mvc.addMessageValidator("RetrieveImagingDocumentSetRequest", new RetrieveImagingDocumentSetRequestValidator(vc, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
+				return mvc;
+			} else {
+				validateToplevelElement(erBuilder, mvc, "RetrieveDocumentSetResponse", rootElementName);
+				mvc.addMessageValidator("RetrieveDocumentSetResponse", new RetrieveResponseValidator(vc, xml, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
+				return mvc;
+			}
+
+
+
 		} else if (vc.isSQ) {
 			if (vc.isRequest) {
 				validateToplevelElement(erBuilder, mvc, "AdhocQueryRequest", rootElementName);
@@ -582,6 +595,9 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 			return mvc;
 		} else if (rootElementName.equals("SubmitObjectsRequest")) {
 			reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Register request");
+			// TODO: In this case, it could be a Register On-Demand Document Entry (RODDE) type so we need to dig a little deeper.
+			// Will this work?
+			// new AXIOMXPath("/SubmitObjectsRequest/LeafRegistryObjectList[1]/ExtrinsicObject[1][@objectType='urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248']")
 			vc.isR = true;
 			vc.isRequest = true;
 			mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
