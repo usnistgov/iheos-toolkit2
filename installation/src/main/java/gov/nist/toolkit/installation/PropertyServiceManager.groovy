@@ -104,26 +104,37 @@ public class PropertyServiceManager {
 		loadPropertyManager();
 		return propertyManager;
 	}
-	
+
 	public void loadPropertyManager() {
 		if (propertyManager != null)
 			return;
 
-        // Create a File from the properties file in order to pass it to v3
-        assert Installation.installation().warHome()
-        File propPath = new File(new File(Installation.installation().warHome(), "WEB-INF"), "toolkit.properties");
-        setPropertiesFile(propPath.toString());
+		// Create a File from the properties file in order to pass it to v3
+		assert Installation.installation().warHome()
+		File propPath = null;
+		try {
+//			logger.debug("*** getting toolkit.properties file:" + getClass().getResource("/toolkit.properties"));
 
-        propertyManager = new PropertyManager(propPath.toString());
+			URL propURL = getClass().getResource("/toolkit.properties");
+			propPath = new File(propURL.getFile());
 
-		// This removes the dependency that 
+			setPropertiesFile(propPath.toString());
+
+//			logger.debug("*** got toolkit.properties file:" + propPath.toString());
+
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+
+		propertyManager = new PropertyManager(propPath.toString());
+
+		// This removes the dependency that
 		// gov.nist.registry.common2.xml.SchemaValidation
 		// has on port 9080
 		// Schema references will be made directly through the file system and not
 		// via "system" references (via a URI)
 		System.setProperty("XDSSchemaDir", new File(new File(Installation.installation().warHome(), "toolkitx"), "schema").toString());
 	}
-
 
 	public File internalActorsFile() {
         assert Installation.installation().warHome()
