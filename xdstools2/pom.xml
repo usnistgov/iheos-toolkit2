@@ -343,6 +343,7 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.axis2</groupId>
@@ -383,6 +384,7 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
@@ -425,14 +427,21 @@
         <!-- See profiles stanza above -->
         <!-- Begin profile part 1/2 -->    
         <filters>
-                    <!--
-                        Ensures that an environment properties file is always loaded from the
-                        configuration directory of the active Maven profile.
-                    -->
-                <filter>../tk-deps/profiles/env/${build.profile.id}.properties</filter>
+            <!--
+            NOTE: Filters usually go in the src\main\filters.
+            See https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html.
+            -->
+
+            <!--
+                Ensures that an environment properties file is always loaded from the
+                configuration directory of the active Maven profile.
+            -->
+                <filter>../tk-deps/src/main/filters/${build.profile.id}.properties</filter>
         </filters>
-        <!-- End profile part 1/2 -->    
-        
+        <!-- End profile part 1/2 -->
+
+
+
         <plugins>
         
             <plugin>
@@ -462,26 +471,6 @@
                 </dependencies>
             </plugin>
 
-            <!-- Begin profile part 2/2 -->    
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <webResources>
-                       <resource>
-                        <filtering>true</filtering>
-                        <directory>src/main/webapp</directory>   
-                        <includes>
-                            <include>WEB-INF/toolkit.properties</include>
-                        </includes>                
-                    </resource>
-                  </webResources>    
-                   <warSourceDirectory>src/main/webapp</warSourceDirectory>
-                <webXml>src/main/webapp/WEB-INF/web.xml</webXml>                                
-                </configuration>
-            </plugin> 
-            <!-- End profile part 2/2 -->        
-                
 
             <!--
               There are two copies of this plugin - I have no idea which one is running.  I only
@@ -593,6 +582,18 @@
                 </configuration>
             </plugin>
         </plugins>
+        <!-- Begin profile part 2/2 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <!-- End profile part 2/2 -->
     </build>
     <scm>
         <tag>v3.0.2a</tag>
