@@ -60,7 +60,7 @@ public class SimulatorsController {
 //        resourceConfig.property(ServerProperties.TRACING, "ALL");
     }
     
-    @GET
+    @POST
     @Path("/{id}/xdsi/retrieve")
     @Produces("application/json")
     public Response retrieveImagingDocSet(final RetrieveImgRequestResource request) {
