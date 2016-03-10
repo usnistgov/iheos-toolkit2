@@ -145,7 +145,7 @@ abstract public class StoredQueryFactory {
 		homeCommunityId = adhoc_query.getAttributeValue(MetadataSupport.home_qname);
 
 		ParamParser parser = new ParamParser();
-		params = parser.parse(ahqr);
+		params = parser.parse(ahqr,true);
 
 		if (log_message != null)
 			log_message.addOtherParam("Parameters", params.toString());

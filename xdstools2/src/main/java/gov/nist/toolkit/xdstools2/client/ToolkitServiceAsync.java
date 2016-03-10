@@ -173,6 +173,11 @@ public interface ToolkitServiceAsync {
 
 
 	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
+
+	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);
+
+	void doesTestkitExist(String selectedEnvironment, AsyncCallback<Boolean> asyncCallback);
+
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
 
 	//------------------------------------------------------------------------

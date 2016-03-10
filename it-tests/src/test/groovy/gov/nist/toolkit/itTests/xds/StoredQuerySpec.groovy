@@ -25,7 +25,6 @@ class StoredQuerySpec extends ToolkitSpecification {
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'BR14^^^&1.2.360&ISO'
     String patientId2 = 'BR15^^^&1.2.360&ISO'
     String reg = 'bill__reg'
     SimId simId = new SimId(reg)

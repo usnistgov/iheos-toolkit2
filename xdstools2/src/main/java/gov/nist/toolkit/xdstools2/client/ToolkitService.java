@@ -178,6 +178,10 @@ public interface ToolkitService extends RemoteService  {
 	String getAssigningAuthority() throws Exception;
 	List<String> getAssigningAuthorities() throws Exception;
 	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+	String configureTestkit(String selectedEnvironment);
+
+	boolean doesTestkitExist(String selectedEnvironment);
+
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------

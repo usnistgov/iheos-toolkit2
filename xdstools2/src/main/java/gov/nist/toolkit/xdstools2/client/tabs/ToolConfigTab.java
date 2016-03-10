@@ -5,8 +5,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.*;
+import gov.nist.toolkit.xdstools2.client.Panel;
+import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
 
 import java.util.Map;
 
@@ -103,6 +106,10 @@ public class ToolConfigTab extends GenericQueryTab {
 
 		topPanel.add(loadAllGazelleConfigs);
 		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(toolkitService, myContainer, "ALL"));
+
+		/* new code for testkit update */
+        TestkitConfigTool tkconf=new TestkitConfigTool(myContainer,toolkitService);
+        topPanel.add(tkconf);
 	}
 
 	class Saver implements ClickHandler {
