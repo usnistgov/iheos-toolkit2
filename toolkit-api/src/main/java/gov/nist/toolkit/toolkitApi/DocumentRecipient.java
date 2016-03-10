@@ -1,4 +1,4 @@
-package gov.nist.toolkit.tookitApi;
+package gov.nist.toolkit.toolkitApi;
 
 /**
  * This interface supports the Notification interface for notifying

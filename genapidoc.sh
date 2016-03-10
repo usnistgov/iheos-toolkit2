@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#groovydoc --destdir ~/tmp/toolkit-documentation gov.nist.toolkit.toolkitApi toolkit-api/src/main/java/gov/nist/toolkit/tookitApi/*.java
+#groovydoc --destdir ~/tmp/toolkit-documentation gov.nist.toolkit.toolkitApi toolkit-api/src/main/java/gov/nist/toolkit/toolkitApi/*.java
 
 output=$1
 rm -rf $output

@@ -12,8 +12,8 @@ import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.tookitApi.BasicSimParameters
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.BasicSimParameters
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.SimId

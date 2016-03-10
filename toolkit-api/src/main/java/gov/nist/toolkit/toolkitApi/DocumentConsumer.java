@@ -1,4 +1,4 @@
-package gov.nist.toolkit.tookitApi;
+package gov.nist.toolkit.toolkitApi;
 
 import gov.nist.toolkit.toolkitServicesCommon.LeafClassRegistryResponse;
 import gov.nist.toolkit.toolkitServicesCommon.RetrieveRequest;

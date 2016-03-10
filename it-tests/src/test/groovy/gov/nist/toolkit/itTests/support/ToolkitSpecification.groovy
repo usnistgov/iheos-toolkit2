@@ -10,7 +10,7 @@ import gov.nist.toolkit.results.client.TestLogs
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimId
 import spock.lang.Shared
 import spock.lang.Specification

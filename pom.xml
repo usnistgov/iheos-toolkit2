@@ -95,7 +95,7 @@
                         <!--<group>-->
                             <!--<title>API Documentation</title>-->
                             <!--<packages>-->
-                                <!--gov.nist.toolkit.tookitApi*:gov.nist.toolkit.toolkitServicesCommon*-->
+                                <!--gov.nist.toolkit.toolkitApii*:gov.nist.toolkit.toolkitServicesCommon*-->
                             <!--</packages>-->
                         <!--</group>-->
                     <!--</groups>-->

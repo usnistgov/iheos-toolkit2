@@ -8,8 +8,8 @@ import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrysupport.MetadataSupport
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.client.TestLogs
-import gov.nist.toolkit.tookitApi.DocumentConsumer
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.DocumentConsumer
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.*
 import gov.nist.toolkit.toolkitServicesCommon.resource.QueryParametersResource
 import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveRequestResource

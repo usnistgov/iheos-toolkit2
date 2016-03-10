@@ -9,8 +9,8 @@ import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.tookitApi.DocumentRegRep
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.DocumentRegRep
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.DocumentContent
 import gov.nist.toolkit.toolkitServicesCommon.RefList

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.tookitApi;
+package gov.nist.toolkit.toolkitApi;
 
 import gov.nist.toolkit.toolkitServicesCommon.LeafClassList;
 import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassListResource;
@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 /**
  *
  */
-public class XcaRespondingGateway extends AbstractActor implements RespondingGateway {
+public class XcaInitiatingGateway  extends AbstractActor implements InitiatingGateway {
     @Override
     public LeafClassList FindDocuments(String patientID) throws ToolkitServiceException {
         Response response = engine.getTarget()
@@ -18,4 +18,5 @@ public class XcaRespondingGateway extends AbstractActor implements RespondingGat
             throw new ToolkitServiceException(response);
         return response.readEntity(LeafClassListResource.class);
     }
+
 }

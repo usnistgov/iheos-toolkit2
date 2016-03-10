@@ -17,8 +17,8 @@ import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.tookitApi.BasicSimParameters
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.BasicSimParameters
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import gov.nist.toolkit.toolkitServicesCommon.SimId

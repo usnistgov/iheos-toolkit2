@@ -5,7 +5,7 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
-import gov.nist.toolkit.tookitApi.*
+import gov.nist.toolkit.toolkitApi.*
 import gov.nist.toolkit.toolkitServicesCommon.*
 import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentResource
 import gov.nist.toolkit.transactionNotificationService.TransactionLog

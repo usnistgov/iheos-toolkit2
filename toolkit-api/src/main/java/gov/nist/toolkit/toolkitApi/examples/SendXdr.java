@@ -1,6 +1,6 @@
-package gov.nist.toolkit.tookitApi.examples;
+package gov.nist.toolkit.toolkitApi.examples;
 
-import gov.nist.toolkit.tookitApi.SimulatorBuilder;
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder;
 
 /**
  * Created by bill on 10/30/15.
