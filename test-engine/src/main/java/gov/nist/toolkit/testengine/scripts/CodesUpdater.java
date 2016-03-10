@@ -18,7 +18,6 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -32,13 +31,10 @@ import java.util.*;
  */
 public class CodesUpdater {
     private final static String sections[] = { "tests", "testdata",  "examples"/*, "selftest"*/ };
-    private final String outputSeparator="----------------------------------------------------";
 
     private File testkit;
     private AllCodes allCodes=null;
     private List<String> filesTreated = new ArrayList<String>();
-    private List<String> metadataFilesPaths=new ArrayList<String>();
-    private List<String> queryFilesPaths=new ArrayList<String>();
     private Map<String,Code> replacementMap= new HashMap<String,Code>();
 
     private String out=new String();
@@ -49,7 +45,6 @@ public class CodesUpdater {
      */
     void reset(){
         filesTreated=new ArrayList<String>();
-        metadataFilesPaths=new ArrayList<String>();
         replacementMap=new HashMap<String,Code>();
     }
 
@@ -83,9 +78,9 @@ public class CodesUpdater {
         try {
             File[] dirs = testFile.listFiles();
             if (dirs == null) {
-                System.out.println("No tests defined in " + dirs);
+                System.out.println("No tests defined in " + testFile.toString());
                 // TODO throw an exception?!
-                out+="No tests defined in " + dirs +"\n";
+                out+="No tests defined in " + testFile.toString() +"\n";
                 error = true;
             }else {
                 for (int i = 0; i < dirs.length; i++) {
@@ -136,10 +131,8 @@ public class CodesUpdater {
                 OMElement metadataFile=transaction.getFirstChildWithName(new QName("MetadataFile"));
                 if (metadataFile!=null) {
                     if (transaction.getLocalName().contains("StoredQueryTransaction")) {
-                        queryFilesPaths.add(testFile + "/" + metadataFile.getText());
                         processQueryFile(testFile, metadataFile.getText());
                     }else {
-                        metadataFilesPaths.add(testFile + "/" + metadataFile.getText());
                         processMetadataFile(testFile,metadataFile.getText());
                     }
                 }
@@ -459,6 +452,7 @@ public class CodesUpdater {
         execute();
         reset();
         execute();
+        String outputSeparator=new String("----------------------------------------------------");
         out=outputSeparator+outputSeparator+"\n"+"   SUCCESS on generating testkit in environment in " +
                 pathToEnvironment.split("/")[pathToEnvironment.split("/").length-1] + "\n" +
                 outputSeparator+outputSeparator +"\n\n"+out;

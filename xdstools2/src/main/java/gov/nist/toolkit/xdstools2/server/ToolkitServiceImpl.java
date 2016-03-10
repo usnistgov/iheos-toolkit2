@@ -3,12 +3,15 @@ package gov.nist.toolkit.xdstools2.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.*;
-    import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
-    import gov.nist.toolkit.actortransaction.client.Severity;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.Simulator;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
+import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-    import gov.nist.toolkit.actortransaction.client.TransactionType;
-    import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
@@ -17,13 +20,13 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
-    import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-    import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-    import gov.nist.toolkit.services.client.RawResponse;
-    import gov.nist.toolkit.services.client.RgOrchestrationRequest;
-    import gov.nist.toolkit.services.server.RawResponseBuilder;
-    import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.server.RawResponseBuilder;
+import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
@@ -57,7 +60,8 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("serial")
-public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitService {
+public class ToolkitServiceImpl extends RemoteServiceServlet implements
+        ToolkitService {
     static String schematronHome = null;
     ServletContext context = null;
 //	static File warHome = null;
@@ -73,8 +77,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     public GazelleServiceManager gazelleServiceManager;
 
     // Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
-    // a reference to an instance of this class. This is necessary to get around a circular
-	// a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
+    // a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
     // reference in the build tree
 
     public ToolkitServiceImpl() {
@@ -90,66 +93,22 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     // Site Services
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public List<String> getSiteNames(boolean reload, boolean simAlso) throws NoServletSessionException {
-        return siteServiceManager.getSiteNames(session().getId(), reload, simAlso);
-    }
-
-    public Collection<Site> getAllSites() throws Exception {
-        return siteServiceManager.getAllSites(session().getId());
-    }
-
-    public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception {
-        return siteServiceManager.reloadSites(session().getId(), simAlso);
-    }
-
-    public Site getSite(String siteName) throws Exception {
-        return siteServiceManager.getSite(session().getId(), siteName);
-    }
-
-    public String saveSite(Site site) throws Exception {
-        return siteServiceManager.saveSite(session().getId(), site);
-    }
-
-    public String deleteSite(String siteName) throws Exception {
-        return siteServiceManager.deleteSite(session().getId(), siteName);
-    }
-
+    public List<String> getSiteNames(boolean reload, boolean simAlso)  throws NoServletSessionException { return siteServiceManager.getSiteNames(session().getId(), reload, simAlso); }
+    public Collection<Site> getAllSites() throws Exception { return siteServiceManager.getAllSites(session().getId()); }
+    public List<String> reloadSites(boolean simAlso) throws FactoryConfigurationError, Exception { return siteServiceManager.reloadSites(session().getId(), simAlso); }
+    public Site getSite(String siteName) throws Exception { return siteServiceManager.getSite(session().getId(), siteName); }
+    public String saveSite(Site site) throws Exception { return siteServiceManager.saveSite(session().getId(), site); }
+    public String deleteSite(String siteName) throws Exception { return siteServiceManager.deleteSite(session().getId(), siteName); }
     //	public String getHome() throws Exception { return session().getHome(); }
-    public List<String> getUpdateNames() throws NoServletSessionException {
-        return siteServiceManager.getUpdateNames(session().getId());
-    }
-
-    public TransactionOfferings getTransactionOfferings() throws Exception {
-        return siteServiceManager.getTransactionOfferings(session().getId());
-    }
-
-    public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception {
-        return siteServiceManager.reloadCommonSites();
-    }
-
-    public List<String> getRegistryNames() throws NoServletSessionException {
-        return siteServiceManager.getRegistryNames(session().getId());
-    }
-
-    public List<String> getRepositoryNames() throws NoServletSessionException {
-        return siteServiceManager.getRepositoryNames(session().getId());
-    }
-
-    public List<String> getRGNames() throws NoServletSessionException {
-        return siteServiceManager.getRGNames(session().getId());
-    }
-
-    public List<String> getIGNames() throws NoServletSessionException {
-        return siteServiceManager.getIGNames(session().getId());
-    }
-
-    public List<String> getActorTypeNames() throws NoServletSessionException {
-        return siteServiceManager.getActorTypeNames(session().getId());
-    }
-
-    public List<String> getSiteNamesWithRG() throws Exception {
-        return siteServiceManager.getSiteNamesWithRG(session().getId());
-    }
+    public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
+    public TransactionOfferings getTransactionOfferings() throws Exception { return siteServiceManager.getTransactionOfferings(session().getId()); }
+    public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return siteServiceManager.reloadCommonSites(); }
+    public List<String> getRegistryNames()  throws NoServletSessionException { return siteServiceManager.getRegistryNames(session().getId()); }
+    public List<String> getRepositoryNames()  throws NoServletSessionException { return siteServiceManager.getRepositoryNames(session().getId()); }
+    public List<String> getRGNames()  throws NoServletSessionException { return siteServiceManager.getRGNames(session().getId()); }
+    public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
+    public List<String> getActorTypeNames()  throws NoServletSessionException { return siteServiceManager.getActorTypeNames(session().getId()); }
+    public List<String> getSiteNamesWithRG() throws Exception { return siteServiceManager.getSiteNamesWithRG(session().getId()); }
 
 
     //------------------------------------------------------------------------
@@ -157,99 +116,44 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     // Query Services
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public List<Result> registerAndQuery(SiteSpec site, String pid) throws NoServletSessionException {
-        return session().queryServiceManager().registerAndQuery(site, pid);
-    }
-
-    public List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException {
-        return session().queryServiceManager().lifecycleValidation(site, pid);
-    }
-
-    public List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException {
-        return session().queryServiceManager().folderValidation(site, pid);
-    }
-
-    public List<Result> submitRegistryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException {
-        return session().queryServiceManager().submitRegistryTestdata(site, datasetName, pid);
-    }
-
-    public List<Result> submitRepositoryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException {
-        return session().queryServiceManager().submitRepositoryTestdata(site, datasetName, pid);
-    }
-
+    public List<Result> registerAndQuery(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().registerAndQuery(site, pid); }
+    public List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().lifecycleValidation(site, pid); }
+    public List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().folderValidation(site, pid); }
+    public List<Result> submitRegistryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRegistryTestdata(site, datasetName, pid); }
+    public List<Result> submitRepositoryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRepositoryTestdata(site, datasetName, pid); }
     public List<Result> submitXDRTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException {
-        return session().queryServiceManager().submitXDRTestdata(site, datasetName, pid);
+        return session().queryServiceManager().submitXDRTestdata(site, datasetName, pid); }
+    public List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().provideAndRetrieve(site, pid); }
+    public List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException  { return session().queryServiceManager().findDocuments(site, pid, onDemand);
     }
 
-    public List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException {
-        return session().queryServiceManager().provideAndRetrieve(site, pid);
+    public List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException  { return session().queryServiceManager().findDocumentsByRefId(site, pid, refIds);
     }
-
-    public List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException {
-        return session().queryServiceManager().findDocuments(site, pid, onDemand);
-    }
-
-    public List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException {
-        return session().queryServiceManager().findDocumentsByRefId(site, pid, refIds);
-    }
-
-    public List<Result> getDocuments(SiteSpec site, AnyIds aids) throws NoServletSessionException {
-        return session().queryServiceManager().getDocuments(site, aids);
-    }
-
-    public List<Result> findFolders(SiteSpec site, String pid) throws NoServletSessionException {
-        return session().queryServiceManager().findFolders(site, pid);
-    }
-
+    public List<Result> getDocuments(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getDocuments(site, aids); }
+    public List<Result> findFolders(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().findFolders(site, pid); }
     public List<Result> getFolders(SiteSpec site, AnyIds aids) throws NoServletSessionException {
-        return session().queryServiceManager().getFolders(site, aids);
-    }
-
-    public List<Result> getFoldersForDocument(SiteSpec site, AnyIds aids) throws NoServletSessionException {
-        return session().queryServiceManager().getFoldersForDocument(site, aids);
-    }
-
-    public List<Result> getFolderAndContents(SiteSpec site, AnyIds aids) throws NoServletSessionException {
-        return session().queryServiceManager().getFolderAndContents(site, aids);
-    }
-
+        return session().queryServiceManager().getFolders(site, aids); }
+    public List<Result> getFoldersForDocument(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getFoldersForDocument(site, aids); }
+    public List<Result> getFolderAndContents(SiteSpec site, AnyIds aids) throws NoServletSessionException  {
+        return session().queryServiceManager().getFolderAndContents(site, aids); }
     public List<Result> getAssociations(SiteSpec site, ObjectRefs ids) throws NoServletSessionException {
-        return session().queryServiceManager().getAssociations(site, ids);
+        return session().queryServiceManager().getAssociations(site, ids); }
+    public List<Result> getObjects(SiteSpec site, ObjectRefs ids) throws NoServletSessionException  { return session().queryServiceManager().getObjects(site, ids); }
+    public List<Result> getSubmissionSets(SiteSpec site, AnyIds aids) throws NoServletSessionException  { return session().queryServiceManager().getSubmissionSets(site, aids); }
+    public List<Result> getSSandContents(SiteSpec site, String ssid) throws NoServletSessionException  { return session().queryServiceManager().getSSandContents(site, ssid);
     }
 
-    public List<Result> getObjects(SiteSpec site, ObjectRefs ids) throws NoServletSessionException {
-        return session().queryServiceManager().getObjects(site, ids);
+    public List<Result> srcStoresDocVal(SiteSpec site, String ssid) throws NoServletSessionException  { return session().queryServiceManager().srcStoresDocVal(site, ssid); }
+    public List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception { return session().queryServiceManager().retrieveDocument(site, uids); }
+    public List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception { return session().queryServiceManager().retrieveImagingDocSet(site, uids, studyRequest, transferSyntax);
     }
 
-    public List<Result> getSubmissionSets(SiteSpec site, AnyIds aids) throws NoServletSessionException {
-        return session().queryServiceManager().getSubmissionSets(site, aids);
+    public List<Result> getRelated(SiteSpec site, ObjectRef or,	List<String> assocs) throws NoServletSessionException  { return session().queryServiceManager().getRelated(site, or, assocs);
     }
-
-    public List<Result> getSSandContents(SiteSpec site, String ssid) throws NoServletSessionException {
-        return session().queryServiceManager().getSSandContents(site, ssid);
-    }
-
-    public List<Result> srcStoresDocVal(SiteSpec site, String ssid) throws NoServletSessionException {
-        return session().queryServiceManager().srcStoresDocVal(site, ssid);
-    }
-
-    public List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception {
-        return session().queryServiceManager().retrieveDocument(site, uids);
-    }
-
-    public List<Result> getRelated(SiteSpec site, ObjectRef or, List<String> assocs) throws NoServletSessionException {
-        return session().queryServiceManager().getRelated(site, or, assocs);
-    }
-
-    public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException {
-        return session().queryServiceManager().getAll(site, pid, codesSpec);
-    }
-    
+    public List<Result> getAll(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  { return session().queryServiceManager().getAll(site, pid, codesSpec); }
     public List<Result> findDocuments2(SiteSpec site, String pid, Map<String, List<String>> codesSpec) throws NoServletSessionException  {
-		System.out.println("Running findDocuments2 service");
-		return session().queryServiceManager().findDocuments2(site, pid, codesSpec);
-    }
-
+        System.out.println("Running findDocuments2 service");
+        return session().queryServiceManager().findDocuments2(site, pid, codesSpec); }
 
 
     public List<Result> findPatient(SiteSpec site, String firstName,
@@ -267,14 +171,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
                 homePhone, workPhone, principleCareProvider,
                 pob, pobAddress1, pobAddress2, pobCity, pobState, pobZip, pobCountry);
     }
-
     public List<Result> mpqFindDocuments(SiteSpec site, String pid,
                                          List<String> classCodes, List<String> hcftCodes,
                                          List<String> eventCodes) throws NoServletSessionException {
         return session().queryServiceManager().mpqFindDocuments(site, pid, classCodes, hcftCodes,
                 eventCodes);
     }
-
     public List<Result> mpqFindDocuments(SiteSpec site, String pid,
                                          Map<String, List<String>> codesSpec) throws NoServletSessionException {
         return session().queryServiceManager().mpqFindDocuments(site, pid, codesSpec);
@@ -289,22 +191,26 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     // Test Service
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-// New - Loads or reloads test data
-	public List<Test> reloadAllTestResults(String sessionName) throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(sessionName); }
-	public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
-	public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession); }
-	public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
-	public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
-	public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
-	public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
-	public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException { return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
-	public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException { session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
-	public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
-	public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testId); }
-	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
-	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
+    // New - Loads or reloads test data
+    public List<Test> reloadAllTestResults(String sessionName) throws Exception { return session().xdsTestServiceManager().reloadAllTestResults(sessionName); }
+    public List<TestInstance> getTestlogListing(String sessionName) throws Exception { return session().xdsTestServiceManager().getTestlogListing(sessionName); }
+    public Map<String, Result> getTestResults(List<TestInstance> testIds, String testSession) throws NoServletSessionException { return session().xdsTestServiceManager().getTestResults(testIds, testSession);
+    }
 
-	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
+    public String setMesaTestSession(String sessionName)  throws NoServletSessionException { session().xdsTestServiceManager().setMesaTestSession(sessionName); return sessionName;}
+    public List<String> getMesaTestSessionNames() throws Exception { return session().xdsTestServiceManager().getMesaTestSessionNames(); }
+    public boolean addMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().addMesaTestSession(name); }
+    public boolean delMesaTestSession(String name) throws Exception { return session().xdsTestServiceManager().delMesaTestSession(name); }
+    public String getNewPatientId(String assigningAuthority)  throws NoServletSessionException {
+        return session().xdsTestServiceManager().getNewPatientId(assigningAuthority); }
+    public String delTestResults(List<TestInstance> testInstances, String testSession )  throws NoServletSessionException {
+        session().xdsTestServiceManager().delTestResults(testInstances, testSession); return ""; }
+    public List<Test> deleteAllTestResults(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().deleteAllTestResults(getSession().getMesaSessionName(), site); }
+    public Test deleteSingleTestResult(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().deleteSingleTestResult(getSession().getMesaSessionName(), site, testId); }
+    public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
+    public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
+
+    public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
     public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
         Session s = getSession();
         if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
@@ -316,75 +222,41 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
         return new OrchestrationManager().buildRgTestEnvironment(s, request);
     }
 
-
     /**
      * Get list of section names defined for the test in the order they should be executed
-     *
      * @param test test name
      * @return list of sections
      * @throws Exception if something goes wrong
      */
-    public List<String> getTestIndex(String test) throws Exception {
-        return session().xdsTestServiceManager().getTestIndex(test);
-    }
+    public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
 
     /**
      * Get map of (collection name, collection description) pairs contained in testkit
-     *
      * @param collectionSetName the collection name
      * @return the map
      * @throws Exception is something goes wrong
      */
-    public Map<String, String> getCollectionNames(String collectionSetName) throws Exception {
-        return session().xdsTestServiceManager().getCollectionNames(collectionSetName);
-    }
-
-    public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception {
-        return session().xdsTestServiceManager().getLogContent(sessionName, testInstance);
-    }
-
-    public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException {
+    public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
+    public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
+    public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
         return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
-
-    public TestLogs getRawLogs(TestInstance logId) throws NoServletSessionException {
-        return session().xdsTestServiceManager().getRawLogs(logId);
-    }
-
-    public List<String> getTestdataSetListing(String testdataSetName) throws NoServletSessionException {
-        return session().xdsTestServiceManager().getTestdataSetListing(testdataSetName);
-    }
-
-    public String getTestplanAsText(TestInstance testInstance, String section) throws Exception {
-        return session().xdsTestServiceManager().getTestplanAsText(testInstance, section);
-    }
-
-    public CodesResult getCodesConfiguration() throws NoServletSessionException {
-        return session().xdsTestServiceManager().getCodesConfiguration();
-    }
-
-    public List<TestInstance> getTestlogListing(String sessionName) throws Exception {
-        return session().xdsTestServiceManager().getTestlogListing(sessionName);
-    }
+    public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
+    public List<String> getTestdataSetListing(String testdataSetName)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestdataSetListing(testdataSetName); }
+    public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
+    public CodesResult getCodesConfiguration()  throws NoServletSessionException {
+        return session().xdsTestServiceManager().getCodesConfiguration(); }
 
     /**
      * Get test names and descriptions from a named test collection
-     *
      * @param collectionSetName name of directory holding tc files (collection definitions)
-     * @param collectionName    collection name within the directory
+     * @param collectionName collection name within the directory
      * @return testname ==> description mapping
      * @throws Exception if something goes wrong
      */
-    public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception {
-        return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
-    }
-
-    public boolean isPrivateMesaTesting() throws NoServletSessionException {
-        return session().xdsTestServiceManager().isPrivateMesaTesting();
-    }
-
-    public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException {
-        return session().xdsTestServiceManager().sendPidToRegistry(site, pid);
+    public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
+    public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
+    public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid);
     }
 
     //------------------------------------------------------------------------
@@ -392,9 +264,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     // Gazelle Service
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public String reloadSystemFromGazelle(String systemName) throws Exception {
-        return new GazelleServiceManager(session()).reloadSystemFromGazelle(systemName);
-    }
+    public String reloadSystemFromGazelle(String systemName) throws Exception { return new GazelleServiceManager(session()).reloadSystemFromGazelle(systemName); }
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
@@ -402,19 +272,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     public List<String> getEnvironmentNames() throws NoServletSessionException {
-        return session().getEnvironmentNames();
-    }
-
-    public String setEnvironment(String name) throws NoServletSessionException {
-        session().setEnvironment(name);
-        return name;
-    }
-
-    public String getCurrentEnvironment() throws NoServletSessionException {
-        return session().getCurrentEnvironment();
-    }
-
-    public String getDefaultEnvironment() throws NoServletSessionException {
+        return session().getEnvironmentNames(); }
+    public String setEnvironment(String name) throws NoServletSessionException { session().setEnvironment(name); return name; }
+    public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
+    public String getDefaultEnvironment()  throws NoServletSessionException {
         String defaultEnvironment = Installation.installation().propertyServiceManager().getDefaultEnvironment();
         if (Session.environmentExists(defaultEnvironment))
             return defaultEnvironment;
@@ -426,71 +287,29 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     // Session
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public Map<String, String> getSessionProperties() throws NoServletSessionException {
-        return session().getSessionPropertiesAsMap();
-    }
+    public Map<String, String> getSessionProperties() throws NoServletSessionException { return session().getSessionPropertiesAsMap(); }
+    public void setSessionProperties(Map<String, String> props) throws NoServletSessionException { session().setSessionProperties(props); }
+    public Pid createPid(String assigningAuthority) throws NoServletSessionException { return session().allocateNewPid(assigningAuthority); }
 
-    public void setSessionProperties(Map<String, String> props) throws NoServletSessionException {
-        session().setSessionProperties(props);
-    }
-
-    public Pid createPid(String assigningAuthority) throws NoServletSessionException {
-        return session().allocateNewPid(assigningAuthority);
-    }
-
-    public String getAssigningAuthority() throws Exception {
-        return session().getAssigningAuthority();
-    }
-
-    public List<String> getAssigningAuthorities() throws Exception {
-        return session().getAssigningAuthorities();
-    }
+    public String getAssigningAuthority() throws Exception { return session().getAssigningAuthority(); }
+    public List<String> getAssigningAuthorities() throws Exception { return session().getAssigningAuthorities(); }
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
     // Property Service
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public TkProps getTkProps() throws NoServletSessionException {
-        return session().tkProps();
-    }
-
-    public String getDefaultAssigningAuthority() throws NoServletSessionException {
-        return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority();
-    }
-
-    public String getImplementationVersion() throws NoServletSessionException {
-        return Installation.installation().propertyServiceManager().getImplementationVersion();
-    }
-
-    public Map<String, String> getToolkitProperties() throws NoServletSessionException {
-        return Installation.installation().propertyServiceManager().getToolkitProperties();
-    }
-
-    public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException {
-        return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed();
-    }
-
+    public TkProps getTkProps() throws NoServletSessionException { return session().tkProps(); }
+    public String getDefaultAssigningAuthority()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getDefaultAssigningAuthority(); }
+    public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
+    public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }
+    public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException  { return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(); }
     //	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
-    public String setToolkitProperties(Map<String, String> props) throws Exception {
-        return setToolkitPropertiesImpl(props);
-    }
-
-    public String getAdminPassword() throws NoServletSessionException {
-        return Installation.installation().propertyServiceManager().getAdminPassword();
-    }
-
-    public boolean reloadPropertyFile() throws NoServletSessionException {
-        return Installation.installation().propertyServiceManager().reloadPropertyFile();
-    }
-
-    public String getAttributeValue(String username, String attName) throws Exception {
-        return Installation.installation().propertyServiceManager().getAttributeValue(username, attName);
-    }
-
-    public void setAttributeValue(String username, String attName, String attValue) throws Exception {
-        Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue);
-    }
+    public String setToolkitProperties(Map<String, String> props) throws Exception { return setToolkitPropertiesImpl(props); }
+    public String getAdminPassword() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getAdminPassword(); }
+    public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().reloadPropertyFile(); }
+    public String getAttributeValue(String username, String attName) throws Exception { return Installation.installation().propertyServiceManager().getAttributeValue(username, attName); }
+    public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue); }
 
 
     //------------------------------------------------------------------------
@@ -498,103 +317,39 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     // Simulator Service
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public String putSimConfig(SimulatorConfig config) throws Exception {
-        return new SimulatorServiceManager(session()).saveSimConfig(config);
-    }
-
+    public String putSimConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).saveSimConfig(config); }
     // this deletes a simulator
-    public String deleteConfig(SimulatorConfig config) throws Exception {
-        return new SimulatorServiceManager(session()).deleteConfig(config);
-    }
+    public String deleteConfig(SimulatorConfig config) throws Exception { return new SimulatorServiceManager(session()).deleteConfig(config); }
+    public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception { new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec); }
+    public String getSimulatorEndpoint() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorEndpoint(); }
+    public MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).executeSimMessage(simFileSpec); }
+    public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception { return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans); }
+    public String getTransactionRequest(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionRequest(simid, actor, trans, event); }
+    public String getTransactionResponse(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionResponse(simid, actor, trans, event); }
+    public int removeOldSimulators() throws NoServletSessionException { return new SimulatorServiceManager(session()).removeOldSimulators(); }
+    public List<Result> getSelectedMessage(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessage(simFileSpec); }
+    public List<Result> getSelectedMessageResponse(String simFileSpec) throws NoServletSessionException { return new SimulatorServiceManager(session()).getSelectedMessageResponse(simFileSpec); }
 
-    public void renameSimFile(String simFileSpec, String newSimFileSpec) throws Exception {
-        new SimulatorServiceManager(session()).renameSimFile(simFileSpec, newSimFileSpec);
-    }
-
-    public String getSimulatorEndpoint() throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).getSimulatorEndpoint();
-    }
-
-    public MessageValidationResults executeSimMessage(String simFileSpec) throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).executeSimMessage(simFileSpec);
-    }
-
-    public List<TransactionInstance> getTransInstances(SimId simid, String xactor, String trans) throws Exception {
-        return new SimulatorServiceManager(session()).getTransInstances(simid, xactor, trans);
-    }
-
-    public String getTransactionRequest(SimId simid, String actor, String trans, String event) throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).getTransactionRequest(simid, actor, trans, event);
-    }
-
-    public String getTransactionResponse(SimId simid, String actor, String trans, String event) throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).getTransactionResponse(simid, actor, trans, event);
-    }
-
-    public int removeOldSimulators() throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).removeOldSimulators();
-    }
-
-    public List<Result> getSelectedMessage(String simFileSpec) throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).getSelectedMessage(simFileSpec);
-    }
-
-    public List<Result> getSelectedMessageResponse(String simFileSpec) throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).getSelectedMessageResponse(simFileSpec);
-    }
-
-    public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).getSimulatorNameMap();
-    }
-
-    public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException {
-        return new SimulatorServiceManager(session()).validateMessage(vc);
-    }
-
-    public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception {
-        return new SimulatorServiceManager(session()).getSimConfigs(ids);
-    }
-
-    public List<SimulatorConfig> getAllSimConfigs(String user) throws Exception {
-        return new SimulatorServiceManager(session()).getAllSimConfigs(user);
-    }
-
+    public Map<String, SimId> getActorSimulatorNameMap() throws NoServletSessionException { return new SimulatorServiceManager(session()).getSimulatorNameMap(); }
+    public MessageValidationResults validateMessage(ValidationContext vc) throws NoServletSessionException, EnvironmentNotSelectedClientException { return new SimulatorServiceManager(session()).validateMessage(vc); }
+    public List<SimulatorConfig> getSimConfigs(List<SimId> ids) throws Exception { return new SimulatorServiceManager(session()).getSimConfigs(ids); }
+    public List<SimulatorConfig> getAllSimConfigs(String user) throws Exception { return new SimulatorServiceManager(session()).getAllSimConfigs(user); }
     public Simulator getNewSimulator(String actorTypeName, SimId simId) throws Exception {
-        return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName, simId);
+        return new SimulatorServiceManager(session()).getNewSimulator(actorTypeName, simId); }
+    public void deleteSimFile(String simFileSpec) throws Exception { new SimulatorServiceManager(session()).deleteSimFile(simFileSpec); }
+    public List<String> getTransactionsForSimulator(SimId simid) throws Exception { return new SimulatorServiceManager(session()).getTransactionsForSimulator(simid); }
+    public List<SimulatorStats> getSimulatorStats(List<SimId> simids) throws Exception { return new SimulatorServiceManager(session()).getSimulatorStats(simids); }
+    public String getTransactionLog(SimId simid, String actor, String trans, String event) throws NoServletSessionException { return new SimulatorServiceManager(session()).getTransactionLog(simid, actor, trans, event); }
+
+    public List<Pid> getPatientIds(SimId simId) throws Exception { return new SimulatorServiceManager(session()).getPatientIds(simId); }
+    public String addPatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).addPatientIds(simId, pids);
     }
 
-    public void deleteSimFile(String simFileSpec) throws Exception {
-        new SimulatorServiceManager(session()).deleteSimFile(simFileSpec);
-    }
-
-    public List<String> getTransactionsForSimulator(SimId simid) throws Exception {
-        return new SimulatorServiceManager(session()).getTransactionsForSimulator(simid);
-    }
-
-    public List<SimulatorStats> getSimulatorStats(List<SimId> simids) throws Exception {
-        return new SimulatorServiceManager(session()).getSimulatorStats(simids);
-    }
-
-    public String getTransactionLog(SimId simid, String actor, String trans, String event) throws NoServletSessionException {
-        return new SimulatorServiceManager(session()).getTransactionLog(simid, actor, trans, event);
-    }
-
-    public List<Pid> getPatientIds(SimId simId) throws Exception {
-        return new SimulatorServiceManager(session()).getPatientIds(simId);
-    }
-
-    public String addPatientIds(SimId simId, List<Pid> pids) throws Exception {
-        return new SimulatorServiceManager(session()).addPatientIds(simId, pids);
-    }
-
-    public boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception {
-        return new SimulatorServiceManager(session()).deletePatientIds(simId, pids);
-    }
+    public boolean deletePatientIds(SimId simId, List<Pid> pids) throws Exception { return new SimulatorServiceManager(session()).deletePatientIds(simId, pids); }
 
     public Result getSimulatorEventRequest(TransactionInstance ti) throws Exception {
         return new SimulatorServiceManager(session()).getSimulatorEventRequestAsResult(ti);
     }
-
     public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
         return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
     }
@@ -609,13 +364,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
     // Dashboard Service
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------
-    public List<RegistryStatus> getDashboardRegistryData() throws Exception {
-        return new DashboardServiceManager(session()).getDashboardRegistryData();
-    }
-
-    public List<RepositoryStatus> getDashboardRepositoryData() throws Exception {
-        return new DashboardServiceManager(session()).getDashboardRepositoryData();
-    }
+    public List<RegistryStatus> getDashboardRegistryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRegistryData(); }
+    public List<RepositoryStatus> getDashboardRepositoryData() throws Exception { return new DashboardServiceManager(session()).getDashboardRepositoryData(); }
 
 
     // Other support calls
@@ -675,6 +425,22 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements ToolkitS
             Installation.installation().warHome(warHome);
         }
         return context;
+    }
+
+    @Override
+    public String configureTestkit(String selectedEnvironmentName) {
+        File environmentFile = Installation.installation().environmentFile(selectedEnvironmentName);
+        File defaultTestkit = Installation.installation().testkitFile();
+        CodesUpdater updater = new CodesUpdater();
+        updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
+        return updater.getOutput();
+    }
+
+    @Override
+    public boolean doesTestkitExist(String selectedEnvironment) {
+        File environmentFile = Installation.installation().environmentFile(selectedEnvironment);
+        File testkit=new File(environmentFile,"testkit");
+        return testkit.exists();
     }
 
     // Used only for non-servlet use (Dashboard is good example)
