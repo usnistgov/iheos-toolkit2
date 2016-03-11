@@ -1,12 +1,5 @@
 package gov.nist.toolkit.tookitApi;
 
-import gov.nist.toolkit.actortransaction.SimulatorActorType;
-import gov.nist.toolkit.toolkitServicesCommon.*;
-import gov.nist.toolkit.toolkitServicesCommon.resource.*;
-import org.apache.log4j.Logger;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.jackson.JacksonFeature;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -14,6 +7,27 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.apache.log4j.Logger;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.jackson.JacksonFeature;
+
+import gov.nist.toolkit.actortransaction.SimulatorActorType;
+import gov.nist.toolkit.toolkitServicesCommon.LeafClassRegistryResponse;
+import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
+import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse;
+import gov.nist.toolkit.toolkitServicesCommon.RetrieveRequest;
+import gov.nist.toolkit.toolkitServicesCommon.RetrieveResponse;
+import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
+import gov.nist.toolkit.toolkitServicesCommon.SimId;
+import gov.nist.toolkit.toolkitServicesCommon.StoredQueryRequest;
+import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
+import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 
 /**
  * Builder class for building and using Simulator configurations.  Simulators come in two flavors:
@@ -107,7 +121,14 @@ public class EngineSpi {
         delete(parms.getId(), parms.getUser());
     }
 
-    public SimConfig get(SimId simId) throws ToolkitServiceException {
+    /**
+     * Returns the SimConfig for an existing simulator.
+    * @param simId simulator id for sim to fetch.
+    * @return SimConfig instance
+    * @throws ToolkitServiceException on error, for example if the simulator
+    * does not exist.
+    */
+   public SimConfig get(SimId simId) throws ToolkitServiceException {
         Response response = target.path("simulators/" + simId.getFullId()).request().get();
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
@@ -118,8 +139,8 @@ public class EngineSpi {
      * Send an XDR Provide and Register transaction.  The engine is identified by parameters to the class
      * constructor.  The simulator id is contained in the SendRequest object.
      * @param request SendRequest object
-     * @return
-     * @throws ToolkitServiceException
+     * @return Response Object
+     * @throws ToolkitServiceException on error
      */
     public RawSendResponse sendXdr(RawSendRequest request) throws ToolkitServiceException {
         request.setTransactionName("xdrpr");

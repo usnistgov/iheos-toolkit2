@@ -104,6 +104,21 @@ public class SimulatorBuilder {
         cons.config =  engine.create(id, user, SimulatorActorType.DOCUMENT_CONSUMER, environmentName);
         return cons;
     }
+    /**
+     * Create new Imaging Document Consumer simulator with default configuration.
+     * @param id Simulator ID
+     * @param user User creating Simulator.  Same as TestSession in Toolkit UI. The simulator ID must be unique for this user.
+     * @param env Environment defines Affinity Domain coding schemes and TLS certificate for use with client.
+     * @return Simulator configuration.
+     * @throws ToolkitServiceException if anything goes wrong.
+     */
+    public ImagingDocumentConsumer createImagingDocumentConsumer(String id, 
+       String user, String env) throws ToolkitServiceException {
+       XdsiImagingDocumentConsumer idc = new XdsiImagingDocumentConsumer();
+       idc.engine = engine;
+       idc.config = engine.create(id, user, SimulatorActorType.IMAGE_DOCUMENT_CONSUMER, env);
+       return idc;
+    }
 
     /**
      * Create new Document Recipient simulator with default configuration.
@@ -216,7 +231,15 @@ public class SimulatorBuilder {
         return engine.get(simId);
     }
 
-    public SimId get(String user, String id) {
+   /**
+    * Creates SimId instance for passed user (session) and sim id. Note: Does
+    * not check to see if such a simulator exists.
+    * 
+    * @param user (session)
+    * @param id simulator id.
+    * @return SimId instance.
+    */
+   public SimId get(String user, String id) {
         SimIdResource simId = new SimIdResource();
         simId.setUser(user);
         simId.setId(id);

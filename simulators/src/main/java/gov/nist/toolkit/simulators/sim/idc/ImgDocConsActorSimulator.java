@@ -3,24 +3,28 @@
  */
 package gov.nist.toolkit.simulators.sim.idc;
 
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.FactoryConfigurationError;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
-import javax.xml.parsers.FactoryConfigurationError;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Image Document Consumer Actor Simulator.  PRELIMINARY
@@ -80,15 +84,12 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
       "xmlns:iherad=\"urn:ihe:rad:xdsi-b:2009\" " + 
       "xmlns:ihe=\"urn:ihe:iti:xds-b:2007\">";
    
-   public RetrievedDocumentsModel retrieve(SimulatorConfig config,
-                                           RetrieveImgRequestModel request) throws Exception {
+   public RetrievedDocumentsModel retrieve(Site site,
+                                           RetrieveRequestModel iModel) throws Exception {
 
-       String endpoint =
-               config.get(
-                       (isTls()) ? SimulatorProperties.idsrTlsEndpoint : SimulatorProperties.idsrEndpoint
-               ).asString();
+       String endpoint = site.getEndpoint(type, isTls(), false);
 
-      OMElement retrieveRequest = buildRetrieve(request);
+      OMElement retrieveRequest = buildRetrieve(iModel);
       
       Soap soap = new Soap();
       for (OMElement ele : extraSoapHeaderElements) {
@@ -127,7 +128,7 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
    
    
    
-   private OMElement buildRetrieve (RetrieveImgRequestModel request) 
+   private OMElement buildRetrieve (RetrieveRequestModel iModel) 
       throws XdsInternalException, FactoryConfigurationError {
       // TODO Build a real one
       return Util.parse_xml(
@@ -149,9 +150,10 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
 
    }
    
-   private RetrievedDocumentsModel parseResponse(OMElement result) {
-      // TODO write a real one
-      return null;
+   private RetrievedDocumentsModel parseResponse(OMElement result) throws Exception {
+      RetrieveB retb = new RetrieveB(null);
+      Map<String, RetrievedDocumentModel> map = retb.parse_rep_response(result).getMap();
+      return new RetrievedDocumentsModel(map);
    }
 
 } // EO ImgDocConsActorSimulator class

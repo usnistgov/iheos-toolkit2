@@ -1,0 +1,13 @@
+/** TableStyles.css **/
+/** Custom styles for GWT tables. Created by Diane Azais, 2015 **/
+
+@def selectionBorderWidth 0px;
+.cellTableWidget {
+
+}
+
+.cellTableCell {
+    border-width: 0 !important;
+}
+
+
