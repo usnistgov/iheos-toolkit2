@@ -1,12 +1,12 @@
 package gov.nist.toolkit.sitemanagement.client;
 
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This is as close as toolkit comes to managing Actor configurations. ATFactory

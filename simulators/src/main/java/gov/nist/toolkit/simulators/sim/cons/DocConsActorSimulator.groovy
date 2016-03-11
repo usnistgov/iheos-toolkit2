@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.cons
 
-import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actortransaction;
+package gov.nist.toolkit.configDatatypes;
 
 
 // This file must be kept up to date with ActorType.java

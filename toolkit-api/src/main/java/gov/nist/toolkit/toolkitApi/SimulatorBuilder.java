@@ -1,6 +1,6 @@
 package gov.nist.toolkit.toolkitApi;
 
-import gov.nist.toolkit.actortransaction.SimulatorActorType;
+import gov.nist.toolkit.configDatatypes.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;

@@ -1,11 +1,10 @@
 package gov.nist.toolkit.sitemanagement.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.io.Serializable;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Configuration of a single instance of a transaction. Transactions are

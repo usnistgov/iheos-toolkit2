@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.src;
 
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.soap.DocumentMap;

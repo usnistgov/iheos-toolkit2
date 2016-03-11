@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;

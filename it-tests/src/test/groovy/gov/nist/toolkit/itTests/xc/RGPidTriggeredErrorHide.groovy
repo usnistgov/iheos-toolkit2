@@ -2,8 +2,8 @@ package gov.nist.toolkit.itTests.xc
 
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.SimulatorActorType
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.client.PatientError
 import gov.nist.toolkit.configDatatypes.client.PatientErrorList
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap

@@ -2,7 +2,7 @@ package gov.nist.toolkit.toolkitServices;
 
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
@@ -444,7 +444,7 @@ public class SimulatorsController {
         }
 
         try {
-            TransactionType transactionType = TransactionType.find(ActorType.XDR_DOC_SRC, request.getTransactionName());
+            TransactionType transactionType = ActorType.XDR_DOC_SRC.getTransaction(request.getTransactionName());
             if (transactionType == null)
                 throw new BadSimConfigException(String.format("Do not understand transaction %s", request.getTransactionName()));
             XdrDocSrcActorSimulator sim = new XdrDocSrcActorSimulator();

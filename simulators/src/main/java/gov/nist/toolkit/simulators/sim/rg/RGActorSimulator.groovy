@@ -1,10 +1,10 @@
 package gov.nist.toolkit.simulators.sim.rg
 
 import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.Severity
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.configDatatypes.client.PatientErrorList
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap
 import gov.nist.toolkit.configDatatypes.client.Pid
