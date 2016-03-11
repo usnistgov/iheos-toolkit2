@@ -4,19 +4,19 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.testenginelogging.Report;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
+import org.jaxen.JaxenException;
 
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.jaxen.JaxenException;
-
 public class ReportManager {
+    private final static Logger logger = Logger.getLogger(ReportManager.class);
 	List<Report> reports;
 	OMElement root;
 	Map<String, OMElement> sections;
@@ -77,6 +77,7 @@ public class ReportManager {
 
 	public void generate() throws XdsInternalException {
 		for (Report report : reports) {
+            logger.info("Generating Report " + report.toString());
 			AXIOMXPath xpathExpression;
 			try {
 				if (report.getXpath() != null && !report.getXpath().equals("")) {
@@ -86,15 +87,20 @@ public class ReportManager {
 					try {
 						val = xpathExpression.stringValueOf(section);
 					} catch (Exception e) {
-						throw new XdsInternalException("Error evaluating XPath expression [" +
-								report.getXpath() + "] against output of section [" + report.getSection() + "]");
+                        val = String.format("Error generating report: %s", e.getMessage());
+//						throw new XdsInternalException("Error evaluating XPath expression [" +
+//								report.getXpath() + "] against output of section [" + report.getSection() + "]");
 					}
 					report.setValue(val);
 					if (val == null || val.equals(""))
-						throw new XdsInternalException("Report " + report.name +
+						val = "Report " + report.name +
 								" which has XPath " + report.getXpath() +
 								" evaluates to [" + val + "] when evaluated " +
-								"against section " + report.getSection());
+								"against section " + report.getSection();
+//                    throw new XdsInternalException("Report " + report.name +
+//                            " which has XPath " + report.getXpath() +
+//                            " evaluates to [" + val + "] when evaluated " +
+//                            "against section " + report.getSection());
 				}
 			}
 			catch (JaxenException e) {

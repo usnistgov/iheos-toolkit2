@@ -120,8 +120,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 					er.err(Code.XDSRegistryError, "No RGs configured", this, null);
 					return;
 				}
-
-
 			} else {
 				// look at home to see where to route this message
 				if (request.getHomeAtt() == null) {
@@ -131,6 +129,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				Site site = remoteSites.getSiteForHome(request.getHome());
 
 				if (site == null) {
+                    response.add_error(Code.XDSRegistryError.name(), "Don't have configuration for RG with homeCommunityId " + request.getHome(), this.getClass().getName(), null, null);
 					er.err(Code.XDSRegistryError, "Don't have configuration for RG with homeCommunityId " + request.getHome(), this, null);
 					return;
 				}
@@ -143,8 +142,6 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 				// forward the query
 				forwardQuery(site);
 			}
-
-
 
 			List<OMElement> results = m.getAllObjects(); // everything but ObjectRefs
 			results.addAll(m.getObjectRefs());
@@ -186,7 +183,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			er.challenge("Request to RG is");
 			er.detail(new OMFormatter(req).toString());
 
-			AdhocQueryResponseParser.AdhocQueryResponse rgResponse = sqCall(req, endpoint);
+			gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse rgResponse = sqCall(req, endpoint);
 
 			er.challenge("Response from RG is");
 			er.detail(new OMFormatter(rgResponse.getMessage()).toString());
@@ -265,7 +262,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 		er.err(XdsErrorCode.Code.XDSRegistryError, msg, this, null);
 	}
 
-	AdhocQueryResponseParser.AdhocQueryResponse sqCall(OMElement request, String endpoint) throws Exception {
+	gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse sqCall(OMElement request, String endpoint) throws Exception {
 		Soap soap = new Soap();
 		soap.setAsync(false);
 		soap.setUseSaml(false);
@@ -289,7 +286,7 @@ public class XcQuerySim extends AbstractMessageValidator implements MetadataGene
 			result = mockSoap.call(endpoint, request);
 		}
 
-		AdhocQueryResponseParser.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
+		gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse response = new AdhocQueryResponseParser(result).getResponse();
 
 		return response;
 	}

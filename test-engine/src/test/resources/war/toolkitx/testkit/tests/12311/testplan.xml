@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12311</Test>
+  <TestStep id="getdocs">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>XGQ</Transaction>
+      <SQ>Test GetDocuments XGQ</SQ>
+      <Assertion>LeafClass return</Assertion>
+    </Rule>
+    <XCQTransaction>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseXPath testdir="../12309" symbol="$home$" step="finddocs">
+                //TestStep[@id='finddocs']/XCQTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='ObjectRef'][1]/@home</UseXPath>
+      <UseObjectRef testdir="../12309" index="0" symbol="$doc_uuid_1$" step="finddocs"/>
+      <UseObjectRef testdir="../12309" index="1" symbol="$doc_uuid_2$" step="finddocs"/>
+      <Report name="$requestHome$" section="InputMetadata">
+                //*[local-name()='AdhocQuery']/@home
+            </Report>
+      <Report name="$doc_uuid_1$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+            </Report>
+      <Report name="$doc_uid_1$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+            </Report>
+      <Report name="$doc_uuid_2$" section="Result">
+                //*[local-name()='ExtrinsicObject'][2]/@id
+            </Report>
+      <Report name="$doc_uid_2$" section="Result">
+                //*[local-name()='ExtrinsicObject'][2]/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:2e82c1f6-a085-4c72-9da3-8640a32e42ab']/@value
+            </Report>
+      <Report name="$repositoryUniqueId$" section="Result">
+                //*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+            </Report>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="ExtrinsicObjectCount"> 
+                    count(//XCQTransaction[@step="getdocs"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ExtrinsicObject']) = 2
+                </Assert>
+      </Assertions>
+    </XCQTransaction>
+  </TestStep>
+</TestPlan>

@@ -47,6 +47,7 @@ public class QueryBoilerplate {
 		if (GenericQueryTab.transactionOfferings == null) {
 			genericQueryTab.reloadTransactionOfferings();
 		} else {
+            // TODO - this probablt needs to change to true
 			genericQueryTab.redisplay(false);
 		}
 	}

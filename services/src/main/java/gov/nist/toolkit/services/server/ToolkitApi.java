@@ -40,23 +40,23 @@ public class ToolkitApi {
     boolean internalUse = true;
     private static ToolkitApi api = null;
 
-//    /**
-//     * Use when running unit tests
-//     * @return
-//     */
-//    public static ToolkitApi forInternalUse() {
-//        if (api == null) {
-//            api = new ToolkitApi(UnitTestEnvironmentManager.setupLocalToolkit());
-//            api.internalUse = true;
-//            return api;
-//        }
-//        if (!api.internalUse) {
-//            String msg = "Engine initialized for Service Use - cannot reinitialize for Internal Use";
-//            logger.fatal(msg);
-//            throw new EngineInitializationException(msg);
-//        }
-//        return api;
-//    }
+    /**
+     * Use when running unit tests or used in production
+     * @return
+     */
+    public static ToolkitApi forInternalUse() {
+        if (api == null) {
+            api = new ToolkitApi(UnitTestEnvironmentManager.setupLocalToolkit());
+            api.internalUse = true;
+            return api;
+        }
+        if (!api.internalUse) {
+            String msg = "Engine initialized for Service Use - cannot reinitialize for Internal Use";
+            logger.fatal(msg);
+            throw new EngineInitializationException(msg);
+        }
+        return api;
+    }
 
     /**
      * Use to initialize when implementing a service
@@ -78,6 +78,10 @@ public class ToolkitApi {
             throw new EngineInitializationException(msg);
         }
         return api;
+    }
+
+    public static ToolkitApi forNormalUse(Session session) {
+        return new ToolkitApi(session);
     }
 
     /**
@@ -108,6 +112,7 @@ public class ToolkitApi {
 
     public Simulator createSimulator(SimId simId) throws Exception {
         ActorType actorType = ActorType.findActor(simId.getActorType());
+        logger.info(String.format("Create sim %s of type %s", simId.toString(), simId.getActorType()));
         if (actorType == null) throw new BadSimConfigException("Simulator type " + simId.getActorType() + " does not exist");
         return createSimulator(actorType, simId);
     }
@@ -237,8 +242,9 @@ public class ToolkitApi {
         return new SimulatorServiceManager(session).getTransactionLog(simId, null, transaction, eventId);
     }
 
-
-
+    public Session getSession() {
+        return session;
+    }
 }
 
 

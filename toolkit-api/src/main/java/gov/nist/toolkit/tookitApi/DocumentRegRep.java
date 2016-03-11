@@ -6,7 +6,7 @@ import gov.nist.toolkit.toolkitServicesCommon.RefList;
 /**
  *
  */
-public interface DocumentRegRep  extends AbstractActorInterface /*SimConfig*/ {
+public interface DocumentRegRep  extends AbstractActorInterface {
 
     /**
      * This is the equivalent of a FindDocuments Stored Query.

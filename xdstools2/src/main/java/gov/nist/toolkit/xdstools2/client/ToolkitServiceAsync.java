@@ -4,12 +4,16 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -118,6 +122,7 @@ public interface ToolkitServiceAsync {
 	void registerAndQuery(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void getRelated(SiteSpec site, ObjectRef or, List<String> assocs, AsyncCallback<List<Result>> callback);
 	void retrieveDocument(SiteSpec site, Uids uids, AsyncCallback<List<Result>> callback);
+	void retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax, AsyncCallback<List<Result>> callback);
 	void submitRegistryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
 	void submitRepositoryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
 	void submitXDRTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
@@ -169,6 +174,11 @@ public interface ToolkitServiceAsync {
 
 
 	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
+
+	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);
+
+	void doesTestkitExist(String selectedEnvironment, AsyncCallback<Boolean> asyncCallback);
+
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
 
 	//------------------------------------------------------------------------
@@ -178,13 +188,15 @@ public interface ToolkitServiceAsync {
 	//------------------------------------------------------------------------
 	void reloadAllTestResults(String sessionName, AsyncCallback<List<Test>> callback) throws Exception;
 	void getTestlogListing(String sessionName, AsyncCallback<List<TestInstance>> callback);
-	void getTestResults(List<String> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
+	void getTestResults(List<TestInstance> testIds, String testSession, AsyncCallback<Map<String, Result>> callback);
 	void setMesaTestSession(String sessionName, AsyncCallback callback);
 	void getMesaTestSessionNames(AsyncCallback<List<String>> callback);
 	void deleteAllTestResults(Site site, AsyncCallback<List<Test>> callback);
 	void deleteSingleTestResult(Site site, int testId, AsyncCallback<Test> callback);
 	void runAllTests(Site site, AsyncCallback<List<Test>> callback);
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
-    void getProfileErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
+    void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
+    void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 
 }

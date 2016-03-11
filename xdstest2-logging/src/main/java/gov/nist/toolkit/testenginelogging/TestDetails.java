@@ -34,7 +34,7 @@ public class TestDetails  {
 		"selftest", "development", "utilities", "xcpd", "collection", "static.collections"};
 	static final String testPlanFileName = "testplan.xml";
 
-	public String toString() { return "[TestSpec: testkit=" + testkit + " area=" + area +
+	public String toString() { return "[TestDetails: testkit=" + testkit + " area=" + area +
 		"<br />testnum=" + testInstance +
 		"<br />sections= " + testPlansToString() +
 		"<br />logs= " + sectionLogMap.toString() +

@@ -113,6 +113,17 @@ public class SchemaValidation extends MetadataTypes {
 			"http://" + host + ":" + portString + "/xdsref/schema/audit/healthcare-security-audit.xsd " :
 				localSchema + "/audit/healthcare-security-audit.xsd ");
 			break;
+		case METADATA_TYPE_RAD69:
+			schemaLocation = "urn:ihe:rad:xdsi-b:2009 " + 
+			((localSchema == null) ?
+			"http://" + host + ":" + portString + "/xdsref/schema/v3/XDSI.b_ImagingDocumentSource.xsd " :
+				localSchema + "/v3/XDSI.b_ImagingDocumentSource.xsd ") +
+			
+			"urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0 " + 
+			((localSchema == null) ?
+			"http://" + host + ":" + portString + "/xdsref/schema/v3/rs.xsd" :
+			localSchema + "/v3/rs.xsd"	);
+			break;
 		default:
 			throw new XdsInternalException("SchemaValidation: invalid metadata type = " + metadataType);
 		}

@@ -14,6 +14,7 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.util.*;
 
 public class Linkage extends BasicLinkage {
+    private final static Logger logger = Logger.getLogger(Linkage.class);
 	OMElement instruction_output;
 	Metadata m;
 
@@ -199,9 +201,15 @@ public class Linkage extends BasicLinkage {
 	}
 
 	public void replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text) throws XdsInternalException {
+        private_replace_string_in_text_and_attributes(root, old_text, new_text);
+    }
 
-		if (root == null)
-			return;
+    void private_replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text) throws XdsInternalException {
+
+		if (root == null) return;
+        if (root.getLocalName().equals("Report")) return;
+        if (root.getLocalName().equals("UseReport")) return;
+        if (root.getLocalName().equals("UseId")) return;
 
 		// don't look inside document contents
 		try {
@@ -215,16 +223,7 @@ public class Linkage extends BasicLinkage {
 		for (Iterator it=root.getChildElements(); it.hasNext(); ) {
 			OMElement e = (OMElement) it.next();
 
-			try {
-				replaceStringInElement(e, old_text, new_text);
-			} catch (Exception ex) {
-				throw new XdsInternalException("Error trying to replace [" + old_text + "] with [" +
-				new_text + "] in element " + e.getLocalName(), ex		);
-
-			}
-
-			// recurse
-			replace_string_in_text_and_attributes(e, old_text, new_text);
+			private_replace_string_in_text_and_attributes(e, old_text, new_text);
 		}
 
 	}
@@ -233,7 +232,7 @@ public class Linkage extends BasicLinkage {
 			String new_text) {
 		// text
 		String text = e.getText();
-		if (text.indexOf(old_text) != -1) {
+		if (text.contains(old_text)) {
 			text = text.replaceAll(escape_pattern(old_text), new_text);
 			e.setText(text);
 		}
@@ -242,7 +241,7 @@ public class Linkage extends BasicLinkage {
 		for (Iterator ita=e.getAllAttributes(); ita.hasNext(); ) {
 			OMAttribute att = (OMAttribute) ita.next();
 			String value = att.getAttributeValue();
-			if (value.indexOf(old_text) != -1) {
+			if (value.contains(old_text)) {
 				value = value.replaceAll(escape_pattern(old_text), new_text);
 				att.setAttributeValue(value);
 			}
@@ -577,6 +576,7 @@ public class Linkage extends BasicLinkage {
 	public void apply(OMElement root) throws XdsInternalException {
 		for (String key : linkage.keySet()) {
 			String value = linkage.get(key);
+//            logger.info(String.format("apply %s:%s to %s", key, value,new OMFormatter(root).toString()));
 			replace_string_in_text_and_attributes(root, key, value);
 		}
 	}

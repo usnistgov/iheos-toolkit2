@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11994/submit</Test>
+  <TestStep id="submit">
+    <Goal>Submit DocumentEntry</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>metadata.xml</MetadataFile>
+      <Report name="docid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject']/@id
+            </Report>
+      <Report name="ssuid" section="InputMetadata">
+                //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
+            </Report>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="submit_copy">
+    <Goal>Submit DocumentEntry</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>metadata.xml</MetadataFile>
+      <Report name="docid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject']/@id
+            </Report>
+      <Report name="ssuid" section="InputMetadata">
+                //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
+            </Report>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

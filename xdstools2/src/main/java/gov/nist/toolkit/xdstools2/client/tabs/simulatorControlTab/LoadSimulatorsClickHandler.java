@@ -33,8 +33,16 @@ class LoadSimulatorsClickHandler implements ClickHandler {
 
 		for (int i=0; i<parts.length; i++) {
 			String x = parts[i].trim();
-			if (!x.equals(""))
-				ids.add(new SimId(currentTestSession, x));
+			if (!x.equals("")) {
+                SimId si;
+                try {
+                    si = new SimId(currentTestSession, x);
+                } catch (Exception e) {
+                    new PopupMessage(e.getMessage());
+                    return;
+                }
+                ids.add(si);
+            }
 		}
 
 		simulatorControlTab.toolkitService.getSimConfigs(ids, new AsyncCallback<List<SimulatorConfig>>() {

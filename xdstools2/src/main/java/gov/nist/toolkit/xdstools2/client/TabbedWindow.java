@@ -45,7 +45,8 @@ public abstract class TabbedWindow {
 		registerTab(container);
 		onTabSelection();
 
-		environmentManager = new EnvironmentManager(tabContainer, toolkitService, new Panel(menuPanel));
+		environmentManager = new EnvironmentManager(tabContainer, toolkitService/*, new Panel(menuPanel)*/);
+		menuPanel.add(environmentManager);
 		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 	}
 	

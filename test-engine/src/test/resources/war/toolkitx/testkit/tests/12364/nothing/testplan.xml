@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12364/nothing</Test>
+  <Rule>FindDocumentsForMultiplePatients</Rule>
+  <TestStep id="object_refs">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <Rule>
+      <Transaction>MPQ</Transaction>
+      <SQ>FindDocumentsForMultiplePatients</SQ>
+      <Assertion>No restrictions - must fail</Assertion>
+    </Rule>
+    <MPQTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+    </MPQTransaction>
+  </TestStep>
+</TestPlan>

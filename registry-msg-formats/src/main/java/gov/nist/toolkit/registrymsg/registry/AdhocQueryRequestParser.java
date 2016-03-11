@@ -1,9 +1,9 @@
 package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.xpath.AXIOMXPath;
 
 public class AdhocQueryRequestParser {
 	OMElement ele;
@@ -36,5 +36,13 @@ public class AdhocQueryRequestParser {
 
 		request.queryId = request.adhocQueryElement.getAttributeValue(MetadataSupport.id_qname);
 
-	}
+        AXIOMXPath xpathExpression = new AXIOMXPath ("//*[local-name()='Slot'][@name = '$XDSDocumentEntryPatientId']/*[local-name()='ValueList']/*[local-name()='Value']");
+        Object o =  xpathExpression.selectSingleNode(ele);
+        OMElement omEle = (OMElement) o;
+        String text = omEle.getText();
+        if (text == null || text.equals("")) return;
+        if (text.startsWith("'")) text = text.substring(1);
+        if (text.endsWith("'")) text = text.substring(0, text.length()-1);
+        request.patientId = text;
+    }
 }

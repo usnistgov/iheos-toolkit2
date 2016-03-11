@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>11975/xfrm</Test>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/tf6/services/test11975</RegistryEndpoint>
+    <TestStep id="xfrm">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <ProvideAndRegisterTransaction>
+            <XDSb/>
+            <MetadataFile>xfrm_doc.xml</MetadataFile>
+            <Document id="Document01">my_document.txt</Document>
+            <AssignUuids/>
+            <UseId testdir="../orig" id="Document01" step="submit" section="AssignedUuids"
+                symbol="$xfrm_doc_uuid$"/>
+        </ProvideAndRegisterTransaction>
+    </TestStep>
+</TestPlan>

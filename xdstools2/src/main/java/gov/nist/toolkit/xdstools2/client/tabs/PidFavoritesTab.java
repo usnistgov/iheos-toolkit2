@@ -7,9 +7,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.PidBuilder;
-import gov.nist.toolkit.actorfactory.client.PidSet;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidBuilder;
+import gov.nist.toolkit.configDatatypes.client.PidSet;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
@@ -18,7 +18,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import java.util.*;
 
 /**
- * Created by bill on 9/23/15.
+ *
  */
 public class PidFavoritesTab  extends GenericQueryTab {
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();

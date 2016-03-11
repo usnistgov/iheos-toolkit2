@@ -117,7 +117,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 	boolean passOnErrors(MessageValidatorEngine mvc, OMElement result) throws XdsInternalException {
 
 		AdhocQueryResponseParser aqrp = new AdhocQueryResponseParser(result);
-		AdhocQueryResponseParser.AdhocQueryResponse aqr = aqrp.getResponse();
+		gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse aqr = aqrp.getResponse();
 
 		if (!aqr.isSuccess()) {
 			RegistryErrorListGenerator relg = new RegistryErrorListGenerator();

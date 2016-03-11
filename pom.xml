@@ -69,6 +69,8 @@
         <module>transaction-notification-service</module>
         <module>grizzly-support</module>
         <module>sim-test-servlet</module>
+        <module>config-datatypes</module>
+        <module>it-tests</module>
     </modules>
 
 

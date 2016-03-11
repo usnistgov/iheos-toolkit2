@@ -228,6 +228,12 @@ public class QueryServiceManager extends CommonService {
 		return new RetrieveDocument(session).run(site, uids);
 	}
 
+	public List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception {
+		logger.debug(session.id() + ": " + "retrieveImagingDocSet");
+		if (site == null) site = session.siteSpec;
+		return new RetrieveImagingDocSet(session).run(site, uids, studyRequest, transferSyntax);
+	}
+
 	public List<Result> findPatient(SiteSpec site, String firstName,
 			String secondName, String lastName, String suffix, String gender,
 			String dob, String ssn, String pid, String homeAddress1,
@@ -348,6 +354,38 @@ public class QueryServiceManager extends CommonService {
 				results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
 			}
 		}
+		return results;
+	}
+
+	public List<Result> perRepositoryImagingDocSetRetrieve(Uids uids, TestInstance testInstance,
+			List<String> sections, Map<String, String> params) {
+		List<Result> results = new ArrayList<Result>();
+
+
+		Map<String, Uids> org = uids.organizeByRepository();
+		for (String repuid : org.keySet()) {
+			params.put("$repuid$", repuid);
+			int i = 0;
+			for (Uid uid : org.get(repuid).uids) {
+				//params.put("$uid" + i + "$", uid.uid);
+				i++;
+			}
+			if (i > 10) { // query templates impose this limit
+				results.add(new Result(
+						new AssertionResults(
+								"ToolkitServiceImpl#buildPerRepositoryImagingDocSetRetrieve: too many documents requested",
+								false)));
+			} else {
+				Map<String, String> myparams = dup(params);
+				myparams.put("$home$", org.get(repuid).uids.get(0).home);
+				logger.debug("ToolkitServiceImpl#buildPerRepositoryImagingDocSetRetrieve: parameter dump");
+				for (String param : myparams.keySet()) {
+				    logger.debug("..." + param + ": " + myparams.get(param));
+				}
+				results.add(session.xdsTestServiceManager().xdstest(testInstance, sections, myparams, null, null, false));
+			}
+		}
+
 		return results;
 	}
 

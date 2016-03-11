@@ -280,6 +280,7 @@ public class MetadataSupport {
 	}
 
 	public static String SQ_action = "urn:ihe:iti:2007:RegistryStoredQuery";
+    public static String SQ_response_action = "urn:ihe:iti:2007:RegistryStoredQueryResponse";
 	public static String MPQ_action = "urn:ihe:iti:2009:MultiPatientStoredQuery";
 
 	// multi-patient stored query ids

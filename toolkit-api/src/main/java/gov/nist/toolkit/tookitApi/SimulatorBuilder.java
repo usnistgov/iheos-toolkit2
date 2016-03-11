@@ -3,6 +3,7 @@ package gov.nist.toolkit.tookitApi;
 import gov.nist.toolkit.actortransaction.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 
 /**
  * Build/modify a collection of different Actor simulators running in a remote copy of toolkit.
@@ -51,6 +52,28 @@ public class SimulatorBuilder {
         src.engine = engine;
         src.config =  engine.create(id, user, SimulatorActorType.DOCUMENT_SOURCE, environmentName);
         return src;
+    }
+
+    /**
+     * Create new Document Consumer simulator with default configuration.
+     * To create a simulator with
+     * custom configuration:
+     * <ol>
+     * <li>Create simulator with default configuration</li>
+     * <li>Update the local copy of the configuration</li>
+     * <li>Send the update via the update method</li>
+     * </ol>
+     * @param id Simulator ID
+     * @param user User creating Simulator.  Same as TestSession in Toolkit UI. The simulator ID must be unique for this user.
+     * @param environmentName Environment defines Affinity Domain coding schemes and TLS certificate for use with client.
+     * @return Simulator configuration.
+     * @throws ToolkitServiceException if anything goes wrong.
+     */
+    public DocumentConsumer createDocumentConsumer(String id, String user, String environmentName) throws ToolkitServiceException {
+        XdsDocumentConsumer cons = new XdsDocumentConsumer();
+        cons.engine = engine;
+        cons.config =  engine.create(id, user, SimulatorActorType.DOCUMENT_CONSUMER, environmentName);
+        return cons;
     }
 
     /**
@@ -162,6 +185,13 @@ public class SimulatorBuilder {
      */
     public SimConfig get(SimId simId) throws ToolkitServiceException {
         return engine.get(simId);
+    }
+
+    public SimId get(String user, String id) {
+        SimIdResource simId = new SimIdResource();
+        simId.setUser(user);
+        simId.setId(id);
+        return simId;
     }
 
 }

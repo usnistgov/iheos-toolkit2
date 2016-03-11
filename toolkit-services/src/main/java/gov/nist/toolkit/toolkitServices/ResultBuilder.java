@@ -17,7 +17,7 @@ import java.io.IOException;
 public class ResultBuilder {
     static Logger logger = Logger.getLogger(ResultBuilder.class);
 
-    protected Response mapExceptionToResponse(Throwable e, SimId simId, ResponseType responseType) {
+    protected Response mapExceptionToResponse(Throwable e, String simId, ResponseType responseType) {
         Response.Status status = null;
         String reason = "";
         int extendedCode = 0;
@@ -88,7 +88,7 @@ public class ResultBuilder {
             status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
         }
         if (status == null) {
-            reason = "Create simulator " + simId.toString() + " failed - " + ExceptionUtil.exception_details(e);
+            reason = "Create simulator " + simId + " failed - " + ExceptionUtil.exception_details(e);
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
 

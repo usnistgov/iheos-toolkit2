@@ -29,6 +29,10 @@ public class UseReport {
 		return ur;
 	}
 
+    public String getURI() {
+        return String.format("/%s/%s/%s/%s", testInstance.getId(), section, step, reportName);
+    }
+
 	public void normalize() {
 		if (testInstance == null) testInstance = new TestInstance();
 		if (section == null) section = "";

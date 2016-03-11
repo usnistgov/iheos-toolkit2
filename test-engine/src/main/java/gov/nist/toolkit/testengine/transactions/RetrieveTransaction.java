@@ -235,20 +235,20 @@ public class RetrieveTransaction extends BasicTransaction {
 			add_step_status_to_output();
 
 			// check that status == success
-			String status = r_ctx.getRrp().get_registry_response_status();
-			eval_expected_status(status, r_ctx.getRrp().get_error_code_contexts());
+                String status = r_ctx.getRrp().get_registry_response_status();
+                eval_expected_status(status, r_ctx.getRrp().get_error_code_contexts());
 
-			String expErrorCode = s_ctx.getExpectedErrorCode();
-			if (expErrorCode != null && !expErrorCode.equals("")) {
-				List<String> errCodesReturned = r_ctx.getRrp().get_error_codes();
-				if ( !errCodesReturned.contains(expErrorCode)) {
-					s_ctx.set_error("Expected errorCode of " + expErrorCode + "\nDid getRetrievedDocumentsModel errorCodes of " +
-							errCodesReturned);
-					step_failure = true;
-				}
-			}
-			reportManagerPostRun();
-		}
+                String expErrorCode = s_ctx.getExpectedErrorCode();
+                if (expErrorCode != null && !expErrorCode.equals("")) {
+                    List<String> errCodesReturned = r_ctx.getRrp().get_error_codes();
+                    if (!errCodesReturned.contains(expErrorCode)) {
+                        s_ctx.set_error("Expected errorCode of " + expErrorCode + "\nDid getRetrievedDocumentsModel errorCodes of " +
+                                errCodesReturned);
+                        step_failure = true;
+                    }
+                }
+                reportManagerPostRun();
+            }
 	}
 
 	@SuppressWarnings("unchecked")

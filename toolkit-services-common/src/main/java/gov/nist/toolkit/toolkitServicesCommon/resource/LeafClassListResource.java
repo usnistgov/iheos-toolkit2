@@ -19,4 +19,6 @@ public class LeafClassListResource implements LeafClassList {
     }
 
     public void setLeafClasses(List<String> leafClasses) { this.leafClasses = leafClasses; }
+
+    public void add(String leafClass) { leafClasses.add(leafClass); }
 }

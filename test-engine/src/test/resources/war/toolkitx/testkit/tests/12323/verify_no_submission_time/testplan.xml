@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12323/verify_no_submission_time</Test>
+  <TestStep id="getFolder">
+    <Goal>Get Folder</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="folid" section="no_time" step="no_time" useAs="$uuid1$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <Report name="lastUpdateTime" section="Result">
+                //*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='lastUpdateTime']/*[local-name()='ValueList']/*[local-name()='Value'] </Report>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="0"/>
+        <Documents count="0"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="verify_has_todays_date">
+    <Goal>Verify folder submitted has today's date</Goal>
+    <NullTransaction>
+      <UseReport reportName="lastUpdateTime" section="THIS" step="getFolder" useAs="updateTime"/>
+      <Assertions>
+        <Assert id="todaysDate"> substring("updateTime",1,8) = "$DATE$" </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

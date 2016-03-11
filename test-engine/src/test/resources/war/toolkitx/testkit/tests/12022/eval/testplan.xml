@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12022/eval</Test>
+  <TestStep id="original_deprecated">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$ssuid$" step="submit" section="AssignedUids"/>
+      <MetadataFile>ssandcontents.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithTwoDocOneFolOneDocInFol/>
+        <OneDocDep/>
+        <OneDocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="apnd_xfrm_deprecated">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../apnd" id="SubmissionSet01" symbol="$ssuid$" step="submit" section="AssignedUids"/>
+      <MetadataFile>ssandcontents.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithTwoDoc/>
+        <DocDep/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="replacement_approved">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../rplc" id="SubmissionSet01" symbol="$ssuid$" step="rplc" section="AssignedUids"/>
+      <MetadataFile>ssandcontents.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+        <DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11993/rplc</Test>
+  <TestStep id="rplc">
+    <Goal>Replace DocumentEntry from step submit_copy</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Issue RPLC</Assertion>
+    </Rule>
+    <RegisterTransaction>
+      <XDSb/>
+      <UseReport reportName="docid" section="submit" step="submit_copy" useAs="$rplc_doc_uuid$"/>
+      <MetadataFile>metadata.xml</MetadataFile>
+      <Report name="ssuid" section="InputMetadata">
+                //*[local-name()='RegistryPackage']/*[local-name()='ExternalIdentifier'][@identificationScheme='urn:uuid:96fdda7c-d067-4183-912e-bf5ee74998a8']/@value
+            </Report>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

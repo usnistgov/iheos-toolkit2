@@ -144,7 +144,7 @@ public class BuildCollections extends HttpServlet {
                     continue;
                 File tagsFile = new File(testDir + File.separator + "collections.txt");
                 if ( !tagsFile.exists()) {
-                    System.out.println("Test dir " + testDir + " has no collections.txt file");
+//                    System.out.println("Test dir " + testDir + " has no collections.txt file");
                     error = true;
                     continue;
                 }

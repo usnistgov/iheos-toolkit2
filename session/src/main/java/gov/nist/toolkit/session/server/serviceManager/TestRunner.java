@@ -9,12 +9,14 @@ import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
 
 public class TestRunner {
     private final XdsTestServiceManager xdsTestServiceManager;
+    static Logger logger = Logger.getLogger(TestRunner.class);
 
     public TestRunner(XdsTestServiceManager xdsTestServiceManager) {
         this.xdsTestServiceManager = xdsTestServiceManager;
@@ -74,6 +76,7 @@ public class TestRunner {
             // Supports getTestResults tookit api call
             ResultPersistence rPer = new ResultPersistence();
             try {
+                logger.info("Persist results to EC");
                 rPer.write(result, mesaTestSession);
             } catch (Exception e) {
                 result.assertions.add(ExceptionUtil.exception_details(e), false);
