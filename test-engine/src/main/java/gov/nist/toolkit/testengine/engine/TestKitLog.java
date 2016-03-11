@@ -44,10 +44,23 @@ public class TestKitLog {
 
 		File path;
 
-		if (parts.length == 3)
+		/* if (parts.length == 3)
 			path = new File(testLog + File.separator + parts[2] +  File.separator + "log.xml");
 		else
 			path = new File(testLog + File.separator + "log.xml");
+		*/
+
+		if (parts.length>2) {
+			path = testLog;
+			int offset = 2 + (parts.length - 3);
+			for (int cx=offset; cx < parts.length; cx++) {
+				path = new File(path, parts[cx]);
+			}
+			path = new File(path, "log.xml");
+
+		} else
+			path = new File(testLog + File.separator + "log.xml");
+
 		System.out.println("getLogFile");
 		System.out.println("   testlog is " + testLog);
 		System.out.println("   testspec is " + testPlan);

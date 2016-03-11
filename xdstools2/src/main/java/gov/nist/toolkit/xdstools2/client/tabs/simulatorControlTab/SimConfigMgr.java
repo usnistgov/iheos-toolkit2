@@ -120,6 +120,7 @@ class SimConfigMgr {
                 row++;
             }
 
+
             else if (SimulatorProperties.errorForPatient.equals(ele.name)) {
                 final SimulatorConfigElement configEle = ele;
                 List<TransactionType> transactionTypes = ActorType.findActor(config.getActorType()).getTransactions();
@@ -134,6 +135,25 @@ class SimConfigMgr {
                             public void onClick(ClickEvent clickEvent) {
                                 configEle.setValue(map);
 //                                saveSimConfig();
+                            }
+                        }
+                );
+                row++;
+            }
+
+            // Selecting a Repository for the ODDS
+            else if (SimulatorProperties.oddsRepositorySite.equals(ele.name)) {
+                final SimulatorConfigElement configEle = ele;
+                HorizontalPanel siteBoxes = new HorizontalPanel();
+                final SiteSelectionPresenter siteSelectionPresenter = new SiteSelectionPresenter(simulatorControlTab.toolkitService, TransactionType.PROVIDE_AND_REGISTER.getName(), configEle.asList(), siteBoxes);
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 1, siteBoxes);
+                saveButton.addClickHandler(
+                        new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                configEle.setValue(siteSelectionPresenter.getSelected());
+                                saveSimConfig();
                             }
                         }
                 );

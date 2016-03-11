@@ -66,8 +66,11 @@ public class UtilityRunner {
 //                assertionResults = new AssertionResults();
 //            assertionResults = assertionResults;
 
+
+
             if (session.transactionSettings.logRepository == null) {
                 if (testRunType == TestRunType.UTILITY) {
+                    logger.info("*** logRepository user: " + session.getId());
                     session.transactionSettings.logRepository =
                             LogRepositoryFactory.
                                     getRepository(
@@ -77,6 +80,7 @@ public class UtilityRunner {
                                             LogIdType.TIME_ID,
                                             null);
                 } else if (testRunType == TestRunType.TEST) {
+                    logger.info("*** logRepository user (sessionName): " + session.getMesaSessionName());
                     session.transactionSettings.logRepository =
                             LogRepositoryFactory.
                                     getRepository(
@@ -88,6 +92,7 @@ public class UtilityRunner {
                 }
             }
             session.xt.setLogRepository(session.transactionSettings.logRepository);
+            logger.info("*** logRepository user (sessionName): " + session.transactionSettings.logRepository.getUser());
 
             try {
                 if (testInstance.getId().startsWith("tc:")) {
@@ -172,14 +177,7 @@ public class UtilityRunner {
                 // s.assertionResults.add("Log Cache: " + s.getLogCount() + " entries");
                 session.transactionSettings.securityParams = session;
 
-
-
-
                 session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
-
-
-
-
 
                 assertionResults.add(session.transactionSettings.res);
 

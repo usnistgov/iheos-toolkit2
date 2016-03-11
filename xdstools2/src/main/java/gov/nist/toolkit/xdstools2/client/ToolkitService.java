@@ -159,6 +159,7 @@ public interface ToolkitService extends RemoteService  {
 	 List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
 	
 	 List<String> getSiteNamesWithRG() throws Exception;
+	 List<String> getSiteNamesByTranType(String transactionType) throws Exception;
 
 	 String reloadSystemFromGazelle(String systemName) throws Exception;
 	 boolean isGazelleConfigFeedEnabled() throws NoServletSessionException ;

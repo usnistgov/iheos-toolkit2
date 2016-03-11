@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.sim.od.rep;
 
 import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -12,6 +13,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
+import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
@@ -20,6 +22,7 @@ import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -145,8 +148,20 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 				docUids.add(uid);
 			}
 
-			DocumentResponseSim dms = new DocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
-			mvc.addMessageValidator("Generate DocumentResponse", dms, gerb.buildNewErrorRecorder());
+
+			boolean persistenceOptn = getSimulatorConfig().get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean();
+
+			RegistryResponseGeneratingSim dms = null;
+
+			if (persistenceOptn) {
+				dms = new PersistanceDocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId, getSimulatorConfig());
+			} else {
+				dms = new DocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
+			}
+
+
+
+			mvc.addMessageValidator("Generate DocumentResponse", (AbstractMessageValidator)dms, gerb.buildNewErrorRecorder());
 
 			mvc.run();
 

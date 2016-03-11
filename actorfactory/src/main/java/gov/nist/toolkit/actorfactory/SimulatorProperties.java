@@ -192,6 +192,29 @@ public class SimulatorProperties {
     public static final String                     repositoryUniqueId = "repositoryUniqueId";
 
     /**
+     * See  ITI Vol. 3, Rev. 12, 4.1.1, pg. 10, 350
+     */
+    public static final String                     PERSISTENCE_OF_RETRIEVED_DOCS = "Persistence of Retrieved Documents Option";
+
+    /**
+     * The current index state of the content bundle. The index number is the item ordinal from the bundle index.
+     */
+    public static final String                      currentContentBundleIdx = "Current Content Bundle Idx";
+
+    /**
+     * Content bundle
+     * Should be in the format of "9999/Trans/ContentBundle" where 9999 is a test number.
+     * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
+     */
+    public static final String                      contentBundle = "Content Bundle";
+
+    /**
+     * The repository site to store the stable snapshot associated with the on-demand document entry.
+     */
+    public static final String                      oddsRepositorySite = "Repository Site";
+
+
+    /**
      * String property controlling the definition of the Home Community ID of a Responding Gateway.
      */
     public static final String                        homeCommunityId = "homeCommunityId";

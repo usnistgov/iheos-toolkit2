@@ -10,18 +10,18 @@ import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
-
 /**
- * Test the Register transaction
+ * Document Consumer Actor tests
  */
-class OdSpec extends ToolkitSpecification {
+class OdDocumentConsumerSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'SR14^^^&1.2.460&ISO'
-    String reg = 'sunil__rr2'
+    String patientId = 'SKB1^^^&1.2.960&ISO'
+    @Shared String reg = 'sunil__rr'
     SimId simId = new SimId(reg)
     @Shared String testSession = 'sunil';
 
@@ -36,21 +36,48 @@ class OdSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('rr2', testSession)
+        spi.delete('rr', testSession)
 
         spi.create(
-                'rr2',
+                'rr',
                 testSession,
                 SimulatorActorType.REPOSITORY_REGISTRY,
                 'test')
 
-        spi.delete('odds2', testSession)
+        spi.delete('odds', testSession)
 
-        spi.create(
-                'odds2',
+
+        SimConfig simConfig = spi.create(
+                'odds',
                 testSession,
                 SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
                 'test')
+
+        println "*** describe odds sim: ${simConfig.describe()}"
+
+        // Persistence should be ON by default in the simulator config
+
+//        odds_sim.getConfig()
+
+        //SimulatorConfigElement sce =  odds_sim.getConfigs().get(SimulatorProperties.oddsRepositorySite);
+
+        //println "got Odds sce: ${sce.asList()}"
+/*
+        // Set the repository/reg site in the ODDS config
+        for (int cx=0; cx<odds_sim.getConfigs().size(); cx++) {
+            if (sce.equals(odds_sim.getConfig(cx))) {
+                for (String site : sce.asList()) {
+                    if (reg.equals(site)) {
+                        List<String> value = new ArrayList<String>()
+                        value.add(reg)
+                        sce.setValue(value)
+                    }
+                }
+                odds_sim.getConfigs().set(cx,sce)
+
+            }
+        }
+*/
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
@@ -71,7 +98,7 @@ class OdSpec extends ToolkitSpecification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__rr2'
+        String siteName = 'sunil__rr'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -88,10 +115,14 @@ class OdSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'Run all tests'() {
+    /**
+     * Initialize the ODDS state
+     * @return
+     */
+    def 'Run Register test'() {
         when:
-        String siteName = 'sunil__rr2'
-        TestInstance testId = new TestInstance("15806")
+        String siteName = 'sunil__rr'
+        TestInstance testId = new TestInstance("15812")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
@@ -105,15 +136,40 @@ class OdSpec extends ToolkitSpecification {
         results.size() == 1
         results.get(0).passed()
     }
+
     /**
-     * This section is here, with the other reg/rep tests, because the Retrieve needs the document entry id and the repository id from the previous PnR section.
+     * DocCons: Make sure OD registration was successful
      * @return
      */
-    def 'Run retrieve tests'() {
+    def 'Run query test'() {
         when:
-        String siteName = 'sunil__odds2'
-        TestInstance testId = new TestInstance("15806")
-        List<String> sections = ["Retrieve"]
+        String siteName = 'sunil__rr'
+        TestInstance testId = new TestInstance("15812")
+        List<String> sections = ["Query_OD"]
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', patientId)
+        boolean stopOnFirstError = true
+
+        and: 'Run'
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+
+        then:
+        true
+        results.size() == 1
+        results.get(0).passed()
+    }
+
+
+
+    /**
+     * DocCons: retrieve
+     * @return
+     */
+    def 'Run retrieve test'() {
+        when:
+        String siteName = 'sunil__odds'
+        TestInstance testId = new TestInstance("15812")
+        List<String> sections = ["Retrieve_OD"]
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
