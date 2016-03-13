@@ -6,7 +6,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.SiteBuilder
 import gov.nist.toolkit.results.client.SiteSpec

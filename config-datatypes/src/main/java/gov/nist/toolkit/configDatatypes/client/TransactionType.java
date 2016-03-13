@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actortransaction.client;
+package gov.nist.toolkit.configDatatypes.client;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -140,23 +140,17 @@ public enum TransactionType implements Serializable {
 		return null;
 	}
 
-	static public TransactionType find(ActorType a, String transString) {
-        if (a == null) return null;
-
-		for (TransactionType t : a.getTransactions()) {
-            if (t.isIdentifiedBy(transString))
-				return t;
-        }
-
-		return null;
-    }
-
-	static public TransactionType find(String receivingActorStr, String transString) {
-        if (receivingActorStr == null || transString == null) return null;
-
-		ActorType a = ActorType.findActor(receivingActorStr);
-        return find(a, transString);
-    }
+//	static public TransactionType find(ActorType a, String transString) {
+//        if (a == null) return null;
+//
+//		for (TransactionType t : a.getTransactions()) {
+//            if (t.isIdentifiedBy(transString))
+//				return t;
+//        }
+//
+//		return null;
+//    }
+//
 
 	static public List<TransactionType> asList() {
         List<TransactionType> l = new ArrayList<TransactionType>();

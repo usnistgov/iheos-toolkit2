@@ -1,8 +1,8 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.SimulatorProperties
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.Metadata

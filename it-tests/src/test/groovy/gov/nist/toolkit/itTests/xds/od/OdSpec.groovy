@@ -1,7 +1,7 @@
 package gov.nist.toolkit.itTests.xds.od
 
 import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.installation.Installation

@@ -1,5 +1,5 @@
 package gov.nist.toolkit.itTests.sdk
-import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.toolkitApi.BasicSimParameters
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder

@@ -7,7 +7,7 @@
     import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
     import gov.nist.toolkit.actortransaction.client.Severity;
     import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-    import gov.nist.toolkit.actortransaction.client.TransactionType;
+    import gov.nist.toolkit.configDatatypes.client.TransactionType;
     import gov.nist.toolkit.configDatatypes.client.Pid;
     import gov.nist.toolkit.installation.ExternalCacheManager;
     import gov.nist.toolkit.installation.Installation;

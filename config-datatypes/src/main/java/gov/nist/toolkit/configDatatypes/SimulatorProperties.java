@@ -1,4 +1,4 @@
-package gov.nist.toolkit.actorfactory;
+package gov.nist.toolkit.configDatatypes;
 
 /**
  * These are properties to be used with gov.nist.toolkit.toolkitServicesCommon.SimConfig

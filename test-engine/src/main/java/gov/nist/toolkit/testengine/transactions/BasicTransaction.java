@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.installation.Configuration;
 import gov.nist.toolkit.registrymetadata.IdParser;

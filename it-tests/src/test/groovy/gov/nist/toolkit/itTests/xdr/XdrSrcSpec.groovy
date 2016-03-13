@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.xdr
-import gov.nist.toolkit.actorfactory.SimulatorProperties
-import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymsg.registry.RegistryError

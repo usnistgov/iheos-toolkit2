@@ -1,5 +1,7 @@
 package gov.nist.toolkit.actortransaction.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 // This file must be kept up to date with SimulatorActorTypes.java
 
@@ -17,13 +20,13 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public enum ActorType implements IsSerializable, Serializable {
     XDR_DOC_SRC(
             "XDR Document Source",
-			Arrays.asList("XDR_Source"),
+            Arrays.asList("XDR_Source"),
             "xdrsrc",
             "gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator",
-			Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
+            Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             false,
             null
-	),
+    ),
     REGISTRY(
             "Document Registry",
             Arrays.asList("DOC_REGISTRY", "registryb", "initialize_for_stored_query"),
@@ -33,8 +36,8 @@ public enum ActorType implements IsSerializable, Serializable {
             true,
             null
     ),
-	// Update option on Document Registry
-	// this should be removed once implications are re-discovered
+    // Update option on Document Registry
+    // this should be removed once implications are re-discovered
 //		UPDATE (
 //				"Update Option",
 //				new ArrayList<String>(),
@@ -45,67 +48,67 @@ public enum ActorType implements IsSerializable, Serializable {
 //				),
     REPOSITORY(
             "Document Repository",
-			Arrays.asList("DOC_REPOSITORY", "repositoryb"),
+            Arrays.asList("DOC_REPOSITORY", "repositoryb"),
             "rep",
             "gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator",
-			Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
-			true,
+            Arrays.asList(TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
+            true,
             "repository"
-	),
+    ),
     ONDEMAND_DOCUMENT_SOURCE(
             "On-Demand Document Source",
-			Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
+            Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
             "gov.nist.toolkit.simulators.sim.od.rep.RepositoryActorSimulator",
-			Arrays.asList(TransactionType.ODDS_RETRIEVE),
-			true,
+            Arrays.asList(TransactionType.ODDS_RETRIEVE),
+            true,
             "odds"
-	),
+    ),
     ISR(
             "Integrated Source/Repository",
-			Arrays.asList("EMBED_REPOS"),
+            Arrays.asList("EMBED_REPOS"),
             "isr",
             null,
-			Arrays.asList(TransactionType.ISR_RETRIEVE),
-			true,
+            Arrays.asList(TransactionType.ISR_RETRIEVE),
+            true,
             "isr"
-	),
+    ),
     REPOSITORY_REGISTRY(
             "Document Repository/Registry",
-			new ArrayList<String>(),
+            new ArrayList<String>(),
             "rr",
             "gov.nist.toolkit.simulators.sim.RegRepActorSimulator",
-			Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ, TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
+            Arrays.asList(TransactionType.REGISTER, TransactionType.STORED_QUERY, TransactionType.UPDATE, TransactionType.MPQ, TransactionType.PROVIDE_AND_REGISTER, TransactionType.RETRIEVE),
             false,
             null
-	),
+    ),
     DOCUMENT_RECIPIENT(
             "Document Recipient",
-			Arrays.asList("DOC_RECIPIENT"),
+            Arrays.asList("DOC_RECIPIENT"),
             "rec",
             "gov.nist.toolkit.simulators.sim.RegRepActorSimulator",
-			Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
+            Arrays.asList(TransactionType.XDR_PROVIDE_AND_REGISTER),
             true,
             null
-	),
+    ),
     RESPONDING_GATEWAY(
             "Responding Gateway",
-			Arrays.asList("RESP_GATEWAY"),
+            Arrays.asList("RESP_GATEWAY"),
             "rg",
             "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
-			Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
+            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
             true,
             null
-	),
+    ),
     INITIATING_GATEWAY(
             "Initiating Gateway",
-			Arrays.asList("INIT_GATEWAY"),
+            Arrays.asList("INIT_GATEWAY"),
             "ig",
             "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
-			Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
+            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
             null
-	),
+    ),
     INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
             "Initialize for Stored Query",
             new ArrayList<String>(),
@@ -114,7 +117,7 @@ public enum ActorType implements IsSerializable, Serializable {
             new ArrayList<TransactionType>(),
             false,
             null
-	),
+    ),
 
     // TODO - actorType lookup problem
     // This at the end of the list on purpose.  From the UI actor types are selected by the transactions they support.
@@ -130,7 +133,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE),
             false,
             null
-	),
+    ),
     IMAGING_DOC_SOURCE(
             "Imaging Document Source",
             Arrays.asList("IMAGING_DOC_SOURCE"),
@@ -148,20 +151,20 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             false,
             null
-       )
+    )
     ;
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     String name;
-	List<String> altNames;
+    List<String> altNames;
     String shortName;
     List<TransactionType> transactionTypes; // TransactionTypes this actor can receive
     boolean showInConfig;
     String actorsFileLabel;
     String simulatorClassName;
 
-	ActorType() {
-	} // for GWT
+    ActorType() {
+    } // for GWT
 
     ActorType(String name, List<String> altNames, String shortName, String simulatorClassName, List<TransactionType> tt, boolean showInConfig, String actorsFileLabel) {
         this.name = name;
@@ -173,13 +176,13 @@ public enum ActorType implements IsSerializable, Serializable {
         this.actorsFileLabel = actorsFileLabel;
     }
 
-	public boolean showInConfig() {
+    public boolean showInConfig() {
         return showInConfig;
     }
 
-	public boolean isRepositoryActor() {
+    public boolean isRepositoryActor() {
         return this.equals(REPOSITORY);
-	}
+    }
 
     public boolean isRegistryActor() {
         return this.equals(REGISTRY);
@@ -189,42 +192,42 @@ public enum ActorType implements IsSerializable, Serializable {
         return this.equals(RESPONDING_GATEWAY);
     }
 
-	public boolean isIGActor() {
+    public boolean isIGActor() {
         return this.equals(INITIATING_GATEWAY);
     }
 
-	public boolean isGW() {
+    public boolean isGW() {
         return isRGActor() || isIGActor();
     }
 
-        public boolean isImagingDocumentSourceActor() {
+    public boolean isImagingDocumentSourceActor() {
         return this.equals(IMAGING_DOC_SOURCE);
     }
 
     public String getSimulatorClassName() { return simulatorClassName; }
 
-	public String getActorsFileLabel() {
+    public String getActorsFileLabel() {
         return actorsFileLabel;
     }
 
     static public List<String> getActorNames() {
         List<String> names = new ArrayList<String>();
 
-		for (ActorType a : values())
+        for (ActorType a : values())
             names.add(a.name);
 
-		return names;
+        return names;
     }
 
-	/**
-	 * Within toolkit, each TransactionType maps to a unique ActorType
-	 * (as receiver of the transaction). To make this work, transaction
-	 * names are customized to make this mapping unique.  This goes
-	 * beyond the definition in the TF.
-	 *
-	 * @param tt
-	 * @return
-	 */
+    /**
+     * Within toolkit, each TransactionType maps to a unique ActorType
+     * (as receiver of the transaction). To make this work, transaction
+     * names are customized to make this mapping unique.  This goes
+     * beyond the definition in the TF.
+     *
+     * @param tt
+     * @return
+     */
     static public ActorType getActorType(TransactionType tt) {
         if (tt == null)
             return null;
@@ -246,11 +249,11 @@ public enum ActorType implements IsSerializable, Serializable {
         return types;
     }
 
-	static public ActorType findActor(String name) {
+    static public ActorType findActor(String name) {
         if (name == null)
             return null;
 
-		for (ActorType actor : values()) {
+        for (ActorType actor : values()) {
             if (actor.name.equals(name)) return actor;
             if (actor.shortName.equals(name)) return actor;
             if (actor.altNames.contains(name)) return actor;
@@ -258,31 +261,46 @@ public enum ActorType implements IsSerializable, Serializable {
         return null;
     }
 
+    static public TransactionType find(String receivingActorStr, String transString) {
+        if (receivingActorStr == null || transString == null) return null;
 
-	public String toString() {
+        ActorType a = findActor(receivingActorStr);
+        return a.getTransaction(transString);
+    }
+
+    public TransactionType getTransaction(String name) {
+        for (TransactionType tt : transactionTypes) {
+            if (tt.getShortName().equals(name)) return tt;
+            if (tt.getName().equals(name)) return tt;
+        }
+        return null;
+    }
+
+
+    public String toString() {
         StringBuffer buf = new StringBuffer();
 
-		buf.append(name).append(" [");
+        buf.append(name).append(" [");
         for (TransactionType tt : transactionTypes)
             buf.append(tt).append(",");
         buf.append("]");
 
-		return buf.toString();
+        return buf.toString();
     }
 
-	public String getName() {
+    public String getName() {
         return name;
     }
 
-	public String getShortName() {
+    public String getShortName() {
         return shortName;
     }
 
-	public List<TransactionType> getTransactions() {
+    public List<TransactionType> getTransactions() {
         return transactionTypes;
     }
 
-	public boolean hasTransaction(TransactionType transType) {
+    public boolean hasTransaction(TransactionType transType) {
         for (TransactionType transType2 : transactionTypes) {
             if (transType2.equals(transType))
                 return true;
@@ -291,11 +309,11 @@ public enum ActorType implements IsSerializable, Serializable {
     }
 
 
-	public boolean equals(ActorType at) {
+    public boolean equals(ActorType at) {
         try {
             return name.equals(at.name);
         } catch (Exception e) {
-		}
+        }
         return false;
     }
 }

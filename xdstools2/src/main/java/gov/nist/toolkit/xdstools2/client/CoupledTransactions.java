@@ -1,6 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.util.ArrayList;
 import java.util.List;

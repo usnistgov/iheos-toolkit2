@@ -1,7 +1,5 @@
 package gov.nist.toolkit.toolkitServicesCommon;
 
-import gov.nist.toolkit.xdsexception.XdsException;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,12 +23,12 @@ public enum ResponseStatusType {
         this.value = value;
     }
 
-    static public ResponseStatusType getStatus(String statusString) throws XdsException {
+    static public ResponseStatusType getStatus(String statusString) throws Exception {
         if (statusString == null)
-            throw new XdsException("Do not understand RegistryResponse status of " + statusString, "");
+            throw new Exception("Do not understand RegistryResponse status of " + statusString);
         for (ResponseStatusType t : values()) {
             if (statusString.equals(t.value)) return t;
         }
-        throw new XdsException("Do not understand RegistryResponse status of " + statusString, "");
+        throw new Exception("Do not understand RegistryResponse status of " + statusString);
     }
 }

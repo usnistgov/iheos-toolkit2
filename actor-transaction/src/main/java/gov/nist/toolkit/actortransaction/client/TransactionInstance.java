@@ -1,9 +1,10 @@
 package gov.nist.toolkit.actortransaction.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 /**
- * Created by bill on 9/30/15.
+ *
  */
 public class TransactionInstance implements IsSerializable {
     public String simId = null;

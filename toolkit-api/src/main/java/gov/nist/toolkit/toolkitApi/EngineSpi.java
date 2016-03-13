@@ -1,5 +1,10 @@
 package gov.nist.toolkit.toolkitApi;
 
+import gov.nist.toolkit.configDatatypes.SimulatorActorType;
+import org.apache.log4j.Logger;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.jackson.JacksonFeature;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -8,11 +13,6 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.jackson.JacksonFeature;
-
-import gov.nist.toolkit.actortransaction.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.LeafClassRegistryResponse;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse;

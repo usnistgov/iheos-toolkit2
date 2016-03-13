@@ -3,10 +3,11 @@
  */
 package gov.nist.toolkit.toolkitServicesCommon;
 
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 
 /**
  * DICOM Image set bean, encapsulating request and responce data

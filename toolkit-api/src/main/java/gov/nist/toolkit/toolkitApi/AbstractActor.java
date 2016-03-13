@@ -5,10 +5,12 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
+import java.io.IOException;
 
 /**
  *
@@ -42,41 +44,24 @@ abstract class AbstractActor implements AbstractActorInterface {
       engine.delete(config.getId(), config.getUser());
    }
 
-   /**
-    * Set a property that takes a String value
-    * 
-    * @param name property name. See
-    * {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property
-    * names.
-    * @param value property value
-    */
-   public void setProperty(String name, String value) {
-      config.setProperty(name, value);
-   }
-
-   /**
-    * Set a property that takes a boolean value
-    * 
-    * @param name property name. See
-    * {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property
-    * names.
-    * @param value property value
-    */
-   public void setProperty(String name, boolean value) {
-      config.setProperty(name, value);
-   }
-
-   /**
-    * Is named property a boolean value?
-    * 
-    * @param name property name. See
-    * {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property
-    * names.
-    * @return boolean
-    */
-   public boolean isBoolean(String name) {
-      return config.isBoolean(name);
-   }
+    /**
+     * Set a property that takes a String value
+     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @param value property value
+     */
+    public void setProperty(String name, String value) { config.setProperty(name, value);}
+    /**
+     * Set a property that takes a boolean value
+     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @param value property value
+     */
+    public void setProperty(String name, boolean value) { config.setProperty(name, value);}
+    /**
+     * Is named property a boolean value?
+     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @return boolean
+     */
+    public boolean isBoolean(String name) { return config.isBoolean(name);}
 
    public boolean isString(String name) {
       return config.isString(name);
@@ -86,29 +71,18 @@ abstract class AbstractActor implements AbstractActorInterface {
       return config.isList(name);
    }
 
-   /**
-    * Return named property as a String
-    * 
-    * @param name property name. See
-    * {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property
-    * names.
-    * @return String value
-    */
-   public String asString(String name) {
-      return config.asString(name);
-   }
-
-   /**
-    * Return named property as a String
-    * 
-    * @param name property name. See
-    * {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property
-    * names.
-    * @return boolean value
-    */
-   public boolean asBoolean(String name) {
-      return config.asBoolean(name);
-   }
+    /**
+     * Return named property as a String
+     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @return String value
+     */
+    public String asString(String name) { return config.asString(name); }
+    /**
+     * Return named property as a String
+     * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
+     * @return boolean value
+     */
+    public boolean asBoolean(String name) { return config.asBoolean(name); }
 
    public List <String> asList(String name) {
       return config.asList(name);
@@ -116,7 +90,7 @@ abstract class AbstractActor implements AbstractActorInterface {
 
    /**
     * Describe Simulator Configuration.
-    * 
+    *
     * @return Description string.
     */
    public String describe() {
@@ -169,5 +143,16 @@ abstract class AbstractActor implements AbstractActorInterface {
       return response.readEntity(RefListResource.class);
 
    }
+
+    @Override
+    public void setPatientErrorMap(PatientErrorMap errorMap) throws IOException {
+//        config.setPatientErrorMap(errorMap);
+    }
+
+    @Override
+    public PatientErrorMap getPatientErrorMap() throws IOException {
+        return null;
+//        return config.getPatientErrorMap();
+    }
 
 }

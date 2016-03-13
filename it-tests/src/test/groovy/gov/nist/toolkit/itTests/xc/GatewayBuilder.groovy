@@ -1,6 +1,6 @@
 package gov.nist.toolkit.itTests.xc
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance

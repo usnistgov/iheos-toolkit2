@@ -3,7 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
 import gov.nist.toolkit.services.client.IgOrchestrationResponse;

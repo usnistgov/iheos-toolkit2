@@ -4,7 +4,7 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorList;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -31,7 +31,7 @@ public class PatientErrorMapPresenter {
         }
 
         for (String transactionTypeName : map.keySet()) {
-            TransactionType transactionType = TransactionType.find(actorType, transactionTypeName);
+            TransactionType transactionType = actorType.getTransaction(transactionTypeName);
             if (transactionType == null) {
                 new PopupMessage("Internal error: transactionType " + transactionTypeName + "  not defined by actor type " + actorType);
                 return;

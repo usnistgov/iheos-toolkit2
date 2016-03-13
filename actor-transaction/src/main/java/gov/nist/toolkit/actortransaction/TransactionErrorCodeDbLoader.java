@@ -1,9 +1,9 @@
 package gov.nist.toolkit.actortransaction;
 
 import gov.nist.toolkit.actortransaction.client.ErrorCode;
-import gov.nist.toolkit.actortransaction.client.TransactionErrorCodesDb;
 import gov.nist.toolkit.actortransaction.client.Severity;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.actortransaction.client.TransactionErrorCodesDb;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;

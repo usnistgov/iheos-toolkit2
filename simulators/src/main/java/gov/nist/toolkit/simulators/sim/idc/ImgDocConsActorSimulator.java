@@ -10,11 +10,11 @@ import java.util.Map;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;

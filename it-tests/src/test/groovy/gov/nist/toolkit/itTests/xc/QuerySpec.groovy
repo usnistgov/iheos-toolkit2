@@ -1,8 +1,8 @@
 package gov.nist.toolkit.itTests.xc
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
