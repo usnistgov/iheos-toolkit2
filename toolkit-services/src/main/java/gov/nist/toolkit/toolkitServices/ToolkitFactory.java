@@ -1,13 +1,14 @@
 package gov.nist.toolkit.toolkitServices;
 
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
-import org.apache.log4j.Logger;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 
 /**
  * Not for public use.

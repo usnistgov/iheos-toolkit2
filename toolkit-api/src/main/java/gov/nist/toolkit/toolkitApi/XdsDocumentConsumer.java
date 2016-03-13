@@ -1,5 +1,8 @@
 package gov.nist.toolkit.toolkitApi;
 
+import java.io.IOException;
+
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.toolkitServicesCommon.LeafClassRegistryResponse;
 import gov.nist.toolkit.toolkitServicesCommon.RetrieveRequest;
 import gov.nist.toolkit.toolkitServicesCommon.RetrieveResponse;
@@ -23,4 +26,22 @@ public class XdsDocumentConsumer extends AbstractActor implements DocumentConsum
     public RetrieveResponse retrieve(RetrieveRequest request) throws ToolkitServiceException {
         return engine.retrieve(request);
     }
+
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#setPatientErrorMap(gov.nist.toolkit.configDatatypes.client.PatientErrorMap)
+    */
+   @Override
+   public void setPatientErrorMap(PatientErrorMap errorMap) throws IOException {
+      // TODO Auto-generated method stub
+      
+   }
+
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#getPatientErrorMap()
+    */
+   @Override
+   public PatientErrorMap getPatientErrorMap() throws IOException {
+      // TODO Auto-generated method stub
+      return null;
+   }
 }

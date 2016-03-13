@@ -1,6 +1,32 @@
 package gov.nist.toolkit.toolkitServices;
 
-import gov.nist.toolkit.actorfactory.client.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
+import gov.nist.toolkit.actorfactory.client.BadSimConfigException;
+import gov.nist.toolkit.actorfactory.client.BadSimRequestException;
+import gov.nist.toolkit.actorfactory.client.NoContentException;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimPropertyTypeConflictException;
+import gov.nist.toolkit.actorfactory.client.Simulator;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -17,26 +43,27 @@ import gov.nist.toolkit.services.server.RepositorySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator;
+import gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.simulators.support.StoredDocument;
+import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.Document;
 import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType;
-import gov.nist.toolkit.toolkitServicesCommon.resource.*;
+import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentContentResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RegistryErrorResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveRequestResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.StoredQueryRequestResource;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -56,6 +83,39 @@ public class SimulatorsController {
         // note this is also set in web.xml
 //        ResourceConfig resourceConfig = new ResourceConfig(SimulatorsController.class);
 //        resourceConfig.property(ServerProperties.TRACING, "ALL");
+    }
+    
+    @POST
+    @Produces("application/json")
+    @Path("/{id}/xdsi/retrieve")
+    public Response retrieveImagingDocSet(final RetrieveRequestResource request) {
+       String fullId = request.getFullId();
+        logger.info(String.format("POST simulators/%s/xdsi/retrieve", fullId));
+        RetrieveResponseResource returnResource = new RetrieveResponseResource();
+        try {
+            Site site = api.getActorConfig(request.getId());
+
+            RetrieveRequestModel iModel = new RetrieveRequestModel();
+            RetrieveItemRequestModel rModel = new RetrieveItemRequestModel();
+            rModel.setHomeId(request.getHomeCommunityId());
+            rModel.setRepositoryId(request.getRepositoryUniqueId());
+            rModel.setDocumentId(request.getDocumentUniqueId());
+            iModel.add(rModel);
+
+            // Trigger simulator to do the retrieve
+
+            ImgDocConsActorSimulator sim = new ImgDocConsActorSimulator();
+            sim.setTls(request.isTls());
+            RetrievedDocumentsModel sModel = sim.retrieve(site, iModel);
+
+            RetrievedDocumentModel m = sModel.getMap().values().iterator().next();
+            returnResource.setDocumentContents(m.getContents());
+            returnResource.setMimeType(m.getContent_type());
+
+            return Response.ok(returnResource).build();
+        } catch (Exception e) {
+            return new ResultBuilder().mapExceptionToResponse(e, fullId, ResponseType.RESPONSE);
+        }
     }
 
     @Context
@@ -306,7 +366,7 @@ public class SimulatorsController {
     }
 
     @GET
-    @Produces("applicaiton/json")
+    @Produces("application/json")
     @Path("/{id}/event/{transaction}/{eventid}")
     public Response getEvent(@PathParam("id") String id, @PathParam("transaction") String transaction, @PathParam("eventid") String eventid) {
         logger.info(String.format("GET simulators/%s/event/%s/%s", id, transaction, eventid));
@@ -334,6 +394,7 @@ public class SimulatorsController {
             config = api.getConfig(simId);
             if (config == null) throw new NoSimException("");
 
+            // Build internal model from external request resource
             RetrieveRequestModel iModel = new RetrieveRequestModel();
             RetrieveItemRequestModel rModel = new RetrieveItemRequestModel();
             rModel.setHomeId(request.getHomeCommunityId());
@@ -341,10 +402,12 @@ public class SimulatorsController {
             rModel.setDocumentId(request.getDocumentUniqueId());
             iModel.add(rModel);
 
+            // Trigger simulator to do the retrieve
             DocConsActorSimulator sim = new DocConsActorSimulator();
             sim.setTls(request.isTls());
             RetrievedDocumentsModel sModel = sim.retrieve(config, iModel);
 
+            // Package results for return
             RetrievedDocumentModel m = sModel.getMap().values().iterator().next();
             returnResource.setDocumentContents(m.getContents());
             returnResource.setMimeType(m.getContent_type());
@@ -353,7 +416,6 @@ public class SimulatorsController {
         } catch (Exception e) {
         return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
     }
-
 }
 
     @POST

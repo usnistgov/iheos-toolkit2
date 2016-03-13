@@ -1,5 +1,8 @@
 package gov.nist.toolkit.toolkitApi;
 
+import java.io.IOException;
+
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
@@ -25,4 +28,22 @@ class XdrDocumentSource extends AbstractActor implements DocumentSource {
      * @return the empty request
      */
     public RawSendRequest newRawSendRequest() { return new RawSendRequestResource(config); }
+
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#setPatientErrorMap(gov.nist.toolkit.configDatatypes.client.PatientErrorMap)
+    */
+   @Override
+   public void setPatientErrorMap(PatientErrorMap errorMap) throws IOException {
+      // TODO Auto-generated method stub
+      
+   }
+
+   /* (non-Javadoc)
+    * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#getPatientErrorMap()
+    */
+   @Override
+   public PatientErrorMap getPatientErrorMap() throws IOException {
+      // TODO Auto-generated method stub
+      return null;
+   }
 }

@@ -1,9 +1,13 @@
 package gov.nist.toolkit.actortransaction.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 // This file must be kept up to date with SimulatorActorTypes.java
 
@@ -129,13 +133,22 @@ public enum ActorType implements IsSerializable, Serializable {
 	),
     IMAGING_DOC_SOURCE(
             "Imaging Document Source",
-                        Arrays.asList("IMAGING_DOC_SOURCE"),
+            Arrays.asList("IMAGING_DOC_SOURCE"),
             "ids",
             "gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator",
-                        Arrays.asList(TransactionType.RET_IMG_DOC_SET),
+            Arrays.asList(TransactionType.RET_IMG_DOC_SET),
             true,
             null
-        )
+        ),
+    IMAGING_DOC_CONSUMER(
+            "Imaging Document Consumer",
+            Arrays.asList("IMAGING_DOC_CONSUMER", "XDSI_Consumer"),
+            "idc",
+            "gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator",
+            Arrays.asList(TransactionType.RET_IMG_DOC_SET),
+            false,
+            null
+       )
     ;
 
 	private static final long serialVersionUID = 1L;

@@ -8,7 +8,7 @@ public class SchematronMetadataTypes {
     final public static int NwHINPD_305     	   = 3;
     final public static int NwHINPD_306            = 4;
     //the next three types are needed to validate a HITSP_C32.
-    //the scheamtron rules will be fired for each dependent required specification
+    //the schematron rules will be fired for each dependent required specification
     final public static int C32                    = 5;
     final public static int NCPDP 				   = 6;
     
