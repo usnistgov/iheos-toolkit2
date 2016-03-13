@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface SimConfig extends SimId {
     /**
-     * Set a property that takes a String value
+     * Set a property that takes a String value.
      * @param name property name. See {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property names.
      * @param value property value
      */
@@ -34,8 +34,6 @@ public interface SimConfig extends SimId {
 
     /**
      * Set a property that takes a PatientErrorMap value
-     * @param name property name. See {@link gov.nist.toolkit.actorfactory.SimulatorProperties} for property names.
-     * @param value property value
      */
     void setPatientErrorMap(PatientErrorMap errorMap) throws IOException;
 

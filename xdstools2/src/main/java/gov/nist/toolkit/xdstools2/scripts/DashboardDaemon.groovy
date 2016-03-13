@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.scripts
 
 import gov.nist.toolkit.actortransaction.client.ActorType
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser

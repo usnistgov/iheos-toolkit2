@@ -1,16 +1,16 @@
 package gov.nist.toolkit.itTests.xds
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.SimulatorProperties
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
-import gov.nist.toolkit.tookitApi.DocumentRegRep
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.DocumentRegRep
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.DocumentContent
 import gov.nist.toolkit.toolkitServicesCommon.RefList

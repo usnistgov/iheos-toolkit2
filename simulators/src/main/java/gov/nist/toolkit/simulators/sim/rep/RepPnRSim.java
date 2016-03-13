@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rep;
 
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;

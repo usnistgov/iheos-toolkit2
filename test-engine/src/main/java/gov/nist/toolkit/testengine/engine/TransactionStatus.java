@@ -39,6 +39,8 @@ public class TransactionStatus {
 	}
 
 	public boolean isNamespaceOk() {
+        if (value.equals(StatusValue.PartialSuccess) && fullValue.startsWith(MetadataSupport.ihe_response_status_type_namespace))
+            return true;
 		return fullValue.startsWith(MetadataSupport.response_status_type_namespace);
 	}
 

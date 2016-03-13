@@ -1,7 +1,7 @@
 package gov.nist.toolkit.simulators.sim.ids
 import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator
@@ -14,7 +14,6 @@ import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
-import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger

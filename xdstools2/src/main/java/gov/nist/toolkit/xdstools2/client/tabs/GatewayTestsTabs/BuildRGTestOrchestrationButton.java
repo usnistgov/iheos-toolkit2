@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.services.client.RawResponse;
 import gov.nist.toolkit.services.client.RgOrchestrationRequest;
@@ -80,6 +80,11 @@ class BuildRGTestOrchestrationButton extends ReportableButton {
                 RgOrchestrationResponse orchResponse = (RgOrchestrationResponse) rawResponse;
                 testTab.orch = orchResponse;
                 panel().add(new HTML("<h2>Generated Environment</h2>"));
+
+                if (orchResponse.getMessage().length() > 0) {
+                    panel().add(new HTML("<h3>" + orchResponse.getMessage().replaceAll("\n", "<br />")  + "</h3>"));
+                }
+
                 FlexTable table = new FlexTable();
                 panel().add(table);
                 if (useSimAsSUT) {

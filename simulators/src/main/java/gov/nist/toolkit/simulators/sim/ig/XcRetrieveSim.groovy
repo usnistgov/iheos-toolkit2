@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.ig
 import gov.nist.toolkit.actorfactory.SimManager
-import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.registrymsg.repository.*
