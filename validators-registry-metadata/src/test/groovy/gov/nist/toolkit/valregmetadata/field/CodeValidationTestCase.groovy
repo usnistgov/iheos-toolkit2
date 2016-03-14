@@ -20,6 +20,7 @@ class CodeValidationTestCase extends Specification{
 
     def setup(){
         metadata = getClass().classLoader.getResource('PnR1Doc.xml').text
+       // metadata = getClass().classLoader.getResource('RegisterDocumentSet-b.bytes').text
     }
 
 //    def 'Validate'(){

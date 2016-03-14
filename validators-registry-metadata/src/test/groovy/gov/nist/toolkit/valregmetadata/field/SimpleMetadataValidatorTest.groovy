@@ -17,7 +17,11 @@ class SimpleMetadataValidatorTest extends Specification {
         BasicConfigurator.configure()
 
         when:
-        InputStream metadataStream = getClass().getResourceAsStream('/PnR1Doc.xml')
+        //InputStream metadataStream = getClass().getResourceAsStream('/PnR1Doc.xml')
+        //InputStream metadataStream = getClass().getResourceAsStream('/RegisterDocumentSet-b-response.bytes')
+        InputStream metadataStream = getClass().getResourceAsStream('/Message.bytes')
+
+
         String metadataString = Io.getStringFromInputStream(metadataStream)
         Metadata m = MetadataParser.parse(metadataString)
 
@@ -27,7 +31,8 @@ class SimpleMetadataValidatorTest extends Specification {
         vc.codesFilename = getClass().getResource('/codes.xml').file
 
         ErrorRecorder er = new GwtErrorRecorder()
-//        ErrorRecorder er = new TextErrorRecorder()
+//      ErrorRecorder er = new XMLErrorRecorder()
+//      ErrorRecorder er = new TextErrorRecorder()
 
         MetadataValidator val = new MetadataValidator(m, vc, null)
         val.run(er)
