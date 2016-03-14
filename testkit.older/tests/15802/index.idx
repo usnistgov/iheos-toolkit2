@@ -1,0 +1,9 @@
+load_docentry_1
+deprecate_docentry_1
+confirm_docentry_1_deprecated
+undeprecate_docentry_1
+confirm_docentry_1_undeprecated
+load_docentry_2
+update_docentry_2
+approve_orig_docentry_2
+verify_orig_docentry_2_deprecated

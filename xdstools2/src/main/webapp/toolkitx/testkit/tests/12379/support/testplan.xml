@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12379/support</Test>
+  <Rule>XDSExtraMetadataNotSaved rule</Rule>
+  <TestStep id="support">
+    <Rule>
+      <Assertion>This step should pass with a warning if Extra Metadata can be saved.</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <MetadataFile>metadata.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="verify_by_query">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId id="SubmissionSet01" symbol="$ssuid$" step="support" section="AssignedUids"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+      </ExpectedContents>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="DocumentEntry_has_extra_slot">
+               count(//TestStep[@id='verify_by_query']//*[local-name()='ExtrinsicObject']/*[local-name()='Slot'][@name='urn:nist:extraDESlot']) = 1
+               </Assert>
+        <Assert id="SubmissionSet_has_extra_slot">
+               count(//TestStep[@id='verify_by_query']//*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='urn:nist:extraSSSlot']) = 1
+               </Assert>
+        <Assert id="Association_has_extra_slot">
+               count(//TestStep[@id='verify_by_query']//*[local-name()='Association']/*[local-name()='Slot'][@name='urn:nist:extraAssocSlot']) = 1
+               </Assert>
+      </Assertions>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

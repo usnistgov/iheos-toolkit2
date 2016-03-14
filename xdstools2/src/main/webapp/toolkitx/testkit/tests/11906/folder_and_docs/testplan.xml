@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>11906/folder_and_docs</Test>
+  <Rule>GetSubmissionSetAndContents - Query based on uniqueId. Submission Set includes multiple documents and a folder.</Rule>
+  <TestStep id="folder_and_docs">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/two_doc_w_fol" id="SubmissionSet01" symbol="$uniqueid$" 
+        step="submit_2doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <SSwithTwoDocOneFol/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

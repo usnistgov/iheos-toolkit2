@@ -1,0 +1,798 @@
+<html>
+
+<head>
+<title>Release Notes</title>
+</head>
+
+<body>
+
+<h1>Release Notes</h1>
+
+<p>Release note are listed for each build number
+
+<h4>201a (released 28 April 2015)</h4>
+
+<ul>
+<li>Bug fix - Added \r to list of whitespace chars in multipart parser used by simulators
+<li><a href="https://bitbucket.org/bmajur/toolkit2/issue/1/bugs-in-test-11898-and-11897">Bug</a> fix - Test 11898/other_sourceid states it tests a stored query request by unknown source id other_sourceid Adds selection on non-existant sourceId -> this test script doesn't use an non-existant source id, but an invalid source id (3670984664a); it is invalid because it's not an OID. 
+<li><a href="https://bitbucket.org/bmajur/toolkit2/issue/1/bugs-in-test-11898-and-11897">Bug</a> fix - 
+Test 11897/no_matching_classcode states it tests a store query request with an unknown code.
+The description states: no_matching_classcode: queries for class code not contained in test data must return: none -> This test script doesn't use a code that is not contained in test data, but instead uses an invalid code with only a coding scheme '^^blah'.
+</ul>
+
+
+<h4>200 (released 1 November 2014)</h4>
+
+<ul>
+<li>Converted tests to use new Affinity Domain coding.
+</ul>
+
+<h4>170 (released 6 November 2013)</h4>
+
+<ul>
+<li>Updates made to dozens of tests based on regression tests run against
+Public Registry server and/or toolkit simulators.
+<li>Updated documentation on a lot of tests
+</ul>
+
+<h4>169   (released    19 September  2013  )      </h4>
+
+MDHT<br>
+
+<ul>
+<li>When testing a document against MU2 requirements which contains valid Heavy or Light tobacco smoker codes, the validator was firing an error which was incorrect and has been rectified now.</li>
+<li>Incorporated the following ERRATA</li>
+	<ul>
+	<li>102,107,143,144,198,145,146,147,157</li>
+	<li>ERRATA 102:</li>
+		<ul>
+		<li>In Procedure Activity Act (2.16.840.1.113883.10.20.22.4.12), in narrative constraint 8294, correct the phrase ‘procedure activity observation’ to ‘procedure activity act’.</li>
+		</ul>
+	<li>ERRATA 107:</li>
+		<ul>
+		<li>Correction to Health Status Observation value set was incorporated into sample test data files used by MDHT</li>
+		</ul> 
+	<li>ERRATA 143:</li>
+		<ul>
+		<li>In Procedure Activity Act, Procedure Activity Observation, and Procedure Activity Procedure, allow more than one entryRelationship/substanceAdministration.</li>
+		<li>CONFs 8329, 8279, and 7886 were updated from “MAY contain zero or one [0..1] entryRelationship”, to “MAY contain zero or more [0..*] entryRelationship.” And CONF:8330/15602 were added for ProcedureActivityAct/medicationActivity.</li>
+		</ul>
+	<li>ERRATA 144:</li>
+		<ul>
+		<li>Correct ICD9/ICD10 OIDs and names associated with CONF:16750, CONF:19207, CONF:19202, and CVX 2.16.840.1.113883.12.292.</li>
+		</ul>
+	<li>ERRATA 198:</li>
+		<ul>
+		<li>Vaccines administered (CVX) valueSet had an OID of 2.16.840.1.114222.4.11.934 instead of 2.16.840.1.113883.3.88.12.80.22 and was corrected.</li>
+		</ul>
+	<li>ERRATA 145:</li>
+		<ul>
+		<li>No changes to the validator.</li>
+		</ul>
+	<li>ERRATA 146:</li>
+		<ul>
+		<li>The unit attribute should not be constrained to the literal value "1", since the rest of the statement constrains it to the AgePQ_UCUM value set</li>
+		</ul>
+	<li>ERRATA 147:</li>
+		<ul>
+		<li>No changes to the validator.</li>
+		</ul>
+	<li>ERRATA 157:</li>
+		<ul>
+		<li>No changes to the validator.</li>
+		</ul>
+	</ul>
+</ul>
+
+Known Issues in the release that impact users: 
+<ul>
+	<li>No known defects that affect the Vendor community for MU2 certification.</li>
+</ul>
+
+<h4>168   (released    16 August  2013  )      </h4>
+
+Direct<br>
+
+<ul>
+<li>Fixed DTS 165 Body. Quoted-printable CR and LF code can appear separately.</li>
+<li>TTT now display a link for unknown attachment such as pdf or rtf text.</li>
+<li>Fixed bug where several CCDA or XDM attachments validation where not correctly displayed in the validation report.</li>
+<li>Added anchors to move faster in the Validation report.</li>
+<li>Fixed bug where encrypted but not signed messages were not processed.</li>
+</ul>
+
+MDN<br>
+
+<ul>
+<li>Fixed MDN Error field validation. TTT now validate correctly the Error, Warning, Failure and Extension fields.</li>
+<li>Fixed bug where wrapped MDNs were not identified as such.</li>
+</ul>
+
+MDHT<br>
+
+Defects fixed in this release: 
+The MDHT Release for August contains the following fixes based on previously identified defects: 
+<ul>
+<li>Validation Errors on Payers Section with Multiple Performers, For e.g when a user is attempting to put both a performer (payer) and a performer (guarantor) in the same document the validator is providing an error. This issue is now corrected.</li>
+<li>When Content IDs are present on the Narrative Text element and reference them in the entries, the validator is incorrectly throwing an error. This issue is now corrected.</li>
+<li>Validator is incorrectly displaying a warning message for authoringDevice when author/assignedAuthor/AssignedPerson is already present which is valid per the C-CDA IG. This issue is now corrected.</li>
+<li>C-CDA validator indicates smoking status observation is missing even when it exists. This issue is now corrected.</li>
+<li>Corrected the Clinical Office Visit Summary validation to allow Medication Administered element to be represented by Medications.</li>
+<li>Corrected the Medication Activity entry validation to represent the logical “OR” concept properly when representing doseQuantity or RateQuantity.</li>
+<li>For Result observations within Cognitive Status section, the validator was updated to use either SNOMED or LOINC according to C-CDA IG instead of limiting it to just LOINC.</li>
+<li>Incorporated the following ERRATA</li>
+	<ul><li>72, 73, 74, 79, 76, 278, 63, 80, 81, 85, 86, 87, 88, 89, 90, 95, 96, 97, 100, 106, 156, 169, and 229</li></ul>
+</ul>
+Known Issues in the release that impact users: 
+<ul>
+<li>No known defects that affect the Vendor community for MU2 certification.</li>
+</ul>
+
+
+<h4>167   (released    2 August  2013  )      </h4>
+
+General<br>
+
+<ul>
+<li>Updated the validation report with new style to make it clearer and easier to understand.</li>
+<li>Attachments are now saved on the server and the validation report provides a link to download them.</li>
+<li>Updated Ambulator and Inpatient CCDAs (for sending with Direct and XDM over Direct, and XDR).</li>
+<li>Added full metadata submissions for all XDR sample data.</li>
+</ul>
+
+SAML<br>
+
+<ul>
+<li>Updated template to fix compliance issue with the SAML2.0 in the authorization statement.</li>
+<li>Fix SAML patientID and homeCommunity data retrieval.</li>
+</ul>
+
+
+<h4>166   (released    3 July  2013  )      </h4>
+
+General<br>
+
+<ul>
+<li>XTN has been added as a valid format for intendedRecipient for IHE profiles.</li>
+<li>MU2 metadata_level header was not being generated when SAML was enabled in the test engine (message send).  Minimal metadata XDR would fail metadata validation since metadata_level=minimal header was not present in message</li>
+<li>Fixed parsing for validator message upload.  Was broken in recent multipart parser work.</li>
+<li>Updated Ambulatory and Inpatient XDM sample data.  The Patient IDs in metadata did not match the Patient IDs in the CCDAs.</li>
+</ul>
+
+Direct Validation changelog:<br>
+
+<ul>
+<li>Fixed display bug where message-id was sometimes not properly displayed</li>
+<li>Fixed Message-ID validation bug including special characters !, #, $, %, &, ', *, +, /, =, ?, ^, `, {, }, |, ~</li>
+</ul>
+
+
+C-CDA<br>
+<ul>
+<li>Update CCDA_Inpatient test data</li>
+</ul>
+
+MDHT<br><br>
+Link to the MDHT Release used by the validator on the OHT/MDHT website: 
+http://sourceforge.net/projects/oht-modeling/files/Nightly%20Builds/Runtime/org.openhealthtools.mdht.uml.cda.runtime.N-N20130617-201306171357.zip/download
+<br><br>
+Defects fixed in this release: 
+<ul>
+<li>When representing lab results utilizing value reference ranges using the standard IVL_INT data type (for when high/low contain no decimal and have no units) the validator throws an error incorrectly. Going forward implementers can use IVL_INT data type.</li>
+<li>Validation of Text data elements of type ìSTî which contain CDATA blocks is sensitive to white spaces. Going forward implementers can use white spaces in the ST data type along with CDATA.</li>
+<li>When Using Multiple TemplateIds to conformance, the validator is looking at the first one to verify conformance instead of checking the entire list. Community has encountered this issue on the Smoking Status Observation. Going forward implementers can use multiple template Ids in the Smoking Status observation entry.</li>
+<li>Encounter Diagnoses validation was requiring Assessment and Problem Observation even when other encounter / problem sections and entries are present. This has now been corrected to require the problem observation entry as part of Assessment based on the other sections/entries present in the document.</li>
+<li>Validation of Procedure Activity Procedure template was requiring address and telecom elements even when the represented organization was not present. This is now corrected and the validation only requires the elements when the representedOrganization is present.</li>
+<li>Validation of DocumentationOf/ServiceEvent/Performer was throwing an error when implementers were using a codesystem different from the one prescribed in C-CDA IG which is NUCC Health Care Provider Taxonomy 2.16.840.1.113883.6.101. This was changed to a WARNING as it is supposed to be per the IG.</li>
+<li>Fixed the error where the validator was not allowing multiple languageCommunication elements in a CDA document per the IG.</li>
+<li>Fixed the validator bug where an error was being generated when the comment author information includes an assignedPerson name AND a representedOrganization name.</li>
+<li>Fixed the error where the validator was using the incorrect severity when checking conformance to the confidentialityCode value set. The severity was changed from a ìSHALLî to a ìSHOULDî.</li>
+<li>C-CDA ERRATAís incorporated into the release are as follows:</li>
+<ul><li>64, 66, 67, 60,</li></ul>
+</ul>
+Known Issues in the release that impact users:<br> 
+<ul>
+<li>Validation Errors on Payers Section with Multiple Performers, For e.g when a user is attempting to put both a performer (payer) and a performer (guarantor) in the same document the validator is providing an error.</li>
+<li>When IDís are present on the Narrative Text element and reference them in the entries, the validator is incorrectly throwing an error. </li>
+<li>Validator incorrectly displaying a warning message for authoringDevice when author/assignedAuthor/AssignedPerson is already present which is valid per the C-CDA IG.</li>
+<li>C-CDA validator indicates smoking status observation is missing even when it exists.</li>
+</ul>
+
+
+<h4>165   (released    25 June  2013  )      </h4>
+
+<ul>
+<li>Bug fix related to parsing multipart boundary in simulators.
+Was not properly identifying SIMPLE vs MTOM because of bad parsing
+of the boundary element in the message headers.
+<li>Separate Registry and Repository simulators now work together.
+</ul>
+
+<h4>164   (released    20 June  2013  )      </h4>
+
+General<br>
+
+<ul>
+<li>Fixed display bug in validator where the summary indicated that errors were found
+but no actual errors were reported.
+</ul>
+Direct Validation changelog:<br>
+<ul>
+  <li>DTS 114 Orig-Date: The day of the week is now optional as
+recommended by the specification.</li>
+  <li>TTT is now able to recognize and display properly a stylesheet
+file.</li>
+  <li>Fixed bug where quoted-printable attachments where not correctly
+displayed.</li>
+  <li>TTT is now able to parse and decrypt application/x-pkcs7-mime
+messages.</li>
+  <li>Fixed bug where wrapped message with singlepart attachment were
+not parsed.</li>
+  <li>Fixed a bug in the validation of received header. The regex
+sometimes couldn't parse the value of the field.</li>
+  <li>Removed regular expression to check quoted-printable content. It
+made the TTT falling to validate some emails and was obsolete.</li>
+  <li>Now checking if application/xml part are CCDA content or
+stylesheet. Decoding QP encoded content as well.</li>
+</ul>
+<br>
+MDN validation changelog:<br>
+<ul>
+  <li>Fixed a bug where MDN headers were not correctly extracted which
+was leading the toolkit to fail validation.</li>
+  <li>Fixed a bug in MDN validation where disposition field was
+sometimes not found.</li>
+</ul>
+
+SOAP/SAML:<br>
+<ul>
+  <li>Fixed dateTime comparison validation, milliseconds should not be taken into account.</li>
+  <li>Fixed dateTime validation,  timezones and fractional milliseconds are optional.</li>
+  <li>Fixed distinguished name validation.</li>
+  <li>Fixed keyIdentifier namespace.</li>
+</ul>
+
+
+<h4>163a   (released     14 May 2013  )      </h4>
+
+<h5>Bug Fixes</h5>
+
+<ul>
+<li>Bug fix affecting the Document Recipient simulator that accepts XDR messages: 
+Groovy library missing from deployed war. Part of XDR validator built in Groovy.
+</ul>
+
+<h4>163   (released     10 May 2013  )      </h4>
+
+<h5>Known bugs</h5>
+
+<ul>
+<li>The Document Recipient Simulator (XDR) will report a validation error:
+<pre>
+Slot intendedRecipient: 
+Some Hospital^^^^^^^^^1.2.3.4.5.6.7.8.9.1789.45|^Wel^Marcus^^^Dr^MD|^^Internet^mwel@healthcare.example.org 
+: Format is XON|XCN  where either XON or XCN must be present
+</pre>
+when SAML is included. In many cases this error message is incorrect.  This will be fixed soon.
+</ul>
+
+<h5>Bug Fixes</h5>
+
+<ul>
+<li>SAML: Installed new implementation of SAML.  This include SAML header generation an SAML
+header validation. This may cause new errors to be reported because it provides a more comprehensive
+ validation.
+<li>Direct:
+<ul>Fixed Orig-Date validation: Day of the week changed from required to optional 
+Under Direct validation
+<li>Fixed DTS 165: - Signature algorithms now allowed for micalg value: sha-1, sha-256, sha1
+<li>Now checking the OID algorithm number located in the signing certificate					
+<li>Fixed Base64 encoding: - Base64 encoding is now spread in several lines which contains no more than 76 characters	
+<li>Updated XDMDecoder: - Fxed a bug where valid XDM content sometimes failed the validation	
+<li>Fixed quoted-printable encoding: - TTT is now able to decode quoted-printable attachment
+</ul>
+<li>MDN:
+<ul>
+<li>Fixed display bug for unencrypted MDN
+<li>Fixed display bug for DTS 462 (disposition field)
+</ul>	
+<li>Display:
+<ul>
+<li>Improved the display of the validation report including more details and a link to the RFC.
+</ul>
+<li>Release Notes for CCDA Validator Released on 05_03_2013
+<ul>
+<li>Link to the MDHT Release used by the validator on the OHT/MDHT website: 
+<li>Release downloadable from <a href="http://sourceforge.net/projects/oht-modeling/files/Nightly%20Builds/Runtime/org.openhealthtools.mdht.uml.cda.runtime.N-N20130429-201304291641.zip/download">here</a>
+<li>Defects fixed in this release:
+<ul> 
+<li>Added support for SDTC extension attributes which include:
+<li>DischargeDispositioncode, DeceaseInd, Id, DeceasedInd, DeceasedTime, BirthTime and RaceCode.
+<li>Added null flavor checks for Birth Time in the tool.
+<li>Fixed the issue where the tool was (incorrectly) requiring the addr and telecom elements to exist whether or not the representedOrganization element was present within a Procedure Observation.
+<li>The validator was incorrectly checking every performer for the existence of the “assignedEntity/Name , Telecom and Address elements”. It should check to ensure that “at least one of the performer or responsible party or encounter participant” has the provider telecom and address information.
+<li>Added Null Flavor checks to the model where it was missing by using an automated program to detect missing null flavor checks.
+</ul>
+<li>Known Issues in the release that impact users:
+<ul> 
+<li>When representing lab results utilizing value reference ranges using the standard IVL_INT data type (for when high/low contain no decimal and have no units) the validator throws an error incorrectly.
+<li>Validate of Text data elements which contain CDATA elements is sensitive to white spaces.
+<li>When Using Multiple TemplateIds to conformance, the validator is looking at the first one to verify conformance instead of checking the entire list. Community has encountered this issue on the Smoking Status Observation.
+<li>When ID’s are present on the Narrative Text element and reference them in the entries, the validator is incorrectly throwing an error. </ul>
+</ul>
+<li>Fixed bug in DNS CERT lookup - was rejecting and refusing to use good certs
+</ul>
+
+<h4>162   (released     2 May 2013  )      </h4>
+
+<h5>New Features</h5>
+
+<ul>
+<li>Version used in Istanbul for the IHE Connectathon
+<li>The only major update was to realign the actor configuration
+download feature with the current relase of Gazelle
+<li>Built with shared-lib version 161a
+</ul>
+<h4>161   (released     1 Mar 2013  )      </h4>
+
+<h5>New Features</h5>
+
+<ul>
+<li>Added ability to use alternate signing certs from GUI
+<li>Added MDN support 
+</ul>
+
+<h5>Bug Fixes</h5>
+
+<ul>
+<li>Improve error reporting on DNS/MX record lookup
+<li>Built with share-lib version 161 
+<li>Build with MDHT Release 03012013.  The link for download is
+<a href="http://sourceforge.net/projects/oht-modeling/files/Nightly%2520Builds/Runtime/org.openhealthtools.mdht.uml.cda.runtime.N-N20130219-201302191756.zip/download&usd=2&usg=ALhdy29oL5BnUp3MNWwRbiDoMEXOjzcTaA">here</a>
+<li>Fixed MDN validation bug, the MDN headers were not correctly processed.
+<li>Fixed the error/warning messages displayed for MDN validation.
+<li>Direct Message validation: tool was throwing an error because there was a blank at the end of the message ID.
+<li>Direct Message validation: tool was not able to match the upper case micalg algorithm.
+<li>Direct Message validation: content type of the XDM documents sent by the DirectSender (Send Direct Message) portion of the Tool was set to text/xml instead of application/zip.
+</ul>
+
+<h4>160   (released February 15, 2013)       </h4>
+
+<h5>New Features</h5>
+<ul>
+<li>Direct message sent to TTT for validation: attached documents of type text or
+CCDA are placed into the validation report.
+<li>The following new formats are recognized by the Message Validator
+   <ul>
+   <li>CCDA wrapped in XDM (CCDA validated along with XDM format)
+   <li>CCDA sent in XDR (CCDA validated along with XDR format)
+   </ul>
+</li>
+</ul>
+
+<h5>Bug Fixes</h5>
+<ul>
+<li>Upgrade MDHT to 02_15_2013 release:<br />
+Defects fixed in this release:
+  <ul>
+	<li>Allow Referrals to be documented as part of “Plan of Care Section” or “Assessment and Plan section” or
+“Reason for Referral” section.
+		<ul>
+			<li>Previously the validation was over constrained and only Reason for Referral section was being
+allowed.
+		</ul>
+	</li>
+	<li>Allow Vital Signs to use sections with entries required or section with entries optional.
+		<ul>
+			<li>Previously the validation was over constrained and only Vital Signs section with entries required
+template was being allowed.
+		</ul>
+	</li>
+	<li>Allow CareTeam Members to be documented as part of either “EncompassingEncounter/responsibleParty”
+or “EncompassingEncounter/encounterParticipant” or “documentationOf/ServiceEvent/Performer”.
+		<ul>
+			<li>Previously the validation was looking for all three of them to exist and declaring an error
+incorrectly on valid samples.
+		</ul>
+	</li>
+	<li>Cognitive Status Problem Observation Entry was modeled with incorrect cardinality resulting in an error.
+		<ul>
+			<li>Previously the Problem Observation Entry was modeled with a cardinality of 1..* instead of 0..*
+which was resulting in an error.
+		</ul>
+	</li>
+	<li>Fixed a memory leak that was causing heap exhaustion in about 4 hours.
+	<li>Pregnancy Observation was modeled with incorrect cardinality resulting in an error.
+		<ul>
+			<li>Previously Pregnancy Observation was modeled with a cardinality of 1..1 instead of 0..1 which
+caused a validation error for valid samples.
+		</ul>
+	</li>
+	<li>EncounterActivities\Code vocabulary constraints were modeled incorrectly resulting in an error.
+		<ul>
+			<li>Previously Encounter Activities \ Code was being validated to have a code system of SNOMED-
+CT or ICD-10 incorrectly. This has now been corrected.
+		</ul>
+	</li>
+  </ul>
+</li>
+Known issues in this release that impact users:<br />
+	<ul>
+		<li>No known issues
+	</ul>
+<li>XDM decoder was detecting directories incorrectly.  This frequently resulted 
+in the message <i>Directory IHE_XDM not found</i> even when it was present.
+<li>Built with shared-lib version 160
+</ul>
+
+<h5>Known problems</h5>
+<ul>
+	<li>When an XDR message is received containing a CCDA, the CCDA is validated before the response message
+	is sent.  This allows the validation errors to be included in the response. Since the CCDA validation
+	can take a very long time to run (sometimes over a minute) the sender (Document Source actor) can 
+	timeout waiting for the SOAP response.  When using toolkit as the Document Source, it does timeout.
+</ul>
+
+<h4>159   (released February 7, 2013)       </h4>
+
+This version was used at the North American Connectathon January 28 - February
+1, 2013 in Chicago<br />
+
+<h5>Direct</h5>
+<ul>
+<li>Added plain/txt attachments to validation log
+<li>Add private key validation to startup of listener
+(<a href="http://sourceforge.net/p/iheos/code/ci/1a4476653788e902be699a182ee31ad0f81a433d/"> commit </a>)
+(<a href="http://sourceforge.net/p/iheos/code/ci/fcf717fe5670bf6a3a418bc75c7ed4ea5ae50b4f/"> commit </a>)
+</ul>
+
+<h5>IHE</h5>
+<ul>
+<li>Updated Gazelle interface to match current version of Gazelle 
+(<a href="http://sourceforge.net/p/iheos/code/ci/e22fcc2b8856c9017c38079cc9c736a7b4d74c17/">commit</a>)
+<li>SOAP message validator was updated some time ago to loosen the requirements on the mustUnderstand attribute.
+The values 1, 0, true (ingore case comparison), and false (ignore case comparison) are all acceptable values.
+</ul>
+
+<h4>158 (MDHT updates only (released January 10, 2913)</h4>
+
+<ul>
+<li>MHDT version 12212012 installed:
+<ul>
+<li>Comment Activity Author constraint should be a “MAY” and not a “SHALL” – CONF 9433
+<li>Functional and Cognitive status will not require structured entries because there is no standard
+vocabulary requirement for the data elements.
+<li>CONF 9050 and CONF 15603 constraints were implemented incorrectly.
+<li>Plan of Care section will allow multiple observations. Previously only one observation was being allowed.
+<li>Plan of Care section entries will be optional and not required.
+<li>Null Flavor check on code in the Results section was requiring a LOINC code system which has now been
+corrected.
+<li>Null Flavor on playing Entity within observations for allergies (CONF 7421, 10083, 10084) was not being
+allowed, this has been corrected.
+</ul>
+</ul>
+
+<h4>156  (MU 2 updates only)   (released December 19, 2012 ) </h4>
+<ul>
+<li>Built with shared-lib version 155
+<li>155 had been built with some old modules - corrected
+<li>Updated CCDA examples
+<li>Removed the Environment and TestSession selections from DirectSend and DirectRegistration tab.
+<li>Removed TestSession selection from Message Validation tab. Still needed for metadata containing 
+messages.
+</ul>
+
+<h4>155  (MU 2 updates only)   (released December 14, 2012 ) </h4>
+<ul>
+<li>Built with shared-lib version 155
+<li>SAML tested between TTT and Connect instance
+<li>MDHT (CCDA Validation) (version 12062012)
+   <ul>
+   <li>Multiple race codes in recordTarget section of CCDA header were not allowed due to the sdtc schema extension not being present. This is now fixed.
+   <li>ADDR Type not handling Null Flavor in MDHT when the top level element is null. This has been corrected.
+   <li>NPI forced for RepOrg and AuthoringDevice which is not correct, NPI is only valid for Assigned Person. This is now fixed.
+   </ul>
+</li>
+<li>Alan added this <a href="https://sourceforge.net/p/iheos/wiki/TransportTestingToolConfiguration/">configuration guide</a>
+</ul>
+
+
+<h4>153  (Direct updates only)   (released November 23, 2012 ) </h4>
+
+<ul>
+<li>Built with shared-lib version 153
+<li>Includes update MDHT validator for CCDA (version 11142012)
+<ul>
+<li>Fixed the Allergy Section validations based on Community feedback.
+<li>Fixed Error messages for Race and Ethnicity and preferred language value sets to point to the ONC S&CC 2014 standards instead of CCDA conformance statements.
+</ul>
+<li>The Direct Send panel can now send either wrapped or unwrapped formats.
+<li>The Direct Send panel now uses a pre-configured certificate for signing and can hold multiple encryption certificates keyed by the Direct (To) address
+<li>Fixed the SAML/TLS popups that incorectly occured on the Direct Send panel when a second copy is created.
+<li>Added more documentation to the Registration Page
+<li>Added the support mailing list and a link to the official ONC Regulation FAQ page to the home page
+</ul>
+
+<h4>152     (released November 6, 2012 ) </h4>
+
+<ul>
+<li>Built with shared-lib version 151c
+<li>Direct Send working
+<li>Accepts wrapped and unwrapped formats
+<li>Only sends unwrapped format
+<li>XDR (DIRECT/ONC format) - send works, receive works (simulator) validator not yet implemented
+<li>MDN processing/generation not implemented yet
+<li>SAML not fully tested yet
+</ul>
+
+<h4>145 (released September 20, 2012)</h4>
+
+<ul>
+<li>Added CCDA/MDHT validator to Message Validator page
+<li>Added custom home page for MU2
+<li>Relaxed validation of env:mustUnderstand to match requirements in SOAP 1.2.  The stricter
+requirements from WS-I are no longer referenced by profile.
+<li>Added ability to enable features from config file
+<li>Fixed test engine interpretation of expected errors. Was throwing strange errors when a test expected an error response.
+<li>Updated testdata 12361 so it can be run from GUI (separate sections for each Patient ID)
+<ul>
+<li>Upgraded the bouncycastle jars from
+  <ul>
+  <li>bcprov-jdk15-132.jar
+  <li>bcprov-ext-jdk15-1.40.jar
+  </ul>
+to
+  <ul>
+  <li>bcprov-jdk15+-146.jar
+  <li>bcprov-ext-jdk15+-146.jar
+  </ul>
+after it was reported that the versions were inconsistent.  JBoss AS 6.0.1 
+failed with a message DEPLOYMENTS IN ERROR
+</li>
+
+</ul>
+</li>
+</ul>
+
+<h4>144</h4>
+
+<ul>
+<li>Version from NA2012 Connectathon
+<li>Added Default_Environment config parameter. This can be overridden by browser cookie.
+<li>Added support for Extra Metadata
+<li>Test 11909 contained a poorly formatted UUID
+</ul>
+
+<h4>143</h4>
+
+<ul>
+<li>Fixed bug - sites not displayed on Pre-Connectathon test tab
+</ul>
+
+<h4>142</h4>
+
+<ul>
+<li>12312 - yet another fix to assertion xpath
+<li>Fixed some subtle bugs in Simulator support and MU sim.  Thanks for the heads up Paulo.
+<li>Tests 12021, 12028, 12368, 12370 were missing from the toolkit.  Added them back in.
+</ul>
+
+<h4>141</h4>
+
+<ul>
+<li>Tests 11979, 11983, 11986, 12369 were missing from pre-connectathon Repository test list
+<li>The tests in the Pre-Connectathon tab are displated in test number order
+<li>The following Repository test data items had repositoryUniqueId, size, hash, URI coded
+in metadata.  They have been removed: XCA_NA5507, XCA_NA5508, XCA_NA5509.  
+</ul>
+
+<h5>bugs</h5>
+<ul>
+<li>If installed to a directory with a space character in the name (like c:\Program Files)
+then many internal files will not be found.  Usually the first to be noticed 
+are the schema files.
+<li>Retrieve transaction on Repository simulator does not work correctly yet.
+</ul>
+
+
+<h4>140</h4>
+
+<ul>
+<li>Bug fixes for release 138
+</ul>
+
+<h4>138</h4>
+
+<ul>
+<li>XDR validation now accepts new limited metadata definition
+<li>XDM validation now accepts new minimal metadata definition
+<li>XDM message validation added to Message Validation tab
+<li>Fixed bug in HTTP parser - binary part (like zip upload) now parsed correctly
+<li>Parts of Patient Discovery have been added
+<li>NwHIN format SAML has been added to Message Validator
+<li>Environment can now be chosen individually (per session).  Environment
+consists of chosen keystore and codes.xml.  If codes.xml not present in environment
+directory then default is used.
+<li>Remember open simulators across sessions (uses cookies)
+<li>Added mpq transaction type to actors.xml.  It is now the required 
+transaction type for MPQ transactions.
+<li>Fixed XML formatter so attribute namespace is presented
+<li>Improved error messages for malformed HTTP headers
+<li>Added mustUnderstand to SOAP Header returned from sims
+<li>Sims didn't log SOAPFault output
+<li>Added use of cookies to remember current simulator collection
+<li>Fixed logging of response headers from sims
+</ul>
+
+<h5>bugs</h5>
+
+
+
+<h4>137</h4>
+
+<ul>
+<li>Last few releases were built with Java 1.6 JRE which includes a few methods
+on the String class that are not present in 1.5.  Switched development environment
+back to JRE 1.5 so it will run with 1.5 or 1.6.
+<li>Added homeCommunityId and repositoryUniqueId processing to config
+linkage to Gazelle
+</ul>
+
+<h4>136</h4>
+
+<ul>
+<li>Message Validator: validation of XDR request message checked for wrong ws:Action
+<li>Inspector: added <i>Get All Versions</i> action to DocumentEntries which invokes
+GetDocuments with the lid as a parameter and $MetadataLevel=2
+</ul>
+
+<h4>135</h4>
+
+<ul>
+<li>Installed correct certificate for European Connectathon
+</ul>
+
+<h4>134</h4>
+
+<ul>
+<li>Fixed handling of &lt;NoPatientid/> instruction
+<li>keystore password moved to war/toolkitx/xdstest/keystores/keystore.properties
+<li>Add Xdstest2_version to log.xml so it will be accepted through EVS
+<li>Added GetFolderAndContents to home page
+<li>Added FindFolders query to home page
+<li>Added metadata contents summary to queries on home page
+<li>Log file cache moved under SessionCache so it deleted at the end of a session and on
+initialization
+<li>Upgrade to Axis2 version 1.5.4
+</ul>
+
+<h4>133</h4>
+
+<ul>
+<li>Problem at connectathon where a user would get results back from another user. Second
+symptom was getting strange stack traces instead error messages that related to real
+problems.  Issue was bug in management of session variable.  This has been fixed but the
+fix has broken the use of simulators.  This will be fixed in a later release.
+<li>Occasionally an error is repored related to not being able to load addressing module.  This
+has been tracked to a bug in Axis2 version 1.4 libraries.  Some recoding has minimized the
+frequency of this error.  Future upgrade to version 1.5 will actually fix it. 
+</ul>
+
+<h4>132</h4>
+
+<ul>
+<li>Added Dashboard for connectathon
+<li>Finished core of IG construction including junit tests.
+<li>Added better exception management to MetadataValidator page in hopes it helps solve
+the perceived hang problem
+<li>Added Repository Listing tab - lists Repositories by their repositoryUniqueId
+<li>Warning - since I don't yet have an IG that will fan out or route XC queries to test against, the handling of 
+these queries by the toolkit is suspect.
+<li>Fixed Cross Community query handling of homeCommunityId
+<li>Attribute DocumentEntry.documentAvailabilty - registry simulator is not ready to process this att yet
+</ul>
+
+<h4>131</h4>
+
+<ul>
+<li>Added support for DocumentEntry.documentAvailability
+<li>Bug in log scanner gave strange errors in Folder validation tool
+</ul>
+
+<h4>130</h4>
+
+<ul>
+<li>The first two tests for Metadata Update are installed and ready. The main documentation
+link is 
+<a href="http://ihewiki.wustl.edu/wiki/index.php/XDS_Test_Kit_2009-2010_Test_Requirements#Metadata_Update">here</a>
+but in reality most of the documentation for testing the Registry is displayed in the 
+Pre-Connectathon Tests tab. The extent of the Metadata Update support is just enough to support
+these tests. The Stored Query updates are not yet installed.
+<li>The new Registry simulator is ready for public testing. It has been tested using
+all the Registry specific tests in the Pre-Connectathon Tests tab (see note below
+about tests involving Patient IDs)
+<li>The Simulator Control and Simulator Message View tabs are ready for public testing.
+<li>Pre-Connectathon Tests tab ready for public testing. Warning - tests that manipulate
+the Patient ID do not yet work.  The additional Patient ID support in the toolkit is
+not ready for release.
+<li>Improved error message in Message Validator on HTTP parse error.
+<li>Added toolkit level config param to enable all ciphers
+<li>Added basic Metadata Update/Update DocumentEntry functionality.
+<li>Registry sim(Register transaction) passes all tests that do not involve multiple
+Patient IDs
+<li>Fixed GetDocuments tab. Now works with UUID and UID inputs
+</ul>
+
+<h4>129</h4>
+
+<ul>
+<li>Previous version spewed "Request Message is SIMPLE SOAP but MTOM is required" even when content type was undecided.
+<li>Added Registry simulator
+<li>Unresolved bugs:
+<ul>
+<li>NoPatientId tag does not work in xdstest2 in gui environment: test 11997
+<li>sim directories get created under war directory in debug
+</ul>
+</ul>
+
+<h4>128</h4>
+
+<ul>
+<li>Added Toolkit Configuration to user interface
+<li>Added refresh button to Site/Actor Configuration panel
+<li>Added back into configuration these jars: xercesImpl-2.8.1.jar, ebxmlrr-common.jar, commons-logging-1.1.jar
+<li>Tested successfully on these Tomcat versions: 5.5.31, 6.0.29, 7.0.2
+<li>Added Mesa Test tab
+<li>Added Simulator expiration
+<li>Altered filenames in LogCache so no : (colon) chars are used (illegal on Windows)
+<li>Unresolved bugs:
+<ul>
+</ul>
+</ul>
+
+<h4>127</h4>
+
+<ul>
+<li>Added Concepts of Operation to test kit documentation
+</ul>
+
+<h4>126</h4>
+
+<ul>
+<li>First installment of documentation on the test engine (xdstest). This
+installment documents the language it self.  More examples are needed and 
+new sections on Concepts of Operation and the log format are still needed.
+<li>Bug fix - Really poorly formatted SOAP Headers are reported as having
+null value.  Error message improved.
+</ul>
+
+<h4>125</h4>
+
+<ul>
+<li>Added more online documentation
+<li>Metadata Validator - removed endpoint option
+<li>Metadata Validator - disabled XDM option
+<li>Metadata Validator - Document Contents not always available - was labeled
+as an error.
+</ul>
+
+<h4>124</h4>
+
+<ul>
+<li>Add Message Validator page
+<li>Most forms of validation now produce documentation references when an error is 
+reported
+<li>Validations no longer stop at the first error
+<li>Add prototype Simulator Control page and start of infrastructre to support simulators
+</ul>
+
+
+<h4>98</h4>
+
+<ul>
+<li>Version used at IHE Connectathon in Bordeaux France, April 2010
+</ul>
+
+</body>
+
+</html>

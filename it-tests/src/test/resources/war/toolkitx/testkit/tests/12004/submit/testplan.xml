@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12004/submit</Test>
+  <TestStep id="submit">
+    <Goal>Submit single DocumentEntry</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="resubmit_doc">
+    <Goal>Resubmit same DocumentEntry with same uniqueId.  Must be successful.</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <NoAssignUids id="Document01"/>
+      <MetadataFile>single_doc2.xml</MetadataFile>
+      <UseId id="Document01" symbol="$doc_uid$" step="submit" section="AssignedUids"/>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="resubmit_doc_diff_hash">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <Goal>Resubmit same DocumentEntry with same uniqueId but different hash.  
+            Must fail with XDSDuplicateUniqueIdInRegistry error</Goal>
+    <ExpectedErrorMessage>XDSNonIdenticalHash</ExpectedErrorMessage>
+    <RegisterTransaction>
+      <XDSb/>
+      <NoAssignUids id="Document01"/>
+      <MetadataFile>single_doc3.xml</MetadataFile>
+      <UseId id="Document01" symbol="$doc_uid$" step="submit" section="AssignedUids"/>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

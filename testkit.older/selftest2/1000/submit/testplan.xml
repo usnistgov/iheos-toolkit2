@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>1000/submit</Test>
+    <RegistryEndpoint>http://ihexds.nist.gov:12080/axis2/services/registryA2doc</RegistryEndpoint> 
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <XDSa/>
+            <MetadataFile>two_doc.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

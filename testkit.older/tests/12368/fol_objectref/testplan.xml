@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12368/fol_objectref</Test>
+  <Rule>XDSResultNotSinglePatient rule</Rule>
+  <TestStep id="leafclass">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolders</SQ>
+      <Assertion>Test data from 12346 and 12344 have different patient ids - should not generate error
+            since only ObjectRefs are returned</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <Metadata>
+        <query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+          <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+          <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:5737b14c-8a1a-4539-b659-e03a34a5e1e4">
+            <tag0:Slot name="$XDSFolderUniqueId">
+              <tag0:ValueList>
+                <tag0:Value>('$uid1$','$uid2$')</tag0:Value>
+              </tag0:ValueList>
+            </tag0:Slot>
+          </tag0:AdhocQuery>
+        </query:AdhocQueryRequest>
+      </Metadata>
+      <UseId testdir="../../12346" id="Folder" symbol="$uid1$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <UseId testdir="../../12374" id="Folder" symbol="$uid2$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <ObjectRefs count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15802/undeprecate_docentry_1</Test>
+  <TestStep id="undeprecate_docentry_1">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <MuTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>undeprecate.xml</MetadataFile>
+      <UseReport reportName="doc_uuid" section="load_docentry_1" step="load_docentry_1" useAs="$orig_docentry_uuid$"/>
+    </MuTransaction>
+  </TestStep>
+</TestPlan>

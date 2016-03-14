@@ -1,0 +1,1416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This list was curated by Steve Moore -->
+<Codes>
+	<CodeType name="confidentialityCode" classScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f">
+		<!-- Added Sept. 2009 NHIN -->
+		<Code code="N" display="Normal" codingScheme="2.16.840.1.113883.5.25" />
+		<Code code="R" display="Restricted" codingScheme="2.16.840.1.113883.5.25" />
+		<Code code="V" display="very restricted" codingScheme="2.16.840.1.113883.5.25" />
+
+	</CodeType>
+	<CodeType name="healthcareFacilityTypeCode" classScheme="urn:uuid:f33fb8ac-18af-42cc-ae0e-ed0b0bdb91e1">
+		
+		<!-- Added Sept. 2009 NHIN -->
+		<Code code="281PC2000N" display="Hospitals; Chronic Disease Hospital; Children"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="282NC2000N" display="Hospitals; General Acute Care Hospital; Children"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="281NR1301N" display="Hospitals; General Acute Care Hospital; Rural"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="282NW0100N" display="Hospitals; General Acute Care Hospital; Women"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="283XC2000N" display="Hospitals;Rehabilitation Hospital; Children"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="2865C1500N" display="Hospitals;Military Hospital; Community Health"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="2865M2000N" display="Hospitals; Military Hospital; Medical Center"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="2865X1600N" display="Hospitals; Military Hospital; Operational Component Facility"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ACC" display="Accident Site"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ALL" display="Allergy clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="AMB" display="Ambulance"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="AMPUT" display="Amputee clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="BMTC" display="Bone marrow transplant clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="BMTU" display="Bone marrow transplant unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="BREAST" display="Breast clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CANC" display="Child and adolescent neurology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CAPC" display="Child and adolescent psychiatry clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CARD" display="Ambulatory Health Care Facilities; Clinic/Center; Rehabilitation; Cardiac Facilities"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CATH" display="Cardiac catheterization lab"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CCU" display="Coronary care unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CHEST" display="Chest unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CHR" display="Chronic care unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="COAG" display="Coagulation clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="COMM" display="Community Location"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CRS" display="Colon and rectal surgery clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="CVDX" display="Cardiovascular diagnostics or therepeutics unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="DADDR" display="Delvery Address"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="DERM" display="Dermatology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="DX" display="Diagnostics or therapeutics unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ECHO" display="Echocardiography lab"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ENDO" display="Endocrinology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ENDOS" display="Endoscopy lab"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ENT" display="Otorhimolaryngology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="EPIL" display="Epilepsy unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ER" display="Emergency room"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ETU" display="Emergency Trauma unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="FMC" display="Family medicine clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="GACH" display="Hospitals; General Acute Care Hospital"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="GI" display="Gastroenterology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="GIDX" display="Gasteroenterology diagnosis or theraputics lab"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="GIM" display="General internal medicine clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="GYN" display="Gynecology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="HAND" display="Hand clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="HD" display="Hemodialysis unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="HEM" display="Hemotology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="HOSP" display="Hospitals"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="HTN" display="Hypertension clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="HU" display="Hospital unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ICU" display="Intesnive care unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="IEC" display="Impairment evaluation center"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="INFD" display="Infectious disease center"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="INV" display="Infertility clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="LYMPH" display="Lympedema clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="MGEN" display="Medical genetics clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="MHSP" display="Military Hospital"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="MOBL" display="Mobile unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="NCCF" display="Nursing or custodial care facility"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="NCCS" display="Neurology critical care and stroke unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="NEPH" display="Nephrology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="NEUR" display="Neurology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="NS" display="Neurosurgery unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="OB" display="Obstetrics clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="OF" display="Outpatient facility"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="OMS" display="Oral and maxillofacial surgery clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ONCL" display="Medical oncology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="OPH" display="Opthamology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="ORTHO" display="Orthopedics clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PAINCL" display="Pain clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PC" display="Primary care clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDC" display="Pediatrics clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDCARD" display="Pediatric cardiology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDE" display="Pediatric  endocrinolgy clinci"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDGI" display="Pediatric gastroeneterolgy clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDHEM" display="Pediatric hematology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		
+		<Code code="PEDHO" display="Pediatric oncology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDICU" display="Pediatric intensive care unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDID" display="Pediatric infectious disease clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDNEPH" display="Pediatric nephrology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDNICU" display="Pediatric neonatal intesive care unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDRHEUM" display="Pediatric rheumatology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PEDU" display="Pediatric unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PHARM" display="Pharmacy"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PHU" display="Pyschiatric hospital unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PLS" display="Plastic surgery clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="POD" display="Podiatry clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PRC" display="Pain rehabilitation center"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PREV" display="Preventive medicine clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PROCTO" display="Proctology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PROFF" display="Provider's office"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PROS" display="Prosthodontics clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PSI" display="Phychology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PSY" display="Psychiatry clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PSYCHF" display="Psychiatric care facility"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="PTRES" display="Patient's residence"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="RADDX" display="Radiology diagnostics or therapeutics unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="RADO" display="Radiation oncology unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="RH" display="Rehabilitation hospital"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="RHEUM" display="Rheumatology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="RHU" display="Rehabilitation hospital unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="RNEU" display="Neuroradiology unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="RTF" display="Residential treatment Facility"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="SCHOOL" display="school"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="SLEEP" display="Sleep disporders unit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="SNF" display="Skilled nursing facility"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="SPMED" display="Sports medicine clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="SU" display="Surgery clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="SURF" display="Substance use rehabilitation facility"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="TR" display="Transplant clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="TRAVEL" display="Travel and geographic medicine clinit"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="URO" display="Urology clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="WND" display="Wound clinic"
+			codingScheme="2.16.840.1.113883.5.11" />
+		<Code code="WORK" display="work site"
+			codingScheme="2.16.840.1.113883.5.11" />
+		
+		<!-- End NHIN 2009 -->
+		
+		
+		
+		<Code code="unobtainable" display="unobtainable"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		
+		<Code code="Home" display="Home"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Assisted Living" display="Assisted Living"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Home Health Care" display="Home Health Care"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Hospital Setting" display="Hospital Setting"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Acute care hospital" display="Acute care hospital"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Hospital Unit" display="Hospital Unit"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Critical Care Unit" display="Critical Care Unit"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Emergency Department" display="Emergency Department"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Observation Ward" display="Observation Ward"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Rehabilitation hospital" display="Rehabilitation hospital"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Nursing Home" display="Nursing Home"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Skilled Nursing Facility" display="Skilled Nursing Facility"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Outpatient" display="Outpatient"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes" />
+		<Code code="Outpatient" display="Outpatient"
+			codingScheme="Connect-a-thon healthcareFacilityTypeCodes 2" />
+			
+		<!--  Codes for testing MPQ - since no patient id restrictions are used we need to have
+		some really restricted codes that are not used elsewhere.  Do not submit metadata with 
+		these codes unless you are testing MPQ -->
+
+		<Code code="MPQ-hcftcode-1" codingScheme="MPQ Testing"
+			display="MPQ-hcftcode-1" />
+		<Code code="MPQ-hcftcode-2" codingScheme="MPQ Testing"
+			display="MPQ-hcftcode-2" />
+		
+	</CodeType>
+	<CodeType name="practiceSettingCode" classScheme="urn:uuid:cccf5598-8b07-4b77-a05e-ae952c785ead">
+		
+		<!-- Added Sept, 2009 NHIN -->
+		<Code code="394802001" display="General Medicine"
+			codingScheme="2.16.840.1.113883.6.96" />
+		<Code code="408478003" display="Critical Care Medicine"
+			codingScheme="2.16.840.1.113883.6.96" />
+		<Code code="410001006" display="Military Medicine"
+			codingScheme="2.16.840.1.113883.6.96" />
+		
+		
+		
+		
+		<Code code="unobtainable" display="unobtainable"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Anesthesia" display="Anesthesia"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Cardiology" display="Cardiology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Case Manager" display="Case Manager"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Chaplain" display="Chaplain"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Chemotherapy" display="Chemotherapy"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Chiropractic" display="Chiropractic"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Critical Care" display="Critical Care"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Dentistry" display="Dentistry"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Diabetology" display="Diabetology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Dialysis" display="Dialysis"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Dialysis" display="Dialysis"
+			codingScheme="Connect-a-thon practiceSettingCodes 2" />
+		<Code code="Emergency" display="Emergency"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Endocrinology" display="Endocrinology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Gastroenterology" display="Gastroenterology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="General Medicine" display="General Medicine"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="General Surgery" display="General Surgery"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Gynecology" display="Gynecology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Labor and Delivery" display="Labor and Delivery"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Laboratory" display="Laboratory"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Multidisciplinary" display="Multidisciplinary"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Neonatal Intensive Care" display="Neonatal Intensive Care"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Neurosurgery" display="Neurosurgery"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Nursery" display="Nursery"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Nursing" display="Nursing"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Obstetrics" display="Obstetrics"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Occupational Therapy" display="Occupational Therapy"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Ophthalmology" display="Ophthalmology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Optometry" display="Optometry"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Orthopedics" display="Orthopedics"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Otorhinolaryngology" display="Otorhinolaryngology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Pathology" display="Pathology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Perioperative" display="Perioperative"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Pharmacacy" display="Pharmacacy"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Physical Medicine" display="Physical Medicine"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Plastic Surgery" display="Plastic Surgery"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Podiatry" display="Podiatry"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Psychiatry" display="Psychiatry"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Pulmonary" display="Pulmonary"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Radiology" display="Radiology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Social Services" display="Social Services"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Speech Therapy" display="Speech Therapy"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Thyroidology" display="Thyroidology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Tumor Board" display="Tumor Board"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Urology" display="Urology"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Home" display="Home" codingScheme="Connect-a-thon practiceSettingCodes" />
+		<Code code="Veterinary Medicine" display="Veterinary Medicine"
+			codingScheme="Connect-a-thon practiceSettingCodes" />
+	</CodeType>
+	<CodeType name="eventCodeList" classScheme="urn:uuid:2c6b8cb7-8b2a-4051-b291-b1ae6a575ef4">
+		<!-- 
+        These codes were generated for RSNA 2008
+        -->
+
+		<Code code="TRID1001" display="XRAY CHEST Orderable"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1002" display="XRAY CHEST Procedure"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1003" display="RSNA XRAY CHEST FOR SCREENING Protocol"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1004" display="XRAY CHEST PA Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1031" display="XRAY CHEST LATERAL LEFT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+
+		<Code code="TRID1014" display="XRAY PORTABLE CHEST TRAUMA Orderable"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1015" display="XRAY CHEST PORTABLE TRAUMA Procedure"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1016" display="RSNA XRAY CHEST FOR TRAUMA Protocol"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1005" display="XRAY PORTABLE CHEST AP Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+
+		<Code code="TRID1017" display="CT TRUNK ADENOPATHY Orderable"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1018" display="CT TRUNK ADENOPATHY Procedure"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1019" display="RSNA CT TRUNK FOR ADENOPATHY Protocol"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1007" display="ADMIN ORAL CONTRAST Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1008" display="TIME DELAY 60 MIN Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1009" display="CT LOCALIZER AP TRUNK Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1010" display="INJECT IV CONTRAST Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1011" display="CT ACQUISITION AXIAL THIN TRUNK Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1012" display="CT RECONSTRUCTION CORONAL THIN TRUNK Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1013" display="CT RECONSTRUCTION SAGGITAL THIN TRUNK Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1020" display="DISMISS PATIENT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+
+		<Code code="TRID1021" display="MRI KNEE RIGHT PAIN Orderable"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1022" display="MRI KNEE RIGHT PAIN Procedure"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1023" display="MRI KNEE RIGHT FOR PAIN Protocol"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1024" display="MR LOCALIZER MULTIPLANAR KNEE RIGHT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1025"
+			display="MR ACQUISITION AXIAL T2P-2D(SE_M)_N/M  KNEE RIGHT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1026"
+			display="MR ACQUISITION SAGGITAL PD-2D(SE_M)_N/M  KNEE RIGHT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1027"
+			display="MR ACQUISITION SAGGITAL T2P-2D(SE_M)_N/M KNEE RIGHT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1028"
+			display="MR ACQUISITION CORONAL T2P-2D(SE_M)_N/M  KNEE RIGHT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1029"
+			display="MR ACQUISITION CORONAL T1R-2D(SE_1)_N  KNEE RIGHT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+		<Code code="TRID1030"
+			display="MR ACQUISITION CORONAL PD-2D(SE_M)_N/M  KNEE RIGHT Procedure Step"
+			codingScheme="RSNA2008 eventCodeList" />
+
+		<!--
+			The following codes represent policies that may be Acknowledged by
+			the patient using the BPPC Content Profile
+		-->
+
+		<Code code="1.3.6.1.4.1.21367.2006.7.106" display="OPT-OUT"
+			codingScheme="Connect-a-thon eventCodeList" />
+		<Code code="1.3.6.1.4.1.21367.2006.7.108" display="OPT-IN"
+			codingScheme="Connect-a-thon eventCodeList" />
+
+		<Code code="1.3.6.1.4.1.21367.2006.7.111" display="Authorize Capmed as PHR"
+			codingScheme="Connect-a-thon eventCodeList" />
+		<Code code="1.3.6.1.4.1.21367.2006.7.112" display="Authorize Care Evolution as PHR"
+			codingScheme="Connect-a-thon eventCodeList" />
+		<Code code="1.3.6.1.4.1.21367.2006.7.113" display="Authorize Acme as PHR"
+			codingScheme="Connect-a-thon eventCodeList" />
+		<Code code="1.3.6.1.4.1.21367.2006.7.114" display="Authorize ABC as PHR"
+			codingScheme="Connect-a-thon eventCodeList" />
+		<Code code="1.3.6.1.4.1.21367.2006.7.115" display="Authorize XYZ as PHR"
+			codingScheme="Connect-a-thon eventCodeList" />
+
+
+		<Code code="Colonoscopy" display="Colonoscopy" codingScheme="Connect-a-thon eventCodeList" />
+		<Code code="Appendectomy" display="Appendectomy" codingScheme="Connect-a-thon eventCodeList" />
+		<Code code="Amputation" display="Amputation" codingScheme="Connect-a-thon eventCodeList" />
+		<!-- Anatomic Region Codes: CID 4 -->
+		<!-- CID 4030 include -->
+		<!-- CID 4031 include -->
+		<Code codingScheme="SNM3" code="T-D4000" display="Abdomen" />
+		<Code codingScheme="SRT" code="R-FAB57" display="Abdomen and Pelvis" />
+		<Code codingScheme="SNM3" code="T-15420" display="Acromioclavicular joint" />
+		<Code codingScheme="SNM3" code="T-15750" display="Ankle joint" />
+		<Code codingScheme="SNM3" code="T-280A0" display="Apex of Lung" />
+		<Code codingScheme="SNM3" code="T-D8200" display="Arm" />
+		<Code codingScheme="SNM3" code="T-60610" display="Bile duct" />
+		<Code codingScheme="SNM3" code="T-74000" display="Bladder" />
+		<Code codingScheme="SNM3" code="T-04000" display="Breast" />
+		<Code codingScheme="SNM3" code="T-26000" display="Bronchus" />
+		<Code codingScheme="SNM3" code="T-12770" display="Calcaneus" />
+		<Code codingScheme="SNM3" code="T-11501" display="Cervical spine" />
+		<Code codingScheme="SRT" code="T-D00F7" display="Cervico-thoracic spine" />
+		<Code codingScheme="SNM3" code="T-D3000" display="Chest" />
+		<Code codingScheme="SRT" code="R-FAB55" display="Chest and Abdomen" />
+		<Code codingScheme="SRT" code="R-FAB56" display="Chest, Abdomen and Pelvis" />
+		<Code codingScheme="SNM3" code="T-12310" display="Clavicle" />
+		<Code codingScheme="SNM3" code="T-11BF0" display="Coccyx" />
+		<Code codingScheme="SNM3" code="T-59300" display="Colon" />
+		<Code codingScheme="SNM3" code="T-58200" display="Duodenum" />
+		<Code codingScheme="SNM3" code="T-D8300" display="Elbow" />
+		<Code codingScheme="SRT" code="T-D0010" display="Entire body" />
+		<Code codingScheme="SRT" code="T-D00CC" display="Entire spine" />
+		<Code codingScheme="SNM3" code="T-56000" display="Esophagus" />
+		<Code codingScheme="SRT" code="T-DD163" display="Esophagus, stomach and duodenum" />
+		<Code codingScheme="SNM3" code="T-D0300" display="Extremity" />
+		<Code codingScheme="SNM3" code="T-11196" display="Facial bones" />
+		<Code codingScheme="SNM3" code="T-12710" display="Femur" />
+		<Code codingScheme="SNM3" code="T-D8800" display="Finger" />
+		<Code codingScheme="SNM3" code="T-D9700" display="Foot" />
+		<Code codingScheme="SNM3" code="T-12402" display="Forearm bone" />
+		<Code codingScheme="SNM3" code="T-63000" display="Gall bladder" />
+		<Code codingScheme="SNM3" code="T-D8700" display="Hand" />
+		<Code codingScheme="SNM3" code="T-D1100" display="Head" />
+		<Code codingScheme="SRT" code="T-D1000" display="Head and Neck" />
+		<Code codingScheme="SNM3" code="T-32000" display="Heart" />
+		<Code codingScheme="SNM3" code="T-15710" display="Hip joint" />
+		<Code codingScheme="SNM3" code="T-12410" display="Humerus" />
+		<Code codingScheme="SNM3" code="T-58600" display="Ileum" />
+		<Code codingScheme="SRT" code="T-AB959" display="Internal Auditory Canal" />
+		<Code codingScheme="SNM3" code="T-D1213" display="Jaw region" />
+		<Code codingScheme="SNM3" code="T-58400" display="Jejunum" />
+		<Code codingScheme="SNM3" code="T-D9200" display="Knee" />
+		<Code codingScheme="SNM3" code="T-59000" display="Large intestine" />
+		<Code codingScheme="SNM3" code="T-24100" display="Larynx" />
+		<Code codingScheme="SNM3" code="T-D9400" display="Leg" />
+		<Code codingScheme="SNM3" code="T-11503" display="Lumbar spine" />
+		<Code codingScheme="SRT" code="T-D00F9" display="Lumbo-sacral spine" />
+		<Code codingScheme="SNM3" code="T-11180" display="Mandible" />
+		<Code codingScheme="SNM3" code="T-11133" display="Mastoid bone" />
+		<Code codingScheme="SNM3" code="T-11170" display="Maxilla" />
+		<Code codingScheme="SNM3" code="T-D3300" display="Mediastinum" />
+		<Code codingScheme="SNM3" code="T-11149" display="Nasal bone" />
+		<Code codingScheme="SNM3" code="T-D1600" display="Neck" />
+		<Code codingScheme="SRT" code="R-FAB52" display="Neck and Chest" />
+		<Code codingScheme="SRT" code="R-FAB53" display="Neck, Chest and Abdomen" />
+		<Code codingScheme="SRT" code="R-FAB54" display="Neck, Chest, Abdomen and Pelvis" />
+		<Code codingScheme="SNM3" code="T-11102" display="Optic canal" />
+		<Code codingScheme="SNM3" code="T-D0801" display="Orbital region" />
+		<Code codingScheme="SRT" code="T-65600"
+			display="Pancreatic duct and bile duct systems" />
+		<Code codingScheme="SNM3" code="T-22000" display="Paranasal sinus" />
+		<Code codingScheme="SNM3" code="T-61100" display="Parotid gland" />
+		<Code codingScheme="SNM3" code="T-12730" display="Patella" />
+		<Code codingScheme="SNM3" code="T-D6000" display="Pelvis" />
+		<Code codingScheme="SRT" code="R-FAB58" display="Pelvis and lower extremeties" />
+		<Code codingScheme="SRT" code="T-9200B" display="Prostate" />
+		<Code codingScheme="SNM3" code="T-59600" display="Rectum" />
+		<Code codingScheme="SNM3" code="T-11300" display="Rib" />
+		<Code codingScheme="SNM3" code="T-15680" display="Sacroiliac joint" />
+		<Code codingScheme="SNM3" code="T-11AD0" display="Sacrum" />
+		<Code codingScheme="SNM3" code="T-12280" display="Scapula" />
+		<Code codingScheme="SNM3" code="T-D1460" display="Sella turcica" />
+		<Code codingScheme="SNM3" code="T-12980" display="Sesamoid bones of foot" />
+		<Code codingScheme="SNM3" code="T-D2220" display="Shoulder" />
+		<Code codingScheme="SNM3" code="T-11100" display="Skull" />
+		<Code codingScheme="SNM3" code="T-58000" display="Small intestine" />
+		<Code codingScheme="SNM3" code="T-11500" display="Spine" />
+		<Code codingScheme="SNM3" code="T-15610" display="Sternoclavicular joint" />
+		<Code codingScheme="SNM3" code="T-11210" display="Sternum" />
+		<Code codingScheme="SNM3" code="T-57000" display="Stomach" />
+		<Code codingScheme="SNM3" code="T-61300" display="Submandibular gland" />
+		<Code codingScheme="SNM3" code="T-15770" display="Tarsal joint" />
+		<Code codingScheme="SNM3" code="T-15290" display="Temporomandibular joint" />
+		<Code codingScheme="SNM3" code="T-11502" display="Thoracic spine" />
+		<Code codingScheme="SRT" code="T-D00F8" display="Thoraco-lumbar spine" />
+		<Code codingScheme="SNM3" code="T-D8810" display="Thumb" />
+		<Code codingScheme="SNM3" code="T-D9800" display="Toe" />
+		<Code codingScheme="SNM3" code="T-25000" display="Trachea" />
+		<Code codingScheme="SNM3" code="T-70010" display="Upper urinary tract" />
+		<Code codingScheme="SRT" code="T-73800" display="Ureter" />
+		<Code codingScheme="SNM3" code="T-75000" display="Urethra" />
+		<Code codingScheme="SNM3" code="T-88920" display="Uterus and fallopian tubes" />
+		<!-- End of CID 4031 include -->
+		<Code codingScheme="SNM3" code="T-42501" display="Abdominal aorta" />
+		<Code codingScheme="SRT" code="T-41070" display="Abdominal aorta and its branches" />
+		<Code codingScheme="SNM3" code="T-B3000" display="Adrenal gland" />
+		<Code codingScheme="SNM3" code="T-42303" display="Aortic arch" />
+		<Code codingScheme="SNM3" code="T-A0100" display="Brain" />
+		<Code codingScheme="SNM3" code="T-45011" display="Carotid" />
+		<Code codingScheme="SNM3" code="T-A600A" display="Cerebellum" />
+		<Code codingScheme="SNM3" code="T-45526" display="Circle of Willis" />
+		<Code codingScheme="SRT" code="T-43000" display="Coronary artery" />
+		<Code codingScheme="SNM3" code="T-A0193" display="Cranial venous system" />
+		<Code codingScheme="SNM3" code="T-41040" display="Iliac arterial system" />
+		<Code codingScheme="SNM3" code="T-D4909" display="Kidney" />
+		<Code codingScheme="SNM3" code="T-62002" display="Liver" />
+		<Code codingScheme="SNM3" code="T-D4034" display="Pancreas" />
+		<Code codingScheme="SNM3" code="T-B7000" display="Parathyroid" />
+		<Code codingScheme="SRT" code="T-44000" display="Pulmonary artery" />
+		<Code codingScheme="SRT" code="T-46600" display="Renal artery" />
+		<Code codingScheme="SNM3" code="T-D4035" display="Spleen" />
+		<Code codingScheme="SNM3" code="T-9400F" display="Testis" />
+		<Code codingScheme="SNM3" code="T-4600A" display="Thoracic aorta" />
+		<Code codingScheme="SNM3" code="T-C8001" display="Thymus" />
+		<Code codingScheme="SNM3" code="T-B6000" display="Thyroid" />
+		<Code codingScheme="SNM3" code="T-83009" display="Uterus" />
+		<!-- End of CID 4030 include -->
+		<!-- CID 4040 include -->
+		<Code codingScheme="SRT" code="T-D4000" display="Abdomen" />
+		<Code codingScheme="SRT" code="T-59490" display="Anus, rectum and sigmoid colon" />
+		<Code codingScheme="SRT" code="T-60610" display="Bile duct" />
+		<Code codingScheme="SRT" code="T-74000" display="Bladder" />
+		<Code codingScheme="SRT" code="T-DD123" display="Bladder and urethra" />
+		<Code codingScheme="SRT" code="T-26000" display="Bronchus" />
+		<Code codingScheme="SRT" code="T-83200" display="Cervix" />
+		<Code codingScheme="SRT" code="T-D3000" display="Chest" />
+		<Code codingScheme="SRT" code="T-DD163" display="Esophagus, stomach and duodenum" />
+		<Code codingScheme="SRT" code="T-AB200" display="External auditory canal" />
+		<Code codingScheme="SRT" code="T-63000" display="Gall bladder" />
+		<Code codingScheme="SRT" code="T-D7000" display="Inguinal region" />
+		<Code codingScheme="SRT" code="T-15001" display="Joint" />
+		<Code codingScheme="SRT" code="T-71000" display="Kidney" />
+		<Code codingScheme="SRT" code="T-D9200" display="Knee" />
+		<Code codingScheme="SRT" code="T-59000" display="Large intestine" />
+		<Code codingScheme="SRT" code="T-24100" display="Larynx" />
+		<Code codingScheme="SRT" code="T-40230" display="Lumen of blood vessel" />
+		<Code codingScheme="SRT" code="T-D3300" display="Mediastinum" />
+		<Code codingScheme="SRT" code="T-2300C" display="Naso pharynx" />
+		<Code codingScheme="SRT" code="T-22000" display="Paranasal sinus" />
+		<Code codingScheme="SRT" code="T-55002" display="Pharynx" />
+		<Code codingScheme="SRT" code="T-20101" display="Pharynx and larynx" />
+		<Code codingScheme="SRT" code="T-59600" display="Rectum" />
+		<Code codingScheme="SRT" code="T-D2220" display="Shoulder" />
+		<Code codingScheme="SRT" code="T-59470" display="Sigmoid colon" />
+		<Code codingScheme="SRT" code="T-11500" display="Spine" />
+		<Code codingScheme="SRT" code="T-DD006" display="Trachea and bronchus" />
+		<Code codingScheme="SRT" code="T-70010" display="Upper urinary tract" />
+		<Code codingScheme="SRT" code="T-73800" display="Ureter" />
+		<Code codingScheme="SRT" code="T-88920" display="Uterus and fallopian tubes" />
+		<!-- End of CID 4040 include -->
+		<!-- CID 4042 include -->
+		<!-- CID 3010 include -->
+		<Code codingScheme="SNM3" code="T-42500" display="Abdominal aorta" />
+		<Code codingScheme="SRT" code="T-48503" display="Anomalous pulmonary vein" />
+		<Code codingScheme="SRT" code="T-49215" display="Antecubital vein" />
+		<Code codingScheme="SNM3" code="T-48440" display="Anterior cardiac vein" />
+		<Code codingScheme="SNM3" code="T-45530" display="Anterior communicating artery" />
+		<Code codingScheme="SNM3" code="T-45730" display="Anterior spinal artery" />
+		<Code codingScheme="SNM3" code="T-47700" display="Anterior tibial artery" />
+		<Code codingScheme="SNM3" code="T-42000" display="Aorta" />
+		<Code codingScheme="SNM3" code="T-42300" display="Aortic arch" />
+		<Code codingScheme="SRT" code="D3-81922" display="Aortic fistula" />
+		<Code codingScheme="SRT" code="T-32602" display="Apex of left ventricle" />
+		<Code codingScheme="SRT" code="T-32502" display="Apex of right ventricle" />
+		<Code codingScheme="SNM3" code="T-41000" display="Artery" />
+		<Code codingScheme="SNM3" code="T-42100" display="Ascending aorta" />
+		<Code codingScheme="SNM3" code="T-47100" display="Axillary Artery" />
+		<Code codingScheme="SNM3" code="T-49110" display="Axillary vein" />
+		<Code codingScheme="SNM3" code="T-48340" display="Azygos vein" />
+		<Code codingScheme="SRT" code="A-00203" display="Baffle" />
+		<Code codingScheme="SNM3" code="T-45800" display="Basilar artery" />
+		<Code codingScheme="SNM3" code="T-D00AB" display="Body conduit" />
+		<Code codingScheme="SRT" code="T-49424" display="Boyd?s perforating vein" />
+		<Code codingScheme="SNM3" code="T-47160" display="Brachial artery" />
+		<Code codingScheme="SNM3" code="T-49350" display="Brachial vein" />
+		<Code codingScheme="SNM3" code="T-45010" display="Carotid Artery" />
+		<Code codingScheme="SNM3" code="T-49240" display="Cephalic vein" />
+		<Code codingScheme="SNM3" code="T-45510" display="Cerebral artery" />
+		<Code codingScheme="SNM3" code="D4-31320" display="Common atrium" />
+		<Code codingScheme="SNM3" code="T-45100" display="Common carotid artery" />
+		<Code codingScheme="SNM3" code="T-46710" display="Common iliac artery" />
+		<Code codingScheme="SNM3" code="T-48920" display="Common iliac vein" />
+		<Code codingScheme="SNM3" code="D4-31120" display="Common ventricle" />
+		<Code codingScheme="SRT" code="D4-32504"
+			display="Congenital coronary artery fistula to left atrium" />
+		<Code codingScheme="SRT" code="D4-32506"
+			display="Congenital coronary artery fistula to left ventricle" />
+		<Code codingScheme="SRT" code="D4-32509"
+			display="Congenital coronary artery fistula to right atrium" />
+		<Code codingScheme="SRT" code="D4-32510"
+			display="Congenital coronary artery fistula to right ventricle" />
+		<Code codingScheme="SNM3" code="D3-40208"
+			display="Congenital pulmonary arteriovenous fistula" />
+		<Code codingScheme="SNM3" code="T-43000" display="Coronary artery" />
+		<Code codingScheme="SNM3" code="T-48410" display="Coronary sinus" />
+		<Code codingScheme="SNM3" code="T-42400" display="Descending aorta" />
+		<Code codingScheme="SRT" code="T-49429" display="Dodd?s perforating vein" />
+		<Code codingScheme="SNM3" code="T-45200" display="External carotid artery" />
+		<Code codingScheme="SNM3" code="T-46910" display="External iliac artery" />
+		<Code codingScheme="SNM3" code="T-48930" display="External iliac vein" />
+		<Code codingScheme="SNM3" code="T-45240" display="Facial artery" />
+		<Code codingScheme="SNM3" code="T-47400" display="Femoral artery" />
+		<Code codingScheme="SNM3" code="T-49410" display="Femoral vein" />
+		<Code codingScheme="SNM3" code="T-48820" display="Gastric vein" />
+		<Code codingScheme="SRT" code="T-47490" display="Genicular artery" />
+		<Code codingScheme="SNM3" code="T-48420" display="Great cardiac vein" />
+		<Code codingScheme="SNM3" code="T-46420" display="Hepatic artery" />
+		<Code codingScheme="SNM3" code="T-48720" display="Hepatic vein" />
+		<Code codingScheme="SRT" code="T-4942A" display="Hunterian perforating vein" />
+		<Code codingScheme="SNM3" code="T-46700" display="Iliac artery" />
+		<Code codingScheme="SNM3" code="T-48470" display="Inferior cardiac vein" />
+		<Code codingScheme="SNM3" code="T-48540" display="Inferior left pulmonary vein" />
+		<Code codingScheme="SNM3" code="T-46520" display="Inferior mesenteric artery" />
+		<Code codingScheme="SNM3" code="T-48520" display="Inferior right pulmonary vein" />
+		<Code codingScheme="SNM3" code="T-48710" display="Inferior vena cava" />
+		<Code codingScheme="SNM3" code="T-46010" display="Innominate artery" />
+		<Code codingScheme="SNM3" code="T-48620" display="Innominate vein" />
+		<Code codingScheme="SNM3" code="T-45300" display="Internal carotid artery" />
+		<Code codingScheme="SNM3" code="T-48170" display="Internal jugular vein" />
+		<Code codingScheme="SNM3" code="T-46740" display="Internal iliac artey" />
+		<Code codingScheme="SNM3" code="T-46200" display="Internal mammary artery" />
+		<Code codingScheme="SRT" code="D4-31052" display="Juxtaposed atrial appendage" />
+		<Code codingScheme="SNM3" code="T-45410" display="Lacrimal artery" />
+		<Code codingScheme="SRT" code="T-45416" display="Lacrimal artery of right eye" />
+		<Code codingScheme="SNM3" code="T-32300" display="Left atrium" />
+		<Code codingScheme="SNM3" code="T-32310" display="Left auricular appendage" />
+		<Code codingScheme="SNM3" code="T-47420" display="Left femoral artery" />
+		<Code codingScheme="SNM3" code="T-44400" display="Left pulmonary artery" />
+		<Code codingScheme="SNM3" code="T-32600" display="Left ventricle" />
+		<Code codingScheme="SNM3" code="T-32640" display="Left ventricle inflow" />
+		<Code codingScheme="SRT" code="D4-31022" display="Left ventricle outflow chamber" />
+		<Code codingScheme="SNM3" code="T-32650" display="Left ventricle outflow tract" />
+		<Code codingScheme="SNM3" code="T-45230" display="Lingual artery" />
+		<Code codingScheme="SNM3" code="T-46960" display="Lumbar artery" />
+		<Code codingScheme="SNM3" code="T-46500" display="Mesenteric artery" />
+		<Code codingScheme="SRT" code="T-4884A" display="Mesenteric vein" />
+		<Code codingScheme="SNM3" code="T-45250" display="Occipital artery" />
+		<Code codingScheme="SNM3" code="T-48214" display="Occipital vein" />
+		<Code codingScheme="SNM3" code="T-45400" display="Ophthalmic artery" />
+		<Code codingScheme="SNM3" code="D4-32012" display="Patent ductus arteriosus" />
+		<Code codingScheme="SNM3" code="T-47630" display="Peroneal artery" />
+		<Code codingScheme="SNM3" code="T-47500" display="Popliteal artery" />
+		<Code codingScheme="SNM3" code="T-48810" display="Portal vein" />
+		<Code codingScheme="SNM3" code="T-45320" display="Posterior communication artery" />
+		<Code codingScheme="SRT" code="T-49535" display="Posterior medial tributary" />
+		<Code codingScheme="SNM3" code="T-47600" display="Posterior tibial artery" />
+		<Code codingScheme="SNM3" code="T-F7001" display="Primitive aorta" />
+		<Code codingScheme="SNM3" code="T-F7040" display="Primitive pulmonary artery" />
+		<Code codingScheme="SNM3" code="T-44000" display="Pulmonary artery" />
+		<Code codingScheme="SRT" code="D4-33142" display="Pulmonary artery conduit" />
+		<Code codingScheme="SRT" code="T-32190"
+			display="Pulmonary chamber of cor triatriatum" />
+		<Code codingScheme="SNM3" code="T-48500" display="Pulmonary vein" />
+		<Code codingScheme="SRT" code="D4-33512" display="Pulmonary vein confluence" />
+		<Code codingScheme="SRT" code="D4-33514" display="Pulmonary venous atrium" />
+		<Code codingScheme="SNM3" code="T-47300" display="Radial artery" />
+		<Code codingScheme="SNM3" code="T-46600" display="Renal artery" />
+		<Code codingScheme="SNM3" code="T-48740" display="Renal vein" />
+		<Code codingScheme="SNM3" code="T-32200" display="Right atrium" />
+		<Code codingScheme="SNM3" code="T-32210" display="Right auricular appendage" />
+		<Code codingScheme="SNM3" code="T-47410" display="Right femoral artery" />
+		<Code codingScheme="SNM3" code="T-44200" display="Right pulmonary artery" />
+		<Code codingScheme="SNM3" code="T-32500" display="Right ventricle" />
+		<Code codingScheme="SNM3" code="T-32540" display="Right ventricle inflow" />
+		<Code codingScheme="SRT" code="D4-31032" display="Right ventricle outflow chamber" />
+		<Code codingScheme="SNM3" code="T-32550" display="Right ventricle outflow tract" />
+		<Code codingScheme="SRT" code="T-D930A" display="Saphenofemoral junction" />
+		<Code codingScheme="SNM3" code="T-49530" display="Saphenous vein" />
+		<Code codingScheme="SNM3" code="T-46460" display="Splenic artery" />
+		<Code codingScheme="SNM3" code="T-48890" display="Splenic vein" />
+		<Code codingScheme="SNM3" code="T-46100" display="Subclavian artery" />
+		<Code codingScheme="SNM3" code="T-48330" display="Subclavian vein" />
+		<Code codingScheme="SNM3" code="T-45270" display="Superficial temporal artery" />
+		<Code codingScheme="SNM3" code="T-48530" display="Superior left pulmonary vein" />
+		<Code codingScheme="SNM3" code="T-46510" display="Superior mesenteric artery" />
+		<Code codingScheme="SNM3" code="T-48510" display="Superior right pulmonary vein" />
+		<Code codingScheme="SNM3" code="T-45210" display="Superior thyroid artery" />
+		<Code codingScheme="SNM3" code="T-48610" display="Superior vena cava" />
+		<Code codingScheme="SRT" code="T-44007"
+			display="Systemic collateral artery to lung" />
+		<Code codingScheme="SRT" code="D4-33516" display="Systemic venous atrium" />
+		<Code codingScheme="SNM3" code="T-42070" display="Thoracic aorta" />
+		<Code codingScheme="SNM3" code="D4-31400" display="Truncus arteriosus communis" />
+		<Code codingScheme="SNM3" code="T-46400" display="Truncus coeliacus" />
+		<Code codingScheme="SNM3" code="T-47200" display="Ulnar artery" />
+		<Code codingScheme="SNM3" code="T-F1810" display="Umbilical artery" />
+		<Code codingScheme="SNM3" code="T-48817" display="Umbilical vein" />
+		<Code codingScheme="SNM3" code="T-48000" display="Vein" />
+		<Code codingScheme="SNM3" code="T-48003" display="Venous network" />
+		<Code codingScheme="SNM3" code="T-45700" display="Vertebral artery" />
+		<!-- End of CID 3010 include -->
+		<!-- CID 4031 already included above -->
+		<!-- End of CID 4042 include -->
+		<Code codingScheme="SNM3" code="T-32100" display="Atrium" />
+		<Code codingScheme="SNM3" code="T-D8100" display="Axilla" />
+		<Code codingScheme="SNM3" code="T-D2100" display="Back" />
+		<Code codingScheme="SNM3" code="T-D6500" display="Broad ligament" />
+		<Code codingScheme="SNM3" code="T-D1206" display="Buccal region of face" />
+		<Code codingScheme="SNM3" code="T-D2600" display="Buttock" />
+		<Code codingScheme="SNM3" code="T-72100" display="Calyx" />
+		<Code codingScheme="SNM3" code="T-D1206" display="Cheek" />
+		<Code codingScheme="SNM3" code="T-AA200" display="Cornea" />
+		<Code codingScheme="SNM3" code="T-AB000" display="Ear" />
+		<Code codingScheme="SNM3" code="T-41000" display="Endo-arterial" />
+		<Code codingScheme="SNM3" code="T-32000" display="Endo-cardiac" />
+		<Code codingScheme="SNM3" code="T-56000" display="Endo-esophageal" />
+		<Code codingScheme="SNM3" code="T-21300" display="Endo-nasal" />
+		<Code codingScheme="SNM3" code="T-23050" display="Endo-nasopharyngeal" />
+		<Code codingScheme="SNM3" code="T-59600" display="Endo-rectal" />
+		<Code codingScheme="SNM3" code="T-71000" display="Endo-renal" />
+		<Code codingScheme="SNM3" code="T-73000" display="Endo-ureteric" />
+		<Code codingScheme="SNM3" code="T-75000" display="Endo-urethral" />
+		<Code codingScheme="SNM3" code="T-82000" display="Endo-vaginal" />
+		<Code codingScheme="SNM3" code="T-40000" display="Endo-vascular" />
+		<Code codingScheme="SNM3" code="T-48000" display="Endo-venous" />
+		<Code codingScheme="SNM3" code="T-74250" display="Endo-vesical" />
+		<Code codingScheme="SNM3" code="T-D4200" display="Epigastric region" />
+		<Code codingScheme="SNM3" code="T-AA810" display="Eyelid" />
+		<Code codingScheme="SNM3" code="T-D1200" display="Face" />
+		<Code codingScheme="SNM3" code="T-D2310" display="Flank" />
+		<Code codingScheme="SNM3" code="T-15200" display="Fontanel of skull" />
+		<Code codingScheme="SNM3" code="T-D2600" display="Gluteal region" />
+		<Code codingScheme="SNM3" code="T-D2500" display="Hip" />
+		<Code codingScheme="SNM3" code="T-D4240" display="Hypogastric region" />
+		<Code codingScheme="SNM3" code="T-D1212" display="Hypoglossal" />
+		<Code codingScheme="SNM3" code="T-55300" display="Hypopharynx" />
+		<Code codingScheme="SNM3" code="T-D4010" display="Intra-abdominal" />
+		<Code codingScheme="SNM3" code="G-A15A" display="Intra-articular" />
+		<Code codingScheme="SNM3" code="T-D14000" display="Intracranial" />
+		<Code codingScheme="SNM3" code="T-56000" display="Intra-esophageal" />
+		<Code codingScheme="SNM3" code="T-D6221" display="Intra-pelvic" />
+		<Code codingScheme="SNM3" code="T-D3000" display="Intra-thoracic" />
+		<Code codingScheme="SNM3" code="T-D4211" display="Left hypochondriac region" />
+		<Code codingScheme="SNM3" code="T-D7020" display="Left inguinal region" />
+		<Code codingScheme="SNM3" code="T-D4140" display="Left lower quadrant of abdomen" />
+		<Code codingScheme="SNM3" code="T-D2340" display="Left lumbar region" />
+		<Code codingScheme="SNM3" code="T-D4130" display="Left upper quadrant of abdomen" />
+		<Code codingScheme="SNM3" code="T-04003" display="Lower inner quadrant of breast" />
+		<Code codingScheme="SNM3" code="T-04005" display="Lower outer quadrant of breast" />
+		<Code codingScheme="SNM3" code="T-D2300" display="Lumbar region" />
+		<Code codingScheme="SNM3" code="T-28000" display="Lung" />
+		<Code codingScheme="SNM3" code="T-51000" display="Mouth" />
+		<Code codingScheme="SNM3" code="T-21000" display="Nose" />
+		<Code codingScheme="SNM3" code="T-D4450" display="Omental bursa" />
+		<Code codingScheme="SNM3" code="T-D4600" display="Omentum" />
+		<Code codingScheme="SNM3" code="T-87000" display="Ovary" />
+		<Code codingScheme="SNM3" code="T-65010" display="Pancreatic duct" />
+		<Code codingScheme="SNM3" code="T-D3136" display="Parasternal" />
+		<Code codingScheme="SNM3" code="T-91000" display="Penis" />
+		<Code codingScheme="SNM3" code="T-D2700" display="Perineum" />
+		<Code codingScheme="SNM3" code="T-D9310" display="Popliteal fossa" />
+		<Code codingScheme="SNM3" code="T-72000" display="Renal pelvis" />
+		<Code codingScheme="SNM3" code="T-D4900" display="Retroperitoneum" />
+		<Code codingScheme="SNM3" code="T-D4212" display="Right hypochondriac region" />
+		<Code codingScheme="SNM3" code="T-D7010" display="Right inguinal region" />
+		<Code codingScheme="SNM3" code="T-D4120" display="Right lower quadrant of abdomen" />
+		<Code codingScheme="SNM3" code="T-D2342" display="Right lumbar region" />
+		<Code codingScheme="SNM3" code="T-D4110" display="Right upper quadrant of abdomen" />
+		<Code codingScheme="SNM3" code="T-D1160" display="Scalp" />
+		<Code codingScheme="SNM3" code="T-AA110" display="Sclera" />
+		<Code codingScheme="SNM3" code="T-98000" display="Scrotum" />
+		<Code codingScheme="SNM3" code="T-A7010" display="Spinal cord" />
+		<Code codingScheme="SNM3" code="T-D4210" display="Subcostal" />
+		<Code codingScheme="SNM3" code="T-D1603" display="Submandibular area" />
+		<Code codingScheme="SNM3" code="T-D3213" display="Subxiphoid" />
+		<Code codingScheme="SNM3" code="T-D1620" display="Supraclavicular region of neck" />
+		<Code codingScheme="SNM3" code="T-D4240" display="Suprapubic region" />
+		<Code codingScheme="SNM3" code="T-11218" display="Suprasternal notch" />
+		<Code codingScheme="SNM3" code="T-D9100" display="Thigh" />
+		<Code codingScheme="SNM3" code="T-D3000" display="Thorax" />
+		<Code codingScheme="SNM3" code="T-53000" display="Tongue" />
+		<Code codingScheme="SNM3" code="T-D4230" display="Umbilical region" />
+		<Code codingScheme="SNM3" code="T-04002" display="Upper inner quadrant of breast" />
+		<Code codingScheme="SNM3" code="T-04004" display="Upper outer quadrant of breast" />
+		<Code codingScheme="SNM3" code="T-82000" display="Vagina" />
+		<Code codingScheme="SNM3" code="A-04140" display="Vascular graft" />
+		<Code codingScheme="SNM3" code="T-32400" display="Ventricle" />
+		<Code codingScheme="SNM3" code="T-81000" display="Vulva" />
+		<Code codingScheme="SNM3" code="T-15460" display="Wrist joint" />
+		<!-- End of CID 4 -->
+
+		<!-- Acquisition Modality Codes: CID 29 -->
+		<Code codingScheme="DCM" code="EPS" display="Cardiac Electrophysiology" />
+		<Code codingScheme="DCM" code="CR" display="Computed Radiography" />
+		<Code codingScheme="DCM" code="CT" display="Computed Tomography" />
+		<Code codingScheme="DCM" code="DX" display="Digital Radiography" />
+		<Code codingScheme="DCM" code="ECG" display="Electrocardiography" />
+		<Code codingScheme="DCM" code="ES" display="Endoscopy" />
+		<Code codingScheme="DCM" code="XC" display="External-camera Photography" />
+		<Code codingScheme="DCM" code="GM" display="General Microscopy" />
+		<Code codingScheme="DCM" code="HD" display="Hemodynamic Waveform" />
+		<Code codingScheme="DCM" code="IO" display="Intra-oral Radiography" />
+		<Code codingScheme="DCM" code="IVUS" display="Intravascular Ultrasound" />
+		<Code codingScheme="DCM" code="MR" display="Magnetic Resonance" />
+		<Code codingScheme="DCM" code="MG" display="Mammography" />
+		<Code codingScheme="DCM" code="NM" display="Nuclear Medicine" />
+		<Code codingScheme="DCM" code="OCT" display="Optical Coherence Tomography" />
+		<Code codingScheme="DCM" code="OPM" display="Ophthalmic Mapping" />
+		<Code codingScheme="DCM" code="OP" display="Ophthalmic Photography" />
+		<Code codingScheme="DCM" code="OPR" display="Ophthalmic Refraction" />
+		<Code codingScheme="DCM" code="OPV" display="Ophthalmic Visual Field" />
+		<Code codingScheme="DCM" code="PX" display="Panoramic X-Ray" />
+		<Code codingScheme="DCM" code="PT" display="Positron emission tomography" />
+		<Code codingScheme="DCM" code="RF" display="Radiofluoroscopy" />
+		<Code codingScheme="DCM" code="RG" display="Radiographic imaging" />
+		<Code codingScheme="DCM" code="RTIMAGE" display="Radiotherapy Image" />
+		<Code codingScheme="DCM" code="REG" display="Registration" />
+		<Code codingScheme="DCM" code="SEG" display="Segmentation" />
+		<Code codingScheme="DCM" code="SM" display="Slide Microscopy" />
+		<Code codingScheme="DCM" code="US" display="Ultrasound" />
+		<Code codingScheme="DCM" code="XA" display="X-Ray Angiography" />
+		<Code codingScheme="DCM" code="NONE" display="None" />
+		<!-- End of CID 29 -->
+		
+				<!--  Codes for testing MPQ - since no patient id restrictions are used we need to have
+		some really restricted codes that are not used elsewhere.  Do not submit metadata with 
+		these codes unless you are testing MPQ -->
+
+		<Code code="MPQ-eventcode-1" codingScheme="MPQ Testing"
+			display="MPQ-eventcode-1" />
+		<Code code="MPQ-eventcode-2" codingScheme="MPQ Testing"
+			display="MPQ-eventcode-2" />
+		
+		<!-- XDW - added 12 Nov 13 -->
+		<Code code="urn:ihe:iti:xdw:2011:eventCode:open" display="Open Workflow" codingScheme="1.3.6.1.4.1.19376.1.2.3"/> 
+		<Code code="urn:ihe:iti:xdw:2011:eventCode:closed" display="Closed Workflow" codingScheme="1.3.6.1.4.1.19376.1.2.3"/> 
+				
+	</CodeType>
+	
+	<!-- 
+		
+		This section replaced by folderCodeList below.
+		
+		
+	<CodeType name="codeList" classScheme="urn:uuid:1ba97051-7806-41a8-a48b-8fce7af683c5">
+		<Code code="Anesthesia" display="Anesthesia" codingScheme="Connect-a-thon codeList" />
+		<Code code="Cardiology" display="Cardiology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Case Manager" display="Case Manager" codingScheme="Connect-a-thon codeList" />
+		<Code code="Chaplain" display="Chaplain" codingScheme="Connect-a-thon codeList" />
+		<Code code="Chemotherapy" display="Chemotherapy" codingScheme="Connect-a-thon codeList" />
+		<Code code="Chiropractic" display="Chiropractic" codingScheme="Connect-a-thon codeList" />
+		<Code code="Critical Care" display="Critical Care" codingScheme="Connect-a-thon codeList" />
+		<Code code="Dentistry" display="Dentistry" codingScheme="Connect-a-thon codeList" />
+		<Code code="Diabetology" display="Diabetology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Dialysis" display="Dialysis" codingScheme="Connect-a-thon codeList" />
+		<Code code="Emergency" display="Emergency" codingScheme="Connect-a-thon codeList" />
+		<Code code="Endocrinology" display="Endocrinology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Gastroenterology" display="Gastroenterology"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="General Medicine" display="General Medicine"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="General Surgery" display="General Surgery"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Gynecology" display="Gynecology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Labor and Delivery" display="Labor and Delivery"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Laboratory" display="Laboratory" codingScheme="Connect-a-thon codeList" />
+		<Code code="Multidisciplinary" display="Multidisciplinary"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Neonatal Intensive Care" display="Neonatal Intensive Care"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Neurosurgery" display="Neurosurgery" codingScheme="Connect-a-thon codeList" />
+		<Code code="Nursery" display="Nursery" codingScheme="Connect-a-thon codeList" />
+		<Code code="Nursing" display="Nursing" codingScheme="Connect-a-thon codeList" />
+		<Code code="Obstetrics" display="Obstetrics" codingScheme="Connect-a-thon codeList" />
+		<Code code="Occupational Therapy" display="Occupational Therapy"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Ophthalmology" display="Ophthalmology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Optometry" display="Optometry" codingScheme="Connect-a-thon codeList" />
+		<Code code="Orthopedics" display="Orthopedics" codingScheme="Connect-a-thon codeList" />
+		<Code code="Otorhinolaryngology" display="Otorhinolaryngology"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Pathology" display="Pathology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Perioperative" display="Perioperative" codingScheme="Connect-a-thon codeList" />
+		<Code code="Pharmacacy" display="Pharmacacy" codingScheme="Connect-a-thon codeList" />
+		<Code code="Physical Medicine" display="Physical Medicine"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Plastic Surgery" display="Plastic Surgery"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Podiatry" display="Podiatry" codingScheme="Connect-a-thon codeList" />
+		<Code code="Psychiatry" display="Psychiatry" codingScheme="Connect-a-thon codeList" />
+		<Code code="Pulmonary" display="Pulmonary" codingScheme="Connect-a-thon codeList" />
+		<Code code="Radiology" display="Radiology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Social Services" display="Social Services"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Speech Therapy" display="Speech Therapy"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Thyroidology" display="Thyroidology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Tumor Board" display="Tumor Board" codingScheme="Connect-a-thon codeList" />
+		<Code code="Urology" display="Urology" codingScheme="Connect-a-thon codeList" />
+		<Code code="Veterinary Medicine" display="Veterinary Medicine"
+			codingScheme="Connect-a-thon codeList" />
+		<Code code="Blood Pressure" display="Blood Pressure"
+			codingScheme="Connect-a-thon codeList" />
+			
+			
+	</CodeType>
+	
+	-->
+
+	<!--
+		This section is used to validate mime type requests and to map mime
+		types into repository file types. The mapping from repository file
+		types back into mime types is done in /usr/local/tomcat1/conf/web.xml
+	-->
+	<CodeType name="mimeType">
+		<Code code="application/pdf" ext="pdf" />
+		<!--
+			used only by ACC, I think, now obsolete <Code
+			code="text/x-cda-r2+xml"/>
+		-->
+		<Code code="text/xml" ext="xml" />
+		<Code code="application/x-hl7" ext="hl7" />
+		<Code code="application/dicom" ext="dicom" />
+		<Code code="text/plain" ext="txt" />
+		<Code code="multipart/related" ext="mpr" />
+		<Code code="image/tiff" ext="tiff" />
+		<Code code="image/jpeg" ext="jpeg" />
+		<Code code="image/gif" ext="gif" />
+		<Code code="text/goofy" ext="gfy" />  <!--  fake mimetype for testing -->
+		
+	</CodeType>
+	
+	<!--
+		This section is used to validate XDSFolder.folderCodeList attribute. 
+		As of TF 6, this attribute is no longer tied to the DocumentEntry 
+		objects it contains.  This attribute is separately controlled by
+		Affinity Domain configuration. 
+	 -->
+	 
+	 <CodeType name="folderCodeList" classScheme="urn:uuid:1ba97051-7806-41a8-a48b-8fce7af683c5">
+		<Code code="Referrals" codingScheme="Connect-a-thon folderCodeList"
+			display="Referrals" />
+		<Code code="Alergy Treatments" codingScheme="Connect-a-thon folderCodeList"
+			display="Alergy Treatments" />
+	 </CodeType>
+	 
+	 <CodeType name="associationDocumentation" classScheme="urn:uuid:abd807a3-4432-4053-87b4-fd82c643d1f3">
+		<Code code="Additional_Information" codingScheme="Connect-a-thon associationDocumentation"
+			display="Additional Information" />
+		<Code code="Corrected_Information" codingScheme="Connect-a-thon associationDocumentation"
+			display="Corrected Information" />
+	 </CodeType>
+	 
+	<!--
+		This element is now repeated since this server must support testing
+		for multiple events simultaneous and each event has an Assiging
+		Authority defined for the event.
+	-->
+	<AssigningAuthority id="&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO" />
+	<AssigningAuthority id="&amp;1.3.6.1.4.1.21367.2005.13.20.2000&amp;ISO" />
+	<AssigningAuthority id="&amp;1.3.6.1.4.1.21367.2005.13.20.3000&amp;ISO" />
+
+
+
+<!-- data/Connectathon-XDS.b-Metadata.tsv -->
+
+
+	<CodeType name="typeCode" classScheme="urn:uuid:f0306f51-975f-434e-a61c-c59651d33983">
+		<Code code="34746-8" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Nursing Evaluation and Management Note" />
+		<Code code="11502-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "LABORATORY REPORT.TOTAL" />
+		<Code code="HWS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Healthy Weight Summary Type Code" />
+		<Code code="34817-7" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Otorhinolaryngology Evaluation and Management Note" />
+		<Code code="XTHM-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "XTHM-WD Type Code" />
+		<Code code="34133-9" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Summary of Episode Note" />
+		<Code code="11528-7" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Radiology Report" />
+		<Code code="NEWBORN DS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Newborn Discharge Type Code" />
+		<Code code="28570-0" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Procedure Note" />
+		<Code code="18748-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Diagnostic Imaging Report" />
+		<Code code="28651-8" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Nurse Transfer note" />
+		<Code code="34895-3" codingScheme="2.16.840.1.113883.6.1" 
+			display = "EDUCATION NOTE" />
+		<Code code="26436-6" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Laboratory Studies" />
+		<Code code="PRPH-CA TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Physician Report to Public Health Cancer Registry Type Code" />
+		<Code code="ITS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "ITS Type Code" />
+		<Code code="34133-9" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Summarization of Episode Note" />
+		<Code code="55182-0" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Quality Measure Report" />
+		<Code code="18842-5" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Discharge Summarization Note" />
+		<Code code="XTB-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "XTB-WD Type Code" />
+		<Code code="57057-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Labor and Delivery Summary" />
+		<Code code="PCP TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Patient Care Plan Type Code" />
+		<Code code="57056-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Labor and Delivery admission history and physical" />
+		<Code code="TRS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "TRS Type Code" />
+		<Code code="57055-6" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Antepartum summary" />
+		<Code code="11506-3" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Subsequent evaluation note" />
+		<Code code="MS-VRDR TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Medical Summary for VRDR Type Code" />
+		<Code code="XDW-TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "XDW Type Code" />
+		<Code code="57058-0" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Maternal Discharge Summary" />
+		<Code code="VRDR TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Vital Records Death Reporting Type Code" />
+		<Code code="ETS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "ETS Type Code" />
+		<Code code="NN TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Nursing Note Type Code" />
+		<Code code="PPVS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Post Partum Visit Summary Type Code" />
+		<Code code="11369-6" codingScheme="2.16.840.1.113883.6.1" 
+			display = "HISTORY OF IMMUNIZATIONS" />
+		<Code code="57016-8" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Privacy Policy Acknowledgement Document" />
+		<Code code="DSC TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "DSC Type Code" />
+		<Code code="DICOM KON TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "DICOM Key Object Note Type Code" />
+		<Code code="COMPOSITE TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Composite Triage and Nursing Type COde" />
+		<Code code="34117-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "HISTORY AND PHYSICAL" />
+		<Code code="11504-8" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Surgical Operation Note" />
+		<Code code="11488-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Consultation Note" />
+		<Code code="*" codingScheme="2.16.840.1.113883.6.1" 
+			display = "*" />
+		<Code code="34117-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "History &amp; Physical" />
+		<Code code="TRIAGE TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Triage Note Type Code" />
+		<Code code="EHDI-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "EHDI-WD Type Code" />
+		<Code code="57057-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Labor and delivery summary" />
+		<Code code="XBeR-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "XBeR-WD Type Code" />
+		<Code code="HW TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Healthy Weight Type Code" />
+		<Code code="28568-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "ED Visit Note" />
+	</CodeType>
+
+
+	<CodeType name="contentTypeCode" classScheme="urn:uuid:aa543740-bdda-424e-8c96-df4873be8500">
+		<Code code="34746-8" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Nursing Evaluation and Management Note" />
+		<Code code="11502-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "LABORATORY REPORT.TOTAL" />
+		<Code code="HWS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Healthy Weight Summary Type Code" />
+		<Code code="34817-7" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Otorhinolaryngology Evaluation and Management Note" />
+		<Code code="XTHM-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "XTHM-WD Type Code" />
+		<Code code="34133-9" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Summary of Episode Note" />
+		<Code code="11528-7" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Radiology Report" />
+		<Code code="NEWBORN DS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Newborn Discharge Type Code" />
+		<Code code="28570-0" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Procedure Note" />
+		<Code code="18748-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Diagnostic Imaging Report" />
+		<Code code="28651-8" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Nurse Transfer note" />
+		<Code code="34895-3" codingScheme="2.16.840.1.113883.6.1" 
+			display = "EDUCATION NOTE" />
+		<Code code="26436-6" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Laboratory Studies" />
+		<Code code="PRPH-CA TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Physician Report to Public Health Cancer Registry Type Code" />
+		<Code code="ITS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "ITS Type Code" />
+		<Code code="34133-9" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Summarization of Episode Note" />
+		<Code code="55182-0" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Quality Measure Report" />
+		<Code code="18842-5" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Discharge Summarization Note" />
+		<Code code="XTB-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "XTB-WD Type Code" />
+		<Code code="57057-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Labor and Delivery Summary" />
+		<Code code="PCP TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Patient Care Plan Type Code" />
+		<Code code="57056-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Labor and Delivery admission history and physical" />
+		<Code code="TRS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "TRS Type Code" />
+		<Code code="57055-6" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Antepartum summary" />
+		<Code code="11506-3" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Subsequent evaluation note" />
+		<Code code="MS-VRDR TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Medical Summary for VRDR Type Code" />
+		<Code code="XDW-TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "XDW Type Code" />
+		<Code code="57058-0" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Maternal Discharge Summary" />
+		<Code code="VRDR TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Vital Records Death Reporting Type Code" />
+		<Code code="ETS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "ETS Type Code" />
+		<Code code="NN TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Nursing Note Type Code" />
+		<Code code="PPVS TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Post Partum Visit Summary Type Code" />
+		<Code code="11369-6" codingScheme="2.16.840.1.113883.6.1" 
+			display = "HISTORY OF IMMUNIZATIONS" />
+		<Code code="57016-8" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Privacy Policy Acknowledgement Document" />
+		<Code code="DSC TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "DSC Type Code" />
+		<Code code="DICOM KON TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "DICOM Key Object Note Type Code" />
+		<Code code="COMPOSITE TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Composite Triage and Nursing Type COde" />
+		<Code code="34117-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "HISTORY AND PHYSICAL" />
+		<Code code="11504-8" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Surgical Operation Note" />
+		<Code code="11488-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Consultation Note" />
+		<Code code="*" codingScheme="2.16.840.1.113883.6.1" 
+			display = "*" />
+		<Code code="34117-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "History &amp; Physical" />
+		<Code code="TRIAGE TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Triage Note Type Code" />
+		<Code code="EHDI-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "EHDI-WD Type Code" />
+		<Code code="57057-2" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Labor and delivery summary" />
+		<Code code="XBeR-WD TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "XBeR-WD Type Code" />
+		<Code code="HW TYPECODE" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Healthy Weight Type Code" />
+		<Code code="28568-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "ED Visit Note" />
+	</CodeType>
+
+
+	<CodeType name="classCode" classScheme="urn:uuid:41a5887f-8865-4c09-adf7-e362475b143a">
+		<Code code="51851-4" codingScheme="2.16.840.1.113883.6.1" 
+			display = "Workflow" />
+		<Code code="DEMO-Consult" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Consultation" />
+		<Code code="DEMO-Procedure" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Procedure" />
+		<Code code="DEMO-H &amp; P" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "History and Physical" />
+		<Code code="DEMO-Lab" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Lab Result" />
+		<Code code="*" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "*" />
+		<Code code="DEMO-Ref" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Referral" />
+		<Code code="DEMO-Eval" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Evaluation" />
+		<Code code="DEMO-Pt Mgmt" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Patient Management" />
+		<Code code="DEMO-Ext Summary" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Summary for External / Non Clinical Use" />
+		<Code code="DEMO-Index" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Document Index" />
+		<Code code="DEMO-Department Rpt" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Departmental Report" />
+		<Code code="DEMO-Workflow" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Workflow Document" />
+		<Code code="DEMO-Summary" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Summary" />
+		<Code code="DEMO-Security" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "Security" />
+
+
+		<Code code="MPQ-classcode-1" codingScheme="MPQ Testing" 
+			display = "Security" />
+	</CodeType>
+
+
+	<CodeType name="formatCode" classScheme="urn:uuid:a09d5840-386c-46f2-b5ad-9c3699a4309d">
+		<Code code="urn:ihe:rad:CDA:ImagingReportStructuredHeadings:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "ImagingReportStructuredHeadings" />
+		<Code code="urn:ihe:qrph:ehcp:2010" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:qrph:ehcp:2010" />
+		<Code code="urn:ihe:iti:bppc:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:iti:bppc:2007" />
+		<Code code="urn:ihe:pcc:xds-ms:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:xds-ms:2007" />
+		<Code code="urn:ihe:iti:bppc-sd:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:iti:bppc-sd:2007" />
+		<Code code="urn:ihe:rad:TEXT" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:rad:TEXT" />
+		<Code code="urn:ihe:pcc:its:2011" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:its:2011" />
+		<Code code="urn:ihe:pcc:ehdiwd:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ehdiwd:2013" />
+		<Code code="urn:wustl:mir:xtb:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:xtb:1999" />
+		<Code code="urn:ihe:qrph:qme-eh:2010" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:qrph:qme-eh:2010" />
+		<Code code="urn:ihe:pcc:aps:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:aps:2007" />
+		<Code code="urn:ihe:qrph:hw:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:qrph:hw:2013" />
+		<Code code="urn:ihe:pcc:nds:2010" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:nds:2010" />
+		<Code code="1.2.840.10008.5.1.4.1.1.88.59" codingScheme="1.2.840.10008.2.6.1" 
+			display = "1.2.840.10008.5.1.4.1.1.88.59" />
+		<Code code="urn:wustl:mir:ppoc:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:ppoc:1999" />
+		<Code code="urn:ihe:card:CRC:2012" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:card:CRC:2012" />
+		<Code code="urn:wustl:mir:ccd:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:ccd:1999" />
+		<Code code="urn:ihe:pcc:xphr:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:xphr:2007" />
+		<Code code="urn:ihe:pcc:hp:2008" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:hp:2008" />
+		<Code code="urn:ihe:pcc:lds:2009" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:lds:2009" />
+		<Code code="urn:ihe:iti:xds-sd:pdf:2008" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:iti:xds-sd:pdf:2008" />
+		<Code code="urn:ihe:pcc:ppvs:2010" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ppvs:2010" />
+		<Code code="urn:ihe:pcc:ldhp:2009" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ldhp:2009" />
+		<Code code="urn:ihe:iti:xds-sd:text:2008" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:iti:xds-sd:text:2008" />
+		<Code code="urn:wustl:mir:hsp-ccd:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-ccd:1999" />
+		<Code code="urn:ihe:pcc:ic:2009" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ic:2009" />
+		<Code code="urn:wustl:mir:hsp-hp:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-hp:1999" />
+		<Code code="urn:ihe:pcc:ptcp:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ptcp:2013" />
+		<Code code="urn:wustl:mir:hsp-on:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-on:1999" />
+		<Code code="urn:wustl:mir:hsp-cn:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-cn:1999" />
+		<Code code="urn:ihe:pcc:aphp:2008" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:aphp:2008" />
+		<Code code="urn:ihe:qrph:vrdr:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:qrph:vrdr:2013" />
+		<Code code="urn:wustl:mir:hsp-dir:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-dir:1999" />
+		<Code code="urn:ihe:pcc:nn:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:nn:2007" />
+		<Code code="urn:ihe:pcc:ape:2008" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ape:2008" />
+		<Code code="urn:ihe:qrph:BFDR:2011" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:qrph:BFDR:2011" />
+		<Code code="urn:ihe:pcc:edpn:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:edpn:2007" />
+		<Code code="urn:ihe:qrph:sdvrdrprepop:2013" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:qrph:sdvrdrprepop:2013" />
+		<Code code="urn:ihe:pcc:ets:2011" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ets:2011" />
+		<Code code="urn:ihe:qrph:prph:2009" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:qrph:prph:2009" />
+		<Code code="urn:ihe:iti:xdw:2011:workflowDoc" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:iti:xdw:2011:workflowDoc" />
+		<Code code="urn:ihe:pcc:xberwd:2012" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "XBER workflowDoc" />
+		<Code code="urn:ihe:lab:xd-lab:2008" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:lab:xd-lab:2008" />
+		<Code code="urn:ihe:pcc:trs:2011" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:trs:2011" />
+		<Code code="urn:wustl:mir:crd:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:crd:1999" />
+		<Code code="urn:ihe:card:imaging:2011" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:card:imaging:2011" />
+		<Code code="urn:ihe:pcc:apl:2008" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:apl:2008" />
+		<Code code="urn:ihe:pcc:mds:2009" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:mds:2009" />
+		<Code code="urn:wustl:mir:dsc:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:dsc:1999" />
+		<Code code="urn:ihe:pcc:edr:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:edr:2007" />
+		<Code code="urn:ihe:rad:PDF" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:rad:PDF" />
+		<Code code="urn:ihe:pcc:ctnn:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ctnn:2007" />
+		<Code code="urn:wustl:mir:hsp-unstructured:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-unstructured:1999" />
+		<Code code="urn:ihe:pcc:tn:2007" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:tn:2007" />
+		<Code code="urn:wustl:mir:hsp-progress:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-progress:1999" />
+		<Code code="urn:wustl:mir:hsp-ds:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-ds:1999" />
+		<Code code="urn:wustl:mir:xber:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:xber:1999" />
+		<Code code="urn:ihe:pcc:ens:2010" codingScheme="1.3.6.1.4.1.19376.1.2.3" 
+			display = "urn:ihe:pcc:ens:2010" />
+		<Code code="urn:wustl:mir:hsp-procedure:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:hsp-procedure:1999" />
+		<Code code="urn:wustl:mir:xthm:1999" codingScheme="1.3.6.1.4.1.21367.100.1" 
+			display = "urn:wustl:mir:xthm:1999" />
+	</CodeType>
+</Codes>

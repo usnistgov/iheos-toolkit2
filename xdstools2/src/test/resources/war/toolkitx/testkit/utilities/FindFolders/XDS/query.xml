@@ -1,0 +1,18 @@
+<query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                         xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                         xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+    <AdhocQuery id="urn:uuid:958f3006-baad-4929-a4de-ff1114824431">
+        <Slot name="$XDSFolderPatientId">
+            <ValueList>
+                <Value>'$patient_id$'</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSFolderStatus">
+            <ValueList>
+                <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved', 'urn:oasis:names:tc:ebxml-regrep:StatusType:Deprecated')</Value>
+            </ValueList>
+        </Slot>
+    </AdhocQuery>
+</query:AdhocQueryRequest>

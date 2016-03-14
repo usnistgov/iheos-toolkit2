@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>Direct1</Test>
+    <TestStep id="send">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <DirectTransaction>
+		<NoMetadata/>
+		<CertFile>keystore.p12</CertFile>
+		<CertFilePassword>changeit</CertFilePassword>
+		<BodyContent>My first Direct message</BodyContent>
+		<DirectFromAddress>bmajur@gmail.com</DirectFromAddress>
+		<DirectToAddress>direct-clinical-summary@hit-testing.nist.gov</DirectToAddress>
+		<Subject>Direct Validation Request</Subject>
+		<AttachmentContentFile>DischargeSummary_2014Edition_sample.xml</AttachmentContentFile>
+		<DirectSystemMailerHostname>ec2-23-22-205-69.compute-1.amazonaws.com</DirectSystemMailerHostname>
+		<DirectSystemMailerPort>25</DirectSystemMailerPort>
+        </DirectTransaction>
+    </TestStep>
+</TestPlan>

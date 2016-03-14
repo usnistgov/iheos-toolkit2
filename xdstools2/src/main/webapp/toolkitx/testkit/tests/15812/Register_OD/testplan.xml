@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15812/Register_OD</Test>
+  <Rule>This section submits an On-Demand DocumentEntry to the Registry's ability to accept them and to support the queries that follow. The submission of an On-Demand DocumentEntry is done with transaction ITI-61.</Rule>
+  <TestStep id="Register">
+  <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterODDETransaction>
+	  <AssignUuids/>
+      <MetadataFile>single_ondemand_doc.xml</MetadataFile>
+	        <Report name="oddocid" section="InputMetadata">
+			 //*[local-name()='ExtrinsicObject']/@id
+			</Report>
+  			<Report name="repuid" section="Result">
+             //*[local-name()='ExtrinsicObject']/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+            </Report>
+    </RegisterODDETransaction>
+  </TestStep>
+</TestPlan>

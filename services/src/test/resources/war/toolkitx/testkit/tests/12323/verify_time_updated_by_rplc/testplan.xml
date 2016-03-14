@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12323/verify_time_updated_by_rplc</Test>
+  <TestStep id="getFolder">
+    <Goal>Issue a GetFolders query</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="folid" section="has_time" step="has_time" useAs="$uuid1$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <Report name="lastUpdateTime" section="Result">
+				//*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='lastUpdateTime']/*[local-name()='ValueList']/*[local-name()='Value']
+			</Report>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="0"/>
+        <Documents count="0"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="verify_time_updated_by_rplc">
+    <Goal>Verify Folder lastUpdatedTime was updated by document replace</Goal>
+    <NullTransaction>
+      <UseReport reportName="updated_time" section="verify_time_updated" step="verify_time_updated" useAs="original_time"/>
+      <UseReport reportName="lastUpdateTime" section="THIS" step="getFolder" useAs="after_rplc_time"/>
+      <Assertions>
+        <Assert id="dateUpdated">
+                'original_time' &lt; 'after_rplc_time'
+                </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

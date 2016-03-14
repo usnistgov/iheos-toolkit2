@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>GetSubmissionSetsByUUID</Test>
+    
+    <TestStep id="GetSubmissionSetsByUUID">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <IGQTransaction>
+	    <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </IGQTransaction>
+    </TestStep>
+    
+</TestPlan>

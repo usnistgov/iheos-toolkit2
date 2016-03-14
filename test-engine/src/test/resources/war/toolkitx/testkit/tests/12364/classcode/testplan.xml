@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12364/classcode</Test>
+  <Rule>FindDocumentsForMultiplePatients</Rule>
+  <TestStep id="object_refs">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>MPQ</Transaction>
+      <SQ>FindDocumentsForMultiplePatients</SQ>
+      <Assertion>Select on ClassCode</Assertion>
+    </Rule>
+    <MPQTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <ObjectRefs count="4"/>
+      </ExpectedContents>
+    </MPQTransaction>
+  </TestStep>
+</TestPlan>

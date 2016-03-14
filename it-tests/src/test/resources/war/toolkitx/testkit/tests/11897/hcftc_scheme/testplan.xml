@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11897/hcftc_scheme</Test>
+  <TestStep id="hcftc_scheme">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+      <Assertion>HCFTC and scheme</Assertion>
+    </Rule>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <ObjectRefs count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

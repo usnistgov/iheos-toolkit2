@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>BasicXcpd</Test>
+    <TestStep id="305">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>XCPD</Transaction>
+        </Rule>
+        <XcpdTransaction>
+            <ParseMetadata>False</ParseMetadata>
+            <Metadata>query.xml</Metadata>
+        </XcpdTransaction>
+    </TestStep>
+</TestPlan>

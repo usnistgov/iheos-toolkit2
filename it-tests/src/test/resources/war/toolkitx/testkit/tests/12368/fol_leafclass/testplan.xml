@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>12368/fol_leafclass</Test>
+  <Rule>XDSResultNotSinglePatient rule</Rule>
+  <TestStep id="leafclass">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolders</SQ>
+      <Assertion>Test data from 12346 and 12344 have different patient ids - should generate error</Assertion>
+    </Rule>
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSResultNotSinglePatient</ExpectedErrorCode>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/doc_w_fol" id="Folder" symbol="$uuid1$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <UseId testdir="../../12374" id="Folder" symbol="$uuid2$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

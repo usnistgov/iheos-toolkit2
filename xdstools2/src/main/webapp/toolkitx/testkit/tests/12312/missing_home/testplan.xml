@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12312/missing_home</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSMissingHomeCommunityId</ExpectedErrorCode>
+    <XCRTransaction>
+      <UseReport test="12311" reportName="$doc_uid_1$" step="getdocs" useAs="$docuid$"/>
+      <UseReport test="12311" reportName="$repositoryUniqueId$" step="getdocs" useAs="$repositoryuid$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="NoDocuments">
+              		count(//XCRTransaction/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "0"                    
+         		</Assert>
+      </Assertions>
+    </XCRTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="XDS Toolkit">
+    <bannerLeft>
+        <name>XDS Toolkit</name>
+    </bannerLeft>
+    <body>
+        <!--<links>-->
+            <!--<item name="Apache" href="http://www.apache.org/" />-->
+            <!--<item name="Maven 1.x" href="http://maven.apache.org/maven-1.x/"/>-->
+            <!--<item name="Maven 2" href="http://maven.apache.org/"/>-->
+        <!--</links>-->
+
+        <menu name="Toolkit">
+            <item name="System Requirements" href="systemRequirements.html"/>
+            <item name="System Components" href="systemComponents.html"/>
+            <item name="Download" href="download.html"/>
+            <item name="Installation" href="install.html"/>
+            <item name="Release Notes" href="releasenotes/index.html" />
+            <item name="HowTo" href="howto/index.html"/>
+            <item name="Tools" href="tools/index.html"/>
+            <item name="License" href="license.html"/>
+            <item name="Issue/big tracker" href="issues.html"/>
+            <item name="Road Map" href="roadmap.html" />
+            <item name="On-line Documentation" href="online.html" />
+        </menu>
+
+        <!--<menu ref="reports"/>-->
+
+
+    </body>
+</project>

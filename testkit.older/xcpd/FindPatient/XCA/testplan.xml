@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>FindPatient</Test>
+    <TestStep id="findpatient">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>Xcpd</Transaction>
+            <SQ>Test findpatient XGC</SQ>
+        </Rule>
+        <XcpdTransaction>
+            <ParseMetadata>False</ParseMetadata>
+            <MetadataFile>findpatient.xml</MetadataFile>
+            <WSSECHeader></WSSECHeader>
+        </XcpdTransaction>
+    </TestStep>
+</TestPlan>

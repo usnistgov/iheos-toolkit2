@@ -1,0 +1,16 @@
+
+<rim:LeafRegistryObjectList xmlns:rim="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0">
+   <rim:Association targetObject="urn:uuid:19dba33a-7939-4691-a035-cb091f9fce68"
+         sourceObject="urn:uuid:7e63f169-fcfa-4ce2-ae13-bbfabb9bba0e"
+         associationType="urn:oasis:names:tc:ebxml-regrep:AssociationType:HasMember"
+         id="urn:uuid:b8f38597-9eab-4ad9-b661-d7ad3d51241e"
+         objectType="urn:oasis:names:tc:ebxml-regrep:ObjectType:RegistryObject:Association"
+         lid="urn:uuid:b8f38597-9eab-4ad9-b661-d7ad3d51241e">
+      <rim:Slot name="SubmissionSetStatus">
+         <rim:ValueList>
+            <rim:Value>Original</rim:Value>
+         </rim:ValueList>
+      </rim:Slot>
+      <rim:VersionInfo versionName="-1"/>
+   </rim:Association>
+</rim:LeafRegistryObjectList>

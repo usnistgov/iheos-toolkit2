@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12002/eval</Test>
+  <TestStep id="folder_and_contents">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderandContents</SQ>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../create_folder" id="Folder" symbol="$uniqueid$" step="submit_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <Associations count="0"/>
+        <Documents count="0"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

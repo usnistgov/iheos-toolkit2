@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>GetDocuments/XCA</Test>
+    <Rule>GetDocuments Stored Query</Rule>
+    <TestStep id="GetDocuments">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XCQTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </XCQTransaction>
+    </TestStep>
+</TestPlan>

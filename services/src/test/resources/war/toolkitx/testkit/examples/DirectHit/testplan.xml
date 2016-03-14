@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>Direct1</Test>
+    <TestStep id="send">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <DirectTransaction>
+			<NoMetadata/>
+			<CertFile>hit-testing.nist.gov.p12</CertFile>
+			<CertFilePassword/>
+			<BodyContentFile>body.txt</BodyContentFile>
+			<DirectFromAddress>bmajur@gmail.com</DirectFromAddress>
+			<DirectToAddress>direct-clinical-summary@hit-testing.nist.gov</DirectToAddress>
+			<Subject>Direct Validation Request</Subject>
+			<AttachmentContentFile>DischargeSummary_2014Edition_sample.xml</AttachmentContentFile>
+			<DirectSystemMailerHostname>hit-testing.nist.gov</DirectSystemMailerHostname>
+			<DirectSystemMailerPort>25</DirectSystemMailerPort>
+        </DirectTransaction>
+    </TestStep>
+</TestPlan>

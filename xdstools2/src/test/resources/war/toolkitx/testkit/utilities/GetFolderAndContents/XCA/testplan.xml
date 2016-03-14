@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>GetFolderAndContents/XCA</Test>
+    <Rule>GetFolderAndContents Stored Query</Rule>
+    <TestStep id="GetFolderAndContents">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <XCQTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <homeCommunityId>$home$</homeCommunityId>
+            <MetadataFile>query.xml</MetadataFile>
+        </XCQTransaction>
+    </TestStep>
+</TestPlan>

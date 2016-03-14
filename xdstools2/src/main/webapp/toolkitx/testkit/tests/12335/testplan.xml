@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12335</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RetrieveTransaction>
+      <UseId testdir="../12029/submit" id="Document01" symbol="$docuid$" step="submit" section="AssignedUids"/>
+      <UseRepositoryUniqueId testdir="../12029/query" id="Document01" symbol="$repuid$" step="by_uid"/>
+      <ReferenceMetadata testdir="../12029/query" step="by_uid"/>
+      <XDSb/>
+      <ASync/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents/>
+      <ReferenceDocument uid="$docuid$">../12029/submit/my_document.pdf</ReferenceDocument>
+    </RetrieveTransaction>
+  </TestStep>
+</TestPlan>

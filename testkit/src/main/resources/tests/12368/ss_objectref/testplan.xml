@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>12368/ss_objectref</Test>
+  <TestStep id="ss_uuid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetSubmissionSets</SQ>
+      <Assertion>ObjectRef return of two SubmissionSets (and 2 Associations) with different PatientIds - no error</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../../12374" id="Document01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <ObjectRefs count="4"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

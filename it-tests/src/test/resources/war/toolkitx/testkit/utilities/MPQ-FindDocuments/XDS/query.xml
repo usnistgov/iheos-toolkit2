@@ -1,0 +1,61 @@
+<query:AdhocQueryRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                         xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0"
+                         xmlns="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0"
+                         xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+    <!-- FindDocumentsForMultiplePatients -->
+    <AdhocQuery id="urn:uuid:3d1bdb10-39a2-11de-89c2-2f44d94eaa9f">
+        <Slot name="$XDSDocumentEntryPatientId">
+            <ValueList>
+                <Value>('$patient_id$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryHealthcareFacilityTypeCode">
+            <ValueList>
+                <Value>('$hcft0$')</Value>
+                <Value>('$hcft1$')</Value>
+                <Value>('$hcft2$')</Value>
+                <Value>('$hcft3$')</Value>
+                <Value>('$hcft4$')</Value>
+                <Value>('$hcft5$')</Value>
+                <Value>('$hcft6$')</Value>
+                <Value>('$hcft7$')</Value>
+                <Value>('$hcft8$')</Value>
+                <Value>('$hcft9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryClassCode">
+            <ValueList>
+                <Value>('$cc0$')</Value>
+                <Value>('$cc1$')</Value>
+                <Value>('$cc2$')</Value>
+                <Value>('$cc3$')</Value>
+                <Value>('$cc4$')</Value>
+                <Value>('$cc5$')</Value>
+                <Value>('$cc6$')</Value>
+                <Value>('$cc7$')</Value>
+                <Value>('$cc8$')</Value>
+                <Value>('$cc9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryEventCodeList">
+            <ValueList>
+                <Value>('$ec0$')</Value>
+                <Value>('$ec1$')</Value>
+                <Value>('$ec2$')</Value>
+                <Value>('$ec3$')</Value>
+                <Value>('$ec4$')</Value>
+                <Value>('$ec5$')</Value>
+                <Value>('$ec6$')</Value>
+                <Value>('$ec7$')</Value>
+                <Value>('$ec8$')</Value>
+                <Value>('$ec9$')</Value>
+            </ValueList>
+        </Slot>
+        <Slot name="$XDSDocumentEntryStatus">
+            <ValueList>
+                <Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</Value>
+            </ValueList>
+        </Slot>
+    </AdhocQuery>
+</query:AdhocQueryRequest>

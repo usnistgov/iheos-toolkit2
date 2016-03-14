@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>RetrieveDocumentSet</Test>
+    <TestStep id="retrieve">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RetrieveTransaction>
+            <!--
+            <ReferenceMetadata testdir="../query" step="by_uid"/>
+            -->
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+            <XDSb/>
+        </RetrieveTransaction>
+    </TestStep>
+</TestPlan>

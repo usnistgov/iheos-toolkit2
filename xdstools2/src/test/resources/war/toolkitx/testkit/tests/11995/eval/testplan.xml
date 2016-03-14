@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11995/eval</Test>
+  <TestStep id="validate_deprecate">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$ssuid$" step="submit" section="AssignedUids"/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+        <DocDep/>
+        <HasRPLC/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate_new">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../rplc" id="SubmissionSet01" symbol="$ssuid$" step="rplc" section="AssignedUids"/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+        <DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

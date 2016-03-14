@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+   <Test>socket</Test>
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegistryEndpoint>http://ihexds.nist.gov:12080/tf5/services/xdsrepositoryb</RegistryEndpoint>
+        <SocketTransaction>
+            <InputFile>request.txt</InputFile>
+        </SocketTransaction>
+    </TestStep>
+</TestPlan>

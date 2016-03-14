@@ -1,0 +1,11 @@
+
+<query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
+    <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:a7ae438b-4bc2-4642-93e9-be891f7bb155">
+        <tag0:Slot name="$uuid">
+            <tag0:ValueList>
+                <tag0:Value>('$uuid1$','$uuid2$')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+    </tag0:AdhocQuery>
+</query:AdhocQueryRequest>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+  <Test>11907</Test>
+  <TestStep id="uniqueid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderandContents</SQ>
+      <Assertion>Operation with UniqueId</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <UseId testdir="../12346/doc_w_fol" id="Folder" symbol="$uniqueid$" step="submit_doc_w_fol" section="AssignedUids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="uuid">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderandContents</SQ>
+      <Assertion>Operation with UUID</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <UseId testdir="../12346/doc_w_fol" id="Folder" symbol="$uuid$" step="submit_doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="conf_code">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderandContents</SQ>
+      <Assertion>Operation with UUID and confidentiality code</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query3.xml</MetadataFile>
+      <UseId testdir="../12346/two_doc_w_fol" id="Folder" symbol="$uuid$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="both_conf_code">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderandContents</SQ>
+      <Assertion>Operation with UUID and confidentiality code</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query4.xml</MetadataFile>
+      <UseId testdir="../12346/two_doc_w_fol" id="Folder" symbol="$uuid$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="2"/>
+        <Documents count="2"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="format_code">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetFolderandContents</SQ>
+      <Assertion>Operation with UUID and formatCode</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query5.xml</MetadataFile>
+      <UseId testdir="../12346/two_doc_w_fol" id="Folder" symbol="$uuid$" step="submit_2doc_w_fol" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12368/doc_objectref</Test>
+  <Rule>XDSResultNotSinglePatient rule - should not fail since only ObjectRefs are requested</Rule>
+  <TestStep id="objectref">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion/>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../../12374" id="Document01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <ObjectRefs count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

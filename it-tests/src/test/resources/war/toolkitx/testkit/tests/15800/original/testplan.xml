@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15800/original</Test>
+  <TestStep id="original">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <AssignUuids/>
+      <XDSb/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+      <Report name="doc_uuid" section="InputMetadata">
+                //*[local-name()='ExtrinsicObject'][1]/@id
+            </Report>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>

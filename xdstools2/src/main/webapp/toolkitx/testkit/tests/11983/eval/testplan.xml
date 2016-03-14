@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11983/eval</Test>
+  <TestStep id="doc_metadata_missing">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$ss_uuid$" step="doc_metadata_missing" section="AssignedUuids"/>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="doc_missing">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <UseId testdir="../submit" id="SubmissionSet01" symbol="$ss_uuid$" step="doc_missing" section="AssignedUuids"/>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>12342</Test>
+    <Rule>Stored Query in the presence of XCA</Rule>
+    
+    
+    <TestStep id="uuid">
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>GetDocuments</SQ>
+            <Assertion>Operation with UUID, verify Public Registry code returns home</Assertion>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <IGQTransaction>
+	    <XDSb/>
+            <Metadata>query1.xml</Metadata>
+            <UseId testdir="../../testdata/12344" id="Document01" step="submit_doc"
+                section="AssignedUuids" symbol="$uuid$"/>
+            <ExpectedContents>
+                <Documents count="1"/>
+            </ExpectedContents>
+            <Assertions>
+                <DataRef file="THIS" as="output"/>
+                <Assert id="vaidateHome"> 
+                    count(//IGQTransaction[@step="uuid"]/Result//*[local-name(.)='ExtrinsicObject'][@home='$configHome$']) = 1
+                </Assert>
+            </Assertions>
+        </IGQTransaction>
+    </TestStep>
+    
+    
+    <TestStep id="pid">
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>FindDocuments</SQ>
+        </Rule>
+        <ExpectedStatus>Success</ExpectedStatus>
+        <IGQTransaction>
+	    <XDSb/>
+            <MetadataFile>query2.xml</MetadataFile>
+            <UseId testdir="../../testdata/12344" id="Document01" step="submit_doc"
+                section="AssignedUuids" symbol="$uuid$"/>
+            <UseId testdir="../../testdata/12344" id="Document01" step="submit_doc"
+                section="AssignedPatientId" symbol="$patientid$"/>
+            <ExpectedContents>
+                <ObjectRefs count="5"/>
+            </ExpectedContents>
+            <Assertions>
+                <DataRef file="THIS" as="output"/>
+                <Assert id="vaidateHome"> 
+                    count(//IGQTransaction[@step="pid"]/Result/*[local-name(.)='AdhocQueryResponse']/*[local-name(.)='RegistryObjectList']/*[local-name(.)='ObjectRef'][@home='$configHome$']) = 5
+                </Assert>
+            </Assertions>
+        </IGQTransaction>
+    </TestStep>
+    
+    
+</TestPlan>

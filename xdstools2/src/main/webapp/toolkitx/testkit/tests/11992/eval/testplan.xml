@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11992/eval</Test>
+  <TestStep id="validate_deprecate">
+    <Goal>Validate original DocumentEntry has status Deprecated</Goal>
+    <Goal>...Use GetSubmissionSetAndContents</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="ssuid" section="submit" step="submit" useAs="$ssuid$"/>
+      <MetadataFile>query1.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+        <DocDep/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validate_new">
+    <Goal>Validate replacement DocumentEntry has status Approved</Goal>
+    <Goal>...Use GetSubmissionSetAndContents</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="ssuid" section="rplc" step="rplc" useAs="$ssuid$"/>
+      <MetadataFile>query2.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDoc/>
+        <DocApp/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

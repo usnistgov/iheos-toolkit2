@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12368/doc_leafclass</Test>
+  <Rule>XDSResultNotSinglePatient rule</Rule>
+  <TestStep id="leafclass">
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>GetDocuments</SQ>
+      <Assertion/>
+    </Rule>
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <ExpectedErrorCode>XDSResultNotSinglePatient</ExpectedErrorCode>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="Document01" symbol="$uuid1$" step="submit_doc" section="AssignedUuids"/>
+      <UseId testdir="../../12374" id="Document01" symbol="$uuid2$" step="submit_doc" section="AssignedUuids"/>
+      <ExpectedContents>
+        <Documents count="0"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

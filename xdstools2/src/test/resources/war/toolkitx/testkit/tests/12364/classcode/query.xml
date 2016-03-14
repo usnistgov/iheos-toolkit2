@@ -1,0 +1,16 @@
+
+<query:AdhocQueryRequest xmlns:query="urn:oasis:names:tc:ebxml-regrep:xsd:query:3.0">
+    <query:ResponseOption returnComposedObjects="true" returnType="ObjectRef"/>
+    <tag0:AdhocQuery xmlns:tag0="urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" id="urn:uuid:3d1bdb10-39a2-11de-89c2-2f44d94eaa9f">
+        <tag0:Slot name="$XDSDocumentEntryClassCode">
+            <tag0:ValueList>
+                <tag0:Value>('MPQ-classcode-1^^MPQ Testing')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+        <tag0:Slot name="$XDSDocumentEntryStatus">
+            <tag0:ValueList>
+                <tag0:Value>('urn:oasis:names:tc:ebxml-regrep:StatusType:Approved')</tag0:Value>
+            </tag0:ValueList>
+        </tag0:Slot>
+    </tag0:AdhocQuery>
+</query:AdhocQueryRequest>

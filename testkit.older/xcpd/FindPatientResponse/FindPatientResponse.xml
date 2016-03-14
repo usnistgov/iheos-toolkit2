@@ -1,0 +1,108 @@
+<PRPA_IN201306UV02 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 ../../xsd/NE2008/multicacheschemas/PRPA_IN201306UV02.xsd" xmlns="urn:hl7-org:v3" ITSVersion="XML_1.0">
+	<id root="57e77e59-1743-4d36-a8a2-de1735793e52"/>
+	<creationTime value="20110316161212"/>
+	<interactionId extension="PRPA_IN201306UV02" root="2.16.840.1.113883.1.6"/>
+	<processingCode code="T"/>
+	<processingModeCode code="T"/>
+	<acceptAckCode code="NE"/>
+	<receiver typeCode="RCV">
+		<device classCode="DEV" determinerCode="INSTANCE">
+			<id root="2.16.840.1.113883.3.72.6.4"/>
+			<asAgent classCode="AGNT">
+				<representedOrganization classCode="ORG" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.72.6.1"/>
+				</representedOrganization>
+			</asAgent>
+		</device>
+	</receiver>
+	<sender typeCode="SND">
+		<device classCode="DEV" determinerCode="INSTANCE">
+			<id root="2.16.840.1.113883.3.72.6.6.18"/>
+			<asAgent classCode="AGNT">
+				<representedOrganization classCode="ORG" determinerCode="INSTANCE">
+					<id root="2.16.840.1.113883.3.72.6.1"/>
+				</representedOrganization>
+			</asAgent>
+		</device>
+	</sender>
+	<acknowledgement>
+		<typeCode code="AA"/>
+		<targetMessage>
+			<id extension="35423" root="1.2.840.114350.1.13.0.1.7.1.1"/>
+		</targetMessage>
+	</acknowledgement>
+	<controlActProcess classCode="CACT" moodCode="EVN">
+		<code code="PRPA_TE201306UV02" codeSystem="2.16.840.1.113883.1.6"/>
+		<subject typeCode="SUBJ">
+			<registrationEvent classCode="REG" moodCode="EVN">
+				<id nullFlavor="NA"/>
+				<statusCode code="active"/>
+				<subject1 typeCode="SBJ">
+					<patient classCode="PAT">
+						<id assigningAuthorityName="domain1" extension="801" root="1.2.3.4.5.1000"/>
+						<statusCode code="active"/>
+						<patientPerson>
+							<name>
+								<given>Chip</given>
+								<family>Moore</family>
+							</name>
+							<administrativeGenderCode code="M"/>
+							<birthTime value="19849711"/>
+							<addr>
+								<city>Montreal</city>
+							</addr>
+						</patientPerson>
+						<providerOrganization classCode="NAT" determinerCode="INSTANCE">
+							<id root="2.16.840.1.113883.3.333"/>
+							<contactParty classCode="CON" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+						</providerOrganization>
+						<subjectOf1>
+							<queryMatchObservation moodCode="EVN" classCode="ALRT">
+								<code code="IHE_PDQ"/>
+								<value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="INT" value="100"/>
+							</queryMatchObservation>
+						</subjectOf1>
+					</patient>
+				</subject1>
+				<custodian typeCode="CST">
+					<assignedEntity classCode="ASSIGNED">
+						<id/>
+					</assignedEntity>
+				</custodian>
+			</registrationEvent>
+		</subject>
+		<queryAck>
+			<queryId extension="3809840989" root="1.2.840.114350.1.13.28.1.18.5.999"/>
+			<queryResponseCode code="OK"/>
+			<resultTotalQuantity nullFlavor="NA"/>
+			<resultCurrentQuantity nullFlavor="NA"/>
+			<resultRemainingQuantity nullFlavor="NA"/>
+		</queryAck>
+		<queryByParameter>
+			<queryId extension="3809840989" root="1.2.840.114350.1.13.28.1.18.5.999"/>
+			<statusCode code="new"/>
+			<responseModalityCode code="R"/>
+			<responsePriorityCode code="I"/>
+			<parameterList>
+				<!-- Gender (Required, one and unique)-->
+				<livingSubjectAdministrativeGender>
+					<value code="M"/>
+					<semanticsText representation="TXT">LivingSubject.administrativeGender</semanticsText>
+				</livingSubjectAdministrativeGender>
+				<!-- Birthday (Required, one and unique)-->
+				<livingSubjectBirthTime>
+					<value value="19849711"/>
+					<semanticsText>LivingSubject.birthTime</semanticsText>
+				</livingSubjectBirthTime>
+				<!-- Name (This element is required, one or multiple. The first given and family name is required, second given name is not required, neither suffix) -->
+				<livingSubjectName>
+					<value>
+						<given partType="GIV">Chip</given>
+						<family partType="FAM">Moore</family>
+					</value>
+					<semanticsText representation="TXT">LivingSubject.name</semanticsText>
+				</livingSubjectName>
+			</parameterList>
+		</queryByParameter>
+	</controlActProcess>
+</PRPA_IN201306UV02>

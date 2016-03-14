@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>11897/eventcode_multi_select</Test>
+  <TestStep id="eventcode_multi_select">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>SQ</Transaction>
+      <SQ>FindDocuments</SQ>
+      <Assertion>Eventcode - must have 2 event codes to be acceptable</Assertion>
+    </Rule>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <UseId testdir="../../12346/single_doc" id="SubmissionSet01" symbol="$patient_id$" step="submit_doc" section="AssignedPatientId"/>
+      <ExpectedContents>
+        <ObjectRefs count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

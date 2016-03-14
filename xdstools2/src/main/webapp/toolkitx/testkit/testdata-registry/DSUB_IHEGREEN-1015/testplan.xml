@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>DSUB_IHEGREEN-1015</Test>
+    <TestStep id="submit">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <RegisterTransaction>
+            <NoPatientId/>
+            <XDSb/>
+            <MetadataFile>metadata.xml</MetadataFile>
+        </RegisterTransaction>
+    </TestStep>
+</TestPlan>

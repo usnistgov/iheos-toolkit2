@@ -1,0 +1,10 @@
+Transaction,Code,Severity,Text
+P, DocumentQueued, W, An XDR Recipient queued the document for future manual matching to a patient.
+P, InvalidDocumentContent, E, The recipient has rejected this submission because it detected that one of the documents does not match the metadata.
+P, PartialAppendContentNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Append semantics.
+P, PartialFolderContentNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Folder semantics.
+P, PartialReplaceContentNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Replacement semantics.
+P, PartialTransformNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Transform semantics.
+P, PartialTransformReplaceNotProcessed, W, An XDR Document Recipient did not process some part of the content. Specifically the parts not processed are Transform and Replace semantics.
+RS, XDSDocumentUniqueIdError, E, The document associated with the uniqueId is not available. This could be because the document is not available. The requestor is not authorized to access that document or the document is no longer available.
+XGR, XDSDocumentUniqueIdError, E, The document associated with the uniqueId is not available. This could be because the document is not available. The requestor is not authorized to access that document or the document is no longer available.

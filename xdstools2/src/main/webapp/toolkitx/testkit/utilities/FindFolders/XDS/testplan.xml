@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>FindFolders/XDS</Test>
+    <TestStep id="FindFolders">
+        <ExpectedStatus>Success</ExpectedStatus>
+        <Rule>
+            <Transaction>SQ</Transaction>
+            <SQ>FindFolders</SQ>
+            <Assertion>LeafClass return</Assertion>
+        </Rule>
+        <StoredQueryTransaction>
+            <XDSb/>
+            <CleanParams/>
+            <MetadataFile>query.xml</MetadataFile>
+        </StoredQueryTransaction>
+    </TestStep>
+</TestPlan>

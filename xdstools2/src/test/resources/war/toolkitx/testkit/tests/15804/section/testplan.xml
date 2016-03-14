@@ -1,0 +1,17 @@
+ 
+<TestPlan>
+  <Test>15804/section</Test>
+  <Rule>Patient Identity Feed</Rule>
+  <TestStep id="step">
+    <Rule>
+      <Transaction>Patient Identity Feed</Transaction>
+      <Assertion>Send UI configured Patient ID</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <PatientIdentityFeedTransaction>
+      <XDSb/>
+      <NoMetadata/>
+    </PatientIdentityFeedTransaction>
+  </TestStep>
+</TestPlan>
+
