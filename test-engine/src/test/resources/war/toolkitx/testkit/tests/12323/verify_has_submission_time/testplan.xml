@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12323/verify_has_submission_time</Test>
+  <TestStep id="verify_has_time_submission">
+    <Goal>Verify folder submitted in has_time section has today's date</Goal>
+    <Goal>   This submission had an old time that must be overwritten by the Registry</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="folid" section="has_time" step="has_time" useAs="$uuid1$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <Report name="original_time" section="Result">
+//*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='lastUpdateTime']/*[local-name()='ValueList']/*[local-name()='Value']
+            </Report>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="0"/>
+        <Documents count="0"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+      <Assertions>
+        <DataRef file="THIS" as="output"/>
+        <Assert id="todaysDate">
+                    substring(//TestStep[@id="verify_has_time_submission"]/StoredQueryTransaction/Result/*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='lastUpdateTime']/*[local-name()='ValueList']/*[local-name()='Value'],1,8)="$DATE$"
+                </Assert>
+      </Assertions>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

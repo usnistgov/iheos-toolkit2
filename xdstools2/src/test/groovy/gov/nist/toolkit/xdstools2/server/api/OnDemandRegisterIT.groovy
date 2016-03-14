@@ -30,7 +30,7 @@ class OnDemandRegisterIT extends Specification {
     String testSession = 'sunil';
 
     def setup() {
-        api = ToolkitApi.forInternalUse()
+        api = new ToolkitApi().forServiceUse()
         println "EC is ${Installation.installation().externalCache().toString()}"
         println "${api.getSiteNames(true)}"
         api.createTestSession(testSession)

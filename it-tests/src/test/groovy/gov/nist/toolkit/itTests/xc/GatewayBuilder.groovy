@@ -1,13 +1,13 @@
 package gov.nist.toolkit.itTests.xc
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.ToolkitApi
-import gov.nist.toolkit.tookitApi.InitiatingGateway
-import gov.nist.toolkit.tookitApi.RespondingGateway
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.InitiatingGateway
+import gov.nist.toolkit.toolkitApi.RespondingGateway
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import groovy.transform.TypeChecked

@@ -39,8 +39,8 @@ public class ConnectathonTab extends GenericQueryTab {
 		
 		mainGrid.setWidget(row, col, HyperlinkFactory.link(TabLauncher.srcStoresDocValTabLabel, new TabLauncher(container, TabLauncher.srcStoresDocValTabLabel)));
 		row++;
-								
-		row = 0;
+
+        row = 0;
 		col = 1;
 		
 		mainGrid.setWidget(row, col, addHTML("<b>Registry Validations</b>"));

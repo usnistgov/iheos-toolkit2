@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
-import gov.nist.toolkit.actorfactory.client.Pid;
-import gov.nist.toolkit.actorfactory.client.PidBuilder;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.common.datatypes.UuidValidator;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;

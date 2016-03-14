@@ -1,8 +1,8 @@
 package gov.nist.toolkit.simulators.sim.ig
 import gov.nist.toolkit.actorfactory.SimManager
-import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode
 import gov.nist.toolkit.registrymsg.repository.*
@@ -53,26 +53,30 @@ public class XcRetrieveSim extends AbstractMessageValidator {
         }
     }
 
+    class NonException extends Exception { }
+
     @Override
     public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
         this.er = er;
         er.registerValidator(this);
 
-        if (startUpException != null)
+        if (startUpException != null) {
             er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
+            throw new NonException()
+        }
 
         try {
             // if request didn't validate, return so errors can be reported
             if (common.hasErrors()) {
                 response.add(dsSimCommon.getRegistryErrorList(), null);
-                return;
+                throw new NonException();  // need to run finally code
             }
 
             SimManager simMgr = new SimManager("ignored");
             List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingGateways).asList());
             if (sites == null || sites.size() == 0) {
                 er.err(XdsErrorCode.Code.XDSRepositoryError, "No RespondingGateways configured", this, null);
-                return;
+                throw new NonException();  // need to run finally code
             }
             Sites remoteSites = new Sites(sites);
 
@@ -87,7 +91,7 @@ public class XcRetrieveSim extends AbstractMessageValidator {
 
                 if (site == null) {
                     er.err(XdsErrorCode.Code.XDSRepositoryError, "Don't have configuration for RG with homeCommunityId " + homeId, this, null);
-                    return;
+                    throw new NonException();  // need to run finally code
                 }
 
                 RetrievedDocumentsModel retDocs = forwardRetrieve(site, requestModel.getItemsForCommunity(homeId));
@@ -97,11 +101,11 @@ public class XcRetrieveSim extends AbstractMessageValidator {
                 }
             }
 
-            result = new RetrieveDocumentResponseGenerator(retrievedDocs, dsSimCommon.registryErrorList).get();
-
+        } catch (NonException e) {
         } catch (Exception e) {
             logException(er, e);
         } finally {
+            result = new RetrieveDocumentResponseGenerator(retrievedDocs, dsSimCommon.registryErrorList).get();
             er.unRegisterValidator(this);
         }
     }

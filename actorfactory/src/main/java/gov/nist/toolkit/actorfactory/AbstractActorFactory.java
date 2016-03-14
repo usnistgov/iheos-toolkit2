@@ -1,5 +1,18 @@
 package gov.nist.toolkit.actorfactory;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -7,7 +20,9 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
@@ -16,14 +31,6 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
-import org.apache.log4j.Logger;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 /**
  * Factory class for simulators.  Technically ActorFactry is no longer accurate
@@ -51,7 +58,10 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), 		new RepositoryRegistryActorFactory());
 		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
 		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
-        factories.put(ActorType.XDR_DOC_SRC.getName(), 				new XdrDocSrcActorFactory());
+      factories.put(ActorType.XDR_DOC_SRC.getName(), 				   new XdrDocSrcActorFactory());
+      factories.put(ActorType.DOC_CONSUMER.getName(), 			   new ConsumerActorFactory());
+      factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
+      factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 		new ImagingDocSourceActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
@@ -120,7 +130,7 @@ public abstract class AbstractActorFactory {
 	// Returns list since multiple simulators could be built as a grouping/cluster
 	// only used by SimulatorFactory to offer a generic API for building sims
 	public Simulator buildNewSimulator(SimManager simm, String simtype, SimId simID, boolean save) throws Exception {
-
+        logger.info("Build New Simulator " + simtype);
 		ActorType at = ActorType.findActor(simtype);
 
 		if (at == null)
@@ -134,12 +144,16 @@ public abstract class AbstractActorFactory {
 		logger.info("Build new Simulator of type " + getClass().getSimpleName() + " simID: " + simID);
 
 		// This is the simulator-specific factory
-		AbstractActorFactory af = factories.get(at.getName());
+        String actorTypeName = at.getName();
+		AbstractActorFactory af = factories.get(actorTypeName);
 
 		if (af == null)
-			throw new ToolkitRuntimeException(String.format("Cannot build simulator of type %s - cannot find ActorType", at.getName()));
+			throw new Exception(String.format("Cannot build simulator of type %s - cannot find Factory for ActorType [", actorTypeName) + "]");
 
 		af.setSimManager(simm);
+
+        if (simID.getId().contains("__"))
+            throw new Exception("Simulator ID cannot contain double underscore (__)");
 
 		Simulator simulator = af.buildNew(simm, simID, true);
 
@@ -193,7 +207,12 @@ public abstract class AbstractActorFactory {
 		id = parts[2];
 		//		id = id.replaceAll("-", "_");
 
-		return new SimId(id);
+        try {
+            return new SimId(id);
+        }
+        catch (Exception e) {
+            throw new ToolkitRuntimeException("Internal error: " + e.getMessage(), e);
+        }
 	}
 
 	String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, boolean isTLS) {
@@ -443,6 +462,10 @@ public abstract class AbstractActorFactory {
 
     public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, List<String> values, boolean isMultiSelect) {
         addUser(sc, new SimulatorConfigElement(name, type, values, isMultiSelect));
+    }
+
+    public void addEditableConfig(SimulatorConfig sc, String name, ParamType type, PatientErrorMap value) {
+        addUser(sc, new SimulatorConfigElement(name, type, value));
     }
 
     public void addFixedConfig(SimulatorConfig sc, String name, ParamType type, Boolean value) {

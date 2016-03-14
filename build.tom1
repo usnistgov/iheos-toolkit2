@@ -1,0 +1,29 @@
+#!/bin/sh
+
+#
+# Finalize WAR
+# add javadocs and site documentation
+# insert my toolkit.properties file
+#
+
+name='xdstools2-2.202.0-SNAPSHOT'
+
+cd ~/tk
+mvn -o clean package
+
+mkdir xdstools2/target/$name/javadoc
+sh genapidoc.sh xdstools2/target/$name/javadoc
+
+cd xdstools2
+mvn -o site
+
+cd target
+rm -r $name/site
+mv site $name
+
+cd $name
+jar cf ../xdstools2.war *
+
+cd ~/tk/build.tom1.stuff
+jar uf ~/tk/xdstools2/target/xdstools2.war WEB-INF
+

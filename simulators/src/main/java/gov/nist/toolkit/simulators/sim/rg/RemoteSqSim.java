@@ -1,6 +1,6 @@
 package gov.nist.toolkit.simulators.sim.rg;
 
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -117,7 +117,7 @@ public class RemoteSqSim  extends TransactionSimulator implements MetadataGenera
 	boolean passOnErrors(MessageValidatorEngine mvc, OMElement result) throws XdsInternalException {
 
 		AdhocQueryResponseParser aqrp = new AdhocQueryResponseParser(result);
-		AdhocQueryResponseParser.AdhocQueryResponse aqr = aqrp.getResponse();
+		gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse aqr = aqrp.getResponse();
 
 		if (!aqr.isSuccess()) {
 			RegistryErrorListGenerator relg = new RegistryErrorListGenerator();

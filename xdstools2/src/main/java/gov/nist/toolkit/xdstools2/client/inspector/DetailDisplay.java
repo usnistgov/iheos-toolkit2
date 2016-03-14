@@ -74,19 +74,21 @@ public class DetailDisplay {
 
 	int displayDetail(FlexTable ft, int row, boolean bold, Map<String, List<String>> values, Map<String, String> xmls) {
 		int startRow = row;
-		for (String name : values.keySet()) {
-			for (String value : values.get(name)) {
-				String xml = xmls.get(name);
-				if (row == startRow) {
-					ft.setHTML(row, 0, bold(name, bold));
-				}
-				if (xml == null || xml.equals(""))
-					ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
-				else
-					ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml));
-				row++;
-			}
-		}
+        if (values != null) {
+            for (String name : values.keySet()) {
+                for (String value : values.get(name)) {
+                    String xml = xmls.get(name);
+                    if (row == startRow) {
+                        ft.setHTML(row, 0, bold(name, bold));
+                    }
+                    if (xml == null || xml.equals(""))
+                        ft.setHTML(row, 1, value.replaceAll(" ", "&nbsp;"));
+                    else
+                        ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, value, xml));
+                    row++;
+                }
+            }
+        }
 		return row;
 	}
 
@@ -150,8 +152,10 @@ public class DetailDisplay {
 		FlexTable ft = new FlexTable();
 		int row=0;
 		boolean b;
-		
-		b = diff.title != null;
+
+        detailPanel.add(ft);
+
+        b = diff.title != null;
 		ft.setHTML(row, 0, bold("title",b));
 		ft.setWidget(row, 1, HyperlinkFactory.linkXMLView(it, ss.title, ss.titleX));
 		row++;
@@ -209,7 +213,6 @@ public class DetailDisplay {
 		b = diff.authors != null;
 		row = displayDetail(ft, row, b, ss.authors, ss.authorsX);
 
-		detailPanel.add(ft);
 	}
 
 	void displayDetail(DocumentEntry de, DocumentEntry diff) {

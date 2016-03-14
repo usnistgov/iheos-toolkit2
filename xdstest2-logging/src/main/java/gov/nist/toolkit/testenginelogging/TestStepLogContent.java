@@ -18,9 +18,7 @@ import org.apache.log4j.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class TestStepLogContent  implements Serializable {
 	/**
@@ -38,6 +36,9 @@ public class TestStepLogContent  implements Serializable {
 	List<String> errors;
 	List<String> details;
 	List<String> reports;
+    List<String> useReports;
+    Map<String, String> assignedIds = new HashMap<>();
+    Map<String, String> assignedUids = new HashMap<>();
 	String inputMetadata;
 	String result;
 	String inHeader = null;
@@ -83,6 +84,9 @@ public class TestStepLogContent  implements Serializable {
 			} else if ("Warning".equals(expStat)) {
 				expectedWarning = true;
 				expectedSuccess = false;
+            } else if ("PartialSuccess".equals(expStat)) {
+                expectedWarning = false;
+                expectedSuccess = false;
 			} else
 				throw new Exception("TestStep: Error parsing log.xml file: illegal value (" + expStat + ") for ExpectedStatus element of step " + id);
 		}
@@ -95,7 +99,9 @@ public class TestStepLogContent  implements Serializable {
 		parseResult();
 		parseInputMetadata();
 		parseRoot();
-		parseReports();
+		parseUseReports();
+        parseReports();
+        parseIds();
 	}
 
 	public StepGoals getGoals() {
@@ -168,6 +174,26 @@ public class TestStepLogContent  implements Serializable {
 		endpoint = endpoints.get(0).getText();
 	}
 
+    private final static QName symbolQ = new QName("symbol");
+    private final static QName idQ = new QName("id");
+
+    void parseIds() {
+        parseIds(assignedUids, "AssignedUids");
+        parseIds(assignedIds, "AssignedUuids");
+    }
+
+    void parseIds(Map<String, String> map, String section) {
+        List<OMElement> idEles = XmlUtil.decendentsWithLocalName(root, section);
+        for (OMElement e : idEles) {
+            for (Iterator i = e.getChildrenWithLocalName("Assign"); i.hasNext(); ) {
+                OMElement a = (OMElement) i.next();
+                String symbol = a.getAttributeValue(symbolQ);
+                String id = a.getAttributeValue(idQ);
+                map.put(symbol, id);
+            }
+        }
+    }
+
 	public List<String> getAssertionErrors() {
 		List<OMElement> errorEles = XmlUtil.decendentsWithLocalName(root, "Error");
 		List<String> errors = new ArrayList<String>();
@@ -220,23 +246,60 @@ public class TestStepLogContent  implements Serializable {
 	}
 
 	private static final QName nameQname = new QName("name");
+    private static final QName reportNameQname = new QName("reportName");
+    private static final QName valueQname = new QName("value");
+    private static final QName testQname = new QName("test");
+    private static final QName sectionQname = new QName("section");
+    private static final QName stepQname = new QName("step");
 
 	private void parseReports() {
 		reports = new ArrayList<String>();
 
+        // without use of the map we get duplicates because of the Assertions
+        // section of the log.xml file format
+        Map<String, String> map = new HashMap<>();
 		for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "Report")) {
 			String name = ele.getAttributeValue(nameQname);
 			String value = ele.getText();
-			reports.add(name + " = " + value);
+            map.put(name, value);
 		}
+        for(String key : map.keySet()) {
+            reports.add(key + " = " + map.get(key));
+        }
 
 	}
 
-	public List<String> getReports() {
+    private void parseUseReports() {
+        useReports = new ArrayList<String>();
+
+        // without use of the map we get duplicates because of the Assertions
+        // section of the log.xml file format
+        Map<String, String> map = new HashMap<>();
+        for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "UseReport")) {
+            String name = ele.getAttributeValue(reportNameQname);
+            String value = ele.getAttributeValue(valueQname);
+            String test = ele.getAttributeValue(testQname);
+            String section = ele.getAttributeValue(sectionQname);
+            String step = ele.getAttributeValue(stepQname);
+            String fullName = String.format("/%s/%s/%s/%s", test, section, step, name);
+            map.put(fullName, value);
+        }
+
+        for(String key : map.keySet()) {
+            useReports.add(key + " = " + map.get(key));
+        }
+
+    }
+
+    public List<String> getReports() {
 		return reports;
 	}
 
-	public List<String> getDetails() {
+    public List<String> getUseReports() {
+        return useReports;
+    }
+
+    public List<String> getDetails() {
 		return details;
 	}
 
@@ -335,5 +398,11 @@ public class TestStepLogContent  implements Serializable {
 		this.success = success;
 	}
 
+    public Map<String, String> getAssignedIds() {
+        return assignedIds;
+    }
 
+    public Map<String, String> getAssignedUids() {
+        return assignedUids;
+    }
 }

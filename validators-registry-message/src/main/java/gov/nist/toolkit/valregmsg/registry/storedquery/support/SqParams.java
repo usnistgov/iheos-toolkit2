@@ -2,6 +2,7 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.valregmsg.registry.And;
+import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -12,19 +13,19 @@ import java.util.*;
 public class SqParams {
 	Map<String, Object> params;
 	String query_id;
-	
+
 	public SqParams(String queryid, Map<String, Object> params) {
 		query_id = queryid;
 		this.params = params;
 	}
-	
+
 	public SqParams() {
 		params = new HashMap<String, Object>();
 	}
-	
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		
+
 		for (Iterator<String> it = params.keySet().iterator(); it.hasNext(); ) {
 			String name = it.next();
 			Object value = params.get(name);
@@ -34,18 +35,18 @@ public class SqParams {
 			buf.append(value);
 			buf.append("\n");
 		}
-		
+
 		return buf.toString();
 	}
 
     public Set<String> getNames() { return params.keySet(); }
-	
+
 	public int size() { return params.size(); }
 	public void addParm(String name, Object value) { params.put(name, value); }
 	public boolean hasParm(String parmName) { return params.containsKey(parmName); }
 	public Object getParm(String parmName) { return params.get(parmName); }
 	public String getQueryId() { return query_id; }
-	
+
 	public void addStringParm(String name, String value) {
 		addParm(name, value);
 	}
@@ -57,7 +58,7 @@ public class SqParams {
 	public void addIntParm(String name, BigInteger value) {
 		addParm(name, value);
 	}
-	
+
 	public void addListParm(String name, List<String> values) {
 		addParm(name, values);
 	}
@@ -68,7 +69,7 @@ public class SqParams {
 		addParm(name, values);
 	}
 
-	
+
 	public String getStringParm(String name) {
 		Object o = params.get(name);
 		if ( o instanceof String) {
@@ -76,7 +77,7 @@ public class SqParams {
 		}
 		return null;
 	}
-	
+
 	public String getIntParm(String name) throws MetadataException {
 		Object o = params.get(name);
 		if (o == null)
@@ -84,11 +85,11 @@ public class SqParams {
 		if ( o instanceof Integer) {
 			Integer i = (Integer) o;
 			return i.toString();
-		} 
+		}
 		if ( o instanceof BigInteger) {
 			BigInteger i = (BigInteger) o;
 			return i.toString();
-		} 
+		}
 		else
 			throw new MetadataException("Parameter " + name + " - expecting a number but got " + o.getClass().getName() + " instead", SqDocRef.Request_parms);
 	}
@@ -120,7 +121,7 @@ public class SqParams {
 		}
 		throw new XdsInternalException("get_arraylist_parm(): bad type = " + o.getClass().getName());
 	}
-	
+
 	public SQCodedTerm getCodedParm(String name) throws MetadataException, XdsInternalException {
 		Object o = params.get(name);
 		if (o == null)
@@ -131,7 +132,7 @@ public class SqParams {
 				throw new MetadataException("Parameter " + name + " is empty", SqDocRef.Request_parms);
 			return term;
 		}
-			
+
 		throw new XdsInternalException("getCodedParm(): bad type = " + o.getClass().getName());
 	}
 
@@ -161,4 +162,14 @@ public class SqParams {
 		return names;
 	}
 
+    // TODO can I replace Object by SQCodeOr (which if I am right is supposed to be the type of object)
+	public Map<String, SQCodedTerm> getCodedParms() {
+		Map<String,SQCodedTerm> codes=new HashMap<String,SQCodedTerm>();
+		for (String key:params.keySet()){
+			if (key.endsWith("Code")){
+                codes.put(key,((SQCodedTerm) params.get(key)));
+            }
+		}
+		return codes;
+	}
 }

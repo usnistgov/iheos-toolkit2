@@ -1,15 +1,23 @@
 package gov.nist.toolkit.simulators.sim.rg
 
 import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.actortransaction.client.TransactionType
+import gov.nist.toolkit.actortransaction.client.Severity
+import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.PatientErrorList
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap
+import gov.nist.toolkit.configDatatypes.client.Pid
+import gov.nist.toolkit.configDatatypes.client.PidBuilder
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.registrymetadata.Metadata
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequest
+import gov.nist.toolkit.registrymsg.registry.AdhocQueryRequestParser
 import gov.nist.toolkit.registrymsg.registry.Response
 import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
+import gov.nist.toolkit.registrysupport.MetadataSupport
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGenerator
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator
@@ -162,6 +170,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 			return true; // no updates anyway
 		}
 		else if (transactionType.equals(TransactionType.XC_QUERY)) {
+
 			ValidationContext vc = common.vc;
 			vc.isRequest = true;
 			vc.isSimpleSoap = true;
@@ -189,8 +198,56 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 				return false;
 			}
 
-			SoapMessageValidator smv = (SoapMessageValidator) mv;
+            SoapMessageValidator smv = (SoapMessageValidator) mv;
 			OMElement query = smv.getMessageBody();
+
+            SimulatorConfigElement asce = getSimulatorConfig().getUserByName(SimulatorProperties.homeCommunityId);
+            String configuredHomeCommunityId = null;
+            if (asce == null) {
+                er.err(Code.XDSRegistryError, "RG Internal Error - homeCommunityId not configured", this, "");
+                dsSimCommon.sendErrorsInRegistryResponse(er);
+                return false;
+            }
+            configuredHomeCommunityId = asce.asString();
+            if (configuredHomeCommunityId == null || configuredHomeCommunityId.equals("")) {
+                er.err(Code.XDSRegistryError, "RG Internal Error - homeCommunityId not configured", this, "");
+                dsSimCommon.sendErrorsInRegistryResponse(er);
+                return false;
+            }
+
+            AdhocQueryRequest queryRequest = new AdhocQueryRequestParser(query).getAdhocQueryRequest();
+            String homeInRequest = queryRequest.getHome();
+
+            boolean homeRequired = !MetadataSupport.sqTakesPatientIdParam(queryRequest.queryId);
+            if (homeRequired) {
+                if (homeInRequest == null || homeInRequest.equals("")) {
+                    er.err(Code.XDSRegistryError, String.format("Query %s requires Home Community Id in request", MetadataSupport.getSQName(queryRequest.queryId)), this, "");
+                    dsSimCommon.sendErrorsInRegistryResponse(er);
+                    return false;
+                }
+            }
+
+            if (homeRequired && !configuredHomeCommunityId.equals(homeInRequest)) {
+                er.err(Code.XDSRegistryError, "HomeCommunityId in request (" +  homeInRequest + ") does not match configured value (" + configuredHomeCommunityId + ")", this, "");
+                dsSimCommon.sendErrorsInRegistryResponse(er);
+                return false;
+            }
+
+            // Handle forced error
+            PatientErrorMap patientErrorMap = getSimulatorConfig().getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
+            PatientErrorList patientErrorList = patientErrorMap.get(transactionType.name);
+            if (patientErrorList != null && !patientErrorList.isEmpty()) {
+                String patientId = queryRequest.patientId;
+                if (patientId != null) {
+                    Pid pid = PidBuilder.createPid(patientId);
+                    String error = patientErrorList.getErrorName(pid);
+                    if (error != null) {
+                        er.err(error, "Error forced because of Patient ID", "", Severity.Error.toString(), "");
+                        dsSimCommon.sendErrorsInRegistryResponse(er);
+                        return false;
+                    }
+                }
+            }
 
 			RemoteSqSim rss = new RemoteSqSim(common, dsSimCommon, this, getSimulatorConfig(), query);
 

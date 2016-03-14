@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server.gazelle.actorConfig;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
@@ -70,7 +70,7 @@ class SysConfig {
 		isAsync = entry.isAsync();
 
 		actorType = ActorType.findActor(actor);
-		trans = TransactionType.find(actorType, transId);
+		trans = actorType.getTransaction(transId);
 
 		repUid = configToXml.oConfigs.getRepUid(sysName);
 		oddsRepUid = configToXml.oConfigs.getODDSRepUid(sysName);

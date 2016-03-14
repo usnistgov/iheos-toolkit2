@@ -1,12 +1,13 @@
 package gov.nist.toolkit.itTests.xdr
-import gov.nist.toolkit.actorfactory.SimulatorProperties
-import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
-import gov.nist.toolkit.tookitApi.*
+import gov.nist.toolkit.toolkitApi.*
 import gov.nist.toolkit.toolkitServicesCommon.*
+import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentResource
 import gov.nist.toolkit.transactionNotificationService.TransactionLog
 import gov.nist.toolkit.transactionNotificationService.TransactionNotification
 import gov.nist.toolkit.utilities.xml.Util
@@ -114,7 +115,7 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
         RawSendRequest req = documentSource.newRawSendRequest()
 
         req.metadata = this.getClass().getResource('/testdata/PnR1Doc.xml').text
-        req.addDocument('Document01', new Document('text/plain', 'Hello World!'.bytes))
+        req.addDocument('Document01', new DocumentResource('text/plain', 'Hello World!'.bytes))
 
         RawSendResponse response = documentSource.sendProvideAndRegister(req)
 

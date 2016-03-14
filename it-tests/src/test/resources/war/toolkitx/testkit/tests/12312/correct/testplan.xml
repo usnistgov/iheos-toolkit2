@@ -13,7 +13,7 @@
       <Assertions>
         <DataRef file="THIS" as="output"/>
         <Assert id="OneDocument">
-              		count(//XCRTransaction[@step="retrieve_small"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"                    
+              		count(//XCRTransaction[@step="retrieve_small"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
          		</Assert>
       </Assertions>
     </XCRTransaction>
@@ -30,7 +30,7 @@
       <Assertions>
         <DataRef file="THIS" as="output"/>
         <Assert id="OneDocuments">
-              		count(//XCRTransaction[@step="retrieve_big"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"                    
+              		count(//XCRTransaction[@step="retrieve_big"]/Result[1]/*[local-name()='RetrieveDocumentSetResponse']/*[local-name()='DocumentResponse']) = "1"
          		</Assert>
       </Assertions>
     </XCRTransaction>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12021/query</Test>
+  <Rule>Retrieve metadata to get access to XDSDocumentEntry.repositoryUniqueId and XDSDocumentEntry.uniqueId</Rule>
+  <TestStep id="by_uid">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseId testdir="../submit" id="Document01" symbol="$docuid1$" step="submit" section="AssignedUids"/>
+      <UseId testdir="../submit" id="Document02" symbol="$docuid2$" step="submit" section="AssignedUids"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <Report name="repuid" section="Result">
+                //*[local-name()='ExtrinsicObject']/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+            </Report>
+      <ExpectedContents>
+        <Documents count="2"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,13 +1,11 @@
 package gov.nist.toolkit.sitemanagement.test
 
-import gov.nist.toolkit.actortransaction.client.TransactionType;
-
-import static org.junit.Assert.*
-
+import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType
-
 import org.junit.Test
+
+import static org.junit.Assert.*
 
 class TransactionBeanTest {
 

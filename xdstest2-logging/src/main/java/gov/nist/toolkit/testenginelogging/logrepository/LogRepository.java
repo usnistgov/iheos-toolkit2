@@ -156,4 +156,7 @@ public class LogRepository  {
         return null;
     }
 
+    public String getUser() {
+        return user;
+    }
 }

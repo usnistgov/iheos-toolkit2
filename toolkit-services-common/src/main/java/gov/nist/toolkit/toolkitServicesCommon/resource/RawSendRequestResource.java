@@ -1,11 +1,13 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
-import gov.nist.toolkit.toolkitServicesCommon.Document;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -16,7 +18,7 @@ public class RawSendRequestResource extends SimIdResource implements RawSendRequ
     boolean tls = false;
     String metadata;
     List<String> extraHeaders = new ArrayList<String>();
-    Map<String, Document> documents = new HashMap<String, Document>();
+    Map<String, DocumentResource> documents = new HashMap<String, DocumentResource>();
 
     public RawSendRequestResource() {}
 
@@ -28,7 +30,7 @@ public class RawSendRequestResource extends SimIdResource implements RawSendRequ
     }
 
     @Override
-    public void addDocument(String id, Document doc) {
+    public void addDocument(String id, DocumentResource doc) {
         documents.put(id, doc);
     }
 
@@ -75,11 +77,11 @@ public class RawSendRequestResource extends SimIdResource implements RawSendRequ
     }
 
     @Override
-    public Map<String, Document> getDocuments() {
+    public Map<String, DocumentResource> getDocuments() {
         return documents;
     }
 
-    public void setDocuments(Map<String, Document> documents) {
+    public void setDocuments(Map<String, DocumentResource> documents) {
         this.documents = documents;
     }
 }

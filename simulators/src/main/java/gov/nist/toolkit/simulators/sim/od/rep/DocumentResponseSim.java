@@ -41,11 +41,23 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 		try {
 			response = new RetrieveMultipleResponse();
 
+			/***
+			 * Document Response WBS:
+			 * A) Check if persistence option is enabled for this sim, if it is on, then:
+			 *
+			 *  1) Get content state,
+			 *  	a) if not in the last section, do a PnR (using api.runTest and replacing the prior document as needed) with the current section in the content bundle
+			 *  	c)  return previous document if reached end of content state
+			 *  3) Get the StoredDocument resulting from the PnR (store the document entry Uuid)
+			 *  4) Set NewDocumentId in the response
+			 * B) If no persistence, then just serve up the content from disk
+			 */
+
 			// At this point, there are no documents in this repository, so insert a fake one here.
-			// Begin insert a fake document here
+
 			String dynamicDocumentUuid = "od-doc-uid";
 			StoredDocument storedDocument = repIndex.getDocumentCollection().getStoredDocument(dynamicDocumentUuid);
-			if (storedDocument==null) {
+			if (storedDocument==null) { 			// Begin insert a fake document here
 				storedDocument =  new StoredDocument("nonexistent-od-file-path",dynamicDocumentUuid);
 				storedDocument.setContent("This content is served on-demand.".getBytes());
 				storedDocument.setMimetype("text/plain");

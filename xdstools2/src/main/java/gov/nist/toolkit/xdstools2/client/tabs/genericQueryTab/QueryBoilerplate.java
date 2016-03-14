@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.RadioButton;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 
@@ -47,6 +47,7 @@ public class QueryBoilerplate {
 		if (GenericQueryTab.transactionOfferings == null) {
 			genericQueryTab.reloadTransactionOfferings();
 		} else {
+            // TODO - this probablt needs to change to true
 			genericQueryTab.redisplay(false);
 		}
 	}

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.session.server
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.client.Pid
+import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.envSetting.EnvSetting
 import gov.nist.toolkit.installation.ExternalCacheManager

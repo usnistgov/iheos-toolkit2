@@ -387,6 +387,8 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 	public static MessageValidatorEngine validateBasedOnValidationContext(
 			ErrorRecorderBuilder erBuilder, OMElement xml,
 			MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
+		logger.debug("messageValidatorEngine#validateBasedOnValidationContext");
+		logger.debug(" VC: " + vc.toString());
 
 		String rootElementName = null;
 
@@ -468,6 +470,21 @@ public class MessageValidatorFactory implements MessageValidatorFactory2I {
 				mvc.addMessageValidator("RetrieveDocumentSetResponse", new RetrieveResponseValidator(vc, xml, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
 				return mvc;
 			}
+
+		} else if (vc.isRad69) {
+			if (vc.isRequest) {
+				mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
+				validateToplevelElement(erBuilder, mvc, "RetrieveImagingDocumentSetRequest", rootElementName);
+				mvc.addMessageValidator("RetrieveImagingDocumentSetRequest", new RetrieveImagingDocumentSetRequestValidator(vc, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
+				return mvc;
+			} else {
+				validateToplevelElement(erBuilder, mvc, "RetrieveDocumentSetResponse", rootElementName);
+				mvc.addMessageValidator("RetrieveDocumentSetResponse", new RetrieveResponseValidator(vc, xml, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
+				return mvc;
+			}
+
+
+
 		} else if (vc.isSQ) {
 			if (vc.isRequest) {
 				validateToplevelElement(erBuilder, mvc, "AdhocQueryRequest", rootElementName);

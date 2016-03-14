@@ -234,7 +234,7 @@ public class PlanContext extends BasicContext {
 					step_context.setTestConfig(testConfig);
 					step_context.setTransationSettings(transactionSettings);
 
-					step_context.run(part, this);
+                    step_context.run(part, this);
 
 					if ( !step_context.getStatus() )
 						status = false;
@@ -274,13 +274,14 @@ public class PlanContext extends BasicContext {
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
-			throw e;  // error handler above reports error in UI
+			 throw e;  // error handler above reports error in UI
 		}
 
 		if (writeLogFiles) {
 			File logFile = null;
 			try {
 				logFile = testConfig.logFile;
+                logger.info("Writing log file " + logFile);
 				FileOutputStream os = new FileOutputStream(logFile);
 				//System.out.println(results_document.toString());
 				//String results_string = results_document.toString();
@@ -296,11 +297,9 @@ public class PlanContext extends BasicContext {
 //				phone_home_log_files.add(results_document);
 
 			} catch (FileNotFoundException e) {
-				System.out.println("Cannot create file log.xml (" + logFile + ")");
-				System.exit(-1);
+				logger.fatal("Cannot create file log.xml (" + logFile + ")");
 			} catch (IOException e) {
-				System.out.println("Cannot write to file log.xml (" + logFile + ")");
-				System.exit(-1);
+				logger.fatal("Cannot write to file log.xml (" + logFile + ")");
 			}
 		}
 

@@ -5,11 +5,13 @@ import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,14 +25,12 @@ import java.util.List;
  */
 public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 
-	static final String repositoryUniqueIdBase = "1.1.4567248.1."; // It is an arbitrary value. "248" is a hint of the On-Demand object type UUID, which ends in "248."
+	static final String repositoryUniqueIdBase = "1.1.4567248.1."; // It is an arbitrary value.
 	static int repositoryUniqueIdIncr = 1;
 	boolean isRecipient = false;
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(
-				// TODO: The PnR part will be added later
-//				TransactionType.PROVIDE_AND_REGISTER,
 				TransactionType.RETRIEVE);
 
 
@@ -50,13 +50,13 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 
 		// Repository
 		addEditableConfig(sc, SimulatorProperties.repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
-		// TODO: The PnR part will be added later
-//		addFixedEndpoint(sc, SimulatorProperties.pnrEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, false);
-//		addFixedEndpoint(sc, SimulatorProperties.pnrTlsEndpoint, actorType, TransactionType.PROVIDE_AND_REGISTER, true);
+
 		addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.ODDS_RETRIEVE, false);
 		addFixedEndpoint(sc, SimulatorProperties.retrieveTlsEndpoint, actorType, TransactionType.ODDS_RETRIEVE, true);
-//		addFixedEndpoint(sc, SimulatorProperties.registerEndpoint, actorType, TransactionType.REGISTER, false);
-//		addFixedEndpoint(sc, SimulatorProperties.registerTlsEndpoint, actorType, TransactionType.REGISTER, true);
+
+		addEditableConfig(sc, SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, ParamType.BOOLEAN, true);
+		addEditableConfig(sc, SimulatorProperties.oddsRepositorySite, ParamType.SELECTION, new ArrayList<String>(), false);
+		addEditableConfig(sc, SimulatorProperties.contentBundle, ParamType.TEXT, "15812/Register_OD/ContentBundle");
 
 		return new Simulator(sc);
 	}
@@ -78,22 +78,6 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 		site.user = asc.getId().user;  // labels this site as coming from a sim
 
 		boolean isAsync = false;
-
-		// TODO: The PnR part will be added later
-		/*
-		site.addTransaction(new TransactionBean(
-				TransactionType.PROVIDE_AND_REGISTER.getCode(),
-				RepositoryType.NONE,
-				asc.get(SimulatorProperties.pnrEndpoint).asString(),
-				false, 
-				isAsync));
-		site.addTransaction(new TransactionBean(
-				TransactionType.PROVIDE_AND_REGISTER.getCode(),
-				RepositoryType.NONE,
-				asc.get(SimulatorProperties.pnrTlsEndpoint).asString(),
-				true, 
-				isAsync));
-		*/
 
 		site.addRepository(new TransactionBean(
 				asc.get(SimulatorProperties.repositoryUniqueId).asString(),

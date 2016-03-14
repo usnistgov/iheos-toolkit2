@@ -1,5 +1,7 @@
 package gov.nist.toolkit.actortransaction.client;
 
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+
 import java.io.Serializable;
 
 /**

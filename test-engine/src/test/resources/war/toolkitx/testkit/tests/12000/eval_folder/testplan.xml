@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12000/eval_folder</Test>
+  <TestStep id="eval_folder">
+    <Goal>Retrieve Folder and its initial DocumentEntry using GetSubmissionSetAndContents query</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="ssuid" section="submit" step="submit_doc_w_fol" useAs="$ssuid$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents>
+        <SSwithOneDocOneFol/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+</TestPlan>

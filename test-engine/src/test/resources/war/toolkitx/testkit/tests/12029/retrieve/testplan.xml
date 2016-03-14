@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12029/retrieve</Test>
+  <TestStep id="retrieve">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RetrieveTransaction>
+      <UseReport reportName="repuid" section="query" step="by_uid" useAs="$repuid$"/>
+      <UseReport reportName="Document01_uid" section="submit" step="submit" useAs="$docuid1$"/>
+      <ReferenceMetadata testdir="../query" step="by_uid"/>
+      <XDSb/>
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents/>
+      <ReferenceDocument uid="$docuid1$">submit/my_document.pdf</ReferenceDocument>
+    </RetrieveTransaction>
+  </TestStep>
+</TestPlan>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12323/verify_time_updated</Test>
+  <TestStep id="verify_time_updated">
+    <Goal>Get Folder</Goal>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <StoredQueryTransaction>
+      <XDSb/>
+      <UseReport reportName="folid" section="has_time" step="has_time" useAs="$uuid1$"/>
+      <MetadataFile>query.xml</MetadataFile>
+      <Report name="updated_time" section="Result">
+				//*[local-name()='AdhocQueryResponse']/*[local-name()='RegistryObjectList']/*[local-name()='RegistryPackage']/*[local-name()='Slot'][@name='lastUpdateTime']/*[local-name()='ValueList']/*[local-name()='Value']
+			</Report>
+      <ExpectedContents>
+        <SubmissionSets count="0"/>
+        <Associations count="1"/>
+        <Documents count="1"/>
+        <Folders count="1"/>
+      </ExpectedContents>
+    </StoredQueryTransaction>
+  </TestStep>
+  <TestStep id="validation">
+    <Goal>Verify folder lastUpdatedTime has been updated with DocumentEntry
+			addition</Goal>
+    <NullTransaction>
+      <UseReport reportName="original_time" section="verify_has_submission_time" step="verify_has_time_submission" useAs="original_folder_time"/>
+      <UseReport reportName="updated_time" section="THIS" step="verify_time_updated" useAs="updated_folder_time"/>
+      <Assertions>
+        <Assert id="dateUpdated">
+					'original_folder_time' != 'updated_folder_time'
+                </Assert>
+      </Assertions>
+    </NullTransaction>
+  </TestStep>
+</TestPlan>

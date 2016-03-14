@@ -1,6 +1,7 @@
 package gov.nist.toolkit.simulators.sim.reg;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
@@ -25,7 +26,8 @@ public class AdhocQueryResponseGenerator extends TransactionSimulator implements
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
 		ahqr = querySim.getAdhocQueryResponse();
 		try {
-			ahqr.add(dsSimCommon.getRegistryErrorList(), null);
+            RegistryErrorListGenerator errGen = dsSimCommon.getRegistryErrorList();
+			ahqr.add(errGen, null);
 		} catch (XdsInternalException e) {
 			e.printStackTrace();
 		}

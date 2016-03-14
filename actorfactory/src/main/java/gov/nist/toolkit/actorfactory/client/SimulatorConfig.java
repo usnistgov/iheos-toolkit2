@@ -2,6 +2,7 @@ package gov.nist.toolkit.actorfactory.client;
 
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
@@ -196,6 +197,13 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 		return actorType;
 	}
     public void setActorType(String type) { actorType = type; }
+
+    public String getActorTypeFullName() {
+        String actorTypeName = getActorType();
+        ActorType type = ActorType.findActor(actorTypeName);
+        if (type == null) return actorTypeName;
+        return type.getName();
+    }
 	
 	public SimulatorConfigElement get(String name) {
 		for (SimulatorConfigElement ele : elements) {

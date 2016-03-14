@@ -34,7 +34,7 @@ public class TestDetails  {
 		"selftest", "development", "utilities", "xcpd", "collection", "static.collections"};
 	static final String testPlanFileName = "testplan.xml";
 
-	public String toString() { return "[TestSpec: testkit=" + testkit + " area=" + area +
+	public String toString() { return "[TestDetails: testkit=" + testkit + " area=" + area +
 		"<br />testnum=" + testInstance +
 		"<br />sections= " + testPlansToString() +
 		"<br />logs= " + sectionLogMap.toString() +
@@ -269,13 +269,17 @@ public class TestDetails  {
 	public SectionTestPlanFileMap getTestPlans() throws Exception {
 
 		File index = new File(getTestDir() + File.separator + "index.idx");
-		if (index.exists()) 
-			return getTestPlansFromIndex(index);
-		else 
-			return getTestPlanFromDir(getTestDir());
+		return getSectionTestPlanFileMap(index);
 
 	}
-	
+
+	private SectionTestPlanFileMap getSectionTestPlanFileMap(File index) throws Exception {
+		if (index.exists())
+			return getTestPlansFromIndex(index);
+		else
+			return getTestPlanFromDir(getTestDir());
+	}
+
 	public File getIndexFile() {
 		return new File(getTestDir() + File.separator + "index.idx");
 	}

@@ -8,6 +8,12 @@
             <version>2.202.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>toolkit-api</artifactId>
+            <version>2.202.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <parent>
@@ -69,6 +75,9 @@
         <module>transaction-notification-service</module>
         <module>grizzly-support</module>
         <module>sim-test-servlet</module>
+        <module>config-datatypes</module>
+        <module>config-datatypes-io</module>
+        <module>it-tests</module>
     </modules>
 
 
@@ -86,7 +95,7 @@
                         <!--<group>-->
                             <!--<title>API Documentation</title>-->
                             <!--<packages>-->
-                                <!--gov.nist.toolkit.tookitApi*:gov.nist.toolkit.toolkitServicesCommon*-->
+                                <!--gov.nist.toolkit.toolkitApii*:gov.nist.toolkit.toolkitServicesCommon*-->
                             <!--</packages>-->
                         <!--</group>-->
                     <!--</groups>-->

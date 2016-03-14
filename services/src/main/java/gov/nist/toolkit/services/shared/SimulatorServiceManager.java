@@ -7,6 +7,7 @@ import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
@@ -289,7 +290,7 @@ public class SimulatorServiceManager extends CommonService {
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
 		logger.debug(session.id() + ": " + "saveSimConfig");
 		try {
-			SimManager simManager = new SimCache().getSimManagerForSession(session.id(), true);
+			SimManager simManager = SimCache.getSimManagerForSession(session.id(), true);
 			new GenericSimulatorFactory(simManager).saveConfiguration(config);
 		} catch (IOException e) {
 			logger.error("saveSimConfig", e);
@@ -303,6 +304,13 @@ public class SimulatorServiceManager extends CommonService {
         SimulatorConfig config = SimCache.getSimulatorConfig(simId);
         if (config != null)
             return deleteConfig(config);
+        if (new SimDb().exists(simId)) {
+            try {
+                new SimDb(simId).delete();
+            } catch (Exception e) {
+                // ignore
+            }
+        }
         return "";
     }
 
@@ -373,48 +381,43 @@ public class SimulatorServiceManager extends CommonService {
 		return vm.runValidation(vc, message, input2, gerb);
 	}
 
-	public List<SimulatorStats> getSimulatorStats(List<SimId> simIds) throws IOException, NoSimException {
-		logger.debug(session.id() + ": " + "getSimulatorStats for " + simIds);
-		try {
-			List<SimulatorStats> stats = new ArrayList<>();
-			for (SimId simId : simIds) {
-				SimDb db = new SimDb(simId);
-				if (db.getSimulatorActorType() == ActorType.REGISTRY) {
-					stats.add(RegistryActorSimulator.getSimulatorStats(simId));
-				}
-				else if (db.getSimulatorActorType() == ActorType.REPOSITORY ||
-                         db.getSimulatorActorType() == ActorType.ONDEMAND_DOCUMENT_SOURCE) {
-					stats.add(RepositoryActorSimulator.getSimulatorStats(simId));
-				}
-				else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
-					SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
-					SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
-					rep.add(reg);
-					stats.add(rep);
-				}
-				else if (db.getSimulatorActorType() == ActorType.DOCUMENT_RECIPIENT) {
-					SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
-					SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
-					rep.add(reg);
-					stats.add(rep);
-				}
-                else if (db.getSimulatorActorType() == ActorType.RESPONDING_GATEWAY) {
-                    SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
-                    SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
-                    rep.add(reg);
-                    stats.add(rep);
-                }
-				else {
-                    stats.add(new SimulatorStats(simId));
-					logger.debug("Don't recognize actorType - " + db.getSimulatorActorType());
-				}
-			}
-			return stats;
-		} catch (Exception e) {
-			logger.error(ExceptionUtil.exception_details(e, "getSimulatorStats"));
-			throw e;
-		}
-	}
+   public List <SimulatorStats> getSimulatorStats(List <SimId> simIds) throws IOException, NoSimException {
+      logger.debug(session.id() + ": " + "getSimulatorStats for " + simIds);
+      try {
+         List <SimulatorStats> stats = new ArrayList <>();
+         for (SimId simId : simIds) {
+            SimDb db = new SimDb(simId);
+            if (db.getSimulatorActorType() == ActorType.REGISTRY) {
+               stats.add(RegistryActorSimulator.getSimulatorStats(simId));
+            } else if (db.getSimulatorActorType() == ActorType.REPOSITORY
+               || db.getSimulatorActorType() == ActorType.ONDEMAND_DOCUMENT_SOURCE) {
+               stats.add(RepositoryActorSimulator.getSimulatorStats(simId));
+            } else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
+               SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
+               SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
+               rep.add(reg);
+               stats.add(rep);
+            } else if (db.getSimulatorActorType() == ActorType.DOCUMENT_RECIPIENT) {
+               SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
+               SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
+               rep.add(reg);
+               stats.add(rep);
+            } else if (db.getSimulatorActorType() == ActorType.RESPONDING_GATEWAY) {
+               SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
+               SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
+               rep.add(reg);
+               stats.add(rep);
+            } else {
+               stats.add(new SimulatorStats(simId));
+               logger.debug("Don't recognize actorType - " + db.getSimulatorActorType());
+            }
+         }
+         return stats;
+      } catch (Exception e) {
+         logger.error(ExceptionUtil.exception_details(e, "getSimulatorStats"));
+         throw e;
+      }
+   }
 
 	public List<Pid> getPatientIds(SimId simId) throws IOException, NoSimException {
 		SimDb db = new SimDb(simId);

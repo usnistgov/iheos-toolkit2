@@ -78,7 +78,7 @@ public class QueryRequestMessageValidator extends AbstractMessageValidator {
 			er.detail("Query Parameters are:");
 			ParamParser parser = new ParamParser();
 			for (OMElement slot : XmlUtil.childrenWithLocalName(ahq, "Slot")) {
-				SlotParse sp = parser.parseSingleSlot(slot);
+				SlotParse sp = parser.parseSingleSlot(slot,true);
 				er.detail(sp.name + " ==> " + sp.rawValues);
 				er.detail(".    .    . yields values " + sp.values);
 				for (String error : sp.errs) {

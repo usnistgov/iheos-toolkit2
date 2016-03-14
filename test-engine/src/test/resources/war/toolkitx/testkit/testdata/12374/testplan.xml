@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>12374</Test>
+  <Rule>Submit data to XDS.b registry to support SQ testing</Rule>
+  <TestStep id="register_new_patient_id">
+    <Rule>
+      <Transaction>Patient Identity Feed</Transaction>
+      <Assertion>Send to Registry</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <PatientIdentityFeedTransaction>
+      <XDSb/>
+      <CreateNewPatientId/>
+      <NoMetadata/>
+    </PatientIdentityFeedTransaction>
+  </TestStep>
+  <TestStep id="submit_doc">
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Single document submission supports various query testing</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="submit_doc_w_fol">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Single document in a folder submission supports various query
+                testing</Assertion>
+    </Rule>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc_w_fol.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="submit_2doc_w_fol">
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Two documents in a folder submission supports various query
+                testing</Assertion>
+    </Rule>
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>two_doc_w_fol.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="submit_doc_for_rplc">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Single document submission supports RPLC</Assertion>
+    </Rule>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <MetadataFile>single_doc_for_rplc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="rplc">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <Rule>
+      <Transaction>R</Transaction>
+      <Assertion>Issue RPLC</Assertion>
+    </Rule>
+    <RegisterTransaction>
+      <XDSb/>
+      <AssignUuids/>
+      <UseId id="Document01" symbol="$rplc_doc_uuid$" step="submit_doc_for_rplc" section="AssignedUuids"/>
+      <MetadataFile>rplc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+  <TestStep id="reset_patient_id">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <NewPatientId/>
+  </TestStep>
+</TestPlan>
