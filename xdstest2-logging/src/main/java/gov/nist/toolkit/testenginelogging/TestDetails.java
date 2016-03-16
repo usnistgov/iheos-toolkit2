@@ -269,13 +269,17 @@ public class TestDetails  {
 	public SectionTestPlanFileMap getTestPlans() throws Exception {
 
 		File index = new File(getTestDir() + File.separator + "index.idx");
-		if (index.exists()) 
-			return getTestPlansFromIndex(index);
-		else 
-			return getTestPlanFromDir(getTestDir());
+		return getSectionTestPlanFileMap(index);
 
 	}
-	
+
+	private SectionTestPlanFileMap getSectionTestPlanFileMap(File index) throws Exception {
+		if (index.exists())
+			return getTestPlansFromIndex(index);
+		else
+			return getTestPlanFromDir(getTestDir());
+	}
+
 	public File getIndexFile() {
 		return new File(getTestDir() + File.separator + "index.idx");
 	}

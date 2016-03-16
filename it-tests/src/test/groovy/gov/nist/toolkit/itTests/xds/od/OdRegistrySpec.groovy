@@ -7,7 +7,7 @@ import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.testengine.scripts.BuildCollections
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
 /**
  * Test the Register transaction

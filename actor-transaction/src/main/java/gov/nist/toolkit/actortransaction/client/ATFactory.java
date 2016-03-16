@@ -2,6 +2,7 @@ package gov.nist.toolkit.actortransaction.client;
 
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 import java.io.Serializable;
 import java.util.*;
@@ -26,7 +27,7 @@ public class ATFactory implements IsSerializable, Serializable {
 	static {
 		
 		for (TransactionType tr : TransactionType.values()) {
-			transactionMapByCode.put(tr.code, tr);
+			transactionMapByCode.put(tr.getCode(), tr);
 		}
 	}
 
@@ -66,7 +67,7 @@ public class ATFactory implements IsSerializable, Serializable {
 			return null;
 		
 		for (TransactionType trans : TransactionType.values()) {
-			if (trans.shortName.equals(name))
+			if (trans.getShortName().equals(name))
 				return trans;
 		}
 		return null;

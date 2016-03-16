@@ -7,16 +7,14 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-
-import java.util.List;
 
 /**
  * Manages the content of a single Simulator on the screen
@@ -120,9 +118,10 @@ class SimConfigMgr {
                 row++;
             }
 
+
             else if (SimulatorProperties.errorForPatient.equals(ele.name)) {
                 final SimulatorConfigElement configEle = ele;
-                List<TransactionType> transactionTypes = ActorType.findActor(config.getActorType()).getTransactions();
+//                List<TransactionType> transactionTypes = ActorType.findActor(config.getActorType()).getTransactions();
                 ActorType actorType = ActorType.findActor(config.getActorType());
                 final PatientErrorMap map = config.getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
                 final PatientErrorMapPresenter presenter = new PatientErrorMapPresenter(map, actorType, simulatorControlTab.toolkitService);
@@ -134,6 +133,25 @@ class SimConfigMgr {
                             public void onClick(ClickEvent clickEvent) {
                                 configEle.setValue(map);
 //                                saveSimConfig();
+                            }
+                        }
+                );
+                row++;
+            }
+
+            // Selecting a Repository for the ODDS
+            else if (SimulatorProperties.oddsRepositorySite.equals(ele.name)) {
+                final SimulatorConfigElement configEle = ele;
+                HorizontalPanel siteBoxes = new HorizontalPanel();
+                final SiteSelectionPresenter siteSelectionPresenter = new SiteSelectionPresenter(simulatorControlTab.toolkitService, TransactionType.PROVIDE_AND_REGISTER.getName(), configEle.asList(), siteBoxes);
+                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+                tbl.setWidget(row, 1, siteBoxes);
+                saveButton.addClickHandler(
+                        new ClickHandler() {
+                            @Override
+                            public void onClick(ClickEvent clickEvent) {
+                                configEle.setValue(siteSelectionPresenter.getSelected());
+                                saveSimConfig();
                             }
                         }
                 );

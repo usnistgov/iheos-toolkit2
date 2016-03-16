@@ -1,7 +1,7 @@
 package gov.nist.toolkit.itTests.xds.od
 
 import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.installation.Installation
@@ -9,7 +9,7 @@ import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.testengine.scripts.BuildCollections
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
 
 /**
@@ -21,7 +21,7 @@ class OdSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     String patientId = 'SR14^^^&1.2.460&ISO'
-    String reg = 'sunil__rr'
+    String reg = 'sunil__rr2'
     SimId simId = new SimId(reg)
     @Shared String testSession = 'sunil';
 
@@ -36,18 +36,18 @@ class OdSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('rr', testSession)
+        spi.delete('rr2', testSession)
 
         spi.create(
-                'rr',
+                'rr2',
                 testSession,
                 SimulatorActorType.REPOSITORY_REGISTRY,
                 'test')
 
-        spi.delete('odds', testSession)
+        spi.delete('odds2', testSession)
 
         spi.create(
-                'odds',
+                'odds2',
                 testSession,
                 SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
                 'test')
@@ -71,7 +71,7 @@ class OdSpec extends ToolkitSpecification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__rr'
+        String siteName = 'sunil__rr2'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -90,7 +90,7 @@ class OdSpec extends ToolkitSpecification {
 
     def 'Run all tests'() {
         when:
-        String siteName = 'sunil__rr'
+        String siteName = 'sunil__rr2'
         TestInstance testId = new TestInstance("15806")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
@@ -111,7 +111,7 @@ class OdSpec extends ToolkitSpecification {
      */
     def 'Run retrieve tests'() {
         when:
-        String siteName = 'sunil__odds'
+        String siteName = 'sunil__odds2'
         TestInstance testId = new TestInstance("15806")
         List<String> sections = ["Retrieve"]
         Map<String, String> params = new HashMap<>()

@@ -1,15 +1,13 @@
 package gov.nist.toolkit.configDatatypes.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by bill on 9/23/15.
+ *
  */
-public class PidSet implements Serializable, IsSerializable {
+public class PidSet implements Serializable {
     Set<Pid> pids = new HashSet<>();
 
     public PidSet() {}

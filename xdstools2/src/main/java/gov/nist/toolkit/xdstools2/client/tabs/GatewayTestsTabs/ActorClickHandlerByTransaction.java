@@ -2,7 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 class ActorClickHandlerByTransaction implements ClickHandler {
 	/**

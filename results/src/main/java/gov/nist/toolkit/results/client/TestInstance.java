@@ -1,8 +1,8 @@
 package gov.nist.toolkit.results.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Identify a test instance, the combination of a test definition and the state of the running test.
@@ -116,7 +116,7 @@ public class TestInstance implements IsSerializable, Serializable {
 		return id;
 	}
 
-	// these should only be ued by TestIdBuilder which extends this class
+	// these should only be used by TestIdBuilder which extends this class
 	// with stuff that cannot be part of GWT
 	public String getInternalEvent() { return event; }
 	public void setInternalEvent(String e) { event = e; }

@@ -1,7 +1,7 @@
 package gov.nist.toolkit.actorfactory;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.SeparateSiteLoader;
@@ -70,6 +70,29 @@ public class SiteServiceManager {
 				ss.add(s.getName());
 		}
 		return ss;
+	}
+
+	public List<String> getSiteNamesByTran(String tranTypeStr, String sessionId) throws Exception {
+		logger.debug(sessionId + ": " + "getSiteNamesWithRep");
+		List<String> pnrSites = null;
+		try {
+			Collection<Site> siteCollection = new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection();
+
+			Sites theSites = new Sites(siteCollection);
+
+			TransactionType transactionType = TransactionType.find(tranTypeStr);
+
+			if (transactionType!=null) {
+				pnrSites = theSites.getSiteNamesWithTransaction(transactionType);
+			} else {
+				logger.error("transactionType is null.");
+			}
+
+		} catch (Exception e) {
+			logger.error(e.toString());
+		}
+		return pnrSites;
+
 	}
 	
 	public List<String> getSiteNames(String sessionId, boolean reload, boolean returnSimAlso)   {

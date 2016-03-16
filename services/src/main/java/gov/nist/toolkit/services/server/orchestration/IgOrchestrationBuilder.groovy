@@ -2,11 +2,15 @@ package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.actorfactory.SimDb
-import gov.nist.toolkit.actorfactory.SimulatorProperties
-import gov.nist.toolkit.configDatatypes.client.Pid
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.configDatatypes.client.TransactionType
+import gov.nist.toolkit.configDatatypes.client.PatientError
+import gov.nist.toolkit.configDatatypes.client.PatientErrorList
+import gov.nist.toolkit.configDatatypes.client.PatientErrorMap
+import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.SiteBuilder
 import gov.nist.toolkit.results.client.TestInstance
@@ -29,6 +33,7 @@ class IgOrchestrationBuilder {
     Pid oneDocPid
     Pid twoDocPid
     Pid twoRgPid
+    Pid registryError
     ToolkitApi api
     Util util
     List<SimulatorConfig> rgConfigs = []
@@ -48,33 +53,43 @@ class IgOrchestrationBuilder {
             oneDocPid = session.allocateNewPid()
             twoDocPid = session.allocateNewPid()
             twoRgPid = session.allocateNewPid()
+            registryError = session.allocateNewPid()
 
-            buildRGs()
+            buildRGs(registryError)
 
-            String home1 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
+            String home0 = rgConfigs.get(0).get(SimulatorProperties.homeCommunityId).asString()
+            String home1 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
 
             // Submit test data
-            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc1', oneDocPid, home1)
-            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'twodoc', twoDocPid, home1)
+            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc1', oneDocPid, home0)
+            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'twodoc', twoDocPid, home0)
+
 
             Map<String, String> params
             params = [
                     '$patientid$': twoRgPid.asString(),
-                    '$testdata_home$': home1,
+                    '$testdata_home$': home0,
                     '$testdata_repid$': rgConfigs[0].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
             util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(0).id), new TestInstance("15807"), 'onedoc2', params)
 
-            String home2 = rgConfigs.get(1).get(SimulatorProperties.homeCommunityId).asString()
             params = [
                     '$patientid$': twoRgPid.asString(),
-                    '$testdata_home$': home2,
+                    '$testdata_home$': home1,
                     '$testdata_repid$': rgConfigs[1].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
             util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'onedoc3', params)
+
+            params = [
+                    '$patientid$': registryError.asString(),
+                    '$testdata_home$': home1,
+                    '$testdata_repid$': rgConfigs[1].getConfigEle(SimulatorProperties.repositoryUniqueId).asString()]
+            util.submit(request.userName, SiteBuilder.siteSpecFromSimId(rgConfigs.get(1).id), new TestInstance("15807"), 'registryError', params)
+
 
             IgOrchestrationResponse response = new IgOrchestrationResponse()
             response.oneDocPid = oneDocPid
             response.twoDocPid = twoDocPid
             response.twoRgPid = twoRgPid
+            response.unknownPid = registryError
             response.simulatorConfigs = rgConfigs
             response.igSimulatorConfig = igConfig
 
@@ -84,7 +99,7 @@ class IgOrchestrationBuilder {
         }
     }
 
-    void buildRGs() {
+    void buildRGs(Pid unknownPid) {
         // build and initialize remote communities
         String id1 = 'rg1'
         String id2 = 'rg2'
@@ -101,12 +116,26 @@ class IgOrchestrationBuilder {
         SimCache.addToSession(Installation.defaultSessionName(), rgSimConfig2)
 
         SimulatorConfigElement rgEle
+
         // disable checking of Patient Identity Feed
         rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.VALIDATE_AGAINST_PATIENT_IDENTITY_FEED)
         rgEle.setValue(false)
+
         // set fixed homeCommunityId
         rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.homeCommunityId)
         rgEle.setValue('urn:oid:1.2.34.567.8.1')
+
+        // config rg1 to return XDSUnknownPatientId for registryError query requests
+        rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.errorForPatient)
+        PatientErrorMap pem = new PatientErrorMap()
+        PatientErrorList pel = new PatientErrorList()
+        PatientError pe = new PatientError()
+        pe.setPatientId(unknownPid)
+        pe.setErrorCode('XDSRegistryError')
+        pel.add(pe)
+        pem.put(TransactionType.XC_QUERY.name, pel)
+        rgEle.setValue(pem)
+
         api.saveSimulator(rgSimConfig1)
 
         // disable checking of Patient Identity Feed
