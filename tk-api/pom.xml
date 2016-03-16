@@ -16,6 +16,7 @@
     <modules>
         <module>../toolkit-api</module>
         <module>../toolkit-services-common</module>
+        <module>../config-datatypes</module>
     </modules>
 
 </project>
