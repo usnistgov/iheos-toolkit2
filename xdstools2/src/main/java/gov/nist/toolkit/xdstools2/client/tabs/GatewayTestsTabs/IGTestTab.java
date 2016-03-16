@@ -94,10 +94,10 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
         ////////////////////////////////////////////////////////////////////////////////////////////////
         topPanel.add(new HTML("<h1>Initiating Gateway Test Tool</h1>"));
 
-        Image diagram=new Image();
-        diagram.setUrl("diagrams/ig_diagram.png");
-        diagram.setHeight("300px");
-        topPanel.add(diagram);
+        Image initiatingGatewayDiagram=new Image();
+        initiatingGatewayDiagram.setUrl("diagrams/IGdiagram.png");
+        initiatingGatewayDiagram.setHeight("300px");
+        topPanel.add(initiatingGatewayDiagram);
 
         topPanel.add(new HTML("<p>" +
                 "This tool tests an Initiating Gateway with Affinity Domain option.  The tests are driven by " +
