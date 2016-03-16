@@ -78,7 +78,6 @@
         <module>config-datatypes</module>
         <module>config-datatypes-io</module>
         <module>it-tests</module>
-        <module>tk-api</module>
     </modules>
 
 
