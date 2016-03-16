@@ -85,22 +85,6 @@
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-javadoc-plugin</artifactId>-->
-                <!--<version>2.10.3</version>-->
-                <!--<configuration>-->
-                    <!--<aggregate>true</aggregate>-->
-                    <!--<groups>-->
-                        <!--<group>-->
-                            <!--<title>API Documentation</title>-->
-                            <!--<packages>-->
-                                <!--gov.nist.toolkit.toolkitApii*:gov.nist.toolkit.toolkitServicesCommon*-->
-                            <!--</packages>-->
-                        <!--</group>-->
-                    <!--</groups>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>com.bluetrainsoftware.maven</groupId>
                 <artifactId>groovydoc-maven-plugin</artifactId>
