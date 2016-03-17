@@ -127,7 +127,7 @@ class IgOrchestrationBuilder {
         rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.homeCommunityId)
         rgEle.setValue('urn:oid:1.2.34.567.8.1')
 
-        // config rg1 to return XDSUnknownPatientId for registryError query requests
+        // config rg1 to return XDSRegistryError for registryError query requests
         rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.errorForPatient)
         PatientErrorMap pem = new PatientErrorMap()
         PatientErrorList pel = new PatientErrorList()

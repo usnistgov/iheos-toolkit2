@@ -82,7 +82,11 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
                         "Initiating Gateway " +
                         "selected below. This will start the test. Before running a test, make sure your " +
                         "Initiating Gateway is configured to send to the Responding Gateways above.  This " +
-                        "test only uses non-TLS endpoints (for now). TLS selection is disabled.</p>"
+                        "tool uses only non-TLS endpoints. TLS selection is disabled.</p>" +
+
+                        "<br />It may ne necessary to refresh the selection list at times.  The Reload button" +
+                        " at the top of the screen performs this refresh."
+
         );
         addResultsPanel = false;  // manually done below
 
@@ -97,7 +101,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
                 "a Document Consumer as defined by the Affinity Domain option. The Initiating Gateway " +
                 "(System Under Test) will " +
                 "be configured to relay requests to two Responding Gateways. This tool supplies the " +
-                "Responding Gateways. " +
+                "Document Consumer and Responding Gateways as Toolkit supported simulators. " +
                 "Each of the Responding Gateways is backed by a Registry and a Repository which will be loaded " +
                 "with supporting test data. The test data patterns needed for testing are assigned to different " +
                 "Patient IDs so that once the Initiating Gateway SUT is configured, different test environments " +
@@ -108,7 +112,6 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
                 "These simulators and " +
                 "their logs will be maintained in a test session you create for this test. At the top of the window, " +
                 "create a new test session and select it. " +
-                "<br /><br />WARNING - All logs and simulators in the selected test session will be deleted in the next step below.  " +
                 "</p>"
         ));
 
@@ -117,14 +120,13 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
                 "<hr />" +
                 "<h2>Build Test Environment</h2>" +
                 "<p>" +
-                "This will delete the contents of the selected test session and re-initialize it. " +
                 "The Build Test Environment button will create the necessary simulators to test your Initiating Gateway:  " +
                         "a Document Consumer to drive the test and two Responding Gateways to service requests from " +
                         "your Initiating Gateway. " +
 
                         "The generated test configuration will be displayed below. " +
                         "Once the test environment is built, configure your Initiating Gateway to forward requests " +
-                        "to the two generated Responding Gateways. "
+                        "to the two generated Responding Gateways. </p>"
 
         ));
 
