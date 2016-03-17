@@ -123,7 +123,7 @@
                     'requested1' = 'returned1' or 'requested1' = 'returned2'
                 </Assert>
                 <Assert>
-                    'requested2' = 'returned1' or 'requested1' = 'returned2'
+                    'requested2' = 'returned1' or 'requested2' = 'returned2'
                 </Assert>
                 <Assert>
                     'returned1' != 'returned2'

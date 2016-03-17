@@ -49,6 +49,8 @@ public class ValidatorErrorItem implements IsSerializable {
 	public String getReportable() {
 		StringBuilder buf = new StringBuilder();
 		if (hasDTS()) buf.append(dts).append(" : ");
+		if (this.code != null && !code.equals(XdsErrorCode.Code.NoCode))
+			buf.append(code.name() + " : ");
 		buf.append(msg.trim());
 		if (hasExpected() || hasFound() )
 			buf.append('\n').append("Expected [").append(expected).append("]  ").append("Found [ ").append("]\n");
