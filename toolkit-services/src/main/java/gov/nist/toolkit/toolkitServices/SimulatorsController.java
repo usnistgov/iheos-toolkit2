@@ -33,6 +33,9 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
+import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrieveImageSeriesRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrieveImageStudyRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
@@ -46,12 +49,12 @@ import gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.simulators.support.StoredDocument;
-import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.Document;
 import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType;
 import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentContentResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.OneImageRetrieveResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
@@ -88,33 +91,78 @@ public class SimulatorsController {
     @POST
     @Produces("application/json")
     @Path("/{id}/xdsi/retrieve")
-    public Response retrieveImagingDocSet(final RetrieveRequestResource request) {
-       String fullId = request.getFullId();
-        logger.info(String.format("POST simulators/%s/xdsi/retrieve", fullId));
+    public Response retrieveImagingDocSet(final OneImageRetrieveResource request) {
+        logger.info(String.format("POST simulators/%s/xdsi/retrieve ", 
+           (request.isDirect() ? request.getEndpoint() : request.getFullId())));
         RetrieveResponseResource returnResource = new RetrieveResponseResource();
+        String dest = "";
         try {
-            Site site = api.getActorConfig(request.getId());
-
-            RetrieveRequestModel iModel = new RetrieveRequestModel();
-            RetrieveItemRequestModel rModel = new RetrieveItemRequestModel();
-            rModel.setHomeId(request.getHomeCommunityId());
-            rModel.setRepositoryId(request.getRepositoryUniqueId());
-            rModel.setDocumentId(request.getDocumentUniqueId());
-            iModel.add(rModel);
+            
+            // Transfer from passed objects to internal model
+            
+//            RetrieveImageRequestModel rModel = new RetrieveImageRequestModel();            
+//            for (RetrieveImageStudyRequest eRequest : request.getRetrieveImageStudyRequests()) {
+//               RetrieveImageStudyRequestModel eModel = new RetrieveImageStudyRequestModel();
+//               eModel.setStudyInstanceUID(eRequest.getStudyInstanceUID());
+//               rModel.addStudyRequest(eModel);
+//               for (RetrieveImageSeriesRequest sRequest: eRequest.getRetrieveImageSeriesRequests()) {
+//                  RetrieveImageSeriesRequestModel sModel = new RetrieveImageSeriesRequestModel();
+//                  sModel.setSeriesInstanceUID(sRequest.getSeriesInstanceUID());
+//                  eModel.addSeriesRequest(sModel);
+//                  for (RetrieveImageDocumentRequest dRequest : sRequest.getRetrieveImageDocumentRequests()) {
+//                     RetrieveItemRequestModel dModel = new RetrieveItemRequestModel();
+//                     dModel.setRepositoryId(dRequest.getRepositoryUniqueId());
+//                     dModel.setDocumentId(dRequest.getDocumentUniqueId());
+//                     dModel.setHomeId(dRequest.getHomeCommunityId());
+//                     sModel.addDocumentRequest(dModel);
+//                  } // EO document request loop
+//               } // EO series request loop
+//            } // EO study request loop
+//            
+//            for (String xferSyntax : request.getTransferSyntaxUIDs())
+//               rModel.addTransferSyntaxUID(xferSyntax);
+            
+            RetrieveImageRequestModel rModel = new RetrieveImageRequestModel();
+            {
+            RetrieveImageStudyRequestModel eModel = new RetrieveImageStudyRequestModel();
+            eModel.setStudyInstanceUID(request.getStudyUID());
+            rModel.addStudyRequest(eModel);
+            RetrieveImageSeriesRequestModel sModel = new RetrieveImageSeriesRequestModel();
+            sModel.setSeriesInstanceUID(request.getSeriesUID());
+            eModel.addSeriesRequest(sModel);
+            RetrieveItemRequestModel dModel = new RetrieveItemRequestModel();
+            dModel.setDocumentId(request.getDocumentUniqueId());
+            dModel.setRepositoryId(request.getRepositoryUniqueId());
+            dModel.setHomeId(request.getHomeCommunityId());
+            sModel.addDocumentRequest(dModel);
+            rModel.addTransferSyntaxUID(request.getXferSyntax());
+            }
 
             // Trigger simulator to do the retrieve
 
             ImgDocConsActorSimulator sim = new ImgDocConsActorSimulator();
             sim.setTls(request.isTls());
-            RetrievedDocumentsModel sModel = sim.retrieve(site, iModel);
+            sim.setDirect(request.isDirect());
+            if (request.isDirect()) {
+               dest = "direct";
+               sim.setEndpoint(request.getEndpoint());
+            }
+            else {
+               sim.setSite(api.getActorConfig(request.getId()));
+               dest = request.getFullId();
+            }
+            RetrievedDocumentsModel sModel = sim.retrieve(rModel);
 
             RetrievedDocumentModel m = sModel.getMap().values().iterator().next();
+            returnResource.setDocumentUid(m.getDocUid());
+            returnResource.setRepositoryUid(m.getRepUid());
+            returnResource.setHomeCommunityUid(m.getHome());
             returnResource.setDocumentContents(m.getContents());
             returnResource.setMimeType(m.getContent_type());
 
             return Response.ok(returnResource).build();
         } catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, fullId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, dest, ResponseType.RESPONSE);
         }
     }
 
@@ -150,7 +198,8 @@ public class SimulatorsController {
                     .build();
         }
         catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
+           logger.warn(e.getMessage());
+           return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
     }
 
