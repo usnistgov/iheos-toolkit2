@@ -31,9 +31,9 @@ class TransactionReportBuilder {
     public TransactionLogBean asBean(SimDb db, SimId simId, String callbackClassName) {
         TransactionLogBean bean = new TransactionLogBean();
         bean.requestMessageHeader = db.requestMessageHeader
-        bean.requestMessageBody = db.responseMessageBody
+        bean.requestMessageBody = new String(db.responseMessageBody)
         bean.responseMessageHeader = db.responseMessageHeader
-        bean.responseMessageBody = db.responseMessageBody
+        bean.responseMessageBody = new String(db.responseMessageBody)
         bean.callbackClassName = callbackClassName
         bean.simulatorId = simId.id
         bean.simulatorUser = simId.user
