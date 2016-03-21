@@ -302,8 +302,20 @@ public class SimulatorControlTab extends GenericQueryTab {
 						@Override
 						public void onClick(ClickEvent clickEvent) {
 							SimulatorConfig config = getData();
-							EditTab editTab = new EditTab(self, config);
-							editTab.onTabLoad(myContainer, true, null);
+
+//							GenericQueryTab editTab;
+							if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())) {
+								// This simulator requires content state initialization
+								OddsEditTab editTab;
+								editTab = new OddsEditTab(self, config);
+								editTab.onTabLoad(myContainer, true, null);
+							} else {
+								// Generic state-less type simulators
+								GenericQueryTab editTab = new EditTab(self, config);
+								editTab.onTabLoad(myContainer, true, null);
+							}
+
+
 						}
 					});
 					buttonPanel.add(editButton);

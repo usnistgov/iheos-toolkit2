@@ -51,13 +51,14 @@ public class SiteSelectionPresenter {
     }
 
     /**
-     * "Sorry, this method is not yet implemented."
+     *
      * @param toolkitService
      * @param selected
      * @param panel
      */
     public SiteSelectionPresenter(ToolkitServiceAsync toolkitService, final List<String> selected, final Panel panel) {
-        //"Sorry, this method is not yet implemented.";
+        // Sorry, this method is not yet implemented.
+        // It can be added when all sites are desired without a transactionType filter.
     }
 
     void bind() {}

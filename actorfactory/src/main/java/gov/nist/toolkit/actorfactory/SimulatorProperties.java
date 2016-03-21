@@ -202,16 +202,16 @@ public class SimulatorProperties {
     public static final String                      currentContentBundleIdx = "Current Content Bundle Idx";
 
     /**
-     * Content bundle
-     * Should be in the format of "9999/Trans/ContentBundle" where 9999 is a test number.
+     * Testplan to register and supply content
+     * Look up will be in this order: "{Test plan#}/{section[0]}/ContentBundle" Example: 15812/Register_OD/ContentBundle
      * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
      */
-    public static final String                      contentBundle = "Content Bundle";
+    public static final String                      TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT = "Testplan to Register On-Demand Document Entry and Supply Content";
 
     /**
      * The repository site to store the stable snapshot associated with the on-demand document entry.
      */
-    public static final String                      oddsRepositorySite = "Repository Site";
+    public static final String                      oddsRepositorySite = "Repository";
 
 
     /**

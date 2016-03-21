@@ -75,7 +75,7 @@ public class PersistanceDocumentResponseSim extends TransactionSimulator impleme
 			 * B) If no persistence, then just serve up the content from disk
 			 */
 
-			String contentBundleId =  getSimulatorConfig().get(SimulatorProperties.contentBundle).asString();
+			String contentBundleId =  getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
 			SimulatorConfigElement sce = getSimulatorConfig().get(SimulatorProperties.currentContentBundleIdx);
 			String contentBundleState = null;
 

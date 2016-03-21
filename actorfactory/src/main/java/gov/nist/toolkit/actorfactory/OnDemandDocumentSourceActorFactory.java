@@ -55,7 +55,7 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 
 		addEditableConfig(sc, SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, ParamType.BOOLEAN, true);
 		addEditableConfig(sc, SimulatorProperties.oddsRepositorySite, ParamType.SELECTION, new ArrayList<String>(), false);
-		addEditableConfig(sc, SimulatorProperties.contentBundle, ParamType.TEXT, "15812/Register_OD/ContentBundle");
+		addEditableConfig(sc, SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT, ParamType.TEXT, "15812");
 
 		return new Simulator(sc);
 	}

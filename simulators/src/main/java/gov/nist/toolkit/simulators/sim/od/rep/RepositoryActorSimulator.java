@@ -60,7 +60,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	public RepositoryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(dsSimCommon.simCommon, dsSimCommon);
 		this.repIndex = dsSimCommon.repIndex;
-		this.db = dsSimCommon.simCommon.db;;
+		this.db = dsSimCommon.simCommon.db;
 		this.response = dsSimCommon.simCommon.response;
         setSimulatorConfig(simulatorConfig);
 		init();
