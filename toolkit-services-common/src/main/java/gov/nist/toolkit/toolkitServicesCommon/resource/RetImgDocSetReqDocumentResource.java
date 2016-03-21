@@ -5,15 +5,15 @@ package gov.nist.toolkit.toolkitServicesCommon.resource;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import gov.nist.toolkit.toolkitServicesCommon.RetrieveImageDocumentRequest;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqDocument;
 
 /**
  * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  */
 @XmlRootElement
-public class RetrieveImageDocumentRequestResource
-   implements RetrieveImageDocumentRequest {
+public class RetImgDocSetReqDocumentResource
+   implements RetImgDocSetReqDocument {
 
    String repositoryUniqueId = null;
    String documentUniqueId = null;

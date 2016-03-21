@@ -12,11 +12,11 @@ import java.util.List;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public interface RetrieveImageStudyRequest {
+public interface RetImgDocSetReqStudy {
    
    void setStudyInstanceUID (String studyInstanceUID);
-   void setRetrieveImageSeriesRequests(List<RetrieveImageSeriesRequest> retrieveImageSeriesRequests);
+   void setRetrieveImageSeriesRequests(List<RetImgDocSetReqSeries> retrieveImageSeriesRequests);
    String getStudyInstanceUID();
-   List<RetrieveImageSeriesRequest> getRetrieveImageSeriesRequests();
+   List<RetImgDocSetReqSeries> getRetrieveImageSeriesRequests();
 
 }

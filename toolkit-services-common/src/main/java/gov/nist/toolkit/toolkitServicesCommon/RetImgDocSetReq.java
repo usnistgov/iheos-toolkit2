@@ -12,10 +12,10 @@ import java.util.List;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public interface RetrieveImageRequest extends SimId {
+public interface RetImgDocSetReq extends SimId {
 
-   void setRetrieveImageStudyRequests(List<RetrieveImageStudyRequest> studyRequests);
+   void setRetrieveImageStudyRequests(List<RetImgDocSetReqStudy> studyRequests);
    void setTransferSystaxUIDs(List<String> transferSyntaxUIDs);
-   List<RetrieveImageStudyRequest> getRetrieveImageStudyRequests();
+   List<RetImgDocSetReqStudy> getRetrieveImageStudyRequests();
    List<String> getTransferSyntaxUIDs();
 }

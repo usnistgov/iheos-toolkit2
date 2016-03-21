@@ -10,7 +10,7 @@ package gov.nist.toolkit.toolkitServicesCommon;
  * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
-public interface RetrieveImageDocumentRequest {
+public interface RetImgDocSetReqDocument {
    void setRepositoryUniqueId(String repositoryUniqueId);
    void setDocumentUniqueId(String documentUniqueId);
    void setHomeCommunityId(String homeCommunityId);

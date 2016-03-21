@@ -9,8 +9,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import gov.nist.toolkit.toolkitServicesCommon.RetrieveImageRequest;
-import gov.nist.toolkit.toolkitServicesCommon.RetrieveImageStudyRequest;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReq;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqStudy;
 
 /**
  * RAD-69 Request resource. Corresponds to the 
@@ -19,12 +19,32 @@ import gov.nist.toolkit.toolkitServicesCommon.RetrieveImageStudyRequest;
  * Project <a href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  */
 @XmlRootElement
-public class RetrieveImageRequestResource extends SimIdResource 
-   implements RetrieveImageRequest {
+public class RetImgDocSetReqResource extends SimIdResource 
+   implements RetImgDocSetReq {
+   /**
+    * IDS endpoint URL. If present, this overrides the sim ID, and is
+    * referred to as a "direct" query.
+    */
+   String endpoint = null;
 
-   List <RetrieveImageStudyRequest> studyRequests = new ArrayList <>();
+   List <RetImgDocSetReqStudy> studyRequests = new ArrayList <>();
    List <String> transferSyntaxUIDs = new ArrayList <>();
    RequestFlavorResource flavor = new RequestFlavorResource();
+
+   
+   /**
+    * @return the {@link #endpoint} value.
+    */
+   public String getEndpoint() {
+      return endpoint;
+   }
+
+   /**
+    * @param endpoint the {@link #endpoint} to set
+    */
+   public void setEndpoint(String endpoint) {
+      this.endpoint = endpoint;
+   }
 
    /*
     * (non-Javadoc)
@@ -33,7 +53,7 @@ public class RetrieveImageRequestResource extends SimIdResource
     * setRetrieveImageStudyRequests(java.util.List)
     */
    @Override
-   public void setRetrieveImageStudyRequests(List <RetrieveImageStudyRequest> studyRequests) {
+   public void setRetrieveImageStudyRequests(List <RetImgDocSetReqStudy> studyRequests) {
       this.studyRequests.addAll(studyRequests);
    }
 
@@ -56,7 +76,7 @@ public class RetrieveImageRequestResource extends SimIdResource
     */
    @Override
    @XmlElementWrapper
-   public List <RetrieveImageStudyRequest> getRetrieveImageStudyRequests() {
+   public List <RetImgDocSetReqStudy> getRetrieveImageStudyRequests() {
       return studyRequests;
    }
 
