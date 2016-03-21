@@ -183,7 +183,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	TestKit getTestKit() {
 		if (testKit == null)
-			testKit = new TestKit(session.getTestkitFile());
+			testKit = new TestKit(Installation.installation().testkitFile());
 		return testKit;
 	}
 

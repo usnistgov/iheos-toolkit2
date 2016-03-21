@@ -28,3 +28,10 @@ homeCommunityId
 	on a Stored Query. This test repeats step uniqueid above
 	but with the homeCommunityId present.
 
+	The test is attempting to verify that if a Document Registry receives a
+	Stored Query including a homeCommunityId that it is ignored. This is a
+	general requirement of query parameters - if it is not relevant then
+	ignore it. There is no connection between a Registry and a homeCommunityId.
+	So your Registry must ignore the presence of the homeCommunityId
+	in the query.
+
