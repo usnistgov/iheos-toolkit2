@@ -144,7 +144,7 @@
       </tag0:Slot>
       <tag0:Slot name="sourcePatientId">
         <tag0:ValueList>
-          <tag0:Value>89765a87b^^^&amp;3.4.5&amp;ISO</tag0:Value>
+          <tag0:Value>89765a87b^^^&amp;1.3.6.1.4.1.21367.2005.13.20.1000&amp;ISO</tag0:Value>
         </tag0:ValueList>
       </tag0:Slot>
       <tag0:Slot name="sourcePatientInfo">
