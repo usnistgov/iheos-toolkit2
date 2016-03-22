@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqSeries;
 import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqStudy;
 
 /**
@@ -23,7 +22,7 @@ import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqStudy;
 public class RetImgDocSetReqStudyResource implements RetImgDocSetReqStudy {
    
    String studyInstanceUID = "";
-   List<RetImgDocSetReqSeries> retrieveImageSeriesRequests = new ArrayList<>();
+   List<RetImgDocSetReqSeriesResource> retrieveImageSeriesRequests = new ArrayList<>();
 
    /* (non-Javadoc)
     * @see gov.nist.toolkit.toolkitServicesCommon.RetrieveImageStudyRequest#setStudyInstanceUID(java.lang.String)
@@ -37,8 +36,12 @@ public class RetImgDocSetReqStudyResource implements RetImgDocSetReqStudy {
     * @see gov.nist.toolkit.toolkitServicesCommon.RetrieveImageStudyRequest#setRetrieveImageSeriesRequests(java.util.List)
     */
    @Override
-   public void setRetrieveImageSeriesRequests(List <RetImgDocSetReqSeries> retrieveImageSeriesRequests) {
-      this.retrieveImageSeriesRequests.addAll(retrieveImageSeriesRequests);
+   public void setRetrieveImageSeriesRequests(List <RetImgDocSetReqSeriesResource> retrieveImageSeriesRequests) {
+      this.retrieveImageSeriesRequests = retrieveImageSeriesRequests;
+   }
+   
+   public void addSeriesRequest(RetImgDocSetReqSeriesResource seriesRequest) {
+      retrieveImageSeriesRequests.add(seriesRequest);
    }
 
    /* (non-Javadoc)
@@ -53,7 +56,7 @@ public class RetImgDocSetReqStudyResource implements RetImgDocSetReqStudy {
     * @see gov.nist.toolkit.toolkitServicesCommon.RetrieveImageStudyRequest#getRetrieveImageSeriesRequest()
     */
    @Override
-   public List <RetImgDocSetReqSeries> getRetrieveImageSeriesRequests() {
+   public List <RetImgDocSetReqSeriesResource> getRetrieveImageSeriesRequests() {
       return retrieveImageSeriesRequests;
    }
 

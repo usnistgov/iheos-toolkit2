@@ -52,13 +52,18 @@ import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.Document;
 import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqDocument;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqSeries;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqStudy;
 import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentContentResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.OneImageRetrieveResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RegistryErrorResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetReqResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetRespDocumentResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetRespResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveRequestResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
@@ -91,52 +96,35 @@ public class SimulatorsController {
     @POST
     @Produces("application/json")
     @Path("/{id}/xdsi/retrieve")
-    public Response retrieveImagingDocSet(final OneImageRetrieveResource request) {
+    public Response retrieveImagingDocSet(final RetImgDocSetReqResource request) {
         logger.info(String.format("POST simulators/%s/xdsi/retrieve ", 
            (request.isDirect() ? request.getEndpoint() : request.getFullId())));
-        RetrieveResponseResource returnResource = new RetrieveResponseResource();
         String dest = "";
         try {
             
-            // Transfer from passed objects to internal model
+            // Transfer from request resource to request model
             
-//            RetrieveImageRequestModel rModel = new RetrieveImageRequestModel();            
-//            for (RetrieveImageStudyRequest eRequest : request.getRetrieveImageStudyRequests()) {
-//               RetrieveImageStudyRequestModel eModel = new RetrieveImageStudyRequestModel();
-//               eModel.setStudyInstanceUID(eRequest.getStudyInstanceUID());
-//               rModel.addStudyRequest(eModel);
-//               for (RetrieveImageSeriesRequest sRequest: eRequest.getRetrieveImageSeriesRequests()) {
-//                  RetrieveImageSeriesRequestModel sModel = new RetrieveImageSeriesRequestModel();
-//                  sModel.setSeriesInstanceUID(sRequest.getSeriesInstanceUID());
-//                  eModel.addSeriesRequest(sModel);
-//                  for (RetrieveImageDocumentRequest dRequest : sRequest.getRetrieveImageDocumentRequests()) {
-//                     RetrieveItemRequestModel dModel = new RetrieveItemRequestModel();
-//                     dModel.setRepositoryId(dRequest.getRepositoryUniqueId());
-//                     dModel.setDocumentId(dRequest.getDocumentUniqueId());
-//                     dModel.setHomeId(dRequest.getHomeCommunityId());
-//                     sModel.addDocumentRequest(dModel);
-//                  } // EO document request loop
-//               } // EO series request loop
-//            } // EO study request loop
-//            
-//            for (String xferSyntax : request.getTransferSyntaxUIDs())
-//               rModel.addTransferSyntaxUID(xferSyntax);
+            RetrieveImageRequestModel rModel = new RetrieveImageRequestModel();            
+            for (RetImgDocSetReqStudy eRequest : request.getRetrieveImageStudyRequests()) {
+               RetrieveImageStudyRequestModel eModel = new RetrieveImageStudyRequestModel();
+               eModel.setStudyInstanceUID(eRequest.getStudyInstanceUID());
+               rModel.addStudyRequest(eModel);
+               for (RetImgDocSetReqSeries sRequest: eRequest.getRetrieveImageSeriesRequests()) {
+                  RetrieveImageSeriesRequestModel sModel = new RetrieveImageSeriesRequestModel();
+                  sModel.setSeriesInstanceUID(sRequest.getSeriesInstanceUID());
+                  eModel.addSeriesRequest(sModel);
+                  for (RetImgDocSetReqDocument dRequest : sRequest.getRetrieveImageDocumentRequests()) {
+                     RetrieveItemRequestModel dModel = new RetrieveItemRequestModel();
+                     dModel.setRepositoryId(dRequest.getRepositoryUniqueId());
+                     dModel.setDocumentId(dRequest.getDocumentUniqueId());
+                     dModel.setHomeId(dRequest.getHomeCommunityId());
+                     sModel.addDocumentRequest(dModel);
+                  } // EO document request loop
+               } // EO series request loop
+            } // EO study request loop
             
-            RetrieveImageRequestModel rModel = new RetrieveImageRequestModel();
-            {
-            RetrieveImageStudyRequestModel eModel = new RetrieveImageStudyRequestModel();
-            eModel.setStudyInstanceUID(request.getStudyUID());
-            rModel.addStudyRequest(eModel);
-            RetrieveImageSeriesRequestModel sModel = new RetrieveImageSeriesRequestModel();
-            sModel.setSeriesInstanceUID(request.getSeriesUID());
-            eModel.addSeriesRequest(sModel);
-            RetrieveItemRequestModel dModel = new RetrieveItemRequestModel();
-            dModel.setDocumentId(request.getDocumentUniqueId());
-            dModel.setRepositoryId(request.getRepositoryUniqueId());
-            dModel.setHomeId(request.getHomeCommunityId());
-            sModel.addDocumentRequest(dModel);
-            rModel.addTransferSyntaxUID(request.getXferSyntax());
-            }
+            for (String xferSyntax : request.getTransferSyntaxUIDs())
+               rModel.addTransferSyntaxUID(xferSyntax);
 
             // Trigger simulator to do the retrieve
 
@@ -152,15 +140,25 @@ public class SimulatorsController {
                dest = request.getFullId();
             }
             RetrievedDocumentsModel sModel = sim.retrieve(rModel);
-
-            RetrievedDocumentModel m = sModel.getMap().values().iterator().next();
-            returnResource.setDocumentUid(m.getDocUid());
-            returnResource.setRepositoryUid(m.getRepUid());
-            returnResource.setHomeCommunityUid(m.getHome());
-            returnResource.setDocumentContents(m.getContents());
-            returnResource.setMimeType(m.getContent_type());
-
-            return Response.ok(returnResource).build();
+            
+            // Transfer from response model to response resource
+            
+            RetImgDocSetRespResource rsp = new RetImgDocSetRespResource();
+            rsp.setAbbreviatedResponse(sModel.getAbbreviatedMessage());
+            
+            List<RetImgDocSetRespDocumentResource> dRsps = new ArrayList<>();
+            for ( RetrievedDocumentModel dModel : sModel.getMap().values()) {
+               RetImgDocSetRespDocumentResource dRsp = new RetImgDocSetRespDocumentResource();
+               dRsp.setDocumentUid(dModel.getDocUid());
+               dRsp.setRepositoryUid(dModel.getRepUid());
+               dRsp.setHomeCommunityUid(dModel.getHome());
+               dRsp.setDocumentContents(dModel.getContents());
+               dRsp.setMimeType(dModel.getContent_type());
+               dRsps.add(dRsp);
+            }
+            rsp.setDocuments(dRsps);
+            
+            return Response.ok(rsp).build();
         } catch (Exception e) {
             return new ResultBuilder().mapExceptionToResponse(e, dest, ResponseType.RESPONSE);
         }

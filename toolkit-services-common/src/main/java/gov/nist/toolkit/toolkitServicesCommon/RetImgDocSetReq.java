@@ -5,6 +5,8 @@ package gov.nist.toolkit.toolkitServicesCommon;
 
 import java.util.List;
 
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetReqStudyResource;
+
 /**
  * RAD-69 Image Request interface
  * 
@@ -14,8 +16,8 @@ import java.util.List;
  */
 public interface RetImgDocSetReq extends SimId {
 
-   void setRetrieveImageStudyRequests(List<RetImgDocSetReqStudy> studyRequests);
-   void setTransferSystaxUIDs(List<String> transferSyntaxUIDs);
-   List<RetImgDocSetReqStudy> getRetrieveImageStudyRequests();
+   void setRetrieveImageStudyRequests(List<RetImgDocSetReqStudyResource> studyRequests);
+   void setTransferSyntaxUIDs(List<String> transferSyntaxUIDs);
+   List<RetImgDocSetReqStudyResource> getRetrieveImageStudyRequests();
    List<String> getTransferSyntaxUIDs();
 }

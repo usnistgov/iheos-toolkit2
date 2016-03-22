@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqDocument;
 import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqSeries;
 
 /**
@@ -24,7 +23,7 @@ public class RetImgDocSetReqSeriesResource
    implements RetImgDocSetReqSeries {
    
    String seriesInstanceUID;
-   List <RetImgDocSetReqDocument> retrieveImageDocumentRequests = 
+   List <RetImgDocSetReqDocumentResource> retrieveImageDocumentRequests = 
       new ArrayList<>();
 
    /* (non-Javadoc)
@@ -48,15 +47,19 @@ public class RetImgDocSetReqSeriesResource
     */
    @Override
    public void setRetrieveImageDocumentRequests(
-      List <RetImgDocSetReqDocument> retrieveImageDocumentRequests) {
-      this.retrieveImageDocumentRequests.addAll(retrieveImageDocumentRequests);
+      List <RetImgDocSetReqDocumentResource> retrieveImageDocumentRequests) {
+      this.retrieveImageDocumentRequests = retrieveImageDocumentRequests;
+   }
+   
+   public void addDocumentRequest(RetImgDocSetReqDocumentResource documentRequest) {
+      retrieveImageDocumentRequests.add(documentRequest);
    }
 
    /* (non-Javadoc)
     * @see gov.nist.toolkit.toolkitServicesCommon.RetrieveImageSeriesRequest#getRetrieveImageDocumentRequest()
     */
    @Override
-   public List <RetImgDocSetReqDocument>
+   public List <RetImgDocSetReqDocumentResource>
       getRetrieveImageDocumentRequests() {
       return retrieveImageDocumentRequests;
    }

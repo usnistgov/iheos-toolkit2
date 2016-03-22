@@ -6,11 +6,10 @@ package gov.nist.toolkit.toolkitServicesCommon.resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReq;
-import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqStudy;
 
 /**
  * RAD-69 Request resource. Corresponds to the 
@@ -27,7 +26,7 @@ public class RetImgDocSetReqResource extends SimIdResource
     */
    String endpoint = null;
 
-   List <RetImgDocSetReqStudy> studyRequests = new ArrayList <>();
+   List <RetImgDocSetReqStudyResource> studyRequests = new ArrayList <>();
    List <String> transferSyntaxUIDs = new ArrayList <>();
    RequestFlavorResource flavor = new RequestFlavorResource();
 
@@ -45,6 +44,11 @@ public class RetImgDocSetReqResource extends SimIdResource
    public void setEndpoint(String endpoint) {
       this.endpoint = endpoint;
    }
+   
+   @XmlTransient
+   public boolean isDirect() {
+      return endpoint != null && endpoint.length() > 0;
+   }
 
    /*
     * (non-Javadoc)
@@ -53,8 +57,12 @@ public class RetImgDocSetReqResource extends SimIdResource
     * setRetrieveImageStudyRequests(java.util.List)
     */
    @Override
-   public void setRetrieveImageStudyRequests(List <RetImgDocSetReqStudy> studyRequests) {
-      this.studyRequests.addAll(studyRequests);
+   public void setRetrieveImageStudyRequests(List <RetImgDocSetReqStudyResource> studyRequests) {
+      this.studyRequests = studyRequests;
+   }
+   
+   public void addStudyRequest(RetImgDocSetReqStudyResource studyRequest) {
+      studyRequests.add(studyRequest);
    }
 
    /*
@@ -64,8 +72,12 @@ public class RetImgDocSetReqResource extends SimIdResource
     * setTransferSystaxUIDs(java.util.List)
     */
    @Override
-   public void setTransferSystaxUIDs(List <String> transferSyntaxUIDs) {
-      this.transferSyntaxUIDs.addAll(transferSyntaxUIDs);
+   public void setTransferSyntaxUIDs(List <String> transferSyntaxUIDs) {
+      this.transferSyntaxUIDs = transferSyntaxUIDs;
+   }
+   
+   public void addTransferSyntaxUid(String transferSyntaxUID) {
+      transferSyntaxUIDs.add(transferSyntaxUID);
    }
 
    /*
@@ -75,8 +87,7 @@ public class RetImgDocSetReqResource extends SimIdResource
     * getRetrieveImageStudyRequests()
     */
    @Override
-   @XmlElementWrapper
-   public List <RetImgDocSetReqStudy> getRetrieveImageStudyRequests() {
+   public List <RetImgDocSetReqStudyResource> getRetrieveImageStudyRequests() {
       return studyRequests;
    }
 

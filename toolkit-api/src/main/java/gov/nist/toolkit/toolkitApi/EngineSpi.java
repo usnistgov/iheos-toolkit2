@@ -26,9 +26,10 @@ import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.StoredQueryRequest;
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
-import gov.nist.toolkit.toolkitServicesCommon.resource.OneImageRetrieveResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetReqResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetRespResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
@@ -180,16 +181,16 @@ public class EngineSpi {
     }
 
   // public RetrieveResponse imagingRetrieve(RetrieveImageRequestResource request)
-   public RetrieveResponse imagingRetrieve(OneImageRetrieveResource request)
+   public RetImgDocSetRespResource imagingRetrieve(RetImgDocSetReqResource request)
       throws ToolkitServiceException {
-      Entity <OneImageRetrieveResource> entity = Entity.json(request);
+      Entity <RetImgDocSetReqResource> entity = Entity.json(request);
       String path = String.format("simulators/%s/xdsi/retrieve", request.getFullId());
       WebTarget t = target.path(path);
       Builder b = t.request(MediaType.APPLICATION_JSON);
       Response response = b.post(entity);
       if (response.getStatus() != 200)
          throw new ToolkitServiceException(response);
-      return response.readEntity(RetrieveResponseResource.class);
+      return response.readEntity(RetImgDocSetRespResource.class);
    }
 
 }

@@ -5,6 +5,8 @@ package gov.nist.toolkit.toolkitServicesCommon;
 
 import java.util.List;
 
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetReqSeriesResource;
+
 /**
  * RAD-69 StudyRequest interface
  * 
@@ -15,8 +17,8 @@ import java.util.List;
 public interface RetImgDocSetReqStudy {
    
    void setStudyInstanceUID (String studyInstanceUID);
-   void setRetrieveImageSeriesRequests(List<RetImgDocSetReqSeries> retrieveImageSeriesRequests);
+   void setRetrieveImageSeriesRequests(List<RetImgDocSetReqSeriesResource> retrieveImageSeriesRequests);
    String getStudyInstanceUID();
-   List<RetImgDocSetReqSeries> getRetrieveImageSeriesRequests();
+   List<RetImgDocSetReqSeriesResource> getRetrieveImageSeriesRequests();
 
 }

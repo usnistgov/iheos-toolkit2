@@ -5,10 +5,12 @@ package gov.nist.toolkit.simulators.sim.idc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -130,7 +132,30 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
       RetrieveB retb = new RetrieveB(null);
       Map <String, RetrievedDocumentModel> map =
          retb.parse_rep_response(result).getMap();
-      return new RetrievedDocumentsModel(map);
+      RetrievedDocumentsModel rModel = new RetrievedDocumentsModel();
+      rModel.setMap(map);
+      rModel.setAbbreviatedMessage(abbreviateResponse(result));
+      return rModel;
+   }
+   
+   /**
+    * Returns the passed response message in string form, replacing text in
+    * {@code <Document>} elements with "...". <b>Destructive</b>
+    * @param resp passed message
+    * @return String version of abbreviated response
+    */
+   @SuppressWarnings("unchecked")
+   private String abbreviateResponse(OMElement resp) throws XMLStreamException {
+      Iterator<OMElement> dri = resp.getChildrenWithLocalName("DocumentResponse");
+      while (dri.hasNext()) {
+         OMElement dr = dri.next();
+         Iterator<OMElement> di = dr.getChildrenWithLocalName("Document");
+         while (di.hasNext()) {
+            OMElement d = di.next();
+            d.setText("...");
+         } // <Document> loop         
+      } // <DocumentResponse> loop
+      return resp.toStringWithConsume();
    }
 
 } // EO ImgDocConsActorSimulator class
