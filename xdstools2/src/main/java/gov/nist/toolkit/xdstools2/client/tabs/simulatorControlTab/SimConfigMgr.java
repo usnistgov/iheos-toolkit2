@@ -15,6 +15,7 @@ import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ import java.util.List;
  * @author bill
  *
  */
-class SimConfigMgr {
+class SimConfigMgr implements SimConfigMgrIntf {
     /**
      *
      */
@@ -42,14 +43,14 @@ class SimConfigMgr {
         this.testSession = testSession;
     }
 
-    void removeFromPanel() {
+   public void removeFromPanel() {
         if (hpanel != null) {
             panel.remove(hpanel);
             hpanel = null;
         }
     }
 
-    void displayInPanel() {
+    public void displayInPanel() {
         tbl.clear();
         int row = 0;
 
@@ -141,25 +142,6 @@ class SimConfigMgr {
                 row++;
             }
 
-            // Selecting a Repository for the ODDS
-            else if (SimulatorProperties.oddsRepositorySite.equals(ele.name)) {
-                final SimulatorConfigElement configEle = ele;
-                HorizontalPanel siteBoxes = new HorizontalPanel();
-                final SiteSelectionPresenter siteSelectionPresenter = new SiteSelectionPresenter(simulatorControlTab.toolkitService, TransactionType.PROVIDE_AND_REGISTER.getName(), configEle.asList(), siteBoxes);
-                tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
-                tbl.setWidget(row, 1, siteBoxes);
-                saveButton.addClickHandler(
-                        new ClickHandler() {
-                            @Override
-                            public void onClick(ClickEvent clickEvent) {
-                                configEle.setValue(siteSelectionPresenter.getSelected());
-                                saveSimConfig();
-                            }
-                        }
-                );
-                row++;
-            }
-
         }
 
         hpanel = new HorizontalPanel();
@@ -183,7 +165,7 @@ class SimConfigMgr {
 
     }
 
-    void saveSimConfig() {
+    public void saveSimConfig() {
         simulatorControlTab.toolkitService.putSimConfig(config, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {

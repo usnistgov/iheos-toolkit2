@@ -137,7 +137,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 
 			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (smv == null) {
-				er.err(Code.XDSRepositoryError, "Internal Error: cannot find SoapMessageValidator.class", "RepositoryActorSimulator.java", null);
+				er.err(Code.XDSRepositoryError, "Internal Error: cannot find SoapMessageValidator.class", "od.rep.RepositoryActorSimulator.java", null);
 				return false;
 			}
 			OMElement retrieveRequest = smv.getMessageBody();

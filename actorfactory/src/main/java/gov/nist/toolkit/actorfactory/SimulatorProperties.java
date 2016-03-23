@@ -202,11 +202,16 @@ public class SimulatorProperties {
     public static final String                      currentContentBundleIdx = "Current Content Bundle Idx";
 
     /**
-     * Testplan to register and supply content
+     * Testplan to register On-Demand Document Entry and supply content
      * Look up will be in this order: "{Test plan#}/{section[0]}/ContentBundle" Example: 15812/Register_OD/ContentBundle
      * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
      */
-    public static final String                      TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT = "Testplan to Register On-Demand Document Entry and Supply Content";
+    public static final String                      TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT = "Testplan to Register and Supply Content";
+
+    /**
+     * On-demand document entry Patient Id
+     */
+    public static final String                      oddePatientId = "On-Demand Document Entry Patient ID";
 
     /**
      * The repository site to store the stable snapshot associated with the on-demand document entry.
