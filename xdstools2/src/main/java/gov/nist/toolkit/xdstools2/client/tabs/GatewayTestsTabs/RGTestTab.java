@@ -100,15 +100,18 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         topPanel.add(new HTML("<h1>Responding Gateway Test Tool</h1>"));
 
         topPanel.add(new HTML(
-                "This tool tests a Responding Gateway that exposes endpoints for a Document Registry and" +
-                        "Document Repository or can be configured to use an external Registry/Repository pair." +
+                "This tool tests a Responding Gateway that exposes endpoints for a Document Registry and " +
+                        "Document Repository or can be configured to use an external Registry/Repository pair. " +
+                        "All tests are initiated by a Toolkit supplied Initiating Gateway that sends " +
+                        "query and retrieve requests to the Responding Gateway/System Under Test." +
+
+
                 "<h2>Create supporting test session</h2>" +
                         "These simulators and " +
                         "their logs will be maintained in a test session you create for this test. At the top of the window, " +
                         "create a new test session and select it. " +
                         "All context for this test is kept within this test session - if multiple test sessions are " +
                         "created they do not interact." +
-                        "WARNING - This tool deletes all logs and simulators in the selected test session when the test environment is built.  " +
                         "</p>"
         ));
 
@@ -212,7 +215,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         topPanel.add(new HTML(
                         "<h2>Build Test Environment</h2>" +
                         "<p>" +
-                        "This will delete the contents of the selected test session and initialize it. " +
+                        "This will initialize the test environment in the Test Session seleted at the top. " +
                         "The generated test environment will be displayed below. " +
                         "Once the test environment is built, configure your Responding Gateway to forward requests " +
                         "to the generated Registry/Repository simulators (if the External option is selected). " +

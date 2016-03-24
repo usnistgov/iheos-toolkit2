@@ -109,7 +109,7 @@
     <TestStep id="Verify mimeType for Document 1">
         <Goal>Validate mimeType in Retrieve response against FindDocuments response</Goal>
         <NullTransaction>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$mimeType$" useAs="queryValue"/>
+            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$mimeType$" useAs="queryValue"/>
             <UseReport reportName="$mimetype_response1$" section="THIS" step="retrieve" useAs="retrievedValue"/>
             <Assertions>
                 <Assert>
@@ -160,7 +160,7 @@
     <TestStep id="Verify mimeType for Document 2">
         <Goal>Validate mimeType in Retrieve response against FindDocuments response</Goal>
         <NullTransaction>
-            <UseReport test="15808" section="OneDocFindDocuments" step="finddocs" reportName="$mimeType$"           useAs="queryValue"/>
+            <UseReport test="15808" section="SingleDocumentFindDocuments" step="finddocs" reportName="$mimeType$"           useAs="queryValue"/>
             <UseReport              section="THIS"                step="retrieve" reportName="$mimetype_response2$" useAs="retrievedValue"/>
             <Assertions>
                 <Assert>

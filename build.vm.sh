@@ -17,7 +17,7 @@ fi
 SCRIPTNAME=$(basename $0 .sh)
 
 cd ~/tk
-mvn -o clean package -DskipTests -Dmaven.test.skip=true
+mvn clean install -DskipTests -Dmaven.test.skip=true
 
 cd xdstools2/target
 WARNAME=$(basename *.war .war)
@@ -27,7 +27,7 @@ mkdir xdstools2/target/$WARNAME/javadoc
 bash $BASEDIR/genapidoc.sh xdstools2/target/$WARNAME/javadoc
 
 cd xdstools2
-mvn -o site
+mvn site -Ddependency.locations.enabled=false
 
 cd target
 rm -r $WARNAME/site
