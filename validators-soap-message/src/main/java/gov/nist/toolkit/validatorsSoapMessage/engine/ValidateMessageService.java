@@ -6,7 +6,6 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
-import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -25,7 +24,7 @@ import java.util.List;
  *
  */
 
-public class ValidateMessageService extends CommonService {
+public class ValidateMessageService {
 	RegistryValidationInterface rvi;
 
 	public ValidateMessageService(RegistryValidationInterface rvi) {

@@ -10,6 +10,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
+import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 public class MetadataMessageValidator extends AbstractMessageValidator {

@@ -1,6 +1,5 @@
 package gov.nist.toolkit.valregmsg.message;
 
-import gov.nist.toolkit.common.coder.Base64Coder;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -143,7 +142,7 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 					if (base64Contents == null || base64Contents.equals("")) {
 						er.err(XdsErrorCode.Code.XDSRepositoryError, "Document contents not a XOP Include pointing to a separate Part and not inline Base64", this, Mtom.XOP_include);
 					} else {
-						byte[] contents = Base64Coder.decode(base64Contents);
+						byte[] contents = org.apache.commons.codec.binary.Base64.decodeBase64(base64Contents);
 						StoredDocumentInt sd = new StoredDocumentInt();
 						storedDocuments.put(id, sd);
 						sd.content = contents;

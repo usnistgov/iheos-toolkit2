@@ -34,7 +34,6 @@ import gov.nist.toolkit.testengine.transactions.SqlQueryTransaction;
 import gov.nist.toolkit.testengine.transactions.StoredQueryTransaction;
 import gov.nist.toolkit.testengine.transactions.XCQTransaction;
 import gov.nist.toolkit.testengine.transactions.XDRProvideAndRegisterTransaction;
-import gov.nist.toolkit.testengine.transactions.XcpdTransaction;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 public class StepContext extends BasicContext implements ErrorReportingInterface {
@@ -347,11 +346,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				{
 					transaction = new EchoV3Transaction(this, instruction, instruction_output);
 				} 
-				else if (instruction_name.equals("XcpdTransaction")) 
-				{
-					transaction = new XcpdTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("SocketTransaction")) 
+				else if (instruction_name.equals("SocketTransaction"))
 				{
 					transaction = new SocketTransaction(this, instruction, instruction_output);
 				} 

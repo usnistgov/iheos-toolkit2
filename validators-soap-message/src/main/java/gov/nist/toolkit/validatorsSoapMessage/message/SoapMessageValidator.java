@@ -4,7 +4,6 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderValidatorAdapter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -14,7 +13,6 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
-import org.apache.axis2.util.XMLUtils;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -115,18 +113,18 @@ public class SoapMessageValidator extends AbstractMessageValidator {
 
         //ADD SAML VALIDATION IF NEEDED. -@Antoine
         // - check if this is the best place to do so.
-        OMElement security = XmlUtil.firstChildWithLocalName(header, "Security");
-        if(security != null){
-            vc.hasSaml = true; // setting the flag is not really necessary, for consistency only.
-            // mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
-            Element wsseHeader;
-            try {
-                wsseHeader = XMLUtils.toDOM(security);
-                mvc.addMessageValidator("SAML Validator", new WsseHeaderValidatorAdapter(vc, wsseHeader,header), erBuilder.buildNewErrorRecorder());
-            } catch (Exception e) {
-                er.err(XdsErrorCode.Code.NoCode, e);
-            }
-        }
+//        OMElement security = XmlUtil.firstChildWithLocalName(header, "Security");
+//        if(security != null){
+//            vc.hasSaml = true; // setting the flag is not really necessary, for consistency only.
+//            // mvc.addMessageValidator("SAML Validator", new SAMLMessageValidator(vc, envelope, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+//            Element wsseHeader;
+//            try {
+//                wsseHeader = XMLUtils.toDOM(security);
+//                mvc.addMessageValidator("SAML Validator", new WsseHeaderValidatorAdapter(vc, wsseHeader,header), erBuilder.buildNewErrorRecorder());
+//            } catch (Exception e) {
+//                er.err(XdsErrorCode.Code.NoCode, e);
+//            }
+//        }
         er.unRegisterValidator(this);
     }
 

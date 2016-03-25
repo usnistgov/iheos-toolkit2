@@ -13,15 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>soap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
             <artifactId>actorfactory</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>results</artifactId>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
@@ -33,35 +25,11 @@
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>docref</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>saml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>registry-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
             <artifactId>validators-support</artifactId>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
-            <artifactId>http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
             <artifactId>message-validator-factory2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>registry-msg-formats</artifactId>
         </dependency>
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
@@ -72,24 +40,8 @@
             <artifactId>xds-exceptions</artifactId>
         </dependency>
         <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>utilities</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>installation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>wsseTool</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.opensaml</groupId>
-            <artifactId>opensaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>

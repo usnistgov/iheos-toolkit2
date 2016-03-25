@@ -137,23 +137,27 @@ public class MessageValidatorFactory {
 //            mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
             ValUtil.reportError(erBuilder, mvc, rootElementName, "Wrong validator called - use SoapMessageValidatorFactory for SOAP messages.");
             return mvc;
-        } else if (rootElementName.equals("Assertion")) {
-            // schema validation of SOAP envelope is useless
-            //			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-            // don't know what ValidationContext to set - let this validator choose
-            mvc.addMessageValidator("SAML Wrapper", new SAMLMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
-            return mvc;
-
-        } else if (rootElementName.equals("PRPA_IN201305UV02")) {
-            mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-            return mvc;
-        } else if (rootElementName.equals("PRPA_IN201306UV02")) {
-            mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-            return mvc;
-        } else if (rootElementName.equals("ClinicalDocument")) {
-            mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-            return mvc;
-        } else {
+        }
+//        else if (rootElementName.equals("Assertion")) {
+//            // schema validation of SOAP envelope is useless
+//            //			mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+//            // don't know what ValidationContext to set - let this validator choose
+//            mvc.addMessageValidator("SAML Wrapper", new SAMLMessageValidator(vc, xml, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+//            return mvc;
+//        }
+//        else if (rootElementName.equals("PRPA_IN201305UV02")) {
+//            mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+//            return mvc;
+//        }
+//        else if (rootElementName.equals("PRPA_IN201306UV02")) {
+//            mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+//            return mvc;
+//        }
+//        else if (rootElementName.equals("ClinicalDocument")) {
+//            mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+//            return mvc;
+//        }
+        else {
             ValUtil.reportError(erBuilder, mvc, rootElementName, "Don't know how to parse this.");
             return mvc;
         }
@@ -285,29 +289,33 @@ public class MessageValidatorFactory {
             CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
             mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
             return mvc;
-        } else if (vc.isXcpd || vc.isNwHINxcpd) {
-            if (vc.isRequest) {
-                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "PRPA_IN201305UV02", rootElementName);
-                mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-                return mvc;
-            } else {
-                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "PRPA_IN201306UV02", rootElementName);
-                mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-                return mvc;
-            }
-        } else if (vc.isNcpdp) {
-            if(vc.isRequest) {
-                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "Message", rootElementName);
-                mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-                return mvc;
-            } else{
-                return mvc;
-            }
-        } else if (vc.isC32) {
-            CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "ClinicalDocument", rootElementName);
-            mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-            return mvc;
-        } else {
+        }
+//        else if (vc.isXcpd || vc.isNwHINxcpd) {
+//            if (vc.isRequest) {
+//                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "PRPA_IN201305UV02", rootElementName);
+//                mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+//                return mvc;
+//            } else {
+//                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "PRPA_IN201306UV02", rootElementName);
+//                mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+//                return mvc;
+//            }
+//        }
+//        else if (vc.isNcpdp) {
+//            if(vc.isRequest) {
+//                CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "Message", rootElementName);
+//                mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+//                return mvc;
+//            } else{
+//                return mvc;
+//            }
+//        }
+//        else if (vc.isC32) {
+//            CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "ClinicalDocument", rootElementName);
+//            mvc.addMessageValidator("Schematron Validator", new SchematronValidator(vc, xml), erBuilder.buildNewErrorRecorder());
+//            return mvc;
+//        }
+        else {
             ValUtil.reportError(erBuilder, mvc, "ValidationContext", "Don't know how to parse this: " + vc.toString());
             return mvc;
         }
