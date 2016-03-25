@@ -208,7 +208,7 @@ public class XdmDecoder extends AbstractMessageValidator {
 //							docVC.isCCDA = true;
 //							er.detail("Scheduling validation as type " + docVC.ccdaType);
 //
-//							MessageValidatorFactory.getValidatorForCCDA(erBuilder, contents, mvc, docVC);
+//							CommonMessageValidatorFactory.getValidatorForCCDA(erBuilder, contents, mvc, docVC);
 ////							MessageValidatorEngine mve = MessageValidatorFactoryFactory.messageValidatorFactory2I.getValidator((ErrorRecorderBuilder)er, contents, null, docVC, null);
 ////							mve.run();
 //						} else {

@@ -8,7 +8,7 @@ import gov.nist.toolkit.http.HttpParseException;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.MultipartParserBa;
 import gov.nist.toolkit.http.PartBa;
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
@@ -83,7 +83,7 @@ public class MtomMessageValidator extends AbstractMessageValidator {
 
 			
 			er.detail("Scheduling validation of SOAP wrapper");
-			MessageValidatorFactory.getValidatorContext(erBuilder, startPart.getBody(), mvc, "Validate SOAP", vc, rvi);
+			CommonMessageValidatorFactory.getValidatorContext(erBuilder, startPart.getBody(), mvc, "Validate SOAP", vc, rvi);
 
 		} catch (UnsupportedEncodingException e) {
 			er.err(XdsErrorCode.Code.NoCode, e);

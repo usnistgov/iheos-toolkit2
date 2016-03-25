@@ -6,7 +6,7 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.http.HttpHeader;
 import gov.nist.toolkit.http.HttpParserBa;
 import gov.nist.toolkit.http.ParseException;
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
@@ -16,7 +16,7 @@ import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
  * Validate SIMPLE SOAP message. The input (an HTTP stream) has already been parsed
  * and the headers are in a HttpParserBa class and the body in a byte[]. This 
  * validator only evaluates the HTTP headers. Validation of the body is passed
- * off to MessageValidatorFactory.
+ * off to CommonMessageValidatorFactory.
  * @author bill
  *
  */
@@ -68,7 +68,7 @@ public class SimpleSoapHttpHeaderValidator extends AbstractMessageValidator {
 
 //			er.detail("Scheduling validation of SOAP content");
             er.sectionHeading("SOAP Message");
-			MessageValidatorFactory.getValidatorContext(erBuilder, bodyBytes, mvc, "Validate SOAP", vc, rvi);
+			CommonMessageValidatorFactory.getValidatorContext(erBuilder, bodyBytes, mvc, "Validate SOAP", vc, rvi);
 
 		} catch (ParseException e) {
 			err(e);
