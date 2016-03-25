@@ -42,7 +42,7 @@
         <module>soap</module>
         <module>xdstest2-logging</module>
         <module>dsig</module>
-        <!--<module>saml</module>-->
+        <module>saml</module>
         <module>http</module>
         <module>test-engine</module>
         <module>message-validator-factory2</module>
