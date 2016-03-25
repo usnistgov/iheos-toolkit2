@@ -104,6 +104,11 @@
             </dependency>
             <dependency>
                 <groupId>gov.nist.toolkit</groupId>
+                <artifactId>validators-soap-message</artifactId>
+                <version>2.202.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>gov.nist.toolkit</groupId>
                 <artifactId>simulators</artifactId>
                 <version>2.202.0-SNAPSHOT</version>
             </dependency>

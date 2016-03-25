@@ -8,7 +8,7 @@ import gov.nist.toolkit.simulators.sim.reg.SoapWrapperRegistryResponseSim
 import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon
 import gov.nist.toolkit.simulators.support.SimCommon
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import groovy.transform.TypeChecked

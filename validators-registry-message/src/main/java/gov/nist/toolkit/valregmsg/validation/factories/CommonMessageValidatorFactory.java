@@ -12,7 +12,6 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.message.*;
 import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
@@ -105,13 +104,17 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 
 		if (vc.isXDM) {
 			mvc = getValidatorForXDM(erBuilder, input, mvc, vc, rvi);
-		} else if (vc.isNcpdp) {
-			mvc = getValidatorForNcpdp(erBuilder, inputString, mvc, vc, rvi);
-//		} else if (vc.isCCDA) {
+		}
+//		else if (vc.isNcpdp) {
+//			mvc = getValidatorForNcpdp(erBuilder, inputString, mvc, vc, rvi);
+//		}
+//      else if (vc.isCCDA) {
 //			mvc = getValidatorForCCDA(erBuilder, input, mvc, vc);
-		} else if (vc.hasHttp) {
-			mvc = getValidatorForHttp(erBuilder, inputString, mvc, vc, rvi);
-		} else {
+//		}
+		else if (vc.hasHttp) {
+//			mvc = getValidatorForHttp(erBuilder, inputString, mvc, vc, rvi);
+		}
+		else {
 			mvc = getValidatorForXML(erBuilder, inputString, mvc, vc, rvi);
 		}
 
@@ -119,35 +122,6 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 		return mvc;
 	}
 
-	/**
-	 * Start a new validation where input is known to be an HTTP message
-	 * @param erBuilder ErrorRecorder factory. A new ErrorRecorder is allocated and used for each validation step.
-	 * @param httpInput HTTP input string
-	 * @param mvc validation engine to use.  If null then create a new one
-	 * @param vc description of the validations to be performed
-	 * @param rvi interface for performing local inquires about metadata. Example: does this UUID represent a folder?
-	 * @return old (or new) MessageValidatorEngine which will manage the individual validation steps. It is preloaded with
-	 * at least the first validation step so calling engine.run() will kick start the validation. Note that no
-	 * ValidationContext is created so the goals of the validation are not yet known.
-	 */
-	static public MessageValidatorEngine getValidatorForHttp(ErrorRecorderBuilder erBuilder, String httpInput, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
-		try {
-			HttpParserBa hparser = new HttpParserBa(httpInput.getBytes());
-			mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-			mvc.addMessageValidator("HTTP Validator", new HttpMessageValidator(vc, hparser, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
-			return mvc;
-		} catch (HttpParseException e) {
-			mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-			String msg = "Input does not parse as an HTTP stream: " + ExceptionUtil.exception_details(e);
-			ValUtil.reportError(erBuilder, mvc, "HTTP Parser", msg + e.getMessage());
-			return mvc;
-		} catch (ParseException e) {
-			mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
-			String msg = "Input does not parse as an HTTP stream: " + ExceptionUtil.exception_details(e);
-			ValUtil.reportError(erBuilder, mvc, "HTTP Parser", msg + e.getMessage());
-			return mvc;
-		}
-	}
 
 	static public MessageValidatorEngine getValidatorForXDM(ErrorRecorderBuilder erBuilder, byte[] input, MessageValidatorEngine mvc, ValidationContext vc, RegistryValidationInterface rvi) {
 		mvc = (mvc == null) ? new MessageValidatorEngine() : mvc;
@@ -322,13 +296,13 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 
 			// SOAP parser will find body and schedule its validation based on
 			// requested validation
-			if (vc.hasSoap || vc.hasSaml) {
-				mvc.addMessageValidator("SOAP Message Parser", new SoapMessageParser(vc, xml), erBuilder.buildNewErrorRecorder());
-				mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
-				return mvc;
-			}  else {
+//			if (vc.hasSoap || vc.hasSaml) {
+//				mvc.addMessageValidator("SOAP Message Parser", new SoapMessageParser(vc, xml), erBuilder.buildNewErrorRecorder());
+//				mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+//				return mvc;
+//			}  else {
 				return MessageValidatorFactory.validateBasedOnValidationContext(erBuilder, xml, mvc, vc, rvi);
-			}
+//			}
 
 		} else {
 			// Parse based on rootElementName

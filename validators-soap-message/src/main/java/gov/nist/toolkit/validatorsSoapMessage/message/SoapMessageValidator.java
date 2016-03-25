@@ -1,4 +1,4 @@
-package gov.nist.toolkit.valregmsg.message;
+package gov.nist.toolkit.validatorsSoapMessage.message;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;

@@ -12,7 +12,7 @@ import gov.nist.toolkit.simulators.support.DsSimCommon
 import gov.nist.toolkit.simulators.support.GatewaySimulatorCommon
 import gov.nist.toolkit.simulators.support.SimCommon
 import gov.nist.toolkit.utilities.xml.XmlUtil
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
+import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement

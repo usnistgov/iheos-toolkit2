@@ -10,7 +10,7 @@ import gov.nist.toolkit.valsupport.message.ServiceRequestContainer;
 /**
  *
  */
-class ValUtil {
+public class ValUtil {
     /**
      * Report an error in a newly constructed ErrorRecorder
      * @param erBuilder ErrorRecorder factory. A new ErrorRecorder is allocated and used for each validation step.
@@ -19,7 +19,7 @@ class ValUtil {
      * @param error text of error
      * @return new ErrorRecorder
      */
-    static ErrorRecorder reportError(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String error) {
+    static public ErrorRecorder reportError(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String error) {
         ErrorRecorder er = erBuilder.buildNewErrorRecorder();
         er.err(XdsErrorCode.Code.XDSRegistryError, error, "CommonMessageValidatorFactory", "");
         mvc.addMessageValidator(title, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
@@ -33,7 +33,7 @@ class ValUtil {
      * @param title title of new ErrorRecorder section to be built
      * @return new ErrorRecorder
      */
-    static ErrorRecorder report(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title) {
+    static public ErrorRecorder report(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title) {
         ErrorRecorder er = erBuilder.buildNewErrorRecorder();
         mvc.addMessageValidator(title, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
         return er;
@@ -46,13 +46,13 @@ class ValUtil {
      * @param title name of decision
      * @param text text of decision
      */
-    static void reportParseDecision(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String text) {
+    static public void reportParseDecision(ErrorRecorderBuilder erBuilder, MessageValidatorEngine mvc, String title, String text) {
         ErrorRecorder er = erBuilder.buildNewErrorRecorder();
         //		er.info1(text);
         mvc.addMessageValidator(title + " - " + text, new ServiceRequestContainer(DefaultValidationContextFactory.validationContext()), er);
     }
 
-    static int min(int a, int b) {
+    static public int min(int a, int b) {
         if (a < b) return a;
         return b;
     }

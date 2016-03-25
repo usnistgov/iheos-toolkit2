@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 /**
- * Created by bill on 11/16/15.
+ *
  */
 public class RGADActorSimulator extends BaseDsActorSimulator {
     static final Logger logger = Logger.getLogger(RGADActorSimulator.class);

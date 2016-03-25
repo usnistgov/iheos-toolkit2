@@ -31,8 +31,8 @@
     import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
     import gov.nist.toolkit.tk.TkLoader;
     import gov.nist.toolkit.tk.client.TkProps;
-    import gov.nist.toolkit.valregmsg.message.SchemaValidation;
-    import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
+	import gov.nist.toolkit.validatorsSoapMessage.factories.SoapMessageValidatorFactory;
+	import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 	import gov.nist.toolkit.valsupport.client.MessageValidationResults;
     import gov.nist.toolkit.valsupport.client.ValidationContext;
     import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -80,7 +80,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 			siteServiceManager = SiteServiceManager.getSiteServiceManager();   // One copy shared between sessions
 			System.out.println("CommonMessageValidatorFactory()");
 			if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
-				MessageValidatorFactoryFactory.messageValidatorFactory2I = new CommonMessageValidatorFactory("a");
+				MessageValidatorFactoryFactory.messageValidatorFactory2I = new SoapMessageValidatorFactory();
 			}
 	}
 
