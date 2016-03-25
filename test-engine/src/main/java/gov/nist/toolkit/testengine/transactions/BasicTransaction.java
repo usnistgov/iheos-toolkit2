@@ -6,7 +6,7 @@ import gov.nist.toolkit.installation.Configuration;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.securityCommon.SecurityParams;

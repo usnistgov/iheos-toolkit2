@@ -1,12 +1,10 @@
-package gov.nist.toolkit.registrymsg.registry;
+package gov.nist.toolkit.registrysupport;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingCompletionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
@@ -280,7 +278,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 				registry_error_2.setNamespace(MetadataSupport.ebRSns3);
 			registryErrorList().addChild(registry_error_2);
 			String severity = registry_error.getAttributeValue(MetadataSupport.severity_qname);
-			severity = new Metadata().stripNamespace(severity);
+			severity = stripNamespace(severity);
 			if (severity.equals("Error"))
 				has_errors = true;
 			else
@@ -288,6 +286,14 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 		}
 	}
 
+	public String stripNamespace(String value) {
+		if (value == null)
+			return null;
+		if (value.indexOf(":") == -1)
+			return value;
+		String[] parts = value.split(":");
+		return parts[parts.length - 1];
+	}
 
 	public boolean hasContent() {
 		return this.has_errors || this.has_warnings;

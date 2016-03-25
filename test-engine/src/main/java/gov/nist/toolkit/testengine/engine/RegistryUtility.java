@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;

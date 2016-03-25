@@ -1,8 +1,8 @@
 package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.xdsexception.MetadataException;

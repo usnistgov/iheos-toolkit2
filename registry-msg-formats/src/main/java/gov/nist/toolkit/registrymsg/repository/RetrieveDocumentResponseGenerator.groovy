@@ -1,6 +1,6 @@
 package gov.nist.toolkit.registrymsg.repository
 
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator
 import gov.nist.toolkit.registrysupport.MetadataSupport
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMAttribute

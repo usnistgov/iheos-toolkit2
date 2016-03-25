@@ -2,7 +2,7 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 

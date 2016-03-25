@@ -1,20 +1,8 @@
 package gov.nist.toolkit.valregmetadata.field;
 
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
-import gov.nist.toolkit.registrysupport.logging.LoggerException;
-import gov.nist.toolkit.utilities.xml.Parse;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XMLParserException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import javax.xml.parsers.FactoryConfigurationError;
 
 import junit.framework.TestCase;
 
-import org.apache.axiom.om.OMElement;
 
 public class UriTest extends TestCase {
 //	RegistryErrorList rel;

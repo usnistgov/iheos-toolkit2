@@ -1,9 +1,9 @@
 package gov.nist.toolkit.valregmsg.registry;
 
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 import org.apache.axiom.om.OMElement;

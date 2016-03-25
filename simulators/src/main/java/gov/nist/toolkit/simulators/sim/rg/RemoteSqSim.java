@@ -7,7 +7,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
-import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.AdhocQueryResponseGeneratingSim;
