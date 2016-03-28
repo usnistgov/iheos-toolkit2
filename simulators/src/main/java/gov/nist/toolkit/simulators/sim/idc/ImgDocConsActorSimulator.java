@@ -127,7 +127,7 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
       return g.get();
    }
 
-   private RetrievedDocumentsModel parseResponse(OMElement result)
+   public static RetrievedDocumentsModel parseResponse(OMElement result)
       throws Exception {
       RetrieveB retb = new RetrieveB(null);
       Map <String, RetrievedDocumentModel> map =
@@ -145,7 +145,7 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
     * @return String version of abbreviated response
     */
    @SuppressWarnings("unchecked")
-   private String abbreviateResponse(OMElement resp) throws XMLStreamException {
+   public static  String abbreviateResponse(OMElement resp) throws XMLStreamException {
       Iterator<OMElement> dri = resp.getChildrenWithLocalName("DocumentResponse");
       while (dri.hasNext()) {
          OMElement dr = dri.next();

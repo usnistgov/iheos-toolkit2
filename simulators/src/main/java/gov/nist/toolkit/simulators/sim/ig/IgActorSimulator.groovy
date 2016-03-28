@@ -156,7 +156,7 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
                return false;
             }
             
-            logger.debug("Extract query from validator chain");
+            logger.debug("Extract retrieve from validator chain");
             AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
             if (mv == null || !(mv instanceof SoapMessageValidator)) {
                 er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");

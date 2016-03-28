@@ -1,7 +1,5 @@
 package gov.nist.toolkit.actortransaction.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 // This file must be kept up to date with SimulatorActorTypes.java
@@ -96,7 +96,8 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("RESP_GATEWAY"),
             "rg",
             "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
-            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
+            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE,
+               TransactionType.RET_IMG_DOC_SET),
             true,
             null
     ),
@@ -105,7 +106,8 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("INIT_GATEWAY"),
             "ig",
             "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
-            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
+            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,
+               TransactionType.RET_IMG_DOC_SET),
             true,
             null
     ),
