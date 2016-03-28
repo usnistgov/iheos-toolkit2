@@ -1,17 +1,18 @@
 package gov.nist.toolkit.valregmsg.registry;
 
 import gov.nist.toolkit.registrymsg.registry.Response;
+import org.apache.axiom.om.OMElement;
+
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
-import org.apache.axiom.om.OMElement;
-
 public class RetrieveMultipleResponse extends Response {
 	OMElement rdsr = null;
 
-	public OMElement getRoot() { return rdsr; }
+	@Override
+   public OMElement getRoot() { return rdsr; }
 
 	public RetrieveMultipleResponse() throws XdsInternalException {
 		super();

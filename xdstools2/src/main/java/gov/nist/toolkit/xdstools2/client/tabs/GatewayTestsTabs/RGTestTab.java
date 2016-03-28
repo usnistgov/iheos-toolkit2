@@ -74,7 +74,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         genericQueryTitle = "Select System Under Test";
         HTML instructions = new HTML(
                 "<p>" +
-                        "The system under test is a Responding Gateway. To be testable by this tool one of the following " +
+                        "The system under test is a Responding Gateway. For the testing to be fully automated by this tool one of the following " +
                         "configurations must be supported by your implementation. " +
                         "<ul>" +
                         "<li>Exposed Registry/Repository endpoints - your implementation includes Registry/Repository " +
@@ -85,6 +85,10 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         "external Registry and Repository which will be selected below. This tool will provide " +
                         "these actors." +
                         "</ul>" +
+
+                        "<p>If your Responding Gateway does not meet the above requirement it must be initialized " +
+                        "manually.  See <a href=\"site/testkit/tests/RG/testdata.html\"  target=\"_blank\">here</a> for details.</p>"  +
+
                 "<p>When the test is run a Cross Gateway Query or Retrieve transaction will be sent to the " +
                         "Responding Gateway " +
                         "selected below. This will start the test. Before running a test, make sure your " +

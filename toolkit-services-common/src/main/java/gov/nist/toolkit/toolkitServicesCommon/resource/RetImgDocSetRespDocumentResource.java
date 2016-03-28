@@ -1,39 +1,52 @@
+/**
+ * 
+ */
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import gov.nist.toolkit.toolkitServicesCommon.RetrieveResponse;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetRespDocument;
 
 /**
- *
+ * Retrieve Imaging Document Set Response Document Resource corresponds to
+ * {@code <DocumentResponse>} element in {@code <RetrieveDocumentSetResponse>}
+ * message. 
+ * 
+ * Note: Essentially duplicate of RetrieveResposeResource at this point, but
+ * thinking that class may change in the future. Plus it is at a higher
+ * level than this.
+ * 
+ * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
+ * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  */
 @XmlRootElement
-public class RetrieveResponseResource implements RetrieveResponse {
+public class RetImgDocSetRespDocumentResource 
+   implements RetImgDocSetRespDocument{
    String documentUid;
    String repositoryUid;
    String homeCommunityUid;
-    String mimeType;
-    byte[] documentContents;
+   String mimeType;
+   byte[] documentContents;
 
-    public RetrieveResponseResource() {}
+ public RetImgDocSetRespDocumentResource() {}
 
-    @Override
+   @Override
    public String getMimeType() {
-        return mimeType;
-    }
+      return mimeType;
+   }
 
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
-    }
+   public void setMimeType(String mimeType) {
+      this.mimeType = mimeType;
+   }
 
-    @Override
+   @Override
    public byte[] getDocumentContents() {
-        return documentContents;
-    }
+      return documentContents;
+   }
 
-    public void setDocumentContents(byte[] documentContents) {
-        this.documentContents = documentContents;
-    }
+   public void setDocumentContents(byte[] documentContents) {
+      this.documentContents = documentContents;
+   }
 
    /**
     * @return the {@link #documentUid} value.
@@ -79,6 +92,5 @@ public class RetrieveResponseResource implements RetrieveResponse {
    public void setHomeCommunityUid(String homeCommunityUid) {
       this.homeCommunityUid = homeCommunityUid;
    }
-    
-    
+
 }
