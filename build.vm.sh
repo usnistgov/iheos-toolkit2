@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #
+#
 # Finalize WAR
 # add javadocs and site documentation
 # insert my toolkit.properties file
