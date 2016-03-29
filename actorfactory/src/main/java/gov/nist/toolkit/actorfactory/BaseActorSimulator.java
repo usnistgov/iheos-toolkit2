@@ -14,7 +14,7 @@ public class BaseActorSimulator {
     public void onTransactionBegin(SimulatorConfig config) {}
     public void onTransactionEnd(SimulatorConfig config) {}
 
-    // simulatorConfig guarenteed to be initialized
+    // simulatorConfig guaranteed to be initialized
     public void onServiceStart(SimulatorConfig config) {}  // these two refer to Servlet start/stop
     public void onServiceStop(SimulatorConfig config) {}
 

@@ -29,10 +29,38 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-core</artifactId>-->
-        <!--</dependency>-->
     </dependencies>
-
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <configuration>
+                    <!-- Default configuration for all reports -->
+                    <aggregate>true</aggregate>
+                    <includeDependencySources>true</includeDependencySources>
+                    <dependencySourceIncludes>
+                        <dependencySourceInclude>gov.nist.toolkit.toolkitServicesCommon</dependencySourceInclude>
+                    </dependencySourceIncludes>
+                    <!--<subpackages>gov.nist.toolkit.toolkitServicesCommon</subpackages>-->
+                    <additionalDependencies>
+                        <dependencySourceIncludes>gov.nist.toolkit.toolkitServicesCommon</dependencySourceIncludes>
+                        <additionalDependency>
+                            <groupId>gov.nist.toolkit</groupId>
+                            <artifactId>toolkit-services-common</artifactId>
+                        </additionalDependency>
+                    </additionalDependencies>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

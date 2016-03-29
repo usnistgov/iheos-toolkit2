@@ -9,8 +9,8 @@ import javax.ws.rs.MatrixParam;
 /**
  * BeanParam POJO for transaction RS.
  * 
- * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
- * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
+ * @author Ralph Moulton / MIR WUSTL IHE Development Project
+ * <a href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
  *
  */
 public class TParameters {

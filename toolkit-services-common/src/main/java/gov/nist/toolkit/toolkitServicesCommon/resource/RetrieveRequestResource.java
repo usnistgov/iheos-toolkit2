@@ -1,8 +1,8 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
-import gov.nist.toolkit.toolkitServicesCommon.RetrieveRequest;
-
 import javax.xml.bind.annotation.XmlRootElement;
+
+import gov.nist.toolkit.toolkitServicesCommon.RetrieveRequest;
 
 /**
  *
@@ -16,27 +16,33 @@ public class RetrieveRequestResource  extends SimIdResource implements RetrieveR
 
     public RetrieveRequestResource() {}
 
-    public String getRepositoryUniqueId() {
+    @Override
+   public String getRepositoryUniqueId() {
         return repositoryUniqueId;
     }
 
-    public void setRepositoryUniqueId(String repositoryUniqueId) {
+    @Override
+   public void setRepositoryUniqueId(String repositoryUniqueId) {
         this.repositoryUniqueId = repositoryUniqueId;
     }
 
-    public String getDocumentUniqueId() {
+    @Override
+   public String getDocumentUniqueId() {
         return documentUniqueId;
     }
 
-    public void setDocumentUniqueId(String documentUniqueId) {
+    @Override
+   public void setDocumentUniqueId(String documentUniqueId) {
         this.documentUniqueId = documentUniqueId;
     }
 
-    public String getHomeCommunityId() {
+    @Override
+   public String getHomeCommunityId() {
         return homeCommunityId;
     }
 
-    public void setHomeCommunityId(String homeCommunityId) {
+    @Override
+   public void setHomeCommunityId(String homeCommunityId) {
         this.homeCommunityId = homeCommunityId;
     }
 
