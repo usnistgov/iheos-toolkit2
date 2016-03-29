@@ -1,59 +1,63 @@
-	package gov.nist.toolkit.xdstools2.server;
+package gov.nist.toolkit.xdstools2.server;
 
-    import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-    import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-    import gov.nist.toolkit.actorfactory.SiteServiceManager;
-    import gov.nist.toolkit.actorfactory.client.*;
-    import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
-    import gov.nist.toolkit.actortransaction.client.Severity;
-    import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-    import gov.nist.toolkit.configDatatypes.client.TransactionType;
-    import gov.nist.toolkit.configDatatypes.client.Pid;
-    import gov.nist.toolkit.installation.ExternalCacheManager;
-    import gov.nist.toolkit.installation.Installation;
-    import gov.nist.toolkit.installation.PropertyServiceManager;
-    import gov.nist.toolkit.registrymetadata.client.AnyIds;
-    import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-    import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-    import gov.nist.toolkit.registrymetadata.client.Uids;
-    import gov.nist.toolkit.results.client.*;
-    import gov.nist.toolkit.results.shared.Test;
-    import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-    import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-    import gov.nist.toolkit.services.client.RawResponse;
-    import gov.nist.toolkit.services.client.RgOrchestrationRequest;
-    import gov.nist.toolkit.services.server.RawResponseBuilder;
-    import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
-    import gov.nist.toolkit.services.shared.SimulatorServiceManager;
-    import gov.nist.toolkit.session.server.Session;
-    import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
-    import gov.nist.toolkit.sitemanagement.client.Site;
-    import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-    import gov.nist.toolkit.tk.TkLoader;
-    import gov.nist.toolkit.tk.client.TkProps;
-    import gov.nist.toolkit.valregmsg.message.SchemaValidation;
-    import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
-    import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-    import gov.nist.toolkit.valsupport.client.ValidationContext;
-    import gov.nist.toolkit.xdsexception.ExceptionUtil;
-    import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
-    import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-    import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-    import gov.nist.toolkit.xdstools2.client.ToolkitService;
-    import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-    import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
-    import org.apache.log4j.Logger;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+import gov.nist.toolkit.actorfactory.SiteServiceManager;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.Simulator;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
+import gov.nist.toolkit.actortransaction.client.Severity;
+import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.installation.ExternalCacheManager;
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.installation.PropertyServiceManager;
+import gov.nist.toolkit.registrymetadata.client.AnyIds;
+import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+import gov.nist.toolkit.registrymetadata.client.Uids;
+import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.server.RawResponseBuilder;
+import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
+import gov.nist.toolkit.services.shared.SimulatorServiceManager;
+import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testengine.scripts.CodesUpdater;
+import gov.nist.toolkit.tk.TkLoader;
+import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.valregmsg.message.SchemaValidation;
+import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+import gov.nist.toolkit.valsupport.client.MessageValidationResults;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
+import gov.nist.toolkit.xdstools2.client.RegistryStatus;
+import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
+import gov.nist.toolkit.xdstools2.client.ToolkitService;
+import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
+import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+import org.apache.log4j.Logger;
 
-    import javax.servlet.ServletContext;
-    import javax.servlet.http.HttpServletRequest;
-    import javax.servlet.http.HttpSession;
-    import javax.xml.parsers.FactoryConfigurationError;
-    import java.io.File;
-    import java.io.IOException;
-    import java.util.Collection;
-    import java.util.Date;
-    import java.util.List;
-    import java.util.Map;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.xml.parsers.FactoryConfigurationError;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -61,13 +65,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	static String schematronHome = null;
 	ServletContext context = null;
 //	static File warHome = null;
-	
+
 	static Logger logger = Logger.getLogger(ToolkitServiceImpl.class);
 
 	// Individual service requests from browser are delegated to one of these
-	
+
 	// ServiceManagers for execution
-	public QueryServiceManager queryServiceManager; 
+	public QueryServiceManager queryServiceManager;
 	public SiteServiceManager siteServiceManager;
 	public DashboardServiceManager dashboardServiceManager;
 	public GazelleServiceManager gazelleServiceManager;
@@ -75,13 +79,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	// Next two constructors exist to initialize MessageValidatorFactoryFactory which olds
 	// a reference to an instance of this class. This is necessary to getRetrievedDocumentsModel around a circular
 	// reference in the build tree
-	
+
 	public ToolkitServiceImpl() {
-			siteServiceManager = SiteServiceManager.getSiteServiceManager();   // One copy shared between sessions
-			System.out.println("MessageValidatorFactory()");
-			if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
-				MessageValidatorFactoryFactory.messageValidatorFactory2I = new MessageValidatorFactory("a");
-			}
+		siteServiceManager = SiteServiceManager.getSiteServiceManager();   // One copy shared between sessions
+		System.out.println("MessageValidatorFactory()");
+		if (MessageValidatorFactoryFactory.messageValidatorFactory2I == null) {
+			MessageValidatorFactoryFactory.messageValidatorFactory2I = new MessageValidatorFactory("a");
+		}
 	}
 
 	//------------------------------------------------------------------------
@@ -95,7 +99,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public Site getSite(String siteName) throws Exception { return siteServiceManager.getSite(session().getId(), siteName); }
 	public String saveSite(Site site) throws Exception { return siteServiceManager.saveSite(session().getId(), site); }
 	public String deleteSite(String siteName) throws Exception { return siteServiceManager.deleteSite(session().getId(), siteName); }
-//	public String getHome() throws Exception { return session().getHome(); }
+	//	public String getHome() throws Exception { return session().getHome(); }
 	public List<String> getUpdateNames()  throws NoServletSessionException { return siteServiceManager.getUpdateNames(session().getId()); }
 	public TransactionOfferings getTransactionOfferings() throws Exception { return siteServiceManager.getTransactionOfferings(session().getId()); }
 	public List<String> reloadExternalSites() throws FactoryConfigurationError, Exception { return siteServiceManager.reloadCommonSites(); }
@@ -147,14 +151,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 
 	public List<Result> findPatient(SiteSpec site, String firstName,
-			String secondName, String lastName, String suffix, String gender,
-			String dob, String ssn, String pid, String homeAddress1,
-			String homeAddress2, String homeCity, String homeState,
-			String homeZip, String homeCountry, String mothersFirstName, String mothersSecondName,
-			String mothersLastName, String mothersSuffix, String homePhone,
-			String workPhone, String principleCareProvider, String pob,
-			String pobAddress1, String pobAddress2, String pobCity,
-			String pobState, String pobZip, String pobCountry) {
+									String secondName, String lastName, String suffix, String gender,
+									String dob, String ssn, String pid, String homeAddress1,
+									String homeAddress2, String homeCity, String homeState,
+									String homeZip, String homeCountry, String mothersFirstName, String mothersSecondName,
+									String mothersLastName, String mothersSuffix, String homePhone,
+									String workPhone, String principleCareProvider, String pob,
+									String pobAddress1, String pobAddress2, String pobCity,
+									String pobState, String pobZip, String pobCountry) {
 		return queryServiceManager.findPatient(site, firstName, secondName, lastName, suffix, gender, dob, ssn, pid,
 				homeAddress1, homeAddress2, homeCity, homeState, homeZip, homeCountry,
 				mothersFirstName, mothersSecondName, mothersLastName, mothersSuffix,
@@ -162,8 +166,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 				pob, pobAddress1, pobAddress2, pobCity, pobState, pobZip, pobCountry);
 	}
 	public List<Result> mpqFindDocuments(SiteSpec site, String pid,
-			List<String> classCodes, List<String> hcftCodes,
-			List<String> eventCodes) throws NoServletSessionException {
+										 List<String> classCodes, List<String> hcftCodes,
+										 List<String> eventCodes) throws NoServletSessionException {
 		return session().queryServiceManager().mpqFindDocuments(site, pid, classCodes, hcftCodes,
 				eventCodes);
 	}
@@ -195,31 +199,31 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
 
 	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
-    public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
-        Session s = getSession();
-        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildIgTestEnvironment(s, request);
-    }
-    public RawResponse buildRgTestOrchestration(RgOrchestrationRequest request) {
-        Session s = getSession();
-        if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
-        return new OrchestrationManager().buildRgTestEnvironment(s, request);
-    }
+	public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildIgTestEnvironment(s, request);
+	}
+	public RawResponse buildRgTestOrchestration(RgOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildRgTestEnvironment(s, request);
+	}
 
-    /**
-     * Get list of section names defined for the test in the order they should be executed
-     * @param test test name
-     * @return list of sections
-     * @throws Exception if something goes wrong
-     */
+	/**
+	 * Get list of section names defined for the test in the order they should be executed
+	 * @param test test name
+	 * @return list of sections
+	 * @throws Exception if something goes wrong
+	 */
 	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
 
-    /**
-     * Get map of (collection name, collection description) pairs contained in testkit
-     * @param collectionSetName the collection name
-     * @return the map
-     * @throws Exception is something goes wrong
-     */
+	/**
+	 * Get map of (collection name, collection description) pairs contained in testkit
+	 * @param collectionSetName the collection name
+	 * @return the map
+	 * @throws Exception is something goes wrong
+	 */
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
 	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
@@ -230,25 +234,31 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
 	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
 
-    /**
-     * Get test names and descriptions from a named test collection
-     * @param collectionSetName name of directory holding tc files (collection definitions)
-     * @param collectionName collection name within the directory
-     * @return testname ==> description mapping
-     * @throws Exception if something goes wrong
-     */
+	/**
+	 * Get test names and descriptions from a named test collection
+	 * @param collectionSetName name of directory holding tc files (collection definitions)
+	 * @param collectionName collection name within the directory
+	 * @return testname ==> description mapping
+	 * @throws Exception if something goes wrong
+	 */
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
 
 	@Override
-	public String configureTestkit(String selectedEnvironment) {
-		return null;
+	public String configureTestkit(String selectedEnvironmentName) {
+		File environmentFile = Installation.installation().environmentFile(selectedEnvironmentName);
+		File defaultTestkit = Installation.installation().testkitFile();
+		CodesUpdater updater = new CodesUpdater();
+		updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
+		return updater.getOutput();
 	}
 
 	@Override
 	public boolean doesTestkitExist(String selectedEnvironment) {
-		return false;
+		File environmentFile = Installation.installation().environmentFile(selectedEnvironment);
+		File testkit=new File(environmentFile,"testkit");
+		return testkit.exists();
 	}
 
 	//------------------------------------------------------------------------
@@ -257,7 +267,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public String reloadSystemFromGazelle(String systemName) throws Exception { return new GazelleServiceManager(session()).reloadSystemFromGazelle(systemName); }
-	
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Environment management
@@ -267,11 +277,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public String setEnvironment(String name) throws NoServletSessionException { session().setEnvironment(name); return name; }
 	public String getCurrentEnvironment() throws NoServletSessionException { return session().getCurrentEnvironment(); }
 	public String getDefaultEnvironment()  throws NoServletSessionException  {
-        String defaultEnvironment = Installation.installation().propertyServiceManager().getDefaultEnvironment();
-        if (Session.environmentExists(defaultEnvironment))
-            return defaultEnvironment;
-        return Installation.DEFAULT_ENVIRONMENT_NAME;
-    }
+		String defaultEnvironment = Installation.installation().propertyServiceManager().getDefaultEnvironment();
+		if (Session.environmentExists(defaultEnvironment))
+			return defaultEnvironment;
+		return Installation.DEFAULT_ENVIRONMENT_NAME;
+	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -294,14 +304,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public String getImplementationVersion() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getImplementationVersion(); }
 	public Map<String, String> getToolkitProperties()  throws NoServletSessionException { return Installation.installation().propertyServiceManager().getToolkitProperties(); }
 	public boolean isGazelleConfigFeedEnabled() throws NoServletSessionException  { return SiteServiceManager.getSiteServiceManager().useGazelleConfigFeed(); }
-//	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
+	//	public String getToolkitEnableNwHIN() { return propertyServiceManager.getToolkitEnableNwHIN(); }
 	public String setToolkitProperties(Map<String, String> props) throws Exception { return setToolkitPropertiesImpl(props); }
 	public String getAdminPassword() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().getAdminPassword(); }
 	public boolean reloadPropertyFile() throws NoServletSessionException  { return Installation.installation().propertyServiceManager().reloadPropertyFile(); }
 	public String getAttributeValue(String username, String attName) throws Exception { return Installation.installation().propertyServiceManager().getAttributeValue(username, attName); }
 	public void setAttributeValue(String username, String attName, String attValue) throws Exception { Installation.installation().propertyServiceManager().setAttributeValue(username, attName, attValue); }
 
-	
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Simulator Service
@@ -339,11 +349,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public Result getSimulatorEventResponse(TransactionInstance ti) throws Exception {
 		return new SimulatorServiceManager(session()).getSimulatorEventResponseAsResult(ti);
 	}
-    public List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception {
-        List<String> refs = TransactionErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(transactionName), severity);
-        logger.info(": getTransactionErrorCodeRefs(" + transactionName + ") => " + refs.size() + " codes");
-        return refs;
-    }
+	public List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception {
+		List<String> refs = TransactionErrorCodeDbLoader.LOAD().getRefsByTransaction(TransactionType.find(transactionName), severity);
+		logger.info(": getTransactionErrorCodeRefs(" + transactionName + ") => " + refs.size() + " codes");
+		return refs;
+	}
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -355,43 +365,43 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 
 	// Other support calls
-	
+
 	public String setToolkitPropertiesImpl(Map<String, String> props)
 			throws Exception {
 		logger.debug(": " + "setToolkitProperties");
-        logger.debug(describeProperties(props));
-        try {
-            // verify External_Cache points to a writable directory
-            String eCache = props.get("External_Cache");
-            File eCacheFile = new File(eCache);
-            if (!eCacheFile.exists() || !eCacheFile.isDirectory())
-                throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
-            if (!eCacheFile.canWrite())
-                throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
+		logger.debug(describeProperties(props));
+		try {
+			// verify External_Cache points to a writable directory
+			String eCache = props.get("External_Cache");
+			File eCacheFile = new File(eCache);
+			if (!eCacheFile.exists() || !eCacheFile.isDirectory())
+				throw new IOException("Cannot save toolkit properties: property External_Cache does not point to an existing directory");
+			if (!eCacheFile.canWrite())
+				throw new IOException("Cannot save toolkit properties: property External_Cache points to a directory that is not writable");
 
 //            File warhome = Installation.installation().warHome();
-            new PropertyServiceManager().getPropertyManager().update(props);
-            reloadPropertyFile();
+			new PropertyServiceManager().getPropertyManager().update(props);
+			reloadPropertyFile();
 //		Installation.installation().externalCache(eCacheFile);
-            ExternalCacheManager.reinitialize(eCacheFile);
-            try {
-                TkLoader.tkProps(Installation.installation().getTkPropsFile());
-            } catch (Throwable t) {
+			ExternalCacheManager.reinitialize(eCacheFile);
+			try {
+				TkLoader.tkProps(Installation.installation().getTkPropsFile());
+			} catch (Throwable t) {
 
-            }
-        } catch (Exception e) {
-            throw new Exception(ExceptionUtil.exception_details(e));
-        }
+			}
+		} catch (Exception e) {
+			throw new Exception(ExceptionUtil.exception_details(e));
+		}
 		return "";
 	}
 
-    String describeProperties(Map<String, String> props) {
-        StringBuilder buf = new StringBuilder();
+	String describeProperties(Map<String, String> props) {
+		StringBuilder buf = new StringBuilder();
 
-        for (String key : props.keySet()) buf.append(key).append(" = ").append(props.get(key)).append("\n");
+		for (String key : props.keySet()) buf.append(key).append(" = ").append(props.get(key)).append("\n");
 
-        return buf.toString();
-    }
+		return buf.toString();
+	}
 
 	public ServletContext servletContext() {
 		// this gets called from the initialization section of SimServlet
@@ -404,7 +414,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 		}
 		if (context != null && Installation.installation().warHome() == null) {
-			
+
 			File warHome = new File(context.getRealPath("/"));
 			System.setProperty("warHome", warHome.toString());
 			logger.info("warHome [ToolkitServiceImpl]: " + warHome);
@@ -416,7 +426,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	// Used only for non-servlet use (Dashboard is good example)
 	static public final String sessionVarName = "MySession";
 	String sessionID = null;
-	
+
 	public String getSessionId() {
 		if (sessionID != null)
 			return sessionID;
@@ -424,7 +434,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		HttpSession hsession = request.getSession();
 		return hsession.getId();
 	}
-	
+
 	public String getSessionIdIfAvailable() {
 		try {
 			return getSessionId();
@@ -439,7 +449,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public void setStandAloneSession(Session s) {
 		standAloneSession = s;
 	}
-	
+
 	// This exception is passable to the GUI.  The server side exception
 	// is NoSessionException
 	public Session session() throws NoServletSessionException {
@@ -448,13 +458,13 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 			throw new NoServletSessionException("");
 		return s;
 	}
-	
+
 
 	public Session getSession() {
 		HttpServletRequest request = this.getThreadLocalRequest();
 		return getSession(request);
 	}
-		
+
 	public Session getSession(HttpServletRequest request) {
 		if (request == null && standAloneSession != null) {
 			// not running interactively - maybe part of Dashboard
@@ -470,10 +480,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 				return s;
 			servletContext();
 		}
-		
+
 		// Force short session timeout for testing
 //		hsession.setMaxInactiveInterval(60/4);    // one quarter minute
-		
+
 		//******************************************
 		//
 		// New session object to be created
