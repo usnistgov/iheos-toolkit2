@@ -6,6 +6,10 @@
 
 package gov.nist.toolkit.utilities.xml;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -14,10 +18,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class XmlUtil {
 	static public OMFactory om_factory = OMAbstractFactory.getOMFactory();
@@ -92,9 +92,30 @@ public class XmlUtil {
 	public static OMElement createElement(String localName, OMNamespace ns) {
 		return om_factory.createOMElement(localName, ns);
 	}
+	
+	/**
+	 * Creates a new OMElement with the same local name and namespace as the 
+	 * parameter element. <b>NOT</b> a clone
+	 * @param element reference element for new element
+	 * @return new element
+	 */
+	public static OMElement createElement(OMElement element) {
+	   return om_factory.createOMElement(element.getLocalName(), element.getNamespace());
+	}
 
 	public static OMElement addChild(String localName, OMNamespace ns, OMElement parent) {
 		return om_factory.createOMElement(localName, ns, parent);
+	}
+	
+	/**
+    * Creates a new child OMElement with the same local name and namespace as the 
+    * parameter element. <b>NOT</b> a clone
+	 * @param element reference element
+	 * @param parent for new element
+	 * @return new element
+	 */
+	public static OMElement addChild(OMElement element, OMElement parent) {
+      return om_factory.createOMElement(element.getLocalName(), element.getNamespace(), parent);
 	}
 
 

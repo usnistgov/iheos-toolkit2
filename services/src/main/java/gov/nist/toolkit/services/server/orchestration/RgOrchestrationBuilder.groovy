@@ -45,7 +45,7 @@ class RgOrchestrationBuilder {
             RgOrchestrationResponse response = new RgOrchestrationResponse()
 
             // clear out test session
-            new SimDb().getSimIdsForUser(request.userName).each { SimId simId -> api.deleteSimulator(simId) }
+//            new SimDb().getSimIdsForUser(request.userName).each { SimId simId -> api.deleteSimulator(simId) }
 
             String supportIdName = 'support'
             SimId supportId
