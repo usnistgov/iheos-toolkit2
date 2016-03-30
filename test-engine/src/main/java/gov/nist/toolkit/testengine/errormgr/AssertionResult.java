@@ -6,7 +6,7 @@ public class AssertionResult {
 	public String info;
 	
 	/**
-	 * Use for assertions that fail
+	 * Use for assertionEleList that fail
 	 * @param assertion
 	 * @param info
 	 */
@@ -17,7 +17,7 @@ public class AssertionResult {
 	}
 
 	/**
-	 * Use for assertions that pass
+	 * Use for assertionEleList that pass
 	 * @param assertion
 	 */
 	public AssertionResult(String assertion) {

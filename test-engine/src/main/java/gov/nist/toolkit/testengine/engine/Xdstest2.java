@@ -323,7 +323,7 @@ public class Xdstest2 {
 
 	/**
 	 * Gather and return the assertion results from the test logs. Once a test has been run, 
-	 * it is usually necessary to display the details of the assertions that failed. This includes 
+	 * it is usually necessary to display the details of the assertionEleList that failed. This includes
 	 * the receipt of SOAPFaults, teststeps that failed, and general error messages that appear
 	 * in the testlog.
 	 * @return - Organized collection of error messages

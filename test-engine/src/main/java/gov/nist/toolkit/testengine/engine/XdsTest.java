@@ -212,7 +212,7 @@ public class XdsTest {
 		
 		// these properties are needed by the DSIG package in gov.nist.registry.common2.dsig
 		// specifically the KeyStoreAccessObject which need to know there to find the 
-		// keystore for signing SAML assertions
+		// keystore for signing SAML assertionEleList
 		
 		try {
 			System.setProperty("DSIG_keystore_url",System.getProperty("javax.net.ssl.keyStore"));

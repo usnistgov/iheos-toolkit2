@@ -1,6 +1,7 @@
-package gov.nist.toolkit.testengine.engine;
+package gov.nist.toolkit.testengine.assertionEngine;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.testengine.engine.*;
 import gov.nist.toolkit.utilities.xml.Parse;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -24,30 +25,6 @@ public class AssertionEngine {
 	TestConfig testConfig;
     ArrayList<Assertion> assertions = new ArrayList<Assertion>();
     ArrayList<DataRef> refs = new ArrayList<DataRef>();
-
-    class DataRef {
-		String file;
-        // special files
-        //  MGMT - testConfig.testmgmt_dir
-        //  THIS - output of current step
-		String as;
-        // name to use in data store
-		DataRef(String file, String as) { this.file = file; this.as = as; }
-        public String toString() { return String.format("DataRef: file:%s as:%s", file, as); }
-	}
-
-    class Assertion {
-        String id;
-        String xpath;
-        Assertion(String id, String xpath) {
-            this.id = id;
-            this.xpath = xpath.replaceAll("SITE", testConfig.siteXPath);
-        }
-
-        public String toString() {
-            return "[Assertion: id=" +id + " xpath=" + xpath + "]";
-        }
-    }
 
 	public void setTestConfig(TestConfig config) {
 		testConfig = config;
@@ -124,7 +101,7 @@ public class AssertionEngine {
 			String xpath = asser.getText();
 			xpath = xpath.replaceAll("\\$DATE\\$", date());
 
-			assertions.add(new Assertion(id, xpath));
+			assertions.add(new Assertion(id, xpath, testConfig));
 		}
 	}
 
@@ -157,7 +134,7 @@ public class AssertionEngine {
 		testLogger.add_name_value(assertion_output,"RawAssertionData", data);
 		testLogger.add_name_value(assertion_output, "AssertionCount", Integer.toString(assertions.size()));
 
-//        logger.info("Compiled Assertions: " + assertions.toString());
+//        logger.info("Compiled Assertions: " + assertionEleList.toString());
 //        logger.info("RawAssertionData: " + data);
 
 		try {

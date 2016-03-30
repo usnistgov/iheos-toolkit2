@@ -12,6 +12,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.engine.*;
+import gov.nist.toolkit.testengine.engine.assertionEngine.AssertionEngine;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.Report;
@@ -51,7 +52,7 @@ public abstract class BasicTransaction  {
 	protected ArrayList<OMElement> use_repository_unique_id;
 	// assertion linkage
 	protected ArrayList<OMElement> data_refs;
-	protected ArrayList<OMElement> assertions;
+	protected ArrayList<OMElement> assertionEleList;
 
 	static public final short xds_none = 0;
 	static public final short xds_a = 1;
@@ -291,7 +292,7 @@ public abstract class BasicTransaction  {
 		.append("use_object_ref = ").append((use_object_ref == null) ? null : use_object_ref.toString())
 		.append("use_repository_unique_id = ").append((use_repository_unique_id == null) ? null : use_repository_unique_id.toString())
 		.append("data_refs = ").append((data_refs == null) ? null : data_refs.toString())
-		.append("assertions = ").append((assertions == null) ? null : assertions.toString())
+		.append("assertionEleList = ").append((assertionEleList == null) ? null : assertionEleList.toString())
 		.append("endpoint = ").append(endpoint).append("\n")
 		.append("linkage = ").append((local_linkage_data == null) ? null : local_linkage_data.toString())
 		.append("metadata_filename = ").append(metadata_filename).append("\n")
@@ -332,7 +333,7 @@ public abstract class BasicTransaction  {
 		use_object_ref = new ArrayList<OMElement>();
 		use_repository_unique_id = new ArrayList<OMElement>();
 		data_refs = new ArrayList<OMElement>();
-		assertions = new ArrayList<OMElement>();
+		assertionEleList = new ArrayList<OMElement>();
 		local_linkage_data = new HashMap<String, String>();
 		isSQ = false;
 
@@ -920,13 +921,13 @@ public abstract class BasicTransaction  {
 				data_refs.add(part);
 			}
 			else if (part_name.equals("Assert")) {
-				assertions.add(part);
+				assertionEleList.add(part);
 			}
 		}
 	}
 
     // report the parameters to the request as Reports so they can be referenced
-    // in assertions
+    // in assertionEleList
     void reportStepParameters() {
         logger.info("generating linkageAsReports");
         if (reportManager == null)
@@ -1139,13 +1140,13 @@ public abstract class BasicTransaction  {
 
         try {
             if (useReportManager != null) {
-                useReportManager.apply(assertions);
+                useReportManager.apply(assertionEleList);
             }
         } catch (Exception e) {
             failed();
         }
 
-		engine.setAssertions(assertions);
+		engine.setAssertions(assertionEleList);
 		engine.setLinkage(linkage);
 		engine.setOutput(step_output);
 		engine.setTestConfig(testConfig);
