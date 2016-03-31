@@ -33,7 +33,7 @@ public class SiteSelectionPresenter {
 
             public void onSuccess(List<String> results) {
                 siteNames = results;
-                siteNames.add(0, none);
+//                siteNames.add(0, none);
                 view = new SingleSelectionView();
                 view.setData(siteNames);
 
@@ -71,5 +71,9 @@ public class SiteSelectionPresenter {
                 selected.add(code);
         }
         return selected;
+    }
+
+    public List<String> getSiteNames() {
+        return siteNames;
     }
 }
