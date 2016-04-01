@@ -69,19 +69,25 @@ class SysConfig {
 		transId = entry.getTransId();
 		isAsync = entry.isAsync();
 
+		System.out.println(entry.line);
+	}
+
+	public boolean eval(ConfigToXml configToXml) {
 		actorType = ActorType.findActor(actor);
+		if (actorType == null) {
+			System.out.println("Actor Type [" + actor + "] not understood");
+			return false;
+		}
 		trans = actorType.getTransaction(transId);
 
 		repUid = configToXml.oConfigs.getRepUid(sysName);
 		oddsRepUid = configToXml.oConfigs.getODDSRepUid(sysName);
 		home = configToXml.oConfigs.getHome(sysName);
-		
-		if (sysName.indexOf("EHR_GMT_2014") != -1) {
-			System.out.println(entry.line);
-			System.out.println(this);
-		}
+
+		System.out.println(this);
+		return true;
 	}
-	
+
 	public String toString() {
 		return "[SysConfig: sysName=" + sysName + " actor=" + actor + " secure=" + isSecure + 
 				" approved=" + isApproved + " " + 
