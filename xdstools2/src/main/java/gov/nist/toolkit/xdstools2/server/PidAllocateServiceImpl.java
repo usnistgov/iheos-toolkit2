@@ -1,7 +1,7 @@
 package gov.nist.toolkit.xdstools2.server;
 
 import gov.nist.toolkit.http.httpclient.HttpClient;
-import gov.nist.toolkit.valregmetadata.field.CodeValidation;
+import gov.nist.toolkit.valregmetadata.top.CodeValidation;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import gov.nist.toolkit.xdstools2.client.PidAllocateService;
 

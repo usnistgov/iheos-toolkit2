@@ -6,11 +6,12 @@ import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
+import gov.nist.toolkit.valregmetadata.top.ObjectStructureValidator;
+import gov.nist.toolkit.valregmetadata.top.SubmissionStructure;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.MessageBody;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
-import gov.nist.toolkit.valsupport.message.MessageBodyContainer;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 
 public class MetadataMessageValidator extends AbstractMessageValidator {
@@ -58,10 +59,9 @@ public class MetadataMessageValidator extends AbstractMessageValidator {
 			contentSummary(er, m);
 			
 			MetadataValidator mv = new MetadataValidator(m, vc, rvi);
-			mv.runObjectStructureValidation(er);
+			new ObjectStructureValidator(m, vc, rvi).run(er);
 			mv.runCodeValidation(er);
-			mv.runSubmissionStructureValidation(er);
-			
+			new SubmissionStructure(m, rvi).run(er, vc);
 
 		} catch (Exception e) {
 			er.err(XdsErrorCode.Code.XDSRegistryError, e);
