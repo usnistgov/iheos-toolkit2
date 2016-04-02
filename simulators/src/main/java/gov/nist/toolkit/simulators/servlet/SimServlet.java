@@ -360,7 +360,7 @@ public class SimServlet  extends HttpServlet {
 			}
 			MetadataCollection mc = regIndex.getMetadataCollection();
 
-			// purge object in the index that are no longer present behind the index
+			// purge model in the index that are no longer present behind the index
 			mc.purge();
 		}
 

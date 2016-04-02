@@ -311,7 +311,7 @@ public class Metadata {
 
 	/**
 	 * Move top-level classifications under the objects they classification.
-	 * Classification object can be top-level objects or nested inside the
+	 * Classification model can be top-level objects or nested inside the
 	 * objects they classify. Move all top-level classifications under the
 	 * objects they classify.
      * @throws MetadataException
@@ -495,7 +495,7 @@ public class Metadata {
 					"Association".equals(name)
 					) {
 
-				//oops this won't work, object needs real wrapper so everything works
+				//oops this won't work, model needs real wrapper so everything works
 				if(wrapper.getParent() == null) {
 					// add a wrapper
 					OMElement wrap = MetadataSupport.om_factory.createOMElement("wrapper", null);
@@ -535,7 +535,7 @@ public class Metadata {
 	 * Add to metadata collection. If collection empty then initialize it.
 	 *
 	 * @param metadata
-	 *            - a submission or a single metadata object. Will be wrapped
+	 *            - a submission or a single metadata model. Will be wrapped
 	 *            internally (made into single XML document)
 	 * @param discard_duplicates
 	 * @throws XdsInternalException
@@ -1202,7 +1202,7 @@ public class Metadata {
 	}
 
 	public Metadata getMetadataAsObjectRefs() {
-		// Request is for ObjectRefs only so build new metadata object with
+		// Request is for ObjectRefs only so build new metadata model with
 		// objectrefs
 		Metadata orMetadata = new Metadata();
 		orMetadata.mkObjectRefs(getIds(getLeafClassObjects()));
@@ -1327,7 +1327,7 @@ public class Metadata {
 		String type = getAssocType(assoc);
 		if (type == null)
 			throw new MetadataException(
-					"Invalid Association object: no associationType attribute: "
+					"Invalid Association model: no associationType attribute: "
 							+ assoc.toString(), EbRim.Assoc_type);
 		String[] parts = type.split(":");
 		if (parts.length < 1)
@@ -1597,7 +1597,7 @@ public class Metadata {
 			if (value_list == null)
 				throw new MetadataException(
 						"Slot without ValueList - slot name is " + slot_name
-								+ " of object " + id(ele), EbRim.Slot);
+								+ " of model " + id(ele), EbRim.Slot);
 			for (@SuppressWarnings("unchecked")
 				 Iterator<OMElement> it = value_list.getChildElements(); it.hasNext();) {
 				OMElement v = it.next();
@@ -1706,7 +1706,7 @@ public class Metadata {
 	}
 
 	/**
-	 * Contains LeafClass of object?
+	 * Contains LeafClass of model?
 	 *
 	 * @param id
 	 * @return
@@ -1993,7 +1993,7 @@ public class Metadata {
 		}
 		if (interpretAsSubmission && submissionSet == null)
 			throw new NoSubmissionSetException(
-					"Metadata: No Submission Set found: no RegistryPackage object found with a Classification (classificationNode= urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd)" +
+					"Metadata: No Submission Set found: no RegistryPackage model found with a Classification (classificationNode= urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd)" +
 							" or an ExternalIdentifier with correct identificationScheme for uniqueID, patientID or sourceID attribute", MetadataTables.Submission_request);
 
 	}
@@ -2077,7 +2077,7 @@ public class Metadata {
 		} else {
 			//				throw new MetadataException(
 			//						"Metadata: parse(): did not expect a " + type
-			//						+ " object at the top level");
+			//						+ " model at the top level");
 		}
 
 		for (@SuppressWarnings("unchecked")

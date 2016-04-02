@@ -5,7 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.valregmetadata.field.MetadataValidator;
+import gov.nist.toolkit.valregmetadata.top.MetadataValidator;
 import gov.nist.toolkit.valregmetadata.top.ObjectStructureValidator;
 import gov.nist.toolkit.valregmetadata.top.SubmissionStructure;
 import gov.nist.toolkit.valsupport.client.ValidationContext;

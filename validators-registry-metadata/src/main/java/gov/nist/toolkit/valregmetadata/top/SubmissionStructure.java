@@ -144,7 +144,7 @@ public class SubmissionStructure {
 				hasmember_error = true;
 			}
 		} else {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assocDescription(assocId) + ": only Folder to DocumentEntry associations can be members of SubmissionSet (linked to SubmissionSet object via HasMember association", this, assocsRef);
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, assocDescription(assocId) + ": only Folder to DocumentEntry associations can be members of SubmissionSet (linked to SubmissionSet model via HasMember association", this, assocsRef);
 			hasmember_error = true;
 		}
 	}
@@ -306,9 +306,9 @@ public class SubmissionStructure {
 
 
 		// for both the target and source
-		// if points to an object in submission, can be symbolic or uuid
-		//     but object must be HasMember Association
-		// if points to an object in registry, must be uuid
+		// if points to an model in submission, can be symbolic or uuid
+		//     but model must be HasMember Association
+		// if points to an model in registry, must be uuid
 
 		if (submissionContains(tsource)) {
 			// tsource must be folder
@@ -416,7 +416,7 @@ public class SubmissionStructure {
 		}
 
 		if (!isUUID(target)) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is a symbolic ID that cannot reference an object in the registry", this, "ITI TF-3: 4.1.6.1");
+			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in the registry with its targetObject attribute, it references " + objectDescription(target) + " which is a symbolic ID that cannot reference an model in the registry", this, "ITI TF-3: 4.1.6.1");
 		}
 	}
 
@@ -612,11 +612,11 @@ public class SubmissionStructure {
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on Submission Set association has no value", this, "ITI TF-3: 4.1.4.1");
 				} else if (	ss_status.equals("Original")) {
 					if ( !containsObject(target))
-						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on SubmissionSet association has value 'Original' but the targetObject " + target + " references an object not in the submission",
+						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on SubmissionSet association has value 'Original' but the targetObject " + target + " references an model not in the submission",
 								this, "ITI TF-3: 4.1.4.1");
 				} else if (	ss_status.equals("Reference")) {
 					if (containsObject(target))
-						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on SubmissionSet association has value 'Reference' but the targetObject " + target + " references an object in the submission",
+						er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on SubmissionSet association has value 'Reference' but the targetObject " + target + " references an model in the submission",
 								this, "ITI TF-3: 4.1.4.1");
 				} else {
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "SubmissionSetStatus Slot on Submission Set association has unrecognized value: " + ss_status, this, "ITI TF-3: 4.1.4.1");

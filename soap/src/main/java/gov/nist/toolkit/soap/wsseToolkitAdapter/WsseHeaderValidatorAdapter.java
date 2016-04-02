@@ -30,7 +30,7 @@ import java.util.List;
  * ValidationContext could be push as a parameter of this method.
  *
  * NOTE : CustomLogger is a quick way to log stuff from the wsse module without
- * having to define an object model of what is "logging"!
+ * having to define an model model of what is "logging"!
  *
  *  clarify what vc , err, mvc are doing! How comes the element to validate
  * on in not part of the run() params?

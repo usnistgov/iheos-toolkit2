@@ -120,7 +120,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 
 			Ro obj = getObjectById(id);
 			if (obj == null) {
-				er.err(Code.XDSRegistryError, "mergeDelta: cannot find object " + id, this, null);
+				er.err(Code.XDSRegistryError, "mergeDelta: cannot find model " + id, this, null);
 				return false;
 			}
 
@@ -340,7 +340,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 		for (String id : ids) {
 			Metadata m2 = loadRo(id);
 			if (m2 == null)
-				throw new XdsInternalException("Cannot load metadata for object " + id);
+				throw new XdsInternalException("Cannot load metadata for model " + id);
 			m.addMetadata(m2);
 		}
 
@@ -484,7 +484,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 //		logger().debug("storing " + id + "\ngiven current metadata index\n" + getIdStats("    ") );
 		Ro ro = getRo(id);
 		if (ro == null) {
-			logger().debug("object " + id + " not found in metadata index");
+			logger().debug("model " + id + " not found in metadata index");
 			throw new XdsInternalException("MetadataCollection#storeMetadata: index corrupted");
 		}
 		File rof = regIndex.getSimDb().getRegistryObjectFile(id);
@@ -556,7 +556,7 @@ public class MetadataCollection implements Serializable, RegistryValidationInter
 	}
 
 	// for the registry objects that are associatons, filter out those who reference
-	// object not in this set
+	// model not in this set
 	public List<Ro> filterAssocs(List<Ro> ros) {
 		List<Ro> out = new ArrayList<Ro>();
 

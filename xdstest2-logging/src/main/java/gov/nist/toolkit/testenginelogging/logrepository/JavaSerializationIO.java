@@ -52,7 +52,7 @@ public class JavaSerializationIO implements ILoggerIO  {
 		} 
 		catch (ClassNotFoundException e) {
 			logger.debug("attempting to restore log " + "from " + logFile(id, logDir));
-			throw new XdsInternalException("Cannot create object of type LogMap - class not found", e);
+			throw new XdsInternalException("Cannot create model of type LogMap - class not found", e);
 		} catch (Exception e) {
 			logger.error(ExceptionUtil.here("Cannot load " + logFile(id, logDir)));
 			throw e;

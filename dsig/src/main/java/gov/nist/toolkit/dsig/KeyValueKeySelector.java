@@ -33,7 +33,7 @@ public class KeyValueKeySelector extends KeySelector {
 			XMLCryptoContext context)
 	throws KeySelectorException {
 		if (keyInfo == null) {
-			throw new KeySelectorException("Null KeyInfo object!");
+			throw new KeySelectorException("Null KeyInfo model!");
 		}
 		SignatureMethod sm = (SignatureMethod) method;
 		List list = keyInfo.getContent();

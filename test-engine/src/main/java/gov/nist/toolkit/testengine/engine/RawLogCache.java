@@ -56,7 +56,7 @@ public class RawLogCache {
 //			return map;
 //		} 
 //		catch (ClassNotFoundException e) {
-//			throw new XdsInternalException("Cannot create object of type LogMap - class not found",e);
+//			throw new XdsInternalException("Cannot create model of type LogMap - class not found",e);
 //		} finally {
 //			in.close();
 //		}

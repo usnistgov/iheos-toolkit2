@@ -55,12 +55,12 @@ public class SimCommon {
 
 
 	/**
-	 * Build a new simulator support object
-	 * @param db the simulator database object supporting this simulator
+	 * Build a new simulator support model
+	 * @param db the simulator database model supporting this simulator
 	 * @param tls is tls employed
 	 * @param vc validation context used to validate the input message
 	 * @param mvc message validation engine
-	 * @param response HttpServletResponse object for accepting eventual output
+	 * @param response HttpServletResponse model for accepting eventual output
 	 * @throws IOException
 	 * @throws XdsException 
 	 */

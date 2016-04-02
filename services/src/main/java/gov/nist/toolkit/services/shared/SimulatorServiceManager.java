@@ -44,7 +44,7 @@ import java.util.Map;
 /**
  * Each new request should go to a new instance.  All persistence
  * between calls is done by storing on disk or in the session
- * object.
+ * model.
  * @author bill
  *
  */

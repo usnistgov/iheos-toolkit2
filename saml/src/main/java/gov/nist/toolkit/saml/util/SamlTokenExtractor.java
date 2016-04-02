@@ -394,7 +394,7 @@ public class SamlTokenExtractor {
        log.debug("Exiting SamlTokenExtractor.extractConditionsInfo...");
    }
     /**
-     * Initializes the assertion object to contain empty strings for all values.
+     * Initializes the assertion model to contain empty strings for all values.
      * These are overwritten in the extraction process with real values if they
      * are available
      * @param assertOut The Assertion element being written to
@@ -574,7 +574,7 @@ public class SamlTokenExtractor {
     }
 
     /**
-     * Extracts the value of the UID object identifier of the X509 formatted 
+     * Extracts the value of the UID model identifier of the X509 formatted
      * content.  This method uses Sun proprietary classes to determine if the 
      * X509 is properly formed and to extract the value of the UID. The current 
      * specification for the string representation of a distinguished name is 

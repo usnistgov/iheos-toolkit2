@@ -304,7 +304,7 @@ public class XdsTestServiceManager extends CommonService {
 	/**
 	 * Return the contents of all the log.xml files found under external_cache/TestLogCache/&lt;sessionName&gt;.  If there
 	 * are multiple sections to the test then load them all. Each element of the
-	 * returned list (Result object) represents the output of all steps in a single section of the test.
+	 * returned list (Result model) represents the output of all steps in a single section of the test.
 	 * @param sessionName - not the servlet session but instead the dir name
 	 * under external_cache/TestLogCache identifying the user of the service
 	 * @param testInstance like 12355
@@ -737,9 +737,9 @@ public class XdsTestServiceManager extends CommonService {
 	// TODO To complete
 
 	/**
-	 * A Test object includes a Test Id or Instance Number, a Short Description, a Time and a Status. This object is used
+	 * A Test model includes a Test Id or Instance Number, a Short Description, a Time and a Status. This model is used
 	 * for display purposes only. Build similar objects using the package Results, or replace Test with a similar
-	 * existing object.
+	 * existing model.
 	 */
 	public List<Test> reloadAllTestResults(String sessionName) throws Exception {
 //		List<TestInstance> testList = null;

@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 public class MyResource {
 
     /**
-     * Method handling HTTP GET requests. The returned object will be sent
+     * Method handling HTTP GET requests. The returned model will be sent
      * to the client as "text/plain" media type.
      *
      * @return String that will be returned as a text/plain response.

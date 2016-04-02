@@ -57,7 +57,7 @@ public class FindSubmissionSetsSim extends FindSubmissionSets {
 			if (content_type instanceof SQCodeOr) {
 				results = mc.subSetCollection.filterByContentTypeCode((SQCodeOr)content_type, results);
 			} else {
-				throw new XdsException("FindSubmissionSetsSim: cannot cast object of type " + content_type.getClass().getName() + " (from contentTypeCodes) into an instance of class SQCodeOr", null);
+				throw new XdsException("FindSubmissionSetsSim: cannot cast model of type " + content_type.getClass().getName() + " (from contentTypeCodes) into an instance of class SQCodeOr", null);
 			}
 		}
 

@@ -27,7 +27,7 @@ public class SiteSpec implements IsSerializable {
 	public boolean isAsync = false;
 
     /**
-     * Create a site spec. This is a data transfer object (DTO) used to manage Sites in the UI.
+     * Create a site spec. This is a data transfer model (DTO) used to manage Sites in the UI.
      * @param name name of the site
      * @param actorType actor type of interest within the site
      * @param toClone if set it is another SiteSpec to get the TLS, SAML, and ASYNC settings from.  If this

@@ -13,7 +13,7 @@ public class AddressType {
      * Gets the value of the addressType property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link CeType }
      *     
      */
@@ -25,7 +25,7 @@ public class AddressType {
      * Sets the value of the addressType property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link CeType }
      *     
      */
@@ -37,7 +37,7 @@ public class AddressType {
      * Gets the value of the city property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -49,7 +49,7 @@ public class AddressType {
      * Sets the value of the city property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -61,7 +61,7 @@ public class AddressType {
      * Gets the value of the country property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -73,7 +73,7 @@ public class AddressType {
      * Sets the value of the country property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -85,7 +85,7 @@ public class AddressType {
      * Gets the value of the state property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -97,7 +97,7 @@ public class AddressType {
      * Sets the value of the state property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -109,7 +109,7 @@ public class AddressType {
      * Gets the value of the streetAddress property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -121,7 +121,7 @@ public class AddressType {
      * Sets the value of the streetAddress property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -133,7 +133,7 @@ public class AddressType {
      * Gets the value of the zipCode property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -145,7 +145,7 @@ public class AddressType {
      * Sets the value of the zipCode property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */

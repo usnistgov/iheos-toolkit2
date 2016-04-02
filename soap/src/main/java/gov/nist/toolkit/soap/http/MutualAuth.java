@@ -117,7 +117,7 @@ public class MutualAuth {
         throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {
         //create Inputstream to keystore file
         java.io.InputStream inputStream = new java.io.FileInputStream(keyStoreFileName);
-        //create keystore object, load it with keystorefile data
+        //create keystore model, load it with keystorefile data
         KeyStore keyStore = KeyStore.getInstance("JKS");
         keyStore.load(inputStream, keyStorePassword == null ? null : keyStorePassword.toCharArray());
         //DEBUG information should be removed
@@ -132,7 +132,7 @@ public class MutualAuth {
                 new KeyManager[] {
                      new MutualAuth().new AliasKeyManager(keyStore, alias, keyStorePassword)};
         } else {
-            //create keymanager factory and load the keystore object in it 
+            //create keymanager factory and load the keystore model in it
             KeyManagerFactory keyManagerFactory =
                 KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             keyManagerFactory.init(keyStore, keyStorePassword == null ? null : keyStorePassword.toCharArray());
@@ -146,7 +146,7 @@ public class MutualAuth {
         throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         //create Inputstream to truststore file
         java.io.InputStream inputStream = new java.io.FileInputStream(trustStoreFileName);
-        //create keystore object, load it with truststorefile data
+        //create keystore model, load it with truststorefile data
         KeyStore trustStore = KeyStore.getInstance("JKS");
         trustStore.load(inputStream, trustStorePassword == null ? null : trustStorePassword.toCharArray());
         //DEBUG information should be removed
@@ -154,7 +154,7 @@ public class MutualAuth {
         	System.out.println("For TrustStore ...............");
             printKeystoreInfo(trustStore);
         }
-        //create trustmanager factory and load the keystore object in it 
+        //create trustmanager factory and load the keystore model in it
         TrustManagerFactory trustManagerFactory =
             TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);

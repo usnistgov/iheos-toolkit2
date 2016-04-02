@@ -13,7 +13,7 @@ public class TokenCreationInfoType {
      * Gets the value of the assertion property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link AssertionType }
      *     
      */
@@ -25,7 +25,7 @@ public class TokenCreationInfoType {
      * Sets the value of the assertion property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link AssertionType }
      *     
      */
@@ -37,7 +37,7 @@ public class TokenCreationInfoType {
      * Gets the value of the actionName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -49,7 +49,7 @@ public class TokenCreationInfoType {
      * Sets the value of the actionName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -61,7 +61,7 @@ public class TokenCreationInfoType {
      * Gets the value of the resourceName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -73,7 +73,7 @@ public class TokenCreationInfoType {
      * Sets the value of the resourceName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */

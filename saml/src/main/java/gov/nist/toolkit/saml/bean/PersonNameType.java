@@ -14,7 +14,7 @@ public class PersonNameType {
      * Gets the value of the familyName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -26,7 +26,7 @@ public class PersonNameType {
      * Sets the value of the familyName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -38,7 +38,7 @@ public class PersonNameType {
      * Gets the value of the givenName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -50,7 +50,7 @@ public class PersonNameType {
      * Sets the value of the givenName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -62,7 +62,7 @@ public class PersonNameType {
      * Gets the value of the nameType property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link CeType }
      *     
      */
@@ -74,7 +74,7 @@ public class PersonNameType {
      * Sets the value of the nameType property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link CeType }
      *     
      */
@@ -86,7 +86,7 @@ public class PersonNameType {
      * Gets the value of the secondNameOrInitials property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -98,7 +98,7 @@ public class PersonNameType {
      * Sets the value of the secondNameOrInitials property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -110,7 +110,7 @@ public class PersonNameType {
      * Gets the value of the fullName property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -122,7 +122,7 @@ public class PersonNameType {
      * Sets the value of the fullName property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -134,7 +134,7 @@ public class PersonNameType {
      * Gets the value of the prefix property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -146,7 +146,7 @@ public class PersonNameType {
      * Sets the value of the prefix property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -158,7 +158,7 @@ public class PersonNameType {
      * Gets the value of the suffix property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -170,7 +170,7 @@ public class PersonNameType {
      * Sets the value of the suffix property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */

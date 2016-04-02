@@ -52,7 +52,7 @@ public class FindFoldersSim extends FindFolders {
 			else if (codes instanceof SQCodeAnd) {
 					results = mc.folCollection.filterByFolderCodeList((SQCodeAnd)codes, results);
 			} else {
-				throw new XdsException("FindDocumentsSim: cannot cast object of type " + codes.getClass().getName() + " (from eventCode) into an instance of class SQCodeOr or SQCodeAnd", null);
+				throw new XdsException("FindDocumentsSim: cannot cast model of type " + codes.getClass().getName() + " (from eventCode) into an instance of class SQCodeOr or SQCodeAnd", null);
 			}
 		}
 		

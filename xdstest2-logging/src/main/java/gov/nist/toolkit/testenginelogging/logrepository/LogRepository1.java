@@ -55,7 +55,7 @@ abstract public class LogRepository1 {
 		} 
 		catch (ClassNotFoundException e) {
 			getLogger().debug("attempting to restore log " + "from " + logDir);
-			throw new XdsInternalException("Cannot create object of type LogMap - class not found",e);
+			throw new XdsInternalException("Cannot create model of type LogMap - class not found",e);
 		} finally {
 			in.close();
 		}

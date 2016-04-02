@@ -35,72 +35,72 @@ public class AttributeBean {
     }
 
     /**
-     * Method getSimpleName returns the simpleName of this SamlAttribute object.
+     * Method getSimpleName returns the simpleName of this SamlAttribute model.
      *
-     * @return the simpleName (type String) of this SamlAttribute object.
+     * @return the simpleName (type String) of this SamlAttribute model.
      */
     public String getSimpleName() {
         return simpleName;
     }
 
     /**
-     * Method setSimpleName sets the simpleName of this SamlAttribute object.
+     * Method setSimpleName sets the simpleName of this SamlAttribute model.
      *
-     * @param simpleName the simpleName of this SamlAttribute object.
+     * @param simpleName the simpleName of this SamlAttribute model.
      */
     public void setSimpleName(String simpleName) {
         this.simpleName = simpleName;
     }
     
     /**
-     * Method getNameFormat returns the nameFormat of this SamlAttribute object
+     * Method getNameFormat returns the nameFormat of this SamlAttribute model
      * 
-     * @return he nameFormat of this SamlAttribute object
+     * @return he nameFormat of this SamlAttribute model
      */
     public String getNameFormat() {
         return nameFormat;
     }
     
     /**
-     * Method setNameFormat sets the nameFormat of this SamlAttribute object.
+     * Method setNameFormat sets the nameFormat of this SamlAttribute model.
      *
-     * @param nameFormat the nameFormat of this SamlAttribute object.
+     * @param nameFormat the nameFormat of this SamlAttribute model.
      */
     public void setNameFormat(String nameFormat) {
         this.nameFormat = nameFormat;
     }
 
     /**
-     * Method getQualifiedName returns the qualifiedName of this SamlAttribute object.
+     * Method getQualifiedName returns the qualifiedName of this SamlAttribute model.
      *
-     * @return the qualifiedName (type String) of this SamlAttribute object.
+     * @return the qualifiedName (type String) of this SamlAttribute model.
      */
     public String getQualifiedName() {
         return qualifiedName;
     }
 
     /**
-     * Method setQualifiedName sets the qualifiedName of this SamlAttribute object.
+     * Method setQualifiedName sets the qualifiedName of this SamlAttribute model.
      *
-     * @param qualifiedName the qualifiedName of this SamlAttribute object.
+     * @param qualifiedName the qualifiedName of this SamlAttribute model.
      */
     public void setQualifiedName(String qualifiedName) {
         this.qualifiedName = qualifiedName;
     }
 
     /**
-     * Method getAttributeValues returns the attributeValues of this SamlAttribute object.
+     * Method getAttributeValues returns the attributeValues of this SamlAttribute model.
      *
-     * @return the attributeValues (type Map) of this SamlAttribute object.
+     * @return the attributeValues (type Map) of this SamlAttribute model.
      */
     public List<String> getAttributeValues() {
         return attributeValues;
     }
 
     /**
-     * Method setAttributeValues sets the attributeValues of this SamlAttribute object.
+     * Method setAttributeValues sets the attributeValues of this SamlAttribute model.
      *
-     * @param attributeValues the attributeValues of this SamlAttribute object.
+     * @param attributeValues the attributeValues of this SamlAttribute model.
      */
     public void setAttributeValues(List<String> attributeValues) {
         this.attributeValues = attributeValues;

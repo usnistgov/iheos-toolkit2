@@ -149,10 +149,10 @@ public class Structure {
 					err("SubmissionSetStatus Slot on Submission Set association has no value");
 				} else if (	ss_status.equals("Original")) {
 					if ( !m.containsObject(target))
-						err("SubmissionSetStatus Slot on Submission Set association has value 'Original' but the targetObject " + target + " references an object not in the submission");
+						err("SubmissionSetStatus Slot on Submission Set association has value 'Original' but the targetObject " + target + " references an model not in the submission");
 				} else if (	ss_status.equals("Reference")) {
 					if (m.containsObject(target))
-						err("SubmissionSetStatus Slot on Submission Set association has value 'Reference' but the targetObject " + target + " references an object in the submission");
+						err("SubmissionSetStatus Slot on Submission Set association has value 'Reference' but the targetObject " + target + " references an model in the submission");
 				} else {
 					err("SubmissionSetStatus Slot on Submission Set association has unrecognized value: " + ss_status);
 				}

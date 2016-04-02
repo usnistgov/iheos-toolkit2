@@ -10,7 +10,7 @@ public class HomeCommunityType {
      * Gets the value of the description property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -22,7 +22,7 @@ public class HomeCommunityType {
      * Sets the value of the description property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -34,7 +34,7 @@ public class HomeCommunityType {
      * Gets the value of the homeCommunityId property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -46,7 +46,7 @@ public class HomeCommunityType {
      * Sets the value of the homeCommunityId property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -58,7 +58,7 @@ public class HomeCommunityType {
      * Gets the value of the name property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -70,7 +70,7 @@ public class HomeCommunityType {
      * Sets the value of the name property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */

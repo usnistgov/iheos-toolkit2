@@ -36,12 +36,12 @@ public class Attribute extends ValidatorCommon {
 //		new FolderValidator(this).run();
 //
 //		if (is_submit && m.getSubmissionSets().size() == 0) 
-//			err("Submission must contain a SubmissionSet object, none were found");
+//			err("Submission must contain a SubmissionSet model, none were found");
 //
 //		if (is_submit && m.getSubmissionSets().size() > 1) {
 //			StringBuffer buf = new StringBuffer();
 //
-//			buf.append("Submission must contain a single SubmissionSet object, ");
+//			buf.append("Submission must contain a single SubmissionSet model, ");
 //			buf.append(m.getSubmissionSets().size()).append(" were found:\n");
 //
 //			for (OMElement ss : m.getSubmissionSets()) {
@@ -154,7 +154,7 @@ public class Attribute extends ValidatorCommon {
 //
 //					if (m.getSlotValue(class_ele, "authorPerson", 1) != null) 
 //						err(classified_object_type + " " + classified_object_id + " has a author type classification (classificationScheme=" +
-//								class_scheme + ") with multiple values in the authorPerson slot.  Only one is allowed. To document a second author, create a second Classification object"	);
+//								class_scheme + ") with multiple values in the authorPerson slot.  Only one is allowed. To document a second author, create a second Classification model"	);
 //
 //					for (OMElement slot : MetadataSupport.childrenWithLocalName(class_ele, "Slot")) {
 //						String slot_name = slot.getAttributeValue(MetadataSupport.slot_name_qname);

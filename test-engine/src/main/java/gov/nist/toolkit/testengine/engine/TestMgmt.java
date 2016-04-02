@@ -19,7 +19,7 @@ public class TestMgmt extends OMGenerator {
 	}
 
 	public HashMap<String, String> assignUniqueIds(Metadata metadata, String no_assign_uid_to) throws XdsInternalException {
-		HashMap<String, String> unique_ids = new HashMap<String, String>();    // object id field => uniqueID assigned
+		HashMap<String, String> unique_ids = new HashMap<String, String>();    // model id field => uniqueID assigned
 
 
 			IdAllocator allocator = UniqueIdAllocator.getInstance(testConfig);
@@ -37,7 +37,7 @@ public class TestMgmt extends OMGenerator {
 	}
 
 	public HashMap<String, String> assignPatientId(Metadata metadata, String forced_patient_id) throws XdsInternalException {
-		HashMap<String, String> ids = new HashMap<String, String>();    // object id field => patientID assigned
+		HashMap<String, String> ids = new HashMap<String, String>();    // model id field => patientID assigned
 
 		IdAllocator allocator = (forced_patient_id == null) ? new PatientIdAllocator(testConfig) : new PatientIdAllocator(testConfig, forced_patient_id);
 		// for all ExtrinsicObjects
@@ -54,7 +54,7 @@ public class TestMgmt extends OMGenerator {
 	}
 
 	public HashMap<String, String> assignSourceId(Metadata metadata) throws XdsInternalException {
-		HashMap<String, String> ids = new HashMap<String, String>();    // object id field => patientID assigned
+		HashMap<String, String> ids = new HashMap<String, String>();    // model id field => patientID assigned
 
 		IdAllocator allocator = new SourceIdAllocator(testConfig);
 

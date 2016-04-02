@@ -265,7 +265,7 @@
 <!--
      this currently only handles GIF's and JPEG's.  It could, however,
 	 be extended by including other image MIME types in the predicate
-	 and/or by generating <object> or <applet> tag with the correct
+	 and/or by generating <model> or <applet> tag with the correct
 	 params depending on the media type
   -->
 <xsl:template match='observation_media'>

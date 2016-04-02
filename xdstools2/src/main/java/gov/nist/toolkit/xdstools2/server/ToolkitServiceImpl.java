@@ -476,7 +476,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		
 		//******************************************
 		//
-		// New session object to be created
+		// New session model to be created
 		//
 		//******************************************
 		File warHome = null;

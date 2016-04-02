@@ -295,7 +295,7 @@ public class HttpClient implements HostnameVerifier {
 		else if (o instanceof String)
 			setAttachment((String) o, type);
 		else
-			throw new Exception("SOAPLite.setAttachment() cannot handle object type " + o.getClass().getName());
+			throw new Exception("SOAPLite.setAttachment() cannot handle model type " + o.getClass().getName());
 	}
 
 	public String username_password() {

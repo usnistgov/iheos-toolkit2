@@ -22,7 +22,7 @@ import java.util.Map;
 import org.apache.axiom.om.OMElement;
 
 /**
- * Translate a Metadata object into client objects.
+ * Translate a Metadata model into client objects.
  * @author bill
  *
  */

@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.utilities.io.Io
+import gov.nist.toolkit.valregmetadata.top.MetadataValidator
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import org.apache.log4j.BasicConfigurator
 import spock.lang.Specification

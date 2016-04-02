@@ -2,7 +2,7 @@ package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmetadata.object.ExternalIdentifier;
+import gov.nist.toolkit.valregmetadata.model.ExternalIdentifier;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 

@@ -85,7 +85,7 @@ public class AssertionEngine {
 
 	String date() {  // return date in 20081009 format
 		StringBuilder sb = new StringBuilder();
-		// Send all output to the Appendable object sb
+		// Send all output to the Appendable model sb
 		Formatter formatter = new Formatter(sb, Locale.US);
 		Calendar c = new GregorianCalendar();
 		formatter.format("%s%02d%02d", c.get(Calendar.YEAR), c.get(Calendar.MONTH)+1, c.get(Calendar.DAY_OF_MONTH));

@@ -15,7 +15,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Gets the value of the id property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -27,7 +27,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Sets the value of the id property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -39,7 +39,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Gets the value of the issueInstant property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -51,7 +51,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Sets the value of the issueInstant property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -63,7 +63,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Gets the value of the version property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -75,7 +75,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Sets the value of the version property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -87,7 +87,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Gets the value of the issuer property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -99,7 +99,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Sets the value of the issuer property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -111,7 +111,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Gets the value of the issuerFormat property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -123,7 +123,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Sets the value of the issuerFormat property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -135,7 +135,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Gets the value of the conditions property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link SamlAuthzDecisionStatementEvidenceConditionsType }
      *     
      */
@@ -147,7 +147,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Sets the value of the conditions property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link SamlAuthzDecisionStatementEvidenceConditionsType }
      *     
      */
@@ -159,7 +159,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Gets the value of the accessConsentPolicy property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -171,7 +171,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Sets the value of the accessConsentPolicy property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -183,7 +183,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Gets the value of the instanceAccessConsentPolicy property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -195,7 +195,7 @@ public class SamlAuthzDecisionStatementEvidenceAssertionType {
      * Sets the value of the instanceAccessConsentPolicy property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */

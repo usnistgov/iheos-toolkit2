@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmetadata.object.RegistryObject;
+import gov.nist.toolkit.valregmetadata.model.RegistryObject;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQuery;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.ParamParser.SlotParse;

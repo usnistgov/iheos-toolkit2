@@ -4,10 +4,10 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.valregmetadata.object.Association;
-import gov.nist.toolkit.valregmetadata.object.DocumentEntry;
-import gov.nist.toolkit.valregmetadata.object.Folder;
-import gov.nist.toolkit.valregmetadata.object.SubmissionSet;
+import gov.nist.toolkit.valregmetadata.model.Association;
+import gov.nist.toolkit.valregmetadata.model.DocumentEntry;
+import gov.nist.toolkit.valregmetadata.model.Folder;
+import gov.nist.toolkit.valregmetadata.model.SubmissionSet;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -35,7 +35,7 @@ public class ObjectStructureValidator {
         if (vc.skipInternalStructure)
             return;
 
-        er.sectionHeading("Evaluating metadata object structure");
+        er.sectionHeading("Evaluating metadata model structure");
 
         Set<String> knownIds = new HashSet<String>();
 

@@ -92,7 +92,7 @@ class GetDocumentDetailsSpec extends ToolkitSpecification {
         when: 'parse returned metadata'
         Metadata m = MetadataParser.parseNonSubmission(deString)
 
-        then: 'verify it contains one DocumentEntry object'
+        then: 'verify it contains one DocumentEntry model'
         m.getExtrinsicObjects().size() == 1
 
         when: 'extract uniqueId for one DocumentEntry'

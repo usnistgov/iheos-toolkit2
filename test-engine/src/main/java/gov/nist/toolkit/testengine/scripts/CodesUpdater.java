@@ -399,7 +399,7 @@ public class CodesUpdater {
     /**
      * This method returns a Code out of a classification element.
      * @param classificationElement classification element to extract
-     * @return code object
+     * @return code model
      */
     private Code getCode(OMElement classificationElement){
         // getRetrievedDocumentsModel coding scheme
@@ -422,7 +422,7 @@ public class CodesUpdater {
             codeSystemElement= v;
         }
 
-        // return the code object
+        // return the code model
         if (codeSystemElement == null) return new Code(value, codeSystem, displayName);
         codeSystem = codeSystemElement.getText();
         return new Code(value, codeSystem, displayName);

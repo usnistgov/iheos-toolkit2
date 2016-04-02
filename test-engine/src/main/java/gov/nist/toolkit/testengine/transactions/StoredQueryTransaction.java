@@ -68,7 +68,7 @@ public class StoredQueryTransaction extends QueryTransaction {
 		String ns_uri = (ns != null) ? ns.getNamespaceURI() : null;
 		int metadata_type = getMetadataType();
 
-		isStableOrODDE = true; // A registry response can include both object types
+		isStableOrODDE = true; // A registry response can include both model types
 
 		// verify input is correct top-level request
 		if (parse_metadata) {

@@ -169,7 +169,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         for (Pid pid : favoritePids) {
             // first is display value
             // second is parsable value. may contain more than just the id, like patient name
-            //   it can be used to generate a Pid object later
+            //   it can be used to generate a Pid model later
             favoritesListBox.addItem(pid.asParsableString(), pid.asParsableString());
         }
     }

@@ -27,13 +27,13 @@ import gov.nist.toolkit.xdsexception.XdsInternalException
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 /**
- * The session object is used in one of four ways depending on the context:
+ * The session model is used in one of four ways depending on the context:
  * 
- * 1) GUI - each GUI session is represented by a session object. It is managed
+ * 1) GUI - each GUI session is represented by a session model. It is managed
  * through the Servlet session mechanism. It is managed by the class
  * ToolkitServiceImpl. This is a single threaded use of the session instance.
  * 
- * 2) Simulators - on session object is used and shared by all simulator
+ * 2) Simulators - on session model is used and shared by all simulator
  * instances.  It is managed by the class SimServlet. This is a 
  * multi-threaded use of the session instance.
  * 

@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmetadata.object.Classification;
+import gov.nist.toolkit.valregmetadata.model.Classification;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -248,7 +248,7 @@ public class CodeValidationBase {
 		}
 	}
 
-	// if classified object is an Association, only some types of Associations can
+	// if classified model is an Association, only some types of Associations can
 	// accept an associationDocumenation classification
 	void validateAssocClassifications(ErrorRecorder er, Classification cl) {
 

@@ -34,7 +34,7 @@ import org.apache.axiom.om.OMElement;
 abstract public class StoredQueryFactory {
 
 	/**
-	 * Returns an object of generic type StoredQuery which implements a single stored query
+	 * Returns an model of generic type StoredQuery which implements a single stored query
 	 * type implemented against a specific registry implementation. The sub-class that implements
 	 * this method is specific to an implementation.
 	 * @param sqs
@@ -191,7 +191,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 * @throws XDSRegistryOutOfResourcesException
@@ -200,7 +200,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -208,7 +208,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -216,7 +216,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -224,7 +224,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -232,7 +232,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -240,7 +240,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -248,7 +248,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -256,7 +256,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -264,7 +264,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -272,7 +272,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */
@@ -280,7 +280,7 @@ abstract public class StoredQueryFactory {
 	/**
 	 * Stored Query API call. Relies on implementation specific sub-class to implement.
 	 * @param sqs
-	 * @return Metadata object
+	 * @return Metadata model
 	 * @throws XdsException
 	 * @throws LoggerException
 	 */

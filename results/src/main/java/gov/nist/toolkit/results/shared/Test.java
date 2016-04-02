@@ -3,7 +3,7 @@ package gov.nist.toolkit.results.shared;
 import java.io.Serializable;
 
 /**
- * This object exists for display purposes. It provides data to a grid of tests located inside TestsOverviewWidget.
+ * This model exists for display purposes. It provides data to a grid of tests located inside TestsOverviewWidget.
  * Created by Diane Azais local on 10/11/2015.
  *
  */

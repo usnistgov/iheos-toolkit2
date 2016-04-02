@@ -79,7 +79,7 @@ public class GetAllSim extends GetAll {
         // filter on DEType
         deResults = mc.docEntryCollection.filterByObjectType(deObjectTypes, deResults);
 
-//        System.out.println("After object type filter:");
+//        System.out.println("After model type filter:");
 //        System.out.println("   DE: " + deResults);
 
         // filter on formatCode
@@ -87,7 +87,7 @@ public class GetAllSim extends GetAll {
             if (format_codes instanceof SQCodeOr) {
                 deResults = mc.docEntryCollection.filterByFormatCode((SQCodeOr)format_codes, deResults);
             } else {
-                throw new XdsException("FindDocumentsSim: cannot cast object of type " + format_codes.getClass().getName() + " (from formatCodes) into an instance of class SQCodeOr", null);
+                throw new XdsException("FindDocumentsSim: cannot cast model of type " + format_codes.getClass().getName() + " (from formatCodes) into an instance of class SQCodeOr", null);
             }
         }
 
@@ -103,7 +103,7 @@ public class GetAllSim extends GetAll {
                 deResults = mc.docEntryCollection.filterByConfCode((SQCodeAnd)conf_codes, deResults);
             }
             else {
-                throw new XdsException("FindDocumentsSim: cannot cast object of type " + conf_codes.getClass().getName() + " (from confCode) into an instance of class SQCodeOr or SQCodeAnd", null);
+                throw new XdsException("FindDocumentsSim: cannot cast model of type " + conf_codes.getClass().getName() + " (from confCode) into an instance of class SQCodeOr or SQCodeAnd", null);
             }
         }
 

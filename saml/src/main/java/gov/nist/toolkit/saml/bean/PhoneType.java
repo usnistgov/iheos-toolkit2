@@ -12,7 +12,7 @@ public class PhoneType {
      * Gets the value of the areaCode property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -24,7 +24,7 @@ public class PhoneType {
      * Sets the value of the areaCode property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -36,7 +36,7 @@ public class PhoneType {
      * Gets the value of the countryCode property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -48,7 +48,7 @@ public class PhoneType {
      * Sets the value of the countryCode property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -60,7 +60,7 @@ public class PhoneType {
      * Gets the value of the extension property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -72,7 +72,7 @@ public class PhoneType {
      * Sets the value of the extension property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -84,7 +84,7 @@ public class PhoneType {
      * Gets the value of the localNumber property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link String }
      *     
      */
@@ -96,7 +96,7 @@ public class PhoneType {
      * Sets the value of the localNumber property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link String }
      *     
      */
@@ -108,7 +108,7 @@ public class PhoneType {
      * Gets the value of the phoneNumberType property.
      * 
      * @return
-     *     possible object is
+     *     possible model is
      *     {@link CeType }
      *     
      */
@@ -120,7 +120,7 @@ public class PhoneType {
      * Sets the value of the phoneNumberType property.
      * 
      * @param value
-     *     allowed object is
+     *     allowed model is
      *     {@link CeType }
      *     
      */

@@ -63,7 +63,7 @@ public abstract class TabbedWindow {
 	}
 
 	// access to params shared between tabs
-	// delegate to proper object
+	// delegate to proper model
 	public SiteSpec getCommonSiteSpec() { return tabContainer.getQueryState().getSiteSpec(); }
 	public void setCommonSiteSpec(SiteSpec s) { tabContainer.getQueryState().setSiteSpec(s); }
 	public String getCommonPatientId() { return tabContainer.getQueryState().getPatientId(); }

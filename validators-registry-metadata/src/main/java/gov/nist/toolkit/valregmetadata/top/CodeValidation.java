@@ -31,6 +31,7 @@ public class CodeValidation extends CodeValidationBase {
 	public CodeValidation(Metadata m, ValidationContext vc, ErrorRecorder er)  {
 		super();
 		this.m = m;
+		this.er = er;
 		is_submit = true;
 		xds_b = true;
 		try {

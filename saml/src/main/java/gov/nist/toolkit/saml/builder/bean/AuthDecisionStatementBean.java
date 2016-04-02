@@ -71,72 +71,72 @@ public class AuthDecisionStatementBean {
     }
 
     /**
-     * Method getResource returns the resource of this SamlDecision object.
+     * Method getResource returns the resource of this SamlDecision model.
      *
-     * @return the resource (type String) of this SamlDecision object.
+     * @return the resource (type String) of this SamlDecision model.
      */
     public String getResource() {
         return resource;
     }
 
     /**
-     * Method setResource sets the resource of this SamlDecision object.
+     * Method setResource sets the resource of this SamlDecision model.
      *
-     * @param resource the resource of this SamlDecision object.
+     * @param resource the resource of this SamlDecision model.
      */
     public void setResource(String resource) {
         this.resource = resource;
     }
 
     /**
-     * Method getActions returns the actions of this SamlDecision object.
+     * Method getActions returns the actions of this SamlDecision model.
      *
-     * @return the actions (type List<SamlAction>) of this SamlDecision object.
+     * @return the actions (type List<SamlAction>) of this SamlDecision model.
      */
     public List<ActionBean> getActions() {
         return actionBeans;
     }
 
     /**
-     * Method setActions sets the actions of this SamlDecision object.
+     * Method setActions sets the actions of this SamlDecision model.
      *
-     * @param actionBeans the actions of this SamlDecision object.
+     * @param actionBeans the actions of this SamlDecision model.
      */
     public void setActions(List<ActionBean> actionBeans) {
         this.actionBeans = actionBeans;
     }
 
     /**
-     * Method getDecision returns the decision of this SamlDecision object.
+     * Method getDecision returns the decision of this SamlDecision model.
      *
-     * @return the decision (type Decision) of this SamlDecision object.
+     * @return the decision (type Decision) of this SamlDecision model.
      */
     public Decision getDecision() {
         return decision;
     }
 
     /**
-     * Method setDecision sets the decision of this SamlDecision object.
+     * Method setDecision sets the decision of this SamlDecision model.
      *
-     * @param decision the decision of this SamlDecision object.
+     * @param decision the decision of this SamlDecision model.
      */
     public void setDecision(Decision decision) {
         this.decision = decision;
     }
 
     /**
-     * Method getEvidence returns the evidence of this SamlDecision object.
+     * Method getEvidence returns the evidence of this SamlDecision model.
      *
-     * @return the evidence (type Object) of this SamlDecision object.
+     * @return the evidence (type Object) of this SamlDecision model.
      */
     public Object getEvidence() {
         return evidence;
     }
 
     /**
-     * Method setEvidence sets the evidence of this SamlDecision object.
+     * Method setEvidence sets the evidence of this SamlDecision model.
      *
-     * @param evidence the evidence of this SamlDecision object.
+     * @param evidence the evidence of this SamlDecision model.
      */
     public void setEvidence(Object evidence) {
         this.evidence = evidence;

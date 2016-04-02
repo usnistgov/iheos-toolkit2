@@ -14,18 +14,18 @@ public class SAMLParms {
     private CallbackHandler samlCallbackHandler;
 
     /**
-     * Method getIssuer returns the issuer of this SAMLParms object.
+     * Method getIssuer returns the issuer of this SAMLParms model.
      *
-     * @return the issuer (type String) of this SAMLParms object.
+     * @return the issuer (type String) of this SAMLParms model.
      */
     public String getIssuer() {
         return issuer;
     }
 
     /**
-     * Method setIssuer sets the issuer of this SAMLParms object.
+     * Method setIssuer sets the issuer of this SAMLParms model.
      *
-     * @param issuer the issuer of this SAMLParms object.
+     * @param issuer the issuer of this SAMLParms model.
      */
     public void setIssuer(String issuer) {
         this.issuer = issuer;

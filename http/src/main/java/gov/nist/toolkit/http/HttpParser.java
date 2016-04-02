@@ -106,7 +106,7 @@ public class HttpParser {
 	}
 
 	public HttpParser(HttpServletRequest request) throws IOException, HttpParseException {
-		// This is the default toString() since it shows an object id (helps understand recursion)
+		// This is the default toString() since it shows an model id (helps understand recursion)
 		logger.debug("new HttpParser(" + this.toString() + ")");
 		init(request);
 	}
