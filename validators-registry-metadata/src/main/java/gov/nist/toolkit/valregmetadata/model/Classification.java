@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.valregmetadata.validators.ObjectValidator;
 import gov.nist.toolkit.valregmetadata.validators.RegistryObjectValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -108,47 +109,11 @@ public class Classification extends AbstractRegistryObject {
 		return parent.getAttributeValue(MetadataSupport.id_qname);
 	}
 
-	public void validateStructure(ErrorRecorder er, ValidationContext vc) {
-		new RegistryObjectValidator(this).validateId(er, vc, "entryUUID", id, "ITI TF-3: 4.1.12.2");
-		OMElement parentEle = (OMElement) ro.getParent();
-		String parentEleId =  ((parentEle == null) ? "null" :
-			parentEle.getAttributeValue(MetadataSupport.id_qname));
-		String classifiedObjectId = ro.getAttributeValue(MetadataSupport.classified_object_qname);
-
-		if (parentEle != null && !parentEleId.equals(classifiedObjectId))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of model " + parentEleId + " but the classifiedObject value is " +
-					classifiedObjectId + ", they must match", this, "ITI TF-3: 4.1.12.2");
-
-		if (getClassificationScheme() == null || getClassificationScheme().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": does not have a value for the classificationScheme attribute", this, "ebRIM 3.0 section 4.3.1");
-		else if (!getClassificationScheme().startsWith("urn:uuid:"))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": classificationScheme attribute value is not have urn:uuid: prefix", this, "ITI TF-3: 4.3.1");
-
-		if (getCodeValue().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": nodeRepresentation attribute is missing or empty", this, "ebRIM 3.0 section 4.3.1");
-
-		if (getCodeDisplayName().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": no name attribute", this, "ITI TF-3: 4.1.12.2");
-
-		if (getCodeScheme().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": no codingScheme Slot", this, "ITI TF-3: 4.1.12.2");
-
-	}
 
 	public OMElement toXml() throws XdsInternalException  {
 		return toXml(null);
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
-			ValidationContext vc) {
-	}
-
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
-			ValidationContext vc) {
-	}
-
-	public void validateSlotsLegal(ErrorRecorder er) {
-	}
 
 
 

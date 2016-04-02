@@ -22,9 +22,11 @@ import java.util.Set;
  */
 public class RegistryObjectValidator {
     AbstractRegistryObject mo;
+    ObjectValidator ov;
 
-    public RegistryObjectValidator(AbstractRegistryObject mo) {
+    public RegistryObjectValidator(AbstractRegistryObject mo, ObjectValidator ov) {
         this.mo = mo;
+        this.ov = ov;
     }
 
     public void validateRequiredClassificationsPresent(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource) {
@@ -59,10 +61,10 @@ public class RegistryObjectValidator {
 
     public void validateClassificationsCodedCorrectly(ErrorRecorder er, ValidationContext vc) {
         for (Classification c : mo.getClassifications())
-            c.validateStructure(er, vc);
+            new ClassificationValidator(c).validateStructure(er, vc);
 
         for (Author a : mo.getAuthors())
-            a.validateStructure(er, vc);
+            new AuthorValidator(a).validateStructure(er, vc);
     }
 
     public void validateClassifications(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource)  {
@@ -85,7 +87,7 @@ public class RegistryObjectValidator {
 
     public void validateExternalIdentifiersCodedCorrectly(ErrorRecorder er, ValidationContext vc, ClassAndIdDescription desc, String resource) {
         for (ExternalIdentifier ei : mo.getExternalIdentifiers()) {
-            ei.validateStructure(er, vc);
+            new ExternalIdentifierValidator(ei).validateStructure(er, vc);
             if (MetadataSupport.XDSDocumentEntry_uniqueid_uuid.equals(ei.getIdentificationScheme())) {
                 String[] parts = ei.getValue().split("\\^");
                 new OidFormat(er, mo.identifyingString() + ": " + ei.identifyingString(), externalIdentifierDescription(desc, ei.getIdentificationScheme()))
@@ -196,23 +198,23 @@ public class RegistryObjectValidator {
         }
 
         for (Classification c : mo.getClassifications())
-            new RegistryObjectValidator(c).validateId(er, vc, "entryUUID", c.getId(), resource);
+            new RegistryObjectValidator(c, ov).validateId(er, vc, "entryUUID", c.getId(), resource);
 
         for (Author a : mo.getAuthors())
-            new RegistryObjectValidator(a).validateId(er, vc, "entryUUID", a.getId(), resource);
+            new RegistryObjectValidator(a, ov).validateId(er, vc, "entryUUID", a.getId(), resource);
 
         for (ExternalIdentifier ei : mo.getExternalIdentifiers())
-            new RegistryObjectValidator(ei).validateId(er, vc, "entryUUID", ei.getId(), resource);
+            new RegistryObjectValidator(ei, ov).validateId(er, vc, "entryUUID", ei.getId(), resource);
 
     }
 
     public void validateSlots(ErrorRecorder er, ValidationContext vc) {
         er.challenge("Validating that Slots present are legal");
-        mo.validateSlotsLegal(er);
+        ov.validateSlotsLegal(er);
         er.challenge("Validating required Slots present");
-        mo.validateRequiredSlotsPresent(er, vc);
+        ov.validateRequiredSlotsPresent(er, vc);
         er.challenge("Validating Slots are coded correctly");
-        mo.validateSlotsCodedCorrectly(er, vc);
+        ov.validateSlotsCodedCorrectly(er, vc);
     }
 
     public void verifyIdsUnique(ErrorRecorder er, Set<String> knownIds) {
@@ -223,13 +225,13 @@ public class RegistryObjectValidator {
         }
 
         for (Classification c : mo.getClassifications())
-            new RegistryObjectValidator(c).verifyIdsUnique(er, knownIds);
+            new RegistryObjectValidator(c, ov).verifyIdsUnique(er, knownIds);
 
         for (Author a : mo.getAuthors())
-            new RegistryObjectValidator(a).verifyIdsUnique(er, knownIds);
+            new RegistryObjectValidator(a, ov).verifyIdsUnique(er, knownIds);
 
         for (ExternalIdentifier ei : mo.getExternalIdentifiers())
-            new RegistryObjectValidator(ei).verifyIdsUnique(er, knownIds);
+            new RegistryObjectValidator(ei, ov).verifyIdsUnique(er, knownIds);
     }
 
 

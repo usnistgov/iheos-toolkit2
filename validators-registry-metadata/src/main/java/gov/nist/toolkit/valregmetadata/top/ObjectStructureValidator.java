@@ -8,6 +8,10 @@ import gov.nist.toolkit.valregmetadata.model.Association;
 import gov.nist.toolkit.valregmetadata.model.DocumentEntry;
 import gov.nist.toolkit.valregmetadata.model.Folder;
 import gov.nist.toolkit.valregmetadata.model.SubmissionSet;
+import gov.nist.toolkit.valregmetadata.validators.AssociationValidator;
+import gov.nist.toolkit.valregmetadata.validators.DocumentEntryValidator;
+import gov.nist.toolkit.valregmetadata.validators.FolderValidator;
+import gov.nist.toolkit.valregmetadata.validators.SubmissionSetValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -48,7 +52,7 @@ public class ObjectStructureValidator {
                 er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
                 continue;
             }
-            s.validate(er, vc, knownIds);
+            new SubmissionSetValidator(s).validate(er, vc, knownIds);
         }
 
         for (OMElement deEle : m.getExtrinsicObjects() ) {
@@ -60,7 +64,7 @@ public class ObjectStructureValidator {
                 er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
                 continue;
             }
-            de.validate(er, vc, knownIds);
+            new DocumentEntryValidator(de).validate(er, vc, knownIds);
         }
 
         for (OMElement fEle : m.getFolders()) {
@@ -72,7 +76,7 @@ public class ObjectStructureValidator {
                 er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
                 continue;
             }
-            f.validate(er, vc, knownIds);
+            new FolderValidator(f).validate(er, vc, knownIds);
         }
 
         for (OMElement aEle : m.getAssociations()) {
@@ -84,7 +88,7 @@ public class ObjectStructureValidator {
                 er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
                 continue;
             }
-            a.validate(er, vc, knownIds);
+            new AssociationValidator(a).validate(er, vc, knownIds);
         }
 
         er.sectionHeading("Other metadata objects");

@@ -26,9 +26,9 @@ public abstract class AbstractRegistryObject {
 
 	abstract public String identifyingString();
 	abstract public OMElement toXml() throws XdsInternalException;
-	abstract public void validateSlotsLegal(ErrorRecorder er);
-	abstract public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc);
-	abstract public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc);
+//	abstract public void validateSlotsLegal(ErrorRecorder er);
+//	abstract public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc);
+//	abstract public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc);
 
 	OMElement ro;
 	List<Slot> slots = new ArrayList<Slot>();

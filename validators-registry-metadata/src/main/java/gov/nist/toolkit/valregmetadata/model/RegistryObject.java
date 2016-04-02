@@ -23,19 +23,16 @@ public class RegistryObject extends AbstractRegistryObject {
 		return null;
 	}
 
-	@Override
 	public void validateRequiredSlotsPresent(ErrorRecorder er,
 			ValidationContext vc) {
 
 	}
 
-	@Override
 	public void validateSlotsCodedCorrectly(ErrorRecorder er,
 			ValidationContext vc) {
 
 	}
 
-	@Override
 	public void validateSlotsLegal(ErrorRecorder er) {
 
 	}

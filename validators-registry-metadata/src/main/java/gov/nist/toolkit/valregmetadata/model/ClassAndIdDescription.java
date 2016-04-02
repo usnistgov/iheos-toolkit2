@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ClassAndIdDescription {
-	List<String> definedSchemes;
-	List<String> requiredSchemes;
-	List<String> multipleSchemes;
+	public List<String> definedSchemes;
+	public List<String> requiredSchemes;
+	public List<String> multipleSchemes;
 	// id => name mapping
-	Map<String, String> names;
+	public Map<String, String> names;
 
 	public List<String> getDefinedSchemes() {
 		return definedSchemes;

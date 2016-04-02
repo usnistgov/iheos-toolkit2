@@ -97,27 +97,6 @@ public class Author extends AbstractRegistryObject {
 		classificationScheme = cl.getAttributeValue(MetadataSupport.classificationscheme_qname);
 	}
 
-	public void validateStructure(ErrorRecorder er, ValidationContext vc)  {
-		new RegistryObjectValidator(this).validateId(er, vc, "entryUUID", id, null);
-		OMElement parentEle = (OMElement) ro.getParent();
-		String parentEleId =  ((parentEle == null) ? "null" :
-			parentEle.getAttributeValue(MetadataSupport.id_qname));
-		String classifiedObjectId = ro.getAttributeValue(MetadataSupport.classified_object_qname);
-
-		if (parentEle != null && !parentEleId.equals(classifiedObjectId))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of model " + parentEleId + " but the classifiedObject value is " +
-					classifiedObjectId + ", they must match", this, "ITI TF-3: 4.1.12.2");
-
-		try {
-			if (getClassificationScheme() == null || getClassificationScheme().equals(""))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": does not have a value for the classificationScheme attribute", this, "ebRIM 3.0 section 4.3.1");
-			else if (!getClassificationScheme().startsWith("urn:uuid:"))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": classificationScheme attribute value is not have urn:uuid: prefix", this, "ITI TF-3: 4.3.1");
-		} catch (XdsInternalException e) {
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, e);
-		}
-	}
-
 	String getPerson() {
 		try {
 			return getAuthorPerson();
@@ -185,14 +164,4 @@ public class Author extends AbstractRegistryObject {
 		return toXml(owner);
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
-			ValidationContext vc) {
-	}
-
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
-			ValidationContext vc) {
-	}
-
-	public void validateSlotsLegal(ErrorRecorder er) {
-	}
 }

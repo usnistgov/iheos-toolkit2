@@ -64,36 +64,8 @@ public class ExternalIdentifier extends AbstractRegistryObject {
 		return "ExternalIdentifier(identificationScheme=" + identificationScheme + ", type=" + name + ")";
 	}
 
-	public void validateStructure(ErrorRecorder er, ValidationContext vc) {
-		new RegistryObjectValidator(this).validateId(er, vc, "entryUUID", id, null);
-		OMElement parentEle = (OMElement) ro.getParent();
-		String parentEleId = ((parentEle == null) ? "null" :
-			parentEle.getAttributeValue(MetadataSupport.id_qname));
-		String registryObject = ro.getAttributeValue(MetadataSupport.registry_object_qname);
-
-		if (parentEle != null && !parentEleId.equals(registryObject))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": is a child of model " + parentEleId + " but the registryObject value is " +
-					registryObject + ", they must match", this, "ITI TF-3: 4.1.12.5");
-
-		if (value == null || value.equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": value attribute missing or empty", this, "ebRIM 3.0 section 2.11.1");
-
-		if (getName() == null || getName().equals(""))
-			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": display name (Name element) missing or empty", this, "ITI TF-3: 4.1.12.5");
-	}
-
 	public OMElement toXml() throws XdsInternalException  {
 		return toXml(null);
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
-			ValidationContext vc) {
-	}
-
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
-			ValidationContext vc) {
-	}
-
-	public void validateSlotsLegal(ErrorRecorder er) {
-	}
 }
