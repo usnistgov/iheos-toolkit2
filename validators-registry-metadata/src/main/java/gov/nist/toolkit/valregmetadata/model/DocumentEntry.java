@@ -266,7 +266,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 
 		validateTopAtts(er, vc);
 
-		validateSlots(er, vc);
+		new RegistryObjectValidator(this).validateSlots(er, vc);
 
 		if (vc.isXDRMinimal)
 			new RegistryObjectValidator(this).validateClassifications(er, vc, directClassificationDescription, table415);
@@ -280,7 +280,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		else
 			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, externalIdentifierDescription, table415);
 
-		verifyIdsUnique(er, knownIds);
+		new RegistryObjectValidator(this).verifyIdsUnique(er, knownIds);
 
 		// Restore the dynamic validation flag
 		if (vc.isResponse && vc.isStableOrODDE) {

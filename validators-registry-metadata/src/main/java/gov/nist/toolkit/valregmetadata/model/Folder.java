@@ -152,7 +152,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 
 		validateTopAtts(er, vc);
 
-		validateSlots(er, vc);
+		new RegistryObjectValidator(this).validateSlots(er, vc);
 
 		if (vc.isXDM || vc.isXDRLimited)
 			new RegistryObjectValidator(this).validateClassifications(er, vc, XDMclassificationDescription, table417);
@@ -164,7 +164,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 		else
 			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, externalIdentifierDescription, table417);
 
-		verifyIdsUnique(er, knownIds);
+		new RegistryObjectValidator(this).verifyIdsUnique(er, knownIds);
 	}
 
 	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {

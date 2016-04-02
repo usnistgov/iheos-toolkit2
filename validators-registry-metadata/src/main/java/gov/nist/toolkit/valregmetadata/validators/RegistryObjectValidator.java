@@ -206,6 +206,31 @@ public class RegistryObjectValidator {
 
     }
 
+    public void validateSlots(ErrorRecorder er, ValidationContext vc) {
+        er.challenge("Validating that Slots present are legal");
+        mo.validateSlotsLegal(er);
+        er.challenge("Validating required Slots present");
+        mo.validateRequiredSlotsPresent(er, vc);
+        er.challenge("Validating Slots are coded correctly");
+        mo.validateSlotsCodedCorrectly(er, vc);
+    }
+
+    public void verifyIdsUnique(ErrorRecorder er, Set<String> knownIds) {
+        if (mo.getId() != null) {
+            if (knownIds.contains(mo.getId()))
+                er.err(XdsErrorCode.Code.XDSRegistryMetadataError, mo.identifyingString() + ": entryUUID " + mo.getId() + "  identifies multiple objects", this, "ITI TF-3: 4.1.12.3 and ebRS 5.1.2");
+            knownIds.add(mo.getId());
+        }
+
+        for (Classification c : mo.getClassifications())
+            new RegistryObjectValidator(c).verifyIdsUnique(er, knownIds);
+
+        for (Author a : mo.getAuthors())
+            new RegistryObjectValidator(a).verifyIdsUnique(er, knownIds);
+
+        for (ExternalIdentifier ei : mo.getExternalIdentifiers())
+            new RegistryObjectValidator(ei).verifyIdsUnique(er, knownIds);
+    }
 
 
     private String externalIdentifierDescription(ClassAndIdDescription desc, String eiScheme) {

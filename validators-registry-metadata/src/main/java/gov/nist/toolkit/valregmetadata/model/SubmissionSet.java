@@ -225,7 +225,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 
 		validateTopAtts(er, vc);
 
-		validateSlots(er, vc);
+		new RegistryObjectValidator(this).validateSlots(er, vc);
 
 		if (vc.isXDM || vc.isXDRLimited)
 			new RegistryObjectValidator(this).validateClassifications(er, vc, XDMclassificationDescription, table416);
@@ -241,7 +241,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 		else
 			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, externalIdentifierDescription, table416);
 
-		verifyIdsUnique(er, knownIds);
+		new RegistryObjectValidator(this).verifyIdsUnique(er, knownIds);
 	}
 
 	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {

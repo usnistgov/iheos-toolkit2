@@ -118,13 +118,13 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 
 		validateTopAtts(er, vc);
 
-		validateSlots(er, vc);
+		new RegistryObjectValidator(this).validateSlots(er, vc);
 
 		validateClassifications(er, vc);
 
 		new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, externalIdentifierDescription, "ITI TF-3 4.1.3");
 
-		verifyIdsUnique(er, knownIds);
+		new RegistryObjectValidator(this).verifyIdsUnique(er, knownIds);
 
 		verifyNotReferenceSelf(er);
 	}

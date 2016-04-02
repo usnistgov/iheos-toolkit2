@@ -361,24 +361,6 @@ public abstract class AbstractRegistryObject {
 
 
 
-	public void verifyIdsUnique(ErrorRecorder er, Set<String> knownIds) {
-		if (id != null) {
-			if (knownIds.contains(id))
-				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": entryUUID " + id + "  identifies multiple objects", this, "ITI TF-3: 4.1.12.3 and ebRS 5.1.2");
-			knownIds.add(id);
-		}
-
-		for (Classification c : classifications)
-			c.verifyIdsUnique(er, knownIds);
-
-		for (Author a : authors)
-			a.verifyIdsUnique(er, knownIds);
-
-		for (ExternalIdentifier ei : externalIdentifiers)
-			ei.verifyIdsUnique(er, knownIds);
-
-
-	}
 	protected int count(List<String> strings, String target) {
 		int i=0;
 
@@ -394,14 +376,6 @@ public abstract class AbstractRegistryObject {
 		return "Classification(" + cScheme + ")(" + desc.names.get(cScheme) + ")";
 	}
 
-	public void validateSlots(ErrorRecorder er, ValidationContext vc) {
-		er.challenge("Validating that Slots present are legal");
-		validateSlotsLegal(er);
-		er.challenge("Validating required Slots present");
-		validateRequiredSlotsPresent(er, vc);
-		er.challenge("Validating Slots are coded correctly");
-		validateSlotsCodedCorrectly(er, vc);
-	}
 
 
 }
