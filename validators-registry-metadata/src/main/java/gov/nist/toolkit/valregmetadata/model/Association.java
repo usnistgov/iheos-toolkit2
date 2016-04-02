@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.valregmetadata.validators.RegistryObjectValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -121,7 +122,7 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 
 		validateClassifications(er, vc);
 
-		validateExternalIdentifiers(er, vc, externalIdentifierDescription, "ITI TF-3 4.1.3");
+		new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, externalIdentifierDescription, "ITI TF-3 4.1.3");
 
 		verifyIdsUnique(er, knownIds);
 
@@ -175,10 +176,10 @@ public class Association extends AbstractRegistryObject implements TopLevelObjec
 				);
 
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
-		validateId(er, vc, "entryUUID", id, null);
+		new RegistryObjectValidator(this).validateId(er, vc, "entryUUID", id, null);
 
-		validateId(er, vc, "sourceObject", source, null);
-		validateId(er, vc, "targetObject", target, null);
+		new RegistryObjectValidator(this).validateId(er, vc, "sourceObject", source, null);
+		new RegistryObjectValidator(this).validateId(er, vc, "targetObject", target, null);
 
 
 		boolean muReq = vc.isMU && vc.isRequest;

@@ -5,6 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.datatype.DtmFormat;
+import gov.nist.toolkit.valregmetadata.validators.RegistryObjectValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
@@ -154,14 +155,14 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 		validateSlots(er, vc);
 
 		if (vc.isXDM || vc.isXDRLimited)
-			validateClassifications(er, vc, XDMclassificationDescription, table417);
+			new RegistryObjectValidator(this).validateClassifications(er, vc, XDMclassificationDescription, table417);
 		else
-			validateClassifications(er, vc, classificationDescription, table417);
+			new RegistryObjectValidator(this).validateClassifications(er, vc, classificationDescription, table417);
 
 		if (vc.isXDM || vc.isXDRLimited)
-			validateExternalIdentifiers(er, vc, XDMexternalIdentifierDescription, table417);
+			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, XDMexternalIdentifierDescription, table417);
 		else
-			validateExternalIdentifiers(er, vc, externalIdentifierDescription, table417);
+			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, externalIdentifierDescription, table417);
 
 		verifyIdsUnique(er, knownIds);
 	}
@@ -169,7 +170,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {
 
 		//                    name				   multi	format                                                  resource
-		validateSlot(er, 	"lastUpdateTime", 	   false, 	new DtmFormat(er, "Slot lastUpdateTime",            table417),  table417);
+		new RegistryObjectValidator(this).validateSlot(er, 	"lastUpdateTime", 	   false, 	new DtmFormat(er, "Slot lastUpdateTime",            table417),  table417);
 	}
 
 	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
@@ -181,7 +182,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	}
 
 	public void validateSlotsLegal(ErrorRecorder er)  {
-		verifySlotsUnique(er);
+		new RegistryObjectValidator(this).verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
 			if ( ! legal_slot_name(slot.getName()))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + slot.getName() + " is not a legal slot name for a SubmissionSet",  this,  table417);
@@ -196,7 +197,7 @@ public class Folder extends AbstractRegistryObject implements TopLevelObject {
 	}
 
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
-		validateTopAtts(er, vc, table417, statusValues);
+		new RegistryObjectValidator(this).validateTopAtts(er, vc, table417, statusValues);
 	}
 
 	public boolean equals(Folder f)  {

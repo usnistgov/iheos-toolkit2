@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.valregmetadata.validators.RegistryObjectValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
@@ -108,7 +109,7 @@ public class Classification extends AbstractRegistryObject {
 	}
 
 	public void validateStructure(ErrorRecorder er, ValidationContext vc) {
-		validateId(er, vc, "entryUUID", id, "ITI TF-3: 4.1.12.2");
+		new RegistryObjectValidator(this).validateId(er, vc, "entryUUID", id, "ITI TF-3: 4.1.12.2");
 		OMElement parentEle = (OMElement) ro.getParent();
 		String parentEleId =  ((parentEle == null) ? "null" :
 			parentEle.getAttributeValue(MetadataSupport.id_qname));

@@ -6,6 +6,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.datatype.DtmFormat;
 import gov.nist.toolkit.valregmetadata.datatype.XonXcnXtnFormat;
+import gov.nist.toolkit.valregmetadata.validators.RegistryObjectValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
@@ -227,18 +228,18 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 		validateSlots(er, vc);
 
 		if (vc.isXDM || vc.isXDRLimited)
-			validateClassifications(er, vc, XDMclassificationDescription, table416);
+			new RegistryObjectValidator(this).validateClassifications(er, vc, XDMclassificationDescription, table416);
 		else if (vc.isXDRMinimal)
-			validateClassifications(er, vc, MinimalclassificationDescription, table416);
+			new RegistryObjectValidator(this).validateClassifications(er, vc, MinimalclassificationDescription, table416);
 		else
-			validateClassifications(er, vc, classificationDescription, table416);
+			new RegistryObjectValidator(this).validateClassifications(er, vc, classificationDescription, table416);
 
 		if (vc.isXDM || vc.isXDRLimited)
-			validateExternalIdentifiers(er, vc, XDMexternalIdentifierDescription, table416);
+			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, XDMexternalIdentifierDescription, table416);
 		else if (vc.isXDRMinimal)
-			validateExternalIdentifiers(er, vc, MinimalexternalIdentifierDescription, table416);
+			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, MinimalexternalIdentifierDescription, table416);
 		else
-			validateExternalIdentifiers(er, vc, externalIdentifierDescription, table416);
+			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, externalIdentifierDescription, table416);
 
 		verifyIdsUnique(er, knownIds);
 	}
@@ -248,16 +249,16 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 			validateDirectSlotsCodedCorrectly(er, vc);
 		} else {
 			//                    name				   multi	format                                                  resource
-			validateSlot(er, 	"submissionTime", 	   false, 	new DtmFormat(er, "Slot submissionTime",            table416),  table416);
-			validateSlot(er, 	"intendedRecipient",   true, 	new XonXcnXtnFormat(er, "Slot intendedRecipient",      table416),  table416);
+			new RegistryObjectValidator(this).validateSlot(er, 	"submissionTime", 	   false, 	new DtmFormat(er, "Slot submissionTime",            table416),  table416);
+			new RegistryObjectValidator(this).validateSlot(er, 	"intendedRecipient",   true, 	new XonXcnXtnFormat(er, "Slot intendedRecipient",      table416),  table416);
 		}
 	}
 
 	public void validateDirectSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {
 
 		//                    name				   multi	format                                                  resource
-		validateSlot(er, 	"submissionTime", 	   false, 	new DtmFormat(er, "Slot submissionTime",            table416),  table416);
-		validateSlot(er, 	"intendedRecipient",   true, 	new XonXcnXtnFormat(er, "Slot intendedRecipient",     table416),  table416);
+		new RegistryObjectValidator(this).validateSlot(er, 	"submissionTime", 	   false, 	new DtmFormat(er, "Slot submissionTime",            table416),  table416);
+		new RegistryObjectValidator(this).validateSlot(er, 	"intendedRecipient",   true, 	new XonXcnXtnFormat(er, "Slot intendedRecipient",     table416),  table416);
 	}
 
 	public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc) {
@@ -276,7 +277,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	public void validateSlotsLegal(ErrorRecorder er)  {
-		verifySlotsUnique(er);
+		new RegistryObjectValidator(this).verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
 			if ( ! legal_slot_name(slot.getName()))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + slot.getName() + " is not a legal slot name for a SubmissionSet",  this,  table416);
@@ -291,7 +292,7 @@ public class SubmissionSet extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	public void validateTopAtts(ErrorRecorder er, ValidationContext vc) {
-		validateTopAtts(er, vc, table416, statusValues);
+		new RegistryObjectValidator(this).validateTopAtts(er, vc, table416, statusValues);
 	}
 
 

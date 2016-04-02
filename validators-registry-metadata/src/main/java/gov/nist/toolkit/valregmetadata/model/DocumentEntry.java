@@ -14,6 +14,7 @@ import gov.nist.toolkit.valregmetadata.datatype.OidFormat;
 import gov.nist.toolkit.valregmetadata.datatype.Rfc3066Format;
 import gov.nist.toolkit.valregmetadata.datatype.SourcePatientInfoFormat;
 import gov.nist.toolkit.valregmetadata.datatype.XcnFormat;
+import gov.nist.toolkit.valregmetadata.validators.RegistryObjectValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -268,16 +269,16 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		validateSlots(er, vc);
 
 		if (vc.isXDRMinimal)
-			validateClassifications(er, vc, directClassificationDescription, table415);
+			new RegistryObjectValidator(this).validateClassifications(er, vc, directClassificationDescription, table415);
 		else
-			validateClassifications(er, vc, classificationDescription, table415);
+			new RegistryObjectValidator(this).validateClassifications(er, vc, classificationDescription, table415);
 
 		if (vc.isXDRMinimal)
-			validateExternalIdentifiers(er, vc, directExternalIdentifierDescription, table415);
+			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, directExternalIdentifierDescription, table415);
 		else if (vc.isXDM || vc.isXDRLimited)
-			validateExternalIdentifiers(er, vc, XDMexternalIdentifierDescription, table415);
+			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, XDMexternalIdentifierDescription, table415);
 		else
-			validateExternalIdentifiers(er, vc, externalIdentifierDescription, table415);
+			new RegistryObjectValidator(this).validateExternalIdentifiers(er, vc, externalIdentifierDescription, table415);
 
 		verifyIdsUnique(er, knownIds);
 
@@ -337,7 +338,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	 * @param er
 	 */
 	public void validateSlotsLegal(ErrorRecorder er)  {
-		verifySlotsUnique(er);
+		new RegistryObjectValidator(this).verifySlotsUnique(er);
 		for (Slot slot : getSlots()) {
 			if ( ! legal_slot_name(slot.getName()))
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": " + slot.getName() + " is not a legal slot name for a DocumentEntry",   this, table415);
@@ -352,19 +353,19 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 	}
 
 	public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc)  {
-
+		RegistryObjectValidator v = new RegistryObjectValidator(this);
 		//                    name				   multi	format                                                  resource
-		validateSlot(er, 	"creationTime", 	   false, 	new DtmFormat(er, "Slot creationTime",      table415),  table415);
-		validateSlot(er, 	"languageCode",		   false, 	new Rfc3066Format(er, "Slot languageCode",      table415),  table415);
-		validateSlot(er, 	"legalAuthenticator",  false, 	new XcnFormat(er, "Slot legalAuthenticator",table415),  table415);
-		validateSlot(er, 	"serviceStartTime",	   false, 	new DtmFormat(er, "Slot serviceStartTime",  table415),  table415);
-		validateSlot(er, 	"serviceStopTime",	   false, 	new DtmFormat(er, "Slot serviceStopTime",   table415),  table415);
-		validateSlot(er, 	"sourcePatientInfo",   true, 	new SourcePatientInfoFormat(er, "Slot sourcePatientInfo", table415),  table415);
-		validateSlot(er, 	"sourcePatientId",     false, 	new CxFormat(er, "Slot sourcePatientId",   table415),  table415);
-		validateSlot(er, 	"hash",			 	   false, 	new HashFormat(er, "Slot hash",   null), 		        table415);
-		validateSlot(er, 	"size",				   false, 	new IntFormat(er, "Slot size",   table415),             table415);
-		validateSlot(er, 	"URI",				   true, 	new AnyFormat(er, "Slot URI",   table415),   table415);
-		validateSlot(er, 	"repositoryUniqueId",	false, 	new OidFormat(er, "Slot repositoryUniqueId",   table415),   table415);
+		v.validateSlot(er, 	"creationTime", 	   false, 	new DtmFormat(er, "Slot creationTime",      table415),  table415);
+		v.validateSlot(er, 	"languageCode",		   false, 	new Rfc3066Format(er, "Slot languageCode",      table415),  table415);
+		v.validateSlot(er, 	"legalAuthenticator",  false, 	new XcnFormat(er, "Slot legalAuthenticator",table415),  table415);
+		v.validateSlot(er, 	"serviceStartTime",	   false, 	new DtmFormat(er, "Slot serviceStartTime",  table415),  table415);
+		v.validateSlot(er, 	"serviceStopTime",	   false, 	new DtmFormat(er, "Slot serviceStopTime",   table415),  table415);
+		v.validateSlot(er, 	"sourcePatientInfo",   true, 	new SourcePatientInfoFormat(er, "Slot sourcePatientInfo", table415),  table415);
+		v.validateSlot(er, 	"sourcePatientId",     false, 	new CxFormat(er, "Slot sourcePatientId",   table415),  table415);
+		v.validateSlot(er, 	"hash",			 	   false, 	new HashFormat(er, "Slot hash",   null), 		        table415);
+		v.validateSlot(er, 	"size",				   false, 	new IntFormat(er, "Slot size",   table415),             table415);
+		v.validateSlot(er, 	"URI",				   true, 	new AnyFormat(er, "Slot URI",   table415),   table415);
+		v.validateSlot(er, 	"repositoryUniqueId",	false, 	new OidFormat(er, "Slot repositoryUniqueId",   table415),   table415);
 
 
 		if ( getSlot("URI") != null ) {
@@ -407,7 +408,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 		if (mimeType == null || mimeType.equals(""))
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": mimeType attribute missing or empty", this, table415);
 
-		validateTopAtts(er, vc, table415, statusValues);
+		new RegistryObjectValidator(this).validateTopAtts(er, vc, table415, statusValues);
 
 	}
 
