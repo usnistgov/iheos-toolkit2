@@ -5,9 +5,6 @@ import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
-import gov.nist.toolkit.http.HttpParseException;
-import gov.nist.toolkit.http.HttpParserBa;
-import gov.nist.toolkit.http.ParseException;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -18,7 +15,6 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
 import org.apache.axiom.om.xpath.AXIOMXPath;
@@ -301,13 +297,13 @@ public class CommonMessageValidatorFactory implements MessageValidatorFactory2I 
 //				mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
 //				return mvc;
 //			}  else {
-				return MessageValidatorFactory.validateBasedOnValidationContext(erBuilder, xml, mvc, vc, rvi);
+				return ValidationContextValidationFactory.validateBasedOnValidationContext(erBuilder, xml, mvc, vc, rvi);
 //			}
 
 		} else {
 			// Parse based on rootElementName
 			ValUtil.reportParseDecision(erBuilder, mvc, "Parse Decision", "Explicit validation not requested - looking at content");
-			return MessageValidatorFactory.validateBasedOnRootElement(erBuilder, xml, mvc, vc,
+			return RootElementValidatorFactory.validateBasedOnRootElement(erBuilder, xml, mvc, vc,
 					rootElementName, rvi);
 		}
 	}

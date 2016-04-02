@@ -18,7 +18,7 @@ import spock.lang.Specification
 /**
  *
  */
-class MessageValidatorFactoryTest extends Specification {
+class RootElementValidatorFactoryTest extends Specification {
     def pnrXmlString
     OMElement xml
     MessageValidatorEngine mvc
@@ -55,7 +55,7 @@ class MessageValidatorFactoryTest extends Specification {
 
         when: 'Run validations'
 
-        mvc = MessageValidatorFactory.validateBasedOnValidationContext(
+        mvc = ValidationContextValidationFactory.validateBasedOnValidationContext(
                 erb, xml, mvc, vc, rvi
         )
         mvc.run()
@@ -85,7 +85,7 @@ class MessageValidatorFactoryTest extends Specification {
         erb.sectionHeading('Pnr validation test')
 
         when: 'Run validations'
-        mvc = MessageValidatorFactory.validateBasedOnRootElement(
+        mvc = RootElementValidatorFactory.validateBasedOnRootElement(
                 erb, pnrXmlString, mvc, vc, rvi
         )
         mvc.run()

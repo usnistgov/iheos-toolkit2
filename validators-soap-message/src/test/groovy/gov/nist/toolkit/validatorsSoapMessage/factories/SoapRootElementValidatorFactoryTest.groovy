@@ -6,7 +6,6 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
 import gov.nist.toolkit.utilities.xml.Util
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory
 import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
@@ -18,7 +17,7 @@ import spock.lang.Specification
 /**
  *
  */
-class SoapMessageValidatorFactoryTest extends Specification {
+class SoapRootElementValidatorFactoryTest extends Specification {
     def pnrXmlString
     OMElement xml
     MessageValidatorEngine mvc

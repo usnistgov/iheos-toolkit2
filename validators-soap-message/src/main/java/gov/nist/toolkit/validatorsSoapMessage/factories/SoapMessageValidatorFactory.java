@@ -11,8 +11,9 @@ import gov.nist.toolkit.validatorsSoapMessage.message.HttpMessageValidator;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageParser;
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.validation.factories.CommonMessageValidatorFactory;
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+import gov.nist.toolkit.valregmsg.validation.factories.RootElementValidatorFactory;
 import gov.nist.toolkit.valregmsg.validation.factories.ValUtil;
+import gov.nist.toolkit.valregmsg.validation.factories.ValidationContextValidationFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -44,7 +45,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
             return mvc;
         }
 
-        return MessageValidatorFactory.validateBasedOnValidationContext(erBuilder, xml, mvc, vc, rvi);
+        return ValidationContextValidationFactory.validateBasedOnValidationContext(erBuilder, xml, mvc, vc, rvi);
     }
 
     /**
@@ -97,7 +98,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
             mvc.addMessageValidator("SOAP Message Validator", new SoapMessageValidator(vc, erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
             return mvc;
         }
-        return MessageValidatorFactory.validateBasedOnRootElement(erBuilder, xml, mvc, vc, rootElementName, rvi);
+        return RootElementValidatorFactory.validateBasedOnRootElement(erBuilder, xml, mvc, vc, rootElementName, rvi);
     }
 
     /**
@@ -161,7 +162,7 @@ public class SoapMessageValidatorFactory implements MessageValidatorFactory2I {
 
         } else {
             // Parse based on rootElementName
-            return MessageValidatorFactory.validateBasedOnRootElement(erBuilder, xml, mvc, vc,
+            return RootElementValidatorFactory.validateBasedOnRootElement(erBuilder, xml, mvc, vc,
                     rootElementName, rvi);
         }
     }

@@ -7,7 +7,7 @@ import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+import gov.nist.toolkit.valregmsg.validation.factories.ValidationContextValidationFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -140,7 +140,7 @@ public class XdmDecoder extends AbstractMessageValidator {
 					metadataVc.xds_b = true;
 					metadataVc.setCodesFilename(vc.getCodesFilename());
 					logger.info("Validating metadata");
-					MessageValidatorFactory.validateBasedOnValidationContext(
+					ValidationContextValidationFactory.validateBasedOnValidationContext(
 							erBuilder,
 							ele,
 							mvc,

@@ -5,7 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.validation.factories.MessageValidatorFactory;
+import gov.nist.toolkit.valregmsg.validation.factories.ValidationContextValidationFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -13,7 +13,6 @@ import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNamespace;
-import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +95,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             er.challenge("Checking expected WS-Action against SOAP Body contents");
             verifywsActionCorrectForValidationContext(wsaction);
             er.detail("Scheduling validation of body based on requested message type");
-            MessageValidatorFactory.validateBasedOnValidationContext(erBuilder, messagebody, mvc, vc, rvi);
+            ValidationContextValidationFactory.validateBasedOnValidationContext(erBuilder, messagebody, mvc, vc, rvi);
         } else if (messagebody == null) {
             // Is this an error?
         } else {
@@ -105,7 +104,7 @@ public class SoapMessageValidator extends AbstractMessageValidator {
             setValidationContextFromWSAction(vc, wsaction);
             if (vc.isValid()) {
                 er.detail("Validation Context is " + vc);
-                MessageValidatorFactory.validateBasedOnValidationContext(erBuilder, messagebody, mvc, vc, rvi);
+                ValidationContextValidationFactory.validateBasedOnValidationContext(erBuilder, messagebody, mvc, vc, rvi);
             } else {
                 err("Cannot validate SOAP Body - WS-Addressing Action header " + wsaction + " is not understood","ITI TF-2a, 2b, XDR, XCA, MPQ Supplements");
             }
