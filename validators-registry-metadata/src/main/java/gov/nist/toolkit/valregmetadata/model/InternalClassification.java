@@ -68,15 +68,5 @@ public class InternalClassification extends AbstractRegistryObject {
 		return ro;
 	}
 
-	public void validateRequiredSlotsPresent(ErrorRecorder er,
-			ValidationContext vc) {
-	}
-
-	public void validateSlotsCodedCorrectly(ErrorRecorder er,
-			ValidationContext vc) {
-	}
-
-	public void validateSlotsLegal(ErrorRecorder er) {
-	}
 
 }

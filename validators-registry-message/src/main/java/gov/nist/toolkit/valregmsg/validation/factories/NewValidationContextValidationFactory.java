@@ -12,7 +12,7 @@ import org.apache.axiom.om.OMElement;
 /**
  * Run validation based on a ValidationContext.
  */
-public class ValidationContextValidationFactory {
+public class NewValidationContextValidationFactory {
     /**
      * Start a new validation on an XML input and run the validation based on the rules coded in the ValidationContext
      * @param erBuilder ErrorRecorder factory. A new ErrorRecorder is allocated and used for each validation step.
@@ -55,7 +55,7 @@ public class ValidationContextValidationFactory {
             if (vc.isXDR) {
                 if (vc.isRequest) {
                     CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "ProvideAndRegisterDocumentSetRequest", rootElementName);
-                    mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+                    mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
                     return mvc;
                 } else {
                     CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
@@ -65,7 +65,7 @@ public class ValidationContextValidationFactory {
             } else {
                 if (vc.isRequest) {
                     CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "ProvideAndRegisterDocumentSetRequest", rootElementName);
-                    mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+                    mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
                     if (vc.hasHttp)
                         mvc.addMessageValidator("DocumentElementValidator", new DocumentElementValidator(vc, erBuilder, mvc), erBuilder.buildNewErrorRecorder());
                     return mvc;
@@ -78,7 +78,7 @@ public class ValidationContextValidationFactory {
         } else if (vc.isR || vc.isRODDE) {
             if (vc.isRequest) {
                 CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
-                mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+                mvc.addMessageValidator("SubmitObjectsRequest", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
                 return mvc;
             } else {
                 CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
@@ -88,7 +88,7 @@ public class ValidationContextValidationFactory {
         } else if (vc.isMU) {
             if (vc.isRequest) {
                 CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
-                mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+                mvc.addMessageValidator("SubmitObjectsRequest", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
                 return mvc;
             } else {
                 CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "RegistryResponse", rootElementName);
@@ -130,12 +130,12 @@ public class ValidationContextValidationFactory {
                 CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "AdhocQueryResponse", rootElementName);
                 mvc.addMessageValidator("AdhocQueryResponse", new QueryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
                 mvc.addMessageValidator("RegistryResponse", new RegistryResponseValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-                mvc.addMessageValidator("Contained Metadata", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+                mvc.addMessageValidator("Contained Metadata", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
                 return mvc;
             }
         } else if (vc.isXDM) {
             CommonMessageValidatorFactory.validateToplevelElement(erBuilder, mvc, "SubmitObjectsRequest", rootElementName);
-            mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            mvc.addMessageValidator("SubmitObjectsRequest", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
             return mvc;
         }
         else {

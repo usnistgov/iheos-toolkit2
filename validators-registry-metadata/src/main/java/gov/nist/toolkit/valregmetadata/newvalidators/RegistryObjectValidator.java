@@ -1,4 +1,4 @@
-package gov.nist.toolkit.valregmetadata.validators;
+package gov.nist.toolkit.valregmetadata.newvalidators;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;

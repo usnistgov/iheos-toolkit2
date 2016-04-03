@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
  * Run validation based on examining the message and deciding what validators
  * are needed.
  */
-public class RootElementValidatorFactory {
-    static Logger logger = Logger.getLogger(RootElementValidatorFactory.class);
+public class NewRootElementValidatorFactory {
+    static Logger logger = Logger.getLogger(NewRootElementValidatorFactory.class);
 
     /**
      * Start a new validation on a string input and run the validation inferred from the name of the XML root element
@@ -69,7 +69,7 @@ public class RootElementValidatorFactory {
             mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
             mvc.addMessageValidator("DocumentContentsExtraction", new DocumentAttachmentMapper(vc, xml), erBuilder.buildNewErrorRecorder());
             mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-            mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            mvc.addMessageValidator("ProvideAndRegisterDocumentSetRequest", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
             return mvc;
         } else if (rootElementName.equals("SubmitObjectsRequest")) {
             ValUtil.reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Register request");
@@ -81,7 +81,7 @@ public class RootElementValidatorFactory {
             mvc.addMessageValidator("Message Body Container", new MessageBodyContainer(vc, xml), erBuilder.buildNewErrorRecorder());
             mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
             mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
-            mvc.addMessageValidator("SubmitObjectsRequest", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            mvc.addMessageValidator("SubmitObjectsRequest", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
             return mvc;
         } else if (rootElementName.equals("RegistryResponse")) {
             ValUtil.reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a RegistryResponse");
@@ -109,7 +109,7 @@ public class RootElementValidatorFactory {
             mvc.addMessageValidator("Parse Metadata Wrappers", new WrapperValidator(vc), erBuilder.buildNewErrorRecorder());
             mvc.addMessageValidator("Schema", new SchemaValidator(vc, xml), erBuilder.buildNewErrorRecorder());
             // need to inspect WSAction to know if it is XC
-            mvc.addMessageValidator("Contained Metadata", new MetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
+            mvc.addMessageValidator("Contained Metadata", new NewMetadataMessageValidator(vc, new MessageBody(xml), erBuilder, mvc, rvi), erBuilder.buildNewErrorRecorder());
             return mvc;
         } else if (rootElementName.equals("RetrieveDocumentSetRequest")) {
             ValUtil.reportParseDecision(erBuilder, mvc, "Parse Decision", "Input is a Retrieve Document Set request");
