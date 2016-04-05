@@ -4,7 +4,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>2.202.4</version>
+        <version>2.202.5</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>config-datatypes</artifactId>
-            <version>2.202.4</version>
+            <version>2.202.5</version>
         </dependency>
     </dependencies>
     <build>

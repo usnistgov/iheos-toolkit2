@@ -274,6 +274,7 @@ public enum ActorType implements IsSerializable, Serializable {
         for (TransactionType tt : transactionTypes) {
             if (tt.getShortName().equals(name)) return tt;
             if (tt.getName().equals(name)) return tt;
+            if (tt.getId().equals(name)) return tt;
         }
         return null;
     }
