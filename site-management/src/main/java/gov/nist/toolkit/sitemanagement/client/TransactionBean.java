@@ -1,10 +1,11 @@
 package gov.nist.toolkit.sitemanagement.client;
 
+import java.io.Serializable;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
+
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-
-import java.io.Serializable;
 
 /**
  * Configuration of a single instance of a transaction. Transactions are
@@ -17,9 +18,6 @@ import java.io.Serializable;
  *
  */
 public class TransactionBean implements IsSerializable, Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public boolean isSecure = false;
 	public boolean isAsync = false;

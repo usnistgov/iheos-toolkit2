@@ -1,6 +1,32 @@
 package gov.nist.toolkit.simulators.servlet;
 
-import gov.nist.toolkit.actorfactory.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
+import gov.nist.toolkit.actorfactory.GenericSimulatorFactory;
+import gov.nist.toolkit.actorfactory.PatientIdentityFeedServlet;
+import gov.nist.toolkit.actorfactory.RuntimeManager;
+import gov.nist.toolkit.actorfactory.SimDb;
+import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -31,20 +57,6 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 public class SimServlet  extends HttpServlet {
 	static Logger logger = Logger.getLogger(SimServlet.class);
@@ -61,7 +73,8 @@ public class SimServlet  extends HttpServlet {
 	PatientIdentityFeedServlet patientIdentityFeedServlet;
 
 
-	public void init(ServletConfig sConfig) throws ServletException {
+	@Override
+   public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
 		config = sConfig;
 		logger.info("Initializing toolkit in SimServlet");
@@ -78,7 +91,8 @@ public class SimServlet  extends HttpServlet {
 		logger.info("SimServlet initialized");
 	}
 
-	public void destroy() {
+	@Override
+   public void destroy() {
 		onServiceStop();
 	}
 
@@ -87,7 +101,8 @@ public class SimServlet  extends HttpServlet {
 		return mvr;
 	}
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response) {
+	@Override
+   public void doGet(HttpServletRequest request, HttpServletResponse response) {
 		String uri = request.getRequestURI();
         logger.info("SIMSERVLET GET " + uri);
 		String[] parts;
@@ -367,7 +382,8 @@ public class SimServlet  extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) {
+	@Override
+   public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		String uri  = request.getRequestURI().toLowerCase();
 		logger.info("+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ");
 		logger.info("uri is " + uri);
@@ -389,7 +405,7 @@ public class SimServlet  extends HttpServlet {
 
 		// endpoint parsing
 		//
-		// endpoing looks like
+		// endpoint looks like
 		// http://host:port/xdstools2/sim/simid/actor/transaction[/validation]
 		// where
 		//   simid is a uniqueID for a simulator
@@ -563,9 +579,6 @@ public class SimServlet  extends HttpServlet {
 			}
 		}
 
-
-
-
 		List<String> flushed = new ArrayList<String>();
 		int regCacheCount = 0;
 		int repCacheCount = 0;
@@ -615,7 +628,7 @@ public class SimServlet  extends HttpServlet {
 		logger.debug(regCacheCount + " items left in the Registry Index cache");
 		logger.debug(repCacheCount + " items left in the Repository Index cache");
 
-	}
+	} // EO doPost method
 
 	public static void onServiceStart()  {
 		try {

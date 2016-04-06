@@ -136,8 +136,8 @@ public class SimulatorsController {
                sim.setEndpoint(request.getEndpoint());
             }
             else {
-               sim.setSite(api.getActorConfig(request.getId()));
-               dest = request.getFullId();
+               sim.setSite(api.getActorConfig(request.getFullId()));
+               dest = request.getId();
             }
             RetrievedDocumentsModel sModel = sim.retrieve(rModel);
             

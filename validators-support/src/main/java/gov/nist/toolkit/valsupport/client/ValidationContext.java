@@ -1,14 +1,15 @@
 package gov.nist.toolkit.valsupport.client;
 
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-import gov.nist.toolkit.commondatatypes.client.SchematronMetadataTypes;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
+import gov.nist.toolkit.commondatatypes.client.SchematronMetadataTypes;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 
 
 /**
@@ -29,10 +30,13 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	//
 	// primary transaction selection
     //
-	public boolean isR       = false;
+   public boolean isR       = false;
 	public boolean isRODDE 	 = false;
 	public boolean isStableOrODDE = false;
 	public boolean isPnR     = false;
+	/**
+	 * is this a Retrieve Document Set Transaction (ITI-43)?
+	 */
 	public boolean isRet	 = false;
 	public boolean isXDR	 = false;
 	public boolean isXDRLimited = false;   // IHE version
@@ -42,6 +46,11 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean isMU      = false;
 	public boolean isDIRECT  = false;
 	public boolean isCCDA	 = false;
+	/**
+	 * Is this a Retrieve Imaging Document Set (RAD-69) transaction? Also set for
+	 * Cross Gateway Retrieve Imaging Document Set (RAD-75) transaction. In that
+	 * case, {@link #isXC} is also set.
+	 */
 	public boolean isRad69	 = false;
     //NHIN xcpd
     public boolean isXcpd = false;
@@ -56,15 +65,26 @@ public class ValidationContext  implements Serializable, IsSerializable {
     // Modifiers
     //
 
-	// is Cross Community - a modifier on other settings
+	/**
+	 * is this a Cross Community Transaction?
+	 * A modifier on other settings; enforces the home community id requirement.
+	 */
 	public boolean isXC      = false;
 
 	public boolean isValidateCodes = true;
 	public boolean isPartOfRecipient = false;
 	public boolean validateAgainstPatientIdentityFeed = false;
 
-	// if neither set then context is not known
-	public boolean isRequest = false;
+	/**
+	 * Is this a Request? A setting of false does not mean that this is a 
+	 * Response; that is set using {@link #isResponse}. If neither flag is set 
+	 * then context is not known.
+	 */
+	public boolean isRequest = false;/**
+    * Is this a Response? A setting of false does not mean that this is a 
+    * Request; that is set using {@link #isRequest}. If neither flag is set 
+    * then context is not known.
+    */
 	public boolean isResponse= false;
 
 	public boolean isAsync = false;

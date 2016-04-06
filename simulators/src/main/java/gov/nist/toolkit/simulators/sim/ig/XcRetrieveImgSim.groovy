@@ -42,6 +42,10 @@ import org.apache.log4j.Logger
  */
 @TypeChecked
 class XcRetrieveImgSim extends AbstractMessageValidator {
+   
+   private static final TransactionType rad69 = TransactionType.RET_IMG_DOC_SET;
+   private static final TransactionType rad75 = TransactionType.XC_RET_IMG_DOC_SET;
+   
    Logger logger = Logger.getLogger(XcRetrieveSim);
 
    SimCommon common;
@@ -165,9 +169,8 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
                true, //mtom
                true,  // WS-Addressing
                true,  // SOAP 1.2
-               "urn:ihe:iti:2007:CrossGatewayRetrieve",
-               "urn:ihe:iti:2007:CrossGatewayRetrieveResponse"
-               );
+               rad75.getRequestAction(),
+               rad75.getResponseAction());
       } catch (Exception e) {
          Exception e2 = new Exception("Soap Call to endpoint " + endpoint + " failed - " + e.getMessage(), e);
          logException(er, e2)

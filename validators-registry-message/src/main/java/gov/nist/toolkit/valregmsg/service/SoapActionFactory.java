@@ -1,9 +1,9 @@
 package gov.nist.toolkit.valregmsg.service;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import gov.nist.toolkit.registrysupport.MetadataSupport;
 
 public class SoapActionFactory {
 
@@ -14,6 +14,7 @@ public class SoapActionFactory {
 	public final static String ret_b_async_action = "urn:ihe:iti:2007:RetrieveDocumentSet";
 	public final static String anon_action        = "urn:anonOutInOp";
 	public final static String rad_69_action      = "urn:ihe:rad:2009:RetrieveImagingDocumentSet";
+	public final static String rad_75_action      = "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet";
 
 	public final static String epsos_xcqr_action = "urn:epsos:xcqr";
 
@@ -39,6 +40,7 @@ public class SoapActionFactory {
 		    	 put(r_b_action,                                         "urn:ihe:iti:2007:RegisterDocumentSet-bResponse");
 		    	 put(ret_b_action,                                       "urn:ihe:iti:2007:RetrieveDocumentSetResponse");
 		    	 put(rad_69_action,                                      "urn:ihe:rad:2007:RetrieveDocumentSetResponse");
+		    	 put(rad_75_action,                                      "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse");
 		    	 put(MetadataSupport.SQ_action,                          MetadataSupport.SQ_response_action);
 		    	 put("urn:ihe:iti:2007:CrossGatewayRetrieve",            "urn:ihe:iti:2007:CrossGatewayRetrieveResponse");
 		    	 put("urn:ihe:iti:2007:CrossGatewayQuery",               "urn:ihe:iti:2007:CrossGatewayQueryResponse");
@@ -56,6 +58,7 @@ public class SoapActionFactory {
 
 		};
 
+		// I think perhaps this could better be a method in TransactionType. rm.
 	static public String getResponseAction(String requestAction) {
 		if (requestAction == null) return null;
 		return actions.get(requestAction);

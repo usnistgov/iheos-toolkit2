@@ -135,10 +135,9 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 
             return false;
 
-         case TransactionType.XC_RET_IMG_DOC_SET:
+         case TransactionType.RET_IMG_DOC_SET:
 
-            logger.debug("Transaction type: XC_RET_IMG_DOC_SET");
-            common.vc.isRet = true;
+            logger.debug("Transaction type: RET_IMG_DOC_SET");
             common.vc.isRad69 = true;
             common.vc.isXC = true;
             common.vc.isRequest = true;

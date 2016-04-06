@@ -132,6 +132,15 @@ public class RGActorFactory extends AbstractActorFactory {
             sc.get(SimulatorProperties.xcrTlsEndpoint).asString(), true,
             isAsync));
 
+         site.addTransaction(new TransactionBean(
+            TransactionType.XC_RET_IMG_DOC_SET.getCode(), RepositoryType.NONE,
+            sc.get(SimulatorProperties.xcirEndpoint).asString(), false,
+            isAsync));
+         site.addTransaction(new TransactionBean(
+            TransactionType.XC_RET_IMG_DOC_SET.getCode(), RepositoryType.NONE,
+            sc.get(SimulatorProperties.xcirTlsEndpoint).asString(), true,
+            isAsync));
+
          site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());
 
          new RegistryActorFactory().getActorSite(sc, site);
