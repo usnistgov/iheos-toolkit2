@@ -1,22 +1,19 @@
 package gov.nist.toolkit.soap.axis2;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
+import gov.nist.toolkit.docref.WsDocRef;
+import gov.nist.toolkit.dsig.XMLDSigProcessor;
+import gov.nist.toolkit.securityCommon.SecurityParams;
+import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
+import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
+import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
+import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
+import gov.nist.toolkit.xdsexception.*;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.soap.SOAP11Constants;
-import org.apache.axiom.soap.SOAP12Constants;
-import org.apache.axiom.soap.SOAPEnvelope;
-import org.apache.axiom.soap.SOAPFactory;
+import org.apache.axiom.soap.*;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
@@ -37,21 +34,17 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.log4j.Logger;
 
-import gov.nist.toolkit.docref.WsDocRef;
-import gov.nist.toolkit.dsig.XMLDSigProcessor;
-import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
-import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
-import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
-import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.LoadKeystoreException;
-import gov.nist.toolkit.xdsexception.XdsFormatException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+
+
+
 
 //vbeera: The below imports should be used in case of the potential 2nd fix for MustUnderstand Check Exception.
 /*
@@ -66,6 +59,7 @@ public class Soap implements SoapInterface {
 
 	private static Logger log = Logger.getLogger(Soap.class);
 
+	int timeout = 1000 * 60 * 60;
 	ServiceClient serviceClient = null;
 	OperationClient operationClient = null;
 	OMElement result = null;
@@ -355,7 +349,7 @@ public class Soap implements SoapInterface {
 
 		AxisService ANONYMOUS_SERVICE = null;
 
-		serviceClient = new ServiceClient(cc, ANONYMOUS_SERVICE);
+  		serviceClient = new ServiceClient(cc, ANONYMOUS_SERVICE);
 
 		// Start the painful process of loading the addressing module
 		// Axis2 has some timing problems so, yes, this is necessary
@@ -511,12 +505,16 @@ public class Soap implements SoapInterface {
 
 		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
         AxisFault soapFault = null;
+        Instant start = null;
 		try {
+	      start = Instant.now();
 			operationClient.execute(block); // execute sync or async
 //		} catch (AxisFault e) {
 //            soapFault = e;
 //            operationClient.execute(block); // execute sync or async
         } catch (AxisFault e) {
+           logger.debug("$$$$$ Timeout: " + timeout + ", Elapsed time: " + ChronoUnit.MILLIS.between(start, Instant.now()) + " milliseconds");
+           soapFault = e;
             MessageContext inMsgCtx = getInputMessageContext();
             OMElement soapBody = inMsgCtx.getEnvelope().getBody();
             result = soapBody.getFirstElement();
@@ -712,7 +710,8 @@ public class Soap implements SoapInterface {
 	 * CHANGE hardcoded parameters should be accessible
 	 * in some easily identifiable place. What do they mean? -Antoine
 	 */
-	void setOptions(Options opts) throws AxisFault {
+	@SuppressWarnings("restriction")
+   void setOptions(Options opts) throws AxisFault {
 		opts.setTo(new EndpointReference(endpoint));
 
 		if (System.getenv("XDSHTTP10") != null) {

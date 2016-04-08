@@ -22,6 +22,9 @@ import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
 
+import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+
 @TypeChecked
 class RGImgDocSetRet extends AbstractMessageValidator {
    Logger logger = Logger.getLogger(RGImgDocSetRet);
@@ -101,7 +104,31 @@ class RGImgDocSetRet extends AbstractMessageValidator {
             logException(er, e2)
             throw e2
          }
+         
          result = soap.getResult();
+         
+         /*
+          * Add the Home Community ID and Repository Unique Id to documents
+          */
+         
+         String repositoryUniqueIdValue = dsSimCommon.getSimulatorConfig().get(SimulatorProperties.repositoryUniqueId).asString();
+         String homeCommunityIdValue = dsSimCommon.getSimulatorConfig().get(SimulatorProperties.homeCommunityId).asString();
+         
+         for (OMElement documentResponseElement : XmlUtil.decendentsWithLocalName(result, "DocumentResponse")) {
+            OMElement repositoryUniqueIdElement = documentResponseElement.getFirstChildWithName(MetadataSupport.repository_unique_id_qnamens);
+            if (repositoryUniqueIdElement == null) {
+               repositoryUniqueIdElement = MetadataSupport.om_factory.createOMElement(MetadataSupport.repository_unique_id_qnamens);
+               documentResponseElement.addChild(repositoryUniqueIdElement);
+            }            
+            repositoryUniqueIdElement.setText(repositoryUniqueIdValue);
+            
+            OMElement homeCommunityIdElement = documentResponseElement.getFirstChildWithName(MetadataSupport.home_community_id_qname);
+            if (homeCommunityIdElement == null) {
+               homeCommunityIdElement = MetadataSupport.om_factory.createOMElement(MetadataSupport.home_community_id_qname);
+               documentResponseElement.addChild(homeCommunityIdElement);
+            }            
+            homeCommunityIdElement.setText(homeCommunityIdValue);
+         }
 
       } catch (NonException e) {
       } catch (Exception e) {
