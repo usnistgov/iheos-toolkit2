@@ -58,6 +58,9 @@ public class ConfigPull {
 		
 		HttpClient hc = new HttpClient();
 		byte[] data = hc.httpGetBytes(u);
+
+		String stuff = new String(data);
+		logger.info("Config is " + stuff);
 		
 		Io.bytesToFile(new File(actorsDir + File.separator + systemName + ".csv"), data);
 	}

@@ -70,6 +70,8 @@ class SysConfig {
 		isAsync = entry.isAsync();
 
 		actorType = ActorType.findActor(actor);
+		if (actorType == null)
+			return;
 		trans = actorType.getTransaction(transId);
 
 		repUid = configToXml.oConfigs.getRepUid(sysName);
