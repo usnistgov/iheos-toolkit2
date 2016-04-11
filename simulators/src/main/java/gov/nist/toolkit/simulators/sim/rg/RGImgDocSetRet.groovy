@@ -108,10 +108,10 @@ class RGImgDocSetRet extends AbstractMessageValidator {
          result = soap.getResult();
          
          /*
-          * Add the Home Community ID and Repository Unique Id to documents
+          * Add the Home Community ID and IDS Repository Unique Id to documents
           */
          
-         String repositoryUniqueIdValue = dsSimCommon.getSimulatorConfig().get(SimulatorProperties.repositoryUniqueId).asString();
+         String idsRepositoryUniqueIdValue = dsSimCommon.getSimulatorConfig().get(SimulatorProperties.idsRepositoryUniqueId).asString();
          String homeCommunityIdValue = dsSimCommon.getSimulatorConfig().get(SimulatorProperties.homeCommunityId).asString();
          
          for (OMElement documentResponseElement : XmlUtil.decendentsWithLocalName(result, "DocumentResponse")) {
@@ -120,7 +120,7 @@ class RGImgDocSetRet extends AbstractMessageValidator {
                repositoryUniqueIdElement = MetadataSupport.om_factory.createOMElement(MetadataSupport.repository_unique_id_qnamens);
                documentResponseElement.addChild(repositoryUniqueIdElement);
             }            
-            repositoryUniqueIdElement.setText(repositoryUniqueIdValue);
+            repositoryUniqueIdElement.setText(idsRepositoryUniqueIdValue);
             
             OMElement homeCommunityIdElement = documentResponseElement.getFirstChildWithName(MetadataSupport.home_community_id_qname);
             if (homeCommunityIdElement == null) {

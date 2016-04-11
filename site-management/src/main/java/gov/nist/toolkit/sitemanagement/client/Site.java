@@ -199,8 +199,8 @@ public class Site  implements IsSerializable, Serializable {
 	/**
 	 * This counts endpoints.  A repository can have endpoints
 	 * for all combinations of secure, async, and type.  There are
-	 * two basically different repository types, Document
-	 * Repository and On-Demand Document Source.
+	 * three basically different repository types, Document
+	 * Repository, On-Demand Document Source, and Image Document Source.
 	 * @return
 	 */
 	public int repositoryBCount() {

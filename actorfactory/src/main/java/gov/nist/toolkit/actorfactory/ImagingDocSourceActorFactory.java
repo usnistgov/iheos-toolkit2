@@ -16,8 +16,8 @@ import java.util.List;
 
 public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 	SimId newID = null;
-	static final String repositoryUniqueIdBase = "1.1.4567332.10.";
-	static int repositoryUniqueIdIncr = 1;
+	static final String idsRepositoryUniqueIdBase = "1.1.4567332.10.";
+	static int idsRepositoryUniqueIdIncr = 1;
 
 
 	static final List<TransactionType> incomingTransactions = 
@@ -35,7 +35,7 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 		else
 			sc = new SimulatorConfig();
 
-		addEditableConfig(sc, SimulatorProperties.repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
+		addEditableConfig(sc, SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, getNewIdsRepositoryUniqueId());
 		addFixedEndpoint(sc, SimulatorProperties.idsrEndpoint, actorType, TransactionType.RET_IMG_DOC_SET, false);
 		addFixedEndpoint(sc, SimulatorProperties.idsrTlsEndpoint, actorType, TransactionType.RET_IMG_DOC_SET, true);
 //        addEditableConfig(sc, SimulatorProperties.respondingGateways, ParamType.SELECTION, new ArrayList<String>(), true);
@@ -43,8 +43,8 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 		return new Simulator(sc);
 	}
 
-	static String getNewRepositoryUniqueId() {
-		return repositoryUniqueIdBase + repositoryUniqueIdIncr++;
+	static String getNewIdsRepositoryUniqueId() {
+		return idsRepositoryUniqueIdBase + idsRepositoryUniqueIdIncr++;
 	}
 
 
@@ -77,14 +77,14 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 				isAsync));
 
 		site.addRepository(new TransactionBean(
-				sc.get(SimulatorProperties.repositoryUniqueId).asString(),
-				RepositoryType.REPOSITORY,
+				sc.get(SimulatorProperties.idsRepositoryUniqueId).asString(),
+				RepositoryType.IDS,
 				sc.get(SimulatorProperties.idsrEndpoint).asString(),
 				false,
 				isAsync));
 		site.addRepository(new TransactionBean(
-				sc.get(SimulatorProperties.repositoryUniqueId).asString(),
-				RepositoryType.REPOSITORY,
+				sc.get(SimulatorProperties.idsRepositoryUniqueId).asString(),
+				RepositoryType.IDS,
 				sc.get(SimulatorProperties.idsrTlsEndpoint).asString(),
 				true,
 				isAsync));
