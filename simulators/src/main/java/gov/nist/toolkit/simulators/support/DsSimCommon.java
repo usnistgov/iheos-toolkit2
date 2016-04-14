@@ -1,18 +1,5 @@
 package gov.nist.toolkit.simulators.support;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
@@ -46,6 +33,13 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.File;
+import java.util.*;
 
 /**
  *
@@ -490,8 +484,10 @@ public class DsSimCommon {
             if (simCommon.db != null)
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
-	    this.writeAttachments(simCommon.os, er);
-            simCommon.os.write(getTrailer().toString().getBytes());
+            if (simCommon.vc.requiresMtom()) {
+                this.writeAttachments(simCommon.os, er);
+                simCommon.os.write(getTrailer().toString().getBytes());
+            }
             simCommon.generateLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {
@@ -685,7 +681,6 @@ public class DsSimCommon {
 	public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
 		logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
 		String[] uids = compositeUid.split(":");
-		// XCAI_TODO Modify this to work with Bill's method, probably in external cache somewhere.
 		String path = "/opt/xdsi/storage/ids-repository/" + uids[0] + "/" + uids[1] + "/" + uids[2];
 		logger.debug(" " + path);
 		File folder = new File(path);
