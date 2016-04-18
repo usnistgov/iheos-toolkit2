@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -523,7 +524,8 @@ public class SimulatorsController {
                     config,
                     transactionType,
                     internalizeDocs(request),
-                    request.isTls()
+                    request.isTls(),
+                    config.get(SimulatorProperties.environment).asString()
             );
             RawSendResponseResource responseResource = new RawSendResponseResource();
             responseResource.setResponseSoapBody(new OMFormatter(responseEle).toString());

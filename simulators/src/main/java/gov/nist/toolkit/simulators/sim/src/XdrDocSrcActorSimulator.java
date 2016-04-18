@@ -4,6 +4,8 @@ import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.securityCommon.SecurityParamsFactory;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.soap.axis2.MtomBuilder;
@@ -80,7 +82,7 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
      * @throws XdsFormatException
      * @throws XdsConfigurationException
      */
-    public OMElement run(SimulatorConfig config, TransactionType transactionType, DocumentMap documentMap, boolean isTls) throws AxisFault, LoadKeystoreException, XdsInternalException, XdsFormatException, XdsConfigurationException {
+    public OMElement run(SimulatorConfig config, TransactionType transactionType, DocumentMap documentMap, boolean isTls, String environmentName) throws AxisFault, LoadKeystoreException, XdsInternalException, XdsFormatException, XdsConfigurationException {
         GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
         logger.debug("XDR Doc Src starting transaction " + transactionType);
@@ -104,6 +106,9 @@ public class XdrDocSrcActorSimulator extends BaseDsActorSimulator {
         for (OMElement ele : extraSoapHeaderElements) {
             soap.addHeader(ele);
         }
+
+        soap.setSecurityParams(SecurityParamsFactory.getSecurityParams(environmentName));
+
         return soap.soapCall(mtom.getBody(),
                 endpoint,
                 true, // mtom
