@@ -1,7 +1,9 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.*;
 
 /**
  * Not for Public Use.
@@ -12,9 +14,11 @@ public class OperationResultResource {
     int extendedCode = 0;
     String reason;
     String reasonPhrase;
+    String stackTrace = null;
 
     static final public String EXTENDED_CODE_HEADER = "X-EXTENDED-CODE";
     static final public String REASON_HEADER = "X-REASON";
+    static final public String STACK_TRACE_HEADER = "X-STACK-TRACR";
 
     static final public int SIM_DOES_NOT_EXIST = Response.Status.NOT_FOUND.getStatusCode()*100+1;
     static final public int CONTENT_DOES_NOT_EXIST = Response.Status.NOT_FOUND.getStatusCode()*100+2;
@@ -35,6 +39,42 @@ public class OperationResultResource {
         String codeString = response.getHeaderString(EXTENDED_CODE_HEADER);
         if (codeString != null && !codeString.equals("")) extendedCode = Integer.parseInt(codeString);
         reason = response.getHeaderString(REASON_HEADER);
+
+        StringBuilder buf = new StringBuilder();
+        MultivaluedMap<String, String> map = response.getStringHeaders();
+        Set<Map.Entry<String, List<String>>> sets = map.entrySet();
+        Map<String, String> traceHeaders = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : sets) {
+            String key = entry.getKey();
+            if (key.startsWith(STACK_TRACE_HEADER)) {
+                for (String value : entry.getValue()) {
+                    traceHeaders.put(key, value);
+                }
+            }
+        }
+
+        for (String key : sort(asList(traceHeaders.keySet()))) {
+            buf.append(traceHeaders.get(key)).append("\n");
+        }
+
+        stackTrace = buf.toString();
+    }
+
+    List<String> asList(Set<String> in) {
+        List<String> out = new ArrayList<>();
+        for (String x : in) out.add(x);
+        return out;
+    }
+
+    List<String> sort(List<String> in) {
+        Collections.sort(in,
+                new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return o1.compareTo(o2);
+                    }
+                });
+        return in;
     }
 
     public Response.ResponseBuilder asHeaders(Response.ResponseBuilder builder) {
@@ -44,10 +84,24 @@ public class OperationResultResource {
     }
 
     public Response.ResponseBuilder asResponse() {
-       return Response.status(status)
+       Response.ResponseBuilder builder = Response.status(status)
                 .header(EXTENDED_CODE_HEADER, Integer.toString(extendedCode))
-                .header(REASON_HEADER, reason)
-               .entity(this, null);
+                .header(REASON_HEADER, reason);
+
+        int i = 1;
+
+        List<String> lines = asLineList(stackTrace);
+        // first line is exception message.  Rest is stack trace
+        if (lines.size() > 0) {
+            builder.header(String.format("%s%d", STACK_TRACE_HEADER, i), lines.get(0));
+            i++;
+        }
+        for (String traceLine : onlyToolkitLines(lines)) {
+            builder.header(String.format("%s%d", STACK_TRACE_HEADER, i), traceLine);
+            i++;
+        }
+
+        return builder.entity(this, null);
     }
 
     public Response.Status getStatus() {
@@ -76,6 +130,30 @@ public class OperationResultResource {
         this.extendedCode = extendedCode;
     }
 
+    List<String> asLineList(String x) {
+        String[] lines = x.split("\n");
+        List<String> lineList = new ArrayList<>();
+        for (int i=0; i<lines.length; i++) {
+            lineList.add(lines[i]);
+        }
+        return lineList;
+    }
+
+    List<String> onlyToolkitLines(List<String> in) {
+        List<String> out = new ArrayList<String>();
+
+        for (String line : in) {
+            if (line.contains("gov.nist.toolkit"))
+                out.add(line);
+        }
+
+        return out;
+    }
+
+    public void setStackTrace(String stackTrace) {
+        this.stackTrace = stackTrace;
+    }
+
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
@@ -98,9 +176,15 @@ public class OperationResultResource {
                 append(" reasonPhrase:").
                 append("\"").
                 append((reasonPhrase == null) ? null : reasonPhrase.trim()).
-                append("\"").
+                append("\"");
 
-                append(" }");
+        if (stackTrace != null) {
+            buf.append("\nStack Trace:\n  ").
+                    append(stackTrace.replaceAll("\n", "\n  ")).
+                    append("\n");
+        }
+
+        buf.append(" }");
         return buf.toString();
     }
 }

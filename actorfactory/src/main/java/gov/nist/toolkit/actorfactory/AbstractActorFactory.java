@@ -113,6 +113,7 @@ public abstract class AbstractActorFactory {
 		addUser(sc, ele);
 
         addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
+		addFixedConfig(sc, SimulatorProperties.environment, ParamType.TEXT, "null");
 
         return sc;
 	}
