@@ -1,4 +1,4 @@
-package src.test.groovy.gov.nist.toolkit.itTests.xdr
+package gov.nist.toolkit.itTests.xdr
 
 import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
@@ -9,14 +9,13 @@ import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.registrymsg.registry.RegistryError
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListParser
 import gov.nist.toolkit.testengine.engine.UniqueIdFactory
-import gov.nist.toolkit.toolkitApi.*
+import gov.nist.toolkit.toolkitApi.BasicSimParameters
+import gov.nist.toolkit.toolkitApi.DocumentSource
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest
 import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
-import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentResource
-import gov.nist.toolkit.transactionNotificationService.TransactionLog
-import gov.nist.toolkit.transactionNotificationService.TransactionNotification
 import gov.nist.toolkit.utilities.xml.OMFormatter
 import gov.nist.toolkit.utilities.xml.Util
 import org.apache.axiom.om.OMElement

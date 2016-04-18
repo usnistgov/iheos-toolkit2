@@ -24,6 +24,8 @@ public class SecurityParamsImpl implements SecurityParams {
 
     @Override
     public File getKeystore() throws EnvironmentNotSelectedException {
+        if (environmentName == null)
+            throw new EnvironmentNotSelectedException("Environment not specified in call");
         File keystoreFile = Installation.installation().getKeystore(environmentName);
         if (!keystoreFile.exists())
             throw new EnvironmentNotSelectedException("Environment " + environmentName + " does not have a keystore");

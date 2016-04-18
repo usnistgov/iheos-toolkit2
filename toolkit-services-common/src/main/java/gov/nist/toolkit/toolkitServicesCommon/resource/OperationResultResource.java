@@ -18,7 +18,7 @@ public class OperationResultResource {
 
     static final public String EXTENDED_CODE_HEADER = "X-EXTENDED-CODE";
     static final public String REASON_HEADER = "X-REASON";
-    static final public String STACK_TRACE_HEADER = "X-STACK-TRACR";
+    static final public String STACK_TRACE_HEADER = "X-STACK-TRACE";
 
     static final public int SIM_DOES_NOT_EXIST = Response.Status.NOT_FOUND.getStatusCode()*100+1;
     static final public int CONTENT_DOES_NOT_EXIST = Response.Status.NOT_FOUND.getStatusCode()*100+2;
@@ -53,7 +53,9 @@ public class OperationResultResource {
             }
         }
 
-        for (String key : sort(asList(traceHeaders.keySet()))) {
+        for (String key : sortAsNumbers(asList(traceHeaders.keySet()), STACK_TRACE_HEADER)) {
+            String value = traceHeaders.get(key);
+//            System.out.println(String.format("%s => %s", key, value));
             buf.append(traceHeaders.get(key)).append("\n");
         }
 
@@ -66,12 +68,20 @@ public class OperationResultResource {
         return out;
     }
 
-    List<String> sort(List<String> in) {
+    List<String> sortAsNumbers(List<String> in, String prefix) {
         Collections.sort(in,
                 new Comparator<String>() {
                     @Override
                     public int compare(String o1, String o2) {
-                        return o1.compareTo(o2);
+                        if (o1.startsWith(STACK_TRACE_HEADER))
+                            o1 = o1.substring(STACK_TRACE_HEADER.length());
+                        if (o2.startsWith(STACK_TRACE_HEADER))
+                            o2 = o2.substring(STACK_TRACE_HEADER.length());
+                        int i1 = Integer.parseInt(o1);
+                        int i2 = Integer.parseInt(o2);
+                        if (i1 == i2) return 0;
+                        return (i1 < i2) ? -1 : 1;
+//                        return o1.compareTo(o2);
                     }
                 });
         return in;

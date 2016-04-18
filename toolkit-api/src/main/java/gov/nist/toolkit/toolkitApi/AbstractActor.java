@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
@@ -55,7 +56,9 @@ abstract class AbstractActor implements AbstractActorInterface {
      * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
      * @param value property value
      */
-    public void setProperty(String name, boolean value) { config.setProperty(name, value);}
+    public void setProperty(String name, boolean value) {
+        config.setProperty(name, value);
+    }
     /**
      * Is named property a boolean value?
      * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
