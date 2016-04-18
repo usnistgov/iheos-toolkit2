@@ -39,9 +39,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 
@@ -53,7 +52,6 @@ import java.util.*;
  import org.apache.axis2.engine.Phase;
  */
 
-@SuppressWarnings("javadoc")
 public class Soap implements SoapInterface {
     static Logger logger = Logger.getLogger(Soap.class);
 
@@ -505,15 +503,15 @@ public class Soap implements SoapInterface {
 
 		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
         AxisFault soapFault = null;
-        Instant start = null;
+        long start = 0;
 		try {
-	      start = Instant.now();
+		   start = System.nanoTime();
 			operationClient.execute(block); // execute sync or async
 //		} catch (AxisFault e) {
 //            soapFault = e;
 //            operationClient.execute(block); // execute sync or async
         } catch (AxisFault e) {
-           logger.debug("$$$$$ Timeout: " + timeout + ", Elapsed time: " + ChronoUnit.MILLIS.between(start, Instant.now()) + " milliseconds");
+           logger.debug("$$$$$ Timeout: " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
            soapFault = e;
             MessageContext inMsgCtx = getInputMessageContext();
             OMElement soapBody = inMsgCtx.getEnvelope().getBody();

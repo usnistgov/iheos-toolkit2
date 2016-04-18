@@ -1,5 +1,20 @@
 package gov.nist.toolkit.simulators.support;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
@@ -33,13 +48,6 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.File;
-import java.util.*;
 
 /**
  *
@@ -372,7 +380,7 @@ public class DsSimCommon {
     }
 
     /**
-     * Used to build RetrieveDocumentSetRespoinse
+     * Used to build RetrieveDocumentSetResponse
      * @param env
      * @param er
      * @return
@@ -681,30 +689,38 @@ public class DsSimCommon {
 	public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
 		logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
 		String[] uids = compositeUid.split(":");
-		String path = "/opt/xdsi/storage/ids-repository/" + uids[0] + "/" + uids[1] + "/" + uids[2];
-		logger.debug(" " + path);
-		File folder = new File(path);
+      /*
+       * XCAI_TODO Here we are using a directory ids-repository under the
+       * simulator directory to store images for an ids simulator or an rg
+       * simulator (which bundles an ids). This can be set up as a soft link to
+       * the directory actually containing the images. However, we should pass
+       * this by Bill and then come up with a way to handle this in the config.
+       */
+      Path idsRepositoryPath = simCommon.db.getSimDir().toPath().resolve("ids-repository");
+		File idsRepositoryDir = idsRepositoryPath.toFile();
+		if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
+		   logger.warn("Could not file ids-repository directory " + idsRepositoryDir);
+		   return null;
+		}
+		Path folderPath = idsRepositoryPath.resolve(uids[0]).resolve(uids[1]).resolve(uids[2]);
+		logger.debug(" " + folderPath);
+		File folder = folderPath.toFile();
 		if (!folder.exists()) {
 			logger.debug("Could not find file folder for composite UID: " + compositeUid);
 			return null;
 		}
 		boolean found = false;
 		Iterator<String> it = transferSyntaxUids.iterator();
-		String finalPath = null;
+		Path finalPath = Paths.get("");
 		while (it.hasNext() && !found) {
-			String x = it.next();
-			finalPath = path + "/" + x;
-			File f = new File(finalPath);
-			if (f.exists()) {
-				found = true;
-			}
+		   finalPath = folderPath.resolve(it.next());
+			if(finalPath.toFile().exists()) found = true;
 		}
 		StoredDocument sd = null;
 		if (found) {
 			logger.debug("Found path to file: " + finalPath);
 			StoredDocumentInt sdi = new StoredDocumentInt();
-//			sdi.pathToDocument = "/tmp/000000.dcm";
-			sdi.pathToDocument = finalPath;
+			sdi.pathToDocument = finalPath.toString();
 			sdi.uid = uids[2];
 			logger.debug(" Instance UID: " + sdi.uid);
 			sdi.mimeType = "application/dicom";

@@ -148,7 +148,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    } // EO run method
 
    /**
-    * Send XCAI RetImgDocSetRequest (RAD-75) to Receiving Gateway
+    * Send XCAI RetImgDocSetRequest (RAD-75) to Responding Gateway
     * @param site target RG
     * @param reqModel RetImgDocSetRequest (RAD-75) model for request to send
     * @return Results of request

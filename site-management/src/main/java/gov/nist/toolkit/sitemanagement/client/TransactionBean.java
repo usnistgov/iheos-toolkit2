@@ -30,7 +30,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 	
 	
 	// Remove this? Not used for anything real yet.
-	public enum RepositoryType  implements IsSerializable, Serializable  { REPOSITORY, ODDS, NONE, IDS;
+	public enum RepositoryType  implements IsSerializable { REPOSITORY, ODDS, NONE, IDS;
 	
 		RepositoryType() {}
 	};
@@ -75,7 +75,8 @@ public class TransactionBean implements IsSerializable, Serializable {
 		return transType.getName();
 	}
 
-	public String toString() {
+	@Override
+   public String toString() {
 		if (transType != null)
 			return "[trans=" + transType + 
 //					" RepositoryType=" + repositoryType +
