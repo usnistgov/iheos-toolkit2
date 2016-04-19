@@ -175,8 +175,19 @@ public interface ToolkitServiceAsync {
 
 	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
 
+	/**
+	 * This method copy the default testkit to a selected environment and triggers a code update based on
+	 * the affinity domain configuration file (codes.xml) located in the selected environment.
+	 * @param selectedEnvironment name of the target environment
+	 * @param callback Async. callback returning the update output as a String.
+     */
 	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);
 
+	/**
+	 * This method tests if there already is a testkit configured in a selected environment.
+	 * @param selectedEnvironment name of the selected environment.
+	 * @param asyncCallback Async. callback returning a boolean.
+	 */
 	void doesTestkitExist(String selectedEnvironment, AsyncCallback<Boolean> asyncCallback);
 
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);

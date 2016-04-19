@@ -179,8 +179,20 @@ public interface ToolkitService extends RemoteService  {
 	String getAssigningAuthority() throws Exception;
 	List<String> getAssigningAuthorities() throws Exception;
 	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+	/**
+	 * This method copy the default testkit to a selected environment and triggers a code update based on
+	 * the affinity domain configuration file (codes.xml) located in the selected environment.
+	 * @param selectedEnvironment name of the target environment for the testkit.
+	 * @return update output as a String
+	 */
+
 	String configureTestkit(String selectedEnvironment);
 
+	/**
+	 * This method tests if there already is a testkit configured in a selected environment.
+	 * @param selectedEnvironment name of the selected environment.
+	 * @return boolean
+	 */
 	boolean doesTestkitExist(String selectedEnvironment);
 
 

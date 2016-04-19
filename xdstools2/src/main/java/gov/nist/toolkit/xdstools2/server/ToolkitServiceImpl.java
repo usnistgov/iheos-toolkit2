@@ -245,6 +245,12 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
 
+	/**
+	 * This method copies the default testkit to a selected environment and triggers a code update based on
+	 * the affinity domain configuration file (codes.xml) located in the selected environment.
+	 * @param selectedEnvironmentName target environment for the testkit.
+	 * @return update output as a String
+	 */
 	@Override
 	public String configureTestkit(String selectedEnvironmentName) {
 		File environmentFile = Installation.installation().environmentFile(selectedEnvironmentName);
@@ -254,6 +260,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return updater.getOutput();
 	}
 
+    /**
+     * This method tests if there already is a testkit configured in a selected environment.
+     * @param selectedEnvironment name of the selected environment.
+     * @return boolean
+     */
 	@Override
 	public boolean doesTestkitExist(String selectedEnvironment) {
 		File environmentFile = Installation.installation().environmentFile(selectedEnvironment);
