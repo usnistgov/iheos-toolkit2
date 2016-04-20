@@ -100,14 +100,14 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
                docUids.add(uid);
                logger.debug("Document UID: " + uid);
             }
+            
+            boolean errors = true;
 
             List<String> imagingUids = new ArrayList<String>();
             for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
                String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
                logger.debug("Study UID: " + studyUid);
-               Iterator<OMElement> seriesIterator = studyEle.getChildElements();
-               while (seriesIterator.hasNext()) {
-                  OMElement seriesEle = (OMElement)seriesIterator.next();
+               for (OMElement seriesEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "SeriesRequest")) {
                   String seriesUid = seriesEle.getAttributeValue(new QName("seriesInstanceUID"));
                   logger.debug(" Series UID: " + seriesUid);
                   for (OMElement instanceEle : XmlUtil.decendentsWithLocalName(seriesEle, "DocumentUniqueId")) {
@@ -115,9 +115,10 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
                      String fullUid=studyUid + ":" + seriesUid + ":" + uid;
                      imagingUids.add(fullUid);
                      logger.debug("  " + fullUid);
-                  }
+                  } 
                }
             }
+            
             List<String> transferSyntaxUids = new ArrayList<String>();
             for (OMElement transferSyntaxEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "TransferSyntaxUID")) {
                String xferSyntaxUid = transferSyntaxEle.getText();
@@ -238,6 +239,33 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
             return true;
       }
+   }
+   
+   
+   /**
+    * Is the passed string properly formatted URN OID? Example would be a home
+    * community id. "urn:oid:" followed by a valid xds-b OID. 
+    * @param value String to be validated.
+    * @param blankOk boolean, return true for a null/empty string?
+    * @return boolean true if value is properly formatted, false otherwise.
+    */
+   private boolean isUrnOid(String value, boolean blankOk) {
+      if (value == null || value.length() == 0) return blankOk;
+      if (value.startsWith("urn:oid:")) {
+         return isOid(value.substring("urn:oid:".length()), false);
+      }
+      return false;
+   }
+   /**
+    * Is the passed string properly formatted OID? Example would be a home
+    * community id. 
+    * @param value String to be validated.
+    * @param blankOk boolean, return true for a null/empty string?
+    * @return boolean true if value is properly formatted, false otherwise.
+    */
+   private boolean isOid(String value, boolean blankOk) {
+      if (value == null || value.length() == 0) return blankOk;
+      return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}");
    }
 
 

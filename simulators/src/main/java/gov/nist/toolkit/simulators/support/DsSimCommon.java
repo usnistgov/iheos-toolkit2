@@ -57,6 +57,8 @@ public class DsSimCommon {
     public RegIndex regIndex = null;
     public RepIndex repIndex = null;
     public SimCommon simCommon;
+    ErrorRecorder er = null;
+    
     Map<String, StoredDocument> documentsToAttach = null;  // cid => document
     RegistryErrorListGenerator registryErrorListGenerator = null;
 
@@ -64,6 +66,7 @@ public class DsSimCommon {
 
     public DsSimCommon(SimCommon simCommon, RegIndex regIndex, RepIndex repIndex) throws IOException, XdsException {
         this.simCommon = simCommon;
+        this.er = this.simCommon.getCommonErrorRecorder();
         this.regIndex = regIndex;
         this.repIndex = repIndex;
 
@@ -699,7 +702,10 @@ public class DsSimCommon {
       Path idsRepositoryPath = simCommon.db.getSimDir().toPath().resolve("ids-repository");
 		File idsRepositoryDir = idsRepositoryPath.toFile();
 		if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
-		   logger.warn("Could not file ids-repository directory " + idsRepositoryDir);
+         logger.warn("Could not file ids-repository directory " + idsRepositoryDir);
+		   er.err(XdsErrorCode.Code.XDSRepositoryError, 
+		      "Could not find repository [" + idsRepositoryPath + "] ",
+		      "IdsActorSimulator EL-1", MetadataSupport.error_severity, "Internal error");
 		   return null;
 		}
 		Path folderPath = idsRepositoryPath.resolve(uids[0]).resolve(uids[1]).resolve(uids[2]);
@@ -707,6 +713,9 @@ public class DsSimCommon {
 		File folder = folderPath.toFile();
 		if (!folder.exists()) {
 			logger.debug("Could not find file folder for composite UID: " + compositeUid);
+			er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, 
+			   "No document matching composite UID [" + compositeUid + "] ",
+			   "IdsActorSimulator EL-2", MetadataSupport.error_severity, "ITI TF-3 Table 4.2.4.1-2");
 			return null;
 		}
 		boolean found = false;
@@ -737,6 +746,9 @@ public class DsSimCommon {
 			while (it.hasNext()) {
 				logger.debug("  Xfer syntax: " + it.next());
 			}
+			er.err(XdsErrorCode.Code.XDSRepositoryError, 
+			   "IDS cannot encode the pixel data using any of the requested transfer syntaxes", 
+			   uids[2], MetadataSupport.error_severity, "RAD TF-3 4.69.4.2.3");
 		}
 		return sd;
 	}
