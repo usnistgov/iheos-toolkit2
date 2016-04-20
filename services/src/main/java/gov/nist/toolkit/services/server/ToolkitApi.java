@@ -186,12 +186,15 @@ public class ToolkitApi {
     
     public Site getActorConfig(String id) throws Exception {
        if (session == null) return null;
+       logger.debug("ToolkitApi#getActorConfig for ID: " + id);
+       logger.debug(" Session ID: " + session.getId());
        SimManager simManager = new SimManager(session.getId());
        Collection<Site> sites = simManager.getAllSites().asCollection();
        for (Site site : sites) {
+          logger.debug(" Testing site name: " + site.getName());
           if (site.getName().equals(id)) return site;
        }
-       throw new Exception("Site not found");
+       throw new Exception("Site not found: " + id);
     }
 
     /**
