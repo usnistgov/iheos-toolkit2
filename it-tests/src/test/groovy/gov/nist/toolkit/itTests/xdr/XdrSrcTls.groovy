@@ -50,7 +50,32 @@ class XdrSrcTls extends ToolkitSpecification {
         srcParams.id = 'source'
         srcParams.user = 'bill'
         srcParams.actorType = SimulatorActorType.DOCUMENT_SOURCE
-        srcParams.environmentName = 'test'
+        srcParams.environmentName = 'NA2016'
+    }
+
+    def 'environment gets added to configuration in sim create' () {
+        when:
+        println 'STEP - DELETE DOCSRC SIM'
+        spi.delete(srcParams.id, srcParams.user)
+
+        and:
+        println 'STEP - CREATE DOCSRC SIM'
+        DocumentSource documentSource = spi.createDocumentSource(
+                srcParams.id,
+                srcParams.user,
+                srcParams.environmentName
+        )
+
+        then: 'verify sim built'
+        documentSource.getId() == srcParams.id
+
+        when: 'extract environment name'
+        String env = documentSource.asString(SimulatorProperties.environment)
+
+        then: 'matches config'
+        env == srcParams.environmentName
+        documentSource.getEnvironmentName() == srcParams.environmentName
+
     }
 
     def 'Send XDR with TLS'() {
@@ -73,7 +98,7 @@ class XdrSrcTls extends ToolkitSpecification {
         println 'STEP - UPDATE - SET DOC REC ENDPOINTS INTO DOC SRC'
         documentSource.setProperty(SimulatorProperties.pnrEndpoint, recipientEndpoint)
         documentSource.setProperty(SimulatorProperties.pnrTlsEndpoint, recipientTLSEndpoint)
-        documentSource.setProperty(SimulatorProperties.environment, srcParams.environmentName)
+//        documentSource.setProperty(SimulatorProperties.environment, srcParams.environmentName)
         SimConfig updatedVersion = documentSource.update(documentSource.getConfig())
         println "Updated Src Sim config is ${updatedVersion.describe()}"
 

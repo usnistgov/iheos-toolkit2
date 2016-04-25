@@ -3,6 +3,7 @@ package gov.nist.toolkit.toolkitApi;
 import gov.nist.toolkit.configDatatypes.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
 
 /**
@@ -58,6 +59,8 @@ public class SimulatorBuilder {
         XdrDocumentSource src = new XdrDocumentSource();
         src.engine = engine;
         src.config =  engine.create(id, user, SimulatorActorType.DOCUMENT_SOURCE, environmentName);
+        SimConfigResource sc = src.config;
+        sc.setEnvironmentName(environmentName);
         return src;
     }
 

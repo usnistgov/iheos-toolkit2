@@ -11,6 +11,8 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
+
 import java.io.IOException;
 
 /**
@@ -18,18 +20,18 @@ import java.io.IOException;
  */
 abstract class AbstractActor implements AbstractActorInterface {
    EngineSpi engine;
-   SimConfig config;
+   SimConfigResource config;
 
    public SimConfig getConfig() {
       return config;
    }
 
-   public SimConfig update(SimConfig config) throws ToolkitServiceException {
+   public SimConfigResource update(SimConfigResource config) throws ToolkitServiceException {
       config = engine.update(config);
       return config;
    }
 
-   public void setConfig(SimConfig cnf) {
+   public void setConfig(SimConfigResource cnf) {
       config = cnf;
    }
 
@@ -50,7 +52,12 @@ abstract class AbstractActor implements AbstractActorInterface {
      * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
      * @param value property value
      */
-    public void setProperty(String name, String value) { config.setProperty(name, value);}
+    public void setProperty(String name, String value) {
+        config.setProperty(name, value);
+//        if (SimulatorProperties.environment.equals((name))) {
+//            config.setEnvironmentName(value);
+//        }
+    }
     /**
      * Set a property that takes a boolean value
      * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.

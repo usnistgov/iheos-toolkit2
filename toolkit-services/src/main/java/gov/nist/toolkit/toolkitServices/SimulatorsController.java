@@ -170,6 +170,11 @@ public class SimulatorsController {
         return null;
     }
 
+    static List<String> UPDATE_EXCEPTIONS = new ArrayList<>();
+    static {
+        UPDATE_EXCEPTIONS.add(SimulatorProperties.environment);
+    }
+
     /**
      * Update Simulator Configuration.
      * @param config containing updates
@@ -192,7 +197,7 @@ public class SimulatorsController {
             for (String propName : config.getPropertyNames()) {
                 SimulatorConfigElement ele = currentConfig.get(propName);
                 if (ele == null) continue;  // no such property
-                if (!ele.isEditable()) {
+                if (!ele.isEditable() && !UPDATE_EXCEPTIONS.contains(propName)) {
                     continue;  // ignore
                 }
 
