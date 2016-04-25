@@ -44,6 +44,7 @@ public class UtilityRunner {
      * @param stopOnFirstFailure
      * @return
      */
+    // TODO add environment name as param? (what about session? will it contain the mesa session info?
     public Result run(Session session, Map<String, String> params, Map<String, Object> params2, List<String> sections,
                       TestInstance testInstance, String[] areas, boolean stopOnFirstFailure) {
 

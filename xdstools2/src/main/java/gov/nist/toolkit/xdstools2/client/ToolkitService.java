@@ -39,7 +39,7 @@ public interface ToolkitService extends RemoteService  {
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
 	public String getTestReadme(String test) throws Exception;
 	public List<String> getTestIndex(String test) throws Exception;
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
+	public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames() throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;

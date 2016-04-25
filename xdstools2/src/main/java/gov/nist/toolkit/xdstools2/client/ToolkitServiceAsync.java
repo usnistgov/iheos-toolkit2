@@ -161,7 +161,7 @@ public interface ToolkitServiceAsync {
 	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
 	void getTestReadme(String test, AsyncCallback<String> callback);
 	void getTestIndex(String test, AsyncCallback<List<String>> callback);
-	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
+	void runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);

@@ -408,7 +408,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 				parms.put("$patientid$", pid);
 			}
 			
-			toolkitService.runMesaTest(testSession, siteSpec, new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
+			toolkitService.runMesaTest(getEnvironmentSelection(),testSession, siteSpec, new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
 			
 		}
 		

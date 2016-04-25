@@ -60,7 +60,7 @@ class ToolkitSpecification extends Specification {
         params.put('$patientid$', pid.toString())
         boolean stopOnFirstError = true
 
-        List<Result> results = api.runTest(testSession, simId.fullId, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(null,testSession, simId.fullId, testId, sections, params, stopOnFirstError)
 
         assert results.size() == 1
         assert results.get(0).passed()
@@ -72,7 +72,7 @@ class ToolkitSpecification extends Specification {
         params.put('$patientid$', pid.toString())
         boolean stopOnFirstError = true
 
-        List<Result> results = api.runTest(testSession, simId.fullId, testInstance, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(null,testSession, simId.fullId, testInstance, sections, params, stopOnFirstError)
 
         TestLogs testLogs = api.getTestLogs(testInstance)
 

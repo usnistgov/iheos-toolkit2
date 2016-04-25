@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Installation {
@@ -149,8 +150,34 @@ public class Installation {
         return testkit;
     }
 
+    /**
+     * This method return a list of testkit files sorted by priority level.
+     * The first in the list is the top priority testkit.
+     * It can contain a user testkit for an environment, an environment testkit (generated from code update)
+     * and the toolkit default testkit.
+     * It always contains at least the default testkit of the toolkit. The presence of the other
+     * two depends on the existence.
+     * @param environmentName name of the environment to look into for the environment specific testkits.
+     * @param mesaSessionName name of the test session for the user specific testkit.
+     * @return list of testkit files
+     */
+	public List<File> testkitFiles(String environmentName,String mesaSessionName) {
+        List<File> testkits=new ArrayList<File>();
+        // paths to the testkit repository in the environment directory
+        File environmentTestkitsFile=new File(environmentFile(environmentName),"testkits");
+        // path to the user's testkit (based on the name of the test session)
+        File usrTestkit=new File(environmentTestkitsFile,mesaSessionName);
+        // path to the environment specific testkit (generated from Code Update)
+        File environmentDefaultTestkit=new File(environmentTestkitsFile,"default");
+        if (usrTestkit!=null && usrTestkit.exists()) testkits.add(usrTestkit);
+        if (environmentDefaultTestkit!=null && environmentDefaultTestkit.exists()) testkits.add(environmentDefaultTestkit);
+        // toolkit default testkit
+        testkits.add(testkitFile());
+        return testkits;
+    }
+
     public String defaultEnvironmentName() { return propertyServiceManager().getDefaultEnvironment(); }
-	
+
 	public File environmentFile(String envName) {
 		return new File(externalCache + sep + "environment" + sep + envName);
 	}

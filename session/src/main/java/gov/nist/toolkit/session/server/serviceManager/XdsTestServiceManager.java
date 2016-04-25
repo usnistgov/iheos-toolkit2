@@ -104,10 +104,13 @@ public class XdsTestServiceManager extends CommonService {
 //
 //		return utilityRunner.run(session, params, params2, sections, testId, areas, stopOnFirstFailure);
 //	}
-
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
+	// TODO add environment name as a parameter? (we could also probably replace the string mesatestsession(name) by session session in this prototype)
+	public List<Result> runMesaTest(String environmentName,String mesaTestSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
-		return new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+        if (environmentName == null) environmentName=Installation.DEFAULT_ENVIRONMENT_NAME;
+        if (session.getMesaSessionName() == null) session.setMesaSessionName(mesaTestSessionName);
+        session.setCurrentEnvName(environmentName);
+		return new TestRunner(this).run(session, mesaTestSessionName, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 
 	/**

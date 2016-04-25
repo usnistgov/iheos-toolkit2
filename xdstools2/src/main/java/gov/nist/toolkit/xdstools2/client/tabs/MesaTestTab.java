@@ -181,7 +181,7 @@ public class MesaTestTab extends GenericQueryTab {
 			}
 
 			rigForRunning();
-			toolkitService.runMesaTest(getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
+			toolkitService.runMesaTest(getEnvironmentSelection(),getCurrentTestSession(), getSiteSelection(), new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
 
 		}
 
