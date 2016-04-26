@@ -525,7 +525,7 @@ public class Soap implements SoapInterface {
 			try {
 				inMsgCtx.getEnvelope().build();
 			} catch (NullPointerException e) {
-				throw new XdsInternalException("Service not available on this host:port");
+				throw new XdsInternalException("Service not available on this host:port (" + endpoint + ")");
 			}
 
 			OMElement soapBody = inMsgCtx.getEnvelope().getBody();

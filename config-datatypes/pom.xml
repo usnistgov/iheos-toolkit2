@@ -13,6 +13,10 @@
     <artifactId>config-datatypes</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

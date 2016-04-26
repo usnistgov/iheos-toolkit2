@@ -29,7 +29,8 @@
     import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
     import gov.nist.toolkit.sitemanagement.client.Site;
     import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
-    import gov.nist.toolkit.tk.TkLoader;
+	import gov.nist.toolkit.testengine.scripts.CodesUpdater;
+	import gov.nist.toolkit.tk.TkLoader;
     import gov.nist.toolkit.tk.client.TkProps;
 	import gov.nist.toolkit.validatorsSoapMessage.factories.SoapMessageValidatorFactory;
 	import gov.nist.toolkit.valregmsg.message.SchemaValidation;
@@ -242,13 +243,19 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
 
 	@Override
-	public String configureTestkit(String selectedEnvironment) {
-		return null;
+	public String configureTestkit(String selectedEnvironmentName) {
+		File environmentFile = Installation.installation().environmentFile(selectedEnvironmentName);
+		File defaultTestkit = Installation.installation().testkitFile();
+		CodesUpdater updater = new CodesUpdater();
+		updater.run(environmentFile.getAbsolutePath(),defaultTestkit.getAbsolutePath());
+		return updater.getOutput();
 	}
 
 	@Override
 	public boolean doesTestkitExist(String selectedEnvironment) {
-		return false;
+		File environmentFile = Installation.installation().environmentFile(selectedEnvironment);
+		File testkit=new File(environmentFile,"testkit");
+		return testkit.exists();
 	}
 
 	//------------------------------------------------------------------------
@@ -476,7 +483,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		
 		//******************************************
 		//
-		// New session model to be created
+		// New session object to be created
 		//
 		//******************************************
 		File warHome = null;
