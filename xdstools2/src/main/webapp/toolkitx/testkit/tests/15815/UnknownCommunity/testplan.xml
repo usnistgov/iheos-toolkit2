@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
-    <Test>15814/XDSRegistryError</Test>
-    <TestStep id="finddocs">
+    <Test>15814/UnknownCommunity</Test>
+    <TestStep id="getdocs">
         <ExpectedStatus>Failure</ExpectedStatus>
+        <ExpectedErrorCode>XDSUnknownCommunity</ExpectedErrorCode>
         <Rule>
             <Transaction>XCQ</Transaction>
-            <SQ>Test FindDocuments Cross-Gateway Query of Responding Gateway</SQ>
+            <SQ>Test GetdDocuments Cross-Gateway Query of Responding Gateway</SQ>
             <Assertion>LeafClass return</Assertion>
         </Rule>
         <Goal>GetDocuments query with wrong Home Community Id must return XDSUnknownCommunityError</Goal>

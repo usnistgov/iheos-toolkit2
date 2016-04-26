@@ -115,13 +115,13 @@ public class SimulatorBuilder {
      * @return Simulator configuration.
      * @throws ToolkitServiceException if anything goes wrong.
      */
-    public ImagingDocumentConsumer createImagingDocumentConsumer(String id, 
-       String user, String env) throws ToolkitServiceException {
-       XdsiImagingDocumentConsumer idc = new XdsiImagingDocumentConsumer();
-       idc.engine = engine;
-       idc.config = engine.create(id, user, SimulatorActorType.IMAGE_DOCUMENT_CONSUMER, env);
-       return idc;
-    }
+//    public ImagingDocumentConsumer createImagingDocumentConsumer(String id, 
+//       String user, String env) throws ToolkitServiceException {
+//       XdsiImagingDocumentConsumer idc = new XdsiImagingDocumentConsumer();
+//       idc.engine = engine;
+//       idc.config = engine.create(id, user, SimulatorActorType.IMAGE_DOCUMENT_CONSUMER, env);
+//       return idc;
+//    }
 
     /**
      * Create new Document Recipient simulator with default configuration.

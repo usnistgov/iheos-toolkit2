@@ -102,6 +102,10 @@ public class ConfigToXml {
 		for (GazelleEntry entry : entries) {
 			System.out.println(entry);
 			SysConfig sysConfig = new SysConfig(this, entry);
+			boolean ok = sysConfig.eval(this);
+			if (!ok)
+				continue;
+
 			System.out.println(sysConfig);
 			TransactionType trans = sysConfig.trans;
 			

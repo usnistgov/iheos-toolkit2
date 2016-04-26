@@ -48,7 +48,7 @@ class IgOrchestrationBuilder {
 
     RawResponse buildTestEnvironment() {
         try {
-            new SimDb().getSimIdsForUser(request.userName).each { SimId simId -> api.deleteSimulator(simId) }
+//            new SimDb().getSimIdsForUser(request.userName).each { SimId simId -> api.deleteSimulator(simId) }
 
             oneDocPid = session.allocateNewPid()
             twoDocPid = session.allocateNewPid()
@@ -106,8 +106,10 @@ class IgOrchestrationBuilder {
         SimId rgSimId1 = new SimId(request.userName, id1, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
         SimId rgSimId2 = new SimId(request.userName, id2, ActorType.RESPONDING_GATEWAY.name, request.environmentName)
         println "creating rg1 sim"
+        api.deleteSimulator(rgSimId1);
         SimulatorConfig rgSimConfig1 = api.createSimulator(rgSimId1).getConfig(0)
         println "creating rg2 sim"
+        api.deleteSimulator(rgSimId2);
         SimulatorConfig rgSimConfig2 = api.createSimulator(rgSimId2).getConfig(0)
 
         // this expects full server version of simulator config
@@ -125,7 +127,7 @@ class IgOrchestrationBuilder {
         rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.homeCommunityId)
         rgEle.setValue('urn:oid:1.2.34.567.8.1')
 
-        // config rg1 to return XDSUnknownPatientId for registryError query requests
+        // config rg1 to return XDSRegistryError for registryError query requests
         rgEle = rgSimConfig1.getConfigEle(SimulatorProperties.errorForPatient)
         PatientErrorMap pem = new PatientErrorMap()
         PatientErrorList pel = new PatientErrorList()

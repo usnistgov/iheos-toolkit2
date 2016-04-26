@@ -1,15 +1,16 @@
 package gov.nist.toolkit.registrysupport;
 
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMFactory;
-import org.apache.axiom.om.OMNamespace;
-
-import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.xml.namespace.QName;
+
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
 
 /**
  *
@@ -44,6 +45,9 @@ public class MetadataSupport {
 
 	static public String xdsB_uri = "urn:ihe:iti:xds-b:2007";
 	static public OMNamespace xdsB =   om_factory.createOMNamespace(xdsB_uri, "xdsb");
+	
+	static public String xdsiB_uri = "urn:ihe:rad:xdsi-b:2009";
+	static public OMNamespace xdsiB = om_factory.createOMNamespace(xdsiB_uri, "xdsiB");
 
 	static public OMNamespace xop_include = om_factory.createOMNamespace("http://www.w3.org/2004/08/xop/include", "xopinclude");
 
