@@ -65,7 +65,7 @@ public class EngineSpi {
 
     public WebTarget getTarget() { return target; }
 
-    public SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
+    public SimConfigResource create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
         String actorTypeString = actorType.getName();
         SimId simId = ToolkitFactory.newSimId(id, user, actorTypeString, environmentName);
         SimIdResource bean = new SimIdResource(simId);
@@ -94,7 +94,7 @@ public class EngineSpi {
         return create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
     }
 
-    public SimConfig update(SimConfig config) throws ToolkitServiceException {
+    public SimConfigResource update(SimConfig config) throws ToolkitServiceException {
         Response response = target
                 .path(String.format("simulators/%s", config.getId()))
                 .request(MediaType.APPLICATION_JSON)

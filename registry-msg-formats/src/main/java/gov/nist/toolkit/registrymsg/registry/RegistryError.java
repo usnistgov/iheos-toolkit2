@@ -14,6 +14,11 @@ public class RegistryError {
 	public String location = null;
 	public boolean isWarning;
 
+	@Override
+	public String toString() {
+		return String.format("%s %s: %s at %s", severity, errorCode, codeContext, location);
+	}
+
 	public RegistryError() {
 
 	}

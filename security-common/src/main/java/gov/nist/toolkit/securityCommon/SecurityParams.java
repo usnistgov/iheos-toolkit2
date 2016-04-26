@@ -10,5 +10,5 @@ public interface SecurityParams {
 	File getKeystore() throws EnvironmentNotSelectedException;
 	String getKeystorePassword() throws IOException, EnvironmentNotSelectedException;
 	
-	public File getKeystoreDir() throws EnvironmentNotSelectedException;
+	File getKeystoreDir() throws EnvironmentNotSelectedException;
 }

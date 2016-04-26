@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -216,6 +217,11 @@ public class SimulatorsController {
         return null;
     }
 
+    static List<String> UPDATE_EXCEPTIONS = new ArrayList<>();
+    static {
+        UPDATE_EXCEPTIONS.add(SimulatorProperties.environment);
+    }
+
     /**
      * Update Simulator Configuration.
      * @param config containing updates
@@ -238,7 +244,7 @@ public class SimulatorsController {
             for (String propName : config.getPropertyNames()) {
                 SimulatorConfigElement ele = currentConfig.get(propName);
                 if (ele == null) continue;  // no such property
-                if (!ele.isEditable()) {
+                if (!ele.isEditable() && !UPDATE_EXCEPTIONS.contains(propName)) {
                     continue;  // ignore
                 }
 
@@ -570,7 +576,8 @@ public class SimulatorsController {
                     config,
                     transactionType,
                     internalizeDocs(request),
-                    request.isTls()
+                    request.isTls(),
+                    config.get(SimulatorProperties.environment).asString()
             );
             RawSendResponseResource responseResource = new RawSendResponseResource();
             responseResource.setResponseSoapBody(new OMFormatter(responseEle).toString());
