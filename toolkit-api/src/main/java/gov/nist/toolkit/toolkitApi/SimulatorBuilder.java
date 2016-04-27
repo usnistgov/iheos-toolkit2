@@ -249,4 +249,10 @@ public class SimulatorBuilder {
         return simId;
     }
 
+    public XdmValidator createXdmValidator() {
+        XdmValidatorImpl impl = new XdmValidatorImpl();
+        impl.engine = engine;
+        return impl;
+    }
+
 }
