@@ -17,6 +17,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmItem;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequestResource;
+import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.valregmsg.xdm.OMap;
+import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -585,6 +597,37 @@ public class SimulatorsController {
         } catch (Throwable e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
+    }
+
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/xdmValidation")
+    public Response xdmValidation(final XdmRequestResource request) {
+        ValidationContext vc = DefaultValidationContextFactory.validationContext();
+        vc.isXDM = true;
+        ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
+        TextErrorRecorder er = (TextErrorRecorder) erBuilder.buildNewErrorRecorder();
+        MessageValidatorEngine mvc = new MessageValidatorEngine();
+
+        XdmDecoder xd = new XdmDecoder(vc, erBuilder, Io.bytesToInputStream(request.getZip()));
+        xd.er = er;
+
+        if (!xd.isXDM()) {
+            XdmReportResource report = new XdmReportResource();
+            report.setReport(er.toString());
+            return Response.ok(report).build();
+        }
+        xd.run(er, mvc);
+        OMap omap = xd.getContents();
+        XdmReportResource report = new XdmReportResource();
+        report.setReport(er.toString());
+        report.setPass(!er.hasErrors());
+        for (gov.nist.toolkit.valregmsg.xdm.Path path : omap.keySet()) {
+            report.addItem(new XdmItem(path.toString(), omap.get(path).get()));
+        }
+
+        return Response.ok(report).build();
     }
 
     DocumentMap internalizeDocs(RawSendRequestResource request) throws BadSimRequestException {
