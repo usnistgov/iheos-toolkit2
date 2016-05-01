@@ -475,6 +475,12 @@
             </dependency>
             <dependency>
                 <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-dev</artifactId>
+                <version>${gwtVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.gwt</groupId>
                 <artifactId>gwt-servlet</artifactId>
                 <!--<scope>provided</scope>-->
                 <!--<scope>runtime</scope>-->

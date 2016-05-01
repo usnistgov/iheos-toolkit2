@@ -414,6 +414,12 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>toolkit-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.0-alpha4</version>
+        </dependency>
+
         <!--<dependency>-->
             <!--<groupId>com.sun.jersey</groupId>-->
             <!--<artifactId>jersey-server</artifactId>-->

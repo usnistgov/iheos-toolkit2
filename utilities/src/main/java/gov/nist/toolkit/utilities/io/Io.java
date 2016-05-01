@@ -146,7 +146,11 @@ public class Io {
 		if ( !file.exists())
 			throw new FileNotFoundException(file + " cannot be read");
 		FileInputStream is = new FileInputStream(file);
-		return getBytesFromInputStream(is);
+		try {
+			return getBytesFromInputStream(is);
+		} finally {
+			is.close();
+		}
 
 	}
 
@@ -183,8 +187,11 @@ public class Io {
 
 	static public void stringToFile(File file, String string) throws IOException {
 		BufferedWriter out = new BufferedWriter(new FileWriter(file));
-		out.write(string);
-		out.close();	
+		try {
+			out.write(string);
+		} finally {
+			out.close();
+		}
 	}
 	
 	static public void xmlToFile(File file, OMElement xml) throws IOException {
@@ -193,8 +200,11 @@ public class Io {
 
 	static public void bytesToFile(File file, byte[] content) throws IOException {
 		OutputStream out = new FileOutputStream(file);
-		out.write(content);
-		out.close();	
+		try {
+			out.write(content);
+		} finally {
+			out.close();
+		}
 	}
 	
 	static public InputStream bytesToInputStream(byte[] in) {

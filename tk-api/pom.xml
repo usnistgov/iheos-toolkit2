@@ -13,10 +13,18 @@
     <artifactId>tk-api</artifactId>
     <packaging>pom</packaging>
 
+    <description>
+        This POM exists to control the pushing of modules to Gazelle Nexus for users of the API.
+        After any changes to the API you should run:
+        cd tk-api; mvn deploy
+        which will update the Snapshots repository on Gazelle Nexus.
+    </description>
+
     <modules>
         <module>../toolkit-api</module>
         <module>../toolkit-services-common</module>
         <module>../config-datatypes</module>
+        <module>../transaction-notification-service</module>
     </modules>
 
 </project>

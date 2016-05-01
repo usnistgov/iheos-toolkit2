@@ -72,6 +72,8 @@ public class MetadataSupport {
 	static public QName registrypackage_qnamens = new QName(ebRIMns3_uri, "RegistryPackage", "rim");
 	static public QName association_qnamens = new QName(ebRIMns3_uri, "Association", "rim");
 
+	static public QName provide_and_register_request = new QName(xdsB_uri, "ProvideAndRegisterDocumentSetRequest", "rs");
+
 	static public QName versioninfo_qnamens = new QName(ebRIMns3_uri, "VersionInfo", "rim");
 	static public QName versionname_qname = new QName("versionName");
 

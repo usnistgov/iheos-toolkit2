@@ -3,6 +3,7 @@ package gov.nist.toolkit.toolkitApi;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 
 /**
  *
@@ -11,7 +12,7 @@ public interface AbstractActorInterface extends SimConfig {
 
     SimConfig getConfig();
 
-     SimConfig update(SimConfig config) throws ToolkitServiceException;
+     SimConfigResource update(SimConfigResource config) throws ToolkitServiceException;
 
     /**
      * Delete the actor.

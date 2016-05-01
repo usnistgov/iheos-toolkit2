@@ -3243,6 +3243,12 @@ public class Metadata {
 
 	}
 
+	public OMElement asProvideAndRegister() throws XdsInternalException {
+		OMElement ele = MetadataSupport.om_factory.createOMElement(MetadataSupport.provide_and_register_request);
+		ele.addChild(getV3SubmitObjectsRequest());
+		return ele;
+	}
+
 	public String stripNamespace(String value) {
 		if (value == null)
 			return null;
