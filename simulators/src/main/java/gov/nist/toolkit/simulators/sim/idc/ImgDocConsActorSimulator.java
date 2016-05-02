@@ -33,7 +33,10 @@ import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
  */
 public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
 
-   private static final TransactionType type = TransactionType.RET_IMG_DOC_SET;
+   private TransactionType type = TransactionType.RET_IMG_DOC_SET;
+   public void setTransactionType(TransactionType type) {
+      this.type = type;
+   }
 
    static private final Logger logger =
       Logger.getLogger(ImgDocConsActorSimulator.class);

@@ -254,6 +254,13 @@ public class SimulatorProperties {
     public static final String                         FORCE_FAULT = "Force Fault";
 
     /**
+     * String property defining the Repository UniqueId of a Repository simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                     idsRepositoryUniqueId = "idsRepositoryUniqueId";
+
+
+    /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */

@@ -96,11 +96,13 @@ public class SimulatorsController {
     
     @POST
     @Produces("application/json")
-    @Path("/{id}/xdsi/retrieve")
-    public Response retrieveImagingDocSet(final RetImgDocSetReqResource request) {
+    @Path("/{id}/xdsi/retrieve/{type}")
+    public Response retrieveImagingDocSet(final RetImgDocSetReqResource request, @PathParam("type") String transaction) {
         logger.info(String.format("POST simulators/%s/xdsi/retrieve ", 
            (request.isDirect() ? request.getEndpoint() : request.getFullId())));
         String dest = "";
+        TransactionType type = TransactionType.RET_IMG_DOC_SET;
+        if (transaction.equals("rad75")) type = TransactionType.XC_RET_IMG_DOC_SET;
         try {
             
             // Transfer from request resource to request model
@@ -130,6 +132,7 @@ public class SimulatorsController {
             // Trigger simulator to do the retrieve
 
             ImgDocConsActorSimulator sim = new ImgDocConsActorSimulator();
+            sim.setTransactionType(type);
             sim.setTls(request.isTls());
             sim.setDirect(request.isDirect());
             if (request.isDirect()) {
@@ -137,8 +140,8 @@ public class SimulatorsController {
                sim.setEndpoint(request.getEndpoint());
             }
             else {
-               sim.setSite(api.getActorConfig(request.getId()));
-               dest = request.getFullId();
+               sim.setSite(api.getActorConfig(request.getFullId()));
+               dest = request.getId();
             }
             RetrievedDocumentsModel sModel = sim.retrieve(rModel);
             
