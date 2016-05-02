@@ -1,6 +1,7 @@
 package gov.nist.toolkit.valregmsg.xdm;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
@@ -41,13 +42,15 @@ public class XdmDecoder extends AbstractMessageValidator {
 
 	boolean showContents = false;
 
+	public OMap getContents() { return contents; }
+
 	public static void main(String[] args) {
 		try {
 			InputStream is = Io.getInputStreamFromFile(new File(args[0]));
 			ValidationContext vc = DefaultValidationContextFactory.validationContext();
 			vc.isXDM = true;
 			ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
-			ErrorRecorder er = erBuilder.buildNewErrorRecorder();
+			TextErrorRecorder er = (TextErrorRecorder) erBuilder.buildNewErrorRecorder();
 			MessageValidatorEngine mvc = new MessageValidatorEngine();
 
 			XdmDecoder xd = new XdmDecoder(vc, erBuilder, is);

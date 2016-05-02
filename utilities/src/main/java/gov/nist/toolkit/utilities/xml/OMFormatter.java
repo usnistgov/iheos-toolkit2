@@ -105,9 +105,9 @@ public class OMFormatter {
 		
 		boolean addDefaultNSDef = false;
 		if (defaultNamespaceUri != null) {
-			if (!defaultNamespaceUri.equals(parentsDefaultNamespaceUri)) {
+//			if (!defaultNamespaceUri.equals(parentsDefaultNamespaceUri)) {
 				addDefaultNSDef = true;
-			}
+//			}
 		}
 		
 		if (myNamespaceUri == null || myNamespaceUri.equals(defaultNamespaceUri))
