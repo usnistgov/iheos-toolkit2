@@ -4,6 +4,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
@@ -31,6 +32,7 @@ public class DocRetrieveTab extends GenericQueryTab {
 	static CoupledTransactions couplings = new CoupledTransactions();
 
 	TextBox docUidBox;
+	TextArea textArea;
 //	TextBox repUidBox;
 	
 	public DocRetrieveTab() {
@@ -56,9 +58,15 @@ public class DocRetrieveTab extends GenericQueryTab {
 		docUidLabel.setText("Document UniqueId");
 		mainGrid.setWidget(row,0, docUidLabel);
 
-		docUidBox = new TextBox();
-		docUidBox.setWidth("500px");
-		mainGrid.setWidget(row, 1, docUidBox);
+//		docUidBox = new TextBox();
+//		docUidBox.setWidth("500px");
+//		mainGrid.setWidget(row, 1, docUidBox);
+
+		textArea = new TextArea();
+		textArea.setCharacterWidth(40);
+		textArea.setVisibleLines(10);
+		mainGrid.setWidget(row, 1, textArea);
+
 		row++;
 		
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
@@ -74,16 +82,28 @@ public class DocRetrieveTab extends GenericQueryTab {
 			if (siteSpec == null)
 				return;
 
-			if (docUidBox.getValue() == null || docUidBox.getValue().equals("")) {
+//			if (docUidBox.getValue() == null || docUidBox.getValue().equals("")) {
+//				new PopupMessage("You must enter a Document UniqueId first");
+//				return;
+//			}
+
+			if (textArea.getValue() == null || textArea.getValue().equals("")) {
 				new PopupMessage("You must enter a Document UniqueId first");
 				return;
 			}
 
+
+			List<String> values = formatIds(textArea.getValue());
+
 			Uids uids = new Uids();
-			Uid uid = new Uid(docUidBox.getValue().trim());
-			
-			uids.add(uid);
-			
+
+
+			for (String value : values) {
+				Uid uid = new Uid(value.trim());
+				uids.add(uid);
+			}
+
+
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);

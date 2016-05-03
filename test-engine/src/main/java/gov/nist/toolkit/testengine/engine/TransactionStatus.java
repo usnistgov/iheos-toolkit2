@@ -60,4 +60,16 @@ public class TransactionStatus {
 		return value == StatusValue.Success;
 	}
 
+	public boolean isPartialSuccess() {
+		return value == StatusValue.PartialSuccess;
+	}
+
+	public String getNamespace() {
+		if (!isPartialSuccess()) {
+			return MetadataSupport.response_status_type_namespace + value.toString();
+		} else {
+			return MetadataSupport.ihe_response_status_type_namespace + value.toString();
+		}
+	}
+
 }

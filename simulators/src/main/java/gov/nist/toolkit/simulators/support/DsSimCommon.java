@@ -179,6 +179,8 @@ public class DsSimCommon {
             if (rel == null)
                 rel = new RegistryErrorListGenerator(Response.version_3, false);
 
+            rel.setPartialSuccess(simCommon.mvc.isPartialSuccess());
+
             for (ValidationStepResult vsr : results) {
                 for (ValidatorErrorItem vei : vsr.er) {
                     if (vei.level == ValidatorErrorItem.ReportingLevel.ERROR) {
@@ -222,13 +224,33 @@ public class DsSimCommon {
         }
     }
 
-    public void addDocumentAttachments(List<String> uids, ErrorRecorder er) {
+    public void addDocumentAttachments(List<String> uids, ErrorRecorder er) throws XdsInternalException {
+        int notFound = 0;
         for (String uid : uids) {
             StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
-            if (sd == null)
-                continue;
-            addDocumentAttachment(sd);
+            // if (sd == null)
+            //   continue;
+            // addDocumentAttachment(sd);
+            // Fix bug 70
+            if (sd == null) {
+                notFound++;
+//                er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, "DsSimCommon#addDocumentAttachments: " + uid + " not found.", this, "Error");
+            } else
+                addDocumentAttachment(sd);
         }
+
+        int foundDocuments = 0;
+        if (documentsToAttach!=null)
+            foundDocuments = documentsToAttach.size();
+
+        if (foundDocuments==0) {
+            er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, "DsSimCommon#addDocumentAttachments: not found.", this, "Error");
+        } else if (notFound > 0 && foundDocuments > 0) {
+            // Only some documents are found.
+            simCommon.mvc.setPartialSuccess(true);
+        }
+
+
     }
 
     public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {

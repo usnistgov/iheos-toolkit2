@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15816/Retrieve</Test>
+  <TestStep id="retrieve_doc">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RetrieveTransaction>
+
+      <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/>
+	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid$"/>
+<!--
+	  <UseReport reportName="oddocid" section="SubmitTestData" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uuid$"/>
+      <UseId testdir="../SubmitTestData" id="Document01" symbol="$od_doc_uuid$" step="SubmitOnDemandDocumentEntry" section="AssignedUuids"/>
+      <UseReport reportName="repuid" section="query" step="by_uid" useAs="$repuid$"/>
+      <UseReport reportName="Document01_uid" section="submit" step="submit" useAs="$docuid1$"/>
+      <ReferenceMetadata testdir="../query" step="by_uid"/>
+-->
+      <MetadataFile>normal_query.xml</MetadataFile>
+      <ExpectedContents/>
+
+      <ReferenceDocument uid="$doc_uid$">PnR/my_document.txt</ReferenceDocument>
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+
+  <TestStep id="retrieve_bad_doc_uid">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <RetrieveTransaction>
+
+      <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/>
+
+      <MetadataFile>bad_query.xml</MetadataFile>
+      <ExpectedContents/>
+
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+
+  <TestStep id="retrieve_partial_uid">
+    <ExpectedStatus>PartialSuccess,Success</ExpectedStatus>
+    <RetrieveTransaction>
+
+      <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/>
+	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid$"/>
+
+      <MetadataFile>partial_query.xml</MetadataFile>
+      <ExpectedContents/>
+
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+
+
+
+</TestPlan>
