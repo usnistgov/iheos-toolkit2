@@ -32,10 +32,11 @@ public class RGActorFactory extends AbstractActorFactory {
    }
 
    static final List <TransactionType> incomingTransactions =
-      Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE);
+      Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE,
+         TransactionType.XC_RET_IMG_DOC_SET);
 
    @Override
-   protected Simulator buildNew(SimManager simm, SimId newID,
+   protected Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
       boolean configureBase)
          throws EnvironmentNotSelectedException, NoSessionException {
       this.newID = newID;
@@ -78,7 +79,7 @@ public class RGActorFactory extends AbstractActorFactory {
       SimulatorConfig repositoryConfig =
          new RepositoryActorFactory().buildNew(simm, simId, true).getConfig(0); // was
                                                                                 // false
-      
+      // This needs to be grouped with an Image Document Source also
       SimulatorConfig idsConfig = 
          new ImagingDocSourceActorFactory().buildNew(simm, simId, true).getConfig(0);
 
@@ -130,6 +131,15 @@ public class RGActorFactory extends AbstractActorFactory {
          site.addTransaction(new TransactionBean(
             TransactionType.XC_RETRIEVE.getCode(), RepositoryType.NONE,
             sc.get(SimulatorProperties.xcrTlsEndpoint).asString(), true,
+            isAsync));
+
+         site.addTransaction(new TransactionBean(
+            TransactionType.XC_RET_IMG_DOC_SET.getCode(), RepositoryType.NONE,
+            sc.get(SimulatorProperties.xcirEndpoint).asString(), false,
+            isAsync));
+         site.addTransaction(new TransactionBean(
+            TransactionType.XC_RET_IMG_DOC_SET.getCode(), RepositoryType.NONE,
+            sc.get(SimulatorProperties.xcirTlsEndpoint).asString(), true,
             isAsync));
 
          site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());

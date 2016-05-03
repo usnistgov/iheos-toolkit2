@@ -15,14 +15,29 @@ import gov.nist.toolkit.utilities.xml.XmlUtil
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import groovy.transform.TypeChecked
+
+import javax.xml.namespace.QName
+
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
-import javax.xml.namespace.QName
+
+// XCAI_TODO Add handling for error cases, image not found.
 
 @TypeChecked
 public class IdsActorSimulator extends GatewaySimulatorCommon {
 	static Logger logger = Logger.getLogger(IdsActorSimulator.class);
 	AdhocQueryResponseGenerator sqs;
+
+   static List<TransactionType> transactions = new ArrayList<>();
+
+   static {
+      transactions.add(TransactionType.RET_IMG_DOC_SET);
+      transactions.add(TransactionType.IG_QUERY);
+      transactions.add(TransactionType.IG_RETRIEVE);
+   }
+   public boolean supports(TransactionType transactionType) {
+      return transactions.contains(transactionType);
+   }
 
 	public IdsActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
 		super(common, dsSimCommon);
@@ -46,7 +61,8 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
         logger.info("IdsActorSimulator: run - transactionType is " + transactionType);
 	GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-		if (transactionType.equals(TransactionType.RET_IMG_DOC_SET)) {
+      switch (transactionType) {
+         case TransactionType.RET_IMG_DOC_SET:
 			logger.debug("Transaction type: RET_IMG_DOC_SET");
 			common.vc.isRet = false;
 			common.vc.isRad69 = true;
@@ -85,20 +101,20 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 				logger.debug("Document UID: " + uid);
 			}
 
+            boolean errors = true;
+
 			List<String> imagingUids = new ArrayList<String>();
 			for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
 				String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
 				logger.debug("Study UID: " + studyUid);
-				Iterator<OMElement> seriesIterator = studyEle.getChildElements();
-				while (seriesIterator.hasNext()) {
-					OMElement seriesEle = (OMElement)seriesIterator.next();
+               for (OMElement seriesEle : XmlUtil.decendentsWithLocalName(studyEle, "SeriesRequest")) {
 					String seriesUid = seriesEle.getAttributeValue(new QName("seriesInstanceUID"));
 					logger.debug(" Series UID: " + seriesUid);
 					for (OMElement instanceEle : XmlUtil.decendentsWithLocalName(seriesEle, "DocumentUniqueId")) {
 						String uid = instanceEle.getText();
 						String fullUid=studyUid + ":" + seriesUid + ":" + uid;
 						imagingUids.add(fullUid);
-						logger.debug(fullUid);
+                     logger.debug("  " + fullUid);
 					}
 				}
 			}
@@ -137,9 +153,10 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), gerb.buildNewErrorRecorder());
 
 			mvc.run();
+         break;
 
 
-		} else if (transactionType.equals(TransactionType.IG_QUERY)) {
+		case TransactionType.IG_QUERY:
 /*
 			common.vc.isSQ = true;
 			common.vc.isXC = false;
@@ -190,8 +207,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 */
 			return false; // no updates anyway
 
-		} 
-		else if (transactionType.equals(TransactionType.IG_RETRIEVE)) {
+		case TransactionType.IG_RETRIEVE:
 /*
             common.vc.isRet = true;
             common.vc.isXC = false;
@@ -232,14 +248,40 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
 */
 
             return false;
-		}
 			
-		else {
+         default:
 			er.err(Code.XDSRegistryError, "Don't understand transaction " + transactionType, "ImagingDocSourceActorSimulator", "");
             dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
 			return true;
 		}
 	}
+
+
+   /**
+    * Is the passed string properly formatted URN OID? Example would be a home
+    * community id. "urn:oid:" followed by a valid xds-b OID. 
+    * @param value String to be validated.
+    * @param blankOk boolean, return true for a null/empty string?
+    * @return boolean true if value is properly formatted, false otherwise.
+    */
+   private boolean isUrnOid(String value, boolean blankOk) {
+      if (value == null || value.length() == 0) return blankOk;
+      if (value.startsWith("urn:oid:")) {
+         return isOid(value.substring("urn:oid:".length()), false);
+      }
+      return false;
+   }
+   /**
+    * Is the passed string properly formatted OID? Example would be a home
+    * community id. 
+    * @param value String to be validated.
+    * @param blankOk boolean, return true for a null/empty string?
+    * @return boolean true if value is properly formatted, false otherwise.
+    */
+   private boolean isOid(String value, boolean blankOk) {
+      if (value == null || value.length() == 0) return blankOk;
+      return value.matches("\\d(?=\\d*\\.)(?:\\.(?=\\d)|\\d){0,255}");
+   }
 
 
 }

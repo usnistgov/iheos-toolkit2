@@ -239,6 +239,9 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         } else if (wsaction.equals("urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery")) {
             vc.isResponse = true;
             vc.isXcpd = true;
+        } else if (wsaction.equals("urn:ihe:rad:2009:RetrieveImagingDocumentSet")) {
+           vc.isRequest = true;
+           vc.isRad69 = true;
         }
     }
 

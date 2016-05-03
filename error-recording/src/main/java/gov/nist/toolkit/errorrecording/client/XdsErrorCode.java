@@ -37,7 +37,8 @@ public class XdsErrorCode implements IsSerializable  {
 		XDSMetadataUpdateError,
 		XDSMissingHomeCommunityId,
 		XDSUnknownCommunity,
-		XDSResultNotSinglePatient
+		XDSResultNotSinglePatient,
+		XDSIRequestError
 	};
 	
 	

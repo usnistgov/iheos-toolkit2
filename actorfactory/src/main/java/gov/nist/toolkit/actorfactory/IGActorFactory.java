@@ -75,6 +75,13 @@ public class IGActorFactory extends AbstractActorFactory {
          TransactionType.IG_RETRIEVE.getCode(), RepositoryType.NONE,
          sc.get(SimulatorProperties.igrTlsEndpoint).asString(), true, isAsync));
 
+      site.addTransaction(new TransactionBean(
+         TransactionType.RET_IMG_DOC_SET.getCode(), RepositoryType.NONE,
+         sc.get(SimulatorProperties.idsrEndpoint).asString(), false, isAsync));
+      site.addTransaction(new TransactionBean(
+         TransactionType.RET_IMG_DOC_SET.getCode(), RepositoryType.NONE,
+         sc.get(SimulatorProperties.idsrTlsEndpoint).asString(), true, isAsync));
+
       return site;
    }
 
