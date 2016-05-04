@@ -142,7 +142,8 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
       } catch (Exception e) {
          logException(er, e);
       } finally {
-         result = new RetrieveDocumentResponseGenerator(retrievedDocs, dsSimCommon.registryErrorList).get();
+         result = new RetrieveDocumentResponseGenerator(retrievedDocs, 
+            dsSimCommon.registryErrorList).get();
          er.unRegisterValidator(this);
       }
    } // EO run method

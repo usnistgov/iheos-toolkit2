@@ -126,12 +126,34 @@ public abstract class Response implements ErrorLogger {
 
 	}
 
+	
 	abstract public void addQueryResults(OMElement metadata) throws XdsInternalException;
 
+	/**
+	 * Set "forced" value for status attribute in RetrieveDocumentSetResponse 
+	 * RegistryResponse element. If this is NOT set, the status value will be
+	 * "Failure" if any RegistryError elements with severity "Error" are in the
+	 * RegistryErrorList element, and "Success" otherwise.<br/>
+	 * <b>NOTE:</b> Must be invoked BEFORE {@link #getResponse()}
+	 * @param status the String value for the status attribute. This must be the
+	 * entire value, including the namespace. It is suggested to use one of:<ul>
+	 * <li/> {@link gov.nist.toolkit.registrysupport.MetadataSupport#status_success MetadataSupport.status_success}
+    * <li/> {@link gov.nist.toolkit.registrysupport.MetadataSupport#status_partial_success MetadataSupport.status_partial_success}
+    * <li/> {@link gov.nist.toolkit.registrysupport.MetadataSupport#status_failure MetadataSupport.status_failure}
+	 * </ul>
+	 */
 	public void setForcedStatus(String status) {
 		forcedStatus = status;
 	}
 
+   /**
+    * Gets the completed RetrieveDocumentSetResponse SOAP message body, first
+    * adding any RegistryErrors, and setting status attribute in
+    * RetrieveDocumentSetResponse RegistryResponse element
+    * 
+    * @return OMElement instance for RetrieveDocumentSetResponse element
+    * @throws XdsInternalException on error, most likely in Axiom processing.
+    */
 	public OMElement getResponse()  throws XdsInternalException {
 		if (version == version_2) {
 			response.addAttribute("status", registryErrorList.getStatus(), null);
@@ -156,32 +178,12 @@ public abstract class Response implements ErrorLogger {
 
 		setLocationForXCA();
 
-		//			if (this instanceof RetrieveMultipleResponse) {
-		//				return ((RetrieveMultipleResponse) this).rdsr;
-		//			}
-		//			else if (this instanceof RegistryResponse) {
-		//
-		//			}
-		//			else if (this instanceof AdhocQueryResponse) {
-		//				AdhocQueryResponse a = (AdhocQueryResponse) this;
-		//				OMElement query_result = a.getQueryResult();
-		//				if (query_result != null)
-		//					response.addChild(query_result);
-		//			} else {
-		//				throw new XdsInternalException("Response.getResponse(): unknown extending class: " + getClass().getName());
-		//			}
-
 		return getRoot();
-
-
-
-//		return response;
 	}
 
 	void setLocationForXCA() {
 		if (isXCA && registryErrorList != null)
 			registryErrorList.setIsXCA();
-
 	}
 
 	public void add_error(String code, String msg, String location, String resource, LogMessage log_message) {

@@ -242,10 +242,17 @@ public class DsSimCommon {
         }
     }
 
-    public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
+   /**
+    * Attempts to retrieve DICOM documents from passed list of UIDs in one of
+    * the passed list of transfer syntaxes.
+    * @param imagingDocumentUids List of composite UIDs (studyUid:SeriesUid:InstanceUID)
+    * for DICOM documents requested by caller.
+    * @param transferSyntaxUids List of transfer syntax UIDs acceptable to caller
+    * @param er ErrorRecorder to store errors found during processing.
+    */
+   public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
 	logger.debug("DsSimComon#addImagingDocumentAttachments");
         for (String uid : imagingDocumentUids) {
-            //StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
             StoredDocument sd = this.getStoredImagingDocument(uid, transferSyntaxUids);
 	    logger.debug(" uid=" + uid);
             if (sd == null)
@@ -687,6 +694,18 @@ public class DsSimCommon {
         return null;
     }
 
+   /**
+    * Attempts to retrieve the referenced DICOM document in one of the 
+    * referenced Transfer Syntaxes.
+    * @param compositeUid composite UID of DICOM document desired by caller
+    * (studyUid:SeriesUid:InstanceUid)
+    * @param transferSyntaxUids List of Transfer Syntax UIDs for syntaxes
+    * acceptable to caller
+    * @return StoredDocument instance for the DICOM document referenced by the
+    * compositeUid, or null if no document can be returned. A side effect is
+    * that the current ErrorRecorder has an error added to it if no document can
+    * be returned.
+    */
 	public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
 		logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
 		String[] uids = compositeUid.split(":");
@@ -732,11 +751,8 @@ public class DsSimCommon {
 			logger.debug(" Instance UID: " + sdi.uid);
 			sdi.mimeType = "application/dicom";
 			sdi.charset = "UTF-8";
-//			sdi.hash="0000";
-//			sdi.size = "4";
 			sdi.content = null;
 			sd = new StoredDocument(sdi);
-//			sd.cid = mkCid(5);
 		} else {
 			logger.debug("Did not find an image file that matched transfer syntax");
 			logger.debug(" Composite UID: " + compositeUid);
@@ -750,25 +766,5 @@ public class DsSimCommon {
 		}
 		return sd;
 	}
-
-/*
-	public StoredDocument getStoredImagingDocument(String uid) {
-		logger.debug("DsSimCommon#getStoredImagingDocument(1 arg): " + uid);
-		StoredDocumentInt sdi = new StoredDocumentInt();
-		sdi.pathToDocument = "/tmp/000000.dcm";
-		sdi.uid = uid;
-		sdi.mimeType = "application/dicom";
-		sdi.charset = "UTF-8";
-//		sdi.hash="0000";
-//		sdi.size = "4";
-		sdi.content = null;
-		StoredDocument sd = new StoredDocument(sdi);
-//		sd.cid = mkCid(5);
-		return sd;
-	}
-*/
-
-
-
 
 }
