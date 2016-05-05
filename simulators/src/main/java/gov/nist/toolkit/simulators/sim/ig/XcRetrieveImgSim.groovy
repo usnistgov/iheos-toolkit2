@@ -18,6 +18,7 @@ import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
 import gov.nist.toolkit.soap.axis2.Soap
 import gov.nist.toolkit.testengine.engine.RetrieveB
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
@@ -58,10 +59,6 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    RetrievedDocumentsModel retrievedDocs = new RetrievedDocumentsModel();
    OMElement result = null;
    
-   OMElement getResult() {
-      return result;
-   }
-
    OMElement getResult() {
       return result;
    }
@@ -198,10 +195,36 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
             retb.parse_rep_response(result).getMap();
       RetrievedDocumentsModel rModel = new RetrievedDocumentsModel();
       rModel.setMap(map);
+      
+      pullErrorList(rModel, result);
+      
       rModel.setAbbreviatedMessage(abbreviateResponse(result));
 
       return rModel;
    } // EO retrieveCall method
+   
+   /**
+    * <ol>
+    * <li/>Gets RegistryResponse status attribute value from response and loads into model.
+    * <li/>Gets RegistryError elements (if any) and loads into ErrorRecorder</ol>
+    * @param model RetrievedDocumentsModel built from response
+    * @param response SOAP body - RetrieveDocumentSetResponse element
+    */
+   private void pullErrorList(RetrievedDocumentsModel model, OMElement response) {
+      OMElement regResp = XmlUtil.firstChildWithLocalName(response, "RegistryResponse");
+      if (regResp == null) return;
+      // load status attribute value
+      model.setStatus(XmlUtil.getAttributeValue(regResp, "status"));
+      for (OMElement regErr : XmlUtil.decendentsWithLocalName(regResp, "RegistryError")) {
+         String errorCode = XmlUtil.getAttributeValue(regErr, "errorCode");
+         String codeContext = XmlUtil.getAttributeValue(regErr, "codeContext");
+         String location = XmlUtil.getAttributeValue(regErr, "location");
+         String severity = XmlUtil.getAttributeValue(regErr, "severity");
+      }
+      
+      // TODO Working here
+
+   }
 
    private void validateXcRetrieveResponse(RetrievedDocumentsModel models) {
       models.values().each { RetrievedDocumentModel model ->

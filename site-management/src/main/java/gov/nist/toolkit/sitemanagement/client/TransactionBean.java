@@ -29,7 +29,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 	
 	
 	// Remove this? Not used for anything real yet.
-	public enum RepositoryType  implements IsSerializable, Serializable  { REPOSITORY, ODDS, NONE;
+	public enum RepositoryType  implements IsSerializable, Serializable  { REPOSITORY, ODDS, NONE, IDS;
 	
 		RepositoryType() {}
 	};

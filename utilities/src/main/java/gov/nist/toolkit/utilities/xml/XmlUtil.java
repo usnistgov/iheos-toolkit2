@@ -95,10 +95,6 @@ public class XmlUtil {
 	   return element.getAttributeValue(new QName(attributeName));
 	}
 
-	public static String getAttributeValue(OMElement element, String attributeName) {
-	   return element.getAttributeValue(new QName(attributeName));
-	}
-
 	public static OMElement createElement(String localName, OMNamespace ns) {
 		return om_factory.createOMElement(localName, ns);
 	}
