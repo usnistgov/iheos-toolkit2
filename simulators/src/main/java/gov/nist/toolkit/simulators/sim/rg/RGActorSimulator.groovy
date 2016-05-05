@@ -32,46 +32,47 @@ import gov.nist.toolkit.valsupport.client.ValidationContext
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
 import groovy.transform.TypeChecked
+
 import org.apache.axiom.om.OMElement
 import org.apache.log4j.Logger
 
 @TypeChecked
 public class RGActorSimulator extends GatewaySimulatorCommon implements MetadataGeneratingSim {
-   SimDb db;
-   static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
-   Metadata m;
-   MessageValidatorEngine mvc;
+	SimDb db;
+	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
+	Metadata m;
+	MessageValidatorEngine mvc;
 
-   public RGActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
-      super(common, dsSimCommon);
-      this.db = db;
-      setSimulatorConfig(simulatorConfig);
-   }
+	public RGActorSimulator(SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig) {
+		super(common, dsSimCommon);
+		this.db = db;
+		setSimulatorConfig(simulatorConfig);
+	}
 
-   public RGActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
-      super(dsSimCommon.simCommon, dsSimCommon);
-      this.db = dsSimCommon.simCommon.db;
-      setSimulatorConfig(simulatorConfig);
-   }
+	public RGActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+		super(dsSimCommon.simCommon, dsSimCommon);
+		this.db = dsSimCommon.simCommon.db;
+        setSimulatorConfig(simulatorConfig);
+	}
 
-   public RGActorSimulator() {}
+    public RGActorSimulator() {}
 
-   public void init() {}
+	public void init() {}
 
 
-   public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
+	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 
-      this.mvc = mvc;
+		this.mvc = mvc;
 
-      switch(transactionType) {
+      switch (transactionType) {
          case TransactionType.XC_RETRIEVE:
 
-            common.vc.isRequest = true;
-            common.vc.isRet = true;
-            common.vc.isXC = true;
-            common.vc.isSimpleSoap = false;
-            common.vc.hasSoap = true;
-            common.vc.hasHttp = true;
+			common.vc.isRequest = true;
+			common.vc.isRet = true;
+			common.vc.isXC = true;
+			common.vc.isSimpleSoap = false;
+			common.vc.hasSoap = true;
+			common.vc.hasHttp = true;
 
          // this validates through soap wrapper
             if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
@@ -331,7 +332,7 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
          case TransactionType.XC_RET_IMG_DOC_SET:
 
-            logger.debug("Transaction type: XC_RET_IMG_DOC_SET");
+         logger.debug("Transaction type: XC_RET_IMG_DOC_SET");
             common.vc.isRequest = true;
             common.vc.isRad69 = true;
             common.vc.isXC = true;

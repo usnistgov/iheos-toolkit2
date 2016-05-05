@@ -55,7 +55,7 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
     }
 
     @Override
-    public void init(DsSimCommon c, SimulatorConfig config) {
+   public void init(DsSimCommon c, SimulatorConfig config) {
         rep.init(c, config);
         reg.init(c, config);
         ids.init(c, config);

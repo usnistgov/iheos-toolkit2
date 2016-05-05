@@ -102,30 +102,31 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             }
 
             boolean errors = true;
-            // pass StudyRequest, SeriesRequest, DocumentRequest to pull combinations ids.
-            List<String> imagingUids = new ArrayList<String>();
-            for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
-               String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
-               logger.debug("Study UID: " + studyUid);
-               for (OMElement seriesEle : XmlUtil.decendentsWithLocalName(studyEle, "SeriesRequest")) {
-                  String seriesUid = seriesEle.getAttributeValue(new QName("seriesInstanceUID"));
-                  logger.debug(" Series UID: " + seriesUid);
-                  for (OMElement instanceEle : XmlUtil.decendentsWithLocalName(seriesEle, "DocumentUniqueId")) {
-                     String uid = instanceEle.getText();
-                     String fullUid=studyUid + ":" + seriesUid + ":" + uid;
-                     imagingUids.add(fullUid);
-                     logger.debug("  " + fullUid);
-                  }
-               }
-            }
-            // pull transfer syntax UIDs.
-            List<String> transferSyntaxUids = new ArrayList<String>();
-            for (OMElement transferSyntaxEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "TransferSyntaxUID")) {
-               String xferSyntaxUid = transferSyntaxEle.getText();
-               logger.debug("Transfer Syntax UID: " + xferSyntaxUid);
-               //logger.debug(" to string: " + transferSyntaxEle.toString());
-               transferSyntaxUids.add(xferSyntaxUid);
-            }
+
+			List<String> imagingUids = new ArrayList<String>();
+			for (OMElement studyEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "StudyRequest")) {
+				String studyUid = studyEle.getAttributeValue(new QName("studyInstanceUID"));
+				logger.debug("Study UID: " + studyUid);
+				Iterator<OMElement> seriesIterator = studyEle.getChildElements();
+				while (seriesIterator.hasNext()) {
+					OMElement seriesEle = (OMElement)seriesIterator.next();
+					String seriesUid = seriesEle.getAttributeValue(new QName("seriesInstanceUID"));
+					logger.debug(" Series UID: " + seriesUid);
+					for (OMElement instanceEle : XmlUtil.decendentsWithLocalName(seriesEle, "DocumentUniqueId")) {
+						String uid = instanceEle.getText();
+						String fullUid=studyUid + ":" + seriesUid + ":" + uid;
+						imagingUids.add(fullUid);
+						logger.debug(fullUid);
+					}
+				}
+			}
+			List<String> transferSyntaxUids = new ArrayList<String>();
+			for (OMElement transferSyntaxEle : XmlUtil.decendentsWithLocalName(retrieveRequest, "TransferSyntaxUID")) {
+				String xferSyntaxUid = transferSyntaxEle.getText();
+				logger.debug("Transfer Syntax UID: " + xferSyntaxUid);
+				//logger.debug(" to string: " + transferSyntaxEle.toString());
+				transferSyntaxUids.add(xferSyntaxUid);
+			}
 
             RetrieveImagingDocSetResponseSim dms = null;
             String repositoryUniqueId="";
@@ -154,7 +155,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
             mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, dms), gerb.buildNewErrorRecorder());
 
             mvc.run();
-            break;
+            return false;
 
 
          case TransactionType.IG_QUERY:
@@ -237,14 +238,14 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
          default:
             er.err(Code.XDSRegistryError, "Don't understand transaction " + transactionType, "ImagingDocSourceActorSimulator", "");
             dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);
-            return true;
-      }
-   }
+			return true;
+		}
+	}
 
 
    /**
     * Is the passed string properly formatted URN OID? Example would be a home
-    * community id. "urn:oid:" followed by a valid xds-b OID. 
+    * community id. "urn:oid:" followed by a valid xds-b OID.
     * @param value String to be validated.
     * @param blankOk boolean, return true for a null/empty string?
     * @return boolean true if value is properly formatted, false otherwise.
@@ -258,7 +259,7 @@ public class IdsActorSimulator extends GatewaySimulatorCommon {
    }
    /**
     * Is the passed string properly formatted OID? Example would be a home
-    * community id. 
+    * community id.
     * @param value String to be validated.
     * @param blankOk boolean, return true for a null/empty string?
     * @return boolean true if value is properly formatted, false otherwise.

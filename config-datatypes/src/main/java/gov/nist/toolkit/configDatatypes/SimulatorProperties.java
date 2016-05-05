@@ -259,7 +259,6 @@ public class SimulatorProperties {
      */
     public static final String                     idsRepositoryUniqueId = "idsRepositoryUniqueId";
 
-
     /**
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.

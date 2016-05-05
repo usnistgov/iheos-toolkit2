@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.commondatatypes.client.SchematronMetadataTypes;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
@@ -30,7 +31,7 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	//
 	// primary transaction selection
     //
-	public boolean isR       = false;
+   public boolean isR       = false;
 	public boolean isRODDE 	 = false;
 	public boolean isStableOrODDE = false;
 	public boolean isPnR     = false;
@@ -76,13 +77,13 @@ public class ValidationContext  implements Serializable, IsSerializable {
 	public boolean validateAgainstPatientIdentityFeed = false;
 
 	/**
-	 * Is this a Request? A setting of false does not mean that this is a 
-	 * Response; that is set using {@link #isResponse}. If neither flag is set 
+	 * Is this a Request? A setting of false does not mean that this is a
+	 * Response; that is set using {@link #isResponse}. If neither flag is set
 	 * then context is not known.
 	 */
 	public boolean isRequest = false;/**
-    * Is this a Response? A setting of false does not mean that this is a 
-    * Request; that is set using {@link #isRequest}. If neither flag is set 
+    * Is this a Response? A setting of false does not mean that this is a
+    * Request; that is set using {@link #isRequest}. If neither flag is set
     * then context is not known.
     */
 	public boolean isResponse= false;

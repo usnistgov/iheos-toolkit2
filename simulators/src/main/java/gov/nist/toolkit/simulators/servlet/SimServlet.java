@@ -74,7 +74,7 @@ public class SimServlet  extends HttpServlet {
 
 
 	@Override
-	public void init(ServletConfig sConfig) throws ServletException {
+   public void init(ServletConfig sConfig) throws ServletException {
 		super.init(sConfig);
 		config = sConfig;
 		logger.info("Initializing toolkit in SimServlet");
@@ -92,7 +92,7 @@ public class SimServlet  extends HttpServlet {
 	}
 
 	@Override
-	public void destroy() {
+   public void destroy() {
 		onServiceStop();
 	}
 
@@ -102,7 +102,7 @@ public class SimServlet  extends HttpServlet {
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) {
+   public void doGet(HttpServletRequest request, HttpServletResponse response) {
 		String uri = request.getRequestURI();
         logger.info("SIMSERVLET GET " + uri);
 		String[] parts;
@@ -383,7 +383,7 @@ public class SimServlet  extends HttpServlet {
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) {
+   public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		String uri  = request.getRequestURI().toLowerCase();
 		logger.info("+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ");
 		logger.info("uri is " + uri);
@@ -578,9 +578,6 @@ public class SimServlet  extends HttpServlet {
 				repIndex = null;
 			}
 		}
-
-
-
 
 		List<String> flushed = new ArrayList<String>();
 		int regCacheCount = 0;

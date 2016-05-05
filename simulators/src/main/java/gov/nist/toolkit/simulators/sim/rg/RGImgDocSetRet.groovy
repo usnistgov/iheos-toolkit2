@@ -148,4 +148,5 @@ class RGImgDocSetRet extends AbstractMessageValidator {
       logger.error(msg);
       er.err(XdsErrorCode.Code.XDSRepositoryError, msg, this, null);
    }
+
 }  // EO RGImgDocSetRet class

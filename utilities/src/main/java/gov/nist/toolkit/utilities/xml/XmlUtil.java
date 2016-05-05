@@ -90,6 +90,10 @@ public class XmlUtil {
 			decendentsWithLocalName1(decendents, child, localName, depth - 1);
 		}
 	}
+	
+	public static String getAttributeValue(OMElement element, String attributeName) {
+	   return element.getAttributeValue(new QName(attributeName));
+	}
 
 	public static String getAttributeValue(OMElement element, String attributeName) {
 	   return element.getAttributeValue(new QName(attributeName));

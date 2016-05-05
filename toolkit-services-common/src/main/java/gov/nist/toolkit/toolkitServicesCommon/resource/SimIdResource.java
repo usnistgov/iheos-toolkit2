@@ -1,10 +1,10 @@
 package gov.nist.toolkit.toolkitServicesCommon.resource;
 
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import gov.nist.toolkit.toolkitServicesCommon.SimId;
 import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Not for Public Use.

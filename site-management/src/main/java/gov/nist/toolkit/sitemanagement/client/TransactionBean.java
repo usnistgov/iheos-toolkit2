@@ -17,9 +17,6 @@ import java.io.Serializable;
  *
  */
 public class TransactionBean implements IsSerializable, Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public boolean isSecure = false;
 	public boolean isAsync = false;
@@ -32,7 +29,7 @@ public class TransactionBean implements IsSerializable, Serializable {
 	
 	
 	// Remove this? Not used for anything real yet.
-	public enum RepositoryType  implements IsSerializable, Serializable  { REPOSITORY, ODDS, NONE, IDS;
+	public enum RepositoryType  implements IsSerializable, Serializable  { REPOSITORY, ODDS, NONE;
 	
 		RepositoryType() {}
 	};

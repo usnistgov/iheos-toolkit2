@@ -58,7 +58,7 @@ public class DsSimCommon {
     public RepIndex repIndex = null;
     public SimCommon simCommon;
     ErrorRecorder er = null;
-    
+
     Map<String, StoredDocument> documentsToAttach = null;  // cid => document
     RegistryErrorListGenerator registryErrorListGenerator = null;
 
@@ -390,7 +390,7 @@ public class DsSimCommon {
     }
 
     /**
-     * Used to build RetrieveDocumentSetRespoinse
+     * Used to build RetrieveDocumentSetResponse
      * @param env
      * @param er
      * @return
@@ -502,8 +502,10 @@ public class DsSimCommon {
             if (simCommon.db != null)
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
-	    this.writeAttachments(simCommon.os, er);
-            simCommon.os.write(getTrailer().toString().getBytes());
+            if (simCommon.vc.requiresMtom()) {
+                this.writeAttachments(simCommon.os, er);
+                simCommon.os.write(getTrailer().toString().getBytes());
+            }
             simCommon.generateLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {
@@ -695,7 +697,7 @@ public class DsSimCommon {
     }
 
    /**
-    * Attempts to retrieve the referenced DICOM document in one of the 
+    * Attempts to retrieve the referenced DICOM document in one of the
     * referenced Transfer Syntaxes.
     * @param compositeUid composite UID of DICOM document desired by caller
     * (studyUid:SeriesUid:InstanceUid)
@@ -720,7 +722,7 @@ public class DsSimCommon {
 		File idsRepositoryDir = idsRepositoryPath.toFile();
 		if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
          logger.warn("Could not file ids-repository directory " + idsRepositoryDir);
-		   er.err(XdsErrorCode.Code.XDSRepositoryError, 
+		   er.err(XdsErrorCode.Code.XDSRepositoryError,
 		      "Could not find repository [" + idsRepositoryPath + "] ",
 		      "IdsActorSimulator EL-1", MetadataSupport.error_severity, "Internal error");
 		   return null;
@@ -730,7 +732,7 @@ public class DsSimCommon {
 		File folder = folderPath.toFile();
 		if (!folder.exists()) {
 			logger.debug("Could not find file folder for composite UID: " + compositeUid);
-			er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, 
+			er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError,
 			   "No document matching composite UID [" + compositeUid + "] ",
 			   "IdsActorSimulator EL-2", MetadataSupport.error_severity, "ITI TF-3 Table 4.2.4.1-2");
 			return null;
@@ -741,7 +743,7 @@ public class DsSimCommon {
 		while (it.hasNext() && !found) {
 		   finalPath = folderPath.resolve(it.next());
 			if(finalPath.toFile().exists()) found = true;
-			}
+		}
 		StoredDocument sd = null;
 		if (found) {
 			logger.debug("Found path to file: " + finalPath);
@@ -760,8 +762,8 @@ public class DsSimCommon {
 			while (it.hasNext()) {
 				logger.debug("  Xfer syntax: " + it.next());
 			}
-			er.err(XdsErrorCode.Code.XDSRepositoryError, 
-			   "IDS cannot encode the pixel data using any of the requested transfer syntaxes", 
+			er.err(XdsErrorCode.Code.XDSRepositoryError,
+			   "IDS cannot encode the pixel data using any of the requested transfer syntaxes",
 			   uids[2], MetadataSupport.error_severity, "RAD TF-3 4.69.4.2.3");
 		}
 		return sd;

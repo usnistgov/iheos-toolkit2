@@ -40,6 +40,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+
+
 
 //vbeera: The below imports should be used in case of the potential 2nd fix for MustUnderstand Check Exception.
 /*
@@ -53,6 +57,7 @@ public class Soap implements SoapInterface {
 
 	private static Logger log = Logger.getLogger(Soap.class);
 
+	int timeout = 1000 * 60 * 60;
 	ServiceClient serviceClient = null;
 	OperationClient operationClient = null;
 	OMElement result = null;
@@ -98,7 +103,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#getInHeader()
 	 */
-	public OMElement getInHeader() {
+	@Override
+   public OMElement getInHeader() {
 		return inHeader;
 	}
 
@@ -107,7 +113,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#getOutHeader()
 	 */
-	public OMElement getOutHeader() {
+	@Override
+   public OMElement getOutHeader() {
 		return outHeader;
 	}
 
@@ -121,7 +128,8 @@ public class Soap implements SoapInterface {
 	 * gov.nist.registry.common2.axis2soap.SoapInterfac#addHeader(org.apache
 	 * .axiom.om.OMElement)
 	 */
-	public void addHeader(OMElement header) {
+	@Override
+   public void addHeader(OMElement header) {
 		if (additionalHeaders == null)
 			additionalHeaders = new ArrayList<OMElement>();
 		additionalHeaders.add(header);
@@ -134,7 +142,8 @@ public class Soap implements SoapInterface {
 	 * gov.nist.registry.common2.axis2soap.SoapInterfac#addSecHeader(org.apache
 	 * .axiom.om.OMElement)
 	 */
-	public void addSecHeader(OMElement header) {
+	@Override
+   public void addSecHeader(OMElement header) {
 		if (secHeaders == null)
 			secHeaders = new ArrayList<OMElement>();
 		secHeaders.add(header);
@@ -145,7 +154,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#clearHeaders()
 	 */
-	public void clearHeaders() {
+	@Override
+   public void clearHeaders() {
 		additionalHeaders = null;
 	}
 
@@ -154,7 +164,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#setAsync(boolean)
 	 */
-	public void setAsync(boolean async) {
+	@Override
+   public void setAsync(boolean async) {
 		this.async = async;
 	}
 
@@ -326,7 +337,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#soapCallWithWSSEC()
 	 */
-	public void soapCallWithWSSEC() throws XdsInternalException, AxisFault,
+	@Override
+   public void soapCallWithWSSEC() throws XdsInternalException, AxisFault,
 			EnvironmentNotSelectedException, LoadKeystoreException {
 		System.out.println("soapCallWithWSSEC() ----- useWSSEC :" + useWSSEC);
 		ConfigurationContext cc = null;
@@ -335,7 +347,7 @@ public class Soap implements SoapInterface {
 
 		AxisService ANONYMOUS_SERVICE = null;
 
-		serviceClient = new ServiceClient(cc, ANONYMOUS_SERVICE);
+  		serviceClient = new ServiceClient(cc, ANONYMOUS_SERVICE);
 
 		// Start the painful process of loading the addressing module
 		// Axis2 has some timing problems so, yes, this is necessary
@@ -464,19 +476,23 @@ public class Soap implements SoapInterface {
 
 		AxisCallback callback = new AxisCallback() {
 
-			public void onComplete() {
+			@Override
+         public void onComplete() {
 				done = true;
 			}
 
-			public void onError(Exception arg0) {
+			@Override
+         public void onError(Exception arg0) {
 				done = true;
 			}
 
-			public void onFault(MessageContext arg0) {
+			@Override
+         public void onFault(MessageContext arg0) {
 				done = true;
 			}
 
-			public void onMessage(MessageContext arg0) {
+			@Override
+         public void onMessage(MessageContext arg0) {
 				done = true;
 			}
 
@@ -487,12 +503,16 @@ public class Soap implements SoapInterface {
 
 		log.info(String.format("******************************** BEFORE SOAP SEND to %s ****************************", endpoint));
         AxisFault soapFault = null;
+        long start = 0;
 		try {
+		   start = System.nanoTime();
 			operationClient.execute(block); // execute sync or async
 //		} catch (AxisFault e) {
 //            soapFault = e;
 //            operationClient.execute(block); // execute sync or async
         } catch (AxisFault e) {
+           logger.debug("$$$$$ Timeout: " + timeout + ", Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start) / 1000.0 + " milliseconds");
+           soapFault = e;
             MessageContext inMsgCtx = getInputMessageContext();
             OMElement soapBody = inMsgCtx.getEnvelope().getBody();
             result = soapBody.getFirstElement();
@@ -605,7 +625,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#soapCall()
 	 */
-	public OMElement soapCall() throws LoadKeystoreException,
+	@Override
+   public OMElement soapCall() throws LoadKeystoreException,
 			XdsInternalException, AxisFault, XdsFormatException,
 			EnvironmentNotSelectedException {
 
@@ -687,7 +708,8 @@ public class Soap implements SoapInterface {
 	 * CHANGE hardcoded parameters should be accessible
 	 * in some easily identifiable place. What do they mean? -Antoine
 	 */
-	void setOptions(Options opts) throws AxisFault {
+	@SuppressWarnings("restriction")
+   void setOptions(Options opts) throws AxisFault {
 		opts.setTo(new EndpointReference(endpoint));
 
 		if (System.getenv("XDSHTTP10") != null) {
@@ -755,7 +777,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#getResult()
 	 */
-	public OMElement getResult() {
+	@Override
+   public OMElement getResult() {
 		return result;
 	}
 
@@ -769,8 +792,7 @@ public class Soap implements SoapInterface {
 			throw new XdsInternalException(
 					"No SOAPHeader returned: expected header with action = "
 							+ expected_return_action);
-		OMElement action = XmlUtil.firstChildWithLocalName(hdr,
-				"Action");
+		OMElement action = XmlUtil.firstChildWithLocalName(hdr, "Action");
 		if (action == null && expected_return_action != null)
 			throw new XdsInternalException(
 					"No action returned in SOAPHeader: expected action = "
@@ -876,7 +898,8 @@ public class Soap implements SoapInterface {
 	 * gov.nist.registry.common2.axis2soap.SoapInterfac#getExpectedReturnAction
 	 * ()
 	 */
-	public String getExpectedReturnAction() {
+	@Override
+   public String getExpectedReturnAction() {
 		return expectedReturnAction;
 	}
 
@@ -887,7 +910,8 @@ public class Soap implements SoapInterface {
 	 * gov.nist.registry.common2.axis2soap.SoapInterfac#setExpectedReturnAction
 	 * (java.lang.String)
 	 */
-	public void setExpectedReturnAction(String expectedReturnAction) {
+	@Override
+   public void setExpectedReturnAction(String expectedReturnAction) {
 		this.expectedReturnAction = expectedReturnAction;
 	}
 
@@ -896,7 +920,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#isMtom()
 	 */
-	public boolean isMtom() {
+	@Override
+   public boolean isMtom() {
 		return mtom;
 	}
 
@@ -905,7 +930,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#setMtom(boolean)
 	 */
-	public void setMtom(boolean mtom) {
+	@Override
+   public void setMtom(boolean mtom) {
 		this.mtom = mtom;
 	}
 
@@ -914,7 +940,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#isAddressing()
 	 */
-	public boolean isAddressing() {
+	@Override
+   public boolean isAddressing() {
 		return addressing;
 	}
 
@@ -988,7 +1015,8 @@ public class Soap implements SoapInterface {
 	 * @see
 	 * gov.nist.registry.common2.axis2soap.SoapInterfac#setAddressing(boolean)
 	 */
-	public void setAddressing(boolean addressing) {
+	@Override
+   public void setAddressing(boolean addressing) {
 		this.addressing = addressing;
 	}
 
@@ -997,7 +1025,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#isSoap12()
 	 */
-	public boolean isSoap12() {
+	@Override
+   public boolean isSoap12() {
 		return soap12;
 	}
 
@@ -1006,7 +1035,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#setSoap12(boolean)
 	 */
-	public void setSoap12(boolean soap12) {
+	@Override
+   public void setSoap12(boolean soap12) {
 		this.soap12 = soap12;
 	}
 
@@ -1015,7 +1045,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#isAsync()
 	 */
-	public boolean isAsync() {
+	@Override
+   public boolean isAsync() {
 		return async;
 	}
 
@@ -1024,7 +1055,8 @@ public class Soap implements SoapInterface {
 	 *
 	 * @see gov.nist.registry.common2.axis2soap.SoapInterfac#setUseSaml(boolean)
 	 */
-	public void setUseSaml(boolean use) {
+	@Override
+   public void setUseSaml(boolean use) {
 		useWSSEC = use;
 	}
 

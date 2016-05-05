@@ -58,7 +58,7 @@ public class SoapActionFactory {
 
 		};
 
-	// I think perhaps this could better be a method in TransactionType. rm.
+		// I think perhaps this could better be a method in TransactionType. rm.
 	static public String getResponseAction(String requestAction) {
 		if (requestAction == null) return null;
 		return actions.get(requestAction);

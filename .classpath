@@ -1,51 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=toolkit&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry kind="src" path="actorfactory/src"/>
-	<classpathentry kind="src" path="resources"/>
-	<classpathentry kind="src" path="security-common/src"/>
-	<classpathentry kind="src" path="soap/test/resources"/>
-	<classpathentry kind="src" path="soap/test/java"/>
-	<classpathentry kind="src" path="saml/test/java"/>
-	<classpathentry kind="src" path="saml/test/resources"/>
-	<classpathentry kind="src" path="message-validator-factory2/src"/>
-	<classpathentry kind="src" path="actor-transaction/src"/>
-	<classpathentry kind="src" path="common/src"/>
-	<classpathentry kind="src" path="common-datatypes/src"/>
-	<classpathentry kind="src" path="docref/src"/>
-	<classpathentry kind="src" path="dsig/src"/>
-	<classpathentry kind="src" path="email/src"/>
-	<classpathentry kind="src" path="envSettings/src"/>
-	<classpathentry kind="src" path="error-recording/src"/>
-	<classpathentry kind="src" path="http/src"/>
-	<classpathentry kind="src" path="installation/src"/>
-	<classpathentry kind="src" path="registry-metadata/src"/>
-	<classpathentry kind="src" path="registry-msg-formats/src"/>
-	<classpathentry kind="src" path="registry-support/src"/>
-	<classpathentry kind="src" path="saml/src"/>
-	<classpathentry kind="src" path="sim-common/src"/>
-	<classpathentry kind="src" path="simulators/src"/>
-	<classpathentry kind="src" path="site-management/src"/>
-	<classpathentry kind="src" path="session/src"/>
-	<classpathentry kind="src" path="soap/src"/>
-	<classpathentry kind="src" path="testkit-utilities/src"/>
-	<classpathentry kind="src" path="tk/src"/>
-	<classpathentry kind="src" path="utilities/src"/>
-	<classpathentry kind="src" path="validators-ccda/src"/>
-	<classpathentry kind="src" path="validators-registry-message/src"/>
-	<classpathentry kind="src" path="validators-registry-metadata/src"/>
-	<classpathentry kind="src" path="validators-support/src"/>
-	<classpathentry kind="src" path="xds-exceptions/src"/>
-	<classpathentry kind="src" path="xdstest2/src"/>
-	<classpathentry kind="src" path="xdstest-gui/src"/>
-	<classpathentry kind="src" path="xdstest2-logging/src"/>
-	<classpathentry kind="src" path="xdstools2/src"/>
-	<classpathentry kind="src" path="results/src"/>
-	<classpathentry kind="src" path="message-dispatch/src"/>
-	<classpathentry kind="src" path="timer/src"/>
-	<classpathentry kind="src" path="rest/src"/>
-	<classpathentry kind="src" path="dns/src"/>
-	<classpathentry kind="src" path="dst/src"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
 	<classpathentry kind="lib" path="lib/apache-mailet-base-1.1.jar"/>

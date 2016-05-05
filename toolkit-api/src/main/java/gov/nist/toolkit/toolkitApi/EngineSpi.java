@@ -86,9 +86,9 @@ public class EngineSpi {
 
     /**
      * Not for Public Use.
-     * @param parms
-     * @return
-     * @throws ToolkitServiceException
+     * @param parms BasicSimParameters
+     * @return new SimConfig instance
+     * @throws ToolkitServiceException on error
      */
     public SimConfig create(BasicSimParameters parms) throws ToolkitServiceException {
         return create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
@@ -121,8 +121,8 @@ public class EngineSpi {
 
     /**
      * Not for Public Use.
-     * @param parms
-     * @throws ToolkitServiceException
+     * @param parms BasicSimParameters for simulator to delete
+     * @throws ToolkitServiceException on error, for example, no such simulator.
      */
     public void delete(BasicSimParameters parms) throws ToolkitServiceException {
         delete(parms.getId(), parms.getUser());

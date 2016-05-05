@@ -57,6 +57,10 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    RetrieveMultipleResponse response;
    RetrievedDocumentsModel retrievedDocs = new RetrievedDocumentsModel();
    OMElement result = null;
+   
+   OMElement getResult() {
+      return result;
+   }
 
    OMElement getResult() {
       return result;

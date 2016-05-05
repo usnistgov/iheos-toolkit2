@@ -41,6 +41,4 @@ public class XdsErrorCode implements IsSerializable  {
 		XDSIRequestError
 	};
 	
-	
-	
 }
