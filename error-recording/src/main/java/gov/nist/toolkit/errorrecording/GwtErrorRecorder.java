@@ -106,7 +106,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		propagateError();
 	}
 
-	// propogate error labeling to previous CHALLENGE
+	// propagate error labeling to previous CHALLENGE
 	// so context of error is sent/viewed
 	private void propagateError() {
 		logger.debug("propagating errors");

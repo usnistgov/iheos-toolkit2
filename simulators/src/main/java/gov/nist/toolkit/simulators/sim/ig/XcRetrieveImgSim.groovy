@@ -220,10 +220,8 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
          String codeContext = XmlUtil.getAttributeValue(regErr, "codeContext");
          String location = XmlUtil.getAttributeValue(regErr, "location");
          String severity = XmlUtil.getAttributeValue(regErr, "severity");
+         er.err(errorCode, codeContext, location, severity, null);
       }
-      
-      // TODO Working here
-
    }
 
    private void validateXcRetrieveResponse(RetrievedDocumentsModel models) {
