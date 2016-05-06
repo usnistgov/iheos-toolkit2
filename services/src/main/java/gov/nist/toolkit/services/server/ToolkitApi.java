@@ -43,6 +43,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 public class ToolkitApi {
     static Logger logger = Logger.getLogger(ToolkitApi.class);
     private Session session;
+    private String environmentName;
     boolean internalUse = true;
     private static ToolkitApi api = null;
 
@@ -100,7 +101,10 @@ public class ToolkitApi {
         logger.info("ToolkitApi using session " + session.id());
     }
 
-
+    public ToolkitApi withEnvironment(String environmentName){
+        this.environmentName=environmentName;
+        return this;
+    }
 
     /**
      * Create a new simulator.
@@ -205,7 +209,7 @@ public class ToolkitApi {
      * @return - list of Result objects - one per test step (transaction) run
      * @throws Exception if testSession could not be created
      */
-    public List<Result> runTest(String environmentName,String testSessionName, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+    public List<Result> runTest(String testSessionName, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
         if (testSessionName == null) {
             testSessionName = "API";
             xdsTestServiceManager().addMesaTestSession(testSessionName);

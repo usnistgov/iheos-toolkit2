@@ -24,7 +24,7 @@ class Util {
         qparams.put('$patientid$', patientId.asString())
         qparams.put('$testdata_home$', home);
 
-        List<Result> results = api.runTest(null,userName, site.name, testId, sections, qparams, true)
+        List<Result> results = api.runTest(userName, site.name, testId, sections, qparams, true)
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }
@@ -32,7 +32,7 @@ class Util {
     public void submit(String userName, SiteSpec site, TestInstance testId, String section, Map<String, String> parameters) {
         // load the reg/rep with two documents
         List<String> sections = [ section ]
-        List<Result> results = api.runTest(null,userName, site.name, testId, sections, parameters, true)
+        List<Result> results = api.runTest(userName, site.name, testId, sections, parameters, true)
         if (!results.get(0).passed())
             throw new Exception(results.get(0).toString())
     }

@@ -73,7 +73,7 @@ class RegistrySimITh extends Specification {
         boolean stopOnFirstError = true
 
         and: 'Run Register test'
-        List<Result> results = api.runTest(null,testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
 
         then:
         true
@@ -95,7 +95,7 @@ class RegistrySimITh extends Specification {
         boolean stopOnFirstError = true
 
         and: 'Run pid transaction test'
-        List<Result> results = api.runTest(null,testSession, siteName, testName, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testName, sections, params, stopOnFirstError)
 
         then:
         true

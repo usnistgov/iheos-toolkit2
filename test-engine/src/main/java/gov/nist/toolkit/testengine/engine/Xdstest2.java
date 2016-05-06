@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.securityCommon.SecurityParams;
@@ -34,6 +35,7 @@ public class Xdstest2 {
 	LogRepository logRepository;
 	File testkit;
 	File altTestkit;
+	List<File> testkits;
 	TestInstance testInstance;
 	Site site;
 	File toolkitDir;   // never referenced
@@ -184,6 +186,10 @@ public class Xdstest2 {
 	 */
 	public void addTest(TestInstance testInstance) throws Exception {
 		this.testInstance = testInstance;
+		// TODO this is where I should integrate code that determine the right testkit.
+//		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n TEST ID: "+testInstance.getId());
+//		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
+//		if (tk==null) tk=xt.getTestkit();
 		xt.addTestSpec(new TestDetails(xt.getTestkit(), testInstance));
 
 	}
@@ -456,4 +462,7 @@ public class Xdstest2 {
 		return lm;
 	}
 
+	public void setTestkits(List<File> testkits) {
+		this.testkits = testkits;
+	}
 }

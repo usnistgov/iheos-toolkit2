@@ -54,7 +54,7 @@ class OnDemandIsSnapshotOfIT extends Specification {
         boolean stopOnFirstError = true
 
         and: 'Run pid transaction test'
-        List<Result> results = api.runTest(null,testSession, siteName, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -72,7 +72,7 @@ class OnDemandIsSnapshotOfIT extends Specification {
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(null,testSession, siteName, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
@@ -94,7 +94,7 @@ class OnDemandIsSnapshotOfIT extends Specification {
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(null,testSession, siteName, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true

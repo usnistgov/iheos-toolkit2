@@ -51,7 +51,7 @@ class GatewayBuilder {
             Map<String, String> qparams = new HashMap<>()
             qparams.put('$patientid$', patientId)
 
-            List<Result> results = api.runTest(null,userName, respondingGateway.getFullId(), testId, sections, qparams, true)
+            List<Result> results = api.runTest(userName, respondingGateway.getFullId(), testId, sections, qparams, true)
             assert results.get(0).passed()
         }
 

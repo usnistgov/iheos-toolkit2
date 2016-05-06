@@ -27,7 +27,6 @@ public class TestRunner {
         this.xdsTestServiceManager = xdsTestServiceManager;
     }
 
-    // TODO add environment name as param?
     public List<Result> run(Session session, String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
                             Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
         XdsTestServiceManager.logger.info(session.id() + ": " + "run" + " " + mesaTestSession + " " + testInstance + " " + sections + " " + siteSpec + " " + params + " " + stopOnFirstFailure);
@@ -75,7 +74,6 @@ public class TestRunner {
             // be properly pulled from the external_cache.
 //            Result result = xdsTestServiceManager.xdstest(testId, sections, params, params2, null, stopOnFirstFailure);
             UtilityRunner utilityRunner = new UtilityRunner(xdsTestServiceManager, TestRunType.TEST);
-            // TODO add environment name in this call?
             Result result = utilityRunner.run(session, params, params2, sections, testInstance, null, stopOnFirstFailure);
 //			ResultSummary summary = new ResultSummary(result);
 

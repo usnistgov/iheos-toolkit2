@@ -34,6 +34,7 @@ public class ClientApi implements SecurityParams {
 
     public ClientApi(Session session) {
         this.session = session;
+        // TODO Change for list of files (testkitFiles())?
         this.testkitFile = Installation.installation().testkitFile();
     }
 

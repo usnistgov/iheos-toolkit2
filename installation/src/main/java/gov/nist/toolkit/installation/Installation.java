@@ -162,15 +162,19 @@ public class Installation {
      * @return list of testkit files
      */
 	public List<File> testkitFiles(String environmentName,String mesaSessionName) {
+//		if (environmentName == null) environmentName=Installation.DEFAULT_ENVIRONMENT_NAME;
         List<File> testkits=new ArrayList<File>();
-        // paths to the testkit repository in the environment directory
-        File environmentTestkitsFile=new File(environmentFile(environmentName),"testkits");
-        // path to the user's testkit (based on the name of the test session)
-        File usrTestkit=new File(environmentTestkitsFile,mesaSessionName);
-        // path to the environment specific testkit (generated from Code Update)
-        File environmentDefaultTestkit=new File(environmentTestkitsFile,"default");
-        if (usrTestkit!=null && usrTestkit.exists()) testkits.add(usrTestkit);
-        if (environmentDefaultTestkit!=null && environmentDefaultTestkit.exists()) testkits.add(environmentDefaultTestkit);
+        if (environmentName!=null) {
+            // paths to the testkit repository in the environment directory
+            File environmentTestkitsFile = new File(environmentFile(environmentName), "testkits");
+            // path to the user's testkit (based on the name of the test session)
+            File usrTestkit = new File(environmentTestkitsFile, mesaSessionName);
+            // path to the environment specific testkit (generated from Code Update)
+            File environmentDefaultTestkit = new File(environmentTestkitsFile, "default");
+            if (usrTestkit != null && usrTestkit.exists()) testkits.add(usrTestkit);
+            if (environmentDefaultTestkit != null && environmentDefaultTestkit.exists())
+                testkits.add(environmentDefaultTestkit);
+        }
         // toolkit default testkit
         testkits.add(testkitFile());
         return testkits;
@@ -210,4 +214,18 @@ public class Installation {
 	public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 
+	public File findTestkitFromTest(List<File> testkits, String id) {
+		for (File testkit:testkits){
+			if (testkit.exists()){
+				File[] areas=testkit.listFiles();
+				for (File area:areas){
+					File test=new File(area,id);
+					if (test.exists()){
+						return testkit;
+					}
+				}
+			}
+		}
+		return null;
+	}
 }
