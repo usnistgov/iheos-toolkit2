@@ -17,8 +17,8 @@ fi
 
 SCRIPTNAME=$(basename $0 .sh)
 
-cd $BASEDIR
-mvn -o clean install -DskipTests -Dmaven.test.skip=true
+#cd $BASEDIR
+#mvn -o clean install -DskipTests -Dmaven.test.skip=true
 
 cd xdstools2/target
 WARNAME=$(basename *.war .war)

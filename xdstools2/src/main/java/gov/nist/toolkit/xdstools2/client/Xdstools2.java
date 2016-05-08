@@ -5,8 +5,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.*;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -74,7 +72,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 
 	void buildWrapper() {
 		// tabPanel = new TabPanel();
-		if ("xdstools2".equals(GWT.getModuleName())) { // This RootPanel is exclusive to v2. In other words, the intention of this block is to hide this from V3 module.
+//		if ("xdstools2".equals(GWT.getModuleName())) { // This RootPanel is exclusive to v2. In other words, the intention of this block is to hide this from V3 module.
 
 			Widget decoratedTray = decorateMenuContainer();
 
@@ -97,7 +95,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 				}
 
 			});
-		}
+//		}
 
 	}
 
