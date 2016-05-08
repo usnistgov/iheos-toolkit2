@@ -78,7 +78,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-		logger.debug("Repository starting transaction " + transactionType);
+		logger.debug("OD Repository starting transaction " + transactionType);
 
 		/* if (transactionType.equals(TransactionType.PROVIDE_AND_REGISTER) ||
 				transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {

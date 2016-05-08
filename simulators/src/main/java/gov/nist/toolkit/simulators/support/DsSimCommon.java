@@ -223,9 +223,14 @@ public class DsSimCommon {
     public void addDocumentAttachments(List<String> uids, ErrorRecorder er) {
         for (String uid : uids) {
             StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
-            if (sd == null)
-                continue;
-            addDocumentAttachment(sd);
+            // if (sd == null)
+            //   continue;
+            // Fix bug 70
+            // TODO: implement the ParitalSuccess response if any one of the requested document is not available in the repository.
+            if (sd == null) {
+                er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, "DsSimCommon#addDocumentAttachments: " + uid + " not found.", this, "Error");
+            } else
+                addDocumentAttachment(sd);
         }
     }
 

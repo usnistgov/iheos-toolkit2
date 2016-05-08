@@ -24,7 +24,7 @@ import java.util.List;
  * @author bill
  *
  */
-class SimConfigMgr implements SimConfigMgrIntf {
+public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     /**
      *
      */
@@ -36,7 +36,10 @@ class SimConfigMgr implements SimConfigMgrIntf {
     FlexTable tbl = new FlexTable();
     Button saveButton = new Button("Save");
 
-    SimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
+
+    int row = 0;
+
+    public BaseSimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
         this.simulatorControlTab = simulatorControlTab;
         this.panel = panel;
         this.config = config;
@@ -50,9 +53,12 @@ class SimConfigMgr implements SimConfigMgrIntf {
         }
     }
 
-    public void displayInPanel() {
+    public void displayHeader() {
+
+    }
+
+    public void displayBasicSimulatorConfig() {
         tbl.clear();
-        int row = 0;
 
         tbl.setWidget(row, 0, HtmlMarkup.html("Simulator Type"));
         tbl.setWidget(row, 1, HtmlMarkup.html(config.getActorTypeFullName()));
@@ -63,6 +69,9 @@ class SimConfigMgr implements SimConfigMgrIntf {
         tbl.setWidget(row, 1, HtmlMarkup.html(config.getId().toString()));
 
         row++;
+    }
+
+    public void displayInPanel() {
 
         for (SimulatorConfigElement ele : config.getElements()) {
 
@@ -140,10 +149,17 @@ class SimConfigMgr implements SimConfigMgrIntf {
                         }
                 );
                 row++;
+            } else {
+                // Base class does not recognize this element, add a spacer
+                row++;
             }
 
         }
 
+    }
+
+
+    public void addTable(FlexTable tbl) {
         hpanel = new HorizontalPanel();
 
         panel.add(hpanel);
@@ -153,6 +169,9 @@ class SimConfigMgr implements SimConfigMgrIntf {
         hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
         panel.add(HtmlMarkup.html("<br />"));
 
+    }
+
+    public void addSaveHandler() {
         // this is added last so other internal saves (above) happen first
         saveButton.addClickHandler(
                 new ClickHandler() {
@@ -162,7 +181,6 @@ class SimConfigMgr implements SimConfigMgrIntf {
                     }
                 }
         );
-
     }
 
     public void saveSimConfig() {
@@ -177,6 +195,30 @@ class SimConfigMgr implements SimConfigMgrIntf {
                 new LoadSimulatorsClickHandler(simulatorControlTab, testSession).onClick(null);
             }
         });
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public SimulatorConfig getConfig() {
+        return config;
+    }
+
+    public FlexTable getTbl() {
+        return tbl;
+    }
+
+    public SimulatorControlTab getSimulatorControlTab() {
+        return simulatorControlTab;
+    }
+
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+    public VerticalPanel getPanel() {
+        return panel;
     }
 
 }

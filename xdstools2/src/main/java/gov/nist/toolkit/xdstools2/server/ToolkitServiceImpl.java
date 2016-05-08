@@ -30,6 +30,7 @@ import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+import gov.nist.toolkit.simulators.support.RunTestPlan;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
@@ -110,6 +111,14 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
     public List<String> getActorTypeNames()  throws NoServletSessionException { return siteServiceManager.getActorTypeNames(session().getId()); }
     public List<String> getSiteNamesWithRG() throws Exception { return siteServiceManager.getSiteNamesWithRG(session().getId()); }
     public List<String> getSiteNamesByTranType(String transactionType) throws Exception { return siteServiceManager.getSiteNamesByTran(transactionType, session().getId()); }
+
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    // Background test plan running methods
+    //------------------------------------------------------------------------
+    //------------------------------------------------------------------------
+    public Result register(String username, TestInstance testInstance, String pid, SiteSpec registry) { return RunTestPlan.register(username,testInstance,pid,registry);}
+    public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds) {return RunTestPlan.registerWithLocalizedTrackingInODDS(username,testInstance,pid,registry,odds); }
 
     //------------------------------------------------------------------------
     //------------------------------------------------------------------------

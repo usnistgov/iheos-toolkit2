@@ -199,4 +199,12 @@ public interface ToolkitServiceAsync {
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Background test plan running methods
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	void register(String username, TestInstance testInstance, String pid, SiteSpec registry, AsyncCallback<Result> callback);
+	void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds, AsyncCallback<Map<String, String>> callback);
+
 }

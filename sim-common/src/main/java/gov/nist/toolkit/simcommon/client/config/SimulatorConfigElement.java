@@ -22,6 +22,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	public ParamType type;
 	public TransactionType transType = null;
 
+
 	// cannot use Object class - will not serialize so tricks are necessary
 	public enum ValueType implements IsSerializable { BOOLEAN, STRING , SINGLE_SELECT_LIST, MULTI_SELECT_LIST, PATIENT_ERROR_MAP};
 	ValueType valueType = ValueType.STRING;

@@ -7,6 +7,10 @@ public interface SimConfigMgrIntf {
 
     void removeFromPanel();
 
+    void displayHeader();
+
+    void displayBasicSimulatorConfig();
+
     void displayInPanel();
 
     void saveSimConfig();

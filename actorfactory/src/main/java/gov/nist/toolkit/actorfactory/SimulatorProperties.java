@@ -199,7 +199,7 @@ public class SimulatorProperties {
     /**
      * The current index state of the content bundle. The index number is the item ordinal from the bundle index.
      */
-    public static final String                      currentContentBundleIdx = "Current Content Bundle Idx";
+    public static final String                      oddsContentSupplyState = "Content Supply State";
 
     /**
      * Testplan to register On-Demand Document Entry and supply content
@@ -212,6 +212,11 @@ public class SimulatorProperties {
      * On-demand document entry Patient Id
      */
     public static final String                      oddePatientId = "On-Demand Document Entry Patient ID";
+
+    /**
+     * Registry for the ODDE registration
+     */
+    public static final String                      oddsRegistrySite = "Registry";
 
     /**
      * The repository site to store the stable snapshot associated with the on-demand document entry.

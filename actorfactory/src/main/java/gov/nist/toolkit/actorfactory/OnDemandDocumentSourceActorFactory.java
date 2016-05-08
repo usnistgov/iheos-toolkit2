@@ -47,19 +47,24 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 		else
 			sc = new SimulatorConfig();
 
+		// Registry for the ODDE registration
+		addEditableConfig(sc, SimulatorProperties.oddePatientId, ParamType.TEXT, "");
+		addEditableConfig(sc, SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT, ParamType.TEXT, "15812");
+		addEditableConfig(sc, SimulatorProperties.oddsRegistrySite, ParamType.SELECTION, new ArrayList<String>(), false);
+
 		// Repository
 		addEditableConfig(sc, SimulatorProperties.repositoryUniqueId, ParamType.TEXT, getNewRepositoryUniqueId());
 
 		addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.ODDS_RETRIEVE, false);
 		addFixedEndpoint(sc, SimulatorProperties.retrieveTlsEndpoint, actorType, TransactionType.ODDS_RETRIEVE, true);
 
+		addFixedConfig(sc, SimulatorProperties.oddsContentSupplyState, ParamType.TEXT, ""); // This should be a dynamic value
+
 		// By default the persistence option will be off. It does not make sense to enable this option by default because additional user inputs are required, which are unknown at this point.
 		addEditableConfig(sc, SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, ParamType.BOOLEAN, false);
 
 		// If the user enables the persistence option, then we will require additional details such as the repository and the patient Id.
 		addEditableConfig(sc, SimulatorProperties.oddsRepositorySite, ParamType.SELECTION, new ArrayList<String>(), false);
-		addEditableConfig(sc, SimulatorProperties.oddePatientId, ParamType.TEXT, "");
-		addEditableConfig(sc, SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT, ParamType.TEXT, "15812");
 
 		return new Simulator(sc);
 	}

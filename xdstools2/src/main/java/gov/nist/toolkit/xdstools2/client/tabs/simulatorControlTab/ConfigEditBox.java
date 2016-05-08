@@ -53,4 +53,11 @@ public class ConfigEditBox {
 		}
 	}
 
+	public TextBox getTb() {
+		return tb;
+	}
+
+	public InlineLabel getLblTextBox() {
+		return lblTextBox;
+	}
 }

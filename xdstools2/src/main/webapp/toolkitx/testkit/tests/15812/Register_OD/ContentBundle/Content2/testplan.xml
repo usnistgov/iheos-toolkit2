@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>15812/ContentBundle/Content2</Test>
+  <Test>15812/Register_OD/ContentBundle/Content2</Test>
   <Rule>desc todo</Rule>
   <TestStep id="SubmitStableIsSnapshotOfDocumentEntry">
     <ExpectedStatus>Success</ExpectedStatus>
@@ -8,8 +8,8 @@
 	  <AssignUuids/>
 	  <!-- <UseReport reportName="oddocid" section="THIS" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uuid$"/> -->
 
-		<UseId testdir="../../Register_OD" id="Document01" symbol="$od_doc_uuid$" step="Register" section="AssignedUuids"/> 
-  		<UseId testdir="../../Register_OD" id="doc01" symbol="$rplc_doc_uuid$" step="Register" section="AssignedUuids"/>
+		<UseId testdir="../../" id="Document01" symbol="$od_doc_uuid$" step="Register" section="AssignedUuids"/> 
+  		<UseId testdir="../../" id="doc01" symbol="$rplc_doc_uuid$" step="Register" section="AssignedUuids"/>
   		<UseId testdir="../Content1" id="doc01" symbol="$stable_snap1_doc_uuid$" step="SubmitStableIsSnapshotOfDocumentEntry" section="AssignedUuids"/>
       <MetadataFile>single_stable_snapshot_doc2.xml</MetadataFile>
 	  <Document  id="Document01">my_document.txt</Document>

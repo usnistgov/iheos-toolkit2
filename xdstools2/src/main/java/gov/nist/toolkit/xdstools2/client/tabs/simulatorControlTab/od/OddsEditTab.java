@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
+package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -6,6 +6,7 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 
 public class OddsEditTab extends GenericQueryTab {
     /**
@@ -33,6 +34,8 @@ public class OddsEditTab extends GenericQueryTab {
         addCloseButton(container, topPanel, null);
 
         OddsSimConfigMgr simConfigMgr = new OddsSimConfigMgr(simulatorControlTab, topPanel, config, getCurrentTestSession());
+        simConfigMgr.displayHeader();
+        simConfigMgr.displayBasicSimulatorConfig();
         simConfigMgr.displayInPanel();
     }
 

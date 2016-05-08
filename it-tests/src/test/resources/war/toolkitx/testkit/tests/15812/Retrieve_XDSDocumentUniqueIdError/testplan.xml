@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15812/Retrieve_XDSDocumentUniqueIdError</Test>
+  <TestStep id="Retrieve">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RetrieveTransaction>
+
+      <MetadataFile>query.xml</MetadataFile>
+      <ExpectedContents/>
+
+<!-- We're expecting an error in the response status.
+-->
+
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+
+</TestPlan>
