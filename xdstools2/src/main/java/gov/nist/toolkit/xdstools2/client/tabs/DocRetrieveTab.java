@@ -46,7 +46,7 @@ public class DocRetrieveTab extends GenericQueryTab {
 		addCloseButton(container,topPanel, null);
 
 		HTML title = new HTML();
-		title.setHTML("<h2>Retrieve Document</h2>");
+		title.setHTML("<h2>Retrieve Documents</h2>");
 		topPanel.add(title);
 
 		mainGrid = new FlexTable();
@@ -55,7 +55,7 @@ public class DocRetrieveTab extends GenericQueryTab {
 		topPanel.add(mainGrid);
 
 		HTML docUidLabel = new HTML();
-		docUidLabel.setText("Document UniqueId");
+		docUidLabel.setText("Document UniqueIds");
 		mainGrid.setWidget(row,0, docUidLabel);
 
 //		docUidBox = new TextBox();

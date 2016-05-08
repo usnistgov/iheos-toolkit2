@@ -231,10 +231,10 @@ public class DsSimCommon {
             // if (sd == null)
             //   continue;
             // addDocumentAttachment(sd);
-            // Fix bug 70
+            // Fix Issue 70
             if (sd == null) {
                 notFound++;
-//                er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, "DsSimCommon#addDocumentAttachments: " + uid + " not found.", this, "Error");
+                er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, "DsSimCommon#addDocumentAttachments: Not found.", uid, "Error");
             } else
                 addDocumentAttachment(sd);
         }
@@ -243,10 +243,8 @@ public class DsSimCommon {
         if (documentsToAttach!=null)
             foundDocuments = documentsToAttach.size();
 
-        if (foundDocuments==0) {
-            er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, "DsSimCommon#addDocumentAttachments: not found.", this, "Error");
-        } else if (notFound > 0 && foundDocuments > 0) {
-            // Only some documents are found.
+        if (notFound > 0 && foundDocuments > 0) {
+            // Only some documents were found.
             simCommon.mvc.setPartialSuccess(true);
         }
 

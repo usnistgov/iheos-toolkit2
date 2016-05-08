@@ -24,6 +24,7 @@
       <MetadataFile>bad_query.xml</MetadataFile>
       <ExpectedContents/>
 
+
       <XDSb/>
     </RetrieveTransaction>
   </TestStep>
@@ -38,22 +39,6 @@
       <MetadataFile>partial_query.xml</MetadataFile>
       <ExpectedContents/>
 
-      <XDSb/>
-    </RetrieveTransaction>
-  </TestStep>
-
-
-  <TestStep id="badrepuid">
-    <ExpectedStatus>PartialSuccess</ExpectedStatus>
-    <RetrieveTransaction>
-
-      <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/>
-	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid0$"/>
-
-	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid1$"/>
-
-      <MetadataFile>badrepuid_query.xml</MetadataFile>
-      <ExpectedContents/>
 
       <XDSb/>
     </RetrieveTransaction>

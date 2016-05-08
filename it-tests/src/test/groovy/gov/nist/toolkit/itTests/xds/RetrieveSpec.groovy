@@ -77,7 +77,6 @@ class RetrieveSpec extends ToolkitSpecification {
         sections.add("section")
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
-        params.put('$repositoryUniqueId$', repUid)
         params.put('$repuid$', repUid)
         boolean stopOnFirstError = true
 
@@ -97,7 +96,6 @@ class RetrieveSpec extends ToolkitSpecification {
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
-        params.put('$repositoryUniqueId$', repUid)
         params.put('$repuid$', repUid)
         boolean stopOnFirstError = true
 
@@ -113,14 +111,13 @@ class RetrieveSpec extends ToolkitSpecification {
      * This section is here, with the other reg/rep tests, because the Retrieve needs the document entry id and the repository id from the previous PnR section.
      * @return
      */
-    def 'Run normal retrieve test'() {
+    def 'Run retrieve tests'() {
         when:
         String siteName = 'sunil__rr'
         TestInstance testId = new TestInstance("15816")
         List<String> sections = ["Retrieve"]
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
-        params.put('$repositoryUniqueId$', repUid)
         params.put('$repuid$', repUid)
         boolean stopOnFirstError = true
 
