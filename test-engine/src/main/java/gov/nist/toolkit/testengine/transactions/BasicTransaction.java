@@ -905,10 +905,10 @@ public abstract class BasicTransaction  {
             String sectionId = getStep().getPlan().getCurrentSection();
             String id = String.format("%s/%s/%s", testId, sectionId, stepId);
 
-            if ("true".equals(Configuration.getProperty("testclient.addTestAsAuthor"))) {
-                if (metadata != null)
-                    metadata.addAuthorPersonToAll(id);
-            }
+//            if ("true".equals(Configuration.getProperty("testclient.addTestAsAuthor"))) {
+//                if (metadata != null)
+//                    metadata.addAuthorPersonToAll(id);
+//            }
 
 		}
 

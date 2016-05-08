@@ -504,8 +504,10 @@ public class DsSimCommon {
             if (simCommon.db != null)
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
-	    this.writeAttachments(simCommon.os, er);
-            simCommon.os.write(getTrailer().toString().getBytes());
+            if (simCommon.vc.requiresMtom()) {
+                this.writeAttachments(simCommon.os, er);
+                simCommon.os.write(getTrailer().toString().getBytes());
+            }
             simCommon.generateLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {

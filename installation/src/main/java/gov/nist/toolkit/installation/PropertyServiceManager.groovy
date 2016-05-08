@@ -113,7 +113,7 @@ public class PropertyServiceManager {
 		assert Installation.installation().warHome()
 		File propPath = null;
 		try {
-//			logger.debug("*** getting toolkit.properties file:" + getClass().getResource("/toolkit.properties"));
+			logger.debug("*** getting toolkit.properties file:" + getClass().getResource("/toolkit.properties"));
 
 			URL propURL = getClass().getResource("/toolkit.properties");
 			propPath = new File(propURL.getFile());

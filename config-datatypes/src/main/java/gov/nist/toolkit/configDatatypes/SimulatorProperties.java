@@ -265,4 +265,5 @@ public class SimulatorProperties {
      */
     public static final String                        idsrTlsEndpoint = "IDSR_TLS_endpoint";
 
+    public static final String                        environment = "Environment";
 }

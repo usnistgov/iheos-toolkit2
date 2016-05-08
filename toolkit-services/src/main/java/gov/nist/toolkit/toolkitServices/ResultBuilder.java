@@ -21,6 +21,7 @@ public class ResultBuilder {
         Response.Status status = null;
         String reason = "";
         int extendedCode = 0;
+        String stackTrace = ExceptionUtil.exception_details(e);
 
         if (e instanceof EnvironmentNotSelectedClientException) {
             reason = "Environment does not exist - " + e.getMessage();
@@ -28,7 +29,6 @@ public class ResultBuilder {
             status = Response.Status.BAD_REQUEST;   // 400
         }
         else if (e instanceof EnvironmentNotSelectedException) {
-            logger.info(ExceptionUtil.exception_details(e));
             reason = "Environment does not exist - " + e.getMessage();
             extendedCode = OperationResultResource.ENVIRONMENT_DOES_NOT_EXIST;
             status = Response.Status.BAD_REQUEST;   // 400
@@ -88,7 +88,7 @@ public class ResultBuilder {
             status = Response.Status.INTERNAL_SERVER_ERROR;  // TODO - better code
         }
         if (status == null) {
-            reason = "Create simulator " + simId + " failed - " + ExceptionUtil.exception_details(e);
+            reason = "Create simulator " + simId + " failed";
             status = Response.Status.INTERNAL_SERVER_ERROR;
         }
 
@@ -96,6 +96,7 @@ public class ResultBuilder {
         result.setStatus(status);
         result.setExtendedCode(extendedCode);
         result.setReason(reason);
+        result.setStackTrace(stackTrace);
 
         logger.info(result);
 

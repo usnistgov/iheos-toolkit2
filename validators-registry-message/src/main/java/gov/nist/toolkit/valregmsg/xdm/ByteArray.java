@@ -8,18 +8,11 @@ import java.io.InputStream;
 public class ByteArray {
 
 	byte[] ba;
-	String sha1;
 	int size;
 	
 	public ByteArray(byte[] ba) {
 		this.ba = ba;
 		this.size = ba.length;
-		Sha1Bean sb = new Sha1Bean();
-		sb.setByteStream(ba);
-		try {
-			this.sha1 = sb.getSha1String();
-		} catch (Exception e) {
-		}
 	}
 	
 	public InputStream getInputStream() {
@@ -35,7 +28,16 @@ public class ByteArray {
 	}
 	
 	public String getSha1() {
+		Sha1Bean sb = new Sha1Bean();
+		String sha1 = "";
+		sb.setByteStream(ba);
+		try {
+			sha1 = sb.getSha1String();
+		} catch (Exception e) {
+		}
 		return sha1;
 	}
+
+	public byte[] get() { return ba; }
 	
 }

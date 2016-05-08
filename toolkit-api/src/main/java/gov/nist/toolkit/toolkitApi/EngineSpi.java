@@ -10,6 +10,9 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReport;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequest;
 import org.apache.log4j.Logger;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.filter.LoggingFilter;
@@ -65,7 +68,7 @@ public class EngineSpi {
 
     public WebTarget getTarget() { return target; }
 
-    public SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
+    public SimConfigResource create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
         String actorTypeString = actorType.getName();
         SimId simId = ToolkitFactory.newSimId(id, user, actorTypeString, environmentName);
         SimIdResource bean = new SimIdResource(simId);
@@ -94,7 +97,7 @@ public class EngineSpi {
         return create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
     }
 
-    public SimConfig update(SimConfig config) throws ToolkitServiceException {
+    public SimConfigResource update(SimConfig config) throws ToolkitServiceException {
         Response response = target
                 .path(String.format("simulators/%s", config.getId()))
                 .request(MediaType.APPLICATION_JSON)
@@ -192,5 +195,16 @@ public class EngineSpi {
          throw new ToolkitServiceException(response);
       return response.readEntity(RetImgDocSetRespResource.class);
    }
+
+    public XdmReport validateXDM(XdmRequest request) throws ToolkitServiceException {
+        Response response = target
+                .path("simulators/xdmValidation")
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(request));
+        if (response.getStatus() != 200)
+            throw new ToolkitServiceException(response);
+        return response.readEntity(XdmReportResource.class);
+
+    }
 
 }
