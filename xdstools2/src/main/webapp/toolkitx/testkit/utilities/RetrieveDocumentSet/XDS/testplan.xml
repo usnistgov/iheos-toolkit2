@@ -2,7 +2,7 @@
 <TestPlan>
     <Test>RetrieveDocumentSet</Test>
     <TestStep id="retrieve">
-        <ExpectedStatus>Success</ExpectedStatus>
+        <ExpectedStatus>Success,PartialSuccess</ExpectedStatus>
         <RetrieveTransaction>
             <!--
             <ReferenceMetadata testdir="../query" step="by_uid"/>

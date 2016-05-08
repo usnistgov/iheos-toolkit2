@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15816/Register_Stable</Test>
+  <Rule>This section submits a Stable DocumentEntry to the Registry. The submission of a Stable DocumentEntry is done with transaction ITI-42.</Rule>
+  <TestStep id="Register">
+    <ExpectedStatus>Success</ExpectedStatus>
+	 <RegisterTransaction>
+      <XDSb/>
+	  <AssignUuids/>
+	        <Report name="docid" section="Result">
+//*[local-name()='ExtrinsicObject']/@id
+			</Report>
+<!--
+			<Report name="repuid" section="Result">
+//*[local-name()='ExtrinsicObject'][1]/*[local-name()='Slot'][@name='repositoryUniqueId']/*[local-name()='ValueList']/*[local-name()='Value']
+			</Report>
+-->
+      <MetadataFile>single_stable_doc.xml</MetadataFile>
+    </RegisterTransaction>
+  </TestStep>
+</TestPlan>
