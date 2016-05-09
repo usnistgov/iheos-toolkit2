@@ -4,6 +4,9 @@
 package gov.nist.toolkit.simulators.sim.idc;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +50,8 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
    private boolean direct = false;
    private Site site = null;
    private String endpoint = null;
+   /** If present, SOAP headers and Request body are stored here */
+   private String messageDir = null;
 
    /**
     * @return the {@link #tls} value.
@@ -78,6 +83,20 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
     */
    public void setEndpoint(String endpoint) {
       this.endpoint = endpoint;
+   }
+
+   /**
+    * @return the {@link #messageDir} value.
+    */
+   public String getMessageDir() {
+      return messageDir;
+   }
+
+   /**
+    * @param messageDir the {@link #messageDir} to set
+    */
+   public void setMessageDir(String messageDir) {
+      this.messageDir = messageDir;
    }
 
    /**
@@ -118,6 +137,12 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
          type.getRequestAction(), type.getResponseAction());
 
       logger.info(result.toStringWithConsume());
+      
+      if (messageDir != null) {
+         writeToFile(soap.getInHeader().toString(), messageDir, "RequestHeader.xml");
+         writeToFile(soap.getOutHeader().toString(), messageDir, "ResponseHeader.xml");
+         writeToFile(retrieveRequest.toString(), messageDir, "RetrieveImageSetRequest.xml");
+      }
 
       return parseResponse(result);
 
@@ -159,6 +184,11 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
          } // <Document> loop         
       } // <DocumentResponse> loop
       return resp.toStringWithConsume();
+   }
+   
+   private void writeToFile(String str, String dir, String fName) throws Exception{
+      Path pfn = Paths.get(dir, fName);
+      Files.write(pfn, str.getBytes("UTF-8"));
    }
 
 } // EO ImgDocConsActorSimulator class

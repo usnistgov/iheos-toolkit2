@@ -134,6 +134,7 @@ public class SimulatorsController {
             ImgDocConsActorSimulator sim = new ImgDocConsActorSimulator();
             sim.setTransactionType(type);
             sim.setTls(request.isTls());
+            sim.setMessageDir(request.getMessageDir());
             sim.setDirect(request.isDirect());
             if (request.isDirect()) {
                dest = "direct";
