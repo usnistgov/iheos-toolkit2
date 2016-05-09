@@ -1,14 +1,5 @@
 package gov.nist.toolkit.testengine.engine;
 
-import java.io.FileNotFoundException;
-import java.util.Iterator;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMAttribute;
-import org.apache.axiom.om.OMElement;
-import org.apache.axis2.AxisFault;
-
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.testengine.transactions.DsubPublishTransaction;
@@ -36,12 +27,23 @@ import gov.nist.toolkit.testengine.transactions.XCQTransaction;
 import gov.nist.toolkit.testengine.transactions.XDRProvideAndRegisterTransaction;
 import gov.nist.toolkit.testengine.transactions.XcpdTransaction;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMAttribute;
+import org.apache.axiom.om.OMElement;
+import org.apache.axis2.AxisFault;
+
+import javax.xml.namespace.QName;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class StepContext extends BasicContext implements ErrorReportingInterface {
 	OMElement output = null;
 	OMElement test_step_output = null;
 //	boolean expectedstatus = true;
-	TransactionStatus expectedStatus = new TransactionStatus();
+//	TransactionStatus expectedStatus = new TransactionStatus();
+	List<TransactionStatus> expectedStatus = new ArrayList<>();
 	String expectedErrorMessage = "";
 	String expected_error_code = "";
 	String stepId;
@@ -88,17 +90,21 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		
 		buf
 //		.append("XDS Version = ").append(xdsVersionName()).append("\n")
-		.append("Expected Status = ").append(expectedStatus).append("\n")
+		.append("Expected Status = ").append(Arrays.toString(expectedStatus.toArray())).append("\n")
 		.append("Expected Error Message = ").append(expectedErrorMessage).append("\n");
-		
+
 		return buf.toString();
 	}
-	
-	public void setExpectedStatus(TransactionStatus expectedStatus) {
-		this.expectedStatus = expectedStatus;
+
+	public void setExpectedStatus(List<TransactionStatus> transactionStatus) {
+		this.expectedStatus = transactionStatus;
 	}
-	
-	public TransactionStatus getExpectedStatus() {
+
+	public void addExpectedStatus(TransactionStatus transactionStatus) {
+		this.expectedStatus.add(transactionStatus);
+	}
+
+	public List<TransactionStatus> getExpectedStatus() {
 		return expectedStatus;
 	}
 	
@@ -204,8 +210,39 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 			{
 				expected_status = instruction.getText();
 				testLog.add_name_value(test_step_output, instruction_name, expected_status);
-				setExpectedStatus(new TransactionStatus(expected_status));
-			} 
+
+				if (expected_status!=null && !"".equals(expected_status)) {
+					String[] statuses = expected_status.split(",");
+					for (String status : statuses) {
+						addExpectedStatus(new TransactionStatus(status.trim()));
+					}
+				}
+
+			}
+			/*
+			Save this code for later when an intrustuction with mulitple values is needed.
+
+			else if (instruction_name.equals("AcceptableStatus"))
+			{
+				String acceptableStatus;
+				Iterator statusElements = instruction.getChildElements();
+				OMElement acceptableStatusEle = MetadataSupport.om_factory.createOMElement(new QName("AcceptableStatus"));
+				while (statusElements.hasNext()) {
+					OMElement statusElement = (OMElement) statusElements.next();
+					String localName = "Status";
+					if (localName.equals(statusElement.getLocalName())) {
+						acceptableStatus = statusElement.getText();
+
+						OMElement status = MetadataSupport.om_factory.createOMElement(localName, null);
+						status.setText(acceptableStatus);
+						acceptableStatusEle.addChild(status);
+
+
+						addExpectedStatus(new TransactionStatus(acceptableStatus));
+					}
+				}
+				testLog.add_name_value(test_step_output, instruction_name, acceptableStatusEle);
+			} */
 			else if (instruction_name.equals("Rule")) 
 			{
 			} 
