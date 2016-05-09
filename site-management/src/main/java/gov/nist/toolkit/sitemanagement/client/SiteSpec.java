@@ -1,4 +1,4 @@
-package gov.nist.toolkit.results.client;
+package gov.nist.toolkit.sitemanagement.client;
 
 import gov.nist.toolkit.actortransaction.client.ActorType;
 

@@ -1,15 +1,14 @@
 package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.actorfactory.SimDb
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.configDatatypes.client.TransactionType
 import gov.nist.toolkit.installation.Installation
-import gov.nist.toolkit.results.SiteBuilder
-import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.results.shared.SiteBuilder
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RgOrchestrationRequest

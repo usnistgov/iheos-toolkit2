@@ -28,7 +28,8 @@
     import gov.nist.toolkit.session.server.Session;
     import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
     import gov.nist.toolkit.sitemanagement.client.Site;
-    import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+	import gov.nist.toolkit.sitemanagement.client.SiteSpec;
+	import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 	import gov.nist.toolkit.testengine.scripts.CodesUpdater;
 	import gov.nist.toolkit.tk.TkLoader;
     import gov.nist.toolkit.tk.client.TkProps;

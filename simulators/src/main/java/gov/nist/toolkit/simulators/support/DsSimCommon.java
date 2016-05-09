@@ -1,5 +1,6 @@
 package gov.nist.toolkit.simulators.support;
 
+import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
@@ -7,11 +8,12 @@ import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
 import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -27,6 +29,8 @@ import gov.nist.toolkit.validatorsSoapMessage.message.SimpleSoapHttpHeaderValida
 import gov.nist.toolkit.validatorsSoapMessage.message.SoapMessageValidator;
 import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
@@ -36,9 +40,9 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.File;
 import java.util.*;
 
 /**
@@ -92,7 +96,8 @@ public class DsSimCommon {
     public void runInitialValidations() throws IOException {
         GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-        simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
+        simCommon.mvc = runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
+//        simCommon.mvc = simCommon.vms.runValidation(simCommon.vc, simCommon.db, simCommon.mvc, gerb);
         simCommon.mvc.run();
         simCommon.buildMVR();
 
@@ -106,6 +111,21 @@ public class DsSimCommon {
             logger.debug("no steps with errors");
         }
     }
+
+    /**
+     * Starts the validation/simulator process by pulling the HTTP wrapper from the db, creating a validation engine if necessary,
+     * and starting an HTTP validator. It returns the validation engine. Remember that the basic abstract
+     * Simulator class inherits directly from the abstract MessageValidator class.
+     * @param vc
+     * @param db
+     * @param mvc
+     * @return
+     * @throws IOException
+     */
+    public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
+        return new ValidateMessageService(regIndex).runValidation(vc, db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
+    }
+
 
     public void sendErrorsInRegistryResponse(ErrorRecorder er) {
         if (er == null)

@@ -11,10 +11,10 @@
     <artifactId>validators-registry-message</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>actorfactory</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nist.toolkit</groupId>-->
+            <!--<artifactId>actorfactory</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>validators-registry-metadata</artifactId>
@@ -46,6 +46,10 @@
         <dependency>
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>xds-exceptions</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>http</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>

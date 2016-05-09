@@ -9,7 +9,7 @@ import gov.nist.toolkit.installation.PropertyServiceManager
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.results.client.AssertionResults
 import gov.nist.toolkit.results.client.CodesConfiguration
-import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.sitemanagement.client.SiteSpec
 import gov.nist.toolkit.securityCommon.SecurityParams
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager

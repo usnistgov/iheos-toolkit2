@@ -1,6 +1,5 @@
 package gov.nist.toolkit.validatorsSoapMessage.engine;
 
-import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
@@ -31,19 +30,6 @@ public class ValidateMessageService {
 	this.rvi = rvi;
 	}
 	
-	/**
-     * Starts the validation/simulator process by pulling the HTTP wrapper from the db, creating a validation engine if necessary, 
-     * and starting an HTTP validator. It returns the validation engine. Remember that the basic abstract
-     * Simulator class inherits directly from the abstract MessageValidator class.
-	 * @param vc
-	 * @param db
-	 * @param mvc
-	 * @return
-	 * @throws IOException
-	 */
-	public MessageValidatorEngine runValidation(ValidationContext vc, SimDb db, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
-		return runValidation(vc, db.getRequestMessageHeader(), db.getRequestMessageBody(), mvc, gerb);
-	}
 
 	public MessageValidatorEngine runValidation(ValidationContext vc, String httpMsgHdr, byte[] httpMsgBody, MessageValidatorEngine mvc, ErrorRecorderBuilder gerb) throws IOException {
 

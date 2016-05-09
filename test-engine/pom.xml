@@ -95,10 +95,10 @@
             <groupId>gov.nist.toolkit</groupId>
             <artifactId>validators-support</artifactId>
         </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>actorfactory</artifactId>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>gov.nist.toolkit</groupId>-->
+            <!--<artifactId>actorfactory</artifactId>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
