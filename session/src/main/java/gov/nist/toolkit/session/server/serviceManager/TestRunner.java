@@ -1,18 +1,23 @@
 package gov.nist.toolkit.session.server.serviceManager;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.CommonService;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.LogIdIOFormat;
+import gov.nist.toolkit.results.client.LogIdType;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestSessionNotSelectedException;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import org.apache.log4j.Logger;
-
-import java.util.List;
-import java.util.Map;
 
 public class TestRunner {
     private final XdsTestServiceManager xdsTestServiceManager;
@@ -34,7 +39,7 @@ public class TestRunner {
                 throw new TestSessionNotSelectedException("Must choose test session");
             session.setSiteSpec(siteSpec);
 
-            // if testId is actualy a test collection then let a lower leve fill in the logRepository
+            // if testId is actually a test collection then let a lower level fill in the logRepository
             // for the individual test - no logRepository should be created for the test collection
             // itself
             if (session.transactionSettings.logRepository == null && !testInstance.getId().startsWith("tc:")) {

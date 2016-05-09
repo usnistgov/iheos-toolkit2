@@ -206,6 +206,8 @@ public interface ToolkitService extends RemoteService  {
 	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
     List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception;
 
+	String getServletContextName();
+
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	// Background test plan running methods

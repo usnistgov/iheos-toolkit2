@@ -1,13 +1,13 @@
 package gov.nist.toolkit.valsupport;
 
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.valsupport.client.MessageDirection;
 import gov.nist.toolkit.valsupport.client.MessageTransaction;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 
 /**
- * Created by bill on 7/24/15.
+ *
  */
 public class ValidationContextFactory {
 

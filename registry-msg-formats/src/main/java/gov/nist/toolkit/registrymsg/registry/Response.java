@@ -7,12 +7,11 @@ import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMNamespace;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNamespace;
 
 public abstract class Response implements ErrorLogger {
 	public final static short version_2 = 2;
@@ -152,8 +151,13 @@ public abstract class Response implements ErrorLogger {
 		if (forcedStatus != null) {
 			response.addAttribute("status", forcedStatus, null);
 		} else {
-			response.addAttribute("status", MetadataSupport.response_status_type_namespace + registryErrorList.getStatus(), null);
+			if (registryErrorList.isPartialSuccess())
+				response.addAttribute("status", MetadataSupport.ihe_response_status_type_namespace + registryErrorList.getStatus(), null);
+			else
+				response.addAttribute("status", MetadataSupport.response_status_type_namespace + registryErrorList.getStatus(), null);
 		}
+
+
 
 		setLocationForXCA();
 
@@ -195,6 +199,9 @@ public abstract class Response implements ErrorLogger {
 
 	public void add(RegistryErrorListGenerator rel, LogMessage log_message) throws XdsInternalException {
 		registryErrorList.addRegistryErrorList(rel.getRegistryErrorList(), log_message);
+//        if (registryErrorList.hasErrors())
+//            setForcedStatus("xxx");
+		registryErrorList.setPartialSuccess(rel.isPartialSuccess());
 	}
 
 	public void add_warning(String code, String msg, String location, LogMessage log_message) {

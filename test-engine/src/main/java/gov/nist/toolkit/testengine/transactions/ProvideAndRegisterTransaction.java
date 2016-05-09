@@ -1,19 +1,13 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.soap.axis2.Swa;
-import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.HttpCodeException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMText;
@@ -30,12 +24,20 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
+import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.soap.axis2.Swa;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.HttpCodeException;
+import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 public class ProvideAndRegisterTransaction extends RegisterTransaction {
 	boolean use_xop = true;
@@ -45,11 +47,13 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 		super(s_ctx, instruction, instruction_output);
 	}
 
-	protected  String getBasicTransactionName() {
+	@Override
+   protected  String getBasicTransactionName() {
 		return "pr";
 	}
 
-	public void run(OMElement metadata_element)
+	@Override
+   public void run(OMElement metadata_element)
 	throws XdsException {
 		boolean my_swa = false;
 
@@ -70,7 +74,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 				pnr.addChild(metadata.getV3SubmitObjectsRequest());
 			}
 			for (String id : document_id_filenames.keySet() ) {
-				String filename = (String) document_id_filenames.get(id);
+				String filename = document_id_filenames.get(id);
 
 				if (nameUuidMap != null) {
 					String newId = nameUuidMap.get(id);
@@ -255,7 +259,8 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 				OMElement soap_header_in = response.getEnvelope().getHeader();
 				testLog.add_name_value(instruction_output, "InHeader", Util.deep_copy( soap_header_in));
 
-				MessageContext request = mepClient
+				@SuppressWarnings("unused")
+            MessageContext request = mepClient
 				.getMessageContext(WSDLConstants.MESSAGE_LABEL_OUT_VALUE);
 				OMElement soap_header_out = response.getEnvelope().getHeader();
 				testLog.add_name_value(instruction_output, "OutHeader", Util.deep_copy( soap_header_out));
@@ -318,7 +323,8 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 		return XmlUtil.firstChildWithLocalName(envelope, "Body");
 	}
 
-	protected void parseInstruction(OMElement part) throws XdsInternalException {
+	@Override
+   protected void parseInstruction(OMElement part) throws XdsInternalException {
 		String part_name = part.getLocalName();
 		if (part_name.equals("Document")) {
 			String id = part.getAttributeValue(MetadataSupport.id_qname);
@@ -341,16 +347,15 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 		}
 	}
 
-	protected String getRequestAction() {
+	@Override
+   protected String getRequestAction() {
 		if (xds_version == BasicTransaction.xds_b) {
 			if (async) {
 				return SoapActionFactory.pnr_b_async_action;
-			} else {
-				return SoapActionFactory.pnr_b_action;
 			}
-		} else {
-			return SoapActionFactory.anon_action;
+         return SoapActionFactory.pnr_b_action;
 		}
+      return SoapActionFactory.anon_action;
 	}
 
 

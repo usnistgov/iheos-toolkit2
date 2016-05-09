@@ -5,7 +5,8 @@ import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
@@ -15,11 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * IMPORTANT NOTE: This class is only a very basic mock-up of the On-Demand Document Source.
- * It will ignore key parameters and so on.
- * So it's main goal for now is only to serve up bogus content on a retrieve request.
- *
- * For now, This actor factory is based on the repository actor factory.
+ * This actor factory is based on the repository actor factory.
  *
  */
 public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {

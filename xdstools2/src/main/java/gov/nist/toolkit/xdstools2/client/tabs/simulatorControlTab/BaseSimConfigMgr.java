@@ -7,17 +7,15 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import gov.nist.toolkit.actorfactory.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
-
-import java.util.List;
 
 /**
  * Manages the content of a single Simulator on the screen
@@ -133,7 +131,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
 
             else if (SimulatorProperties.errorForPatient.equals(ele.name)) {
                 final SimulatorConfigElement configEle = ele;
-                List<TransactionType> transactionTypes = ActorType.findActor(config.getActorType()).getTransactions();
+//                List<TransactionType> transactionTypes = ActorType.findActor(config.getActorType()).getTransactions();
                 ActorType actorType = ActorType.findActor(config.getActorType());
                 final PatientErrorMap map = config.getConfigEle(SimulatorProperties.errorForPatient).asPatientErrorMap();
                 final PatientErrorMapPresenter presenter = new PatientErrorMapPresenter(map, actorType, simulatorControlTab.toolkitService);

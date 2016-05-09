@@ -1,19 +1,19 @@
 package gov.nist.toolkit.itTests.support
 
-import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.adt.ListenerFactory
+import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.grizzlySupport.GrizzlyController
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.results.client.TestLogs
 import gov.nist.toolkit.services.server.ToolkitApi
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimId
 import spock.lang.Shared
 import spock.lang.Specification
-
 /**
  *
  */
@@ -44,6 +44,11 @@ class ToolkitSpecification extends Specification {
         new SimulatorBuilder(urlRoot)
     }
 
+    SimulatorBuilder getSimulatorApi(String host, String remoteToolkitPort) {
+        String urlRoot = String.format("http://%s:%s/xdstools2", host, remoteToolkitPort)
+        new SimulatorBuilder(urlRoot)
+    }
+
     def cleanupSpec() {  // one time shutdown when everything is done
         if (server) {
             server.stop()
@@ -66,7 +71,7 @@ class ToolkitSpecification extends Specification {
         assert results.get(0).passed()
     }
 
-    def initializeRepository(String testSession, SimId simId, Pid pid, TestInstance testInstance) {
+    TestLogs initializeRepository(String testSession, SimId simId, Pid pid, TestInstance testInstance) {
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', pid.toString())
@@ -74,7 +79,11 @@ class ToolkitSpecification extends Specification {
 
         List<Result> results = api.runTest(testSession, simId.fullId, testInstance, sections, params, stopOnFirstError)
 
+        TestLogs testLogs = api.getTestLogs(testInstance)
+
+        assert testLogs
         assert results.size() == 1
         assert results.get(0).passed()
+        return testLogs
     }
 }

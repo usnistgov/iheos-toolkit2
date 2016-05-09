@@ -1,9 +1,24 @@
 package gov.nist.toolkit.services.server;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actorfactory.client.BadSimConfigException;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.Simulator;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.envSetting.EnvSetting;
@@ -12,19 +27,12 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * This is a second attempt to start a real API.  ClientAPI has not
@@ -107,7 +115,9 @@ public class ToolkitApi {
      */
     public Simulator createSimulator(ActorType actorType, SimId simId) throws Exception {
         simId.setActorType(actorType.getName());
-        return simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
+        Simulator sim = simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
+        sim.getConfig(0).getConfigEle(SimulatorProperties.environment).setValue(simId.getEnvironmentName());
+        return sim;
     }
 
     public Simulator createSimulator(SimId simId) throws Exception {
@@ -164,7 +174,7 @@ public class ToolkitApi {
         return SimManager.getSite(config);
     }
 
-    public SimulatorConfig getConfig(SimId simId) {
+    public SimulatorConfig getConfig(SimId simId) throws Exception {
         if (session == null) return null;
         SimManager simManager = new SimManager(session.getId());
         simManager.loadAllSims();
@@ -176,6 +186,16 @@ public class ToolkitApi {
         SiteSpec siteSpec = new SiteSpec();
         siteSpec.setName(site.getName());
         return siteSpec;
+    }
+    
+    public Site getActorConfig(String id) throws Exception {
+       if (session == null) return null;
+       SimManager simManager = new SimManager(session.getId());
+       Collection<Site> sites = simManager.getAllSites().asCollection();
+       for (Site site : sites) {
+          if (site.getName().equals(id)) return site;
+       }
+       throw new Exception("Site not found");
     }
 
     /**
@@ -198,6 +218,10 @@ public class ToolkitApi {
         siteSpec.setName(siteName);
         if (session.getMesaSessionName() == null) session.setMesaSessionName(testSession);
         return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+    }
+
+    public TestLogs getTestLogs(TestInstance testInstance) {
+        return xdsTestServiceManager().getRawLogs(testInstance);
     }
 
     public List<String> getSiteNames(boolean simAlso) {

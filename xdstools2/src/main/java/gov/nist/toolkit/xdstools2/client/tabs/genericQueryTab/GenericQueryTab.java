@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Panel;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResult;

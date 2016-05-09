@@ -7,8 +7,9 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
@@ -52,9 +53,10 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), 		new RepositoryRegistryActorFactory());
 		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
 		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
-        factories.put(ActorType.XDR_DOC_SRC.getName(), 				new XdrDocSrcActorFactory());
-        factories.put(ActorType.DOC_CONSUMER.getName(), 			new ConsumerActorFactory());
-        factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 			new ImagingDocSourceActorFactory());
+      factories.put(ActorType.XDR_DOC_SRC.getName(), 				   new XdrDocSrcActorFactory());
+      factories.put(ActorType.DOC_CONSUMER.getName(), 			   new ConsumerActorFactory());
+      factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
+      factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 		new ImagingDocSourceActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
@@ -106,6 +108,7 @@ public abstract class AbstractActorFactory {
 		addUser(sc, ele);
 
         addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
+		addFixedConfig(sc, SimulatorProperties.environment, ParamType.TEXT, "null");
 
         return sc;
 	}
@@ -215,7 +218,8 @@ public abstract class AbstractActorFactory {
 	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
 		String transtype = SimDb.getTransactionDirName(ele.transType);
 
-		String contextName = Installation.installation().tkProps.get("toolkit.servlet.context", "xdstools2");
+//		String contextName = Installation.installation().tkProps.get("toolkit.servlet.context", "xdstools2");
+		String contextName = Installation.installation().getServletContextName();
 
 		return "http"
 		+ ((isTLS) ? "s" : "")

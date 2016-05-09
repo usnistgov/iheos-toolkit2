@@ -1,13 +1,11 @@
 package gov.nist.toolkit.configDatatypes.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 
 /**
  *
  */
-public class PatientError implements Serializable, IsSerializable {
+public class PatientError implements Serializable {
     Pid patientId;
     String errorCode;
 

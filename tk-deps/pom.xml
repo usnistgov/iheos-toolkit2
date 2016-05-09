@@ -40,22 +40,22 @@
             <url>https://gazelle.ihe.net/nexus/content/repositories/thirdparty</url>
         </repository>
         <repository>
+            <id>gazelle-snapshots</id>
+            <name>gazelle nexus</name>
+            <url>https://gazelle.ihe.net/nexus/content/repositories/snapshots</url>
+        </repository>
+        <repository>
             <id>repository.jboss.org-public</id>
             <name>JBoss.org Maven repository</name>
             <url>https://repository.jboss.org/nexus/content/groups/public</url>
         </repository>
         <repository>
             <id>maven-central</id>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
         </repository>
         <repository>
             <id>apache-central</id>
-            <url>http://repo.maven.apache.org/maven2</url>
-        </repository>
-        <repository>
-            <id>Codehaus Mojo</id>
-            <name>Codehaus Mojo</name>
-            <url>https://nexus.codehaus.org/content/repositories/releases/</url>
+            <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
 
@@ -364,11 +364,6 @@
                 <artifactId>jersey-container-servlet</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-moxy</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
@@ -475,6 +470,12 @@
             <dependency>
                 <groupId>com.google.gwt</groupId>
                 <artifactId>gwt-user</artifactId>
+                <version>${gwtVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.gwt</groupId>
+                <artifactId>gwt-dev</artifactId>
                 <version>${gwtVersion}</version>
                 <scope>provided</scope>
             </dependency>

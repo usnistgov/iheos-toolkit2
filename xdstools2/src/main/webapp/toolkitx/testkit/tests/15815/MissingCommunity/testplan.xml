@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestPlan>
+    <Test>15814/MissingCommunity</Test>
+    <TestStep id="getdocs">
+        <ExpectedStatus>Failure</ExpectedStatus>
+        <ExpectedErrorCode>XDSMissingHomeCommunityId</ExpectedErrorCode>
+        <Rule>
+            <Transaction>XCQ</Transaction>
+            <SQ>Test GetDocuments Cross-Gateway Query of Responding Gateway</SQ>
+            <Assertion>LeafClass return</Assertion>
+        </Rule>
+        <Goal>GetDocuments query with wrong Home Community Id must return XDSUnknownCommunityError</Goal>
+        <XCQTransaction>
+            <MetadataFile>query.xml</MetadataFile>
+
+        </XCQTransaction>
+    </TestStep>
+</TestPlan>

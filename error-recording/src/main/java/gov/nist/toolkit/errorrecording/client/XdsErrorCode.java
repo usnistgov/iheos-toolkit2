@@ -32,10 +32,12 @@ public class XdsErrorCode implements IsSerializable  {
 		XDSRegistryDeprecatedDocumentError,
 		XDSUnknownRepositoryId,
 		XDSDocumentUniqueIdError,
+		XDSPartialSuccess,
 		XDSMetadataVersionError,
 		XDSMetadataUpdateOperationError,
 		XDSMetadataUpdateError,
 		XDSMissingHomeCommunityId,
+		XDSUnknownCommunity,
 		XDSResultNotSinglePatient
 	};
 	

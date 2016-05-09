@@ -1,10 +1,16 @@
 package gov.nist.toolkit.actortransaction.client;
 
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import java.io.Serializable;
-import java.util.*;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 
 /**
@@ -26,7 +32,7 @@ public class ATFactory implements IsSerializable, Serializable {
 	static {
 		
 		for (TransactionType tr : TransactionType.values()) {
-			transactionMapByCode.put(tr.code, tr);
+			transactionMapByCode.put(tr.getCode(), tr);
 		}
 	}
 
@@ -34,7 +40,8 @@ public class ATFactory implements IsSerializable, Serializable {
 	static public List<ActorType> RetrieveActorTypes = Arrays.asList(
 			ActorType.REPOSITORY,
 			ActorType.ONDEMAND_DOCUMENT_SOURCE,
-			ActorType.ISR);
+			ActorType.ISR,
+			ActorType.IMAGING_DOC_SOURCE);
 
 
 	static List<TransactionType> gatewayTransactions = new ArrayList<TransactionType>();
@@ -45,6 +52,7 @@ public class ATFactory implements IsSerializable, Serializable {
 		gatewayTransactions.add(TransactionType.XC_PATIENT_DISCOVERY);
 		gatewayTransactions.add(TransactionType.IG_QUERY);
 		gatewayTransactions.add(TransactionType.IG_RETRIEVE);
+		gatewayTransactions.add(TransactionType.XC_RET_IMG_DOC_SET);
 	}
 	
 	
@@ -66,7 +74,7 @@ public class ATFactory implements IsSerializable, Serializable {
 			return null;
 		
 		for (TransactionType trans : TransactionType.values()) {
-			if (trans.shortName.equals(name))
+			if (trans.getShortName().equals(name))
 				return trans;
 		}
 		return null;

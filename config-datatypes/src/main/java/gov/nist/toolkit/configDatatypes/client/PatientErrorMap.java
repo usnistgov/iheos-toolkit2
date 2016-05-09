@@ -1,7 +1,5 @@
 package gov.nist.toolkit.configDatatypes.client;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,7 +9,7 @@ import java.util.Set;
 /**
  * Maps between TransactionType name and list of PatientErrors
  */
-public class PatientErrorMap implements Serializable, IsSerializable, Map<String, PatientErrorList> {
+public class PatientErrorMap implements Serializable, Map<String, PatientErrorList> {
     Map<String, PatientErrorList> config = new HashMap<>();
 
     public PatientErrorMap() {}

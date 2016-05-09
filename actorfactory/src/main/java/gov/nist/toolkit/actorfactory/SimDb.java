@@ -3,7 +3,7 @@ package gov.nist.toolkit.actorfactory;
 import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
@@ -777,28 +777,40 @@ public class SimDb {
 	public void putRequestHeaderFile(byte[] bytes) throws IOException {
 		File f = getRequestHeaderFile();
 		OutputStream out = new FileOutputStream(f);
-		out.write(bytes);
-		out.close();
+		try {
+			out.write(bytes);
+		} finally {
+			out.close();
+		}
 	}
 
 	public void putRequestBodyFile(byte[] bytes) throws IOException {
 		OutputStream out = new FileOutputStream(getRequestBodyFile());
-		out.write(bytes);
-		out.close();
+		try {
+			out.write(bytes);
+		} finally {
+			out.close();
+		}
 	}
 
 	public void putResponse(HttpMessage msg) throws IOException {
 		File hdrFile = getResponseHdrFile();
 		String hdrs = msg.getHeadersAsString();
 		OutputStream os = new FileOutputStream(hdrFile);
-		os.write(hdrs.getBytes());
-		os.close();
+		try {
+			os.write(hdrs.getBytes());
+		} finally {
+			os.close();
+		}
 
 		String body = msg.getBody();
 		File bodyFile = getResponseBodyFile();
 		os = new FileOutputStream(bodyFile);
-		os.write(body.getBytes());
-		os.close();
+		try {
+			os.write(body.getBytes());
+		} finally {
+			os.close();
+		}
 	}
 
 }

@@ -39,6 +39,8 @@ public class TransactionStatus {
 	}
 
 	public boolean isNamespaceOk() {
+        if (value.equals(StatusValue.PartialSuccess) && fullValue.startsWith(MetadataSupport.ihe_response_status_type_namespace))
+            return true;
 		return fullValue.startsWith(MetadataSupport.response_status_type_namespace);
 	}
 
@@ -56,6 +58,18 @@ public class TransactionStatus {
 
 	public boolean isSuccess() {
 		return value == StatusValue.Success;
+	}
+
+	public boolean isPartialSuccess() {
+		return value == StatusValue.PartialSuccess;
+	}
+
+	public String getNamespace() {
+		if (!isPartialSuccess()) {
+			return MetadataSupport.response_status_type_namespace + value.toString();
+		} else {
+			return MetadataSupport.ihe_response_status_type_namespace + value.toString();
+		}
 	}
 
 }

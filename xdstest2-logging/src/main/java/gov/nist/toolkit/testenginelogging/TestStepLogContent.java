@@ -37,6 +37,8 @@ public class TestStepLogContent  implements Serializable {
 	List<String> details;
 	List<String> reports;
     List<String> useReports;
+    Map<String, String> assignedIds = new HashMap<>();
+    Map<String, String> assignedUids = new HashMap<>();
 	String inputMetadata;
 	String result;
 	String inHeader = null;
@@ -73,17 +75,27 @@ public class TestStepLogContent  implements Serializable {
 			expectedSuccess = true;
 		else {
 			String expStat = expectedStatusEle.getText();
-			if ("Success".equals(expStat)) {
-				expectedSuccess = true;
-				expectedWarning = false;
-			} else if ("Failure".equals(expStat)) {
-				expectedSuccess = false;
-				expectedWarning = false;
-			} else if ("Warning".equals(expStat)) {
-				expectedWarning = true;
-				expectedSuccess = false;
-			} else
-				throw new Exception("TestStep: Error parsing log.xml file: illegal value (" + expStat + ") for ExpectedStatus element of step " + id);
+
+			String[] statuses = expStat.split(",");
+
+			for (int cx=0; cx<statuses.length; cx++) {
+				String status = statuses[cx].trim();
+				if ("Success".equals(status)) {
+					expectedSuccess = true;
+					expectedWarning = false;
+				} else if ("Failure".equals(status)) {
+					expectedSuccess = false;
+					expectedWarning = false;
+				} else if ("Warning".equals(status)) {
+					expectedWarning = true;
+					expectedSuccess = false;
+				} else if ("PartialSuccess".equals(status)) {
+					expectedWarning = false;
+					expectedSuccess = false;
+				} else if (cx==statuses.length-1)
+					throw new Exception("TestStep: Error parsing log.xml file: illegal value (" + expStat + ") for ExpectedStatus element of step " + id);
+			}
+
 		}
 		parseGoals();
 		parseEndpoint();
@@ -96,6 +108,7 @@ public class TestStepLogContent  implements Serializable {
 		parseRoot();
 		parseUseReports();
         parseReports();
+        parseIds();
 	}
 
 	public StepGoals getGoals() {
@@ -167,6 +180,26 @@ public class TestStepLogContent  implements Serializable {
 			return;
 		endpoint = endpoints.get(0).getText();
 	}
+
+    private final static QName symbolQ = new QName("symbol");
+    private final static QName idQ = new QName("id");
+
+    void parseIds() {
+        parseIds(assignedUids, "AssignedUids");
+        parseIds(assignedIds, "AssignedUuids");
+    }
+
+    void parseIds(Map<String, String> map, String section) {
+        List<OMElement> idEles = XmlUtil.decendentsWithLocalName(root, section);
+        for (OMElement e : idEles) {
+            for (Iterator i = e.getChildrenWithLocalName("Assign"); i.hasNext(); ) {
+                OMElement a = (OMElement) i.next();
+                String symbol = a.getAttributeValue(symbolQ);
+                String id = a.getAttributeValue(idQ);
+                map.put(symbol, id);
+            }
+        }
+    }
 
 	public List<String> getAssertionErrors() {
 		List<OMElement> errorEles = XmlUtil.decendentsWithLocalName(root, "Error");
@@ -372,5 +405,11 @@ public class TestStepLogContent  implements Serializable {
 		this.success = success;
 	}
 
+    public Map<String, String> getAssignedIds() {
+        return assignedIds;
+    }
 
+    public Map<String, String> getAssignedUids() {
+        return assignedUids;
+    }
 }

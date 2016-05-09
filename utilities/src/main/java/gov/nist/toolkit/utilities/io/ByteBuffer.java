@@ -1,5 +1,7 @@
 package gov.nist.toolkit.utilities.io;
 
+import java.util.Arrays;
+
 public class ByteBuffer {
 	int chunk_size = 4000;
 	byte[] buffer = null;
@@ -21,7 +23,7 @@ public class ByteBuffer {
 	}
 	
 	public byte[] get() {
-		return buffer;
+		return Arrays.copyOfRange(buffer, 0, fill);
 	}
 	
 	public int size() {

@@ -1,9 +1,9 @@
 package gov.nist.toolkit.itTests.sdk
-import gov.nist.toolkit.actortransaction.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
-import gov.nist.toolkit.tookitApi.BasicSimParameters
-import gov.nist.toolkit.tookitApi.SimulatorBuilder
-import gov.nist.toolkit.tookitApi.ToolkitServiceException
+import gov.nist.toolkit.toolkitApi.BasicSimParameters
+import gov.nist.toolkit.toolkitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitApi.ToolkitServiceException
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
 /**

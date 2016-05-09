@@ -13,12 +13,15 @@ import java.io.IOException;
 public class ExternalCacheManager {
     static Logger logger = Logger.getLogger(ExternalCacheManager.class);
 
-    synchronized public static String initialize(File location) {
-        if (Installation.installation().externalCache() != null) return "External Cache already initialized";
+    synchronized public static String initialize(File location) throws XdsException {
+        logger.info("Initialize External Cache to " + location);
         if (!location.exists()) return String.format("External Cache location %s does not exist", location);
         if (!location.isDirectory()) return String.format("External Cache location %s is not a directory", location);
         if (!location.canWrite()) return String.format("External Cache location %s cannot be written", location);
-        Installation.installation().externalCache(location);
+        if (Installation.installation().externalCache() == null)
+            Installation.installation().externalCache(location);
+        // initialize environment
+        initializeDefaultEnvironment(location, Installation.installation().environmentFile());
         return null;
     }
 
@@ -29,6 +32,15 @@ public class ExternalCacheManager {
         if (error != null) throw new XdsException(error, "");
         File environment = Installation.installation().environmentFile();
         // initialize environment
+        initializeDefaultEnvironment(location, environment);
+        // initialize test log cache
+        Installation.installation().testLogCache().mkdirs();
+        // initialize SimDb
+        Installation.installation().simDbFile().mkdirs();
+    }
+
+    private static void initializeDefaultEnvironment(File location, File environment) throws XdsException {
+        logger.info("initialize default environment check");
         if (!environment.exists() || !Installation.installation().environmentFile(Installation.DEFAULT_ENVIRONMENT_NAME).exists()) {
             logger.info("Initializing environments in " + location);
             try {
@@ -37,17 +49,13 @@ public class ExternalCacheManager {
                 throw new XdsException("Cannot initialize environments area of External Cache at " + location, "", e);
             }
         }
-        // initialize test log cache
-        Installation.installation().testLogCache().mkdirs();
-        // initialize SimDb
-        Installation.installation().simDbFile().mkdirs();
     }
 
     public static void initializeFromMarkerFile(File markerFile) throws XdsException {
         reinitialize(markerFile.getParentFile());
     }
 
-    public static void initialize() {
+    public static void initialize() throws XdsException {
         File location = new File(Installation.installation().propertyServiceManager().getPropertyManager().getExternalCache());
         initialize(location);
     }

@@ -30,6 +30,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	public final static short version_2 = 2;
 	public final static short version_3 = 3;
 	String errors_and_warnings = "";
+	boolean partialSuccess = false;
 	boolean has_errors = false;
 	boolean has_warnings = false;
 	OMElement rel = null;
@@ -108,7 +109,9 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	}
 
 	public String getStatus() {
-		if (has_errors())
+		if (partialSuccess)
+			return "PartialSuccess";
+		else if (has_errors())
 			return "Failure";
 		return "Success";
 	}
@@ -526,6 +529,10 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	}
 
+	public void setPartialSuccess(boolean value) {
+		partialSuccess = value;
+	}
+
 	@Override
 	public void success(String dts, String name, String found, String expected, String RFC) {
 	}
@@ -554,4 +561,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	}
 
+	public boolean isPartialSuccess() {
+		return partialSuccess;
+	}
 }

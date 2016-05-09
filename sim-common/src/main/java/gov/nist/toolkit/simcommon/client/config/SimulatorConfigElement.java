@@ -2,7 +2,7 @@ package gov.nist.toolkit.simcommon.client.config;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.actortransaction.client.ParamType;
-import gov.nist.toolkit.actortransaction.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 
 import java.io.Serializable;
