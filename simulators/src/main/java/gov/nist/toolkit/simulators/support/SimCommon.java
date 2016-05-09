@@ -102,8 +102,9 @@ public class SimCommon {
 		return vc;
 	}
 
-
-
+	public void setValidationContext(ValidationContext vc) {
+		this.vc = vc;
+	}
 
 	ErrorRecorder er = null;
 

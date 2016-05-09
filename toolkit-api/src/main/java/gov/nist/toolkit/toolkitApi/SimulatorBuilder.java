@@ -59,8 +59,8 @@ public class SimulatorBuilder {
         XdrDocumentSource src = new XdrDocumentSource();
         src.engine = engine;
         src.config =  engine.create(id, user, SimulatorActorType.DOCUMENT_SOURCE, environmentName);
-        SimConfigResource sc = src.config;
-        sc.setEnvironmentName(environmentName);
+        SimConfig sc = src.config;
+        ((SimConfigResource)sc).setEnvironmentName(environmentName);
         return src;
     }
 
