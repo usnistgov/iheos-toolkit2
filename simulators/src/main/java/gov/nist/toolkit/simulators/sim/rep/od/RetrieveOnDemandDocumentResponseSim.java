@@ -1,4 +1,4 @@
-package gov.nist.toolkit.simulators.sim.od.rep;
+package gov.nist.toolkit.simulators.sim.rep.od;
 
 import gov.nist.toolkit.actorfactory.OnDemandDocumentSourceActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
@@ -16,7 +16,6 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
-import gov.nist.toolkit.simulators.support.RunTestPlan;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
@@ -34,25 +33,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PersistanceDocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
-	static Logger logger = Logger.getLogger(PersistanceDocumentResponseSim.class);
+public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim {
+	static Logger logger = Logger.getLogger(RetrieveOnDemandDocumentResponseSim.class);
 	DsSimCommon dsSimCommon;
 	List<String> documentUids;
 	List<String> dynamicDocumentUids = new ArrayList<String>();
 	RetrieveMultipleResponse response;
 	RepIndex repIndex;
 	String repositoryUniqueId;
-
-
 	SimulatorConfig simulatorConfig;
+	boolean persistenceOptn = false;
 
-	public PersistanceDocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId, SimulatorConfig simulatorConfig) {
+	public RetrieveOnDemandDocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId, SimulatorConfig simulatorConfig) {
 		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		this.documentUids = documentUids;
 		this.repIndex = dsSimCommon.repIndex;
 		this.repositoryUniqueId = repositoryUniqueId;
 		this.simulatorConfig = simulatorConfig;
+		// Detect persistence simulator setting
+		this.persistenceOptn = getSimulatorConfig().get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean();
+
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -60,7 +61,7 @@ public class PersistanceDocumentResponseSim extends TransactionSimulator impleme
 		try {
 			response = new RetrieveMultipleResponse();
 
-			// TODO: Parameterize persistence option so that the same class can be used instead of one for Persistence and non-Persistance.
+			// TODO: Parameterize persistence option so that the same class can be used instead of one for Persistence and non-Persistence.
 			// TODO: Register an ODDE
 
 			String siteName = getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite).asList().get(0);
@@ -69,16 +70,16 @@ public class PersistanceDocumentResponseSim extends TransactionSimulator impleme
 			// ---------------------------------------------------------------------------------------------------------
 
 			/***
-			 * TODO: Extract class.
+			 * TODO?: Extract class for the persistence?
 			 * Document Response WBS:
 			 * A) Check if persistence option is enabled for this sim, if it is on, then:
 			 *
-			 *  1) Get content state,
+			 *  1) Get content supply state index, which could range from 0 to the number of available documents on disk minus 1
 			 *  	a) if not in the last section, do a PnR (using api.runTest and replacing the prior document as needed) with the current section in the content bundle
-			 *  	c)  return previous document if reached end of content state
+			 *  	c) if in the last section, return previous document without a PnR
 			 *  3) Get the StoredDocument resulting from the PnR (store the document entry Uuid)
 			 *  4) Set NewDocumentId in the response
-			 *  5) Update content state -- how?
+			 *  5) Update content supply state index -- it is the content of the document entry in the ODDS repository containing the ODDE UID, which is created when the original ODDE is initialized by the Initialize button.
 			 * B) If no persistence, then just serve up the content from disk
 			 */
 
@@ -99,7 +100,7 @@ public class PersistanceDocumentResponseSim extends TransactionSimulator impleme
 			XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(myTestSession);
 
 			List<String> testPlanSections = xdsTestServiceManager.getTestIndex(testPlanId);
-			String registerSection = testPlanSections.get(0); // Make an assumption that the only (first) section is always the Register section which has the ContentBundle
+			String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
 			String contentBundle = testPlanId + "/" + registerSection + "/" + "ContentBundle";
 			List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
 			int contentBundleIdx = (supplyStateIdx==null || (supplyStateIdx!=null && "".equals(supplyStateIdx.asString())))?0: (supplyStateIdx!=null?Integer.parseInt(supplyStateIdx.asString()):0);
@@ -109,8 +110,9 @@ public class PersistanceDocumentResponseSim extends TransactionSimulator impleme
 			List<String> sections = new ArrayList<String>(){};
 			sections.add(section);
 
-
-			Result result = RunTestPlan.Transaction(siteName, sessionName, testId, params, stopOnFirstError, myTestSession, xdsTestServiceManager, sections);
+			Result result = null;
+			// FIXME:
+			// TODO: Result result = RunTestPlan.Transaction(siteName, sessionName, testId, params, stopOnFirstError, myTestSession, xdsTestServiceManager, sections);
 
 
 			// ------------------------------------------------------------------------------------------------------

@@ -34,7 +34,6 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     FlexTable tbl = new FlexTable();
     Button saveButton = new Button("Save");
 
-
     int row = 0;
 
     public BaseSimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {

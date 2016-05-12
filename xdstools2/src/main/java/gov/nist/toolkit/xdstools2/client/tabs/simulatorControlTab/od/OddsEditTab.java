@@ -35,7 +35,6 @@ public class OddsEditTab extends GenericQueryTab {
 
         OddsSimConfigMgr simConfigMgr = new OddsSimConfigMgr(simulatorControlTab, topPanel, config, getCurrentTestSession());
         simConfigMgr.displayHeader();
-        simConfigMgr.displayBasicSimulatorConfig();
         simConfigMgr.displayInPanel();
     }
 

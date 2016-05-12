@@ -566,12 +566,22 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	// Background test plan running methods
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public Result register(String username, TestInstance testInstance, String pid, SiteSpec registry) { return RunTestPlan.register(username,testInstance,pid,registry);}
-	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds) {return RunTestPlan.registerWithLocalizedTrackingInODDS(username,testInstance,pid,registry,odds); }
-
-	@Override
-	public List<String> getSiteNamesByTranType(String transactionType) throws Exception {
-		return null;
+	public Result register(String username, TestInstance testInstance, String pid, SiteSpec registry) {
+		return RunTestPlan.register(getSession(),username,testInstance,pid,registry);
 	}
+	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds) {
+		return RunTestPlan.registerWithLocalizedTrackingInODDS(getSession(),username,testInstance,pid,registry,odds);
+	}
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// ODDE related methods
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public List<String> getSiteNamesByTranType(String transactionType) throws Exception {
+		return siteServiceManager.getSiteNamesByTran(transactionType, session().getId());
+	}
+	public Map<String, String> setupOnDemandDocumentEntry(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds) throws Exception { return null; }
+
 
 }

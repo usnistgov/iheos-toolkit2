@@ -1,4 +1,4 @@
-package gov.nist.toolkit.simulators.sim.od.rep;
+package gov.nist.toolkit.simulators.sim.rep.od;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class DocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
+public class Retrieve2DocumentResponseSim extends TransactionSimulator implements RegistryResponseGeneratingSim{
 	DsSimCommon dsSimCommon;
 	List<String> documentUids;
 	List<String> dynamicDocumentUids = new ArrayList<String>();
@@ -29,7 +29,7 @@ public class DocumentResponseSim extends TransactionSimulator implements Registr
 	RepIndex repIndex;
 	String repositoryUniqueId;
 
-	public DocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
+	public Retrieve2DocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId) {
 		super(common, null);
 		this.dsSimCommon = dsSimCommon;
 		this.documentUids = documentUids;

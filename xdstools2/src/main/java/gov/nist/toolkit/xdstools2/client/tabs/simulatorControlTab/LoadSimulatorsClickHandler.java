@@ -10,11 +10,11 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import java.util.ArrayList;
 import java.util.List;
 
-class LoadSimulatorsClickHandler implements ClickHandler {
+public class LoadSimulatorsClickHandler implements ClickHandler {
 	SimulatorControlTab simulatorControlTab;
 	String currentTestSession;
 
-	LoadSimulatorsClickHandler(SimulatorControlTab simulatorControlTab, String currentTestSession) {
+	public LoadSimulatorsClickHandler(SimulatorControlTab simulatorControlTab, String currentTestSession) {
 		this.simulatorControlTab = simulatorControlTab;
 		this.currentTestSession = currentTestSession;
 	}
