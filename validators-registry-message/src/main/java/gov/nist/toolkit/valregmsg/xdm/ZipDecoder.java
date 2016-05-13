@@ -1,5 +1,6 @@
 package gov.nist.toolkit.valregmsg.xdm;
 
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.utilities.io.Io;
 
 import java.io.IOException;
@@ -9,6 +10,11 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
 
 public class ZipDecoder {
+	ErrorRecorder er = null;
+
+	public ZipDecoder() {}
+
+	public ZipDecoder(ErrorRecorder er) { this.er = er; }
 
 	OMap parse(InputStream in) throws ZipException, IOException {
 		OMap contents = new OMap();
@@ -21,16 +27,22 @@ public class ZipDecoder {
 			entry = zis.getNextEntry();
 			if (entry == null)
 				break;
+			System.out.println("Item: " + entry.getName());
 			if (entry.getName().startsWith("__"))
 				continue;
 			if (entry.getName().contains("/."))
 				continue;
-			if (entry.isDirectory())
-				System.out.print("Directory: ");
-			else
-				System.out.print("File: ");
+			if (entry.isDirectory()) {
+				// Extra content not restricted to ISO 9660
+				if (er != null && entry.getName().contains("IHE_XDM"))
+					new ValidateISO9660(er).run(entry.getName());
+			}
+			else {
+				// Extra content not restricted to ISO 9660
+				if (er != null && entry.getName().contains("IHE_XDM"))
+					new ValidateISO9660(er).run(entry.getName());
+			}
 			String entryName = entry.getName().toUpperCase();
-			System.out.println(entryName);
 
 			byte[] bytes = null;
 

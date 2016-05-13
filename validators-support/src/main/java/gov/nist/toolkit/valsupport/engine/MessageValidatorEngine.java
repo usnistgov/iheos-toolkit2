@@ -21,6 +21,7 @@ public class MessageValidatorEngine {
 	static Logger logger = Logger.getLogger(MessageValidatorEngine.class);
 
 	List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
+	boolean isPartialSuccess = false;
 
 	public MessageValidatorEngine() {}
 	
@@ -173,4 +174,12 @@ public class MessageValidatorEngine {
 	}
 
 	public ValidationStep getRootValidationStep() { return getValidationStep(0); }
+
+	public boolean isPartialSuccess() {
+		return isPartialSuccess;
+	}
+
+	public void setPartialSuccess(boolean partialSuccess) {
+		isPartialSuccess = partialSuccess;
+	}
 }

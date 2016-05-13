@@ -70,4 +70,10 @@ public abstract class BaseDsActorSimulator extends BaseActorSimulator {
 
     public SimulatorConfig getSimulatorConfig() { return dsSimCommon.simulatorConfig; }
     public void setSimulatorConfig(SimulatorConfig config) { dsSimCommon.simulatorConfig = config; }
+
+	public SimCommon getCommon() {
+		return common;
+	}
+
+	public DsSimCommon getDsSimCommon() { return dsSimCommon; }
 }

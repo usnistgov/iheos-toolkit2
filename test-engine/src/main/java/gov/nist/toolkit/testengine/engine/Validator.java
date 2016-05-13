@@ -524,8 +524,6 @@ public class Validator {
 			OMElement selectionPart = (OMElement) selectiveIt.next();
 			String selectionLocalName = selectionPart.getLocalName();
 
-			// TODO: Implement MustOnlyInclude here.
-
 			if ("MustOnlyInclude".equals(selectionLocalName)) {
 				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.MUST_ONLY_INCLUDE, m, selectionPart);
 			} else if ("Include".equals(selectionLocalName)) {

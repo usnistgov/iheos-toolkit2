@@ -403,7 +403,23 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return buf.toString();
 	}
 
+
+	public void discoverServletContextName() {
+		try {
+			if (context == null)
+				context = getServletContext();
+		} catch (Exception e) {
+		}
+		if (context == null) {
+			logger.info("Context is null");
+		}
+		logger.info("Context Name is " + context.getServletContextName());
+		logger.info("Context Path is " + context.getContextPath());
+		Installation.installation().setServletContextName(context.getContextPath());
+	}
+
 	public ServletContext servletContext() {
+		discoverServletContextName();
 		// this gets called from the initialization section of SimServlet
 		// for access to properties.  This code is not expected to work correct.
 		// Just don't throw exceptions that are not helpful
@@ -545,5 +561,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return getSession().ipAddr;
 	}
 
+	public String getServletContextName() {
+		return Installation.installation().getServletContextName();
+	}
 
 }

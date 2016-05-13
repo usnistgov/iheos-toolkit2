@@ -310,7 +310,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 				if (getSlot(slotName) == null)
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
 			}
-		} else if (!(vc.isXDM || vc.isXDRLimited)) {
+		} else if (!(vc.isXDM || vc.isXDRLimited || vc.isXDRMinimal)) {
 			for (String slotName : requiredSlots) {
 				if (getSlot(slotName) == null)
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);

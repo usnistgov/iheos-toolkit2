@@ -32,6 +32,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 	Metadata m = null;
 //	SimulatorConfig simulatorConfig;
 	static Logger logger = Logger.getLogger(RepPnRSim.class);
+	private boolean forward = true;
 
 	public RepPnRSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(common, simulatorConfig);
@@ -187,16 +188,18 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				}
 			}
 
-			// issue soap call to registry
-			String endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
-			
-			Soap soap = new Soap();
-			try {
-				OMElement result = soap.soapCall(m.getV3SubmitObjectsRequest(), endpoint, false, true, true, SoapActionFactory.r_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.r_b_action));
-				ErrorRecorder rrEr = dsSimCommon.registryResponseAsErrorRecorder(result);
-				mvc.addErrorRecorder("RegistryResponse", rrEr);
-			} catch (Exception e) {
-				er.err(Code.XDSRepositoryError, e);
+			if (isForward()) {
+				// issue soap call to registry
+				String endpoint = simulatorConfig.get(SimulatorProperties.registerEndpoint).asString();
+
+				Soap soap = new Soap();
+				try {
+					OMElement result = soap.soapCall(m.getV3SubmitObjectsRequest(), endpoint, false, true, true, SoapActionFactory.r_b_action, SoapActionFactory.getResponseAction(SoapActionFactory.r_b_action));
+					ErrorRecorder rrEr = dsSimCommon.registryResponseAsErrorRecorder(result);
+					mvc.addErrorRecorder("RegistryResponse", rrEr);
+				} catch (Exception e) {
+					er.err(Code.XDSRepositoryError, e);
+				}
 			}
 
 		}
@@ -207,4 +210,11 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 		}
 	}
 
+	public boolean isForward() {
+		return forward;
+	}
+
+	public void setForward(boolean forward) {
+		this.forward = forward;
+	}
 }

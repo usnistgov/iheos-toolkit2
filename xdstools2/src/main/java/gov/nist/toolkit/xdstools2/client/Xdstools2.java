@@ -5,8 +5,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.*;
-import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.event.logical.shared.*;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -74,7 +72,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 
 	void buildWrapper() {
 		// tabPanel = new TabPanel();
-		if ("xdstools2".equals(GWT.getModuleName())) { // This RootPanel is exclusive to v2. In other words, the intention of this block is to hide this from V3 module.
+//		if ("xdstools2".equals(GWT.getModuleName())) { // This RootPanel is exclusive to v2. In other words, the intention of this block is to hide this from V3 module.
 
 			Widget decoratedTray = decorateMenuContainer();
 
@@ -99,7 +97,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 			});
 		}
 
-	}
+//	}
 
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
 
@@ -264,6 +262,9 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		ME.debugMessages.setSelectedIndex(ME.debugMessages.getItemCount()-1);
 	}
 
+	public String servletContextName;
+	public String toolkitName;
+
     /**
      * This is the old entry point method.
 	 * It's now being used as an initialization method the GUI and the environment
@@ -271,6 +272,22 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
     public void run() {
         loadTkProps();
         testSessionManager.load();
+
+		ht.toolkitService.getServletContextName(new AsyncCallback<String>() {
+			@Override
+			public void onFailure(Throwable throwable) {
+				new PopupMessage("Failed to load servletContextName - " + throwable.getMessage());
+			}
+
+			@Override
+			public void onSuccess(String s) {
+				servletContextName = s;
+				if (s != null && !s.equals("") && s.startsWith("/"))
+					toolkitName = s.substring(1);
+				else
+					toolkitName = s;
+			}
+		});
     }
 
 	private void onModuleLoad2() {

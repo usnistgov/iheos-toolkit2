@@ -4,7 +4,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>2.202.7</version>
+        <version>2.202.8</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 
@@ -195,7 +195,7 @@
     </mailingLists>
     <issueManagement>
         <system>BitBucket</system>
-        <url>https://bitbucket.org/bmajur/toolkit2/issues</url>
+        <url>https://bitbucket.org/iheos/toolkit2/issues</url>
     </issueManagement>
     <!--<organization>-->
         <!--<name>National Institute of Standards and Technology</name>-->
