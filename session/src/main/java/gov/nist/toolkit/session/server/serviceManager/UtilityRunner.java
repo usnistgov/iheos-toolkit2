@@ -98,6 +98,7 @@ public class UtilityRunner {
             session.xt.setLogRepository(session.transactionSettings.logRepository);
             logger.info("*** logRepository user (sessionName): " + session.transactionSettings.logRepository.getUser());
 
+            session.xt.setTestkits(Installation.installation().testkitFiles(session.getCurrentEnvironment(),session.getMesaSessionName()));
             try {
                 if (testInstance.getId().startsWith("tc:")) {
                     String collectionName = testInstance.getId().split(":")[1];
@@ -107,7 +108,6 @@ public class UtilityRunner {
                     // collection.  We replace it with a list of linked TestInstances, one for each
                     // contained test.
 
-                    session.xt.setTestkits(Installation.installation().testkitFiles(session.getCurrentEnvironment(),session.getMesaSessionName()));
                     // TODO change testkitFile() for testkitFiles?
                     TestCollection testCollection = new TestCollection(Installation.installation().testkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();

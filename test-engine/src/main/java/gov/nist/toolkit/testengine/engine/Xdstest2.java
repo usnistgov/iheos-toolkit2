@@ -187,10 +187,10 @@ public class Xdstest2 {
 	public void addTest(TestInstance testInstance) throws Exception {
 		this.testInstance = testInstance;
 		// TODO this is where I should integrate code that determine the right testkit.
-//		System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n TEST ID: "+testInstance.getId());
-//		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
-//		if (tk==null) tk=xt.getTestkit();
-		xt.addTestSpec(new TestDetails(xt.getTestkit(), testInstance));
+		Logger.getLogger(this.getClass().getName()).info("Test is null? "+testkits==null);
+		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
+		if (tk==null) tk=xt.getTestkit();
+		xt.addTestSpec(new TestDetails(tk, testInstance));
 
 	}
 
@@ -208,10 +208,12 @@ public class Xdstest2 {
 		this.testInstance = testInstance;
 		this.sections = sections;
 		TestDetails testDetails;
+		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
+		if (tk==null) tk=xt.getTestkit();
 		if (areas == null)
-			testDetails = new TestDetails(xt.getTestkit(), testInstance);
+			testDetails = new TestDetails(tk, testInstance);
 		else
-			testDetails = new TestDetails(xt.getTestkit(), testInstance, areas);
+			testDetails = new TestDetails(tk, testInstance, areas);
 		if (logRepository != null)
 			testDetails.setLogRepository(logRepository);
 		if (doLogCheck) {
