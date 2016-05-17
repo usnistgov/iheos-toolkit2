@@ -57,7 +57,7 @@ public class XDRTestdataTab  extends GenericQueryTab {
 		row++;
 
 		testlistBox.setVisibleItemCount(1);
-		toolkitService.getTestdataSetListing("testdata-xdr", loadRecipientTestListCallback);
+		toolkitService.getTestdataSetListing(getEnvironmentSelection(),getCurrentTestSession(),"testdata-xdr", loadRecipientTestListCallback);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}

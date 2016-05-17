@@ -91,7 +91,7 @@ public interface ToolkitServiceAsync {
 	void getRGNames(AsyncCallback<List<String>> callback);
 	void getIGNames(AsyncCallback<List<String>> callback);
 	void getRawLogs(TestInstance logId, AsyncCallback<TestLogs> callback);
-	void getTestdataSetListing(String testdataSetName, AsyncCallback<List<String>> callback);
+	void getTestdataSetListing(String environmentName, String sessionName,String testdataSetName, AsyncCallback<List<String>> callback);
 	void getCodesConfiguration(AsyncCallback<CodesResult> callback);
 	void getSite(String siteName, AsyncCallback<Site> callback);
 	void getAllSites(AsyncCallback<Collection<Site>> callback);

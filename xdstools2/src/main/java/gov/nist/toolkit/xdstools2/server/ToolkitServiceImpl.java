@@ -230,7 +230,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return session().xdsTestServiceManager().runMesaTest(environmentName,mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
 	public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
-	public List<String> getTestdataSetListing(String testdataSetName)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestdataSetListing(testdataSetName); }
+	public List<String> getTestdataSetListing(String environmentName, String testSessionName, String testdataSetName)  throws NoServletSessionException {
+        return session().xdsTestServiceManager().getTestdataSetListing(environmentName,testSessionName,testdataSetName);
+    }
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
 	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
 
@@ -260,11 +262,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return updater.getOutput();
 	}
 
-    /**
-     * This method tests if there already is a testkit configured in a selected environment.
-     * @param selectedEnvironment name of the selected environment.
-     * @return boolean
-     */
+	/**
+	 * This method tests if there already is a testkit configured in a selected environment.
+	 * @param selectedEnvironment name of the selected environment.
+	 * @return boolean
+	 */
 	@Override
 	public boolean doesTestkitExist(String selectedEnvironment) {
 		File environmentFile = Installation.installation().environmentFile(selectedEnvironment);

@@ -205,6 +205,10 @@ public class XdsTestServiceManager extends CommonService {
 		return testKit;
 	}
 
+	TestKit getTestKit(File testkit){
+		return new TestKit(testkit);
+	}
+
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception  {
 		logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + collectionName);
 		try {
@@ -691,9 +695,14 @@ public class XdsTestServiceManager extends CommonService {
 		session.setMesaSessionName(sessionName);
 	}
 
-	public List<String> getTestdataSetListing(String testdataSetName) {
+	public List<String> getTestdataSetListing(String environmentName,String testSessionName,String testdataSetName) {
 		logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
-		return getTestKit().getTestdataSetListing(testdataSetName);
+		Set<String> testdataSetListing = new HashSet<String>();
+		for (File testkit:Installation.installation().testkitFiles(environmentName,testSessionName)) {
+			testdataSetListing.addAll(getTestKit(testkit).getTestdataSetListing(testdataSetName));
+		}
+		testdataSetListing.addAll(getTestKit().getTestdataSetListing(testdataSetName));
+		return new ArrayList<String>(testdataSetListing);
 	}
 
 	public List<String> getTestdataRegistryTests() {

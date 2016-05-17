@@ -62,7 +62,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 		row++;
 
 		testlistBox.setVisibleItemCount(1);
-		toolkitService.getTestdataSetListing("testdata-registry", loadRegistryTestListCallback);
+		toolkitService.getTestdataSetListing(getEnvironmentSelection(),getCurrentTestSession(),"testdata-registry", loadRegistryTestListCallback);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
