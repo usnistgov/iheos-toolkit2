@@ -15,7 +15,7 @@ import spock.lang.Shared
 /**
  * Created by onh2 on 5/17/16.
  */
-class SubmitRepositoryTestdataSpec extends ToolkitSpecification{
+class TestkitPathFinderSpec extends ToolkitSpecification{
     @Shared SimulatorBuilder spi
 
 
