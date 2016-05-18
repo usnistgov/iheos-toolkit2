@@ -721,7 +721,7 @@ public class XdsTest {
 					logDirectory = ts.logRepository.logDir(testLogId);
 
 				// This is the log.xml file
-				testConfig.logFile = new TestKitLog(logDirectory, testkit, altTestkit).getLogFile(testPlanFile);
+				testConfig.logFile = new TestKitLog(logDirectory, testSpec.getTestkit(), altTestkit).getLogFile(testPlanFile);
 				writeLogFiles = true;
 				if (writeLogFiles) {
 					logFiles.add(testConfig.logFile);

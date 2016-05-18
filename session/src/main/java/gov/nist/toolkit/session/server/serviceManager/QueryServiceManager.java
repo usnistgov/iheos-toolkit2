@@ -66,10 +66,11 @@ public class QueryServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> submitRepositoryTestdata(SiteSpec site,
-			String datasetName, String pid)  {
+	public List<Result> submitRepositoryTestdata(String testSessionName, SiteSpec site,
+												 String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitRepositoryTestdata");
 		try {
+			session.setMesaSessionName(testSessionName);
 			return new SubmitRepositoryTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);

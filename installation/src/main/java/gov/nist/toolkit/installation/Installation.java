@@ -18,6 +18,7 @@ public class Installation {
     public TkProps tkProps = new TkProps();
 
     public final static String DEFAULT_ENVIRONMENT_NAME = "default";
+    private final static Logger LOGGER=Logger.getLogger(Installation.class.getName());
 
     PropertyServiceManager propertyServiceMgr = null;
     static Logger logger = Logger.getLogger(Installation.class);
@@ -162,7 +163,6 @@ public class Installation {
      * @return list of testkit files
      */
     public List<File> testkitFiles(String environmentName,String mesaSessionName) {
-//		if (environmentName == null) environmentName=Installation.DEFAULT_ENVIRONMENT_NAME;
         List<File> testkits=new ArrayList<File>();
         if (environmentName!=null) {
             // paths to the testkit repository in the environment directory
@@ -171,12 +171,17 @@ public class Installation {
             if (mesaSessionName!=null) {
                 // path to the user's testkit (based on the name of the test session)
                 usrTestkit = new File(environmentTestkitsFile, mesaSessionName);
+            }else {
+                LOGGER.info("Mesa session name is null");
             }
             // path to the environment specific testkit (generated from Code Update)
             File environmentDefaultTestkit = new File(environmentTestkitsFile, "default");
             if (usrTestkit != null && usrTestkit.exists()) testkits.add(usrTestkit);
-            if (environmentDefaultTestkit != null && environmentDefaultTestkit.exists())
+            if (environmentDefaultTestkit != null && environmentDefaultTestkit.exists()) {
                 testkits.add(environmentDefaultTestkit);
+            }
+        }else{
+            LOGGER.info("Environment name is null");
         }
         // toolkit default testkit
         testkits.add(testkitFile());
@@ -218,8 +223,6 @@ public class Installation {
     public static String defaultServiceSessionName() { return "SERVICE"; }
 
     public File findTestkitFromTest(List<File> testkits, String id) {
-        // FIXME during mvn build testkits is null
-//        if (testkits!=null)
         for (File testkit:testkits){
             if (testkit!=null)
                 if (testkit.exists()){

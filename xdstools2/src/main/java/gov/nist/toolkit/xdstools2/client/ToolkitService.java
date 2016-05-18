@@ -132,7 +132,7 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception;
 	List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception;
 	List<Result> submitRegistryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
-	List<Result> submitRepositoryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
+	List<Result> submitRepositoryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;
 	List<Result> submitXDRTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
 	List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException ;

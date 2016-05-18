@@ -467,4 +467,8 @@ public class Xdstest2 {
 	public void setTestkits(List<File> testkits) {
 		this.testkits = testkits;
 	}
+
+	public List<File> getTestkits() {
+		return testkits;
+	}
 }

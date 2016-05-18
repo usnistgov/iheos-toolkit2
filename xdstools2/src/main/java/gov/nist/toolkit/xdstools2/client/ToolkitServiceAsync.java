@@ -124,8 +124,8 @@ public interface ToolkitServiceAsync {
 	void retrieveDocument(SiteSpec site, Uids uids, AsyncCallback<List<Result>> callback);
 	void retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax, AsyncCallback<List<Result>> callback);
 	void submitRegistryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
-	void submitRepositoryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
-	void submitXDRTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
+	void submitRepositoryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
+	void submitXDRTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
 	void provideAndRetrieve(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void lifecycleValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
