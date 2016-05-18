@@ -1,6 +1,6 @@
 package gov.nist.toolkit.soap.http;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;

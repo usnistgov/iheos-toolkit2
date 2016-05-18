@@ -1,7 +1,5 @@
 package gov.nist.toolkit.registrymsg.registry;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
-
 import java.util.ArrayList;
 import java.util.List;
 

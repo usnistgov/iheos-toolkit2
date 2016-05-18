@@ -1,6 +1,6 @@
 package gov.nist.toolkit.valregmsg.service;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 
 import java.util.HashMap;
 import java.util.Map;

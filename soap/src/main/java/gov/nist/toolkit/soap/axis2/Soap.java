@@ -3,17 +3,17 @@ package gov.nist.toolkit.soap.axis2;
 import gov.nist.toolkit.docref.WsDocRef;
 import gov.nist.toolkit.dsig.XMLDSigProcessor;
 import gov.nist.toolkit.securityCommon.SecurityParams;
-import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.wsseTool.api.config.KeystoreAccess;
 import gov.nist.toolkit.wsseTool.api.config.SecurityContext;
-import gov.nist.toolkit.wsseTool.api.config.SecurityContextFactory;
 import gov.nist.toolkit.xdsexception.*;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.soap.*;
+import org.apache.axiom.soap.SOAP11Constants;
+import org.apache.axiom.soap.SOAP12Constants;
+import org.apache.axiom.soap.SOAPEnvelope;
+import org.apache.axiom.soap.SOAPFactory;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.AddressingConstants;
@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+
+//import gov.nist.toolkit.soap.wsseToolkitAdapter.WsseHeaderGeneratorAdapter;
 
 //vbeera: The below imports should be used in case of the potential 2nd fix for MustUnderstand Check Exception.
 /*
@@ -219,35 +221,35 @@ public class Soap implements SoapInterface {
 		envelope.getBody().addChild(body);
 
 		setSoapHeader(envelope.getHeader());
-		if (useWSSEC) {
-			try {
-				String store = securityParams.getKeystore().getAbsolutePath();
-				String kPass = securityParams.getKeystorePassword();
-				String alias = "1";
-				String sPass = "changeit";
-
-				KeystoreAccess keystore = new KeystoreAccess(store, sPass,
-						alias, kPass);
-				SecurityContext context = SecurityContextFactory.getInstance();
-				context.setKeystore(keystore);
-
-				String pid = this.params.get("$patientid$");
-				parsePid(pid, context);
-				context.getParams().put("endpoint", this.endpoint);
-
-				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter
-						.buildHeader(context);
-
-				securityHeader = org.apache.axis2.util.XMLUtils.toOM(header);
-				getSoapHeader().addChild(securityHeader);
-
-			} catch (Exception e) {
-				log.error(
-						"!! error while trying to generate security header !!",
-						e);
-			}
-
-		}
+//		if (useWSSEC) {
+//			try {
+//				String store = securityParams.getKeystore().getAbsolutePath();
+//				String kPass = securityParams.getKeystorePassword();
+//				String alias = "1";
+//				String sPass = "changeit";
+//
+//				KeystoreAccess keystore = new KeystoreAccess(store, sPass,
+//						alias, kPass);
+//				SecurityContext context = SecurityContextFactory.getInstance();
+//				context.setKeystore(keystore);
+//
+//				String pid = this.params.get("$patientid$");
+//				parsePid(pid, context);
+//				context.getParams().put("endpoint", this.endpoint);
+//
+//				org.w3c.dom.Element header = WsseHeaderGeneratorAdapter
+//						.buildHeader(context);
+//
+//				securityHeader = org.apache.axis2.util.XMLUtils.toOM(header);
+//				getSoapHeader().addChild(securityHeader);
+//
+//			} catch (Exception e) {
+//				log.error(
+//						"!! error while trying to generate security header !!",
+//						e);
+//			}
+//
+//		}
 
 		return envelope;
 	}

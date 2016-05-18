@@ -5,7 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.AssocType;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.OldValueNewValueStatus;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex.StatusValue;

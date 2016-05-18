@@ -1,4 +1,4 @@
-package gov.nist.toolkit.registrysupport;
+package gov.nist.toolkit.commondatatypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
