@@ -11,6 +11,16 @@ public class PropertyManager {
 
 	static Logger logger = Logger.getLogger(PropertyManager.class);
 
+	static public final String ADMIN_PASSWORD      = "Admin_password";
+	static public final String TOOLKIT_HOST        = "Toolkit_Host";
+	static public final String TOOLKIT_PORT        = "Toolkit_Port";
+	static public final String TOOLKIT_TLS_PORT    = "Toolkit_TLS_Port";
+	static public final String GAZELLE_CONFIG_URL  = "Gazelle_Config_URL";
+	static public final String EXTERNAL_CACHE      = "External_Cache";
+	static public final String USE_ACTORS_FILE     = "Use_Actors_File";
+	static public final String TESTKIT             = "Testkit";
+	static public final String LISTENER_PORT_RANGE = "Listener_Port_Range";
+
 	String propFile;
 	Properties toolkitProperties = null;
 	
@@ -32,7 +42,7 @@ public class PropertyManager {
 	void validateProperty(String name, String value) throws Exception {
 		if (name == null)
 			throw new Exception("Property with name null not allowed");
-		if (name.equals("Admin_password")) {
+		if (name.equals(ADMIN_PASSWORD)) {
 			if (value == null || value.equals(""))
 				throw new Exception("Empty password not allowed");
 		}
@@ -69,30 +79,30 @@ public class PropertyManager {
 
 	public String getPassword() {
 		loadProperties();
-		return (String) toolkitProperties.get("Admin_password");
+		return (String) toolkitProperties.get(ADMIN_PASSWORD);
 	}
 	
 	public String getToolkitHost() {
 		loadProperties();
-		return (String) toolkitProperties.get("Toolkit_Host");
+		return (String) toolkitProperties.get(TOOLKIT_HOST);
 	}
 	
 	public String getToolkitPort() {
 		loadProperties();
-		return (String) toolkitProperties.get("Toolkit_Port");
+		return (String) toolkitProperties.get(TOOLKIT_PORT);
 	}
 	
 	public String getToolkitTlsPort() {
 		loadProperties();
-		return (String) toolkitProperties.get("Toolkit_TLS_Port");
+		return (String) toolkitProperties.get(TOOLKIT_TLS_PORT);
 	}
 
 	public List<String> getListenerPortRange() {
 		loadProperties();
-		String rangeString = (String) toolkitProperties.get("Listener_Port_Range");
-		if (rangeString == null) throw new ToolkitRuntimeException("Listener_Port_Range missing from toolkit.properties file");
+		String rangeString = (String) toolkitProperties.get(LISTENER_PORT_RANGE);
+		if (rangeString == null) throw new ToolkitRuntimeException(LISTENER_PORT_RANGE + " missing from toolkit.properties file");
 		String[] parts = rangeString.split(",");
-		if (parts.length != 2) throw new ToolkitRuntimeException("Listener_Port_Range from toolkit.properties is badly formtted - it must be port_number, port_number");
+		if (parts.length != 2) throw new ToolkitRuntimeException(LISTENER_PORT_RANGE + " from toolkit.properties is badly formtted - it must be port_number, port_number");
 		List<String> range = new ArrayList<>();
 		range.add(parts[0].trim());
 		range.add(parts[1].trim());
@@ -101,19 +111,19 @@ public class PropertyManager {
 
 	public String getToolkitGazelleConfigURL() {
 		loadProperties();
-		return (String) toolkitProperties.get("Gazelle_Config_URL");
+		return (String) toolkitProperties.get(GAZELLE_CONFIG_URL);
 	}
 	
 	public String getExternalCache() {
 		loadProperties();
-		String cache = (String) toolkitProperties.get("External_Cache");
+		String cache = (String) toolkitProperties.get(EXTERNAL_CACHE);
 		System.setProperty("External_Cache", cache);
 		return cache;
 	}
 	
 	public boolean isUseActorsFile() {
 		loadProperties();
-		String use = (String) toolkitProperties.get("Use_Actors_File");
+		String use = (String) toolkitProperties.get(USE_ACTORS_FILE);
 		if (use == null)
 			return true;
 		return "true".compareToIgnoreCase(use) == 0;
@@ -131,7 +141,7 @@ public class PropertyManager {
 
     public String getTestkit() {
         loadProperties();
-        String testkit = (String) toolkitProperties.get("Testkit");
+        String testkit = (String) toolkitProperties.get(TESTKIT);
         if (testkit != null) {
             testkit = testkit.trim();
             if ("".equals(testkit)) testkit = null;

@@ -52,4 +52,16 @@ class EndpointParserTest extends Specification {
 
         and: ep.updateHostAndPort('myhost', 'myport').getEndpoint() == 'http://myhost:myport/foo'
     }
+
+    def 'get host'() {
+        expect: new EndpointParser('http://host:port/foo').getHost() == 'host'
+    }
+
+    def 'get port'() {
+        expect: new EndpointParser('http://host:port/foo').getPort() == 'port'
+    }
+
+    def 'get default port'() {
+        expect: new EndpointParser('http://host/foo').getPort() == '80'
+    }
 }

@@ -62,6 +62,17 @@ public class EndpointParser {
         return this;
     }
 
+    public String getHost() {
+        String[] hp = parts[2].split(":");
+        return hp[0];
+    }
+
+    public String getPort() {
+        String[] hp = parts[2].split(":");
+        if (hp.length < 2) return "80";
+        return hp[1];
+    }
+
     public String getEndpoint() {
         StringBuilder buf = new StringBuilder();
 
