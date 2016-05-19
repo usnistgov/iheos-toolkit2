@@ -30,7 +30,7 @@ import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
-import gov.nist.toolkit.simulators.support.RunTestPlan;
+import gov.nist.toolkit.simulators.support.TransactionUtil;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.testengine.scripts.CodesUpdater;
@@ -566,11 +566,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	// Background test plan running methods
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public Result register(String username, TestInstance testInstance, String pid, SiteSpec registry) {
-		return RunTestPlan.register(getSession(),username,testInstance,pid,registry);
+	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) {
+		return TransactionUtil.register(getSession(),username,testInstance,registry,params);
 	}
-	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds) {
-		return RunTestPlan.registerWithLocalizedTrackingInODDS(getSession(),username,testInstance,pid,registry,odds);
+	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId odds, Map<String, String> params) {
+		return TransactionUtil.registerWithLocalizedTrackingInODDS(getSession(),username,testInstance,registry,odds, params);
 	}
 
 	//------------------------------------------------------------------------
@@ -581,7 +581,6 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<String> getSiteNamesByTranType(String transactionType) throws Exception {
 		return siteServiceManager.getSiteNamesByTran(transactionType, session().getId());
 	}
-	public Map<String, String> setupOnDemandDocumentEntry(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds) throws Exception { return null; }
 
 
 }
