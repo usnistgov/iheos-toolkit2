@@ -5,7 +5,7 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.client.Pid
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
-import gov.nist.toolkit.registrysupport.MetadataSupport
+import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.results.client.TestLogs
 import gov.nist.toolkit.toolkitApi.DocumentConsumer

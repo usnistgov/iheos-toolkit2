@@ -4,7 +4,7 @@
     <parent>
         <groupId>gov.nist.toolkit</groupId>
         <artifactId>tk-deps</artifactId>
-        <version>2.202.8</version>
+        <version>2.202.9</version>
         <relativePath>../tk-deps/pom.xml</relativePath>
     </parent>
 

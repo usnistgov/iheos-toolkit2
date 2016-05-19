@@ -1,6 +1,6 @@
 package gov.nist.toolkit.soap.axis2;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.soap.Document;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;

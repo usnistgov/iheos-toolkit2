@@ -3,7 +3,7 @@ package gov.nist.toolkit.valregmetadata.field;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.object.Association;
 import gov.nist.toolkit.valregmetadata.object.DocumentEntry;
 import gov.nist.toolkit.valregmetadata.object.Folder;

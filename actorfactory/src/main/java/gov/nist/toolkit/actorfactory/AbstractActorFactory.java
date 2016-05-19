@@ -227,7 +227,7 @@ public abstract class AbstractActorFactory {
 		+ Installation.installation().propertyServiceManager().getToolkitHost() 
 		+ ":" 
 		+ ((isTLS) ? Installation.installation().propertyServiceManager().getToolkitTlsPort() : Installation.installation().propertyServiceManager().getToolkitPort()) 
-		+ "/"  
+//		+ "/"  context name includes preceding /
 		+ contextName  
 		+ "/sim/" 
 		+ asc.getId() 

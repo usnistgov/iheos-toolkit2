@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import junit.framework.TestCase;
 
 import org.apache.axiom.om.OMAttribute;
