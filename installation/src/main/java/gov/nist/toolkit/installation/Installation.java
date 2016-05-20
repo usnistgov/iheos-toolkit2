@@ -18,7 +18,7 @@ public class Installation {
 	File externalCache = null;
 	String sep = File.separator;
 	public TkProps tkProps = new TkProps();
-	String servletContextName;
+	String servletContextName = "/xdstools2";
 
     public final static String DEFAULT_ENVIRONMENT_NAME = "default";
 
