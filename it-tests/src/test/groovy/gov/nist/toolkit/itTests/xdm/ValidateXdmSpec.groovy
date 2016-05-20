@@ -45,6 +45,8 @@ class ValidateXdmSpec extends ToolkitSpecification {
         }
 
         then:
-        report.pass
+        !report.pass
+        report.report.contains('Filename is limited to 8 characters')
     }
+
 }
