@@ -2,15 +2,13 @@ package gov.nist.toolkit.testengine.transactions;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.testengine.engine.HomeAttribute;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
-
-import java.util.List;
 
 public class XCQTransaction extends StoredQueryTransaction {
 	String expectedHomeCommunityId = null;

@@ -6,7 +6,7 @@ package gov.nist.toolkit.registrymsg.repository;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 
 /**

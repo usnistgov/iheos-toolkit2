@@ -4,7 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valregmetadata.datatype.AnyFormat;
 import gov.nist.toolkit.valregmetadata.datatype.CxFormat;
 import gov.nist.toolkit.valregmetadata.datatype.DtmFormat;
@@ -310,7 +310,7 @@ public class DocumentEntry extends AbstractRegistryObject implements TopLevelObj
 				if (getSlot(slotName) == null)
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);
 			}
-		} else if (!(vc.isXDM || vc.isXDRLimited)) {
+		} else if (!(vc.isXDM || vc.isXDRLimited || vc.isXDRMinimal)) {
 			for (String slotName : requiredSlots) {
 				if (getSlot(slotName) == null)
 					er.err(XdsErrorCode.Code.XDSRegistryMetadataError, identifyingString() + ": Slot " + slotName + " missing", this, table415);

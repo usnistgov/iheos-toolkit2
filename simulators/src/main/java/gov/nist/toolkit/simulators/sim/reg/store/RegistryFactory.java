@@ -2,7 +2,7 @@ package gov.nist.toolkit.simulators.sim.reg.store;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import org.apache.axiom.om.OMElement;
 

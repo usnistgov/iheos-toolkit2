@@ -20,18 +20,18 @@ import java.io.IOException;
  */
 abstract class AbstractActor implements AbstractActorInterface {
    EngineSpi engine;
-   SimConfigResource config;
+   SimConfig config;
 
    public SimConfig getConfig() {
       return config;
    }
 
-   public SimConfigResource update(SimConfigResource config) throws ToolkitServiceException {
+   public SimConfig update(SimConfig config) throws ToolkitServiceException {
       config = engine.update(config);
       return config;
    }
 
-   public void setConfig(SimConfigResource cnf) {
+   public void setConfig(SimConfig cnf) {
       config = cnf;
    }
 

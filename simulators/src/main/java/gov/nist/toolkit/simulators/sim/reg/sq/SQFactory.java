@@ -3,7 +3,7 @@ package gov.nist.toolkit.simulators.sim.reg.sq;
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;

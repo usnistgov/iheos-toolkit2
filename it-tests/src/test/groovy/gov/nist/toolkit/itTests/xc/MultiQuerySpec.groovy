@@ -3,7 +3,7 @@ package gov.nist.toolkit.itTests.xc
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
-import gov.nist.toolkit.registrysupport.MetadataSupport
+import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.SiteSpec

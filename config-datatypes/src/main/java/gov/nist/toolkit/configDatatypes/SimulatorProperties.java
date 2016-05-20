@@ -6,6 +6,9 @@ package gov.nist.toolkit.configDatatypes;
  * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#setProperty()
  */
 public class SimulatorProperties {
+
+    static public boolean isTlsEndpoint(String name) { return name != null && name.indexOf("TLS") != -1; }
+
     /**
      * Boolean property controlling whether Metadata Update is enabled on Registry Simulator.
      */

@@ -2,7 +2,6 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.Result;
@@ -169,7 +168,7 @@ public class TransactionUtil {
                     DocumentEntryDetail ded = new DocumentEntryDetail();
                     ded.setUniqueId(result.stepResults.get(0).getMetadata().docEntries.get(0).uniqueId);
                     ded.setId(result.stepResults.get(0).getMetadata().docEntries.get(0).id);
-                    ded.setEntryType(MetadataSupport.XDSRODDEDocumentEntry_objectType_uuid);
+                    ded.setEntryType("urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248");
                     ded.setTimestamp(result.getTimestamp());
                     ded.setTestInstanceId(testInstance.getId());
                     ded.setPatientId(result.stepResults.get(0).getMetadata().docEntries.get(0).patientId);
