@@ -16,6 +16,7 @@ import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.testengine.engine.PatientIdAllocator
 import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2
@@ -141,8 +142,17 @@ public class Session implements SecurityParams {
 				Site st = sites.getSite(siteSpec.name);
                 logger.info("site is " + st);
                 logger.info(st.describe());
-				repUid = st.getRepositoryUniqueId();
+
+				// Fix Issue 98 (ODDS)
+				TransactionBean transactionBean  =  st.getRepositoryBean(TransactionBean.RepositoryType.ODDS,siteSpec.isTls); // .repositories.transactions.get(0).repositoryType
+				if (transactionBean!=null) {
+					repUid = st.getRepositoryUniqueId(TransactionBean.RepositoryType.ODDS);
+				} else {
+					repUid = st.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
+				}
+
 			} catch (Exception e) {
+				logger.warn(e.toString());
 			}
 		}
 

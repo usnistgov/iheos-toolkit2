@@ -205,7 +205,7 @@ public interface ToolkitServiceAsync {
 	// Background test plan running methods
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	void register(String username, TestInstance testInstance, String pid, SiteSpec registry, AsyncCallback<Result> callback);
-	void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds, AsyncCallback<Map<String, String>> callback);
+	void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback);
+	void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId odds, Map<String, String> params, AsyncCallback<Map<String, String>> callback);
 
 }

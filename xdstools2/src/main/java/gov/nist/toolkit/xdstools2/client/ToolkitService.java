@@ -213,7 +213,7 @@ public interface ToolkitService extends RemoteService  {
 	// Background test plan running methods
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	public Result register(String username, TestInstance testInstance, String pid, SiteSpec registry) throws Exception;
-	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, String pid, SiteSpec registry, SiteSpec odds) throws Exception;
+	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
+	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
 
 }

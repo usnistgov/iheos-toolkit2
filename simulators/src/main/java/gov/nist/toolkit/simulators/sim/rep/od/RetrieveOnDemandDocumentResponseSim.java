@@ -22,7 +22,6 @@ import gov.nist.toolkit.simulators.support.TransactionSimulator;
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
-import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
@@ -61,157 +60,216 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 		try {
 			response = new RetrieveMultipleResponse();
 
-			// TODO: Parameterize persistence option so that the same class can be used instead of one for Persistence and non-Persistence.
-			// TODO: Register an ODDE
+			// Make sure the documentUids are real ones and not bogus to throw the XDSDocumentUniqueIdError
+			dsSimCommon.addDocumentAttachments(documentUids, er);
 
-			String siteName = getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite).asList().get(0);
+			Collection<StoredDocument> documents = dsSimCommon.getAttachments();
+
+			/*
+			 Possible cases (x2 Persistence Option (P-on) on/off):
+			 1a. Single UID and it is not found
+				 P-on:
+				 	1. PnR
+				 	2. Get the content to include in the response
+				 P-off:
+				 	1. (No PnR) Get the content to include in the response
+			 1b. Single UID found
+			 2a. Multiple UID and all not found
+			 2b. Multiple UID and partial results
+			 2c. Multiple UID and all found
+			 */
+			// ------------------------------------------------
+
+//			String siteName = getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite).asList().get(0);
 
 
 			// ---------------------------------------------------------------------------------------------------------
 
-			/***
-			 * TODO?: Extract class for the persistence?
-			 * Document Response WBS:
-			 * A) Check if persistence option is enabled for this sim, if it is on, then:
-			 *
-			 *  1) Get content supply state index, which could range from 0 to the number of available documents on disk minus 1
-			 *  	a) if not in the last section, do a PnR (using api.runTest and replacing the prior document as needed) with the current section in the content bundle
-			 *  	c) if in the last section, return previous document without a PnR
-			 *  3) Get the StoredDocument resulting from the PnR (store the document entry Uuid)
-			 *  4) Set NewDocumentId in the response
-			 *  5) Update content supply state index -- it is the content of the document entry in the ODDS repository containing the ODDE UID, which is created when the original ODDE is initialized by the Initialize button.
-			 * B) If no persistence, then just serve up the content from disk
-			 */
+			OMElement root = response.getRoot();
 
-			String testPlanId =  getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
-			SimulatorConfigElement supplyStateIdx = getSimulatorConfig().get(SimulatorProperties.oddsContentSupplyState);
-			String contentBundleState = null;
+			for (StoredDocument document : documents) {
 
-			String sessionName = getSimulatorConfig().getId().getUser();
-			TestInstance testId = new TestInstance(testPlanId);
+				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
 
-			Map<String, String> params = new HashMap<>();
-			String patientId =  getSimulatorConfig().get(SimulatorProperties.oddePatientId).asString(); //  "SKB1^^^&1.2.960&ISO";
-			logger.info("patientId is: " + patientId);
-			params.put("$patientid$", patientId);
-			boolean stopOnFirstError = true;
- 			Session myTestSession = new Session(Installation.installation().warHome(), sessionName);
+				OMElement repId = MetadataSupport.om_factory.createOMElement(MetadataSupport.repository_unique_id_qnamens);
+				repId.setText(repositoryUniqueId);
+				docResponse.addChild(repId);
 
-			XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(myTestSession);
+				OMElement docId = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_unique_id_qnamens);
+				docId.setText(document.getUid());
+				docResponse.addChild(docId);
 
-			List<String> testPlanSections = xdsTestServiceManager.getTestIndex(testPlanId);
-			String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
-			String contentBundle = testPlanId + "/" + registerSection + "/" + "ContentBundle";
-			List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
-			int contentBundleIdx = (supplyStateIdx==null || (supplyStateIdx!=null && "".equals(supplyStateIdx.asString())))?0: (supplyStateIdx!=null?Integer.parseInt(supplyStateIdx.asString()):0);
-			String section = registerSection + "/" + "ContentBundle" + "/" + contentBundleSections.get(contentBundleIdx);
-			logger.info("Selecting contentBundle section: " + section);
+				// ----- Begin On-Demand
+				OMElement newDocId = MetadataSupport.om_factory.createOMElement(MetadataSupport.newDocumentUniqueId);
+				newDocId.setText(document.getUid() + "." + document.getEntryDetail().getSupplyStateIndex());
+				docResponse.addChild(newDocId);
 
-			List<String> sections = new ArrayList<String>(){};
-			sections.add(section);
+				// TODO: Find out if the NewRepositoryUniqueId needs to be added in. (Vol. 2b, 3.43.5.1.3).
+				// A: Not required without the Persistence option. (Bill)
+				// ------ End On-Demand
 
-			Result result = null;
-			// FIXME:
-			// TODO: Result result = RunTestPlan.Transaction(siteName, sessionName, testId, params, stopOnFirstError, myTestSession, xdsTestServiceManager, sections);
+				OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);
+				mimeType.setText(document.getMimeType());
+				docResponse.addChild(mimeType);
+
+				OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
+				docResponse.addChild(doc);
+
+				OMElement include = MetadataSupport.om_factory.createOMElement(MetadataSupport.xop_include_qnamens);
+				OMAttribute href = MetadataSupport.om_factory.createOMAttribute("href", null, "cid:" + document.cid);
+				include.addAttribute(href);
+				doc.addChild(include);
+
+				root.addChild(docResponse);
+			}
 
 
 			// ------------------------------------------------------------------------------------------------------
-
-			if (result.passed()) {
-				// 1. Update the supplyStateIdx
-				// NOTE: UI needs to be reloaded for this change to be reflected
-				int nextStateIdx = ((contentBundleSections.size() < contentBundleIdx+1)?contentBundleIdx+1:contentBundleSections.size()-1); // Zero based index adjustment
-				supplyStateIdx.setValue(""+nextStateIdx);
-				getSimulatorConfig().get(SimulatorProperties.oddsContentSupplyState).setValue(""+nextStateIdx);
-				new OnDemandDocumentSourceActorFactory().saveConfiguration(getSimulatorConfig());
+		} catch (Exception e) {
+				er.err(Code.XDSRepositoryError, e);
+				return;
+			}
+	}
 
 
+	private void x() {
+		/***
+		 * TODO?: Extract class for the persistence?
+		 * Document Response WBS:
+		 * A) Check if persistence option is enabled for this sim, if it is on, then:
+		 *
+		 *  1) Get content supply state index, which could range from 0 to the number of available documents on disk minus 1
+		 *  	a) if not in the last section, do a PnR (using api.runTest and replacing the prior document as needed) with the current section in the content bundle
+		 *  	c) if in the last section, return previous document without a PnR
+		 *  3) Get the StoredDocument resulting from the PnR (store the document entry Uuid)
+		 *  4) Set NewDocumentId in the response
+		 *  5) Update content supply state index -- it is the content of the document entry in the ODDS repository containing the ODDE UID, which is created when the original ODDE is initialized by the Initialize button.
+		 * B) If no persistence, then just serve up the content from disk
+		 */
 
-				// 2. Send retrieve response
-				// At this point, there are no documents in this repository, so insert a fake one here.
-				String dynamicDocumentUuid = "od-doc-uid";
-				StoredDocument storedDocument = repIndex.getDocumentCollection().getStoredDocument(dynamicDocumentUuid);
-				if (storedDocument==null) { 			// Begin insert a fake document here
-					storedDocument =  new StoredDocument("nonexistent-od-file-path",dynamicDocumentUuid);
-					storedDocument.setContent("This content is served on-demand.".getBytes());
-					storedDocument.setMimetype("text/plain");
+		try {
 
-					repIndex.getDocumentCollection().add(storedDocument);
-				}
-				// End
+		String testPlanId =  getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
+		SimulatorConfigElement supplyStateIdx = getSimulatorConfig().get(SimulatorProperties.oddsContentSupplyState);
+		String contentBundleState = null;
 
-				// Replace all OD promise Uuids with fake dynamic contents
-				for (String uid : documentUids) {
-					dynamicDocumentUids.add(dynamicDocumentUuid);
-				}
+		String sessionName = getSimulatorConfig().getId().getUser();
+		TestInstance testId = new TestInstance(testPlanId);
 
-				dsSimCommon.addDocumentAttachments(dynamicDocumentUids, er); // Old param was (documentUids)
-				// End On-Demand update block
+		Map<String, String> params = new HashMap<>();
+		String patientId =  getSimulatorConfig().get(SimulatorProperties.oddePatientId).asString(); //  "SKB1^^^&1.2.960&ISO";
+		logger.info("patientId is: " + patientId);
+		params.put("$patientid$", patientId);
+		boolean stopOnFirstError = true;
+		Session myTestSession = new Session(Installation.installation().warHome(), sessionName);
 
-				Collection<StoredDocument> documents = dsSimCommon.getAttachments();
+		XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(myTestSession);
 
-				OMElement root = response.getRoot();
+		List<String> testPlanSections = xdsTestServiceManager.getTestIndex(testPlanId);
+		String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
+		String contentBundle = testPlanId + "/" + registerSection + "/" + "ContentBundle";
+		List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
+		int contentBundleIdx = (supplyStateIdx==null || (supplyStateIdx!=null && "".equals(supplyStateIdx.asString())))?0: (supplyStateIdx!=null?Integer.parseInt(supplyStateIdx.asString()):0);
+		String section = registerSection + "/" + "ContentBundle" + "/" + contentBundleSections.get(contentBundleIdx);
+		logger.info("Selecting contentBundle section: " + section);
 
-				if (documents!= null && documentUids!=null)
-					if (documents.size() != documentUids.size()) {// This should always be equal in this case and only for OD where documents are bogus
-						er.err(Code.XDSRepositoryError, new ToolkitRuntimeException("The On-Demand StoredDocument collection size does not match with the requested number of Uids."));
-						return;
-					}
+		List<String> sections = new ArrayList<String>(){};
+		sections.add(section);
 
-				int cx = 0;
-				for (StoredDocument document : documents) {
-					String uid = document.getUid();
+		Result result = null;
+		// FIXME:
+		// TODO: Result result = RunTestPlan.Transaction(siteName, sessionName, testId, params, stopOnFirstError, myTestSession, xdsTestServiceManager, sections);
 
-					StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
+		if (result.passed()) {
+			// 1. Update the supplyStateIdx
+			// NOTE: UI needs to be reloaded for this change to be reflected
+			int nextStateIdx = ((contentBundleSections.size() < contentBundleIdx+1)?contentBundleIdx+1:contentBundleSections.size()-1); // Zero based index adjustment
+			supplyStateIdx.setValue(""+nextStateIdx);
+			getSimulatorConfig().get(SimulatorProperties.oddsContentSupplyState).setValue(""+nextStateIdx);
+			new OnDemandDocumentSourceActorFactory().saveConfiguration(getSimulatorConfig());
 
-					OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
 
-					OMElement repId = MetadataSupport.om_factory.createOMElement(MetadataSupport.repository_unique_id_qnamens);
-					repId.setText(repositoryUniqueId);
-					docResponse.addChild(repId);
 
-					OMElement docId = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_unique_id_qnamens);
-					docId.setText(documentUids.get(cx));
+			// 2. Send retrieve response
+			// At this point, there are no documents in this repository, so insert a fake one here.
+			String dynamicDocumentUuid = "od-doc-uid";
+			StoredDocument storedDocument = repIndex.getDocumentCollection().getStoredDocument(dynamicDocumentUuid);
+			if (storedDocument==null) { 			// Begin insert a fake document here
+				storedDocument =  new StoredDocument("nonexistent-od-file-path",dynamicDocumentUuid);
+				storedDocument.setContent("This content is served on-demand.".getBytes());
+				storedDocument.setMimetype("text/plain");
+
+				repIndex.getDocumentCollection().add(storedDocument);
+			}
+			// End
+
+			// Replace all OD promise Uuids with fake dynamic contents
+			for (String uid : documentUids) {
+				dynamicDocumentUids.add(dynamicDocumentUuid);
+			}
+
+			dsSimCommon.addDocumentAttachments(dynamicDocumentUids, er); // Old param was (documentUids)
+			// End On-Demand update block
+
+			Collection<StoredDocument> documents = dsSimCommon.getAttachments();
+
+			OMElement root = response.getRoot();
+
+
+			int cx = 0;
+			for (StoredDocument document : documents) {
+				String uid = document.getUid();
+
+				StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
+
+				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
+
+				OMElement repId = MetadataSupport.om_factory.createOMElement(MetadataSupport.repository_unique_id_qnamens);
+				repId.setText(repositoryUniqueId);
+				docResponse.addChild(repId);
+
+				OMElement docId = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_unique_id_qnamens);
+				docId.setText(documentUids.get(cx));
 				/* "sd.uid" is the value of the bogus StoredDocument inserted above.
 				We are restoring the original promise Id. This is because OD changes are temporary in this class and changes elsewhere should not be needed.
 				The order of the collection iterator doesn't matter here because the bogus content is exactly the same for any OD promise (for now).
 				* */
-					docResponse.addChild(docId);
+				docResponse.addChild(docId);
 
-					// Begin On-Demand
-					OMElement newDocId = MetadataSupport.om_factory.createOMElement(MetadataSupport.newDocumentUniqueId);
-					newDocId.setText(documentUids.get(cx++) + "." + supplyStateIdx );
-					docResponse.addChild(newDocId);
+				// ----- Begin On-Demand
+				OMElement newDocId = MetadataSupport.om_factory.createOMElement(MetadataSupport.newDocumentUniqueId);
+				newDocId.setText(documentUids.get(cx++) + "." + supplyStateIdx );
+				docResponse.addChild(newDocId);
 
-					// TODO: Find out if the NewRepositoryUniqueId needs to be added in. (Vol. 2b, 3.43.5.1.3).
-					// A: Not required without the Persistence option. (Bill)
-					// End On-Demand
+				// TODO: Find out if the NewRepositoryUniqueId needs to be added in. (Vol. 2b, 3.43.5.1.3).
+				// A: Not required without the Persistence option. (Bill)
+				// ------ End On-Demand
 
-					OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);
-					mimeType.setText(sd.getMimeType());
-					docResponse.addChild(mimeType);
+				OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);
+				mimeType.setText(sd.getMimeType());
+				docResponse.addChild(mimeType);
 
-					OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
-					docResponse.addChild(doc);
+				OMElement doc = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_qnamens);
+				docResponse.addChild(doc);
 
-					OMElement include = MetadataSupport.om_factory.createOMElement(MetadataSupport.xop_include_qnamens);
-					OMAttribute href = MetadataSupport.om_factory.createOMAttribute("href", null, "cid:" + document.cid);
-					include.addAttribute(href);
-					doc.addChild(include);
+				OMElement include = MetadataSupport.om_factory.createOMElement(MetadataSupport.xop_include_qnamens);
+				OMAttribute href = MetadataSupport.om_factory.createOMAttribute("href", null, "cid:" + document.cid);
+				include.addAttribute(href);
+				doc.addChild(include);
 
-					root.addChild(docResponse);
-				}
-			} else {
-				// TODO: what to do if PnR failed?
+				root.addChild(docResponse);
 			}
+		} else {
+			// TODO: what to do if PnR failed?
+		}
 
+		} catch (Exception ex) {
 
 		}
-		catch (Exception e) {
-			er.err(Code.XDSRepositoryError, e);
-			return;
-		}
+
 	}
+
+
 
 	/*
 	private Result Transaction(String siteName, String sessionName, TestInstance testId, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, List<String> sections) {

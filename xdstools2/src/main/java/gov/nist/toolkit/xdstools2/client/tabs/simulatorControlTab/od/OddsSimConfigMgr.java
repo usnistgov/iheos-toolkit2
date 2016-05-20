@@ -52,8 +52,10 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     SiteSelectionPresenter regSSP;
     ConfigEditBox oddePatientIdCEBox = new ConfigEditBox();
     ConfigEditBox testPlanCEBox = new ConfigEditBox();
+    ConfigEditBox oddsReposCEBox = new ConfigEditBox();
     Map<String, String> oddeMap = new HashMap<String, String>();
-
+    Button regButton = new Button("Initialize"); // Register an On-Demand Document Entry
+    HTML regActionErrors = new HTML();
     int row = 0;
 
     public OddsSimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
@@ -238,6 +240,9 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         }
 
+        // TODO:
+        // FIXME: Remove SCE for supply state use, values should be coming from an ODDS rep index
+        // May need a server side call to retrieve a map containing values
         SimulatorConfigElement oddsContentSupplyState = config.get(SimulatorProperties.oddsContentSupplyState);
         if (oddsContentSupplyState != null) {
 
@@ -305,8 +310,8 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         SimulatorConfigElement repositoryUniqueId = config.get(SimulatorProperties.repositoryUniqueId);
         if (repositoryUniqueId!=null) {
             newRow();
-            ConfigEditBox oddsReposCeb = new ConfigEditBox(repositoryUniqueId, tbl, getRow());
-            oddsReposCeb.getLblTextBox().setText("ODDS " + repositoryUniqueId.name);
+            oddsReposCEBox.configure(repositoryUniqueId, tbl, getRow());
+            oddsReposCEBox.getLblTextBox().setText("ODDS " + repositoryUniqueId.name);
         }
 
 
@@ -331,6 +336,9 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             tbl.setWidget(getRow(),0,new HTML("&nbsp;"));
             tbl.setWidget(getRow(),1,regActionVPanel);
 
+            newRow();
+            tbl.setWidget(getRow(),0,regActionErrors);
+            tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
 
             simulatorControlTab.toolkitService.getSiteNamesByTranType(TransactionType.REGISTER_ODDE.getName(), new AsyncCallback<List<String>>() {
@@ -356,7 +364,6 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                         regSiteBoxes.add(new HTML("<ul>" +  errMsg + "</ul>"));
 
                     } else {
-                        Button regButton = new Button("Initialize"); // Register an On-Demand Document Entry
                         regButton.getElement().getStyle().setPaddingLeft(6, Style.Unit.PX);
 //                            verticalPanel.getElement().getStyle().setMarginBottom(4, Style.Unit.PX);
 //                            regButton.getElement().getStyle().setMarginTop(4, Style.Unit.PX);
@@ -364,13 +371,13 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
                         regActionVPanel.add(regButton);
 
-
                         regButton.addClickHandler(
                                 new ClickHandler() {
                                     @Override
                                     public void onClick(ClickEvent clickEvent) {
                                         oddsRegistrySite.setValue(regSSP.getSelected());
                                         if (validateParams()) {
+                                            setRegButton("Please wait...", false);
                                             saveSimConfig();
                                             registerODDE();
                                         }
@@ -410,19 +417,42 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             }
         }
 
+        Map<String, String> params = new HashMap<>();
+        params.put("$patientid$", oddePatientIdCEBox.getTb().getValue());
+        params.put("$repuid$", oddsReposCEBox.getTb().getValue());
+
         getSimulatorControlTab().toolkitService.registerWithLocalizedTrackingInODDS(getConfig().getId().getUser(), new TestInstance(testPlanCEBox.getTb().getValue())
-                , oddePatientIdCEBox.getTb().getValue(), new SiteSpec(regSSP.getSelected().get(0)), new SiteSpec(getConfig().getId().toString())
+                , new SiteSpec(regSSP.getSelected().get(0)), getConfig().getId() , params
                 , new AsyncCallback<Map<String, String>>() {
                     @Override
                     public void onFailure(Throwable throwable) {
-                        new PopupMessage("Sorry, registration of an ODDE failed: " + throwable.getMessage());
+                        regActionErrors.getElement().getStyle().setColor("red");
+                        regActionErrors.setText("Error: " + throwable.getMessage());
+
+                        setRegButton("Initialize", true);
                     }
 
                     @Override
-                    public void onSuccess(Map<String, String> uid_SupplyIdx) {
+                    public void onSuccess(Map<String, String> responseMap) {
 
-                        for (String key : uid_SupplyIdx.keySet()) {
-                            new PopupMessage(uid_SupplyIdx.get(key));
+                        setRegButton("Initialize", true);
+                        if (responseMap.containsKey("error")) {
+//                            new PopupMessage("Sorry, registration of an On-Demand Document Entry failed: ");
+                            regActionErrors.getElement().getStyle().setColor("red");
+
+                            StringBuffer sb = new StringBuffer();
+                            sb.append(responseMap.get("error"));
+                            sb.append("<br/>");
+
+                            for (int cx=0; cx < responseMap.size()-1; cx++) {
+                                sb.append(responseMap.get("assertion"+cx));
+                                sb.append("<br/>");
+                            }
+                            regActionErrors.setHTML(sb.toString());
+                        } else {
+                            regActionErrors.getElement().getStyle().setColor("black");
+                            regActionErrors.setText("Registration was successful. ODDE Id is " + responseMap.get("key"));
+
                         }
 
 
@@ -432,6 +462,11 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
 
+    }
+
+    private void setRegButton(String initialize, boolean enabled) {
+        regButton.setText(initialize);
+        regButton.setEnabled(enabled);
     }
 
     /**
@@ -446,6 +481,10 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         if ("".equals(testPlanCEBox.getTb().getValue())) {
             errMsg += "<li>A testplan number to Register an On-Demand Document Entry and to Supply Content is required.</li>";
         }
+        if ("".equals(oddsReposCEBox.getTb().getValue())) {
+            errMsg += "<li>An ODDS repository Id is required.</li>";
+        }
+
 
             // If the persistence option is ON, then saving should activate the register OD transaction.
         if (persistenceCb.getValue()) {

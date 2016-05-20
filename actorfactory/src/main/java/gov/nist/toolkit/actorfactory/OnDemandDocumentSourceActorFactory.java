@@ -21,13 +21,15 @@ import java.util.List;
  */
 public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 
-	static final String repositoryUniqueIdBase = "1.1.4567248.1."; // It is an arbitrary value.
+	static final String repositoryUniqueIdBase = "1.1.4567248.1."; // This arbitrary value is different from the regular repository unique id.
 	static int repositoryUniqueIdIncr = 1;
 	boolean isRecipient = false;
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(
-				TransactionType.RETRIEVE);
+//				TransactionType.RETRIEVE
+				TransactionType.ODDS_RETRIEVE
+		);
 
 
 	// Label as a DocumentRecipient

@@ -58,6 +58,7 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
             "gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator",
+//            Arrays.asList(TransactionType.RETRIEVE),
             Arrays.asList(TransactionType.ODDS_RETRIEVE),
             true,
             "odds"
@@ -119,6 +120,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null
     ),
 
+    // Issue 78 (ODDS Issue 98)
     // TODO - actorType lookup problem
     // This at the end of the list on purpose.  From the UI actor types are selected by the transactions they support.
     // A problem came up in TransactionSelectionManager#generateSiteSpec() where this gets chosen instead of
