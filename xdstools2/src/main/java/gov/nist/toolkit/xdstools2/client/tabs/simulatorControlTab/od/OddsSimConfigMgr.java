@@ -15,6 +15,7 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
@@ -53,10 +54,10 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     ConfigEditBox oddePatientIdCEBox = new ConfigEditBox();
     ConfigEditBox testPlanCEBox = new ConfigEditBox();
     ConfigEditBox oddsReposCEBox = new ConfigEditBox();
-    Map<String, String> oddeMap = new HashMap<String, String>();
     Button regButton = new Button("Initialize"); // Register an On-Demand Document Entry
-    HTML regActionErrors = new HTML();
+    HTML regActionMessage = new HTML();
     int row = 0;
+    FlexTable oddeEntriesTbl = new FlexTable();
 
     public OddsSimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
 
@@ -240,31 +241,18 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         }
 
-        // TODO:
-        // FIXME: Remove SCE for supply state use, values should be coming from an ODDS rep index
-        // May need a server side call to retrieve a map containing values
-        SimulatorConfigElement oddsContentSupplyState = config.get(SimulatorProperties.oddsContentSupplyState);
-        if (oddsContentSupplyState != null) {
 
-            newRow();
-            tbl.setWidget(getRow(), 0, new HTML(oddsContentSupplyState.name));
-            FlexTable oddeEntries = new FlexTable();
-            oddeEntries.setBorderWidth(1);
-            int oddeRow = 0;
-            oddeEntries.setWidget(oddeRow, 0, new HTML("On-Demand Document Entry ID"));
-            oddeEntries.setWidget(oddeRow, 1, new HTML("Supply State Index"));
-            oddeRow++;
-            if (!oddeMap.isEmpty()) {
-                for (String key : oddeMap.keySet()) {
-                    oddeEntries.setWidget(oddeRow, 0, new HTML(key));
-                    oddeEntries.setWidget(oddeRow, 1, new HTML(oddeMap.get(key)));
-                    oddeRow++;
-                }
-            }
-            tbl.setWidget(getRow(), 1, oddeEntries);
 
-        }
 
+
+        newRow();
+        tbl.setWidget(getRow(), 0, new HTML("Content Supply State"));
+
+        oddeEntriesTbl.setBorderWidth(1);
+
+        tbl.setWidget(getRow(), 1, oddeEntriesTbl);
+
+        getOdDocumentEntries(simulatorControlTab);
         addTable(tbl);
 
         getSaveButton().addClickHandler(
@@ -280,6 +268,36 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
 
+    }
+
+    private void getOdDocumentEntries(SimulatorControlTab simulatorControlTab) {
+        simulatorControlTab.toolkitService.getOnDemandDocumentEntryDetails(getConfig().getId(), new AsyncCallback<List<DocumentEntryDetail>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                regActionMessage.getElement().getStyle().setColor("red");
+                regActionMessage.setText("getOnDemandDocumentEntryDetails Error:" + throwable.toString());
+            }
+
+            @Override
+            public void onSuccess(List<DocumentEntryDetail> documentEntryDetails) {
+                oddeEntriesTbl.clear();
+                int oddeRow = 0;
+                oddeEntriesTbl.setWidget(oddeRow, 0, new HTML("On-Demand Document Entry ID"));
+                oddeEntriesTbl.setWidget(oddeRow, 1, new HTML("Registry"));
+                oddeEntriesTbl.setWidget(oddeRow, 2, new HTML("Patient ID"));
+                oddeEntriesTbl.setWidget(oddeRow, 3, new HTML("Supply State Index"));
+                oddeRow++;
+                if (documentEntryDetails!=null) {
+                    for (DocumentEntryDetail ded : documentEntryDetails) {
+                        oddeEntriesTbl.setWidget(oddeRow, 0, new HTML(ded.getUniqueId()));
+                        oddeEntriesTbl.setWidget(oddeRow, 1, new HTML(ded.getRegistrySite().getName()));
+                        oddeEntriesTbl.setWidget(oddeRow, 2, new HTML(ded.getPatientId()));
+                        oddeEntriesTbl.setWidget(oddeRow, 3, new HTML(""+ded.getSupplyStateIndex()));
+                        oddeRow++;
+                    }
+                }
+            }
+        });
     }
 
     private void displayRegisterOptions() {
@@ -337,7 +355,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
             tbl.setWidget(getRow(),1,regActionVPanel);
 
             newRow();
-            tbl.setWidget(getRow(),0,regActionErrors);
+            tbl.setWidget(getRow(),0, regActionMessage);
             tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
 
@@ -426,8 +444,8 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 , new AsyncCallback<Map<String, String>>() {
                     @Override
                     public void onFailure(Throwable throwable) {
-                        regActionErrors.getElement().getStyle().setColor("red");
-                        regActionErrors.setText("Error: " + throwable.getMessage());
+                        regActionMessage.getElement().getStyle().setColor("red");
+                        regActionMessage.setText("Error: " + throwable.getMessage());
 
                         setRegButton("Initialize", true);
                     }
@@ -438,7 +456,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                         setRegButton("Initialize", true);
                         if (responseMap.containsKey("error")) {
 //                            new PopupMessage("Sorry, registration of an On-Demand Document Entry failed: ");
-                            regActionErrors.getElement().getStyle().setColor("red");
+                            regActionMessage.getElement().getStyle().setColor("red");
 
                             StringBuffer sb = new StringBuffer();
                             sb.append(responseMap.get("error"));
@@ -448,11 +466,11 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                                 sb.append(responseMap.get("assertion"+cx));
                                 sb.append("<br/>");
                             }
-                            regActionErrors.setHTML(sb.toString());
+                            regActionMessage.setHTML(sb.toString());
                         } else {
-                            regActionErrors.getElement().getStyle().setColor("black");
-                            regActionErrors.setText("Registration was successful. ODDE Id is " + responseMap.get("key"));
-
+                            regActionMessage.getElement().getStyle().setColor("black");
+                            regActionMessage.setText("Registration was successful. ODDE Id is " + responseMap.get("key"));
+                            getOdDocumentEntries(getSimulatorControlTab());
                         }
 
 

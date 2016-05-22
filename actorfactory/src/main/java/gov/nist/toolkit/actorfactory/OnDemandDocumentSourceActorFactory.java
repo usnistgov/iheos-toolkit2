@@ -57,7 +57,7 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 		addFixedEndpoint(sc, SimulatorProperties.retrieveEndpoint, actorType, TransactionType.ODDS_RETRIEVE, false);
 		addFixedEndpoint(sc, SimulatorProperties.retrieveTlsEndpoint, actorType, TransactionType.ODDS_RETRIEVE, true);
 
-		addFixedConfig(sc, SimulatorProperties.oddsContentSupplyState, ParamType.TEXT, ""); // This should be a dynamic value
+//		addFixedConfig(sc, SimulatorProperties.oddsContentSupplyState, ParamType.TEXT, ""); // This should be a dynamic value
 
 		// By default the persistence option will be off. It does not make sense to enable this option by default because additional user inputs are required, which are unknown at this point.
 		addEditableConfig(sc, SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, ParamType.BOOLEAN, false);

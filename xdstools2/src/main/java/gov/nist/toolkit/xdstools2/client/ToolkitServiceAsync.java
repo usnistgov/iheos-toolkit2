@@ -202,10 +202,12 @@ public interface ToolkitServiceAsync {
 	void getServletContextName(AsyncCallback<String> callback);
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-	// Background test plan running methods
+	// Background test plan running methods related to On-Demand Documents
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback);
 	void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId odds, Map<String, String> params, AsyncCallback<Map<String, String>> callback);
+	void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
+
 
 }

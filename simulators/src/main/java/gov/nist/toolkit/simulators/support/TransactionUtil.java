@@ -66,29 +66,41 @@ public class TransactionUtil {
         //new Session(Installation.installation().warHome(), username);
 
         XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
-        List<Result> results = null;
-        Result result = null;
+
+
 
         try {
 
             // NOTE: Make an assumption that there is only one ( and the first) section is always the Register section so in this case run the Default section. This needs to be manually enforced when designing content bundles.
 
             List<String> sections = new ArrayList<>();
+            List<Result> results = null;
 
             results = Transaction(registry, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
 
-            result = results.get(0);
-            if (result!=null)
-                logger.info("passed? " + result.passed());
-            else
-                logger.info("Null result.");
+            printResult(results);
+            return results.get(0);
 
         } catch (Exception ex) {
             logger.error(ex.toString());
         }
 
-        return result;
+        return null;
 
+    }
+
+    private static boolean printResult(List<Result> results) {
+        if (results!=null) {
+            Result result = results.get(0);
+            if (result!=null) {
+                boolean passed = result.passed();
+                logger.info("register passed? " + passed);
+                return passed;
+            } else
+                logger.info("Null result.");
+        } else
+            logger.info("Null results.");
+        return false;
     }
 
     /**
@@ -170,9 +182,9 @@ public class TransactionUtil {
                     ded.setId(result.stepResults.get(0).getMetadata().docEntries.get(0).id);
                     ded.setEntryType("urn:uuid:34268e47-fdf5-41a6-ba33-82133c465248");
                     ded.setTimestamp(result.getTimestamp());
-                    ded.setTestInstanceId(testInstance.getId());
+                    ded.setTestInstance(testInstance);
                     ded.setPatientId(result.stepResults.get(0).getMetadata().docEntries.get(0).patientId);
-                    ded.setRegistrySiteName(registry.getName());
+                    ded.setRegistrySite(registry);
 
 
                     // Save document entry detail to the repository index
@@ -202,6 +214,83 @@ public class TransactionUtil {
 
         }
         return rs;
+    }
+
+    static public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId) {
+        List<DocumentEntryDetail> result = null;
+
+        try {
+            SimDb simDb = new SimDb(oddsSimId);
+
+            RepIndex repIndex = new RepIndex(simDb.getRepositoryIndexFile().toString(), oddsSimId);
+
+            if (repIndex.getDocumentCollection() != null) {
+                List<StoredDocument> documents = repIndex.getDocumentCollection().getDocuments();
+                if (documents != null) {
+                    result = new ArrayList<>();
+                    for (StoredDocument sd : documents) {
+                        result.add(sd.getEntryDetail());
+                    }
+                }
+
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return result;
+    }
+
+
+    static public Result pnrWithLocalizedTrackingInODDS(Session session, String username, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params) {
+
+        try {
+            XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
+            TestInstance testInstance = ded.getTestInstance();
+            List<String> testPlanSections = xdsTestServiceManager.getTestIndex(testInstance.getId());
+            String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
+            String contentBundle = testInstance.getId() + "/" + registerSection + "/" + "ContentBundle";
+            List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
+            int contentBundleIdx = ded.getSupplyStateIndex();
+            String section = registerSection + "/" + "ContentBundle" + "/" + contentBundleSections.get(contentBundleIdx);
+
+            logger.info("Selecting contentBundle section: " + section);
+
+            List<String> sections = new ArrayList<String>(){};
+            sections.add(section);
+
+            Result result = null;
+            List<Result> results = null;
+            boolean stopOnFirstError = true;
+
+            results = Transaction(repository, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
+            printResult(results);
+            if (result.passed()) {
+                int lastBundleIdx = contentBundleSections.size()-1;
+                int nextContentIdx = (contentBundleIdx<lastBundleIdx)?contentBundleIdx+1:lastBundleIdx;
+
+                SimDb simDb = new SimDb(oddsSimId);
+                RepIndex repIndex = new RepIndex(simDb.getRepositoryIndexFile().toString(), oddsSimId);
+                StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(ded.getId());
+                ded.setSupplyStateIndex(nextContentIdx);
+                sd.setEntryDetail(ded);
+                // Update DED
+                // TODO: inspect the results and add the snapshot entryUUID to DED class. Use it when getSupplyStateIndex is greater than 0 to replace the previous snapshot.
+                // TODO: see if the Document reference is avaliable in the result? This is needed for the OD response
+                repIndex.getDocumentCollection().delete(ded.getId());
+                repIndex.getDocumentCollection().add(sd);
+                repIndex.save();
+            }
+
+            return results.get(0);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+
+
     }
 
 }

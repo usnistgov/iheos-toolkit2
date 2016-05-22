@@ -2,23 +2,24 @@ package gov.nist.toolkit.simulators.sim.rep.od;
 
 import gov.nist.toolkit.actorfactory.OnDemandDocumentSourceActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
 import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.simulators.support.TransactionSimulator;
+import gov.nist.toolkit.simulators.support.TransactionUtil;
 import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -68,12 +69,13 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 			/*
 			 Possible cases (x2 Persistence Option (P-on) on/off):
 			 1a. Single UID and it is not found
+			 	Return an XDS error
+			 1b. Single UID found
 				 P-on:
 				 	1. PnR
 				 	2. Get the content to include in the response
 				 P-off:
 				 	1. (No PnR) Get the content to include in the response
-			 1b. Single UID found
 			 2a. Multiple UID and all not found
 			 2b. Multiple UID and partial results
 			 2c. Multiple UID and all found
@@ -84,10 +86,33 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 
 
 			// ---------------------------------------------------------------------------------------------------------
+			String sessionName = getSimulatorConfig().getId().getUser();
+			Session mySession = new Session(Installation.installation().warHome(), sessionName);
 
 			OMElement root = response.getRoot();
 
+
 			for (StoredDocument document : documents) {
+
+				// Is persistence option on then do a PnR
+				if (isPersistenceOptn()) {
+					String testPlanId =  getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
+					TestInstance testId = new TestInstance(testPlanId);
+
+					Map<String, String> params = new HashMap<>();
+					String patientId =  getSimulatorConfig().get(SimulatorProperties.oddePatientId).asString(); //  "SKB1^^^&1.2.960&ISO";
+					params.put("$patientid$", patientId);
+					params.put("$od_doc_uuid$", document.getEntryDetail().getUniqueId());
+
+					TransactionUtil.pnrWithLocalizedTrackingInODDS(mySession, getSimulatorConfig().getId().getUser()
+							, new SiteSpec(getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite).asString())
+							, document.getEntryDetail(), getSimulatorConfig().getId(), params);
+
+
+
+				}
+
+
 
 				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
 
@@ -150,16 +175,11 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 		try {
 
 		String testPlanId =  getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
-		SimulatorConfigElement supplyStateIdx = getSimulatorConfig().get(SimulatorProperties.oddsContentSupplyState);
 		String contentBundleState = null;
 
 		String sessionName = getSimulatorConfig().getId().getUser();
 		TestInstance testId = new TestInstance(testPlanId);
 
-		Map<String, String> params = new HashMap<>();
-		String patientId =  getSimulatorConfig().get(SimulatorProperties.oddePatientId).asString(); //  "SKB1^^^&1.2.960&ISO";
-		logger.info("patientId is: " + patientId);
-		params.put("$patientid$", patientId);
 		boolean stopOnFirstError = true;
 		Session myTestSession = new Session(Installation.installation().warHome(), sessionName);
 
@@ -169,7 +189,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 		String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
 		String contentBundle = testPlanId + "/" + registerSection + "/" + "ContentBundle";
 		List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
-		int contentBundleIdx = (supplyStateIdx==null || (supplyStateIdx!=null && "".equals(supplyStateIdx.asString())))?0: (supplyStateIdx!=null?Integer.parseInt(supplyStateIdx.asString()):0);
+		int contentBundleIdx = 0; //(supplyStateIdx==null || (supplyStateIdx!=null && "".equals(supplyStateIdx.asString())))?0: (supplyStateIdx!=null?Integer.parseInt(supplyStateIdx.asString()):0);
 		String section = registerSection + "/" + "ContentBundle" + "/" + contentBundleSections.get(contentBundleIdx);
 		logger.info("Selecting contentBundle section: " + section);
 
@@ -184,8 +204,8 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 			// 1. Update the supplyStateIdx
 			// NOTE: UI needs to be reloaded for this change to be reflected
 			int nextStateIdx = ((contentBundleSections.size() < contentBundleIdx+1)?contentBundleIdx+1:contentBundleSections.size()-1); // Zero based index adjustment
-			supplyStateIdx.setValue(""+nextStateIdx);
-			getSimulatorConfig().get(SimulatorProperties.oddsContentSupplyState).setValue(""+nextStateIdx);
+//			supplyStateIdx.setValue(""+nextStateIdx);
+//			getSimulatorConfig().get(SimulatorProperties.oddsContentSupplyState).setValue(""+nextStateIdx);
 			new OnDemandDocumentSourceActorFactory().saveConfiguration(getSimulatorConfig());
 
 
@@ -238,7 +258,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 
 				// ----- Begin On-Demand
 				OMElement newDocId = MetadataSupport.om_factory.createOMElement(MetadataSupport.newDocumentUniqueId);
-				newDocId.setText(documentUids.get(cx++) + "." + supplyStateIdx );
+//				newDocId.setText(documentUids.get(cx++) + "." + supplyStateIdx );
 				docResponse.addChild(newDocId);
 
 				// TODO: Find out if the NewRepositoryUniqueId needs to be added in. (Vol. 2b, 3.43.5.1.3).
@@ -304,5 +324,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 		return simulatorConfig;
 	}
 
-
+	public boolean isPersistenceOptn() {
+		return persistenceOptn;
+	}
 }

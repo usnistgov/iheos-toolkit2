@@ -582,5 +582,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return siteServiceManager.getSiteNamesByTran(transactionType, session().getId());
 	}
 
+	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId) {
+		return TransactionUtil.getOnDemandDocumentEntryDetails(oddsSimId);
+	}
 
 }

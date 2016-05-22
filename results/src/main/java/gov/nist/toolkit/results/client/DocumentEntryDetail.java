@@ -24,10 +24,10 @@ public class DocumentEntryDetail implements Serializable, IsSerializable {
     String timestamp;
     /**
      *  Test Plan Id */
-    String testInstanceId;
+    TestInstance testInstance;
     /**
      *  Registry Site where the Document Entry exists */
-    String registrySiteName;
+    SiteSpec registrySite;
     /**
      *  Patient Id */
     String patientId;
@@ -69,22 +69,6 @@ public class DocumentEntryDetail implements Serializable, IsSerializable {
         this.timestamp = timestamp;
     }
 
-    public String getTestInstanceId() {
-        return testInstanceId;
-    }
-
-    public void setTestInstanceId(String testInstanceId) {
-        this.testInstanceId = testInstanceId;
-    }
-
-    public String getRegistrySiteName() {
-        return registrySiteName;
-    }
-
-    public void setRegistrySiteName(String registrySiteName) {
-        this.registrySiteName = registrySiteName;
-    }
-
     public String getPatientId() {
         return patientId;
     }
@@ -99,5 +83,21 @@ public class DocumentEntryDetail implements Serializable, IsSerializable {
 
     public void setSupplyStateIndex(int supplyStateIndex) {
         this.supplyStateIndex = supplyStateIndex;
+    }
+
+    public TestInstance getTestInstance() {
+        return testInstance;
+    }
+
+    public void setTestInstance(TestInstance testInstance) {
+        this.testInstance = testInstance;
+    }
+
+    public SiteSpec getRegistrySite() {
+        return registrySite;
+    }
+
+    public void setRegistrySite(SiteSpec registrySite) {
+        this.registrySite = registrySite;
     }
 }
