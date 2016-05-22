@@ -79,7 +79,7 @@ public class OddsActorSimulator extends BaseDsActorSimulator {
 
 		logger.debug("ODDS beginning to process: " + transactionType);
 
-		if (transactionType.equals(TransactionType.ODDS_RETRIEVE)) {
+		if (transactionType.equals(TransactionType.RETRIEVE)) {
 
 			common.vc.isRet = true;
 			common.vc.xds_b = true;

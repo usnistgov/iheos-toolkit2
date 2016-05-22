@@ -27,6 +27,7 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -95,23 +96,19 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 			for (StoredDocument document : documents) {
 
 				// Is persistence option on then do a PnR
-				if (isPersistenceOptn()) {
-					String testPlanId =  getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
-					TestInstance testId = new TestInstance(testPlanId);
+				String testPlanId =  getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
+				TestInstance testId = new TestInstance(testPlanId);
 
-					Map<String, String> params = new HashMap<>();
-					String patientId =  getSimulatorConfig().get(SimulatorProperties.oddePatientId).asString(); //  "SKB1^^^&1.2.960&ISO";
-					params.put("$patientid$", patientId);
-					params.put("$od_doc_uuid$", document.getEntryDetail().getUniqueId());
+				Map<String, String> params = new HashMap<>();
+				String patientId =  getSimulatorConfig().get(SimulatorProperties.oddePatientId).asString(); //  "SKB1^^^&1.2.960&ISO";
+				params.put("$patientid$", patientId);
+				params.put("$od_doc_uuid$", document.getEntryDetail().getId());
 
-					TransactionUtil.pnrWithLocalizedTrackingInODDS(mySession, getSimulatorConfig().getId().getUser()
-							, new SiteSpec(getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite).asString())
-							, document.getEntryDetail(), getSimulatorConfig().getId(), params);
-
-
-
-				}
-
+				File documentFile = TransactionUtil.getOdContentFile(persistenceOptn, mySession, getSimulatorConfig().getId().getUser()
+						, new SiteSpec(getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite).asString())
+						, document.getEntryDetail(), getSimulatorConfig().getId(), params);
+				document.setPathToDocument(documentFile.toString());
+				document.setMimetype("text/plain");
 
 
 				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);

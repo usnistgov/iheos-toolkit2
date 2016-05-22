@@ -27,7 +27,7 @@ public class OnDemandDocumentSourceActorFactory extends AbstractActorFactory {
 
 	static final List<TransactionType> incomingTransactions = 
 		Arrays.asList(
-//				TransactionType.RETRIEVE
+				TransactionType.RETRIEVE,
 				TransactionType.ODDS_RETRIEVE
 		);
 

@@ -248,12 +248,7 @@ public class XdsTestServiceManager extends CommonService {
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception {
 		try {
 			logger.debug(session.id() + ": " + "getTestplanAsText");
-			List<String> sections = new ArrayList<String>();
-			sections.add(section);
-
-			Xdstest2 xt2 = getNewXt();
-			xt2.addTest(testInstance, sections, null, false);
-			TestDetails ts = xt2.getTestSpec(testInstance);
+			TestDetails ts = getTestDetails(testInstance, section);
 
 			File tsFile;
 
@@ -274,6 +269,15 @@ public class XdsTestServiceManager extends CommonService {
 		} catch (Throwable t) {
 			throw new Exception(t.getMessage() + "\n" + ExceptionUtil.exception_details(t));
 		}
+	}
+
+	public TestDetails getTestDetails(TestInstance testInstance, String section) throws Exception {
+		List<String> sections = new ArrayList<String>();
+		sections.add(section);
+
+		Xdstest2 xt2 = getNewXt();
+		xt2.addTest(testInstance, sections, null, false);
+		return xt2.getTestSpec(testInstance);
 	}
 
 	public List<TestInstance> getTestlogListing(String sessionName) throws Exception {

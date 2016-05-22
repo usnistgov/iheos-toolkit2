@@ -2,6 +2,7 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.Result;
@@ -11,9 +12,14 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
+import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -242,30 +248,67 @@ public class TransactionUtil {
     }
 
 
-    static public Result pnrWithLocalizedTrackingInODDS(Session session, String username, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params) {
+    static File getDocumentFile(File testPlanFile) {
+
+        OMElement testplanEle;
+        try {
+                testplanEle = Util.parse_xml(testPlanFile);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+        List<OMElement> testSteps = XmlUtil.decendentsWithLocalName(testplanEle, "TestStep");
+        for (OMElement testStep : testSteps) {
+            String stepName = testStep.getAttributeValue(MetadataSupport.id_qname);
+            OMElement documentFileEle = XmlUtil.firstDecendentWithLocalName(testStep, "Document");
+            if (documentFileEle != null) {
+                String documentName = documentFileEle.getText();
+                return new File(testPlanFile.getParent(), documentName);
+            }
+
+        }
+
+        return null;
+    }
+
+
+    static public File getOdContentFile(boolean persistenceOption, Session session, String username, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params) {
 
         try {
             XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
             TestInstance testInstance = ded.getTestInstance();
             List<String> testPlanSections = xdsTestServiceManager.getTestIndex(testInstance.getId());
-            String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
+            String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: In a Content Bundle: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
             String contentBundle = testInstance.getId() + "/" + registerSection + "/" + "ContentBundle";
             List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
+
+
+
             int contentBundleIdx = ded.getSupplyStateIndex();
             String section = registerSection + "/" + "ContentBundle" + "/" + contentBundleSections.get(contentBundleIdx);
 
-            logger.info("Selecting contentBundle section: " + section);
+            TestDetails ts = xdsTestServiceManager.getTestDetails(testInstance,section);
+            File documentFile = null;  // IMPORTANT NOTE: In a Content Bundle: Make an assumption of only step per section
+            documentFile = getDocumentFile(ts.getTestplanFile(section));
 
-            List<String> sections = new ArrayList<String>(){};
-            sections.add(section);
+
+            logger.info("Selecting contentBundle section: " + section + " file: " + documentFile);
 
             Result result = null;
-            List<Result> results = null;
-            boolean stopOnFirstError = true;
 
-            results = Transaction(repository, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
-            printResult(results);
-            if (result.passed()) {
+            if (persistenceOption) {
+                List<String> sections = new ArrayList<String>(){};
+                sections.add(section);
+
+                List<Result> results = null;
+                boolean stopOnFirstError = true;
+
+                // pnr
+                results = Transaction(repository, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
+
+                printResult(results);
+            }
+
+            if (!persistenceOption || (persistenceOption && result!=null && result.passed())) {
                 int lastBundleIdx = contentBundleSections.size()-1;
                 int nextContentIdx = (contentBundleIdx<lastBundleIdx)?contentBundleIdx+1:lastBundleIdx;
 
@@ -282,7 +325,7 @@ public class TransactionUtil {
                 repIndex.save();
             }
 
-            return results.get(0);
+            return documentFile;
 
         } catch (Exception ex) {
             ex.printStackTrace();
