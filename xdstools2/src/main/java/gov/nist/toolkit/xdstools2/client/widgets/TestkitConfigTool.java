@@ -33,7 +33,6 @@ public class TestkitConfigTool extends Composite {
         container.add(environmentManager);
         Button runUpdater=new Button("Run",new RunTestkitConfigHandler());
         container.add(runUpdater);
-//        container.add(resultPanel);
 
         initWidget(container);
     }
@@ -47,20 +46,16 @@ public class TestkitConfigTool extends Composite {
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    // TODO probably gonna need to do something here
-                    Logger.getLogger(this.getClass().getName()).info("weird");
+                    Logger.getLogger(this.getClass().getName()).info(throwable.getMessage());
                 }
 
                 @Override
                 public void onSuccess(Boolean exists) {
-                    Logger.getLogger(this.getClass().getName()).info("exists?");
                     if (exists) {
-                        Logger.getLogger(this.getClass().getName()).info("OK");
                         boolean confirmed = Window.confirm("There already is a existing testkit configured for this environment. " +
                                 "This will override it. Do you want to proceed?");
                         if (confirmed) runConfigTestkit();
                     } else {
-                        Logger.getLogger(this.getClass().getName()).info("not OK");
                         runConfigTestkit();
                     }
                 }

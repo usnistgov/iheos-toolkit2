@@ -186,8 +186,6 @@ public class Xdstest2 {
 	 */
 	public void addTest(TestInstance testInstance) throws Exception {
 		this.testInstance = testInstance;
-		// TODO this is where I should integrate code that determine the right testkit.
-		Logger.getLogger(this.getClass().getName()).info("Test is null? "+testkits==null);
 		File tk=Installation.installation().findTestkitFromTest(testkits,testInstance.getId());
 		if (tk==null) tk=xt.getTestkit();
 		xt.addTestSpec(new TestDetails(tk, testInstance));

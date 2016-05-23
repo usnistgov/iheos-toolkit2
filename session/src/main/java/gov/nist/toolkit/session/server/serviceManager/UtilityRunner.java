@@ -44,14 +44,10 @@ public class UtilityRunner {
      * @param stopOnFirstFailure
      * @return
      */
-    // TODO add environment name as param? (what about session? will it contain the mesa session info?
     public Result run(Session session, Map<String, String> params, Map<String, Object> params2, List<String> sections,
                       TestInstance testInstance, String[] areas, boolean stopOnFirstFailure) {
 
         xdsTestServiceManager.cleanupParams(params);
-
-        // TODO find test in the right testkit using Session object (contain mesaSession and environment)
-        // TODO add the location (or File) in TestInstance (could also be done at a higher level)
 
         try {
             // Initialize if necessary.  Used by TestRunner and it may have other settings
@@ -108,7 +104,6 @@ public class UtilityRunner {
                     // collection.  We replace it with a list of linked TestInstances, one for each
                     // contained test.
 
-                    // TODO change testkitFile() for testkitFiles?
                     TestCollection testCollection = new TestCollection(Installation.installation().testkitFile(), collectionName);
                     List<String> testIds = testCollection.getTestIds();
                     TestInstance ti = null;
@@ -183,7 +178,6 @@ public class UtilityRunner {
                 // s.assertionResults.add("Log Cache: " + s.getLogCount() + " entries");
                 session.transactionSettings.securityParams = session;
 
-                // TODO set testkit in xt
                 session.xt.run(params, params2, stopOnFirstFailure, session.transactionSettings);
 
                 assertionResults.add(session.transactionSettings.res);

@@ -14,7 +14,7 @@ public class Xdstools2Activity extends AbstractActivity {
 
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
-        // TODO the following can be refactored in a specific method such as openTab
+        // TODO the following can be refactored in a specific method such as openTab, even in a different class
         if(tabId!=null ) {
             // Open required tab
             System.out.println("GO TO");

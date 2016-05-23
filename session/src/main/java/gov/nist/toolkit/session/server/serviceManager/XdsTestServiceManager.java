@@ -104,7 +104,6 @@ public class XdsTestServiceManager extends CommonService {
 //
 //		return utilityRunner.run(session, params, params2, sections, testId, areas, stopOnFirstFailure);
 //	}
-	// TODO add environment name as a parameter? (we could also probably replace the string mesatestsession(name) by session session in this prototype)
 	public List<Result> runMesaTest(String environmentName,String mesaTestSessionName, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
 									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) {
         if (session.getMesaSessionName() == null) session.setMesaSessionName(mesaTestSessionName);

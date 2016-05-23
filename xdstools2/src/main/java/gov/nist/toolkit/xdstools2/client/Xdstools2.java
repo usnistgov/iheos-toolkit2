@@ -240,8 +240,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 
                         @Override
                         public void onSuccess(String s) {
-                            // FIXME What is the purpose of the call if nothing happens? There should be comments
-                            // or logs of what's going on
+                            // FIXME What is the purpose of the callback if nothing happens with it?
                             ht.toolkitService.setEnvironment(s, new AsyncCallback() {
                                 @Override
                                 public void onFailure(Throwable throwable) {
