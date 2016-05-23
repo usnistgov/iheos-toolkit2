@@ -1,18 +1,13 @@
 package gov.nist.toolkit.valregmetadata.model;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
-import gov.nist.toolkit.valregmetadata.validators.RegistryObjectValidator;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 public class Author extends AbstractRegistryObject {
 	String classificationScheme = null;

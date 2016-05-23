@@ -34,6 +34,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	RepIndex repIndex;
 //	SimDb db;
 	String repositoryUniqueId;
+	private boolean forward = true;
 
 	static List<TransactionType> transactions = new ArrayList<>();
 
@@ -102,6 +103,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			}
 
 			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, getSimulatorConfig());
+			pnrSim.setForward(forward);
 			mvc.addMessageValidator("PnR", pnrSim, gerb.buildNewErrorRecorder());
 
 			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
@@ -180,5 +182,11 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 		return repIndex.getSimulatorStats();
 	}
 
+	public boolean isForward() {
+		return forward;
+	}
 
+	public void setForward(boolean forward) {
+		this.forward = forward;
+	}
 }

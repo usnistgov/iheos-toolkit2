@@ -1,15 +1,14 @@
 package gov.nist.toolkit.valregmsg.registry;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-
-import java.util.List;
-
 import org.apache.axiom.om.OMContainer;
 import org.apache.axiom.om.OMElement;
+
+import java.util.List;
 
 public class AdhocQueryResponse extends Response {
 	OMElement queryResult = null;

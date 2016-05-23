@@ -229,6 +229,8 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		if (msg == null || msg.trim().equals(""))
 			return;
 		logger.debug(ExceptionUtil.here("err - " + msg));
+		if (severity.indexOf("Error") != -1)
+			System.out.println("Got Error");
 		boolean isWarning = (severity == null) ? false : ((severity.indexOf("Warning") != -1));
 		ReportingCompletionType ctype = (isWarning) ? ValidatorErrorItem.ReportingCompletionType.WARNING : ValidatorErrorItem.ReportingCompletionType.ERROR;
 		ValidatorErrorItem ei = new ValidatorErrorItem();

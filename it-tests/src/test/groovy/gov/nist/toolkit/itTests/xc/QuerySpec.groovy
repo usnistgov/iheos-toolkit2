@@ -12,7 +12,7 @@ import gov.nist.toolkit.registrymetadata.client.Uids
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentManager
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
-import gov.nist.toolkit.registrysupport.MetadataSupport
+import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.sitemanagement.client.SiteSpec

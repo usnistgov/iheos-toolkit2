@@ -317,8 +317,8 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 			currentTransaction = getTransactionFromLabel(value);
 
 			String u = "<a href=\"" +
-			"/xdstools2/message/" + simid + "/" + currentActor + "/" + currentTransaction + "/" + messageId + "\"" +
-//			" target=\"_blank\"" + 
+			 "message/" + simid + "/" + currentActor + "/" + currentTransaction + "/" + messageId + "\"" +
+//			" target=\"_blank\"" +
 			">Download Message</a>";
 			download.setHTML(u);
 

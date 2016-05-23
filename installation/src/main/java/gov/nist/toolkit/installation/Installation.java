@@ -4,13 +4,11 @@ package gov.nist.toolkit.installation;
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -20,6 +18,7 @@ public class Installation {
 	File externalCache = null;
 	String sep = File.separator;
 	public TkProps tkProps = new TkProps();
+	String servletContextName = "/xdstools2";
 
     public final static String DEFAULT_ENVIRONMENT_NAME = "default";
 
@@ -210,4 +209,11 @@ public class Installation {
 	public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 
+	public String getServletContextName() {
+		return servletContextName;
+	}
+
+	public void setServletContextName(String servletContextName) {
+		this.servletContextName = servletContextName;
+	}
 }

@@ -1,5 +1,6 @@
 package gov.nist.toolkit.registrysupport;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
@@ -31,6 +32,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	boolean has_errors = false;
 	boolean has_warnings = false;
 	OMElement rel = null;
+	boolean partialSuccess = false;
 	StringBuffer validations = null;
 	short version;
 	protected OMNamespace ebRSns;
@@ -560,4 +562,11 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 
 	}
 
+	public void setPartialSuccess(boolean value) {
+		partialSuccess = value;
+	}
+
+	public boolean isPartialSuccess() {
+		return partialSuccess;
+	}
 }

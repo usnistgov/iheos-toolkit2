@@ -200,4 +200,6 @@ public interface ToolkitServiceAsync {
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
     void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 
+
+	void getServletContextName(AsyncCallback<String> callback);
 }

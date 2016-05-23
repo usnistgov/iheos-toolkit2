@@ -1,25 +1,17 @@
 package gov.nist.toolkit.results.client;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymetadata.client.Association;
-import gov.nist.toolkit.registrymetadata.client.Author;
-import gov.nist.toolkit.registrymetadata.client.DocumentEntry;
-import gov.nist.toolkit.registrymetadata.client.Folder;
-import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
-import gov.nist.toolkit.registrymetadata.client.MetadataObject;
-import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-import gov.nist.toolkit.registrymetadata.client.SubmissionSet;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.axiom.om.OMElement;
 
 /**
  * Translate a Metadata model into client objects.

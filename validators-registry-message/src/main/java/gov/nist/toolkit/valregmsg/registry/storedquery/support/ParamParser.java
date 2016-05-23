@@ -2,7 +2,7 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 
 import gov.nist.toolkit.docref.EbRim;
 import gov.nist.toolkit.docref.SqDocRef;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.registry.SQCodeAnd;
 import gov.nist.toolkit.valregmsg.registry.SQCodeOr;

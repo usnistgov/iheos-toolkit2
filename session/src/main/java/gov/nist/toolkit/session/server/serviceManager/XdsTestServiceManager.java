@@ -589,8 +589,9 @@ public class XdsTestServiceManager extends CommonService {
 		// context.getInitParameter("toolkit-host").trim();
 		String toolkitPort = session.getServerPort();
 		// context.getInitParameter("toolkit-port").trim();
-		return "http://" + toolkitHost + ":" + toolkitPort
-				+ "/xdstools2/DocumentCache/";
+//		return "http://" + toolkitHost + ":" + toolkitPort
+//				+ Session.servletContextName + "/DocumentCache/";
+		return  "DocumentCache/";
 	}
 
     File getRepositoryCache() {

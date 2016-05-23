@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmetadata.field;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
@@ -9,11 +9,10 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axiom.om.OMElement;
 
 public class Structure {
 	Metadata m;
@@ -149,10 +148,10 @@ public class Structure {
 					err("SubmissionSetStatus Slot on Submission Set association has no value");
 				} else if (	ss_status.equals("Original")) {
 					if ( !m.containsObject(target))
-						err("SubmissionSetStatus Slot on Submission Set association has value 'Original' but the targetObject " + target + " references an model not in the submission");
+						err("SubmissionSetStatus Slot on Submission Set association has value 'Original' but the targetObject " + target + " references an object not in the submission");
 				} else if (	ss_status.equals("Reference")) {
 					if (m.containsObject(target))
-						err("SubmissionSetStatus Slot on Submission Set association has value 'Reference' but the targetObject " + target + " references an model in the submission");
+						err("SubmissionSetStatus Slot on Submission Set association has value 'Reference' but the targetObject " + target + " references an object in the submission");
 				} else {
 					err("SubmissionSetStatus Slot on Submission Set association has unrecognized value: " + ss_status);
 				}

@@ -171,7 +171,6 @@ public class TextErrorRecorder implements ErrorRecorder {
 
 	public void err(String code, String msg, String location, String severity,
 			String resource) {
-
 	}
 
 	public void err(Code code, String msg, String location, String severity,

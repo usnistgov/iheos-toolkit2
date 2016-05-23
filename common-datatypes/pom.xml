@@ -11,6 +11,10 @@
     <artifactId>common-datatypes</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
+        </dependency>
     </dependencies>
 
 <build>

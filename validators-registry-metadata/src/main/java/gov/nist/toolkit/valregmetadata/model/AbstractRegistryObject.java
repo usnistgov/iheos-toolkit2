@@ -1,26 +1,15 @@
 package gov.nist.toolkit.valregmetadata.model;
 
-import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmetadata.datatype.CxFormat;
-import gov.nist.toolkit.valregmetadata.datatype.FormatValidator;
-import gov.nist.toolkit.valregmetadata.datatype.OidFormat;
-import gov.nist.toolkit.valregmetadata.datatype.UuidFormat;
-import gov.nist.toolkit.valregmetadata.validators.RegistryObjectValidator;
-import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.axiom.om.OMElement;
 
 public abstract class AbstractRegistryObject {
 
@@ -30,10 +19,10 @@ public abstract class AbstractRegistryObject {
 //	abstract public void validateRequiredSlotsPresent(ErrorRecorder er, ValidationContext vc);
 //	abstract public void validateSlotsCodedCorrectly(ErrorRecorder er, ValidationContext vc);
 
-	OMElement ro;
+	protected OMElement ro;
 	List<Slot> slots = new ArrayList<Slot>();
-	String status = null;
-	String home = null;
+	protected String status = null;
+	protected String home = null;
 	String name = "";
 	String description = "";
 	List<Classification> classifications = new ArrayList<Classification>();
@@ -42,7 +31,7 @@ public abstract class AbstractRegistryObject {
 	List<ExternalIdentifier> externalIdentifiers = new ArrayList<ExternalIdentifier>();
 	Metadata m;
 	OMElement owner = null;
-	String id = "";
+	protected String id = "";
 	String lid;
 	String version = "1.1";
 

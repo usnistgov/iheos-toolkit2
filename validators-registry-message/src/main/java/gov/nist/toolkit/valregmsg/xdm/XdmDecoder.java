@@ -160,6 +160,10 @@ public class XdmDecoder extends AbstractMessageValidator {
 						String size = m.getSlotValue(eo, "size", 0);
 						String uri  = m.getSlotValue(eo, "URI", 0);
 
+						er.detail("URI is " + uri);
+
+						new ValidateISO9660(er).run(uri);
+
 						if (hash == null)
 							er.err(Code.NoCode, "hash attribute not found", subsetDir,"");
 						else
@@ -237,7 +241,7 @@ public class XdmDecoder extends AbstractMessageValidator {
 			return true;  // already decoded
 		er.challenge("Decoding ZIP");
 		try {
-			contents = new ZipDecoder().parse(in);
+			contents = new ZipDecoder(er).parse(in);
 		} 
 		catch (ZipException e) {
 			er.err(Code.NoCode, e);

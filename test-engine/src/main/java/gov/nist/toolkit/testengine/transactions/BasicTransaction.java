@@ -1,14 +1,13 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
-import gov.nist.toolkit.installation.Configuration;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.assertionEngine.AssertionEngine;
@@ -461,13 +460,13 @@ public abstract class BasicTransaction  {
 	}
 
 	String getExpectedStatusString() {
-		return s_ctx.getExpectedStatus().toString();
+		return Arrays.toString(s_ctx.getExpectedStatus().toArray());
 	}
 
 	void eval_expected_status(String status,
 			ArrayList<String> returned_code_contexts) throws XdsInternalException {
 		TransactionStatus currentStatus = new TransactionStatus(status);
-		TransactionStatus expectedStatus = s_ctx.getExpectedStatus();
+		List<TransactionStatus> expectedStatus = s_ctx.getExpectedStatus();
 		//		if (!expected_status) {
 		//			step_failure = false;
 		//			this.s_ctx.resetStatus();
@@ -478,12 +477,32 @@ public abstract class BasicTransaction  {
 				step_failure = true;
 			}
 		} else {
+
+			StringBuffer expectedStatusSb = new StringBuffer();
+			int counter=1;
+			for (TransactionStatus ts : expectedStatus) {
+
+				expectedStatusSb.append(ts.getNamespace());
+				if (expectedStatus.size()>1 && counter<expectedStatus.size())
+					expectedStatusSb.append(" OR ");
+				counter++;
+			}
+
+
 			if ( ! currentStatus.isNamespaceOk()) {
-				s_ctx.set_error("Status is " + status + " , expected status is " + MetadataSupport.response_status_type_namespace + getExpectedStatusString());
+				s_ctx.set_error("Status is " + status + " , expected status is " + expectedStatusSb);
 				step_failure = true;
 			} else {
-				if ( !currentStatus.equals(expectedStatus)) {
-					s_ctx.set_error("Status is " + status + ", expected status is " + MetadataSupport.response_status_type_namespace + getExpectedStatusString());
+
+				boolean foundAcceptableStatus = false;
+				for (TransactionStatus ts : expectedStatus) {
+					if ( currentStatus.equals(ts)) {
+						foundAcceptableStatus = true;
+					}
+				}
+
+				if (!foundAcceptableStatus) {
+					s_ctx.set_error("Status is " + status + ", expected status is " + expectedStatusSb.toString());
 					step_failure = true;
 				}
 			}
@@ -491,7 +510,7 @@ public abstract class BasicTransaction  {
 
 		// if expected error message specified then expected status must be Failure
 		boolean hasExpectedErrorMessage = !s_ctx.getExpectedErrorMessage().equals("");
-		boolean isExpectingFailure = expectedStatus.isFailure();
+		boolean isExpectingFailure = expectedStatus.size()==1 && expectedStatus.get(0).isFailure();
 		if (  hasExpectedErrorMessage && !isExpectingFailure) {
 			fatal("ExpectedErrorMessage specified but ExpectedStatus is Success. This does not make sense");
 		}
@@ -1298,7 +1317,7 @@ public abstract class BasicTransaction  {
 
 		logSoapRequest(soap);
 
-		if (s_ctx.getExpectedStatus().isSuccess()) {
+		if (s_ctx.getExpectedStatus().size()==1 && s_ctx.getExpectedStatus().get(0).isSuccess()) {
 			RegistryResponseParser registry_response = new RegistryResponseParser(getSoapResult());
 			List<String> errs = registry_response.get_regrep_error_msgs();
 			if (errs.size() > 0) {

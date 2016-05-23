@@ -2,7 +2,7 @@ package gov.nist.toolkit.testenginelogging;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.RegistryErrorLog;
 import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
@@ -75,20 +75,27 @@ public class TestStepLogContent  implements Serializable {
 			expectedSuccess = true;
 		else {
 			String expStat = expectedStatusEle.getText();
-			if ("Success".equals(expStat)) {
-				expectedSuccess = true;
-				expectedWarning = false;
-			} else if ("Failure".equals(expStat)) {
-				expectedSuccess = false;
-				expectedWarning = false;
-			} else if ("Warning".equals(expStat)) {
-				expectedWarning = true;
-				expectedSuccess = false;
-            } else if ("PartialSuccess".equals(expStat)) {
-                expectedWarning = false;
-                expectedSuccess = false;
-			} else
-				throw new Exception("TestStep: Error parsing log.xml file: illegal value (" + expStat + ") for ExpectedStatus element of step " + id);
+
+			String[] statuses = expStat.split(",");
+
+			for (int cx=0; cx<statuses.length; cx++) {
+				String status = statuses[cx].trim();
+				if ("Success".equals(status)) {
+					expectedSuccess = true;
+					expectedWarning = false;
+				} else if ("Failure".equals(status)) {
+					expectedSuccess = false;
+					expectedWarning = false;
+				} else if ("Warning".equals(status)) {
+					expectedWarning = true;
+					expectedSuccess = false;
+				} else if ("PartialSuccess".equals(status)) {
+					expectedWarning = false;
+					expectedSuccess = false;
+				} else if (cx==statuses.length-1)
+					throw new Exception("TestStep: Error parsing log.xml file: illegal value (" + expStat + ") for ExpectedStatus element of step " + id);
+			}
+
 		}
 		parseGoals();
 		parseEndpoint();

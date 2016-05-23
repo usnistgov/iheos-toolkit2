@@ -2,10 +2,10 @@ package gov.nist.toolkit.valregmsg.validation.factories;
 
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactory2I;
 import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;

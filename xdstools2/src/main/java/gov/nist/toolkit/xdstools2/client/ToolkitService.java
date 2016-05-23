@@ -3,7 +3,10 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.Simulator;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -199,4 +202,7 @@ public interface ToolkitService extends RemoteService  {
 	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
     List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception;
+
+	String getServletContextName();
+
 }

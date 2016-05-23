@@ -1,7 +1,6 @@
 package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 

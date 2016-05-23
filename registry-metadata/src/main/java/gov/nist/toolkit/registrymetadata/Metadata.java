@@ -3,7 +3,7 @@ package gov.nist.toolkit.registrymetadata;
 import gov.nist.toolkit.docref.EbRS;
 import gov.nist.toolkit.docref.EbRim;
 import gov.nist.toolkit.docref.MetadataTables;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;

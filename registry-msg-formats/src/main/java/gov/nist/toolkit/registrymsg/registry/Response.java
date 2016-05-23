@@ -1,9 +1,9 @@
 package gov.nist.toolkit.registrymsg.registry;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.registrysupport.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
@@ -143,7 +143,7 @@ public abstract class Response implements ErrorLogger {
 			}
 			return response;
 		}
-		if (registryErrorList.hasContent()) {
+		if (registryErrorList != null && registryErrorList.hasContent()) {
 			OMElement error_list = registryErrorList.getRegistryErrorList();
 			if (error_list != null)
 				response.addChild(error_list);
@@ -151,9 +151,17 @@ public abstract class Response implements ErrorLogger {
 
 		if (forcedStatus != null) {
 			response.addAttribute("status", forcedStatus, null);
-		} else {
-			response.addAttribute("status", MetadataSupport.response_status_type_namespace + registryErrorList.getStatus(), null);
+		} else if (registryErrorList == null) {
+			response.addAttribute("status", MetadataSupport.status_success, null);
 		}
+		else {
+			if (registryErrorList.isPartialSuccess())
+				response.addAttribute("status", MetadataSupport.ihe_response_status_type_namespace + registryErrorList.getStatus(), null);
+			else
+				response.addAttribute("status", MetadataSupport.response_status_type_namespace + registryErrorList.getStatus(), null);
+		}
+
+
 
 		setLocationForXCA();
 
@@ -197,6 +205,7 @@ public abstract class Response implements ErrorLogger {
 		registryErrorList.addRegistryErrorList(rel.getRegistryErrorList(), log_message);
 //        if (registryErrorList.hasErrors())
 //            setForcedStatus("xxx");
+		registryErrorList.setPartialSuccess(rel.isPartialSuccess());
 	}
 
 	public void add_warning(String code, String msg, String location, LogMessage log_message) {

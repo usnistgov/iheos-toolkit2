@@ -233,10 +233,14 @@ public class Session implements SecurityParams {
 	public String id() {
 		return sessionId;
 	}
+
+	static public String getServletContextName() {
+		return servletContextName;
+	}
 	
 	public String getSimBaseEndpoint() {
 		// the last piece must agree with simulatorServlet in web.xml
-		return "http://" + serverIP + ":" + serverPort + "/xdstools2/simulator";
+		return "http://" + serverIP + ":" + serverPort + servletContextName + "/simulator"
 	}
 	
 	public void setServerSpec(String ip, String port) {
