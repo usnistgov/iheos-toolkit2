@@ -2,17 +2,20 @@ package gov.nist.toolkit.simulators.sim.rep.od;
 
 import gov.nist.toolkit.actorfactory.OnDemandDocumentSourceActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymsg.registry.Response;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
@@ -27,7 +30,6 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,6 +64,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 		try {
 			response = new RetrieveMultipleResponse();
 
+			repIndex.restore();
 			// Make sure the documentUids are real ones and not bogus to throw the XDSDocumentUniqueIdError
 			dsSimCommon.addDocumentAttachments(documentUids, er);
 
@@ -89,6 +92,9 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 			// ---------------------------------------------------------------------------------------------------------
 			String sessionName = getSimulatorConfig().getId().getUser();
 			Session mySession = new Session(Installation.installation().warHome(), sessionName);
+			getSimulatorConfig().getId().setEnvironmentName(Installation.installation().defaultEnvironmentName());
+			mySession.setEnvironment(getSimulatorConfig().getId().getEnvironmentName());
+
 
 			OMElement root = response.getRoot();
 
@@ -99,16 +105,44 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 				String testPlanId =  getSimulatorConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).asString();
 				TestInstance testId = new TestInstance(testPlanId);
 
+				if (document.getEntryDetail()==null) {
+					logger.error("Null document entry in ODDS!  StoredDocument Uid: " + document.getUid());
+					break;
+				}
+
+				SiteSpec reposSite = null;
+				SimulatorConfigElement scReposEl = getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite);
+				if (scReposEl!=null) {
+					if (scReposEl.asList()!=null) {
+						reposSite = new SiteSpec(scReposEl.asList().get(0), ActorType.REPOSITORY, null);
+					}
+				}
+
+				DocumentEntryDetail ded = document.getEntryDetail();
+
+				if (persistenceOptn) {
+					if (mySession.getMesaSessionName() == null) mySession.setMesaSessionName(sessionName);
+					mySession.setSiteSpec(reposSite);
+				}
+
 				Map<String, String> params = new HashMap<>();
 				String patientId =  getSimulatorConfig().get(SimulatorProperties.oddePatientId).asString(); //  "SKB1^^^&1.2.960&ISO";
 				params.put("$patientid$", patientId);
-				params.put("$od_doc_uuid$", document.getEntryDetail().getId());
+				params.put("$od_doc_uuid$", ded.getId());
 
-				File documentFile = TransactionUtil.getOdContentFile(persistenceOptn, mySession, getSimulatorConfig().getId().getUser()
-						, new SiteSpec(getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite).asString())
-						, document.getEntryDetail(), getSimulatorConfig().getId(), params);
-				document.setPathToDocument(documentFile.toString());
-				document.setMimetype("text/plain");
+				if (persistenceOptn) {
+					params.put("$repuid$", mySession.repUid);
+					if (ded.getSnapshot()!=null) {
+						params.put("$rplc_doc_uuid$", ded.getSnapshot().getId());
+					}
+				}
+
+
+				Map<String,String> rsMap = TransactionUtil.getOdContentFile(persistenceOptn, mySession, sessionName
+						, reposSite
+						, ded, getSimulatorConfig().getId(), params);
+				document.setPathToDocument(rsMap.get("file"));
+				document.setMimetype(rsMap.get("mimeType"));
 
 
 				OMElement docResponse = MetadataSupport.om_factory.createOMElement(MetadataSupport.document_response_qnamens);
@@ -122,12 +156,25 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 				docResponse.addChild(docId);
 
 				// ----- Begin On-Demand
-				OMElement newDocId = MetadataSupport.om_factory.createOMElement(MetadataSupport.newDocumentUniqueId);
-				newDocId.setText(document.getUid() + "." + document.getEntryDetail().getSupplyStateIndex());
-				docResponse.addChild(newDocId);
 
 				// TODO: Find out if the NewRepositoryUniqueId needs to be added in. (Vol. 2b, 3.43.5.1.3).
 				// A: Not required without the Persistence option. (Bill)
+				// FIXME: add new repos for persistence optn
+
+				if (persistenceOptn) {
+					OMElement newReposId = MetadataSupport.om_factory.createOMElement(MetadataSupport.newRepositoryUniqueId);
+					newReposId.setText(rsMap.get("newRepsoitoryUniqueId"));
+					docResponse.addChild(newReposId);
+				}
+
+				OMElement newDocId = MetadataSupport.om_factory.createOMElement(MetadataSupport.newDocumentUniqueId);
+				if (persistenceOptn) {
+					newDocId.setText(rsMap.get("snapshotUniqueId"));
+				} else {
+					// Temporary made Id
+					newDocId.setText(document.getUid() + "." + ded.getSupplyStateIndex());
+				}
+				docResponse.addChild(newDocId);
 				// ------ End On-Demand
 
 				OMElement mimeType = MetadataSupport.om_factory.createOMElement(MetadataSupport.mimetype_qnamens);

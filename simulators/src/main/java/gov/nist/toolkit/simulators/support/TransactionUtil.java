@@ -2,14 +2,18 @@ package gov.nist.toolkit.simulators.support;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.DocumentEntryDetail;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testenginelogging.TestDetails;
@@ -34,11 +38,9 @@ public class TransactionUtil {
     static public List<Result> Transaction(SiteSpec siteSpec, String sessionName, TestInstance testId, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, List<String> sections) {
 
 //        UtilityRunner utilityRunner = new UtilityRunner(xdsTestServiceManager, TestRunType.TEST);
-        if (myTestSession.getMesaSessionName() == null) myTestSession.setMesaSessionName(sessionName);
 
 
 //        logger.info("Transaction index 0 has:" + siteName); // This should always be the selected value
-        myTestSession.setSiteSpec(siteSpec);
 //        myTestSession.transactionSettings.patientId
 
         List<Result> results = xdsTestServiceManager.runMesaTest(sessionName, siteSpec, testId, sections, params, null, stopOnFirstError); // This wrapper does two important things of interest: 1) set patient id 2) eventually calls the UtilityRunner
@@ -82,6 +84,9 @@ public class TransactionUtil {
             List<String> sections = new ArrayList<>();
             List<Result> results = null;
 
+            if (session.getMesaSessionName() == null) session.setMesaSessionName(username);
+            session.setSiteSpec(registry);
+
             results = Transaction(registry, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
 
             printResult(results);
@@ -100,7 +105,7 @@ public class TransactionUtil {
             Result result = results.get(0);
             if (result!=null) {
                 boolean passed = result.passed();
-                logger.info("register passed? " + passed);
+                logger.info("tx passed? " + passed);
                 return passed;
             } else
                 logger.info("Null result.");
@@ -183,6 +188,16 @@ public class TransactionUtil {
 
                 try {
 
+
+                    XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
+                    List<String> testPlanSections = xdsTestServiceManager.getTestIndex(testInstance.getId());
+                    String registerSection = testPlanSections.get(0); // IMPORTANT NOTE: In a Content Bundle: Make an assumption that the only (first) section is always the Register section which has the ContentBundle
+                    String contentBundle = testInstance.getId() + "/" + registerSection + "/" + "ContentBundle";
+                    List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
+
+                    // Save document entry detail to the repository index
+                    SimDb simDb = new SimDb(oddsSimId);
+
                     DocumentEntryDetail ded = new DocumentEntryDetail();
                     ded.setUniqueId(result.stepResults.get(0).getMetadata().docEntries.get(0).uniqueId);
                     ded.setId(result.stepResults.get(0).getMetadata().docEntries.get(0).id);
@@ -190,13 +205,20 @@ public class TransactionUtil {
                     ded.setTimestamp(result.getTimestamp());
                     ded.setTestInstance(testInstance);
                     ded.setPatientId(result.stepResults.get(0).getMetadata().docEntries.get(0).patientId);
-                    ded.setRegistrySite(registry);
+                    ded.setSiteSpec(registry);
+                    SimulatorConfig simulatorConfig = simDb.getSimulator(oddsSimId);
+                    if (simulatorConfig.get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean()) {
+                        SimulatorConfigElement sce = simulatorConfig.get(SimulatorProperties.oddsRepositorySite);
+                        if (sce!=null && sce.asList()!=null && sce.asList().size()>0) {
+                            SiteSpec reposSite = new SiteSpec(sce.asList().get(0));
+                            ded.setReposSiteSpec(reposSite);
+                        }
+                    }
+                    ded.setContentBundleSections(contentBundleSections);
 
-
-                    // Save document entry detail to the repository index
-                    SimDb simDb = new SimDb(oddsSimId);
 
                     RepIndex repIndex = new RepIndex(simDb.getRepositoryIndexFile().toString(), oddsSimId);
+
 
                     // Another place the StoredDocument gets touched is the Retrieve -- to update the supply state index
                     // StoredDocument storedDocument = repIndex.getDocumentCollection().getStoredDocument(oddeUid);
@@ -271,7 +293,10 @@ public class TransactionUtil {
     }
 
 
-    static public File getOdContentFile(boolean persistenceOption, Session session, String username, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params) {
+    /**
+     * Maps Content file and if being persisted, its new snapshot UUID
+     */
+    static public Map<String,String> getOdContentFile(boolean persistenceOption, Session session, String username, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params) {
 
         try {
             XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
@@ -281,19 +306,19 @@ public class TransactionUtil {
             String contentBundle = testInstance.getId() + "/" + registerSection + "/" + "ContentBundle";
             List<String> contentBundleSections = xdsTestServiceManager.getTestIndex(contentBundle);
 
-
-
             int contentBundleIdx = ded.getSupplyStateIndex();
             String section = registerSection + "/" + "ContentBundle" + "/" + contentBundleSections.get(contentBundleIdx);
 
             TestDetails ts = xdsTestServiceManager.getTestDetails(testInstance,section);
-            File documentFile = null;  // IMPORTANT NOTE: In a Content Bundle: Make an assumption of only step per section
-            documentFile = getDocumentFile(ts.getTestplanFile(section));
+            File documentFile = getDocumentFile(ts.getTestplanFile(section));  // IMPORTANT NOTE: In a Content Bundle: Make an assumption of only step per section
+            String snapshotUniqueId = "";
 
 
             logger.info("Selecting contentBundle section: " + section + " file: " + documentFile);
 
             Result result = null;
+            DocumentEntryDetail snapshotDed = null;
+            Map<String,String> rs = new HashMap<>();
 
             if (persistenceOption) {
                 List<String> sections = new ArrayList<String>(){};
@@ -302,10 +327,37 @@ public class TransactionUtil {
                 List<Result> results = null;
                 boolean stopOnFirstError = true;
 
-                // pnr
+                // pnr -- only happens in persistence mode
                 results = Transaction(repository, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
 
                 printResult(results);
+
+                if (results!=null && results.size()>0) {
+
+                    result = results.get(0);
+                    StepResult stepResult = null;
+                    for (StepResult sr : result.getStepResults()) {
+                        if (section.equals(sr.section)) {
+                            stepResult = sr;
+                        }
+                    }
+
+                    if (result.passed()) {
+                        rs.put("newRepsoitoryUniqueId", stepResult.getMetadata().docEntries.get(0).repositoryUniqueId);
+
+                        snapshotDed = new DocumentEntryDetail();
+                        snapshotUniqueId = stepResult.getMetadata().docEntries.get(0).uniqueId;
+                        snapshotDed.setUniqueId(snapshotUniqueId);
+                        snapshotDed.setId(stepResult.getMetadata().docEntries.get(0).id);
+                        snapshotDed.setEntryType("urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
+                        snapshotDed.setTimestamp(result.getTimestamp());
+                        snapshotDed.setTestInstance(testInstance);
+                        snapshotDed.setPatientId(stepResult.getMetadata().docEntries.get(0).patientId);
+                        snapshotDed.setSiteSpec(repository);
+                    }
+                }
+
+
             }
 
             if (!persistenceOption || (persistenceOption && result!=null && result.passed())) {
@@ -314,18 +366,27 @@ public class TransactionUtil {
 
                 SimDb simDb = new SimDb(oddsSimId);
                 RepIndex repIndex = new RepIndex(simDb.getRepositoryIndexFile().toString(), oddsSimId);
-                StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(ded.getId());
-                ded.setSupplyStateIndex(nextContentIdx);
-                sd.setEntryDetail(ded);
-                // Update DED
-                // TODO: inspect the results and add the snapshot entryUUID to DED class. Use it when getSupplyStateIndex is greater than 0 to replace the previous snapshot.
-                // TODO: see if the Document reference is avaliable in the result? This is needed for the OD response
-                repIndex.getDocumentCollection().delete(ded.getId());
-                repIndex.getDocumentCollection().add(sd);
-                repIndex.save();
+                StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(ded.getUniqueId());
+
+                if (sd!=null) {
+                    sd.getEntryDetail().setSupplyStateIndex(nextContentIdx);
+                    if (snapshotDed!=null) {
+                        sd.getEntryDetail().setSnapshot(snapshotDed);
+                    }
+                    // Update DED
+                    repIndex.getDocumentCollection().delete(ded.getUniqueId());
+                    repIndex.getDocumentCollection().add(sd);
+                    repIndex.save();
+                }
+
+
             }
 
-            return documentFile;
+
+            rs.put("file",documentFile.toString());
+            rs.put("mimeType","text/plain");
+            rs.put("snapshotUniqueId",snapshotUniqueId);
+            return rs;
 
         } catch (Exception ex) {
             ex.printStackTrace();

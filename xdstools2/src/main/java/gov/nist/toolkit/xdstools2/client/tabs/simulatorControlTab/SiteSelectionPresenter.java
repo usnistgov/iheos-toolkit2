@@ -16,17 +16,17 @@ public class SiteSelectionPresenter {
     final static String none = "None";
 
     /**
-     *
+     * @param groupName
      * @param results
      * @param selected
      * @param panel
      */
-    public SiteSelectionPresenter(List<String> results, final List<String> selected, final Panel panel) {
+    public SiteSelectionPresenter(String groupName, List<String> results, final List<String> selected, final Panel panel) {
 
             siteNames.addAll(results);
 //                siteNames.add(0, none);
             view = new SingleSelectionView();
-            view.setData(siteNames);
+            view.setData(groupName, siteNames);
 
             List<Integer> selectedRows = new ArrayList<>();
             for (String sel : selected) {

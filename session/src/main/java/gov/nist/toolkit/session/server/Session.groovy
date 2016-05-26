@@ -133,28 +133,31 @@ public class Session implements SecurityParams {
 		this.siteSpec = siteSpec;
 		transactionSettings = new TransactionSettings();
 		transactionSettings.siteSpec = siteSpec;
-		
-		if (repUid == null || repUid.equals("")) {
-			// this will not always work and is not always relevant - just try
-			//    WHY?
-			try {
-				Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites();
-				Site st = sites.getSite(siteSpec.name);
-                logger.info("site is " + st);
-                logger.info(st.describe());
 
-				// Fix Issue 98 (ODDS)
-				TransactionBean transactionBean  =  st.getRepositoryBean(TransactionBean.RepositoryType.ODDS,siteSpec.isTls); // .repositories.transactions.get(0).repositoryType
-				if (transactionBean!=null) {
-					repUid = st.getRepositoryUniqueId(TransactionBean.RepositoryType.ODDS);
-				} else {
-					repUid = st.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
-				}
+		try {
+			Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites();
+			Site st = sites.getSite(siteSpec.name);
+			String tempRepUid = null;
 
-			} catch (Exception e) {
-				logger.warn(e.toString());
+			logger.info("site is " + st);
+			logger.info(st.describe());
+
+			// Fix Issue 98 (ODDS)
+			TransactionBean transactionBean  =  st.getRepositoryBean(TransactionBean.RepositoryType.ODDS,siteSpec.isTls); // .repositories.transactions.get(0).repositoryType
+			if (transactionBean!=null) {
+				tempRepUid = st.getRepositoryUniqueId(TransactionBean.RepositoryType.ODDS);
+			} else {
+				tempRepUid = st.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 			}
+
+			if (tempRepUid!=null) {
+				repUid = tempRepUid;
+			}
+
+		} catch (Exception e) {
+			logger.warn(e.toString());
 		}
+
 
 	}
 

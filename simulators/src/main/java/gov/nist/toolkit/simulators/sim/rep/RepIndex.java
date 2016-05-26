@@ -77,11 +77,18 @@ public class RepIndex implements Serializable {
 	}
 
 	public SimulatorStats getSimulatorStats() throws IOException, NoSimException {
+		return getSimulatorStats(ActorType.REPOSITORY);
+	}
+
+	public SimulatorStats getSimulatorStats(ActorType actorType) throws IOException, NoSimException {
 		SimulatorStats stats = new SimulatorStats();
-		stats.actorType = ActorType.REPOSITORY;
+		stats.actorType = actorType; // Should repository type be used here instead?
 		stats.simId = simId;
 
-		stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
+		if (ActorType.REPOSITORY.equals(actorType))
+			stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
+		else if (ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)) // The Toolkit Odds sim stats are a little different from the regular repository stats: it only stores ODDEs details so the actual documents live elsewhere.
+			stats.put(SimulatorStats.DOCUMENT_ENTRY_COUNT, dc.size());
 		return stats;
 	}
 

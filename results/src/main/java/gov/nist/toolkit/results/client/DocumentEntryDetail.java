@@ -3,6 +3,7 @@ package gov.nist.toolkit.results.client;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Sunil Bhaskarla on 5/16/2016.
@@ -26,15 +27,29 @@ public class DocumentEntryDetail implements Serializable, IsSerializable {
      *  Test Plan Id */
     TestInstance testInstance;
     /**
-     *  Registry Site where the Document Entry exists */
-    SiteSpec registrySite;
+     *  Registry Site where the OD Document Entry exists */
+    SiteSpec siteSpec;
+    /**
+     * If persisting a snapshot, the repository site
+     */
+    SiteSpec reposSiteSpec;
     /**
      *  Patient Id */
     String patientId;
     /**
-     * The supply state index. Applies to on-demand documents only.
+     * The supply state index. Applies to on-demand documents only. This index maps to the content bundle section.
      */
     int supplyStateIndex = 0;
+
+    /**
+     * Persisted snapshot. There can be only one snapshot for an ODDE at any given time.
+     */
+    DocumentEntryDetail snapshot;
+
+    /**
+     * Content bundle sections
+     */
+    List<String> contentBundleSections;
 
 
     public String getUniqueId() {
@@ -93,11 +108,36 @@ public class DocumentEntryDetail implements Serializable, IsSerializable {
         this.testInstance = testInstance;
     }
 
-    public SiteSpec getRegistrySite() {
-        return registrySite;
+    public SiteSpec getSiteSpec() {
+        return siteSpec;
     }
 
-    public void setRegistrySite(SiteSpec registrySite) {
-        this.registrySite = registrySite;
+    public void setSiteSpec(SiteSpec siteSpec) {
+        this.siteSpec = siteSpec;
+    }
+
+
+    public DocumentEntryDetail getSnapshot() {
+        return snapshot;
+    }
+
+    public void setSnapshot(DocumentEntryDetail snapshot) {
+        this.snapshot = snapshot;
+    }
+
+    public List<String> getContentBundleSections() {
+        return contentBundleSections;
+    }
+
+    public void setContentBundleSections(List<String> contentBundleSections) {
+        this.contentBundleSections = contentBundleSections;
+    }
+
+    public SiteSpec getReposSiteSpec() {
+        return reposSiteSpec;
+    }
+
+    public void setReposSiteSpec(SiteSpec reposSiteSpec) {
+        this.reposSiteSpec = reposSiteSpec;
     }
 }

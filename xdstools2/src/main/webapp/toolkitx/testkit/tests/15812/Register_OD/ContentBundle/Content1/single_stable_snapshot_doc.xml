@@ -4,6 +4,11 @@
       <rim:Name>
         <rim:LocalizedString value="Physical"/>
       </rim:Name>
+      <rim:Slot name="repositoryUniqueId">
+        <rim:ValueList>
+          <rim:Value>$repuid$</rim:Value>
+        </rim:ValueList>
+      </rim:Slot>
       <rim:Description/>
       <rim:Slot name="creationTime">
         <rim:ValueList>
