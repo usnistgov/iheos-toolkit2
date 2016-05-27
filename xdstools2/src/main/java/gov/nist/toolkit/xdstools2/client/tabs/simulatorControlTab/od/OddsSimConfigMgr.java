@@ -150,7 +150,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     }
 
     public void displayPersistenceConfig() {
-        
+
     }
 
     public void displayRetrieveConfig() {
@@ -293,19 +293,23 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 oddeEntriesTbl.getFlexCellFormatter().setHorizontalAlignment(oddeRow,0, HasHorizontalAlignment.ALIGN_RIGHT);
                 oddeRow++;
 
-                oddeEntriesTbl.setWidget(oddeRow, 0, new HTML("Created On"));
-                oddeEntriesTbl.setWidget(oddeRow, 1, new HTML("On-Demand Document Unique ID"));
-                oddeEntriesTbl.setWidget(oddeRow, 2, new HTML("Registry"));
-                oddeEntriesTbl.setWidget(oddeRow, 3, new HTML("Repository"));
-                oddeEntriesTbl.setWidget(oddeRow, 4, new HTML("Patient ID"));
-                oddeEntriesTbl.setWidget(oddeRow, 5, new HTML("Supply State"));
+                oddeEntriesTbl.setWidget(oddeRow, 0, new HTML("<b>Created On</b>"));
+                oddeEntriesTbl.setWidget(oddeRow, 1, new HTML("<b>On-Demand Document Unique ID</b>"));
+                oddeEntriesTbl.setWidget(oddeRow, 2, new HTML("<b>Registry</b>"));
+                oddeEntriesTbl.setWidget(oddeRow, 3, new HTML("<b>Repository</b>"));
+                oddeEntriesTbl.setWidget(oddeRow, 4, new HTML("<b>Patient ID</b>"));
+                oddeEntriesTbl.setWidget(oddeRow, 5, new HTML("<b>Supply State</b>"));
                 oddeRow++;
 
                 if (documentEntryDetails!=null) {
-                    for (DocumentEntryDetail ded : documentEntryDetails) {
+                    // Sort descending (List is originally in ascending order)
+//                  Collections.reverse(documentEntryDetails);   -- This seems to need an additional inherits module:
+                    int oDdocCount = documentEntryDetails.size()-1 /* Z-B Idx*/;
+                    for (int cx=oDdocCount; cx>-1; cx--) {
+                        DocumentEntryDetail ded = documentEntryDetails.get(cx);
                         oddeEntriesTbl.setWidget(oddeRow, 0, new HTML(ded.getTimestamp()));
                         oddeEntriesTbl.setWidget(oddeRow, 1, new HTML(ded.getUniqueId()));
-                        oddeEntriesTbl.setWidget(oddeRow, 2, new HTML(ded.getSiteSpec().getName()));
+                        oddeEntriesTbl.setWidget(oddeRow, 2, new HTML(ded.getRegSiteSpec().getName()));
                         oddeEntriesTbl.setWidget(oddeRow, 3, new HTML(ded.getReposSiteSpec()==null?"&nbsp;":ded.getReposSiteSpec().getName()));
                         oddeEntriesTbl.setWidget(oddeRow, 4, new HTML(ded.getPatientId()));
 
@@ -321,7 +325,6 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                             oddeEntriesTbl.setWidget(oddeRow, 5, new HTML(""+ded.getSupplyStateIndex() + ": " + ded.getContentBundleSections().get(ded.getSupplyStateIndex()) + bundlePeek ));
                         } else
                             oddeEntriesTbl.setWidget(oddeRow, 5, new HTML(""+ded.getSupplyStateIndex() + ": Missing Content Bundle!"));
-
                         oddeRow++;
                     }
                 }
@@ -336,7 +339,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
         newRow();
         tbl.setWidget(getRow(), 0, new HTML("<hr/> <h2>First, Initialize this Simulator by Registering an On-Demand Document Entry</h2>" +
-                "<p>Enter a Patient Id and select a Registry site to register an On-Demand Document Entry. If the Registry site is a simulator, you may use the Patient Identity Feed (PIF) tool to add a new patient Id. If persistence of On-Demand Documents is desired, you must select the Persistence option from the Retrieve configuration prior to the registration. Click the Initialize button to register and setup a persistence indicator for retrieve requests.</p>"));
+                "<p>Enter a Patient Id and select a Registry site to register an On-Demand Document Entry. You may use the Patient Identity Feed (PIF) tool to add a new patient Id. If persistence of On-Demand Documents is desired, you must select the Persistence option from the Retrieve configuration prior to the registration. Click the Initialize button to register and setup a persistence indicator for retrieve requests.</p>"));
         tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
 
