@@ -17,7 +17,16 @@ public class DocumentCollection implements Serializable {
 
 	public void add(StoredDocument d) {
 		synchronized(repIndex) {
+			d.setId(documents.size());
 			documents.add(d);
+			dirty = true;
+		}
+	}
+
+	public void update(StoredDocument d) {
+		synchronized(repIndex) {
+			documents.remove(d.getId());
+			documents.add(d.getId(),d);
 			dirty = true;
 		}
 	}
