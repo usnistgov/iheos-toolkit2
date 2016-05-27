@@ -87,8 +87,6 @@ public class RepIndex implements Serializable {
 
 		if (ActorType.REPOSITORY.equals(actorType))
 			stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
-		else if (ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)) // The Toolkit Odds sim stats are a little different from the regular repository stats: it only stores ODDEs details so the actual documents live elsewhere.
-			stats.put(SimulatorStats.DOCUMENT_ENTRY_COUNT, dc.size());
 		return stats;
 	}
 

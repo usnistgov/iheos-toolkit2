@@ -28,7 +28,7 @@ public class DocumentEntryDetail implements Serializable, IsSerializable {
     TestInstance testInstance;
     /**
      *  Registry Site where the OD Document Entry exists */
-    SiteSpec siteSpec;
+    SiteSpec regSiteSpec;
     /**
      * If persisting a snapshot, the repository site
      */
@@ -108,12 +108,12 @@ public class DocumentEntryDetail implements Serializable, IsSerializable {
         this.testInstance = testInstance;
     }
 
-    public SiteSpec getSiteSpec() {
-        return siteSpec;
+    public SiteSpec getRegSiteSpec() {
+        return regSiteSpec;
     }
 
-    public void setSiteSpec(SiteSpec siteSpec) {
-        this.siteSpec = siteSpec;
+    public void setRegSiteSpec(SiteSpec regSiteSpec) {
+        this.regSiteSpec = regSiteSpec;
     }
 
 

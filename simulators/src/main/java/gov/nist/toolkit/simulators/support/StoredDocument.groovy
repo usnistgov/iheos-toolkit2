@@ -16,7 +16,14 @@ public class StoredDocument implements Serializable {
 	String mimeType;
 	String charset;
 	String hash;
+	/**
+	 * Document Entry Details
+	 */
 	DocumentEntryDetail entryDetail;
+	/**
+	 * Local StoredDocument list item identifier.
+	 */
+	int id;
 
     public String size;
 	
@@ -102,5 +109,13 @@ public class StoredDocument implements Serializable {
 
 	void setEntryDetail(DocumentEntryDetail entryDetail) {
 		this.entryDetail = entryDetail
+	}
+
+	int getId() {
+		return id
+	}
+
+	void setId(int id) {
+		this.id = id
 	}
 }

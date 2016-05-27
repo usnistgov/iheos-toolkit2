@@ -5,7 +5,6 @@ import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
-import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -141,14 +140,14 @@ public class OddsActorSimulator extends BaseDsActorSimulator {
 			return true;
 		}
 		else {
-			dsSimCommon.sendFault("Od-RepositoryActorSimulator: Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("OddsActorSimulator: Don't understand transaction " + transactionType, null);
 			return false;
 		}
 	}
 
 	static public SimulatorStats getSimulatorStats(SimId simId) throws IOException, NoSimException {
 		RepIndex repIndex = SimServlet.getRepIndex(simId);
-		return repIndex.getSimulatorStats(ActorType.ONDEMAND_DOCUMENT_SOURCE);
+		return repIndex.getSimulatorStats();
 	}
 
 

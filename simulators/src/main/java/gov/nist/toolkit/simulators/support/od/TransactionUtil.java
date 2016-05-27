@@ -1,4 +1,4 @@
-package gov.nist.toolkit.simulators.support;
+package gov.nist.toolkit.simulators.support.od;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimId;
@@ -15,6 +15,7 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
+import gov.nist.toolkit.simulators.support.StoredDocument;
 import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testenginelogging.TestDetails;
 import gov.nist.toolkit.utilities.xml.Util;
@@ -33,6 +34,7 @@ import java.util.Map;
  * Created by Sunil Bhaskarla on 4/2/2016.
  */
 public class TransactionUtil {
+    public static final int ALL_OD_DOCS_SUPPLIED = -1;
     static Logger logger = Logger.getLogger(TransactionUtil.class);
 
     static public List<Result> Transaction(SiteSpec siteSpec, String sessionName, TestInstance testId, Map<String, String> params, boolean stopOnFirstError, Session myTestSession, XdsTestServiceManager xdsTestServiceManager, List<String> sections) {
@@ -175,7 +177,6 @@ public class TransactionUtil {
              registry.name
              */
 
-            // TODO:
             // When a Retrieve is triggered, we have to detect an ODDS-recognized UID from a bogus or non-existent UID, to do this, we Store the UID in the ODDS.
             // The document in ODDS for the UID will contain the content supply index which will be used for the PnR and content supply
             // 0. Implement an internal-purpose-only "fakePnR" in ODDS that will only store document
@@ -205,7 +206,7 @@ public class TransactionUtil {
                     ded.setTimestamp(result.getTimestamp());
                     ded.setTestInstance(testInstance);
                     ded.setPatientId(result.stepResults.get(0).getMetadata().docEntries.get(0).patientId);
-                    ded.setSiteSpec(registry);
+                    ded.setRegSiteSpec(registry);
                     SimulatorConfig simulatorConfig = simDb.getSimulator(oddsSimId);
                     if (simulatorConfig.get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean()) {
                         SimulatorConfigElement sce = simulatorConfig.get(SimulatorProperties.oddsRepositorySite);
@@ -296,7 +297,7 @@ public class TransactionUtil {
     /**
      * Maps Content file and if being persisted, its new snapshot UUID
      */
-    static public Map<String,String> getOdContentFile(boolean persistenceOption, Session session, String username, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params) {
+    static public Map<String,String> getOdContentFile(boolean persistenceOption, Session session, String username, SiteSpec repository, DocumentEntryDetail ded, SimId oddsSimId, Map<String, String> params)  {
 
         try {
             XdsTestServiceManager xdsTestServiceManager = new XdsTestServiceManager(session);
@@ -309,7 +310,11 @@ public class TransactionUtil {
             int contentBundleIdx = ded.getSupplyStateIndex();
             String section = registerSection + "/" + "ContentBundle" + "/" + contentBundleSections.get(contentBundleIdx);
 
-            TestDetails ts = xdsTestServiceManager.getTestDetails(testInstance,section);
+            int lastBundleIdx = contentBundleSections.size() - 1;
+            int nextContentIdx = (contentBundleIdx < lastBundleIdx) ? contentBundleIdx + 1 : lastBundleIdx;
+
+
+            TestDetails ts = xdsTestServiceManager.getTestDetails(testInstance, section);
             File documentFile = getDocumentFile(ts.getTestplanFile(section));  // IMPORTANT NOTE: In a Content Bundle: Make an assumption of only step per section
             String snapshotUniqueId = "";
 
@@ -318,83 +323,107 @@ public class TransactionUtil {
 
             Result result = null;
             DocumentEntryDetail snapshotDed = null;
-            Map<String,String> rs = new HashMap<>();
+            Map<String, String> rs = new HashMap<>();
 
             if (persistenceOption) {
-                List<String> sections = new ArrayList<String>(){};
+                List<String> sections = new ArrayList<String>() {
+                };
                 sections.add(section);
 
                 List<Result> results = null;
                 boolean stopOnFirstError = true;
 
-                // pnr -- only happens in persistence mode
-                results = Transaction(repository, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
+                // pnr -- only happens in persistence mode and until the first time the last document in the content bundle is retrieved.
+                // Example: A content bundle has 2 documents
+                // ODD is the localized StoredDocument tracking detail in the ODDS repository
+                // Ret 1: ODD has 0, Snapshot has 0
+                // Ret 2: ODD has 1, Snapshot has -1
+                // Ret 3: ODD has 1, Snapshot has -1 to indicate end of documents
+                if (ded.getSnapshot() == null /* first retrieve attempt */ || ALL_OD_DOCS_SUPPLIED != ded.getSnapshot().getSupplyStateIndex() /* subsequent attempt until the last */ ) {
+                    results = Transaction(repository, username, testInstance, params, stopOnFirstError, session, xdsTestServiceManager, sections);
 
-                printResult(results);
+                    printResult(results);
 
-                if (results!=null && results.size()>0) {
+                    if (results != null && results.size() > 0) {
 
-                    result = results.get(0);
-                    StepResult stepResult = null;
-                    for (StepResult sr : result.getStepResults()) {
-                        if (section.equals(sr.section)) {
-                            stepResult = sr;
+                        result = results.get(0);
+                        StepResult stepResult = null;
+                        for (StepResult sr : result.getStepResults()) {
+                            if (section.equals(sr.section)) {
+                                stepResult = sr;
+                            }
                         }
-                    }
 
-                    if (result.passed()) {
-                        rs.put("newRepsoitoryUniqueId", stepResult.getMetadata().docEntries.get(0).repositoryUniqueId);
+                        if (result.passed()) {
+                            String repUid = stepResult.getMetadata().docEntries.get(0).repositoryUniqueId;
+                            rs.put("newRepsoitoryUniqueId", repUid);
 
-                        snapshotDed = new DocumentEntryDetail();
-                        snapshotUniqueId = stepResult.getMetadata().docEntries.get(0).uniqueId;
-                        snapshotDed.setUniqueId(snapshotUniqueId);
-                        snapshotDed.setId(stepResult.getMetadata().docEntries.get(0).id);
-                        snapshotDed.setEntryType("urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
-                        snapshotDed.setTimestamp(result.getTimestamp());
-                        snapshotDed.setTestInstance(testInstance);
-                        snapshotDed.setPatientId(stepResult.getMetadata().docEntries.get(0).patientId);
-                        snapshotDed.setSiteSpec(repository);
+                            snapshotDed = new DocumentEntryDetail();
+                            snapshotUniqueId = stepResult.getMetadata().docEntries.get(0).uniqueId;
+                            snapshotDed.setUniqueId(snapshotUniqueId);
+                            rs.put("snapshotUniqueId", snapshotUniqueId);
+                            snapshotDed.setId(stepResult.getMetadata().docEntries.get(0).id);
+                            snapshotDed.setEntryType("urn:uuid:7edca82f-054d-47f2-a032-9b2a5b5186c1");
+                            snapshotDed.setTimestamp(result.getTimestamp());
+                            snapshotDed.setTestInstance(testInstance);
+                            snapshotDed.setPatientId(stepResult.getMetadata().docEntries.get(0).patientId);
+                            repository.homeId = repUid;
+                            snapshotDed.setReposSiteSpec(repository);
+
+                            if (contentBundleIdx == nextContentIdx)
+                                snapshotDed.setSupplyStateIndex(ALL_OD_DOCS_SUPPLIED);
+                            else
+                                snapshotDed.setSupplyStateIndex(contentBundleIdx);
+
+                            SimDb simDb = new SimDb(oddsSimId);
+                            RepIndex repIndex = new RepIndex(simDb.getRepositoryIndexFile().toString(), oddsSimId);
+                            StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(ded.getUniqueId());
+                            if (sd!=null) {
+                                sd.getEntryDetail().setSupplyStateIndex(nextContentIdx);
+                                sd.getEntryDetail().setSnapshot(snapshotDed);
+                                repIndex.getDocumentCollection().update(sd);
+                                repIndex.save();
+                            } else {
+                                logger.error("PersistenceOption Error: SD is null! Id:" + ded.getUniqueId());
+                            }
+
+                        }
+
                     }
+                } else if (ded.getSnapshot() != null && ALL_OD_DOCS_SUPPLIED == ded.getSnapshot().getSupplyStateIndex()) { // ALL OD documents already supplied
+                    rs.put("newRepsoitoryUniqueId", ded.getSnapshot().getReposSiteSpec().homeId);
+                    rs.put("snapshotUniqueId", ded.getSnapshot().getUniqueId());
                 }
 
 
-            }
-
-            if (!persistenceOption || (persistenceOption && result!=null && result.passed())) {
-                int lastBundleIdx = contentBundleSections.size()-1;
-                int nextContentIdx = (contentBundleIdx<lastBundleIdx)?contentBundleIdx+1:lastBundleIdx;
+            } else {
+                // Non-Persistence option
 
                 SimDb simDb = new SimDb(oddsSimId);
                 RepIndex repIndex = new RepIndex(simDb.getRepositoryIndexFile().toString(), oddsSimId);
                 StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(ded.getUniqueId());
 
-                if (sd!=null) {
+                if (sd != null) {
                     sd.getEntryDetail().setSupplyStateIndex(nextContentIdx);
-                    if (snapshotDed!=null) {
-                        sd.getEntryDetail().setSnapshot(snapshotDed);
-                    }
-                    // Update DED
-                    repIndex.getDocumentCollection().delete(ded.getUniqueId());
-                    repIndex.getDocumentCollection().add(sd);
+                    repIndex.getDocumentCollection().update(sd);
                     repIndex.save();
+                } else {
+                    logger.error("SD is null! Id:" + ded.getUniqueId());
                 }
 
 
             }
 
+            rs.put("file", documentFile.toString());
+            rs.put("mimeType", "text/plain");
 
-            rs.put("file",documentFile.toString());
-            rs.put("mimeType","text/plain");
-            rs.put("snapshotUniqueId",snapshotUniqueId);
             return rs;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            } catch(Exception ex){
+                ex.printStackTrace();
+                return null;
+            }
+
         }
-
-        return null;
-
-
-    }
 
 }
