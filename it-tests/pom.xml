@@ -117,8 +117,16 @@
                         <include>**/*Test.java</include>
                         <include>**/*IT.java</include>
                     </includes>
+                    <excludes>
+                        <exclude>**/OdSpec.java</exclude>
+                        <exclude>**/OdSpec.groovy</exclude>
+                        <exclude>**/RetrieveSpec.groovy</exclude>
+                        <exclude>**/RetrieveSpec.java</exclude>
+                        <exclude>**/OdDocumentConsumerSpec.groovy</exclude>
+                        <exclude>**/OdDocumentConsumerSpec.java</exclude>
+                    </excludes>
                     <!-- This is temporarily enabled because it is a known issue that some of the Query Spec integrations tests fail! -->
-                    <testFailureIgnore>true</testFailureIgnore>
+                    <!--<testFailureIgnore>true</testFailureIgnore>-->
                 </configuration>
                 <executions>
                     <execution>

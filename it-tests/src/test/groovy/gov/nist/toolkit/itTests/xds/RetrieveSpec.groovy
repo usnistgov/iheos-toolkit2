@@ -129,7 +129,7 @@ class RetrieveSpec extends ToolkitSpecification {
         results.size() == 1
         results.get(0).passed()
 
-        println "size: ${results.size()}, pass: ${results.get(0).passed()}"
+        //println "size: ${results.size()}, pass: ${results.get(0).passed()}"
     }
 
 }
