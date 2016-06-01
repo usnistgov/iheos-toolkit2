@@ -11,7 +11,16 @@ import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.AssertionResult;
+import gov.nist.toolkit.results.client.AssertionResults;
+import gov.nist.toolkit.results.client.CodesConfiguration;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
@@ -37,10 +46,16 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -541,6 +556,15 @@ public class XdsTestServiceManager extends CommonService {
                                                     response,
                                                     "RetrieveDocumentSetResponse");
 								if (rdsr != null) {
+
+									// Issue 103: We need to propogate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
+									try {
+										String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
+										stepResult.setRegistryResponseStatus(rrStatusValue);
+									} catch (Throwable t) {
+										logger.error(t.toString());
+									}
+
 									RetrieveB rb = new RetrieveB();
 									Map<String, RetrievedDocumentModel> resMap = rb
 											.parse_rep_response(response).getMap();

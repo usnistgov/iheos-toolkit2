@@ -13,6 +13,7 @@ import java.util.List;
 public class StepResult implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	public boolean status;
+	String registryResponseStatus;
 	public String section;
 	public String stepName;
 	MetadataCollection metadata;
@@ -101,5 +102,12 @@ public class StepResult implements IsSerializable, Serializable {
 	public TestLog getTestLog() { return testLog; }
 	
 	public void setTestLog(TestLog tl) { testLog = tl; haveLogs = true;}
-	
+
+	public String getRegistryResponseStatus() {
+		return registryResponseStatus;
+	}
+
+	public void setRegistryResponseStatus(String registryResponseStatus) {
+		this.registryResponseStatus = registryResponseStatus;
+	}
 }
