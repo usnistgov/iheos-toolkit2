@@ -304,15 +304,30 @@ public class SimDb {
 
 		return names;
 	}
-	
+
+
+	public void getActorIfAvailable() {
+		if (actor==null) {
+			try {
+				String actorTemp = getSimulatorType();
+				if (actorTemp!=null) {
+					actor=actorTemp;
+				}
+			} catch (IOException ex) {
+				logger.warn(ex.toString());
+			}
+		}
+	}
 
 	public File getRegistryIndexFile() {
+		getActorIfAvailable();
 		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "reg_db.ser");
 	}
 
 	public File getRepositoryIndexFile() {
+		getActorIfAvailable();
 		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "rep_db.ser");
