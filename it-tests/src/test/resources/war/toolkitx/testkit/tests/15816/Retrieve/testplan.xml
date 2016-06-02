@@ -24,6 +24,7 @@
       <MetadataFile>bad_query.xml</MetadataFile>
       <ExpectedContents/>
 
+
       <XDSb/>
     </RetrieveTransaction>
   </TestStep>
