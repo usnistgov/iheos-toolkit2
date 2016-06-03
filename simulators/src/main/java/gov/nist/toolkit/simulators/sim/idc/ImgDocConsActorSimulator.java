@@ -139,9 +139,9 @@ public class ImgDocConsActorSimulator extends BaseDsActorSimulator {
       logger.info(result.toStringWithConsume());
       
       if (messageDir != null) {
-         writeToFile(soap.getInHeader().toString(), messageDir, "RequestHeader.xml");
-         writeToFile(soap.getOutHeader().toString(), messageDir, "ResponseHeader.xml");
-         writeToFile(retrieveRequest.toString(), messageDir, "RetrieveImageSetRequest.xml");
+         writeToFile(soap.getOutHeader().toString(), messageDir, "RequestHeader.xml");
+         writeToFile(soap.getInHeader().toString(), messageDir, "ResponseHeader.xml");
+         writeToFile(retrieveRequest.toString(), messageDir, "RequestBody.xml");
       }
 
       return parseResponse(result);
