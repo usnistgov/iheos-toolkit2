@@ -55,8 +55,10 @@ import javax.servlet.http.HttpSession;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -567,10 +569,17 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) {
-		return TransactionUtil.register(getSession(),username,testInstance,registry,params);
+		return TransactionUtil.register(getSession(),username,testInstance,registry,params, new ArrayList<String>());
 	}
 	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId odds, Map<String, String> params) {
-		return TransactionUtil.registerWithLocalizedTrackingInODDS(getSession(),username,testInstance,registry,odds, params);
+		try {
+			return TransactionUtil.registerWithLocalizedTrackingInODDS(getSession(),username,testInstance,registry,odds, params);
+		} catch (Exception ex) {
+			Map<String, String> errorMap = new HashMap<>();
+			errorMap.put("error",ex.toString());
+			return errorMap;
+		}
+
 	}
 
 	//------------------------------------------------------------------------

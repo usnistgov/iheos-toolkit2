@@ -68,7 +68,7 @@ public class TransactionUtil {
     /**
      * Must have a default Register section in this test.
      */
-    static public Result register(Session session, String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) {
+    static public Result register(Session session, String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, List<String> sections) {
 
         // pid format "SKB1^^^&1.2.960&ISO";
 
@@ -83,7 +83,6 @@ public class TransactionUtil {
 
             // NOTE: Make an assumption that there is only one ( and the first) section is always the Register section so in this case run the Default section. This needs to be manually enforced when designing content bundles.
 
-            List<String> sections = new ArrayList<>();
             List<Result> results = null;
 
             if (session.getMesaSessionName() == null) session.setMesaSessionName(username);
@@ -95,6 +94,7 @@ public class TransactionUtil {
             return results.get(0);
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             logger.error(ex.toString());
         }
 
@@ -120,13 +120,16 @@ public class TransactionUtil {
      *
      * @return
      */
-    static public Map<String, String> registerWithLocalizedTrackingInODDS(Session session, String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) {
+    static public Map<String, String> registerWithLocalizedTrackingInODDS(Session session, String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception {
+
+        if (oddsSimId==null)
+            throw new Exception("ODDS Sim Id cannot be null.");
 
         Map<String, String> rs = new HashMap<>();
         String oddeUid = null;
 
         // Part 1. Register an ODDE
-        Result result = register(session, username,testInstance,registry,params);
+        Result result = register(session, username,testInstance,registry,params, new ArrayList<String>(){{add("Register_OD");}});
 
         if (result!=null && result.getStepResults()!=null)
             logger.info(" *** register result size: " + result.getStepResults().size());
@@ -150,6 +153,7 @@ public class TransactionUtil {
                 oddeUid = result.stepResults.get(0).getMetadata().docEntries.get(0).uniqueId;
                 rs.put("key", oddeUid);
             } catch (Throwable t) {
+                t.printStackTrace();
                 rs.put("error", t.toString());
             }
 
@@ -234,6 +238,7 @@ public class TransactionUtil {
                     repIndex.save();
 
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     rs.put("error",ex.toString());
                 }
 

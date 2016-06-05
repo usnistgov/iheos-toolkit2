@@ -110,17 +110,17 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 					break;
 				}
 
-				SiteSpec reposSite = null;
-				SimulatorConfigElement scReposEl = getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite);
-				if (scReposEl!=null) {
-					if (scReposEl.asList()!=null) {
-						reposSite = new SiteSpec(scReposEl.asList().get(0), ActorType.REPOSITORY, null);
-					}
-				}
-
 				DocumentEntryDetail ded = document.getEntryDetail();
+				SiteSpec reposSite = null;
 
 				if (persistenceOptn) {
+					SimulatorConfigElement scReposEl = getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite);
+					if (scReposEl!=null) {
+						if (scReposEl.asList()!=null) {
+							reposSite = new SiteSpec(scReposEl.asList().get(0), ActorType.REPOSITORY, null);
+						}
+					}
+
 					if (mySession.getMesaSessionName() == null) mySession.setMesaSessionName(sessionName);
 					mySession.setSiteSpec(reposSite);
 				}

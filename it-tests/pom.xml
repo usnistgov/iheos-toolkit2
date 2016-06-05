@@ -112,19 +112,35 @@
                 <version>2.19.1</version>
                 <configuration>
                     <includes>
-                        <include>**/*Spec.groovy</include>
-                        <include>**/*Spec.java</include>
-                        <include>**/*Test.java</include>
-                        <include>**/*IT.java</include>
+                        <!--OD Registry-->
+                        <include>**/OdRegistrySpec.java</include>
+                        <include>**/OdRegistrySpec.groovy</include>
+                        <!--Doc Consumer-->
+                        <include>**/OdConsumerSpec.java</include>
+                        <include>**/OdConsumerSpec.groovy</include>
+                        <include>**/OdConsumerPersistenceSpec.java</include>
+                        <include>**/OdConsumerPersistenceSpec.groovy</include>
+                        <!--General Retrieve-->
+                        <include>**/RetrieveSpec.groovy</include>
+                        <include>**/RetrieveSpec.java</include>
+
+                        <!-- 15812 can be unassigned-->
+
+                        <!-- orig begin -->
+                        <!--<include>**/*Spec.groovy</include>-->
+                        <!--<include>**/*Spec.java</include>-->
+                        <!--<include>**/*Test.java</include>-->
+                        <!--<include>**/*IT.java</include>-->
+                        <!--orig end-->
                     </includes>
-                    <excludes>
-                        <exclude>**/OdSpec.java</exclude>
-                        <exclude>**/OdSpec.groovy</exclude>
-                        <exclude>**/RetrieveSpec.groovy</exclude>
-                        <exclude>**/RetrieveSpec.java</exclude>
-                        <exclude>**/OdDocumentConsumerSpec.groovy</exclude>
-                        <exclude>**/OdDocumentConsumerSpec.java</exclude>
-                    </excludes>
+                    <!--<excludes>-->
+                        <!--<exclude>**/OdSpec.java</exclude>-->
+                        <!--<exclude>**/OdSpec.groovy</exclude>-->
+                        <!--<exclude>**/RetrieveSpec.groovy</exclude>-->
+                        <!--<exclude>**/RetrieveSpec.java</exclude>-->
+                        <!--<exclude>**/OdDocumentConsumerSpec.groovy</exclude>-->
+                        <!--<exclude>**/OdDocumentConsumerSpec.java</exclude>-->
+                    <!--</excludes>-->
                     <!-- This is temporarily enabled because it is a known issue that some of the Query Spec integrations tests fail! -->
                     <!--<testFailureIgnore>true</testFailureIgnore>-->
                 </configuration>
