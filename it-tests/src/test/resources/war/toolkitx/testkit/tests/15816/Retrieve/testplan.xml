@@ -46,7 +46,7 @@
 
 <!-- See Issue 87. Needs discussion with Bill. 
   <TestStep id="badrepuid">
-    <ExpectedStatus>PartialSuccess</ExpectedStatus>
+    <ExpectedStatus>Failure</ExpectedStatus>
     <RetrieveTransaction>
 
 	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid0$"/> 
