@@ -165,6 +165,11 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 					buf.append(mc.docEntries.size()).append(" DocumentEntries ");
 					buf.append(mc.folders.size()).append(" Folders ");
 					buf.append(mc.objectRefs.size()).append(" ObjectRefs ");
+
+					if (theresult.get(0).getStepResults().get(0).documents!=null) {
+						buf.append(theresult.get(0).getStepResults().get(0).documents.size()).append(" Documents");
+					}
+
 					resultsShortDescription.setText(buf.toString());
 				}
 			} catch (Exception e) {}
@@ -206,7 +211,7 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 			}
 			if (status) {
 				if (partialSuccess)
-					setStatus("Step Result Status: Success, Registry Response Status: PartialSuccess", true);
+					setStatus("<span style=\"color:orange;font-weight:bold;\">Status:</span>&nbsp;<span style=\"color:orange;font-weight:bold;\">PartialSuccess</span>");
 				else
 					setStatus("Status: Success", true);
 			} else
@@ -406,6 +411,10 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 	public void setStatus(String message, boolean status) {
 		statusBox.setHTML(HtmlMarkup.bold(red(message,status)));
+	}
+
+	public void setStatus(String message) {
+		statusBox.setHTML(message);
 	}
 
 	public String getRunningMessage() {
