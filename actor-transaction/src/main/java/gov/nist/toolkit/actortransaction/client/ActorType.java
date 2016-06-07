@@ -97,7 +97,7 @@ public enum ActorType implements IsSerializable, Serializable {
             "rg",
             "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
             Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE,
-               TransactionType.RET_IMG_DOC_SET),
+               TransactionType.XC_RET_IMG_DOC_SET),
             true,
             null
     ),

@@ -29,7 +29,7 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 class RGImgDocSetRet extends AbstractMessageValidator {
    Logger logger = Logger.getLogger(RGImgDocSetRet);
 
-   private static final TransactionType type = TransactionType.RET_IMG_DOC_SET;
+   private static final TransactionType type = TransactionType.XC_RET_IMG_DOC_SET;
 
    SimCommon common;
    DsSimCommon dsSimCommon;

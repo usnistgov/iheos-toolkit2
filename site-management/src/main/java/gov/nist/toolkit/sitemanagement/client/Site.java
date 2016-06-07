@@ -30,8 +30,7 @@ public class Site  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name = null;
 	TransactionCollection transactions = new TransactionCollection(false);
-	// There can be only one ODDS repository
-	// and one XDS.b repository in a site.
+	// There can be only one ODDS, one XDS.b, and one IDS repository in a site.
 	// An XDS.b Repository and a ODDS Repository
 	// can have the same repositoryUniqueId and endpoint. But
 	// they require two entries to identify them.
@@ -63,7 +62,6 @@ public class Site  implements IsSerializable, Serializable {
 				((pidAllocateURI == null) ? s.pidAllocateURI == null : pidAllocateURI.equals(s.pidAllocateURI)) &&
 				transactions.equals(s.transactions) &&
 				repositories.equals(s.repositories);
-				
 	}
 	
 	public TransactionCollection transactions() {
