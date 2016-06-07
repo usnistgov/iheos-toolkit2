@@ -1,18 +1,5 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
-import org.jaxen.JaxenException;
-
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
@@ -30,6 +17,17 @@ import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsPreparsedException;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
+import org.jaxen.JaxenException;
+
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class RetrieveTransaction extends BasicTransaction {
 //	String metadata_filename = null;
@@ -323,9 +321,6 @@ public class RetrieveTransaction extends BasicTransaction {
 		}
 		return map;
 	}
-
-
-
 
 
 	private HashMap<String, RetrievedDocumentModel> build_request_info(OMElement metadata_ele) throws XdsException {

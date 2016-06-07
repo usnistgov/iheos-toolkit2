@@ -8,7 +8,7 @@
             <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$home$" useAs="$home$"/>
             <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$repositoryUniqueId$" useAs="$repositoryuid$"/>
             <ExpectedMimeType>text/plain</ExpectedMimeType>
-            <ReferenceDocument uid="$docuid$">../../15807/onedoc/my_document.txt</ReferenceDocument>
+            <ReferenceDocument uid="$docuid$">../../15807/onedoc1/my_document.txt</ReferenceDocument>
             <MetadataFile>retrieve.xml</MetadataFile>
             <Report name="$home_request$" section="InputMetadata">
                 //*[local-name()='HomeCommunityId']
@@ -72,7 +72,7 @@
     <TestStep id="Verify mimeType">
         <Goal>Validate mimeType in Retrieve response against FindDocuments response</Goal>
         <NullTransaction>
-            <UseReport test="15808"  section="OneDocFindDocuments" step="finddocs" reportName="$mimeType$" useAs="queryValue"/>
+            <UseReport test="15808"  section="SingleDocumentFindDocuments" step="finddocs" reportName="$mimeType$" useAs="queryValue"/>
             <UseReport reportName="$mimetype_response$" section="THIS" step="retrieve" useAs="retrievedValue"/>
             <Assertions>
                 <Assert>

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.registrymsg.registry;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;

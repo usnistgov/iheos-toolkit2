@@ -3,7 +3,7 @@ package gov.nist.toolkit.valregmetadata.field;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
 import org.apache.axiom.om.OMElement;
@@ -38,7 +38,7 @@ public class SubmissionStructure {
 			all_docs_linked_to_ss(er, vc);
 			all_fols_linked_to_ss(er, vc);
 			symbolic_refs_not_in_submission(er);
-			eval_assocs(er); // Verifications from ITI TF-3 4.2.2.2.6 Rev. 12.1 are in the ProcessMetadataForRegister class
+			eval_assocs(er, vc); // Verifications from ITI TF-3 4.2.2.2.6 Rev. 12.1 are in the ProcessMetadataForRegister class
 
 			ss_status_single_value(er, vc);
 
@@ -399,7 +399,7 @@ public class SubmissionStructure {
 		}
 	}
 
-	void evalRelationship(ErrorRecorder er, OMElement assoc) {
+	void evalRelationship(ErrorRecorder er, OMElement assoc, ValidationContext vc) {
 		String source = m.getAssocSource(assoc);
 		String target = m.getAssocTarget(assoc);
 		String type = m.getAssocType(assoc);
@@ -407,7 +407,7 @@ public class SubmissionStructure {
 		if (source == null || target == null || type == null)
 			return;
 
-		if (!isDocumentEntry(source))
+		if (!isDocumentEntry(source) && !vc.isMU)
 			er.err(XdsErrorCode.Code.XDSRegistryMetadataError, objectDescription(assoc) + ": with type " + simpleAssocType(type) + " must reference a DocumentEntry in submission with its sourceObject attribute, it references " + objectDescription(source), this, "ITI TF-3: 4.1.6.1");
 
 		if (containsObject(target)) { // This only checks for a circular reference but not the registry collection
@@ -432,7 +432,14 @@ public class SubmissionStructure {
 				"signs"
 		);
 
-	void eval_assocs(ErrorRecorder er) {
+	static List<String> mu_relationships =
+			Arrays.asList(
+					"UpdateAvailabilityStatus",
+					"SubmitAssociation"
+			);
+
+
+	void eval_assocs(ErrorRecorder er, ValidationContext vc) {
 		for (OMElement assoc : m.getAssociations()) {
 			String type = m.getAssocType(assoc);
 			if (type == null)
@@ -440,8 +447,8 @@ public class SubmissionStructure {
 			type = simpleAssocType(type);
 			if (type.equals("HasMember")) {
 				evalHasMember(er, assoc);
-			} else if(relationships.contains(type)) {
-				evalRelationship(er, assoc);
+			} else if(relationships.contains(type) || (vc.isMU && mu_relationships.contains(type))) {
+				evalRelationship(er, assoc, vc);
 			} else {
 				er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Don't understand association type: " + type, this, "ITI TF-3: Table 4.2.2-1"); // Rev 12.1
 			}

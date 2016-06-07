@@ -99,6 +99,12 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>Reconfigure Simulators</servlet-name>
+		<servlet-class>gov.nist.toolkit.simulators.servlet.ReconfigureSimulators</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	
 	<!--<servlet>-->
 		<!--<servlet-name>simulatorServlet2</servlet-name>-->
 		<!--<servlet-class>gov.nist.toolkit.simulators.servlet.SimServlet</servlet-class>-->
@@ -173,6 +179,11 @@
         <servlet-name>buildCollectionsServlet</servlet-name>
         <url-pattern>/mapping</url-pattern>
     </servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>Reconfigure Simulators</servlet-name>
+		<url-pattern>/mapping2</url-pattern>
+	</servlet-mapping>
 
     <!-- ============== Jersey import for REST ==============
     -->

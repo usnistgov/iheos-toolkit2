@@ -1,5 +1,5 @@
 package gov.nist.toolkit.registrymsg.repository
-import gov.nist.toolkit.registrysupport.MetadataSupport
+import gov.nist.toolkit.commondatatypes.MetadataSupport
 import groovy.transform.TypeChecked
 import org.apache.axiom.om.OMElement
 import sun.misc.BASE64Encoder

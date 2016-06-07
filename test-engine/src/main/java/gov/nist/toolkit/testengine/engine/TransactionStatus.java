@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 
 public class TransactionStatus {
 
@@ -58,6 +58,18 @@ public class TransactionStatus {
 
 	public boolean isSuccess() {
 		return value == StatusValue.Success;
+	}
+
+	public boolean isPartialSuccess() {
+		return value == StatusValue.PartialSuccess;
+	}
+
+	public String getNamespace() {
+		if (!isPartialSuccess()) {
+			return MetadataSupport.response_status_type_namespace + value.toString();
+		} else {
+			return MetadataSupport.ihe_response_status_type_namespace + value.toString();
+		}
 	}
 
 }

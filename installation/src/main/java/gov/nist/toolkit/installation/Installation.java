@@ -3,18 +3,22 @@ package gov.nist.toolkit.installation;
 
 import gov.nist.toolkit.tk.TkLoader;
 import gov.nist.toolkit.tk.client.TkProps;
+import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 public class Installation {
 	File warHome = null;
 	File externalCache = null;
 	String sep = File.separator;
 	public TkProps tkProps = new TkProps();
+	String servletContextName = "/xdstools2";
 
     public final static String DEFAULT_ENVIRONMENT_NAME = "default";
 
@@ -159,6 +163,28 @@ public class Installation {
 		return new File(externalCache + sep + "environment");
 	}
 
+	public File getKeystoreDir(String environmentName) {
+		return new File(environmentFile(environmentName), "keystore");
+	}
+
+	public File getKeystore(String environmentName) {
+		return new File(getKeystoreDir(environmentName), "keystore");
+	}
+
+	public File getKeystorePropertiesFile(String environment) {
+		File dir = getKeystoreDir(environment);
+		return new File(dir, "keystore.properties");
+	}
+
+	public String getKeystorePassword(String environmentName) throws IOException {
+		File propertiesFile = getKeystorePropertiesFile(environmentName);
+		if (!propertiesFile.exists() || propertiesFile.isDirectory())
+			return null;
+		Properties props = new Properties();
+		props.load(Io.getInputStreamFromFile(propertiesFile));
+		return props.getProperty("keyStorePassword");
+	}
+
 	// Default codes.xml to use if no environments are configured
 	public File internalEnvironmentFile(String envName) {
 		return new File(new File(toolkitxFile(), "environment"), envName);
@@ -183,4 +209,11 @@ public class Installation {
 	public static String defaultSessionName() { return "STANDALONE"; }
     public static String defaultServiceSessionName() { return "SERVICE"; }
 
+	public String getServletContextName() {
+		return servletContextName;
+	}
+
+	public void setServletContextName(String servletContextName) {
+		this.servletContextName = servletContextName;
+	}
 }

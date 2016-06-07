@@ -70,7 +70,7 @@
         </NullTransaction>
     </TestStep>
     <TestStep id="VerifyDocumentId">
-        <Goal>Verify repositoryUniqueId</Goal>
+        <Goal>Verify documentUniqueId</Goal>
         <NullTransaction>
             <UseReport reportName="$docuid_request$"  section="THIS" step="retrieve" useAs="requested"/>
             <UseReport reportName="$docuid_response$" section="THIS" step="retrieve" useAs="returned"/>

@@ -67,3 +67,6 @@ syntax: regexp
 
 #sunil
 sunil_ij/
+
+syntax: regexp
+^xdstools2/src/main/resources/toolkit\.properties$

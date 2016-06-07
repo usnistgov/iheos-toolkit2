@@ -9,7 +9,24 @@ import java.util.Set;
  * Class StoredDocumentMap should be merged into this one.  They are redundant.
  */
 public class RetrievedDocumentsModel {
-    // uid ==> model
+   
+   String abbreviatedMessage;
+   
+    /**
+    * @return the {@link #abbreviatedMessage} value.
+    */
+   public String getAbbreviatedMessage() {
+      return abbreviatedMessage;
+   }
+
+   /**
+    * @param abbreviatedMessage the {@link #abbreviatedMessage} to set
+    */
+   public void setAbbreviatedMessage(String abbreviatedMessage) {
+      this.abbreviatedMessage = abbreviatedMessage;
+   }
+
+   // uid ==> model
     Map<String, RetrievedDocumentModel> map = new HashMap<>();
 
     public Map<String, RetrievedDocumentModel> getMap() {

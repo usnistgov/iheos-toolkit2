@@ -126,7 +126,7 @@ class TestSelectionManager {
         panel.setWidget(documentationPanel);
         table.setWidget(1, 1, panel);
 
-        documentationPanel.setHeight("450px");
+        documentationPanel.setHeight("550px");
 
         selectionPanel.add(selectTestList);
 

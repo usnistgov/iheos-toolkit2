@@ -5,12 +5,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.xdstools2.client.*;
-import gov.nist.toolkit.xdstools2.client.Panel;
-import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.widgets.TestkitConfigTool;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ToolConfigTab extends GenericQueryTab {
@@ -107,6 +107,7 @@ public class ToolConfigTab extends GenericQueryTab {
 		topPanel.add(loadAllGazelleConfigs);
 		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(toolkitService, myContainer, "ALL"));
 
+		topPanel.add(new HTML("<hr />"));
 		/* new code for testkit update */
         TestkitConfigTool tkconf=new TestkitConfigTool(myContainer,toolkitService);
         topPanel.add(tkconf);
@@ -137,6 +138,15 @@ public class ToolConfigTab extends GenericQueryTab {
 		
 	}
 
+	// Special handling for these properties
+	static List<String> specialProperties = new ArrayList<>();
+	static {
+		specialProperties.add("External_Cache");
+		specialProperties.add("Toolkit_Host");
+		specialProperties.add("Toolkit_Port");
+		specialProperties.add("Toolkit_TLS_Port");
+	}
+
     /**
      * Build the grid of toolkit properties for display. The property names (keys) will be correctly formatted for
      * display here as long as underscores are used in the toolkit properties file.
@@ -144,23 +154,29 @@ public class ToolConfigTab extends GenericQueryTab {
     void loadPropertyGrid() {
         grid.clear();
         gridRow = 0;
+		for (String key : specialProperties) {
+			addPropertyToGrid(key);
+		}
         for (String key : props.keySet()) {
-
-            // create the label for each row
-            String formattedKey = key.trim().replace('_', ' ');
-            grid.setText(gridRow, 0, formattedKey);
-
-            // create the boxed value for each row
-            TextBox tb = new TextBox();
-            tb.setWidth("600px");
-            String value = props.get(key);
-            tb.setText(value);
-            grid.setWidget(gridRow, 1, tb);
-
-            gridRow++;
+			if (specialProperties.contains(key)) continue;
+			addPropertyToGrid(key);
         }
     }
 
+	void addPropertyToGrid(String key) {
+		// create the label for each row
+		String formattedKey = key.trim().replace('_', ' ');
+		grid.setText(gridRow, 0, formattedKey);
+
+		// create the boxed value for each row
+		TextBox tb = new TextBox();
+		tb.setWidth("600px");
+		String value = props.get(key);
+		tb.setText(value);
+		grid.setWidget(gridRow, 1, tb);
+
+		gridRow++;
+	}
 
 
     void savePropertyFile() {

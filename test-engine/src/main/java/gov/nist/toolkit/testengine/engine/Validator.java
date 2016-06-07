@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.docref.MetadataTables;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
@@ -523,8 +523,6 @@ public class Validator {
 		for (Iterator selectiveIt = ec.getChildElements(); selectiveIt.hasNext(); ) {
 			OMElement selectionPart = (OMElement) selectiveIt.next();
 			String selectionLocalName = selectionPart.getLocalName();
-
-			// TODO: Implement MustOnlyInclude here.
 
 			if ("MustOnlyInclude".equals(selectionLocalName)) {
 				verifySubmittedEOIdInRegistryResponse(DocumentEntryFilter.MUST_ONLY_INCLUDE, m, selectionPart);

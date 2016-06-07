@@ -1,18 +1,24 @@
 package gov.nist.toolkit.toolkitApi;
 
-import gov.nist.toolkit.configDatatypes.SimulatorActorType;
-import org.apache.log4j.Logger;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReport;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequest;
+import org.apache.log4j.Logger;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
+import org.glassfish.jersey.jackson.JacksonFeature;
+
+import gov.nist.toolkit.configDatatypes.SimulatorActorType;
 import gov.nist.toolkit.toolkitServicesCommon.LeafClassRegistryResponse;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendRequest;
 import gov.nist.toolkit.toolkitServicesCommon.RawSendResponse;
@@ -25,6 +31,8 @@ import gov.nist.toolkit.toolkitServicesCommon.ToolkitFactory;
 import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetReqResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetRespResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
@@ -39,7 +47,8 @@ import gov.nist.toolkit.toolkitServicesCommon.resource.SimIdResource;
  * which initiates an XDR Provide and Register transaction from a Document Source sim.
  */
 public class EngineSpi {
-    static Logger logger = Logger.getLogger(EngineSpi.class);
+    static Logger logger = Logger.getLogger("SYSTEM");
+    
     private WebTarget target;
 
     /**
@@ -50,6 +59,7 @@ public class EngineSpi {
     public EngineSpi(String urlRoot) {
         ClientConfig cc = new ClientConfig().register(new JacksonFeature());
         Client c = ClientBuilder.newClient(cc);
+        c.register(new LoggingFilter(java.util.logging.Logger.getLogger("SYSTEM"), true));
         Configuration conf = c.getConfiguration();
         logger.info(conf.getPropertyNames());
         logger.info("target is " + urlRoot + "/rest/");
@@ -58,7 +68,7 @@ public class EngineSpi {
 
     public WebTarget getTarget() { return target; }
 
-    public SimConfig create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
+    public SimConfigResource create(String id, String user, SimulatorActorType actorType, String environmentName) throws ToolkitServiceException {
         String actorTypeString = actorType.getName();
         SimId simId = ToolkitFactory.newSimId(id, user, actorTypeString, environmentName);
         SimIdResource bean = new SimIdResource(simId);
@@ -87,7 +97,7 @@ public class EngineSpi {
         return create(parms.getId(), parms.getUser(), parms.getActorType(), parms.getEnvironmentName());
     }
 
-    public SimConfig update(SimConfig config) throws ToolkitServiceException {
+    public SimConfigResource update(SimConfig config) throws ToolkitServiceException {
         Response response = target
                 .path(String.format("simulators/%s", config.getId()))
                 .request(MediaType.APPLICATION_JSON)
@@ -173,14 +183,28 @@ public class EngineSpi {
         return response.readEntity(RetrieveResponseResource.class);
     }
 
-    public RetrieveResponse imagingRetrieve(RetrieveRequest request) throws ToolkitServiceException {
+  // public RetrieveResponse imagingRetrieve(RetrieveImageRequestResource request)
+   public RetImgDocSetRespResource imagingRetrieve(RetImgDocSetReqResource request)
+      throws ToolkitServiceException {
+      Entity <RetImgDocSetReqResource> entity = Entity.json(request);
+      String path = String.format("simulators/%s/xdsi/retrieve", request.getFullId());
+      WebTarget t = target.path(path);
+      Builder b = t.request(MediaType.APPLICATION_JSON);
+      Response response = b.post(entity);
+      if (response.getStatus() != 200)
+         throw new ToolkitServiceException(response);
+      return response.readEntity(RetImgDocSetRespResource.class);
+   }
+
+    public XdmReport validateXDM(XdmRequest request) throws ToolkitServiceException {
         Response response = target
-                .path(String.format("simulators/%s/xdsi/retrieve", request.getFullId()))
+                .path("simulators/xdmValidation")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.json(request));
         if (response.getStatus() != 200)
             throw new ToolkitServiceException(response);
-        return response.readEntity(RetrieveResponseResource.class);
+        return response.readEntity(XdmReportResource.class);
+
     }
 
 }

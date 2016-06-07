@@ -16,6 +16,19 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.errorrecording.TextErrorRecorder;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.factories.TextErrorRecorderBuilder;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmItem;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmReportResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.xdm.XdmRequestResource;
+import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.valregmsg.xdm.OMap;
+import gov.nist.toolkit.valregmsg.xdm.XdmDecoder;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
+import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -33,11 +46,14 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponse;
 import gov.nist.toolkit.registrymsg.registry.AdhocQueryResponseParser;
+import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrieveImageSeriesRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrieveImageStudyRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.services.server.RegistrySimApi;
 import gov.nist.toolkit.services.server.RepositorySimApi;
 import gov.nist.toolkit.services.server.ToolkitApi;
@@ -46,16 +62,21 @@ import gov.nist.toolkit.simulators.sim.cons.DocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.idc.ImgDocConsActorSimulator;
 import gov.nist.toolkit.simulators.sim.src.XdrDocSrcActorSimulator;
 import gov.nist.toolkit.simulators.support.StoredDocument;
-import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.DocumentMap;
 import gov.nist.toolkit.toolkitServicesCommon.Document;
 import gov.nist.toolkit.toolkitServicesCommon.ResponseStatusType;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqDocument;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqSeries;
+import gov.nist.toolkit.toolkitServicesCommon.RetImgDocSetReqStudy;
 import gov.nist.toolkit.toolkitServicesCommon.resource.DocumentContentResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.LeafClassRegistryResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendRequestResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RawSendResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RegistryErrorResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetReqResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetRespDocumentResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.RetImgDocSetRespResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveRequestResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RetrieveResponseResource;
 import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
@@ -88,33 +109,71 @@ public class SimulatorsController {
     @POST
     @Produces("application/json")
     @Path("/{id}/xdsi/retrieve")
-    public Response retrieveImagingDocSet(final RetrieveRequestResource request) {
-       String fullId = request.getFullId();
-        logger.info(String.format("POST simulators/%s/xdsi/retrieve", fullId));
-        RetrieveResponseResource returnResource = new RetrieveResponseResource();
+    public Response retrieveImagingDocSet(final RetImgDocSetReqResource request) {
+        logger.info(String.format("POST simulators/%s/xdsi/retrieve ", 
+           (request.isDirect() ? request.getEndpoint() : request.getFullId())));
+        String dest = "";
         try {
-            Site site = api.getActorConfig(request.getId());
-
-            RetrieveRequestModel iModel = new RetrieveRequestModel();
-            RetrieveItemRequestModel rModel = new RetrieveItemRequestModel();
-            rModel.setHomeId(request.getHomeCommunityId());
-            rModel.setRepositoryId(request.getRepositoryUniqueId());
-            rModel.setDocumentId(request.getDocumentUniqueId());
-            iModel.add(rModel);
+            
+            // Transfer from request resource to request model
+            
+            RetrieveImageRequestModel rModel = new RetrieveImageRequestModel();            
+            for (RetImgDocSetReqStudy eRequest : request.getRetrieveImageStudyRequests()) {
+               RetrieveImageStudyRequestModel eModel = new RetrieveImageStudyRequestModel();
+               eModel.setStudyInstanceUID(eRequest.getStudyInstanceUID());
+               rModel.addStudyRequest(eModel);
+               for (RetImgDocSetReqSeries sRequest: eRequest.getRetrieveImageSeriesRequests()) {
+                  RetrieveImageSeriesRequestModel sModel = new RetrieveImageSeriesRequestModel();
+                  sModel.setSeriesInstanceUID(sRequest.getSeriesInstanceUID());
+                  eModel.addSeriesRequest(sModel);
+                  for (RetImgDocSetReqDocument dRequest : sRequest.getRetrieveImageDocumentRequests()) {
+                     RetrieveItemRequestModel dModel = new RetrieveItemRequestModel();
+                     dModel.setRepositoryId(dRequest.getRepositoryUniqueId());
+                     dModel.setDocumentId(dRequest.getDocumentUniqueId());
+                     dModel.setHomeId(dRequest.getHomeCommunityId());
+                     sModel.addDocumentRequest(dModel);
+                  } // EO document request loop
+               } // EO series request loop
+            } // EO study request loop
+            
+            for (String xferSyntax : request.getTransferSyntaxUIDs())
+               rModel.addTransferSyntaxUID(xferSyntax);
 
             // Trigger simulator to do the retrieve
 
             ImgDocConsActorSimulator sim = new ImgDocConsActorSimulator();
             sim.setTls(request.isTls());
-            RetrievedDocumentsModel sModel = sim.retrieve(site, iModel);
-
-            RetrievedDocumentModel m = sModel.getMap().values().iterator().next();
-            returnResource.setDocumentContents(m.getContents());
-            returnResource.setMimeType(m.getContent_type());
-
-            return Response.ok(returnResource).build();
+            sim.setDirect(request.isDirect());
+            if (request.isDirect()) {
+               dest = "direct";
+               sim.setEndpoint(request.getEndpoint());
+            }
+            else {
+               sim.setSite(api.getActorConfig(request.getId()));
+               dest = request.getFullId();
+            }
+            RetrievedDocumentsModel sModel = sim.retrieve(rModel);
+            
+            // Transfer from response model to response resource
+            
+            RetImgDocSetRespResource rsp = new RetImgDocSetRespResource();
+            rsp.setAbbreviatedResponse(sModel.getAbbreviatedMessage());
+            
+            List<RetImgDocSetRespDocumentResource> dRsps = new ArrayList<>();
+            for ( RetrievedDocumentModel dModel : sModel.getMap().values()) {
+               RetImgDocSetRespDocumentResource dRsp = new RetImgDocSetRespDocumentResource();
+               dRsp.setDocumentUid(dModel.getDocUid());
+               dRsp.setRepositoryUid(dModel.getRepUid());
+               dRsp.setHomeCommunityUid(dModel.getHome());
+               dRsp.setDocumentContents(dModel.getContents());
+               dRsp.setMimeType(dModel.getContent_type());
+               dRsps.add(dRsp);
+            }
+            rsp.setDocuments(dRsps);
+            
+            return Response.ok(rsp).build();
         } catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, fullId, ResponseType.RESPONSE);
+            return new ResultBuilder().mapExceptionToResponse(e, dest, ResponseType.RESPONSE);
         }
     }
 
@@ -150,7 +209,8 @@ public class SimulatorsController {
                     .build();
         }
         catch (Exception e) {
-            return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
+           logger.warn(e.getMessage());
+           return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
     }
 
@@ -167,6 +227,11 @@ public class SimulatorsController {
         if (res.isBoolean(name)) return PropType.BOOLEAN;
         if (res.isString(name)) return PropType.STRING;
         return null;
+    }
+
+    static List<String> UPDATE_EXCEPTIONS = new ArrayList<>();
+    static {
+        UPDATE_EXCEPTIONS.add(SimulatorProperties.environment);
     }
 
     /**
@@ -191,7 +256,7 @@ public class SimulatorsController {
             for (String propName : config.getPropertyNames()) {
                 SimulatorConfigElement ele = currentConfig.get(propName);
                 if (ele == null) continue;  // no such property
-                if (!ele.isEditable()) {
+                if (!ele.isEditable() && !UPDATE_EXCEPTIONS.contains(propName)) {
                     continue;  // ignore
                 }
 
@@ -523,7 +588,8 @@ public class SimulatorsController {
                     config,
                     transactionType,
                     internalizeDocs(request),
-                    request.isTls()
+                    request.isTls(),
+                    config.get(SimulatorProperties.environment).asString()
             );
             RawSendResponseResource responseResource = new RawSendResponseResource();
             responseResource.setResponseSoapBody(new OMFormatter(responseEle).toString());
@@ -531,6 +597,37 @@ public class SimulatorsController {
         } catch (Throwable e) {
             return new ResultBuilder().mapExceptionToResponse(e, simId.toString(), ResponseType.RESPONSE);
         }
+    }
+
+    @POST
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/xdmValidation")
+    public Response xdmValidation(final XdmRequestResource request) {
+        ValidationContext vc = DefaultValidationContextFactory.validationContext();
+        vc.isXDM = true;
+        ErrorRecorderBuilder erBuilder = new TextErrorRecorderBuilder();
+        TextErrorRecorder er = (TextErrorRecorder) erBuilder.buildNewErrorRecorder();
+        MessageValidatorEngine mvc = new MessageValidatorEngine();
+
+        XdmDecoder xd = new XdmDecoder(vc, erBuilder, Io.bytesToInputStream(request.getZip()));
+        xd.er = er;
+
+        if (!xd.isXDM()) {
+            XdmReportResource report = new XdmReportResource();
+            report.setReport(er.toString());
+            return Response.ok(report).build();
+        }
+        xd.run(er, mvc);
+        OMap omap = xd.getContents();
+        XdmReportResource report = new XdmReportResource();
+        report.setReport(er.toString());
+        report.setPass(!er.hasErrors());
+        for (gov.nist.toolkit.valregmsg.xdm.Path path : omap.keySet()) {
+            report.addItem(new XdmItem(path.toString(), omap.get(path).get()));
+        }
+
+        return Response.ok(report).build();
     }
 
     DocumentMap internalizeDocs(RawSendRequestResource request) throws BadSimRequestException {

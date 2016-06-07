@@ -11,7 +11,7 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -179,6 +179,8 @@ public class DsSimCommon {
             if (rel == null)
                 rel = new RegistryErrorListGenerator(Response.version_3, false);
 
+            rel.setPartialSuccess(simCommon.mvc.isPartialSuccess());
+
             for (ValidationStepResult vsr : results) {
                 for (ValidatorErrorItem vei : vsr.er) {
                     if (vei.level == ValidatorErrorItem.ReportingLevel.ERROR) {
@@ -222,13 +224,31 @@ public class DsSimCommon {
         }
     }
 
-    public void addDocumentAttachments(List<String> uids, ErrorRecorder er) {
+    public void addDocumentAttachments(List<String> uids, ErrorRecorder er) throws XdsInternalException {
+        int notFound = 0;
         for (String uid : uids) {
             StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
-            if (sd == null)
-                continue;
-            addDocumentAttachment(sd);
+            // if (sd == null)
+            //   continue;
+            // addDocumentAttachment(sd);
+            // Fix Issue 70
+            if (sd == null) {
+                notFound++;
+                er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError, "DsSimCommon#addDocumentAttachments: Not found.", uid, "Error");
+            } else
+                addDocumentAttachment(sd);
         }
+
+        int foundDocuments = 0;
+        if (documentsToAttach!=null)
+            foundDocuments = documentsToAttach.size();
+
+        if (notFound > 0 && foundDocuments > 0) {
+            // Only some documents were found.
+            simCommon.mvc.setPartialSuccess(true);
+        }
+
+
     }
 
     public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
@@ -484,8 +504,10 @@ public class DsSimCommon {
             if (simCommon.db != null)
                 Io.stringToFile(simCommon.db.getResponseBodyFile(), respStr);
             simCommon.os.write(respStr.getBytes());
-	    this.writeAttachments(simCommon.os, er);
-            simCommon.os.write(getTrailer().toString().getBytes());
+            if (simCommon.vc.requiresMtom()) {
+                this.writeAttachments(simCommon.os, er);
+                simCommon.os.write(getTrailer().toString().getBytes());
+            }
             simCommon.generateLog();
 //            SimulatorConfigElement callbackElement = getSimulatorConfig().getRetrievedDocumentsModel(SimulatorConfig.TRANSACTION_NOTIFICATION_URI);
 //            if (callbackElement != null) {

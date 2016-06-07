@@ -7,7 +7,7 @@ import gov.nist.toolkit.registrymsg.repository.RetrieveItemRequestModel
 import gov.nist.toolkit.registrymsg.repository.RetrieveRequestModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
-import gov.nist.toolkit.registrysupport.MetadataSupport
+import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator
 import gov.nist.toolkit.soap.axis2.Soap
 import gov.nist.toolkit.testengine.engine.RetrieveB

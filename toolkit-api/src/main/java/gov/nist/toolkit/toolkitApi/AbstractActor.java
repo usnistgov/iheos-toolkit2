@@ -5,11 +5,14 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.toolkitServicesCommon.RefList;
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig;
 import gov.nist.toolkit.toolkitServicesCommon.resource.RefListResource;
+import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource;
+
 import java.io.IOException;
 
 /**
@@ -49,13 +52,20 @@ abstract class AbstractActor implements AbstractActorInterface {
      * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
      * @param value property value
      */
-    public void setProperty(String name, String value) { config.setProperty(name, value);}
+    public void setProperty(String name, String value) {
+        config.setProperty(name, value);
+//        if (SimulatorProperties.environment.equals((name))) {
+//            config.setEnvironmentName(value);
+//        }
+    }
     /**
      * Set a property that takes a boolean value
      * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.
      * @param value property value
      */
-    public void setProperty(String name, boolean value) { config.setProperty(name, value);}
+    public void setProperty(String name, boolean value) {
+        config.setProperty(name, value);
+    }
     /**
      * Is named property a boolean value?
      * @param name property name. See {@link gov.nist.toolkit.configDatatypes.SimulatorProperties} for property names.

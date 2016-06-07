@@ -1,5 +1,7 @@
 package gov.nist.toolkit.configDatatypes.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 /**
  *
  */
-public enum TransactionType implements Serializable {
+public enum TransactionType implements Serializable, IsSerializable {
     PROVIDE_AND_REGISTER("ITI-41", "Provide and Register", "prb", "pr.b", "pr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse", true),
     XDR_PROVIDE_AND_REGISTER("ITI-41", "XDR Provide and Register", "xdrpr", "xdrpr", "xdrpr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse", true),
     REGISTER("ITI-42", "Register", "rb", "r.b", "r.as", false, "urn:ihe:iti:2007:RegisterDocumentSet-b", "urn:ihe:iti:2007:RegisterDocumentSet-bResponse", false),
@@ -26,7 +28,8 @@ public enum TransactionType implements Serializable {
     XC_PATIENT_DISCOVERY("ITI-55", "Cross Community Patient Discovery", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery", false),
     DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", "", false),
     PIF("PIF", "Patient Identity Feed", "pif", "pif", "pif", false, "", "", false),
-    RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:rad:2007:RetrieveDocumentSetResponse", true);
+    RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:rad:2007:RetrieveDocumentSetResponse", true),
+    XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true);
 
 
 	private static final long serialVersionUID = 1L;
@@ -35,7 +38,7 @@ public enum TransactionType implements Serializable {
 	String shortName = "";
     String code = "";   // like pr.b - used in actors table
     String asyncCode = "";
-    boolean needsRepUid = false;
+    boolean needsRepUid = false;  // I think maybe not used? RM
     String requestAction = "";
     String responseAction = "";
     boolean requiresMtom = false;

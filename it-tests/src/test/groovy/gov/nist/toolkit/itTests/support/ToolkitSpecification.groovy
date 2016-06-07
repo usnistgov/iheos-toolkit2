@@ -44,6 +44,11 @@ class ToolkitSpecification extends Specification {
         new SimulatorBuilder(urlRoot)
     }
 
+    SimulatorBuilder getSimulatorApi(String host, String remoteToolkitPort) {
+        String urlRoot = String.format("http://%s:%s/xdstools2", host, remoteToolkitPort)
+        new SimulatorBuilder(urlRoot)
+    }
+
     def cleanupSpec() {  // one time shutdown when everything is done
         if (server) {
             server.stop()

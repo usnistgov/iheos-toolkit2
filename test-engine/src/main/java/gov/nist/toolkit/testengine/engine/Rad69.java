@@ -6,7 +6,7 @@ import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
 import gov.nist.toolkit.registrymsg.repository.RetrieveResponseParser;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.utilities.xml.XmlUtil;

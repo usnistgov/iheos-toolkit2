@@ -6,6 +6,9 @@ package gov.nist.toolkit.configDatatypes;
  * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#setProperty()
  */
 public class SimulatorProperties {
+
+    static public boolean isTlsEndpoint(String name) { return name != null && name.indexOf("TLS") != -1; }
+
     /**
      * Boolean property controlling whether Metadata Update is enabled on Registry Simulator.
      */
@@ -167,6 +170,18 @@ public class SimulatorProperties {
      * Endpoint to use to send the indicated transaction to this Simulator.
      * Updates to this property are ignored.
      */
+    public static final String                            xcirEndpoint = "XCIR_endpoint";
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
+    public static final String                         xcirTlsEndpoint = "XCIR_TLS_endpoint";
+
+    /**
+     * Endpoint to use to send the indicated transaction to this Simulator.
+     * Updates to this property are ignored.
+     */
     public static final String                            igrEndpoint = "IGR_endpoint";
 
     /**
@@ -253,4 +268,5 @@ public class SimulatorProperties {
      */
     public static final String                        idsrTlsEndpoint = "IDSR_TLS_endpoint";
 
+    public static final String                        environment = "Environment";
 }
