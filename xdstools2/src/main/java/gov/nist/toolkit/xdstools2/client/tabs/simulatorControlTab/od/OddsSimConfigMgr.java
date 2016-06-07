@@ -1,8 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -12,6 +15,8 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
@@ -23,17 +28,21 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
+import gov.nist.toolkit.xdstools2.client.StringSort;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigBooleanBox;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigEditBox;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.ConfigTextDisplayBox;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.LoadSimulatorsClickHandler;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SingleSelectionView;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SiteSelectionPresenter;
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.intf.SimConfigMgrIntf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -47,9 +56,9 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     SimulatorConfig config;
     String testSession;
     FlexTable tbl = new FlexTable();
-    Button saveButton = new Button("Save");
 
     CheckBox persistenceCb = new CheckBox();
+    SingleSelectionView persistenceSsv = new SingleSelectionView();
     HorizontalPanel reposSiteBoxes = new HorizontalPanel();
     SiteSelectionPresenter reposSSP;
     HorizontalPanel regSiteBoxes = new HorizontalPanel();
@@ -61,7 +70,18 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
     HTML regActionMessage = new HTML();
     int row = 0;
     FlexTable oddeEntriesTbl = new FlexTable();
-    Button refreshSupplyState = new Button("Refresh");
+    ListBox contentBundleLbx = new ListBox();
+    static String choose = "-- Choose --";
+//    Button refreshSupplyState = new Button("<span style=\"font-size:8px;color:blue\">Refresh</span>");
+
+    interface OddsResources extends ClientBundle {
+        public static final OddsResources INSTANCE = GWT.create(OddsResources.class);
+
+        @Source("icons/ic_refresh_black_24dp_1x.png")
+        ImageResource getRefreshIcon();
+    }
+    Image refreshImg = new Image(((OddsResources)GWT.create(OddsResources.class)).getRefreshIcon());
+
 
     public OddsSimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
 
@@ -83,19 +103,9 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         getPanel().add(new HTML("<h1>On-Demand Document Source (ODDS) Simulator Configuration</h1>"));
 
         getPanel().add(new HTML("" +
-                 "This simulator supports testing of Registration and Retrieval of On-Demand patient documents. First, initialize this simulator by registering an On-Demand Document Entry and selecting the Persistence option in the Retrieve Configuration section. Next, retrieve the document." +
+                 "This simulator supports testing of Registration and Retrieval of On-Demand patient documents. First, initialize this simulator by registering an On-Demand Document Entry (ODDE) and then retrieve the On-Demand document." +
                  "" +
                 "<hr/>"
-//                +
-//
-//                "<h2>Retrieving an On-Demand Document</h2>" +
-//                "<p>A Document Consumer may Retrieve an On-Demand Document from an ODDS using its ODDS Repository ID. If the Persistence Option is enabled, the selected Repository must be configured to forward registry requests to the same Registry holding the On-Demand Document Entry." +
-//                "</p>" +
-//                "<hr/>" +
-//
-//                "<h2>Simulator Configuration</h2>" +
-//                "<p></p>"
-
 
         ));
     }
@@ -105,9 +115,24 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         FlexTable tbl = getTbl();
 
         newRow();
-        tbl.setWidget(getRow(), 0, new HTML("<h2>Simulator Configuration</h2>"));
+        FlexTable sectionHeaderTbl = new FlexTable();
+        sectionHeaderTbl.setWidget(0,0,new HTML("<h2>Simulator Configuration</h2>" ));
+        Button saveButton = new Button("Save");
+        saveButton.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        // Only save, no validation takes place here.
+                        saveSimConfig();
+                    }
+                }
+        );
+        sectionHeaderTbl.setWidget(0, 1, saveButton);
+        sectionHeaderTbl.getFlexCellFormatter().setHorizontalAlignment(0,1, HasHorizontalAlignment.ALIGN_RIGHT);
+        sectionHeaderTbl.getFlexCellFormatter().setVerticalAlignment(0,1, HasVerticalAlignment.ALIGN_MIDDLE);
+        sectionHeaderTbl.setWidth("100%");
+        tbl.setWidget(getRow(), 0, sectionHeaderTbl);
         tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
-
 
         newRow();
         tbl.setWidget(getRow(), 0, HtmlMarkup.html("Simulator Type"));
@@ -130,7 +155,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         new ConfigTextDisplayBox(config.get(SimulatorProperties.environment),tbl, getRow());
 
         newRow();
-        new ConfigEditBox(config.get(SimulatorProperties.codesEnvironment),tbl, getRow());
+        new ConfigTextDisplayBox(config.get(SimulatorProperties.codesEnvironment),tbl, getRow());
 
     }
 
@@ -147,63 +172,65 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         // Retrieve config
         displayRetrieveConfig();
 
+        // Supply State
+        displaySupplyState();
+
     }
 
     public void displayPersistenceConfig() {
-
-    }
-
-    public void displayRetrieveConfig() {
         SimulatorControlTab simulatorControlTab = getSimulatorControlTab();
         final SimulatorConfig config = getConfig();
         FlexTable tbl = getTbl();
-        final HorizontalPanel oddsRepositorySitePanel = new HorizontalPanel();
         final HTML lblReposSiteBoxes = HtmlMarkup.html(SimulatorProperties.oddsRepositorySite);
 
-        // Retrieve config
         newRow();
-        tbl.setWidget(getRow(), 0, new HTML("<hr/>"
-                + "<h2>Retrieve Configuration</h2>"
-                + "<p>A Document Consumer may Retrieve an On-Demand Document from an ODDS using its ODDS Repository ID. If the Persistence Option is enabled, the selected Repository must be configured to forward registry requests to the same Registry holding the On-Demand Document Entry." ));
+        tbl.setWidget(getRow(), 0, new HTML(""
+                + "<h3 style='padding: 0px;margin: 0px;'>Persistence Option</h3>"
+                + "<p>If you choose to enable the Persistence Option checking the box below, please select a Repository which should be configured to forward registry requests to the same Registry site where you intend to register this ODDE.</p>" ));
         tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
+        final SimulatorConfigElement persistenceOption = config.get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS);
+        if (persistenceOption!=null) {
+            newRow();
 
-        for (final SimulatorConfigElement ele : config.getElements()) {
+            tbl.setText(getRow(), 0, persistenceOption.name.replace('_', ' '));
 
-            // Boolean
-            if (ele.isBoolean()) {
+//            List<String> pOtpn = new ArrayList<>();
+//            pOtpn.add("Off");
+//            pOtpn.add("On");
+//            persistenceSsv.setData("persistenceOptn",pOtpn);
+//            List<Integer> selectedRow = new ArrayList<>();
+//            if (persistenceOption.asBoolean())
+//                selectedRow.add(1);
+//            else
+//                selectedRow.add(0);
+//            persistenceSsv.setSelectedRows(selectedRow);
+//            tbl.setWidget(getRow(), 1, persistenceSsv.asWidget());
 
-                // Need to group other related controls based on this selector
-                if (SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS.equals(ele.name)) {
-                    newRow();
+            persistenceCb.setValue(persistenceOption.asBoolean());
+            persistenceCb.setEnabled(persistenceOption.isEditable());
+            tbl.setWidget(getRow(), 1, persistenceCb);
+            persistenceCb.addClickHandler(
+                    new ClickHandler() {
+                        @Override
+                        public void onClick(ClickEvent event) {
+                            persistenceOption.setValue(persistenceCb.getValue());
 
-                    tbl.setText(getRow(), 0, ele.name.replace('_', ' '));
-
-                    persistenceCb.setValue(ele.asBoolean());
-                    persistenceCb.setEnabled(ele.isEditable());
-                    tbl.setWidget(getRow(), 1, persistenceCb);
-                    persistenceCb.addClickHandler(
-                            new ClickHandler() {
-                                @Override
-                                public void onClick(ClickEvent event) {
-                                    ele.setValue(persistenceCb.getValue());
-
-                                    boolean persistenceOpt = persistenceCb.getValue();
-                                    lblReposSiteBoxes.setVisible(persistenceOpt);
-                                    reposSiteBoxes.setVisible(persistenceOpt);
+                            boolean persistenceOpt = persistenceCb.getValue();
+                            lblReposSiteBoxes.setVisible(persistenceOpt);
+                            reposSiteBoxes.setVisible(persistenceOpt);
 //                                    oddePatientIdCEBox.setVisible(persistenceOpt);
 //                                    testPlanCEBox.setVisible(persistenceOpt);
 
-                                }
-                            }
-                    );
-                }
+                        }
+                    }
+            );
+        }
 
 
-            }
-
+        final SimulatorConfigElement oddsReposSite = config.get(SimulatorProperties.oddsRepositorySite);
+        if (oddsReposSite!=null) {
             // Selecting a Repository for the ODDS
-            else if (SimulatorProperties.oddsRepositorySite.equals(ele.name)) {
                 simulatorControlTab.toolkitService.getSiteNamesByTranType(TransactionType.PROVIDE_AND_REGISTER.getName(), new AsyncCallback<List<String>>() {
 
                     public void onFailure(Throwable caught) {
@@ -211,7 +238,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                     }
 
                     public void onSuccess(List<String> results) {
-                        reposSSP = new SiteSelectionPresenter("reposSites", results, ele.asList(), reposSiteBoxes);
+                        reposSSP = new SiteSelectionPresenter("reposSites", results, oddsReposSite.asList(), reposSiteBoxes);
                     }
                 });
 
@@ -221,20 +248,33 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 tbl.setWidget(getRow(), 0, lblReposSiteBoxes);
                 tbl.setWidget(getRow(), 1, reposSiteBoxes);
 
-                getSaveButton().addClickHandler(
-                        new ClickHandler() {
-                            @Override
-                            public void onClick(ClickEvent clickEvent) {
-                                ele.setValue(reposSSP.getSelected());
-                            }
-                        }
-                );
-
                 boolean persistenceOpt = persistenceCb.getValue();
                 lblReposSiteBoxes.setVisible(persistenceOpt);
                 reposSiteBoxes.setVisible(persistenceOpt);
 
-            }
+
+        }
+
+    }
+
+    public void displayRetrieveConfig() {
+        SimulatorControlTab simulatorControlTab = getSimulatorControlTab();
+        final SimulatorConfig config = getConfig();
+        FlexTable tbl = getTbl();
+
+
+        // Retrieve config
+        newRow();
+        tbl.setWidget(getRow(), 0, new HTML("<hr/>"
+                + "<h2>Retrieve Configuration</h2>"
+                + "<p>A Document Consumer may retrieve an On-Demand document from an ODDS using a DocumentUniqueId and a RepositoryUniqueId.</p>" ));
+        tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
+
+
+        for (final SimulatorConfigElement ele : config.getElements()) {
+
+
+
            if (SimulatorProperties.retrieveEndpoint.equals(ele.name)) {
 
                 newRow();
@@ -251,27 +291,42 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         }
 
 
+    }
+
+    public void displaySupplyState() {
+        FlexTable tbl = getTbl();
+
         newRow();
-        tbl.setWidget(getRow(), 0, new HTML("On-Demand Document Supply State"));
+        tbl.setWidget(getRow(), 0, new HTML("<hr/>"
+                + "<h2>On-Demand Document Supply State</h2>"
+                + "<p>This table displays the state of each On-Demand Document. A blank Repository value indicates that the Persistence Option does not apply for that On-Demand Document. The first number in the the Supply State column indicates the index of the content section in the content bundle.</p>" ));
+        tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
+
+        newRow();
+//        tbl.setWidget(getRow(), 0, new HTML("Supply State"));
 
         oddeEntriesTbl.setBorderWidth(1);
 
-        tbl.setWidget(getRow(), 1, oddeEntriesTbl);
+        tbl.setWidget(getRow(), 0, oddeEntriesTbl);
 
         getOdDocumentEntries(simulatorControlTab);
         addTable(tbl);
+        tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
-        getSaveButton().addClickHandler(
-                new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent clickEvent) {
-                        if (validateParams()) {
-                            saveSimConfig();
-                        }
-                    }
-                }
-        );
     }
+
+    public void addTable(FlexTable tbl) {
+        hpanel = new HorizontalPanel();
+
+        panel.add(hpanel);
+        hpanel.add(tbl);
+
+//        hpanel.add(saveButton);
+        hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
+        panel.add(HtmlMarkup.html("<br />"));
+
+    }
+
 
     private void getOdDocumentEntries(SimulatorControlTab simulatorControlTab) {
         simulatorControlTab.toolkitService.getOnDemandDocumentEntryDetails(getConfig().getId(), new AsyncCallback<List<DocumentEntryDetail>>() {
@@ -286,19 +341,37 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                 oddeEntriesTbl.clear();
                 int oddeRow = 0;
 
+
+//                new PopupMessage(GWT.getModuleBaseForStaticFiles());
 //                refreshSupplyState.getElement().getStyle().setMarginLeft(80, Style.Unit.PCT);
 
-                oddeEntriesTbl.setWidget(oddeRow, 0,refreshSupplyState);
-                oddeEntriesTbl.getFlexCellFormatter().setColSpan(oddeRow,0,6);
-                oddeEntriesTbl.getFlexCellFormatter().setHorizontalAlignment(oddeRow,0, HasHorizontalAlignment.ALIGN_RIGHT);
-                oddeRow++;
+//                oddeEntriesTbl.setWidget(oddeRow, 0,refreshSupplyState);
+//                oddeEntriesTbl.getFlexCellFormatter().setColSpan(oddeRow,0,6);
+//                oddeEntriesTbl.getFlexCellFormatter().setHorizontalAlignment(oddeRow,0, HasHorizontalAlignment.ALIGN_RIGHT);
+//                oddeRow++;
 
                 oddeEntriesTbl.setWidget(oddeRow, 0, new HTML("<b>Created On</b>"));
                 oddeEntriesTbl.setWidget(oddeRow, 1, new HTML("<b>On-Demand Document Unique ID</b>"));
                 oddeEntriesTbl.setWidget(oddeRow, 2, new HTML("<b>Registry</b>"));
                 oddeEntriesTbl.setWidget(oddeRow, 3, new HTML("<b>Repository</b>"));
                 oddeEntriesTbl.setWidget(oddeRow, 4, new HTML("<b>Patient ID</b>"));
-                oddeEntriesTbl.setWidget(oddeRow, 5, new HTML("<b>Supply State</b>"));
+
+                HorizontalPanel ssHp = new HorizontalPanel();
+                ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+                ssHp.add(new HTML("<b>Supply State</b>"));
+                ssHp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+//                refreshSupplyState.getElement().addClassName("roundedButton1");
+//                ssHp.add(refreshSupplyState);
+                refreshImg.setAltText("Refresh");
+                refreshImg.setTitle("Refresh");
+                refreshImg.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+                refreshImg.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
+
+
+
+                ssHp.add(refreshImg);
+
+                oddeEntriesTbl.setWidget(oddeRow, 5, ssHp);
                 oddeRow++;
 
                 if (documentEntryDetails!=null) {
@@ -337,9 +410,29 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         final SimulatorConfig config = getConfig();
         final FlexTable tbl = getTbl();
 
+
         newRow();
-        tbl.setWidget(getRow(), 0, new HTML("<hr/> <h2>First, Initialize this Simulator by Registering an On-Demand Document Entry</h2>" +
-                "<p>Enter a Patient Id and select a Registry site to register an On-Demand Document Entry. You may use the Patient Identity Feed (PIF) tool to add a new patient Id. If persistence of On-Demand Documents is desired, you must select the Persistence option from the Retrieve configuration prior to the registration. Click the Initialize button to register and setup a persistence indicator for retrieve requests.</p>"));
+        tbl.setWidget(getRow(),0,new HTML("<hr/>"));
+        tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
+
+        newRow();
+        FlexTable sectionHeaderTbl = new FlexTable();
+        sectionHeaderTbl.setWidget(0,0,new HTML("<h2>First, Initialize this Simulator by Registering an On-Demand Document Entry</h2><p>Enter a Patient Id for the ODDE. You may use the Patient Identity Feed (PIF) tool to add a new patient Id. If persistence of On-Demand documents is desired, you must select the Persistence Option before clicking the Initialize button.</p>" ));
+        Button saveButton = new Button("Save");
+        saveButton.addClickHandler(
+                new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        // Only save, no validation takes place here.
+                        saveSimConfig();
+                    }
+                }
+        );
+        sectionHeaderTbl.setWidget(0, 1, saveButton);
+        sectionHeaderTbl.getFlexCellFormatter().setHorizontalAlignment(0,1, HasHorizontalAlignment.ALIGN_RIGHT);
+        sectionHeaderTbl.getFlexCellFormatter().setVerticalAlignment(0,1, HasVerticalAlignment.ALIGN_MIDDLE);
+        sectionHeaderTbl.setWidth("100%");
+        tbl.setWidget(getRow(), 0, sectionHeaderTbl);
         tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
 
@@ -351,11 +444,20 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         }
 
         SimulatorConfigElement testplanToRegisterAndSupply =  config.get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT);
-        if (testplanToRegisterAndSupply!=null) {
-            newRow();
-            testPlanCEBox.configure(testplanToRegisterAndSupply, tbl, getRow());
-            //                        testPlanCEBox.setVisible(persistenceCb.getValue());
-        }
+//        if (testplanToRegisterAndSupply!=null) {
+//            newRow();
+//            testPlanCEBox.configure(testplanToRegisterAndSupply, tbl, getRow());
+//                                    /* testPlanCEBox.setVisible(persistenceCb.getValue()); */
+//        }
+
+
+        contentBundleLbx.addItem(choose,"");
+        contentBundleLbx.setSelectedIndex(0); // Make it default so the user should change it
+        loadTestsFromCollection(contentBundleLbx, "ODContentBundle");
+        newRow();
+        tbl.setWidget(getRow(),0,new HTML(testplanToRegisterAndSupply.getName()));
+        tbl.setWidget(getRow(),1, contentBundleLbx);
+
 
         SimulatorConfigElement repositoryUniqueId = config.get(SimulatorProperties.repositoryUniqueId);
         if (repositoryUniqueId!=null) {
@@ -365,6 +467,8 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 //            oddsReposTDBox.getLblTextBox().setText("ODDS " + repositoryUniqueId.name);
         }
 
+        // Persistence Option
+        displayPersistenceConfig();
 
         final SimulatorConfigElement oddsRegistrySite = config.get(SimulatorProperties.oddsRegistrySite);
 
@@ -422,23 +526,11 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
                         regActionVPanel.add(regButton);
 
-                        getSaveButton().addClickHandler(
-                                new ClickHandler() {
-                                    @Override
-                                    public void onClick(ClickEvent clickEvent) {
-                                        oddsRegistrySite.setValue(reposSSP.getSelected());
-                                    }
-                                }
-                        );
 
                         regButton.addClickHandler(
                                 new ClickHandler() {
                                     @Override
                                     public void onClick(ClickEvent clickEvent) {
-                                        getConfig().get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).setValue(persistenceCb.getValue());
-                                        getConfig().get(SimulatorProperties.oddsRepositorySite).setValue(reposSSP.getSelected());
-                                        getConfig().get(SimulatorProperties.oddsRegistrySite).setValue(regSSP.getSelected());
-                                        oddsRegistrySite.setValue(regSSP.getSelected());
                                         if (validateParams()) {
                                             setRegButton("Please wait...", false);
                                             saveSimConfig();
@@ -448,13 +540,12 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
                                 }
                         );
 
-                        refreshSupplyState.addClickHandler(new ClickHandler() {
+                        refreshImg.addClickHandler(new ClickHandler() {
                             @Override
                             public void onClick(ClickEvent clickEvent) {
                                 getOdDocumentEntries(getSimulatorControlTab());
                             }
                         });
-
                     }
 
                 }
@@ -466,24 +557,33 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         }
     }
 
-    public void addTable(FlexTable tbl) {
-        hpanel = new HorizontalPanel();
 
-        panel.add(hpanel);
-        hpanel.add(tbl);
+    void loadTestsFromCollection(final ListBox lbx, final String testCollectionName) {
+        getSimulatorControlTab().toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
 
-        FlexTable saveBarTbl = new FlexTable();
-        saveBarTbl.setWidget(0,0,saveButton);
-        saveBarTbl.getFlexCellFormatter().setVerticalAlignment(0,0, HasVerticalAlignment.ALIGN_TOP);
-//        saveBarTbl.setWidget(1,0,saveButton);
-//        saveBarTbl.getFlexCellFormatter().setVerticalAlignment(0,0, HasVerticalAlignment.ALIGN_BOTTOM);
+            public void onFailure(Throwable caught) {
+                new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
+            }
 
+            public void onSuccess(Map<String, String> result) {
 
-        hpanel.add(saveBarTbl);
-        hpanel.add(HtmlMarkup.html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"));
-        panel.add(HtmlMarkup.html("<br />"));
+                Set<String> testNumsSet = result.keySet();
+                List<String> testNums = new ArrayList<String>();
+                testNums.addAll(testNumsSet);
+                testNums = new StringSort().sort(testNums);
 
+                for (String name : testNums) {
+                    String description = result.get(name);
+                    lbx.addItem(name + " - " + description, name);
+                }
+
+                if (lbx.getItemCount() > 0) {
+                    lbx.setSelectedIndex(0);
+                }
+            }
+        });
     }
+
     private void registerODDE() {
 
         if (regSSP !=null) {
@@ -498,7 +598,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         params.put("$patientid$", oddePatientIdCEBox.getTb().getValue());
         params.put("$repuid$", getConfig().get(SimulatorProperties.repositoryUniqueId).asString()); // oddsReposTDBox.toString() getTb().getValue());
 
-        getSimulatorControlTab().toolkitService.registerWithLocalizedTrackingInODDS(getConfig().getId().getUser(), new TestInstance(testPlanCEBox.getTb().getValue())
+        getSimulatorControlTab().toolkitService.registerWithLocalizedTrackingInODDS(getConfig().getId().getUser(), new TestInstance(contentBundleLbx.getSelectedValue())
                 , new SiteSpec(regSSP.getSelected().get(0), ActorType.REGISTRY, null), getConfig().getId() , params
                 , new AsyncCallback<Map<String, String>>() {
                     @Override
@@ -555,7 +655,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         if ("".equals(oddePatientIdCEBox.getTb().getValue())) {
             errMsg += "<li>An On-Demand Document Entry Patient ID is required.</li>";
         }
-        if ("".equals(testPlanCEBox.getTb().getValue())) {
+        if ("".equals(contentBundleLbx.getSelectedValue())) {
             errMsg += "<li>A testplan number to Register an On-Demand Document Entry and to Supply Content is required.</li>";
         }
         /*
@@ -592,19 +692,14 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         return true;
     }
 
-    public void addSaveHandler() {
-        // this is added last so other internal saves (above) happen first
-        saveButton.addClickHandler(
-                new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent clickEvent) {
-                        saveSimConfig();
-                    }
-                }
-        );
-    }
+
 
     public void saveSimConfig() {
+        getConfig().get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).setValue(persistenceCb.getValue());
+        getConfig().get(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT).setValue(contentBundleLbx.getSelectedValue());
+        getConfig().get(SimulatorProperties.oddsRepositorySite).setValue(reposSSP.getSelected());
+        getConfig().get(SimulatorProperties.oddsRegistrySite).setValue(regSSP.getSelected());
+
         simulatorControlTab.toolkitService.putSimConfig(config, new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
@@ -637,10 +732,6 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
     public SimulatorControlTab getSimulatorControlTab() {
         return simulatorControlTab;
-    }
-
-    public Button getSaveButton() {
-        return saveButton;
     }
 
     public VerticalPanel getPanel() {
