@@ -2,7 +2,6 @@ package gov.nist.toolkit.simulators.sim.rep.od;
 
 import gov.nist.toolkit.actorfactory.OnDemandDocumentSourceActorFactory;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
@@ -15,7 +14,6 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
-import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseGeneratingSim;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
@@ -45,7 +43,7 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 	RepIndex repIndex;
 	String repositoryUniqueId;
 	SimulatorConfig simulatorConfig;
-	boolean persistenceOptn = false;
+
 
 	public RetrieveOnDemandDocumentResponseSim(ValidationContext vc, List<String> documentUids, SimCommon common, DsSimCommon dsSimCommon, String repositoryUniqueId, SimulatorConfig simulatorConfig) {
 		super(common, null);
@@ -54,9 +52,6 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 		this.repIndex = dsSimCommon.repIndex;
 		this.repositoryUniqueId = repositoryUniqueId;
 		this.simulatorConfig = simulatorConfig;
-		// Detect persistence simulator setting
-		this.persistenceOptn = getSimulatorConfig().get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean();
-
 	}
 
 	public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
@@ -111,16 +106,10 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 				}
 
 				DocumentEntryDetail ded = document.getEntryDetail();
-				SiteSpec reposSite = null;
+				SiteSpec reposSite = ded.getReposSiteSpec();
+				boolean persistenceOptn = reposSite!=null;
 
 				if (persistenceOptn) {
-					SimulatorConfigElement scReposEl = getSimulatorConfig().get(SimulatorProperties.oddsRepositorySite);
-					if (scReposEl!=null) {
-						if (scReposEl.asList()!=null) {
-							reposSite = new SiteSpec(scReposEl.asList().get(0), ActorType.REPOSITORY, null);
-						}
-					}
-
 					if (mySession.getMesaSessionName() == null) mySession.setMesaSessionName(sessionName);
 					mySession.setSiteSpec(reposSite);
 				}
@@ -368,7 +357,4 @@ public class RetrieveOnDemandDocumentResponseSim extends TransactionSimulator im
 		return simulatorConfig;
 	}
 
-	public boolean isPersistenceOptn() {
-		return persistenceOptn;
-	}
 }

@@ -3,6 +3,7 @@ package gov.nist.toolkit.simulators.support.od;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.results.client.AssertionResult;
@@ -215,7 +216,7 @@ public class TransactionUtil {
                     if (simulatorConfig.get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean()) {
                         SimulatorConfigElement sce = simulatorConfig.get(SimulatorProperties.oddsRepositorySite);
                         if (sce!=null && sce.asList()!=null && sce.asList().size()>0) {
-                            SiteSpec reposSite = new SiteSpec(sce.asList().get(0));
+                            SiteSpec reposSite = new SiteSpec(sce.asList().get(0), ActorType.REPOSITORY, null);
                             ded.setReposSiteSpec(reposSite);
                         }
                     }
