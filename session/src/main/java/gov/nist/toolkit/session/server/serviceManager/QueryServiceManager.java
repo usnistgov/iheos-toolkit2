@@ -11,6 +11,7 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.services.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsException;
 import org.apache.log4j.Logger;
@@ -462,7 +463,7 @@ public class QueryServiceManager extends CommonService {
 				}
 				if (s2 != null && s2.hasRepositoryB()) {
 					try {
-						id.repositoryUniqueId = s2.getRepositoryUniqueId();
+						id.repositoryUniqueId = s2.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 					} catch (Exception e) {
 					}
 				}
@@ -501,7 +502,7 @@ public class QueryServiceManager extends CommonService {
 		Site s2 = SiteServiceManager.getSiteServiceManager().getCommonSites().getSite(s.siteSpec.name);
 		for (Uid uid : uids.uids) {
 			if (uid.repositoryUniqueId == null)
-				uid.repositoryUniqueId = s2.getRepositoryUniqueId();
+				uid.repositoryUniqueId = s2.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 			if (s.siteSpec.isGW()) {
 				if (s.siteSpec.homeId != null)
 					uid.home = s.siteSpec.homeId;

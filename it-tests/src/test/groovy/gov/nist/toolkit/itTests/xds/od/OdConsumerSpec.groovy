@@ -1,32 +1,41 @@
 package gov.nist.toolkit.itTests.xds.od
 
 import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
+import gov.nist.toolkit.results.client.SiteSpec
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
+import gov.nist.toolkit.session.server.Session
+import gov.nist.toolkit.simulators.support.od.TransactionUtil
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
+import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
-
 /**
  * Test the Register transaction
  */
-class OdSpec extends ToolkitSpecification {
+class OdConsumerSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'SR14^^^&1.2.460&ISO'
+    @Shared String patientId = 'SR14^^^&1.2.460&ISO'
     String reg = 'sunil__rr2'
     SimId simId = new SimId(reg)
     @Shared String testSession = 'sunil';
+    @Shared SimConfig rrConfig = null
+    @Shared SimConfig oddsConfig = null;
+    @Shared Session tkSession
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
+
+        tkSession = UnitTestEnvironmentManager.setupLocalToolkit()
 
         // Initialize remote api for talking to toolkit on Grizzly
         // Needed to build simulators
@@ -38,7 +47,7 @@ class OdSpec extends ToolkitSpecification {
 
         spi.delete('rr2', testSession)
 
-        spi.create(
+        rrConfig = spi.create(
                 'rr2',
                 testSession,
                 SimulatorActorType.REPOSITORY_REGISTRY,
@@ -46,27 +55,27 @@ class OdSpec extends ToolkitSpecification {
 
         spi.delete('odds2', testSession)
 
-        spi.create(
+        oddsConfig = spi.create(
                 'odds2',
                 testSession,
                 SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
                 'test')
-    }
+        oddsConfig.setProperty(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS, false)
+        oddsConfig.setProperty(SimulatorProperties.TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT, "15806")
+        oddsConfig.setProperty(SimulatorProperties.oddePatientId, patientId)
+        // If Persistence Option: this is required: SimulatorProperties.oddsRepositorySite
+        List<String> regSites = new ArrayList<String>()
+        regSites.add(rrConfig.getFullId())
+        oddsConfig.setProperty(SimulatorProperties.oddsRegistrySite, regSites)
+        spi.update(oddsConfig)
+
+}
 
     def cleanupSpec() {  // one time shutdown when everything is done
         server.stop()
         ListenerFactory.terminateAll()
     }
 
-    def setup() {
-        println "EC is ${Installation.installation().externalCache().toString()}"
-        println "${api.getSiteNames(true)}"
-        api.createTestSession(testSession)
-        if (!api.simulatorExists(simId)) {
-            println "Creating sim ${simId}"
-            api.createSimulator(ActorType.REPOSITORY_REGISTRY, simId)
-        }
-    }
 
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
@@ -88,28 +97,32 @@ class OdSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'Run all tests'() {
+    def 'Register OD'() {
         when:
-        String siteName = 'sunil__rr2'
-        TestInstance testId = new TestInstance("15806")
-        List<String> sections = new ArrayList<>()
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)
-        boolean stopOnFirstError = true
-
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+        // For testing purposes, manual initialization of the ODDS with the ODDE is required
+        Map<String, String> paramsRegOdde = new HashMap<>()
+        paramsRegOdde.put('$patientid$', patientId)
+        paramsRegOdde.put('$repuid$', oddsConfig.asString(SimulatorProperties.repositoryUniqueId))
 
         then:
-        true
-        results.size() == 1
-        results.get(0).passed()
+        Map<String,String> rs = TransactionUtil.registerWithLocalizedTrackingInODDS(tkSession
+                , oddsConfig.getUser()
+                , new TestInstance("15806")
+                , new SiteSpec(rrConfig.getFullId(), ActorType.REGISTRY, null)
+                , new SimId(oddsConfig.getFullId())
+                , paramsRegOdde)
+
+        for (String key : rs.keySet()) {
+            System.out.println("*** regOdde key:" + key + ": " + rs.get(key))
+        }
+
     }
+
     /**
-     * This section is here, with the other reg/rep tests, because the Retrieve needs the document entry id and the repository id from the previous PnR section.
+     *
      * @return
      */
-    def 'Run retrieve tests'() {
+    def 'Run retrieve without Persistence Option'() {
         when:
         String siteName = 'sunil__odds2'
         TestInstance testId = new TestInstance("15806")

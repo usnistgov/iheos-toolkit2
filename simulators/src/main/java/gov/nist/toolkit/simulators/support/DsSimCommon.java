@@ -228,9 +228,6 @@ public class DsSimCommon {
         int notFound = 0;
         for (String uid : uids) {
             StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
-            // if (sd == null)
-            //   continue;
-            // addDocumentAttachment(sd);
             // Fix Issue 70
             if (sd == null) {
                 notFound++;

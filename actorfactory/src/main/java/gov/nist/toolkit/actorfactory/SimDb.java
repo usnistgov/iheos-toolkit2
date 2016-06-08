@@ -121,7 +121,7 @@ public class SimDb {
 
 	File simSafetyFile() { return new File(simDir, "simId.txt"); }
 	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
-    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); /*&& new File(simDir, "simctl.ser").exists();*/ }
+    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
 	// ipAddr aka simid
 	public SimDb(File dbRoot, SimId simId, String actor, String transaction) throws IOException, NoSimException {
@@ -304,15 +304,30 @@ public class SimDb {
 
 		return names;
 	}
-	
+
+
+	public void getActorIfAvailable() {
+		if (actor==null) {
+			try {
+				String actorTemp = getSimulatorType();
+				if (actorTemp!=null) {
+					actor=actorTemp;
+				}
+			} catch (IOException ex) {
+				logger.warn(ex.toString());
+			}
+		}
+	}
 
 	public File getRegistryIndexFile() {
+		getActorIfAvailable();
 		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "reg_db.ser");
 	}
 
 	public File getRepositoryIndexFile() {
+		getActorIfAvailable();
 		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "rep_db.ser");

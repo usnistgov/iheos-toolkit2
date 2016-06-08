@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>15806/SubmitTestData</Test>
+  <Test>15806/Register_OD</Test>
   <Rule>desc todo</Rule>
   <TestStep id="SubmitOnDemandDocumentEntry">
   <ExpectedStatus>Success</ExpectedStatus>

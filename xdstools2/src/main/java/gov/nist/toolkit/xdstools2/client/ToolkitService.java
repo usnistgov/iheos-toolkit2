@@ -14,7 +14,12 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
@@ -203,5 +208,14 @@ public interface ToolkitService extends RemoteService  {
     List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception;
 
 	String getServletContextName();
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Background test plan running methods related to On-Demand Documents
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
+	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
+	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
 
 }

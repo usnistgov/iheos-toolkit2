@@ -16,6 +16,7 @@ import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager
 import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager
 import gov.nist.toolkit.sitemanagement.Sites
 import gov.nist.toolkit.sitemanagement.client.Site
+import gov.nist.toolkit.sitemanagement.client.TransactionBean
 import gov.nist.toolkit.testengine.engine.PatientIdAllocator
 import gov.nist.toolkit.testengine.engine.TransactionSettings
 import gov.nist.toolkit.testengine.engine.Xdstest2
@@ -132,19 +133,31 @@ public class Session implements SecurityParams {
 		this.siteSpec = siteSpec;
 		transactionSettings = new TransactionSettings();
 		transactionSettings.siteSpec = siteSpec;
-		
-		if (repUid == null || repUid.equals("")) {
-			// this will not always work and is not always relevant - just try
-			//    WHY?
-			try {
-				Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites();
-				Site st = sites.getSite(siteSpec.name);
-                logger.info("site is " + st);
-                logger.info(st.describe());
-				repUid = st.getRepositoryUniqueId();
-			} catch (Exception e) {
+
+		try {
+			Sites sites = new SimCache().getSimManagerForSession(id()).getAllSites();
+			Site st = sites.getSite(siteSpec.name);
+			String tempRepUid = null;
+
+			logger.info("site is " + st);
+			logger.info(st.describe());
+
+			// Fix Issue 98 (ODDS)
+			TransactionBean transactionBean  =  st.getRepositoryBean(TransactionBean.RepositoryType.ODDS,siteSpec.isTls); // .repositories.transactions.get(0).repositoryType
+			if (transactionBean!=null) {
+				tempRepUid = st.getRepositoryUniqueId(TransactionBean.RepositoryType.ODDS);
+			} else {
+				tempRepUid = st.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 			}
+
+			if (tempRepUid!=null) {
+				repUid = tempRepUid;
+			}
+
+		} catch (Exception e) {
+			logger.warn(e.toString());
 		}
+
 
 	}
 

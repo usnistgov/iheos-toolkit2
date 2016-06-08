@@ -10,6 +10,7 @@ import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
@@ -90,7 +91,18 @@ public abstract class AbstractActorFactory {
 		SimulatorConfig sc = new SimulatorConfig(newId, simType.getShortName(), SimDb.getNewExpiration(SimulatorConfig.class));
 
 		return configureBaseElements(sc);
-	}	
+	}
+
+	protected void configEnv(SimManager simm, SimId simId, SimulatorConfig sc) {
+		if (simId.getEnvironmentName() != null) {
+			EnvSetting es = new EnvSetting(simId.getEnvironmentName());
+			File codesFile = es.getCodesFile();
+			addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
+		} else {
+			File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+			addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
+		}
+	}
 
 	SimulatorConfig configureBaseElements(SimulatorConfig sc) {
 		SimulatorConfigElement ele;

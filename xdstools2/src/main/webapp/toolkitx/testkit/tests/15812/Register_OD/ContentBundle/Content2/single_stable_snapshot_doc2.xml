@@ -4,6 +4,11 @@
       <rim:Name>
         <rim:LocalizedString value="Physical"/>
       </rim:Name>
+      <rim:Slot name="repositoryUniqueId">
+        <rim:ValueList>
+          <rim:Value>$repuid$</rim:Value>
+        </rim:ValueList>
+      </rim:Slot>
       <rim:Description/>
       <rim:Slot name="creationTime">
         <rim:ValueList>
@@ -228,7 +233,7 @@
 	<rim:Association associationType="urn:ihe:iti:2010:AssociationType:IsSnapshotOf"
 	targetObject="$od_doc_uuid$"
 	sourceObject="Document01" />
-    <rim:Association targetObject="$rplc_doc_uuid$" sourceObject="$stable_snap1_doc_uuid$" associationType="RPLC"/>
+    <rim:Association targetObject="$rplc_doc_uuid$" sourceObject="Document01" associationType="RPLC"/>
     <rim:ObjectRef id="$rplc_doc_uuid$"/>
     <rim:ObjectRef id="urn:uuid:7edca82f-054d-47f2-a032-9b2a5b518fff"/>
     <rim:ObjectRef id="urn:uuid:a54d6aa5-d40d-43f9-88c5-b4633d873bdd"/>

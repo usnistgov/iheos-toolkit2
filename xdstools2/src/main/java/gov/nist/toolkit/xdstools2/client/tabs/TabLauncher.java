@@ -39,7 +39,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String simulatorMessageViewTabLabel = "Simulator Log Viewer";
 	final static public String simulatorControlTabLabel = "Simulator Manager";
 	final static public String srcStoresDocValTabLabel = "XDS.b_Doc_Source_Stores_Document";
-	final static public String documentRetrieveTabLabel = "RetrieveDocument";
+	final static public String documentRetrieveTabLabel = "RetrieveDocuments";
 	final static public String allocatePatientIdTabLabel = "Allocate Patient ID for the Public Registry";
 	final static public String registryTestDataTabLabel = "XDS Register";
 	final static public String dashboardTabLabel = "Dashboard";

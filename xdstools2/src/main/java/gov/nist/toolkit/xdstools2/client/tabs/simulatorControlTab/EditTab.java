@@ -33,6 +33,7 @@ public class EditTab extends GenericQueryTab {
         addCloseButton(container, topPanel, null);
 
         SimConfigMgr simConfigMgr = new SimConfigMgr(simulatorControlTab, topPanel, config, getCurrentTestSession());
+        simConfigMgr.displayBasicSimulatorConfig();
         simConfigMgr.displayInPanel();
     }
 

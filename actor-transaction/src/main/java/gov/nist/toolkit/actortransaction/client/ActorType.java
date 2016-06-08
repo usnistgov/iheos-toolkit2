@@ -1,16 +1,14 @@
 package gov.nist.toolkit.actortransaction.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 
 // This file must be kept up to date with SimulatorActorTypes.java
 
@@ -59,7 +57,8 @@ public enum ActorType implements IsSerializable, Serializable {
             "On-Demand Document Source",
             Arrays.asList("ODDS", "ON_DEMAND_DOC_SOURCE"),
             "odds",
-            "gov.nist.toolkit.simulators.sim.od.rep.RepositoryActorSimulator",
+            "gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator",
+//            Arrays.asList(TransactionType.RETRIEVE),
             Arrays.asList(TransactionType.ODDS_RETRIEVE),
             true,
             "odds"
@@ -121,6 +120,7 @@ public enum ActorType implements IsSerializable, Serializable {
             null
     ),
 
+    // Issue 78 (ODDS Issue 98)
     // TODO - actorType lookup problem
     // This at the end of the list on purpose.  From the UI actor types are selected by the transactions they support.
     // A problem came up in TransactionSelectionManager#generateSiteSpec() where this gets chosen instead of

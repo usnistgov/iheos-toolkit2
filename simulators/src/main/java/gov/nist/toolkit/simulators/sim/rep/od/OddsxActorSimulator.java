@@ -1,11 +1,10 @@
-package gov.nist.toolkit.simulators.sim.od.rep;
+package gov.nist.toolkit.simulators.sim.rep.od;
 
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actorfactory.client.SimulatorStats;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
@@ -31,8 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryActorSimulator extends BaseDsActorSimulator {
-	static final Logger logger = Logger.getLogger(RepositoryActorSimulator.class);
+public class OddsxActorSimulator extends BaseDsActorSimulator {
+	static final Logger logger = Logger.getLogger(OddsxActorSimulator.class);
 
 	RepIndex repIndex;
 	String repositoryUniqueId;
@@ -48,7 +47,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 		return transactions.contains(transactionType);
 	}
 
-	public RepositoryActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response, String repositoryUniqueId) {
+	public OddsxActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response, String repositoryUniqueId) {
 		super(common, dsSimCommon);
 		this.repIndex = repIndex;
 		this.db = db;
@@ -57,16 +56,16 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 		setSimulatorConfig(simulatorConfig);
 	}
 
-	public RepositoryActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+	public OddsxActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(dsSimCommon.simCommon, dsSimCommon);
 		this.repIndex = dsSimCommon.repIndex;
-		this.db = dsSimCommon.simCommon.db;;
+		this.db = dsSimCommon.simCommon.db;
 		this.response = dsSimCommon.simCommon.response;
         setSimulatorConfig(simulatorConfig);
 		init();
 	}
 
-	public RepositoryActorSimulator() {}
+	public OddsxActorSimulator() {}
 
 	public void init() {
 		SimulatorConfigElement configEle = getSimulatorConfig().get("repositoryUniqueId");
@@ -78,48 +77,9 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 	public boolean run(TransactionType transactionType, MessageValidatorEngine mvc, String validation) throws IOException {
 		GwtErrorRecorderBuilder gerb = new GwtErrorRecorderBuilder();
 
-		logger.debug("Repository starting transaction " + transactionType);
+		logger.debug("ODDS beginning to process: " + transactionType);
 
-		/* if (transactionType.equals(TransactionType.PROVIDE_AND_REGISTER) ||
-				transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {
-
-			common.vc.isPnR = true;
-			common.vc.xds_b = true;
-			common.vc.isXDR = false;
-			common.vc.isRequest = true;
-			common.vc.hasHttp = true;
-			common.vc.hasSoap = true;
-
-			if (transactionType.equals(TransactionType.XDR_PROVIDE_AND_REGISTER)) {
-				logger.info("XDR style of PnR");
-				common.vc.isXDR = true;
-			}
-
-			if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
-				return false;
-
-			if (mvc.hasErrors()) {
-				dsSimCommon.sendErrorsInRegistryResponse(er);
-				return false;
-			}
-
-			RepPnRSim pnrSim = new RepPnRSim(common, dsSimCommon, getSimulatorConfig());
-			mvc.addMessageValidator("PnR", pnrSim, gerb.buildNewErrorRecorder());
-
-			RegistryResponseGeneratorSim rrg = new RegistryResponseGeneratorSim(common, dsSimCommon);
-
-			mvc.addMessageValidator("Attach Errors", rrg, gerb.buildNewErrorRecorder());
-
-			// wrap in soap wrapper and http wrapper
-			// auto-detects need for multipart/MTOM
-			mvc.addMessageValidator("ResponseInSoapWrapper", new SoapWrapperRegistryResponseSim(common, dsSimCommon, rrg), gerb.buildNewErrorRecorder());
-
-			mvc.run();
-
-			return true;
-
-		}
-		else */ if (transactionType.equals(TransactionType.RETRIEVE)) {
+		if (transactionType.equals(TransactionType.RETRIEVE)) {
 
 			common.vc.isRet = true;
 			common.vc.xds_b = true;
@@ -137,7 +97,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 
 			SoapMessageValidator smv = (SoapMessageValidator) common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
 			if (smv == null) {
-				er.err(Code.XDSRepositoryError, "Internal Error: cannot find SoapMessageValidator.class", "RepositoryActorSimulator.java", null);
+				er.err(Code.XDSRepositoryError, "Internal Error: cannot find SoapMessageValidator.class", "od.rep.RepositoryActorSimulator.java", null);
 				return false;
 			}
 			OMElement retrieveRequest = smv.getMessageBody();
@@ -149,17 +109,13 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			}
 
 
-			boolean persistenceOptn = getSimulatorConfig().get(SimulatorProperties.PERSISTENCE_OF_RETRIEVED_DOCS).asBoolean();
-
 			RegistryResponseGeneratingSim dms = null;
 
-			if (persistenceOptn) {
-				dms = new PersistanceDocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId, getSimulatorConfig());
-			} else {
-				dms = new DocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
-			}
-
-
+//			if (persistenceOptn) {
+				dms = new RetrieveOnDemandDocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId, getSimulatorConfig());
+//			} else {
+//				dms = new RetrieveDocumentResponseSim(common.vc, docUids, common, dsSimCommon, repositoryUniqueId);
+//			}
 
 			mvc.addMessageValidator("Generate DocumentResponse", (AbstractMessageValidator)dms, gerb.buildNewErrorRecorder());
 
@@ -184,7 +140,7 @@ public class RepositoryActorSimulator extends BaseDsActorSimulator {
 			return true;
 		}
 		else {
-			dsSimCommon.sendFault("Od-RepositoryActorSimulator: Don't understand transaction " + transactionType, null);
+			dsSimCommon.sendFault("OddsActorSimulator: Don't understand transaction " + transactionType, null);
 			return false;
 		}
 	}
