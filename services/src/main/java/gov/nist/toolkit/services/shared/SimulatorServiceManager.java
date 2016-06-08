@@ -27,7 +27,7 @@ import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
-import gov.nist.toolkit.simulators.sim.rep.od.OddsxActorSimulator;
+import gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
@@ -413,7 +413,7 @@ public class SimulatorServiceManager extends CommonService {
             } else if (db.getSimulatorActorType() == ActorType.REPOSITORY) {
                stats.add(RepositoryActorSimulator.getSimulatorStats(simId));
             } else if  (db.getSimulatorActorType() == ActorType.ONDEMAND_DOCUMENT_SOURCE) {
-				stats.add(OddsxActorSimulator.getSimulatorStats(simId));
+				stats.add(OddsActorSimulator.getSimulatorStats(simId));
 			} else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
                SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
                SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);

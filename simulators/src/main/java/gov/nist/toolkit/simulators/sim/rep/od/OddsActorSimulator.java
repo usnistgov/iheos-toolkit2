@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OddsxActorSimulator extends BaseDsActorSimulator {
-	static final Logger logger = Logger.getLogger(OddsxActorSimulator.class);
+public class OddsActorSimulator extends BaseDsActorSimulator {
+	static final Logger logger = Logger.getLogger(OddsActorSimulator.class);
 
 	RepIndex repIndex;
 	String repositoryUniqueId;
@@ -47,7 +47,7 @@ public class OddsxActorSimulator extends BaseDsActorSimulator {
 		return transactions.contains(transactionType);
 	}
 
-	public OddsxActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response, String repositoryUniqueId) {
+	public OddsActorSimulator(RepIndex repIndex, SimCommon common, DsSimCommon dsSimCommon, SimDb db, SimulatorConfig simulatorConfig, HttpServletResponse response, String repositoryUniqueId) {
 		super(common, dsSimCommon);
 		this.repIndex = repIndex;
 		this.db = db;
@@ -56,7 +56,7 @@ public class OddsxActorSimulator extends BaseDsActorSimulator {
 		setSimulatorConfig(simulatorConfig);
 	}
 
-	public OddsxActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
+	public OddsActorSimulator(DsSimCommon dsSimCommon, SimulatorConfig simulatorConfig) {
 		super(dsSimCommon.simCommon, dsSimCommon);
 		this.repIndex = dsSimCommon.repIndex;
 		this.db = dsSimCommon.simCommon.db;
@@ -65,7 +65,7 @@ public class OddsxActorSimulator extends BaseDsActorSimulator {
 		init();
 	}
 
-	public OddsxActorSimulator() {}
+	public OddsActorSimulator() {}
 
 	public void init() {
 		SimulatorConfigElement configEle = getSimulatorConfig().get("repositoryUniqueId");
