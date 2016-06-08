@@ -1,5 +1,7 @@
 package gov.nist.toolkit.configDatatypes.client;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,15 +9,14 @@ import java.util.List;
 /**
  *
  */
-public enum TransactionType implements Serializable {
+public enum TransactionType implements Serializable, IsSerializable {
     PROVIDE_AND_REGISTER("ITI-41", "Provide and Register", "prb", "pr.b", "pr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse", true),
     XDR_PROVIDE_AND_REGISTER("ITI-41", "XDR Provide and Register", "xdrpr", "xdrpr", "xdrpr.as", false, "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-b", "urn:ihe:iti:2007:ProvideAndRegisterDocumentSet-bResponse", true),
     REGISTER("ITI-42", "Register", "rb", "r.b", "r.as", false, "urn:ihe:iti:2007:RegisterDocumentSet-b", "urn:ihe:iti:2007:RegisterDocumentSet-bResponse", false),
     REGISTER_ODDE("ITI-61","Register On-Demand Document Entry", "rodde", "rodde", "rodde.as", false, "urn:ihe:iti:2010:RegisterOnDemandDocumentEntry", "urn:ihe:iti:2010:RegisterOnDemandDocumentResponse", false),
     RETRIEVE("ITI-43", "Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     IG_RETRIEVE("ITI-43", "Initiating Gateway Retrieve", "igr", "igr", "igr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-//    ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "odds", "odds", "odds.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-    ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true), // NOTE: It is only a mock-up for now.
+    ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     ISR_RETRIEVE("ITI-43", "Integrated Source/Repository Retrieve", "isr", "isr", "isr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     STORED_QUERY("ITI-18", "Stored Query", "sq", "sq.b", "sq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false),
     IG_QUERY("ITI-18", "Initiating Gateway Query", "igq", "igq", "igq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false),

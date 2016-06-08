@@ -3,7 +3,7 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.generic;
 import gov.nist.toolkit.docref.EbRim;
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;

@@ -1,4 +1,4 @@
-Test 15812 - On Demand Document Consumer Actor tests
+On-Demand Document Registry
 
-Register_OD - This section an On-Demand document entry to the registry.
+Register_OD - This section submits an On-Demand Document Entry to the Registry.
 

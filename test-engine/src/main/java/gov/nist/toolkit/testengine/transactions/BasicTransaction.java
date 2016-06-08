@@ -1,17 +1,31 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
-import gov.nist.toolkit.installation.Configuration;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.IdParser;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponseParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.securityCommon.SecurityParams;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testengine.engine.*;
+import gov.nist.toolkit.testengine.engine.AssertionEngine;
+import gov.nist.toolkit.testengine.engine.ErrorReportingInterface;
+import gov.nist.toolkit.testengine.engine.Linkage;
+import gov.nist.toolkit.testengine.engine.OmLogger;
+import gov.nist.toolkit.testengine.engine.PatientIdAllocator;
+import gov.nist.toolkit.testengine.engine.PlanContext;
+import gov.nist.toolkit.testengine.engine.RegistryUtility;
+import gov.nist.toolkit.testengine.engine.ReportManager;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.testengine.engine.TestConfig;
+import gov.nist.toolkit.testengine.engine.TestLogFactory;
+import gov.nist.toolkit.testengine.engine.TestMgmt;
+import gov.nist.toolkit.testengine.engine.TransactionSettings;
+import gov.nist.toolkit.testengine.engine.TransactionStatus;
+import gov.nist.toolkit.testengine.engine.UseReportManager;
+import gov.nist.toolkit.testengine.engine.Validator;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
 import gov.nist.toolkit.testenginelogging.Report;
@@ -21,7 +35,12 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
-import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.NoMetadataException;
+import gov.nist.toolkit.xdsexception.SchemaValidationException;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -31,7 +50,12 @@ import org.apache.log4j.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public abstract class BasicTransaction  {
 	protected OMElement instruction;
@@ -460,13 +484,13 @@ public abstract class BasicTransaction  {
 	}
 
 	String getExpectedStatusString() {
-		return s_ctx.getExpectedStatus().toString();
+		return Arrays.toString(s_ctx.getExpectedStatus().toArray());
 	}
 
 	void eval_expected_status(String status,
 			ArrayList<String> returned_code_contexts) throws XdsInternalException {
 		TransactionStatus currentStatus = new TransactionStatus(status);
-		TransactionStatus expectedStatus = s_ctx.getExpectedStatus();
+		List<TransactionStatus> expectedStatus = s_ctx.getExpectedStatus();
 		//		if (!expected_status) {
 		//			step_failure = false;
 		//			this.s_ctx.resetStatus();
@@ -477,12 +501,32 @@ public abstract class BasicTransaction  {
 				step_failure = true;
 			}
 		} else {
+
+			StringBuffer expectedStatusSb = new StringBuffer();
+			int counter=1;
+			for (TransactionStatus ts : expectedStatus) {
+
+				expectedStatusSb.append(ts.getNamespace());
+				if (expectedStatus.size()>1 && counter<expectedStatus.size())
+					expectedStatusSb.append(" OR ");
+				counter++;
+			}
+
+
 			if ( ! currentStatus.isNamespaceOk()) {
-				s_ctx.set_error("Status is " + status + " , expected status is " + MetadataSupport.response_status_type_namespace + getExpectedStatusString());
+				s_ctx.set_error("Status is " + status + " , expected status is " + expectedStatusSb);
 				step_failure = true;
 			} else {
-				if ( !currentStatus.equals(expectedStatus)) {
-					s_ctx.set_error("Status is " + status + ", expected status is " + MetadataSupport.response_status_type_namespace + getExpectedStatusString());
+
+				boolean foundAcceptableStatus = false;
+				for (TransactionStatus ts : expectedStatus) {
+					if ( currentStatus.equals(ts)) {
+						foundAcceptableStatus = true;
+					}
+				}
+
+				if (!foundAcceptableStatus) {
+					s_ctx.set_error("Status is " + status + ", expected status is " + expectedStatusSb.toString());
 					step_failure = true;
 				}
 			}
@@ -490,7 +534,7 @@ public abstract class BasicTransaction  {
 
 		// if expected error message specified then expected status must be Failure
 		boolean hasExpectedErrorMessage = !s_ctx.getExpectedErrorMessage().equals("");
-		boolean isExpectingFailure = expectedStatus.isFailure();
+		boolean isExpectingFailure = expectedStatus.size()==1 && expectedStatus.get(0).isFailure();
 		if (  hasExpectedErrorMessage && !isExpectingFailure) {
 			fatal("ExpectedErrorMessage specified but ExpectedStatus is Success. This does not make sense");
 		}
@@ -860,10 +904,10 @@ public abstract class BasicTransaction  {
             String sectionId = getStep().getPlan().getCurrentSection();
             String id = String.format("%s/%s/%s", testId, sectionId, stepId);
 
-            if ("true".equals(Configuration.getProperty("testclient.addTestAsAuthor"))) {
-                if (metadata != null)
-                    metadata.addAuthorPersonToAll(id);
-            }
+//            if ("true".equals(Configuration.getProperty("testclient.addTestAsAuthor"))) {
+//                if (metadata != null)
+//                    metadata.addAuthorPersonToAll(id);
+//            }
 
 		}
 
@@ -1297,7 +1341,7 @@ public abstract class BasicTransaction  {
 
 		logSoapRequest(soap);
 
-		if (s_ctx.getExpectedStatus().isSuccess()) {
+		if (s_ctx.getExpectedStatus().size()==1 && s_ctx.getExpectedStatus().get(0).isSuccess()) {
 			RegistryResponseParser registry_response = new RegistryResponseParser(getSoapResult());
 			List<String> errs = registry_response.get_regrep_error_msgs();
 			if (errs.size() > 0) {

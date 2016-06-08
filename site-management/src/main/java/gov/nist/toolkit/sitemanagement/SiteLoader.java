@@ -3,7 +3,7 @@ package gov.nist.toolkit.sitemanagement;
 import gov.nist.toolkit.actortransaction.client.ATFactory;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
@@ -74,6 +74,7 @@ public abstract class SiteLoader {
 			if ("transaction".equals(ele_name)) {
 				s.transactions().add(name, value, isSecure, async);
 			} else if ("repository".equals(ele_name)) {
+				// Issue 98 TODO: set the repositoryType here
 				s.repositories().add(uid, value, isSecure, async);
 			} else if ("home".equals(ele_name)) {
 				s.home = value;

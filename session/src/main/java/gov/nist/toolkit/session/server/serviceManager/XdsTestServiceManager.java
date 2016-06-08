@@ -11,7 +11,16 @@ import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.AssertionResult;
+import gov.nist.toolkit.results.client.AssertionResults;
+import gov.nist.toolkit.results.client.CodesConfiguration;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
@@ -37,10 +46,16 @@ import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -265,13 +280,8 @@ public class XdsTestServiceManager extends CommonService {
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception {
 		try {
 			logger.debug(session.id() + ": " + "getTestplanAsText");
-			List<String> sections = new ArrayList<String>();
-			sections.add(section);
-
-			Xdstest2 xt2 = getNewXt();
+			TestDetails ts = getTestDetails(testInstance, section);
             xt2.setTestkits(Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName()));
-			xt2.addTest(testInstance, sections, null, false);
-			TestDetails ts = xt2.getTestSpec(testInstance);
 
 			File tsFile;
 
@@ -292,6 +302,15 @@ public class XdsTestServiceManager extends CommonService {
 		} catch (Throwable t) {
 			throw new Exception(t.getMessage() + "\n" + ExceptionUtil.exception_details(t));
 		}
+	}
+
+	public TestDetails getTestDetails(TestInstance testInstance, String section) throws Exception {
+		List<String> sections = new ArrayList<String>();
+		sections.add(section);
+
+		Xdstest2 xt2 = getNewXt();
+		xt2.addTest(testInstance, sections, null, false);
+		return xt2.getTestSpec(testInstance);
 	}
 
 	public List<TestInstance> getTestlogListing(String sessionName) throws Exception {
@@ -555,6 +574,15 @@ public class XdsTestServiceManager extends CommonService {
                                                     response,
                                                     "RetrieveDocumentSetResponse");
 								if (rdsr != null) {
+
+									// Issue 103: We need to propogate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
+									try {
+										String rrStatusValue = XmlUtil.firstDecendentWithLocalName(rdsr, "RegistryResponse").getAttributeValue(new QName("status"));
+										stepResult.setRegistryResponseStatus(rrStatusValue);
+									} catch (Throwable t) {
+										logger.error(t.toString());
+									}
+
 									RetrieveB rb = new RetrieveB();
 									Map<String, RetrievedDocumentModel> resMap = rb
 											.parse_rep_response(response).getMap();
@@ -606,8 +634,9 @@ public class XdsTestServiceManager extends CommonService {
 		// context.getInitParameter("toolkit-host").trim();
 		String toolkitPort = session.getServerPort();
 		// context.getInitParameter("toolkit-port").trim();
-		return "http://" + toolkitHost + ":" + toolkitPort
-				+ "/xdstools2/DocumentCache/";
+//		return "http://" + toolkitHost + ":" + toolkitPort
+//				+ Session.servletContextName + "/DocumentCache/";
+		return  "DocumentCache/";
 	}
 
     File getRepositoryCache() {

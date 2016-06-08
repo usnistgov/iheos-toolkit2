@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
 import org.apache.log4j.Logger;
 
 import gov.nist.toolkit.actorfactory.SimDb;
@@ -117,7 +119,9 @@ public class ToolkitApi {
      */
     public Simulator createSimulator(ActorType actorType, SimId simId) throws Exception {
         simId.setActorType(actorType.getName());
-        return simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
+        Simulator sim = simulatorServiceManager().getNewSimulator(actorType.getName(), simId);
+        sim.getConfig(0).getConfigEle(SimulatorProperties.environment).setValue(simId.getEnvironmentName());
+        return sim;
     }
 
     public Simulator createSimulator(SimId simId) throws Exception {

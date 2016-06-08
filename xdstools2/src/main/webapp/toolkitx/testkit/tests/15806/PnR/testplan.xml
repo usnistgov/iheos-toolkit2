@@ -8,7 +8,7 @@
 	  <AssignUuids/>
 	  <!-- <UseReport reportName="oddocid" section="THIS" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uuid$"/> -->
 
-		<UseId testdir="../SubmitTestData" id="Document01" symbol="$od_doc_uuid$" step="SubmitOnDemandDocumentEntry" section="AssignedUuids"/> 
+		<UseId testdir="../Register_OD" id="Document01" symbol="$od_doc_uuid$" step="SubmitOnDemandDocumentEntry" section="AssignedUuids"/> 
       <MetadataFile>single_stable_snapshot_doc.xml</MetadataFile>
 	  <Document  id="Document01">my_document.txt</Document>
     </ProvideAndRegisterTransaction>

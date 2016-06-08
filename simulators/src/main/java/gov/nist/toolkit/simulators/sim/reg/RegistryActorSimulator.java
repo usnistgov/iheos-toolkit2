@@ -17,6 +17,7 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.support.BaseDsActorSimulator;
 import gov.nist.toolkit.simulators.support.DsSimCommon;
 import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import org.apache.log4j.Logger;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class RegistryActorSimulator extends BaseDsActorSimulator {
 	static Logger logger = Logger.getLogger(RegistryActorSimulator.class);
 	boolean updateEnabled;
+	private boolean generateResponse = true;
 
 	static List<TransactionType> transactions = new ArrayList<>();
 
@@ -109,6 +111,7 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 				return false;  // returns if SOAP Fault was generated
 			
 			if (mvc.hasErrors()) {
+				if (generateResponse)
 				dsSimCommon.sendErrorsInRegistryResponse(er);
 				return false;
 			}
@@ -122,13 +125,15 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 
 			mvc.run();
 
-			// wrap in soap wrapper and http wrapper
-			mvc.addMessageValidator("ResponseInSoapWrapper", 
-					new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator),
-					er);
+			if (generateResponse) {
+				// wrap in soap wrapper and http wrapper
+				mvc.addMessageValidator("ResponseInSoapWrapper",
+						new SoapWrapperRegistryResponseSim(common, dsSimCommon, registryResponseGenerator),
+						er);
 
-			// catch up on validators to be run so we can judge whether to commit or not
-			mvc.run();
+				// catch up on validators to be run so we can judge whether to commit or not
+				mvc.run();
+			}
 
 			// commit updates (delta) to registry database
 			if (!common.hasErrors())
@@ -309,6 +314,18 @@ public class RegistryActorSimulator extends BaseDsActorSimulator {
 	static public SimulatorStats getSimulatorStats(SimId simId) throws IOException, NoSimException {
 		RegIndex regIndex = SimServlet.getRegIndex(simId);
 		return regIndex.getSimulatorStats();
+	}
+
+	public void setValidationContext(ValidationContext vc) {
+		common.setValidationContext(vc);
+	}
+
+	public boolean isGenerateResponse() {
+		return generateResponse;
+	}
+
+	public void setGenerateResponse(boolean generateResponse) {
+		this.generateResponse = generateResponse;
 	}
 
 	@Override

@@ -121,7 +121,7 @@ public class SimDb {
 
 	File simSafetyFile() { return new File(simDir, "simId.txt"); }
 	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
-    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); /*&& new File(simDir, "simctl.ser").exists();*/ }
+    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
 	// ipAddr aka simid
 	public SimDb(File dbRoot, SimId simId, String actor, String transaction) throws IOException, NoSimException {
@@ -304,15 +304,30 @@ public class SimDb {
 
 		return names;
 	}
-	
+
+
+	public void getActorIfAvailable() {
+		if (actor==null) {
+			try {
+				String actorTemp = getSimulatorType();
+				if (actorTemp!=null) {
+					actor=actorTemp;
+				}
+			} catch (IOException ex) {
+				logger.warn(ex.toString());
+			}
+		}
+	}
 
 	public File getRegistryIndexFile() {
+		getActorIfAvailable();
 		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "reg_db.ser");
 	}
 
 	public File getRepositoryIndexFile() {
+		getActorIfAvailable();
 		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "rep_db.ser");
@@ -777,28 +792,40 @@ public class SimDb {
 	public void putRequestHeaderFile(byte[] bytes) throws IOException {
 		File f = getRequestHeaderFile();
 		OutputStream out = new FileOutputStream(f);
-		out.write(bytes);
-		out.close();
+		try {
+			out.write(bytes);
+		} finally {
+			out.close();
+		}
 	}
 
 	public void putRequestBodyFile(byte[] bytes) throws IOException {
 		OutputStream out = new FileOutputStream(getRequestBodyFile());
-		out.write(bytes);
-		out.close();
+		try {
+			out.write(bytes);
+		} finally {
+			out.close();
+		}
 	}
 
 	public void putResponse(HttpMessage msg) throws IOException {
 		File hdrFile = getResponseHdrFile();
 		String hdrs = msg.getHeadersAsString();
 		OutputStream os = new FileOutputStream(hdrFile);
-		os.write(hdrs.getBytes());
-		os.close();
+		try {
+			os.write(hdrs.getBytes());
+		} finally {
+			os.close();
+		}
 
 		String body = msg.getBody();
 		File bodyFile = getResponseBodyFile();
 		os = new FileOutputStream(bodyFile);
-		os.write(body.getBytes());
-		os.close();
+		try {
+			os.write(body.getBytes());
+		} finally {
+			os.close();
+		}
 	}
 
 }

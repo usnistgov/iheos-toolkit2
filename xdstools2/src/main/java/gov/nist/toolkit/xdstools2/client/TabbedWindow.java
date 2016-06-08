@@ -66,7 +66,16 @@ public abstract class TabbedWindow {
 	// delegate to proper object
 	public SiteSpec getCommonSiteSpec() { return tabContainer.getQueryState().getSiteSpec(); }
 	public void setCommonSiteSpec(SiteSpec s) { tabContainer.getQueryState().setSiteSpec(s); }
-	public String getCommonPatientId() { return tabContainer.getQueryState().getPatientId(); }
+	public String getCommonPatientId() {
+
+		try {
+			return tabContainer.getQueryState().getPatientId();
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		return null;
+
+	}
 	public void setCommonPatientId(String p) { tabContainer.getQueryState().setPatientId(p); }
 
 	public String getEnvironmentSelection() { return tabContainer.getEnvironmentState().getEnvironmentName(); }
@@ -146,8 +155,7 @@ public abstract class TabbedWindow {
 		Anchor close = new Anchor();
 		close.setTitle("Close this tab");
 		close.setText("[close]");
-		
-		if ("xdstools2".equals(GWT.getModuleName())) // Hide this from V3 module
+//		if (Xdstools2.getInstance().toolkitName.equals(GWT.getModuleName())) // Hide this from V3 module
 			menuPanel.add(close);
 			
 		close.addClickHandler(new ClickHandler() {

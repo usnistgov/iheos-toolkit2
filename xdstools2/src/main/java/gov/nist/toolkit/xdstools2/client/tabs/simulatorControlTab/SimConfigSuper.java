@@ -38,6 +38,7 @@ class SimConfigSuper {
 	void add(SimulatorConfig config) {
 		delete(config);
 		SimConfigMgr mgr = new SimConfigMgr(simulatorControlTab, panel, config, testSession);
+		mgr.displayBasicSimulatorConfig();
 		mgr.displayInPanel();
 		mgrs.add(mgr);
 		
@@ -84,6 +85,7 @@ class SimConfigSuper {
 				txt = txt + ", " + mgr.config.getId();
 			
 			mgr.removeFromPanel();
+			mgr.displayBasicSimulatorConfig();
 			mgr.displayInPanel();
 		}
 		simulatorControlTab.simIdsTextArea.setText(txt);

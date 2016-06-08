@@ -92,8 +92,13 @@ public class TransactionOfferingFactory {
 					continue;
 				TransactionType tt;
 				if (tb.isRetrieve()) {
-					tt = TransactionType.RETRIEVE;
-				} else 
+					// Partial fix Issue 78 (ODDS Issue 98)
+					// TODO: may need to retrieve the repositoryType/transactionType flag from the (future) site xml file once it is available. Currently the site xml element in use is just <repository> without any transaction type identifier.
+					if (TransactionBean.RepositoryType.ODDS.equals(tb.repositoryType)) {
+						tt = TransactionType.ODDS_RETRIEVE;
+					} else
+						tt = TransactionType.RETRIEVE;
+				} else
 					tt = tb.getTransactionType();
 				
 				if (tb.isSecure) {

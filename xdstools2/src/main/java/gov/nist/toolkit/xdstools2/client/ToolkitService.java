@@ -3,7 +3,10 @@ package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.Simulator;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -11,7 +14,12 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.DocumentEntryDetail;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.SiteSpec;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.services.client.IgOrchestrationRequest;
@@ -210,4 +218,16 @@ public interface ToolkitService extends RemoteService  {
 	 String setMesaTestSession(String sessionName) throws NoServletSessionException ;
 	 String getNewPatientId(String assigningAuthority) throws NoServletSessionException ;
     List<String> getTransactionErrorCodeRefs(String transactionName, Severity severity) throws Exception;
+
+	String getServletContextName();
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	// Background test plan running methods related to On-Demand Documents
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	public Result register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params) throws Exception;
+	public Map<String, String> registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId oddsSimId, Map<String, String> params) throws Exception;
+	public List<DocumentEntryDetail> getOnDemandDocumentEntryDetails(SimId oddsSimId);
+
 }

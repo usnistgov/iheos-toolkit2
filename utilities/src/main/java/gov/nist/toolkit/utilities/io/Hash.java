@@ -3,7 +3,7 @@ package gov.nist.toolkit.utilities.io;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 public class Hash {
-	public String compute_hash(ByteBuffer buffer) throws XdsInternalException {
+	private String compute_hash(ByteBuffer buffer) throws XdsInternalException {
 		Sha1Bean sha = new Sha1Bean();
 		sha.setByteStream(buffer.get());
 		String hash = null;

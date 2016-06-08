@@ -5,7 +5,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.StoredQueryFactory;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;

@@ -27,7 +27,7 @@ import org.apache.axis2.wsdl.WSDLConstants;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.soap.axis2.Swa;
 import gov.nist.toolkit.testengine.engine.StepContext;
 import gov.nist.toolkit.utilities.io.Io;

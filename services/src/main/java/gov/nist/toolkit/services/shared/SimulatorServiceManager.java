@@ -22,10 +22,12 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.services.server.SimulatorApi;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
+import gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator;
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
@@ -268,7 +270,7 @@ public class SimulatorServiceManager extends CommonService {
 		logger.debug(session.id() + ": " + "getAllSimConfigs for " + user);
 		if (user == null) return new ArrayList<>();
 
-		GenericSimulatorFactory simFact = new GenericSimulatorFactory(new SimCache().getSimManagerForSession(session.id()));
+		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
 
 		SimDb db = new SimDb();
 		List<SimId> simIds = db.getAllSimIds();
@@ -279,12 +281,31 @@ public class SimulatorServiceManager extends CommonService {
 				userSimIds.add(simId);
 		}
 
-		List<SimulatorConfig> configs = simFact.loadSimulators(userSimIds);
+		List<SimulatorConfig> configs = GenericSimulatorFactory.loadSimulators(userSimIds);
 
 		// update cache
 		SimCache.update(session.id(), configs);
 
 		return configs;
+	}
+
+	public void updateAllSimulatorsHostAndPort(String host, String port) throws NoSimException, IOException, ClassNotFoundException {
+		GenericSimulatorFactory simFact = new GenericSimulatorFactory(SimCache.getSimManagerForSession(session.id()));
+
+		SimDb db = new SimDb();
+		List<SimId> simIds = db.getAllSimIds();
+
+		List<SimulatorConfig> configs = GenericSimulatorFactory.loadSimulators(simIds);
+		for (SimulatorConfig config : configs) {
+			List<SimulatorConfigElement> endpointElements = config.getEndpointConfigs();
+			for (SimulatorConfigElement endpointElement : endpointElements) {
+
+			}
+		}
+
+		// update cache
+		SimCache.update(session.id(), configs);
+
 	}
 
 	public String saveSimConfig(SimulatorConfig config) throws Exception  {
@@ -389,10 +410,11 @@ public class SimulatorServiceManager extends CommonService {
             SimDb db = new SimDb(simId);
             if (db.getSimulatorActorType() == ActorType.REGISTRY) {
                stats.add(RegistryActorSimulator.getSimulatorStats(simId));
-            } else if (db.getSimulatorActorType() == ActorType.REPOSITORY
-               || db.getSimulatorActorType() == ActorType.ONDEMAND_DOCUMENT_SOURCE) {
+            } else if (db.getSimulatorActorType() == ActorType.REPOSITORY) {
                stats.add(RepositoryActorSimulator.getSimulatorStats(simId));
-            } else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
+            } else if  (db.getSimulatorActorType() == ActorType.ONDEMAND_DOCUMENT_SOURCE) {
+				stats.add(OddsActorSimulator.getSimulatorStats(simId));
+			} else if (db.getSimulatorActorType() == ActorType.REPOSITORY_REGISTRY) {
                SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
                SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
                rep.add(reg);

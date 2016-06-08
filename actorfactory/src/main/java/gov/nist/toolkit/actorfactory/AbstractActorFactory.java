@@ -1,18 +1,5 @@
 package gov.nist.toolkit.actorfactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import gov.nist.toolkit.actorfactory.client.NoSimException;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
@@ -21,8 +8,9 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
@@ -31,6 +19,14 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * Factory class for simulators.  Technically ActorFactry is no longer accurate
@@ -95,7 +91,18 @@ public abstract class AbstractActorFactory {
 		SimulatorConfig sc = new SimulatorConfig(newId, simType.getShortName(), SimDb.getNewExpiration(SimulatorConfig.class));
 
 		return configureBaseElements(sc);
-	}	
+	}
+
+	protected void configEnv(SimManager simm, SimId simId, SimulatorConfig sc) {
+		if (simId.getEnvironmentName() != null) {
+			EnvSetting es = new EnvSetting(simId.getEnvironmentName());
+			File codesFile = es.getCodesFile();
+			addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
+		} else {
+			File codesFile = EnvSetting.getEnvSetting(simm.sessionId).getCodesFile();
+			addEditableConfig(sc, SimulatorProperties.codesEnvironment, ParamType.SELECTION, codesFile.toString());
+		}
+	}
 
 	SimulatorConfig configureBaseElements(SimulatorConfig sc) {
 		SimulatorConfigElement ele;
@@ -113,6 +120,7 @@ public abstract class AbstractActorFactory {
 		addUser(sc, ele);
 
         addEditableConfig(sc, SimulatorProperties.FORCE_FAULT, ParamType.BOOLEAN, false);
+		addFixedConfig(sc, SimulatorProperties.environment, ParamType.TEXT, "null");
 
         return sc;
 	}
@@ -222,7 +230,8 @@ public abstract class AbstractActorFactory {
 	protected String mkEndpoint(SimulatorConfig asc, SimulatorConfigElement ele, String actor, boolean isTLS) {
 		String transtype = SimDb.getTransactionDirName(ele.transType);
 
-		String contextName = Installation.installation().tkProps.get("toolkit.servlet.context", "xdstools2");
+//		String contextName = Installation.installation().tkProps.get("toolkit.servlet.context", "xdstools2");
+		String contextName = Installation.installation().getServletContextName();
 
 		return "http"
 		+ ((isTLS) ? "s" : "")
@@ -230,7 +239,7 @@ public abstract class AbstractActorFactory {
 		+ Installation.installation().propertyServiceManager().getToolkitHost() 
 		+ ":" 
 		+ ((isTLS) ? Installation.installation().propertyServiceManager().getToolkitTlsPort() : Installation.installation().propertyServiceManager().getToolkitPort()) 
-		+ "/"  
+//		+ "/"  context name includes preceding /
 		+ contextName  
 		+ "/sim/" 
 		+ asc.getId() 

@@ -77,11 +77,16 @@ public class RepIndex implements Serializable {
 	}
 
 	public SimulatorStats getSimulatorStats() throws IOException, NoSimException {
+		return getSimulatorStats(ActorType.REPOSITORY);
+	}
+
+	public SimulatorStats getSimulatorStats(ActorType actorType) throws IOException, NoSimException {
 		SimulatorStats stats = new SimulatorStats();
-		stats.actorType = ActorType.REPOSITORY;
+		stats.actorType = actorType; // Should repository type be used here instead?
 		stats.simId = simId;
 
-		stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
+		if (ActorType.REPOSITORY.equals(actorType))
+			stats.put(SimulatorStats.DOCUMENT_COUNT, dc.size());
 		return stats;
 	}
 

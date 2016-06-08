@@ -2,7 +2,7 @@ package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import org.apache.axiom.om.OMElement;
@@ -13,6 +13,11 @@ public class RegistryError {
 	public String severity = null;
 	public String location = null;
 	public boolean isWarning;
+
+	@Override
+	public String toString() {
+		return String.format("%s %s: %s at %s", severity, errorCode, codeContext, location);
+	}
 
 	public RegistryError() {
 

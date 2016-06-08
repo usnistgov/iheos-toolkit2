@@ -6,6 +6,9 @@ package gov.nist.toolkit.configDatatypes;
  * @see gov.nist.toolkit.toolkitServicesCommon.SimConfig#setProperty()
  */
 public class SimulatorProperties {
+
+    static public boolean isTlsEndpoint(String name) { return name != null && name.indexOf("TLS") != -1; }
+
     /**
      * Boolean property controlling whether Metadata Update is enabled on Registry Simulator.
      */
@@ -211,21 +214,26 @@ public class SimulatorProperties {
     public static final String                     PERSISTENCE_OF_RETRIEVED_DOCS = "Persistence of Retrieved Documents Option";
 
     /**
-     * The current index state of the content bundle. The index number is the item ordinal from the bundle index.
-     */
-    public static final String                      currentContentBundleIdx = "Current Content Bundle Idx";
-
-    /**
-     * Content bundle
-     * Should be in the format of "9999/Trans/ContentBundle" where 9999 is a test number.
+     * Testplan to register On-Demand Document Entry and supply content
+     * Look up will be in this order: "{Test plan#}/{section[0]}/ContentBundle" Example: 15812/Register_OD/ContentBundle
      * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
      */
-    public static final String                      contentBundle = "Content Bundle";
+    public static final String                      TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT = "Testplan to Register and Supply Content";
+
+    /**
+     * On-demand document entry Patient Id
+     */
+    public static final String                      oddePatientId = "On-Demand Document Entry Patient ID";
+
+    /**
+     * Registry for the ODDE registration
+     */
+    public static final String                      oddsRegistrySite = "Registry";
 
     /**
      * The repository site to store the stable snapshot associated with the on-demand document entry.
      */
-    public static final String                      oddsRepositorySite = "Repository Site";
+    public static final String                      oddsRepositorySite = "Repository";
 
 
     /**
@@ -265,4 +273,5 @@ public class SimulatorProperties {
      */
     public static final String                        idsrTlsEndpoint = "IDSR_TLS_endpoint";
 
+    public static final String                        environment = "Environment";
 }

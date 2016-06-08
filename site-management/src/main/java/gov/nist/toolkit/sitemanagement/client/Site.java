@@ -153,12 +153,13 @@ public class Site  implements IsSerializable, Serializable {
 
 	/**
 	 * Get Repository Bean
+	 * @param repositoryType
 	 * @param isSecure
 	 * @return TransactionBean
 	 */
-	public TransactionBean getRepositoryBean(boolean isSecure) {
+	public TransactionBean getRepositoryBean(RepositoryType repositoryType, boolean isSecure) {
 		for (TransactionBean b : repositories.transactions) {
-			if (b.repositoryType == RepositoryType.REPOSITORY && b.isSecure == isSecure)
+			if (b.repositoryType == repositoryType && b.isSecure == isSecure)
 				return b;
 		}
 		return null;
@@ -173,17 +174,17 @@ public class Site  implements IsSerializable, Serializable {
 		addRepository(bean);
 	}
 
-	public String getRepositoryUniqueId() throws Exception {
+	public String getRepositoryUniqueId(RepositoryType repositoryType) throws Exception {
 		if (!hasRepositoryB())
 			throw new Exception("Site " + name + " does not define an XDS.b Repository");
 		TransactionBean transbean;
-		transbean = getRepositoryBean(false);  // try non-secure first
+		transbean = getRepositoryBean(repositoryType, false);  // try non-secure first
 		if (transbean != null) {
 			String repUid =  transbean.name;
 			if (repUid != null && !repUid.equals(""))
 				return repUid;
 		}
-		transbean = getRepositoryBean(true);  // secure next
+		transbean = getRepositoryBean(repositoryType, true);  // secure next
 		if (transbean != null) {
 			String repUid =  transbean.name;
 			if (repUid != null && !repUid.equals(""))
@@ -207,7 +208,7 @@ public class Site  implements IsSerializable, Serializable {
 		int cnt = 0;
 		if (name != null && name.equals("allRepositories")) return 0;
 		for (TransactionBean b : repositories.transactions) {
-			if (b.repositoryType == RepositoryType.REPOSITORY)
+			if (b.repositoryType == RepositoryType.REPOSITORY || b.repositoryType == RepositoryType.ODDS)
 				cnt++;
 		}
 		return cnt;
@@ -216,7 +217,7 @@ public class Site  implements IsSerializable, Serializable {
 	public Set<String> repositoryUniqueIds() {
 		Set<String> ids = new HashSet<String>();
 		for (TransactionBean b : repositories.transactions) {
-			if (b.repositoryType == RepositoryType.REPOSITORY) {
+			if (b.repositoryType == RepositoryType.REPOSITORY || b.repositoryType == RepositoryType.ODDS) {
 				ids.add(b.name); // repositoryUniqueId since this is a retrieve
 			}
 		}		

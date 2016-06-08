@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
@@ -91,7 +92,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 		for (Site site : sites) {
 			try {
-				byUid.put(site.getRepositoryUniqueId(), site);
+				byUid.put(site.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY), site);
 			} catch (Exception e) {}
 			byName.put(site.getSiteName(), site);
 		}
@@ -120,7 +121,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 		for (String name : namea) {
 			col = 0;
 			try {
-				byNameTable.setText(row, 1, byName.get(name).getRepositoryUniqueId());
+				byNameTable.setText(row, 1, byName.get(name).getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY));
 				byNameTable.setText(row, 0, name);
 				row++;
 			} catch (Exception e) {
@@ -137,7 +138,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 			for (String name : namea) {
 				Site s = byName.get(name);
 				try {
-					String uidx = s.getRepositoryUniqueId();
+					String uidx = s.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 					if (!uid.equals(uidx))
 						continue;
 					col=1;

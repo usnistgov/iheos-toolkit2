@@ -1,6 +1,5 @@
 package gov.nist.toolkit.testkitutilities;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.Util;
 
 import java.io.File;

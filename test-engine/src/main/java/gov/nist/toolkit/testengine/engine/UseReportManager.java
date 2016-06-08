@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.*;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
