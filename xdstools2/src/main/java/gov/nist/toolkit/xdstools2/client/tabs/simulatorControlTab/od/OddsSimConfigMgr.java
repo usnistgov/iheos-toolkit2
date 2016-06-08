@@ -299,7 +299,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
         newRow();
         tbl.setWidget(getRow(), 0, new HTML("<hr/>"
                 + "<h2>On-Demand Document Supply State</h2>"
-                + "<p>This table displays the state of each On-Demand Document. A blank Repository value indicates that the Persistence Option does not apply for that On-Demand Document. The first number in the the Supply State column indicates the index of the content section in the content bundle.</p>" ));
+                + "<p>This table displays the state of each On-Demand Document. A blank Repository value indicates that the Persistence Option did not apply for that On-Demand Document Entry at the time it was created. The first number in the the Supply State column indicates the index of the content section in the content bundle.</p>" ));
         tbl.getFlexCellFormatter().setColSpan(getRow(),0,2);
 
         newRow();
