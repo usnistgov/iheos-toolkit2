@@ -101,7 +101,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 			String testdataSetName = testlistBox.getItemText(selected);	
 
 			rigForRunning();
-			toolkitService.submitRegistryTestdata(getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			toolkitService.submitRegistryTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

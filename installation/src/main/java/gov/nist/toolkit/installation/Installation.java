@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Installation {
@@ -184,6 +185,23 @@ public class Installation {
             LOGGER.info("Environment name is null");
         }
         // toolkit default testkit
+        testkits.add(testkitFile());
+        return testkits;
+    }
+
+    /**
+     * This method returns all the existing testkits.
+     * @return list of all existing testkits.
+     */
+    public List<File> getAllTestkits(){
+        List<File> testkits=new ArrayList<File>();
+        File environmentsRootFile=environmentFile();
+        for (File environment:environmentsRootFile.listFiles()){
+            File testkitsContainer=new File(environment,"testkits");
+            if (testkitsContainer.exists()) {
+                testkits.addAll(Arrays.asList(testkitsContainer.listFiles()));
+            }
+        }
         testkits.add(testkitFile());
         return testkits;
     }

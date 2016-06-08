@@ -56,10 +56,11 @@ public class QueryServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> submitRegistryTestdata(SiteSpec site,
+	public List<Result> submitRegistryTestdata(String testSessionName,SiteSpec site,
 			String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitRegistryTestdata");
 		try {
+			session.setMesaSessionName(testSessionName);
 			return new SubmitRegistryTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);
@@ -77,10 +78,11 @@ public class QueryServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> submitXDRTestdata(SiteSpec site,
+	public List<Result> submitXDRTestdata(String testSessionName,SiteSpec site,
 			String datasetName, String pid)  {
 		logger.debug(session.id() + ": " + "submitXDRTestdata");
 		try {
+			session.setMesaSessionName(testSessionName);
 			return new SubmitXDRTestdata(session).run(site, datasetName, pid);
 		} catch (XdsException e) {
 			return buildResultList(e);

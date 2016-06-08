@@ -97,7 +97,7 @@ public class XDRTestdataTab  extends GenericQueryTab {
 			String testdataSetName = testlistBox.getItemText(selected);	
 
 			rigForRunning();
-			toolkitService.submitXDRTestdata(getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			toolkitService.submitXDRTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

@@ -211,7 +211,18 @@ public class XdsTestServiceManager extends CommonService {
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception  {
 		logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + collectionName);
 		try {
-			return getTestKit().getCollection(collectionSetName, collectionName);
+            System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getMesaSessionName());
+            Map<String,String> collection=new HashMap<String,String>();
+            for (File testkitFile:Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName())){
+                TestKit tk=new TestKit(testkitFile);
+                Map<String,String> c=tk.getCollection(collectionSetName,collectionName);
+                for (String key:c.keySet()) {
+                    if (!collection.containsKey(key)) {
+                        collection.put(key,c.get(key));
+                    }
+                }
+            }
+            return collection;
 		} catch (Exception e) {
 			logger.error("getCollection", e);
 			throw new Exception(e.getMessage());
@@ -221,7 +232,8 @@ public class XdsTestServiceManager extends CommonService {
 	public String getTestReadme(String test) throws Exception {
 		logger.debug(session.id() + ": " + "getTestReadme " + test);
 		try {
-			TestDefinition tt = new TestDefinition(getTestKit().getTestDir(test));
+            TestKit tk=new TestKit(Installation.installation().findTestkitFromTest(Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName()),test));
+			TestDefinition tt = new TestDefinition(tk.getTestDir(test));
 			return tt.getReadme();
 		} catch (Exception e) {
 			logger.error("getTestReadme", e);
@@ -257,6 +269,7 @@ public class XdsTestServiceManager extends CommonService {
 			sections.add(section);
 
 			Xdstest2 xt2 = getNewXt();
+            xt2.setTestkits(Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName()));
 			xt2.addTest(testInstance, sections, null, false);
 			TestDetails ts = xt2.getTestSpec(testInstance);
 
@@ -720,13 +733,25 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public String getNewPatientId(String assigningAuthority) {
-		logger.debug(session.id() + ": " + "getNewPatientId()");
+		logger.debug(session.id() + ": " +
+                "getNewPatientId()");
 		return session.allocateNewPid(assigningAuthority).asString();
 	}
 
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
 		logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
-		return getTestKit().getCollectionNames(collectionSetName);
+        Map<String,String> collectionNames=new HashMap<String,String>();
+        List<File> testkitsFiles=Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName());
+        for (File testkitFile:testkitsFiles){
+            TestKit tk=new TestKit(testkitFile);
+            Map<String, String> tmpCollectionNames=tk.getCollectionNames(collectionSetName);
+            for (String key:tmpCollectionNames.keySet()) {
+                if (!collectionNames.containsKey(key)) {
+                    collectionNames.put(key, tmpCollectionNames.get(key));
+                }
+            }
+        }
+        return collectionNames;
 	}
 
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) {
