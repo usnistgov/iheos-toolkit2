@@ -20,7 +20,7 @@ public abstract class ToolWindow {
 	public HorizontalPanel menuPanel = new HorizontalPanel();
 	EnvironmentManager environmentManager = null;
 	protected TestSessionManager2 testSessionManager = Xdstools2.getInstance().getTestSessionManager();
-	TabContainer tabContainer;
+	protected TabContainer tabContainer;
 	Logger logger = Logger.getLogger("Tabbed window");
 	final public ToolkitServiceAsync toolkitService = GWT
 			.create(ToolkitService.class);

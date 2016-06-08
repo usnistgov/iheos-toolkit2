@@ -3,21 +3,14 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
-import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.AbstractTool;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FindDocumentsTab extends GenericQueryTab {
+public class FindDocumentsTab extends AbstractTool {
 
 	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
 	static {
@@ -30,30 +23,20 @@ public class FindDocumentsTab extends GenericQueryTab {
 
 	CheckBox selectOnDemand;
 
-	public FindDocumentsTab() {
-		super(new FindDocumentsSiteActorManager());
-	}
+	@Override
+	public String getTabTitle() { return "FindDocs"; }
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
+	@Override
+	public String getToolTitle() { return "Find Documents Stored Query"; }
 
-		container.addTab(topPanel, "FindDocuments", select);
-		addToolHeader(container,topPanel, null);
-
-		HTML title = new HTML();
-		title.setHTML("<h2>Find Documents Stored Query</h2>");
-		topPanel.add(title);
-
-		mainGrid = new FlexTable();
+	@Override
+	public void initTool() {
 		int row = 0;
 
 		selectOnDemand = new CheckBox();
 		selectOnDemand.setText("Include On-Demand DocumentEntries");
 		mainGrid.setWidget(row, 0, selectOnDemand);
 		row++;
-
-		topPanel.add(mainGrid);
 
 		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
@@ -63,21 +46,12 @@ public class FindDocumentsTab extends GenericQueryTab {
 		public void onClick(ClickEvent event) {
 			resultPanel.clear();
 
-			SiteSpec siteSpec = queryBoilerplate.getSiteSelection();
-			if (siteSpec == null) {
-				new PopupMessage("You must select a site first");
-				return;
-			}
+			if (!verifySiteProvided()) return;
+			if (!verifyPidProvided()) return;
 
-			if (pidTextBox.getValue() == null || pidTextBox.getValue().equals("")) {
-				new PopupMessage("You must enter a Patient ID first");
-				return;
-			}
-			addStatusBox();
-			getGoButton().setEnabled(false);
-			getInspectButton().setEnabled(false);
+			prepareToRun();
 
-			toolkitService.findDocuments(siteSpec, pidTextBox.getValue().trim(), selectOnDemand.getValue(), queryCallback);
+			toolkitService.findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), queryCallback);
 		}
 
 	}

@@ -1,16 +1,14 @@
 package gov.nist.toolkit.xdstools2.client.siteActorManagers;
 
 
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-
 public class FindDocumentsSiteActorManager extends BaseSiteActorManager {
 
 
-	public SiteSpec verifySiteSelection() {
-		
-		return queryTab.getQueryBoilerplate().getSiteSelection();
-		
-	}
+//	public SiteSpec verifySiteSelection() {
+//
+//		return queryTab.getQueryBoilerplate().getSiteSelection();
+//
+//	}
 
 	public String getEndpointSelectionHelp() {
 		return "This tool can take on one of serveral roles: a Document Consumer sending a Registry Stored Query " +

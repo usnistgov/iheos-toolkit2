@@ -2,6 +2,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.Panel;
@@ -96,7 +97,8 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public GenericQueryTab(BaseSiteActorManager siteActorManager) {
 		me = this;
 		this.siteActorManager = siteActorManager;
-		siteActorManager.setGenericQueryTab(this);
+		if (siteActorManager != null)
+			siteActorManager.setGenericQueryTab(this);
 
 		// when called as HomeTab is built, the wrong session services this call, this
 		// makes sure the job gets done
@@ -384,6 +386,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		addStatusBox(getRunningMessage());
 	}
 
+	public void prepareToRun() {
+		addStatusBox();
+		getGoButton().setEnabled(false);
+		getInspectButton().setEnabled(false);
+	}
+
 	public void addStatusBox(String initialMessage) {
 		setStatus(initialMessage, true);
 		resultPanel.add(statusBox);
@@ -573,6 +581,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
     Button runButton = new Button(runButtonText);
     Button inspectButon = new Button("Inspect Results");
+	HandlerRegistration inspectButtonHandler = null;
 
     public void addRunnerButtons(VerticalPanel panel) {
         boolean hasRunButton = runnerPanel.getWidgetIndex(runButton) > -1;
@@ -601,8 +610,9 @@ public abstract class GenericQueryTab  extends ToolWindow {
             runnerPanel.add(getInspectButton());
         }
 
-        if (getInspectButton() != null)
-            getInspectButton().addClickHandler(new InspectorLauncher(me));
+        if (getInspectButton() != null && inspectButtonHandler == null)
+			inspectButtonHandler = getInspectButton().addClickHandler(new InspectorLauncher(me));
+
 
         runnerPanel.add(logLaunchButtonPanel);
 
