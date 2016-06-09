@@ -45,6 +45,7 @@ public class FindDocumentsTab extends AbstractTool {
 		toolkitService.findDocuments(queryBoilerplate.getSiteSelection(), pidTextBox.getValue().trim(), selectOnDemand.getValue(), queryCallback);
 	}
 
+	@Override
 	public String getWindowShortName() {
 		return "finddocuments";
 	}

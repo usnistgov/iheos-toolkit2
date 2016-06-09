@@ -31,6 +31,12 @@ public abstract class AbstractTool extends GenericQueryTab {
      */
     abstract public String getToolTitle();
 
+    /**
+     * @return a short name for tool that corresponds to its documentation in
+     * site/tools
+     */
+    abstract public String getWindowShortName();
+
     public AbstractTool() {
         super(null);
     }
