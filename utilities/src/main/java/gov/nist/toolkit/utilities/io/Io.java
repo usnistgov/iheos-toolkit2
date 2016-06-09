@@ -224,11 +224,26 @@ public class Io {
 			return;
 		if (f.isDirectory()) {
 			String[] contents = f.list();
-			for (int i=0; i<contents.length; i++) 
-				delete(new File(f + File.separator + contents[i]));
-			f.delete();
+			for (int i=0; i<contents.length; i++) {
+				File fn = new File(f, contents[i]);
+				System.out.println("deleting>>>" + fn );
+				delete(fn);
+			}
+			System.out.println("deleting>>>" + f + " rs: " + f.delete());
+
+
 		} else if (f.isFile()){
-			f.delete();
+
+			int ct = 0;
+			do {
+				try {
+					Thread.sleep(1000);
+					System.out.println(ct + ": deleting>>>" + f );
+				} catch (Exception ex) {
+				}
+			} while (!f.delete() && ++ct<10);
+
+
 		}
 	}
 

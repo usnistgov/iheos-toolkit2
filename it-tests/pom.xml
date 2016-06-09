@@ -127,22 +127,28 @@
                         <!-- TODO: Test plan 15812 can be unassigned, it was consolidated by another test plan. -->
 
                         <!-- orig begin -->
-                        <include>**/*Spec.groovy</include>
-                        <include>**/*Spec.java</include>
-                        <include>**/*Test.java</include>
-                        <include>**/*IT.java</include>
+                        <!--<include>**/*Spec.groovy</include>-->
+                        <!--<include>**/*Spec.java</include>-->
+                        <!--<include>**/*Test.java</include>-->
+                        <!--<include>**/*IT.java</include>-->
                         <!--orig end-->
+                        <!--<include>**/ReconfigureSpec.groovy</include>-->
+                        <!--<include>**/ReconfigureSpec.java</include>-->
+                        <include>**/MultiQuerySpec.groovy</include>
+                        <include>**/MultiQuerySpec.java</include>
+
                     </includes>
                     <excludes>
                         <!-- Comment out tests with errors -->
-                        <exclude>**/ReconfigureSpec.groovy</exclude>
-                        <exclude>**/ReconfigureSpec.java</exclude>
-                        <exclude>**/MultiQuerySpec.groovy</exclude>
-                        <exclude>**/MultiQuerySpec.java</exclude>
-                        <exclude>**/QuerySpec.groovy</exclude>
-                        <exclude>**/QuerySpec.java</exclude>
-                        <exclude>**/StoredQuerySpec.groovy</exclude>
-                        <exclude>**/StoredQuerySpec.java</exclude>
+                        <!--<exclude>**/ReconfigureSpec.groovy</exclude>-->
+                        <!--<exclude>**/ReconfigureSpec.java</exclude>-->
+                        <!--<exclude>**/MultiQuerySpec.groovy</exclude>-->
+                        <!--<exclude>**/MultiQuerySpec.java</exclude>-->
+                        <!--<exclude>**/QuerySpec.groovy</exclude>-->
+                        <!--<exclude>**/QuerySpec.java</exclude>-->
+                        <!--<exclude>**/StoredQuerySpec.groovy</exclude>-->
+                        <!--<exclude>**/StoredQuerySpec.java</exclude>-->
+
                         <!--<exclude>**/OdSpec.java</exclude>-->
                         <!--<exclude>**/OdSpec.groovy</exclude>-->
                         <!--<exclude>**/RetrieveSpec.groovy</exclude>-->

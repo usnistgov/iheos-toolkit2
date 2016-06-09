@@ -1,5 +1,6 @@
 package gov.nist.toolkit.itTests.xc
 import gov.nist.toolkit.actorfactory.SimCache
+import gov.nist.toolkit.actorfactory.client.SimId
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.results.client.Result
@@ -10,6 +11,7 @@ import gov.nist.toolkit.toolkitApi.RespondingGateway
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServices.ToolkitFactory
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
+import gov.nist.toolkit.actorfactory.SimDb
 import groovy.transform.TypeChecked
 /**
  * Build Initiating Gateway and n Responding Gateways behind it.  Each RG
@@ -31,6 +33,12 @@ class GatewayBuilder {
         (1..numberCommunities).each {
             String id = String.format("rg%d", it)
             spi.delete(id, userName)  // in case it already exists
+
+            SimDb db = new SimDb();
+
+            if (db.exists(new SimId(userName,id)))
+                throw new Exception("XXX Simulator " + userName + id + " exists");
+
             RespondingGateway respondingGateway = spi.createRespondingGateway(id, userName, environmentName)
 
             SimConfig rgSimConfig = spi.get(respondingGateway)

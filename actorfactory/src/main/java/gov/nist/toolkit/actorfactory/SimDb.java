@@ -15,6 +15,7 @@ import gov.nist.toolkit.simcommon.server.ExtendedPropertyManager;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.io.ZipDir;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -637,7 +638,12 @@ public class SimDb {
 	}
 
 	public void delete(File f) {
-		Io.delete(f);
+		try {
+			FileUtils.deleteDirectory(f);
+		} catch (IOException ioe) {
+
+		}
+//		Io.delete(f);
 	}
 
 	public void rename(String fileNameBase, String newFileNameBase) throws IOException {
