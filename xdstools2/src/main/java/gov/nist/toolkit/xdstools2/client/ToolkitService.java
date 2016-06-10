@@ -43,11 +43,11 @@ public interface ToolkitService extends RemoteService  {
 	
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
-	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
-	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
-	public String getTestReadme(String test) throws Exception;
-	public List<String> getTestIndex(String test) throws Exception;
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
+	public Map<String, String> getCollectionNames(String testSession, String collectionSetName) throws Exception;
+	public Map<String, String> getCollection(String testSessionName,String collectionSetName, String collectionName) throws Exception;
+	public String getTestReadme(String testSession,String test) throws Exception;
+	public List<String> getTestIndex(String testSession,String test) throws Exception;
+	public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames() throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;
@@ -103,7 +103,7 @@ public interface ToolkitService extends RemoteService  {
 	List<String> getRepositoryNames() throws Exception; 
 	List<String> getRGNames() throws NoServletSessionException ;
 	List<String> getIGNames() throws NoServletSessionException ;
-	List<String> getTestdataSetListing(String testdataSetName)  throws NoServletSessionException;
+	List<String> getTestdataSetListing(String environmentName, String sessionName,String testdataSetName)  throws NoServletSessionException;
 	CodesResult getCodesConfiguration() throws NoServletSessionException ;
 	TransactionOfferings getTransactionOfferings() throws Exception;
 	
@@ -139,9 +139,9 @@ public interface ToolkitService extends RemoteService  {
 	List<Result> getRelated(SiteSpec site, ObjectRef or, List<String> assocs) throws NoServletSessionException ;
 	List<Result> retrieveDocument(SiteSpec site, Uids uids) throws Exception;
 	List<Result> retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax) throws Exception;
-	List<Result> submitRegistryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
-	List<Result> submitRepositoryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
-	List<Result> submitXDRTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;	
+	List<Result> submitRegistryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;
+	List<Result> submitRepositoryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;
+	List<Result> submitXDRTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException ;
 	List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException ;
 	List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException ;
@@ -155,7 +155,7 @@ public interface ToolkitService extends RemoteService  {
 	
 	String getAdminPassword() throws NoServletSessionException ;
 	
-	String getTestplanAsText(TestInstance testInstance, String section) throws Exception;
+	String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception;
 	
 	 String getImplementationVersion() throws NoServletSessionException ;
 	
@@ -187,8 +187,20 @@ public interface ToolkitService extends RemoteService  {
 	String getAssigningAuthority() throws Exception;
 	List<String> getAssigningAuthorities() throws Exception;
 	List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException;
+	/**
+	 * This method copy the default testkit to a selected environment and triggers a code update based on
+	 * the affinity domain configuration file (codes.xml) located in the selected environment.
+	 * @param selectedEnvironment name of the target environment for the testkit.
+	 * @return update output as a String
+	 */
+
 	String configureTestkit(String selectedEnvironment);
 
+	/**
+	 * This method tests if there already is a testkit configured in a selected environment.
+	 * @param selectedEnvironment name of the selected environment.
+	 * @return boolean
+	 */
 	boolean doesTestkitExist(String selectedEnvironment);
 
 

@@ -249,15 +249,15 @@ public class DsSimCommon {
     }
 
     public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
-	logger.debug("DsSimComon#addImagingDocumentAttachments");
+        logger.debug("DsSimComon#addImagingDocumentAttachments");
         for (String uid : imagingDocumentUids) {
             //StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
             StoredDocument sd = this.getStoredImagingDocument(uid, transferSyntaxUids);
-	    logger.debug(" uid=" + uid);
+            logger.debug(" uid=" + uid);
             if (sd == null)
                 continue;
             addDocumentAttachment(sd);
-	    logger.debug(" Added document for this uid");
+            logger.debug(" Added document for this uid");
         }
     }
 
@@ -324,7 +324,7 @@ public class DsSimCommon {
      * @return
      */
     public StringBuffer wrapSoapEnvelopeInMultipartResponse(OMElement env, ErrorRecorder er) {
-	logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
+        logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
 
         er.detail("Wrapping in Multipart");
 
@@ -373,7 +373,7 @@ public class DsSimCommon {
                     } else {
                         contents = new String(sd.getContent());
                     }
-		    logger.debug("Attaching " + cid + " length " + contents.length());
+                    logger.debug("Attaching " + cid + " length " + contents.length());
                     body.append(contents);
                 } catch (Exception e) {
                     er.err(XdsErrorCode.Code.XDSRepositoryError, e);
@@ -395,7 +395,7 @@ public class DsSimCommon {
      * @return
      */
     public StringBuffer wrapSoapEnvelopeInMultipartResponseBinary(OMElement env, ErrorRecorder er) {
-	logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
+        logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
 
         er.detail("Wrapping in Multipart");
 
@@ -463,9 +463,9 @@ public class DsSimCommon {
     public StringBuffer getTrailer() {
         String rn = "\r\n";
         String boundary = "MIMEBoundary112233445566778899";
-	StringBuffer body = new StringBuffer();
+        StringBuffer body = new StringBuffer();
         body.append("--").append(boundary).append("--").append(rn);
-	return body;
+        return body;
     }
 
     public void sendFault(SoapFault fault) {
@@ -520,22 +520,22 @@ public class DsSimCommon {
     private void writeAttachments(OutputStream os, ErrorRecorder er) {
         String boundary = "MIMEBoundary112233445566778899";
         String rn = "\r\n";
-    try {
+        try {
 
-        if (documentsToAttach != null) {
-            er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
-            for (String cid : documentsToAttach.keySet()) {
-		StringBuffer body = new StringBuffer();
-                StoredDocument sd = documentsToAttach.get(cid);
+            if (documentsToAttach != null) {
+                er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
+                for (String cid : documentsToAttach.keySet()) {
+                    StringBuffer body = new StringBuffer();
+                    StoredDocument sd = documentsToAttach.get(cid);
 
-                body.append("--").append(boundary).append(rn);
-                body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
-                body.append("Content-Transfer-Encoding: binary").append(rn);
-                body.append("Content-ID: <" + cid + ">").append(rn);
-                body.append(rn);
-		os.write(body.toString().getBytes());
-		os.write(sd.getContent());
-		os.write(rn.getBytes());
+                    body.append("--").append(boundary).append(rn);
+                    body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
+                    body.append("Content-Transfer-Encoding: binary").append(rn);
+                    body.append("Content-ID: <" + cid + ">").append(rn);
+                    body.append(rn);
+                    os.write(body.toString().getBytes());
+                    os.write(sd.getContent());
+                    os.write(rn.getBytes());
 /*
                 try {
                     String contents = "ZZZ";
@@ -553,12 +553,12 @@ public class DsSimCommon {
                 }
                 body.append(rn);
 */
+                }
             }
-        }
 
-    } catch (Exception e) {
+        } catch (Exception e) {
             logger.fatal(ExceptionUtil.exception_details(e));
-    }
+        }
     }
 
     public ErrorRecorder registryResponseAsErrorRecorder(OMElement regResp) {
@@ -695,52 +695,52 @@ public class DsSimCommon {
         return null;
     }
 
-	public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
-		logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
-		String[] uids = compositeUid.split(":");
-		String path = "/opt/xdsi/storage/ids-repository/" + uids[0] + "/" + uids[1] + "/" + uids[2];
-		logger.debug(" " + path);
-		File folder = new File(path);
-		if (!folder.exists()) {
-			logger.debug("Could not find file folder for composite UID: " + compositeUid);
-			return null;
-		}
-		boolean found = false;
-		Iterator<String> it = transferSyntaxUids.iterator();
-		String finalPath = null;
-		while (it.hasNext() && !found) {
-			String x = it.next();
-			finalPath = path + "/" + x;
-			File f = new File(finalPath);
-			if (f.exists()) {
-				found = true;
-			}
-		}
-		StoredDocument sd = null;
-		if (found) {
-			logger.debug("Found path to file: " + finalPath);
-			StoredDocumentInt sdi = new StoredDocumentInt();
+    public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
+        logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
+        String[] uids = compositeUid.split(":");
+        String path = "/opt/xdsi/storage/ids-repository/" + uids[0] + "/" + uids[1] + "/" + uids[2];
+        logger.debug(" " + path);
+        File folder = new File(path);
+        if (!folder.exists()) {
+            logger.debug("Could not find file folder for composite UID: " + compositeUid);
+            return null;
+        }
+        boolean found = false;
+        Iterator<String> it = transferSyntaxUids.iterator();
+        String finalPath = null;
+        while (it.hasNext() && !found) {
+            String x = it.next();
+            finalPath = path + "/" + x;
+            File f = new File(finalPath);
+            if (f.exists()) {
+                found = true;
+            }
+        }
+        StoredDocument sd = null;
+        if (found) {
+            logger.debug("Found path to file: " + finalPath);
+            StoredDocumentInt sdi = new StoredDocumentInt();
 //			sdi.pathToDocument = "/tmp/000000.dcm";
-			sdi.pathToDocument = finalPath;
-			sdi.uid = uids[2];
-			logger.debug(" Instance UID: " + sdi.uid);
-			sdi.mimeType = "application/dicom";
-			sdi.charset = "UTF-8";
+            sdi.pathToDocument = finalPath;
+            sdi.uid = uids[2];
+            logger.debug(" Instance UID: " + sdi.uid);
+            sdi.mimeType = "application/dicom";
+            sdi.charset = "UTF-8";
 //			sdi.hash="0000";
 //			sdi.size = "4";
-			sdi.content = null;
-			sd = new StoredDocument(sdi);
+            sdi.content = null;
+            sd = new StoredDocument(sdi);
 //			sd.cid = mkCid(5);
-		} else {
-			logger.debug("Did not find an image file that matched transfer syntax");
-			logger.debug(" Composite UID: " + compositeUid);
-			it = transferSyntaxUids.iterator();
-			while (it.hasNext()) {
-				logger.debug("  Xfer syntax: " + it.next());
-			}
-		}
-		return sd;
-	}
+        } else {
+            logger.debug("Did not find an image file that matched transfer syntax");
+            logger.debug(" Composite UID: " + compositeUid);
+            it = transferSyntaxUids.iterator();
+            while (it.hasNext()) {
+                logger.debug("  Xfer syntax: " + it.next());
+            }
+        }
+        return sd;
+    }
 
 /*
 	public StoredDocument getStoredImagingDocument(String uid) {

@@ -167,14 +167,16 @@ public class BuildCollections extends HttpServlet {
     }
 
     public void run() {
-        File testkit = Installation.installation().testkitFile();
-        testkitIn = testkit;
-        testkitOut = testkit;
-        scan();
-        try {
-            write();
-        } catch (Exception e) {
-            logger.error(String.format("Cannot write built collections - %s", e.getMessage()));
+        for (File testkit:Installation.installation().getAllTestkits()) {
+//        File testkit = Installation.installation().testkitFile();
+            testkitIn = testkit;
+            testkitOut = testkit;
+            scan();
+            try {
+                write();
+            } catch (Exception e) {
+                logger.error(String.format("Cannot write built collections - %s", e.getMessage()));
+            }
         }
     }
 }

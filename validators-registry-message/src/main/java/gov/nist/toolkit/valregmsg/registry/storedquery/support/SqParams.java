@@ -162,7 +162,6 @@ public class SqParams {
 		return names;
 	}
 
-    // TODO can I replace Object by SQCodeOr (which if I am right is supposed to be the type of object)
 	public Map<String, SQCodedTerm> getCodedParms() {
 		Map<String,SQCodedTerm> codes=new HashMap<String,SQCodedTerm>();
 		for (String key:params.keySet()){

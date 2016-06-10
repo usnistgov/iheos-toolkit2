@@ -29,8 +29,8 @@ public class TestDetails  {
 	
 	static Logger logger = Logger.getLogger(TestDetails.class);
 
-	
-	public static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
+	// TODO add missing areas?
+	public static final String[] defaultAreas = new String [] { "tests", "testdata","testdata-repository", "examples", "internal", "play",
 		"selftest", "development", "utilities", "xcpd", "collection", "static.collections"};
 	static final String testPlanFileName = "testplan.xml";
 
@@ -457,6 +457,10 @@ public class TestDetails  {
 
 	public TestInstance getTestInstance() {
 		return testInstance;
+	}
+
+	public File getTestkit(){
+		return testkit;
 	}
 }
 

@@ -151,7 +151,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 	class SelectSectionViewButtonClickHandler implements ClickHandler {
 
 		public void onClick(ClickEvent event) {
-			toolkitService.getTestplanAsText(new TestInstance(selectedTest), selectedSection, new AsyncCallback<String>() {
+			toolkitService.getTestplanAsText(getCurrentTestSession(),new TestInstance(selectedTest), selectedSection, new AsyncCallback<String>() {
 
 				public void onFailure(Throwable caught) {
 					new PopupMessage("getTestplanAsText: " + caught.getMessage());
@@ -235,7 +235,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 	}
 	
 	void loadSectionNames() {
-		toolkitService.getTestIndex(selectedTest, new AsyncCallback<List<String>>() {
+		toolkitService.getTestIndex(getCurrentTestSession(),selectedTest, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestIndex: " + caught.getMessage());
@@ -286,7 +286,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 	}
 	
 	void loadTestReadme() {
-		toolkitService.getTestReadme(selectedTest, new AsyncCallback<String>() {
+		toolkitService.getTestReadme(getCurrentTestSession(),selectedTest, new AsyncCallback<String>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getTestReadme: " + caught.getMessage());
@@ -336,7 +336,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 	}
 	
 	void loadTestsForActor() {
-		toolkitService.getCollection("actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
+		toolkitService.getCollection(getCurrentTestSession(),"actorcollections", selectedActor, new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollection(actorcollections): " + selectedActor + " -----  " + caught.getMessage());
@@ -356,7 +356,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 	}
 	
 	void loadActorNames() {
-		toolkitService.getCollectionNames("actorcollections", new AsyncCallback<Map<String, String>>() {
+		toolkitService.getCollectionNames(getCurrentTestSession(),"actorcollections", new AsyncCallback<Map<String, String>>() {
 
 			public void onFailure(Throwable caught) {
 				new PopupMessage("getCollectionNames: " + caught.getMessage());
@@ -408,7 +408,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 				parms.put("$patientid$", pid);
 			}
 			
-			toolkitService.runMesaTest(testSession, siteSpec, new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
+			toolkitService.runMesaTest(getEnvironmentSelection(),testSession, siteSpec, new TestInstance(selectedTest), selectedSections, parms, true, queryCallback);
 			
 		}
 		
