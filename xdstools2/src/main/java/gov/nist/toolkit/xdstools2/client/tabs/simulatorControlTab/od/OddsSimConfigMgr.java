@@ -559,7 +559,7 @@ public class OddsSimConfigMgr implements SimConfigMgrIntf {
 
 
     void loadTestsFromCollection(final ListBox lbx, final String testCollectionName) {
-        getSimulatorControlTab().toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
+        getSimulatorControlTab().toolkitService.getCollection(testSession,"collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());

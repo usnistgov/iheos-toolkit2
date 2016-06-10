@@ -50,12 +50,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class XdsTestServiceManager extends CommonService {
@@ -281,7 +276,6 @@ public class XdsTestServiceManager extends CommonService {
 		try {
 			logger.debug(session.id() + ": " + "getTestplanAsText");
 			TestDetails ts = getTestDetails(testInstance, section);
-            xt2.setTestkits(Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName()));
 
 			File tsFile;
 
@@ -309,6 +303,7 @@ public class XdsTestServiceManager extends CommonService {
 		sections.add(section);
 
 		Xdstest2 xt2 = getNewXt();
+		xt2.setTestkits(Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName()));
 		xt2.addTest(testInstance, sections, null, false);
 		return xt2.getTestSpec(testInstance);
 	}

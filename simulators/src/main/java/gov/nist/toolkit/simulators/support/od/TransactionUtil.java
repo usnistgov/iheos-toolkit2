@@ -46,7 +46,7 @@ public class TransactionUtil {
 //        logger.info("Transaction index 0 has:" + siteName); // This should always be the selected value
 //        myTestSession.transactionSettings.patientId
 
-        List<Result> results = xdsTestServiceManager.runMesaTest(sessionName, siteSpec, testId, sections, params, null, stopOnFirstError); // This wrapper does two important things of interest: 1) set patient id 2) eventually calls the UtilityRunner
+        List<Result> results = xdsTestServiceManager.runMesaTest(null,sessionName, siteSpec, testId, sections, params, null, stopOnFirstError); // This wrapper does two important things of interest: 1) set patient id 2) eventually calls the UtilityRunner
 
 
 //        Result result = utilityRunner.run(myTestSession, params, null, sections, testId, null, stopOnFirstError);

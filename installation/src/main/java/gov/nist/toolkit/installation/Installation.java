@@ -201,10 +201,13 @@ public class Installation {
     public List<File> getAllTestkits(){
         List<File> testkits=new ArrayList<File>();
         File environmentsRootFile=environmentFile();
-        for (File environment:environmentsRootFile.listFiles()){
-            File testkitsContainer=new File(environment,"testkits");
-            if (testkitsContainer.exists()) {
-                testkits.addAll(Arrays.asList(testkitsContainer.listFiles()));
+        File[] envList=environmentsRootFile.listFiles();
+        if (envList!=null) {
+            for (File environment : envList) {
+                File testkitsContainer = new File(environment, "testkits");
+                if (testkitsContainer.exists()) {
+                    testkits.addAll(Arrays.asList(testkitsContainer.listFiles()));
+                }
             }
         }
         testkits.add(testkitFile());
