@@ -11,7 +11,28 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.HttpCodeException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.util.Base64;
+import org.apache.soap.util.mime.ByteArrayDataSource;
+import org.apache.xml.serialize.DOMSerializer;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XML11Serializer;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.activation.DataSource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeBodyPart;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,29 +52,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import javax.activation.DataSource;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeBodyPart;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.axiom.om.util.Base64;
-import org.apache.soap.util.mime.ByteArrayDataSource;
-import org.apache.xml.serialize.DOMSerializer;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XML11Serializer;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 //import com.sun.tools.javac.resources.javac;
 
@@ -340,17 +338,24 @@ public class HttpClient implements HostnameVerifier {
 	}
 
 	void putFile(String filename, String mimeType, String name) throws java.io.IOException {
-		FileInputStream in = new FileInputStream(new File(filename));
-		byte[] buf = new byte[256];
-		int size;
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream(new File(filename));
+			byte[] buf = new byte[256];
+			int size;
 
-		putLine(boundary);
-		putLine("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + filename + "\"");
-		putLine("Content-type: " + mimeType);
-		putLine("");
+			putLine(boundary);
+			putLine("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + filename + "\"");
+			putLine("Content-type: " + mimeType);
+			putLine("");
 
-		while ( (size=in.read(buf)) > -1) {
-			os.write(buf, 0, size);
+			while ( (size=in.read(buf)) > -1) {
+				os.write(buf, 0, size);
+			}
+
+		} finally {
+			if (in!=null)
+				in.close();
 		}
 	}
 

@@ -186,11 +186,18 @@ public class Io {
 	}
 
 	static public void stringToFile(File file, String string) throws IOException {
-		BufferedWriter out = new BufferedWriter(new FileWriter(file));
+		FileWriter fw = null;
+
+			fw = new FileWriter(file);
+			BufferedWriter out = new BufferedWriter(fw);
+
 		try {
 			out.write(string);
 		} finally {
-			out.close();
+			if (out!=null)
+				out.close();
+			if (fw!=null)
+				fw.close();
 		}
 	}
 	
@@ -226,24 +233,12 @@ public class Io {
 			String[] contents = f.list();
 			for (int i=0; i<contents.length; i++) {
 				File fn = new File(f, contents[i]);
-				System.out.println("deleting>>>" + fn );
 				delete(fn);
 			}
-			System.out.println("deleting>>>" + f + " rs: " + f.delete());
-
+			f.delete();
 
 		} else if (f.isFile()){
-
-			int ct = 0;
-			do {
-				try {
-					Thread.sleep(1000);
-					System.out.println(ct + ": deleting>>>" + f );
-				} catch (Exception ex) {
-				}
-			} while (!f.delete() && ++ct<10);
-
-
+			f.delete();
 		}
 	}
 
