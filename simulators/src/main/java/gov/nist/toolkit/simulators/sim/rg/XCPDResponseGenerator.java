@@ -66,7 +66,15 @@ public class XCPDResponseGenerator extends TransactionSimulator implements XCPDR
 	static public String stringFromFile(File file) throws IOException {
 		if ( !file.exists())
 			throw new FileNotFoundException(file + " cannot be read");
-		FileInputStream is = new FileInputStream(file);
+		FileInputStream is = null;
+		try {
+			is = new FileInputStream(file);
+		} finally {
+			if (is!=null)
+				is.close();
+		}
+
+
 		return getStringFromInputStream(is);
 
 	}

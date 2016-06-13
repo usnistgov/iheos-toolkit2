@@ -76,6 +76,7 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+        System.gc()
         server.stop()
         ListenerFactory.terminateAll()
     }

@@ -365,11 +365,19 @@ public class RetrieveTransaction extends BasicTransaction {
 			if (referenced_documents.containsKey(doc_uid)) {
 				String filename = referenced_documents.get(doc_uid);
 
+				FileInputStream fis = null;
 				try {
-					FileInputStream fis = new FileInputStream(new File(filename));
+					fis = new FileInputStream(new File(filename));
 					rqst.setContents(Io.getBytesFromInputStream(fis));
 				} catch (Exception e) {
 					throw new XdsInternalException("Cannot read ReferenceDocument: " + filename);
+				} finally {
+					try {
+						if (fis != null)
+							fis.close();
+					} catch (Exception e){
+
+					}
 				}
 			}
 			//			else {

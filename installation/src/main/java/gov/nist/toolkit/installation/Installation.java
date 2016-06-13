@@ -11,9 +11,10 @@ import javax.servlet.ServletContext;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
-import java.io.IOException;
 
 
 public class Installation {
@@ -242,7 +243,14 @@ public class Installation {
 		if (!propertiesFile.exists() || propertiesFile.isDirectory())
 			return null;
 		Properties props = new Properties();
-		props.load(Io.getInputStreamFromFile(propertiesFile));
+		InputStream is = null;
+		try {
+			is = Io.getInputStreamFromFile(propertiesFile);
+			props.load(is);
+		} finally {
+			if (is!=null)
+				is.close();
+		}
 		return props.getProperty("keyStorePassword");
 	}
 
