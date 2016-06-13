@@ -114,50 +114,14 @@
                     <forkCount>1</forkCount>
                     <reuseForks>false</reuseForks>
                     <includes>
-                        <!--OD Registry-->
-                        <!--<include>**/OdRegistrySpec.java</include>-->
-                        <!--<include>**/OdRegistrySpec.groovy</include>-->
-                        <!--Doc Consumer-->
-                        <!--<include>**/OdConsumerSpec.java</include>-->
-                        <!--<include>**/OdConsumerSpec.groovy</include>-->
-                        <!--<include>**/OdConsumerPersistenceSpec.java</include>-->
-                        <!--<include>**/OdConsumerPersistenceSpec.groovy</include>-->
-                        <!--General Retrieve-->
-                        <!--<include>**/RetrieveSpec.groovy</include>-->
-                        <!--<include>**/RetrieveSpec.java</include>-->
-
                         <!-- TODO: Test plan 15812 can be unassigned, it was consolidated by another test plan. -->
-
                         <!-- orig begin -->
                         <include>**/*Spec.groovy</include>
                         <include>**/*Spec.java</include>
                         <include>**/*Test.java</include>
                         <include>**/*IT.java</include>
                         <!--orig end-->
-                        <!--<include>**/ReconfigureSpec.groovy</include>-->
-                        <!--<include>**/ReconfigureSpec.java</include>-->
-                        <!--<include>**/MultiQuerySpec.groovy</include>-->
-                        <!--<include>**/MultiQuerySpec.java</include>-->
-
                     </includes>
-                    <excludes>
-                        <!-- Comment out tests with errors -->
-                        <!--<exclude>**/ReconfigureSpec.groovy</exclude>-->
-                        <!--<exclude>**/ReconfigureSpec.java</exclude>-->
-                        <!--<exclude>**/MultiQuerySpec.groovy</exclude>-->
-                        <!--<exclude>**/MultiQuerySpec.java</exclude>-->
-                        <!--<exclude>**/QuerySpec.groovy</exclude>-->
-                        <!--<exclude>**/QuerySpec.java</exclude>-->
-                        <!--<exclude>**/StoredQuerySpec.groovy</exclude>-->
-                        <!--<exclude>**/StoredQuerySpec.java</exclude>-->
-
-                        <!--<exclude>**/OdSpec.java</exclude>-->
-                        <!--<exclude>**/OdSpec.groovy</exclude>-->
-                        <!--<exclude>**/RetrieveSpec.groovy</exclude>-->
-                        <!--<exclude>**/RetrieveSpec.java</exclude>-->
-                        <!--<exclude>**/OdDocumentConsumerSpec.groovy</exclude>-->
-                        <!--<exclude>**/OdDocumentConsumerSpec.java</exclude>-->
-                    </excludes>
                     <!-- This is temporarily enabled because it is a known issue that some of the Query Spec integrations tests fail! -->
                     <!--<testFailureIgnore>true</testFailureIgnore>-->
                 </configuration>
