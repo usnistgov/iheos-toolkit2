@@ -1,32 +1,29 @@
-package gov.nist.toolkit.itTests.xds
+package gov.nist.toolkit.itTests.testpath
 
 import gov.nist.toolkit.actorfactory.client.SimId
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.testengine.scripts.BuildCollections
 import gov.nist.toolkit.toolkitApi.SimulatorBuilder
-import gov.nist.toolkit.toolkitServicesCommon.resource.SimConfigResource
 import spock.lang.Shared
 
 /**
- * Test the Register transaction
+ * Created by onh2 on 5/17/16.
  */
-class RetrieveSpec extends ToolkitSpecification {
+class TestkitPathFinderSpec extends ToolkitSpecification{
     @Shared SimulatorBuilder spi
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'SR7^^^&1.2.260&ISO'
-    String reg = 'sunil__rr'
+    String patientId = 'BR14^^^&1.2.360&ISO'
+    String reg = 'test__rep'
     SimId simId = new SimId(reg)
-    @Shared String testSession = 'sunil'
-    @Shared String repUid = ''
+    @Shared String testSession = 'test';
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -39,22 +36,16 @@ class RetrieveSpec extends ToolkitSpecification {
 
         new BuildCollections().init(null)
 
-        spi.delete('rr', testSession)
+        spi.delete('rep', testSession)
 
-        SimConfigResource rrConfig = spi.create(
-                'rr',
+        spi.create(
+                'rep',
                 testSession,
                 SimulatorActorType.REPOSITORY_REGISTRY,
-                'test')
-
-        repUid = rrConfig.asString(SimulatorProperties.repositoryUniqueId)
-
-        println "*** Repository UID is ***:   ${repUid}"
-
+                'testpath')
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        System.gc()
         server.stop()
         ListenerFactory.terminateAll()
     }
@@ -72,13 +63,12 @@ class RetrieveSpec extends ToolkitSpecification {
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'sunil__rr'
+        String siteName = 'test__rep'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
-        params.put('$repuid$', repUid)
         boolean stopOnFirstError = true
 
         and: 'Run pid transaction test'
@@ -90,47 +80,23 @@ class RetrieveSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'Run all tests'() {
+
+    def 'Run a failed test'() {
         when:
-        String siteName = 'sunil__rr'
-        TestInstance testId = new TestInstance("15816")
+        String siteName = 'test__rep'
+        TestInstance testId = new TestInstance("SingleDocument42")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
-        params.put('$repuid$', repUid)
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.withEnvironment('testpath').runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
         true
         results.size() == 1
         results.get(0).passed()
-    }
-    /**
-     * This section is here, with the other reg/rep tests, because the Retrieve needs the document entry id and the repository id from the previous PnR section.
-     * @return
-     */
-    def 'Run retrieve tests'() {
-        when:
-        String siteName = 'sunil__rr'
-        TestInstance testId = new TestInstance("15816")
-        List<String> sections = ["Retrieve"]
-        Map<String, String> params = new HashMap<>()
-        params.put('$patientid$', patientId)
-        params.put('$repuid$', repUid)
-        boolean stopOnFirstError = true
-
-        and: 'Run'
-        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
-
-        then:
-        true
-        results.size() == 1
-        results.get(0).passed()
-
-        //println "size: ${results.size()}, pass: ${results.get(0).passed()}"
     }
 
 }

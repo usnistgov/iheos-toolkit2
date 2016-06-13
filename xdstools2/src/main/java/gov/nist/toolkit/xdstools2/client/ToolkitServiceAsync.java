@@ -91,7 +91,7 @@ public interface ToolkitServiceAsync {
 	void getRGNames(AsyncCallback<List<String>> callback);
 	void getIGNames(AsyncCallback<List<String>> callback);
 	void getRawLogs(TestInstance logId, AsyncCallback<TestLogs> callback);
-	void getTestdataSetListing(String testdataSetName, AsyncCallback<List<String>> callback);
+	void getTestdataSetListing(String environmentName, String sessionName,String testdataSetName, AsyncCallback<List<String>> callback);
 	void getCodesConfiguration(AsyncCallback<CodesResult> callback);
 	void getSite(String siteName, AsyncCallback<Site> callback);
 	void getAllSites(AsyncCallback<Collection<Site>> callback);
@@ -123,9 +123,9 @@ public interface ToolkitServiceAsync {
 	void getRelated(SiteSpec site, ObjectRef or, List<String> assocs, AsyncCallback<List<Result>> callback);
 	void retrieveDocument(SiteSpec site, Uids uids, AsyncCallback<List<Result>> callback);
 	void retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax, AsyncCallback<List<Result>> callback);
-	void submitRegistryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
-	void submitRepositoryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
-	void submitXDRTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
+	void submitRegistryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
+	void submitRepositoryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
+	void submitXDRTestdata(String testSessionName,SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
 	void provideAndRetrieve(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void lifecycleValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
@@ -157,11 +157,11 @@ public interface ToolkitServiceAsync {
 	void addPatientIds(SimId simId, List<Pid> pids, AsyncCallback<String> callback) throws Exception;
 	void deletePatientIds(SimId simId, List<Pid> pids, AsyncCallback<Boolean> callback) throws Exception;
 
-	void getCollectionNames(String collectionSetName, AsyncCallback<Map<String, String>> callback);
-	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
-	void getTestReadme(String test, AsyncCallback<String> callback);
-	void getTestIndex(String test, AsyncCallback<List<String>> callback);
-	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
+	void getCollectionNames(String testSession,String collectionSetName, AsyncCallback<Map<String, String>> callback);
+	void getCollection(String testSessionName,String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
+	void getTestReadme(String testSession, String test, AsyncCallback<String> callback);
+	void getTestIndex(String testSession,String test, AsyncCallback<List<String>> callback);
+	void runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
@@ -173,10 +173,21 @@ public interface ToolkitServiceAsync {
 	void getSimulatorEventResponse(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
 
 
-	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
+	void getTestplanAsText(String testSession,TestInstance testInstance, String section, AsyncCallback<String> callback);
 
+	/**
+	 * This method copy the default testkit to a selected environment and triggers a code update based on
+	 * the affinity domain configuration file (codes.xml) located in the selected environment.
+	 * @param selectedEnvironment name of the target environment
+	 * @param callback Async. callback returning the update output as a String.
+     */
 	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);
 
+	/**
+	 * This method tests if there already is a testkit configured in a selected environment.
+	 * @param selectedEnvironment name of the selected environment.
+	 * @param asyncCallback Async. callback returning a boolean.
+	 */
 	void doesTestkitExist(String selectedEnvironment, AsyncCallback<Boolean> asyncCallback);
 
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);

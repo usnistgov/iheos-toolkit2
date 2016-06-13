@@ -122,9 +122,9 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<Result> registerAndQuery(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().registerAndQuery(site, pid); }
 	public List<Result> lifecycleValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().lifecycleValidation(site, pid); }
 	public List<Result> folderValidation(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().folderValidation(site, pid); }
-	public List<Result> submitRegistryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRegistryTestdata(site, datasetName, pid); }
-	public List<Result> submitRepositoryTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRepositoryTestdata(site, datasetName, pid); }
-	public List<Result> submitXDRTestdata(SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitXDRTestdata(site, datasetName, pid); }
+	public List<Result> submitRegistryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRegistryTestdata(testSessionName,site, datasetName, pid); }
+	public List<Result> submitRepositoryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitRepositoryTestdata(testSessionName,site, datasetName, pid); }
+	public List<Result> submitXDRTestdata(String testSessionName,SiteSpec site, String datasetName, String pid) throws NoServletSessionException  { return session().queryServiceManager().submitXDRTestdata(testSessionName,site, datasetName, pid); }
 	public List<Result> provideAndRetrieve(SiteSpec site, String pid) throws NoServletSessionException  { return session().queryServiceManager().provideAndRetrieve(site, pid); }
 	public List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException  { return session().queryServiceManager().findDocuments(site, pid, onDemand); }
 	public List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException  { return session().queryServiceManager().findDocumentsByRefId(site, pid, refIds); }
@@ -196,7 +196,10 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<Test> runAllTests(Site site) throws NoServletSessionException { return session().xdsTestServiceManager().runAllTests(getSession().getMesaSessionName(), site); }
 	public Test runSingleTest(Site site, int testId) throws NoServletSessionException { return session().xdsTestServiceManager().runSingleTest(getSession().getMesaSessionName(), site, testId); }
 
-	public String getTestReadme(String test) throws Exception { return session().xdsTestServiceManager().getTestReadme(test); }
+	public String getTestReadme(String testSession,String test) throws Exception {
+        session().setMesaSessionName(testSession);
+        return session().xdsTestServiceManager().getTestReadme(test);
+    }
 	public RawResponse buildIgTestOrchestration(IgOrchestrationRequest request) {
 		Session s = getSession();
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
@@ -210,39 +213,62 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 
 	/**
 	 * Get list of section names defined for the test in the order they should be executed
+     * @param testSession test session name (mesa session name)
 	 * @param test test name
 	 * @return list of sections
 	 * @throws Exception if something goes wrong
 	 */
-	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
+	public List<String> getTestIndex(String testSession,String test) throws Exception {
+        session().setMesaSessionName(testSession);
+        return session().xdsTestServiceManager().getTestIndex(test);
+    }
 
 	/**
 	 * Get map of (collection name, collection description) pairs contained in testkit
+     * @param testSession test session name (mesa session name)
 	 * @param collectionSetName the collection name
 	 * @return the map
 	 * @throws Exception is something goes wrong
 	 */
-	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
+	public Map<String, String> getCollectionNames(String testSession, String collectionSetName) throws Exception {
+        session().setMesaSessionName(testSession);
+        return session().xdsTestServiceManager().getCollectionNames(collectionSetName);
+    }
 	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
-	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
-		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+	public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
+		return session().xdsTestServiceManager().runMesaTest(environmentName,mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
 	public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
-	public List<String> getTestdataSetListing(String testdataSetName)  throws NoServletSessionException { return session().xdsTestServiceManager().getTestdataSetListing(testdataSetName); }
-	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception { return session().xdsTestServiceManager().getTestplanAsText(testInstance, section); }
+	public List<String> getTestdataSetListing(String environmentName, String testSessionName, String testdataSetName)  throws NoServletSessionException {
+        return session().xdsTestServiceManager().getTestdataSetListing(environmentName,testSessionName,testdataSetName);
+    }
+	public String getTestplanAsText(String testSession,TestInstance testInstance, String section) throws Exception {
+        session().setMesaSessionName(testSession);
+        return session().xdsTestServiceManager().getTestplanAsText(testInstance, section);
+    }
 	public CodesResult getCodesConfiguration()  throws NoServletSessionException { return session().xdsTestServiceManager().getCodesConfiguration(); }
 
 	/**
 	 * Get test names and descriptions from a named test collection
+     * @param testsessionName test session name (mesa session name)
 	 * @param collectionSetName name of directory holding tc files (collection definitions)
 	 * @param collectionName collection name within the directory
 	 * @return testname ==> description mapping
 	 * @throws Exception if something goes wrong
 	 */
-	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName); }
+	public Map<String, String> getCollection(String testsessionName,String collectionSetName, String collectionName) throws Exception {
+        session().setMesaSessionName(testsessionName);
+        return session().xdsTestServiceManager().getCollection(collectionSetName, collectionName);
+    }
 	public boolean isPrivateMesaTesting()  throws NoServletSessionException { return session().xdsTestServiceManager().isPrivateMesaTesting(); }
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) throws NoServletSessionException { return session().xdsTestServiceManager().sendPidToRegistry(site, pid); }
 
+	/**
+	 * This method copies the default testkit to a selected environment and triggers a code update based on
+	 * the affinity domain configuration file (codes.xml) located in the selected environment.
+	 * @param selectedEnvironmentName target environment for the testkit.
+	 * @return update output as a String
+	 */
 	@Override
 	public String configureTestkit(String selectedEnvironmentName) {
 		File environmentFile = Installation.installation().environmentFile(selectedEnvironmentName);
@@ -252,6 +278,11 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		return updater.getOutput();
 	}
 
+	/**
+	 * This method tests if there already is a testkit configured in a selected environment.
+	 * @param selectedEnvironment name of the selected environment.
+	 * @return boolean
+	 */
 	@Override
 	public boolean doesTestkitExist(String selectedEnvironment) {
 		File environmentFile = Installation.installation().environmentFile(selectedEnvironment);

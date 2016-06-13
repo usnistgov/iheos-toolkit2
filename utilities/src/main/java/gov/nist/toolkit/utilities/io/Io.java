@@ -186,11 +186,18 @@ public class Io {
 	}
 
 	static public void stringToFile(File file, String string) throws IOException {
-		BufferedWriter out = new BufferedWriter(new FileWriter(file));
+		FileWriter fw = null;
+
+			fw = new FileWriter(file);
+			BufferedWriter out = new BufferedWriter(fw);
+
 		try {
 			out.write(string);
 		} finally {
-			out.close();
+			if (out!=null)
+				out.close();
+			if (fw!=null)
+				fw.close();
 		}
 	}
 	
@@ -224,9 +231,12 @@ public class Io {
 			return;
 		if (f.isDirectory()) {
 			String[] contents = f.list();
-			for (int i=0; i<contents.length; i++) 
-				delete(new File(f + File.separator + contents[i]));
+			for (int i=0; i<contents.length; i++) {
+				File fn = new File(f, contents[i]);
+				delete(fn);
+			}
 			f.delete();
+
 		} else if (f.isFile()){
 			f.delete();
 		}

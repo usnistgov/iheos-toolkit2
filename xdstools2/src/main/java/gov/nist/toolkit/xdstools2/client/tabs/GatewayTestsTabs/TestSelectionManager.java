@@ -51,7 +51,7 @@ class TestSelectionManager {
     }
 
     void loadTestsFromCollection(final String testCollectionName) {
-        toolkitService.getCollection("collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
+        toolkitService.getCollection(tool.getCurrentTestSession(),"collections", testCollectionName, new AsyncCallback<Map<String, String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getCollection(" + testCollectionName + "): " +  " -----  " + caught.getMessage());
@@ -176,7 +176,7 @@ class TestSelectionManager {
     }
 
     void loadSectionNames() {
-        toolkitService.getTestIndex(tool.getSelectedTest(), new AsyncCallback<List<String>>() {
+        toolkitService.getTestIndex(tool.getCurrentTestSession(),tool.getSelectedTest(), new AsyncCallback<List<String>>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getTestIndex: " + caught.getMessage());
@@ -215,7 +215,7 @@ class TestSelectionManager {
     class SelectSectionViewButtonClickHandler implements ClickHandler {
 
         public void onClick(ClickEvent event) {
-            toolkitService.getTestplanAsText(new TestInstance(tool.getSelectedTest()), selectSectionList.getSelectedItemText(), new AsyncCallback<String>() {
+            toolkitService.getTestplanAsText(tool.getCurrentTestSession(),new TestInstance(tool.getSelectedTest()), selectSectionList.getSelectedItemText(), new AsyncCallback<String>() {
 
                 public void onFailure(Throwable caught) {
                     new PopupMessage("getTestplanAsText: " + caught.getMessage());
@@ -262,7 +262,7 @@ class TestSelectionManager {
     }
 
     void loadTestReadme(final HTML documentation) {
-        toolkitService.getTestReadme(tool.getSelectedTest(), new AsyncCallback<String>() {
+        toolkitService.getTestReadme(tool.getCurrentTestSession(),tool.getSelectedTest(), new AsyncCallback<String>() {
 
             public void onFailure(Throwable caught) {
                 new PopupMessage("getTestReadme: " + caught.getMessage());

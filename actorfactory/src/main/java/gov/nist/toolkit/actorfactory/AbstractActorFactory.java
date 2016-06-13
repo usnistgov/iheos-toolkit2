@@ -16,7 +16,6 @@ import gov.nist.toolkit.installation.PropertyServiceManager;
 import gov.nist.toolkit.registrymetadata.UuidAllocator;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.sitemanagement.client.Site;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.NoSimulatorException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
 import org.apache.log4j.Logger;
@@ -25,8 +24,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Factory class for simulators.  Technically ActorFactry is no longer accurate
@@ -283,14 +285,23 @@ public abstract class AbstractActorFactory {
 		SimDb simdb;
 		try {
 			BaseActorSimulator sim = RuntimeManager.getSimulatorRuntime(simId);
-            SimulatorConfig config = loadSimulator(simId, true);
-            if (config != null)
-			    sim.onDelete(config);
-
+			logger.info("pass 1");
+			SimulatorConfig config = loadSimulator(simId, true);
+			logger.info("pass 2");
+			if (config != null)
+				sim.onDelete(config);
+			logger.info("pass 3");
 			simdb = new SimDb(simId);
+			logger.info("pass 4");
 			File simDir = simdb.getSimDir();
+			logger.info("pass 5: " + simDir);
 			simdb.delete(simDir);
+			logger.info("pass 6");
 
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+			/*
         } catch (NoSimException e) {
 			return;		
 		} catch (ClassNotFoundException e) {
@@ -302,6 +313,7 @@ public abstract class AbstractActorFactory {
 		} catch (IllegalAccessException e) {
 			logger.error(ExceptionUtil.exception_details(e));
 		}
+		*/
 //		AbstractActorFactory actorFactory = getActorFactory(config);
 	}
 

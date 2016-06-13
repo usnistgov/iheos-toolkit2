@@ -49,10 +49,17 @@ public class RepIndex implements Serializable {
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		DocumentCollection dc;
-		fis = new FileInputStream(filename);
-		in = new ObjectInputStream(fis);
-		dc = (DocumentCollection)in.readObject();
-		in.close();
+		try {
+			fis = new FileInputStream(filename);
+			in = new ObjectInputStream(fis);
+			dc = (DocumentCollection)in.readObject();
+
+		} finally {
+			in.close();
+			if (fis!=null)
+				fis.close();
+		}
+
 		return dc;
 	}
 

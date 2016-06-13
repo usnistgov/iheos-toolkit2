@@ -94,6 +94,7 @@ public class UtilityRunner {
             session.xt.setLogRepository(session.transactionSettings.logRepository);
             logger.info("*** logRepository user (sessionName): " + session.transactionSettings.logRepository.getUser());
 
+            session.xt.setTestkits(Installation.installation().testkitFiles(session.getCurrentEnvironment(),session.getMesaSessionName()));
             try {
                 if (testInstance.getId().startsWith("tc:")) {
                     String collectionName = testInstance.getId().split(":")[1];

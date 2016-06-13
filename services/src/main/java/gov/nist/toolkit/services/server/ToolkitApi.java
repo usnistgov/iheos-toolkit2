@@ -45,6 +45,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 public class ToolkitApi {
     static Logger logger = Logger.getLogger(ToolkitApi.class);
     private Session session;
+    private String environmentName;
     boolean internalUse = true;
     private static ToolkitApi api = null;
 
@@ -102,7 +103,10 @@ public class ToolkitApi {
         logger.info("ToolkitApi using session " + session.id());
     }
 
-
+    public ToolkitApi withEnvironment(String environmentName){
+        this.environmentName=environmentName;
+        return this;
+    }
 
     /**
      * Create a new simulator.
@@ -200,7 +204,7 @@ public class ToolkitApi {
 
     /**
      *
-     * @param testSession - name of test session to use or null to use default
+     * @param testSessionName - name of test session to use or null to use default
      * @param siteName - name of site to target
      * @param testInstance - which test
      * @param sections - list of section names or null to run all
@@ -209,15 +213,16 @@ public class ToolkitApi {
      * @return - list of Result objects - one per test step (transaction) run
      * @throws Exception if testSession could not be created
      */
-    public List<Result> runTest(String testSession, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
-        if (testSession == null) {
-            testSession = "API";
-            xdsTestServiceManager().addMesaTestSession(testSession);
+    public List<Result> runTest(String testSessionName, String siteName, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws Exception {
+        if (testSessionName == null) {
+            testSessionName = "API";
+            xdsTestServiceManager().addMesaTestSession(testSessionName);
         }
         SiteSpec siteSpec = new SiteSpec();
         siteSpec.setName(siteName);
-        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSession);
-        return xdsTestServiceManager().runMesaTest(testSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+        if (session.getMesaSessionName() == null) session.setMesaSessionName(testSessionName);
+        // TODO add environment name in following call?
+        return xdsTestServiceManager().runMesaTest(environmentName,testSessionName, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
     }
 
     public TestLogs getTestLogs(TestInstance testInstance) {
