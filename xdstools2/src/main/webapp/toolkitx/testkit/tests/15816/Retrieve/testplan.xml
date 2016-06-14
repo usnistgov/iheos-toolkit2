@@ -4,7 +4,7 @@
     <ExpectedStatus>Success</ExpectedStatus>
     <RetrieveTransaction>
 
-      <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/>
+      <!-- <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/> -->
 	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid$"/>
       <MetadataFile>normal_query.xml</MetadataFile>
       <ExpectedContents/>
@@ -19,7 +19,7 @@
     <ExpectedStatus>Failure</ExpectedStatus>
     <RetrieveTransaction>
 
-      <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/>
+      <!-- <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/> -->
 
       <MetadataFile>bad_query.xml</MetadataFile>
       <ExpectedContents/>
@@ -33,16 +33,32 @@
     <ExpectedStatus>PartialSuccess</ExpectedStatus>
     <RetrieveTransaction>
 
-      <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/>
+      <!-- <UseReport reportName="$repuid$" section="PnR" step="SubmitStableDocumentEntry" useAs="$repuid$"/> -->
 	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid$"/>
 
       <MetadataFile>partial_query.xml</MetadataFile>
       <ExpectedContents/>
 
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+
+
+<!-- See Issue 87. Needs discussion with Bill. 
+  <TestStep id="badrepuid">
+    <ExpectedStatus>Failure</ExpectedStatus>
+    <RetrieveTransaction>
+
+	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid0$"/> 
+	  <UseReport reportName="Document01_uid" section="PnR" step="SubmitStableDocumentEntry" useAs="$doc_uid1$"/> 
+
+      <MetadataFile>badrepuid_query.xml</MetadataFile>
+      <ExpectedContents/>
 
       <XDSb/>
     </RetrieveTransaction>
   </TestStep>
+-->
 
 
 
