@@ -39,6 +39,12 @@ public class RetrieveResponseParser {
             OMElement mime_type_ele = XmlUtil.firstChildWithLocalName(doc_response, "mimeType");
             rr.setContent_type((mime_type_ele != null) ? mime_type_ele.getText() : null);
 
+            OMElement newDoc_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "NewDocumentUniqueId");
+            rr.setNewDoc_uid((newDoc_uid_ele != null) ? newDoc_uid_ele.getText() : null);
+
+            OMElement newRep_uid_ele = XmlUtil.firstChildWithLocalName(doc_response, "NewRepositoryUniqueId");
+            rr.setNewRep_uid((newRep_uid_ele != null) ? newRep_uid_ele.getText() : null);
+
             OMElement document_content_ele = XmlUtil.firstChildWithLocalName(doc_response, "Document");
 
             Mtom mtom = new Mtom();

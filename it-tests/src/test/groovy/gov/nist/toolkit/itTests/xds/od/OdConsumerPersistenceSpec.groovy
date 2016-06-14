@@ -6,8 +6,10 @@ import gov.nist.toolkit.adt.ListenerFactory
 import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
+import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.results.client.StepResult
 import gov.nist.toolkit.results.client.TestInstance
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
@@ -24,8 +26,6 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR15^^^&1.2.460&ISO'
-    String reg = 'sunil2__rr3'
-    SimId simId = new SimId(reg)
     @Shared String testSession = 'sunil2';
     @Shared SimConfig rrConfig = null
     @Shared SimConfig oddsConfig = null;
@@ -126,7 +126,7 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
     /**
      *
      * @return
-     */
+
     def 'Run retrieve with Persistence Option'() {
         when:
         String siteName = 'sunil2__odds3'
@@ -144,5 +144,56 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
         results.size() == 1
         results.get(0).passed()
     }
+    */
+
+    /**
+     *
+     * @return
+     */
+    def 'Retrieve from the ODDS with Persistence Option'() {
+        when:
+        String siteName = 'sunil2__odds3'
+        TestInstance testId = new TestInstance("15806")
+        List<String> sections = ["Retrieve"]
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', patientId)
+        boolean stopOnFirstError = true
+        Map<String,String> uids = new HashMap<>()
+
+        and: 'Run'
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+        uids.put(results.get(0).stepResults.get(0).getMetadata().docEntries.get(0).uniqueId,null)
+        int documentsCt = 0;
+        boolean duplicates = false
+        List<Result> persistedRetrieveRs = new ArrayList<>()
+
+        for (StepResult sr : results.get(0).stepResults) {
+            for (Document d : sr.documents) {
+                System.out.println("d.newUid=" + d.newUid)
+                System.out.println("d.newRepositoryUniqueId="+ d.newRepositoryUniqueId)
+
+                sections = ["Retrieve_Persistence"]
+                params.put('$repuid$', d.newRepositoryUniqueId)
+                params.put('$od_snapshot_uid$', d.newUid)
+                persistedRetrieveRs.add(api.runTest(testSession, rrConfig.getFullId(), testId, sections, params, stopOnFirstError).get(0))
+
+                if (!duplicates)
+                    duplicates = uids.containsKey(d.newUid) // Make sure the uid is unique
+                uids.put(d.newUid,null)
+                documentsCt++
+            }
+        }
+
+        then:
+        results.size() == 1
+        results.get(0).passed()
+        !duplicates
+        documentsCt==2 // There are two unique documents in the content bundle for one OD
+
+        for (Result rs : persistedRetrieveRs)
+            rs.passed()
+
+    }
+
 
 }
