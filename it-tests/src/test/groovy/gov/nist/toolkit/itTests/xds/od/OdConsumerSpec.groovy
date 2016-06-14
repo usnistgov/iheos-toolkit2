@@ -8,7 +8,9 @@ import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.results.client.SiteSpec
+import gov.nist.toolkit.results.client.StepResult
 import gov.nist.toolkit.results.client.TestInstance
+import gov.nist.toolkit.registrymetadata.client.Document
 import gov.nist.toolkit.services.server.UnitTestEnvironmentManager
 import gov.nist.toolkit.session.server.Session
 import gov.nist.toolkit.simulators.support.od.TransactionUtil
@@ -98,7 +100,7 @@ class OdConsumerSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'Register OD'() {
+    def 'Initialize ODDS with an ODDE'() {
         when:
         // For testing purposes, manual initialization of the ODDS with the ODDE is required
         Map<String, String> paramsRegOdde = new HashMap<>()
@@ -123,7 +125,7 @@ class OdConsumerSpec extends ToolkitSpecification {
      *
      * @return
      */
-    def 'Run retrieve without Persistence Option'() {
+    def 'Retrieve from the ODDS without Persistence Option'() {
         when:
         String siteName = 'sunil__odds2'
         TestInstance testId = new TestInstance("15806")
@@ -131,14 +133,40 @@ class OdConsumerSpec extends ToolkitSpecification {
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
+        Map<String,String> uids = new HashMap<>()
 
         and: 'Run'
         List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+        uids.put(results.get(0).stepResults.get(0).getMetadata().docEntries.get(0).uniqueId,null)
+        int documentsCt = 0;
+        boolean duplicates = false
+        boolean noNewRepository = true
+        for (StepResult sr : results.get(0).stepResults) {
+            for (Document d : sr.documents) {
+                System.out.println("d.newUid=" + d.newUid)
+                System.out.println("d.newRepositoryUniqueId="+ d.newRepositoryUniqueId)
+                if (noNewRepository)
+                    noNewRepository = (d.newRepositoryUniqueId==null)
+                if (!duplicates)
+                    duplicates = uids.containsKey(d.newUid) // Make sure the uid is unique
+                uids.put(d.newUid,null)
+                documentsCt++
+            }
+        }
 
         then:
-        true
         results.size() == 1
+
         results.get(0).passed()
+
+        !duplicates
+
+        noNewRepository
+
+        documentsCt==2 // There are two unique documents in the content bundle for one OD
+
+
+
     }
 
 }

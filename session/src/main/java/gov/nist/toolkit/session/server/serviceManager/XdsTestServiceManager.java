@@ -587,6 +587,8 @@ public class XdsTestServiceManager extends CommonService {
 										doc.uid = ri.getDocUid();
 										doc.repositoryUniqueId = ri
 												.getRepUid();
+										doc.newUid = ri.getNewDoc_uid();
+										doc.newRepositoryUniqueId = ri.getNewRep_uid();
 										doc.mimeType = ri.getContent_type();
 										doc.homeCommunityId = ri.getHome();
 										doc.cacheURL = getRepositoryCacheWebPrefix()
