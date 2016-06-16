@@ -76,7 +76,7 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        System.gc()
+//        System.gc()
         server.stop()
         ListenerFactory.terminateAll()
     }
@@ -169,20 +169,22 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
         for (StepResult sr : results.get(0).stepResults) {
             for (Document d : sr.documents) {
+                documentsCt++
+                System.out.println("d.cacheURL=" + d.cacheURL)
                 System.out.println("d.newUid=" + d.newUid)
                 System.out.println("d.newRepositoryUniqueId="+ d.newRepositoryUniqueId)
 
-                sections = ["Retrieve_Persistence"]
-                params.put('$repuid$', d.newRepositoryUniqueId)
-                params.put('$od_snapshot_uid$', d.newUid)
-                persistedRetrieveRs.add(api.runTest(testSession, rrConfig.getFullId(), testId, sections, params, stopOnFirstError).get(0))
+                params.put('$repuid'+ documentsCt +'$', d.newRepositoryUniqueId)
+                params.put('$od_snapshot_uid'+ documentsCt +'$', d.newUid)
 
                 if (!duplicates)
                     duplicates = uids.containsKey(d.newUid) // Make sure the uid is unique
                 uids.put(d.newUid,null)
-                documentsCt++
             }
         }
+
+        sections = ["Retrieve_Snapshot"]
+        persistedRetrieveRs.add(api.runTest(testSession, rrConfig.getFullId(), testId, sections, params, stopOnFirstError).get(0))
 
         then:
         results.size() == 1

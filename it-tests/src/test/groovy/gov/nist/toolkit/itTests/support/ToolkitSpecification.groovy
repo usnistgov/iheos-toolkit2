@@ -50,7 +50,7 @@ class ToolkitSpecification extends Specification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        System.gc()
+//        System.gc()
         if (server) {
             server.stop()
             server = null
