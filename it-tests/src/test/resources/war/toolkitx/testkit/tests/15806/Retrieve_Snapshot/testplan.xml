@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><TestPlan>
-  <Test>15806/Retrieve_Persistence</Test>
+  <Test>15806/Retrieve_Snapshot</Test>
   <TestStep id="retrieve_snapshot_1">
     <ExpectedStatus>Success</ExpectedStatus>
     <RetrieveTransaction>
@@ -7,7 +7,9 @@
       <MetadataFile>query_1.xml</MetadataFile>
       <ExpectedContents/>
 
-      <ReferenceDocument uid="$od_snapshot_uid$">../Register_OD/ContentBundle/Content1/my_document.txt</ReferenceDocument> 
+<!--
+      <ReferenceDocument uid="$od_snapshot_uid1$">../Register_OD/ContentBundle/Content1/my_document.txt</ReferenceDocument> 
+-->
 
       <XDSb/>
     </RetrieveTransaction>
@@ -21,7 +23,9 @@
       <MetadataFile>query_2.xml</MetadataFile>
       <ExpectedContents/>
 
-	  <ReferenceDocument uid="$od_snapshot_uid$">../Register_OD/ContentBundle/Content2/my_document.txt</ReferenceDocument> 
+<!--
+	  <ReferenceDocument uid="$od_snapshot_uid2$">../Register_OD/ContentBundle/Content1/my_document.txt</ReferenceDocument> 
+-->
 
       <XDSb/>
     </RetrieveTransaction>

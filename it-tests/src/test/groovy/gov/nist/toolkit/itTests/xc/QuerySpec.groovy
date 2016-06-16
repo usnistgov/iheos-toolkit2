@@ -74,7 +74,7 @@ class QuerySpec extends ToolkitSpecification {
 
     def 'Test Responding Gateway' () {
         when:
-        System.gc()
+//        System.gc()
         println 'STEP - DELETE RESPONDING GATEWAY SIM'
         spi.delete(RGParams)
 
@@ -128,7 +128,7 @@ class QuerySpec extends ToolkitSpecification {
         results.get(0).passed()
 
         when:
-        System.gc()
+//        System.gc()
         println 'STEP - DELETE INITIATING GATEWAY SIM'
         spi.delete(IGParams.id, IGParams.user)
 

@@ -41,7 +41,7 @@ class XdrSrcTls extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        System.gc()
+//        System.gc()
         server.stop()
         ListenerFactory.terminateAll()
     }
