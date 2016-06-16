@@ -1,6 +1,7 @@
 package gov.nist.toolkit.services.server.orchestration
 
 import gov.nist.toolkit.installation.Installation
+import gov.nist.toolkit.services.client.IdsOrchestrationRequest
 import gov.nist.toolkit.services.client.IgOrchestrationRequest
 import gov.nist.toolkit.services.client.RawResponse
 import gov.nist.toolkit.services.client.RgOrchestrationRequest
@@ -37,6 +38,20 @@ class OrchestrationManager {
                 api = ToolkitApi.forInternalUse()
             }
             return new RgOrchestrationBuilder(api, session, request).buildTestEnvironment()
+        } catch (Exception e) {
+            return RawResponseBuilder.build(e);
+        }
+    }
+
+    public RawResponse buildIdsTestEnvironment(Session session, IdsOrchestrationRequest request) {
+        try {
+            ToolkitApi api
+            if(Installation.installation().warHome()) {
+                api = ToolkitApi.forNormalUse(session)
+            } else {
+                api = ToolkitApi.forInternalUse()
+            }
+            return new IdsOrchestrationBuilder(api, session, request).buildTestEnvironment()
         } catch (Exception e) {
             return RawResponseBuilder.build(e);
         }

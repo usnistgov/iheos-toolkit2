@@ -288,6 +288,9 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.iigTestsTabLabel, new TabLauncher(myContainer, TabLauncher.iigTestsTabLabel)));
 		row++;
 
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.idsTestsTabLabel, new TabLauncher(myContainer, TabLauncher.idsTestsTabLabel)));
+		row++;
+
 		// ***************************************************************************
         // Simulators
 

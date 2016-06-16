@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdstools2.client.inspector.MetadataEditorTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IIGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
+import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IDSTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
@@ -60,6 +61,7 @@ public class TabLauncher implements ClickHandler {
 	final static public String iigTestsTabLabel = "Initiating Imaging Gateway Tests";
     final static public String rgTestsTabLabel = "Responding Gateway Tests";
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
+	final static public String idsTestsTabLabel = "Imaging Document Source Tests";
 
 
 
@@ -74,6 +76,8 @@ public class TabLauncher implements ClickHandler {
 			new IGTestTab().onAbstractTabLoad(container, true, "IG Tests");
 		else if (tabType.equals(iigTestsTabLabel))
 			new IIGTestTab().onAbstractTabLoad(container, true, "IIG Tests");
+		else if (tabType.equals(idsTestsTabLabel))
+			new IDSTestTab().onAbstractTabLoad(container, true, "IDS Tests");
         else if (tabType.equals(rgTestsTabLabel))
             new RGTestTab().onAbstractTabLoad(container, true, "RG Tests");
         else if (tabType.equals(findDocumentsByRefIdTabLabel))
