@@ -231,6 +231,19 @@ public class Site  implements IsSerializable, Serializable {
 		}		
 		return tbs;
 	}
+	
+	/**
+	 * Get TransactionBean matching passed RepositoryType and uid.
+	 * @param repuid repository unique id
+	 * @param tType Repository Type
+	 * @return TransactionBean for match, or null
+	 */
+	public TransactionBean transactionBeanForRepositoryUniqueId(String repuid, RepositoryType tType) {
+	   for (TransactionBean bean : repositories.transactions) {
+	      if (bean.repositoryType == tType && bean.name.equals(repuid)) return bean;
+	   }
+	   return null;
+	}
 		
 	public boolean hasRepositoryB() {
 		return repositoryBCount() > 0;

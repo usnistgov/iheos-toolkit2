@@ -98,6 +98,24 @@ class SimConfigMgr {
                 );
                 row++;
             }
+            
+            // Selecting IDS for the RG
+            else if (SimulatorProperties.imagingDocumentSources.equals(ele.name)) {
+               final SimulatorConfigElement configEle = ele;
+               HorizontalPanel idsBoxes = new HorizontalPanel();
+               final IDSSelectionPresenter idsSelectionPresenter = new IDSSelectionPresenter(simulatorControlTab.toolkitService, configEle.asList(), idsBoxes);
+               tbl.setWidget(row, 0, HtmlMarkup.html(ele.name));
+               tbl.setWidget(row, 1, idsBoxes);
+               saveButton.addClickHandler(
+                  new ClickHandler() {
+                      @Override
+                      public void onClick(ClickEvent clickEvent) {
+                          configEle.setValue(idsSelectionPresenter.getSelected());
+                      }
+                  }
+               );
+               row++;
+           }
 
             // Should the RG return an error instead of content?
             else if (SimulatorProperties.errors.equals(ele.name)) {

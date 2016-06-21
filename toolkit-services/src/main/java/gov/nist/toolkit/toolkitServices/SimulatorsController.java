@@ -98,8 +98,8 @@ public class SimulatorsController {
     @Produces("application/json")
     @Path("/{id}/xdsi/retrieve/{type}")
     public Response retrieveImagingDocSet(final RetImgDocSetReqResource request, @PathParam("type") String transaction) {
-        logger.info(String.format("POST simulators/%s/xdsi/retrieve ", 
-           (request.isDirect() ? request.getEndpoint() : request.getFullId())));
+        logger.info(String.format("POST simulators/%s/xdsi/retrieve/%s", 
+           (request.isDirect() ? request.getEndpoint() : request.getFullId()), transaction));
         String dest = "";
         TransactionType type = TransactionType.RET_IMG_DOC_SET;
         if (transaction.equals("rad75")) type = TransactionType.XC_RET_IMG_DOC_SET;

@@ -44,6 +44,7 @@ public interface ToolkitServiceAsync {
 	void isGazelleConfigFeedEnabled(AsyncCallback<Boolean> callback);
 	void reloadSystemFromGazelle(String systemName, AsyncCallback<String> callback);
 	void getSiteNamesWithRG(AsyncCallback<List<String>> callback);
+   void getSiteNamesWithIDS(AsyncCallback<List<String>> callback);
 	void getSiteNamesByTranType(String transactionType, AsyncCallback<List<String>> callback);
 
 	void getDashboardRegistryData(AsyncCallback<List<RegistryStatus>> callback);

@@ -72,6 +72,16 @@ public class SiteServiceManager {
 		return ss;
 	}
 
+   public List<String> getSiteNamesWithIDS(String sessionId) throws Exception {
+      logger.debug(sessionId + ": " + "getSiteNamesWithIDS");
+      List<String> ss = new ArrayList<>();
+      for (Site s : new SimCache().getSimManagerForSession(sessionId).getAllSites().asCollection()) {
+         if (s.hasActor(ActorType.IMAGING_DOC_SOURCE))
+            ss.add(s.getName());
+      }
+      return ss;
+   }
+
 	public List<String> getSiteNamesByTran(String tranTypeStr, String sessionId) throws Exception {
 		logger.debug(sessionId + ": " + "getSiteNamesWithRep");
 		List<String> pnrSites = null;

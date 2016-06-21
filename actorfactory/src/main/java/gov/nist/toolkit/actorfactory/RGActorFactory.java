@@ -69,6 +69,8 @@ public class RGActorFactory extends AbstractActorFactory {
          new ArrayList <String>(), false);
       addEditableConfig(sc, SimulatorProperties.errorForPatient,
          ParamType.SELECTION, new PatientErrorMap());
+      addEditableConfig(sc, SimulatorProperties.imagingDocumentSources, 
+         ParamType.SELECTION, new ArrayList<String>(), true);
 
       // This needs to be grouped with a Document Registry
       SimulatorConfig registryConfig =
@@ -146,6 +148,7 @@ public class RGActorFactory extends AbstractActorFactory {
 
          new RegistryActorFactory().getActorSite(sc, site);
          new RepositoryActorFactory().getActorSite(sc, site);
+         new ImagingDocSourceActorFactory().getActorSite(sc, site);
 
          return site;
       } catch (Throwable t) {

@@ -240,6 +240,8 @@ public class SimulatorProperties {
     public static final String                           creationTime = "Creation Time";
 
     public static final String                           respondingGateways = "Responding Gateways";
+    
+    public static final String imagingDocumentSources = "Imaging Document Sources";
 
     /**
      * Each transaction request throws this error.
