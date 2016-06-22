@@ -29,7 +29,11 @@ public class ValidatorErrorItem implements IsSerializable {
 	public ReportingCompletionType completion = ReportingCompletionType.OK;
 	
 	public ValidatorErrorItem() {} // For GWT
-	
+
+	/**
+	 * Converts an XDS error code into a String
+	 * @return
+     */
 	public String getCodeString() {
 		if (code != XdsErrorCode.Code.NoCode)
 			return code.toString();
@@ -42,10 +46,18 @@ public class ValidatorErrorItem implements IsSerializable {
 		return level == ReportingLevel.ERROR || level == ReportingLevel.D_ERROR;
 	}
 
+	/**
+	 * Returns true when the current validation level either is an error, or has an error in the current section (?)
+	 * @return
+     */
 	public boolean isErrorOrContext() {
 		return isError() || completion == ReportingCompletionType.ERROR;
 	}
 
+	/**
+	 * Generates an error message formulated as "Expected ..., found ...".
+	 * @return
+     */
 	public String getReportable() {
 		StringBuilder buf = new StringBuilder();
 		if (hasDTS()) buf.append(dts).append(" : ");
@@ -72,6 +84,10 @@ public class ValidatorErrorItem implements IsSerializable {
 
 	String getMsg() { return msg.trim(); }
 
+	/**
+	 * Generates a String output from a paragraph of text validation output. Adds level headers to the sections.
+	 * @return
+     */
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
@@ -134,6 +150,10 @@ public class ValidatorErrorItem implements IsSerializable {
 		return buf.toString();
 	}
 
+	/**
+	 * Add to the output? Not obvious what it does exactly
+	 * @param buf
+     */
 	void add(StringBuffer buf) {
 		String sp = "    ";
 		buf.append(sp);

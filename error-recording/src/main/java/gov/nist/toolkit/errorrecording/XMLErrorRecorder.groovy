@@ -2,16 +2,39 @@ package gov.nist.toolkit.errorrecording;
 
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
+import groovy.xml.MarkupBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by diane on 2/19/2016.
  */
 public class XMLErrorRecorder implements ErrorRecorder {
+    ErrorRecorderBuilder errorRecorderBuilder;
+
+    def writer = new StringWriter()
+    def xml = new MarkupBuilder(writer)
+    def summary = new MarkupBuilder(writer) // former List<ValidatorErrorItem> summary = new ArrayList<>();
+    def errors = new MarkupBuilder(writer)  //     List<ValidatorErrorItem> errMsgs = new ArrayList<>();
+
+    // Probably not useful and should be removed
+    List<ErrorRecorder> children = new ArrayList<>();
+
+
+
     @Override
     public void err(XdsErrorCode.Code code, String msg, String location, String resource, Object log_message) {
-        
+        // Check if error message is not null
+        if (msg == null || msg.trim().equals(""))
+            return;
+
+        // Set parameters on the ValidatorErrorItem (needs to be converted to GWT ValidatorErrorItem) and run it
+        // add result to the list of errors
+        // errorcount++
+        // propagate error to Challenge level
+
     }
 
     @Override
@@ -39,7 +62,11 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     }
 
-    @Override
+    private void propagateError() {
+        // Test if in a section heading or challenge section. If challenge then set the ReportingCompletionType to Error.
+    }
+
+        @Override
     public void warning(String code, String msg, String location, String resource) {
 
     }
@@ -156,11 +183,15 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     @Override
     public ErrorRecorder buildNewErrorRecorder() {
-        return null;
+        XMLErrorRecorder rec =  new XMLErrorRecorder();
+        rec.errorRecorderBuilder = this;
+        return rec;
     }
 
     @Override
     public ErrorRecorder buildNewErrorRecorder(Object o) {
-        return null;
+        ErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
+        children.add(er);
+        return er;
     }
 }

@@ -17,9 +17,9 @@ class SimpleMetadataValidatorTest extends Specification {
         BasicConfigurator.configure()
 
         when:
-        //InputStream metadataStream = getClass().getResourceAsStream('/PnR1Doc.xml')
+        InputStream metadataStream = getClass().getResourceAsStream('/PnR1Doc.xml')
         //InputStream metadataStream = getClass().getResourceAsStream('/RegisterDocumentSet-b-response.bytes')
-        InputStream metadataStream = getClass().getResourceAsStream('/Message.bytes')
+        //InputStream metadataStream = getClass().getResourceAsStream('/Message.bytes')
 
 
         String metadataString = Io.getStringFromInputStream(metadataStream)
