@@ -1,6 +1,8 @@
 # About XDS Toolkit #
 
-[Developer's Blog](https://bitbucket.org/iheos/toolkit2/wiki/blog/Home)
+[Installation Guide](https://github.com/usnistgov/iheos-toolkit2/wiki/installing)
+
+[Developer's Blog](https://github.com/usnistgov/iheos-toolkit2/wiki/blog)
 
 [Toolkit documentation site](http://ihexds.nist.gov/XdsDocs/site/index.html)
 
