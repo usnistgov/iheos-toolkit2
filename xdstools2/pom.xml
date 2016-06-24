@@ -194,8 +194,8 @@
         </mailingList>
     </mailingLists>
     <issueManagement>
-        <system>BitBucket</system>
-        <url>https://bitbucket.org/bmajur/toolkit2/issues</url>
+        <system>GitHub</system>
+        <url>https://github.com/usnistgov/iheos-toolkit2/issues</url>
     </issueManagement>
     <!--<organization>-->
         <!--<name>National Institute of Standards and Technology</name>-->
