@@ -11,15 +11,13 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActo
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 public class HomeTab extends GenericQueryTab {
-	//	private static final String Container = null;
-	String aboutMessage = null;	
+	String aboutMessage = null;
 	String nwhin_flag = "false";
 	HorizontalPanel menubar = new HorizontalPanel();
 
 
 	public HomeTab() {
 		super(new FindDocumentsSiteActorManager());
-//		super(new GetDocumentsSiteActorManager());
 	}
 
 
@@ -28,87 +26,43 @@ public class HomeTab extends GenericQueryTab {
 
 		addActorReloader();
 
-		topPanel = new VerticalPanel();	
+		topPanel = new VerticalPanel();
 
 		select = true;
 		myContainer.addTab(topPanel, "Home", select);
-
-//		HTML title = new HTML();
-//		title.setHTML("<h2>Home</h2>");
-//		topPanel.add(title);
-
-//		HTML docLink = new HTML();
-//		docLink.setHTML("<a href=\"" + "site/home.html" + "\" target=\"_blank\">" +  "[help]" + "</a>");
-		//		topPanel.add(docLink);
-
-//		HTML about = new HTML();
-//		about.setHTML("<a href=\"" + "site/about.html" + "\" target=\"_blank\">" +  "[about]" + "</a>");
-		//		topPanel.add(docLink);
-		
-//		Hyperlink h = HyperlinkFactory.link("&nbsp;&nbsp;[about version]&nbsp;&nbsp;", new ClickHandler() {
-//
-//			public void onClick(ClickEvent event) {
-//				new PopupMessage(aboutMessage);
-//			}
-//
-//		});
-
-//		menubar.add(docLink);
-//		menubar.add(h);
-//		menubar.add(about);
-
-//		HTML instLink = new HTML();
-//		instLink.setHTML("<a href=\"" + "site/install.html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
-//		menubar.add(instLink);
-
 		topPanel.add(menubar);
 
 		menubar.add(
 				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + TabLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new TabLauncher(myContainer, TabLauncher.toolConfigTabLabel))
 
-				);
+		);
 
-//		HTML faq = new HTML();
-//		faq.setHTML("<a href=\"" + "doc/faq.html" + "\" target=\"_blank\">" +  "[FAQ]" + "</a>");
-//		menubar.add(faq);
-
-//		new FeatureManager().addCallback(new MainGridLoader());
-
-//		topPanel.add(new HTML("<a href=\"doc/howto/index.html\">How to...</a>"));
-
-//		HTML howtoPanel = new HTML();
-//		String html = HomePageResources.INSTANCE.getIntroHtml().getText();
-//		howtoPanel.setHTML(html);
-//		topPanel.add(howtoPanel);
-
-        Frame frame = new Frame("site/index.html");
-        frame.setSize("100em", "100em");
-        topPanel.add(frame);
+		Frame frame = new Frame("site/index.html");
+		frame.setSize("100em", "100em");
+		topPanel.add(frame);
 
 		new MainGridLoader().featuresLoadedCallback();
 	}
 
-	boolean forDirect = false;
 	boolean forIHE = false;
-	boolean forNwHIN = false;
 
 	class MainGridLoader {
 
 		//@Override
 		public void featuresLoadedCallback() {
 			String th = "";
-			
+
 			try {
 				th = Xdstools2.tkProps().get("toolkit.home","");
 			} catch (Throwable t) {
-				
+
 			}
 
 			mainGrid = new FlexTable();
 			mainGrid.setCellSpacing(20);
 
 			try {
-					forIHE = true;
+				forIHE = true;
 
 				if (forIHE) {
 					loadIHEGrid(0);
@@ -122,36 +76,6 @@ public class HomeTab extends GenericQueryTab {
 				new PopupMessage(e.getClass().getName() + ": " + e.getMessage());
 			}
 		}
-
-	}
-
-	void loadCCDAGrid() {
-		mainGrid = new FlexTable();
-		mainGrid.setCellSpacing(20);
-
-
-		int row = 0;
-		int col = 0;
-
-
-		// ***************************************************************************
-		// Direct
-
-		mainGrid.setWidget(row, col, addHTML("<h2>Direct</h2>"));
-		row++;		
-
-		String val = "Message and CCDA document validators";
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val, new TabLauncher(myContainer, val)));
-		row++;
-
-		// ***************************************************************************
-
-		topPanel.add(mainGrid);
-
-		toolkitService.getAdminPassword(getPasswordCallback);
-
-		loadVersion();
-
 
 	}
 
@@ -213,11 +137,6 @@ public class HomeTab extends GenericQueryTab {
 
 		}
 
-		if (forNwHIN) {
-			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findPatientTabLabel, new TabLauncher(myContainer, TabLauncher.findPatientTabLabel)));
-			row++;
-		}
-
 		// ***************************************************************************
 		// Test data
 
@@ -253,19 +172,19 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.adminTabLabel, new TabLauncher(myContainer, TabLauncher.adminTabLabel)));
 		row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.repositoryTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTabLabel)));
-			row++;
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.repositoryTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTabLabel)));
+		row++;
 
-			if (Xdstools2.tkProps().get("toolkit.mainmenu.experimental", "false").equalsIgnoreCase("true")) {
-				mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testRunnerTabLabel, new TabLauncher(myContainer, TabLauncher.testRunnerTabLabel)));
-				row++;
-			}
-
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.testLogLabel, new TabLauncher(myContainer, TabLauncher.testLogLabel)));
+		if (Xdstools2.tkProps().get("toolkit.mainmenu.experimental", "false").equalsIgnoreCase("true")) {
+			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testRunnerTabLabel, new TabLauncher(myContainer, TabLauncher.testRunnerTabLabel)));
 			row++;
+		}
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.connectathonTabLabel, new TabLauncher(myContainer, TabLauncher.connectathonTabLabel)));
-			row++;
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.testLogLabel, new TabLauncher(myContainer, TabLauncher.testLogLabel)));
+		row++;
+
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.connectathonTabLabel, new TabLauncher(myContainer, TabLauncher.connectathonTabLabel)));
+		row++;
 
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.messageValidatorTabLabel, new TabLauncher(myContainer, TabLauncher.messageValidatorTabLabel)));
 		row++;
@@ -273,20 +192,20 @@ public class HomeTab extends GenericQueryTab {
 		// ***************************************************************************
 		// Tests
 
-        Xdstools2.addtoMainMenu(addHTML("<h3>Tests</h3>"));
-        row++;
+		Xdstools2.addtoMainMenu(addHTML("<h3>Tests</h3>"));
+		row++;
 
-        Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(myContainer, TabLauncher.mesaTabLabel)));
-        row++;
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(myContainer, TabLauncher.mesaTabLabel)));
+		row++;
 
-        Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.igTestsTabLabel, new TabLauncher(myContainer, TabLauncher.igTestsTabLabel)));
-        row++;
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.igTestsTabLabel, new TabLauncher(myContainer, TabLauncher.igTestsTabLabel)));
+		row++;
 
-        Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.rgTestsTabLabel, new TabLauncher(myContainer, TabLauncher.rgTestsTabLabel)));
-        row++;
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.rgTestsTabLabel, new TabLauncher(myContainer, TabLauncher.rgTestsTabLabel)));
+		row++;
 
-        // ***************************************************************************
-        // Simulators
+		// ***************************************************************************
+		// Simulators
 
 		row=0;
 		col=startingColumn+3;
@@ -305,50 +224,6 @@ public class HomeTab extends GenericQueryTab {
 
 
 	}
-
-	private void loadNwHINGrid(int startingColumn) {
-		int row;
-		int col;
-		// ***************************************************************************
-		// NwHIN
-
-
-		row=0;
-		col=startingColumn;
-
-		mainGrid.setWidget(row, col, addHTML("<b>NwHIN</b>"));
-		row++;		
-
-		//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findPatientTabLabel, new TabLauncher(myContainer, TabLauncher.findPatientTabLabel)));
-		//		row++;
-
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsTabLabel)));
-		row++;
-
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.getDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.getDocumentsTabLabel)));
-		row++;
-
-		//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.messageValidatorTabLabel, new TabLauncher(myContainer, TabLauncher.messageValidatorTabLabel)));
-		//		row++;
-		//
-		//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.nwhinTabLabel, new TabLauncher(myContainer, TabLauncher.nwhinTabLabel)));
-		//		row++;
-
-		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.documentRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.documentRetrieveTabLabel)));
-		row++;
-
-	}
-
-
-	int getIndex(ListBox lb, String value) {
-		for (int i=0; i<lb.getItemCount(); i++) {
-			String lbVal = lb.getItemText(i);
-			if (value.equals(lbVal)) 
-				return i;
-		}
-		return -1;
-	}
-
 
 	AsyncCallback<String> getPasswordCallback = new AsyncCallback<String> () {
 
@@ -391,7 +266,7 @@ public class HomeTab extends GenericQueryTab {
 
 	@Override
 	public void onTabLoad(TabContainer container, boolean select,
-			String eventName) {
+						  String eventName) {
 
 	}
 
