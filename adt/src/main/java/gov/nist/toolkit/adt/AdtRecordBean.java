@@ -108,7 +108,7 @@ public class AdtRecordBean {
         record.setPatientAddresses(patientAddress);
     }
 
-    public void setAddAddress(Hl7Address address) {
+    public void setAddAddress(HL7Address address) {
         record.getPatientAddresses().add(address);
     }
 
