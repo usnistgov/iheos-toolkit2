@@ -169,6 +169,8 @@ class RGImgDocSetRet extends AbstractMessageValidator {
                
                for (RetrievedDocumentModel item : rModel.values()) {
                   log.info("IDS retrieve returned " + item)
+                  item.setRepUid(idsRepId);
+                  item.setHome(asc.getConfigEle(SimulatorProperties.homeCommunityId).asString());
                   retrievedDocs.add(item);
                }
                

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path=""/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=toolkit&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/addressing-1.5.4.mar"/>
