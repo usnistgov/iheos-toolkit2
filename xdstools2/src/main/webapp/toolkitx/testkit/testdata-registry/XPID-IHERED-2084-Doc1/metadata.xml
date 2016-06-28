@@ -27,9 +27,24 @@
             <LocalizedString value="DocA"/>
          </Name>
          <Description/>
+         <Slot name="size">
+            <ValueList>
+               <Value>4</Value>
+            </ValueList>
+         </Slot>
+         <Slot name="repositoryUniqueId">
+            <ValueList>
+               <Value>1.19.6.24.109.42.1</Value>
+            </ValueList>
+         </Slot>
+         <Slot name="hash">
+            <ValueList>
+               <Value>e543712c0e10501972de13a5bfcbe826c49feb75</Value>
+            </ValueList>
+         </Slot>
          <Slot name="creationTime">
             <ValueList>
-               <Value>20061224</Value>
+               <Value>20151224</Value>
             </ValueList>
          </Slot>
          <Slot name="languageCode">
@@ -39,26 +54,26 @@
          </Slot>
          <Slot name="serviceStartTime">
             <ValueList>
-               <Value>200612230800</Value>
+               <Value>201512230800</Value>
             </ValueList>
          </Slot>
          <Slot name="serviceStopTime">
             <ValueList>
-               <Value>200612230900</Value>
+               <Value>201512230900</Value>
             </ValueList>
          </Slot>
          <Slot name="sourcePatientId">
             <ValueList>
-               <Value>89765a87b^^^&amp;1.2.3.4.5&amp;ISO</Value>
+               <Value>IHEFACILITY-2084^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
             </ValueList>
          </Slot>
          <Slot name="sourcePatientInfo">
             <ValueList>
-               <Value>PID-3|pid1^^^&amp;1.2.3&amp;ISO</Value>
-               <Value>PID-5|Doe^John^^^</Value>
-               <Value>PID-7|19560527</Value>
+               <Value>PID-3|IHEFACILITY-2084^^^&amp;1.3.6.1.4.1.21367.3000.1.6&amp;ISO</Value>
+               <Value>PID-5|XPID^Peter^^^</Value>
+               <Value>PID-7|20151229</Value>
                <Value>PID-8|M</Value>
-               <Value>PID-11|100 Main St^^Metropolis^Il^44130^USA</Value>
+               <Value>PID-11|South Elmwood Avenue ^^Elmwood Park^Il^44444^USA</Value>
             </ValueList>
          </Slot>
          <Classification classificationScheme="urn:uuid:93606bcf-9494-43ec-9b4e-a7748d1a838d"
@@ -100,7 +115,7 @@
             </Slot>
             <Slot name="authorRole">
                <ValueList>
-                  <Value>Primary Surgon</Value>
+                  <Value>Primary Surgeon</Value>
                </ValueList>
             </Slot>
             <Slot name="authorSpecialty">
@@ -121,9 +136,9 @@
             </Slot>
          </Classification>
          <Classification classificationScheme="urn:uuid:f4f85eac-e6cb-4883-b524-f2705394840f"
-               classifiedObject="Document01" nodeRepresentation="R">
+               classifiedObject="Document01" nodeRepresentation="N">
             <Name>
-               <LocalizedString value="Restricted"/>
+               <LocalizedString value="Normal"/>
             </Name>
             <Slot name="codingScheme">
                <ValueList>
@@ -198,7 +213,7 @@
             </Slot>
          </Classification>
          <ExternalIdentifier identificationScheme="urn:uuid:58a6f841-87b3-4a3e-92fd-a8ffeff98427"
-               value="$patientid$">
+               value="IHERED-2084^^^&amp;1.3.6.1.4.1.21367.13.20.1000&amp;ISO" >
             <Name>
                <LocalizedString value="XDSDocumentEntry.patientId"/>
             </Name>
@@ -219,7 +234,7 @@
          </Description>
          <Slot name="submissionTime">
             <ValueList>
-               <Value>20041225235050</Value>
+               <Value>20151225235050</Value>
             </ValueList>
          </Slot>
          <Classification classificationScheme="urn:uuid:a7058bb9-b4e4-4307-ba5b-e3f0ab85e12d"
@@ -237,7 +252,7 @@
             </Slot>
             <Slot name="authorRole">
                <ValueList>
-                  <Value>Primary Surgon</Value>
+                  <Value>Primary Surgeon</Value>
                </ValueList>
             </Slot>
             <Slot name="authorSpecialty">
@@ -270,7 +285,7 @@
             </Name>
          </ExternalIdentifier>
          <ExternalIdentifier identificationScheme="urn:uuid:6b5aea1a-874d-4603-a4bc-96a0a7b38446"
-               value="$patientid$">
+               value="IHERED-2084^^^&amp;1.3.6.1.4.1.21367.13.20.1000&amp;ISO" >
             <Name>
                <LocalizedString value="XDSSubmissionSet.patientId"/>
             </Name>
