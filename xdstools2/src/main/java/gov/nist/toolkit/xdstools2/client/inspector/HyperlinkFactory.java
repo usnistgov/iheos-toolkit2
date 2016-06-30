@@ -6,13 +6,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hyperlink;
 import gov.nist.toolkit.registrymetadata.client.*;
 import gov.nist.toolkit.results.client.AssertionResults;
-import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.TestDocumentation;
 import gov.nist.toolkit.xdstools2.client.tabs.GetRelatedTab;
-import gov.nist.toolkit.xdstools2.client.tabs.TabLauncher;
 
 public class HyperlinkFactory {
 	
@@ -100,9 +97,9 @@ public class HyperlinkFactory {
 		return h;
 	}
 	
-	public static Hyperlink edit(MetadataInspectorTab it, RegistryObject de, TabContainer container, SiteSpec siteSpec) {
-		return HyperlinkFactory.launchTool(TabLauncher.metadataEditorTabLabel, new TabLauncher(container, TabLauncher.metadataEditorTabLabel, siteSpec, de));
-	}
+//	public static Hyperlink edit(MetadataInspectorTab it, RegistryObject de, TabContainer container, SiteSpec siteSpec) {
+//		return HyperlinkFactory.launchTool(ToolLauncher.metadataEditorTabLabel, new ToolLauncher(container, ToolLauncher.metadataEditorTabLabel, siteSpec, de));
+//	}
 	
 	public static Hyperlink getSubmissionSets(MetadataInspectorTab it, ObjectRef or, String text) {
 		Hyperlink h = new Hyperlink();

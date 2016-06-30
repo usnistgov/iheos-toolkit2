@@ -170,7 +170,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		}
 	}
 
-    TabContainer getTabContainer() { return this;}
+    public TabContainer getTabContainer() { return this;}
 
 	public void addTab(VerticalPanel w, String title, boolean select) {
 		HTML left = new HTML();
