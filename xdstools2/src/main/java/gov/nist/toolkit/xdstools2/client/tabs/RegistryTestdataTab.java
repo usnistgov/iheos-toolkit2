@@ -41,7 +41,7 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 		
 		
-		container.addTab(topPanel, "XDS Register", select);
+		container.addTab(topPanel, eventName, select);
 		addToolHeader(container, topPanel, help);
 
 		topPanel.add(new HTML("<h2>Send XDS Register transaction</h2>"));

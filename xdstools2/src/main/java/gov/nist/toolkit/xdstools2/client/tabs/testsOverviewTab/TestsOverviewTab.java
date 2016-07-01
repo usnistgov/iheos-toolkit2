@@ -50,7 +50,7 @@ public class TestsOverviewTab extends GenericQueryTab {
         // Panel to build inside of
         topPanel = new VerticalPanel();
 
-        container.addTab(topPanel, "Tests Overview", select);  // link into container/tab management
+        container.addTab(topPanel, eventName, select);  // link into container/tab management
         addToolHeader(container, topPanel, null);   // add the close button
 
         HTML title = new HTML();

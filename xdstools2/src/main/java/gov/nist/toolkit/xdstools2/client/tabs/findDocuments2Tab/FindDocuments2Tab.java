@@ -53,7 +53,7 @@ public class FindDocuments2Tab extends GenericQueryTab {
         genericQueryTab = this;   // share with other methods
 
 
-        container.addTab(topPanel, "Find Documents (All Parameters)", select);  // link into container/tab management
+        container.addTab(topPanel, eventName, select);  // link into container/tab management
         addToolHeader(container, topPanel, null);   // add the close button
 
         HTML title = new HTML();

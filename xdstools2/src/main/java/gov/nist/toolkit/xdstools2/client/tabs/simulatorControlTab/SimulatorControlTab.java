@@ -54,7 +54,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 		simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
-		container.addTab(topPanel, "Sim Mgr", select);
+		container.addTab(topPanel, eventName, select);
 		addToolHeader(container, topPanel, null);
 		
 		addActorReloader();

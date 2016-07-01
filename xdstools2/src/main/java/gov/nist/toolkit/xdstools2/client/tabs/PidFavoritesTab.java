@@ -46,7 +46,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         topPanel = new VerticalPanel();
 
 
-        container.addTab(topPanel, "Patient IDs", select);
+        container.addTab(topPanel, eventName, select);
         addToolHeader(container, topPanel, null);
 
         topPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));

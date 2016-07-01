@@ -83,7 +83,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
             }
         }
 
-		container.addTab(topPanel, simIdString + " Logs", select);
+		container.addTab(topPanel, simIdString, select);
 		addToolHeader(container, topPanel, null);
 
 		topPanel.add(simDisplayPanel);

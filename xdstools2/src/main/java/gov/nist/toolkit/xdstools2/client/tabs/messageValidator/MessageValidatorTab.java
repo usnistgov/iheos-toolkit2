@@ -333,7 +333,7 @@ public class MessageValidatorTab extends ToolWindow {
 		topPanel = new VerticalPanel();
 		ccdaSel = new CcdaTypeSelection(tkProps(), null);
 
-		container.addTab(topPanel, "Message Validator", select);
+		container.addTab(topPanel, eventName, select);
 		addToolHeader(container,topPanel, null);
 
 		topPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Message Validator")));

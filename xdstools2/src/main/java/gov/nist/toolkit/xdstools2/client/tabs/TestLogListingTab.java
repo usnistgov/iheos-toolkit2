@@ -39,7 +39,7 @@ public class TestLogListingTab extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 
 
-		container.addTab(topPanel, "TestLog Listing", select);
+		container.addTab(topPanel, eventName, select);
 		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();

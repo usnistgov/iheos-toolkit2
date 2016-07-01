@@ -44,7 +44,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 		
 		
-		container.addTab(topPanel, "XDS PnR", select);
+		container.addTab(topPanel, eventName, select);
 		addToolHeader(container, topPanel, help);
 
 		// Build UI content of tab

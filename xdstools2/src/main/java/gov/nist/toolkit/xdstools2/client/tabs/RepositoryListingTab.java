@@ -1,5 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -7,16 +11,7 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.*;
 
 public class RepositoryListingTab extends GenericQueryTab {
 	FlexTable byNameTable = new FlexTable();
@@ -38,7 +33,7 @@ public class RepositoryListingTab extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 
 
-		container.addTab(topPanel, "Rep List", select);
+		container.addTab(topPanel, eventName, select);
 		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();

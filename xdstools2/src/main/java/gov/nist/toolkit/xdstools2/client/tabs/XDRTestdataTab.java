@@ -38,7 +38,7 @@ public class XDRTestdataTab  extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 		
 		
-		container.addTab(topPanel, "XDR Send", select);
+		container.addTab(topPanel, eventName, select);
 		addToolHeader(container,topPanel, help);
 
 		topPanel.add(new HTML("<h2>Send XDR Provide & Register transaction</h2>"));
