@@ -5,11 +5,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.List;
 
-public class TextViewerTab extends TabbedWindow {
+public class TextViewerTab extends ToolWindow {
 	boolean escapeHTML = true;
 	
 	public TextViewerTab(boolean escapeHTML) {
@@ -29,7 +29,7 @@ public class TextViewerTab extends TabbedWindow {
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "Viewer", select);
 		topPanel.setWidth("100%");
-		addCloseButton(container,topPanel, null, null);
+		addToolHeader(container,topPanel, null, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Text Viewer</h2>");
@@ -62,7 +62,7 @@ public class TextViewerTab extends TabbedWindow {
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, titleString, select);
 		topPanel.setWidth("100%");
-		addCloseButton(container,topPanel, null, null);
+		addToolHeader(container,topPanel, null, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>" + titleString + "</h2>");

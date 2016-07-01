@@ -54,7 +54,7 @@ public class MesaTestTab extends GenericQueryTab {
 
 
 		container.addTab(topPanel, eventName, select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 //		testSessionSelector = TestSessionSelector.getInstance(toolkitService, new Panel(menuPanel));
 
 		HTML title = new HTML();

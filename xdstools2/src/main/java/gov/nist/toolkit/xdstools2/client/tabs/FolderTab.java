@@ -41,7 +41,7 @@ public class FolderTab extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "Folder", select);
-		addCloseButton(container,topPanel, help);
+		addToolHeader(container,topPanel, help);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Folder validation</h2>");

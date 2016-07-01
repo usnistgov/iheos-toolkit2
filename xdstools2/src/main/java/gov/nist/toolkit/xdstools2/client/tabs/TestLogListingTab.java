@@ -40,7 +40,7 @@ public class TestLogListingTab extends GenericQueryTab {
 
 
 		container.addTab(topPanel, "TestLog Listing", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>TestLog Listing</h2>");

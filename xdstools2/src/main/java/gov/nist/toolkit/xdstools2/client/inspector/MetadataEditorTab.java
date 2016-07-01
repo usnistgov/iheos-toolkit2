@@ -13,12 +13,12 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.List;
 import java.util.Map;
 
-public class MetadataEditorTab extends TabbedWindow {
+public class MetadataEditorTab extends ToolWindow {
 
 	// loaded content organized two ways:
 	//    results - organized as a list - shows history of queries
@@ -48,7 +48,7 @@ public class MetadataEditorTab extends TabbedWindow {
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "Editor", select);
 		topPanel.setWidth("100%");
-		addCloseButton(container,topPanel, null, siteSpec);
+		addToolHeader(container,topPanel, null, siteSpec);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Metadata Editor</h2>");

@@ -59,7 +59,7 @@ public class GetRelatedTab  extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "GetRelated", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Related Documents</h2>");

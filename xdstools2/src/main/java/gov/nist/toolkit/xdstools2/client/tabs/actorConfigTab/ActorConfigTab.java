@@ -43,7 +43,7 @@ public class ActorConfigTab extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 
 		container.addTab(topPanel, "ActorConfig", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 		
 		loadGazelleFeedAvailableStatus();
 

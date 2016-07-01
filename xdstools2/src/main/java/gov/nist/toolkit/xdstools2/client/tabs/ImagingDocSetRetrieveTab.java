@@ -39,7 +39,7 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "RetrieveImagingDocSet", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Retrieve Imaging Document Set</h2>");

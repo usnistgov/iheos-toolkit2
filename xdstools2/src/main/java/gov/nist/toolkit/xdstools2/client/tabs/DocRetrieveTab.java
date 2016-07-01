@@ -43,7 +43,7 @@ public class DocRetrieveTab extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "RetrieveDoc", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Retrieve Documents</h2>");

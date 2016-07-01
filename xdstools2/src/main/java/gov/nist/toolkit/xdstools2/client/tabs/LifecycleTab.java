@@ -39,7 +39,7 @@ public class LifecycleTab extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "Lifecycle", select);
-		addCloseButton(container,topPanel, help);
+		addToolHeader(container,topPanel, help);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Lifecycle validation</h2>");

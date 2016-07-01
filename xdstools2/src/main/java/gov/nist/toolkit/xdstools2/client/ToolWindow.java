@@ -1,8 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -15,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public abstract class TabbedWindow {
+public abstract class ToolWindow {
 	public VerticalPanel topPanel;
 	String helpHTML;
 	String topMessage = null;
@@ -27,7 +25,7 @@ public abstract class TabbedWindow {
 	final public ToolkitServiceAsync toolkitService = GWT
 			.create(ToolkitService.class);
 
-	public TabbedWindow() {
+	public ToolWindow() {
 	}
 
 	// Used to be protected but impractical for use with the new widget-based architecture in for ex. TestsOverviewTab
@@ -106,7 +104,7 @@ public abstract class TabbedWindow {
 		topMessage = msg;
 	}
 
-	protected void addCloseButton(TabContainer container, VerticalPanel panel, String helpHTML, SiteSpec site) {
+	protected void addToolHeader(TabContainer container, VerticalPanel panel, String helpHTML, SiteSpec site) {
 		if (site != null) {
 			String type = (site != null) ? site.getTypeName() : "site";
 			String name = (site != null) ? site.name : "name";
@@ -114,10 +112,10 @@ public abstract class TabbedWindow {
 		} else {
 			topMessage = "<h3>No site</h3>";
 		}
-		addCloseButton(container, panel, helpHTML);
+		addToolHeader(container, panel, helpHTML);
 	}
 
-	//	// must be called after addCloseButton which initializes the environment
+	//	// must be called after addToolHeader which initializes the environment
 	//	protected void addSigninButton(VerticalPanel vpanel) {
 	//		final VerticalPanel panel = vpanel;
 	//		
@@ -136,35 +134,35 @@ public abstract class TabbedWindow {
 	//	}
 
 	// all panels getRetrievedDocumentsModel a close button except the home panel
-	protected void addCloseButton(TabContainer container, VerticalPanel topPanel, String helpHTML) {
+	protected void addToolHeader(TabContainer container, VerticalPanel topPanel, String helpHTML) {
 
 		final VerticalPanel myPanel = topPanel;
 		final TabPanel tabPanel = container.getTabPanel();
 
 		this.helpHTML = (helpHTML == null) ? "No Help Available" : helpHTML;
 
-		Anchor close = new Anchor();
-		close.setTitle("Close this tab");
-		close.setText("[close]");
-//		if (Xdstools2.getInstance().toolkitName.equals(GWT.getModuleName())) // Hide this from V3 module
-			menuPanel.add(close);
-			
-		close.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				myPanel.getParent().removeFromParent();
-
-				try {
-					tabPanel.selectTab(tabPanel.getWidgetCount() - 1);
-				} catch (Exception e) {
-				}
-
-				if (environmentManager != null)
-					environmentManager.close();
-				environmentManager = null;
-			}
-
-		});
+//		Anchor close = new Anchor();
+//		close.setTitle("Close this tab");
+//		close.setText("[close]");
+////		if (Xdstools2.getInstance().toolkitName.equals(GWT.getModuleName())) // Hide this from V3 module
+//			menuPanel.add(close);
+//
+//		close.addClickHandler(new ClickHandler() {
+//
+//			public void onClick(ClickEvent event) {
+//				myPanel.getParent().removeFromParent();
+//
+//				try {
+//					tabPanel.selectTab(tabPanel.getWidgetCount() - 1);
+//				} catch (Exception e) {
+//				}
+//
+//				if (environmentManager != null)
+//					environmentManager.close();
+//				environmentManager = null;
+//			}
+//
+//		});
 
 
 		HTML help = new HTML();

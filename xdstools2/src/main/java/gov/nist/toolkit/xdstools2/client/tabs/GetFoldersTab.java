@@ -50,7 +50,7 @@ public class GetFoldersTab extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "GetFolders", select);
-		addCloseButton(container,topPanel, help);
+		addToolHeader(container,topPanel, help);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Folders</h2>");

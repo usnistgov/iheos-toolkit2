@@ -46,7 +46,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "SubmissionSetAndContents", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Submission Set and Contents</h2>");

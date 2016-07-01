@@ -74,7 +74,7 @@ public class FindPatientTab extends GenericQueryTab {
 		topPanel = new VerticalPanel();
 			
 		container.addTab(topPanel, "FindPatient", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Patient</h2>");

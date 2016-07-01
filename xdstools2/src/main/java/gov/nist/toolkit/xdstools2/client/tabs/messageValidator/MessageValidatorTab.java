@@ -20,7 +20,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 
 import java.util.*;
 
-public class MessageValidatorTab extends TabbedWindow {
+public class MessageValidatorTab extends ToolWindow {
 	protected TabContainer myContainer;
 	VerticalPanel resultsContainer = new VerticalPanel();
 	FlexTable resultsTable = new FlexTable();
@@ -334,7 +334,7 @@ public class MessageValidatorTab extends TabbedWindow {
 		ccdaSel = new CcdaTypeSelection(tkProps(), null);
 
 		container.addTab(topPanel, "Message Validator", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		topPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Message Validator")));
 

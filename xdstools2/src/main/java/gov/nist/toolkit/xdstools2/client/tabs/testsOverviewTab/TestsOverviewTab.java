@@ -51,7 +51,7 @@ public class TestsOverviewTab extends GenericQueryTab {
         topPanel = new VerticalPanel();
 
         container.addTab(topPanel, "Tests Overview", select);  // link into container/tab management
-        addCloseButton(container, topPanel, null);   // add the close button
+        addToolHeader(container, topPanel, null);   // add the close button
 
         HTML title = new HTML();
         title.setHTML("<h2>Tests Overview</h2>");

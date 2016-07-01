@@ -40,7 +40,7 @@ public class RegisterAndQueryTab extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "RegisterAndQuery", select);
-		addCloseButton(container,topPanel, help);
+		addToolHeader(container,topPanel, help);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Register And Query</h2>");

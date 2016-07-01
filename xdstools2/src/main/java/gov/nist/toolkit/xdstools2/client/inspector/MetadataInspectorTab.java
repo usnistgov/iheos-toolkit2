@@ -9,7 +9,7 @@ import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MetadataInspectorTab extends TabbedWindow {
+public class MetadataInspectorTab extends ToolWindow {
 
 	TabContainer container;
 	VerticalPanel historyPanel;
@@ -73,7 +73,7 @@ public class MetadataInspectorTab extends TabbedWindow {
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "Inspector", select);
 		topPanel.setWidth("100%");
-		addCloseButton(container,topPanel, null, siteSpec);
+		addToolHeader(container,topPanel, null, siteSpec);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Inspector</h2>");

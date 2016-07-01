@@ -30,7 +30,7 @@ public class ToolConfigTab extends GenericQueryTab {
 
 
 		container.addTab(topPanel, "ToolConfig", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Configure XDS Toolkit</h2>");

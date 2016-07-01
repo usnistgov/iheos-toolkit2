@@ -42,7 +42,7 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 
 
 		container.addTab(topPanel, "FindDocumentsByRefId", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Documents by Reference ID Stored Query</h2>");

@@ -61,7 +61,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 
 		container.addTab(topPanel, "MPQFindDocuments", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
 

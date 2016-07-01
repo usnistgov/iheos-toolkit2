@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SimulatorMessageViewTab extends TabbedWindow {
+public class SimulatorMessageViewTab extends ToolWindow {
 	protected TabContainer myContainer;
 
 	final protected ToolkitServiceAsync toolkitService = GWT
@@ -84,7 +84,7 @@ public class SimulatorMessageViewTab extends TabbedWindow {
         }
 
 		container.addTab(topPanel, simIdString + " Logs", select);
-		addCloseButton(container, topPanel, null);
+		addToolHeader(container, topPanel, null);
 
 		topPanel.add(simDisplayPanel);
 		simDisplayPanel.add(simControlPanel);

@@ -5,7 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
@@ -124,7 +124,7 @@ public class ToolLauncher implements ClickHandler {
 		return null;
 	}
 
-	private TabbedWindow getTool(ToolDef def) {
+	private ToolWindow getTool(ToolDef def) {
 		if (def == null) return null;
 		String menuName = def.getMenuName();
 
@@ -174,7 +174,7 @@ public class ToolLauncher implements ClickHandler {
 
 	private void launch(String requestedName) {
 		ToolDef def = getToolDef(requestedName);
-		TabbedWindow tool = getTool(def);
+		ToolWindow tool = getTool(def);
 		if (tool == null) return;
 		tool.onAbstractTabLoad(container, true, def.activityName);
 	}

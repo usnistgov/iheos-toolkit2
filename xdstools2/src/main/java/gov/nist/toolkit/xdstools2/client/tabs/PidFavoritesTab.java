@@ -47,7 +47,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
 
 
         container.addTab(topPanel, "Patient IDs", select);
-        addCloseButton(container, topPanel, null);
+        addToolHeader(container, topPanel, null);
 
         topPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
 

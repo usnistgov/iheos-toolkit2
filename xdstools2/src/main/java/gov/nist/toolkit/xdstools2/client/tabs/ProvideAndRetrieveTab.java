@@ -47,7 +47,7 @@ public class ProvideAndRetrieveTab extends GenericQueryTab {
 		
 		
 		container.addTab(topPanel, "SubmitAndRetrieve", select);
-		addCloseButton(container,topPanel, help);
+		addToolHeader(container,topPanel, help);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Submit / Retrieve</h2>");

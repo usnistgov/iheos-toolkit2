@@ -11,13 +11,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.xdstools2.client.PidAllocateService;
 import gov.nist.toolkit.xdstools2.client.PidAllocateServiceAsync;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
-import gov.nist.toolkit.xdstools2.client.TabbedWindow;
+import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
-public class PidAllocateTab extends TabbedWindow {
+public class PidAllocateTab extends ToolWindow {
 	
 	final PidAllocateServiceAsync pidAllocateService = GWT
 	.create(PidAllocateService.class);
@@ -26,7 +26,7 @@ public class PidAllocateTab extends TabbedWindow {
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "Patient ID", select);
-		addCloseButton(container, topPanel, null);
+		addToolHeader(container, topPanel, null);
 		
 		HTML intro = new HTML();
 		intro.setHTML(

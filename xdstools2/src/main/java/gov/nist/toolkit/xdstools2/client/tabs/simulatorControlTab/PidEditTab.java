@@ -36,7 +36,7 @@ public class PidEditTab extends GenericQueryTab {
         topPanel = new VerticalPanel();
 
         container.addTab(topPanel, "Pid Edit", select);
-        addCloseButton(container, topPanel, null);
+        addToolHeader(container, topPanel, null);
 
         addReloader();
 

@@ -30,7 +30,7 @@ import java.util.Set;
  * @author bill
  *
  */
-public abstract class GenericQueryTab  extends TabbedWindow {
+public abstract class GenericQueryTab  extends ToolWindow {
 	private final SiteLoader siteLoader = new SiteLoader(this);
 	GenericQueryTab me;
 

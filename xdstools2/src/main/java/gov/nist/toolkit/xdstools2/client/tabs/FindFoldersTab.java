@@ -38,7 +38,7 @@ public class FindFoldersTab extends GenericQueryTab {
 		
 		
 		container.addTab(topPanel, "FindFolders", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Folders</h2>");

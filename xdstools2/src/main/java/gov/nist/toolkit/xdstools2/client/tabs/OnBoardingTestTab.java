@@ -58,7 +58,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 
 
 		container.addTab(topPanel, "Pre-OnBoarding Tests", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Pre-OnBoarding Tests</h2>");

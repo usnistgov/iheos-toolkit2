@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * The inheritance tree is:
  *
- * TabbedWindow - operation of the tab and interaction with the tab container
+ * ToolWindow - operation of the tab and interaction with the tab container
  * GenericQueryTab - organization and display of the sites, patientID, run button, inspect results button
  *      basically everything below the horizontal line in the display of the tab
  * GetAllTab - specifics for this query tab
@@ -70,7 +70,7 @@ public class GetAllTab extends GenericQueryTab {
 
 
 		container.addTab(topPanel, "GetAll", select);  // link into container/tab management
-		addCloseButton(container,topPanel, null);   // add the close button
+		addToolHeader(container,topPanel, null);   // add the close button
 
 		// Tab contents starts here
 		HTML title = new HTML();

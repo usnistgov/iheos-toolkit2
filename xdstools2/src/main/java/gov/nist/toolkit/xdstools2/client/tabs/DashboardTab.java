@@ -38,7 +38,7 @@ public class DashboardTab  extends GenericQueryTab {
 
 
 		container.addTab(topPanel, "Dashboard", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>XDS Dashboard</h2>");

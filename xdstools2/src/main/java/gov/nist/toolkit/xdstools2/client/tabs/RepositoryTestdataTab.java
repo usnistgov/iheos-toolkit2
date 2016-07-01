@@ -45,7 +45,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		
 		
 		container.addTab(topPanel, "XDS PnR", select);
-		addCloseButton(container, topPanel, help);
+		addToolHeader(container, topPanel, help);
 
 		// Build UI content of tab
 		topPanel.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));

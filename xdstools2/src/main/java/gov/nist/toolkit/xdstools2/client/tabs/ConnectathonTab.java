@@ -23,7 +23,7 @@ public class ConnectathonTab extends GenericQueryTab {
 		
 		
 		container.addTab(topPanel, "Connectathon", select);
-		addCloseButton(container,topPanel, null);
+		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Connectathon Tools</h2>");

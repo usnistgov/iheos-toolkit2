@@ -66,7 +66,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         genericQueryTab = this;
 
         container.addTab(topPanel, eventName, select);
-        addCloseButton(container,topPanel, null);
+        addToolHeader(container,topPanel, null);
         tlsOptionEnabled = false;
 
         // customization of GenericQueryTab

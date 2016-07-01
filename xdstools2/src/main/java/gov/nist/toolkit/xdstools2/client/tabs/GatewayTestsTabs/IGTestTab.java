@@ -73,7 +73,7 @@ public class IGTestTab extends GenericQueryTab implements GatewayTool {
         container.addTab(topPanel, eventName, select);
 
 
-        addCloseButton(container,topPanel, null);
+        addToolHeader(container,topPanel, null);
         tlsOptionEnabled = false;
 
         genericQueryTab.reloadTransactionOfferings();
