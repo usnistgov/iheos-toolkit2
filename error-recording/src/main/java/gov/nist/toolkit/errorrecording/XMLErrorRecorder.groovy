@@ -1,5 +1,10 @@
 package gov.nist.toolkit.errorrecording;
 
+import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingCompletionType;
+import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import org.apache.log4j.Logger;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
@@ -12,7 +17,7 @@ import java.util.List;
  * Created by diane on 2/19/2016.
  */
 public class XMLErrorRecorder implements ErrorRecorder {
-    ErrorRecorderBuilder errorRecorderBuilder;
+    public ErrorRecorderBuilder errorRecorderBuilder;
 
     def writer = new StringWriter()
     def xml = new MarkupBuilder(writer)
@@ -23,37 +28,56 @@ public class XMLErrorRecorder implements ErrorRecorder {
     List<ErrorRecorder> children = new ArrayList<>();
 
 
-
+/*
     @Override
-    public void err(XdsErrorCode.Code code, String msg, String location, String resource, Object log_message) {
+    public void err(Code code, String msg, String location, String resource, Object log_message) {
         // Check if error message is not null
         if (msg == null || msg.trim().equals(""))
             return;
 
         // Set parameters on the ValidatorErrorItem (needs to be converted to GWT ValidatorErrorItem) and run it
+        ValidatorErrorItem ei = new ValidatorErrorItem();
+        ei.level = ValidatorErrorItem.ReportingLevel.ERROR;
+        ei.msg = msg;
+        ei.setCode(code);
+        ei.location = location;
+        ei.resource = resource;
+        ei.completion = ValidatorErrorItem.ReportingCompletionType.ERROR;
+
         // add result to the list of errors
+        errMsgs.add(ei);
+
         // errorcount++
+        lastErrCount++;
+
         // propagate error to Challenge level
+        propagateError();
+
+    }
+    */
+
+    @Override
+    void err(Code code, String msg, String location, String resource, Object log_message) {
 
     }
 
     @Override
-    public void err(XdsErrorCode.Code code, String msg, String location, String resource) {
+    public void err(Code code, String msg, String location, String resource) {
 
     }
 
     @Override
-    public void err(XdsErrorCode.Code code, String msg, Object location, String resource) {
+    public void err(Code code, String msg, Object location, String resource) {
 
     }
 
     @Override
-    public void err(XdsErrorCode.Code code, Exception e) {
+    public void err(Code code, Exception e) {
 
     }
 
     @Override
-    public void err(XdsErrorCode.Code code, String msg, String location, String severity, String resource) {
+    public void err(Code code, String msg, String location, String severity, String resource) {
 
     }
 
@@ -72,7 +96,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     @Override
-    public void warning(XdsErrorCode.Code code, String msg, String location, String resource) {
+    public void warning(Code code, String msg, String location, String resource) {
 
     }
 

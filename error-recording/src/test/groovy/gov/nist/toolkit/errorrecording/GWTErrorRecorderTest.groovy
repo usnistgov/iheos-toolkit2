@@ -1,19 +1,19 @@
-package gov.nist.toolkit.errorrecording.factories
+package gov.nist.toolkit.errorrecording
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.ErrorRecorderUtil
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder
-import gov.nist.toolkit.errorrecording.XMLErrorRecorderBuilder
+import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
 import spock.lang.Specification
 
 /**
  * Created by bill on 6/20/15.
  */
-class XMLErrorRecorderTest extends Specification {
+class GWTErrorRecorderTest extends Specification {
 
     def 'Builder test'() {
         when: 'Build basic Error Recorder'
-        ErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
+        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
         ErrorRecorder er = builder.buildNewErrorRecorder()
 
         then:
