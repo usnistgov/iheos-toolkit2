@@ -21,9 +21,16 @@ public class HomeTab extends GenericQueryTab {
 		super(new FindDocumentsSiteActorManager());
 	}
 
+	//	@Override
+//	public void onTabLoad(TabContainer container, boolean select,
+//						  String eventName) {
+//
+//	}
 
-	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
-		myContainer = container;
+	@Override
+//	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
+	public void onTabLoad(TabContainer container, boolean select, String eventName) {
+ 		myContainer = container;
 
 		addActorReloader();
 
@@ -91,6 +98,10 @@ public class HomeTab extends GenericQueryTab {
 
 		if (forIHE) {
 			Xdstools2.addtoMainMenu(addHTML("<h2>Toolkit</h2>"));
+
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.homeTabLabel, new ToolLauncher(myContainer, ToolLauncher.homeTabLabel)));
+			row++;
+
 			Xdstools2.addtoMainMenu(addHTML("<h3>Queries & Retrieves</h3>"));
 			row++;
 
@@ -265,11 +276,6 @@ public class HomeTab extends GenericQueryTab {
 	}
 
 
-	@Override
-	public void onTabLoad(TabContainer container, boolean select,
-						  String eventName) {
-
-	}
 
 
 

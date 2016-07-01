@@ -62,6 +62,7 @@ public class ToolLauncher implements ClickHandler {
 	final static public String igTestsTabLabel = "Initiating Gateway Tests";
 	final static public String rgTestsTabLabel = "Responding Gateway Tests";
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
+	final static public String homeTabLabel = "Home";
 
 
 
@@ -111,6 +112,7 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(imagingDocumentSetRetrieveTabLabel, "RetIDS", "RetIDS"));
 		tools.add(new ToolDef(testLogLabel, "TestLog", "TestLog"));
 		tools.add(new ToolDef(toolConfigTabLabel, "ToolkitConf", "ToolkitConf"));
+		tools.add(new ToolDef(homeTabLabel, "Home", "Home"));
 	}
 
 	private ToolDef getToolDef(String requestedName) {
@@ -166,6 +168,7 @@ public class ToolLauncher implements ClickHandler {
 		if (menuName.equals(repositoryTabLabel)) return new RepositoryListingTab();
 		if (menuName.equals(pidFavoritesLabel)) return new PidFavoritesTab();
 		if (menuName.equals(testsOverviewTabLabel)) return new TestsOverviewTab();
+		if (menuName.equals(homeTabLabel)) return new HomeTab();
 		return null;
 	}
 

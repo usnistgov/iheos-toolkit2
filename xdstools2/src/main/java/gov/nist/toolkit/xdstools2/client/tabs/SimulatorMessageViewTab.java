@@ -432,7 +432,6 @@ public class SimulatorMessageViewTab extends TabbedWindow {
 						results.add(result);
 						MetadataInspectorTab tab = new MetadataInspectorTab();
 						tab.setResults(results);
-						Xdstools2.DEBUG("simdb is " + getSimid().toString());
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
 						tab.setToolkitService(toolkitService);

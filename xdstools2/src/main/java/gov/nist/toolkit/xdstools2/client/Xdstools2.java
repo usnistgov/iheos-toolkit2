@@ -187,15 +187,15 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		wrapper.setCellWidth(left, "1%");
 		wrapper.setCellWidth(right, "1%");
 
-		tabPanel.add(wrapper, title);
+		tabPanel.add(wrapper, buildTabWidget(title, w));
 
-		int index = tabPanel.getWidgetCount() - 1;
 
 		if (select)
-			tabPanel.selectTab(index);
+			selectLastTab();
 		resizeToolkit();
 
 		try {
+			int index = tabPanel.getWidgetCount() - 1;
 			if (getIntegrationEventBus()!=null && index>0) {
 				getIntegrationEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
 			}
@@ -206,73 +206,49 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 
 	static boolean newHomeTab = false;
 
+	private void selectLastTab() {
+		int index = tabPanel.getWidgetCount() - 1;
+		if (index > -1)
+			tabPanel.selectTab(index);
+	}
+
+	Widget buildTabWidget(String title, final Widget content) {
+		HorizontalPanel panel = new HorizontalPanel();
+		Anchor x = new Anchor("X");
+		x.setStyleName("roundedButton1");
+		x.addClickHandler(new ClickHandler() {
+							  @Override
+							  public void onClick(ClickEvent clickEvent) {
+								  content.getParent().removeFromParent();
+								  selectLastTab();
+							  }
+						  }
+		);
+		panel.add(x);
+		panel.add(new HTML(title));
+		return panel;
+	}
+
+	@Deprecated
     static public TkProps tkProps() {
         return props;
     }
 
-	public void loadTkProps() {
-		if (ht == null) {
-			ht = new HomeTab();
-			newHomeTab = true;
-		} else {
-			newHomeTab = false;
-		}
+	/**
+	 * This is the old entry point method.
+	 * It's now being used as an initialization method the GUI and the environment
+	 */
+	void run() {
+		ht = new HomeTab();
+		onModuleLoad2();
 
-		ht.toolkitService.getTkProps(new AsyncCallback<TkProps>() {
-            @Override
-            public void onFailure(Throwable arg0) {
-                new PopupMessage("Load of TkProps failed");
-                if (newHomeTab)
-                    onModuleLoad2(); // continue so admin can fix the config
-            }
-
-            @Override
-            public void onSuccess(TkProps arg0) {
-                props = arg0;
-                if (newHomeTab) {
-                    onModuleLoad2();
-                    ht.toolkitService.getDefaultEnvironment(new AsyncCallback<String>() {
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                        }
-
-                        @Override
-                        public void onSuccess(String s) {
-                            // FIXME What is the purpose of the call if nothing happens? There should be comments
-                            // or logs of what's going on
-                            ht.toolkitService.setEnvironment(s, new AsyncCallback() {
-                                @Override
-                                public void onFailure(Throwable throwable) {
-                                }
-
-                                @Override
-                                public void onSuccess(Object o) {
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
+		testSessionManager.load();
+		loadServletContext();
 	}
 
-	final ListBox debugMessages = new ListBox();
-	static public void DEBUG(String msg) {
-		ME.debugMessages.addItem(msg);
-		ME.debugMessages.setSelectedIndex(ME.debugMessages.getItemCount()-1);
-	}
-
-	public String servletContextName;
 	public String toolkitName;
 
-    /**
-     * This is the old entry point method.
-	 * It's now being used as an initialization method the GUI and the environment
-     */
-    public void run() {
-        loadTkProps();
-        testSessionManager.load();
-
+	private void loadServletContext() {
 		ht.toolkitService.getServletContextName(new AsyncCallback<String>() {
 			@Override
 			public void onFailure(Throwable throwable) {
@@ -281,32 +257,13 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 
 			@Override
 			public void onSuccess(String s) {
-				servletContextName = s;
-				if (s != null && !s.equals("") && s.startsWith("/"))
-					toolkitName = s.substring(1);
-				else
-					toolkitName = s;
+				toolkitName = s;
 			}
 		});
     }
 
 	private void onModuleLoad2() {
 		buildWrapper();
-
-		if (UIDebug) {
-			RootPanel.get().insert(uiDebugPanel, 0);
-			uiDebugPanel.add(new HTML("<b>DEBUG</b>"));
-			debugMessages.setVisibleItemCount(7);
-			debugMessages.setWidth("1000px");
-			uiDebugPanel.add(debugMessages);
-			Button debugClearButton = new Button("Clear", new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent clickEvent) {
-					debugMessages.clear();
-				}
-			});
-			uiDebugPanel.add(debugClearButton);
-		}
 
 		ht.onTabLoad(this, false, null);
 

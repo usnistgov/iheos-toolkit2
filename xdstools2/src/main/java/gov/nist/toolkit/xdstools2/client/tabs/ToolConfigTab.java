@@ -191,7 +191,6 @@ public class ToolConfigTab extends GenericQueryTab {
 
 		public void onSuccess(String result) {
 			new PopupMessage("Properties saved");
-			Xdstools2.getInstance().loadTkProps();  // this may now be accessible if it wasn't before
 		}
 		
 	};

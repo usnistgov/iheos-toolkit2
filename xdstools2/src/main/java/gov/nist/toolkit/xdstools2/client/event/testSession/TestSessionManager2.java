@@ -41,7 +41,6 @@ public class TestSessionManager2 {
                     case SELECT:
                         currentTestSession = event.value;
                         toCookie(event.value);
-                        Xdstools2.DEBUG("testSession is " + currentTestSession);
                 }
             }
         });
