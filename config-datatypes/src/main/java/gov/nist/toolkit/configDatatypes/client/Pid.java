@@ -31,6 +31,7 @@ public class Pid implements Serializable {
 
     public String getAd() { return ad; }
     public String getId() { return id; }
+    public void setId(String id){this.id=id;}
 
     @Override
     public boolean equals(Object o) {
@@ -96,4 +97,7 @@ public class Pid implements Serializable {
     // String representation - as required in protocols
     public String asString() { return toString(); }
 
+    public String getExtra() {
+        return extra;
+    }
 }

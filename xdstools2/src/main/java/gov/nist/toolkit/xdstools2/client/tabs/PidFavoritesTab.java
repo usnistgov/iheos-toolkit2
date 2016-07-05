@@ -10,7 +10,9 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import com.google.gwt.view.client.*;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.configDatatypes.client.PidSet;
@@ -25,23 +27,26 @@ import java.util.*;
  *
  */
 public class PidFavoritesTab extends GenericQueryTab {
-    final MultiSelectionModel<Pid> selectionModel=new MultiSelectionModel<Pid>();
-    CellTable<Pid> favoritesListBox = new CellTable<>();
-    ListDataProvider<Pid> model=new ListDataProvider<Pid>();
-    TextArea pidBox = new TextArea();
-    VerticalPanel assigningAuthorityPanel = new VerticalPanel();
-    HTML selectedPids = new HTML();
-
-    // model
-    Set<Pid> favoritePids = new HashSet<>();  // the database of values
-    List<String> assigningAuthorities = null;
     static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
+    static CoupledTransactions couplings = new CoupledTransactions();
 
     static {
         transactionTypes.add(TransactionType.REGISTER);
     }
 
-    static CoupledTransactions couplings = new CoupledTransactions();
+    // table selection tool
+    final MultiSelectionModel<Pid> selectionModel = new MultiSelectionModel<Pid>();
+    // actual table widget
+    CellTable<Pid> favoritesListBox = new CellTable<>();
+    // table data model
+    ListDataProvider<Pid> model = new ListDataProvider<Pid>();
+
+    VerticalPanel assigningAuthorityPanel = new VerticalPanel();
+    TextArea pidBox = new TextArea();
+    HTML selectedPids = new HTML();
+
+    List<String> assigningAuthorities = null;
+    Map<Button, String> authorityButtons = new HashMap<>();
 
     public PidFavoritesTab() {
         super(new GetDocumentsSiteActorManager());
@@ -65,37 +70,40 @@ public class PidFavoritesTab extends GenericQueryTab {
 
         VerticalPanel favoritesListPanel = new VerticalPanel();
         panel.add(favoritesListPanel);
+
+        // this links the data model with the actual table widget
         model.addDataDisplay(favoritesListBox);
 
-        Column<Pid,String> id= new Column<Pid, String>(new EditTextCell()) {
+        // this is the definition of the table "Patient ID" column (EditTextCell makes edition possible)
+        Column<Pid, String> id = new Column<Pid, String>(new EditTextCell()) {
             @Override
             public String getValue(Pid pid) {
                 return pid.toString();
             }
         };
+        // this is what applies (/saves) the changes made to the pid when exiting edition mode
         id.setFieldUpdater(new FieldUpdater<Pid, String>() {
             @Override
             public void update(int i, Pid pid, String s) {
-                pid.setId(s.split("\\^\\^\\^&"+pid.getAd())[0]);
-//                model.getList().get(i).setId(s.split(pid.getAd())[0]);
-//                System.out.println(s);
-//                model.refresh();
+                pid.setId(s.split("\\^\\^\\^&" + pid.getAd())[0]);
+                model.getList().get(i).setId(s.split("\\^\\^\\^&" + pid.getAd())[0]);
                 toCookie();
             }
         });
         favoritesListBox.setColumnWidth(id, 75.0, Unit.PCT);
-        favoritesListBox.addColumn(id,"Patient ID");
+        favoritesListBox.addColumn(id, "Patient ID");
 
-        Column<Pid,String> name=new Column<Pid,String>(new EditTextCell()){
-
+        // this is the definition of the table "name" column (EditTextCell makes edition possible)
+        Column<Pid, String> name = new Column<Pid, String>(new EditTextCell()) {
             @Override
             public String getValue(Pid pid) {
-                if (pid.getExtra()==null || pid.getExtra().isEmpty()){
+                if (pid.getExtra() == null || pid.getExtra().isEmpty()) {
                     return "   ";
                 }
                 return pid.getExtra();
             }
         };
+        // this is what applies(/saves) the changes made to "name" when exiting edition mode
         name.setFieldUpdater(new FieldUpdater<Pid, String>() {
             @Override
             public void update(int i, Pid pid, String s) {
@@ -104,11 +112,12 @@ public class PidFavoritesTab extends GenericQueryTab {
             }
         });
         favoritesListBox.setColumnWidth(name, 25.0, Unit.PCT);
-        favoritesListBox.addColumn(name,"Name");
+        favoritesListBox.addColumn(name, "Name");
 
         favoritesListBox.setRowCount(10);
-
         favoritesListBox.setWidth("600px");
+
+        // this handle selection change in the grid (MultiSelectionModel<Pid>)
         favoritesListBox.setSelectionModel(selectionModel);
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
@@ -117,10 +126,8 @@ public class PidFavoritesTab extends GenericQueryTab {
             }
         });
         favoritesListPanel.add(new HTML("Favorite Patient IDs"));
-        ScrollPanel p=new ScrollPanel(favoritesListBox);
+        ScrollPanel p = new ScrollPanel(favoritesListBox);
         p.setHeight("350px");
-//        p.add(favoritesListBox);
-//        favoritesListBox.addStyleName("borderedTable");
         favoritesListPanel.add(p);
 
         VerticalPanel pidPanel = new VerticalPanel();
@@ -171,15 +178,12 @@ public class PidFavoritesTab extends GenericQueryTab {
         setShowInspectButton(false);
         topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
                 "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
-                "for private testing only.</p>" ));
+                "for private testing only.</p>"));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 
-
-        fromCookie();
+        model.setList(new LinkedList<Pid>(fromCookie()));
         updateFavoritesFromModel();
         loadAssigningAuthorities();
-        addToFavorites(favoritePids);
-        model.setList(new LinkedList<Pid>(favoritePids));
     }
 
     @Override
@@ -188,21 +192,19 @@ public class PidFavoritesTab extends GenericQueryTab {
     }
 
     void toCookie() {
-        Cookies.setCookie(CookieManager.FAVORITEPIDSCOOKIENAME, new PidSet(favoritePids).asParsableString());
+        Cookies.setCookie(CookieManager.FAVORITEPIDSCOOKIENAME, new PidSet(new HashSet(model.getList())).asParsableString());
     }
 
-    void fromCookie() {
-        favoritePids = new PidSet(Cookies.getCookie(CookieManager.FAVORITEPIDSCOOKIENAME)).get();
+    Set<Pid> fromCookie() {
+        return new PidSet(Cookies.getCookie(CookieManager.FAVORITEPIDSCOOKIENAME)).get();
     }
 
     void addToFavorites(Set<Pid> pids) {
-        favoritePids.addAll(pids);
         model.getList().addAll(pids);
         updateFavoritesFromModel();
     }
 
     void addToFavorities(Pid pid) {
-        favoritePids.add(pid);
         model.getList().add(pid);
         updateFavoritesFromModel();
     }
@@ -221,10 +223,7 @@ public class PidFavoritesTab extends GenericQueryTab {
         model.refresh();
         favoritesListBox.redraw();
         toCookie();
-//        model.setList(new LinkedList<Pid>(favoritePids));
     }
-
-    Map<Button, String> authorityButtons = new HashMap<>();
 
     void updateAssigningAuthorities() {
         assigningAuthorityPanel.clear();
@@ -264,13 +263,9 @@ public class PidFavoritesTab extends GenericQueryTab {
     }
 
     void deleteFromFavorites(List<Pid> pids) {
-        List<Pid> deletables = new ArrayList<>();
         for (Pid pid : pids) {
-//            if (favoritePids.contains(pid)) deletables.add(pid);
             model.getList().remove(pid);
-            favoritePids.remove(pid);
         }
-//        favoritePids.removeAll(deletables);
         selectedPids.setHTML("");
         selectionModel.clear();
         updateFavoritesFromModel();
@@ -342,7 +337,6 @@ public class PidFavoritesTab extends GenericQueryTab {
         }
 
     }
-
 
 
 }

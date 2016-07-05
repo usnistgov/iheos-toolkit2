@@ -130,3 +130,11 @@ h3 {
 .menuCollapse:hover {
   background-color: lavender;
 }
+
+.paddedHorizontalPanel {
+  margin-left:20px;
+}
+
+.borderedTable {
+  border:2px solid darkslategray;
+}
