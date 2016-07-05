@@ -214,6 +214,7 @@ public class Installation {
 	}
 
 	public void setServletContextName(String servletContextName) {
+		logger.info("ServletContext initialized to " + servletContextName);
 		this.servletContextName = servletContextName;
 	}
 }
