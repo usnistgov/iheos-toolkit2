@@ -70,6 +70,9 @@ public class SimServlet  extends HttpServlet {
 		Installation.installation().warHome(warHome);
         logger.info("...warHome initialized to " + Installation.installation().warHome());
 
+		Installation.installation().setServletContextName(getServletContext().getContextPath());
+
+
 		patientIdentityFeedServlet = new PatientIdentityFeedServlet();
 		patientIdentityFeedServlet.init(config);
 
