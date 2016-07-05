@@ -162,7 +162,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 //                transactionTypes.add(TransactionType.PROVIDE_AND_REGISTER);
 //                transactionTypes.add(TransactionType.STORED_QUERY);
 //                transactionTypes.add(TransactionType.RETRIEVE);
-//                externalSystemSelectionPanel.add(new SiteSelectionWidget(to, transactionTypes, new CoupledTransactions(), getCurrentTestSession()).build(null, ""));
+//                externalSystemSelectionPanel.add(new siteSelectionWidget(to, transactionTypes, new CoupledTransactions(), getCurrentTestSession()).build(null, ""));
 //            }
 //        });
 
