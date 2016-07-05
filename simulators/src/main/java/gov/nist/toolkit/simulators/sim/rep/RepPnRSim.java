@@ -131,7 +131,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				if (hasSize && !existingSize.equals(sizeStr)) {
 					er.err(XdsErrorCode.Code.XDSRepositoryMetadataError, "DocumentEntry(" + m.getId(eo) + ") has size slot with value " + existingSize + " which disagrees with computed value of " + sizeStr, this, "");
 				}
-				if (hasHash && !existingHash.equals(hash)) {
+				if (hasHash && !existingHash.equalsIgnoreCase(hash)) {
 					er.err(XdsErrorCode.Code.XDSRepositoryMetadataError, "DocumentEntry(" + m.getId(eo) + ") has hash slot with value " + existingHash + " which disagrees with computed value of " + hash, this, "");
 				}
 
