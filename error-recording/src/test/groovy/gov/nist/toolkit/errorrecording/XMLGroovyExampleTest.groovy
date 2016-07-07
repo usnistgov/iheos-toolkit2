@@ -10,6 +10,7 @@ class XMLGroovyExampleTest extends Specification {
 
     def 'My first Test'() {
         setup:'  My setup stuff'
+        // generate basic XML here
 
         when: ' specific setup stuff'
 
