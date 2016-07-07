@@ -1,6 +1,7 @@
 package gov.nist.toolkit.errorrecording
 
 import gov.nist.toolkit.errorrecording.*
+import groovy.xml.XmlUtil
 import spock.lang.Specification
 
 /**
@@ -10,15 +11,16 @@ class XMLGroovyExampleTest extends Specification {
 
     def 'My first Test'() {
         setup:'  My setup stuff'
-        // generate basic XML here
+       // def xmlGenerationTest = new XMLGroovyExample()
+       // xmlGenerationTest.createRecords()
 
         when: ' specific setup stuff'
+       // (books)
+
 
         then: ' conditions for the when part'
-    }
-    //println x
+        // println XmlUtil.serialize(books)
 
-    //def xmlGenerationTest = new XMLGroovyExample()
-   // xmlGenerationTest.hello()
+    }
 
 }
