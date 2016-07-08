@@ -29,6 +29,7 @@ public class StoredDocument implements Serializable {
 		charset = sdi.charset;
 		hash = sdi.hash;
 		size = sdi.size;
+		content = sdi.content;
 	}
 
     void setPathToDocument(String pathToDocument) {

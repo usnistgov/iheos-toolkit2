@@ -641,7 +641,7 @@ public abstract class BasicTransaction  {
 
 	}
 
-	private void parseEndpoint(TransactionType trans) throws Exception {
+	protected void parseEndpoint(TransactionType trans) throws Exception {
 		endpoint = this.s_ctx.getRegistryEndpoint();   // this is busted, always returns null
 		if (endpoint == null || endpoint.equals("") || testConfig.endpointOverride) {			//boolean async = false;
 			if (testConfig.verbose)
@@ -1317,6 +1317,10 @@ public abstract class BasicTransaction  {
 
 		logSoapRequest(soap);
 
+		scanResponseForErrors();
+	}
+
+	protected boolean scanResponseForErrors() throws XdsInternalException {
 		if (s_ctx.getExpectedStatus().size()==1 && s_ctx.getExpectedStatus().get(0).isSuccess()) {
 			RegistryResponseParser registry_response = new RegistryResponseParser(getSoapResult());
 			List<String> errs = registry_response.get_regrep_error_msgs();
@@ -1325,10 +1329,12 @@ public abstract class BasicTransaction  {
                 for (String err : errs)
 				    s_ctx.set_error(err);
 				failed();
+				return false;
 			}
-
 		}
+		return true;
 	}
+
 	boolean soapRequestLogged = false;
 
 	public void logSoapRequest(Soap soap) {

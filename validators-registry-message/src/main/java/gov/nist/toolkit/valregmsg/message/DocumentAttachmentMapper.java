@@ -1,10 +1,10 @@
 package gov.nist.toolkit.valregmsg.message;
 
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.docref.Mtom;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.http.HttpHeader;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
@@ -24,6 +24,10 @@ import java.util.*;
  */
 public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 
+	// A Document is found in optimizedDocumentReferences OR unOptimizedDocuments depending on how it is attached. You
+	// have to look in both to see if a document was part of the message. getAllIds() gets all ids so this is easy.
+
+	// optimizedDocumentReferences is used when Optimized MTOM (XOP) is found.  It
 	// maps DocumentEntry.id to Document.cid
 	//
 	// The Document.cid is used without the cid: prefix
@@ -33,16 +37,16 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
     //      <xop:Include href="cid:1.urn:uuid:1049A8083359E423AE1282249523329@apache.org"
     //          xmlns:xop="http://www.w3.org/2004/08/xop/include" />
     //  </xdsb:Document>
-	Map<String, String> docIds= new HashMap<String, String>();
 
+	// Content is available in another Multipart:part.  This is just the cid.
+	Map<String, String> optimizedDocumentReferences = new HashMap<String, String>();
+
+	// unOptimizedDocuments is used when UnOptimized MTOM (NO XOP) is found.  It
 	// maps DocumentEntry.id to Document contents
-	Map<String, StoredDocumentInt> storedDocuments= new HashMap<String, StoredDocumentInt>();
-//	Map<String, byte[]> docContents = new HashMap<String, byte[]>();
-//	Map<String, String> docContentType = new HashMap<String, String>();
-//	Map<String, String> docCharset = new HashMap<String, String>();
+	Map<String, StoredDocumentInt> unOptimizedDocuments = new HashMap<>();
 
 	// For a particular document, either:
-	//    its id will show up in docIds because it was an XOP optimized attachment
+	//    its id will show up in optimizedDocumentReferences because it was an XOP optimized attachment
 	//    to getRetrievedDocumentsModel the content you need the map of content ids to contents in class MultipartContainer
 	// OR
 	//    its id will show up in docContents because it was an XOP un-optimized content
@@ -50,28 +54,38 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 
 	OMElement xml;
 
-	public StoredDocumentInt getStoredDocumentForDocumentId(String docId) throws Exception {
-		if (storedDocuments.containsKey(docId))
-			return storedDocuments.get(docId);
-		throw new Exception("Document " + docId + " not part of message, available ids are " + storedDocuments.keySet());
+	public StoredDocumentInt getUnOptimizedDocument(String docId) throws Exception {
+		if (unOptimizedDocuments.containsKey(docId))
+			return unOptimizedDocuments.get(docId);
+		throw new Exception("Document " + docId + " not part of message, available ids are " + unOptimizedDocuments.keySet());
 	}
 
-	public Set<String> getIds() {
+	public StoredDocumentInt getUnOptimizedDocumentIfAvailable(String docId) {
+		return unOptimizedDocuments.get(docId);
+	}
+
+	public String getOptimizedDocumentCid(String docId) { return optimizedDocumentReferences.get(docId); }
+
+	/**
+	 * Get all ids, for optimized and non-optimized
+	 * @return
+     */
+	public Set<String> getAllIds() {
 		Set<String> ids = new HashSet<String>();
-		for (String id : storedDocuments.keySet())
+		for (String id : unOptimizedDocuments.keySet())
 			ids.add(id);
-		for (String id : docIds.keySet())
+		for (String id : optimizedDocumentReferences.keySet())
 			ids.add(id);
 		return ids;
 	}
 
-	public String getDocumentContentsIdForDocumentId(String docId) {
-		return docIds.get(docId);
-	}
-
-	public DocumentAttachmentMapper(ValidationContext vc) {
-		super(vc);
-	}
+//	public String getDocumentContentsIdForDocumentId(String docId) {
+//		return optimizedDocumentReferences.get(docId);
+//	}
+//
+//	public DocumentAttachmentMapper(ValidationContext vc) {
+//		super(vc);
+//	}
 
 	public DocumentAttachmentMapper(ValidationContext vc, OMElement xml) {
 		super(vc);
@@ -115,7 +129,7 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 						String aid = cid;
 						if (aid.startsWith("cid:"))
 							aid = aid.substring(4);
-						docIds.put(id, aid);
+						optimizedDocumentReferences.put(id, aid);
 						er.detail("Maps to attachment " + aid);
 					}
 
@@ -142,9 +156,10 @@ public class DocumentAttachmentMapper  extends AbstractMessageValidator {
 					if (base64Contents == null || base64Contents.equals("")) {
 						er.err(XdsErrorCode.Code.XDSRepositoryError, "Document contents not a XOP Include pointing to a separate Part and not inline Base64", this, Mtom.XOP_include);
 					} else {
-						byte[] contents = org.apache.commons.codec.binary.Base64.decodeBase64(base64Contents);
+						byte[] contents = Base64.getDecoder().decode(base64Contents);
+//						byte[] contents = Base64Coder.decode(base64Contents);
 						StoredDocumentInt sd = new StoredDocumentInt();
-						storedDocuments.put(id, sd);
+						unOptimizedDocuments.put(id, sd);
 						sd.content = contents;
 						sd.mimeType = contentType;
 						sd.charset = charset;

@@ -3,12 +3,12 @@ package gov.nist.toolkit.http;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-
-import java.io.IOException;
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 
 public class HttpParserBa {
 
@@ -82,6 +82,18 @@ public class HttpParserBa {
 	public HttpParserBa(HttpServletRequest request, ErrorRecorder er) throws IOException, HttpParseException {
 		this.er = er;
 		init(request);
+	}
+
+	public HttpParserBa(Map<String, List<String>> headers, byte[] body) throws HttpParseException {
+		for (String name : headers.keySet()) {
+			for (String value : headers.get(name)) {
+				message.addHeader(name, value);
+			}
+		}
+
+		message.body = body;
+
+		tryMultipart();
 	}
 
 	public void init(HttpServletRequest request) throws IOException, HttpParseException {
@@ -222,6 +234,11 @@ public class HttpParserBa {
 			message.body = subarray(input, to); //input.substring(to);
 		}
 
+		initContentType();
+
+	}
+
+	private void initContentType() throws ParseException {
 		String contentTypeString = message.getHeader("content-type");
 		HttpHeader contentTypeHeader = new HttpHeader(contentTypeString);
 
@@ -238,7 +255,6 @@ public class HttpParserBa {
 				er.detail(getPartLabel() + "Content-Type header is " + contentTypeString);
 			}
 		}
-
 	}
 
 	public boolean isTypicalMessage() {
