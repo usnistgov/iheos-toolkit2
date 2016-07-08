@@ -71,7 +71,15 @@ public class Result  implements IsSerializable, Serializable {
 		return buf.toString();
 	}
 	
-	public boolean passed() { return pass && (assertions == null || !assertions.isFailed()); }
+	public boolean passed() { return pass && stepsPassed() && (assertions == null || !assertions.isFailed()); }
+
+	private boolean stepsPassed() {
+		for (StepResult sr : stepResults) {
+			if (!sr.status)
+				return false;
+		}
+		return true;
+	}
 	
 	public void setTestInstance(TestInstance testInstance) { this.testInstance = testInstance; }
 	

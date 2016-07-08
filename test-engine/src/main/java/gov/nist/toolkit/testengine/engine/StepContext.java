@@ -1,31 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.testengine.transactions.BasicTransaction;
-import gov.nist.toolkit.testengine.transactions.DsubPublishTransaction;
-import gov.nist.toolkit.testengine.transactions.DsubSubscribeTransaction;
-import gov.nist.toolkit.testengine.transactions.EchoV2Transaction;
-import gov.nist.toolkit.testengine.transactions.EchoV3Transaction;
-import gov.nist.toolkit.testengine.transactions.EpsosTransaction;
-import gov.nist.toolkit.testengine.transactions.GenericSoap11Transaction;
-import gov.nist.toolkit.testengine.transactions.IGQTransaction;
-import gov.nist.toolkit.testengine.transactions.ImagingDocSetRetrieveTransaction;
-import gov.nist.toolkit.testengine.transactions.MPQTransaction;
-import gov.nist.toolkit.testengine.transactions.MockTransaction;
-import gov.nist.toolkit.testengine.transactions.MuTransaction;
-import gov.nist.toolkit.testengine.transactions.NullTransaction;
-import gov.nist.toolkit.testengine.transactions.PatientIdentityFeedTransaction;
-import gov.nist.toolkit.testengine.transactions.ProvideAndRegisterTransaction;
-import gov.nist.toolkit.testengine.transactions.RegisterODDETransaction;
-import gov.nist.toolkit.testengine.transactions.RegisterTransaction;
-import gov.nist.toolkit.testengine.transactions.RetrieveTransaction;
-import gov.nist.toolkit.testengine.transactions.SimpleTransaction;
-import gov.nist.toolkit.testengine.transactions.SocketTransaction;
-import gov.nist.toolkit.testengine.transactions.SqlQueryTransaction;
-import gov.nist.toolkit.testengine.transactions.StoredQueryTransaction;
-import gov.nist.toolkit.testengine.transactions.XCQTransaction;
-import gov.nist.toolkit.testengine.transactions.XDRProvideAndRegisterTransaction;
-import gov.nist.toolkit.testengine.transactions.XcpdTransaction;
+import gov.nist.toolkit.testengine.transactions.*;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -145,7 +121,13 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		setStatus(false);
 		error(test_step_output, msg);
 	}
-	
+
+	public  void set_error(List<String> msgs) throws XdsInternalException {
+		setStatus(false);
+		for (String msg : msgs)
+			error(test_step_output, msg);
+	}
+
 	public void set_fault(String code, String msg) throws XdsInternalException {
 		setStatus(false);
 		fault(test_step_output, code, msg);
@@ -371,8 +353,14 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				else if (instruction_name.equals("ProvideAndRegisterTransaction")) 
 				{
 					transaction = new ProvideAndRegisterTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("XDRProvideAndRegisterTransaction")) 
+				}
+				else if (instruction_name.equals("HttpTransaction"))
+				{
+					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
+					hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
+					transaction = hTransaction;
+				}
+				else if (instruction_name.equals("XDRProvideAndRegisterTransaction"))
 				{
 					transaction = new XDRProvideAndRegisterTransaction(this, instruction, instruction_output);
 				} 
