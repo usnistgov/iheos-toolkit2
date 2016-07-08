@@ -1,11 +1,5 @@
 package gov.nist.toolkit.common.coder;
 
-import gov.nist.toolkit.utilities.io.Io;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 // This approach should be used for dealing with utf-8 content.
@@ -48,6 +42,7 @@ import java.io.UnsupportedEncodingException;
 *  &nbsp; New method decode(String) added.<br>
 */
 
+@Deprecated
 public class Base64Coder {
 
 // Mapping table from 6-bit nibbles to Base64 characters.
