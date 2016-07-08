@@ -56,13 +56,14 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 			MetadataContainer metaCon = (MetadataContainer) common.getMessageValidatorIfAvailable(MetadataContainer.class);
 			m = metaCon.getMetadata();
 
+			// DocumentAttachmentMapper should always be scheduled to run before this class, MultipartContainer too.
 			DocumentAttachmentMapper dam = (DocumentAttachmentMapper) common.getMessageValidatorIfAvailable(DocumentAttachmentMapper.class);
-			MultipartContainer mc = (MultipartContainer) common.getMessageValidatorIfAvailable(MultipartContainer.class);
+			MultipartContainer multipartContainer = (MultipartContainer) common.getMessageValidatorIfAvailable(MultipartContainer.class);
 
 			Map<String, StoredDocument> sdMap = new HashMap<String, StoredDocument>();
 
 			// verify that all attached documents are repesented in metadata by a DocumentEntry
-			Set<String> idsWithAttachments = dam.getIds();
+			Set<String> idsWithAttachments = dam.getAllIds();
 			for (String id : idsWithAttachments) {
 				boolean foundit = false;
 				for (OMElement eo : m.getExtrinsicObjects()) {
@@ -84,30 +85,30 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 				int size;
 				String hash;
 				StoredDocument storedDocument = null;
-				try {
-					storedDocument = new StoredDocument(dam.getStoredDocumentForDocumentId(eoId));  // exception if not found
+
+				StoredDocumentInt sdi = dam.getUnOptimizedDocumentIfAvailable(eoId);
+				if (sdi != null) { // UnOptimized
+					storedDocument = new StoredDocument(sdi);
 					storedDocument.setPathToDocument(common.db.getRepositoryDocumentFile(uid).toString());
-					sdMap.put(uid, storedDocument);
+					sdMap.put(uid, storedDocument);  // all documents end up here so they can be flushed to sim
 					storedDocument.setPathToDocument(repositoryFile.toString());
 					storedDocument.setUid(uid);
-					byte[] contents = storedDocument.content;
 
+					// calculate size and hash
+					byte[] contents = storedDocument.content;
 					size = contents.length;
 					hash = new Hash().compute_hash(contents);
 					logger.info("Size (at Repository) is " + size);
 					logger.info("Hash (at Repository) is " + hash);
 
-					sdMap.put(uid, storedDocument);
-
-				} catch (Exception e) {
-					// wasn't available through DocumentAttachmentMapper, try MultipartContainer
-					String docContentId = dam.getDocumentContentsIdForDocumentId(eoId);
-					StoredDocumentInt sdi = mc.getContent(docContentId);
+				} else {  // Optimized
+					String cid = dam.getOptimizedDocumentCid(eoId);
+					sdi = multipartContainer.getContent(cid);
 					if (sdi != null) {
 						storedDocument = new StoredDocument(sdi);
 						storedDocument.setUid(uid);
 						storedDocument.setPathToDocument(common.db.getRepositoryDocumentFile(uid).toString());
-						storedDocument.content = mc.getContent(docContentId).content;
+						storedDocument.content = sdi.content;
 						sdMap.put(uid, storedDocument);
 						size = storedDocument.content.length;
 						hash = new Hash().compute_hash(storedDocument.content);
@@ -118,6 +119,7 @@ public class RepPnRSim extends TransactionSimulator implements MetadataGeneratin
 						throw new XDSMissingDocumentException("Document contents for document " + eoId + " not available in message", Mtom.XOP_example2);
 					}
 				}
+
 
 				// add size and hash attributes. Error if they exist and disagree.
 

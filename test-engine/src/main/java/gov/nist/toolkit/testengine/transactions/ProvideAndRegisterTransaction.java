@@ -1,13 +1,19 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
+import gov.nist.toolkit.registrymetadata.Metadata;
+import gov.nist.toolkit.registrymetadata.MetadataParser;
+import gov.nist.toolkit.soap.axis2.Swa;
+import gov.nist.toolkit.testengine.engine.StepContext;
+import gov.nist.toolkit.utilities.io.Io;
+import gov.nist.toolkit.utilities.xml.Util;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.HttpCodeException;
+import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMText;
@@ -24,23 +30,15 @@ import org.apache.axis2.client.ServiceClient;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.wsdl.WSDLConstants;
 
-import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
-import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.registrymetadata.MetadataParser;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.soap.axis2.Swa;
-import gov.nist.toolkit.testengine.engine.StepContext;
-import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.HttpCodeException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ProvideAndRegisterTransaction extends RegisterTransaction {
-	boolean use_xop = true;
+	boolean use_mtom = true;
 	HashMap<String, String> document_id_filenames = new HashMap<String, String>();
 
 	public ProvideAndRegisterTransaction(StepContext s_ctx, OMElement instruction, OMElement instruction_output) {
@@ -84,7 +82,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 
 				javax.activation.DataHandler dataHandler = new javax.activation.DataHandler(new FileDataSource(filename));
 				OMText t = MetadataSupport.om_factory.createOMText(dataHandler, true);
-				t.setOptimize(use_xop);
+				t.setOptimize(use_mtom);
 				OMElement document = MetadataSupport.om_factory.createOMElement("Document", MetadataSupport.xdsB);
 				document.addAttribute("id", id, null);
 				document.addChild(t);
@@ -101,7 +99,7 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 				OMElement result = null;
 
 //				setMetadata(body);
-				useMtom = use_xop;
+				useMtom = use_mtom;
 				useAddressing = true;
 
 				soapCall(body);
@@ -339,8 +337,8 @@ public class ProvideAndRegisterTransaction extends RegisterTransaction {
 		else if (part_name.equals("XDSa")) {
 			xds_version = BasicTransaction.xds_a;
 		}
-		else if (part_name.equals("NoXOP")) {
-			this.use_xop = false;
+		else if (part_name.equals("NoMTOM")) {
+			this.use_mtom = false;
 		}
 		else {
 			parseBasicInstruction(part);
