@@ -54,6 +54,7 @@ class HTTPTransactionSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
         server.stop()
         ListenerFactory.terminateAll()
+        api.deleteSimulatorIfItExists(simId)
     }
 
     TestInstance testId = new TestInstance("PnrXop")

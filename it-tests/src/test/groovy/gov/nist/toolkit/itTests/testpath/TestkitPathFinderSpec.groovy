@@ -20,9 +20,9 @@ class TestkitPathFinderSpec extends ToolkitSpecification{
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'BR14^^^&1.2.360&ISO'
-    String reg = 'test__rep'
-    SimId simId = new SimId(reg)
+    @Shared String patientId = 'BR14^^^&1.2.360&ISO'
+    @Shared String reg = 'test__rep'
+    @Shared SimId simId = new SimId(reg)
     @Shared String testSession = 'test';
 
     def setupSpec() {   // one time setup done when class launched
@@ -36,8 +36,6 @@ class TestkitPathFinderSpec extends ToolkitSpecification{
 
         new BuildCollections().init(null)
 
-        spi.delete('rep', testSession)
-
         spi.create(
                 'rep',
                 testSession,
@@ -46,8 +44,10 @@ class TestkitPathFinderSpec extends ToolkitSpecification{
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+        spi.delete('rep', testSession)
         server.stop()
         ListenerFactory.terminateAll()
+        api.deleteSimulatorIfItExists(simId)
     }
 
     def setup() {

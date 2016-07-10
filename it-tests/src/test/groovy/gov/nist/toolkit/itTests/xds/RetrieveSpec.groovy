@@ -22,9 +22,9 @@ class RetrieveSpec extends ToolkitSpecification {
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'SR7^^^&1.2.260&ISO'
-    String reg = 'sunil__rr'
-    SimId simId = new SimId(reg)
+    @Shared String patientId = 'SR7^^^&1.2.260&ISO'
+    @Shared String reg = 'sunil__rr'
+    @Shared SimId simId = new SimId(reg)
     @Shared String testSession = 'sunil'
     @Shared String repUid = ''
 
@@ -57,6 +57,7 @@ class RetrieveSpec extends ToolkitSpecification {
 //        System.gc()
         server.stop()
         ListenerFactory.terminateAll()
+        api.deleteSimulatorIfItExists(simId)
     }
 
     def setup() {
