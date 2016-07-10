@@ -115,55 +115,13 @@ public abstract class ToolWindow {
 		addToolHeader(container, panel, helpHTML);
 	}
 
-	//	// must be called after addToolHeader which initializes the environment
-	//	protected void addSigninButton(VerticalPanel vpanel) {
-	//		final VerticalPanel panel = vpanel;
-	//		
-	//		Hyperlink signin = new Hyperlink();
-	//		signin.setText("[Sign in]");
-	//		signin.setTitle("Sign-in allows editing of configuration");
-	//		menuPanel.add(signin);
-	//		
-	//		signin.addClickHandler(new ClickHandler() {
-	//
-	//			public void onClick(ClickEvent event) {
-	//				new AdminPasswordDialogBox(panel);
-	//			}
-	//			
-	//		});
-	//	}
-
 	// all panels getRetrievedDocumentsModel a close button except the home panel
 	protected void addToolHeader(TabContainer container, VerticalPanel topPanel, String helpHTML) {
 
-		final VerticalPanel myPanel = topPanel;
-		final TabPanel tabPanel = container.getTabPanel();
+//		final VerticalPanel myPanel = topPanel;
+//		final TabPanel tabPanel = container.getTabPanel();
 
 		this.helpHTML = (helpHTML == null) ? "No Help Available" : helpHTML;
-
-//		Anchor close = new Anchor();
-//		close.setTitle("Close this tab");
-//		close.setText("[close]");
-////		if (Xdstools2.getInstance().toolkitName.equals(GWT.getModuleName())) // Hide this from V3 module
-//			menuPanel.add(close);
-//
-//		close.addClickHandler(new ClickHandler() {
-//
-//			public void onClick(ClickEvent event) {
-//				myPanel.getParent().removeFromParent();
-//
-//				try {
-//					tabPanel.selectTab(tabPanel.getWidgetCount() - 1);
-//				} catch (Exception e) {
-//				}
-//
-//				if (environmentManager != null)
-//					environmentManager.close();
-//				environmentManager = null;
-//			}
-//
-//		});
-
 
 		HTML help = new HTML();
 		help.setHTML("<a href=\"" + "site/tools/" +  getWindowShortName()  + ".html" + "\" target=\"_blank\">" +  "[" + "help" + "]" + "</a>");
