@@ -9,18 +9,28 @@ import spock.lang.Specification
  */
 class XMLGroovyExampleTest extends Specification {
 
-    def 'My first Test'() {
-        setup:'  My setup stuff'
-       // def xmlGenerationTest = new XMLGroovyExample()
-       // xmlGenerationTest.createRecords()
+        def 'Generate XML'() {
 
-        when: ' specific setup stuff'
-       // (books)
+            setup:
+            XMLGroovyExample ex = new XMLGroovyExample()
 
+            when:
+            def res = ex.generateXml()
+            println(res)
 
-        then: ' conditions for the when part'
-        // println XmlUtil.serialize(books)
-
+            then:
+            res == "<people>\n" +
+                    "  <person>\n" +
+                    "    <firstName>John</firstName>\n" +
+                    "    <lastName>Doe</lastName>\n" +
+                    "    <age>25</age>\n" +
+                    "  </person>\n" +
+                    "  <person>\n" +
+                    "    <firstName>Jane</firstName>\n" +
+                    "    <lastName>Smith</lastName>\n" +
+                    "    <age>31</age>\n" +
+                    "  </person>\n" +
+                    "</people>"
+        }
     }
 
-}
