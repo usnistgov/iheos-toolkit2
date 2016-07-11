@@ -156,6 +156,7 @@ public interface ToolkitService extends RemoteService  {
 	 List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
 	
 	 List<String> getSiteNamesWithRG() throws Exception;
+    List<String> getSiteNamesWithRIG() throws Exception;
 	 List<String> getSiteNamesWithIDS() throws Exception;
 	 List<String> getSiteNamesByTranType(String transactionType) throws Exception;
 

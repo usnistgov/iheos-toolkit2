@@ -106,6 +106,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
 	public List<String> getActorTypeNames()  throws NoServletSessionException { return siteServiceManager.getActorTypeNames(session().getId()); }
 	public List<String> getSiteNamesWithRG() throws Exception { return siteServiceManager.getSiteNamesWithRG(session().getId()); }
+   public List<String> getSiteNamesWithRIG() throws Exception { return siteServiceManager.getSiteNamesWithRIG(session().getId()); }
    public List<String> getSiteNamesWithIDS() throws Exception { return siteServiceManager.getSiteNamesWithIDS(session().getId()); }
 
 	@Override
