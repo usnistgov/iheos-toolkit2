@@ -45,6 +45,10 @@ public class TestStepLogContent  implements Serializable {
 	String outHeader = null;
 	String rootString;
 
+	public String getId() {
+		return id;
+	}
+
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 
@@ -212,7 +216,7 @@ public class TestStepLogContent  implements Serializable {
 		return errors;
 	}
 
-	public List<String> getErrors() throws Exception {
+	public List<String> getErrors()  {
 		return errors;
 	}
 

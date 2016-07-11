@@ -51,7 +51,7 @@ public class Report implements Serializable {
 		return buf.toString();
 	}
 
-	static List<Report> parseReports(OMElement ele) throws XdsInternalException {
+	static public List<Report> parseReports(OMElement ele) throws XdsInternalException {
 		List<Report> reports = new ArrayList<Report>();
 
 		for (OMElement rep : XmlUtil.childrenWithLocalName(ele, "Report")) {

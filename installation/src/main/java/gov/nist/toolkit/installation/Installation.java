@@ -88,13 +88,14 @@ public class Installation {
         propertyServiceManager();  // initialize
 		if (externalCache == null) // this can be different in a unit test situation
 			externalCache = new File(propertyServiceManager().getPropertyManager().getExternalCache());
+		logger.info("Installation: External Cache set to " + externalCache);
         logger.info("Toolkit running at " + propertyServiceManager().getToolkitHost() + ":" + propertyServiceManager().getToolkitPort());
 	}
 
 	public File externalCache() { return externalCache; }
 	protected void externalCache(File externalCache) {
 			this.externalCache = externalCache;
-        logger.info("V2 Installation: External Cache set to " + externalCache);
+        logger.info("Installation: External Cache set to " + externalCache);
 		try {
 			tkProps = TkLoader.tkProps(installation().getTkPropsFile()); //TkLoader.tkProps(new File(Installation.installation().externalCache() + File.separator + "tk_props.txt"));
 		} catch (Exception e) {

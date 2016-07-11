@@ -31,6 +31,7 @@
     <inherits name="gov.nist.toolkit.actorfactory.actorfactory"/>
     <inherits name="gov.nist.toolkit.http.http"/>
     <inherits name="gov.nist.toolkit.configDatatypes.datatypes"/>
+    <inherits name="gov.nist.toolkit.testenginelogging.testenginelogging"/>
 
 
     <!-- Specify the app entry point class.                         -->

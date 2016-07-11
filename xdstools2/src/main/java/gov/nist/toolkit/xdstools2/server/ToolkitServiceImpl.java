@@ -31,6 +31,7 @@
 	import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 	import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 	import gov.nist.toolkit.testengine.scripts.CodesUpdater;
+	import gov.nist.toolkit.testenginelogging.client.TestOverviewDTO;
 	import gov.nist.toolkit.tk.TkLoader;
     import gov.nist.toolkit.tk.client.TkProps;
 	import gov.nist.toolkit.validatorsSoapMessage.factories.SoapMessageValidatorFactory;
@@ -223,7 +224,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      * @throws Exception is something goes wrong
      */
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
-	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
+	public TestOverviewDTO getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
 		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}

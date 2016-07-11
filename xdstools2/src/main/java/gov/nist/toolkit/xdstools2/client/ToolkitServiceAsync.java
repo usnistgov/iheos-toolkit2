@@ -17,6 +17,7 @@ import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testenginelogging.client.TestOverviewDTO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -49,7 +50,7 @@ public interface ToolkitServiceAsync {
 	void getDashboardRegistryData(AsyncCallback<List<RegistryStatus>> callback);
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
-	void getLogContent(String sessionName, TestInstance testInstance, AsyncCallback<List<Result>> callback);
+	void getLogContent(String sessionName, TestInstance testInstance, AsyncCallback<TestOverviewDTO> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);

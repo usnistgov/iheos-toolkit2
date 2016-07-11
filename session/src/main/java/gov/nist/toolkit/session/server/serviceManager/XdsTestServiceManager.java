@@ -22,10 +22,8 @@ import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.LogMap;
-import gov.nist.toolkit.testenginelogging.TestDetails;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.*;
+import gov.nist.toolkit.testenginelogging.client.TestOverviewDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
@@ -289,15 +287,13 @@ public class XdsTestServiceManager extends CommonService {
 
 		List<TestInstance> testInstances = new ArrayList<TestInstance>();
 
-		for (File area : sessionDir.listFiles()) {
-			if (!area.isDirectory())
-				continue;
-			for (File test : area.listFiles()) {
+
+			for (File test : sessionDir.listFiles()) {
 				if (!test.isDirectory())
 					continue;
 				testInstances.add(new TestInstance(test.getName()));
 			}
-		}
+
 
 		return testInstances;
 	}
@@ -312,8 +308,10 @@ public class XdsTestServiceManager extends CommonService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception {
+	public TestOverviewDTO getLogContent(String sessionName, TestInstance testInstance) throws Exception {
 		logger.debug(session.id() + ": " + "getLogContent(" + testInstance + ")");
+
+		testInstance.setUser(sessionName);
 
 		File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
 
@@ -340,12 +338,15 @@ public class XdsTestServiceManager extends CommonService {
 		TestInstance logid = newTestLogId();
 
         //  -  why is a method named getLogContent doing a WRITE???????
-		session.transactionSettings.logRepository.logOut(logid, lm);
+		if (session.transactionSettings.logRepository != null)
+			session.transactionSettings.logRepository.logOut(logid, lm);
 //		session.saveLogMapInSessionCache(lm, logid);
 
-		Result result = buildResult(testDetailsList, logid);
+//		Result result = buildResult(testDetailsList, logid);
+//
+//		return asList(result);
 
-		return asList(result);
+		return new TestOverviewBuilder(testDetails).build();
 	}
 
 	public LogMap buildLogMap(File testDir, TestInstance testInstance) throws Exception {
@@ -365,6 +366,12 @@ public class XdsTestServiceManager extends CommonService {
 				if (f.isFile() && f.getName().equals("log.xml")) {
 					LogFileContent ll = new LogFileContent(f);
 					lm.add(f.getName(), ll);
+				} else if (f.isDirectory()) {
+					File logfile = new File(f, "log.xml");
+					if (logfile.exists()) {
+						LogFileContent ll = new LogFileContent(logfile);
+						lm.add(f.getName(), ll);
+					}
 				}
 			}
 

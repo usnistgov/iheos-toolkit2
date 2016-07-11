@@ -1,7 +1,11 @@
 package gov.nist.toolkit.testenginelogging;
 
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.results.client.LogIdIOFormat;
+import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
+import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 import org.apache.log4j.Logger;
@@ -134,6 +138,7 @@ public class TestDetails  {
 		areas = defaultAreas;
 		verifyCurrentTestExists(testkit, testInstance);
 		testPlanFileMap = getTestPlans();
+		logRepository = LogRepositoryFactory.getRepository(Installation.installation().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
 	}
 
 	public TestDetails(File testkit, TestInstance testInstance, String[] areas) throws Exception {
@@ -166,7 +171,7 @@ public class TestDetails  {
 		if ( ! exists() ) {
 			String msg = "TestSpec (testkit=" + testkit + " testId=" + testInstance + ", no " + testPlanFileName + " files found";
 			logger.error(msg);
-			throw new Exception(msg);
+//			throw new Exception(msg);
 		} else {
             logger.info("Using (testkit=" + testkit + " testId=" + testInstance + ")");
         }

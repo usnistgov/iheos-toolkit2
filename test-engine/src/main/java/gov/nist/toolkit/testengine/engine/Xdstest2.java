@@ -7,6 +7,7 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.testengine.errormgr.AssertionResults;
 import gov.nist.toolkit.testenginelogging.*;
+import gov.nist.toolkit.testenginelogging.LogFileContent;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import org.apache.log4j.Logger;

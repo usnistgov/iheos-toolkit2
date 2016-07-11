@@ -23,6 +23,7 @@ import gov.nist.toolkit.services.client.RgOrchestrationRequest;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testenginelogging.client.TestOverviewDTO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -157,7 +158,7 @@ public interface ToolkitService extends RemoteService  {
 	
 	 List<String> getUpdateNames() throws NoServletSessionException ;
 	 List<TestInstance> getTestlogListing(String sessionName) throws Exception;
-	 List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception;
+	TestOverviewDTO getLogContent(String sessionName, TestInstance testInstance) throws Exception;
 	
 	 List<RegistryStatus> getDashboardRegistryData() throws Exception;
 	 List<RepositoryStatus> getDashboardRepositoryData() throws Exception;

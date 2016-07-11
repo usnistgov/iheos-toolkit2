@@ -1,10 +1,14 @@
 package gov.nist.toolkit.testenginelogging;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
 
+import javax.xml.namespace.QName;
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,17 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.axiom.om.OMElement;
-
 /**
  * Object version of log.xml content.
  * @author bill
  *
  */
-public class LogFileContent implements Serializable {
+public class LogFileContent implements Serializable, IsSerializable {
 	/**
 	 *
 	 */
@@ -265,7 +264,7 @@ public class LogFileContent implements Serializable {
 	public String stepName(int step) throws Exception {
 		if (step < 0 || step >= steps.size())
 			throw new Exception("LogFile#stepName: step index " + step + " does not exist");
-		return steps.get(step).id;
+		return steps.get(step).getId();
 	}
 
 	public int size() {
@@ -274,7 +273,7 @@ public class LogFileContent implements Serializable {
 
 	public boolean hasStep(String stepname) {
 		for (int i=0; i<size(); i++) {
-			if (stepname.equals(steps.get(i).id))
+			if (stepname.equals(steps.get(i).getId()))
 				return true;
 		}
 		return false;

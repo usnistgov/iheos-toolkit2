@@ -518,6 +518,7 @@
                         <compileSourcesArtifact>${project.groupId}:error-recording</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:common-datatypes</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:config-datatypes</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:testenginelogging</compileSourcesArtifact>
                     </compileSourcesArtifacts>
                     <runTarget>Xdstools2.html</runTarget>
                     <modules>
