@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -30,26 +29,24 @@ public class RepositoryListingTab extends GenericQueryTab {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
 
-
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, eventName, select);
+		addToolHeader(container, tabTopPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Repository Listing</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
-		topPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By Name")));
 
 		byNameTable.setBorderWidth(1);
 		byNameTable.setCellSpacing(0);
 
-		topPanel.add(byNameTable);
+		tabTopPanel.add(byNameTable);
 
-		topPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h3("By repositoryUniqueId")));
 
-		topPanel.add(byUidTable);
+		tabTopPanel.add(byUidTable);
 
 		byUidTable.setBorderWidth(1);
 		byUidTable.setCellSpacing(0);

@@ -57,18 +57,17 @@ public class GetRelatedTab  extends GenericQueryTab {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "GetRelated", select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, "GetRelated", select);
+		addToolHeader(container, tabTopPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Related Documents</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 
 		HTML pidLabel = new HTML();

@@ -70,18 +70,17 @@ public class MetadataInspectorTab extends ToolWindow {
 			data.enableActions = false;
 
 		data.toolkitService = toolkitService;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Inspector", select);
-		topPanel.setWidth("100%");
-		addToolHeader(container,topPanel, null, siteSpec);
+		container.addTab(tabTopPanel, "Inspector", select);
+		tabTopPanel.setWidth("100%");
+		addToolHeader(container, tabTopPanel, null, siteSpec);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Inspector</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		hpanel = new HorizontalPanel();
-		topPanel.add(hpanel);
-		topPanel.setCellWidth(hpanel, "100%");
+		tabTopPanel.add(hpanel);
+//		tabTopPanel.setCellWidth(hpanel, "100%");
 		hpanel.setBorderWidth(1);
 
 		historyPanel = new VerticalPanel();

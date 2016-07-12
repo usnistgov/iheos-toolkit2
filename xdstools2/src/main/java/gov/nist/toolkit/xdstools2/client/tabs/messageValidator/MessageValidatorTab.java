@@ -330,15 +330,14 @@ public class MessageValidatorTab extends ToolWindow {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
 		ccdaSel = new CcdaTypeSelection(tkProps(), null);
 
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, eventName, select);
+		addToolHeader(container, tabTopPanel, null);
 
-		topPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Message Validator")));
+		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Message Validator")));
 
-		topPanel.add(HtmlMarkup.html("<hr />"));
+		tabTopPanel.add(HtmlMarkup.html("<hr />"));
 
 		VerticalPanel messageTypeArea = new VerticalPanel();	
 		VerticalPanel validationCheckBoxes = new VerticalPanel();
@@ -348,7 +347,7 @@ public class MessageValidatorTab extends ToolWindow {
 		HorizontalPanel typesAndWrappers = new HorizontalPanel();
 
 		// build structure
-		topPanel.add(topH);
+		tabTopPanel.add(topH);
 		topH.add(messageTypeArea);
 		topH.add(rightSideVert);
 		rightSideVert.add(typesAndWrappers);
@@ -415,7 +414,7 @@ public class MessageValidatorTab extends ToolWindow {
 		//
 
 
-		topPanel.add(HtmlMarkup.html("<hr />"));
+		tabTopPanel.add(HtmlMarkup.html("<hr />"));
 		VerticalPanel fromWhereArea = new VerticalPanel();
 		HorizontalPanel inputTypeArea = new HorizontalPanel();
 		//		inputTypeArea.add(fromFileRadioButton);
@@ -424,7 +423,7 @@ public class MessageValidatorTab extends ToolWindow {
 		fromWhereArea.add(inputTypeArea);
 		fromWhereArea.add(uploadForm);
 
-		topPanel.add(fromWhereArea);
+		tabTopPanel.add(fromWhereArea);
 
 		VerticalPanel simArea = new VerticalPanel();
 
@@ -538,7 +537,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				new RenameSimFileDialogBox(topPanel, filename, reloadSimMessages);
+				new RenameSimFileDialogBox(tabTopPanel, filename, reloadSimMessages);
 			}
 		});
 
@@ -585,7 +584,7 @@ public class MessageValidatorTab extends ToolWindow {
 			}
 		});
 
-		topPanel.add(HtmlMarkup.html("<hr/>"));
+		tabTopPanel.add(HtmlMarkup.html("<hr/>"));
 	} //end onTabLoad
 	
 	private void refreshFileUploadPanel() {
@@ -955,7 +954,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 		public void onFailure(Throwable caught) {
 			new GwtValFormatter().addCell(caught.getMessage(), 0);
-			topPanel.add(resultsTable);
+			tabTopPanel.add(resultsTable);
 		}
 
 		public void onSuccess(List<Result> results) {
@@ -975,7 +974,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 		public void onFailure(Throwable caught) {
 			new GwtValFormatter().addCell(caught.getMessage(), 0);
-			topPanel.add(resultsTable);
+			tabTopPanel.add(resultsTable);
 		}
 
 		public void onSuccess(List<Result> result) {
@@ -1007,7 +1006,7 @@ public class MessageValidatorTab extends ToolWindow {
 
 		public void onFailure(Throwable caught) {
 			new GwtValFormatter().addCell(caught.getMessage(), 0);
-			topPanel.add(resultsTable);
+			tabTopPanel.add(resultsTable);
 		}
 
 		public void onSuccess(MessageValidationResults result) {
@@ -1237,8 +1236,8 @@ public class MessageValidatorTab extends ToolWindow {
 		
 		this.htmlReport.removeFromParent();
 		this.htmlReport = new HTML(results.getHtmlResults());
-		topPanel.add(this.htmlReport);
-		//topPanel.add(resultsTable);
+		tabTopPanel.add(this.htmlReport);
+		//tabTopPanel.add(resultsTable);
 
 		inspectButton.setEnabled(true);
 	}

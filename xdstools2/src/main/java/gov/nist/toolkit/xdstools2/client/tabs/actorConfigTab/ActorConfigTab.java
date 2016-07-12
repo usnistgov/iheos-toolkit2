@@ -40,16 +40,15 @@ public class ActorConfigTab extends GenericQueryTab {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
 
-		container.addTab(topPanel, "ActorConfig", select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, "ActorConfig", select);
+		addToolHeader(container, tabTopPanel, null);
 		
 		loadGazelleFeedAvailableStatus();
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Configure Sites</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		Anchor reload = new Anchor();
 		reload.setText("[reload]");
@@ -59,7 +58,7 @@ public class ActorConfigTab extends GenericQueryTab {
 		mainGrid = new FlexTable();
 		int row = 0;
 
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		reloadExternalSites();
 

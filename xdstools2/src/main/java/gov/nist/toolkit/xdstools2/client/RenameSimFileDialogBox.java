@@ -6,12 +6,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 
 public class RenameSimFileDialogBox extends DialogBox {
 	final protected ToolkitServiceAsync toolkitService = GWT
@@ -21,7 +16,7 @@ public class RenameSimFileDialogBox extends DialogBox {
 	AsyncCallback afterRename;
 
 	
-	public RenameSimFileDialogBox(VerticalPanel parent, String oldSimFileSpec, AsyncCallback reloadSimMessages) {
+	public RenameSimFileDialogBox(FlowPanel parent, String oldSimFileSpec, AsyncCallback reloadSimMessages) {
 		this.oldSimFileSpec = oldSimFileSpec;
 		this.afterRename = reloadSimMessages;
 		

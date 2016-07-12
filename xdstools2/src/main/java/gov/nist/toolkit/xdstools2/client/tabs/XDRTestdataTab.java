@@ -35,18 +35,16 @@ public class XDRTestdataTab  extends GenericQueryTab {
 	
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container,topPanel, help);
 
-		topPanel.add(new HTML("<h2>Send XDR Provide & Register transaction</h2>"));
+		container.addTab(tabTopPanel, eventName, select);
+		addToolHeader(container, tabTopPanel, help);
+
+		tabTopPanel.add(new HTML("<h2>Send XDR Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		HTML dataLabel = new HTML();
 		dataLabel.setText("Select Test Data Set");

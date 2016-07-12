@@ -38,15 +38,14 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
 
 
-		container.addTab(topPanel, "FindDocumentsByRefId", select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, "FindDocumentsByRefId", select);
+		addToolHeader(container, tabTopPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Documents by Reference ID Stored Query</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
@@ -68,7 +67,7 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, horizPanel);
 		row++;
 
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}

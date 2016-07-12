@@ -6,7 +6,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
@@ -41,18 +40,17 @@ public class DocRetrieveTab extends GenericQueryTab {
 	
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "RetrieveDoc", select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, "RetrieveDoc", select);
+		addToolHeader(container, tabTopPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Retrieve Documents</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		HTML docUidLabel = new HTML();
 		docUidLabel.setText("Document UniqueIds");

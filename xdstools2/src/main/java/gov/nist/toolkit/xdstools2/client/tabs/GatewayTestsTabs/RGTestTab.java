@@ -62,11 +62,10 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         myContainer = container;
-        topPanel = new VerticalPanel();
         genericQueryTab = this;
 
-        container.addTab(topPanel, eventName, select);
-        addToolHeader(container,topPanel, null);
+        container.addTab(tabTopPanel, eventName, select);
+        addToolHeader(container, tabTopPanel, null);
         tlsOptionEnabled = false;
 
         // customization of GenericQueryTab
@@ -101,9 +100,9 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML("<h1>Responding Gateway Test Tool</h1>"));
+        tabTopPanel.add(new HTML("<h1>Responding Gateway Test Tool</h1>"));
 
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                 "This tool tests a Responding Gateway that exposes endpoints for a Document Registry and " +
                         "Document Repository or can be configured to use an external Registry/Repository pair. " +
                         "All tests are initiated by a Toolkit supplied Initiating Gateway that sends " +
@@ -120,7 +119,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         ));
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-//        topPanel.add(new HTML(
+//        tabTopPanel.add(new HTML(
 //                "<hr /><h2>System under test</h2>" +
 //                "<p>" +
 //                "The system under test is a Responding Gateway. To be testable by this tool one of the following " +
@@ -150,9 +149,9 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
             }
         });
 
-//        final Panel externalSystemSelectionPanel = new VerticalPanel();
+//        final Panel1 externalSystemSelectionPanel = new VerticalPanel();
 //        externalSystemSelectionPanel.setVisible(false);  // until needed
-//        topPanel.add(externalSystemSelectionPanel);
+//        tabTopPanel.add(externalSystemSelectionPanel);
 //
 //        new TransactionOfferingsLoader(toolkitService).run(new ServiceCallCompletionHandler<TransactionOfferings>() {
 //            @Override
@@ -204,19 +203,19 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                 new CoupledTransactions(),
                 false  /* display patient id param */);
 
-//        topPanel.add(systemTypePanel);
+//        tabTopPanel.add(systemTypePanel);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
 //        // Select SUT
 //
-//        topPanel.add(new HTML("<hr />"));
+//        tabTopPanel.add(new HTML("<hr />"));
 //
-//        topPanel.add(siteSelectionPanel);
+//        tabTopPanel.add(siteSelectionPanel);
 //
 //        new SiteTransactionConfigLoader(toolkitService).load(new SiteDisplayer());
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                         "<h2>Build Test Environment</h2>" +
                         "<p>" +
                         "This will initialize the test environment in the Test Session seleted at the top. " +
@@ -227,11 +226,11 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
         ));
 
         HorizontalPanel testEnvironmentsPanel = new HorizontalPanel();
-        topPanel.add(testEnvironmentsPanel);
+        tabTopPanel.add(testEnvironmentsPanel);
 
         BuildRGTestOrchestrationButton testEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Test Environment", false);
 
-        topPanel.add(new HTML("<hr />"));
+        tabTopPanel.add(new HTML("<hr />"));
 
 //        BuildRGTestOrchestrationButton demoEnvButton = new BuildRGTestOrchestrationButton(this, testEnvironmentsPanel, "Build Demonstration Environment", true);
 //
@@ -239,17 +238,17 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
 //        testEnvButton.addLinkedOrchestrationButton(demoEnvButton);
 //        demoEnvButton.addLinkedOrchestrationButton(testEnvButton);
 
-        topPanel.add(testSelectionManager.buildTestSelector());
+        tabTopPanel.add(testSelectionManager.buildTestSelector());
 
-        topPanel.add(testSelectionManager.buildSectionSelector());
+        tabTopPanel.add(testSelectionManager.buildSectionSelector());
 
-        topPanel.add(mainGrid);
+        tabTopPanel.add(mainGrid);
 
         testSelectionManager.loadTestsFromCollection(COLLECTION_NAME);
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
-        topPanel.add(new HTML(
+        tabTopPanel.add(new HTML(
                 "<hr />" +
                         "<h2>Run Test</h2>" +
                         "<p>" +
@@ -258,9 +257,9 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         "</p>"
         ));
 
-        addRunnerButtons(topPanel);
+        addRunnerButtons(tabTopPanel);
 
-        topPanel.add(resultPanel);
+        tabTopPanel.add(resultPanel);
     }
 
 

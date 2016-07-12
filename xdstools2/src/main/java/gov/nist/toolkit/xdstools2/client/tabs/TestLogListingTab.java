@@ -29,18 +29,17 @@ public class TestLogListingTab extends GenericQueryTab {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
 
 
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, eventName, select);
+		addToolHeader(container, tabTopPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>TestLog Listing</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
-		topPanel.add(grid);
-		topPanel.add(panel);
+		tabTopPanel.add(grid);
+		tabTopPanel.add(panel);
 
 		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override

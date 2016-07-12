@@ -6,23 +6,20 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
-import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
-import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public abstract class ToolWindow {
-	public VerticalPanel topPanel;
+	public FlowPanel tabTopPanel = new FlowPanel();
 	String helpHTML;
 	String topMessage = null;
 	public HorizontalPanel menuPanel = new HorizontalPanel();
 	EnvironmentManager environmentManager = null;
-	protected TestSessionManager2 testSessionManager = Xdstools2.getInstance().getTestSessionManager();
+	protected TestSessionManager2 testSessionManager = Xdstools2.getTestSessionManager();
 	protected TabContainer tabContainer;
 	Logger logger = Logger.getLogger("Tabbed window");
-	final public ToolkitServiceAsync toolkitService = GWT
+	final static public ToolkitServiceAsync toolkitService = GWT
 			.create(ToolkitService.class);
 
 	public ToolWindow() {
@@ -37,38 +34,37 @@ public abstract class ToolWindow {
 	abstract public String getWindowShortName();
 
 	public void onAbstractTabLoad(TabContainer container, boolean select, String eventName) {
-		tabContainer = container;
-		logger.log(Level.FINE, "onAbstractTabLoad");
+		tabContainer = TabContainer.instance();
 		onTabLoad(container, select, eventName);
-		registerTab(container);
-		onTabSelection();
+//		registerTab(container);
+//		onTabSelection();
 
-		environmentManager = new EnvironmentManager(tabContainer, toolkitService/*, new Panel(menuPanel)*/);
-		menuPanel.add(environmentManager);
-		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
+//		environmentManager = new EnvironmentManager(tabContainer, toolkitService/*, new Panel1(menuPanel)*/);
+//		menuPanel.add(environmentManager);
+//		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 	}
 	
 	public TkProps tkProps() {
 		return Xdstools2.tkProps();
 	}
 
-	void registerTab(TabContainer container) {
-		TabPanel tabPanel = container.getTabPanel();
-		int count = tabPanel.getWidgetCount();
-		int lastAdded = count -1 ;  // would be count - 1 if home ever got registered
-		if (lastAdded < 0) return;
-		new TabManager().addTab(lastAdded, this);
-	}
+//	void registerTab(TabContainer container) {
+//		TabPanel tabPanel = container.getTabPanel();
+//		int count = tabPanel.getWidgetCount();
+//		int lastAdded = count -1 ;  // would be count - 1 if home ever got registered
+//		if (lastAdded < 0) return;
+//		TabManager.addTab(lastAdded, this);
+//	}
 
 	// access to params shared between tabs
 	// delegate to proper model
-	public SiteSpec getCommonSiteSpec() { return tabContainer.getQueryState().getSiteSpec(); }
-	public void setCommonSiteSpec(SiteSpec s) { tabContainer.getQueryState().setSiteSpec(s); }
-	public String getCommonPatientId() { return tabContainer.getQueryState().getPatientId(); }
-	public void setCommonPatientId(String p) { tabContainer.getQueryState().setPatientId(p); }
+	public SiteSpec getCommonSiteSpec() { return Xdstools2.getInstance().getQueryState().getSiteSpec(); }
+	public void setCommonSiteSpec(SiteSpec s) { Xdstools2.getInstance().getQueryState().setSiteSpec(s); }
+	public String getCommonPatientId() { return Xdstools2.getInstance().getQueryState().getPatientId(); }
+	public void setCommonPatientId(String p) { Xdstools2.getInstance().getQueryState().setPatientId(p); }
 
-	public String getEnvironmentSelection() { return tabContainer.getEnvironmentState().getEnvironmentName(); }
-	public void setEnvironmentSelection(String envName) { tabContainer.getEnvironmentState().setEnvironmentName(envName); }
+	public String getEnvironmentSelection() { return Xdstools2.getInstance().getEnvironmentState().getEnvironmentName(); }
+	public void setEnvironmentSelection(String envName) { Xdstools2.getInstance().getEnvironmentState().setEnvironmentName(envName); }
 
 
 	/**
@@ -96,15 +92,15 @@ public abstract class ToolWindow {
 		environmentManager.update();
 	}
 
-	public void onTabSelection() {
-		System.out.println("Tab " + getWindowShortName() + " selected");
-	}
+//	public void onTabSelection() {
+//		System.out.println("Tab " + getWindowShortName() + " selected");
+//	}
 
 	protected void setTopMessage(String msg) {
 		topMessage = msg;
 	}
 
-	protected void addToolHeader(TabContainer container, VerticalPanel panel, String helpHTML, SiteSpec site) {
+	protected void addToolHeader(TabContainer container, FlowPanel panel, String helpHTML, SiteSpec site) {
 		if (site != null) {
 			String type = (site != null) ? site.getTypeName() : "site";
 			String name = (site != null) ? site.name : "name";
@@ -116,44 +112,55 @@ public abstract class ToolWindow {
 	}
 
 	// all panels getRetrievedDocumentsModel a close button except the home panel
-	protected void addToolHeader(TabContainer container, VerticalPanel topPanel, String helpHTML) {
+//	protected void addToolHeader(TabContainer container, LayoutPanel topPanel, String helpHTML) {
+//
+//		this.helpHTML = (helpHTML == null) ? "No Help Available" : helpHTML;
+//
+//		HTML help = new HTML();
+//		help.setHTML("<a href=\"" + "site/tools/" +  getWindowShortName()  + ".html" + "\" target=\"_blank\">" +  "[" + "help" + "]" + "</a>");
+//		menuPanel.add(help);
+//
+//		if (topMessage != null && !topMessage.equals("")) {
+//			HTML top = new HTML();
+//			top.setHTML(topMessage);
+//			top.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+//			menuPanel.add(top);
+//			menuPanel.setSpacing(30);
+//
+//		}
+//
+//		menuPanel.setSpacing(10);
+//		topPanel.add(menuPanel);
+//		HTML line = new HTML();
+//		line.setHTML("<hr />");
+//		topPanel.add(line);
+//
+////		topPanel.setCellWidth(menuPanel, "100%");
+//
+//	}
 
-//		final VerticalPanel myPanel = topPanel;
-//		final TabPanel tabPanel = container.getTabPanel();
+	protected void addToolHeader(TabContainer container, FlowPanel topPanel, String helpHTML) {
 
 		this.helpHTML = (helpHTML == null) ? "No Help Available" : helpHTML;
 
+//		menuPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		HTML help = new HTML();
 		help.setHTML("<a href=\"" + "site/tools/" +  getWindowShortName()  + ".html" + "\" target=\"_blank\">" +  "[" + "help" + "]" + "</a>");
-		//		topPanel.add(docLink);
-
-
-		//		Hyperlink help = new Hyperlink();
-		//		help.setHTML("[help]");
-		//		help.setTitle("Show help for this tab");
 		menuPanel.add(help);
-		//		help.addClickHandler(new HelpHandler());
 
 		if (topMessage != null && !topMessage.equals("")) {
 			HTML top = new HTML();
 			top.setHTML(topMessage);
-			top.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 			menuPanel.add(top);
-			menuPanel.setSpacing(30);
-
 		}
+//		menuPanel.setSpacing(30);
+//		menuPanel.setWidth("100%");
 
+		topPanel.add(new HTML("<hr />"));
 		menuPanel.setSpacing(10);
 		topPanel.add(menuPanel);
-		HTML line = new HTML();
-		line.setHTML("<hr />");
-		topPanel.add(line);
 
-		topPanel.setCellWidth(menuPanel, "100%");
-
-		// add environment selector to top menu bar
-		//		environmentSelector = EnvironmentSelector.getInstance(toolkitService, new Panel(menuPanel));
-
+//		tabTopPanel.setCellWidth(menuPanel, "100%");
 	}
 
 	public void addToMenu(Anchor anchor) {
@@ -169,7 +176,7 @@ public abstract class ToolWindow {
 	protected void showMessage(String message) {		
 		HTML msgBox = new HTML();
 		msgBox.setHTML("<b>" + message + "</b>");
-		topPanel.add(msgBox);		
+		tabTopPanel.add(msgBox);
 	}
 
 }

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by bill on 9/21/15.
+ *
  */
 public class PidEditTab extends GenericQueryTab {
     SimulatorConfig config;
@@ -33,18 +33,17 @@ public class PidEditTab extends GenericQueryTab {
 
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         myContainer = container;
-        topPanel = new VerticalPanel();
 
-        container.addTab(topPanel, "Pid Edit", select);
-        addToolHeader(container, topPanel, null);
+        container.addTab(tabTopPanel, "Pid Edit", select);
+        addToolHeader(container, tabTopPanel, null);
 
         addReloader();
 
-        topPanel.add(new HTML("<h2>Registry Simulator Patient ID Display/Edit</h2>"));
-        topPanel.add(new HTML("<h3>Simulator " + simId.toString() + "</h3>"));
+        tabTopPanel.add(new HTML("<h2>Registry Simulator Patient ID Display/Edit</h2>"));
+        tabTopPanel.add(new HTML("<h3>Simulator " + simId.toString() + "</h3>"));
 
         HorizontalPanel panel = new HorizontalPanel();
-        topPanel.add(panel);
+        tabTopPanel.add(panel);
         VerticalPanel listPanel = new VerticalPanel();
         panel.add(listPanel);
         listPanel.add(new HTML("Registered Patient IDs"));

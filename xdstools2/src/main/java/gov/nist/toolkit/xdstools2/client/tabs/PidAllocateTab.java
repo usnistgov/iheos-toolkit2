@@ -24,9 +24,8 @@ public class PidAllocateTab extends ToolWindow {
 
 	
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Patient ID", select);
-		addToolHeader(container, topPanel, null);
+		container.addTab(tabTopPanel, "Patient ID", select);
+		addToolHeader(container, tabTopPanel, null);
 		
 		HTML intro = new HTML();
 		intro.setHTML(
@@ -40,11 +39,11 @@ public class PidAllocateTab extends ToolWindow {
 			"<p>Note: The Public Registry software can be installed on any machine.  This tool references " +
 			"the Registry on localhost (local to where the xdstools2 package is loaded)."
 		);
-		topPanel.add(intro);
+		tabTopPanel.add(intro);
 				
 		HTML selectPID = new HTML();
 		selectPID.setHTML("Select an Assigning Authority for the new Patient ID:");
-		topPanel.add(selectPID);
+		tabTopPanel.add(selectPID);
 		
 		
 		getAAsFromServer();
@@ -78,7 +77,7 @@ public class PidAllocateTab extends ToolWindow {
 						HTML h = new HTML();
 						h.setHTML("<br /><br />");
 						panel.add(h);
-						topPanel.add(panel);
+						tabTopPanel.add(panel);
 						
 						sendButton.addClickHandler(new ClickHandler() {
 							public void onClick(ClickEvent event) {
@@ -108,7 +107,7 @@ public class PidAllocateTab extends ToolWindow {
 						HTML resultBox = new HTML();
 						resultBox.setText(result);
 						
-						topPanel.add(resultBox);
+						tabTopPanel.add(resultBox);
 					}
 				});
 	}

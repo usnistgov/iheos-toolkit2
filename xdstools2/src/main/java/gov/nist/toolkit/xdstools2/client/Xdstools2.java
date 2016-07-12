@@ -4,26 +4,29 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.*;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import gov.nist.toolkit.tk.client.TkProps;
-import gov.nist.toolkit.xdstools2.client.event.tabContainer.V2TabOpenedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
+import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
+import gov.nist.toolkit.xdstools2.client.selectors.TestSessionSelector;
 import gov.nist.toolkit.xdstools2.client.tabs.EnvironmentState;
 import gov.nist.toolkit.xdstools2.client.tabs.HomeTab;
 import gov.nist.toolkit.xdstools2.client.tabs.QueryState;
-import gov.nist.toolkit.xdstools2.client.tabs.TabManager;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;
 import gov.nist.toolkit.xdstools2.client.util.ClientFactory;
 
 import java.util.logging.Logger;
 
 
-public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
+public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	public static final int TRAY_SIZE = 190;
 	public static final int TRAY_CTL_BTN_SIZE = 9; // 23
 
@@ -32,10 +35,9 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 	private final static Logger logger=Logger.getLogger(Xdstools2.class.getName());
 
 	public SplitLayoutPanel mainSplitPanel = new SplitLayoutPanel(3);
-	private VerticalPanel mainMenuPanel = new VerticalPanel();
+	private FlowPanel mainMenuPanel = new FlowPanel();
 	HomeTab ht = null;
 
-	private static TabPanel tabPanel = new TabPanel();
 	private HorizontalPanel uiDebugPanel = new HorizontalPanel();
 	boolean UIDebug = false;
 
@@ -60,7 +62,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 	static public TestSessionManager2 getTestSessionManager() { return ME.testSessionManager; }
 
 	EnvironmentState environmentState = new EnvironmentState();
-	@Override
+
     public EnvironmentState getEnvironmentState() { return environmentState; }
 
 	// Central storage for parameters shared across all
@@ -70,7 +72,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		return queryState;
 	}
 
-	void buildWrapper() {
+	void buildTabsWrapper() {
 		// tabPanel = new TabPanel();
 //		if ("xdstools2".equals(GWT.getModuleName())) { // This RootPanel is exclusive to v2. In other words, the intention of this block is to hide this from V3 module.
 
@@ -80,13 +82,27 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 			mainSplitPanel.setWidgetToggleDisplayAllowed(decoratedTray,true);
 
 
-			tabPanel.setWidth("100%");
-			tabPanel.setHeight("100%");
+			TabContainer.setWidth("100%");
+		TabContainer.setHeight("100%");
+
+		HorizontalPanel menuPanel = new HorizontalPanel();
+		EnvironmentManager environmentManager = new EnvironmentManager(TabContainer.instance(), ToolWindow.toolkitService);
+		menuPanel.add(environmentManager);
+		menuPanel.setSpacing(10);
+		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
+
+		FlowPanel mainPanel = new FlowPanel();
+		mainPanel.add(menuPanel);
+//		mainPanel.add(new HTML("<hr />"));
 
 			// Wrap tab panel in a scroll panel
-			ScrollPanel spTabPanel = new ScrollPanel(tabPanel);
-			spTabPanel.setAlwaysShowScrollBars(false);
-			mainSplitPanel.add(spTabPanel);
+			ScrollPanel spTabPanel = new ScrollPanel(TabContainer.getTabPanel());
+			spTabPanel.setAlwaysShowScrollBars(true);
+
+
+		mainPanel.add(spTabPanel);
+
+			mainSplitPanel.add(mainPanel);
 
 			Window.addResizeHandler(new ResizeHandler() {
 				@Override
@@ -102,7 +118,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
 
 	private Widget decorateMenuContainer() {
-		final VerticalPanel vpCollapsible =  new VerticalPanel();
+		final FlowPanel vpCollapsible =  new FlowPanel();
 
 		// Set margins
 		mainMenuPanel.getElement().getStyle().setMargin(3, Style.Unit.PX);
@@ -119,9 +135,9 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		menuTrayStateToBe.setWidth("15px");
 		menuTrayStateToBe.setWidth("100%");
 
-		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+//		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		vpCollapsible.add(menuTrayStateToBe);
-		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+//		vpCollapsible.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		vpCollapsible.add(mainMenuPanel);
 
 		// Wrap menu in a scroll panel
@@ -157,10 +173,10 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 				long containerWidth = mainSplitPanel.getParent().getElement().getClientWidth();
 				long containerHeight = mainSplitPanel.getParent().getElement().getClientHeight() - 42; /* compensate for tab bar height, which is a fixed size */
 
-				int selectedTabIndex = tabPanel.getTabBar().getSelectedTab();
+				int selectedTabIndex = TabContainer.getSelectedTab();
 
 				if (selectedTabIndex >= 0) {
-					tabPanel.getWidget(selectedTabIndex).setHeight(containerHeight + "px");
+					TabContainer.getWidget(selectedTabIndex).setHeight(containerHeight + "px");
 				}
 			}else{
 				logger.fine("mainSplitPanel parent is null");
@@ -170,64 +186,7 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		}
 	}
 
-    public TabContainer getTabContainer() { return this;}
-
-	public void addTab(VerticalPanel w, String title, boolean select) {
-		HTML left = new HTML();
-		left.setHTML("&nbsp");
-
-		HTML right = new HTML();
-		right.setHTML("&nbsp");
-
-		HorizontalPanel wrapper = new HorizontalPanel();
-
-		wrapper.add(left);
-		wrapper.add(w);
-		wrapper.add(right);
-		wrapper.setCellWidth(left, "1%");
-		wrapper.setCellWidth(right, "1%");
-
-		tabPanel.add(wrapper, buildTabWidget(title, w));
-
-
-		if (select)
-			selectLastTab();
-		resizeToolkit();
-
-		try {
-			int index = tabPanel.getWidgetCount() - 1;
-			if (getIntegrationEventBus()!=null && index>0) {
-				getIntegrationEventBus().fireEvent(new V2TabOpenedEvent(null,title /* this will be the dynamic tab code */,index));
-			}
-		} catch (Throwable t) {
-			Window.alert("V2TabOpenedEvent error: " +t.toString());
-		}
-	}
-
 	static boolean newHomeTab = false;
-
-	private void selectLastTab() {
-		int index = tabPanel.getWidgetCount() - 1;
-		if (index > -1)
-			tabPanel.selectTab(index);
-	}
-
-	Widget buildTabWidget(String title, final Widget content) {
-		HorizontalPanel panel = new HorizontalPanel();
-		Anchor x = new Anchor("X");
-		x.setStyleName("roundedButton1");
-		x.addClickHandler(new ClickHandler() {
-							  @Override
-							  public void onClick(ClickEvent clickEvent) {
-								  content.getParent().removeFromParent();
-								  selectLastTab();
-							  }
-						  }
-		);
-		panel.add(x);
-		panel.add(new HTML(title));
-		return panel;
-	}
 
 	@Deprecated
     static public TkProps tkProps() {
@@ -239,8 +198,44 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 	 * It's now being used as an initialization method the GUI and the environment
 	 */
 	void run() {
+		buildTabsWrapper();
+//		onModuleLoad2();
+
+//		ht.onTabLoad(this, false, null);
 		ht = new HomeTab();
-		onModuleLoad2();
+		ht.onAbstractTabLoad(TabContainer.instance(), false, null);
+
+//		TabManager.reset();
+
+		// only one panel, it's all done in tabs
+//		tabPanel.selectTab(0);
+
+//		tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
+//
+//			@Override
+//			public void onSelection(SelectionEvent<Integer> event) {
+//				System.out.println("Tab " + event.getSelectedItem() + " selected");
+//				TabManager.notifyTabSelected(event.getSelectedItem());
+//			}
+//
+//		});
+
+		History.addValueChangeHandler(new ValueChangeHandler<String>() {
+			public void onValueChange(ValueChangeEvent<String> event) {
+				String historyToken = event.getValue();
+
+				// Parse the history token
+				try {
+					if (historyToken.equals("mv")) {
+						new MessageValidatorTab().onTabLoad(TabContainer.instance(), true, null);
+					}
+
+				} catch (IndexOutOfBoundsException e) {
+					TabContainer.selectTab(0);
+				}
+			}
+		});
+
 
 		testSessionManager.load();
 		loadServletContext();
@@ -262,49 +257,10 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 		});
     }
 
-	private void onModuleLoad2() {
-		buildWrapper();
 
-		ht.onTabLoad(this, false, null);
-
-		new TabManager().reset();
-
-		// only one panel, it's all done in tabs
-		tabPanel.selectTab(0);
-
-		tabPanel.addSelectionHandler(new SelectionHandler<Integer>() {
-
-			@Override
-			public void onSelection(SelectionEvent<Integer> event) {
-				System.out.println("Tab " + event.getSelectedItem() + " selected");
-				new TabManager().notifyTabSelected(event.getSelectedItem());
-			}
-
-		});
-
-		History.addValueChangeHandler(new ValueChangeHandler<String>() {
-            public void onValueChange(ValueChangeEvent<String> event) {
-                String historyToken = event.getValue();
-
-                // Parse the history token
-                try {
-                    if (historyToken.equals("mv")) {
-                        new MessageValidatorTab().onTabLoad(getTabContainer(), true, null);
-                    }
-
-                } catch (IndexOutOfBoundsException e) {
-                    tabPanel.selectTab(0);
-                }
-            }
-        });
-
-
-	}
-
-
-	public TabPanel getTabPanel() {
-		return tabPanel;
-	}
+//	public TabPanel getTabPanel() {
+//		return tabPanel;
+//	}
 
 
 	static public EventBus getEventBus() {
@@ -319,8 +275,6 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 	public EventBus getIntegrationEventBus() {
 		return v2V3IntegrationEventBus;
 	}
-
-
 
     @Override
     public void setWidget(IsWidget isWidget) {

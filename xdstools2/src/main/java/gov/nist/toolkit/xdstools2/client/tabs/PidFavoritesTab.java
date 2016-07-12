@@ -43,20 +43,18 @@ public class PidFavoritesTab  extends GenericQueryTab {
 
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         myContainer = container;
-        topPanel = new VerticalPanel();
 
+        container.addTab(tabTopPanel, eventName, select);
+        addToolHeader(container, tabTopPanel, null);
 
-        container.addTab(topPanel, eventName, select);
-        addToolHeader(container, topPanel, null);
-
-        topPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
+        tabTopPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
 
         mainGrid = new FlexTable();
 
-        topPanel.add(mainGrid);
+        tabTopPanel.add(mainGrid);
 
         HorizontalPanel panel = new HorizontalPanel();
-        topPanel.add(panel);
+        tabTopPanel.add(panel);
 
         VerticalPanel favoritesListPanel = new VerticalPanel();
         panel.add(favoritesListPanel);
@@ -115,7 +113,7 @@ public class PidFavoritesTab  extends GenericQueryTab {
         setTlsEnabled(false);
         setSamlEnabled(false);
         setShowInspectButton(false);
-        topPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
+        tabTopPanel.add(new HTML("<h3>Generate V2 Patient Identity Feed</h3><br />(From selection in Favorites)" +
                         "<p>Note that this is NOT integrated with Gazelle Patient Management.  It should be used " +
                 "for private testing only.</p>" ));
         queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);

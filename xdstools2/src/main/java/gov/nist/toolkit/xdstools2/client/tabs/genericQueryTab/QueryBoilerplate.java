@@ -39,7 +39,7 @@ public class QueryBoilerplate {
 		genericQueryTab.couplings = couplings;
 
 //		genericQueryTab.resultPanel = new VerticalPanel();
-//		genericQueryTab.topPanel.add(genericQueryTab.resultPanel);
+//		genericQueryTab.tabTopPanel.add(genericQueryTab.resultPanel);
 
 
 		genericQueryTab.addActorReloader();
@@ -74,7 +74,7 @@ public class QueryBoilerplate {
 		if (genericQueryTab == null)
 			return;
 		if (genericQueryTab.resultPanel != null)
-			genericQueryTab.topPanel.remove(genericQueryTab.resultPanel);
+			genericQueryTab.tabTopPanel.remove(genericQueryTab.resultPanel);
 		if (reload != null)
 			genericQueryTab.menuPanel.remove(reload);
 		genericQueryTab.initMainGrid();

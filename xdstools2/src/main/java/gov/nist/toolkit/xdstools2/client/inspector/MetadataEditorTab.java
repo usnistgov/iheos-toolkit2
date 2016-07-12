@@ -45,18 +45,17 @@ public class MetadataEditorTab extends ToolWindow {
 	
 	@Override
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Editor", select);
-		topPanel.setWidth("100%");
-		addToolHeader(container,topPanel, null, siteSpec);
+		container.addTab(tabTopPanel, "Editor", select);
+		tabTopPanel.setWidth("100%");
+		addToolHeader(container, tabTopPanel, null, siteSpec);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Metadata Editor</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		HorizontalPanel hpanel = new HorizontalPanel();
-		topPanel.add(hpanel);
-		topPanel.setCellWidth(hpanel, "100%");
+		tabTopPanel.add(hpanel);
+//		tabTopPanel.setCellWidth(hpanel, "100%");
 		hpanel.setBorderWidth(1);
 
 //		historyPanel = new VerticalPanel();

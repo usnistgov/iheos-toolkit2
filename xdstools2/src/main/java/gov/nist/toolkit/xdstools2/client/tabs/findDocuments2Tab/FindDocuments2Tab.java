@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -47,28 +46,27 @@ public class FindDocuments2Tab extends GenericQueryTab {
     @Override
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         myContainer = container;
-        // Panel to build inside of
-        topPanel = new VerticalPanel();
+        // Panel1 to build inside of
 
         genericQueryTab = this;   // share with other methods
 
 
-        container.addTab(topPanel, eventName, select);  // link into container/tab management
-        addToolHeader(container, topPanel, null);   // add the close button
+        container.addTab(tabTopPanel, eventName, select);  // link into container/tab management
+        addToolHeader(container, tabTopPanel, null);   // add the close button
 
         HTML title = new HTML();
         title.setHTML("<h2>Find Documents (All Parameters)</h2>");
-        topPanel.add(title);
+        tabTopPanel.add(title);
 
         // Generate the composite widget that allows selection of all the GetAll query parameters. Below is the call
         // sqParams.asWidget() which gets the actual Widget.
         sqParams = new FindDocuments2Params(toolkitService, genericQueryTab);
 
         mainGrid = new FlexTable();  // this is important in some tabs, not this one.  This init should be moved to definition
-        topPanel.add(sqParams.asWidget());
-        topPanel.add(new HTML("<hr/>"));
+        tabTopPanel.add(sqParams.asWidget());
+        tabTopPanel.add(new HTML("<hr/>"));
 
-        topPanel.add(mainGrid);
+        tabTopPanel.add(mainGrid);
 
         // add below-the-line-stuff (PatientId, site selection etc.)
         // Also link in the Runner class (shown below) which is called when the user clicks on the Run button.

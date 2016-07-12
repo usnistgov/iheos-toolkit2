@@ -49,13 +49,12 @@ public class SimulatorControlTab extends GenericQueryTab {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
 		self = this;
 
 		simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container, topPanel, null);
+		container.addTab(tabTopPanel, eventName, select);
+		addToolHeader(container, tabTopPanel, null);
 		
 		addActorReloader();
 		
@@ -64,9 +63,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		tlsEnabled = false;
 		enableInspectResults = false;
 
-		topPanel.add(new HTML("<h2>Simulator Manager</h2>"));
+		tabTopPanel.add(new HTML("<h2>Simulator Manager</h2>"));
 
-		topPanel.add(new HTML("<h3>Add new simulator to this test session</h3>"));
+		tabTopPanel.add(new HTML("<h3>Add new simulator to this test session</h3>"));
 
 		HorizontalPanel actorSelectPanel = new HorizontalPanel();
 		actorSelectPanel.add(HtmlMarkup.html("Select actor type"));
@@ -79,9 +78,9 @@ public class SimulatorControlTab extends GenericQueryTab {
 		actorSelectPanel.add(createActorSimulatorButton);
 		createActorSimulatorButton.addClickHandler(new CreateButtonClickHandler(this, testSessionManager));
 
-		topPanel.add(actorSelectPanel);
+		tabTopPanel.add(actorSelectPanel);
 
-		topPanel.add(HtmlMarkup.html("<br />"));
+		tabTopPanel.add(HtmlMarkup.html("<br />"));
 
 		VerticalPanel tableWrapper = new VerticalPanel();
 		table.setBorderWidth(1);
@@ -90,7 +89,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 		tableWrapper.add(tableTitle);
 		tableWrapper.add(table);
 
-		topPanel.add(tableWrapper);
+		tabTopPanel.add(tableWrapper);
 
 
 		simConfigWrapperPanel.add(simConfigPanel);

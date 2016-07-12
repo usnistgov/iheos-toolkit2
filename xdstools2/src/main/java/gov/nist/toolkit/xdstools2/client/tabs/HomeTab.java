@@ -1,7 +1,9 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.LayoutPanel;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -13,8 +15,7 @@ import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 
 public class HomeTab extends GenericQueryTab {
 	String aboutMessage = null;
-	String nwhin_flag = "false";
-	HorizontalPanel menubar = new HorizontalPanel();
+	LayoutPanel menubar = new LayoutPanel();
 
 
 	public HomeTab() {
@@ -34,20 +35,18 @@ public class HomeTab extends GenericQueryTab {
 
 		addActorReloader();
 
-		topPanel = new VerticalPanel();
-
 		select = true;
-		myContainer.addTab(topPanel, "Home", select);
-		topPanel.add(menubar);
+		container.addTab(tabTopPanel, "Home", select);
+//		tabTopPanel.add(new HTML("Menu Bar"));
+		tabTopPanel.add(menubar);
 
 		menubar.add(
 				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + ToolLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new ToolLauncher(myContainer, ToolLauncher.toolConfigTabLabel))
-
 		);
 
 		Frame frame = new Frame("site/index.html");
 		frame.setSize("100em", "100em");
-		topPanel.add(frame);
+		tabTopPanel.add(frame);
 
 		new MainGridLoader().featuresLoadedCallback();
 	}
@@ -76,7 +75,7 @@ public class HomeTab extends GenericQueryTab {
 					loadIHEGrid(0);
 				}
 
-				topPanel.add(mainGrid);
+				tabTopPanel.add(mainGrid);
 				toolkitService.getAdminPassword(getPasswordCallback);
 				loadVersion();
 

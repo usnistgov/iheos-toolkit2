@@ -41,19 +41,17 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		// Create top level VerticalPanel that defines this tab and link it into the
 		// tab system.  Also add Close button.
 		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container, topPanel, help);
+
+		container.addTab(tabTopPanel, eventName, select);
+		addToolHeader(container, tabTopPanel, help);
 
 		// Build UI content of tab
-		topPanel.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
+		tabTopPanel.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		mainGrid.setWidget(row,0, new HTML("Select Test Data Set"));
 

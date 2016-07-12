@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
@@ -48,13 +47,12 @@ public class GetFoldersTab extends GenericQueryTab {
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		tab = this;
 		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "GetFolders", select);
-		addToolHeader(container,topPanel, help);
+		container.addTab(tabTopPanel, "GetFolders", select);
+		addToolHeader(container, tabTopPanel, help);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Folders</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
@@ -71,7 +69,7 @@ public class GetFoldersTab extends GenericQueryTab {
 		mainGrid.setWidget(row, 1, ta);
 		row++;
 
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 		
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, false);
 	}

@@ -3,6 +3,7 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.tabs.FindDocumentsTab;
 
@@ -20,7 +21,7 @@ public class TestInstanceActivity extends AbstractActivity {
             // Open required tab
             System.out.println("GO TO");
             if (tabId.equals("1234"))
-                new FindDocumentsTab().onAbstractTabLoad(xdstools2view.getTabContainer(), true, null);
+                new FindDocumentsTab().onAbstractTabLoad(TabContainer.instance(), true, null);
             xdstools2view.resizeToolkit();
         }
     }

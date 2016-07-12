@@ -3,15 +3,12 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.configDatatypes.client.PatientErrorMap;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -26,14 +23,14 @@ class SimConfigMgr {
      *
      */
     private SimulatorControlTab simulatorControlTab;
-    VerticalPanel panel;
+    Panel panel;
     HorizontalPanel hpanel;
     SimulatorConfig config;
     String testSession;
     FlexTable tbl = new FlexTable();
     Button saveButton = new Button("Save");
 
-    SimConfigMgr(SimulatorControlTab simulatorControlTab, VerticalPanel panel, SimulatorConfig config, String testSession) {
+    SimConfigMgr(SimulatorControlTab simulatorControlTab, Panel panel, SimulatorConfig config, String testSession) {
         this.simulatorControlTab = simulatorControlTab;
         this.panel = panel;
         this.config = config;

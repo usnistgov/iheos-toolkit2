@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -55,17 +54,16 @@ public abstract class AbstractTool extends GenericQueryTab {
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         me = this;
         myContainer = container;
-        topPanel = new VerticalPanel();
 
-        container.addTab(topPanel, getTabTitle(), select);
-        addToolHeader(container,topPanel, null);
+        container.addTab(tabTopPanel, getTabTitle(), select);
+        addToolHeader(container, tabTopPanel, null);
 
         HTML title = new HTML();
         title.setHTML("<h2>" + getToolTitle() + "</h2>");
-        topPanel.add(title);
+        tabTopPanel.add(title);
 
         mainGrid = new FlexTable();
-        topPanel.add(mainGrid);
+        tabTopPanel.add(mainGrid);
 
         initTool();
 

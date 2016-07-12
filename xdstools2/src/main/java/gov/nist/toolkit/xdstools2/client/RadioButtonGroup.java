@@ -10,13 +10,13 @@ import com.google.gwt.user.client.ui.RadioButton;
 
 abstract public class RadioButtonGroup  {
 	public String groupName;
-	public Panel panel;
+	public Panel1 panel;
 	public Map<String, RadioButton> buttonMap = new HashMap<String, RadioButton>();
 	public List<RadioButton> buttons = new ArrayList<RadioButton>();
 
 	public ValueChangeHandler<Boolean> choiceChangedHandler;
 
-	public RadioButtonGroup(String groupName, Panel panel) {
+	public RadioButtonGroup(String groupName, Panel1 panel) {
 		this.groupName = groupName;
 		this.panel = panel;
 	}

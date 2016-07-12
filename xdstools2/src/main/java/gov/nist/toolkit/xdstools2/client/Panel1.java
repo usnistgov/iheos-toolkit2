@@ -4,15 +4,15 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Panel {
+public class Panel1 {
 	HorizontalPanel h = null;
 	VerticalPanel v = null;
 
-	public Panel(HorizontalPanel h) {
+	public Panel1(HorizontalPanel h) {
 		this.h = h;
 	}
 
-	public Panel(VerticalPanel v) {
+	public Panel1(VerticalPanel v) {
 		this.v = v;
 	}
 

@@ -1,13 +1,11 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 
 public class ConnectathonTab extends GenericQueryTab {
@@ -19,15 +17,14 @@ public class ConnectathonTab extends GenericQueryTab {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
+
 		
-		
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, eventName, select);
+		addToolHeader(container, tabTopPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Connectathon Tools</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		mainGrid.setCellSpacing(20);
@@ -92,7 +89,7 @@ public class ConnectathonTab extends GenericQueryTab {
 		mainGrid.setWidget(row, col, HyperlinkFactory.link(ToolLauncher.dashboardTabLabel, new ToolLauncher(container, ToolLauncher.dashboardTabLabel)));
 		row++;
 
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 	}
 

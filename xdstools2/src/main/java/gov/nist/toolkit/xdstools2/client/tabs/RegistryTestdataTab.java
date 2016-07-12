@@ -6,7 +6,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
@@ -38,18 +37,16 @@ public class RegistryTestdataTab  extends GenericQueryTab {
 	
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container, topPanel, help);
 
-		topPanel.add(new HTML("<h2>Send XDS Register transaction</h2>"));
+		container.addTab(tabTopPanel, eventName, select);
+		addToolHeader(container, tabTopPanel, help);
+
+		tabTopPanel.add(new HTML("<h2>Send XDS Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 //		mainGrid.setWidget(row,0, new HTML("Patient ID"));
 

@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -56,12 +55,11 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 	public void onTabLoad(TabContainer container, boolean select, String eventName) {
 		myContainer = container;
-		topPanel = new VerticalPanel();
 		genericQueryTab = this;
 
 
-		container.addTab(topPanel, "MPQFindDocuments", select);
-		addToolHeader(container,topPanel, null);
+		container.addTab(tabTopPanel, "MPQFindDocuments", select);
+		addToolHeader(container, tabTopPanel, null);
 
 		codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
 
@@ -69,7 +67,7 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Multi-Patient Find Documents</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int prow = 0;
@@ -88,8 +86,8 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 		prow++;
 		prow = codeFilterBank.addCodeFiltersByName(otherFilterNames, paramGrid, prow, 1, 2);
 
-		topPanel.add(paramGrid);
-		topPanel.add(mainGrid);
+		tabTopPanel.add(paramGrid);
+		tabTopPanel.add(mainGrid);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}

@@ -1,6 +1,5 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
@@ -26,13 +25,12 @@ public class EditTab extends GenericQueryTab {
 
     public void onTabLoad(TabContainer container, boolean select, String eventName) {
         myContainer = container;
-        topPanel = new VerticalPanel();
 
 
-        container.addTab(topPanel, "Sim Edit", select);
-        addToolHeader(container, topPanel, null);
+        container.addTab(tabTopPanel, "Sim Edit", select);
+        addToolHeader(container, tabTopPanel, null);
 
-        SimConfigMgr simConfigMgr = new SimConfigMgr(simulatorControlTab, topPanel, config, getCurrentTestSession());
+        SimConfigMgr simConfigMgr = new SimConfigMgr(simulatorControlTab, tabTopPanel, config, getCurrentTestSession());
         simConfigMgr.displayInPanel();
     }
 
