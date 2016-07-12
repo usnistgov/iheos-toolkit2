@@ -114,7 +114,7 @@ public interface ToolkitService extends RemoteService  {
 	String saveSite(Site site) throws Exception;
 	String deleteSite(String siteName) throws Exception;
 	
-	List<Result> getSSandContents(SiteSpec site, String ssuid) throws NoServletSessionException ;
+	List<Result> getSSandContents(SiteSpec site, String ssuid,  Map<String, List<String>> codeSpec) throws NoServletSessionException ;
 	List<Result> srcStoresDocVal(SiteSpec site, String ssuid) throws NoServletSessionException ;
 	List<Result> findDocuments(SiteSpec site, String pid, boolean onDemand) throws NoServletSessionException ;
 	List<Result> findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds) throws NoServletSessionException ;

@@ -46,6 +46,8 @@ class TestkitPathFinderSpec extends ToolkitSpecification{
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+        spi.delete('rep', 'testpath')
+        spi.delete('rep','test')
         server.stop()
         ListenerFactory.terminateAll()
     }

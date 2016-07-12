@@ -1,6 +1,7 @@
 package gov.nist.toolkit.session.server.services;
 
 import gov.nist.toolkit.results.CommonService;
+import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -19,7 +20,7 @@ public class GetSSandContents extends CommonService {
 		this.session = session;
 	}
 	
-	public List<Result> run(SiteSpec site, String ssid) {
+	public List<Result> run(SiteSpec site, String ssid, Map<String, List<String>> codeSpec) {
 		try {
 			session.setSiteSpec(site);
 
@@ -27,6 +28,19 @@ public class GetSSandContents extends CommonService {
 			List<String> sections = new ArrayList<String>();
 			Map<String, String> params = new HashMap<String, String>();
 			try {
+
+				// XDS Codes
+				List<String> deType = codeSpec.get(CodesConfiguration.DocumentEntryType);
+				// Only apply the deType code when provided, otherwise get the normal submission set without this filter
+				if (deType != null) {
+					// DocumentEntryType
+					int i=0;
+					for (String codeDef : deType) {
+						params.put("$ot" + String.valueOf(i) + "$", codeDef);
+						i++;
+					}
+				}
+
 				if (session.siteSpec.isRG()) {
 					sections.add("XCA");
 //					params.put("$home$", toolkit.getHome());

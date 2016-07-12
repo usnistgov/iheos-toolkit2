@@ -53,6 +53,7 @@ class StoredQuerySpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
+        spi.delete('reg', testSession)
         server.stop()
         ListenerFactory.terminateAll()
     }
