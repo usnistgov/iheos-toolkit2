@@ -208,10 +208,10 @@ public class QueryServiceManager extends CommonService {
 		}
 	}
 
-	public List<Result> getSSandContents(SiteSpec site, String ssid) {
+	public List<Result> getSSandContents(SiteSpec site, String ssid, Map<String, List<String>> codeSpec) {
 		logger.debug(session.id() + ": " + "getSSandContents");
 		try {
-			return new GetSSandContents(session).run(site, ssid);
+			return new GetSSandContents(session).run(site, ssid, codeSpec);
 		} catch (XdsException e) {
 			return buildResultList(e);
 		}

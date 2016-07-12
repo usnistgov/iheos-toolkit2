@@ -75,6 +75,10 @@ class OdConsumerSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
+        spi.delete('rr2', testSession)
+        spi.delete('odds2', testSession)
+        spi.delete('rr2', 'test')
+        spi.delete('odds2', 'test')
         server.stop()
         ListenerFactory.terminateAll()
     }

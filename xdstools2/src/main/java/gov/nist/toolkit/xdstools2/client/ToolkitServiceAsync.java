@@ -100,7 +100,7 @@ public interface ToolkitServiceAsync {
 	void reloadExternalSites(AsyncCallback<List<String>> callback);
 	void deleteSite(String siteName, AsyncCallback<String> callback);
 
-	void getSSandContents(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
+	void getSSandContents(SiteSpec site, String ssuid, Map<String, List<String>> codeSpec, AsyncCallback<List<Result>> callback);
 	void srcStoresDocVal(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
 	void findDocuments(SiteSpec site, String pid, boolean onDemand, AsyncCallback<List<Result>> callback);
 	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;

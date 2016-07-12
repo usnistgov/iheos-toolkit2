@@ -175,7 +175,7 @@ public class Site  implements IsSerializable, Serializable {
 	}
 
 	public String getRepositoryUniqueId(RepositoryType repositoryType) throws Exception {
-		if (!hasRepositoryB())
+		if (!hasRepositoryB(repositoryType))
 			throw new Exception("Site " + name + " does not define an XDS.b Repository");
 		TransactionBean transbean;
 		transbean = getRepositoryBean(repositoryType, false);  // try non-secure first
@@ -204,11 +204,12 @@ public class Site  implements IsSerializable, Serializable {
 	 * Repository and On-Demand Document Source.
 	 * @return
 	 */
-	public int repositoryBCount() {
+	public int repositoryBCount(RepositoryType repositoryType) {
 		int cnt = 0;
 		if (name != null && name.equals("allRepositories")) return 0;
 		for (TransactionBean b : repositories.transactions) {
-			if (b.repositoryType == RepositoryType.REPOSITORY || b.repositoryType == RepositoryType.ODDS)
+//			if (b.repositoryType == RepositoryType.REPOSITORY || b.repositoryType == RepositoryType.ODDS)
+			if (b.repositoryType == repositoryType)
 				cnt++;
 		}
 		return cnt;
@@ -234,9 +235,13 @@ public class Site  implements IsSerializable, Serializable {
 		}		
 		return tbs;
 	}
-		
+
 	public boolean hasRepositoryB() {
-		return repositoryBCount() > 0;
+		return repositoryBCount(RepositoryType.REPOSITORY) > 0;
+	}
+
+	public boolean hasRepositoryB(RepositoryType repositoryType) {
+		return repositoryBCount(repositoryType) > 0;
 	}
 
 	public int getRepositoryCount() {
