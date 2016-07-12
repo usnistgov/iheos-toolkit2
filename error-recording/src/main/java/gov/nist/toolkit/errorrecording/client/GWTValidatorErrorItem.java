@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author bill
  *
  */
-public class ValidatorErrorItem implements IsSerializable {
+public class GwtValidatorErrorItem implements IsSerializable {
 	public enum ReportingLevel implements IsSerializable { SECTIONHEADING, CHALLENGE, EXTERNALCHALLENGE, DETAIL, ERROR, WARNING, D_SUCCESS, D_INFO, D_ERROR, D_WARNING};
 	public enum ReportingCompletionType implements IsSerializable { ERROR, WARNING, OK };
 
@@ -28,7 +28,7 @@ public class ValidatorErrorItem implements IsSerializable {
 	String codeString = null;
 	public ReportingCompletionType completion = ReportingCompletionType.OK;
 	
-	public ValidatorErrorItem() {} // For GWT
+	public GwtValidatorErrorItem() {} // For GWT
 
 	/**
 	 * Converts an XDS error code into a String

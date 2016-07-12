@@ -1,8 +1,8 @@
 package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.ErrorLogger;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
@@ -88,14 +88,14 @@ public abstract class Response implements ErrorLogger {
 	public void addErrors(List<ValidationStepResult> results) throws XdsInternalException {
 
 		for (ValidationStepResult vsr : results) {
-			for (ValidatorErrorItem vei : vsr.er) {
-				if (vei.level == ValidatorErrorItem.ReportingLevel.ERROR) {
+			for (GwtValidatorErrorItem vei : vsr.er) {
+				if (vei.level == GwtValidatorErrorItem.ReportingLevel.ERROR) {
 					String msg = vei.msg;
 					if (vei.resource != null && !vei.resource.equals(""))
 						msg = msg + " (" + vei.resource + ")";
 					registryErrorList.add_error(vei.getCodeString(), msg, null, null, null);
 				}
-				if (vei.level == ValidatorErrorItem.ReportingLevel.WARNING) {
+				if (vei.level == GwtValidatorErrorItem.ReportingLevel.WARNING) {
 					String msg = vei.msg;
 					if (vei.resource != null && !vei.resource.equals(""))
 						msg = msg + " (" + vei.resource + ")";

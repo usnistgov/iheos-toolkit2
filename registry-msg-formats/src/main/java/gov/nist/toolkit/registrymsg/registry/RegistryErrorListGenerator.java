@@ -2,8 +2,8 @@ package gov.nist.toolkit.registrymsg.registry;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingCompletionType;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingCompletionType;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
@@ -68,7 +68,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 		if (!er.hasErrors())
 			return;
 
-		for (ValidatorErrorItem vei : er.getValidatorErrorItems()) {
+		for (GwtValidatorErrorItem vei : er.getValidatorErrorItems()) {
 			if (vei.completion == ReportingCompletionType.ERROR) {
 				addError(vei.msg, vei.getCodeString(), vei.location);
 			}
@@ -497,7 +497,7 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	}
 
 	@Override
-	public List<ValidatorErrorItem> getErrMsgs() {
+	public List<GwtValidatorErrorItem> getErrMsgs() {
 		return null;
 	}
 

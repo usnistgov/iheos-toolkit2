@@ -4,8 +4,8 @@ import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
@@ -182,14 +182,14 @@ public class DsSimCommon {
             rel.setPartialSuccess(simCommon.mvc.isPartialSuccess());
 
             for (ValidationStepResult vsr : results) {
-                for (ValidatorErrorItem vei : vsr.er) {
-                    if (vei.level == ValidatorErrorItem.ReportingLevel.ERROR) {
+                for (GwtValidatorErrorItem vei : vsr.er) {
+                    if (vei.level == GwtValidatorErrorItem.ReportingLevel.ERROR) {
                         String msg = vei.msg;
                         if (vei.resource != null && !vei.resource.equals(""))
                             msg = msg + " (" + vei.resource + ")";
                         rel.add_error(vei.getCodeString(), vei.msg, vei.location, null, null);
                     }
-                    if (vei.level == ValidatorErrorItem.ReportingLevel.WARNING) {
+                    if (vei.level == GwtValidatorErrorItem.ReportingLevel.WARNING) {
                         String msg = vei.msg;
                         if (vei.resource != null && !vei.resource.equals(""))
                             msg = msg + " (" + vei.resource + ")";
@@ -683,7 +683,7 @@ public class DsSimCommon {
         if (ger.hasErrorsOrContext()) {
             logger.debug("has errors or context");
             SoapFault fault = new SoapFault(SoapFault.FaultCodes.Sender, "Header/Format Validation errors reported by " + clas.getSimpleName());
-            for (ValidatorErrorItem vei : ger.getValidatorErrorItems()) {
+            for (GwtValidatorErrorItem vei : ger.getValidatorErrorItems()) {
                 logger.debug(vei.toString());
                 String resource = vei.resource;
                 if (!vei.isErrorOrContext())

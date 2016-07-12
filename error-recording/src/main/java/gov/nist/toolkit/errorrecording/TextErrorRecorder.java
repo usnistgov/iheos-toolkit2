@@ -1,6 +1,6 @@
 package gov.nist.toolkit.errorrecording;
 
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 
@@ -233,7 +233,7 @@ public class TextErrorRecorder implements ErrorRecorder {
 	}
 
 	@Override
-	public List<ValidatorErrorItem> getErrMsgs() {
+	public List<GwtValidatorErrorItem> getErrMsgs() {
 		return null;
 	}
 

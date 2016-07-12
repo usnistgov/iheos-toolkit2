@@ -3,7 +3,7 @@ package gov.nist.toolkit.valregmsg.validation.engine;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 import gov.nist.toolkit.results.CommonService;
@@ -68,7 +68,7 @@ public class ValidateMessageService extends CommonService {
 			try {
 				ValidationStep vs = mvc.getValidationStep(step);
 				GwtErrorRecorder ger = (GwtErrorRecorder) vs.getErrorRecorder();
-				List<ValidatorErrorItem> errs = ger.getValidatorErrorItems();
+				List<GwtValidatorErrorItem> errs = ger.getValidatorErrorItems();
 				mvr.addResult(vs.getStepName(), errs);
 				mvr.addSummary(vs.getStepName(), ger.getSummaryErrorInfo());
 			} catch (Exception e) {}
@@ -104,19 +104,19 @@ public class ValidateMessageService extends CommonService {
 		}
 	}
 	
-	List<ValidatorErrorItem> buildValidationSummary(ValidationContext vc, MessageValidatorEngine mvc) {
-		List<ValidatorErrorItem> info = new ArrayList<ValidatorErrorItem>();
+	List<GwtValidatorErrorItem> buildValidationSummary(ValidationContext vc, MessageValidatorEngine mvc) {
+		List<GwtValidatorErrorItem> info = new ArrayList<GwtValidatorErrorItem>();
 		
-		ValidatorErrorItem vei = new ValidatorErrorItem();
+		GwtValidatorErrorItem vei = new GwtValidatorErrorItem();
 		vei.msg = "Validation Context: " + vc.toString(); 
-		vei.level = ValidatorErrorItem.ReportingLevel.DETAIL;
+		vei.level = GwtValidatorErrorItem.ReportingLevel.DETAIL;
 		info.add(vei);
 		
 		for (int i=0; i<mvc.getValidationStepCount(); i++) {
 			ValidationStep vs = mvc.getValidationStep(i);
-			vei = new ValidatorErrorItem();
+			vei = new GwtValidatorErrorItem();
 			vei.msg = vs.getStepName();
-			vei.level = ValidatorErrorItem.ReportingLevel.DETAIL;
+			vei.level = GwtValidatorErrorItem.ReportingLevel.DETAIL;
 			info.add(vei);
 		}
 		return info;

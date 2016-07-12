@@ -25,8 +25,8 @@ public class ErrorRecorderAdapter {
 	boolean isOnlyCCDA = false;
 	boolean isDirect = false;
 
-	public ErrorRecorderAdapter(ArrayList<ValidatorErrorItem> er) {
-		/*ArrayList<ValidatorErrorItem> er = new ArrayList<ValidatorErrorItem>();
+	public ErrorRecorderAdapter(ArrayList<GwtValidatorErrorItem> er) {
+		/*ArrayList<GwtValidatorErrorItem> er = new ArrayList<GwtValidatorErrorItem>();
 		for(int k=0;k<results.getResults().size();k++) {
 			for(int l=0;l<results.getResults().get(l).er.size();l++) {
 				er.add(results.getResults().get(l).er.get(l));
@@ -38,8 +38,8 @@ public class ErrorRecorderAdapter {
 
 	}
 
-	public ErrorRecorderAdapter(List<ValidatorErrorItem> er) {
-		ArrayList<ValidatorErrorItem> erVal = new ArrayList<ValidatorErrorItem>();
+	public ErrorRecorderAdapter(List<GwtValidatorErrorItem> er) {
+		ArrayList<GwtValidatorErrorItem> erVal = new ArrayList<GwtValidatorErrorItem>();
 		for(int i=0;i<er.size();i++) {
 			erVal.add(er.get(i));
 		}
@@ -49,9 +49,9 @@ public class ErrorRecorderAdapter {
 	}
 
 
-	public void getReportFromErrorRecorder(ArrayList<ValidatorErrorItem> er) {
+	public void getReportFromErrorRecorder(ArrayList<GwtValidatorErrorItem> er) {
 		for(int i=indexEndSummary;i<er.size();i++) {
-			if(er.get(i).level.equals(ValidatorErrorItem.ReportingLevel.DETAIL)) {
+			if(er.get(i).level.equals(GwtValidatorErrorItem.ReportingLevel.DETAIL)) {
 				if(er.get(i).msg.startsWith("#")) {
 					String contentName = er.get(i).msg.replaceAll("#", "");
 					String content = er.get(i+1).msg;
@@ -70,7 +70,7 @@ public class ErrorRecorderAdapter {
 					detailed.add(new ValidationReportItem(er.get(i).msg));
 				}
 			} else {
-				if(er.get(i).level.equals(ValidatorErrorItem.ReportingLevel.SECTIONHEADING)) {
+				if(er.get(i).level.equals(GwtValidatorErrorItem.ReportingLevel.SECTIONHEADING)) {
 					er.get(i).name = er.get(i).msg;
 				}
 				detailed.add(new ValidationReportItem(er.get(i).level, er.get(i).name,
@@ -81,17 +81,17 @@ public class ErrorRecorderAdapter {
 	}
 
 
-	public void getSummaryFromErrorRecorder(ArrayList<ValidatorErrorItem> er) {
+	public void getSummaryFromErrorRecorder(ArrayList<GwtValidatorErrorItem> er) {
 		for(int i=0;i<er.size();i++) {
 			if(er.get(i).msg.contains("Message Content Summary")) {
 				int k = i+1;
 				while(!er.get(k).msg.contains("Detailed Validation")) {
 					int num = 0;
-					if(er.get(k).level.equals(ValidatorErrorItem.ReportingLevel.DETAIL)) {
+					if(er.get(k).level.equals(GwtValidatorErrorItem.ReportingLevel.DETAIL)) {
 						num = 0;
-					} else if(er.get(k).level.equals(ValidatorErrorItem.ReportingLevel.SECTIONHEADING)) {
+					} else if(er.get(k).level.equals(GwtValidatorErrorItem.ReportingLevel.SECTIONHEADING)) {
 						num = 1;
-					} else if(er.get(k).level.equals(ValidatorErrorItem.ReportingLevel.ERROR)) {
+					} else if(er.get(k).level.equals(GwtValidatorErrorItem.ReportingLevel.ERROR)) {
 						num = 2;
 					} else {
 						num = 2;
@@ -105,7 +105,7 @@ public class ErrorRecorderAdapter {
 		}
 	}
 
-	public int getCCDAFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
+	public int getCCDAFromErrorRecorder(ArrayList<GwtValidatorErrorItem> er, int index) {
 		int k = index; 
 		ArrayList<CCDAValidationReportItem> ccdaList = new ArrayList<CCDAValidationReportItem>();
 		while(!er.get(k).msg.contains("CCDA Validation done")) {
@@ -118,7 +118,7 @@ public class ErrorRecorderAdapter {
 		return k++;
 	}
 
-	public int getXDMFromErrorRecorder(ArrayList<ValidatorErrorItem> er, int index) {
+	public int getXDMFromErrorRecorder(ArrayList<GwtValidatorErrorItem> er, int index) {
 		int k = index; 
 		ArrayList<XDMValidationReportItem> xdmList = new ArrayList<XDMValidationReportItem>();
 		while(!er.get(k).msg.contains("XDM Validation done")) {

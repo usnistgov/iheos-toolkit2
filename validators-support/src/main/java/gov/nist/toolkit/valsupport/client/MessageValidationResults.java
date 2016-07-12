@@ -1,8 +1,8 @@
 package gov.nist.toolkit.valsupport.client;
 
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingLevel;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 
 import java.util.ArrayList;
@@ -28,14 +28,14 @@ public class MessageValidationResults implements IsSerializable {
 	 * @param stepName the step
 	 * @param er the results
 	 */
-	public void addResult(String stepName, List<ValidatorErrorItem> er) {
+	public void addResult(String stepName, List<GwtValidatorErrorItem> er) {
 		ValidationStepResult result = new ValidationStepResult();
 		result.stepName = stepName;
 		result.er = er;
 		results.add(result);
 	}
 	
-	public void addSummary(String stepName, List<ValidatorErrorItem> er) {
+	public void addSummary(String stepName, List<GwtValidatorErrorItem> er) {
 		ValidationStepResult result = new ValidationStepResult();
 		result.stepName = stepName;
 		result.er = er;
@@ -73,7 +73,7 @@ public class MessageValidationResults implements IsSerializable {
 	 */
 	public boolean hasErrors() {
 		for (ValidationStepResult result : results) {
-			for (ValidatorErrorItem info : result.er) {
+			for (GwtValidatorErrorItem info : result.er) {
 				if (info.level == ReportingLevel.ERROR)
 					return true;
 			}
@@ -90,11 +90,11 @@ public class MessageValidationResults implements IsSerializable {
 	public void addError(Code code, String stepName, String msg) {
 		ValidationStepResult result = new ValidationStepResult();
 		result.stepName = stepName;
-		ValidatorErrorItem v = new ValidatorErrorItem();
-		v.level = ValidatorErrorItem.ReportingLevel.ERROR;
+		GwtValidatorErrorItem v = new GwtValidatorErrorItem();
+		v.level = GwtValidatorErrorItem.ReportingLevel.ERROR;
 		v.msg = msg;
 		v.setCode(code);
-		result.er = new ArrayList<ValidatorErrorItem>();
+		result.er = new ArrayList<GwtValidatorErrorItem>();
 		result.er.add(v);
 		results.add(result);
 	}

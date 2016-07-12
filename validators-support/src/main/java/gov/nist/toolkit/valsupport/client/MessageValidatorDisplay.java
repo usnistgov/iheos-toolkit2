@@ -1,9 +1,9 @@
 package gov.nist.toolkit.valsupport.client;
 
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingCompletionType;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem.ReportingLevel;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingCompletionType;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem.ReportingLevel;
 
 import java.util.List;
 
@@ -78,8 +78,8 @@ public class MessageValidatorDisplay {
 			f.addCell(f.h3(result.stepName), 0);
 			f.incRow();
 
-			List<ValidatorErrorItem> ers = result.er;
-			for (ValidatorErrorItem er : ers)  {
+			List<GwtValidatorErrorItem> ers = result.er;
+			for (GwtValidatorErrorItem er : ers)  {
 				
 				// Summary Detection
 				// - Need to change that
@@ -212,8 +212,8 @@ public class MessageValidatorDisplay {
 	public boolean isDirectReport(MessageValidationResults results) {
 		for (ValidationStepResult result : results.getResults()) {
 
-			List<ValidatorErrorItem> ers = result.er;
-			for (ValidatorErrorItem er : ers)  {
+			List<GwtValidatorErrorItem> ers = result.er;
+			for (GwtValidatorErrorItem er : ers)  {
 				switch (er.level) {				
 				case D_SUCCESS:
 					return true;

@@ -4,7 +4,7 @@ public class XDMValidationReportItem {
 	private String msg;
 	private String status;
 
-	public XDMValidationReportItem(String entire_msg, ValidatorErrorItem.ReportingLevel level) {
+	public XDMValidationReportItem(String entire_msg, GwtValidatorErrorItem.ReportingLevel level) {
 
 		this.msg = entire_msg;
 

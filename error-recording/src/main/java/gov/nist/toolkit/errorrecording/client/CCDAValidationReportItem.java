@@ -7,7 +7,7 @@ public class CCDAValidationReportItem {
 	private String resource;
 	private String status;
 
-	public CCDAValidationReportItem(String entire_msg, String resource, ValidatorErrorItem.ReportingLevel level) {
+	public CCDAValidationReportItem(String entire_msg, String resource, GwtValidatorErrorItem.ReportingLevel level) {
 		this.resource = "";
 		if(entire_msg.contains("|")) {
 			String[] split_msg = entire_msg.split("\\|", 4);

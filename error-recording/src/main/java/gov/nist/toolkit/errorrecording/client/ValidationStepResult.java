@@ -14,14 +14,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class ValidationStepResult implements IsSerializable {
 	public String stepName;
-	public List<ValidatorErrorItem> er;
+	public List<GwtValidatorErrorItem> er;
 	
 	public ValidationStepResult() {} // For GWT
 	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
-		for (ValidatorErrorItem item : er)
+		for (GwtValidatorErrorItem item : er)
 			buf.append(item).append("\n");
 		return buf.toString();
 	}

@@ -1,6 +1,6 @@
 package gov.nist.toolkit.errorrecording;
 
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
 
@@ -36,7 +36,7 @@ public interface ErrorRecorder extends ErrorRecorderBuilder {
 	boolean hasErrors();
 	int getNbErrors();
 	void concat(ErrorRecorder er);
-	List<ValidatorErrorItem> getErrMsgs();
+	List<GwtValidatorErrorItem> getErrMsgs();
 	
 	List<ErrorRecorder> getChildren();
     int depth();

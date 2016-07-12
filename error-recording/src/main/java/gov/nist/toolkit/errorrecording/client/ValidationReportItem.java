@@ -17,7 +17,7 @@ public class ValidationReportItem {
 	
 	//public enum ReportingLevel { SECTIONHEADING, SUCCESS, ERROR, WARNING,  INFO, CONTENT};
 	
-	public ValidationReportItem(ValidatorErrorItem.ReportingLevel type, String name, String dts, String found, String expected, String rfc) {
+	public ValidationReportItem(GwtValidatorErrorItem.ReportingLevel type, String name, String dts, String found, String expected, String rfc) {
 		this.name = StringEscapeUtils.escapeHtml(name);
 		switch(type) {
 		

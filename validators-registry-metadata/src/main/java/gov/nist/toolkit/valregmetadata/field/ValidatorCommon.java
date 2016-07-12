@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmetadata.field;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
+import gov.nist.toolkit.errorrecording.client.GwtValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code;
 import gov.nist.toolkit.registrymetadata.Metadata;
@@ -317,7 +317,7 @@ public class ValidatorCommon implements ErrorRecorder {
 	}
 
 	@Override
-	public List<ValidatorErrorItem> getErrMsgs() {
+	public List<GwtValidatorErrorItem> getErrMsgs() {
 		return null;
 	}
 

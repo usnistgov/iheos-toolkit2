@@ -1188,8 +1188,8 @@ public class MessageValidatorTab extends TabbedWindow {
 		//			f.addCell(h3(result.stepName), 0);
 		//			row++;
 		//
-		//			List<ValidatorErrorItem> ers = result.er;
-		//			for (ValidatorErrorItem er : ers)  {
+		//			List<GwtValidatorErrorItem> ers = result.er;
+		//			for (GwtValidatorErrorItem er : ers)  {
 		//				boolean row_advance = true;
 		//				switch (er.level) {
 		//				case SECTIONHEADING:
