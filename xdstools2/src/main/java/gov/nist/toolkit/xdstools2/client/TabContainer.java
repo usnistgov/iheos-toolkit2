@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -17,18 +18,22 @@ public class TabContainer {
 	//	private static TabLayoutPanel tabPanel = new TabLayoutPanel(1.5, Style.Unit.EM);
 //	private static TabPanel TABPANEL = new TabPanel();
 
+	// holds TabBar and currently selected panel from deck
+	// TabBar in North section.  Center holds SimpleLayoutPanel. SimpleLayoutPanel
+	// holds one element from the deck.
+	private static DockLayoutPanel OUTERPANEL = new DockLayoutPanel(Style.Unit.EM);
+
 	private static TabBar TABBAR = new TabBar();
 
-	private static FlowPanel OUTERPANEL = new FlowPanel();
-
-	// this hosts one element from deck at a time
-	private static FlowPanel INNERPANEL = new FlowPanel();
+//	// this hosts one element from deck at a time
+	private static SimpleLayoutPanel INNERPANEL = new SimpleLayoutPanel();
 
 	// Each element of TABBAR maps to one element of deck
-	private static List<FlowPanel> deck = new ArrayList<>();
+	private static List<DockLayoutPanel> deck = new ArrayList<>();
 
 	static {
-		OUTERPANEL.add(TABBAR);
+		OUTERPANEL.addNorth(TABBAR, 2.0);
+		OUTERPANEL.addNorth(new HTML("<hr style=\"background:#6495ED; border:0; height:5px\" />"), 1.0);
 		OUTERPANEL.add(INNERPANEL);
 
 		TABBAR.addSelectionHandler(new SelectionHandler<Integer>() {
@@ -68,22 +73,19 @@ public class TabContainer {
 //		announceOpen(title);
 //	}
 
-	public void addTab(FlowPanel w, String title, boolean select) {
-
-//		TABPANEL.add(h, buildTabHeaderWidget(title, h));
-
+	public void addTab(DockLayoutPanel w, String title, boolean select) {
 		TABBAR.addTab(buildTabHeaderWidget(title, w));
-		int index = TABBAR.getSelectedTab();
-		INNERPANEL.clear();
-		INNERPANEL.add(w);
 		deck.add(w);
 		TABBAR.selectTab(TABBAR.getTabCount() - 1);
+		selectTab();
 
-//		if (select)
-//			selectLastTab();
 		Xdstools2.getInstance().resizeToolkit();
 
 		announceOpen(title);
+	}
+
+	public static void selectTab() {
+		INNERPANEL.setWidget(deck.get(TABBAR.getSelectedTab()));
 	}
 
 	private void announceOpen(String title) {
@@ -102,7 +104,7 @@ public class TabContainer {
 
 	}
 
-	private Widget buildTabHeaderWidget(String title, final FlowPanel content) {
+	private Widget buildTabHeaderWidget(String title, final DockLayoutPanel content) {
 		HorizontalPanel panel = new HorizontalPanel();
 		Anchor x = new Anchor("X");
 		x.setStyleName("roundedButton1");
@@ -137,11 +139,6 @@ public class TabContainer {
 //		TABPANEL.selectTab(tabIndex);
 	}
 
-	public static void selectTab() {
-		INNERPANEL.clear();
-		INNERPANEL.add(deck.get(TABBAR.getSelectedTab()));
-	}
-
 	protected static Widget getTabPanel() {
 		return OUTERPANEL;
 	}
@@ -149,8 +146,8 @@ public class TabContainer {
 	protected static int getSelectedTab() {
 		return TABBAR.getSelectedTab();
 	}
-	protected static Widget getWidget(int tabIndex) {
-		return INNERPANEL.getWidget(tabIndex);
-	}
+//	protected static Widget getWidget(int tabIndex) {
+//		return INNERPANEL.getWidget(tabIndex);
+//	}
 
 }

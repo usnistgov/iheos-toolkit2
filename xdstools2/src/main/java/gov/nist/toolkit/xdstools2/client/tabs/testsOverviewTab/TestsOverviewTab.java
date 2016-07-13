@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.commandsWidget.CommandsWidget;
@@ -42,12 +41,10 @@ public class TestsOverviewTab extends GenericQueryTab {
 
 
     @Override
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
+    public void onTabLoad(boolean select, String eventName) {
         genericQueryTab = this;
 
-        container.addTab(tabTopPanel, eventName, select);  // link into container/tab management
-        addToolHeader(container, tabTopPanel, null);   // add the close button
+        registerTab(select, eventName);  // link into container/tab management
 
         HTML title = new HTML();
         title.setHTML("<h2>Tests Overview</h2>");

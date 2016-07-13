@@ -1,6 +1,7 @@
 package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -11,6 +12,7 @@ import java.util.logging.Logger;
 
 
 public abstract class ToolWindow {
+	private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
 	public FlowPanel tabTopPanel = new FlowPanel();
 	String helpHTML;
 	String topMessage = null;
@@ -23,25 +25,33 @@ public abstract class ToolWindow {
 			.create(ToolkitService.class);
 
 	public ToolWindow() {
+		tabTopRawPanel.add(tabTopPanel);
 	}
+
+	public TabContainer getTabContainer() { return tabContainer; }
+
+	public DockLayoutPanel getRawPanel() { return tabTopRawPanel; }
 
 	// Used to be protected but impractical for use with the new widget-based architecture in for ex. TestsOverviewTab
 	public String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
 
-	abstract public void onTabLoad(TabContainer container, boolean select, String eventName);
+	abstract public void onTabLoad(boolean select, String eventName);
 
 	// getWindowShortName() + ".html"is documentation file in /doc
 	abstract public String getWindowShortName();
 
-	public void onAbstractTabLoad(TabContainer container, boolean select, String eventName) {
-		tabContainer = TabContainer.instance();
-		onTabLoad(container, select, eventName);
+	public void onAbstractTabLoad(boolean select, String eventName) {
+		onTabLoad(select, eventName);
 //		registerTab(container);
 //		onTabSelection();
 
 //		environmentManager = new EnvironmentManager(tabContainer, toolkitService/*, new Panel1(menuPanel)*/);
 //		menuPanel.add(environmentManager);
 //		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
+	}
+
+	public void registerTab(boolean select, String eventName) {
+		TabContainer.instance().addTab(tabTopRawPanel, eventName, select);
 	}
 	
 	public TkProps tkProps() {
@@ -100,7 +110,7 @@ public abstract class ToolWindow {
 		topMessage = msg;
 	}
 
-	protected void addToolHeader(TabContainer container, FlowPanel panel, String helpHTML, SiteSpec site) {
+	protected void addToolHeader(DockLayoutPanel panel, String helpHTML, SiteSpec site) {
 		if (site != null) {
 			String type = (site != null) ? site.getTypeName() : "site";
 			String name = (site != null) ? site.name : "name";
@@ -108,7 +118,7 @@ public abstract class ToolWindow {
 		} else {
 			topMessage = "<h3>No site</h3>";
 		}
-		addToolHeader(container, panel, helpHTML);
+		addToolHeader(panel, helpHTML);
 	}
 
 	// all panels getRetrievedDocumentsModel a close button except the home panel
@@ -139,7 +149,7 @@ public abstract class ToolWindow {
 //
 //	}
 
-	protected void addToolHeader(TabContainer container, FlowPanel topPanel, String helpHTML) {
+	protected void addToolHeader(DockLayoutPanel topPanel, String helpHTML) {
 
 		this.helpHTML = (helpHTML == null) ? "No Help Available" : helpHTML;
 
@@ -156,9 +166,9 @@ public abstract class ToolWindow {
 //		menuPanel.setSpacing(30);
 //		menuPanel.setWidth("100%");
 
-		topPanel.add(new HTML("<hr />"));
+		topPanel.addNorth(new HTML("<hr />"), 4);
 		menuPanel.setSpacing(10);
-		topPanel.add(menuPanel);
+		topPanel.addNorth(menuPanel, 4);
 
 //		tabTopPanel.setCellWidth(menuPanel, "100%");
 	}

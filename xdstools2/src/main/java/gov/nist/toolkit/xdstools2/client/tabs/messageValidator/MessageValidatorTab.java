@@ -21,7 +21,6 @@ import gov.nist.toolkit.xdstools2.client.tabs.TextViewerTab;
 import java.util.*;
 
 public class MessageValidatorTab extends ToolWindow {
-	protected TabContainer myContainer;
 	VerticalPanel resultsContainer = new VerticalPanel();
 	FlexTable resultsTable = new FlexTable();
 	HTML htmlReport = new HTML();
@@ -328,12 +327,14 @@ public class MessageValidatorTab extends ToolWindow {
 		
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
+	MessageValidatorTab me;
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		me = this;
 		ccdaSel = new CcdaTypeSelection(tkProps(), null);
 
-		container.addTab(tabTopPanel, eventName, select);
-		addToolHeader(container, tabTopPanel, null);
+		registerTab(select, eventName);
 
 		tabTopPanel.add(HtmlMarkup.html(HtmlMarkup.h2("Message Validator")));
 
@@ -537,7 +538,7 @@ public class MessageValidatorTab extends ToolWindow {
 					return;
 				}
 				filename = simFilesListBox.getValue(sel);
-				new RenameSimFileDialogBox(tabTopPanel, filename, reloadSimMessages);
+				new RenameSimFileDialogBox(me.getRawPanel(), filename, reloadSimMessages);
 			}
 		});
 
@@ -961,7 +962,7 @@ public class MessageValidatorTab extends ToolWindow {
 			try {
 				inspect(results);
 				//			InspectorTab itab = new InspectorTab();
-				//			itab.onTabLoad(myContainer, true, toolkitService, results, null);
+				//			itab.onTabLoad(getTabContainer(), true, toolkitService, results, null);
 			} catch (Exception e) {
 				new PopupMessage(e.getMessage());
 			}
@@ -993,13 +994,13 @@ public class MessageValidatorTab extends ToolWindow {
 		it.setResults(results);
 		it.setSiteSpec(null);
 		it.setToolkitService(toolkitService);
-		it.onTabLoad(myContainer, true, null);
+		it.onTabLoad(true, null);
 	}
 
 	void viewText(List<Result> results) {
 		TextViewerTab v = new TextViewerTab();
 		v.setResult(results);
-		v.onTabLoad(myContainer, true, null);
+		v.onTabLoad(true, null);
 	}
 
 	protected AsyncCallback<MessageValidationResults> messageValidationCallback = new AsyncCallback<MessageValidationResults> () {

@@ -8,7 +8,6 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.ToolkitServiceAsync;
 
@@ -18,8 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MetadataInspectorTab extends ToolWindow {
-
-	TabContainer container;
 	VerticalPanel historyPanel;
 	VerticalPanel detailPanel;
 	VerticalPanel structPanel;
@@ -57,8 +54,8 @@ public class MetadataInspectorTab extends ToolWindow {
 	public void setResults(List<Result> results) { this.results = results; }
 	public void setSiteSpec(SiteSpec ss) { siteSpec = ss; }
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		this.container = container;
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 
 		logger.log(Level.INFO, "Inspector started");
 
@@ -70,9 +67,8 @@ public class MetadataInspectorTab extends ToolWindow {
 			data.enableActions = false;
 
 		data.toolkitService = toolkitService;
-		container.addTab(tabTopPanel, "Inspector", select);
+		registerTab(select, "Inspector");
 		tabTopPanel.setWidth("100%");
-		addToolHeader(container, tabTopPanel, null, siteSpec);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Inspector</h2>");
@@ -184,7 +180,7 @@ public class MetadataInspectorTab extends ToolWindow {
 
 			Tree contentTree = new Tree();
 
-			new ListingDisplay(this, data, new TreeThing(contentTree)).listing(container);
+			new ListingDisplay(this, data, new TreeThing(contentTree)).listing();
 
 			historyPanel.add(contentTree);
 		}
@@ -296,7 +292,7 @@ public class MetadataInspectorTab extends ToolWindow {
 				dm.combinedMetadata = stepResult.getMetadata(); 
 				dm.allDocs = stepResult.documents;
 				
-				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing(container);
+				new ListingDisplay(this, dm, new TreeThing(stepTreeItem)).listing();
 				
 //				listing(stepResult.getMetadata(), stepResult.documents, new TreeThing(stepTreeItem));
 

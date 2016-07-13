@@ -16,7 +16,7 @@ public class RenameSimFileDialogBox extends DialogBox {
 	AsyncCallback afterRename;
 
 	
-	public RenameSimFileDialogBox(FlowPanel parent, String oldSimFileSpec, AsyncCallback reloadSimMessages) {
+	public RenameSimFileDialogBox(DockLayoutPanel parent, String oldSimFileSpec, AsyncCallback reloadSimMessages) {
 		this.oldSimFileSpec = oldSimFileSpec;
 		this.afterRename = reloadSimMessages;
 		

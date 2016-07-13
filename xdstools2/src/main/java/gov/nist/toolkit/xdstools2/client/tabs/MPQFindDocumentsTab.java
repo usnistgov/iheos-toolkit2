@@ -9,7 +9,6 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.QueryBoilerplate;
@@ -53,13 +52,12 @@ public class MPQFindDocumentsTab extends GenericQueryTab {
 	
 	QueryBoilerplate queryBoilerplate = null;
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 		genericQueryTab = this;
 
 
-		container.addTab(tabTopPanel, "MPQFindDocuments", select);
-		addToolHeader(container, tabTopPanel, null);
+		registerTab(select, "MPQFindDocuments");
 
 		codeFilterBank = new CodeFilterBank(toolkitService, genericQueryTab);
 

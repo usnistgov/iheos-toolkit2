@@ -9,7 +9,6 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -39,12 +38,9 @@ public class ProvideAndRetrieveTab extends GenericQueryTab {
 		super(new GetDocumentsSiteActorManager());
 	}
 	
-
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-
-		container.addTab(tabTopPanel, "SubmitAndRetrieve", select);
-		addToolHeader(container, tabTopPanel, help);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "SubmitAndRetrieve");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Submit / Retrieve</h2>");

@@ -11,7 +11,6 @@ import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.RetrieveSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -33,11 +32,11 @@ public class ImagingDocSetRetrieveTab extends GenericQueryTab {
 	public ImagingDocSetRetrieveTab() {
 		super(new RetrieveSiteActorManager());
 	}
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		container.addTab(tabTopPanel, "RetrieveImagingDocSet", select);
-		addToolHeader(container, tabTopPanel, null);
+
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "RetrieveImagingDocSet");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Retrieve Imaging Document Set</h2>");

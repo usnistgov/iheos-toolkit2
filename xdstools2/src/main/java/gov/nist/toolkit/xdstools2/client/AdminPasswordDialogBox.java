@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.*;
 public class AdminPasswordDialogBox extends DialogBox {
 	PasswordTextBox passBox;
 	
-	public AdminPasswordDialogBox(FlowPanel parent) {
+	public AdminPasswordDialogBox(DockLayoutPanel parent) {
 		
 		setPopupPosition(200, 200);
 		

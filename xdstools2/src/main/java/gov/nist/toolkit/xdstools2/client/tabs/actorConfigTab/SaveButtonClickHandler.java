@@ -29,7 +29,7 @@ class SaveButtonClickHandler implements ClickHandler {
 		else {
 			PasswordManagement.addSignInCallback(actorConfigTab.saveSignedInCallback);
 
-			new AdminPasswordDialogBox(actorConfigTab.tabTopPanel);
+			new AdminPasswordDialogBox(actorConfigTab.getRawPanel());
 		}
 
 	}

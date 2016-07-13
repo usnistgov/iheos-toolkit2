@@ -3,18 +3,17 @@ package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.Simulator;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.ActorType;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.xdstools2.client.ClickHandlerData;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
@@ -23,7 +22,9 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActo
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class SimulatorControlTab extends GenericQueryTab {
 
@@ -34,7 +35,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 	public SimulatorControlTab() {
 		super(new FindDocumentsSiteActorManager());	}
 
-	protected TabContainer myContainer;
 	ListBox         actorSelectListBox = new ListBox();
 	HorizontalPanel simConfigWrapperPanel = new HorizontalPanel();
 	VerticalPanel   simConfigPanel = new VerticalPanel();
@@ -47,15 +47,14 @@ public class SimulatorControlTab extends GenericQueryTab {
 	SimConfigSuper simConfigSuper;
 	SimulatorControlTab self;
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 		self = this;
 
 		simConfigSuper = new SimConfigSuper(this, simConfigPanel, getCurrentTestSession());
 
-		container.addTab(tabTopPanel, eventName, select);
-		addToolHeader(container, tabTopPanel, null);
-		
+		registerTab(select, eventName);
+
 		addActorReloader();
 		
 		runEnabled = false;
@@ -280,7 +279,7 @@ public class SimulatorControlTab extends GenericQueryTab {
                         public void onClick(ClickEvent clickEvent) {
                             SimulatorConfig config = getData();
 							SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-							viewTab.onTabLoad(myContainer, true, config.getId().toString());
+							viewTab.onTabLoad(true, config.getId().toString());
                         }
                     });
 					buttonPanel.add(logButton);
@@ -291,7 +290,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 						public void onClick(ClickEvent clickEvent) {
 							SimulatorConfig config = getData();
 							PidEditTab editTab = new PidEditTab(config);
-							editTab.onTabLoad(myContainer, true, null);
+							editTab.onTabLoad(true, null);
 						}
 					});
 					buttonPanel.add(pidButton);
@@ -302,7 +301,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 						public void onClick(ClickEvent clickEvent) {
 							SimulatorConfig config = getData();
 							EditTab editTab = new EditTab(self, config);
-							editTab.onTabLoad(myContainer, true, null);
+							editTab.onTabLoad(true, "SimEdit");
 						}
 					});
 					buttonPanel.add(editButton);

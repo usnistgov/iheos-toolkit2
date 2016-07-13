@@ -4,12 +4,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -31,11 +30,9 @@ public class PidEditTab extends GenericQueryTab {
         simId = config.getId();
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-
-        container.addTab(tabTopPanel, "Pid Edit", select);
-        addToolHeader(container, tabTopPanel, null);
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
+        registerTab(select, "Pid Edit");
 
         addReloader();
 

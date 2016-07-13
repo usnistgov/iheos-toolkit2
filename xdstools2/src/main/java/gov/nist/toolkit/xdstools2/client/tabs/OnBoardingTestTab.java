@@ -52,11 +52,9 @@ public class OnBoardingTestTab extends GenericQueryTab {
 		super(new GetDocumentsSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-
-		container.addTab(tabTopPanel, "Pre-OnBoarding Tests", select);
-		addToolHeader(container, tabTopPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Pre-OnBoarding Tests");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Pre-OnBoarding Tests</h2>");
@@ -156,7 +154,7 @@ public class OnBoardingTestTab extends GenericQueryTab {
 				}
 
 				public void onSuccess(String result) {
-					new TextViewerTab().onTabLoad(myContainer, true, result, selectedTest + "#" + selectedSection);
+					new TextViewerTab().onTabLoad(true, result, selectedTest + "#" + selectedSection);
 				}
 				
 			});

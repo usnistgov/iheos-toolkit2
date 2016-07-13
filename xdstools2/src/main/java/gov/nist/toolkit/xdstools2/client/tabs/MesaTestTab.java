@@ -48,11 +48,9 @@ public class MesaTestTab extends GenericQueryTab {
 	public void onTabLoad(TabContainer container, boolean select) {
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-
-		container.addTab(tabTopPanel, eventName, select);
-		addToolHeader(container, tabTopPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, eventName);
 //		testSessionSelector = TestSessionSelector.getInstance(toolkitService, new Panel1(menuPanel));
 
 		HTML title = new HTML();
@@ -212,7 +210,7 @@ public class MesaTestTab extends GenericQueryTab {
 				}
 
 				public void onSuccess(String result) {
-					new TextViewerTab().onTabLoad(myContainer, true, result, selectedTest + "#" + selectedSection);
+					new TextViewerTab().onTabLoad(true, result, selectedTest + "#" + selectedSection);
 				}
 				
 			});

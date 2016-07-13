@@ -55,17 +55,16 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
     public ToolkitServiceAsync getToolkitService() { return toolkitService; }
 
     @Override
-    public TabContainer getToolContainer() { return myContainer; }
+    public TabContainer getToolContainer() { return getTabContainer(); }
 
     public void onTabLoad(TabContainer container, boolean select) {
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
         genericQueryTab = this;
 
-        container.addTab(tabTopPanel, eventName, select);
-        addToolHeader(container, tabTopPanel, null);
+        registerTab(select, eventName);
         tlsOptionEnabled = false;
 
         // customization of GenericQueryTab
@@ -358,7 +357,7 @@ public class RGTestTab extends GenericQueryTab implements GatewayTool {
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
                         itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(myContainer, true, null);
+                        itab.onTabLoad(true, null);
                     }
                 });
             }

@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.http.client.HtmlMarkup;
 import gov.nist.toolkit.xdstools2.client.RegistryStatus;
 import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -31,12 +30,9 @@ public class DashboardTab  extends GenericQueryTab {
 		super(new GetDocumentsSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-
-
-		container.addTab(tabTopPanel, "Dashboard", select);
-		addToolHeader(container, tabTopPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Dashboard");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>XDS Dashboard</h2>");

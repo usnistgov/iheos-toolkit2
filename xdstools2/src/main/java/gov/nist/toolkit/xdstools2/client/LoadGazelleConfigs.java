@@ -29,9 +29,9 @@ public class LoadGazelleConfigs  {
 		});
 	}
 	
-	void launchTextViewer(TabContainer myContainer, String tabName, String contents, boolean escapeHTML) {
+	void launchTextViewer(TabContainer container, String tabName, String contents, boolean escapeHTML) {
 		TextViewerTab ttab = new TextViewerTab(escapeHTML);
-		ttab.onTabLoad(myContainer, true, contents, tabName);
+		ttab.onTabLoad(true, contents, tabName);
 	}
 	
 

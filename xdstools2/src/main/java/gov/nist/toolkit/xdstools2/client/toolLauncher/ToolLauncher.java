@@ -4,7 +4,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToolLauncher implements ClickHandler {
-	TabContainer container;
 	String tabType;
 	SiteSpec siteSpec = null;
 	RegistryObject ro = null;
@@ -176,7 +174,7 @@ public class ToolLauncher implements ClickHandler {
 		ToolDef def = getToolDef(requestedName);
 		ToolWindow tool = getTool(def);
 		if (tool == null) return;
-		tool.onAbstractTabLoad(container, true, def.tabName);
+		tool.onAbstractTabLoad(true, def.tabName);
 	}
 
 	public void launch() {
@@ -187,13 +185,11 @@ public class ToolLauncher implements ClickHandler {
 		launch(tabType);
 	}
 
-	public ToolLauncher(TabContainer container, String tabType) {
-		this.container = container;
+	public ToolLauncher(String tabType) {
 		this.tabType = tabType;
 	}
 
-	public ToolLauncher(TabContainer container, String tabType, SiteSpec siteSpec, RegistryObject ro) {
-		this.container = container;
+	public ToolLauncher(String tabType, SiteSpec siteSpec, RegistryObject ro) {
 		this.tabType = tabType;
 		this.siteSpec = siteSpec;
 		this.ro = ro;

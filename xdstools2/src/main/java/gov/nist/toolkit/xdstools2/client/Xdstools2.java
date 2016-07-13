@@ -91,16 +91,16 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 		menuPanel.setSpacing(10);
 		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 
-		FlowPanel mainPanel = new FlowPanel();
-		mainPanel.add(menuPanel);
+		DockLayoutPanel mainPanel = new DockLayoutPanel(Style.Unit.EM);
+		mainPanel.addNorth(menuPanel, 4);
 //		mainPanel.add(new HTML("<hr />"));
 
-			// Wrap tab panel in a scroll panel
-			ScrollPanel spTabPanel = new ScrollPanel(TabContainer.getTabPanel());
-			spTabPanel.setAlwaysShowScrollBars(true);
+//			// Wrap tab panel in a scroll panel
+//			ScrollPanel spTabPanel = new ScrollPanel(TabContainer.getTabPanel());
+//			spTabPanel.setAlwaysShowScrollBars(false);
 
 
-		mainPanel.add(spTabPanel);
+		mainPanel.add(TabContainer.getTabPanel());
 
 			mainSplitPanel.add(mainPanel);
 
@@ -168,22 +168,22 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	}
 
 	public void resizeToolkit() {
-        try {
-			if (mainSplitPanel.getParent()!=null) {
-				long containerWidth = mainSplitPanel.getParent().getElement().getClientWidth();
-				long containerHeight = mainSplitPanel.getParent().getElement().getClientHeight() - 42; /* compensate for tab bar height, which is a fixed size */
-
-				int selectedTabIndex = TabContainer.getSelectedTab();
-
-				if (selectedTabIndex >= 0) {
-					TabContainer.getWidget(selectedTabIndex).setHeight(containerHeight + "px");
-				}
-			}else{
-				logger.fine("mainSplitPanel parent is null");
-			}
-        }catch (Throwable t) {
-			logger.warning("Window resize failed:" + t.toString());
-		}
+//        try {
+//			if (mainSplitPanel.getParent()!=null) {
+//				long containerWidth = mainSplitPanel.getParent().getElement().getClientWidth();
+//				long containerHeight = mainSplitPanel.getParent().getElement().getClientHeight() - 42; /* compensate for tab bar height, which is a fixed size */
+//
+//				int selectedTabIndex = TabContainer.getSelectedTab();
+//
+//				if (selectedTabIndex >= 0) {
+//					TabContainer.getWidget(selectedTabIndex).setHeight(containerHeight + "px");
+//				}
+//			}else{
+//				logger.fine("mainSplitPanel parent is null");
+//			}
+//        }catch (Throwable t) {
+//			logger.warning("Window resize failed:" + t.toString());
+//		}
 	}
 
 	static boolean newHomeTab = false;
@@ -203,7 +203,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 //		ht.onTabLoad(this, false, null);
 		ht = new HomeTab();
-		ht.onAbstractTabLoad(TabContainer.instance(), false, null);
+		ht.onAbstractTabLoad(false, "Home");
 
 //		TabManager.reset();
 
@@ -227,7 +227,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 				// Parse the history token
 				try {
 					if (historyToken.equals("mv")) {
-						new MessageValidatorTab().onTabLoad(TabContainer.instance(), true, null);
+						new MessageValidatorTab().onTabLoad(true, null);
 					}
 
 				} catch (IndexOutOfBoundsException e) {

@@ -24,11 +24,9 @@ public class ToolConfigTab extends GenericQueryTab {
 		super(new NullSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-
-		container.addTab(tabTopPanel, "ToolConfig", select);
-		addToolHeader(container, tabTopPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "ToolConfig");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Configure XDS Toolkit</h2>");
@@ -77,7 +75,7 @@ public class ToolConfigTab extends GenericQueryTab {
 		else {
 			PasswordManagement.addSignInCallback(signedInCallback);
 
-			new AdminPasswordDialogBox(tabTopPanel);
+			new AdminPasswordDialogBox(getRawPanel());
 
 			return;
 		}
@@ -103,11 +101,11 @@ public class ToolConfigTab extends GenericQueryTab {
 		tabTopPanel.add(subtitle2);
 
 		tabTopPanel.add(loadAllGazelleConfigs);
-		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(toolkitService, myContainer, "ALL"));
+		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(toolkitService, getTabContainer(), "ALL"));
 
 		tabTopPanel.add(new HTML("<hr />"));
 		/* new code for testkit update */
-        TestkitConfigTool tkconf=new TestkitConfigTool(myContainer,toolkitService);
+        TestkitConfigTool tkconf=new TestkitConfigTool(getTabContainer(),toolkitService);
         tabTopPanel.add(tkconf);
 	}
 

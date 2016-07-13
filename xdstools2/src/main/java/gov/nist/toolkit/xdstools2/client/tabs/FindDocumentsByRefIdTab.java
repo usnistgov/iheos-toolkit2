@@ -2,12 +2,14 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -35,13 +37,9 @@ public class FindDocumentsByRefIdTab extends GenericQueryTab {
 		super(new FindDocumentsSiteActorManager());
 	}
 
-
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-
-
-		container.addTab(tabTopPanel, "FindDocumentsByRefId", select);
-		addToolHeader(container, tabTopPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "FindDocumentsByRefId");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Documents by Reference ID Stored Query</h2>");

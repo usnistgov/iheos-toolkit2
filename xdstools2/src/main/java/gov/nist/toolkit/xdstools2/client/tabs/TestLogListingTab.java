@@ -19,7 +19,7 @@ public class TestLogListingTab extends GenericQueryTab {
 			.create(ToolkitService.class);
 
 	FlexTable grid = new FlexTable();
-	StackLayoutPanel panel = new StackLayoutPanel(Style.Unit.EM);
+	StackLayoutPanel stackPanel = new StackLayoutPanel(Style.Unit.EM);
 	boolean isPrivateTesting = false;
 
 
@@ -27,19 +27,17 @@ public class TestLogListingTab extends GenericQueryTab {
 		super(new GetDocumentsSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 
-
-		container.addTab(tabTopPanel, eventName, select);
-		addToolHeader(container, tabTopPanel, null);
+		registerTab(select, eventName);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>TestLog Listing</h2>");
 		tabTopPanel.add(title);
 
 		tabTopPanel.add(grid);
-		tabTopPanel.add(panel);
+		tabTopPanel.add(stackPanel);
 
 		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override
@@ -49,7 +47,7 @@ public class TestLogListingTab extends GenericQueryTab {
 			}
 		});
 
-		loadGrid();
+//		loadGrid();
 		loadStackPanel();
 	}
 
@@ -58,7 +56,7 @@ public class TestLogListingTab extends GenericQueryTab {
 	static final int STATUS_COL = 2;
 
 	void loadStackPanel() {
-		grid.clear();
+		stackPanel.clear();
 		toolkitService.getTestlogListing(getCurrentTestSession(), new AsyncCallback<List<TestInstance>>() {
 
 			public void onFailure(Throwable caught) {
@@ -76,16 +74,16 @@ public class TestLogListingTab extends GenericQueryTab {
 						}
 
 						public void onSuccess(TestOverviewDTO testOverview) {
-							HorizontalPanel header = new HorizontalPanel();
+							FlowPanel header = new FlowPanel();
 							header.add(new HTML(testOverview.getName()));
 							header.add((testOverview.isPass()) ?
 									new Image("icons/ic_done_black_24dp_1x.png")
 									:
 									new Image("icons/ic_warning_black_24dp_1x.png"));
 
-							VerticalPanel body = new VerticalPanel();
+							FlowPanel body = new FlowPanel();
 							for (String sectionName : testOverview.getSectionNames()) {
-								HorizontalPanel row = new HorizontalPanel();
+								FlowPanel row = new FlowPanel();
 								row.add(new HTML(sectionName));
 								row.add((testOverview.getSectionOverview(sectionName).isPass()) ?
 										new Image("icons/ic_done_black_24dp_1x.png")
@@ -94,7 +92,7 @@ public class TestLogListingTab extends GenericQueryTab {
 								body.add(row);
 							}
 
-							panel.add(body, header, 4);
+							stackPanel.add(body, header, 4);
 						}
 
 					});

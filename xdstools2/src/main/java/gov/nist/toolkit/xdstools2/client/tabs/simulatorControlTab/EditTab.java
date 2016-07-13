@@ -1,13 +1,12 @@
 package gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
 /**
- * Created by bill on 9/15/15.
+ *
  */
 public class EditTab extends GenericQueryTab {
     SimulatorConfig config = null;
@@ -23,12 +22,9 @@ public class EditTab extends GenericQueryTab {
         this.simulatorControlTab = simulatorControlTab;
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-
-
-        container.addTab(tabTopPanel, "Sim Edit", select);
-        addToolHeader(container, tabTopPanel, null);
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
+        registerTab(select, eventName);
 
         SimConfigMgr simConfigMgr = new SimConfigMgr(simulatorControlTab, tabTopPanel, config, getCurrentTestSession());
         simConfigMgr.displayInPanel();

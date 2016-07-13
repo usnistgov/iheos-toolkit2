@@ -6,7 +6,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -60,15 +59,12 @@ public class GetAllTab extends GenericQueryTab {
 	}
 
 	// Tab initialization
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 		// Panel1 to build inside of
 
 		genericQueryTab = this;   // share with other methods
-
-
-		container.addTab(tabTopPanel, "GetAll", select);  // link into container/tab management
-		addToolHeader(container, tabTopPanel, null);   // add the close button
+		registerTab(select, "GetAll");  // link into container/tab management
 
 		// Tab contents starts here
 		HTML title = new HTML();

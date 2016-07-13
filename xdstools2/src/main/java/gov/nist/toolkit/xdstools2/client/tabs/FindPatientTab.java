@@ -10,7 +10,6 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -68,11 +67,10 @@ public class FindPatientTab extends GenericQueryTab {
 	public FindPatientTab() {
 		super(new FindDocumentsSiteActorManager());
 	}
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
 
-		container.addTab(tabTopPanel, "FindPatient", select);
-		addToolHeader(container, tabTopPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "FindPatient");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Patient</h2>");

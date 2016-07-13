@@ -14,7 +14,6 @@ import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdstools2.client.PasswordManagement;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.StringSort;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.NullSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -38,12 +37,10 @@ public class ActorConfigTab extends GenericQueryTab {
 		super(new NullSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "ActorConfig");
 
-		container.addTab(tabTopPanel, "ActorConfig", select);
-		addToolHeader(container, tabTopPanel, null);
-		
 		loadGazelleFeedAvailableStatus();
 
 		HTML title = new HTML();

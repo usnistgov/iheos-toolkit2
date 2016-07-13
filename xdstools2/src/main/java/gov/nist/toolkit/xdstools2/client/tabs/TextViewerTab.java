@@ -24,10 +24,10 @@ public class TextViewerTab extends ToolWindow {
 	
 	public void setResult(List<Result> results) { this.results = results; }
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {		
-		container.addTab(tabTopPanel, "Viewer", select);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Viewer");
 		tabTopPanel.setWidth("100%");
-		addToolHeader(container, tabTopPanel, null, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Text Viewer</h2>");
@@ -56,10 +56,9 @@ public class TextViewerTab extends ToolWindow {
 
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String text, String titleString) {		
-		container.addTab(tabTopPanel, titleString, select);
+	public void onTabLoad(boolean select, String text, String titleString) {
+		registerTab(select, titleString);
 		tabTopPanel.setWidth("100%");
-		addToolHeader(container, tabTopPanel, null, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>" + titleString + "</h2>");

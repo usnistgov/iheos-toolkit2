@@ -41,11 +41,9 @@ public class PidFavoritesTab  extends GenericQueryTab {
     Set<Pid> favoritePids = new HashSet<>();  // the database of values
     List<String> assigningAuthorities = null;
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-
-        container.addTab(tabTopPanel, eventName, select);
-        addToolHeader(container, tabTopPanel, null);
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
+        registerTab(select, eventName);
 
         tabTopPanel.add(new HTML("<h2>Manage Patient IDs</h2>"));
 

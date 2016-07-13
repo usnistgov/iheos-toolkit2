@@ -17,7 +17,7 @@ class InspectorLauncher implements ClickHandler {
 		itab.setResults(tab.results);
 		itab.setSiteSpec(tab.getCommonSiteSpec());
 		itab.setToolkitService(tab.toolkitService);
-		itab.onTabLoad(tab.myContainer, true, null);
+		itab.onTabLoad(true, null);
 	}
 
 }

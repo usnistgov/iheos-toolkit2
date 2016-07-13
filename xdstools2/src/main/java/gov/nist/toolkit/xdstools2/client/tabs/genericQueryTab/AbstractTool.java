@@ -7,7 +7,6 @@ import com.google.gwt.user.client.ui.HTML;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 
 import java.util.List;
 
@@ -51,12 +50,11 @@ public abstract class AbstractTool extends GenericQueryTab {
     abstract public void run();
 
     @Override
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
+    public void onTabLoad(boolean select, String eventName) {
         me = this;
-        myContainer = container;
 
-        container.addTab(tabTopPanel, getTabTitle(), select);
-        addToolHeader(container, tabTopPanel, null);
+        registerTab(select, getTabTitle());
+//        addToolHeader(getRawPanel(), null);
 
         HTML title = new HTML();
         title.setHTML("<h2>" + getToolTitle() + "</h2>");

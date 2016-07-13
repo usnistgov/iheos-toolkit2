@@ -8,7 +8,6 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -30,12 +29,10 @@ public class FindFoldersTab extends GenericQueryTab {
 		super(new FindDocumentsSiteActorManager());
 	}
 	
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		
-		container.addTab(tabTopPanel, "FindFolders", select);
-		addToolHeader(container, tabTopPanel, null);
+		registerTab(select, "FindFolders");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Find Folders</h2>");

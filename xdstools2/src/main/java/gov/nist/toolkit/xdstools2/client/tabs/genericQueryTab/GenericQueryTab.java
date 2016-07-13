@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -55,7 +56,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public VerticalPanel resultPanel = new VerticalPanel();
     // if false then tool takes responsibliity for placing it
     public boolean addResultsPanel = true;
-	public TabContainer myContainer;
 	CheckBox doTls = new CheckBox("TLS?");
 	ListBox samlListBox = new ListBox();
 	List<RadioButton> byActorButtons = null;
@@ -530,13 +530,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 
 		if (tlsEnabled) {
-			doTls = new CheckBox("");
+			doTls = new CheckBox("use TLS");
             doTls.setEnabled(tlsOptionEnabled);
 			if (getCommonSiteSpec() != null) {
                 doTls.setValue(getCommonSiteSpec().isTls());
             }
 			doTls.addClickHandler(new TlsSelector(this));
-			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("TLS"));
+//			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("TLS"));
 			commonParamGrid.setWidget(commonGridRow++, contentsColumn, doTls);
 		}
 
@@ -556,9 +556,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
 			byActorButtons = siteLoader.addSitesForActor(selectByActor, row);
 			row++;
 		} else if (transactionTypes != null){    // most queries and retrieves use this
-			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("Send to"));
+			FlexTable siteSelectionPanel = new FlexTable();
+			siteSelectionPanel.setWidget(0, 0, new HTML("Send to"));
+
 			FlexTable siteGrid = new FlexTable();
-			commonParamGrid.setWidget(commonGridRow++, contentsColumn, siteGrid);
+			siteSelectionPanel.setWidget(0, 1, siteGrid);
+
 			int siteGridRow = 0;
             Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
 			for (TransactionType tt : transactionTypes) {
@@ -567,11 +570,21 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     String actorTypeName = at.getName();
                     if (!actorTypeNamesAlreadyDisplayed.contains(actorTypeName) && at.showInConfig()) {
                         actorTypeNamesAlreadyDisplayed.add(actorTypeName);
-                        siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
-                        siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+						Label label = new Label(at.getName() + ":");
+						label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLDER);
+                        siteGrid.setWidget(siteGridRow, 0, label);
+						if (getSiteTableForTransactionsSize(tt) == 0) {
+							siteGrid.setWidget(siteGridRow++, 1, new Label("None Available"));
+						} else {
+							siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+						}
                     }
                 }
 			}
+
+			DecoratorPanel decoration = new DecoratorPanel();
+			decoration.add(siteSelectionPanel);
+			mainConfigPanel.add(decoration);
 		}
         if (autoAddRunnerButtons)
             addRunnerButtons(mainConfigPanel);
@@ -654,6 +667,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		}
 //		mainGrid.setWidget(majorRow, startingCol, grid);
 		return grid;
+	}
+
+	int getSiteTableForTransactionsSize(TransactionType tt) {
+		return getSiteList(tt).size();
 	}
 
 	List<Site> getSiteList(TransactionType tt) {

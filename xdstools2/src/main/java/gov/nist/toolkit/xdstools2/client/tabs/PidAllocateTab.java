@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.xdstools2.client.PidAllocateService;
 import gov.nist.toolkit.xdstools2.client.PidAllocateServiceAsync;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.ArrayList;
@@ -22,11 +21,10 @@ public class PidAllocateTab extends ToolWindow {
 	final PidAllocateServiceAsync pidAllocateService = GWT
 	.create(PidAllocateService.class);
 
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		container.addTab(tabTopPanel, "Patient ID", select);
-		addToolHeader(container, tabTopPanel, null);
-		
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Patient ID");
+
 		HTML intro = new HTML();
 		intro.setHTML(
 			"<h2>Public Registry Patient ID Allocation Service</h2>" +

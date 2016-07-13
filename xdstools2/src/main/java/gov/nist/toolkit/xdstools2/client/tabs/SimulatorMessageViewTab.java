@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SimulatorMessageViewTab extends ToolWindow {
-	protected TabContainer myContainer;
 
 	final protected ToolkitServiceAsync toolkitService = GWT
 	.create(ToolkitService.class);
@@ -70,9 +69,8 @@ public class SimulatorMessageViewTab extends ToolWindow {
 
 	// If eventName is null then display list of simulators.  If non-null then it is
 	// the simulator id. In this case do not allow simulator selection.
-	public void onTabLoad(TabContainer container, boolean select, String simIdString) {
-		myContainer = container;
-
+	@Override
+	public void onTabLoad(boolean select, String simIdString) {
 		if (simIdString != null) {
             try {
                 simid = new SimId(simIdString);
@@ -82,8 +80,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
             }
         }
 
-		container.addTab(tabTopPanel, simIdString, select);
-		addToolHeader(container, tabTopPanel, null);
+		registerTab(select, simIdString);
 
 		tabTopPanel.add(simDisplayPanel);
 		simDisplayPanel.add(simControlPanel);
@@ -434,7 +431,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
 						tab.setToolkitService(toolkitService);
-						tab.onTabLoad(myContainer, true, null);
+						tab.onTabLoad(true, null);
                     }
                 });
 			} catch (Exception e) {
@@ -462,7 +459,7 @@ public class SimulatorMessageViewTab extends ToolWindow {
 						SiteSpec siteSpec = new SiteSpec(getSimid().toString(), currentTransactionInstance.actorType, null);
 						tab.setSiteSpec(siteSpec);
 						tab.setToolkitService(toolkitService);
-						tab.onTabLoad(myContainer, true, null);
+						tab.onTabLoad(true, null);
 					}
 				});
 			} catch (Exception e) {

@@ -3,7 +3,6 @@ package gov.nist.toolkit.xdstools2.client.util.activitiesAndPlaces;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 
@@ -19,7 +18,7 @@ public class ToolActivity extends AbstractActivity {
         // TODO the following can be refactored in a specific method such as openTab
         if(toolId!=null ) {
             // Open required tab
-            new ToolLauncher(TabContainer.instance(), toolId).launch();
+            new ToolLauncher(toolId).launch();
             xdstools2view.resizeToolkit();
         }
     }
