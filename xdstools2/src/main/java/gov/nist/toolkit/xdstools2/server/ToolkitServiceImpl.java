@@ -31,7 +31,7 @@
 	import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 	import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 	import gov.nist.toolkit.testengine.scripts.CodesUpdater;
-	import gov.nist.toolkit.testenginelogging.client.TestOverviewDTO;
+	import gov.nist.toolkit.session.client.TestOverviewDTO;
 	import gov.nist.toolkit.tk.TkLoader;
     import gov.nist.toolkit.tk.client.TkProps;
 	import gov.nist.toolkit.validatorsSoapMessage.factories.SoapMessageValidatorFactory;

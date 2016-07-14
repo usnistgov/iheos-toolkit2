@@ -23,7 +23,7 @@ public class TestDetails  {
 	File testkit;
 	LogRepository logRepository = null;
 //	File logdir;
-	public TestInstance testLogId = null;
+//	public TestInstance testLogId = null;
 	String area;  // examples, tests etc
 	TestInstance testInstance;
 //	List<File> testPlanFiles;
@@ -462,6 +462,10 @@ public class TestDetails  {
 
 	public TestInstance getTestInstance() {
 		return testInstance;
+	}
+
+	public void setTestInstance(TestInstance testInstance) {
+		this.testInstance = testInstance;
 	}
 }
 

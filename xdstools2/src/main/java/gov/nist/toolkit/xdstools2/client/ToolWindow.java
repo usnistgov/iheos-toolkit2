@@ -10,9 +10,26 @@ import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
 
 import java.util.logging.Logger;
 
-
+/**
+ * This supports two display modes for tabs/tools
+ * 1. Normal mode - tab class (which extends GenericQueryTab) adds content directly
+ * to tabTopPanel.  This accepts any number of widgets.  This is kept around for
+ * backwards compatibility with all the existing tools.
+ *
+ * 2. Raw mode - tab class (which extends GenericQueryTab) declares a single top
+ * level widget of type *LayoutPanel and expects the window management that comes
+ * from *LayoutPanels (resize from out to in) which is the opposite of non-*LayoutPanels
+ * - from inside to out.
+ *
+ * To use: Set the title by overriding the getTitle method and call useRawPanel(*LayoutPanel)
+ * passing the top level *LayoutPanel.
+ *
+ * In either style, the title shown in the little tab at the top is controlled by
+ * registerTab(boolean select, String eventName)
+ */
 public abstract class ToolWindow {
 	private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
+	private SimpleLayoutPanel innerPanel = new SimpleLayoutPanel();
 	public FlowPanel tabTopPanel = new FlowPanel();
 	String helpHTML;
 	String topMessage = null;
@@ -25,12 +42,27 @@ public abstract class ToolWindow {
 			.create(ToolkitService.class);
 
 	public ToolWindow() {
-		tabTopRawPanel.add(tabTopPanel);
+		String title = getTitle();
+		// .addNorth MUST come before .add - a condition of DockLayoutPanel
+		if (title != null)
+			tabTopRawPanel.addNorth(new HTML("<h1>" + title + "</h1>"), 1.0);
+		tabTopRawPanel.add(innerPanel);
+		innerPanel.setWidget(tabTopPanel);
 	}
 
 	public TabContainer getTabContainer() { return tabContainer; }
 
 	public DockLayoutPanel getRawPanel() { return tabTopRawPanel; }
+
+	public void useRawPanel(Widget windowRoot) {
+		innerPanel.setWidget(windowRoot);
+	}
+
+	/**
+	 * Override when using Raw Mode - only way to set title in raw mode
+	 * @return
+     */
+	public String getTitle() { return null; }
 
 	// Used to be protected but impractical for use with the new widget-based architecture in for ex. TestsOverviewTab
 	public String getCurrentTestSession() { return testSessionManager.getCurrentTestSession(); }
@@ -50,8 +82,8 @@ public abstract class ToolWindow {
 //		menuPanel.add(new TestSessionSelector(testSessionManager.getTestSessions(), testSessionManager.getCurrentTestSession()).asWidget());
 	}
 
-	public void registerTab(boolean select, String eventName) {
-		TabContainer.instance().addTab(tabTopRawPanel, eventName, select);
+	public void registerTab(boolean select, String tabName) {
+		TabContainer.instance().addTab(tabTopRawPanel, tabName, select);
 	}
 	
 	public TkProps tkProps() {

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.testenginelogging.client;
+package gov.nist.toolkit.session.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

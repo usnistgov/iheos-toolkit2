@@ -48,31 +48,12 @@ public class TabContainer {
 
 	public static TabContainer instance() { return me; }
 
-//	public void addTab(VerticalPanel w, String title, boolean select) {
-//		HTML left = new HTML();
-//		left.setHTML("&nbsp");
-//
-//		HTML right = new HTML();
-//		right.setHTML("&nbsp");
-//
-//		HorizontalPanel wrapper = new HorizontalPanel();
-//
-//		wrapper.add(left);
-//		wrapper.add(w);
-//		wrapper.add(right);
-//		wrapper.setCellWidth(left, "1%");
-//		wrapper.setCellWidth(right, "1%");
-//
-////		TABPANEL.add(wrapper, buildTabHeaderWidget(title, w));
-//
-//
-////		if (select)
-////			selectLastTab();
-//		Xdstools2.getInstance().resizeToolkit();
-//
-//		announceOpen(title);
-//	}
-
+	/**
+	 * Create a new tab/tool.
+	 * @param w - content
+	 * @param title - title to appear in the little tab at the top
+	 * @param select - should be selected upon creation (ignored)
+     */
 	public void addTab(DockLayoutPanel w, String title, boolean select) {
 		TABBAR.addTab(buildTabHeaderWidget(title, w));
 		deck.add(w);

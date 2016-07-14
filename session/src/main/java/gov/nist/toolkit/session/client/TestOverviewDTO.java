@@ -1,4 +1,4 @@
-package gov.nist.toolkit.testenginelogging.client;
+package gov.nist.toolkit.session.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public class TestOverviewDTO implements Serializable, IsSerializable {
     String name;
+    String title;
+    String description;
     boolean pass;
     List<String> sectionNames = new ArrayList<>();
     Map<String, SectionOverviewDTO> sections = new HashMap<>();
@@ -58,5 +60,21 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
 
     public SectionOverviewDTO getSectionOverview(String sectionName) {
         return sections.get(sectionName);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
