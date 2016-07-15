@@ -1,7 +1,7 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 
 import java.io.File;
@@ -61,8 +61,8 @@ public class TestCollection {
 		}
 	}
 	
-	public List<TestDetails> getTestSpecs() throws Exception {
-		List<TestDetails> specs = new ArrayList<TestDetails>();
+	public List<TestLogDetails> getTestSpecs() throws Exception {
+		List<TestLogDetails> specs = new ArrayList<TestLogDetails>();
 		
 		for (LinesOfFile lof=new LinesOfFile(collection); lof.hasNext(); ) {
 			String line = lof.next();
@@ -76,7 +76,7 @@ public class TestCollection {
 				continue;
 			TestInstance testInstance = new TestInstance(tokens.remove(0));
 			
-			TestDetails ts = new TestDetails(testkit, testInstance);
+			TestLogDetails ts = new TestLogDetails(testkit, testInstance);
 			if (tokens.size() > 0) 
 				ts.selectSections(tokens);
 			specs.add(ts);
@@ -104,7 +104,7 @@ public class TestCollection {
             // This parser supports specifying specific sections of a test.  TestInstance does not support
             // this yet.
 
-//            TestDetails ts = new TestDetails(testkit, testInstance);
+//            TestLogDetails ts = new TestLogDetails(testkit, testInstance);
 //            if (tokens.size() > 0)
 //                ts.selectSections(tokens);
 //            specs.add(ts);

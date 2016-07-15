@@ -49,13 +49,13 @@ public class UseReportManager  {
 				continue;
 			if (config.verbose)
 				System.out.println("\tLoading logs for test " + testInstance + " section " + section + "...");
-			TestDetails tspec = null;
+			TestLogDetails tspec = null;
 			try {
-				tspec = new TestDetails(config.altTestkitHome, testInstance);
+				tspec = new TestLogDetails(config.altTestkitHome, testInstance);
 			} catch (Exception e) {
-				tspec = new TestDetails(config.testkitHome, testInstance);
+				tspec = new TestLogDetails(config.testkitHome, testInstance);
 			}
-            System.out.println("TestDetails are: " + tspec.toString());
+            System.out.println("TestLogDetails are: " + tspec.toString());
 			tspec.setLogRepository(config.logRepository);
 			File testlogFile = tspec.getTestLog(testInstance, section);
             System.out.println("Loading log " + testlogFile);

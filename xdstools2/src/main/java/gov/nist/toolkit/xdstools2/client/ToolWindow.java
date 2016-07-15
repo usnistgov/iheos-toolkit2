@@ -29,7 +29,8 @@ import java.util.logging.Logger;
  */
 public abstract class ToolWindow {
 	private DockLayoutPanel tabTopRawPanel = new DockLayoutPanel(Style.Unit.EM);
-	private SimpleLayoutPanel innerPanel = new SimpleLayoutPanel();
+//	private SimpleLayoutPanel innerPanel = new SimpleLayoutPanel();
+	private ScrollPanel innerPanel = new ScrollPanel();
 	public FlowPanel tabTopPanel = new FlowPanel();
 	String helpHTML;
 	String topMessage = null;

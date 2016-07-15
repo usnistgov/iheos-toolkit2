@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestDetails  {
+public class TestLogDetails {
 
 	File testkit;
 	LogRepository logRepository = null;
@@ -31,14 +31,44 @@ public class TestDetails  {
 	public SectionLogMap sectionLogMap = new SectionLogMap();
 	String[] areas;
 	
-	static Logger logger = Logger.getLogger(TestDetails.class);
+	static Logger logger = Logger.getLogger(TestLogDetails.class);
 
 	
 	public static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
 		"selftest", "development", "utilities", "xcpd", "collection", "static.collections"};
 	static final String testPlanFileName = "testplan.xml";
 
-	public String toString() { return "[TestDetails: testkit=" + testkit + " area=" + area +
+	public TestLogDetails(File testkit, TestInstance testInstance) throws Exception {
+		this.testkit = testkit;
+		this.testInstance = testInstance;
+		areas = defaultAreas;
+		verifyCurrentTestExists(testkit, testInstance);
+		testPlanFileMap = getTestPlans();
+		logRepository = LogRepositoryFactory.getRepository(Installation.installation().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
+	}
+
+	public TestLogDetails(File testkit, TestInstance testInstance, String[] areas) throws Exception {
+		this.testkit = testkit;
+		this.testInstance = testInstance;
+		this.areas = areas;
+		verifyCurrentTestExists(testkit, testInstance);
+		testPlanFileMap = getTestPlans();
+	}
+
+	public TestLogDetails(File testkit) throws Exception {
+		if (new File(testkit + File.separator + "tests").exists()) {
+			// this is the testkit
+			this.testkit = testkit;
+			areas = defaultAreas;
+		} else  {
+			// this is a test directory
+			this.testkit = null;
+			testPlanFileMap = getTestPlanFromDir(testkit);
+		}
+	}
+
+
+	public String toString() { return "[TestLogDetails: testkit=" + testkit + " area=" + area +
 		"<br />testnum=" + testInstance +
 		"<br />sections= " + testPlansToString() +
 		"<br />logs= " + sectionLogMap.toString() +
@@ -62,7 +92,8 @@ public class TestDetails  {
 	public SectionLogMap getTestPlanLogs() {
 		return sectionLogMap;
 	}
-	
+
+
 	public void setLogRepository(LogRepository logRepository) {
 		this.logRepository = logRepository;
 	}
@@ -104,16 +135,6 @@ public class TestDetails  {
 	 */
 	static public String getLogicalPath(File testPath, File testkit) throws Exception {
         return getLogicalPath(testPath.toPath(), testkit.toPath()).toFile().toString();
-//		String testkitpath = testkit.toString();
-//		String testpath = testPath.toString();
-//
-//		if ( ! testpath.startsWith(testkitpath))
-//			throw new Exception("Path does not target contents of testkit");
-//
-//		String diff = testpath.substring(testkitpath.length());
-//		if (diff.charAt(0) == '/')
-//			return diff.substring(1);
-//		return diff;
 	}
 
     static public Path getLogicalPath(Path testPath, Path testkit) throws Exception {
@@ -130,35 +151,6 @@ public class TestDetails  {
 		if ( !file.exists())
 			throw new Exception("Test plan " + file + " does not exist");
 		return file;
-	}
-
-	public TestDetails(File testkit, TestInstance testInstance) throws Exception {
-		this.testkit = testkit;
-		this.testInstance = testInstance;
-		areas = defaultAreas;
-		verifyCurrentTestExists(testkit, testInstance);
-		testPlanFileMap = getTestPlans();
-		logRepository = LogRepositoryFactory.getRepository(Installation.installation().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
-	}
-
-	public TestDetails(File testkit, TestInstance testInstance, String[] areas) throws Exception {
-		this.testkit = testkit;
-		this.testInstance = testInstance;
-		this.areas = areas;
-		verifyCurrentTestExists(testkit, testInstance);
-		testPlanFileMap = getTestPlans();
-	}
-	
-	public TestDetails(File testkit) throws Exception {
-		if (new File(testkit + File.separator + "tests").exists()) {
-			// this is the testkit
-			this.testkit = testkit;
-			areas = defaultAreas;
-		} else  {
-			// this is a test directory
-			this.testkit = null;
-			testPlanFileMap = getTestPlanFromDir(testkit);
-		}
 	}
 
 	private void verifyCurrentTestExists(File testkit, TestInstance testInstance)
@@ -178,7 +170,7 @@ public class TestDetails  {
 	}
 
 	static public void listTestKitContents(File testkit) throws Exception {
-		TestDetails ts = new TestDetails(testkit);
+		TestLogDetails ts = new TestLogDetails(testkit);
 
 		for (int i=0; i<defaultAreas.length; i++) {
 			ts.area = defaultAreas[i];
@@ -210,7 +202,7 @@ public class TestDetails  {
 
 	static public Map<String, String> getTestKitReadMe(File testkit) throws Exception {
 		Map<String, String> map = new HashMap<String, String>();
-		TestDetails ts = new TestDetails(testkit);
+		TestLogDetails ts = new TestLogDetails(testkit);
 
 		for (int i=0; i<defaultAreas.length; i++) {
 			ts.area = defaultAreas[i];
@@ -261,12 +253,6 @@ public class TestDetails  {
 		return new File(testkit + File.separator + area + File.separatorChar + testInstance.getId());
 	}
 
-//	public LogRepository getLoggerRepository() {
-//		if (logdir == null)
-//			return null;
-//		return new File(logdir + File.separator + area + File.separatorChar + testId);
-//	}
-
 	public boolean exists() {
 		return getTestDir().isDirectory();
 	}
@@ -288,20 +274,6 @@ public class TestDetails  {
 	public File getIndexFile() {
 		return new File(getTestDir() + File.separator + "index.idx");
 	}
-	
-//	public List<File> getTestLogs(String upToSection) throws Exception {
-//		List<File> logfiles = new ArrayList<File>();
-//		File index = getIndexFile();
-//		if (index.exists())
-//			return getTestLogsForThisTest(index, upToSection);
-//		else {
-//			File testlogdir = getTestLogDir();
-//			if (testlogdir != null)
-//				logfiles.add(new File(testlogdir.toString() + File.separatorChar + "log.xml"));
-//		}
-//
-//		return logfiles;
-//	}
 
 	SectionTestPlanFileMap getTestPlansFromIndex(File index) throws Exception {
 		SectionTestPlanFileMap plans = new SectionTestPlanFileMap();

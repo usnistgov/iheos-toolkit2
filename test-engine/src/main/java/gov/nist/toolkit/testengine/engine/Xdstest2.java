@@ -39,7 +39,7 @@ public class Xdstest2 {
 	Site site;
 	File toolkitDir;   // never referenced
 	List<String> sections;
-	List<TestDetails> testDetails;
+	List<TestLogDetails> testLogDetails;
 	SecurityParams tki;
 	public boolean involvesMetadata = false;   // affects logging
 	static Logger logger = Logger.getLogger(Xdstest2.class);
@@ -185,7 +185,7 @@ public class Xdstest2 {
 	 */
 	public void addTest(TestInstance testInstance) throws Exception {
 		this.testInstance = testInstance;
-		xt.addTestSpec(new TestDetails(xt.getTestkit(), testInstance));
+		xt.addTestSpec(new TestLogDetails(xt.getTestkit(), testInstance));
 
 	}
 
@@ -202,34 +202,34 @@ public class Xdstest2 {
 	public void addTest(TestInstance testInstance, List<String> sections, String[] areas, boolean doLogCheck) throws Exception {
 		this.testInstance = testInstance;
 		this.sections = sections;
-		TestDetails testDetails;
+		TestLogDetails testLogDetails;
 		if (areas == null)
-			testDetails = new TestDetails(xt.getTestkit(), testInstance);
+			testLogDetails = new TestLogDetails(xt.getTestkit(), testInstance);
 		else
-			testDetails = new TestDetails(xt.getTestkit(), testInstance, areas);
+			testLogDetails = new TestLogDetails(xt.getTestkit(), testInstance, areas);
 		if (logRepository != null)
-			testDetails.setLogRepository(logRepository);
+			testLogDetails.setLogRepository(logRepository);
 		if (doLogCheck) {
 			if (sections != null && sections.size() != 0)
-				testDetails.selectSections(sections);
+				testLogDetails.selectSections(sections);
 		}
-		xt.addTestSpec(testDetails);
+		xt.addTestSpec(testLogDetails);
 	}
 	
 	public void addTest(TestInstance testInstance, File testDir) throws Exception {
 		this.testInstance = testInstance;
-		TestDetails testDetails = new TestDetails(testDir);
+		TestLogDetails testLogDetails = new TestLogDetails(testDir);
 		if (logRepository != null)
-			testDetails.setLogRepository(logRepository);
-		xt.addTestSpec(testDetails);
+			testLogDetails.setLogRepository(logRepository);
+		xt.addTestSpec(testLogDetails);
 	}
 
 	public void addTest(TestInstance testInstance, List<String> sections, String[] areas) throws Exception {
 		addTest(testInstance, sections, areas, true);
 	}
 	
-	public TestDetails getTestSpec(TestInstance testInstance) throws Exception {
-		return new TestDetails(xt.getTestkit(), testInstance);
+	public TestLogDetails getTestSpec(TestInstance testInstance) throws Exception {
+		return new TestLogDetails(xt.getTestkit(), testInstance);
 	}
 
 	/**
@@ -300,8 +300,8 @@ public class Xdstest2 {
 	public boolean run(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2,  boolean stopOnFirstFailure, TransactionSettings ts) throws Exception {
 		xt.stopOnFirstFailure = stopOnFirstFailure;
 		logger.debug("Running " + testInstance.getId());
-		testDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
-		if (testDetails == null)
+		testLogDetails = xt.runAndReturnLogs(externalLinkage, externalLinkage2, ts, ts.writeLogs);
+		if (testLogDetails == null)
 			throw new Exception("Xdstest2#run: runAndReturnLogs return null (testSpecs)");
 		return xt.status;
 	}
@@ -335,14 +335,14 @@ public class Xdstest2 {
 		if (sectionsToScan != null && sectionsToScan.size() == 0) 
 			sectionsToScan = null;
 
-		if (testDetails.size() > 1) 
+		if (testLogDetails.size() > 1)
 			sectionsToScan = null;
 
 		AssertionResults res = new AssertionResults();
 		String dashes = "------------------------------------------------------------------------------------------------";
 
 		res.add(dashes);
-		for (TestDetails testSpec : testDetails) {
+		for (TestLogDetails testSpec : testLogDetails) {
 //            logger.info("Scanning Test: " + testSpec.getTestInstance());
 			res.add("Test: " + testSpec.getTestInstance());
 			res.add(dashes);
@@ -425,8 +425,8 @@ public class Xdstest2 {
 	 * log information is stored when a test completes. It is initialized by the test execution.
 	 * @return
 	 */
-	public List<TestDetails> getTestSpecs() {
-		return testDetails;
+	public List<TestLogDetails> getTestSpecs() {
+		return testLogDetails;
 	}
 
 	/**
@@ -439,10 +439,10 @@ public class Xdstest2 {
 	public LogMap getLogMap() throws Exception {
 		LogMap lm = new LogMap();
 
-		if (testDetails == null)
+		if (testLogDetails == null)
 			throw new Exception("Xdstest2#getLogMap: testSpecs is null");
 
-		for (TestDetails testSpec : testDetails) {
+		for (TestLogDetails testSpec : testLogDetails) {
 			for (String section : testSpec.getTestPlanLogs().keySet()) {
 				LogFileContent testLog = testSpec.getTestPlanLogs().get(section);
 				if (testLog == null) {

@@ -5,28 +5,35 @@ import gov.nist.toolkit.session.client.StepOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testkitutilities.ReadMe;
+import gov.nist.toolkit.testkitutilities.TestDefinition;
+import gov.nist.toolkit.testkitutilities.TestkitBuilder;
+
+import java.io.File;
 
 /**
  *
  */
 public class TestOverviewBuilder {
-    TestDetails testDetails;
+    TestLogDetails testLogDetails;
     String testId;
+    File testDir;
     TestOverviewDTO testOverview = new TestOverviewDTO();
     XdsTestServiceManager tsm;
 
-    public TestOverviewBuilder(Session session, TestDetails testDetails) {
-        this.testDetails = testDetails;
-        this.testId = testDetails.getTestInstance().getId();
+    public TestOverviewBuilder(Session session, TestLogDetails testLogDetails) throws Exception {
+        this.testLogDetails = testLogDetails;
+        this.testId = testLogDetails.getTestInstance().getId();
+        this.testDir = TestkitBuilder.getTestDir(testId);
         tsm = new XdsTestServiceManager(session);
     }
 
     public TestOverviewDTO build() throws Exception {
         testOverview.setPass(true);  // will be updated by addSections()
         testOverview.setName(testId);
-        XdsTestServiceManager.ReadMe readme = tsm.getReadme(testId);
+        ReadMe readme = new TestDefinition(testDir).getTestReadme();
         testOverview.setTitle(readme.line1);
         testOverview.setDescription(readme.rest);
         addSections();
@@ -35,7 +42,7 @@ public class TestOverviewBuilder {
 
     private void addSections() throws Exception {
         for (String sectionName : tsm.getTestIndex(testId)) {
-            LogFileContent logFileContent = testDetails.sectionLogMap.get(sectionName);
+            LogFileContent logFileContent = testLogDetails.sectionLogMap.get(sectionName);
             SectionOverviewDTO sectionOverview = addSection(sectionName, logFileContent);
             if (!sectionOverview.isPass())
                 testOverview.setPass(false);

@@ -117,10 +117,24 @@ h3 {
   background-color: #E57373 !important;
 }
 
-.testOverviewHeader {
+.testOverviewHeaderSuccess {
+  background-color: lightskyblue !important;
   border-radius: 10px;
   border: 2px solid #90A4AE;
 }
+
+.testOverviewHeaderFail {
+  background-color: indianred !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
+.testOverviewHeaderNotRun {
+  background-color: lightgoldenrodyellow !important;
+  border-radius: 10px;
+  border: 2px solid #90A4AE;
+}
+
 
 .menuCollapse {
   cursor: pointer;

@@ -21,4 +21,20 @@ public class HorizontalFlowPanel extends FlowPanel {
         }
     }
 
+    public void setBackgroundColorSuccess() {
+        addStyleName("testOverviewHeaderSuccess");
+    }
+
+    public void setBackgroundColorFailure() {
+        addStyleName("testOverviewHeaderFail");
+    }
+
+    public void setBackgroundColorNotRun() {
+        addStyleName("testOverviewHeaderFail");
+    }
+
+    public void fullWidth() {
+        this.setWidth("100%");
+    }
+
 }

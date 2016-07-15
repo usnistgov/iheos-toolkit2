@@ -87,7 +87,7 @@ public class TestKit {
 			if (name.length() == 0)
 				continue;
 			TestDefinition tt = new TestDefinition(getTestDir(name));
-			String description = tt.getTestDescription();
+			String description = tt.getTestTitle();
 			testNames.put(name, description);
 		}
 		

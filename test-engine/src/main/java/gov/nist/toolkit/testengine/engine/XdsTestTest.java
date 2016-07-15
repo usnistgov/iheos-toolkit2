@@ -1,6 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testkitutilities.TestEnvConfig;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
@@ -94,7 +94,7 @@ public class XdsTestTest extends TestEnvConfig {
 			assert false;
 		}
 		assert xt.testSpecs.size() == 1;
-		TestDetails ts = xt.testSpecs.get(0);
+		TestLogDetails ts = xt.testSpecs.get(0);
 		ts.getTestInstance().equals("11710");
 		try {
 			assert ts.getReadmeFirstLine().startsWith("Register IP address against Public Registry");

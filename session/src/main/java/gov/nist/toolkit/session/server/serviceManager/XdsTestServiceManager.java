@@ -28,6 +28,7 @@ import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
+import gov.nist.toolkit.testkitutilities.TestkitBuilder;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -203,7 +204,7 @@ public class XdsTestServiceManager extends CommonService {
 
 	TestKit getTestKit() {
 		if (testKit == null)
-			testKit = new TestKit(Installation.installation().testkitFile());
+			testKit = TestkitBuilder.getTestKit();
 		return testKit;
 	}
 
@@ -221,39 +222,7 @@ public class XdsTestServiceManager extends CommonService {
 	public String getTestReadme(String test) throws Exception {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getTestReadme " + test);
-		try {
-			TestDefinition tt = new TestDefinition(getTestKit().getTestDir(test));
-			return tt.getReadme();
-		} catch (Exception e) {
-			logger.error("getTestReadme", e);
-			throw new Exception(e.getMessage());
-		}
-	}
-
-	public class ReadMe {
-		public String line1;
-		public String rest;
-	}
-
-	public ReadMe getReadme(String test) throws Exception {
-		String contents = getTestReadme(test);
-		ReadMe rm = new ReadMe();
-
-		StringBuilder buf = new StringBuilder();
-		Scanner scanner = new Scanner(contents);
-		int i = 0;
-		while (scanner.hasNextLine()) {
-			String line = scanner.nextLine();
-			if (i == 0) {
-				rm.line1 = line;
-				i++;
-				continue;
-			}
-			buf.append(line);
-		}
-		scanner.close();
-		rm.rest = buf.toString();
-		return rm;
+		return new TestDefinition(getTestKit().getTestDir(test)).getFullTestReadme();
 	}
 
 	public List<String> getTestIndex(String test) throws Exception   {
@@ -288,7 +257,7 @@ public class XdsTestServiceManager extends CommonService {
 
 			Xdstest2 xt2 = getNewXt();
 			xt2.addTest(testInstance, sections, null, false);
-			TestDetails ts = xt2.getTestSpec(testInstance);
+			TestLogDetails ts = xt2.getTestSpec(testInstance);
 
 			File tsFile;
 
@@ -364,13 +333,13 @@ public class XdsTestServiceManager extends CommonService {
 		File testkitDir = getTestKit().getTestsDir();
 		File testkitD = testkitDir.getParentFile();
 
-		TestDetails testDetails = new TestDetails(testkitD, testInstance);
-		List<TestDetails> testDetailsList = new ArrayList<TestDetails>();
-		testDetailsList.add(testDetails);
+		TestLogDetails testLogDetails = new TestLogDetails(testkitD, testInstance);
+		List<TestLogDetails> testLogDetailsList = new ArrayList<TestLogDetails>();
+		testLogDetailsList.add(testLogDetails);
 
 		for (String section : lm.getLogFileContentMap().keySet()) {
 			LogFileContent ll = lm.getLogFileContentMap().get(section);
-			testDetails.addTestPlanLog(section, ll);
+			testLogDetails.addTestPlanLog(section, ll);
 		}
 
 		// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
@@ -380,7 +349,7 @@ public class XdsTestServiceManager extends CommonService {
 		if (session.transactionSettings.logRepository != null)
 			session.transactionSettings.logRepository.logOut(logid, lm);
 
-		return new TestOverviewBuilder(session, testDetails).build();
+		return new TestOverviewBuilder(session, testLogDetails).build();
 	}
 
 	public LogMap buildLogMap(File testDir, TestInstance testInstance) throws Exception {
@@ -391,9 +360,9 @@ public class XdsTestServiceManager extends CommonService {
 		File testkitDir = getTestKit().getTestsDir();
 		File testkitD = testkitDir.getParentFile();
 
-		TestDetails testDetails = new TestDetails(testkitD, testInstance);
+		TestLogDetails testLogDetails = new TestLogDetails(testkitD, testInstance);
 
-		List<String> sectionNames = testDetails.getSectionsFromTestDef(new File(testkitDir + File.separator + testInstance));
+		List<String> sectionNames = testLogDetails.getSectionsFromTestDef(new File(testkitDir + File.separator + testInstance));
 
 		if (sectionNames.size() == 0) {
 			for (File f : testDir.listFiles()) {
@@ -485,7 +454,7 @@ public class XdsTestServiceManager extends CommonService {
 		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"));
 	}
 
-	Result buildResult(List<TestDetails> testSpecs, TestInstance logId) throws Exception {
+	Result buildResult(List<TestLogDetails> testSpecs, TestInstance logId) throws Exception {
 		TestInstance testInstance;
 		if (testSpecs.size() == 1) {
 			testInstance = testSpecs.get(0).getTestInstance();
@@ -509,7 +478,7 @@ public class XdsTestServiceManager extends CommonService {
 
 		// load metadata results into Result
 		//		List<TestSpec> testSpecs = s.xt.getTestSpecs();
-		for (TestDetails testSpec : testSpecs) {
+		for (TestLogDetails testSpec : testSpecs) {
 			for (String section : testSpec.sectionLogMap.keySet()) {
 				if (section.equals("THIS"))
 					continue;

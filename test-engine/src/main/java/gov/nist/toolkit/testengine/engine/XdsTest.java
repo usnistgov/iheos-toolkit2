@@ -10,7 +10,7 @@ import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
 import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.TestStepLogContent;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
@@ -37,7 +37,7 @@ public class XdsTest {
 	LogRepository logRepository;
 	TestInstance testInstance;
 	String testPart;
-	List<TestDetails> testSpecs;     
+	List<TestLogDetails> testSpecs;
 	List<File> logFiles;
 	String testDir; 
 	String tokens;
@@ -343,7 +343,7 @@ public class XdsTest {
 
 		if (listingOnly) {
 			try {
-				TestDetails.listTestKitContents(testkit);
+				TestLogDetails.listTestKitContents(testkit);
 			} catch (Exception e) {}
 			return true;
 		}
@@ -678,7 +678,7 @@ public class XdsTest {
 
 	boolean runHadError = false;
 
-	public List<TestDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings globalTransactionSettings, boolean writeLogFiles) throws Exception {
+	public List<TestLogDetails> runAndReturnLogs(Map<String, String> externalLinkage, Map<String, Object> externalLinkage2, TransactionSettings globalTransactionSettings, boolean writeLogFiles) throws Exception {
 		initTestConfig();
 
 		//resetTestSpecLogs();
@@ -698,7 +698,7 @@ public class XdsTest {
 			throw new Exception("XdsTest#runAndReturnLogs: testSpecs is null");
 
         this.status = true;
-		for (TestDetails testSpec : testSpecs) {
+		for (TestLogDetails testSpec : testSpecs) {
 			System.out.println("Test: " + testSpec.getTestInstance().getId());
 			// Changes made by a test should be isolated to that test
 			// They need to run independently
@@ -766,7 +766,7 @@ public class XdsTest {
 
 	public void resetTestSpecLogs() {
 		if (testSpecs != null)
-			for (TestDetails testSpec : testSpecs) {
+			for (TestLogDetails testSpec : testSpecs) {
 				testSpec.resetLogs();
 			}		
 	}
@@ -778,7 +778,7 @@ public class XdsTest {
 			bargs = reverse(args); // bargs = bacwards args (works as stack)
 		} else
 			bargs = args;
-		testSpecs = new ArrayList<TestDetails>();
+		testSpecs = new ArrayList<TestLogDetails>();
 
 		parseOperationOptions();
 
@@ -834,7 +834,7 @@ public class XdsTest {
 				testInstance = new TestInstance(bpop("--testId expects a test number"));
 				if (verbose) System.out.println("testId=" + testInstance);
 				optAssert(!testInstance.getId().startsWith("-"), "--testId expects a test number");
-				TestDetails ts = new TestDetails(testkit, testInstance);
+				TestLogDetails ts = new TestLogDetails(testkit, testInstance);
 
 				if (verbose) System.out.println("before section check");
 				if (verbose) System.out.println("testspec is " + ts);
@@ -921,13 +921,13 @@ public class XdsTest {
 		}
 	}
 
-	public List<TestDetails> getTestSpecs() {
+	public List<TestLogDetails> getTestSpecs() {
 		return testSpecs;
 	}
 
-	public void addTestSpec(TestDetails ts) {
+	public void addTestSpec(TestLogDetails ts) {
 		if (testSpecs == null)
-			testSpecs = new ArrayList<TestDetails>();
+			testSpecs = new ArrayList<TestLogDetails>();
 		testSpecs.add(ts);
 	}
 
@@ -968,9 +968,9 @@ public class XdsTest {
 
 	public void addTestCollection(String testCollectionName) throws Exception {
 		if (testSpecs == null)
-			testSpecs = new ArrayList<TestDetails>();
+			testSpecs = new ArrayList<TestLogDetails>();
 
-		List<TestDetails> details;
+		List<TestLogDetails> details;
 
 		try {
 			details = new TestCollection(altTestkit, testCollectionName).getTestSpecs();

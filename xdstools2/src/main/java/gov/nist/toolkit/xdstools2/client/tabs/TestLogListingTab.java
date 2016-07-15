@@ -1,13 +1,10 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.StackLayoutPanel;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEvent;
@@ -21,7 +18,7 @@ public class TestLogListingTab extends GenericQueryTab {
 	final protected ToolkitServiceAsync toolkitService = GWT
 			.create(ToolkitService.class);
 
-	StackLayoutPanel stackPanel = new StackLayoutPanel(Style.Unit.EM);
+	FlowPanel layout = new FlowPanel();
 
 	public TestLogListingTab() {
 		super(new GetDocumentsSiteActorManager());
@@ -35,7 +32,7 @@ public class TestLogListingTab extends GenericQueryTab {
 
 		registerTab(select, eventName);
 
-		useRawPanel(stackPanel);
+		tabTopPanel.add(layout);
 
 		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override
@@ -54,7 +51,7 @@ public class TestLogListingTab extends GenericQueryTab {
 	static final int STATUS_COL = 2;
 
 	void loadStackPanel() {
-		stackPanel.clear();
+		layout.clear();
 		toolkitService.getTestlogListing(getCurrentTestSession(), new AsyncCallback<List<TestInstance>>() {
 
 			public void onFailure(Throwable caught) {
@@ -64,6 +61,8 @@ public class TestLogListingTab extends GenericQueryTab {
 			public void onSuccess(List<TestInstance> testInstances) {
 
 				for (TestInstance testInstance : testInstances) {
+//					stackPanel.setHeight((40*testInstances.size() + 200)+"px");
+
 					toolkitService.getLogContent(getCurrentTestSession(), testInstance, new AsyncCallback<TestOverviewDTO>() {
 
 						public void onFailure(Throwable caught) {
@@ -72,6 +71,11 @@ public class TestLogListingTab extends GenericQueryTab {
 
 						public void onSuccess(TestOverviewDTO testOverview) {
 							HorizontalFlowPanel header = new HorizontalFlowPanel();
+							if (testOverview.isPass())
+								header.setBackgroundColorSuccess();
+							else
+								header.setBackgroundColorFailure();
+							header.fullWidth();
 							header.add(new HTML("Test: " + testOverview.getName()));
 							header.add(new HTML(testOverview.getTitle()));
 							header.add((testOverview.isPass()) ?
@@ -80,17 +84,35 @@ public class TestLogListingTab extends GenericQueryTab {
 									new Image("icons/ic_warning_black_24dp_1x.png"));
 
 							FlowPanel body = new FlowPanel();
+
+							body.add(new HTML(testOverview.getDescription()));
 							for (String sectionName : testOverview.getSectionNames()) {
-								HorizontalFlowPanel row = new HorizontalFlowPanel();
-								row.add(new HTML("Section: " + sectionName));
-								row.add((testOverview.getSectionOverview(sectionName).isPass()) ?
+								SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
+
+								HorizontalFlowPanel sHeader = new HorizontalFlowPanel();
+								HTML sectionLabel = new HTML("Section: " + sectionName);
+								if (sectionOverview.isPass())
+									sHeader.addStyleName("testOverviewHeaderSuccess");
+								else
+									sHeader.addStyleName("testOverviewHeaderFail");
+								sHeader.add(sectionLabel);
+								sHeader.add((sectionOverview.isPass()) ?
 										new Image("icons/ic_done_black_24dp_1x.png")
 										:
 										new Image("icons/ic_warning_black_24dp_1x.png"));
+								DisclosurePanel sPanel = new DisclosurePanel(sHeader);
+								sPanel.add(new HTML("Blah Blah Blah"));
+
+								HorizontalFlowPanel row = new HorizontalFlowPanel();
+								row.add(sPanel);
+
 								body.add(row);
 							}
 
-							stackPanel.add(body, header, 3);
+							DisclosurePanel panel = new DisclosurePanel(header);
+							panel.setWidth("100%");
+							panel.add(body);
+							layout.add(panel);
 						}
 
 					});
