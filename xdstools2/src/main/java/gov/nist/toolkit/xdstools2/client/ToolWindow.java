@@ -32,6 +32,8 @@ public abstract class ToolWindow {
 //	private SimpleLayoutPanel innerPanel = new SimpleLayoutPanel();
 	private ScrollPanel innerPanel = new ScrollPanel();
 	public FlowPanel tabTopPanel = new FlowPanel();
+	private FlowPanel eastPanel = new FlowPanel();
+	private FlowPanel westPanel = new FlowPanel();
 	String helpHTML;
 	String topMessage = null;
 	public HorizontalPanel menuPanel = new HorizontalPanel();
@@ -46,10 +48,14 @@ public abstract class ToolWindow {
 		String title = getTitle();
 		// .addNorth MUST come before .add - a condition of DockLayoutPanel
 		if (title != null)
-			tabTopRawPanel.addNorth(new HTML("<h1>" + title + "</h1>"), 1.0);
+			tabTopRawPanel.addNorth(new HTML("<h1>" + title + "</h1>"), 4.0);
+		tabTopRawPanel.addEast(eastPanel, 0);
+		tabTopRawPanel.addWest(westPanel, 0);
 		tabTopRawPanel.add(innerPanel);
 		innerPanel.setWidget(tabTopPanel);
 	}
+
+	public void addEast(Widget w) { eastPanel.add(w); }
 
 	public TabContainer getTabContainer() { return tabContainer; }
 

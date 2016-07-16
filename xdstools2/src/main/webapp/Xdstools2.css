@@ -8,8 +8,8 @@
 h1 {
   font-size: 2em;
   font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
+  color: black;
+  margin: 10px 0px 10px;
   text-align: center;
 }
 
@@ -17,7 +17,7 @@ h3 {
   font-size: 1.1em;
   font-weight: bold;
   color: #777777;
-  margin: 10px 20px 0;
+  margin: 20px 10px 0;
   text-align: left;
 }
 

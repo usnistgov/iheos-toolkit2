@@ -90,7 +90,7 @@ public class TestDefinition {
 				i++;
 				continue;
 			}
-			buf.append(line);
+			buf.append(line).append('\n');
 		}
 		scanner.close();
 		rm.rest = buf.toString();

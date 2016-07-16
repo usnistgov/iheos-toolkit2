@@ -13,6 +13,7 @@ import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.session.client.Htmlize;
 
 import java.util.*;
 
@@ -281,7 +282,7 @@ public class MesaTestTab extends GenericQueryTab {
 				Widget w = readmeBox.getWidget();
 				if (w != null)
 					readmeBox.remove(w);
-				readmeBox.add(htmlize("README", result));
+				readmeBox.add(Htmlize.asHtml("README", result));
 			}
 			
 		});
@@ -383,18 +384,6 @@ public class MesaTestTab extends GenericQueryTab {
 	}
 	
 
-	HTML htmlize(String header, String in) {
-		HTML h = new HTML(
-				"<br />" +
-				"<b>" + header + "</b><br /><br />" +
-
-				in.replaceAll("<", "&lt;")
-				.replaceAll("\t", "&nbsp;&nbsp;&nbsp;")
-				.replaceAll(" ", "&nbsp;")
-				.replaceAll("\n", "<br />")
-		);
-		return h;
-	}
 
 
 	public String getWindowShortName() {

@@ -18,6 +18,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -160,6 +161,8 @@ public interface ToolkitServiceAsync {
 	void deletePatientIds(SimId simId, List<Pid> pids, AsyncCallback<Boolean> callback) throws Exception;
 
 	void getCollectionNames(String collectionSetName, AsyncCallback<Map<String, String>> callback);
+	void getCollectionMembers(String collectionSetName, String collectionName, AsyncCallback<List<String>> callback);
+	void getTestCollections(String collectionSetName, AsyncCallback<List<TestCollectionDefinitionDAO>> callback);
 	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
 	void getTestReadme(String test, AsyncCallback<String> callback);
 	void getTestIndex(String test, AsyncCallback<List<String>> callback);

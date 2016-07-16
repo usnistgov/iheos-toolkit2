@@ -29,6 +29,7 @@ import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
 import gov.nist.toolkit.testkitutilities.TestkitBuilder;
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -219,6 +220,17 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
+	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+		if (session != null)
+			logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
+		try {
+			return getTestKit().getCollectionMembers(collectionSetName, collectionName);
+		} catch (Exception e) {
+			logger.error("getCollection", e);
+			throw new Exception(e.getMessage());
+		}
+	}
+
 	public String getTestReadme(String test) throws Exception {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getTestReadme " + test);
@@ -239,6 +251,20 @@ public class XdsTestServiceManager extends CommonService {
 			return tt.getSectionIndex();
 		} catch (IOException e) {
 			return null;
+		}
+	}
+
+	/**
+	 * Collect ID and title for each test collection
+	 * @param collectionSetName
+	 * @return List<TestCollectionDefinitionDAO>
+	 * @throws Exception if cannot scan testkit
+     */
+	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception {
+		try {
+			return getTestKit().getTestCollections(collectionSetName);
+		} catch (Exception e) {
+			throw new Exception(ExceptionUtil.exception_details(e));
 		}
 	}
 
@@ -316,40 +342,45 @@ public class XdsTestServiceManager extends CommonService {
 	 * @throws Exception
 	 */
 	public TestOverviewDTO getLogContent(String sessionName, TestInstance testInstance) throws Exception {
-		if (session != null)
-			logger.debug(session.id() + ": " + "getLogContent(" + testInstance + ")");
+		try {
+			if (session != null)
+				logger.debug(session.id() + ": " + "getLogContent(" + testInstance + ")");
 
-		testInstance.setUser(sessionName);
+			testInstance.setUser(sessionName);
 
-		File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
+			File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
 
-		if (testDir == null)
-			throw new Exception("Cannot find log file for test " + testInstance);
+			if (testDir == null)
+				throw new Exception("Cannot find log file for test " + testInstance);
 
-		LogMap lm = buildLogMap(testDir, testInstance);
+			LogMap lm = buildLogMap(testDir, testInstance);
 
-		// this has a slightly different structure than the testkit
-		// so pass the parent dir so the tests dir can be navigated
-		File testkitDir = getTestKit().getTestsDir();
-		File testkitD = testkitDir.getParentFile();
+			// this has a slightly different structure than the testkit
+			// so pass the parent dir so the tests dir can be navigated
+			File testkitDir = getTestKit().getTestsDir();
+			File testkitD = testkitDir.getParentFile();
 
-		TestLogDetails testLogDetails = new TestLogDetails(testkitD, testInstance);
-		List<TestLogDetails> testLogDetailsList = new ArrayList<TestLogDetails>();
-		testLogDetailsList.add(testLogDetails);
+			TestLogDetails testLogDetails = new TestLogDetails(testkitD, testInstance);
+			List<TestLogDetails> testLogDetailsList = new ArrayList<TestLogDetails>();
+			testLogDetailsList.add(testLogDetails);
 
-		for (String section : lm.getLogFileContentMap().keySet()) {
-			LogFileContent ll = lm.getLogFileContentMap().get(section);
-			testLogDetails.addTestPlanLog(section, ll);
+			for (String section : lm.getLogFileContentMap().keySet()) {
+				LogFileContent ll = lm.getLogFileContentMap().get(section);
+				testLogDetails.addTestPlanLog(section, ll);
+			}
+
+			// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
+			TestInstance logid = newTestLogId();
+
+			//  -  why is a method named getLogContent doing a WRITE???????
+			if (session.transactionSettings.logRepository != null)
+				session.transactionSettings.logRepository.logOut(logid, lm);
+
+			return new TestOverviewBuilder(session, testLogDetails).build();
+		} catch (Exception e) {
+			if (e.getMessage() != null) throw e;
+			throw new Exception(ExceptionUtil.exception_details(e));
 		}
-
-		// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
-		TestInstance logid = newTestLogId();
-
-		//  -  why is a method named getLogContent doing a WRITE???????
-		if (session.transactionSettings.logRepository != null)
-			session.transactionSettings.logRepository.logOut(logid, lm);
-
-		return new TestOverviewBuilder(session, testLogDetails).build();
 	}
 
 	public LogMap buildLogMap(File testDir, TestInstance testInstance) throws Exception {

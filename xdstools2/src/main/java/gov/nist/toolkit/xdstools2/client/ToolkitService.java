@@ -24,6 +24,7 @@ import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -41,6 +42,8 @@ public interface ToolkitService extends RemoteService  {
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
+	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
+	List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception;
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
 	public String getTestReadme(String test) throws Exception;
 	public List<String> getTestIndex(String test) throws Exception;

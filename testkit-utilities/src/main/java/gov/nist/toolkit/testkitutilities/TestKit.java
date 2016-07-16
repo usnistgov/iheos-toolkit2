@@ -1,5 +1,6 @@
 package gov.nist.toolkit.testkitutilities;
 
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
 import org.apache.log4j.Logger;
 
@@ -94,7 +95,57 @@ public class TestKit {
 		return testNames;
 
 	}
-	
+
+	/**
+	 * Get test names from collection
+	 * @param collectionSetName
+	 * @param collectionName
+	 * @return
+	 * @throws Exception
+     */
+	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+		List<String> names = new ArrayList<>();
+
+		String[] parts = Io.stringFromFile(getCollectionFileByName(collectionSetName, collectionName)).split("\n");
+
+		for (int i=0; i<parts.length; i++) {
+			String name = parts[i];
+			if (name == null)
+				continue;
+			name = name.trim();
+			if (name.length() == 0)
+				continue;
+			names.add(name);
+		}
+
+		return names;
+
+	}
+
+	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception {
+		List<TestCollectionDefinitionDAO> defs = new ArrayList<>();
+
+		File collectionDir = new File(testKit, collectionSetName);
+		if (!collectionDir.exists() || !collectionDir.isDirectory())
+			throw new Exception("Test collection set name " + collectionSetName + " does not exist");
+		for (File collectionFile : collectionDir.listFiles()) {
+			if (collectionFile.isDirectory()) continue;
+			if (!collectionFile.getName().endsWith(".txt")) continue;
+			String collectionId = stripFileType(collectionFile.getName());
+			String collectionTitle = Io.stringFromFile(collectionFile);
+			defs.add(new TestCollectionDefinitionDAO(collectionId, collectionTitle));
+		}
+
+		return defs;
+	}
+
+	private String stripFileType(String name) {
+		String[] parts = name.split("\\.");
+		if (parts.length == 0) return name;
+		return parts[0];
+	}
+
+
 	/**
 	 * Given the name of a collection, return File reference.
 	 * @param collectionSetName
@@ -145,32 +196,10 @@ public class TestKit {
  */
 	public List<String> getTestdataRegistryTests() {
 		return getTestdataSetListing("testdata-registry");
-//		List<String> tests = new ArrayList<String>();
-//
-//		File testdataDir = new File(testKit.toString() + File.separator + "testdata-registry");
-//		String[] dirs = testdataDir.list();
-//		for (int i = 0; i < dirs.length; i++) {
-//			if (dirs[i].startsWith("."))
-//				continue;
-//			tests.add(dirs[i]);
-//		}
-//
-//		return tests;
 	}
 
 	public List<String> getTestdataRepositoryTests() {
 		return getTestdataSetListing("testdata-repository");
-//		List<String> tests = new ArrayList<String>();
-//
-//		File testdataDir = new File(testKit.toString() + File.separator + "testdata-repository");
-//		String[] dirs = testdataDir.list();
-//		for (int i = 0; i < dirs.length; i++) {
-//			if (dirs[i].startsWith("."))
-//				continue;
-//			tests.add(dirs[i]);
-//		}
-//
-//		return tests;
 	}
 	
 	public List<String> getTestdataSetListing(String testdataSetName) {

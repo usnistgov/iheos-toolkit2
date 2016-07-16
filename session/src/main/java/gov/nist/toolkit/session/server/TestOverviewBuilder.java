@@ -1,5 +1,6 @@
 package gov.nist.toolkit.session.server;
 
+import gov.nist.toolkit.session.client.Htmlize;
 import gov.nist.toolkit.session.client.SectionOverviewDTO;
 import gov.nist.toolkit.session.client.StepOverviewDTO;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
@@ -12,6 +13,7 @@ import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestkitBuilder;
 
 import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -35,13 +37,20 @@ public class TestOverviewBuilder {
         testOverview.setName(testId);
         ReadMe readme = new TestDefinition(testDir).getTestReadme();
         testOverview.setTitle(readme.line1);
-        testOverview.setDescription(readme.rest);
+        testOverview.setDescription(Htmlize.asString(readme.rest));
         addSections();
         return testOverview;
     }
 
     private void addSections() throws Exception {
-        for (String sectionName : tsm.getTestIndex(testId)) {
+        List<String> sectionNames = null;
+        try {
+            sectionNames = tsm.getTestIndex(testId);
+        } catch (Exception e) {
+            return;  // no sections
+        }
+        if (sectionNames == null) return;
+        for (String sectionName : sectionNames) {
             LogFileContent logFileContent = testLogDetails.sectionLogMap.get(sectionName);
             SectionOverviewDTO sectionOverview = addSection(sectionName, logFileContent);
             if (!sectionOverview.isPass())
