@@ -16,6 +16,7 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
     String title;
     String description;
     boolean pass;
+    boolean run = true;
     List<String> sectionNames = new ArrayList<>();
     Map<String, SectionOverviewDTO> sections = new HashMap<>();
 
@@ -76,5 +77,13 @@ public class TestOverviewDTO implements Serializable, IsSerializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isRun() {
+        return run;
+    }
+
+    public void setRun(boolean run) {
+        this.run = run;
     }
 }

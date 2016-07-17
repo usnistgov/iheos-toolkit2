@@ -118,19 +118,19 @@ h3 {
 }
 
 .testOverviewHeaderSuccess {
-  background-color: lightskyblue !important;
+  background-color: PaleTurquoise !important;
   border-radius: 10px;
   border: 2px solid #90A4AE;
 }
 
 .testOverviewHeaderFail {
-  background-color: indianred !important;
+  background-color: LightCoral !important;
   border-radius: 10px;
   border: 2px solid #90A4AE;
 }
 
 .testOverviewHeaderNotRun {
-  background-color: lightgoldenrodyellow !important;
+  background-color: white !important;
   border-radius: 10px;
   border: 2px solid #90A4AE;
 }

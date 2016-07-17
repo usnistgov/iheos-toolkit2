@@ -226,7 +226,7 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      */
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
 	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
-	public TestOverviewDTO getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
+	public List<TestOverviewDTO> getLogsContent(String sessionName, List<TestInstance> testInstances) throws Exception { return session().xdsTestServiceManager().getLogsContent(sessionName, testInstances); }
 	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getTestCollections(collectionSetName); }
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
 		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);

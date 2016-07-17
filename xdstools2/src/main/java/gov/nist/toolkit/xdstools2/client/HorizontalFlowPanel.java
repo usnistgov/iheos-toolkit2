@@ -30,7 +30,7 @@ public class HorizontalFlowPanel extends FlowPanel {
     }
 
     public void setBackgroundColorNotRun() {
-        addStyleName("testOverviewHeaderFail");
+        addStyleName("testOverviewHeaderNotRun");
     }
 
     public void fullWidth() {

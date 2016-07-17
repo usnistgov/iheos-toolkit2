@@ -14,6 +14,7 @@ import java.util.Map;
 public class SectionOverviewDTO implements Serializable, IsSerializable {
     String name;
     boolean pass;
+    boolean run = true;
     List<String> stepNames = new ArrayList<>();
     Map<String, StepOverviewDTO> steps = new HashMap<>();
 
@@ -54,5 +55,13 @@ public class SectionOverviewDTO implements Serializable, IsSerializable {
     public void addStep(String name, StepOverviewDTO stepOverview) {
         stepNames.add(name);
         steps.put(name, stepOverview);
+    }
+
+    public boolean isRun() {
+        return run;
+    }
+
+    public void setRun(boolean run) {
+        this.run = run;
     }
 }

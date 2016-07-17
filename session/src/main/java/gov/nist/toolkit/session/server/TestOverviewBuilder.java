@@ -62,6 +62,10 @@ public class TestOverviewBuilder {
         SectionOverviewDTO sectionOverview = new SectionOverviewDTO();
 
         sectionOverview.setName(sectionName);
+        if (logFileContent == null) {
+            sectionOverview.setRun(false);
+            return sectionOverview;
+        }
         sectionOverview.setPass(logFileContent.isSuccess());
         for (String stepName : logFileContent.getStepMap().keySet()) {
             TestStepLogContent stepContent = logFileContent.getStepLog(stepName);

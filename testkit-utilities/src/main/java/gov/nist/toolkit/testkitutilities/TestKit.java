@@ -6,10 +6,7 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Tooling access to the embedded copy of the XDS testkit. 
@@ -97,14 +94,14 @@ public class TestKit {
 	}
 
 	/**
-	 * Get test names from collection
+	 * Get test names from collection.  Set is used incase of duplicates.
 	 * @param collectionSetName
 	 * @param collectionName
 	 * @return
 	 * @throws Exception
      */
 	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
-		List<String> names = new ArrayList<>();
+		Set<String> names = new HashSet<>();
 
 		String[] parts = Io.stringFromFile(getCollectionFileByName(collectionSetName, collectionName)).split("\n");
 
@@ -117,8 +114,9 @@ public class TestKit {
 				continue;
 			names.add(name);
 		}
-
-		return names;
+		List<String> list = new ArrayList<>();
+		list.addAll(names);
+		return list;
 
 	}
 

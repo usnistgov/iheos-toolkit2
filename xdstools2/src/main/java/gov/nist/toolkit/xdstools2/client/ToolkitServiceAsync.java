@@ -51,7 +51,7 @@ public interface ToolkitServiceAsync {
 	void getDashboardRegistryData(AsyncCallback<List<RegistryStatus>> callback);
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
-	void getLogContent(String sessionName, TestInstance testInstance, AsyncCallback<TestOverviewDTO> callback);
+	void getLogsContent(String sessionName, List<TestInstance> testInstances, AsyncCallback<List<TestOverviewDTO>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);

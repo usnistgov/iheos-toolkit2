@@ -259,7 +259,7 @@ public class XdsTestServiceManager extends CommonService {
 	 * @param collectionSetName
 	 * @return List<TestCollectionDefinitionDAO>
 	 * @throws Exception if cannot scan testkit
-     */
+	 */
 	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception {
 		try {
 			return getTestKit().getTestCollections(collectionSetName);
@@ -315,7 +315,8 @@ public class XdsTestServiceManager extends CommonService {
 		if (!sessionNames.contains(sessionName))
 			throw new Exception("Don't understand session name " + sessionName);
 
-		File sessionDir = new File(Installation.installation().propertyServiceManager().getTestLogCache() + File.separator + sessionName);
+		File sessionDir = new File(Installation.installation().propertyServiceManager().getTestLogCache() +
+				File.separator + sessionName);
 
 		List<String> names = new ArrayList<>();
 
@@ -329,6 +330,14 @@ public class XdsTestServiceManager extends CommonService {
 		for (String name : names) testInstances.add(new TestInstance(name));
 
 		return testInstances;
+	}
+
+	public List<TestOverviewDTO> getLogsContent(String sessionName, List<TestInstance> testInstances) throws Exception {
+		List<TestOverviewDTO> results = new ArrayList<>();
+		for (TestInstance testInstance : testInstances) {
+			results.add(getLogContent(sessionName, testInstance));
+		}
+		return results;
 	}
 
 	/**
@@ -350,10 +359,9 @@ public class XdsTestServiceManager extends CommonService {
 
 			File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
 
-			if (testDir == null)
-				throw new Exception("Cannot find log file for test " + testInstance);
-
-			LogMap lm = buildLogMap(testDir, testInstance);
+			LogMap lm = null;
+			if (testDir != null)
+				lm = buildLogMap(testDir, testInstance);
 
 			// this has a slightly different structure than the testkit
 			// so pass the parent dir so the tests dir can be navigated
@@ -364,19 +372,24 @@ public class XdsTestServiceManager extends CommonService {
 			List<TestLogDetails> testLogDetailsList = new ArrayList<TestLogDetails>();
 			testLogDetailsList.add(testLogDetails);
 
-			for (String section : lm.getLogFileContentMap().keySet()) {
-				LogFileContent ll = lm.getLogFileContentMap().get(section);
-				testLogDetails.addTestPlanLog(section, ll);
+			if (testDir != null) {
+				for (String section : lm.getLogFileContentMap().keySet()) {
+					LogFileContent ll = lm.getLogFileContentMap().get(section);
+					testLogDetails.addTestPlanLog(section, ll);
+				}
+
+				// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
+				TestInstance logid = newTestLogId();
+
+				//  -  why is a method named getLogContent doing a WRITE???????
+				if (session.transactionSettings.logRepository != null)
+					session.transactionSettings.logRepository.logOut(logid, lm);
 			}
 
-			// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
-			TestInstance logid = newTestLogId();
-
-			//  -  why is a method named getLogContent doing a WRITE???????
-			if (session.transactionSettings.logRepository != null)
-				session.transactionSettings.logRepository.logOut(logid, lm);
-
-			return new TestOverviewBuilder(session, testLogDetails).build();
+			TestOverviewDTO dto = new TestOverviewBuilder(session, testLogDetails).build();
+			if (testDir == null)
+				dto.setRun(false);
+			return dto;
 		} catch (Exception e) {
 			if (e.getMessage() != null) throw e;
 			throw new Exception(ExceptionUtil.exception_details(e));
