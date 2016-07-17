@@ -47,9 +47,24 @@ public class TestOverviewBuilder {
         try {
             sectionNames = tsm.getTestIndex(testId);
         } catch (Exception e) {
-            return;  // no sections
+            return;
         }
-        if (sectionNames == null) return;
+        if (sectionNames == null) {
+            // No test results available - scan
+            // test definition to get section names
+            TestDefinition testDefinition = new TestDefinition(testDir);
+            try {
+                List<String> sections = testDefinition.getSectionIndex();
+                for (String section : sections) {
+                    SectionOverviewDTO sectionOverview = addSection(section, null);
+                    sectionOverview.setRun(false);
+                    testOverview.addSection(sectionOverview);
+                }
+                return;
+            } catch (Exception e) {
+                return; // no index.idx - no sections
+            }
+        }
         for (String sectionName : sectionNames) {
             LogFileContent logFileContent = testLogDetails.sectionLogMap.get(sectionName);
             SectionOverviewDTO sectionOverview = addSection(sectionName, logFileContent);
@@ -64,6 +79,7 @@ public class TestOverviewBuilder {
         sectionOverview.setName(sectionName);
         if (logFileContent == null) {
             sectionOverview.setRun(false);
+            testOverview.addSection(sectionOverview);
             return sectionOverview;
         }
         sectionOverview.setPass(logFileContent.isSuccess());

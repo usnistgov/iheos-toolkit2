@@ -25,15 +25,15 @@ public class TestLogListingTab extends GenericQueryTab {
 	final protected ToolkitServiceAsync toolkitService = GWT
 			.create(ToolkitService.class);
 
-	TestLogListingTab me;
-	final FlowPanel actorPanel = new FlowPanel();
-	final FlowPanel testsPanel = new FlowPanel();
-	final TabBar tabBar = new TabBar();
+	private TestLogListingTab me;
+	private final FlowPanel actorPanel = new FlowPanel();
+	private final FlowPanel testsPanel = new FlowPanel();
+	private final TabBar tabBar = new TabBar();
 
 	// Testable actors
-	List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
+	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
 	// testId ==> overview
-	final Map<String, TestOverviewDTO> testOverviews = new HashMap<>();
+	private final Map<String, TestOverviewDTO> testOverviews = new HashMap<>();
 
 	public TestLogListingTab() {
 		super(new GetDocumentsSiteActorManager());
@@ -63,8 +63,8 @@ public class TestLogListingTab extends GenericQueryTab {
 		tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> selectionEvent) {
-				int i = selectionEvent.getSelectedItem().intValue();
-				displayTestCollection(testCollectionDefinitionDAOs.get(i).getCollectionID());
+				int i = selectionEvent.getSelectedItem();
+				loadTestCollection(testCollectionDefinitionDAOs.get(i).getCollectionID());
 			}
 		});
 
@@ -72,11 +72,7 @@ public class TestLogListingTab extends GenericQueryTab {
 
 	}
 
-	static final int TEST_NAME_COL = 0;
-	static final int SECTION_NAME_COL = 1;
-	static final int STATUS_COL = 2;
-
-	void load(String collectionName) {
+	private void load(String collectionName) {
 		// TabBar listing actor types
 		toolkitService.getTestCollections("actorCollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
 			@Override
@@ -89,46 +85,38 @@ public class TestLogListingTab extends GenericQueryTab {
 			}
 		});
 
-		displayTestCollection(collectionName);
+		loadTestCollection(collectionName);
 
 	}
 
-	private void displayTestCollection(final  String collectionName) {
+	private void loadTestCollection(final  String collectionName) {
 		toolkitService.getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
-			@Override
-			public void onFailure(Throwable throwable) { new PopupMessage("getCollectionMembers: " + throwable.getMessage()); }
 
-			@Override
-			public void onSuccess(final List<String> definedTestIds) {
-				toolkitService.getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
+			public void onFailure(Throwable caught) {
+				new PopupMessage("getTestlogListing: " + caught.getMessage());
+			}
+
+			public void onSuccess(List<String> testIds) {
+				testsPanel.clear();
+				List<TestInstance> testInstances = new ArrayList<>();
+				for (String testId : testIds) testInstances.add(new TestInstance(testId));
+				toolkitService.getLogsContent(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
 
 					public void onFailure(Throwable caught) {
-						new PopupMessage("getTestlogListing: " + caught.getMessage());
+						new PopupMessage("getLogContent: " + caught.getMessage());
 					}
 
-					public void onSuccess(List<String> testIds) {
-						testsPanel.clear();
-						List<TestInstance> testInstances = new ArrayList<>();
-						for (String testId : testIds) testInstances.add(new TestInstance(testId));
-							toolkitService.getLogsContent(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
-
-								public void onFailure(Throwable caught) {
-									new PopupMessage("getLogContent: " + caught.getMessage());
-								}
-
-								public void onSuccess(List<TestOverviewDTO> testOverviews) {
-									for (TestOverviewDTO testOverview : testOverviews) {
-										me.testOverviews.put(testOverview.getName(), testOverview);
-										displayTest(testOverview);
-									}
-								}
-
-							});
+					public void onSuccess(List<TestOverviewDTO> testOverviews) {
+						for (TestOverviewDTO testOverview : testOverviews) {
+							me.testOverviews.put(testOverview.getName(), testOverview);
+							displayTest(testOverview);
 						}
-				});
+					}
 
+				});
 			}
 		});
+
 	}
 
 	private void displayTestCollectionsTabBar() {
@@ -171,10 +159,10 @@ public class TestLogListingTab extends GenericQueryTab {
 
 	private void displaySections(TestOverviewDTO testOverview, FlowPanel parent) {
 		for (String sectionName : testOverview.getSectionNames()) {
-            SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
+			SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
 
-            parent.add(new TestSectionComponent(sectionOverview).asWidget());
-        }
+			parent.add(new TestSectionComponent(sectionOverview).asWidget());
+		}
 	}
 
 	public String getWindowShortName() {

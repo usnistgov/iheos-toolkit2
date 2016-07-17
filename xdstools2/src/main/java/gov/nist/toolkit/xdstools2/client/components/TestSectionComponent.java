@@ -19,7 +19,8 @@ public class TestSectionComponent implements IsWidget {
                 header.addStyleName("testOverviewHeaderSuccess");
             else
                 header.addStyleName("testOverviewHeaderFail");
-        }
+        } else
+            header.addStyleName("testOverviewHeaderNotRun");
         header.add(sectionLabel);
         if (sectionOverview.isRun()) {
             header.add((sectionOverview.isPass()) ?
