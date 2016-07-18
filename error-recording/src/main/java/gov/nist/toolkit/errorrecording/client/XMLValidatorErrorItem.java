@@ -95,47 +95,33 @@ public class XMLValidatorErrorItem implements IsSerializable {
 		case SECTIONHEADING:
 			buf.append("SECTIONHEADING\n");
 			add(buf);
-//			buf.append(caps(getMsg())).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case CHALLENGE:
 			buf.append("CHALLENGE\n");
 			add(buf);
-//				buf.append(sp).append(getMsg()).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case EXTERNALCHALLENGE:
 			buf.append("EXTERNALCHALLENGE\n");
 			add(buf);
-//			buf.append(sp).append(getMsg()).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case DETAIL:
 			buf.append("DETAIL\n");
 			add(buf);
-//			buf.append(sp).append(getMsg()).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case ERROR:
 			case D_ERROR:
 				buf.append("ERROR\n");
 				add(buf);
-//			buf
-//			.append("ERROR: ")
-//			.append(getMsg())
-//			.append(sep)
-//			.append(resource).append('[').append(completion).append(']').append("\n");
 			break;
 
 		case WARNING:
 			case D_WARNING:
 				buf.append("WARNING\n");
 				add(buf);
-//			buf
-//			.append("WARNING: ")
-//			.append(getMsg())
-//					.append(sep)
-//			.append(resource).append('[').append(completion).append(']').append("\n");
 				break;
 
 			case D_INFO:
