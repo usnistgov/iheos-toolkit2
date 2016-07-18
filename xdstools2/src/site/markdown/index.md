@@ -14,3 +14,6 @@
 
 <a href="tools/gatewaytesting.html" target="_blank">XCA Gateway testing tools</a>
 
+<hr />
+
+<a href="http://www.flaticon.com/packs/free-basic-ui-elements">Some Icons "Designed by Freepik and distributed by Flaticon"</a>

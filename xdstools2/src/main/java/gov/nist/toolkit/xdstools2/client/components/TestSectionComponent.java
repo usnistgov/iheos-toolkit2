@@ -24,12 +24,18 @@ public class TestSectionComponent implements IsWidget {
         header.add(sectionLabel);
         if (sectionOverview.isRun()) {
             header.add((sectionOverview.isPass()) ?
-                    new Image("icons/ic_done_black_24dp_1x.png")
+                    new Image("icons2/correct-32.png")
                     :
-                    new Image("icons/ic_warning_black_24dp_1x.png"));
+                    new Image("icons2/cancel-32.png"));
 
             panel.add(new HTML("Blah Blah Blah"));
         }
+        Image play = new Image("icons2/play-32.png");
+        play.setTitle("Run");
+        header.add(play);
+        Image delete = new Image("icons2/remove-32.png");
+        delete.setTitle("Delete Log");
+        header.add(delete);
     }
 
     @Override

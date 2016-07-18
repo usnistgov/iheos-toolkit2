@@ -55,8 +55,9 @@ public class TestLogListingTab extends GenericQueryTab {
 		Xdstools2.getEventBus().addHandler(TestSessionChangedEvent.TYPE, new TestSessionChangedEventHandler() {
 			@Override
 			public void onTestSessionChanged(TestSessionChangedEvent event) {
-				if (event.changeType == TestSessionChangedEvent.ChangeType.SELECT)
-					load("reg");
+				if (event.changeType == TestSessionChangedEvent.ChangeType.SELECT) {
+					loadTestCollections("reg");
+				}
 			}
 		});
 
@@ -68,11 +69,30 @@ public class TestLogListingTab extends GenericQueryTab {
 			}
 		});
 
-		load("reg");
+		loadTestCollections("reg");
 
 	}
 
-	private void load(String collectionName) {
+	private String getSelectedTestCollection() {
+		int selected = tabBar.getSelectedTab();
+		if (selected < testCollectionDefinitionDAOs.size()) {
+			String name = testCollectionDefinitionDAOs.get(selected).getCollectionID();
+			return name;
+		}
+		return null;
+	}
+
+	private int getTestCollectionIndex(String name) {
+		int i = 0;
+		for (TestCollectionDefinitionDAO def : testCollectionDefinitionDAOs) {
+			if (def.getCollectionID().equals(name))
+				return i;
+			i++;
+		}
+		return -1;
+	}
+
+	private void loadTestCollections(String collectionName) {
 		// TabBar listing actor types
 		toolkitService.getTestCollections("actorCollections", new AsyncCallback<List<TestCollectionDefinitionDAO>>() {
 			@Override
@@ -85,11 +105,10 @@ public class TestLogListingTab extends GenericQueryTab {
 			}
 		});
 
-		loadTestCollection(collectionName);
-
+//		loadTestCollection(collectionName);
 	}
 
-	private void loadTestCollection(final  String collectionName) {
+	private void loadTestCollection(final String collectionName) {
 		toolkitService.getCollectionMembers("actorcollections", collectionName, new AsyncCallback<List<String>>() {
 
 			public void onFailure(Throwable caught) {
@@ -141,10 +160,17 @@ public class TestLogListingTab extends GenericQueryTab {
 		header.add(new HTML(testOverview.getTitle()));
 		if (testOverview.isRun()) {
 			header.add((testOverview.isPass()) ?
-					new Image("icons/ic_done_black_24dp_1x.png")
+					new Image("icons2/correct-32.png")
 					:
-					new Image("icons/ic_warning_black_24dp_1x.png"));
+					new Image("icons2/cancel-32.png"));
 		}
+		Image play = new Image("icons2/play-32.png");
+		play.setTitle("Run");
+		header.add(play);
+		Image delete = new Image("icons2/remove-32.png");
+		delete.setTitle("Delete Log");
+		header.add(delete);
+
 		FlowPanel body = new FlowPanel();
 
 		body.add(new HTML(testOverview.getDescription()));
