@@ -65,7 +65,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 
 		// On Demand
 		mainGrid.setText(row, 0, "DocumentEntry Type");
-		onDemandFilter = new OnDemandFilter("Type");
+		onDemandFilter = new OnDemandFilter("Type","Either");
 		mainGrid.setWidget(row, 1, onDemandFilter.asWidget());
 		row++;
 
