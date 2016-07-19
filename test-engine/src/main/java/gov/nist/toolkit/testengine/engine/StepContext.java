@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.testengine.transactions.*;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;

@@ -4,7 +4,7 @@ import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 
 //this gets invoked from both Validator.java and directly from Repository.  Should optimize the implementation so that codes.xml

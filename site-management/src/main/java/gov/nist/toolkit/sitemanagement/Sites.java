@@ -5,7 +5,7 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.*;
 

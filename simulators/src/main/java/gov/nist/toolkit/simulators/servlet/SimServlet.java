@@ -30,7 +30,7 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 

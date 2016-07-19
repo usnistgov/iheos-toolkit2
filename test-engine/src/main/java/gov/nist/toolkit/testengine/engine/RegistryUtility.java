@@ -6,7 +6,7 @@ import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 import gov.nist.toolkit.valregmetadata.top.MetadataValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.xdsexception.SchemaValidationException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

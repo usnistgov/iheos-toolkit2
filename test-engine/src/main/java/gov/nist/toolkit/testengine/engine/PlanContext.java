@@ -1,15 +1,16 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.testengine.transactions.BasicTransaction;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.NotALogFileException;
-import gov.nist.toolkit.testenginelogging.SectionLogMap;
+import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -27,8 +28,8 @@ public class PlanContext extends BasicContext {
 	String defaultRegistryEndpoint = null;
 	Map<String, String> externalLinkage = null;
 	Map<String, Object> externalLinkage2 = null;  // for binary stuff like certificates
-	SectionLogMap previousSectionLogs;
-	LogFileContent currentSectionLog;
+	SectionLogMapDTO previousSectionLogs;
+	LogFileContentDTO currentSectionLog;
 	String currentSection;
 	TestConfig testConfig;
 	TransactionSettings transactionSettings = null;
@@ -48,14 +49,14 @@ public class PlanContext extends BasicContext {
 	}
     public String getCurrentSection() { return currentSection; }
 	
-	public void setPreviousSectionLogs(SectionLogMap previousLogs) {
+	public void setPreviousSectionLogs(SectionLogMapDTO previousLogs) {
 		previousSectionLogs = previousLogs;
         logger.debug(previousLogs.describe());
 	}
 	
-	public SectionLogMap getPreviousSectionLogs() {
+	public SectionLogMapDTO getPreviousSectionLogs() {
 		if (previousSectionLogs == null)
-			previousSectionLogs = new SectionLogMap();
+			previousSectionLogs = new SectionLogMapDTO();
 //		else
 //			System.out.println("\tHave logs for " + previousSectionLogs.sectionNames);
 
@@ -85,10 +86,10 @@ public class PlanContext extends BasicContext {
 	}
 	
 	public void setCurrentSectionLog(OMElement ele) throws NotALogFileException, Exception {
-		currentSectionLog = new LogFileContent(ele);
+		currentSectionLog = new LogFileContentBuilder().build(ele);
 	}
 	
-	public LogFileContent getCurrentSectionLog() {
+	public LogFileContentDTO getCurrentSectionLog() {
 		return currentSectionLog;
 	}
 	
@@ -274,7 +275,7 @@ public class PlanContext extends BasicContext {
 			status = false;
 			set_status_in_output();
 			transactionSettings.res.add(e.getMessage(), "", false);
-			 throw e;  // error handler above reports error in UI
+			 throw e;  // error handler above reportDTOs error in UI
 		}
 
 		if (writeLogFiles) {

@@ -1,0 +1,56 @@
+package gov.nist.toolkit.testenginelogging.client;
+
+
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class LogMapDTO implements Serializable, IsSerializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6977145786942237537L;
+	List<LogMapItemDTO> items = new ArrayList<LogMapItemDTO>();
+	transient Map<String, LogFileContentDTO> logFileContent = new HashMap<String, LogFileContentDTO>();
+	
+	public LogMapDTO() {
+	}
+	
+	public void add(String testName, LogFileContentDTO log) {
+		logFileContent.put(testName, log);
+		items.add(new LogMapItemDTO(testName, log));
+	}
+	
+	public List<LogMapItemDTO> getItems() { return items; }
+	
+	public Map<String, LogFileContentDTO> getLogFileContentMap() { return logFileContent; }
+	
+	public List<String> getKeys() {
+		List<String> keys = new ArrayList<String>();
+		
+		for (LogMapItemDTO item : items) {
+			keys.add(item.testName);
+		}
+		
+		return keys;
+	}
+	
+//	public String toString() {
+//		StringBuffer buf = new StringBuffer();
+//
+//		buf.append("[LogMapDTO: ");
+//
+//		for (LogMapItemDTO i : items) {
+//			buf.append(i.toString());
+//		}
+//
+//		buf.append("]");
+//
+//		return buf.toString();
+//	}
+	
+}

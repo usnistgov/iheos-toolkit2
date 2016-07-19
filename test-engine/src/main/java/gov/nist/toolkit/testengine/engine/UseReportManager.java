@@ -1,13 +1,16 @@
 package gov.nist.toolkit.testengine.engine;
 
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.testenginelogging.*;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
+import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -22,7 +25,7 @@ public class UseReportManager  {
 	RetrievedDocumentModel retrievedDocumentModel;
 	ReportManager reportManager; // things reported from query results
 	TestConfig testConfig;
-	SectionLogMap priorTests = new SectionLogMap();
+	SectionLogMapDTO priorTests = new SectionLogMapDTO();
 
 	/**
 	 * Return TestSections necessary to satisfy these UseReport instances.
@@ -60,7 +63,7 @@ public class UseReportManager  {
 			File testlogFile = tspec.getTestLog(testInstance, section);
             System.out.println("Loading log " + testlogFile);
 			if (testlogFile != null)
-				priorTests.put((section.equals("") ? "None" : section), new LogFileContent(testlogFile));
+				priorTests.put((section.equals("") ? "None" : section), new LogFileContentBuilder().build(testlogFile));
 		}
 	}
 
@@ -164,31 +167,42 @@ public class UseReportManager  {
 		reportManager = rm;
 	}
 
-	public void resolve(SectionLogMap previousLogs) throws XdsInternalException {
+	public void resolve(SectionLogMapDTO previousLogs) throws XdsInternalException {
 		for (UseReport ur : useReports) {
             if (ur.useAs != null && !ur.useAs.equals("") &&
                     ur.value != null && !ur.value.equals(""))
                 continue;  // already resolved
-			LogFileContent log = previousLogs.get(ur.section);
+			LogFileContentDTO log = previousLogs.get(ur.section);
 			if (log == null)
 				log = priorTests.get(ur.section);
 			if (log == null)
-				throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
-			TestStepLogContent stepLog = log.getStepLog(ur.step);
-			if (stepLog == null)
-                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
+				throw new XdsInternalException("UseReportManager#resolve: cannot find ReportDTO for " + ur.getURI() + "\n");
+			TestStepLogContentDTO testStepLogContentDTO = log.getStepLog(ur.step);
+			if (testStepLogContentDTO == null)
+                throw new XdsInternalException("UseReportManager#resolve: cannot find ReportDTO for " + ur.getURI() + "\n");
 
-			OMElement reportEles = stepLog.getRawReports();
-			if (reportEles == null)
-                throw new XdsInternalException("UseReportManager#resolve: cannot find Report for " + ur.getURI() + "\n");
+//			OMElement reportEles = testStepLogContentDTO.getRawReports();
+//			if (reportEles == null)
+//                throw new XdsInternalException("UseReportManager#resolve: cannot find ReportDTO for " + ur.getURI() + "\n");
 
 			String reportName = ur.reportName;
-			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "Report")) {
-				Report r = Report.parse(rep);
-				if (reportName.equals(r.name)) {
-					ur.value = r.getValue();
+			boolean foundit = false;
+			for (ReportDTO reportDTO : testStepLogContentDTO.getReportDTOs()) {
+				if (reportName.equals(reportDTO.getName())) {
+					ur.value = reportDTO.getValue();
+					foundit = true;
+					break;
 				}
 			}
+			if (!foundit)
+                throw new XdsInternalException("UseReportManager#resolve: cannot find ReportDTO for " + ur.getURI() + "\n");
+
+//			for (OMElement rep : XmlUtil.childrenWithLocalName(reportEles, "ReportDTO")) {
+//				ReportDTO r = ReportBuilder.parse(rep);
+//				if (reportName.equals(r.getName())) {
+//					ur.value = r.getValue();
+//				}
+//			}
 
 		}
 	}

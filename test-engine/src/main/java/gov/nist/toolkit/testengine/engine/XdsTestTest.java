@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testkitutilities.TestEnvConfig;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsParameterException;
 
 import java.io.IOException;

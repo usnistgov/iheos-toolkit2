@@ -12,6 +12,10 @@ import gov.nist.toolkit.testengine.transactions.BasicTransaction;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -106,7 +110,7 @@ public class RetrieveB {
 
 	public OMElement run()
 	throws XdsInternalException, FactoryConfigurationError,
-	XdsException, XdsIOException, MetadataException,
+			XdsException, XdsIOException, MetadataException,
 	XdsConfigurationException, MetadataValidationException, XdsWSException, AxisFault, EnvironmentNotSelectedException {
 
 		OMElement result = null;

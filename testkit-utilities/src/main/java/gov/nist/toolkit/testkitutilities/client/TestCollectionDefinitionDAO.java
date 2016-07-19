@@ -2,10 +2,12 @@ package gov.nist.toolkit.testkitutilities.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
 /**
  *
  */
-public class TestCollectionDefinitionDAO implements IsSerializable {
+public class TestCollectionDefinitionDAO implements Serializable, IsSerializable {
     private String collectionID;
     private String collectionTitle;
 

@@ -164,6 +164,7 @@ public class TestInstance implements IsSerializable, Serializable {
 		buf.append(':');
 		if (section != null) buf.append(section);
 		buf.append(':');
+		buf.append(id);
 		return buf.toString();
 	}
 

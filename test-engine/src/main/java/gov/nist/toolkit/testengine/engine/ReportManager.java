@@ -1,9 +1,9 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.testenginelogging.Report;
+import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.utilities.xml.Util;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.log4j.Logger;
@@ -17,31 +17,31 @@ import java.util.Map;
 
 public class ReportManager {
     private final static Logger logger = Logger.getLogger(ReportManager.class);
-	List<Report> reports;
+	List<ReportDTO> reportDTOs;
 	OMElement root;
 	Map<String, OMElement> sections;
 	TestConfig testConfig;
 
 	public ReportManager(TestConfig config) {
 		testConfig = config;
-		reports = new ArrayList<Report>();
+		reportDTOs = new ArrayList<ReportDTO>();
 		sections = new HashMap<String, OMElement>();
 	}
 
 	public String toString() {
-		return "ReportManager: " + reports.toString();
+		return "ReportManager: " + reportDTOs.toString();
 	}
 
-	public void addReport(Report r) {
-		reports.add(r);
+	public void addReport(ReportDTO r) {
+		reportDTOs.add(r);
 	}
 
 	public void addReport(OMElement r) {
-		Report report = new Report();
-		report.name = r.getAttributeValue(new QName("name"));
-		report.setSection(r.getAttributeValue(new QName("section")));
-		report.setXpath(r.getText());
-		addReport(report);
+		ReportDTO reportDTO = new ReportDTO();
+		reportDTO.setName(r.getAttributeValue(new QName("name")));
+		reportDTO.setSection(r.getAttributeValue(new QName("section")));
+		reportDTO.setXpath(r.getText());
+		addReport(reportDTO);
 	}
 
 	public void setXML(OMElement xml) throws XdsInternalException {
@@ -76,35 +76,35 @@ public class ReportManager {
 	}
 
 	public void generate() throws XdsInternalException {
-		for (Report report : reports) {
-            logger.info("Generating Report " + report.toString());
+		for (ReportDTO reportDTO : reportDTOs) {
+            logger.info("Generating ReportBuilder " + reportDTO.toString());
 			AXIOMXPath xpathExpression;
 			try {
-				if (report.getXpath() != null && !report.getXpath().equals("")) {
-					OMElement section = getSection(report.getSection());
-					xpathExpression = new AXIOMXPath (report.getXpath());
+				if (reportDTO.getXpath() != null && !reportDTO.getXpath().equals("")) {
+					OMElement section = getSection(reportDTO.getSection());
+					xpathExpression = new AXIOMXPath (reportDTO.getXpath());
 					String val;
 					try {
 						val = xpathExpression.stringValueOf(section);
 					} catch (Exception e) {
-                        val = String.format("Error generating report: %s", e.getMessage());
+                        val = String.format("Error generating reportBuilder: %s", e.getMessage());
 //						throw new XdsInternalException("Error evaluating XPath expression [" +
-//								report.getXpath() + "] against output of section [" + report.getSection() + "]");
+//								reportBuilder.getXpath() + "] against output of section [" + reportBuilder.getSection() + "]");
 					}
-					report.setValue(val);
+					reportDTO.setValue(val);
 					if (val == null || val.equals(""))
-						val = "Report " + report.name +
-								" which has XPath " + report.getXpath() +
+						val = "ReportBuilder " + reportDTO.getName() +
+								" which has XPath " + reportDTO.getXpath() +
 								" evaluates to [" + val + "] when evaluated " +
-								"against section " + report.getSection();
-//                    throw new XdsInternalException("Report " + report.name +
-//                            " which has XPath " + report.getXpath() +
+								"against section " + reportDTO.getSection();
+//                    throw new XdsInternalException("ReportBuilder " + reportBuilder.name +
+//                            " which has XPath " + reportBuilder.getXpath() +
 //                            " evaluates to [" + val + "] when evaluated " +
-//                            "against section " + report.getSection());
+//                            "against section " + reportBuilder.getSection());
 				}
 			}
 			catch (JaxenException e) {
-				throw new XdsInternalException("Error evaluating Report " + report.name, e);
+				throw new XdsInternalException("Error evaluating ReportBuilder " + reportDTO.getName(), e);
 			}
 
 		}
@@ -114,27 +114,27 @@ public class ReportManager {
 		if (map == null) return;
 		for (String name : map.keySet()) {
 			String value = map.get(name);
-			Report r = new Report(name, value);
-			reports.add(r);
+			ReportDTO r = new ReportDTO(name, value);
+			reportDTOs.add(r);
 		}
 	}
 
 	public void report(Map<String, String> map, String nameSuffix) {
 		for (String name : map.keySet()) {
 			String value = map.get(name);
-			Report r = new Report(name + nameSuffix, value);
-			reports.add(r);
+			ReportDTO r = new ReportDTO(name + nameSuffix, value);
+			reportDTOs.add(r);
 		}
 	}
 
 	public OMElement toXML() {
 		OMElement top = MetadataSupport.om_factory.createOMElement("Reports", null);
 
-		for (Report report : reports) {
-			OMElement rep = MetadataSupport.om_factory.createOMElement("Report", null);
+		for (ReportDTO reportDTO : reportDTOs) {
+			OMElement rep = MetadataSupport.om_factory.createOMElement("ReportBuilder", null);
 
-			rep.addAttribute("name", report.name, null);
-			rep.setText(report.getValue());
+			rep.addAttribute("name", reportDTO.getName(), null);
+			rep.setText(reportDTO.getValue());
 
 			top.addChild(rep);
 		}

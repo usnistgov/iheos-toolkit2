@@ -8,7 +8,7 @@ import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.StepResult;
 import gov.nist.toolkit.session.server.Session;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.ArrayList;
 import java.util.List;

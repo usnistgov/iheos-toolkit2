@@ -14,7 +14,7 @@ import gov.nist.toolkit.valregmetadata.validators.FolderValidator;
 import gov.nist.toolkit.valregmetadata.validators.SubmissionSetValidator;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 import java.util.HashSet;

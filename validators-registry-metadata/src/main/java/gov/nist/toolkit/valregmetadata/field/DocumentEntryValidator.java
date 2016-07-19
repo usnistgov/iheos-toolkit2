@@ -3,8 +3,8 @@ package gov.nist.toolkit.valregmetadata.field;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.valregmetadata.model.ExternalIdentifier;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.Arrays;
 import java.util.List;

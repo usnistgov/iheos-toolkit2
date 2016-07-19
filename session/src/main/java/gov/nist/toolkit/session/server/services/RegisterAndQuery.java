@@ -6,7 +6,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.HashMap;
 import java.util.List;

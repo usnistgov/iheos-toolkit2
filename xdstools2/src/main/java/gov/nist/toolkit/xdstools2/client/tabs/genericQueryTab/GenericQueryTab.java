@@ -155,7 +155,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 			for (Result result : results) {
 				for (AssertionResult ar : result.assertions.assertions) {
 
-                    if (ar.assertion.startsWith("Report") && detailsTree != null) {
+                    if (ar.assertion.startsWith("ReportBuilder") && detailsTree != null) {
                         detailsTree.add(ar.assertion);
                     } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
                             detailsTree.add(ar.assertion);

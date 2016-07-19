@@ -24,7 +24,7 @@ import gov.nist.toolkit.tk.TkLoader
 import gov.nist.toolkit.tk.client.TkProps
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException
-import gov.nist.toolkit.xdsexception.XdsInternalException
+import gov.nist.toolkit.xdsexception.client.XdsInternalException
 import groovy.transform.TypeChecked
 import org.apache.log4j.Logger
 /**

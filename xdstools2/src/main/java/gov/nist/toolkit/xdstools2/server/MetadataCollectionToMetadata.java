@@ -7,7 +7,7 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.results.client.MetadataToMetadataCollectionParser;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 import java.io.File;

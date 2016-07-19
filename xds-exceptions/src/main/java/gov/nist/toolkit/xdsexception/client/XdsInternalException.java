@@ -1,10 +1,10 @@
-package gov.nist.toolkit.xdsexception;
+package gov.nist.toolkit.xdsexception.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 
-public class XdsInternalException extends XdsException /*implements Serializable, IsSerializable*/ {
+public class XdsInternalException extends XdsException  implements Serializable, IsSerializable {
 	
 	/**
 	 * 

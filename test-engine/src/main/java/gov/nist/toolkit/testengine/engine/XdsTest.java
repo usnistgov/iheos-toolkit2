@@ -1,7 +1,6 @@
 package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
@@ -9,15 +8,15 @@ import gov.nist.toolkit.sitemanagement.CombinedSiteLoader;
 import gov.nist.toolkit.sitemanagement.Sites;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.soap.axis2.Soap;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
 import gov.nist.toolkit.testenginelogging.TestLogDetails;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsParameterException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.log4j.Logger;
 
 import javax.xml.parsers.FactoryConfigurationError;
@@ -390,71 +389,71 @@ public class XdsTest {
 	}
 
 	private void showResponse() throws FactoryConfigurationError, Exception {
-		for (File logFile : logFiles) {
-			LogFileContent log = new LogFileContent(logFile);
-			StringBuffer buf = new StringBuffer();
-			for (int i=0; i<log.size(); i++) {
-				TestStepLogContent tslog = log.getTestStepLog(i);
-				buf.append("STEP ");
-				buf.append(tslog.getName());
-				buf.append(":");
-				buf.append(tslog.getRegistryResponse().toString());
-				buf.append("\n");
-			}
-			System.out.println(buf);
-		}
+//		for (File logFile : logFiles) {
+//			LogFileContentDTO log = new LogFileContentBuilder().build(logFile);
+//			StringBuffer buf = new StringBuffer();
+//			for (int i=0; i<log.size(); i++) {
+//				TestStepLogContentDTO tslog = log.getTestStepLog(i);
+//				buf.append("STEP ");
+//				buf.append(tslog.getName());
+//				buf.append(":");
+//				buf.append(tslog.getRegistryResponse().toString());
+//				buf.append("\n");
+//			}
+//			System.out.println(buf);
+//		}
 	}
 
 	private void showErrors()  {
-		StringBuffer buf = new StringBuffer();
-		buf.append("*******************   Error Summary  *******************\n");
-		for (File logFile : logFiles) {
-			LogFileContent log;
-			try {
-				log = new LogFileContent(logFile);
-			} 
-			catch (Exception e) {
-				buf.append("Error: " + e.getMessage() );
-				buf.append(logFile);
-				buf.append("\n");
-				continue;
-			}
-			if ( !log.isSuccess() ) {
-				String fatal = log.getFatalError();
-				if (fatal != null) {
-					buf.append("Test ");
-					buf.append(log.getTestAttribute());
-					buf.append("\t");
-					buf.append("Fatal Error: ");
-					buf.append(fatal);
-					buf.append("\n");
-					continue;
-				}
-				for (int stepIndex=0; stepIndex<log.size(); stepIndex++) {
-					String stepName;
-					try {
-						stepName = log.stepName(stepIndex);
-					} catch (Exception e) {
-						buf.append("Error: cannot access " + stepIndex + "th step of log file\n");
-						continue;
-					}
-
-					addRegistryResponseErrors(buf,
-							log, stepIndex, stepName); 
-
-
-					addAssertionErrors(buf, log,
-							stepIndex);
-
-					addSoapFaults(buf, log,
-							stepIndex);
-				}
-			}
-		}
-		System.out.println(buf);
+//		StringBuffer buf = new StringBuffer();
+//		buf.append("*******************   Error Summary  *******************\n");
+//		for (File logFile : logFiles) {
+//			LogFileContentDTO log;
+//			try {
+//				log = new LogFileContentBuilder().build(logFile);
+//			}
+//			catch (Exception e) {
+//				buf.append("Error: " + e.getMessage() );
+//				buf.append(logFile);
+//				buf.append("\n");
+//				continue;
+//			}
+//			if ( !log.isSuccess() ) {
+//				String fatal = log.getFatalError();
+//				if (fatal != null) {
+//					buf.append("Test ");
+//					buf.append(log.getTestAttribute());
+//					buf.append("\t");
+//					buf.append("Fatal Error: ");
+//					buf.append(fatal);
+//					buf.append("\n");
+//					continue;
+//				}
+//				for (int stepIndex=0; stepIndex<log.size(); stepIndex++) {
+//					String stepName;
+//					try {
+//						stepName = log.stepName(stepIndex);
+//					} catch (Exception e) {
+//						buf.append("Error: cannot access " + stepIndex + "th step of log file\n");
+//						continue;
+//					}
+//
+//					addRegistryResponseErrors(buf,
+//							log, stepIndex, stepName);
+//
+//
+//					addAssertionErrors(buf, log,
+//							stepIndex);
+//
+//					addSoapFaults(buf, log,
+//							stepIndex);
+//				}
+//			}
+//		}
+//		System.out.println(buf);
 	}
 
-	private void addAssertionErrors(StringBuffer buf, LogFileContent log,
+	private void addAssertionErrors(StringBuffer buf, LogFileContentDTO log,
 			int stepIndex) {
 		List<String> assertionErrors = null;
 		try {
@@ -473,7 +472,7 @@ public class XdsTest {
 		}
 	}
 
-	private void addSoapFaults(StringBuffer buf, LogFileContent log,
+	private void addSoapFaults(StringBuffer buf, LogFileContentDTO log,
 			int stepIndex) {
 		List<String> soapFaults = null;
 		try {
@@ -493,27 +492,27 @@ public class XdsTest {
 		}
 	}
 
-	private void addRegistryResponseErrors(StringBuffer buf,
-			LogFileContent log, int stepIndex, String stepName) {
-		RegistryResponseLog rr;
-		try {
-			rr = log.getUnexpectedErrors(stepIndex);
-		} catch (Exception e) {
-			//			buf.append("Error: cannot extract RegistryResponse: " + e.getMessage() + "\n");
-			//			buf.append(ExceptionUtil.exception_details(e));
-			return;
-		}
-		if (rr.size() > 0) {
-			buf.append("***** Test ");
-			buf.append(log.getTestAttribute());
-			buf.append("\t");
-			buf.append("Step ");
-			buf.append(stepName);
-			buf.append("\n");
-			buf.append(rr.getErrorSummary());
-			buf.append("\n");
-		}
-	}
+//	private void addRegistryResponseErrors(StringBuffer buf,
+//			LogFileContentDTO log, int stepIndex, String stepName) {
+//		RegistryResponseLog rr;
+//		try {
+//			rr = log.getUnexpectedErrors(stepIndex);
+//		} catch (Exception e) {
+//			//			buf.append("Error: cannot extract RegistryResponse: " + e.getMessage() + "\n");
+//			//			buf.append(ExceptionUtil.exception_details(e));
+//			return;
+//		}
+//		if (rr.size() > 0) {
+//			buf.append("***** Test ");
+//			buf.append(log.getTestAttribute());
+//			buf.append("\t");
+//			buf.append("Step ");
+//			buf.append(stepName);
+//			buf.append("\n");
+//			buf.append(rr.getErrorSummary());
+//			buf.append("\n");
+//		}
+//	}
 
 	void showException(Exception e) {
 		if (showExceptionTrace || e instanceof NullPointerException) 
@@ -728,21 +727,21 @@ public class XdsTest {
 				}
 				
 				PlanContext plan = new PlanContext();		
-				plan.setPreviousSectionLogs(testSpec.sectionLogMap);
+				plan.setPreviousSectionLogs(testSpec.sectionLogMapDTO);
 				plan.setTestConfig(testConfig);
 				plan.setCurrentSection(section);
 				plan.setExtraLinkage(externalLinkage);
 				plan.setExtraLinkage2(externalLinkage2);
 				plan.setWriteLogFiles(writeLogFiles);
-				plan.setPreviousSectionLogs(testSpec.sectionLogMap);
+				plan.setPreviousSectionLogs(testSpec.sectionLogMapDTO);
 				plan.setTransactionSettings(ts);
 
 				boolean status =  plan.run(testPlanFile);
 				// this.status records whether any test failed
                 if (this.status)
     				this.status = status;
-                // This use of section is used to link reports in log files
-				testSpec.addTestPlanLog(section, new LogFileContent(plan.results_document));
+                // This use of section is used to link reportDTOs in log files
+				testSpec.addTestPlanLog(section, new LogFileContentBuilder().build(plan.results_document));
 
 				if (status) 
 					System.out.println("\t\t...Pass");

@@ -2,7 +2,7 @@ package gov.nist.toolkit.utilities.xml;
 
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -32,6 +32,8 @@ public class Util {
 			return parse_xml((InputStream) o);
 		if (o instanceof File)
 			return parse_xml((File) o);
+		if (o instanceof OMElement)
+			return (OMElement) o;
 		throw new XdsInternalException("Util.parse_xml(): do not understand input format " + o.getClass().getName());
 	}
 

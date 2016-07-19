@@ -26,9 +26,9 @@ import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import gov.nist.toolkit.xdsexception.XdsPreparsedException;
 
 public class ImagingDocSetRetrieveTransaction extends BasicTransaction {

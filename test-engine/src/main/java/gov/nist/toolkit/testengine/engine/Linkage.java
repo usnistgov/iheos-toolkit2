@@ -8,9 +8,9 @@ import gov.nist.toolkit.utilities.xml.Parse;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.xpath.AXIOMXPath;
@@ -207,7 +207,7 @@ public class Linkage extends BasicLinkage {
     void private_replace_string_in_text_and_attributes(OMElement root, String old_text, String new_text) throws XdsInternalException {
 
 		if (root == null) return;
-        if (root.getLocalName().equals("Report")) return;
+        if (root.getLocalName().equals("ReportBuilder")) return;
         if (root.getLocalName().equals("UseReport")) return;
         if (root.getLocalName().equals("UseId")) return;
 

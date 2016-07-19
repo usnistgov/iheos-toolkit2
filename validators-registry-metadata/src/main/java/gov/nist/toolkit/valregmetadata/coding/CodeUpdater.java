@@ -5,19 +5,17 @@ import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.commons.io.FileUtils;
 
+import javax.xml.namespace.QName;
+import javax.xml.parsers.FactoryConfigurationError;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.namespace.QName;
-import javax.xml.parsers.FactoryConfigurationError;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.commons.io.FileUtils;
 
 public class CodeUpdater {
 	private static final QName classificationSchemeQName = new QName("classificationScheme");

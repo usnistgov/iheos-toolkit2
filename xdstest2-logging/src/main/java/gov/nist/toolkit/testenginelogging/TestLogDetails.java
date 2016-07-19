@@ -4,10 +4,12 @@ import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -28,7 +30,7 @@ public class TestLogDetails {
 	TestInstance testInstance;
 //	List<File> testPlanFiles;
 	public SectionTestPlanFileMap testPlanFileMap;   // sectionName ==> testplan.xml file
-	public SectionLogMap sectionLogMap = new SectionLogMap();
+	public SectionLogMapDTO sectionLogMapDTO = new SectionLogMapDTO();
 	String[] areas;
 	
 	static Logger logger = Logger.getLogger(TestLogDetails.class);
@@ -71,26 +73,26 @@ public class TestLogDetails {
 	public String toString() { return "[TestLogDetails: testkit=" + testkit + " area=" + area +
 		"<br />testnum=" + testInstance +
 		"<br />sections= " + testPlansToString() +
-		"<br />logs= " + sectionLogMap.toString() +
+		"<br />logs= " + sectionLogMapDTO.toString() +
 		"]";
 	}
 	
-	public SectionLogMap getSectionLogMap() {
-		return sectionLogMap;
+	public SectionLogMapDTO getSectionLogMapDTO() {
+		return sectionLogMapDTO;
 	}
 	
-	public void addTestPlanLog(String section, LogFileContent lf) throws XdsInternalException {
-		if (sectionLogMap == null)
-			sectionLogMap = new SectionLogMap();		
-		sectionLogMap.put(section, lf);
+	public void addTestPlanLog(String section, LogFileContentDTO lf) throws XdsInternalException {
+		if (sectionLogMapDTO == null)
+			sectionLogMapDTO = new SectionLogMapDTO();
+		sectionLogMapDTO.put(section, lf);
 	}
 	
 	public void resetLogs() {
-		sectionLogMap = new SectionLogMap();
+		sectionLogMapDTO = new SectionLogMapDTO();
 	}
 	
-	public SectionLogMap getTestPlanLogs() {
-		return sectionLogMap;
+	public SectionLogMapDTO getTestPlanLogs() {
+		return sectionLogMapDTO;
 	}
 
 
@@ -367,10 +369,10 @@ public class TestLogDetails {
 		List<File> previousLogFiles = getTestLogsForThisTest(getIndexFile(), sectionNames.get(0));
 				
 		for (File f : previousLogFiles) {
-			LogFileContent lf = new LogFileContent(f);
+			LogFileContentDTO lf = new LogFileContentBuilder().build(f);
 			String sectionName = lf.getSection();
 			//System.out.println("\tLoading log for section " + sectionName);
-			sectionLogMap.put(sectionName, lf);
+			sectionLogMapDTO.put(sectionName, lf);
 		}
 		
 	}
@@ -392,15 +394,9 @@ public class TestLogDetails {
 
 	void loadTestPlansFromSectionList(List<String> sections) throws Exception {
 		testPlanFileMap = new SectionTestPlanFileMap();
-//		File testdir = getTestDir();
 
 		for (String sectionName : sections ) {
 			File path = getTestplanFile(sectionName);
-//			String dir = sectionName;
-//			File path = new File(testdir + File.separator + dir + File.separatorChar + testPlanFileName);
-//			if ( ! path.exists() )
-//				throw new Exception("Test Section " + dir + 
-//						" has been requested but does not exist or does not contain a " + testPlanFileName + " file");
 			testPlanFileMap.put(sectionName, path);
 		}
 	}

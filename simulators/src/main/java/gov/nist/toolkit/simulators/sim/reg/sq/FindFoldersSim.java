@@ -11,8 +11,8 @@ import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.FindFolders;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdsexception;
+package gov.nist.toolkit.xdsexception.client;
 
 public class MetadataException extends XdsException {
 	

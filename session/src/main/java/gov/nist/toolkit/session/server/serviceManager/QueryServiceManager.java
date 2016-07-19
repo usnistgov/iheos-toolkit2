@@ -13,7 +13,7 @@ import gov.nist.toolkit.session.server.services.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;

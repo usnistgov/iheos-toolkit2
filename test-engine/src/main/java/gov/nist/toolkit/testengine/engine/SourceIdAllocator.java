@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.engine;
 
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.io.IOException;
 

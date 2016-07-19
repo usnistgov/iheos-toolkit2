@@ -1,7 +1,7 @@
 package gov.nist.toolkit.valregmsg.registry;
 
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;

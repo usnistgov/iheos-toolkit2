@@ -345,6 +345,18 @@
             <artifactId>security-common</artifactId>
         </dependency>
         <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>testkit-utilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>xdstest2-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>gov.nist.toolkit</groupId>
+            <artifactId>xds-exceptions</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <scope>provided</scope>
@@ -519,6 +531,9 @@
                         <compileSourcesArtifact>${project.groupId}:common-datatypes</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:config-datatypes</compileSourcesArtifact>
                         <compileSourcesArtifact>${project.groupId}:session</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:testkit-utilities</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:xdstest2-logging</compileSourcesArtifact>
+                        <compileSourcesArtifact>${project.groupId}:xds-exceptions</compileSourcesArtifact>
                     </compileSourcesArtifacts>
                     <runTarget>Xdstools2.html</runTarget>
                     <modules>
@@ -585,7 +600,7 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <artifactId>maven-project-info-reportBuilders-plugin</artifactId>
                 <version>2.7</version>
 
                 <configuration>

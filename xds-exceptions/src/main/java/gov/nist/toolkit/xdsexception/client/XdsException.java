@@ -1,16 +1,18 @@
-package gov.nist.toolkit.xdsexception;
+package gov.nist.toolkit.xdsexception.client;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.io.Serializable;
 
-public class XdsException extends Exception implements Serializable/*, IsSerializable */{
+public class XdsException extends Exception implements Serializable, IsSerializable {
 
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	String resource = null;   // pointer back into documentation
+
+	public XdsException() {}
 
 	public XdsException(String msg, String resource) {
 		super(msg);
@@ -27,6 +29,7 @@ public class XdsException extends Exception implements Serializable/*, IsSeriali
 	}
 
 	public String getDetails() {
-		return ExceptionUtil.exception_details(this);
+
+		return ""; //ExceptionUtil.exception_details(this);
 	}
 }

@@ -4,10 +4,10 @@ import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.results.client.LogIdIOFormat;
 import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.testenginelogging.LogMap;
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.ToolkitRuntimeException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -50,25 +50,25 @@ public class LogRepository  {
         }
     }
 
-    public void logOut(TestInstance id, LogMap logMap)
+    public void logOut(TestInstance id, LogMapDTO logMapDTO)
             throws XdsException {
         log.debug(String.format("Saving log for %s", id));
-        logger.logOut(id, logMap, logDir(id));
+        logger.logOut(id, logMapDTO, logDir(id));
     }
 
-    public void logOutIfLinkedToUser(TestInstance id, LogMap logMap) throws XdsException {
+    public void logOutIfLinkedToUser(TestInstance id, LogMapDTO logMapDTO) throws XdsException {
 //        if (idType == LogIdType.SPECIFIC_ID)
-            logOut(id, logMap);
+            logOut(id, logMapDTO);
 //        else {
 //            log.debug(String.format("Not saving log for %s - not tied to user", id));
 //        }
     }
 
-//	public LogMap logIn(TestId id) throws Exception {
+//	public LogMapDTO logIn(TestId id) throws Exception {
 //		return logger.logIn(id, logDir());
 //	}
 
-    static public LogMap logIn(TestInstance testInstance) throws Exception {
+    static public LogMapDTO logIn(TestInstance testInstance) throws Exception {
         if (testInstance == null) {
             log.error(ExceptionUtil.here("testId is null"));
             return null;
@@ -80,7 +80,7 @@ public class LogRepository  {
                     testInstance.getIdType(),
                     testInstance);
             File dir = repo.logDir(testInstance);
-            log.debug(String.format("Loading LogMap for test %s from %s", testInstance, dir));
+            log.debug(String.format("Loading LogMapDTO for test %s from %s", testInstance, dir));
             return repo.logger.logIn(testInstance, dir);
         } catch (Exception e) {
             log.error("Cannot load " + testInstance.describe());
@@ -88,7 +88,7 @@ public class LogRepository  {
         }
     }
 
-//    public LogMap logIn(File logDir) throws Exception {
+//    public LogMapDTO logIn(File logDir) throws Exception {
 //        return logger.logIn(id, logDir);
 //    }
 

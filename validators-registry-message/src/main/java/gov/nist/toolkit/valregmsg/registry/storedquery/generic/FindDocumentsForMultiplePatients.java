@@ -7,11 +7,11 @@ import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LoggerException;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XDSRegistryOutOfResourcesException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.ArrayList;
 import java.util.List;

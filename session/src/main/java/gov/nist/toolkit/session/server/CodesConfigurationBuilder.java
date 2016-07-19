@@ -4,7 +4,7 @@ import gov.nist.toolkit.results.client.CodeConfiguration;
 import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 
 import javax.xml.namespace.QName;

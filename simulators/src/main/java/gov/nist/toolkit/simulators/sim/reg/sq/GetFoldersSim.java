@@ -8,8 +8,8 @@ import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetFolders;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.ArrayList;
 import java.util.List;

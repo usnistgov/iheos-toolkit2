@@ -7,7 +7,7 @@ package gov.nist.toolkit.valregmsg.message;
 import gov.nist.toolkit.commondatatypes.client.MetadataTypes;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.utilities.xml.MyErrorHandler;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 import org.apache.xerces.parsers.DOMParser;

@@ -25,6 +25,9 @@ import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
 import gov.nist.toolkit.testenginelogging.*;
 import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
@@ -32,10 +35,11 @@ import gov.nist.toolkit.testkitutilities.TestkitBuilder;
 import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -178,9 +182,9 @@ public class XdsTestServiceManager extends CommonService {
 		if (session != null)
 			logger.debug(session.id() + ": " + "getRawLogs for " + testInstance.describe());
 
-		LogMap logMap;
+		LogMapDTO logMapDTO;
 		try {
-			logMap = LogRepository.logIn(testInstance);
+			logMapDTO = LogRepository.logIn(testInstance);
 		} catch (Exception e) {
 			logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + testInstance));
 			TestLogs testLogs = new TestLogs();
@@ -192,7 +196,7 @@ public class XdsTestServiceManager extends CommonService {
 		}
 
 		try {
-			TestLogs testLogs = TestLogsBuilder.build(logMap);
+			TestLogs testLogs = TestLogsBuilder.build(logMapDTO);
 			testLogs.testInstance = testInstance;
 			return testLogs;
 		} catch (Exception e) {
@@ -359,7 +363,7 @@ public class XdsTestServiceManager extends CommonService {
 
 			File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
 
-			LogMap lm = null;
+			LogMapDTO lm = null;
 			if (testDir != null)
 				lm = buildLogMap(testDir, testInstance);
 
@@ -374,7 +378,7 @@ public class XdsTestServiceManager extends CommonService {
 
 			if (testDir != null) {
 				for (String section : lm.getLogFileContentMap().keySet()) {
-					LogFileContent ll = lm.getLogFileContentMap().get(section);
+					LogFileContentDTO ll = lm.getLogFileContentMap().get(section);
 					testLogDetails.addTestPlanLog(section, ll);
 				}
 
@@ -389,6 +393,8 @@ public class XdsTestServiceManager extends CommonService {
 			TestOverviewDTO dto = new TestOverviewBuilder(session, testLogDetails).build();
 			if (testDir == null)
 				dto.setRun(false);
+			else
+				dto.setLogMapDTO(lm);
 			return dto;
 		} catch (Exception e) {
 			if (e.getMessage() != null) throw e;
@@ -396,8 +402,8 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public LogMap buildLogMap(File testDir, TestInstance testInstance) throws Exception {
-		LogMap lm = new LogMap();
+	public LogMapDTO buildLogMap(File testDir, TestInstance testInstance) throws Exception {
+		LogMapDTO lm = new LogMapDTO();
 
 		// this has a slightly different structure than the testkit
 		// so pass the parent dir so the tests dir can be navigated
@@ -411,12 +417,12 @@ public class XdsTestServiceManager extends CommonService {
 		if (sectionNames.size() == 0) {
 			for (File f : testDir.listFiles()) {
 				if (f.isFile() && f.getName().equals("log.xml")) {
-					LogFileContent ll = new LogFileContent(f);
+					LogFileContentDTO ll = new LogFileContentBuilder().build(f);
 					lm.add(f.getName(), ll);
 				} else if (f.isDirectory()) {
 					File logfile = new File(f, "log.xml");
 					if (logfile.exists()) {
-						LogFileContent ll = new LogFileContent(logfile);
+						LogFileContentDTO ll = new LogFileContentBuilder().build(logfile);
 						lm.add(f.getName(), ll);
 					}
 				}
@@ -425,7 +431,7 @@ public class XdsTestServiceManager extends CommonService {
 		} else {
 			for (String sectionName : sectionNames ) {
 				File lfx = new File(testDir + File.separator + sectionName + File.separator + "log.xml");
-				LogFileContent ll = new LogFileContent(lfx);
+				LogFileContentDTO ll = new LogFileContentBuilder().build(lfx);
 				lm.add(sectionName, ll);
 			}
 		}
@@ -498,10 +504,10 @@ public class XdsTestServiceManager extends CommonService {
 		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"));
 	}
 
-	Result buildResult(List<TestLogDetails> testSpecs, TestInstance logId) throws Exception {
+	Result buildResult(List<TestLogDetails> testLogDetailses, TestInstance logId) throws Exception {
 		TestInstance testInstance;
-		if (testSpecs.size() == 1) {
-			testInstance = testSpecs.get(0).getTestInstance();
+		if (testLogDetailses.size() == 1) {
+			testInstance = testLogDetailses.get(0).getTestInstance();
 		} else {
 			testInstance = new TestInstance("Combined_Test");
 		}
@@ -515,27 +521,27 @@ public class XdsTestServiceManager extends CommonService {
 		//		// for Pre-Connectathon test results
 		//
 		//		SessionCache sc = new SessionCache(s, getTestLogCache());
-		//		for (LogMapItem item : lm.items) {
+		//		for (LogMapItemDTO item : lm.items) {
 		//			sc.addLogFile(item.log);
 		//
 		//		}
 
 		// load metadata results into Result
-		//		List<TestSpec> testSpecs = s.xt.getTestSpecs();
-		for (TestLogDetails testSpec : testSpecs) {
-			for (String section : testSpec.sectionLogMap.keySet()) {
+		//		List<TestSpec> testLogDetailses = s.xt.getTestSpecs();
+		for (TestLogDetails testLogDetails : testLogDetailses) {
+			for (String section : testLogDetails.sectionLogMapDTO.keySet()) {
 				if (section.equals("THIS"))
 					continue;
-				LogFileContent testlog = testSpec.sectionLogMap.get(section);
-				for (int i = 0; i < testlog.size(); i++) {
+				LogFileContentDTO logFileContentDTO = testLogDetails.sectionLogMapDTO.get(section);
+				for (int i = 0; i < logFileContentDTO.size(); i++) {
 					StepResult stepResult = new StepResult();
 					boolean stepPass = false;
 					result.stepResults.add(stepResult);
 					try {
-						TestStepLogContent tsLog = testlog.getTestStepLog(i);
+						TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getTestStepLog(i);
 						stepResult.section = section;
-						stepResult.stepName = tsLog.getName();
-						stepResult.status = tsLog.getStatus();
+						stepResult.stepName = testStepLogContentDTO.getId();
+						stepResult.status = testStepLogContentDTO.getStatus();
 						stepPass = stepResult.status;
 
 						logger.info("test section " + section + " has status " + stepPass);
@@ -547,7 +553,7 @@ public class XdsTestServiceManager extends CommonService {
 						// found
 						boolean inRequest = false;
 						try {
-							OMElement input = tsLog.getRawInputMetadata();
+							String input = testStepLogContentDTO.getInputMetadata();
 							Metadata m = MetadataParser
 									.parseNonSubmission(input);
 							if (m.getAllObjects().size() > 0) {
@@ -562,7 +568,7 @@ public class XdsTestServiceManager extends CommonService {
 						boolean inResponse = false;
 						if (inRequest == false) {
 							try {
-								OMElement reslt = tsLog.getRawResult();
+								String reslt = testStepLogContentDTO.getResult();
 								Metadata m = MetadataParser
 										.parseNonSubmission(reslt);
 								MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
@@ -578,24 +584,24 @@ public class XdsTestServiceManager extends CommonService {
 
 						// look for document contents
 						if (stepPass) {
-							OMElement response = null;
+							String response = null;
 							try {
-								response = tsLog.getRawResult();  // throws exception on Direct messages (no response)
+								response = testStepLogContentDTO.getResult();  // throws exception on Direct messages (no response)
 							} catch (Exception e) {
 
 							}
 							if (response != null) {
-								OMElement rdsr = response;
+								OMElement rdsr = Util.parse_xml(response);
 								if (!rdsr.getLocalName().equals(
 										"RetrieveDocumentSetResponse"))
 									rdsr = XmlUtil
 											.firstDecendentWithLocalName(
-													response,
+													rdsr,
 													"RetrieveDocumentSetResponse");
 								if (rdsr != null) {
 									RetrieveB rb = new RetrieveB();
 									Map<String, RetrievedDocumentModel> resMap = rb
-											.parse_rep_response(response).getMap();
+											.parse_rep_response(rdsr).getMap();
 									for (String docUid : resMap.keySet()) {
 										RetrievedDocumentModel ri = resMap.get(docUid);
 										Document doc = new Document();

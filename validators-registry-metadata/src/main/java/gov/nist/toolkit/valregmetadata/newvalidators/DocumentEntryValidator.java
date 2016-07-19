@@ -8,7 +8,7 @@ import gov.nist.toolkit.valregmetadata.model.ClassAndIdDescription;
 import gov.nist.toolkit.valregmetadata.model.DocumentEntry;
 import gov.nist.toolkit.valregmetadata.model.Slot;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
-import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 
 import java.util.*;
 

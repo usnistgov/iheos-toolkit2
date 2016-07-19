@@ -118,7 +118,7 @@
                         <include>**/*IT.java</include>
                     </includes>
                     <!-- This is temporarily enabled because it is a known issue that some of the Query Spec integrations tests fail! -->
-                    <testFailureIgnore>true</testFailureIgnore>
+                    <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
                 <executions>
                     <execution>

@@ -1,8 +1,9 @@
-package gov.nist.toolkit.testenginelogging;
+package gov.nist.toolkit.testenginelogging.client;
 
 
 
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.testenginelogging.ReportBuilder;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,39 +11,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SectionLogMap {
+public class SectionLogMapDTO {
 	// - section name must expand to test/section so that test context is maintained
 	// section name => log
-	Map<String, LogFileContent> sectionLogs;
+	Map<String, LogFileContentDTO> sectionLogs;
 	List<String> sectionNames;   // this dictates the order of the sections
 
-	public SectionLogMap() {
-		sectionLogs = new HashMap<String, LogFileContent>();
+	public SectionLogMapDTO() {
+		sectionLogs = new HashMap<String, LogFileContentDTO>();
 		sectionNames = new ArrayList<String>();
 	}
 	
-	public List<SectionGoals> getGoals() {
-		List<SectionGoals> goals = new ArrayList<SectionGoals>();
+	public List<SectionGoalsDTO> getGoals() {
+		List<SectionGoalsDTO> goals = new ArrayList<SectionGoalsDTO>();
 		for (String sectionName : sectionNames) {
 			goals.add(sectionLogs.get(sectionName).getGoals());
 		}
 		return goals;
 	}
 
-	public LogFileContent getLogForSection(String sectionName) {
+	public LogFileContentDTO getLogForSection(String sectionName) {
 		return sectionLogs.get(sectionName);
 	}
 
-	public void put(String sectionName, LogFileContent log) throws XdsInternalException {
+	public void put(String sectionName, LogFileContentDTO log) throws XdsInternalException {
 		if (log == null)
 			throw new XdsInternalException("Null log for section " + sectionName);
 		sectionNames.add(sectionName);
 		sectionLogs.put(sectionName, log);
-		Report.setSection(log.getReports(), sectionName);
+		ReportBuilder.setSection(log.getReportDTOs(), sectionName);
 	}
 
-	public LogFileContent get(String sectionName) throws XdsInternalException {
-		LogFileContent lf = sectionLogs.get(sectionName);
+	public LogFileContentDTO get(String sectionName) throws XdsInternalException {
+		LogFileContentDTO lf = sectionLogs.get(sectionName);
 //		if (lf == null && !sectionName.equals("THIS"))
 //			throw new XdsInternalException("Log for section " + sectionName + " is null");
 		return lf;
@@ -60,7 +61,7 @@ public class SectionLogMap {
 		sectionLogs.remove(sectionName);
 	}
 
-    public String describe() { return "SectionLogMap...\n" + reportsToString(); }
+    public String describe() { return "SectionLogMapDTO...\n" + reportsToString(); }
 
 	public String reportsToString()  {
 		StringBuffer buf = new StringBuffer();
@@ -68,13 +69,13 @@ public class SectionLogMap {
 
 		for (String section : sectionLogs.keySet()) {
 			buf.append("Section: ").append(section).append(": ");
-			LogFileContent log = sectionLogs.get(section);
+			LogFileContentDTO log = sectionLogs.get(section);
 			try {
-				List<Report> reports = log.getReports();
-				for (Report r : reports) {
-					r.section = section;
+				List<ReportDTO> reportDTOs = log.getReportDTOs();
+				for (ReportDTO r : reportDTOs) {
+					r.setSection(section);
 				}
-				buf.append(reports.toString());
+				buf.append(reportDTOs.toString());
 			} catch (Exception e) {
 				System.out.println("Cannot find Reports for section " + section);
 			}
