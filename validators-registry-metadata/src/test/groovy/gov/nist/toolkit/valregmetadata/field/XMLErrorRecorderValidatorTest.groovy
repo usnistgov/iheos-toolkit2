@@ -1,6 +1,8 @@
 package gov.nist.toolkit.valregmetadata.field
 import gov.nist.toolkit.errorrecording.ErrorRecorder
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder
+import gov.nist.toolkit.errorrecording.XMLErrorRecorder
+import gov.nist.toolkit.errorrecording.XMLErrorRecorderBuilder
 import gov.nist.toolkit.registrymetadata.Metadata
 import gov.nist.toolkit.registrymetadata.MetadataParser
 import gov.nist.toolkit.utilities.io.Io
@@ -10,7 +12,7 @@ import spock.lang.Specification
 /**
  *
  */
-class SimpleMetadataValidatorTest extends Specification {
+class XMLErrorRecorderValidatorTest extends Specification {
 
     def 'Run'() {
         setup:
@@ -30,14 +32,14 @@ class SimpleMetadataValidatorTest extends Specification {
         vc.isPnR = true
         vc.codesFilename = getClass().getResource('/codes.xml').file
 
-        ErrorRecorder er = new GwtErrorRecorder()
-//      ErrorRecorder er = new XMLErrorRecorder()
-//      ErrorRecorder er = new TextErrorRecorder()
+        // ErrorRecorder er = new GwtErrorRecorder()
+        //      ErrorRecorder er = new TextErrorRecorder()
+        ErrorRecorder er = new XMLErrorRecorder()
 
         MetadataValidator val = new MetadataValidator(m, vc, null)
         val.run(er)
 
-        println er.toString()
+        println (er.toString())
 
         then:
         true

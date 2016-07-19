@@ -38,7 +38,7 @@ class XMLErrorRecorderTest extends Specification {
 
     def 'Parent Child linkage'() {
         setup:
-        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+        ErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
 
         when: 'Build parent ER'
         ErrorRecorder erParent = builder.buildNewErrorRecorder()
@@ -70,7 +70,7 @@ class XMLErrorRecorderTest extends Specification {
 
     def 'List of three'() {
         setup:
-        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+        ErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
 
         when: 'Build chain of 3 ER'
         ErrorRecorder erParent = builder.buildNewErrorRecorder()
@@ -84,7 +84,7 @@ class XMLErrorRecorderTest extends Specification {
 
     def 'Family tree'() {
         setup:
-        ErrorRecorderBuilder builder = new GwtErrorRecorderBuilder()
+        ErrorRecorderBuilder builder = new XMLErrorRecorderBuilder()
 
         when: 'Build chain of 3 ER plus second grandkid'
         ErrorRecorder erParent = builder.buildNewErrorRecorder()

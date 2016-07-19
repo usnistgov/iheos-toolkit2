@@ -12,7 +12,7 @@ import groovy.xml.*
 
 class XMLGroovyExample {
 
-    // use annotation name in front of class to do static typechecking
+    // TODO use annotation name in front of class to do static typechecking
     //typechecked
 
     def generateXml() {

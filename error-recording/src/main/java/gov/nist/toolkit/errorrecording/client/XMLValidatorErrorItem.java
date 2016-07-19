@@ -127,7 +127,6 @@ public class XMLValidatorErrorItem implements IsSerializable {
 			case D_INFO:
 				buf.append("INFO\n");
 				add(buf);
-//			buf.append("INFO: ").append(getMsg()).append("\n");
 		}
 
 		return buf.toString();
