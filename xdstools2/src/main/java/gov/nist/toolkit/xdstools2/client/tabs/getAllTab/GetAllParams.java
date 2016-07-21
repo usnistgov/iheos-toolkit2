@@ -39,6 +39,7 @@ public class GetAllParams {
     ReturnTypeFilter returnFilter;
 
     CodeFilterBank codeFilterBank;
+    final int idHashCode = System.identityHashCode(this);
 
     public GetAllParams(ToolkitServiceAsync toolkitService, GenericQueryTab genericQueryTab) {
         // The collective filter bank being assembled
@@ -54,7 +55,7 @@ public class GetAllParams {
         prow++;
 
         paramGrid.setText(prow, 1, "");
-        onDemandFilter = new OnDemandFilter("Type");
+        onDemandFilter = new OnDemandFilter("GetAllParams_"+idHashCode);
         paramGrid.setWidget(prow, 2, onDemandFilter.asWidget());
         prow++;
 

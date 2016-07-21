@@ -24,6 +24,7 @@ import java.util.Map;
 public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 
 	OnDemandFilter onDemandFilter;
+	final int idHashCode = System.identityHashCode(this);
 
 	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
 	static {
@@ -65,7 +66,7 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 
 		// On Demand
 		mainGrid.setText(row, 0, "DocumentEntry Type");
-		onDemandFilter = new OnDemandFilter("Type","Either");
+		onDemandFilter = new OnDemandFilter("GetSubmissionSetAndContentsTab_"+idHashCode,"Either");
 		mainGrid.setWidget(row, 1, onDemandFilter.asWidget());
 		row++;
 

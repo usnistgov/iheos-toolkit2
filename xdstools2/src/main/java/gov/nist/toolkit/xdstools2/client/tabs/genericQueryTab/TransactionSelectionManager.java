@@ -17,7 +17,9 @@ public class TransactionSelectionManager {
 	CoupledTransactions couplings;
 //	boolean tls;
 	GenericQueryTab genericQueryTab;
-//	Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons; 
+//	Map<TransactionType, List<RadioButton>> perTransTypeRadioButtons;
+//	static ArrayList<String>
+	final int idHashCode = System.identityHashCode(this);
 	
 	class RbSite {
 		TransactionType tt; // Unique (fits into perTransRB Map below
@@ -37,7 +39,7 @@ public class TransactionSelectionManager {
 		List<RbSite> rbSites = new ArrayList<RbSite>();
 		for (Site site : sites) {
 			String siteName = site.getName();
-			RadioButton rb = new RadioButton(tt.getName(), siteName);
+			RadioButton rb = new RadioButton("rbGroup_" + genericQueryTab.getWindowShortName() + "_" + tt.getName() + "_" + idHashCode, siteName);
 			rb.addClickHandler(ch);
 			RbSite rbs = new RbSite();
 			rbs.tt = tt;
