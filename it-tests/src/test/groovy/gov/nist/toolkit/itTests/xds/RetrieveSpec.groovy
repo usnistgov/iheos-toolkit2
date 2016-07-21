@@ -56,9 +56,9 @@ class RetrieveSpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
         spi.delete('rr', testSession)
+        api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
-        api.deleteSimulatorIfItExists(simId)
     }
 
     def setup() {

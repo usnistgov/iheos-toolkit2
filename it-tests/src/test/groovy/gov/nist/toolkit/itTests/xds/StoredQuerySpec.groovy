@@ -54,9 +54,9 @@ class StoredQuerySpec extends ToolkitSpecification {
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
         spi.delete('reg', testSession)
+        api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
-        api.deleteSimulatorIfItExists(simId)
     }
 
     def setup() {

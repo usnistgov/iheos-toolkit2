@@ -50,9 +50,9 @@ class RegisterSpec extends ToolkitSpecification {
 //        System.gc()
         spi.delete('reg', testSession)
         spi.delete('reg', 'test')
+        api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
-        api.deleteSimulatorIfItExists(simId)
     }
 
     def setup() {
