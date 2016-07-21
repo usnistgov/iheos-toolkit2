@@ -56,7 +56,7 @@ public class PlanContext extends BasicContext {
 	
 	public SectionLogMapDTO getPreviousSectionLogs() {
 		if (previousSectionLogs == null)
-			previousSectionLogs = new SectionLogMapDTO();
+			previousSectionLogs = new SectionLogMapDTO(testConfig.testInstance);
 //		else
 //			System.out.println("\tHave logs for " + previousSectionLogs.sectionNames);
 

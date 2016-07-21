@@ -120,14 +120,14 @@ public class TestStepLogContentBuilder {
         // without use of the map we get duplicates because of the Assertions
         // section of the log.xml file format
         Map<String, String> map = new HashMap<>();
-        for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "ReportDTO")) {
+        for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "Report")) {
             String name = ele.getAttributeValue(nameQname);
             String value = ele.getText();
             map.put(name, value);
         }
         for(String key : map.keySet()) {
             c.getReportsSummary().add(key + " = " + map.get(key));
-            c.getReportDTOs().add(new ReportDTO(key, map.get(key)));
+            c.addReportDTO(new ReportDTO(key, map.get(key)));
         }
 
     }
@@ -275,7 +275,7 @@ public class TestStepLogContentBuilder {
         if (ele == null)
             return "";
         try {
-            return new OMFormatter(ele.toString()).toHtml();
+            return new OMFormatter(ele.toString()).toString();
         } catch (Exception e) {
             return ExceptionUtil.exception_details(e);
         }

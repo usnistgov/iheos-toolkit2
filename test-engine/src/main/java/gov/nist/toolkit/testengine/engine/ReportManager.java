@@ -77,7 +77,7 @@ public class ReportManager {
 
 	public void generate() throws XdsInternalException {
 		for (ReportDTO reportDTO : reportDTOs) {
-            logger.info("Generating ReportBuilder " + reportDTO.toString());
+            logger.info("Generating Report " + reportDTO.toString());
 			AXIOMXPath xpathExpression;
 			try {
 				if (reportDTO.getXpath() != null && !reportDTO.getXpath().equals("")) {
@@ -87,13 +87,13 @@ public class ReportManager {
 					try {
 						val = xpathExpression.stringValueOf(section);
 					} catch (Exception e) {
-                        val = String.format("Error generating reportBuilder: %s", e.getMessage());
+                        val = String.format("Error generating report: %s", e.getMessage());
 //						throw new XdsInternalException("Error evaluating XPath expression [" +
 //								reportBuilder.getXpath() + "] against output of section [" + reportBuilder.getSection() + "]");
 					}
 					reportDTO.setValue(val);
 					if (val == null || val.equals(""))
-						val = "ReportBuilder " + reportDTO.getName() +
+						val = "Report " + reportDTO.getName() +
 								" which has XPath " + reportDTO.getXpath() +
 								" evaluates to [" + val + "] when evaluated " +
 								"against section " + reportDTO.getSection();
@@ -104,7 +104,7 @@ public class ReportManager {
 				}
 			}
 			catch (JaxenException e) {
-				throw new XdsInternalException("Error evaluating ReportBuilder " + reportDTO.getName(), e);
+				throw new XdsInternalException("Error evaluating Report " + reportDTO.getName(), e);
 			}
 
 		}
@@ -131,7 +131,7 @@ public class ReportManager {
 		OMElement top = MetadataSupport.om_factory.createOMElement("Reports", null);
 
 		for (ReportDTO reportDTO : reportDTOs) {
-			OMElement rep = MetadataSupport.om_factory.createOMElement("ReportBuilder", null);
+			OMElement rep = MetadataSupport.om_factory.createOMElement("Report", null);
 
 			rep.addAttribute("name", reportDTO.getName(), null);
 			rep.setText(reportDTO.getValue());

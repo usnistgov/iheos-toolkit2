@@ -183,6 +183,10 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 		return reportDTOs;
 	}
 
+	public void addReportDTO(ReportDTO report) {
+		reportDTOs.add(report);
+	}
+
 	public void setReportDTOs(List<ReportDTO> reportDTOs) {
 		this.reportDTOs = reportDTOs;
 	}

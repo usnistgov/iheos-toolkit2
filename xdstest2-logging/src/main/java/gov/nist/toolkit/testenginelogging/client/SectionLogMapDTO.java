@@ -2,6 +2,7 @@ package gov.nist.toolkit.testenginelogging.client;
 
 
 
+import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.ReportBuilder;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
@@ -14,12 +15,12 @@ import java.util.Map;
 public class SectionLogMapDTO {
 	// - section name must expand to test/section so that test context is maintained
 	// section name => log
-	Map<String, LogFileContentDTO> sectionLogs;
-	List<String> sectionNames;   // this dictates the order of the sections
+	Map<String, LogFileContentDTO> sectionLogs = new HashMap<String, LogFileContentDTO>();
+	List<String> sectionNames = new ArrayList<String>();   // this dictates the order of the sections
+	TestInstance testInstance;
 
-	public SectionLogMapDTO() {
-		sectionLogs = new HashMap<String, LogFileContentDTO>();
-		sectionNames = new ArrayList<String>();
+	public SectionLogMapDTO(TestInstance testInstance) {
+		this.testInstance = testInstance;
 	}
 	
 	public List<SectionGoalsDTO> getGoals() {
@@ -54,7 +55,7 @@ public class SectionLogMapDTO {
 	}
 
 	public String toString() {
-		return reportsToString();
+		return ((testInstance != null) ? testInstance.toString() : "null") + reportsToString();
 	}
 	
 	public void remove(String sectionName) {
@@ -86,5 +87,11 @@ public class SectionLogMapDTO {
 
 	}
 
+	public TestInstance getTestInstance() {
+		return testInstance;
+	}
 
+	public void setTestInstance(TestInstance testInstance) {
+		this.testInstance = testInstance;
+	}
 }

@@ -108,7 +108,7 @@ public class LogRepository  {
 
     // assign event including filenames - do not touch file system in case the event is never used
     public void assignEvent(TestInstance testInstance) {
-        if (idType != LogIdType.TIME_ID) return;  // doesnt use event structure
+        if (idType != LogIdType.TIME_ID) return;  // doesn't use event structure
         if (testInstance.linkedToLogRepository()) return;
         String event = new SimDb().nowAsFilenameBase();
         testInstance.setInternalEvent(event);

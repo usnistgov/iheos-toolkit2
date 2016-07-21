@@ -35,22 +35,9 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 		return stepMap;
 	}
 
-//	public String toString() {
-//		StringBuffer buf = new StringBuffer();
-//
-//		buf.append("[LogFile: ");
-//
-//		if (inputFile != null)
-//			buf.append(inputFile).append("  ");
-//
-//		for (TestStepLogContentDTO s : steps) {
-//			buf.append(s.toString());
-//		}
-//
-//		buf.append("]");
-//
-//		return buf.toString();
-//	}
+	public String toString() {
+		return test + "/" + section;
+	}
 
 	public String getSection() {
 		return section;

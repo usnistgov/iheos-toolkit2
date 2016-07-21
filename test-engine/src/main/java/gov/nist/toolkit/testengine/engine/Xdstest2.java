@@ -220,7 +220,7 @@ public class Xdstest2 {
 	
 	public void addTest(TestInstance testInstance, File testDir) throws Exception {
 		this.testInstance = testInstance;
-		TestLogDetails testLogDetails = new TestLogDetails(testDir);
+		TestLogDetails testLogDetails = new TestLogDetails(testDir, testInstance);
 		if (logRepository != null)
 			testLogDetails.setLogRepository(logRepository);
 		xt.addTestSpec(testLogDetails);

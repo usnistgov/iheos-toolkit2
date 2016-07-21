@@ -178,7 +178,6 @@ class OdDocumentConsumerSpec extends ToolkitSpecification {
         List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
-        true
         results.size() == 1
         results.get(0).passed()
     }

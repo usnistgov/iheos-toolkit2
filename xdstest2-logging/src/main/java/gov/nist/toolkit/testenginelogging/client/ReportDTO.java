@@ -48,7 +48,7 @@ public class ReportDTO implements Serializable, IsSerializable {
     public String toString() {
         StringBuffer buf = new StringBuffer();
 
-        buf.append("ReportBuilder ").append(name).append(" section=").append(section)
+        buf.append("Report ").append(name).append(" section=").append(section)
                 .append(" value=").append(value);
 
         return buf.toString();

@@ -1,13 +1,9 @@
 package gov.nist.toolkit.testenginelogging;
 
-import gov.nist.toolkit.installation.Installation;
-import gov.nist.toolkit.results.client.LogIdIOFormat;
-import gov.nist.toolkit.results.client.LogIdType;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
-import gov.nist.toolkit.testenginelogging.logrepository.LogRepositoryFactory;
 import gov.nist.toolkit.utilities.io.LinesOfFile;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.log4j.Logger;
@@ -30,7 +26,7 @@ public class TestLogDetails {
 	TestInstance testInstance;
 //	List<File> testPlanFiles;
 	public SectionTestPlanFileMap testPlanFileMap;   // sectionName ==> testplan.xml file
-	public SectionLogMapDTO sectionLogMapDTO = new SectionLogMapDTO();
+	public SectionLogMapDTO sectionLogMapDTO;
 	String[] areas;
 	
 	static Logger logger = Logger.getLogger(TestLogDetails.class);
@@ -44,30 +40,32 @@ public class TestLogDetails {
 		this.testkit = testkit;
 		this.testInstance = testInstance;
 		areas = defaultAreas;
+		sectionLogMapDTO = new SectionLogMapDTO(testInstance);
 		verifyCurrentTestExists(testkit, testInstance);
 		testPlanFileMap = getTestPlans();
-		logRepository = LogRepositoryFactory.getRepository(Installation.installation().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
+//		logRepository = LogRepositoryFactory.getRepository(Installation.installation().testLogCache(), testInstance.getUser(), LogIdIOFormat.JAVA_SERIALIZATION, LogIdType.SPECIFIC_ID, testInstance);
 	}
 
 	public TestLogDetails(File testkit, TestInstance testInstance, String[] areas) throws Exception {
 		this.testkit = testkit;
 		this.testInstance = testInstance;
 		this.areas = areas;
+		sectionLogMapDTO = new SectionLogMapDTO(testInstance);
 		verifyCurrentTestExists(testkit, testInstance);
 		testPlanFileMap = getTestPlans();
 	}
 
-	public TestLogDetails(File testkit) throws Exception {
-		if (new File(testkit + File.separator + "tests").exists()) {
-			// this is the testkit
-			this.testkit = testkit;
-			areas = defaultAreas;
-		} else  {
-			// this is a test directory
-			this.testkit = null;
-			testPlanFileMap = getTestPlanFromDir(testkit);
-		}
-	}
+//	public TestLogDetails(File testkit) throws Exception {
+//		if (new File(testkit + File.separator + "tests").exists()) {
+//			// this is the testkit
+//			this.testkit = testkit;
+//			areas = defaultAreas;
+//		} else  {
+//			// this is a test directory
+//			this.testkit = null;
+//			testPlanFileMap = getTestPlanFromDir(testkit);
+//		}
+//	}
 
 
 	public String toString() { return "[TestLogDetails: testkit=" + testkit + " area=" + area +
@@ -83,12 +81,12 @@ public class TestLogDetails {
 	
 	public void addTestPlanLog(String section, LogFileContentDTO lf) throws XdsInternalException {
 		if (sectionLogMapDTO == null)
-			sectionLogMapDTO = new SectionLogMapDTO();
+			sectionLogMapDTO = new SectionLogMapDTO(testInstance);
 		sectionLogMapDTO.put(section, lf);
 	}
 	
 	public void resetLogs() {
-		sectionLogMapDTO = new SectionLogMapDTO();
+		sectionLogMapDTO = new SectionLogMapDTO(testInstance);
 	}
 	
 	public SectionLogMapDTO getTestPlanLogs() {
@@ -172,65 +170,65 @@ public class TestLogDetails {
 	}
 
 	static public void listTestKitContents(File testkit) throws Exception {
-		TestLogDetails ts = new TestLogDetails(testkit);
-
-		for (int i=0; i<defaultAreas.length; i++) {
-			ts.area = defaultAreas[i];
-			File sectionDir = ts.getSectionDir();
-			if ( !sectionDir.exists())
-				continue;
-			System.out.println("======================  " +  ts.area + "  ======================");
-
-			String[] files = sectionDir.list();
-			if (files == null)
-				continue;
-			for (int j=0; j<files.length; j++) {
-				if (files[j].startsWith("."))
-					continue;
-				File file = new File(sectionDir + File.separator + files[j]);
-				if ( !file.isDirectory()) 
-					continue;
-				ts.testInstance = new TestInstance(file.getName());
-				if (ts.isTestDir()) {
-					File readme = ts.getReadme();
-					String firstline = "";
-					if (readme.exists() && readme.isFile())
-						firstline = firstLineOfFile(readme);
-					System.out.println(ts.testInstance + "\t" + firstline.trim());
-				}
-			}
-		}
+//		TestLogDetails ts = new TestLogDetails(testkit);
+//
+//		for (int i=0; i<defaultAreas.length; i++) {
+//			ts.area = defaultAreas[i];
+//			File sectionDir = ts.getSectionDir();
+//			if ( !sectionDir.exists())
+//				continue;
+//			System.out.println("======================  " +  ts.area + "  ======================");
+//
+//			String[] files = sectionDir.list();
+//			if (files == null)
+//				continue;
+//			for (int j=0; j<files.length; j++) {
+//				if (files[j].startsWith("."))
+//					continue;
+//				File file = new File(sectionDir + File.separator + files[j]);
+//				if ( !file.isDirectory())
+//					continue;
+//				ts.testInstance = new TestInstance(file.getName());
+//				if (ts.isTestDir()) {
+//					File readme = ts.getReadme();
+//					String firstline = "";
+//					if (readme.exists() && readme.isFile())
+//						firstline = firstLineOfFile(readme);
+//					System.out.println(ts.testInstance + "\t" + firstline.trim());
+//				}
+//			}
+//		}
 	}
 
 	static public Map<String, String> getTestKitReadMe(File testkit) throws Exception {
 		Map<String, String> map = new HashMap<String, String>();
-		TestLogDetails ts = new TestLogDetails(testkit);
-
-		for (int i=0; i<defaultAreas.length; i++) {
-			ts.area = defaultAreas[i];
-			File sectionDir = ts.getSectionDir();
-			if ( !sectionDir.exists())
-				continue;
-
-			String[] files = sectionDir.list();
-			if (files == null)
-				continue;
-			for (int j=0; j<files.length; j++) {
-				if (files[j].startsWith("."))
-					continue;
-				File file = new File(sectionDir + File.separator + files[j]);
-				if ( !file.isDirectory()) 
-					continue;
-				ts.testInstance = new TestInstance(file.getName());
-				if (ts.isTestDir()) {
-					File readme = ts.getReadme();
-					String firstline = "";
-					if (readme.exists() && readme.isFile())
-						firstline = firstLineOfFile(readme);
-					map.put(ts.testInstance.getId(), firstline.trim());
-				}
-			}
-		}
+//		TestLogDetails ts = new TestLogDetails(testkit);
+//
+//		for (int i=0; i<defaultAreas.length; i++) {
+//			ts.area = defaultAreas[i];
+//			File sectionDir = ts.getSectionDir();
+//			if ( !sectionDir.exists())
+//				continue;
+//
+//			String[] files = sectionDir.list();
+//			if (files == null)
+//				continue;
+//			for (int j=0; j<files.length; j++) {
+//				if (files[j].startsWith("."))
+//					continue;
+//				File file = new File(sectionDir + File.separator + files[j]);
+//				if ( !file.isDirectory())
+//					continue;
+//				ts.testInstance = new TestInstance(file.getName());
+//				if (ts.isTestDir()) {
+//					File readme = ts.getReadme();
+//					String firstline = "";
+//					if (readme.exists() && readme.isFile())
+//						firstline = firstLineOfFile(readme);
+//					map.put(ts.testInstance.getId(), firstline.trim());
+//				}
+//			}
+//		}
 		return map;
 	}
 

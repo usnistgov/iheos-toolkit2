@@ -19,7 +19,7 @@ public class ReportBuilder  {
 		r.setValue(rep.getText());
 
 		if (r.getName() == null || r.getName().equals(""))
-			throw new XdsInternalException("Cannot parse ReportDTO: " + rep.toString());
+			throw new XdsInternalException("Cannot parse Report: " + rep.toString());
 
 		return r;
 	}
@@ -27,7 +27,7 @@ public class ReportBuilder  {
 	static public List<ReportDTO> parseReports(OMElement ele) throws XdsInternalException {
 		List<ReportDTO> reportDTOs = new ArrayList<>();
 
-		for (OMElement rep : XmlUtil.childrenWithLocalName(ele, "ReportDTO")) {
+		for (OMElement rep : XmlUtil.childrenWithLocalName(ele, "Report")) {
 			ReportDTO r = parse(rep);
 			reportDTOs.add(r);
 		}
