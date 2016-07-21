@@ -19,7 +19,7 @@ import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
 /**
- * Test the Register transaction
+ * Test the OD Document Consumer Retrieve
  */
 class OdConsumerSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
@@ -29,9 +29,9 @@ class OdConsumerSpec extends ToolkitSpecification {
     @Shared String patientId = 'SR14^^^&1.2.460&ISO'
     String reg = 'sunil__rr2'
     SimId simId = new SimId(reg)
-    @Shared String testSession = 'sunil';
+    @Shared String testSession = 'sunil'
     @Shared SimConfig rrConfig = null
-    @Shared SimConfig oddsConfig = null;
+    @Shared SimConfig oddsConfig = null
     @Shared Session tkSession
 
     def setupSpec() {   // one time setup done when class launched
@@ -77,8 +77,6 @@ class OdConsumerSpec extends ToolkitSpecification {
 //        System.gc()
         spi.delete('rr2', testSession)
         spi.delete('odds2', testSession)
-        spi.delete('rr2', 'test')
-        spi.delete('odds2', 'test')
         server.stop()
         ListenerFactory.terminateAll()
     }
