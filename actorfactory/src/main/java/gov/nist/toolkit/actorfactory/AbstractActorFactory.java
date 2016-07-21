@@ -57,11 +57,15 @@ public abstract class AbstractActorFactory {
 		factories.put(ActorType.DOCUMENT_RECIPIENT.getName(),  		new RecipientActorFactory());
 		factories.put(ActorType.REPOSITORY_REGISTRY.getName(), 		new RepositoryRegistryActorFactory());
 		factories.put(ActorType.INITIATING_GATEWAY.getName(),  		new IGActorFactory());
+		factories.put(ActorType.INITIATING_IMAGING_GATEWAY.getName(), new IigActorFactory());
+		factories.put(ActorType.RESPONDING_IMAGING_GATEWAY.getName(), new RigActorFactory());
 		factories.put(ActorType.RESPONDING_GATEWAY.getName(),  		new RGActorFactory());
       factories.put(ActorType.XDR_DOC_SRC.getName(), 				   new XdrDocSrcActorFactory());
       factories.put(ActorType.DOC_CONSUMER.getName(), 			   new ConsumerActorFactory());
       factories.put(ActorType.IMAGING_DOC_CONSUMER.getName(),         new ImgConsumerActorFactory());
       factories.put(ActorType.IMAGING_DOC_SOURCE.getName(), 		new ImagingDocSourceActorFactory());
+      factories.put(ActorType.COMBINED_INITIATING_GATEWAY.getName(), new CigActorFactory());
+      factories.put(ActorType.COMBINED_RESPONDING_GATEWAY.getName(), new CrgActorFactory());
 	}
 
 	static public AbstractActorFactory getActorFactory(ActorType at) {
@@ -243,23 +247,6 @@ public abstract class AbstractActorFactory {
 
 	public void saveConfiguration(SimulatorConfig config) throws Exception {
 		verifyActorConfigurationOptions(config);
-
-		//
-		// This statically links the IG to the CURRENT list of remote sites that it could possibly be a
-		// gateway to in the future.  BAD IDEA.  This list needs to be generated on the fly so it is current.
-		//
-//		if (config.getActorType().equals(ActorType.INITIATING_GATEWAY.getName())) {
-//			// must load up XCQ and XCR endpoints for simulator to use
-//			config.remoteSites = new ArrayList<>();
-//
-//			Sites sites = simManager.getAllSites();
-//			for (String remote : config.rgSiteNames) {
-//				Site site = sites.getSite(remote);
-//				config.remoteSites.add(site);
-//			}
-//		}
-		//
-		//
 
 		SimDb simdb = SimDb.mkSim(Installation.installation().simDbFile(), config.getId(), config.getActorType());
 		File simCntlFile = simdb.getSimulatorControlFile();

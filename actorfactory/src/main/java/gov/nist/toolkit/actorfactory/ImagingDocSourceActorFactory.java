@@ -36,9 +36,9 @@ public class ImagingDocSourceActorFactory extends AbstractActorFactory {
 			sc = new SimulatorConfig();
 
 		addEditableConfig(sc, SimulatorProperties.idsRepositoryUniqueId, ParamType.TEXT, getNewIdsRepositoryUniqueId());
+		addEditableConfig(sc, SimulatorProperties.idsImageCache, ParamType.TEXT, newID.getId());
 		addEditableEndpoint(sc, SimulatorProperties.idsrEndpoint, actorType, TransactionType.RET_IMG_DOC_SET, false);
 		addEditableEndpoint(sc, SimulatorProperties.idsrTlsEndpoint, actorType, TransactionType.RET_IMG_DOC_SET, true);
-//        addEditableConfig(sc, SimulatorProperties.respondingGateways, ParamType.SELECTION, new ArrayList<String>(), true);
 
 		return new Simulator(sc);
 	}

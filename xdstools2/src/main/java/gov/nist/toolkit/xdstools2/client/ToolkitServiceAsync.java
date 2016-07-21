@@ -11,10 +11,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.IdsOrchestrationRequest;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -200,6 +197,8 @@ public interface ToolkitServiceAsync {
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
     void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRigTestOrchestration(RigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 	void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 

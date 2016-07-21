@@ -19,6 +19,7 @@
 		<Default_Environment>default</Default_Environment>
 		<Toolkit_TLS_Port>8443</Toolkit_TLS_Port>
 		<Toolkit_Port>8888</Toolkit_Port>
+      <Image_Cache>/opt/xdsi/storage</Image_Cache>
 	</properties>
 
 	<profiles>
@@ -40,6 +41,7 @@
 				<Default_Environment>xdsi</Default_Environment>
 				<Toolkit_TLS_Port>8643</Toolkit_TLS_Port>
 				<Toolkit_Port>9280</Toolkit_Port>
+            <Image_Cache>/opt/xdsi/storage</Image_Cache>
 			</properties>
 		</profile>
 		<profile>

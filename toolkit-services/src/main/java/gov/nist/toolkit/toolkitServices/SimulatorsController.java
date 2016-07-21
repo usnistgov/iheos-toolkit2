@@ -102,6 +102,7 @@ public class SimulatorsController {
            (request.isDirect() ? request.getEndpoint() : request.getFullId()), transaction));
         String dest = "";
         TransactionType type = TransactionType.RET_IMG_DOC_SET;
+        if (transaction.equals("rad69Iig")) type = TransactionType.RET_IMG_DOC_SET_GW;
         if (transaction.equals("rad75")) type = TransactionType.XC_RET_IMG_DOC_SET;
         try {
             

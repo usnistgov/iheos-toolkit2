@@ -330,51 +330,6 @@ public class RGActorSimulator extends GatewaySimulatorCommon implements Metadata
 
             return true;
 
-         case TransactionType.XC_RET_IMG_DOC_SET:
-
-         logger.debug("Transaction type: XC_RET_IMG_DOC_SET");
-            common.vc.isRequest = true;
-            common.vc.isRad69 = true;
-            common.vc.isXC = true;
-            common.vc.isSimpleSoap = false;
-            common.vc.hasSoap = true;
-            common.vc.hasHttp = true;
-
-            logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
-            if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
-               return false;    // SOAP Fault generated
-
-            logger.debug("mvc.hasErrors()");
-            if (mvc.hasErrors()) {
-               returnRetrieveError();
-               return false;
-            }
-
-            logger.debug("Extract retrieve");
-            AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
-            if (mv == null || !(mv instanceof SoapMessageValidator)) {
-               er.err(Code.XDSRegistryError, "RG Internal Error - cannot find SoapMessageValidator instance", "RespondingGatewayActorSimulator", "");
-               returnRetrieveError();
-               return false;
-            }
-            logger.debug("Got AbstractMessageValidator");
-            SoapMessageValidator smv = (SoapMessageValidator) mv;
-            OMElement query = smv.getMessageBody();
-
-            logger.debug("Process message");
-            RGImgDocSetRet retSim = new RGImgDocSetRet(common, dsSimCommon, getSimulatorConfig());
-            mvc.addMessageValidator("XcRetrieveImgSim", retSim, er);
-            mvc.run();
-
-            logger.debug("wrap response message");
-            er.detail("Wrapping response in SOAP Message and sending");
-            OMElement env = dsSimCommon.wrapResponseInSoapEnvelope(retSim.getResult());
-            assert env;
-            dsSimCommon.sendHttpResponse(env, er);
-            mvc.run();
-
-            return false;
-
          default:
 
             dsSimCommon.sendFault("RGActorSimulator: Don't understand transaction " + transactionType, null);

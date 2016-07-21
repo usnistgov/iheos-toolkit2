@@ -167,7 +167,7 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				"TestStep", 
 				step_id);
 
-		Iterator elements = step.getChildElements();
+		Iterator <?> elements = step.getChildElements();
 		while (elements.hasNext()) {
 			OMElement instruction = (OMElement) elements.next();
 			String instruction_name = instruction.getLocalName();
@@ -331,7 +331,11 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				} 
 				else if (instruction_name.equals("ImagingDocSetRetrieveTransaction"))
 				{
-					transaction = new ImagingDocSetRetrieveTransaction(this, instruction, instruction_output);
+               transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, false);
+            } 
+            else if (instruction_name.equals("ImagingDocSetIigRetrieveTransaction"))
+            {
+               transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, true);
 				} 
 				else 
 				{

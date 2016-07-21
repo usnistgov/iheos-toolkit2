@@ -1,103 +1,96 @@
-package gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs;
+/**
+ * 
+ */
+package gov.nist.toolkit.services.server.orchestration;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.codehaus.plexus.util.StringUtils;
+
+import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.ParamType;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.installation.Installation;
+import gov.nist.toolkit.services.client.IigOrchestrationRequest;
+import gov.nist.toolkit.services.client.IigOrchestrationResponse;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.server.RawResponseBuilder;
+import gov.nist.toolkit.services.server.ToolkitApi;
+import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
-import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.widgets.buttons.ReportableButton;
 
 /**
- * Handles "Build Test Environment" Button for IIG Test Orchestration
+ * Build environment for Testing Initiating Imaging Gateway SUT.
+ * 
+ * @author Ralph Moulton / MIR WUSTL IHE Development Project <a
+ * href="mailto:moultonr@mir.wustl.edu">moultonr@mir.wustl.edu</a>
+ *
  */
-class BuildIIGTestOrchestrationButton extends ReportableButton {
-   private IIGTestTab testTab;
-   boolean includeIIG;
+public class IigOrchestrationBuilder {
+   static Logger log = Logger.getLogger(IigOrchestrationBuilder.class);   
 
-   public BuildIIGTestOrchestrationButton(IIGTestTab testTab, Panel topPanel, String label, boolean includeIIG) {
-      super(topPanel, label);
-      this.testTab = testTab;
-      this.includeIIG = includeIIG;
+   static final String sutSimulatorName = "simulator_iig";
+
+   Session session;
+   IigOrchestrationRequest request;
+   ToolkitApi api;
+   Util util;
+   List<SimulatorConfig> simConfigs = new ArrayList<>();
+   SimulatorConfig sutSimulatorConfig = null;
+   
+   public IigOrchestrationBuilder(ToolkitApi api, Session session, IigOrchestrationRequest request) {
+      this.api = api;
+      this.session = session;
+      this.request = request;
+      this.util = new Util(api);
    }
-
-   @SuppressWarnings("unused")
-   @Override
-   public void handleClick(ClickEvent event) {
-      if (GenericQueryTab.empty(testTab.getCurrentTestSession())) {
-         new PopupMessage("Must select test session first");
-         return;
-      }
-      IigOrchestrationRequest request = new IigOrchestrationRequest();
-      request.setUserName(testTab.getCurrentTestSession());
-      request.setIncludeLinkedIIG(includeIIG);
-      testTab.toolkitService.buildIigTestOrchestration(request, new AsyncCallback <RawResponse>() {
-
-         @Override
-         public void onFailure(Throwable throwable) {
-            handleError(throwable);
+   
+   public RawResponse buildTestEnvironment() {
+      
+      String user = request.getUserName();
+      String env = request.getEnvironmentName();
+      
+      try {
+         for (Orchestra sim : Orchestra.values()) {
+            SimId simId = new SimId(user, sim.name(), sim.actorType.getName(), env);
+            api.deleteSimulatorIfItExists(simId);
+            log.debug("Creating " + simId.toString());
+            SimulatorConfig simConfig = api.createSimulator(simId).getConfig(0);
+            // plug our special parameter values
+            for (SimulatorConfigElement chg : sim.elements) {
+               chg.setEditable(true);
+               // lists of simulators may need specific user plugged in
+               if (chg.isList()) {
+                     List <String> list = chg.asList();
+                     for (int i = 0; i < list.size(); i++ ) {
+                        String s = list.get(i);
+                        s = StringUtils.replace(s, "${user}", user);
+                        list.set(i, s);
+                     }
+                     chg.setValue(list);
+               }
+               simConfig.replace(chg);
+            }
+            api.saveSimulator(simConfig);
+            if (sim.name().equals(sutSimulatorName)) sutSimulatorConfig = simConfig;
+            simConfigs.add(simConfig);
          }
 
-         @Override
-         public void onSuccess(RawResponse rawResponse) {
-            if (handleError(rawResponse, IigOrchestrationResponse.class)) return;
-            IigOrchestrationResponse orchResponse = (IigOrchestrationResponse) rawResponse;
+         IigOrchestrationResponse response = new IigOrchestrationResponse();
+         response.setIigSimulatorConfig(sutSimulatorConfig);
+         response.setSimulatorConfigs(simConfigs);
+         return response;
 
-            testTab.rgConfigs = orchResponse.getSimulatorConfigs();
-
-            panel().add(new HTML("<h2>Test Environment</h2>"));
-            FlexTable table = new FlexTable();
-            panel().add(table);
-            int row = 0;
-
-            table.setWidget(row++ , 0, new HTML("<h3>Simulators</h3>"));
-
-            int i = 1;
-            // Pass through simulators in order of Orchestra enum
-            for (Orchestra o : Orchestra.values()) {
-               // Get matching simulator config
-               SimulatorConfig sim = null;
-               for (SimulatorConfig config : testTab.rgConfigs) {
-                  if (config.getId().getId().equals(o.name())) {
-                     sim = config;
-                     break;
-                  }
-               }
-               if (sim == null) {
-                  new PopupMessage("Internal error: Simulator " + o.name() + " not found");
-                  continue;
-               }
-
-               // First row: title, sim id, test data and log buttons
-               table.setWidget(row, 0, new HTML("<h3>" + o.title + "</h3>"));
-               HorizontalPanel hp = new HorizontalPanel();
-               hp.add(new HTML(sim.getId().toString()));
-               hp.add(testTab.addTestEnvironmentInspectorButton(sim.getId().toString(), "Test Data"));
-               hp.add(testTab.testSelectionManager.buildLogLauncher(sim.getId().toString(), "Simulator Log"));
-               table.setWidget(row++ , 1, hp);
-
-               // Property rows, based on ActorType and Orchestration enum
-               for (String property : o.getDisplayProps()) {
-                  table.setWidget(row, 1, new HTML(property));
-                  SimulatorConfigElement prop = sim.get(property);
-                  String value = prop.asString();
-                  if (prop.isList()) value = prop.asList().toString();
-                  table.setWidget(row++ , 2, new HTML(value));
-               }
-               testTab.genericQueryTab.reloadTransactionOfferings();
-
-            } // pass Orchestration
-
-         } // EO on Success method
-
-      }); // Build IIG Orchestration
-
-   }
+      } catch (Exception e) {
+         return RawResponseBuilder.build(e);
+      }
+   } // EO build test environment
+   
+   
    @SuppressWarnings("javadoc")
    public enum Orchestra {
       
@@ -168,14 +161,22 @@ class BuildIIGTestOrchestrationButton extends ReportableButton {
                };
             case INITIATING_IMAGING_GATEWAY:
                return new String[] {
-                  SimulatorProperties.idsrEndpoint,
+                  SimulatorProperties.idsrIigEndpoint,
                   //SimulatorProperties.idsrTlsEndpoint,
                   SimulatorProperties.respondingImagingGateways,
                };
                default:
+                  log.error("Unknown ActorType");
          }
          return new String[0];
       }
       
    } // EO Orchestra enum
-}
+   
+   private String getImageCache() {
+      String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
+      log.debug("Image Cache: " + c);
+      return c;
+   }
+
+} // EO IigOrchestration builder

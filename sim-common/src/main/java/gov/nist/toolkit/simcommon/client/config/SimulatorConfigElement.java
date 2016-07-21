@@ -53,6 +53,14 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
         setValue(values, ((isMultiSelect) ? ValueType.MULTI_SELECT_LIST : ValueType.SINGLE_SELECT_LIST));
     }
 
+    public SimulatorConfigElement(String name, ParamType type, String[] vals, boolean isMultiSelect) {
+        this.name = name;
+        this.type = type;
+        List<String> values = new ArrayList<>();
+        for (String value : vals) values.add(value);
+        setValue(values, ((isMultiSelect) ? ValueType.MULTI_SELECT_LIST : ValueType.SINGLE_SELECT_LIST));
+    }
+
     public SimulatorConfigElement(String name, ParamType type, PatientErrorMap value) {
         this.name = name;
         this.type = type;

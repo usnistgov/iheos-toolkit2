@@ -16,12 +16,14 @@ import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
 import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
@@ -712,18 +714,17 @@ public class DsSimCommon {
 		logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
 		String[] uids = compositeUid.split(":");
       /*
-       * XCAI_TODO Here we are using a directory ids-repository under the
-       * simulator directory to store images for an ids simulator or an rg
-       * simulator (which bundles an ids). This can be set up as a soft link to
-       * the directory actually containing the images. However, we should pass
-       * this by Bill and then come up with a way to handle this in the config.
+       * The image cache is in the IDS Simulator config, absolute, or relative 
+       * to the image cache in the toolkit properties.
        */
-      Path idsRepositoryPath = simCommon.db.getSimDir().toPath().resolve("ids-repository");
+		Path imageCacheRoot = Paths.get(getImageCache());
+		String simCache = simulatorConfig.get(SimulatorProperties.idsImageCache).asString();
+      Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
 		File idsRepositoryDir = idsRepositoryPath.toFile();
 		if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
-         logger.warn("Could not file ids-repository directory " + idsRepositoryDir);
+         logger.warn("Could not file image cache directory " + idsRepositoryDir);
 		   er.err(XdsErrorCode.Code.XDSRepositoryError,
-		      "Could not find repository [" + idsRepositoryPath + "] ",
+		      "Could not find image cache [" + idsRepositoryPath + "] ",
 		      "IdsActorSimulator EL-1", MetadataSupport.error_severity, "Internal error");
 		   return null;
 		}
@@ -768,5 +769,11 @@ public class DsSimCommon {
 		}
 		return sd;
 	}
+	
+	private String getImageCache() {
+      String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
+      logger.debug("Image Cache: " + c);
+      return c;
+   }
 
 }

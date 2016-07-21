@@ -32,8 +32,7 @@ public class RGActorFactory extends AbstractActorFactory {
    }
 
    static final List <TransactionType> incomingTransactions =
-      Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE,
-         TransactionType.XC_RET_IMG_DOC_SET);
+      Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE);
 
    @Override
    protected Simulator buildNew(SimManager simm, @SuppressWarnings("hiding") SimId newID,
@@ -61,16 +60,10 @@ public class RGActorFactory extends AbstractActorFactory {
          TransactionType.XC_RETRIEVE, false);
       addFixedEndpoint(sc, SimulatorProperties.xcrTlsEndpoint, actorType,
          TransactionType.XC_RETRIEVE, true);
-      addFixedEndpoint(sc, SimulatorProperties.xcirEndpoint, actorType,
-         TransactionType.XC_RET_IMG_DOC_SET, false);
-      addFixedEndpoint(sc, SimulatorProperties.xcirTlsEndpoint, actorType,
-         TransactionType.XC_RET_IMG_DOC_SET, true);
       addEditableConfig(sc, SimulatorProperties.errors, ParamType.SELECTION,
          new ArrayList <String>(), false);
       addEditableConfig(sc, SimulatorProperties.errorForPatient,
          ParamType.SELECTION, new PatientErrorMap());
-      addEditableConfig(sc, SimulatorProperties.imagingDocumentSources, 
-         ParamType.SELECTION, new ArrayList<String>(), true);
 
       // This needs to be grouped with a Document Registry
       SimulatorConfig registryConfig =
@@ -81,10 +74,6 @@ public class RGActorFactory extends AbstractActorFactory {
       SimulatorConfig repositoryConfig =
          new RepositoryActorFactory().buildNew(simm, simId, true).getConfig(0); // was
                                                                                 // false
-      // This needs to be grouped with an Image Document Source also
-      SimulatorConfig idsConfig = 
-         new ImagingDocSourceActorFactory().buildNew(simm, simId, true).getConfig(0);
-
       sc.add(registryConfig); // this adds the individual
                               // SimulatorConfigElements to the RG
                               // SimulatorConfig
@@ -92,8 +81,6 @@ public class RGActorFactory extends AbstractActorFactory {
       // which means the SimServlet cannot find them when a message comes in
       sc.add(repositoryConfig);
       
-      sc.add(idsConfig);
-
       return new Simulator(sc);
    }
 
@@ -135,20 +122,10 @@ public class RGActorFactory extends AbstractActorFactory {
             sc.get(SimulatorProperties.xcrTlsEndpoint).asString(), true,
             isAsync));
 
-         site.addTransaction(new TransactionBean(
-            TransactionType.XC_RET_IMG_DOC_SET.getCode(), RepositoryType.NONE,
-            sc.get(SimulatorProperties.xcirEndpoint).asString(), false,
-            isAsync));
-         site.addTransaction(new TransactionBean(
-            TransactionType.XC_RET_IMG_DOC_SET.getCode(), RepositoryType.NONE,
-            sc.get(SimulatorProperties.xcirTlsEndpoint).asString(), true,
-            isAsync));
-
          site.setHome(sc.get(SimulatorProperties.homeCommunityId).asString());
 
          new RegistryActorFactory().getActorSite(sc, site);
          new RepositoryActorFactory().getActorSite(sc, site);
-         new ImagingDocSourceActorFactory().getActorSite(sc, site);
 
          return site;
       } catch (Throwable t) {

@@ -1,33 +1,33 @@
-package gov.nist.toolkit.simulators.sim.rg
+package gov.nist.toolkit.simulators.sim.rig;
 
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.actorfactory.SimManager
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
-import gov.nist.toolkit.registrymsg.repository.*
-import gov.nist.toolkit.simulators.support.*
-import gov.nist.toolkit.sitemanagement.Sites
-import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType
-import gov.nist.toolkit.soap.axis2.Soap
-import gov.nist.toolkit.testengine.engine.RetrieveB
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
-import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
-import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
-import gov.nist.toolkit.xdsexception.ExceptionUtil
-import groovy.transform.TypeChecked
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.registrymsg.repository.*;
+import gov.nist.toolkit.simulators.support.*;
+import gov.nist.toolkit.sitemanagement.Sites;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
+import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.engine.RetrieveB;
+import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
+import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
 
-import org.apache.axiom.om.OMElement
-import org.apache.log4j.Logger
+import groovy.transform.TypeChecked;
 
-import gov.nist.toolkit.registrysupport.MetadataSupport;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 
 /**
@@ -36,13 +36,13 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
  * collects the results, and creates the RAD-75 response. *
  */
 @TypeChecked
-class RGImgDocSetRet extends AbstractMessageValidator {
+class RigImgDocSetRet extends AbstractMessageValidator {
 
    //***************************************************************
    // static Properties
    //***************************************************************
    
-   static Logger log = Logger.getLogger(RGImgDocSetRet);
+   static Logger log = Logger.getLogger(RigImgDocSetRet.class);
 
    private static final TransactionType type = TransactionType.XC_RET_IMG_DOC_SET;
 
@@ -64,7 +64,7 @@ class RGImgDocSetRet extends AbstractMessageValidator {
    // Constructor
    //***************************************************************
 
-   public RGImgDocSetRet(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
+   public RigImgDocSetRet(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
       super(common.vc);
       this.common = common;
       this.dsSimCommon = dsSimCommon;
@@ -81,7 +81,9 @@ class RGImgDocSetRet extends AbstractMessageValidator {
    }
 
    // Not an exception, but thrown to run code in finally block.
-   class NonException extends Exception { }
+   class NonException extends Exception {
+      private static final long serialVersionUID = 1L; 
+   }
 
    //***************************************************************
    // run method
@@ -92,12 +94,12 @@ class RGImgDocSetRet extends AbstractMessageValidator {
       this.er = er;
       er.registerValidator(this);
 
-      if (startUpException != null) {
-         er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
-         throw new NonException()
-      }
-
       try {
+
+         if (startUpException != null) {
+            er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
+            throw new NonException();
+         }
 
          // Request failed initial validation
          if (common.hasErrors()) {
@@ -105,9 +107,8 @@ class RGImgDocSetRet extends AbstractMessageValidator {
             throw new NonException();
          }
          
-         // Get list of configured IDSs, adding this simulator
-         List<String> siteNames = asc.getConfigEle(SimulatorProperties.imagingDocumentSources).asList();         
-         siteNames.add(asc.getId().toString());
+         // Get list of configured IDSs
+         List<String> siteNames = asc.getConfigEle(SimulatorProperties.imagingDocumentSources).asList();  
          SimManager simMgr = new SimManager("ignored");
          List<Site> sites = simMgr.getSites(siteNames);
          if (sites == null || sites.size() == 0) {
@@ -168,7 +169,7 @@ class RGImgDocSetRet extends AbstractMessageValidator {
                pullErrorList(rModel, result);
                
                for (RetrievedDocumentModel item : rModel.values()) {
-                  log.info("IDS retrieve returned " + item)
+                  log.info("IDS retrieve returned " + item);
                   item.setRepUid(idsRepId);
                   item.setHome(asc.getConfigEle(SimulatorProperties.homeCommunityId).asString());
                   retrievedDocs.add(item);
@@ -176,8 +177,8 @@ class RGImgDocSetRet extends AbstractMessageValidator {
                
             } catch (Exception e) {
                Exception e2 = new Exception("Soap Call to endpoint " + endpoint + " failed - " + e.getMessage(), e);
-               logException(er, e2)
-               throw e2
+               logException(er, e2);
+               throw e2;
             }           
            
             
@@ -187,8 +188,12 @@ class RGImgDocSetRet extends AbstractMessageValidator {
       } catch (Exception e) {
          logException(er, e);
       } finally {
-         result = new RetrieveDocumentResponseGenerator(retrievedDocs, 
-            dsSimCommon.registryErrorList).get();
+         try {
+            result = new RetrieveDocumentResponseGenerator(retrievedDocs, 
+               dsSimCommon.getRegistryErrorList()).get();
+         } catch (XdsInternalException e) {
+            e.printStackTrace();
+         }
          er.unRegisterValidator(this);
       }
    } // EO run method

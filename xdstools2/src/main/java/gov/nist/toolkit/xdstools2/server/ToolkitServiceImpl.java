@@ -203,11 +203,21 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
 		return new OrchestrationManager().buildIgTestEnvironment(s, request);
 	}
+   public RawResponse buildIigTestOrchestration(IigOrchestrationRequest request) {
+      Session s = getSession();
+      if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+      return new OrchestrationManager().buildIigTestEnvironment(s, request);
+   }
 	public RawResponse buildRgTestOrchestration(RgOrchestrationRequest request) {
 		Session s = getSession();
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
 		return new OrchestrationManager().buildRgTestEnvironment(s, request);
 	}
+   public RawResponse buildRigTestOrchestration(RigOrchestrationRequest request) {
+      Session s = getSession();
+      if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+      return new OrchestrationManager().buildRigTestEnvironment(s, request);
+   }
 	public RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request) {
 		Session s = getSession();
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));

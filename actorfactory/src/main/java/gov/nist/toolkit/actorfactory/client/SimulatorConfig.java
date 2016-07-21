@@ -7,9 +7,7 @@ import gov.nist.toolkit.simcommon.client.config.SimulatorConfigElement;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Definition for an actor simulator.
@@ -185,6 +183,28 @@ public class SimulatorConfig implements Serializable, IsSerializable {
 
     public boolean hasConfig(String name) {
         return getFixedByName(name) != null;
+    }
+    
+    /**
+     * Removes configuration parameter with same name (if found) and adds
+     * passed parameter.
+    * @param replacement parameter to add/replace
+    * @return true if existing parameter was replaced. false if no such 
+    * parameter was found, and passed parameter was added.
+    */
+   public boolean replace(SimulatorConfigElement replacement) {
+       boolean replaced = false;
+       Iterator <SimulatorConfigElement> itr = elements.iterator();
+       while(itr.hasNext()) {
+          SimulatorConfigElement existing = itr.next();
+          if (existing.name.equals(replacement.name)) {
+             itr.remove();
+             replaced = true;
+             break;
+          }
+       }
+       elements.add(replacement);
+       return replaced;
     }
 	
 	

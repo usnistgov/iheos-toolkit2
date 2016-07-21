@@ -4,13 +4,9 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
-import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
-import gov.nist.toolkit.simulators.sim.ids.IdsActorSimulator;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
@@ -25,13 +21,11 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
     static final Logger logger = Logger.getLogger(RGADActorSimulator.class);
     RegistryActorSimulator reg;
     RepositoryActorSimulator rep;
-    IdsActorSimulator ids;
     RGActorSimulator rg;
 
     public RGADActorSimulator() {
         rep = new RepositoryActorSimulator();
         reg = new RegistryActorSimulator();
-        ids = new IdsActorSimulator();
         rg = new RGActorSimulator();
     }
 
@@ -41,8 +35,6 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
             return rep.run(transactionType, mvc, validation);
         if (reg.supports(transactionType))
             return reg.run(transactionType, mvc, validation);
-        if (ids.supports(transactionType))
-           return ids.run(transactionType, mvc, validation);
         return rg.run(transactionType, mvc, validation);
     }
 
@@ -50,7 +42,6 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
     public void init() {
         rep.init();
         reg.init();
-        ids.init();
         rg.init();
     }
 
@@ -58,7 +49,6 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
    public void init(DsSimCommon c, SimulatorConfig config) {
         rep.init(c, config);
         reg.init(c, config);
-        ids.init(c, config);
         rg.init(c, config);
     }
 
@@ -72,7 +62,6 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
     public void onCreate(SimulatorConfig config) {
         rep.onCreate(config);
         reg.onCreate(config);
-        ids.onCreate(config);
         rg.onCreate(config);
     }
 
@@ -80,7 +69,6 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
     public void onDelete(SimulatorConfig config) {
         rep.onDelete(config);
         reg.onDelete(config);
-        ids.onDelete(config);
         rg.onDelete(config);
     }
 
@@ -88,7 +76,6 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
     public void onServiceStart(SimulatorConfig config) {
         rep.onServiceStart(config);
         reg.onServiceStart(config);
-        ids.onServiceStart(config);
         rg.onServiceStart(config);
     }
 
@@ -96,7 +83,6 @@ public class RGADActorSimulator extends BaseDsActorSimulator {
     public void onServiceStop(SimulatorConfig config) {
         rep.onServiceStop(config);
         reg.onServiceStop(config);
-        ids.onServiceStop(config);
         rg.onServiceStop(config);
     }
 

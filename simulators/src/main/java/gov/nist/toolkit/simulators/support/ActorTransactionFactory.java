@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-class ActorTransactionFactory implements Serializable,IsSerializable {
+public class ActorTransactionFactory implements Serializable,IsSerializable {
 
 	/**
 	 * 
