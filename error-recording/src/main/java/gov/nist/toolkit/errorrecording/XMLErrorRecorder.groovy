@@ -3,6 +3,7 @@ package gov.nist.toolkit.errorrecording
 import gov.nist.toolkit.errorrecording.client.XMLValidatorErrorItem
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
+import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
 
 /**
@@ -11,12 +12,9 @@ import groovy.xml.StreamingMarkupBuilder
 public class XMLErrorRecorder implements ErrorRecorder {
     public ErrorRecorderBuilder errorRecorderBuilder;
 
-    // def errWriter = new StringWriter()
-    // def summaryWriter = new StringWriter()
-    //def summary = new MarkupBuilder(summaryWriter) // former List<GwtValidatorErrorItem> summary = new ArrayList<>();
+    //def summary = // former List<GwtValidatorErrorItem> summary = new ArrayList<>();
     //List<ErrorRecorder> children = new ArrayList<>();  // Probably not useful in new XML validator and should be removed
     def errXml = '''<ErrorLog></ErrorLog>'''
-    // New generated XML elements must be added to this stump
     def errMsgs = new XmlParser().parseText(errXml) // should be called ErrorLog to be accurate
     def errRecords = errMsgs.children()
 
@@ -32,7 +30,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         StringWriter sw = new StringWriter()
         new XmlNodePrinter(new PrintWriter(sw)).print(errMsgs)
 
-        println("New XML: " + sw.toString())
+        println("\n--- XML output: ---\n\n" + sw.toString())
         return sw.toString()
     }
 
@@ -118,20 +116,19 @@ public class XMLErrorRecorder implements ErrorRecorder {
     //TODO last because a SectionHeading element needs to wrap an entire section
     @Override
     public void sectionHeading(String msg) {
-        println("NYI-sectionheading")
-        // tagLastInfo2(); // TODO let's see if it works without saving location of item
-        //XMLValidatorErrorItem ei = new XMLValidatorErrorItem();
-        // ei.level = ReportingLevel.SECTIONHEADING;
-        //ei.msg = msg;
+        println("sectionheading")
+        //tagLastInfo2(); // TODO let's see if it works without saving location of item
         def newElement = '''<SectionHeading>''' + msg + '''</SectionHeading>'''
         def newRecord = new XmlParser().parseText(newElement)
-        errRecords.add(0, newRecord) // TODO need int var for position
+        errRecords.add(newRecord)
     }
 
     @Override
     public void challenge(String msg) {
-        println("NYI-challenge")
-
+        println("challenge")
+        def newElement = '''<Challenge>''' + msg + '''</Challenge>'''
+        def newRecord = new XmlParser().parseText(newElement)
+        errRecords.add(newRecord)
     }
 
     @Override
