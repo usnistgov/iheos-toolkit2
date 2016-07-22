@@ -18,10 +18,11 @@ class XMLGroovyExample {
     def generateXml() {
         def stringWriter1 = new StringWriter()
         def peopleBuilder = new MarkupBuilder(stringWriter1)
+        def name = "John"
 
         peopleBuilder.people {
             person {
-                firstName('John')
+                firstName(name)
                 lastName('Doe')
                 age(25)
             }
