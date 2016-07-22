@@ -37,10 +37,10 @@ class XMLGroovyExample {
     }
 
     /**
-     * Uses Groovy XmlSlurper and append node
+     * Uses Groovy XmlSlurper and append node. XMLSlurper works only to append a node to one's list of children.
      * @return
      */
-    def generateAndModifyXml() {
+    def modifyXmlWithXmlSlurper() {
         // Generate and parse current / old XML
         def peopleXml = '''
             <people>
@@ -82,6 +82,53 @@ class XMLGroovyExample {
         // For testing purposes
         return newPeopleXml.toString()
     }
+
+    /**
+     * Uses Groovy XmlParser and append node. XmlParser provides more flexibility vs XmlSlurper.
+     * @return
+     */
+    def modifyXmlWithXmlParser() {
+        // Generate and parse current / old XML
+        def peopleXml = '''
+            <people>
+                 <person>
+                    <firstName>John</firstName>
+                    <lastName>Doe</lastName>
+                    <age>25</age>
+                  </person>
+                  <person>
+                    <firstName>Jane</firstName>
+                    <lastName>Smith</lastName>
+                    <age>31</age>
+                  </person>
+                </people>
+            '''
+
+        // Define the new element to add
+        def newPersonXml  = '''
+                  <person>
+                    <firstName>Oscar</firstName>
+                    <lastName>Smith</lastName>
+                    <age>60</age>
+                  </person>
+            '''
+
+        // Convert both main XML and element to add to parsed XML records form
+        def peopleRecords = new XmlParser().parseText(peopleXml)
+        def people = peopleRecords.children()
+        def newRecord = new XmlParser().parseText(newPersonXml)
+
+        // Append the new element
+        people.add(2, newRecord)
+
+        // Translate back into a String
+        StringWriter sw = new StringWriter()
+        new XmlNodePrinter(new PrintWriter(sw)).print(peopleRecords)
+
+        // For testing purposes
+        return sw.toString()
+    }
+
 
     /**
      * Trims whitespaces including spaces, carriage returns, new lines

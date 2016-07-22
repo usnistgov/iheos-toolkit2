@@ -14,6 +14,7 @@ class XMLGroovyExampleTest extends Specification {
      * Tests basic XML generation from class XMLGroovyExample
      */
     def 'Generate XML'() {
+        println("--- Generate XML ---")
 
         setup:
         XMLGroovyExample ex = new XMLGroovyExample()
@@ -40,7 +41,8 @@ class XMLGroovyExampleTest extends Specification {
     /**
      * Tests XML modification / adding an element
      */
-    def 'Generate and modify XML'(){
+    def 'Modify XML with XMLSlurper'(){
+        println("--- Modify XML with XMLSlurper ---")
         setup:
         XMLGroovyExample ex = new XMLGroovyExample()
 
@@ -67,12 +69,51 @@ class XMLGroovyExampleTest extends Specification {
             goal = ex.trimXMLWhitespaces(goal)
 
         when:
-        def res = ex.generateAndModifyXml()
+        def res = ex.modifyXmlWithXmlSlurper()
+        println(res)
         res = ex.trimXMLWhitespaces(res)
 
         then:
         res == goal
     }
+
+    def 'Modify XML with XMLParser'(){
+        println("--- Modify XML with XMLParser ---")
+
+        setup:
+        XMLGroovyExample ex = new XMLGroovyExample()
+
+        // End result we are looking for:
+        def goal = '''
+            <people>
+                 <person>
+                    <firstName>John</firstName>
+                    <lastName>Doe</lastName>
+                    <age>25</age>
+                  </person>
+                  <person>
+                    <firstName>Jane</firstName>
+                    <lastName>Smith</lastName>
+                    <age>31</age>
+                  </person>
+                    <person>
+                        <firstName>Oscar</firstName>
+                        <lastName>Smith</lastName>
+                        <age>60</age>
+                    </person>
+                  </people>
+                '''
+        goal = ex.trimXMLWhitespaces(goal)
+
+        when:
+        def res = ex.modifyXmlWithXmlParser()
+        println(res)
+        res = ex.trimXMLWhitespaces(res)
+
+        then:
+        res == goal
+    }
+
 
 }
 
