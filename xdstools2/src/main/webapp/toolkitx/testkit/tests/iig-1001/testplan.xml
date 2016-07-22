@@ -1,27 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestPlan>
     <!-- Data for this test is loaded by xxxx-->
-    <Test>iig-1001</Test>
-    <TestStep id="retrieve">
-        <Goal>Imaging Document Set Retrieve of a single image</Goal>
-        <ExpectedStatus>Success</ExpectedStatus>
-        <ImagingDocSetIigRetrieveTransaction>
-            <MetadataFile>query.xml</MetadataFile>
-            <Report name="$home$" section="Result">
-                //*[local-name()='HomeCommunityId']/text()
-            </Report>
-        </ImagingDocSetIigRetrieveTransaction>
-    </TestStep>
-    <TestStep id="homeValidation">
-        <Goal>Home Community Id returned in metadata matches Responding Gateway configuration</Goal>
-        <NullTransaction>
-            <UseReport reportName="$testdata_home$" section="THIS" step="retrieve" useAs="submittedValue"/>
-            <UseReport reportName="$home$"          section="THIS" step="retrieve" useAs="returnedValue"/>
-            <Assertions>
-                <Assert id="homeCommunityId">
-                    'submittedValue' = 'returnedValue'
-                </Assert>
-            </Assertions>
-        </NullTransaction>
-    </TestStep> 
+   <Test>iig-1001</Test>
+   <TestStep id="retrieve">
+      <Goal>Imaging Document Set Retrieve of a single image</Goal>
+      <ExpectedStatus>Success</ExpectedStatus>
+      <ImagingDocSetIigRetrieveTransaction>
+         <MetadataFile>RAD-69Request.xml</MetadataFile>
+         <Report name="$home$" section="Result">
+            //*[local-name()='HomeCommunityId']/text()
+         </Report>
+      </ImagingDocSetIigRetrieveTransaction>
+   </TestStep>
+   <TestStep id="homeValidation">
+      <Goal>Home Community Id returned in metadata matches Responding
+         Gateway configuration</Goal>
+      <NullTransaction>
+         <UseReport reportName="$testdata_home$" section="THIS"
+            step="retrieve" useAs="submittedValue" />
+         <UseReport reportName="$home$" section="THIS" step="retrieve"
+            useAs="returnedValue" />
+         <Assertions>
+            <Assert id="homeCommunityId">
+               'submittedValue' = 'returnedValue'
+            </Assert>
+         </Assertions>
+      </NullTransaction>
+   </TestStep>
+   <TestStep id="retrievedDocValidation">
+      <Goal>Correct RetrieveDocumentSetResponse values</Goal>
+      <XmlDetailTransaction>
+         <MetadataFile>RAD-69Response.xml</MetadataFile>
+         <Assertions>
+            <Assert name="status code" type="constant"
+               xpath="//xdsb:RetrieveDocumentSetResponse/rs:RegistryResponse/@status"
+               value="urn:oasis:names:tc:ebxml-regrep:ResponseStatusType:Success" />
+            <Assert name="Returned doc(s)" type="sameRetImgs" />
+         </Assertions>
+      </XmlDetailTransaction>
+   </TestStep>
 </TestPlan>
