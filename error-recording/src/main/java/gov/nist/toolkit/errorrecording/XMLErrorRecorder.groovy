@@ -34,6 +34,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         return sw.toString()
     }
 
+
     @Override
     public void err(Code code, String msg, String location, String resource, Object log_message) {
         // Check if error message is not null
@@ -126,21 +127,19 @@ public class XMLErrorRecorder implements ErrorRecorder {
     @Override
     public void challenge(String msg) {
         println("challenge")
-        def newElement = '''<Challenge>''' + msg + '''</Challenge>'''
-        def newRecord = new XmlParser().parseText(newElement)
-        errRecords.add(newRecord)
+        errRecords.add(createXMLElement("Challenge", msg))
     }
 
     @Override
     public void externalChallenge(String msg) {
-        println("NYI-extchall")
-
+        println("extchall")
+        errRecords.add(createXMLElement("ExternalChallenge", msg))
     }
 
     @Override
     public void detail(String msg) {
-        println("NYI-detail")
-
+        println("detail")
+        errRecords.add(createXMLElement("Detail", msg))
     }
 
     @Override
@@ -245,6 +244,17 @@ public class XMLErrorRecorder implements ErrorRecorder {
         ErrorRecorder er =  errorRecorderBuilder.buildNewErrorRecorder();
         children.add(er);
         return er;
+    }
+
+    /**
+     * Utility function
+     * @param name The name of the new XML element to create.
+     * @return The new XML element.
+     */
+    def private static Node createXMLElement(String name, String msg){
+        def newElement = "<" + name + ">" + msg + "</" + name + ">"
+        def newRecord = new XmlParser().parseText(newElement)
+        return newRecord
     }
 
 }
