@@ -40,7 +40,7 @@ public class LogFileContentBuilder {
 
     public LogFileContentDTO build(OMElement testresults, boolean incompleteOk) throws Exception {
         log = Util.parse_xml(testresults);
-        init(false);
+        init(incompleteOk);
         return c;
     }
 
