@@ -3,8 +3,6 @@ package gov.nist.toolkit.errorrecording
 import gov.nist.toolkit.errorrecording.client.XMLValidatorErrorItem
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
-import groovy.util.slurpersupport.GPathResult
-import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
 
 /**
@@ -13,24 +11,29 @@ import groovy.xml.StreamingMarkupBuilder
 public class XMLErrorRecorder implements ErrorRecorder {
     public ErrorRecorderBuilder errorRecorderBuilder;
 
-   // def errWriter = new StringWriter()
-   // def summaryWriter = new StringWriter()
+    // def errWriter = new StringWriter()
+    // def summaryWriter = new StringWriter()
     //def summary = new MarkupBuilder(summaryWriter) // former List<GwtValidatorErrorItem> summary = new ArrayList<>();
     //List<ErrorRecorder> children = new ArrayList<>();  // Probably not useful in new XML validator and should be removed
-    def errXml = '''<ErrorLog>test</ErrorLog>'''   // List<GwtValidatorErrorItem> errMsgs = new ArrayList<>();
-    def errMsgs //= new XmlSlurper().parseText(errXml) // should be called ErrorLog to be accurate
+    def errXml = '''<ErrorLog></ErrorLog>'''
+    // New generated XML elements must be added to this stump
+    def errMsgs = new XmlParser().parseText(errXml) // should be called ErrorLog to be accurate
+    def errRecords = errMsgs.children()
 
 
     /**
+     * //TODO
      * Temporary toString function for testing purposes, may need upgrade later
      * @return
      */
-    public String toString() {
-        // Convert back to XML
-        //def newErrXml = new StreamingMarkupBuilder().bind {
-        //    mkp.yield errMsgs
-        //}
-        return errMsgs.toString()
+    @Override
+    def String toString() {
+        // Convert back to String / XML
+        StringWriter sw = new StringWriter()
+        new XmlNodePrinter(new PrintWriter(sw)).print(errMsgs)
+
+        println("New XML: " + sw.toString())
+        return sw.toString()
     }
 
     @Override
@@ -61,7 +64,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     def addElement(XMLValidatorErrorItem ei){
         // Convert both main XML and element to add to parsed XML records form
         println("\nei\n" + ei.toString())
-        errMsgs = new XmlSlurper().parseText(errXml)
+        //errMsgs = new XmlSlurper().parseText(errXml)
         def newRecord = new XmlSlurper().parseText(ei)
 
         // Append the new element
@@ -100,9 +103,9 @@ public class XMLErrorRecorder implements ErrorRecorder {
         // Test if in a section heading or challenge section. If challenge then set the ReportingCompletionType to Error.
     }
 
-        @Override
+    @Override
     public void warning(String code, String msg, String location, String resource) {
-            println("NYI-warning")
+        println("NYI-warning")
 
     }
 
@@ -112,10 +115,17 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     }
 
+    //TODO last because a SectionHeading element needs to wrap an entire section
     @Override
     public void sectionHeading(String msg) {
         println("NYI-sectionheading")
-
+        // tagLastInfo2(); // TODO let's see if it works without saving location of item
+        //XMLValidatorErrorItem ei = new XMLValidatorErrorItem();
+        // ei.level = ReportingLevel.SECTIONHEADING;
+        //ei.msg = msg;
+        def newElement = '''<SectionHeading>''' + msg + '''</SectionHeading>'''
+        def newRecord = new XmlParser().parseText(newElement)
+        errRecords.add(0, newRecord) // TODO need int var for position
     }
 
     @Override

@@ -1,7 +1,12 @@
 package gov.nist.toolkit.errorrecording.client;
 
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.rpc.IsSerializable
+import gov.nist.toolkit.errorrecording.client.helpers.ReportingLevel
+import groovy.util.slurpersupport.NodeChild;
+import groovy.xml.*
+import groovy.util.XmlSlurper
+import groovy.xml.StreamingMarkupBuilder;
 
 /**
  * Encodes a single error or status along with some metadata about the error/status so
@@ -10,7 +15,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 public class XMLValidatorErrorItem implements IsSerializable {
-	public enum ReportingLevel implements IsSerializable { SECTIONHEADING, CHALLENGE, EXTERNALCHALLENGE, DETAIL, ERROR, WARNING, D_SUCCESS, D_INFO, D_ERROR, D_WARNING};
+	//public enum ReportingLevel implements IsSerializable { SECTIONHEADING, CHALLENGE, EXTERNALCHALLENGE, DETAIL, ERROR, WARNING, D_SUCCESS, D_INFO, D_ERROR, D_WARNING};
 	public enum ReportingCompletionType implements IsSerializable { ERROR, WARNING, OK };
 
 	public ReportingLevel level;
@@ -89,46 +94,55 @@ public class XMLValidatorErrorItem implements IsSerializable {
 	 * @return
      */
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
-		
+		//TODO see if there is a simpler method to initialize buffer here
+		def buf = ''
+		//def bufRecord //= new XmlSlurper().parseText(buf)
+
+
 		switch (level) {
-		case SECTIONHEADING:
-			buf.append("SECTIONHEADING\n");
+		case ReportingLevel.SECTIONHEADING:
+			def element = '''<SectionHeading></SectionHeading>'''
+			//def newRecord = new XmlSlurper().parseText(element)
+			buf = buf + element
+			// -- old --
+			//buf.append("SECTIONHEADING\n");
+			//add(buf);
+			break;
+
+		case ReportingLevel.CHALLENGE:
+			buf.appendNode("CHALLENGE\n");
 			add(buf);
 			break;
 
-		case CHALLENGE:
-			buf.append("CHALLENGE\n");
-			add(buf);
-			break;
-
-		case EXTERNALCHALLENGE:
+		case ReportingLevel.EXTERNALCHALLENGE:
 			buf.append("EXTERNALCHALLENGE\n");
 			add(buf);
 			break;
 
-		case DETAIL:
+		case ReportingLevel.DETAIL:
 			buf.append("DETAIL\n");
 			add(buf);
 			break;
 
-		case ERROR:
-			case D_ERROR:
+		case ReportingLevel.ERROR:
+			case ReportingLevel.D_ERROR:
 				buf.append("ERROR\n");
 				add(buf);
 			break;
 
-		case WARNING:
-			case D_WARNING:
+		case ReportingLevel.WARNING:
+			case ReportingLevel.D_WARNING:
 				buf.append("WARNING\n");
 				add(buf);
 				break;
 
-			case D_INFO:
+			case ReportingLevel.D_INFO:
 				buf.append("INFO\n");
 				add(buf);
+
 		}
 
+		// Returns the parsed form, that still needs to be converted later to readable XML.
 		return buf.toString();
 	}
 
@@ -145,7 +159,7 @@ public class XMLValidatorErrorItem implements IsSerializable {
 
 	boolean hasDTS() { return dts != null && !"".equals(dts); }
 	
-	String caps(String in) {
+	/*String caps(String in) {
 		return in.toUpperCase();
-	}
+	}*/
 }

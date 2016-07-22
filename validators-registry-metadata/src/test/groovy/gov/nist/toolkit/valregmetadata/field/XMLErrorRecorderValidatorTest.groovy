@@ -39,7 +39,7 @@ class XMLErrorRecorderValidatorTest extends Specification {
         MetadataValidator val = new MetadataValidator(m, vc, null)
         val.run(er)
 
-        println (er.toString())
+        println ("\n--- XML output ---\n" + er.toString())
 
         then:
         true
