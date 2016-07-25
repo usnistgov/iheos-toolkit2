@@ -147,13 +147,28 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     @Override
     public void report(String name, String found) {
-        println("NYI-report")
+        println("report")
         detail(name + " " + found);
     }
 
+    /**
+     * 	Note: This section was stored but not displayed when using the GWTErrorRecorder
+     * @param dts
+     * @param name
+     * @param found
+     * @param expected
+     * @param RFC
+     */
     @Override
-    public void success(String dts, String name, String found, String expected, String RFC) {
-        println("NYI-success")
+    public void success(String _dts, String _name, String _found, String _expected, String _rfc) {
+        println("success")
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        builder.records() {
+            Success (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
+        }
+        def el = new XmlSlurper().parseText(sw.toString())
+        errRecords.add(el)
     }
 
     @Override
