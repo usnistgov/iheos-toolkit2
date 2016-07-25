@@ -128,23 +128,27 @@ public class XMLErrorRecorder implements ErrorRecorder {
     public void challenge(String msg) {
         println("challenge")
         errRecords.add(createXMLElement("Challenge", msg))
+        //TODO if (error) stay in this challenge section and log error as sub-element
     }
 
     @Override
     public void externalChallenge(String msg) {
-        println("extchall")
+        println("extchallenge")
         errRecords.add(createXMLElement("ExternalChallenge", msg))
+        //TODO if (error) stay in this challenge section and log error as sub-element
     }
 
     @Override
     public void detail(String msg) {
         println("detail")
         errRecords.add(createXMLElement("Detail", msg))
+        //TODO How to display Submission Set and Association sub-elements?
     }
 
     @Override
     public void report(String name, String found) {
         println("NYI-report")
+        detail(name + " " + found);
     }
 
     @Override
