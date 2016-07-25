@@ -37,6 +37,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     @Override
     public void err(Code code, String msg, String location, String resource, Object log_message) {
+        println("err")
         // Check if error message is not null
         if (msg == null || msg.trim().equals(""))
             return;
@@ -61,23 +62,28 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     def addElement(XMLValidatorErrorItem ei){
-        // Convert both main XML and element to add to parsed XML records form
-        println("\nei\n" + ei.toString())
-        //errMsgs = new XmlSlurper().parseText(errXml)
-        def newRecord = new XmlSlurper().parseText(ei)
 
-        // Append the new element
-        errMsgs.appendNode(newRecord)
     }
 
     @Override
-    public void err(Code code, String msg, String location, String resource) {
-        println("NYI-err2")
+    public void err(Code _code, String _msg, String _location, String _resource) {
+        println("err2")
+       if (_msg == null || _msg.trim().equals(""))
+            return;
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        builder.records() {
+            Error (message:"testmessage")  //, code:_code, location:_location, resource:_resource)
+        }
+        errRecords.add(sw.write())
     }
 
     @Override
     public void err(Code code, String msg, Object location, String resource) {
-        println("NYI-err3")
+        println("err3")
+        String loc = getSimpleName(location)
+        println("err3 error msg: " + msg)
+        err(code, msg, loc, resource);
     }
 
     @Override
@@ -172,8 +178,15 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     @Override
-    public void error(String dts, String name, String found, String expected, String RFC) {
-        println("NYI-error")
+    public void error(String _dts, String _name, String _found, String _expected, String _rfc) {
+        println("error")
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        builder.records() {
+            Error (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
+        }
+        def el = sw.write()
+        errRecords.add(el)
     }
 
     @Override
@@ -265,6 +278,8 @@ public class XMLErrorRecorder implements ErrorRecorder {
         return er;
     }
 
+    // ---------- Utility functions -----------
+
     /**
      * Utility function
      * @param name The name of the new XML element to create.
@@ -274,6 +289,20 @@ public class XMLErrorRecorder implements ErrorRecorder {
         def newElement = "<" + name + ">" + msg + "</" + name + ">"
         def newRecord = new XmlParser().parseText(newElement)
         return newRecord
+    }
+
+    /**
+     * Groovy MarkupBuilder writes its output inside a StringWriter.
+     */
+    private String nodeToString(StringWriter sw, String node){
+        new XmlNodePrinter(new PrintWriter(sw)).print(node)
+
+    }
+
+
+    private String getSimpleName(Object location){
+        if (location != null)
+            return location.getClass().getSimpleName();
     }
 
 }
