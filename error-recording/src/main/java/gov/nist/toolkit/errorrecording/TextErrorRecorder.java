@@ -227,12 +227,10 @@ public class TextErrorRecorder implements ErrorRecorder {
 		return errMsgs.size();
 	}
 
-	@Override
 	public void concat(ErrorRecorder er) {
 
 	}
 
-	@Override
 	public List<GwtValidatorErrorItem> getErrMsgs() {
 		return null;
 	}

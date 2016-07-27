@@ -311,12 +311,10 @@ public class ValidatorCommon implements ErrorRecorder {
 		return 0;
 	}
 
-	@Override
 	public void concat(ErrorRecorder er) {
 
 	}
 
-	@Override
 	public List<GwtValidatorErrorItem> getErrMsgs() {
 		return null;
 	}

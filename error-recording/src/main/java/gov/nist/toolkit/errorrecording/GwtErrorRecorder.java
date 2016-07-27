@@ -290,8 +290,7 @@ public class GwtErrorRecorder implements ErrorRecorder  {
 		return nbErrors;
 	}
 
-	@Override
-	public void concat(ErrorRecorder er) {
+	public void concat(GwtErrorRecorder er) {
 		this.errMsgs.addAll(er.getErrMsgs());
 	}
 	

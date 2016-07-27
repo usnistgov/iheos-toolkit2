@@ -231,12 +231,10 @@ public class XMLErrorRecorder implements ErrorRecorder {
         return 0;
     }
 
-    @Override
     public void concat(ErrorRecorder er) {
         println("NYI-concat")
     }
 
-    @Override
     public List<XMLValidatorErrorItem> getErrMsgs() {
         println("NYI-geterrmsgs")
         return null;

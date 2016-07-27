@@ -35,9 +35,9 @@ public interface ErrorRecorder extends ErrorRecorderBuilder {
 	void showErrorInfo();
 	boolean hasErrors();
 	int getNbErrors();
-	void concat(ErrorRecorder er);
-	List<GwtValidatorErrorItem> getErrMsgs();
-	
+	//void concat(ErrorRecorder er);
+	//List<GwtValidatorErrorItem> getErrMsgs();
+
 	List<ErrorRecorder> getChildren();
     int depth();
     // register should be called at start of a validator run(ErrorRecorder er, MessageValidatorEngine mvc) method
