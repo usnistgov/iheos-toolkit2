@@ -1,6 +1,7 @@
 package gov.nist.toolkit.errorrecording
 
 import groovy.xml.*
+import org.w3c.tidy.Tidy
 
 /**
  * Created by diane on 6/29/2016.
@@ -130,13 +131,73 @@ class XMLGroovyExample {
         return sw.toString()
     }
 
-
     /**
+     * Showcases a much easier syntax to append a Node to existing XML
+     * @return
+     */
+    def modifyXmlWithAppendNode() {
+
+        // Generate and parse current / old XML
+        def peopleXml = '''
+            <people>
+                 <person>
+                    <firstName>John</firstName>
+                    <lastName>Doe</lastName>
+                    <age>25</age>
+                  </person>
+                  <person>
+                    <firstName>Jane</firstName>
+                    <lastName>Smith</lastName>
+                    <age>31</age>
+                  </person>
+                </people>
+            '''
+
+        // Parse main xml
+        def recs = new XmlSlurper().parseText(peopleXml)
+
+        // Append the new node. This is a much simpler syntax to add straightforward XML elements.
+        //recs.appendNode('person').appendNode ('firstName':"Oscar", 'lastName':"Smith", 'age':"60")
+
+        recs.appendNode {
+            person {
+                firstName('Oscar')
+                lastName('Smith')
+                age('60')
+            }
+        }
+
+        // For testing purposes
+        def outputBuilder = new StreamingMarkupBuilder()
+        String res = outputBuilder.bind{ mkp.yield recs }
+        return tidyMeUp(res)
+        }
+
+
+        /**
      * Trims whitespaces including spaces, carriage returns, new lines
      * @param xml
      * @return trimmed XML
      */
     def trimXMLWhitespaces(String xml){
         return xml.replaceAll("\\s+", "")
+    }
+
+    /**
+     * Pretty-print the XML output for debug purposes
+     * Source John Rellis - http://johnrellis.blogspot.com/
+     * @param singleLine
+     * @return
+     */
+    def tidyMeUp(String str) {
+        StringWriter writer = new StringWriter()
+        Tidy tidy = new Tidy()
+        tidy.identity {
+            setEscapeCdata(false)//leave cdata untouched
+            setIndentCdata(true)//indent the CData
+            setXmlTags(true)//working with xml not html
+            parse(new StringReader(str), writer)
+        }
+        writer.toString()
     }
 }

@@ -114,6 +114,44 @@ class XMLGroovyExampleTest extends Specification {
         res == goal
     }
 
+    def 'Modify XML with AppendNode'(){
+        println("--- Modify XML with AppendNode ---")
+
+        setup:
+        XMLGroovyExample ex = new XMLGroovyExample()
+
+        // End result we are looking for:
+        def goal = '''
+            <people>
+                 <person>
+                    <firstName>John</firstName>
+                    <lastName>Doe</lastName>
+                    <age>25</age>
+                  </person>
+                  <person>
+                    <firstName>Jane</firstName>
+                    <lastName>Smith</lastName>
+                    <age>31</age>
+                  </person>
+                    <person>
+                        <firstName>Oscar</firstName>
+                        <lastName>Smith</lastName>
+                        <age>60</age>
+                    </person>
+                  </people>
+                '''
+        goal = ex.trimXMLWhitespaces(goal)
+
+        when:
+        def res = ex.modifyXmlWithAppendNode()
+        println(res)
+        res = ex.trimXMLWhitespaces(res)
+
+        then:
+        res == goal
+    }
+
+
 
 }
 
