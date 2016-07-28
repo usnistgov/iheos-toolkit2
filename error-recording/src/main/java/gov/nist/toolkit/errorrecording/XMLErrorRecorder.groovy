@@ -72,22 +72,8 @@ public class XMLErrorRecorder implements ErrorRecorder {
     public void err(Code _code, String _msg, String _location, String _resource) {
         println("err2")
        if (_msg == null || _msg.trim().equals("")) { return; }
-/*
-        errMsgs.appendNode(
-                new QName("Error"),
-                [:],
-                "1"
-        )
 
-
-        NodeList carNodes = errMsgs.children()
-
-        //Node n = new Node(errMsgs, 'Error', [name:'My New Card', make:'Peel', year:'1962'])
-        carNodes.add(new Node(errMsgs, 'Error', [name:'My New Card', make:'Peel', year:'1962']))
-        NodeList errorNodes = Error.children()
-
-        carNodes.add(new Node(Error, 'Error', [name:'My New Card', make:'Peel', year:'1962']))
-*/
+        // Generate the new element
         def sw = new StringWriter()
         def builder = new MarkupBuilder(sw)
         builder.langs(type:"current", count:3, mainstream:true){
@@ -95,9 +81,11 @@ public class XMLErrorRecorder implements ErrorRecorder {
             language(flavor:"dynamic", version:"1.6.0", "Groovy")
             language(flavor:"dynamic", version:"1.9", "JavaScript")
         }
-        println sw
-        errRecords.add(sw)
 
+        // Parse and add
+        def el = new XmlParser().parseText(sw.toString())
+        println el
+        errRecords.add(el)
     }
 
     @Override
