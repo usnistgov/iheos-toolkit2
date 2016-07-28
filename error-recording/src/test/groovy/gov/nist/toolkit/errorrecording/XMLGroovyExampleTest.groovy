@@ -1,9 +1,8 @@
 package gov.nist.toolkit.errorrecording
 
-import gov.nist.toolkit.errorrecording.*
-import groovy.xml.XmlUtil
-import org.custommonkey.xmlunit.XMLUnit
 import spock.lang.Specification
+
+import static gov.nist.toolkit.errorrecording.client.helpers.Utils.trimXMLWhitespaces
 
 /**
  * Created by diane on 6/29/2016.
@@ -66,12 +65,12 @@ class XMLGroovyExampleTest extends Specification {
                     </person>
                   </people>
                 '''
-            goal = ex.trimXMLWhitespaces(goal)
+            goal = trimXMLWhitespaces(goal)
 
         when:
         def res = ex.modifyXmlWithXmlSlurper()
         println(res)
-        res = ex.trimXMLWhitespaces(res)
+        res = trimXMLWhitespaces(res)
 
         then:
         res == goal
@@ -103,12 +102,12 @@ class XMLGroovyExampleTest extends Specification {
                     </person>
                   </people>
                 '''
-        goal = ex.trimXMLWhitespaces(goal)
+        goal = trimXMLWhitespaces(goal)
 
         when:
         def res = ex.modifyXmlWithXmlParser()
         println(res)
-        res = ex.trimXMLWhitespaces(res)
+        res = trimXMLWhitespaces(res)
 
         then:
         res == goal
@@ -140,12 +139,12 @@ class XMLGroovyExampleTest extends Specification {
                     </person>
                   </people>
                 '''
-        goal = ex.trimXMLWhitespaces(goal)
+        goal = trimXMLWhitespaces(goal)
 
         when:
         def res = ex.modifyXmlWithAppendNode()
         println(res)
-        res = ex.trimXMLWhitespaces(res)
+        res = trimXMLWhitespaces(res)
 
         then:
         res == goal

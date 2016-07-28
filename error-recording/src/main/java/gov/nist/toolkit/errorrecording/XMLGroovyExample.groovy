@@ -1,7 +1,8 @@
 package gov.nist.toolkit.errorrecording
 
-import groovy.xml.*
-import org.w3c.tidy.Tidy
+import gov.nist.toolkit.errorrecording.client.helpers.Utils
+import groovy.xml.MarkupBuilder
+import groovy.xml.StreamingMarkupBuilder
 
 /**
  * Created by diane on 6/29/2016.
@@ -170,34 +171,7 @@ class XMLGroovyExample {
         // For testing purposes
         def outputBuilder = new StreamingMarkupBuilder()
         String res = outputBuilder.bind{ mkp.yield recs }
-        return tidyMeUp(res)
+        return Utils.tidyMeUp(res)
         }
 
-
-        /**
-     * Trims whitespaces including spaces, carriage returns, new lines
-     * @param xml
-     * @return trimmed XML
-     */
-    def trimXMLWhitespaces(String xml){
-        return xml.replaceAll("\\s+", "")
-    }
-
-    /**
-     * Pretty-print the XML output for debug purposes
-     * Source John Rellis - http://johnrellis.blogspot.com/
-     * @param singleLine
-     * @return
-     */
-    def tidyMeUp(String str) {
-        StringWriter writer = new StringWriter()
-        Tidy tidy = new Tidy()
-        tidy.identity {
-            setEscapeCdata(false)//leave cdata untouched
-            setIndentCdata(true)//indent the CData
-            setXmlTags(true)//working with xml not html
-            parse(new StringReader(str), writer)
-        }
-        writer.toString()
-    }
 }
