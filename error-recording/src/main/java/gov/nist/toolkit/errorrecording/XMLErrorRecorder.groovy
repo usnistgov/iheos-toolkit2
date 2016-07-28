@@ -2,9 +2,12 @@ package gov.nist.toolkit.errorrecording
 
 import gov.nist.toolkit.errorrecording.client.XMLValidatorErrorItem
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
+import gov.nist.toolkit.errorrecording.client.helpers.Utils
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
 import groovy.xml.MarkupBuilder
+import groovy.xml.QName
 import groovy.xml.StreamingMarkupBuilder
+import groovy.xml.XmlUtil
 
 /**
  * Created by diane on 2/19/2016.
@@ -30,7 +33,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         StringWriter sw = new StringWriter()
         new XmlNodePrinter(new PrintWriter(sw)).print(errMsgs)
 
-        println("\n--- XML output: ---\n\n" + sw.toString())
+        //println("\n--- XML output: ---\n\n" + sw.toString())
         return sw.toString()
     }
 
@@ -68,21 +71,40 @@ public class XMLErrorRecorder implements ErrorRecorder {
     @Override
     public void err(Code _code, String _msg, String _location, String _resource) {
         println("err2")
-       if (_msg == null || _msg.trim().equals(""))
-            return;
+       if (_msg == null || _msg.trim().equals("")) { return; }
+/*
+        errMsgs.appendNode(
+                new QName("Error"),
+                [:],
+                "1"
+        )
+
+
+        NodeList carNodes = errMsgs.children()
+
+        //Node n = new Node(errMsgs, 'Error', [name:'My New Card', make:'Peel', year:'1962'])
+        carNodes.add(new Node(errMsgs, 'Error', [name:'My New Card', make:'Peel', year:'1962']))
+        NodeList errorNodes = Error.children()
+
+        carNodes.add(new Node(Error, 'Error', [name:'My New Card', make:'Peel', year:'1962']))
+*/
         def sw = new StringWriter()
         def builder = new MarkupBuilder(sw)
-        builder.records() {
-            Error (message:"testmessage")  //, code:_code, location:_location, resource:_resource)
+        builder.langs(type:"current", count:3, mainstream:true){
+            language(flavor:"static", version:"1.5", "Java")
+            language(flavor:"dynamic", version:"1.6.0", "Groovy")
+            language(flavor:"dynamic", version:"1.9", "JavaScript")
         }
-        errRecords.add(sw.write())
+        println sw
+        errRecords.add(sw)
+
     }
 
     @Override
     public void err(Code code, String msg, Object location, String resource) {
         println("err3")
         String loc = getSimpleName(location)
-        println("err3 error msg: " + msg)
+        //println("err3 error msg: " + msg)
         err(code, msg, loc, resource);
     }
 
@@ -301,6 +323,15 @@ public class XMLErrorRecorder implements ErrorRecorder {
     private String getSimpleName(Object location){
         if (location != null)
             return location.getClass().getSimpleName();
+    }
+
+    /**
+     * Parses an xml string and replaces &lt; and &gt; characters with readable < and >
+     * @param xml
+     * @return Readable XML
+     */
+    private String formatXmlTags(String xml){
+        return xml.replace( '&lt;', '<' ).replace( '&gt;', '>' )
     }
 
 }

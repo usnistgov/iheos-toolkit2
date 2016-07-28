@@ -1,6 +1,7 @@
 package gov.nist.toolkit.errorrecording
 
 import gov.nist.toolkit.errorrecording.client.helpers.Utils
+import gov.nist.toolkit.xdsexception.XMLParserException
 import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
 
