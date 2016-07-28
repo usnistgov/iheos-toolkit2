@@ -101,6 +101,10 @@ h3 {
     border-width: 0;
 }
 
+.with-border{
+  border: 2px solid black;
+}
+
 .test-row-white {
   background-color: #90A4AE !important;
 }
@@ -134,7 +138,6 @@ h3 {
   border-radius: 10px;
   border: 2px solid #90A4AE;
 }
-
 
 .menuCollapse {
   cursor: pointer;

@@ -26,7 +26,7 @@ public class LogFileContentDTO implements Serializable, IsSerializable {
 	private String test = null;
 	private String section = null;
 	private SectionGoalsDTO sectionGoalsDTO;
-	private String fatalError;
+	private String fatalError = null;
 	private List<ReportDTO> reportDTOs = new ArrayList<>();
 
 	public LogFileContentDTO() {}

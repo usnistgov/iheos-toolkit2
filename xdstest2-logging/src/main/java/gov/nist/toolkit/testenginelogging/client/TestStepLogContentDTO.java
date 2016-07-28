@@ -23,7 +23,7 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 	private List<String> details = new ArrayList<>();
 	private List<ReportDTO> reportDTOs = new ArrayList<>();
 	private List<String> reportsSummary = new ArrayList<>();
-	private List<String> useReports = new ArrayList<>();
+	private List<UseReportDTO> useReports = new ArrayList<>();
 	private Map<String, String> assignedIds = new HashMap<>();
 	private Map<String, String> assignedUids = new HashMap<>();
 	private List<String> soapFaults = new ArrayList<>();
@@ -54,10 +54,6 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
     public List<String> getReportsSummary() {
 		return reportsSummary;
 	}
-
-    public List<String> getUseReports() {
-        return useReports;
-    }
 
     public List<String> getDetails() {
 		return details;
@@ -189,5 +185,13 @@ public class TestStepLogContentDTO implements Serializable, IsSerializable {
 
 	public void setReportDTOs(List<ReportDTO> reportDTOs) {
 		this.reportDTOs = reportDTOs;
+	}
+
+	public List<UseReportDTO> getUseReports() {
+		return useReports;
+	}
+
+	public void addUseReport(UseReportDTO useReport) {
+		this.useReports.add(useReport);
 	}
 }

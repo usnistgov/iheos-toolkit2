@@ -1,23 +1,20 @@
 package gov.nist.toolkit.testenginelogging.client;
 
 
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 import gov.nist.toolkit.results.client.TestInstance;
-import gov.nist.toolkit.testenginelogging.ReportBuilder;
 import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 
-public class SectionLogMapDTO {
-	// - section name must expand to test/section so that test context is maintained
+public class SectionLogMapDTO implements Serializable, IsSerializable {
 	// section name => log
-	Map<String, LogFileContentDTO> sectionLogs = new HashMap<String, LogFileContentDTO>();
-	List<String> sectionNames = new ArrayList<String>();   // this dictates the order of the sections
-	TestInstance testInstance;
+	private Map<String, LogFileContentDTO> sectionLogs = new HashMap<String, LogFileContentDTO>();
+	private List<String> sectionNames = new ArrayList<String>();   // this dictates the order of the sections
+	private TestInstance testInstance;
+
+	public SectionLogMapDTO() {}
 
 	public SectionLogMapDTO(TestInstance testInstance) {
 		this.testInstance = testInstance;
@@ -40,7 +37,7 @@ public class SectionLogMapDTO {
 			throw new XdsInternalException("Null log for section " + sectionName);
 		sectionNames.add(sectionName);
 		sectionLogs.put(sectionName, log);
-		ReportBuilder.setSection(log.getReportDTOs(), sectionName);
+		setSection(log.getReportDTOs(), sectionName);
 	}
 
 	public LogFileContentDTO get(String sectionName) throws XdsInternalException {
@@ -48,6 +45,12 @@ public class SectionLogMapDTO {
 //		if (lf == null && !sectionName.equals("THIS"))
 //			throw new XdsInternalException("Log for section " + sectionName + " is null");
 		return lf;
+	}
+
+	static public void setSection(List<ReportDTO> reportDTOs, String section) {
+		for (ReportDTO reportDTO : reportDTOs) {
+			reportDTO.setSection(section);
+		}
 	}
 
 	public Collection<String> keySet() {
@@ -93,5 +96,9 @@ public class SectionLogMapDTO {
 
 	public void setTestInstance(TestInstance testInstance) {
 		this.testInstance = testInstance;
+	}
+
+	public List<String> getSectionNames() {
+		return sectionNames;
 	}
 }

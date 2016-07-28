@@ -13,6 +13,7 @@ import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.TestOverviewBuilder;
@@ -23,8 +24,8 @@ import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
-import gov.nist.toolkit.testenginelogging.*;
-import gov.nist.toolkit.session.client.TestOverviewDTO;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
 import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
@@ -336,10 +337,10 @@ public class XdsTestServiceManager extends CommonService {
 		return testInstances;
 	}
 
-	public List<TestOverviewDTO> getLogsContent(String sessionName, List<TestInstance> testInstances) throws Exception {
+	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
 		List<TestOverviewDTO> results = new ArrayList<>();
 		for (TestInstance testInstance : testInstances) {
-			results.add(getLogContent(sessionName, testInstance));
+			results.add(getTestOverview(sessionName, testInstance));
 		}
 		return results;
 	}
@@ -354,10 +355,10 @@ public class XdsTestServiceManager extends CommonService {
 	 * @return
 	 * @throws Exception
 	 */
-	public TestOverviewDTO getLogContent(String sessionName, TestInstance testInstance) throws Exception {
+	public TestOverviewDTO getTestOverview(String sessionName, TestInstance testInstance) throws Exception {
 		try {
 			if (session != null)
-				logger.debug(session.id() + ": " + "getLogContent(" + testInstance + ")");
+				logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
 			testInstance.setUser(sessionName);
 
@@ -385,7 +386,7 @@ public class XdsTestServiceManager extends CommonService {
 				// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
 				TestInstance logid = newTestLogId();
 
-				//  -  why is a method named getLogContent doing a WRITE???????
+				//  -  why is a method named getTestOverview doing a WRITE???????
 				if (session.transactionSettings.logRepository != null)
 					session.transactionSettings.logRepository.logOut(logid, lm);
 			}
@@ -400,6 +401,43 @@ public class XdsTestServiceManager extends CommonService {
 			if (e.getMessage() != null) throw e;
 			throw new Exception(ExceptionUtil.exception_details(e));
 		}
+	}
+
+	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
+		try {
+			if (session != null)
+				logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
+
+			testInstance.setUser(sessionName);
+
+			File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
+
+			LogMapDTO lm = null;
+			if (testDir != null)
+				lm = buildLogMap(testDir, testInstance);
+
+			// this has a slightly different structure than the testkit
+			// so pass the parent dir so the tests dir can be navigated
+			File testkitDir = getTestKit().getTestsDir();
+			File testkitD = testkitDir.getParentFile();
+
+			String sectionName = testInstance.getSection();
+			File logFile;
+
+			if (sectionName == null) {
+				logFile = new File(testDir, "log.xml");
+			} else {
+				logFile = new File(new File(testDir, sectionName), "log.xml");
+			}
+
+			return new LogFileContentBuilder().build(logFile);
+
+//			return new TestLogDetails(testkitD, testInstance).getSectionLogMapDTO();
+		} catch (Exception e) {
+			if (e.getMessage() != null) throw e;
+			throw new Exception(ExceptionUtil.exception_details(e));
+		}
+
 	}
 
 	public LogMapDTO buildLogMap(File testDir, TestInstance testInstance) throws Exception {

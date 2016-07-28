@@ -15,7 +15,9 @@ public class SectionGoalsDTO implements Serializable, IsSerializable {
 	private static final long serialVersionUID = -3222346795028663436L;
 	public String sectionName;
 	public List<StepGoalsDTO> stepGoalDTOs;
-	
+
+	public SectionGoalsDTO() {}
+
 	public SectionGoalsDTO(String sectionName)	{
 		this.sectionName = sectionName;
 		stepGoalDTOs = new ArrayList<>();

@@ -8,6 +8,7 @@ import gov.nist.toolkit.registrysupport.logging.RegistryResponseLog;
 import gov.nist.toolkit.testenginelogging.client.ReportDTO;
 import gov.nist.toolkit.testenginelogging.client.StepGoalsDTO;
 import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
+import gov.nist.toolkit.testenginelogging.client.UseReportDTO;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
@@ -135,19 +136,15 @@ public class TestStepLogContentBuilder {
     private void parseUseReports() {
         // without use of the map we get duplicates because of the Assertions
         // section of the log.xml file format
-        Map<String, String> map = new HashMap<>();
         for (OMElement ele : XmlUtil.decendentsWithLocalName(root, "UseReport")) {
-            String name = ele.getAttributeValue(reportNameQname);
-            String value = ele.getAttributeValue(valueQname);
-            String test = ele.getAttributeValue(testQname);
-            String section = ele.getAttributeValue(sectionQname);
-            String step = ele.getAttributeValue(stepQname);
-            String fullName = String.format("/%s/%s/%s/%s", test, section, step, name);
-            map.put(fullName, value);
-        }
+            UseReportDTO u = new UseReportDTO();
+            u.setName(ele.getAttributeValue(reportNameQname));
+            u.setValue(ele.getAttributeValue(valueQname));
+            u.setTest(ele.getAttributeValue(testQname));
+            u.setSection(ele.getAttributeValue(sectionQname));
+            u.setStep(ele.getAttributeValue(stepQname));
 
-        for(String key : map.keySet()) {
-            c.getUseReports().add(key + " = " + map.get(key));
+            c.addUseReport(u);
         }
     }
 

@@ -9,15 +9,25 @@ public class LogMapItemDTO implements Serializable, IsSerializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -290403612300468696L;
-	public String testName;
-	public LogFileContentDTO log;
+	private String testName;
+	private LogFileContentDTO log;
+
+	public LogMapItemDTO() {}
 	
-	LogMapItemDTO(String testName, LogFileContentDTO log) {
+	public LogMapItemDTO(String testName, LogFileContentDTO log) {
 		this.testName = testName;
 		this.log = log;
 	}
 	
 	public String toString() {
 		return "[LogMapItemDTO: testId=" + testName + " log=" + log.toString() + "]";
+	}
+
+	public LogFileContentDTO getLog() {
+		return log;
+	}
+
+	public String getTestName() {
+		return testName;
 	}
 }

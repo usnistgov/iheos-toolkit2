@@ -19,11 +19,11 @@ import java.util.List;
  *
  */
 public class TestOverviewBuilder {
-    TestLogDetails testLogDetails;
-    String testId;
-    File testDir;
-    TestOverviewDTO testOverview = new TestOverviewDTO();
-    XdsTestServiceManager tsm;
+    private TestLogDetails testLogDetails;
+    private String testId;
+    private File testDir;
+    private TestOverviewDTO testOverview = new TestOverviewDTO();
+    private XdsTestServiceManager tsm;
 
     public TestOverviewBuilder(Session session, TestLogDetails testLogDetails) throws Exception {
         this.testLogDetails = testLogDetails;

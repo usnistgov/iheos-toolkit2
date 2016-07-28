@@ -396,9 +396,9 @@ public class Xdstest2 {
 
 					res.add("Status: " + ((stepLog.isSuccess()) ? "Pass" : "Fail"), stepLog.isSuccess());
 					
-                    for (String report : stepLog.getUseReports()) {
-                        res.add("UseReport: " + report);
-                    }
+//                    for (String report : stepLog.getUseReports()) {
+//                        res.add("UseReport: " + report);
+//                    }
                     for (String report : stepLog.getReportsSummary()) {
                         res.add("ReportBuilder: " + report);
                     }

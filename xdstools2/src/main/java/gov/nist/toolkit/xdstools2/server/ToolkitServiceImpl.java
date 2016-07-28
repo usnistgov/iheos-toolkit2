@@ -1,63 +1,71 @@
 	package gov.nist.toolkit.xdstools2.server;
 
-    import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-    import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
-    import gov.nist.toolkit.actorfactory.SiteServiceManager;
-    import gov.nist.toolkit.actorfactory.client.*;
-    import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
-    import gov.nist.toolkit.actortransaction.client.Severity;
-    import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-    import gov.nist.toolkit.configDatatypes.client.TransactionType;
-    import gov.nist.toolkit.configDatatypes.client.Pid;
-    import gov.nist.toolkit.installation.ExternalCacheManager;
-    import gov.nist.toolkit.installation.Installation;
-    import gov.nist.toolkit.installation.PropertyServiceManager;
-    import gov.nist.toolkit.registrymetadata.client.AnyIds;
-    import gov.nist.toolkit.registrymetadata.client.ObjectRef;
-    import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
-    import gov.nist.toolkit.registrymetadata.client.Uids;
-    import gov.nist.toolkit.results.client.*;
-    import gov.nist.toolkit.results.shared.Test;
-    import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-    import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-    import gov.nist.toolkit.services.client.RawResponse;
-    import gov.nist.toolkit.services.client.RgOrchestrationRequest;
-    import gov.nist.toolkit.services.server.RawResponseBuilder;
-    import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
-    import gov.nist.toolkit.services.shared.SimulatorServiceManager;
-    import gov.nist.toolkit.session.server.Session;
-    import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
-    import gov.nist.toolkit.sitemanagement.client.Site;
+	import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+	import gov.nist.toolkit.MessageValidatorFactory2.MessageValidatorFactoryFactory;
+	import gov.nist.toolkit.actorfactory.SiteServiceManager;
+	import gov.nist.toolkit.actorfactory.client.SimId;
+	import gov.nist.toolkit.actorfactory.client.Simulator;
+	import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+	import gov.nist.toolkit.actorfactory.client.SimulatorStats;
+	import gov.nist.toolkit.actortransaction.TransactionErrorCodeDbLoader;
+	import gov.nist.toolkit.actortransaction.client.Severity;
+	import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+	import gov.nist.toolkit.configDatatypes.client.Pid;
+	import gov.nist.toolkit.configDatatypes.client.TransactionType;
+	import gov.nist.toolkit.installation.ExternalCacheManager;
+	import gov.nist.toolkit.installation.Installation;
+	import gov.nist.toolkit.installation.PropertyServiceManager;
+	import gov.nist.toolkit.registrymetadata.client.AnyIds;
+	import gov.nist.toolkit.registrymetadata.client.ObjectRef;
+	import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
+	import gov.nist.toolkit.registrymetadata.client.Uids;
+	import gov.nist.toolkit.results.client.CodesResult;
+	import gov.nist.toolkit.results.client.Result;
+	import gov.nist.toolkit.results.client.TestInstance;
+	import gov.nist.toolkit.results.client.TestLogs;
+	import gov.nist.toolkit.results.shared.Test;
+	import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+	import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+	import gov.nist.toolkit.services.client.RawResponse;
+	import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+	import gov.nist.toolkit.services.server.RawResponseBuilder;
+	import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
+	import gov.nist.toolkit.services.shared.SimulatorServiceManager;
+	import gov.nist.toolkit.session.client.TestOverviewDTO;
+	import gov.nist.toolkit.session.server.Session;
+	import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
+	import gov.nist.toolkit.sitemanagement.client.Site;
 	import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 	import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 	import gov.nist.toolkit.testengine.scripts.CodesUpdater;
-	import gov.nist.toolkit.session.client.TestOverviewDTO;
+	import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+	import gov.nist.toolkit.testenginelogging.client.SectionLogMapDTO;
 	import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 	import gov.nist.toolkit.tk.TkLoader;
-    import gov.nist.toolkit.tk.client.TkProps;
+	import gov.nist.toolkit.tk.client.TkProps;
 	import gov.nist.toolkit.validatorsSoapMessage.factories.SoapMessageValidatorFactory;
 	import gov.nist.toolkit.valregmsg.message.SchemaValidation;
 	import gov.nist.toolkit.valsupport.client.MessageValidationResults;
-    import gov.nist.toolkit.valsupport.client.ValidationContext;
-    import gov.nist.toolkit.xdsexception.ExceptionUtil;
-    import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
-    import gov.nist.toolkit.xdstools2.client.RegistryStatus;
-    import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
-    import gov.nist.toolkit.xdstools2.client.ToolkitService;
-    import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
-    import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
-    import org.apache.log4j.Logger;
+	import gov.nist.toolkit.valsupport.client.ValidationContext;
+	import gov.nist.toolkit.xdsexception.ExceptionUtil;
+	import gov.nist.toolkit.xdstools2.client.NoServletSessionException;
+	import gov.nist.toolkit.xdstools2.client.RegistryStatus;
+	import gov.nist.toolkit.xdstools2.client.RepositoryStatus;
+	import gov.nist.toolkit.xdstools2.client.ToolkitService;
+	import gov.nist.toolkit.xdstools2.server.serviceManager.DashboardServiceManager;
+	import gov.nist.toolkit.xdstools2.server.serviceManager.GazelleServiceManager;
+	import org.apache.log4j.Logger;
 
-    import javax.servlet.ServletContext;
-    import javax.servlet.http.HttpServletRequest;
-    import javax.servlet.http.HttpSession;
-    import javax.xml.parsers.FactoryConfigurationError;
-    import java.io.File;
-    import java.io.IOException;
-    import java.util.Collection;
-    import java.util.Date;
-    import java.util.List;
-    import java.util.Map;
+	import javax.servlet.ServletContext;
+	import javax.servlet.http.HttpServletRequest;
+	import javax.servlet.http.HttpSession;
+	import javax.xml.parsers.FactoryConfigurationError;
+	import java.io.File;
+	import java.io.IOException;
+	import java.util.Collection;
+	import java.util.Date;
+	import java.util.List;
+	import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ToolkitServiceImpl extends RemoteServiceServlet implements
@@ -226,7 +234,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
      */
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
 	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
-	public List<TestOverviewDTO> getLogsContent(String sessionName, List<TestInstance> testInstances) throws Exception { return session().xdsTestServiceManager().getLogsContent(sessionName, testInstances); }
+	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception { return session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances); }
+	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance); }
 	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getTestCollections(collectionSetName); }
 	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
 		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);

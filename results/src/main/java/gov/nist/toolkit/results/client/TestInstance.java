@@ -19,8 +19,11 @@ public class TestInstance implements IsSerializable, Serializable {
 	LogIdIOFormat format = null;
 	LogIdType idType = null;
 	
-	public TestInstance() {
+	public TestInstance() {}
+	public TestInstance(String id) {
+		this.id = id;
 	}
+	public TestInstance(String id, String section) { this.id = id; this.section = section; }
 
     public String describe() {
         StringBuilder buf = new StringBuilder();
@@ -133,10 +136,6 @@ public class TestInstance implements IsSerializable, Serializable {
 	public String getEventDir() { return eventDir; }
 	public void setEventDir(String eventDir) { this.eventDir = eventDir; }
 
-	public TestInstance(String id) {
-		this.id = id;
-	}
-	
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) return false;

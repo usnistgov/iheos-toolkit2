@@ -15,7 +15,7 @@ public class TestLogsBuilder {
 		TestLogs logs = new TestLogs();
 		
 		for (LogMapItemDTO item : logMapDTO.getItems()) {
-			LogFileContentDTO logFile = item.log;
+			LogFileContentDTO logFile = item.getLog();
 			for (TestStepLogContentDTO stepLog : logFile.getStepLogs()) {
 				TestLog testLog = new TestLog();
 				String stepName = stepLog.getId();

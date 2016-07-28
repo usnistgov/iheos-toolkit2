@@ -29,6 +29,7 @@ public class TestLogListingTab extends GenericQueryTab {
 	private final FlowPanel actorPanel = new FlowPanel();
 	private final FlowPanel testsPanel = new FlowPanel();
 	private final TabBar tabBar = new TabBar();
+	private TestDisclosureManager testDisclosureManager = new TestDisclosureManager();
 
 	// Testable actors
 	private List<TestCollectionDefinitionDAO> testCollectionDefinitionDAOs;
@@ -61,17 +62,26 @@ public class TestLogListingTab extends GenericQueryTab {
 			}
 		});
 
-		tabBar.addSelectionHandler(new SelectionHandler<Integer>() {
-			@Override
-			public void onSelection(SelectionEvent<Integer> selectionEvent) {
-				int i = selectionEvent.getSelectedItem();
-				loadTestCollection(testCollectionDefinitionDAOs.get(i).getCollectionID());
-			}
-		});
+		tabBar.addSelectionHandler(actorSelectionHandler);
+//				new SelectionHandler<Integer>() {
+//			@Override
+//			public void onSelection(SelectionEvent<Integer> selectionEvent) {
+//				int i = selectionEvent.getSelectedItem();
+//				loadTestCollection(testCollectionDefinitionDAOs.get(i).getCollectionID());
+//			}
+//		}
 
 		loadTestCollections("reg");
 
 	}
+
+	SelectionHandler<Integer> actorSelectionHandler = new SelectionHandler<Integer>() {
+		@Override
+		public void onSelection(SelectionEvent<Integer> selectionEvent) {
+			int i = selectionEvent.getSelectedItem();
+			loadTestCollection(testCollectionDefinitionDAOs.get(i).getCollectionID());
+		}
+	};
 
 	private String getSelectedTestCollection() {
 		int selected = tabBar.getSelectedTab();
@@ -119,10 +129,10 @@ public class TestLogListingTab extends GenericQueryTab {
 				testsPanel.clear();
 				List<TestInstance> testInstances = new ArrayList<>();
 				for (String testId : testIds) testInstances.add(new TestInstance(testId));
-				toolkitService.getLogsContent(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
+				toolkitService.getTestsOverview(getCurrentTestSession(), testInstances, new AsyncCallback<List<TestOverviewDTO>>() {
 
 					public void onFailure(Throwable caught) {
-						new PopupMessage("getLogContent: " + caught.getMessage());
+						new PopupMessage("getTestOverview: " + caught.getMessage());
 					}
 
 					public void onSuccess(List<TestOverviewDTO> testOverviews) {
@@ -178,16 +188,39 @@ public class TestLogListingTab extends GenericQueryTab {
 		displaySections(testOverview, body);
 
 		DisclosurePanel panel = new DisclosurePanel(header);
+		testDisclosureManager.add(testOverview.getName(), panel);
 		panel.setWidth("100%");
 		panel.add(body);
 		testsPanel.add(panel);
+//		panel.addOpenHandler(openHandler);
 	}
+
+
+
+//	private OpenHandler<DisclosurePanel> openHandler = new OpenHandler<DisclosurePanel>() {
+//		@Override
+//		public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
+//			DisclosurePanel disclosurePanel = openEvent.getTarget();
+//			String testId = testDisclosureManager.findTestId(disclosurePanel);
+//			toolkitService.getTestLogDetails(getCurrentTestSession(), new TestInstance(testId), new AsyncCallback<SectionLogMapDTO>() {
+//				@Override
+//				public void onFailure(Throwable throwable) {
+//					new PopupMessage("getTestLogDetails: " + throwable.getMessage());
+//				}
+//
+//				@Override
+//				public void onSuccess(SectionLogMapDTO sectionLogMapDTO) {
+//
+//				}
+//			});
+//
+//		}
+//	};
 
 	private void displaySections(TestOverviewDTO testOverview, FlowPanel parent) {
 		for (String sectionName : testOverview.getSectionNames()) {
 			SectionOverviewDTO sectionOverview = testOverview.getSectionOverview(sectionName);
-
-			parent.add(new TestSectionComponent(sectionOverview).asWidget());
+			parent.add(new TestSectionComponent(toolkitService, getCurrentTestSession(), new TestInstance(testOverview.getName()), sectionOverview).asWidget());
 		}
 	}
 

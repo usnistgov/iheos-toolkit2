@@ -18,23 +18,20 @@ import java.util.Map;
 
 public class TestLogDetails {
 
-	File testkit;
-	LogRepository logRepository = null;
-//	File logdir;
-//	public TestInstance testLogId = null;
-	String area;  // examples, tests etc
-	TestInstance testInstance;
-//	List<File> testPlanFiles;
+	private File testkit;
+	private LogRepository logRepository = null;
+	private String area;  // examples, tests etc
+	private TestInstance testInstance;
 	public SectionTestPlanFileMap testPlanFileMap;   // sectionName ==> testplan.xml file
 	public SectionLogMapDTO sectionLogMapDTO;
-	String[] areas;
-	
-	static Logger logger = Logger.getLogger(TestLogDetails.class);
+	private String[] areas;
 
-	
-	public static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
+	private static Logger logger = Logger.getLogger(TestLogDetails.class);
+
+
+	private static final String[] defaultAreas = new String [] { "tests", "testdata", "examples", "internal", "play",
 		"selftest", "development", "utilities", "xcpd", "collection", "static.collections"};
-	static final String testPlanFileName = "testplan.xml";
+	private static final String testPlanFileName = "testplan.xml";
 
 	public TestLogDetails(File testkit, TestInstance testInstance) throws Exception {
 		this.testkit = testkit;
