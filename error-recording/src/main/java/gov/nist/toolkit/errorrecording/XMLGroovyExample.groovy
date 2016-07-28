@@ -158,8 +158,6 @@ class XMLGroovyExample {
         def recs = new XmlSlurper().parseText(peopleXml)
 
         // Append the new node. This is a much simpler syntax to add straightforward XML elements.
-        //recs.appendNode('person').appendNode ('firstName':"Oscar", 'lastName':"Smith", 'age':"60")
-
         recs.appendNode {
             person {
                 firstName('Oscar')
