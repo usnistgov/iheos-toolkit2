@@ -247,16 +247,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
         return addQueryBoilerplate(runner, transactionTypes, couplings, true);
-//		if (queryBoilerplate != null) {
-//			queryBoilerplate.remove();
-//			queryBoilerplate = null;
-//		}
-//		queryBoilerplate = new QueryBoilerplate(
-//				this, runner, transactionTypes,
-//				couplings
-//				);
-//		return queryBoilerplate;
-
 	}
 
 	public QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,

@@ -148,3 +148,19 @@ h3 {
   background-color: lavender;
 }
 
+.section-title {
+  font-size: 14pt;
+  text-align: left;
+}
+
+.test-title {
+  font-size: 16pt;
+  text-align: left;
+}
+
+.right {
+  float: right;
+  /*position: absolute;*/
+  /*right: 0px;*/
+}
+

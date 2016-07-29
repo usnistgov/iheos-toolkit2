@@ -9,6 +9,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.*;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.IGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.GatewayTestsTabs.RGTestTab;
 import gov.nist.toolkit.xdstools2.client.tabs.actorConfigTab.ActorConfigTab;
+import gov.nist.toolkit.xdstools2.client.tabs.conformanceTest.TestLogListingTab;
 import gov.nist.toolkit.xdstools2.client.tabs.findDocuments2Tab.FindDocuments2Tab;
 import gov.nist.toolkit.xdstools2.client.tabs.getAllTab.GetAllTab;
 import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorTab;

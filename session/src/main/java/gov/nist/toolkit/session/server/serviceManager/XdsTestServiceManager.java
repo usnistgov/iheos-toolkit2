@@ -118,6 +118,12 @@ public class XdsTestServiceManager extends CommonService {
 		return new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 
+	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
+									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
+		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		return getTestOverview(mesaTestSession, testInstance);
+	}
+
 	/**
 	 * Original Xdstools2 function to retrieve test results based on the current Session by providing a list of
 	 * TestInstance numbers / Test Ids.

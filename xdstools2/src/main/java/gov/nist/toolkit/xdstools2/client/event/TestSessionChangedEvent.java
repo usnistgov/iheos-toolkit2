@@ -1,6 +1,7 @@
-package gov.nist.toolkit.xdstools2.client.event.testSession;
+package gov.nist.toolkit.xdstools2.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
+import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionChangedEventHandler;
 
 /**
  * Can carry one of three changes:

@@ -1,4 +1,4 @@
-package gov.nist.toolkit.xdstools2.client.components;
+package gov.nist.toolkit.xdstools2.client.tabs.conformanceTest;
 
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
@@ -23,12 +23,12 @@ import java.util.Set;
  *
  */
 public class TestSectionComponent implements IsWidget {
-    HorizontalFlowPanel header = new HorizontalFlowPanel();
-    DisclosurePanel panel = new DisclosurePanel(header);
-    ToolkitServiceAsync toolkitService;
-    String sessionName;
-    TestInstance testInstance;
-    FlowPanel body = new FlowPanel();
+    private final HorizontalFlowPanel header = new HorizontalFlowPanel();
+    private final DisclosurePanel panel = new DisclosurePanel(header);
+    private final ToolkitServiceAsync toolkitService;
+    private final String sessionName;
+    private final TestInstance testInstance;
+    private final FlowPanel body = new FlowPanel();
 
     public TestSectionComponent(ToolkitServiceAsync toolkitService, String sessionName, TestInstance testInstance, SectionOverviewDTO sectionOverview) {
         this.toolkitService = toolkitService;
@@ -36,6 +36,7 @@ public class TestSectionComponent implements IsWidget {
         this.testInstance = testInstance;
 
         HTML sectionLabel = new HTML("Section: " + sectionOverview.getName());
+        sectionLabel.addStyleName("section-title");
         if (sectionOverview.isRun()) {
             if (sectionOverview.isPass())
                 header.addStyleName("testOverviewHeaderSuccess");
@@ -45,24 +46,25 @@ public class TestSectionComponent implements IsWidget {
             header.addStyleName("testOverviewHeaderNotRun");
         header.add(sectionLabel);
         if (sectionOverview.isRun()) {
-            header.add((sectionOverview.isPass()) ?
-                    new Image("icons2/correct-32.png")
+            Image status = (sectionOverview.isPass()) ?
+                    new Image("icons2/correct-16.png")
                     :
-                    new Image("icons2/cancel-32.png"));
-
+                    new Image("icons2/cancel-16.png");
+            status.addStyleName("right");
+            header.add(status);
             panel.add(body);
 
             panel.addOpenHandler(new SectionOpenHandler(new TestInstance(testInstance.getId(), sectionOverview.getName())));
         }
-        Image play = new Image("icons2/play-32.png");
+        Image play = new Image("icons2/play-16.png");
         play.setTitle("Run");
         header.add(play);
-        Image delete = new Image("icons2/remove-32.png");
+        Image delete = new Image("icons2/garbage-16.png");
         delete.setTitle("Delete Log");
         header.add(delete);
     }
 
-    class SectionOpenHandler implements OpenHandler<DisclosurePanel> {
+    private class SectionOpenHandler implements OpenHandler<DisclosurePanel> {
         TestInstance testInstance; // must include section name
 
         SectionOpenHandler(TestInstance testInstance) { this.testInstance = testInstance; }
@@ -81,11 +83,12 @@ public class TestSectionComponent implements IsWidget {
                     body.clear();
                     int row;
                     if (log.hasFatalError()) body.add(new HTML("Fatal Error: " + log.getFatalError() + "<br />"));
-                    int stepI = 0;
                     for (TestStepLogContentDTO step : log.getSteps()) {
+                        HTML stepHeader = new HTML("Step: " + step.getId());
+                        if (step.isSuccess()) stepHeader.addStyleName("testOverviewHeaderSuccess");
+                        else stepHeader.addStyleName("testOverviewHeaderFail");
+                        body.add(stepHeader);
                         StringBuilder buf = new StringBuilder();
-                        if (stepI > 0) buf.append("<br />");
-                        buf.append("Step: " + step.getId()).append("<br />");
                         buf.append("Goal: " + step.getStepGoalsDTO().getGoals()).append("<br />");
                         buf.append("Endpoint: " + step.getEndpoint()).append("<br />");
                         for (String error : step.getErrors()) {
@@ -165,8 +168,6 @@ public class TestSectionComponent implements IsWidget {
                         }
                         body.add(new HTML("Reports"));
                         body.add(reportsTable);
-
-                        stepI++;
                     }
                 }
             });

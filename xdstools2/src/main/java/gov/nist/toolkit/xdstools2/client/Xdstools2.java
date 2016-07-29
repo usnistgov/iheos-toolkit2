@@ -13,6 +13,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
+import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.selectors.EnvironmentManager;
@@ -71,6 +72,8 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 	public QueryState getQueryState() {
 		return queryState;
 	}
+
+	static public TransactionOfferings transactionOfferings = null;
 
 	void buildTabsWrapper() {
 
@@ -219,6 +222,7 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 
 		testSessionManager.load();
 		loadServletContext();
+		reloadTransactionOfferings();
 	}
 
 	public String toolkitName;
@@ -235,6 +239,24 @@ public class Xdstools2  implements AcceptsOneWidget, IsWidget {
 				toolkitName = s;
 			}
 		});
+	}
+
+	private void reloadTransactionOfferings() {
+		try {
+			ht.toolkitService.getTransactionOfferings(new AsyncCallback<TransactionOfferings> () {
+
+				public void onFailure(Throwable caught) {
+					new PopupMessage("Error: " + caught.getMessage() + " Your external cache may be corrupted." +"</font>");
+				}
+
+				public void onSuccess(TransactionOfferings to) {
+					transactionOfferings = to;
+				}
+
+			});
+		} catch (Exception e) {
+			new PopupMessage("Error: " + e.getMessage() + " Your external cache may be corrupted." +"</font>");
+		}
 	}
 
 
