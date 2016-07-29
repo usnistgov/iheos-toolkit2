@@ -157,7 +157,7 @@ public class AdtRecord implements Serializable {
             sb.append("Patient Race #" + (i + 1) + " = " + this.getPatientRace().toArray()[i] + '\n');
         }
         for(int i = 0; i < this.getPatientAddresses().size(); i++) {
-            HL7Address address = (HL7Address) this.getPatientAddresses().toArray()[i];
+            Hl7Address address = (Hl7Address) this.getPatientAddresses().toArray()[i];
             sb.append("Patient Address #" + (i + 1) + " = " + address.toString());
 
 

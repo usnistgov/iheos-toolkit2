@@ -1,21 +1,7 @@
 package gov.nist.toolkit.simulators.support;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.log4j.Logger;
-
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
@@ -28,7 +14,6 @@ import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryErrorListGenerator;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
-import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.simulators.sim.reg.RegistryResponseSendingSim;
 import gov.nist.toolkit.simulators.sim.reg.store.RegIndex;
 import gov.nist.toolkit.simulators.sim.rep.RepIndex;
@@ -37,11 +22,7 @@ import gov.nist.toolkit.soap.http.SoapUtil;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.valregmsg.message.HttpMessageValidator;
-import gov.nist.toolkit.valregmsg.message.MtomMessageValidator;
-import gov.nist.toolkit.valregmsg.message.SimpleSoapHttpHeaderValidator;
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
-import gov.nist.toolkit.valregmsg.message.StoredDocumentInt;
+import gov.nist.toolkit.valregmsg.message.*;
 import gov.nist.toolkit.valregmsg.service.SoapActionFactory;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
 import gov.nist.toolkit.valsupport.engine.ValidationStep;
@@ -50,6 +31,15 @@ import gov.nist.toolkit.xdsexception.ExceptionUtil;
 import gov.nist.toolkit.xdsexception.MetadataException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  *
@@ -261,10 +251,7 @@ public class DsSimCommon {
 
     }
 
-<<<<<<< HEAD
-    public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
-        logger.debug("DsSimComon#addImagingDocumentAttachments");
-=======
+
    /**
     * Attempts to retrieve DICOM documents from passed list of UIDs in one of
     * the passed list of transfer syntaxes.
@@ -275,7 +262,6 @@ public class DsSimCommon {
     */
    public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
 	logger.debug("DsSimComon#addImagingDocumentAttachments");
->>>>>>> feature/GatewayTool-I
         for (String uid : imagingDocumentUids) {
             StoredDocument sd = this.getStoredImagingDocument(uid, transferSyntaxUids);
             logger.debug(" uid=" + uid);
@@ -720,74 +706,7 @@ public class DsSimCommon {
         return null;
     }
 
-<<<<<<< HEAD
-    public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
-        logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
-        String[] uids = compositeUid.split(":");
-        String path = "/opt/xdsi/storage/ids-repository/" + uids[0] + "/" + uids[1] + "/" + uids[2];
-        logger.debug(" " + path);
-        File folder = new File(path);
-        if (!folder.exists()) {
-            logger.debug("Could not find file folder for composite UID: " + compositeUid);
-            return null;
-        }
-        boolean found = false;
-        Iterator<String> it = transferSyntaxUids.iterator();
-        String finalPath = null;
-        while (it.hasNext() && !found) {
-            String x = it.next();
-            finalPath = path + "/" + x;
-            File f = new File(finalPath);
-            if (f.exists()) {
-                found = true;
-            }
-        }
-        StoredDocument sd = null;
-        if (found) {
-            logger.debug("Found path to file: " + finalPath);
-            StoredDocumentInt sdi = new StoredDocumentInt();
-//			sdi.pathToDocument = "/tmp/000000.dcm";
-            sdi.pathToDocument = finalPath;
-            sdi.uid = uids[2];
-            logger.debug(" Instance UID: " + sdi.uid);
-            sdi.mimeType = "application/dicom";
-            sdi.charset = "UTF-8";
-//			sdi.hash="0000";
-//			sdi.size = "4";
-            sdi.content = null;
-            sd = new StoredDocument(sdi);
-//			sd.cid = mkCid(5);
-        } else {
-            logger.debug("Did not find an image file that matched transfer syntax");
-            logger.debug(" Composite UID: " + compositeUid);
-            it = transferSyntaxUids.iterator();
-            while (it.hasNext()) {
-                logger.debug("  Xfer syntax: " + it.next());
-            }
-        }
-        return sd;
-    }
 
-/*
-	public StoredDocument getStoredImagingDocument(String uid) {
-		logger.debug("DsSimCommon#getStoredImagingDocument(1 arg): " + uid);
-		StoredDocumentInt sdi = new StoredDocumentInt();
-		sdi.pathToDocument = "/tmp/000000.dcm";
-		sdi.uid = uid;
-		sdi.mimeType = "application/dicom";
-		sdi.charset = "UTF-8";
-//		sdi.hash="0000";
-//		sdi.size = "4";
-		sdi.content = null;
-		StoredDocument sd = new StoredDocument(sdi);
-//		sd.cid = mkCid(5);
-		return sd;
-	}
-*/
-
-
-
-=======
    /**
     * Attempts to retrieve the referenced DICOM document in one of the
     * referenced Transfer Syntaxes.
@@ -865,6 +784,6 @@ public class DsSimCommon {
       logger.debug("Image Cache: " + c);
       return c;
    }
->>>>>>> feature/GatewayTool-I
+
 
 }

@@ -26,7 +26,7 @@ public abstract class BaseSimConfigMgr implements SimConfigMgrIntf {
     /**
      *
      */
-    private SimulatorControlTab simulatorControlTab;
+    SimulatorControlTab simulatorControlTab;
     VerticalPanel panel;
     HorizontalPanel hpanel;
     SimulatorConfig config;
