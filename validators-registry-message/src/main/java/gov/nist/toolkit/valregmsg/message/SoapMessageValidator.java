@@ -1,5 +1,13 @@
 package gov.nist.toolkit.valregmsg.message;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.axis2.util.XMLUtils;
+import org.w3c.dom.Element;
+
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
@@ -12,13 +20,6 @@ import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNamespace;
-import org.apache.axis2.util.XMLUtils;
-import org.w3c.dom.Element;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Validate a SOAP wrapper according to ITI Appendix V and launch new
@@ -239,6 +240,9 @@ public class SoapMessageValidator extends AbstractMessageValidator {
         } else if (wsaction.equals("urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery")) {
             vc.isResponse = true;
             vc.isXcpd = true;
+        } else if (wsaction.equals("urn:ihe:rad:2009:RetrieveImagingDocumentSet")) {
+           vc.isRequest = true;
+           vc.isRad69 = true;
         }
     }
 

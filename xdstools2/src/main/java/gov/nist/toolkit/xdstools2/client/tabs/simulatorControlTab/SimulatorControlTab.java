@@ -141,10 +141,8 @@ public class SimulatorControlTab extends GenericQueryTab {
 				simConfigSuper.reloadSimulators();
 				loadSimStatus(getCurrentTestSession());
 			}
-
 		});
-
-	}
+	} // createNewSimulator
 	
 	
 	
@@ -163,7 +161,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 				for (String name : result)
 					actorSelectListBox.addItem(name);
 			}
-			
 		});
 	}
 
@@ -184,7 +181,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 		table.setText(row, idColumn, "ID");
 		table.setText(row, typeColumn, "Type");
 		table.setText(row, pidPortColumn, "Patient Feed Port");
-
 	}
 
 	void loadSimStatus() {

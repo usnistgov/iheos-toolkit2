@@ -121,6 +121,13 @@ public class PropertyManager {
 		return cache;
 	}
 	
+	public String getImageCache() {
+	   loadProperties();
+	   String cache = (String) toolkitProperties.getProperty("Image_Cache");
+	   System.setProperty("Image_Cache", cache);
+	   return cache;
+	}
+	
 	public boolean isUseActorsFile() {
 		loadProperties();
 		String use = (String) toolkitProperties.get(USE_ACTORS_FILE);

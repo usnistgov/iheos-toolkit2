@@ -30,8 +30,7 @@ public class Site  implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name = null;
 	TransactionCollection transactions = new TransactionCollection(false);
-	// There can be only one ODDS repository
-	// and one XDS.b repository in a site.
+	// There can be only one ODDS, one XDS.b, and one IDS repository in a site.
 	// An XDS.b Repository and a ODDS Repository
 	// can have the same repositoryUniqueId and endpoint. But
 	// they require two entries to identify them.
@@ -63,7 +62,6 @@ public class Site  implements IsSerializable, Serializable {
 				((pidAllocateURI == null) ? s.pidAllocateURI == null : pidAllocateURI.equals(s.pidAllocateURI)) &&
 				transactions.equals(s.transactions) &&
 				repositories.equals(s.repositories);
-				
 	}
 	
 	public TransactionCollection transactions() {
@@ -200,8 +198,8 @@ public class Site  implements IsSerializable, Serializable {
 	/**
 	 * This counts endpoints.  A repository can have endpoints
 	 * for all combinations of secure, async, and type.  There are
-	 * two basically different repository types, Document
-	 * Repository and On-Demand Document Source.
+	 * three basically different repository types, Document
+	 * Repository, On-Demand Document Source, and Image Document Source.
 	 * @return
 	 */
 	public int repositoryBCount(RepositoryType repositoryType) {
@@ -236,6 +234,19 @@ public class Site  implements IsSerializable, Serializable {
 		return tbs;
 	}
 
+	/**
+	 * Get TransactionBean matching passed RepositoryType and uid.
+	 * @param repuid repository unique id
+	 * @param tType Repository Type
+	 * @return TransactionBean for match, or null
+	 */
+	public TransactionBean transactionBeanForRepositoryUniqueId(String repuid, RepositoryType tType) {
+	   for (TransactionBean bean : repositories.transactions) {
+	      if (bean.repositoryType == tType && bean.name.equals(repuid)) return bean;
+	   }
+	   return null;
+	}
+		
 	public boolean hasRepositoryB() {
 		return repositoryBCount(RepositoryType.REPOSITORY) > 0;
 	}

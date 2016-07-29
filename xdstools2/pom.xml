@@ -1,71 +1,97 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>gov.nist.toolkit</groupId>
-        <artifactId>tk-deps</artifactId>
-        <version>2.202.0-SNAPSHOT</version>
-        <relativePath>../tk-deps/pom.xml</relativePath>
-    </parent>
+	<parent>
+		<groupId>gov.nist.toolkit</groupId>
+		<artifactId>tk-deps</artifactId>
+		<version>2.202.0-SNAPSHOT</version>
+		<relativePath>../tk-deps/pom.xml</relativePath>
+	</parent>
 
-    <profiles>
-        <profile>
-            <id>Bill</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <build.profile.id>Bill</build.profile.id>
-            </properties>
-        </profile>
-        <profile>
-            <id>Diane</id>
-            <properties>
-                <build.profile.id>Diane</build.profile.id>
-            </properties>
+	<properties>
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<testkitOut>${project.basedir}/target/${project.build.finalName}/toolkitx/testkit</testkitOut>
+		<testkitIn>${project.basedir}/src/main/webapp/toolkitx/testkit</testkitIn>
+		<!--<testkitIn>${project.basedir}/../testkit/src/main/resources</testkitIn> -->
+		<Default_Environment>default</Default_Environment>
+		<Toolkit_TLS_Port>8443</Toolkit_TLS_Port>
+		<Toolkit_Port>8888</Toolkit_Port>
+      <Image_Cache>/opt/xdsi/storage</Image_Cache>
+	</properties>
 
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>make-a-jar</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
+	<profiles>
+		<profile>
+			<id>Bill</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<build.profile.id>Bill</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>ERL</id>
+			<properties>
+				<build.profile.id>ERL</build.profile.id>
+				<Testkit>ERLTestkit</Testkit>
+				<External_Cache>/opt/xdsi/xds-toolkit/01</External_Cache>
+				<Default_Environment>xdsi</Default_Environment>
+				<Toolkit_TLS_Port>8643</Toolkit_TLS_Port>
+				<Toolkit_Port>9280</Toolkit_Port>
+            <Image_Cache>/opt/xdsi/storage</Image_Cache>
+			</properties>
+		</profile>
+		<profile>
+			<id>Diane</id>
+			<properties>
+				<build.profile.id>Diane</build.profile.id>
+			</properties>
 
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-install-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>install-file</goal>
-                                </goals>
-                                <configuration>
-                                    <packaging>jar</packaging>
-                                    <artifactId>${project.artifactId}</artifactId>
-                                    <groupId>${project.groupId}</groupId>
-                                    <version>${project.version}</version>
-                                    <file>
-                                        ${project.build.directory}/${project.artifactId}-${project.version}.jar
-                                    </file>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>make-a-jar</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-install-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<goals>
+									<goal>install-file</goal>
+								</goals>
+								<configuration>
+									<packaging>jar</packaging>
+									<artifactId>${project.artifactId}</artifactId>
+									<groupId>${project.groupId}</groupId>
+									<version>${project.version}</version>
+									<file>
+										${project.build.directory}/${project.artifactId}-${project.version}.jar
+									</file>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
+<<<<<<< HEAD
         <profile>
             <id>site</id>
             <activation>
@@ -201,407 +227,531 @@
         <!--<name>National Institute of Standards and Technology</name>-->
         <!--<url>http://nist.gov</url>-->
     <!--</organization>-->
+=======
+>>>>>>> feature/GatewayTool-I
 
-    <artifactId>xdstools2</artifactId>
-    <packaging>war</packaging>
+		<profile>
+			<id>site</id>
+			<activation>
+				<property>
+					<name>site</name>
+				</property>
+			</activation>
+			<properties>
+				<build.profile.id>site</build.profile.id>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-site-plugin</artifactId>
+						<version>3.3</version>
+						<configuration>
+							<port>8181</port>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>org.apache.maven.doxia</groupId>
+								<artifactId>doxia-module-markdown</artifactId>
+								<version>1.5</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>attach-site</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<webResources>
+								<webResource>
+									<!-- this is relative to the pom.xml directory -->
+									<directory>${project.build.directory}/site</directory>
+									<targetPath>site</targetPath>
+								</webResource>
+							</webResources>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>Olivier</id>
+			<properties>
+				<build.profile.id>Olivier</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>Sunil</id>
+			<properties>
+				<build.profile.id>Sunil</build.profile.id>
+			</properties>
+		</profile>
+		<profile>
+			<id>Integration-Tests</id>
+			<properties>
+				<build.profile.id>Integration-Tests</build.profile.id>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>**/*IT.java</include>
+							</includes>
+						</configuration>
+						<executions>
+							<execution>
+								<id>run-integration-tests</id>
+								<phase>integration-test</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<configuration>
+							<path>/</path>
+						</configuration>
+						<executions>
+							<execution>
+								<id>start-tomcat</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<fork>true</fork>
+								</configuration>
+							</execution>
+							<execution>
+								<id>stop-tomcat</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>shutdown</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
-    <properties>
-        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <testkitOut>${project.basedir}/target/${project.build.finalName}/toolkitx/testkit</testkitOut>
-        <testkitIn>${project.basedir}/src/main/webapp/toolkitx/testkit</testkitIn>
-        <!--<testkitIn>${project.basedir}/../testkit/src/main/resources</testkitIn>-->
-    </properties>
+	<name>XDS Toolkit</name>
+	<description>Collection of tools for testing IHE Document Sharing profiles</description>
+	<mailingLists>
+		<mailingList>
+			<name>XDS Implementers</name>
+			<subscribe>http://groups.google.com/group/ihe-xds-implementors</subscribe>
+			<archive>http://groups.google.com/group/ihe-xds-implementors</archive>
+		</mailingList>
+	</mailingLists>
+	<issueManagement>
+		<system>BitBucket</system>
+		<url>https://bitbucket.org/bmajur/toolkit2/issues</url>
+	</issueManagement>
+	<!--<organization> -->
+	<!--<name>National Institute of Standards and Technology</name> -->
+	<!--<url>http://nist.gov</url> -->
+	<!--</organization> -->
 
-    <dependencies>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>transaction-notification-service</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>services</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>config-datatypes</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>toolkit-services</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>rest-tools</artifactId>
-        </dependency>
+	<artifactId>xdstools2</artifactId>
+	<packaging>war</packaging>
 
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>actorfactory</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>soap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>adt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>validators-registry-metadata</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>error-recording</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>simulators</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>registry-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>validators-registry-message</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>xdstest2-logging</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>session</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>results</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>tk</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>validators-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>test-engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>envSettings</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>actor-transaction</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>message-validator-factory2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>installation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>sim-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>site-management</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>registry-metadata</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>xds-exceptions</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>utilities</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>security-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-transport-local</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-transport-http</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-adb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.axis2</groupId>
-            <artifactId>axis2-kernel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.spockframework</groupId>
-            <artifactId>spock-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- These two needed by wsseTool -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-servlet</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-        </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.glassfish.jersey.containers</groupId>-->
-            <!--&lt;!&ndash; if your container implements Servlet API older than 3.0, use "jersey-container-servlet-core"  &ndash;&gt;-->
-            <!--<artifactId>jersey-container-servlet</artifactId>-->
-            <!--<version>2.22.1</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>2.22.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet-core</artifactId>
-            <version>2.22.1</version>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>grizzly-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>gov.nist.toolkit</groupId>
-            <artifactId>toolkit-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.0-alpha4</version>
-        </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>transaction-notification-service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>services</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>config-datatypes</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>toolkit-services</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>rest-tools</artifactId>
+		</dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.sun.jersey</groupId>-->
-            <!--<artifactId>jersey-server</artifactId>-->
-            <!--<version>1.9</version>-->
-        <!--</dependency>-->
-    </dependencies>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>actorfactory</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>soap</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>adt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>validators-registry-metadata</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>error-recording</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>simulators</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>registry-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>validators-registry-message</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>xdstest2-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>session</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>results</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>tk</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>validators-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>test-engine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>envSettings</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>actor-transaction</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>http</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>message-validator-factory2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>installation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>sim-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>site-management</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>registry-metadata</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>xds-exceptions</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>utilities</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>security-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-transport-local</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-transport-http</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-adb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2</groupId>
+			<artifactId>axis2-kernel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.spockframework</groupId>
+			<artifactId>spock-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- These two needed by wsseTool -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.asm</groupId>
+			<artifactId>asm</artifactId>
+		</dependency>
+		<!--<dependency> -->
+		<!--<groupId>org.glassfish.jersey.containers</groupId> -->
+		<!--&lt;!&ndash; if your container implements Servlet API older than 3.0,
+			use "jersey-container-servlet-core" &ndash;&gt; -->
+		<!--<artifactId>jersey-container-servlet</artifactId> -->
+		<!--<version>2.22.1</version> -->
+		<!--</dependency> -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>2.22.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet-core</artifactId>
+			<version>2.22.1</version>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>grizzly-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.nist.toolkit</groupId>
+			<artifactId>toolkit-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.0-alpha4</version>
+		</dependency>
 
-    <build>
-        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+		<!--<dependency> -->
+		<!--<groupId>com.sun.jersey</groupId> -->
+		<!--<artifactId>jersey-server</artifactId> -->
+		<!--<version>1.9</version> -->
+		<!--</dependency> -->
+	</dependencies>
 
-        <!-- See profiles stanza above -->
-        <!-- Begin profile part 1/2 -->    
-        <filters>
-            <!--
-            NOTE: Filters usually go in the src\main\filters.
-            See https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html.
-            -->
+	<build>
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 
-            <!--
-                Ensures that an environment properties file is always loaded from the
-                configuration directory of the active Maven profile.
-            -->
-                <filter>../tk-deps/src/main/filters/${build.profile.id}.properties</filter>
-        </filters>
-        <!-- End profile part 1/2 -->
+		<!-- See profiles stanza above -->
+		<!-- Begin profile part 1/2 -->
+		<filters>
+			<!-- NOTE: Filters usually go in the src\main\filters. See https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html. -->
 
-
-
-        <plugins>
-        
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
-                <version>3.1</version>
-                <configuration>
-                    <compilerId>groovy-eclipse-compiler</compilerId>
-                    <!-- set verbose to be true if you want lots of uninteresting messages -->
-                    <!-- <verbose>true</verbose> -->
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>2.8.0-01</version>
-                    </dependency>
-                    <!-- for 2.8.0-01 and later you must have an explicit dependency on groovy-eclipse-batch -->
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>2.1.8-01</version>
-                        <!-- or choose a different compiler version -->
-                        <!-- <version>1.8.6-01</version> -->
-                        <!-- <version>1.7.10-06</version> -->
-                    </dependency>
-                </dependencies>
-            </plugin>
+			<!-- Ensures that an environment properties file is always loaded from
+				the configuration directory of the active Maven profile. -->
+			<filter>../tk-deps/src/main/filters/${build.profile.id}.properties</filter>
+		</filters>
+		<!-- End profile part 1/2 -->
 
 
-            <!--
-              There are two copies of this plugin - I have no idea which one is running.  I only
-              know it works for the moment!
-            -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <version>${gwtVersion}</version>
-                <executions>
-                    <execution>
-                        <id>compilation_profile</id>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>resources</goal>
-                        </goals>
-                        <configuration>
-                            <optimizationLevel>0</optimizationLevel>
-                        </configuration>
-                    </execution>
 
-                </executions>
-                <configuration>
-                    <compileSourcesArtifacts>
-                        <compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:http</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:validators-support</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:actorfactory</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:sim-common</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:error-recording</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:common-datatypes</compileSourcesArtifact>
-                        <compileSourcesArtifact>${project.groupId}:config-datatypes</compileSourcesArtifact>
-                    </compileSourcesArtifacts>
-                    <runTarget>Xdstools2.html</runTarget>
-                    <modules>
-                        <module>${project.groupId}.xdstools2.Xdstools2</module>
-                    </modules>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <version>${gwtVersion}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-user</artifactId>
-                        <version>${gwtVersion}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-dev</artifactId>
-                        <version>${gwtVersion}</version>
-                    </dependency>
-                </dependencies>
-                <!-- JS is only needed in the package phase, this speeds up testing -->
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>resources</goal>
-                        </goals>
-                    </execution>
-                </executions>
+		<plugins>
 
-                <!-- Plugin configuration. There are many available options,
-                     see gwt-maven-plugin documentation at codehaus.org -->
-                <configuration>
-                    <!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
-                    <runTarget>Xdstools2.html</runTarget>
-                    <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
-                    <compileReport>true</compileReport>
-                    <module>gov.nist.toolkit.xdstools2.Xdstools2</module>
-                    <!--<logLevel>INFO</logLevel>-->
-                    <!--<style>${gwt.style}</style>-->
-                    <copyWebapp>true</copyWebapp>
-                    <!-- <genParam>true</genParam> -->
-                </configuration>
-            </plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
+				<version>3.1</version>
+				<configuration>
+					<compilerId>groovy-eclipse-compiler</compilerId>
+					<!-- set verbose to be true if you want lots of uninteresting messages -->
+					<!-- <verbose>true</verbose> -->
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.codehaus.groovy</groupId>
+						<artifactId>groovy-eclipse-compiler</artifactId>
+						<version>2.8.0-01</version>
+					</dependency>
+					<!-- for 2.8.0-01 and later you must have an explicit dependency on
+						groovy-eclipse-batch -->
+					<dependency>
+						<groupId>org.codehaus.groovy</groupId>
+						<artifactId>groovy-eclipse-batch</artifactId>
+						<version>2.1.8-01</version>
+						<!-- or choose a different compiler version -->
+						<!-- <version>1.8.6-01</version> -->
+						<!-- <version>1.7.10-06</version> -->
+					</dependency>
+				</dependencies>
+			</plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <port>8181</port>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.doxia</groupId>
-                        <artifactId>doxia-module-markdown</artifactId>
-                        <version>1.5</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.7</version>
 
-                <configuration>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-            </plugin>
-        </plugins>
-        <!-- Begin profile part 2/2 -->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <!-- End profile part 2/2 -->
-    </build>
-    <scm>
-        <tag>v3.0.2a</tag>
-    </scm>
+			<!-- There are two copies of this plugin - I have no idea which one is
+				running. I only know it works for the moment! -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>${gwtVersion}</version>
+				<executions>
+					<execution>
+						<id>compilation_profile</id>
+						<goals>
+							<goal>compile</goal>
+							<goal>resources</goal>
+						</goals>
+						<configuration>
+							<optimizationLevel>0</optimizationLevel>
+						</configuration>
+					</execution>
+
+				</executions>
+				<configuration>
+					<compileSourcesArtifacts>
+						<compileSourcesArtifact>${project.groupId}:tk</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:results</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:services</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:actor-transaction</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:site-management</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:registry-metadata</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:http</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:validators-support</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:actorfactory</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:sim-common</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:error-recording</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:common-datatypes</compileSourcesArtifact>
+						<compileSourcesArtifact>${project.groupId}:config-datatypes</compileSourcesArtifact>
+					</compileSourcesArtifacts>
+					<runTarget>Xdstools2.html</runTarget>
+					<modules>
+						<module>${project.groupId}.xdstools2.Xdstools2</module>
+					</modules>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>${gwtVersion}</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-user</artifactId>
+						<version>${gwtVersion}</version>
+					</dependency>
+					<dependency>
+						<groupId>com.google.gwt</groupId>
+						<artifactId>gwt-dev</artifactId>
+						<version>${gwtVersion}</version>
+					</dependency>
+				</dependencies>
+				<!-- JS is only needed in the package phase, this speeds up testing -->
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>compile</goal>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin
+					documentation at codehaus.org -->
+				<configuration>
+					<!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
+					<runTarget>Xdstools2.html</runTarget>
+					<!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
+					<compileReport>true</compileReport>
+					<module>gov.nist.toolkit.xdstools2.Xdstools2</module>
+					<!--<logLevel>INFO</logLevel> -->
+					<!--<style>${gwt.style}</style> -->
+					<copyWebapp>true</copyWebapp>
+					<!-- <genParam>true</genParam> -->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<port>8181</port>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>1.5</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.7</version>
+
+				<configuration>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
+			</plugin>
+		</plugins>
+		<!-- Begin profile part 2/2 -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<!-- End profile part 2/2 -->
+	</build>
+	<scm>
+		<tag>v3.0.2a</tag>
+	</scm>
 </project>

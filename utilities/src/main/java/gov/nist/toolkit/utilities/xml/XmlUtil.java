@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -87,6 +89,10 @@ public class XmlUtil {
 				decendents.add(child);
 			decendentsWithLocalName1(decendents, child, localName, depth - 1);
 		}
+	}
+	
+	public static String getAttributeValue(OMElement element, String attributeName) {
+	   return element.getAttributeValue(new QName(attributeName));
 	}
 
 	public static OMElement createElement(String localName, OMNamespace ns) {

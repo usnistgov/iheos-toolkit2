@@ -21,10 +21,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.services.server.RawResponseBuilder;
 import gov.nist.toolkit.services.server.orchestration.OrchestrationManager;
 import gov.nist.toolkit.services.shared.SimulatorServiceManager;
@@ -112,6 +109,8 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<String> getIGNames()  throws NoServletSessionException { return siteServiceManager.getIGNames(session().getId()); }
 	public List<String> getActorTypeNames()  throws NoServletSessionException { return siteServiceManager.getActorTypeNames(session().getId()); }
 	public List<String> getSiteNamesWithRG() throws Exception { return siteServiceManager.getSiteNamesWithRG(session().getId()); }
+   public List<String> getSiteNamesWithRIG() throws Exception { return siteServiceManager.getSiteNamesWithRIG(session().getId()); }
+   public List<String> getSiteNamesWithIDS() throws Exception { return siteServiceManager.getSiteNamesWithIDS(session().getId()); }
 
 
 	//------------------------------------------------------------------------
@@ -205,10 +204,25 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
 		return new OrchestrationManager().buildIgTestEnvironment(s, request);
 	}
+   public RawResponse buildIigTestOrchestration(IigOrchestrationRequest request) {
+      Session s = getSession();
+      if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+      return new OrchestrationManager().buildIigTestEnvironment(s, request);
+   }
 	public RawResponse buildRgTestOrchestration(RgOrchestrationRequest request) {
 		Session s = getSession();
 		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
 		return new OrchestrationManager().buildRgTestEnvironment(s, request);
+	}
+   public RawResponse buildRigTestOrchestration(RigOrchestrationRequest request) {
+      Session s = getSession();
+      if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+      return new OrchestrationManager().buildRigTestEnvironment(s, request);
+   }
+	public RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request) {
+		Session s = getSession();
+		if (s == null) return RawResponseBuilder.build(new NoServletSessionException(""));
+		return new OrchestrationManager().buildIdsTestEnvironment(s, request);
 	}
 
 	/**

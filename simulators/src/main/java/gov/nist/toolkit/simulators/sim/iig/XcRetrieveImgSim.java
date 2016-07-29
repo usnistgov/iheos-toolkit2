@@ -1,34 +1,45 @@
-package gov.nist.toolkit.simulators.sim.ig
+/**
+ * 
+ */
+package gov.nist.toolkit.simulators.sim.iig;
 
-import gov.nist.toolkit.actorfactory.SimManager
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
-import gov.nist.toolkit.configDatatypes.client.TransactionType
-import gov.nist.toolkit.errorrecording.ErrorRecorder
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode
-import gov.nist.toolkit.registrymsg.repository.RetImgDocSetReqParser
-import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator
-import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestGenerator
-import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestModel
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
-import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
-import gov.nist.toolkit.simulators.support.DsSimCommon
-import gov.nist.toolkit.simulators.support.SimCommon
-import gov.nist.toolkit.sitemanagement.Sites
-import gov.nist.toolkit.sitemanagement.client.Site
-import gov.nist.toolkit.soap.axis2.Soap
-import gov.nist.toolkit.testengine.engine.RetrieveB
-import gov.nist.toolkit.valregmsg.message.SoapMessageValidator
-import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse
-import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine
-import gov.nist.toolkit.valsupport.message.AbstractMessageValidator
-import gov.nist.toolkit.xdsexception.ExceptionUtil
-import groovy.transform.TypeChecked
+import gov.nist.toolkit.actorfactory.SimManager;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.errorrecording.ErrorRecorder;
+import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
+import gov.nist.toolkit.registrymsg.repository.RetImgDocSetReqParser;
+import gov.nist.toolkit.registrymsg.repository.RetrieveDocumentResponseGenerator;
+import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestGenerator;
+import gov.nist.toolkit.registrymsg.repository.RetrieveImageRequestModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
+import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
+import gov.nist.toolkit.simulators.support.DsSimCommon;
+import gov.nist.toolkit.simulators.support.SimCommon;
+import gov.nist.toolkit.sitemanagement.Sites;
+import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.soap.axis2.Soap;
+import gov.nist.toolkit.testengine.engine.RetrieveB;
+import gov.nist.toolkit.utilities.xml.XmlUtil;
+import gov.nist.toolkit.valregmsg.message.SoapMessageValidator;
+import gov.nist.toolkit.valregmsg.registry.RetrieveMultipleResponse;
+import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
+import gov.nist.toolkit.valsupport.message.AbstractMessageValidator;
+import gov.nist.toolkit.xdsexception.ExceptionUtil;
+import gov.nist.toolkit.xdsexception.XdsInternalException;
 
-import javax.xml.stream.XMLStreamException
+import groovy.transform.TypeChecked;
 
-import org.apache.axiom.om.OMElement
-import org.apache.log4j.Logger
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.stream.XMLStreamException;
+
+import org.apache.axiom.om.OMElement;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 /**
  * Handles receipt of RAD-69 by IG, generation of RAD-75(s), collection of
@@ -42,7 +53,10 @@ import org.apache.log4j.Logger
  */
 @TypeChecked
 class XcRetrieveImgSim extends AbstractMessageValidator {
-   Logger logger = Logger.getLogger(XcRetrieveSim);
+   
+   private static final TransactionType rad75 = TransactionType.XC_RET_IMG_DOC_SET;
+   
+   Logger logger = Logger.getLogger(XcRetrieveImgSim.class);
 
    SimCommon common;
    DsSimCommon dsSimCommon;
@@ -53,6 +67,10 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    RetrieveMultipleResponse response;
    RetrievedDocumentsModel retrievedDocs = new RetrievedDocumentsModel();
    OMElement result = null;
+   
+   OMElement getResult() {
+      return result;
+   }
 
    public XcRetrieveImgSim(SimCommon common, DsSimCommon dsSimCommon, SimulatorConfig asc) {
       super(common.vc);
@@ -71,19 +89,21 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    }
 
    // Not an exception, but thrown to run code in finally block.
-   class NonException extends Exception { }
+   class NonException extends Exception {
+      private static final long serialVersionUID = 1L; 
+      }
 
    @Override
    public void run(ErrorRecorder er, MessageValidatorEngine mvc) {
       this.er = er;
       er.registerValidator(this);
 
+      try {
+
       if (startUpException != null) {
          er.err(XdsErrorCode.Code.XDSRegistryError, startUpException);
-         throw new NonException()
+         throw new NonException();
       }
-
-      try {
 
          // Request failed initial validation
          if (common.hasErrors()) {
@@ -93,7 +113,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
 
          // Get list of configured Responding Gateways
          SimManager simMgr = new SimManager("ignored");
-         List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingGateways).asList());
+         List<Site> sites = simMgr.getSites(asc.getConfigEle(SimulatorProperties.respondingImagingGateways).asList());
          if (sites == null || sites.size() == 0) {
             er.err(XdsErrorCode.Code.XDSRepositoryError, "No RespondingGateways configured", this, null);
             throw new NonException();
@@ -125,7 +145,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
 
             RetrievedDocumentsModel retDocsModel = forwardRetrieve(site, homeModel);
             for (RetrievedDocumentModel item : retDocsModel.values()) {
-               logger.info("XCAI retrieve returned " + item)
+               logger.info("XCAI retrieve returned " + item);
                retrievedDocs.add(item);
             }
          } // EO homeId loop
@@ -134,18 +154,24 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
       } catch (Exception e) {
          logException(er, e);
       } finally {
-         result = new RetrieveDocumentResponseGenerator(retrievedDocs, dsSimCommon.registryErrorList).get();
+         try {
+            result = new RetrieveDocumentResponseGenerator(retrievedDocs, 
+               dsSimCommon.getRegistryErrorList()).get();
+         } catch (XdsInternalException e) {
+            e.printStackTrace();
+         }
          er.unRegisterValidator(this);
       }
    } // EO run method
 
    /**
-    * Send XCAI RetImgDocSetRequest (RAD-75) to Receiving Gateway
+    * Send XCAI RetImgDocSetRequest (RAD-75) to Responding Gateway
     * @param site target RG
     * @param reqModel RetImgDocSetRequest (RAD-75) model for request to send
     * @return Results of request
+    * @throws Exception on error
     */
-   private RetrievedDocumentsModel forwardRetrieve(Site site, RetrieveImageRequestModel reqModel) {
+   private RetrievedDocumentsModel forwardRetrieve(Site site, RetrieveImageRequestModel reqModel) throws Exception {
       String endpoint = site.getEndpoint(TransactionType.XC_RET_IMG_DOC_SET, isSecure, isAsync);
       er.detail("Forwarding retrieve request to " + endpoint);
       RetrievedDocumentsModel resultsModel = retrieveCall(reqModel, endpoint);
@@ -153,7 +179,7 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
       return resultsModel;
    }
 
-   private RetrievedDocumentsModel retrieveCall(RetrieveImageRequestModel reqModel, String endpoint) {
+   private RetrievedDocumentsModel retrieveCall(RetrieveImageRequestModel reqModel, String endpoint) throws Exception {
       OMElement request = new RetrieveImageRequestGenerator(reqModel).get();
       Soap soap = new Soap();
       soap.setAsync(false);
@@ -165,18 +191,17 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
                true, //mtom
                true,  // WS-Addressing
                true,  // SOAP 1.2
-               "urn:ihe:iti:2007:CrossGatewayRetrieve",
-               "urn:ihe:iti:2007:CrossGatewayRetrieveResponse"
-               );
+               rad75.getRequestAction(),
+               rad75.getResponseAction());
       } catch (Exception e) {
          Exception e2 = new Exception("Soap Call to endpoint " + endpoint + " failed - " + e.getMessage(), e);
-         logException(er, e2)
-         throw e2
+         logException(er, e2);
+         throw e2;
       }
       OMElement result = soap.getResult();
 
       RetrievedDocumentsModel retDocsModel = parseResponse(result);
-      return retDocsModel
+      return retDocsModel;
    }
 
    private RetrievedDocumentsModel parseResponse(OMElement result)
@@ -186,19 +211,45 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
             retb.parse_rep_response(result).getMap();
       RetrievedDocumentsModel rModel = new RetrievedDocumentsModel();
       rModel.setMap(map);
+      
+      pullErrorList(rModel, result);
+      
       rModel.setAbbreviatedMessage(abbreviateResponse(result));
 
       return rModel;
    } // EO retrieveCall method
+   
+   /*
+    * <ol>
+    * <li/>Gets RegistryResponse status attribute value from response and loads into model.
+    * <li/>Gets RegistryError elements (if any) and loads into ErrorRecorder</ol>
+    * @param model RetrievedDocumentsModel built from response
+    * @param response SOAP body - RetrieveDocumentSetResponse element
+    */
+   private void pullErrorList(RetrievedDocumentsModel model, OMElement response) {
+      OMElement regResp = XmlUtil.firstChildWithLocalName(response, "RegistryResponse");
+      if (regResp == null) return;
+      // load status attribute value
+      model.setStatus(XmlUtil.getAttributeValue(regResp, "status"));
+      for (OMElement regErr : XmlUtil.decendentsWithLocalName(regResp, "RegistryError")) {
+         String errorCode = XmlUtil.getAttributeValue(regErr, "errorCode");
+         String codeContext = XmlUtil.getAttributeValue(regErr, "codeContext");
+         String location = XmlUtil.getAttributeValue(regErr, "location");
+         String severity = XmlUtil.getAttributeValue(regErr, "severity");
+         er.err(errorCode, codeContext, location, severity, null);
+      }
+   }
 
    private void validateXcRetrieveResponse(RetrievedDocumentsModel models) {
-      models.values().each { RetrievedDocumentModel model ->
-         model.with {
-            if (!docUid) er.err(XdsErrorCode.Code.XDSRegistryMetadataError, 'Responding Gateway returned no Document.uniqueId', this, null)
-            if (!repUid) er.err(XdsErrorCode.Code.XDSRegistryMetadataError, 'Responding Gateway returned no repositoryUniqueId', this, null)
-            if (!content_type) er.err(XdsErrorCode.Code.XDSRegistryMetadataError, 'Responding Gateway returned no mimeType', this, null)
-            if (!home) er.err(XdsErrorCode.Code.XDSRegistryMetadataError, 'Responding Gateway returned no homeCommunityId', this, null)
-         }
+      for (RetrievedDocumentModel model : models.values()) {
+         if (StringUtils.isBlank(model.getDocUid()))
+            er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Responding Gateway returned no Document.uniqueId", this, null);
+         if (StringUtils.isBlank(model.getRepUid()))
+            er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Responding Gateway returned no repositoryUniqueId", this, null);
+         if (StringUtils.isBlank(model.getContent_type()))
+            er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Responding Gateway returned no mimeType", this, null);
+         if (StringUtils.isBlank(model.getHome()))
+            er.err(XdsErrorCode.Code.XDSRegistryMetadataError, "Responding Gateway returned no homeCommunityId", this, null);
       }
    }
 
@@ -208,13 +259,14 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
     * @param resp passed message
     * @return String version of abbreviated response
     */
+   @SuppressWarnings("unchecked")
    private String abbreviateResponse(OMElement resp) throws XMLStreamException {
       Iterator<OMElement> dri = resp.getChildrenWithLocalName("DocumentResponse");
       while (dri.hasNext()) {
-         OMElement dr = (OMElement) dri.next();
+         OMElement dr = dri.next();
          Iterator<OMElement> di = dr.getChildrenWithLocalName("Document");
          while (di.hasNext()) {
-            OMElement d = (OMElement) di.next();
+            OMElement d = di.next();
             d.setText("...");
          } // <Document> loop
       } // <DocumentResponse> loop
@@ -230,10 +282,4 @@ class XcRetrieveImgSim extends AbstractMessageValidator {
    }
 
 } // EO XcRetrieveImgSim class
-
-
-
-
-
-
 

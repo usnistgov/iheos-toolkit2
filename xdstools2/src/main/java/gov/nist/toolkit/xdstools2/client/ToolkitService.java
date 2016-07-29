@@ -21,10 +21,7 @@ import gov.nist.toolkit.results.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -167,6 +164,8 @@ public interface ToolkitService extends RemoteService  {
 	 List<RepositoryStatus> getDashboardRepositoryData() throws Exception;
 	
 	 List<String> getSiteNamesWithRG() throws Exception;
+    List<String> getSiteNamesWithRIG() throws Exception;
+	 List<String> getSiteNamesWithIDS() throws Exception;
 	 List<String> getSiteNamesByTranType(String transactionType) throws Exception;
 
 	 String reloadSystemFromGazelle(String systemName) throws Exception;
@@ -179,7 +178,10 @@ public interface ToolkitService extends RemoteService  {
 	 String getAttributeValue(String username, String attName) throws Exception;
 	 void setAttributeValue(String username, String attName, String attValue) throws Exception;
     RawResponse buildIgTestOrchestration(IgOrchestrationRequest request);
-    RawResponse buildRgTestOrchestration(RgOrchestrationRequest request);
+    RawResponse buildIigTestOrchestration(IigOrchestrationRequest request);
+    RawResponse buildRigTestOrchestration(RigOrchestrationRequest request);
+	RawResponse buildRgTestOrchestration(RgOrchestrationRequest request);
+	RawResponse buildIdsTestOrchestration(IdsOrchestrationRequest request);
 
         Map<String, String> getSessionProperties() throws NoServletSessionException;
 	 void setSessionProperties(Map<String, String> props) throws NoServletSessionException;

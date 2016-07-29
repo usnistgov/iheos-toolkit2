@@ -27,7 +27,11 @@ import gov.nist.toolkit.simulators.servlet.ServletSimulator;
 import gov.nist.toolkit.simulators.servlet.SimServlet;
 import gov.nist.toolkit.simulators.sim.reg.RegistryActorSimulator;
 import gov.nist.toolkit.simulators.sim.rep.RepositoryActorSimulator;
+<<<<<<< HEAD
 import gov.nist.toolkit.simulators.sim.rep.od.OddsActorSimulator;
+=======
+import gov.nist.toolkit.simulators.sim.rig.RigActorSimulator;
+>>>>>>> feature/GatewayTool-I
 import gov.nist.toolkit.simulators.support.SimInstanceTerminator;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.valregmsg.validation.engine.ValidateMessageService;
@@ -425,6 +429,11 @@ public class SimulatorServiceManager extends CommonService {
                rep.add(reg);
                stats.add(rep);
             } else if (db.getSimulatorActorType() == ActorType.RESPONDING_GATEWAY) {
+               SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
+               SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
+               rep.add(reg);
+               stats.add(rep);
+            } else if (db.getSimulatorActorType() == ActorType.COMBINED_RESPONDING_GATEWAY) {
                SimulatorStats rep = RepositoryActorSimulator.getSimulatorStats(simId);
                SimulatorStats reg = RegistryActorSimulator.getSimulatorStats(simId);
                rep.add(reg);

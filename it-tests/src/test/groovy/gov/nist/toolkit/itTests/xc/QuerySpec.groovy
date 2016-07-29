@@ -26,7 +26,7 @@ import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType
 import spock.lang.Shared
 /**
- * Build RG, initialize it with a single submission, query and retreive the submission.
+ * Build RG, initialize it with a single submission, query and retrieve the submission.
  *
  * This test uses two copies of toolkit.  One copy is launched via Grizzly and offers the
  * simulator services.  It is references through the variable spi.

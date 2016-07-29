@@ -4,6 +4,7 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionBean;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean.RepositoryType;
 import gov.nist.toolkit.sitemanagement.client.TransactionCollection;
 import gov.nist.toolkit.xdsexception.XdsException;
 
@@ -188,6 +189,19 @@ public class Sites {
 		}
 		return null;
 	}
+   
+   /**
+    * @param uid unique id to look for.
+    * @param repType type of repository to search
+    * @return Site instance with that id, or null if not found.
+    */
+   public Site getSiteForRepUid(String uid, RepositoryType repType) {
+      for (Site site : siteMap.values()) {
+         if (site.transactionBeanForRepositoryUniqueId(uid, repType) != null)
+            return site;
+      }
+      return null;
+   }
 
 	public List<String> getSiteNamesWithActor(ActorType actorType) throws Exception {
 		List<String> rs = new ArrayList<String>();
