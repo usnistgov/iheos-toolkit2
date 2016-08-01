@@ -76,15 +76,12 @@ public class XMLErrorRecorder implements ErrorRecorder {
         // Generate the new element
         def sw = new StringWriter()
         def builder = new MarkupBuilder(sw)
-        builder.langs(type:"current", count:3, mainstream:true){
-            language(flavor:"static", version:"1.5", "Java")
-            language(flavor:"dynamic", version:"1.6.0", "Groovy")
-            language(flavor:"dynamic", version:"1.9", "JavaScript")
+        builder.Error(code:_code, location:_location, resource:_resource){
+            Message(_msg)
         }
 
         // Parse and add
         def el = new XmlParser().parseText(sw.toString())
-        println el
         errRecords.add(el)
     }
 
