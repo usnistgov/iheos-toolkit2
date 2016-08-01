@@ -4,6 +4,7 @@ import gov.nist.toolkit.errorrecording.client.XMLValidatorErrorItem
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
 import gov.nist.toolkit.errorrecording.client.helpers.Utils
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
+import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.xml.MarkupBuilder
 import groovy.xml.QName
 import groovy.xml.StreamingMarkupBuilder
@@ -94,8 +95,8 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     @Override
     public void err(Code code, Exception e) {
-        println("NYI-err4")
-
+        println("err4")
+        err(code, ExceptionUtil.exception_details(e), null, "");
     }
 
     @Override
