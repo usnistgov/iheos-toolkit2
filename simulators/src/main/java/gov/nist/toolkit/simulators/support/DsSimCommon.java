@@ -3,6 +3,7 @@ package gov.nist.toolkit.simulators.support;
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorder;
 import gov.nist.toolkit.errorrecording.GwtErrorRecorderBuilder;
@@ -10,6 +11,7 @@ import gov.nist.toolkit.errorrecording.client.ValidationStepResult;
 import gov.nist.toolkit.errorrecording.client.ValidatorErrorItem;
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder;
+import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.registry.RegistryResponse;
 import gov.nist.toolkit.registrymsg.registry.Response;
@@ -43,6 +45,8 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -53,6 +57,8 @@ public class DsSimCommon {
     public RegIndex regIndex = null;
     public RepIndex repIndex = null;
     public SimCommon simCommon;
+    ErrorRecorder er = null;
+
     Map<String, StoredDocument> documentsToAttach = null;  // cid => document
     RegistryErrorListGenerator registryErrorListGenerator = null;
 
@@ -60,6 +66,7 @@ public class DsSimCommon {
 
     public DsSimCommon(SimCommon simCommon, RegIndex regIndex, RepIndex repIndex) throws IOException, XdsException {
         this.simCommon = simCommon;
+        this.er = this.simCommon.getCommonErrorRecorder();
         this.regIndex = regIndex;
         this.repIndex = repIndex;
 
@@ -248,9 +255,6 @@ public class DsSimCommon {
         int notFound = 0;
         for (String uid : uids) {
             StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
-            // if (sd == null)
-            //   continue;
-            // addDocumentAttachment(sd);
             // Fix Issue 70
             if (sd == null) {
                 notFound++;
@@ -271,16 +275,24 @@ public class DsSimCommon {
 
     }
 
-    public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
+
+   /**
+    * Attempts to retrieve DICOM documents from passed list of UIDs in one of
+    * the passed list of transfer syntaxes.
+    * @param imagingDocumentUids List of composite UIDs (studyUid:SeriesUid:InstanceUID)
+    * for DICOM documents requested by caller.
+    * @param transferSyntaxUids List of transfer syntax UIDs acceptable to caller
+    * @param er ErrorRecorder to store errors found during processing.
+    */
+   public void addImagingDocumentAttachments(List<String> imagingDocumentUids, List<String> transferSyntaxUids, ErrorRecorder er) {
 	logger.debug("DsSimComon#addImagingDocumentAttachments");
         for (String uid : imagingDocumentUids) {
-            //StoredDocument sd = repIndex.getDocumentCollection().getStoredDocument(uid);
             StoredDocument sd = this.getStoredImagingDocument(uid, transferSyntaxUids);
-	    logger.debug(" uid=" + uid);
+            logger.debug(" uid=" + uid);
             if (sd == null)
                 continue;
             addDocumentAttachment(sd);
-	    logger.debug(" Added document for this uid");
+            logger.debug(" Added document for this uid");
         }
     }
 
@@ -347,7 +359,7 @@ public class DsSimCommon {
      * @return
      */
     public StringBuffer wrapSoapEnvelopeInMultipartResponse(OMElement env, ErrorRecorder er) {
-	logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
+        logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponse");
 
         er.detail("Wrapping in Multipart");
 
@@ -396,7 +408,7 @@ public class DsSimCommon {
                     } else {
                         contents = new String(sd.getContent());
                     }
-		    logger.debug("Attaching " + cid + " length " + contents.length());
+                    logger.debug("Attaching " + cid + " length " + contents.length());
                     body.append(contents);
                 } catch (Exception e) {
                     er.err(XdsErrorCode.Code.XDSRepositoryError, e);
@@ -412,13 +424,13 @@ public class DsSimCommon {
     }
 
     /**
-     * Used to build RetrieveDocumentSetRespoinse
+     * Used to build RetrieveDocumentSetResponse
      * @param env
      * @param er
      * @return
      */
     public StringBuffer wrapSoapEnvelopeInMultipartResponseBinary(OMElement env, ErrorRecorder er) {
-	logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
+        logger.debug("DsSimCommon#wrapSoapEnvelopeInMultipartResponseBinary");
 
         er.detail("Wrapping in Multipart");
 
@@ -486,9 +498,9 @@ public class DsSimCommon {
     public StringBuffer getTrailer() {
         String rn = "\r\n";
         String boundary = "MIMEBoundary112233445566778899";
-	StringBuffer body = new StringBuffer();
+        StringBuffer body = new StringBuffer();
         body.append("--").append(boundary).append("--").append(rn);
-	return body;
+        return body;
     }
 
     public void sendFault(SoapFault fault) {
@@ -543,22 +555,22 @@ public class DsSimCommon {
     private void writeAttachments(OutputStream os, ErrorRecorder er) {
         String boundary = "MIMEBoundary112233445566778899";
         String rn = "\r\n";
-    try {
+        try {
 
-        if (documentsToAttach != null) {
-            er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
-            for (String cid : documentsToAttach.keySet()) {
-		StringBuffer body = new StringBuffer();
-                StoredDocument sd = documentsToAttach.get(cid);
+            if (documentsToAttach != null) {
+                er.detail("Attaching " + documentsToAttach.size() + " documents as separate Parts in the Multipart");
+                for (String cid : documentsToAttach.keySet()) {
+                    StringBuffer body = new StringBuffer();
+                    StoredDocument sd = documentsToAttach.get(cid);
 
-                body.append("--").append(boundary).append(rn);
-                body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
-                body.append("Content-Transfer-Encoding: binary").append(rn);
-                body.append("Content-ID: <" + cid + ">").append(rn);
-                body.append(rn);
-		os.write(body.toString().getBytes());
-		os.write(sd.getContent());
-		os.write(rn.getBytes());
+                    body.append("--").append(boundary).append(rn);
+                    body.append("Content-Type: ").append(sd.getMimeType()).append(rn);
+                    body.append("Content-Transfer-Encoding: binary").append(rn);
+                    body.append("Content-ID: <" + cid + ">").append(rn);
+                    body.append(rn);
+                    os.write(body.toString().getBytes());
+                    os.write(sd.getContent());
+                    os.write(rn.getBytes());
 /*
                 try {
                     String contents = "ZZZ";
@@ -576,12 +588,12 @@ public class DsSimCommon {
                 }
                 body.append(rn);
 */
+                }
             }
-        }
 
-    } catch (Exception e) {
+        } catch (Exception e) {
             logger.fatal(ExceptionUtil.exception_details(e));
-    }
+        }
     }
 
     public ErrorRecorder registryResponseAsErrorRecorder(OMElement regResp) {
@@ -718,42 +730,65 @@ public class DsSimCommon {
         return null;
     }
 
+
+   /**
+    * Attempts to retrieve the referenced DICOM document in one of the
+    * referenced Transfer Syntaxes.
+    * @param compositeUid composite UID of DICOM document desired by caller
+    * (studyUid:SeriesUid:InstanceUid)
+    * @param transferSyntaxUids List of Transfer Syntax UIDs for syntaxes
+    * acceptable to caller
+    * @return StoredDocument instance for the DICOM document referenced by the
+    * compositeUid, or null if no document can be returned. A side effect is
+    * that the current ErrorRecorder has an error added to it if no document can
+    * be returned.
+    */
 	public StoredDocument getStoredImagingDocument(String compositeUid, List<String> transferSyntaxUids) {
 		logger.debug("DsSimCommon#getStoredImagingDocument: " + compositeUid);
 		String[] uids = compositeUid.split(":");
-		String path = "/opt/xdsi/storage/ids-repository/" + uids[0] + "/" + uids[1] + "/" + uids[2];
-		logger.debug(" " + path);
-		File folder = new File(path);
+      /*
+       * The image cache is in the IDS Simulator config, absolute, or relative 
+       * to the image cache in the toolkit properties.
+       */
+		Path imageCacheRoot = Paths.get(getImageCache());
+		String simCache = simulatorConfig.get(SimulatorProperties.idsImageCache).asString();
+      Path idsRepositoryPath = imageCacheRoot.resolve(simCache);
+		File idsRepositoryDir = idsRepositoryPath.toFile();
+		if (!idsRepositoryDir.exists() || !idsRepositoryDir.isDirectory()) {
+         logger.warn("Could not file image cache directory " + idsRepositoryDir);
+		   er.err(XdsErrorCode.Code.XDSRepositoryError,
+		      "Could not find image cache [" + idsRepositoryPath + "] ",
+		      "IdsActorSimulator EL-1", MetadataSupport.error_severity, "Internal error");
+		   return null;
+		}
+		Path folderPath = idsRepositoryPath.resolve(uids[0]).resolve(uids[1]).resolve(uids[2]);
+		logger.debug(" " + folderPath);
+		File folder = folderPath.toFile();
 		if (!folder.exists()) {
 			logger.debug("Could not find file folder for composite UID: " + compositeUid);
+			er.err(XdsErrorCode.Code.XDSDocumentUniqueIdError,
+			   "No document matching composite UID [" + compositeUid + "] ",
+			   "IdsActorSimulator EL-2", MetadataSupport.error_severity, "ITI TF-3 Table 4.2.4.1-2");
 			return null;
 		}
 		boolean found = false;
 		Iterator<String> it = transferSyntaxUids.iterator();
-		String finalPath = null;
+		Path finalPath = Paths.get("");
 		while (it.hasNext() && !found) {
-			String x = it.next();
-			finalPath = path + "/" + x;
-			File f = new File(finalPath);
-			if (f.exists()) {
-				found = true;
-			}
+		   finalPath = folderPath.resolve(it.next());
+			if(finalPath.toFile().exists()) found = true;
 		}
 		StoredDocument sd = null;
 		if (found) {
 			logger.debug("Found path to file: " + finalPath);
 			StoredDocumentInt sdi = new StoredDocumentInt();
-//			sdi.pathToDocument = "/tmp/000000.dcm";
-			sdi.pathToDocument = finalPath;
+			sdi.pathToDocument = finalPath.toString();
 			sdi.uid = uids[2];
 			logger.debug(" Instance UID: " + sdi.uid);
 			sdi.mimeType = "application/dicom";
 			sdi.charset = "UTF-8";
-//			sdi.hash="0000";
-//			sdi.size = "4";
 			sdi.content = null;
 			sd = new StoredDocument(sdi);
-//			sd.cid = mkCid(5);
 		} else {
 			logger.debug("Did not find an image file that matched transfer syntax");
 			logger.debug(" Composite UID: " + compositeUid);
@@ -761,28 +796,18 @@ public class DsSimCommon {
 			while (it.hasNext()) {
 				logger.debug("  Xfer syntax: " + it.next());
 			}
+			er.err(XdsErrorCode.Code.XDSRepositoryError,
+			   "IDS cannot encode the pixel data using any of the requested transfer syntaxes",
+			   uids[2], MetadataSupport.error_severity, "RAD TF-3 4.69.4.2.3");
 		}
 		return sd;
 	}
-
-/*
-	public StoredDocument getStoredImagingDocument(String uid) {
-		logger.debug("DsSimCommon#getStoredImagingDocument(1 arg): " + uid);
-		StoredDocumentInt sdi = new StoredDocumentInt();
-		sdi.pathToDocument = "/tmp/000000.dcm";
-		sdi.uid = uid;
-		sdi.mimeType = "application/dicom";
-		sdi.charset = "UTF-8";
-//		sdi.hash="0000";
-//		sdi.size = "4";
-		sdi.content = null;
-		StoredDocument sd = new StoredDocument(sdi);
-//		sd.cid = mkCid(5);
-		return sd;
-	}
-*/
-
-
+	
+	private String getImageCache() {
+      String c = Installation.installation().propertyServiceManager().getPropertyManager().getImageCache();
+      logger.debug("Image Cache: " + c);
+      return c;
+   }
 
 
 }

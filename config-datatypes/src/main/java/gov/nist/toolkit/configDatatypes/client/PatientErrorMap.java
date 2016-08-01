@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * Maps between TransactionType name and list of PatientErrors
  */
-public class PatientErrorMap implements Serializable, Map<String, PatientErrorList> {
+public class PatientErrorMap implements Serializable, IsSerializable, Map<String, PatientErrorList> {
     Map<String, PatientErrorList> config = new HashMap<>();
 
     public PatientErrorMap() {}

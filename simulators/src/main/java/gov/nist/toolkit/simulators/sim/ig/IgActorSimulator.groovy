@@ -135,54 +135,6 @@ public class IgActorSimulator extends GatewaySimulatorCommon {
 
             return false;
 
-         case TransactionType.XC_RET_IMG_DOC_SET:
-
-            logger.debug("Transaction type: XC_RET_IMG_DOC_SET");
-            common.vc.isRet = true;
-            common.vc.isRad69 = true;
-            common.vc.isXC = true;
-            common.vc.isRequest = true;
-            common.vc.isSimpleSoap = false;
-            common.vc.hasSoap = true;
-            common.vc.hasHttp = true;
-
-            logger.debug("dsSimCommon.runInitialValidationsAndFaultIfNecessary()");
-            if (!dsSimCommon.runInitialValidationsAndFaultIfNecessary())
-               return false;
-
-            logger.debug("mvc.hasErrors()");
-            if (mvc.hasErrors()) {
-               dsSimCommon.sendErrorsInRegistryResponse(er);
-               return false;
-            }
-            
-            logger.debug("Extract retrieve from validator chain");
-            AbstractMessageValidator mv = common.getMessageValidatorIfAvailable(SoapMessageValidator.class);
-            if (mv == null || !(mv instanceof SoapMessageValidator)) {
-                er.err(Code.XDSRegistryError, "IG Internal Error - cannot find SoapMessageValidator instance", "InitiatingGatewayActorSimulator", "");
-                dsSimCommon.sendErrorsInRegistryResponse(er);
-                return false;
-            }
-            logger.debug("Got AbstractMessageValidator");
-            SoapMessageValidator smv = (SoapMessageValidator) mv;
-            OMElement retreiveReqeust = smv.getMessageBody();
-            
-            logger.debug("Process message");
-            XcRetrieveImgSim retSim = new XcRetrieveImgSim(common, dsSimCommon, getSimulatorConfig());
-            mvc.addMessageValidator("XcRetrieveImgSim", retSim, er);
-            mvc.run();
-            
-            logger.debug("wrap response message");
-            er.detail("Wrapping response in SOAP Message and sending");
-            OMElement env = dsSimCommon.wrapResponseInSoapEnvelope(retSim.getResult());
-            assert env;
-            dsSimCommon.sendHttpResponse(env, er);
-            mvc.run();
-            
-            return false;
-            
-            // XCAI_TODO written, need to test
-
          default:
             er.err(Code.XDSRegistryError, "Don't understand transaction " + transactionType, "InitiatingGatewayActorSimulator", "");
             dsSimCommon.sendFault("Don't understand transaction " + transactionType, null);

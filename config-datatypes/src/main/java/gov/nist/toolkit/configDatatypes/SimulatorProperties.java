@@ -224,11 +224,27 @@ public class SimulatorProperties {
      * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
      */
     public static final String                      contentBundle = "Content Bundle";
+    /**
+     * Testplan to register On-Demand Document Entry and supply content
+     * Look up will be in this order: "{Test plan#}/{section[0]}/ContentBundle" Example: 15812/Register_OD/ContentBundle
+     * @See https://bitbucket.org/iheos/toolkit/wiki/blog/odds_overview
+     */
+    public static final String                      TESTPLAN_TO_REGISTER_AND_SUPPLY_CONTENT = "Testplan to Register and Supply Content";
+
+    /**
+     * On-demand document entry Patient Id
+     */
+    public static final String                      oddePatientId = "On-Demand Document Entry Patient ID";
+
+    /**
+     * Registry for the ODDE registration
+     */
+    public static final String                      oddsRegistrySite = "Registry";
 
     /**
      * The repository site to store the stable snapshot associated with the on-demand document entry.
      */
-    public static final String                      oddsRepositorySite = "Repository Site";
+    public static final String                      oddsRepositorySite = "Repository";
 
 
     /**
@@ -243,6 +259,10 @@ public class SimulatorProperties {
     public static final String                           creationTime = "Creation Time";
 
     public static final String                           respondingGateways = "Responding Gateways";
+    
+    public static final String                           respondingImagingGateways = "Responding Imaging Gateways";
+    
+    public static final String imagingDocumentSources = "Imaging Document Sources";
 
     /**
      * Each transaction request throws this error.
@@ -257,16 +277,27 @@ public class SimulatorProperties {
     public static final String                         FORCE_FAULT = "Force Fault";
 
     /**
-     * Endpoint to use to send the indicated transaction to this Simulator.
+     * String property defining the Repository UniqueId of a Repository simulator.
      * Updates to this property are ignored.
      */
-    public static final String                           idsrEndpoint = "IDSR_endpoint";
+    public static final String                     idsRepositoryUniqueId = "IDS Repository UniqueId";
 
     /**
-     * Endpoint to use to send the indicated transaction to this Simulator.
-     * Updates to this property are ignored.
+     * String property defining the Image Cache root directory for an IDS 
+     * simulator, absolute or relative to the toolkit image cache directory.
      */
-    public static final String                        idsrTlsEndpoint = "IDSR_TLS_endpoint";
+    public static final String                     idsImageCache = "IDS Image Cache";
+
+   /*
+    * These two are for RAD-69's sent to Imaging Document Sources
+    */
+    public static final String      idsrEndpoint = "IDSR_endpoint";
+    public static final String      idsrTlsEndpoint = "IDSR_TLS_endpoint";
+    /*
+     * These two are for RAD-69's sent to Initiating Imaging Gateways
+     */
+     public static final String      idsrIigEndpoint    = "IDSR to IIG endpoint";
+     public static final String      idsrIigTlsEndpoint = "IDSR to IIG TLS endpoint";
 
     public static final String                        environment = "Environment";
 }

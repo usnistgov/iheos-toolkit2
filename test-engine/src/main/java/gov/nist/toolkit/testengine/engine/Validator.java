@@ -620,7 +620,7 @@ public class Validator {
 								return false;
 							} else {
 								if (!documentEntryType.equals(objectType)) {
-									err("Submitted objectType ["+ documentEntryType +"]does not match with the objectType ["+ objectType +"] in response.");
+									err("Expected objectType ["+ documentEntryType +"] does not match the DocumentEntry objectType ["+ objectType +"] in the response.");
 									return false;
 								}
 							}

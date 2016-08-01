@@ -9,6 +9,7 @@ import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.results.client.TestInstance;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.sitemanagement.client.TransactionBean;
 import gov.nist.toolkit.xdsexception.XdsException;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class ProvideAndRetrieve extends CommonService {
 
 			Site si = SiteServiceManager.getSiteServiceManager().getSite(session.id(), session.siteSpec.name);
 //			Site si = session.siteServiceManager().getSites().getSite(session.siteSpec.name);
-			String repuid = si.getRepositoryUniqueId();
+			String repuid = si.getRepositoryUniqueId(TransactionBean.RepositoryType.REPOSITORY);
 			if (repuid == null) {
 				Result r = ResultBuilder.RESULT(testInstance, null, new AssertionResult("Repository has no configured repositoryUniqueId","",false), null);
 				return asList(r);

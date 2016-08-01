@@ -25,8 +25,8 @@ public class DocRetrieveTab extends GenericQueryTab {
 	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
 	static {
 		transactionTypes.add(TransactionType.RETRIEVE);
+		transactionTypes.add(TransactionType.ODDS_RETRIEVE);
 //		transactionTypes.add(TransactionType.ISR_RETRIEVE);
-//		transactionTypes.add(TransactionType.ODDS_RETRIEVE);
 	}
 	
 	static CoupledTransactions couplings = new CoupledTransactions();

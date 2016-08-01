@@ -95,9 +95,9 @@ public class Xdstools2  implements TabContainer, AcceptsOneWidget, IsWidget {
 				}
 
 			});
-		}
+//		}
 
-//	}
+	}
 
 	static public void addtoMainMenu(Widget w) { ME.mainMenuPanel.add(w); }
 

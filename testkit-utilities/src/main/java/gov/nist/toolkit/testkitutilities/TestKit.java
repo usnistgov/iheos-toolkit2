@@ -86,11 +86,20 @@ public class TestKit {
 			name = name.trim();
 			if (name.length() == 0)
 				continue;
-			TestDefinition tt = new TestDefinition(getTestDir(name));
-			String description = tt.getTestDescription();
-			testNames.put(name, description);
+			File testdir=null;
+			try {
+				testdir = getTestDir(name);
+			}catch (Exception e){
+				if (e.getMessage().contains("does not exist")){
+					testdir=null;
+				}
+			}
+			if (testdir!=null) {
+				TestDefinition tt = new TestDefinition(testdir);
+				String description = tt.getTestDescription();
+				testNames.put(name, description);
+			}
 		}
-		
 		return testNames;
 
 	}

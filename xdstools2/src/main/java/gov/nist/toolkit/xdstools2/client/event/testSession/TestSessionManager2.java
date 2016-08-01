@@ -39,7 +39,7 @@ public class TestSessionManager2 {
                         delete(event.value);
                         break;
                     case SELECT:
-                        currentTestSession = event.value;
+                        setCurrentTestSession(event.value);
                         toCookie(event.value);
                 }
             }
@@ -82,7 +82,7 @@ public class TestSessionManager2 {
 
                 if (isLegalTestSession(initialSelection)) {
 //                    Xdstools2.DEBUG("initialSeletion is legal");
-                    currentTestSession = initialSelection;
+                    setCurrentTestSession(initialSelection);
                     toCookie(currentTestSession);
 //                    Xdstools2.DEBUG("set cookie to " + currentTestSession);
                 } else {
@@ -91,7 +91,7 @@ public class TestSessionManager2 {
                         toCookie(currentTestSession);
 //                        Xdstools2.DEBUG("set cookie to " + currentTestSession);
                     } else {
-                        currentTestSession = "";
+                        setCurrentTestSession("");
 //                        Xdstools2.DEBUG("delete cookie");
                         deleteCookie();
                     }

@@ -18,10 +18,10 @@ import java.util.List;
  *
  */
 public class MessageValidatorEngine {
-	static Logger logger = Logger.getLogger(MessageValidatorEngine.class);
+	static private Logger logger = Logger.getLogger(MessageValidatorEngine.class);
 
-	List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
-	boolean isPartialSuccess = false;
+	private List<ValidationStep> validationSteps = new ArrayList<ValidationStep>();
+	private boolean isPartialSuccess = false;
 
 	public MessageValidatorEngine() {}
 	

@@ -74,6 +74,7 @@ public abstract class SiteLoader {
 			if ("transaction".equals(ele_name)) {
 				s.transactions().add(name, value, isSecure, async);
 			} else if ("repository".equals(ele_name)) {
+				// Issue 98 TODO: set the repositoryType here
 				s.repositories().add(uid, value, isSecure, async);
 			} else if ("home".equals(ele_name)) {
 				s.home = value;

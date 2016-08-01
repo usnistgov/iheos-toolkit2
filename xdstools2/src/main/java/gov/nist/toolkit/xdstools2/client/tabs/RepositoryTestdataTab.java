@@ -64,7 +64,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 		// build drop down box for selecting data set to send. Initiate call to 
 		// back end to load this list.
 		testlistBox.setVisibleItemCount(1); 
-		toolkitService.getTestdataSetListing("testdata-repository", loadRepositoryTestListCallback);
+		toolkitService.getTestdataSetListing(getEnvironmentSelection(),getCurrentTestSession(),"testdata-repository", loadRepositoryTestListCallback);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 	}
@@ -108,7 +108,7 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 			// Initiate the transaction
 			// queryCallback comes out of GenericQueryTab, the super class of the main class of this tab.
 			rigForRunning();
-			toolkitService.submitRepositoryTestdata(getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
+			toolkitService.submitRepositoryTestdata(getCurrentTestSession(),getSiteSelection(), testdataSetName, pidTextBox.getValue().trim(), queryCallback);
 		}
 		
 	}

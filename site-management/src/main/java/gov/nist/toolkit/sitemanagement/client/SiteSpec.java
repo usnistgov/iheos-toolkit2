@@ -4,6 +4,8 @@ import gov.nist.toolkit.actortransaction.client.ActorType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
 /**
  * A Site is the collection of endpoints and parameters for a single site or as Gazelle calls it a system.
  * A Site references multiple actor types but it can hold only one copy of an actor type:
@@ -16,7 +18,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author bill
  *
  */
-public class SiteSpec implements IsSerializable {
+public class SiteSpec implements Serializable, IsSerializable {
 
 	public String name = "";   // site name
 	public ActorType actorType = null;

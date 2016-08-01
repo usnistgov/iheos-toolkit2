@@ -10,6 +10,8 @@ import gov.nist.toolkit.xdsexception.MetadataValidationException;
 import gov.nist.toolkit.xdsexception.XdsException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
 
+import java.util.List;
+
 /**
 Generic implementation of GetAssociations Stored Query. This class knows how to parse a 
  * GetAssociations Stored Query request producing a collection of instance variables describing
@@ -46,6 +48,8 @@ abstract public class GetSubmissionSetAndContents extends StoredQuery {
 		sqs.validate_parm("$XDSSubmissionSetUniqueId",                 true,      false,     true,         false,     false,       "$XDSSubmissionSetEntryUUID");
 		sqs.validate_parm("$XDSDocumentEntryFormatCode",               false,     true,      true,         true,      false,      (String[])null);
 		sqs.validate_parm("$XDSDocumentEntryConfidentialityCode",      false,     true,      true,         true,      true,      (String[])null);
+		// DocumentEntry level
+		sqs.validate_parm("$XDSDocumentEntryType",                         		false,     true,      true,         false,           false,                             (String[])null												);
 
 		if (sqs.has_validation_errors) 
 			throw new MetadataValidationException(QueryParmsErrorPresentErrMsg, SqDocRef.Individual_query_parms);
@@ -55,12 +59,14 @@ abstract public class GetSubmissionSetAndContents extends StoredQuery {
 	protected String ss_uid;
 	protected SQCodedTerm format_code;
 	protected SQCodedTerm conf_code;
-	
+	protected List<String> entry_type;
+
 	void parseParameters() throws XdsInternalException, XdsException, LoggerException {
 		ss_uuid = sqs.params.getStringParm("$XDSSubmissionSetEntryUUID");
 		ss_uid = sqs.params.getStringParm("$XDSSubmissionSetUniqueId");
 		format_code = sqs.params.getCodedParm("$XDSDocumentEntryFormatCode");
 		conf_code = sqs.params.getCodedParm("$XDSDocumentEntryConfidentialityCode");
+		entry_type = sqs.params.getListParm("$XDSDocumentEntryType");
 	}
 
 

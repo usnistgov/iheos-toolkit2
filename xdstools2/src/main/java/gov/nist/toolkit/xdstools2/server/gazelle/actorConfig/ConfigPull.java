@@ -163,6 +163,9 @@ public class ConfigPull {
 			String dataString = new String(data);
 			logger.info("config is " + dataString);
 
+		String stuff = new String(data);
+		logger.info("Config is " + stuff);
+		
 			Io.bytesToFile(new File(actorsDir + File.separator + systemName + ".csv"), data);
 		} catch (Exception ex) {
 			logger.error("pull - exception + " + ExceptionUtil.exception_details(ex));

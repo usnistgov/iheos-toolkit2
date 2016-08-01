@@ -224,94 +224,10 @@ public class ActorConfigTab extends GenericQueryTab {
 				row++;
 			}
 
-			if (ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)) {
-				Label oddsRepositoryUniqueIdLabel = new Label("oddsRepositoryUniqueId");
-				actorEditGrid.setWidget(row, 0, oddsRepositoryUniqueIdLabel);
-			}
 
-			if (ActorType.REPOSITORY.equals(actorType)) {
-				Label repuidLabel = new Label("repositoryUniqueId");
-				actorEditGrid.setWidget(row, 0, repuidLabel);
+			row = addRepositorySection(row, boxwidth, TLS, actorType);
+			row = addOnDemandRepositorySection(row, boxwidth, TLS, actorType);
 
-				TextBox repuidBox = new TextBox();
-				repuidBox.setWidth(boxwidth);
-
-				String repuid = "";
-
-				boolean isAsync = false;
-
-				TransactionBean repBean = currentEditSite.getRepositoryBean(false);
-				TransactionBean secureRepBean = currentEditSite.getRepositoryBean(true);
-				TransactionBean transBean = currentEditSite.transactions().find(TransactionType.RETRIEVE, false, isAsync);
-				TransactionBean secureTransBean = currentEditSite.transactions().find(TransactionType.RETRIEVE, true, isAsync);
-				
-				if (repBean == null) {
-					repBean = new TransactionBean("", RepositoryType.REPOSITORY, "", !TLS, isAsync);
-					currentEditSite.addRepository(repBean);
-				} else {
-					repuid = trim(repBean.getName());
-				}
-
-				if (secureRepBean == null) {
-					secureRepBean = new TransactionBean("", RepositoryType.REPOSITORY, "", TLS, isAsync);
-					currentEditSite.addRepository(secureRepBean);
-				} else if (repuid.equals("")) {
-					repuid = trim(secureRepBean.getName());
-				}
-
-				if (transBean == null) {
-					transBean = new TransactionBean(TransactionType.RETRIEVE, RepositoryType.REPOSITORY, "", !TLS, isAsync);
-					currentEditSite.addTransaction(transBean);
-				}
-				
-				if (secureTransBean == null) {
-					secureTransBean = new TransactionBean(TransactionType.RETRIEVE, RepositoryType.REPOSITORY, "", TLS, isAsync);
-					currentEditSite.addTransaction(secureTransBean);
-				}
-
-				repuidBox.setText(repuid);
-				repuidBox.addChangeHandler(new RepuidChangedHandler(this, repBean, repuidBox));
-				repuidBox.addChangeHandler(new RepuidChangedHandler(this, secureRepBean, repuidBox));
-				actorEditGrid.setWidget(row, 1, repuidBox);
-
-				row++;
-
-				actorEditGrid.setWidget(row, 0, new Label("Retrieve"));
-
-				int TLS_COLUMN = 1;
-				int NONTLS_COLUMN = 2;
-
-				String retEndpoint = repBean.endpoint;
-				TextBox retEndpointBox = new TextBox();
-				retEndpointBox.setWidth(boxwidth);
-				retEndpointBox.setText(trim(retEndpoint));
-				retEndpointBox.addValueChangeHandler(new EndpointChangedHandler(this, repBean, transBean, retEndpointBox));
-				actorEditGrid.setWidget(row, NONTLS_COLUMN, retEndpointBox);
-
-				String secRetEndpoint = secureRepBean.endpoint;
-				TextBox secRetEndpointBox = new TextBox();
-				secRetEndpointBox.setWidth(boxwidth);
-				secRetEndpointBox.setText(trim(secRetEndpoint));
-				secRetEndpointBox.addValueChangeHandler(new EndpointChangedHandler(this, secureRepBean, secureTransBean, secRetEndpointBox));
-				actorEditGrid.setWidget(row, TLS_COLUMN, secRetEndpointBox);
-				
-//				for (Boolean isSecure : booleanValues()) {
-//					TransactionBean transbean = site.transactions().find(TransactionType.RETRIEVE, isSecure, isAsync);
-//					if (transbean == null) {
-//						transbean = new TransactionBean(TransactionType.RETRIEVE, RepositoryType.REPOSITORY, "", isSecure, isAsync);
-//						currentEditSite.addTransaction(transbean);
-//					}
-//					TextBox endpointBox = new TextBox();
-//					endpointBox.setWidth(boxwidth);
-//					endpointBox.setText(trim(transbean.endpoint));
-//					endpointBox.addValueChangeHandler(new EndpointChangedHandler(this, transbean, endpointBox));
-//					actorEditGrid.setWidget(row, (isSecure) ? TLS_COLUMN : NONTLS_COLUMN, endpointBox);
-//				}
-
-				row++;
-
-			}
-			
 			if (ActorType.REGISTRY.equals(actorType)) {
 				HorizontalPanel hpanel = new HorizontalPanel();
 				Label pifLabel = new Label("Patient Identity Feed");
@@ -375,6 +291,165 @@ public class ActorConfigTab extends GenericQueryTab {
 		actorEditGrid.setWidget(row, 2, reloadFromGazelleButton);
 		reloadFromGazelleButton.setEnabled(enableGazelleReload);
 
+	}
+
+	private int addOnDemandRepositorySection(int row, String boxwidth, boolean TLS, ActorType actorType) {
+		if (ActorType.ONDEMAND_DOCUMENT_SOURCE.equals(actorType)) {
+			Label repuidLabel = new Label("ODDS repositoryUniqueId");
+			actorEditGrid.setWidget(row, 0, repuidLabel);
+
+			TextBox repuidBox = new TextBox();
+			repuidBox.setWidth(boxwidth);
+
+			String repuid = "";
+
+			boolean isAsync = false;
+
+			TransactionBean repBean = currentEditSite.getRepositoryBean(RepositoryType.ODDS, false);
+			TransactionBean secureRepBean = currentEditSite.getRepositoryBean(RepositoryType.ODDS, true);
+			TransactionBean transBean = currentEditSite.transactions().find(TransactionType.ODDS_RETRIEVE, false, isAsync);
+			TransactionBean secureTransBean = currentEditSite.transactions().find(TransactionType.ODDS_RETRIEVE, true, isAsync);
+
+			if (repBean == null) {
+				repBean = new TransactionBean("", RepositoryType.ODDS, "", !TLS, isAsync);
+				currentEditSite.addRepository(repBean);
+			} else {
+				repuid = trim(repBean.getName());
+			}
+
+			if (secureRepBean == null) {
+				secureRepBean = new TransactionBean("", RepositoryType.ODDS, "", TLS, isAsync);
+				currentEditSite.addRepository(secureRepBean);
+			} else if (repuid.equals("")) {
+				repuid = trim(secureRepBean.getName());
+			}
+
+			if (transBean == null) {
+				transBean = new TransactionBean(TransactionType.ODDS_RETRIEVE, RepositoryType.ODDS, "", !TLS, isAsync);
+				currentEditSite.addTransaction(transBean);
+			}
+
+			if (secureTransBean == null) {
+				secureTransBean = new TransactionBean(TransactionType.ODDS_RETRIEVE, RepositoryType.ODDS, "", TLS, isAsync);
+				currentEditSite.addTransaction(secureTransBean);
+			}
+
+			repuidBox.setText(repuid);
+			repuidBox.addChangeHandler(new RepuidChangedHandler(this, repBean, repuidBox));
+			repuidBox.addChangeHandler(new RepuidChangedHandler(this, secureRepBean, repuidBox));
+			actorEditGrid.setWidget(row, 1, repuidBox);
+
+			row++;
+
+			actorEditGrid.setWidget(row, 0, new Label("Retrieve"));
+
+			int TLS_COLUMN = 1;
+			int NONTLS_COLUMN = 2;
+
+			String retEndpoint = repBean.endpoint;
+			TextBox retEndpointBox = new TextBox();
+			retEndpointBox.setWidth(boxwidth);
+			retEndpointBox.setText(trim(retEndpoint));
+			retEndpointBox.addValueChangeHandler(new EndpointChangedHandler(this, repBean, transBean, retEndpointBox));
+			actorEditGrid.setWidget(row, NONTLS_COLUMN, retEndpointBox);
+
+			String secRetEndpoint = secureRepBean.endpoint;
+			TextBox secRetEndpointBox = new TextBox();
+			secRetEndpointBox.setWidth(boxwidth);
+			secRetEndpointBox.setText(trim(secRetEndpoint));
+			secRetEndpointBox.addValueChangeHandler(new EndpointChangedHandler(this, secureRepBean, secureTransBean, secRetEndpointBox));
+			actorEditGrid.setWidget(row, TLS_COLUMN, secRetEndpointBox);
+
+			row++;
+
+		}
+		return row;
+	}
+
+	private int addRepositorySection(int row, String boxwidth, boolean TLS, ActorType actorType) {
+		if (ActorType.REPOSITORY.equals(actorType)) {
+            Label repuidLabel = new Label("repositoryUniqueId");
+            actorEditGrid.setWidget(row, 0, repuidLabel);
+
+            TextBox repuidBox = new TextBox();
+            repuidBox.setWidth(boxwidth);
+
+            String repuid = "";
+
+            boolean isAsync = false;
+
+            TransactionBean repBean = currentEditSite.getRepositoryBean(RepositoryType.REPOSITORY, false);
+            TransactionBean secureRepBean = currentEditSite.getRepositoryBean(RepositoryType.REPOSITORY, true);
+            TransactionBean transBean = currentEditSite.transactions().find(TransactionType.RETRIEVE, false, isAsync);
+            TransactionBean secureTransBean = currentEditSite.transactions().find(TransactionType.RETRIEVE, true, isAsync);
+
+            if (repBean == null) {
+                repBean = new TransactionBean("", RepositoryType.REPOSITORY, "", !TLS, isAsync);
+                currentEditSite.addRepository(repBean);
+            } else {
+                repuid = trim(repBean.getName());
+            }
+
+            if (secureRepBean == null) {
+                secureRepBean = new TransactionBean("", RepositoryType.REPOSITORY, "", TLS, isAsync);
+                currentEditSite.addRepository(secureRepBean);
+            } else if (repuid.equals("")) {
+                repuid = trim(secureRepBean.getName());
+            }
+
+            if (transBean == null) {
+                transBean = new TransactionBean(TransactionType.RETRIEVE, RepositoryType.REPOSITORY, "", !TLS, isAsync);
+                currentEditSite.addTransaction(transBean);
+            }
+
+            if (secureTransBean == null) {
+                secureTransBean = new TransactionBean(TransactionType.RETRIEVE, RepositoryType.REPOSITORY, "", TLS, isAsync);
+                currentEditSite.addTransaction(secureTransBean);
+            }
+
+            repuidBox.setText(repuid);
+            repuidBox.addChangeHandler(new RepuidChangedHandler(this, repBean, repuidBox));
+            repuidBox.addChangeHandler(new RepuidChangedHandler(this, secureRepBean, repuidBox));
+            actorEditGrid.setWidget(row, 1, repuidBox);
+
+            row++;
+
+            actorEditGrid.setWidget(row, 0, new Label("Retrieve"));
+
+            int TLS_COLUMN = 1;
+            int NONTLS_COLUMN = 2;
+
+            String retEndpoint = repBean.endpoint;
+            TextBox retEndpointBox = new TextBox();
+            retEndpointBox.setWidth(boxwidth);
+            retEndpointBox.setText(trim(retEndpoint));
+            retEndpointBox.addValueChangeHandler(new EndpointChangedHandler(this, repBean, transBean, retEndpointBox));
+            actorEditGrid.setWidget(row, NONTLS_COLUMN, retEndpointBox);
+
+            String secRetEndpoint = secureRepBean.endpoint;
+            TextBox secRetEndpointBox = new TextBox();
+            secRetEndpointBox.setWidth(boxwidth);
+            secRetEndpointBox.setText(trim(secRetEndpoint));
+            secRetEndpointBox.addValueChangeHandler(new EndpointChangedHandler(this, secureRepBean, secureTransBean, secRetEndpointBox));
+            actorEditGrid.setWidget(row, TLS_COLUMN, secRetEndpointBox);
+
+//				for (Boolean isSecure : booleanValues()) {
+//					TransactionBean transbean = site.transactions().find(TransactionType.RETRIEVE, isSecure, isAsync);
+//					if (transbean == null) {
+//						transbean = new TransactionBean(TransactionType.RETRIEVE, RepositoryType.REPOSITORY, "", isSecure, isAsync);
+//						currentEditSite.addTransaction(transbean);
+//					}
+//					TextBox endpointBox = new TextBox();
+//					endpointBox.setWidth(boxwidth);
+//					endpointBox.setText(trim(transbean.endpoint));
+//					endpointBox.addValueChangeHandler(new EndpointChangedHandler(this, transbean, endpointBox));
+//					actorEditGrid.setWidget(row, (isSecure) ? TLS_COLUMN : NONTLS_COLUMN, endpointBox);
+//				}
+
+            row++;
+
+        }
+		return row;
 	}
 
 	String trim(String s) {

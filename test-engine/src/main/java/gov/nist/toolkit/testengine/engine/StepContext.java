@@ -267,121 +267,77 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 				resetStatus();
 				OMElement instruction_output = null;
 				BasicTransaction transaction = null;
-				
+
 				instruction_output = testLog.add_simple_element(test_step_output, instruction_name);
 				instruction_output.addAttribute("step", step_id, null);
-				
-				if (instruction_name.equals("SqlQueryTransaction")) 
-				{
+
+				if (instruction_name.equals("SqlQueryTransaction")) {
 					transaction = new SqlQueryTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("StoredQueryTransaction")) 
-				{
+				} else if (instruction_name.equals("StoredQueryTransaction")) {
 					transaction = new StoredQueryTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("GenericSoap11Transaction")) 
-				{
+				} else if (instruction_name.equals("GenericSoap11Transaction")) {
 					transaction = new GenericSoap11Transaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("DsubSubscribeTransaction")) 
-				{
+				} else if (instruction_name.equals("DsubSubscribeTransaction")) {
 					transaction = new DsubSubscribeTransaction(this, instruction, instruction_output);
-				}
-				else if (instruction_name.equals("PatientIdentityFeedTransaction"))
-				{
+				} else if (instruction_name.equals("PatientIdentityFeedTransaction")) {
 					transaction = new PatientIdentityFeedTransaction(this, instruction, instruction_output);
-				}
-				else if (instruction_name.equals("IGQTransaction"))
-				{
+				} else if (instruction_name.equals("IGQTransaction")) {
 					transaction = new IGQTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("XCQTransaction")) 
-				{
+				} else if (instruction_name.equals("XCQTransaction")) {
 					transaction = new XCQTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("EpsosTransaction")) 
-				{
+				} else if (instruction_name.equals("EpsosTransaction")) {
 					transaction = new EpsosTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("MPQTransaction")) 
-				{
+				} else if (instruction_name.equals("MPQTransaction")) {
 					transaction = new MPQTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("SimpleTransaction")) 
-				{
+				} else if (instruction_name.equals("SimpleTransaction")) {
 					transaction = new SimpleTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("RetrieveTransaction")) 
-				{
+				} else if (instruction_name.equals("RetrieveTransaction")) {
 					transaction = new RetrieveTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("NullTransaction")) 
-				{
+				} else if (instruction_name.equals("NullTransaction")) {
 					transaction = new NullTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("XCRTransaction"))
-				{
+				} else if (instruction_name.equals("XCRTransaction")) {
 					transaction = new RetrieveTransaction(this, instruction, instruction_output);
-					((RetrieveTransaction)transaction).setIsXca(true);
-				} 
-				else if (instruction_name.equals("IGRTransaction"))
-				{
+					((RetrieveTransaction) transaction).setIsXca(true);
+				} else if (instruction_name.equals("IGRTransaction")) {
 					transaction = new RetrieveTransaction(this, instruction, instruction_output);
-					((RetrieveTransaction)transaction).setIsXca(true);
-					((RetrieveTransaction)transaction).setUseIG(true);
-				} 
-				else if (instruction_name.equals("RegisterTransaction")) 
-				{
+					((RetrieveTransaction) transaction).setIsXca(true);
+					((RetrieveTransaction) transaction).setUseIG(true);
+				} else if (instruction_name.equals("RegisterTransaction")) {
 					transaction = new RegisterTransaction(this, instruction, instruction_output);
-				}
-				else if (instruction_name.equals("RegisterODDETransaction"))
-				{
+				} else if (instruction_name.equals("RegisterODDETransaction")) {
 					transaction = new RegisterODDETransaction(this, instruction, instruction_output);
-				}
-				else if (instruction_name.equals("MuTransaction")) 
-				{
+				} else if (instruction_name.equals("MuTransaction")) {
 					transaction = new MuTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("PublishTransaction")) 
-				{
+				} else if (instruction_name.equals("PublishTransaction")) {
 					transaction = new DsubPublishTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("MockTransaction")) 
-				{
+				} else if (instruction_name.equals("MockTransaction")) {
 					transaction = new MockTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("ProvideAndRegisterTransaction")) 
-				{
+				} else if (instruction_name.equals("ProvideAndRegisterTransaction")) {
 					transaction = new ProvideAndRegisterTransaction(this, instruction, instruction_output);
-				}
-				else if (instruction_name.equals("HttpTransaction"))
-				{
+				} else if (instruction_name.equals("HttpTransaction")) {
 					HTTPTransaction hTransaction = new HTTPTransaction(this, instruction, instruction_output);
 					hTransaction.setTransType(instruction.getAttributeValue(new QName("type")));
 					transaction = hTransaction;
-				}
-				else if (instruction_name.equals("XDRProvideAndRegisterTransaction"))
-				{
+				} else if (instruction_name.equals("XDRProvideAndRegisterTransaction")) {
 					transaction = new XDRProvideAndRegisterTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("EchoV2Transaction")) 
-				{
+				} else if (instruction_name.equals("EchoV2Transaction")) {
 					transaction = new EchoV2Transaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("EchoV3Transaction")) 
-				{
+				} else if (instruction_name.equals("EchoV3Transaction")) {
 					transaction = new EchoV3Transaction(this, instruction, instruction_output);
 				} 
 				else if (instruction_name.equals("SocketTransaction"))
 				{
 					transaction = new SocketTransaction(this, instruction, instruction_output);
-				} 
-				else if (instruction_name.equals("RetrieveImagingDocSetTransaction")) 
-				{
+				} else if (instruction_name.equals("RetrieveImagingDocSetTransaction")) {
 					transaction = new ImagingDocSetRetrieveTransaction(this, instruction, instruction_output);
-				} 
-				else 
-				{
+				} else if (instruction_name.equals("ImagingDocSetRetrieveTransaction")) {
+					transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, false);
+				} else if (instruction_name.equals("ImagingDocSetIigRetrieveTransaction")) {
+					transaction = new IDSRetrieveTransaction(this, instruction, instruction_output, true);
+				} else if (instruction_name.equals("XmlDetailTransaction")) {
+					transaction = new XmlDetailTransaction(this, instruction, instruction_output);
+			    }
+				else {
 					dumpContextIntoOutput(test_step_output);
 					throw new XdsInternalException(ins_context.error("StepContext: Don't understand instruction named " + instruction_name));
 				}
@@ -431,9 +387,8 @@ public class StepContext extends BasicContext implements ErrorReportingInterface
 		parent_context.set("transaction", transaction);
 	}
 
-	public String getRegistryEndpoint() {
-		return getRecursive("RegistryEndpoint");
-	}
-
+   public String getRegistryEndpoint() {
+      return getRecursive("RegistryEndpoint");
+   }
 
 }

@@ -19,9 +19,6 @@ import gov.nist.toolkit.utilities.xml.XmlUtil;
  */
 public class RetImgDocSetReqParser {
    
-   
-   private static final QName studyUidQname = new QName(MetadataSupport.xdsiB_uri, "studyInstanceUID");
-   private static final QName seriesUidQname = new QName(MetadataSupport.xdsiB_uri, "seriesInstanceUID");   
    private static final QName xferListQname = new QName(MetadataSupport.xdsiB_uri, "TransferSyntaxUIDList");
    
    RetrieveImageRequestModel model = new RetrieveImageRequestModel();
@@ -40,11 +37,11 @@ public class RetImgDocSetReqParser {
       for (OMElement studyElement : XmlUtil.decendentsWithLocalName(body, "StudyRequest")) {
          RetrieveImageStudyRequestModel studyModel = new RetrieveImageStudyRequestModel();
          model.addStudyRequest(studyModel);
-         studyModel.setStudyInstanceUID(studyElement.getAttributeValue(studyUidQname));
+         studyModel.setStudyInstanceUID(XmlUtil.getAttributeValue(studyElement, "studyInstanceUID"));
          for (OMElement seriesElement : XmlUtil.decendentsWithLocalName(studyElement, "SeriesRequest")) {
             RetrieveImageSeriesRequestModel seriesModel = new RetrieveImageSeriesRequestModel();
             studyModel.addSeriesRequest(seriesModel);
-            seriesModel.setSeriesInstanceUID(seriesElement.getAttributeValue(seriesUidQname));
+            seriesModel.setSeriesInstanceUID(XmlUtil.getAttributeValue(seriesElement, "seriesInstanceUID"));
             for (OMElement documentElement : XmlUtil.decendentsWithLocalName(seriesElement, "DocumentRequest")) {
                RetrieveItemRequestModel documentModel = new RetrieveItemRequestModel();
                seriesModel.addDocumentRequest(documentModel);

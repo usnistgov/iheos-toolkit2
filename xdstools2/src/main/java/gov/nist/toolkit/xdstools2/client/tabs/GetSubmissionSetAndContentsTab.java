@@ -7,17 +7,24 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
+import gov.nist.toolkit.results.client.CodesConfiguration;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.queryFilter.OnDemandFilter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
+
+	OnDemandFilter onDemandFilter;
+	final int idHashCode = System.identityHashCode(this);
 
 	static List<TransactionType> transactionTypes = new ArrayList<TransactionType>();
 	static {
@@ -46,7 +53,6 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 		myContainer = container;
 		topPanel = new VerticalPanel();
 		container.addTab(topPanel, "SubmissionSetAndContents", select);
-		addToolHeader(container,topPanel, null);
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Get Submission Set and Contents</h2>");
@@ -56,6 +62,12 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 		int row = 0;
 		
 		topPanel.add(mainGrid);
+
+		// On Demand
+		mainGrid.setText(row, 0, "DocumentEntry Type");
+		onDemandFilter = new OnDemandFilter("GetSubmissionSetAndContentsTab_"+idHashCode,"Either");
+		mainGrid.setWidget(row, 1, onDemandFilter.asWidget());
+		row++;
 
 		HTML ssidLabel = new HTML();
 		ssidLabel.setText("Submission Set Unique ID or UUID");
@@ -86,11 +98,16 @@ public class GetSubmissionSetAndContentsTab extends GenericQueryTab {
 				new PopupMessage("You must enter a Submission Set id first");
 				return;
 			}
+
+			Map<String, List<String>> codeSpec = new HashMap<String, List<String>>();
+			onDemandFilter.addToCodeSpec(codeSpec, CodesConfiguration.DocumentEntryType);
+
+
 			addStatusBox();
 			getGoButton().setEnabled(false);
 			getInspectButton().setEnabled(false);
 
-			toolkitService.getSSandContents(siteSpec, ssid.getValue().trim(), queryCallback);
+			toolkitService.getSSandContents(siteSpec, ssid.getValue().trim(), codeSpec, queryCallback);
 		}
 		
 	}

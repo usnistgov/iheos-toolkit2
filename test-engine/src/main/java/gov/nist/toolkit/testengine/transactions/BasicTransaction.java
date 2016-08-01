@@ -750,6 +750,19 @@ public abstract class BasicTransaction  {
 		showEndpoint();
 	}
 
+	protected void parseIDSIigEndpoint(String home, boolean isSecure) throws Exception {
+		if (endpoint == null || endpoint.equals("")) {
+			if (s_ctx.getPlan().getRegistryEndpoint() != null) endpoint = s_ctx.getPlan().getRegistryEndpoint();
+			else try {
+				endpoint = testConfig.site.getEndpoint(TransactionType.RET_IMG_DOC_SET_GW, isSecure, async);
+			} catch (XdsInternalException e) {
+				fatal(ExceptionUtil.exception_details(e, 5));
+			}
+		}
+		testLog.add_name_value(instruction_output, "Endpoint", endpoint);
+		showEndpoint();
+	}
+
 	List<String> failMsgs = null;
 
 	public void fail(String msg) throws XdsInternalException {

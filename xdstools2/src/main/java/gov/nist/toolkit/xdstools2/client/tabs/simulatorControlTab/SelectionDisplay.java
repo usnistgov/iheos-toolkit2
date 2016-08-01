@@ -11,6 +11,8 @@ import java.util.List;
 public interface SelectionDisplay extends HasValue<List<String>> {
     void setData(List<String> data);
 
+    void setData(String groupName, List<String> data);
+
     List<Integer> getSelectedRows();
 
     void setSelectedRows(List<Integer> rows);

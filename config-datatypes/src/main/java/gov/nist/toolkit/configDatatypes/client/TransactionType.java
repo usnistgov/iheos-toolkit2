@@ -16,8 +16,7 @@ public enum TransactionType implements Serializable, IsSerializable {
     REGISTER_ODDE("ITI-61","Register On-Demand Document Entry", "rodde", "rodde", "rodde.as", false, "urn:ihe:iti:2010:RegisterOnDemandDocumentEntry", "urn:ihe:iti:2010:RegisterOnDemandDocumentResponse", false),
     RETRIEVE("ITI-43", "Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     IG_RETRIEVE("ITI-43", "Initiating Gateway Retrieve", "igr", "igr", "igr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-//    ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "odds", "odds", "odds.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
-    ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true), // NOTE: It is only a mock-up for now.
+    ODDS_RETRIEVE("ITI-43", "On-Demand Document Source Retrieve", "ret", "ret.b", "ret.as", true, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     ISR_RETRIEVE("ITI-43", "Integrated Source/Repository Retrieve", "isr", "isr", "isr.as", false, "urn:ihe:iti:2007:RetrieveDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     STORED_QUERY("ITI-18", "Stored Query", "sq", "sq.b", "sq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false),
     IG_QUERY("ITI-18", "Initiating Gateway Query", "igq", "igq", "igq.as", false, "urn:ihe:iti:2007:RegistryStoredQuery", "urn:ihe:iti:2007:RegistryStoredQueryResponse", false),
@@ -28,7 +27,8 @@ public enum TransactionType implements Serializable, IsSerializable {
     XC_PATIENT_DISCOVERY("ITI-55", "Cross Community Patient Discovery", "xcpd", "xcpd", "xcpd.as", false, "urn:hl7-org:v3:PRPA_IN201305UV02:CrossGatewayPatientDiscovery", "urn:hl7-org:v3:PRPA_IN201306UV02:CrossGatewayPatientDiscovery", false),
     DIRECT("ONC-DIRECT", "ONC-DIRECT", "direct", "direct", "direct.as", false, "", "", false),
     PIF("PIF", "Patient Identity Feed", "pif", "pif", "pif", false, "", "", false),
-    RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:rad:2007:RetrieveDocumentSetResponse", true),
+    RET_IMG_DOC_SET("RAD-69", "Retrieve Imaging Document Set", "ret.ids", "ret.ids.b", "ret.ids.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
+    RET_IMG_DOC_SET_GW("RAD-69", "Retrieve Img Doc Set Gateway", "ret.iig", "ret.iig.b", "ret.iig.as", true, "urn:ihe:rad:2009:RetrieveImagingDocumentSet", "urn:ihe:iti:2007:RetrieveDocumentSetResponse", true),
     XC_RET_IMG_DOC_SET("RAD-75", "Cross-Community Ret Img Doc Set", "xcr.ids", "xcr.ids.b", "xcr.ids.as", true, "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSet", "urn:ihe:rad:2011:CrossGatewayRetrieveImagingDocumentSetResponse", true);
 
 

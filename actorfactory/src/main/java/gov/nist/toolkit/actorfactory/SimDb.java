@@ -1,10 +1,13 @@
 package gov.nist.toolkit.actorfactory;
 
-import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actorfactory.client.BadSimIdException;
+import gov.nist.toolkit.actorfactory.client.NoSimException;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
-import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.HttpHeader.HttpHeaderParseException;
 import gov.nist.toolkit.http.HttpMessage;
 import gov.nist.toolkit.http.HttpParseException;
@@ -21,7 +24,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Each simulator has an on-disk presence that keeps track of its long
@@ -121,7 +129,7 @@ public class SimDb {
 
 	File simSafetyFile() { return new File(simDir, "simId.txt"); }
 	boolean isSim() { return new File(simDir, "simId.txt").exists(); }
-    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); /*&& new File(simDir, "simctl.ser").exists();*/ }
+    boolean isSimDir(File dir) { return new File(dir, "simId.txt").exists(); }
 
 	// ipAddr aka simid
 	public SimDb(File dbRoot, SimId simId, String actor, String transaction) throws IOException, NoSimException {
@@ -304,15 +312,30 @@ public class SimDb {
 
 		return names;
 	}
-	
+
+
+	public void getActorIfAvailable() {
+		if (actor==null) {
+			try {
+				String actorTemp = getSimulatorType();
+				if (actorTemp!=null) {
+					actor=actorTemp;
+				}
+			} catch (IOException ex) {
+				logger.warn(ex.toString());
+			}
+		}
+	}
 
 	public File getRegistryIndexFile() {
+		getActorIfAvailable();
 		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "reg_db.ser");
 	}
 
 	public File getRepositoryIndexFile() {
+		getActorIfAvailable();
 		File regDir = new File(simDir.toString() + File.separator + actor);
 		regDir.mkdirs();
 		return new File(regDir.toString() + File.separator + "rep_db.ser");

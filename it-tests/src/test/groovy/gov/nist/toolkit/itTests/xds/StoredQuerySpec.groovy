@@ -25,11 +25,11 @@ class StoredQuerySpec extends ToolkitSpecification {
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId2 = 'BR15^^^&1.2.360&ISO'
-    String reg = 'bill__reg'
-    SimId simId = new SimId(reg)
+    @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
+    @Shared String reg = 'bill__reg'
+    @Shared SimId simId = new SimId(reg)
     @Shared String testSession = 'bill';
-    String siteName = 'bill__reg'
+    @Shared String siteName = 'bill__reg'
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -52,6 +52,9 @@ class StoredQuerySpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+//        System.gc()
+        spi.delete('reg', testSession)
+        api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
     }

@@ -86,7 +86,7 @@ class ServiceManagerITh extends Specification {
         TransactionSettings ts = new TransactionSettings()
 
         // writes results to /Users/bill/tmp/toolkit2/TestLogCache/STANDALONE/11990
-        List<Result> results = manager.runMesaTest(session.getId(), session.siteSpec, '11990', null, parms, null, true)
+        List<Result> results = manager.runMesaTest(null,session.getId(), session.siteSpec, '11990', null, parms, null, true)
 
         then:
         results.get(0).passed()

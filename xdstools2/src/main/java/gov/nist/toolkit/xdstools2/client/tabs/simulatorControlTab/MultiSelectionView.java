@@ -30,6 +30,12 @@ public class MultiSelectionView implements SelectionDisplay {
     }
 
     @Override
+    public void setData(String groupName, List<String> data) {
+        // TODO: use groupName as needed in future
+        setData(data);
+    }
+
+    @Override
     public List<Integer> getSelectedRows() {
         List<Integer> rows = new ArrayList<>();
         for (CheckBox box : selections) {

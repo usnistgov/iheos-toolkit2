@@ -22,6 +22,7 @@ import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.SimulatorMessageViewTab;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.od.OddsEditTab;
 
 import java.util.*;
 
@@ -140,10 +141,8 @@ public class SimulatorControlTab extends GenericQueryTab {
 				simConfigSuper.reloadSimulators();
 				loadSimStatus(getCurrentTestSession());
 			}
-
 		});
-
-	}
+	} // createNewSimulator
 	
 	
 	
@@ -162,7 +161,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 				for (String name : result)
 					actorSelectListBox.addItem(name);
 			}
-			
 		});
 	}
 
@@ -183,7 +181,6 @@ public class SimulatorControlTab extends GenericQueryTab {
 		table.setText(row, idColumn, "ID");
 		table.setText(row, typeColumn, "Type");
 		table.setText(row, pidPortColumn, "Patient Feed Port");
-
 	}
 
 	void loadSimStatus() {
@@ -302,8 +299,20 @@ public class SimulatorControlTab extends GenericQueryTab {
 						@Override
 						public void onClick(ClickEvent clickEvent) {
 							SimulatorConfig config = getData();
-							EditTab editTab = new EditTab(self, config);
-							editTab.onTabLoad(myContainer, true, null);
+
+//							GenericQueryTab editTab;
+							if (ActorType.ONDEMAND_DOCUMENT_SOURCE.getShortName().equals(config.getActorType())) {
+								// This simulator requires content state initialization
+								OddsEditTab editTab;
+								editTab = new OddsEditTab(self, config);
+								editTab.onTabLoad(myContainer, true, null);
+							} else {
+								// Generic state-less type simulators
+								GenericQueryTab editTab = new EditTab(self, config);
+								editTab.onTabLoad(myContainer, true, null);
+							}
+
+
 						}
 					});
 					buttonPanel.add(editButton);

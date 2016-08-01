@@ -1,4 +1,5 @@
 package gov.nist.toolkit.itTests.xc
+
 import gov.nist.toolkit.actorfactory.SimCache
 import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
@@ -30,7 +31,10 @@ class GatewayBuilder {
         // build and initialize remote communities
         (1..numberCommunities).each {
             String id = String.format("rg%d", it)
+
+            System.gc() // On my machine (Sunil's Windows box) this seems to be required because some xml files in the simulator directory are "in use" by Java
             spi.delete(id, userName)  // in case it already exists
+
             RespondingGateway respondingGateway = spi.createRespondingGateway(id, userName, environmentName)
 
             SimConfig rgSimConfig = spi.get(respondingGateway)

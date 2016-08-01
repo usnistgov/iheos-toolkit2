@@ -198,7 +198,7 @@ public class SimManager {
 	}
 
 	/**
-	 * Remove simulator config.  Managed as a list for convienence
+	 * Remove simulator config.  Managed as a list for convenience
 	 * not because there can be multiple (there can't)
 	 * @param simId
 	 */

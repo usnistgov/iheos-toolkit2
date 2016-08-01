@@ -1,18 +1,5 @@
 package gov.nist.toolkit.testengine.transactions;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.namespace.QName;
-
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.log4j.Logger;
-import org.jaxen.JaxenException;
-
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel;
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel;
@@ -25,11 +12,18 @@ import gov.nist.toolkit.utilities.io.Sha1Bean;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
 import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
-import gov.nist.toolkit.xdsexception.XdsPreparsedException;
+import gov.nist.toolkit.xdsexception.*;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
+import org.jaxen.JaxenException;
+
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 //	String metadata_filename = null;
@@ -620,7 +614,7 @@ public class ImagingDocSetRetrieveTransaction extends BasicTransaction {
 
 	@Override
 	protected String getRequestAction() {
-		return null;
+		return "urn:ihe:rad:2009:RetrieveImagingDocumentSet";
 	}
 
 	@Override

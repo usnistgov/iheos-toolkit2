@@ -438,7 +438,7 @@ public class CodesUpdater {
         // init environment dir
         File environment = new File(pathToEnvironment);
         // init testkit dir
-        testkit = new File(environment.getPath()+File.separator+"testkit");
+        testkit = new File(environment.getPath()+File.separator+"testkits"+File.separator+"default");
         // init codes
         allCodes = new CodesFactory().load(new File(environment.getPath()+File.separator+"codes.xml"));
         try {

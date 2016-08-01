@@ -29,26 +29,28 @@ public class RetrieveDocumentResponseGenerator {
         return generate();
     }
 
-    OMElement generate() {
-        OMElement response;
-        response = MetadataSupport.om_factory.createOMElement("RegistryResponse", MetadataSupport.ebRSns3);
-        OMElement rdsr = MetadataSupport.om_factory.createOMElement("RetrieveDocumentSetResponse", MetadataSupport.xdsB);
-        rdsr.addChild(response);
+   OMElement generate() {
+      OMElement response;
+      response = MetadataSupport.om_factory.createOMElement("RegistryResponse", MetadataSupport.ebRSns3);
+      OMElement rdsr = MetadataSupport.om_factory.createOMElement("RetrieveDocumentSetResponse", MetadataSupport.xdsB);
+      rdsr.addChild(response);
 
-        if (registryErrorListGenerator && registryErrorListGenerator.hasErrors()) {
-            statusAtt = MetadataSupport.om_factory.createOMAttribute("status", null, MetadataSupport.status_failure);
-            response.addChild(registryErrorListGenerator.registryErrorList)
-        } else {
-            statusAtt = MetadataSupport.om_factory.createOMAttribute("status", null, MetadataSupport.status_success);
-        }
+      if (registryErrorListGenerator && registryErrorListGenerator.hasErrors()) {
+         String status = MetadataSupport.status_failure;
+         if (model.size() > 0) status = MetadataSupport.status_partial_success;
+         statusAtt = MetadataSupport.om_factory.createOMAttribute("status", null, status);
+         response.addChild(registryErrorListGenerator.registryErrorList)
+      } else {
+         statusAtt = MetadataSupport.om_factory.createOMAttribute("status", null, MetadataSupport.status_success);
+      }
 
-        response.addAttribute(statusAtt);
+      response.addAttribute(statusAtt);
 
-        for (RetrievedDocumentModel item : model.values()) {
-            rdsr.addChild(new DocumentResponseGenerator(item).get());
-        }
-        return rdsr;
-    }
+      for (RetrievedDocumentModel item : model.values()) {
+         rdsr.addChild(new DocumentResponseGenerator(item).get());
+      }
+      return rdsr;
+   }
 
     public OMAttribute getStatusAtt() { return statusAtt; }
 }

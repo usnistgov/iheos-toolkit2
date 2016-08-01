@@ -1,9 +1,11 @@
 package gov.nist.toolkit.itTests.xc
+
 import gov.nist.toolkit.actorfactory.SimCache
-import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
+import gov.nist.toolkit.commondatatypes.MetadataSupport
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
+import gov.nist.toolkit.configDatatypes.SimulatorProperties
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection
@@ -12,7 +14,6 @@ import gov.nist.toolkit.registrymetadata.client.Uids
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentManager
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentModel
 import gov.nist.toolkit.registrymsg.repository.RetrievedDocumentsModel
-import gov.nist.toolkit.commondatatypes.MetadataSupport
 import gov.nist.toolkit.results.client.CodesConfiguration
 import gov.nist.toolkit.results.client.Result
 import gov.nist.toolkit.sitemanagement.client.SiteSpec
@@ -25,7 +26,7 @@ import gov.nist.toolkit.toolkitServicesCommon.SimId
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType
 import spock.lang.Shared
 /**
- * Build RG, initialize it with a single submission, query and retreive the submission.
+ * Build RG, initialize it with a single submission, query and retrieve the submission.
  *
  * This test uses two copies of toolkit.  One copy is launched via Grizzly and offers the
  * simulator services.  It is references through the variable spi.
@@ -37,19 +38,20 @@ class QuerySpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
-    BasicSimParameters RGParams = new BasicSimParameters();
-    BasicSimParameters IGParams = new BasicSimParameters();
-    String patientId = 'BR14^^^&1.2.360&ISO'
-    String testSession = 'bill'
+    @Shared  BasicSimParameters RGParams = new BasicSimParameters();
+    @Shared  BasicSimParameters IGParams = new BasicSimParameters();
+    @Shared  String patientId = 'BR14^^^&1.2.360&ISO'
+    @Shared  String testSession = 'bill'
     @Shared  apiEnvironment = 'test'
     @Shared  spiEnvironment = 'test'
-    TestInstance testId
-    List<String> sections
-    Map<String, String> qparams
-    boolean stopOnFirstError = true
-    List<Result> results
-    String RGSiteName = 'bill__rg1'
-
+    @Shared  TestInstance testId
+    @Shared  List<String> sections
+    @Shared  Map<String, String> qparams
+    @Shared  boolean stopOnFirstError = true
+    @Shared  List<Result> results
+    @Shared  String RGSiteName = 'bill__rg1'
+    @Shared  SimId RGSimId
+    @Shared  SimId IGSimId
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -58,6 +60,14 @@ class QuerySpec extends ToolkitSpecification {
         // Needed to build simulators
         spi = getSimulatorApi(remoteToolkitPort)
     }
+
+    def cleanupSpec() {  // one time shutdown when everything is done
+        if (RGSimId)
+            spi.delete(RGSimId)
+        if (IGSimId)
+            spi.delete(IGSimId)
+    }
+
 
     def setup() {  // run before each test method
         RGParams.id = 'rg1'
@@ -74,12 +84,13 @@ class QuerySpec extends ToolkitSpecification {
 
     def 'Test Responding Gateway' () {
         when:
+//        System.gc()
         println 'STEP - DELETE RESPONDING GATEWAY SIM'
         spi.delete(RGParams)
 
         and:
         println 'STEP - CREATE RESPONDING GATEWAY SIM'
-        SimId RGSimId = spi.create(RGParams)
+        RGSimId = spi.create(RGParams)
 
         then: 'verify sim built'
         RGSimId.getId() == RGParams.id
@@ -127,12 +138,13 @@ class QuerySpec extends ToolkitSpecification {
         results.get(0).passed()
 
         when:
+//        System.gc()
         println 'STEP - DELETE INITIATING GATEWAY SIM'
         spi.delete(IGParams.id, IGParams.user)
 
         and:
         println 'STEP - CREATE INITIATING GATEWAY SIM'
-        SimId IGSimId = spi.create(
+        IGSimId = spi.create(
                 IGParams.id,
                 IGParams.user,
                 IGParams.actorType,

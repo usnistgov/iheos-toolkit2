@@ -52,7 +52,7 @@ public class TestKitLog {
 
 		if (parts.length>2) {
 			path = testLog;
-			int offset = 2 + (parts.length - 3);
+			int offset = 2; // + (parts.length - 3);
 			for (int cx=offset; cx < parts.length; cx++) {
 				path = new File(path, parts[cx]);
 			}

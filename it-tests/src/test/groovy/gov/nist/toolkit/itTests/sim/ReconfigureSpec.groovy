@@ -27,6 +27,10 @@ class ReconfigureSpec extends Specification {
         retrieveEndpoint = config.getConfigEle(SimulatorProperties.retrieveEndpoint).asString()
     }
 
+    def cleanup() {
+        api.deleteSimulatorIfItExists(simId)
+    }
+
     def 'confirm original config'() {
         when:
         EndpointParser ep = new EndpointParser(retrieveEndpoint)

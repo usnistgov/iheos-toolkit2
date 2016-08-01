@@ -16,12 +16,24 @@ public class OnDemandFilter extends Widget implements QueryFilter  {
 
     static final String stableString = "Stable";
     static final String onDemandString = "On-Demand";
-    static final String bothString = "Both";
+    String bothString = "Both";
 
     public OnDemandFilter(String label) {
+       init(label, null);
+    }
+    public OnDemandFilter(String label, String newBothString) {
+        init(label, newBothString);
+    }
+
+    protected void init(String label, String newBothString) {
         RadioButton _static = new RadioButton(label, stableString);
         hp.add(_static);
         hp.add(new RadioButton(label, onDemandString));
+
+        if (newBothString!=null && !bothString.equals(newBothString)) {
+            bothString = newBothString;
+        }
+
         RadioButton both = new RadioButton(label, bothString);
         both.setValue(true);
         hp.add(both);

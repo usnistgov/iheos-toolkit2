@@ -22,6 +22,7 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
 	public ParamType type;
 	public TransactionType transType = null;
 
+
 	// cannot use Object class - will not serialize so tricks are necessary
 	public enum ValueType implements IsSerializable { BOOLEAN, STRING , SINGLE_SELECT_LIST, MULTI_SELECT_LIST, PATIENT_ERROR_MAP};
 	ValueType valueType = ValueType.STRING;
@@ -50,6 +51,14 @@ public class SimulatorConfigElement implements Serializable,IsSerializable {
     public SimulatorConfigElement(String name, ParamType type, List<String> values, boolean isMultiSelect) {
         this.name = name;
         this.type = type;
+        setValue(values, ((isMultiSelect) ? ValueType.MULTI_SELECT_LIST : ValueType.SINGLE_SELECT_LIST));
+    }
+
+    public SimulatorConfigElement(String name, ParamType type, String[] vals, boolean isMultiSelect) {
+        this.name = name;
+        this.type = type;
+        List<String> values = new ArrayList<>();
+        for (String value : vals) values.add(value);
         setValue(values, ((isMultiSelect) ? ValueType.MULTI_SELECT_LIST : ValueType.SINGLE_SELECT_LIST));
     }
 

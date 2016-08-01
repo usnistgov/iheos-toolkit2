@@ -22,9 +22,9 @@ class RetrieveSpec extends ToolkitSpecification {
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'SR7^^^&1.2.260&ISO'
-    String reg = 'sunil__rr'
-    SimId simId = new SimId(reg)
+    @Shared String patientId = 'SR7^^^&1.2.260&ISO'
+    @Shared String reg = 'sunil__rr'
+    @Shared SimId simId = new SimId(reg)
     @Shared String testSession = 'sunil'
     @Shared String repUid = ''
 
@@ -54,6 +54,9 @@ class RetrieveSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+//        System.gc()
+        spi.delete('rr', testSession)
+        api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
     }
@@ -89,11 +92,11 @@ class RetrieveSpec extends ToolkitSpecification {
         results.get(0).passed()
     }
 
-    def 'Run all tests'() {
+    def 'Setup test with submissions'() {
         when:
         String siteName = 'sunil__rr'
         TestInstance testId = new TestInstance("15816")
-        List<String> sections = new ArrayList<>()
+        List<String> sections = ['Register_Stable', 'PnR']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         params.put('$repuid$', repUid)
@@ -115,7 +118,8 @@ class RetrieveSpec extends ToolkitSpecification {
         when:
         String siteName = 'sunil__rr'
         TestInstance testId = new TestInstance("15816")
-        List<String> sections = ["Retrieve"]
+//        List<String> sections = ["Retrieve_Doc", 'Retrieve_Bad_Doc_Uid', 'Retrieve_Partial_Uid']
+        List<String> sections = ['Retrieve_Partial_Uid']
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         params.put('$repuid$', repUid)
@@ -129,7 +133,7 @@ class RetrieveSpec extends ToolkitSpecification {
         results.size() == 1
         results.get(0).passed()
 
-        println "size: ${results.size()}, pass: ${results.get(0).passed()}"
+        //println "size: ${results.size()}, pass: ${results.get(0).passed()}"
     }
 
 }

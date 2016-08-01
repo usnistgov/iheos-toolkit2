@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><TestPlan>
+  <Test>15806/Retrieve</Test>
+  <TestStep id="retrieve_od_doc_1">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RetrieveTransaction>
+
+      <UseReport reportName="repuid" section="Register_OD" step="SubmitOnDemandDocumentEntry" useAs="$repuid$"/>
+	  <UseReport reportName="Document01_uid" section="Register_OD" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uid$"/>
+      <MetadataFile>query_1.xml</MetadataFile>
+      <ExpectedContents/>
+
+<!-- We're expecting a dynamic document in this case. 
+      <ReferenceDocument uid="$docuid1$">submit/my_document.txt</ReferenceDocument>
+-->
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+
+  <TestStep id="retrieve_od_doc_2">
+    <ExpectedStatus>Success</ExpectedStatus>
+    <RetrieveTransaction>
+
+      <UseReport reportName="repuid" section="Register_OD" step="SubmitOnDemandDocumentEntry" useAs="$repuid$"/>
+	  <UseReport reportName="Document01_uid" section="Register_OD" step="SubmitOnDemandDocumentEntry" useAs="$od_doc_uid$"/>
+      <MetadataFile>query_2.xml</MetadataFile>
+      <ExpectedContents/>
+
+<!-- We're expecting a dynamic document in this case. 
+      <ReferenceDocument uid="$docuid1$">submit/my_document.txt</ReferenceDocument>
+-->
+
+      <XDSb/>
+    </RetrieveTransaction>
+  </TestStep>
+</TestPlan>

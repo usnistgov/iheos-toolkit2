@@ -9,68 +9,106 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2;
 import gov.nist.toolkit.xdstools2.client.inspector.HyperlinkFactory;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
-import gov.nist.toolkit.xdstools2.client.toolLauncher.ToolLauncher;
 
 public class HomeTab extends GenericQueryTab {
-	String aboutMessage = null;
+	//	private static final String Container = null;
+	String aboutMessage = null;	
 	String nwhin_flag = "false";
 	HorizontalPanel menubar = new HorizontalPanel();
 
 
 	public HomeTab() {
 		super(new FindDocumentsSiteActorManager());
+//		super(new GetDocumentsSiteActorManager());
 	}
 
-	//	@Override
-//	public void onTabLoad(TabContainer container, boolean select,
-//						  String eventName) {
-//
-//	}
 
-	@Override
-//	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
- 		myContainer = container;
+	public void onTabLoad(final Xdstools2 container, boolean select, String eventName) {
+		myContainer = container;
 
 		addActorReloader();
 
-		topPanel = new VerticalPanel();
+		topPanel = new VerticalPanel();	
 
 		select = true;
 		myContainer.addTab(topPanel, "Home", select);
+
+//		HTML title = new HTML();
+//		title.setHTML("<h2>Home</h2>");
+//		topPanel.add(title);
+
+//		HTML docLink = new HTML();
+//		docLink.setHTML("<a href=\"" + "site/home.html" + "\" target=\"_blank\">" +  "[help]" + "</a>");
+		//		topPanel.add(docLink);
+
+//		HTML about = new HTML();
+//		about.setHTML("<a href=\"" + "site/about.html" + "\" target=\"_blank\">" +  "[about]" + "</a>");
+		//		topPanel.add(docLink);
+		
+//		Hyperlink h = HyperlinkFactory.link("&nbsp;&nbsp;[about version]&nbsp;&nbsp;", new ClickHandler() {
+//
+//			public void onClick(ClickEvent event) {
+//				new PopupMessage(aboutMessage);
+//			}
+//
+//		});
+
+//		menubar.add(docLink);
+//		menubar.add(h);
+//		menubar.add(about);
+
+//		HTML instLink = new HTML();
+//		instLink.setHTML("<a href=\"" + "site/install.html" + "\" target=\"_blank\">" +  "[Installation Instructions]" + "</a>");
+//		menubar.add(instLink);
+
 		topPanel.add(menubar);
 
 		menubar.add(
-				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + ToolLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new ToolLauncher(myContainer, ToolLauncher.toolConfigTabLabel))
+				HyperlinkFactory.launchTool("&nbsp;&nbsp;[" + TabLauncher.toolConfigTabLabel + "]&nbsp;&nbsp;", new TabLauncher(myContainer, TabLauncher.toolConfigTabLabel))
 
-		);
+				);
 
-		Frame frame = new Frame("site/index.html");
-		frame.setSize("100em", "100em");
-		topPanel.add(frame);
+//		HTML faq = new HTML();
+//		faq.setHTML("<a href=\"" + "doc/faq.html" + "\" target=\"_blank\">" +  "[FAQ]" + "</a>");
+//		menubar.add(faq);
+
+//		new FeatureManager().addCallback(new MainGridLoader());
+
+//		topPanel.add(new HTML("<a href=\"doc/howto/index.html\">How to...</a>"));
+
+//		HTML howtoPanel = new HTML();
+//		String html = HomePageResources.INSTANCE.getIntroHtml().getText();
+//		howtoPanel.setHTML(html);
+//		topPanel.add(howtoPanel);
+
+        Frame frame = new Frame("site/index.html");
+        frame.setSize("100em", "100em");
+        topPanel.add(frame);
 
 		new MainGridLoader().featuresLoadedCallback();
 	}
 
+	boolean forDirect = false;
 	boolean forIHE = false;
+	boolean forNwHIN = false;
 
 	class MainGridLoader {
 
 		//@Override
 		public void featuresLoadedCallback() {
 			String th = "";
-
+			
 			try {
 				th = Xdstools2.tkProps().get("toolkit.home","");
 			} catch (Throwable t) {
-
+				
 			}
 
 			mainGrid = new FlexTable();
 			mainGrid.setCellSpacing(20);
 
 			try {
-				forIHE = true;
+					forIHE = true;
 
 				if (forIHE) {
 					loadIHEGrid(0);
@@ -87,6 +125,36 @@ public class HomeTab extends GenericQueryTab {
 
 	}
 
+	void loadCCDAGrid() {
+		mainGrid = new FlexTable();
+		mainGrid.setCellSpacing(20);
+
+
+		int row = 0;
+		int col = 0;
+
+
+		// ***************************************************************************
+		// Direct
+
+		mainGrid.setWidget(row, col, addHTML("<h2>Direct</h2>"));
+		row++;		
+
+		String val = "Message and CCDA document validators";
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(val, new TabLauncher(myContainer, val)));
+		row++;
+
+		// ***************************************************************************
+
+		topPanel.add(mainGrid);
+
+		toolkitService.getAdminPassword(getPasswordCallback);
+
+		loadVersion();
+
+
+	}
+
 	void loadIHEGrid(int startingColumn) {
 
 
@@ -98,55 +166,56 @@ public class HomeTab extends GenericQueryTab {
 
 		if (forIHE) {
 			Xdstools2.addtoMainMenu(addHTML("<h2>Toolkit</h2>"));
-
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.homeTabLabel, new ToolLauncher(myContainer, ToolLauncher.homeTabLabel)));
-			row++;
-
 			Xdstools2.addtoMainMenu(addHTML("<h3>Queries & Retrieves</h3>"));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.findDocumentsTabLabel, new ToolLauncher(myContainer, ToolLauncher.findDocumentsTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.findDocumentsAllParametersTabLabel, new ToolLauncher(myContainer, ToolLauncher.findDocumentsAllParametersTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsAllParametersTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsAllParametersTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.findDocumentsByRefIdTabLabel, new ToolLauncher(myContainer, ToolLauncher.findDocumentsByRefIdTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findDocumentsByRefIdTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsByRefIdTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.mpqFindDocumentsTabLabel, new ToolLauncher(myContainer, ToolLauncher.mpqFindDocumentsTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.mpqFindDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.mpqFindDocumentsTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getDocumentsTabLabel, new ToolLauncher(myContainer, ToolLauncher.getDocumentsTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.getDocumentsTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getRelatedTabLabel, new ToolLauncher(myContainer, ToolLauncher.getRelatedTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getRelatedTabLabel, new TabLauncher(myContainer, TabLauncher.getRelatedTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.findFoldersTabLabel, new ToolLauncher(myContainer, ToolLauncher.findFoldersTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.findFoldersTabLabel, new TabLauncher(myContainer, TabLauncher.findFoldersTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getFoldersTabLabel, new ToolLauncher(myContainer, ToolLauncher.getFoldersTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getFoldersTabLabel, new TabLauncher(myContainer, TabLauncher.getFoldersTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getFolderAndContentsTabLabel, new ToolLauncher(myContainer, ToolLauncher.getFolderAndContentsTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getFolderAndContentsTabLabel, new TabLauncher(myContainer, TabLauncher.getFolderAndContentsTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getSubmissionSetTabLabel, new ToolLauncher(myContainer, ToolLauncher.getSubmissionSetTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getSubmissionSetTabLabel, new TabLauncher(myContainer, TabLauncher.getSubmissionSetTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.getAllTabLabel, new ToolLauncher(myContainer, ToolLauncher.getAllTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.getAllTabLabel, new TabLauncher(myContainer, TabLauncher.getAllTabLabel)));
 			row++;
 
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.documentRetrieveTabLabel, new ToolLauncher(myContainer, ToolLauncher.documentRetrieveTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.documentRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.documentRetrieveTabLabel)));
 			row++;
 
-//			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(ToolLauncher.imagingDocumentSetRetrieveTabLabel, new ToolLauncher(myContainer, ToolLauncher.imagingDocumentSetRetrieveTabLabel)));
-			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.imagingDocumentSetRetrieveTabLabel, new ToolLauncher(myContainer, ToolLauncher.imagingDocumentSetRetrieveTabLabel)));
+//			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.imagingDocumentSetRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.imagingDocumentSetRetrieveTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.imagingDocumentSetRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.imagingDocumentSetRetrieveTabLabel)));
 			row++;
 
 
 
+		}
+
+		if (forNwHIN) {
+			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findPatientTabLabel, new TabLauncher(myContainer, TabLauncher.findPatientTabLabel)));
+			row++;
 		}
 
 		// ***************************************************************************
@@ -158,13 +227,13 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(addHTML("<h3>Submit</h3>"));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.link(ToolLauncher.registryTestDataTabLabel, new ToolLauncher(myContainer, ToolLauncher.registryTestDataTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.link(TabLauncher.registryTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.registryTestDataTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.link(ToolLauncher.repositoryTestDataTabLabel, new ToolLauncher(myContainer, ToolLauncher.repositoryTestDataTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.link(TabLauncher.repositoryTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTestDataTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.link(ToolLauncher.recipientTestDataTabLabel, new ToolLauncher(myContainer, ToolLauncher.recipientTestDataTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.link(TabLauncher.recipientTestDataTabLabel, new TabLauncher(myContainer, TabLauncher.recipientTestDataTabLabel)));
 		row++;
 
 
@@ -178,46 +247,52 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(addHTML("<h3>Tools</h3>"));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.pidFavoritesLabel, new ToolLauncher(myContainer, ToolLauncher.pidFavoritesLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.pidFavoritesLabel, new TabLauncher(myContainer, TabLauncher.pidFavoritesLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.sitesTabLabel, new ToolLauncher(myContainer, ToolLauncher.sitesTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.adminTabLabel, new TabLauncher(myContainer, TabLauncher.adminTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.repositoryTabLabel, new ToolLauncher(myContainer, ToolLauncher.repositoryTabLabel)));
-		row++;
-
-		if (Xdstools2.tkProps().get("toolkit.mainmenu.experimental", "false").equalsIgnoreCase("true")) {
-			mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(ToolLauncher.testRunnerTabLabel, new ToolLauncher(myContainer, ToolLauncher.testRunnerTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.repositoryTabLabel, new TabLauncher(myContainer, TabLauncher.repositoryTabLabel)));
 			row++;
-		}
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.testLogLabel, new ToolLauncher(myContainer, ToolLauncher.testLogLabel)));
-		row++;
+			if (Xdstools2.tkProps().get("toolkit.mainmenu.experimental", "false").equalsIgnoreCase("true")) {
+				mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.testRunnerTabLabel, new TabLauncher(myContainer, TabLauncher.testRunnerTabLabel)));
+				row++;
+			}
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.connectathonTabLabel, new ToolLauncher(myContainer, ToolLauncher.connectathonTabLabel)));
-		row++;
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.testLogLabel, new TabLauncher(myContainer, TabLauncher.testLogLabel)));
+			row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.messageValidatorTabLabel, new ToolLauncher(myContainer, ToolLauncher.messageValidatorTabLabel)));
+			Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.connectathonTabLabel, new TabLauncher(myContainer, TabLauncher.connectathonTabLabel)));
+			row++;
+
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.messageValidatorTabLabel, new TabLauncher(myContainer, TabLauncher.messageValidatorTabLabel)));
 		row++;
 
 		// ***************************************************************************
 		// Tests
 
-		Xdstools2.addtoMainMenu(addHTML("<h3>Tests</h3>"));
+        Xdstools2.addtoMainMenu(addHTML("<h3>Tests</h3>"));
+        row++;
+
+        Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(myContainer, TabLauncher.mesaTabLabel)));
+        row++;
+
+        Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.igTestsTabLabel, new TabLauncher(myContainer, TabLauncher.igTestsTabLabel)));
+        row++;
+
+        Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.rgTestsTabLabel, new TabLauncher(myContainer, TabLauncher.rgTestsTabLabel)));
+        row++;
+
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.iigTestsTabLabel, new TabLauncher(myContainer, TabLauncher.iigTestsTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.mesaTabLabel, new ToolLauncher(myContainer, ToolLauncher.mesaTabLabel)));
-		row++;
-
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.igTestsTabLabel, new ToolLauncher(myContainer, ToolLauncher.igTestsTabLabel)));
-		row++;
-
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rgTestsTabLabel, new ToolLauncher(myContainer, ToolLauncher.rgTestsTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.idsTestsTabLabel, new TabLauncher(myContainer, TabLauncher.idsTestsTabLabel)));
 		row++;
 
 		// ***************************************************************************
-		// Simulators
+        // Simulators
 
 		row=0;
 		col=startingColumn+3;
@@ -225,10 +300,10 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(addHTML("<h3>Simulators</h3>"));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.simulatorControlTabLabel, new ToolLauncher(myContainer, ToolLauncher.simulatorControlTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.simulatorControlTabLabel, new TabLauncher(myContainer, TabLauncher.simulatorControlTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.simulatorMessageViewTabLabel, new ToolLauncher(myContainer, ToolLauncher.simulatorMessageViewTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.simulatorMessageViewTabLabel, new TabLauncher(myContainer, TabLauncher.simulatorMessageViewTabLabel)));
 		row++;
 
 
@@ -236,6 +311,50 @@ public class HomeTab extends GenericQueryTab {
 
 
 	}
+
+	private void loadNwHINGrid(int startingColumn) {
+		int row;
+		int col;
+		// ***************************************************************************
+		// NwHIN
+
+
+		row=0;
+		col=startingColumn;
+
+		mainGrid.setWidget(row, col, addHTML("<b>NwHIN</b>"));
+		row++;		
+
+		//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findPatientTabLabel, new TabLauncher(myContainer, TabLauncher.findPatientTabLabel)));
+		//		row++;
+
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.findDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.findDocumentsTabLabel)));
+		row++;
+
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.getDocumentsTabLabel, new TabLauncher(myContainer, TabLauncher.getDocumentsTabLabel)));
+		row++;
+
+		//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.messageValidatorTabLabel, new TabLauncher(myContainer, TabLauncher.messageValidatorTabLabel)));
+		//		row++;
+		//
+		//		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.nwhinTabLabel, new TabLauncher(myContainer, TabLauncher.nwhinTabLabel)));
+		//		row++;
+
+		mainGrid.setWidget(row, col, HyperlinkFactory.launchTool(TabLauncher.documentRetrieveTabLabel, new TabLauncher(myContainer, TabLauncher.documentRetrieveTabLabel)));
+		row++;
+
+	}
+
+
+	int getIndex(ListBox lb, String value) {
+		for (int i=0; i<lb.getItemCount(); i++) {
+			String lbVal = lb.getItemText(i);
+			if (value.equals(lbVal)) 
+				return i;
+		}
+		return -1;
+	}
+
 
 	AsyncCallback<String> getPasswordCallback = new AsyncCallback<String> () {
 
@@ -276,6 +395,11 @@ public class HomeTab extends GenericQueryTab {
 	}
 
 
+	@Override
+	public void onTabLoad(TabContainer container, boolean select,
+			String eventName) {
+
+	}
 
 
 

@@ -26,8 +26,8 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    BasicSimParameters srcParams = new BasicSimParameters()
-    BasicSimParameters recParams = new BasicSimParameters()
+    @Shared BasicSimParameters srcParams = new BasicSimParameters()
+    @Shared BasicSimParameters recParams = new BasicSimParameters()
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -38,6 +38,8 @@ class XdrSrcSpec extends ToolkitSpecification implements TransactionNotification
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
+        spi.delete(srcParams.id, srcParams.user)
+        spi.delete(recParams.id, recParams.user)
         server.stop()
         ListenerFactory.terminateAll()
     }
