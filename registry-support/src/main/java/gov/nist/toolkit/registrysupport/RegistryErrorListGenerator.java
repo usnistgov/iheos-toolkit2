@@ -108,7 +108,9 @@ public class RegistryErrorListGenerator implements ErrorLogger, ErrorRecorder{
 	}
 
 	public String getStatus() {
-		if (has_errors())
+		if (partialSuccess)
+			return "PartialSuccess";
+		else if (has_errors())
 			return "Failure";
 		return "Success";
 	}
