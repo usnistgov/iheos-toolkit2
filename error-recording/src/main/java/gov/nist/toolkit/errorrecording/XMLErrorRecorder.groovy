@@ -89,7 +89,6 @@ public class XMLErrorRecorder implements ErrorRecorder {
     public void err(Code code, String msg, Object location, String resource) {
         println("err3")
         String loc = getSimpleName(location)
-        //println("err3 error msg: " + msg)
         err(code, msg, loc, resource);
     }
 
