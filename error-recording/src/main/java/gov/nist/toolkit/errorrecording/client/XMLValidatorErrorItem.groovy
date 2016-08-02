@@ -2,11 +2,7 @@ package gov.nist.toolkit.errorrecording.client;
 
 
 import com.google.gwt.user.client.rpc.IsSerializable
-import gov.nist.toolkit.errorrecording.client.helpers.ReportingLevel
-import groovy.util.slurpersupport.NodeChild;
-import groovy.xml.*
-import groovy.util.XmlSlurper
-import groovy.xml.StreamingMarkupBuilder;
+import gov.nist.toolkit.errorrecording.client.structures.ReportingLevel
 
 /**
  * Encodes a single error or status along with some metadata about the error/status so

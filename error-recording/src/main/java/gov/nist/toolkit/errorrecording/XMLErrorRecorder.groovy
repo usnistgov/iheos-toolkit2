@@ -2,19 +2,21 @@ package gov.nist.toolkit.errorrecording
 
 import gov.nist.toolkit.errorrecording.client.XMLValidatorErrorItem
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
-import gov.nist.toolkit.errorrecording.client.helpers.Utils
+import gov.nist.toolkit.errorrecording.client.structures.ReportingCompletionType
+import gov.nist.toolkit.errorrecording.client.structures.ReportingLevel
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.xml.MarkupBuilder
-import groovy.xml.QName
-import groovy.xml.StreamingMarkupBuilder
-import groovy.xml.XmlUtil
+import org.apache.log4j.Logger
 
 /**
  * Created by diane on 2/19/2016.
  */
 public class XMLErrorRecorder implements ErrorRecorder {
     public ErrorRecorderBuilder errorRecorderBuilder;
+
+    static Logger logger = Logger.getLogger(XMLErrorRecorder.class);
+
 
     //def summary = // former List<GwtValidatorErrorItem> summary = new ArrayList<>();
     //List<ErrorRecorder> children = new ArrayList<>();  // Probably not useful in new XML validator and should be removed
@@ -99,9 +101,31 @@ public class XMLErrorRecorder implements ErrorRecorder {
         err(code, ExceptionUtil.exception_details(e), null, "");
     }
 
+    // Untested
     @Override
-    public void err(Code code, String msg, String location, String severity, String resource) {
-        println("NYI-err5")
+    public void err(Code _code, String _msg, String _location, String _severity, String _resource) {
+        println("err5")
+
+        if (_msg == null || _msg.trim().equals(""))
+            return;
+
+        // Log errors if any
+        logger.debug(ExceptionUtil.here("err - " + _msg));
+        if (_severity.indexOf("Error") != -1)
+            System.out.println("Got Error");
+
+        // Prepare parameters for logging
+        boolean isWarning = (_severity == null) ? false : ((_severity.indexOf("Warning") != -1));
+
+        // Generate the new element
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        if (isWarning) {
+            warning(_code, _msg, _location, _resource)
+        }
+        else {
+            err(_code, _msg, _location, _resource)
+        }
     }
 
     @Override
