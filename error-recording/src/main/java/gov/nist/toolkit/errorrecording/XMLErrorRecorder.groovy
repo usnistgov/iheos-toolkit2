@@ -107,7 +107,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         err(_code.toString(), _msg, _location, _severity, _resource)
     }
 
-    // Untested
+    // Untested, need real test data to complete
     @Override
     public void err(String _code, String _msg, String _location, String _severity, String _resource) {
         println("err6")
@@ -124,10 +124,12 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
         // Generate the new element
         if (isWarning) {
-            warning(_code, _msg, _location, _resource)
+            println("this should print a warning")
+           // warning(_code, _msg, _location, _resource)
         }
         else {
-            err(_code, _msg, _location, _resource)
+            println("this should print an error")
+            //err(_code, _msg, _location, _resource)
         }    }
 
     private void propagateError() {
@@ -136,15 +138,15 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     @Override
-    public void warning(String code, String msg, String location, String resource) {
-        println("NYI-warning")
-
+    public void warning(String _code, String _msg, String _location, String _resource) {
+        println("warning1")
+        err(_code, _msg, _location, "Warning", _resource);
     }
 
     @Override
-    public void warning(Code code, String msg, String location, String resource) {
-        println("NYI-warning")
-
+    public void warning(Code _code, String _msg, String _location, String _resource) {
+        println("warning2")
+        err(_code.toString(), _msg, _location, "Warning", _resource);
     }
 
     //TODO last because a SectionHeading element needs to wrap an entire section
