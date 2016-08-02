@@ -223,8 +223,15 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     @Override
-    public void warning(String dts, String name, String found, String expected, String RFC) {
-        println("NYI-warning")
+    public void warning(String _dts, String _name, String _found, String _expected, String _rfc) {
+        println("warning")
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        builder.records() {
+            Warning (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
+        }
+        def el = sw.write()
+        errRecords.add(el)
     }
 
     @Override
