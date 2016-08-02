@@ -132,11 +132,6 @@ public class XMLErrorRecorder implements ErrorRecorder {
             //err(_code, _msg, _location, _resource)
         }    }
 
-    private void propagateError() {
-        println("NYI-propagateerr")
-        // Test if in a section heading or challenge section. If challenge then set the ReportingCompletionType to Error.
-    }
-
     @Override
     public void warning(String _code, String _msg, String _location, String _resource) {
         println("warning1")
@@ -148,6 +143,13 @@ public class XMLErrorRecorder implements ErrorRecorder {
         println("warning2")
         err(_code.toString(), _msg, _location, "Warning", _resource);
     }
+
+    private void propagateError() {
+        println("NYI-propagateerr")
+        // Test if in a section heading or challenge section. If challenge then set the ReportingCompletionType to Error.
+    }
+
+
 
     //TODO last because a SectionHeading element needs to wrap an entire section
     @Override
@@ -163,21 +165,18 @@ public class XMLErrorRecorder implements ErrorRecorder {
     public void challenge(String msg) {
         println("challenge")
         errRecords.add(createXMLElement("Challenge", msg))
-        //TODO if (error) stay in this challenge section and log error as sub-element
     }
 
     @Override
     public void externalChallenge(String msg) {
         println("extchallenge")
         errRecords.add(createXMLElement("ExternalChallenge", msg))
-        //TODO if (error) stay in this challenge section and log error as sub-element
     }
 
     @Override
     public void detail(String msg) {
         println("detail")
         errRecords.add(createXMLElement("Detail", msg))
-        //TODO How to display Submission Set and Association sub-elements?
     }
 
     @Override
