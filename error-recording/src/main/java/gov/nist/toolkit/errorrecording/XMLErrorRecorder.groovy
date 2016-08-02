@@ -2,8 +2,6 @@ package gov.nist.toolkit.errorrecording
 
 import gov.nist.toolkit.errorrecording.client.XMLValidatorErrorItem
 import gov.nist.toolkit.errorrecording.client.XdsErrorCode.Code
-import gov.nist.toolkit.errorrecording.client.structures.ReportingCompletionType
-import gov.nist.toolkit.errorrecording.client.structures.ReportingLevel
 import gov.nist.toolkit.errorrecording.factories.ErrorRecorderBuilder
 import gov.nist.toolkit.xdsexception.ExceptionUtil
 import groovy.xml.MarkupBuilder
@@ -265,6 +263,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
         println("NYI-finish")
     }
 
+    // Looks like an old function, not used in GwtErrorRecorder
     @Override
     public void showErrorInfo() {
         println("NYI-showerrinfo")
@@ -282,15 +281,6 @@ public class XMLErrorRecorder implements ErrorRecorder {
         return 0;
     }
 
-    public void concat(ErrorRecorder er) {
-        println("NYI-concat")
-    }
-
-    public List<XMLValidatorErrorItem> getErrMsgs() {
-        println("NYI-geterrmsgs")
-        return null;
-    }
-
     @Override
     public List<ErrorRecorder> getChildren() {
         println("NYI-errrecorder")
@@ -303,11 +293,13 @@ public class XMLErrorRecorder implements ErrorRecorder {
         return 0;
     }
 
+    // Not used
     @Override
     public void registerValidator(Object validator) {
         println("NYI-regvalidator")
     }
 
+    // Not used
     @Override
     public void unRegisterValidator(Object validator) {
         println("NYI-unregvalidator")
@@ -330,7 +322,7 @@ public class XMLErrorRecorder implements ErrorRecorder {
     // ---------- Utility functions -----------
 
     /**
-     * Utility function
+     * Creates XML elements
      * @param name The name of the new XML element to create.
      * @return The new XML element.
      */
@@ -340,27 +332,9 @@ public class XMLErrorRecorder implements ErrorRecorder {
         return newRecord
     }
 
-    /**
-     * Groovy MarkupBuilder writes its output inside a StringWriter.
-     */
-    private String nodeToString(StringWriter sw, String node){
-        new XmlNodePrinter(new PrintWriter(sw)).print(node)
-
-    }
-
-
     private String getSimpleName(Object location){
         if (location != null)
             return location.getClass().getSimpleName();
-    }
-
-    /**
-     * Parses an xml string and replaces &lt; and &gt; characters with readable < and >
-     * @param xml
-     * @return Readable XML
-     */
-    private String formatXmlTags(String xml){
-        return xml.replace( '&lt;', '<' ).replace( '&gt;', '>' )
     }
 
 }
