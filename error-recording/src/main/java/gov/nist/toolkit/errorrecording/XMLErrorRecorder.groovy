@@ -272,8 +272,8 @@ public class XMLErrorRecorder implements ErrorRecorder {
 
     @Override
     public boolean hasErrors() {
-        println("NYI-boolhaserrors")
-        return false;
+        println("boolhaserrors")
+         return (errRecords.contains("Error"));
     }
 
     @Override
