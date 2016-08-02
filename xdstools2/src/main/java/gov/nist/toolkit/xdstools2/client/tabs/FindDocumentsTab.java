@@ -13,6 +13,7 @@ import gov.nist.toolkit.xdstools2.client.PopupMessage;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class FindDocumentsTab extends GenericQueryTab {
 		selectOnDemand.setText("Include On-Demand DocumentEntries");
 		mainGrid.setWidget(row, 0, selectOnDemand);
 		row++;
+
 
 		topPanel.add(mainGrid);
 

@@ -20,6 +20,8 @@ import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.*;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
+import gov.nist.toolkit.xdstools2.client.util.CookiesServices;
+import gov.nist.toolkit.xdstools2.client.widgets.PidFavoritesCellList;
 
 import java.util.*;
 
@@ -127,6 +129,7 @@ public class PidFavoritesTab extends GenericQueryTab {
         });
         favoritesListPanel.add(new HTML("Favorite Patient IDs"));
         ScrollPanel p = new ScrollPanel(favoritesListBox);
+//        ScrollPanel p = new ScrollPanel(new PidFavoritesCellList());
         p.setHeight("350px");
         favoritesListPanel.add(p);
 
@@ -192,11 +195,11 @@ public class PidFavoritesTab extends GenericQueryTab {
     }
 
     void toCookie() {
-        Cookies.setCookie(CookieManager.FAVORITEPIDSCOOKIENAME, new PidSet(new HashSet(model.getList())).asParsableString());
+        CookiesServices.savePidFavoritesToCookies(model.getList());
     }
 
     Set<Pid> fromCookie() {
-        return new PidSet(Cookies.getCookie(CookieManager.FAVORITEPIDSCOOKIENAME)).get();
+        return CookiesServices.retrievePidFavoritesFromCookies();
     }
 
     void addToFavorites(Set<Pid> pids) {

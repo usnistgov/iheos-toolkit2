@@ -10,9 +10,9 @@ import gov.nist.toolkit.xdstools2.client.Xdstools2Activity;
  * throughout the application like the event bus.
  */
 public class ClientFactoryImpl implements ClientFactory {
-    private final static EventBus eventBus = new SimpleEventBus();
-    private final static PlaceController placeController = new PlaceController(eventBus);
-    private final static Xdstools2Activity xdstools2Activity = new Xdstools2Activity();
+    private static final EventBus eventBus = new SimpleEventBus();
+    private static final PlaceController placeController = new PlaceController(eventBus);
+    private static final Xdstools2Activity xdstools2Activity = new Xdstools2Activity();
 
     @Override
     public EventBus getEventBus() {

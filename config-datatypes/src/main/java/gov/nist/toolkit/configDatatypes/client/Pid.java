@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class Pid implements Serializable {
     String ad = null;
     String id = null;
-    String extra = null;
+    String extra = "";
 
     public Pid(String ad, String id) {
         if (ad == null) this.ad = ad;

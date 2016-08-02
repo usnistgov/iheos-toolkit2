@@ -3,21 +3,7 @@ package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.http.client.HtmlMarkup;
@@ -38,6 +24,7 @@ import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.TabbedWindow;
 import gov.nist.toolkit.xdstools2.client.event.testSession.TestSessionManager2;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.BaseSiteActorManager;
+import gov.nist.toolkit.xdstools2.client.widgets.PidWidget;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -111,7 +98,8 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 
 	HTML statusBox = new HTML();
-	public TextBox pidTextBox = new TextBox();
+	public PidWidget pidTextBox = new PidWidget();
+//	public TextBox pidTextBox = new TextBox();
 
 
 	public GenericQueryTab(BaseSiteActorManager siteActorManager) {
@@ -537,8 +525,12 @@ public abstract class GenericQueryTab  extends TabbedWindow {
 
 		if (hasPatientIdParam) {
 			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("Patient ID"));
+			HTMLTable.CellFormatter formatter = commonParamGrid.getCellFormatter();
+			formatter.setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+			formatter.setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_TOP);
 
-			pidTextBox = new TextBox();
+//			pidTextBox = new TextBox();
+			pidTextBox = new PidWidget();
 			pidTextBox.setWidth("400px");
 			pidTextBox.setText(getCommonPatientId());
 			pidTextBox.addChangeHandler(new PidChangeHandler(this));
