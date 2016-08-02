@@ -101,11 +101,16 @@ public class XMLErrorRecorder implements ErrorRecorder {
         err(code, ExceptionUtil.exception_details(e), null, "");
     }
 
-    // Untested
     @Override
     public void err(Code _code, String _msg, String _location, String _severity, String _resource) {
         println("err5")
+        err(_code.toString(), _msg, _location, _severity, _resource)
+    }
 
+    // Untested
+    @Override
+    public void err(String _code, String _msg, String _location, String _severity, String _resource) {
+        println("err6")
         if (_msg == null || _msg.trim().equals(""))
             return;
 
@@ -118,21 +123,12 @@ public class XMLErrorRecorder implements ErrorRecorder {
         boolean isWarning = (_severity == null) ? false : ((_severity.indexOf("Warning") != -1));
 
         // Generate the new element
-        def sw = new StringWriter()
-        def builder = new MarkupBuilder(sw)
         if (isWarning) {
             warning(_code, _msg, _location, _resource)
         }
         else {
             err(_code, _msg, _location, _resource)
-        }
-    }
-
-    @Override
-    public void err(String code, String msg, String location, String severity, String resource) {
-        println("NYI-err6")
-        //err1(code, msg, location, severity, resource);
-    }
+        }    }
 
     private void propagateError() {
         println("NYI-propagateerr")
