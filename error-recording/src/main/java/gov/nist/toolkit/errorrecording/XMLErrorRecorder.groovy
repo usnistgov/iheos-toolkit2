@@ -247,8 +247,17 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     @Override
-    public void summary(String msg, boolean success, boolean part) {
-        println("NYI-summary")
+    public void summary(String _msg, boolean _success, boolean _part) {
+        println("summary")
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        builder.records() {
+            Summary (success:_success, part:_part){
+                Message(_msg)
+            }
+        }
+        def el = sw.write()
+        errRecords.add(el)
     }
 
     @Override
