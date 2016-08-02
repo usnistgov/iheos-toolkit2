@@ -47,6 +47,10 @@ public enum SimulatorActorType {
      */
     RESPONDING_GATEWAY("rg"),
     /**
+     * Responding Imaging Gateway
+     */
+    RESPONDING_IMAGING_GATEWAY("rig"),
+    /**
      * Image Document Source
      */
     IMAGE_DOCUMENT_SOURCE("ids"),
@@ -57,7 +61,11 @@ public enum SimulatorActorType {
     /**
      * Initiating Gateway
      */
-    INITIATING_GATEWAY("ig");
+    INITIATING_GATEWAY("ig"),
+    /**
+     * Initiating Gateway
+     */
+    INITIATING_IMAGING_GATEWAY("iig");
 
     String name;  // name that matches ActorType.java
 

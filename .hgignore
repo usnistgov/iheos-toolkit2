@@ -70,3 +70,5 @@ sunil_ij/
 
 syntax: regexp
 ^xdstools2/src/main/resources/toolkit\.properties$
+syntax: regexp
+^utilities/src/test/groovy/META-INF/MANIFEST\.MF$

@@ -1,11 +1,12 @@
 package gov.nist.toolkit.soap.axis2;
 
+import org.apache.axiom.om.OMElement;
+import org.apache.axis2.AxisFault;
+
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
 import gov.nist.toolkit.xdsexception.XdsFormatException;
 import gov.nist.toolkit.xdsexception.XdsInternalException;
-import org.apache.axiom.om.OMElement;
-import org.apache.axis2.AxisFault;
 
 public interface SoapInterface {
 
@@ -25,7 +26,7 @@ public interface SoapInterface {
 	 * Low level invocation of soap call.  The basic ServiceClient is inadequate to gain this level
 	 * of control, OperationClient must be used.  Reference:
 	 *    http://today.java.net/pub/a/today/2006/12/13/invoking-web-services-using-apache-axis2.html#working-with
-	 * This does not yet handle async.
+	 * This <b>does not yet handle async</b>.
 	 * @throws AxisFault
 	 * @throws EnvironmentNotSelectedException 
 	 */

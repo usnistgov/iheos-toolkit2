@@ -21,7 +21,7 @@ public class IGActorFactory extends AbstractActorFactory {
    static final List <TransactionType> incomingTransactions =
       Arrays.asList(TransactionType.STORED_QUERY, TransactionType.RETRIEVE);
 
-   protected Simulator buildNew(SimManager simm, SimId newID,
+   public Simulator buildNew(SimManager simm, SimId newID,
       boolean configureBase) {
       this.newID = newID;
 
@@ -38,10 +38,6 @@ public class IGActorFactory extends AbstractActorFactory {
          TransactionType.IG_RETRIEVE, false);
       addFixedEndpoint(sc, SimulatorProperties.igrTlsEndpoint, actorType,
          TransactionType.IG_RETRIEVE, true);
-      addFixedEndpoint(sc, SimulatorProperties.idsrEndpoint, actorType,
-         TransactionType.RET_IMG_DOC_SET, false);
-      addFixedEndpoint(sc, SimulatorProperties.idsrTlsEndpoint, actorType,
-         TransactionType.RET_IMG_DOC_SET, true);
       addEditableConfig(sc, SimulatorProperties.respondingGateways,
          ParamType.SELECTION, new ArrayList <String>(), true);
 

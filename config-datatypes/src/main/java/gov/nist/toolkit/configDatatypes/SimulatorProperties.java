@@ -248,6 +248,10 @@ public class SimulatorProperties {
     public static final String                           creationTime = "Creation Time";
 
     public static final String                           respondingGateways = "Responding Gateways";
+    
+    public static final String                           respondingImagingGateways = "Responding Imaging Gateways";
+    
+    public static final String imagingDocumentSources = "Imaging Document Sources";
 
     /**
      * Each transaction request throws this error.
@@ -262,16 +266,27 @@ public class SimulatorProperties {
     public static final String                         FORCE_FAULT = "Force Fault";
 
     /**
-     * Endpoint to use to send the indicated transaction to this Simulator.
+     * String property defining the Repository UniqueId of a Repository simulator.
      * Updates to this property are ignored.
      */
-    public static final String                           idsrEndpoint = "IDSR_endpoint";
+    public static final String                     idsRepositoryUniqueId = "IDS Repository UniqueId";
 
     /**
-     * Endpoint to use to send the indicated transaction to this Simulator.
-     * Updates to this property are ignored.
+     * String property defining the Image Cache root directory for an IDS 
+     * simulator, absolute or relative to the toolkit image cache directory.
      */
-    public static final String                        idsrTlsEndpoint = "IDSR_TLS_endpoint";
+    public static final String                     idsImageCache = "IDS Image Cache";
+
+   /*
+    * These two are for RAD-69's sent to Imaging Document Sources
+    */
+    public static final String      idsrEndpoint = "IDSR_endpoint";
+    public static final String      idsrTlsEndpoint = "IDSR_TLS_endpoint";
+    /*
+     * These two are for RAD-69's sent to Initiating Imaging Gateways
+     */
+     public static final String      idsrIigEndpoint    = "IDSR to IIG endpoint";
+     public static final String      idsrIigTlsEndpoint = "IDSR to IIG TLS endpoint";
 
     public static final String                        environment = "Environment";
 }

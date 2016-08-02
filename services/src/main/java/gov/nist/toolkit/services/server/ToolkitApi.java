@@ -1,26 +1,12 @@
 package gov.nist.toolkit.services.server;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import gov.nist.toolkit.configDatatypes.SimulatorProperties;
-import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
-import org.apache.log4j.Logger;
-
 import gov.nist.toolkit.actorfactory.SimDb;
 import gov.nist.toolkit.actorfactory.SimManager;
 import gov.nist.toolkit.actorfactory.SiteServiceManager;
-import gov.nist.toolkit.actorfactory.client.BadSimConfigException;
-import gov.nist.toolkit.actorfactory.client.NoSimException;
-import gov.nist.toolkit.actorfactory.client.SimId;
-import gov.nist.toolkit.actorfactory.client.Simulator;
-import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.actortransaction.client.ActorType;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
+import gov.nist.toolkit.configDatatypes.SimulatorProperties;
 import gov.nist.toolkit.envSetting.EnvSetting;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.registrymetadata.client.Uids;
@@ -33,6 +19,11 @@ import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.session.server.serviceManager.QueryServiceManager;
 import gov.nist.toolkit.session.server.serviceManager.XdsTestServiceManager;
 import gov.nist.toolkit.sitemanagement.client.Site;
+import gov.nist.toolkit.xdsexception.ThreadPoolExhaustedException;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This is a second attempt to start a real API.  ClientAPI has not
@@ -131,6 +122,11 @@ public class ToolkitApi {
         return createSimulator(actorType, simId);
     }
 
+    public Simulator openSimulator(SimId simId) throws Exception {
+        SimulatorConfig simConfig = getConfig(simId);
+        return new Simulator(simConfig);
+    }
+
     /**
      * Check whether simulator exists
      * @param simId - id of the simulator
@@ -194,12 +190,15 @@ public class ToolkitApi {
     
     public Site getActorConfig(String id) throws Exception {
        if (session == null) return null;
+       logger.debug("ToolkitApi#getActorConfig for ID: " + id);
+       logger.debug(" Session ID: " + session.getId());
        SimManager simManager = new SimManager(session.getId());
        Collection<Site> sites = simManager.getAllSites().asCollection();
        for (Site site : sites) {
+          logger.debug(" Testing site name: " + site.getName());
           if (site.getName().equals(id)) return site;
        }
-       throw new Exception("Site not found");
+       throw new Exception("Site not found: " + id);
     }
 
     /**

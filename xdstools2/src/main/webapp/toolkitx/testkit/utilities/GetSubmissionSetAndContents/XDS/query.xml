@@ -4,6 +4,16 @@
                          xmlns:rs="urn:oasis:names:tc:ebxml-regrep:xsd:rs:3.0">
     <query:ResponseOption returnComposedObjects="true" returnType="LeafClass"/>
     <AdhocQuery id="urn:uuid:e8e3cb2c-e39c-46b9-99e4-c12f57260b83">
+
+        <Slot name="$XDSDocumentEntryType">
+            <ValueList>
+                <Value>('$ot0$')</Value>
+                <Value>('$ot1$')</Value>
+                <Value>('$ot2$')</Value>
+                <Value>('$ot3$')</Value>
+            </ValueList>
+        </Slot>
+
         <!-- One of these slots will be removed before execution -->
         <Slot name="$XDSSubmissionSetUniqueId">
             <ValueList>

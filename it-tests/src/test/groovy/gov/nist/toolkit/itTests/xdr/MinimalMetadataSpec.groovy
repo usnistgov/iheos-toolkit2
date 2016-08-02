@@ -23,8 +23,8 @@ import spock.lang.Shared
 class MinimalMetadataSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    BasicSimParameters srcParams = new BasicSimParameters()
-    BasicSimParameters recParams = new BasicSimParameters()
+    @Shared BasicSimParameters srcParams = new BasicSimParameters()
+    @Shared BasicSimParameters recParams = new BasicSimParameters()
 
     DocumentSource documentSource
     DocumentRecipient documentRecipient
@@ -38,7 +38,8 @@ class MinimalMetadataSpec extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-//        System.gc()
+        spi.delete(srcParams.id, srcParams.user)
+        spi.delete(recParams.id, recParams.user)
         server.stop()
         ListenerFactory.terminateAll()
     }

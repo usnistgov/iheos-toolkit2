@@ -95,21 +95,55 @@ public enum ActorType implements IsSerializable, Serializable {
             Arrays.asList("RESP_GATEWAY"),
             "rg",
             "gov.nist.toolkit.simulators.sim.rg.RGADActorSimulator",
-            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE,
-               TransactionType.RET_IMG_DOC_SET),
+            Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE),
             true,
             null
     ),
+    RESPONDING_IMAGING_GATEWAY(
+       "Responding Imaging Gateway",
+       Arrays.asList("RESP_IMG_GATEWAY"),
+       "rig",
+       "gov.nist.toolkit.simulators.sim.rig.RigActorSimulator",
+       Arrays.asList(TransactionType.XC_RET_IMG_DOC_SET),
+       true,
+       null
+),
+    COMBINED_RESPONDING_GATEWAY(
+       "Combined Responding Gateway",
+       Arrays.asList("COMB_RESP_GATEWAY"),
+       "crg",
+       "gov.nist.toolkit.simulators.sim.CrgActorSimulator",
+       Arrays.asList(TransactionType.XC_QUERY, TransactionType.XC_RETRIEVE, TransactionType.XC_RET_IMG_DOC_SET),
+       true,
+       null
+),
     INITIATING_GATEWAY(
             "Initiating Gateway",
             Arrays.asList("INIT_GATEWAY"),
             "ig",
             "gov.nist.toolkit.simulators.sim.ig.IgActorSimulator",
-            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,
-               TransactionType.RET_IMG_DOC_SET),
+            Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE),
             true,
             null
     ),
+    INITIATING_IMAGING_GATEWAY(
+       "Initiating Imaging Gateway",
+       Arrays.asList("INIT_IMG_GATEWAY"),
+       "iig",
+       "gov.nist.toolkit.simulators.sim.iig.IigActorSimulator",
+       Arrays.asList(TransactionType.RET_IMG_DOC_SET_GW),
+       true,
+       null
+    ),
+    COMBINED_INITIATING_GATEWAY(
+       "Combined Initiating Gateway",
+       Arrays.asList("COMB_INIT_GATEWAY"),
+       "cig",
+       "gov.nist.toolkit.simulators.sim.CigActorSimulator",
+       Arrays.asList(TransactionType.IG_QUERY, TransactionType.IG_RETRIEVE,TransactionType.RET_IMG_DOC_SET_GW),
+       true,
+       null
+       ),
     INITIALIZE_FOR_STORED_QUERY (  // this is an artificial type used by test indexer
             "Initialize for Stored Query",
             new ArrayList<String>(),
@@ -194,12 +228,20 @@ public enum ActorType implements IsSerializable, Serializable {
         return this.equals(RESPONDING_GATEWAY);
     }
 
+    public boolean isRigActor() {
+        return this.equals(RESPONDING_IMAGING_GATEWAY);
+    }
+
     public boolean isIGActor() {
         return this.equals(INITIATING_GATEWAY);
     }
 
+    public boolean isIigActor() {
+        return this.equals(INITIATING_IMAGING_GATEWAY);
+    }
+
     public boolean isGW() {
-        return isRGActor() || isIGActor();
+        return isRGActor() || isIGActor() || isIigActor() || isRigActor();
     }
 
     public boolean isImagingDocumentSourceActor() {

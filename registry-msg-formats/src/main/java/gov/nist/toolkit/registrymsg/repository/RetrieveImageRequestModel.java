@@ -70,6 +70,21 @@ public class RetrieveImageRequestModel {
    }
    
    /**
+    * @return Set of all IDS Repository Unique Ids represented in this request
+    */
+   public Set<String> getIDSRepositoryUniqueIds() {
+      Set<String> ids = new HashSet<>();
+      for (RetrieveImageStudyRequestModel studyModel : studyRequests) {
+         for (RetrieveImageSeriesRequestModel seriesModel : studyModel.getSeriesRequests()) {
+            for (RetrieveItemRequestModel documentModel : seriesModel.getDocumentRequests()) {
+               ids.add(documentModel.repositoryId);
+            }
+         }
+      }
+      return ids;
+   }
+   
+   /**
     * Generates a <b>Copy</b> of this model containing only documents for the
     * passed home community id
     * @param homeCommunityId id to build model for
@@ -108,8 +123,46 @@ public class RetrieveImageRequestModel {
          homeModel.addTransferSyntaxUID(xferSyntax);
       return homeModel;
    }
-   
-   // XCAI_TODO complete, need to test
+
+   /**
+    * Generates a <b>Copy</b> of this model containing only documents for the
+    * passed repository unique id
+    * @param id unique id to build model for
+    * @return model copy
+    */
+   public RetrieveImageRequestModel getModelForRepository(String id) {
+      RetrieveImageRequestModel newModel = new RetrieveImageRequestModel();
+      for (RetrieveImageStudyRequestModel studyModel : studyRequests) {
+         RetrieveImageStudyRequestModel newStudyModel = new RetrieveImageStudyRequestModel();
+         boolean newStudyModelAdded = false;
+         newStudyModel.setStudyInstanceUID(studyModel.getStudyInstanceUID());
+         for (RetrieveImageSeriesRequestModel seriesModel : studyModel.getSeriesRequests()) {
+            RetrieveImageSeriesRequestModel newSeriesModel = new RetrieveImageSeriesRequestModel();
+            boolean newSeriesModelAdded = false;
+            newSeriesModel.setSeriesInstanceUID(seriesModel.getSeriesInstanceUID());
+            for (RetrieveItemRequestModel documentModel : seriesModel.getDocumentRequests()) {
+               if (documentModel.getRepositoryId().equals(id)) {
+                  if (newStudyModelAdded == false) {
+                     newModel.addStudyRequest(newStudyModel);
+                     newStudyModelAdded = true;
+                  }
+                  if (newSeriesModelAdded == false) {
+                     newStudyModel.addSeriesRequest(newSeriesModel);
+                     newSeriesModelAdded = true;
+                  }
+                  RetrieveItemRequestModel newDocumentModel = new RetrieveItemRequestModel();
+                  newDocumentModel.setDocumentId(documentModel.getDocumentId());
+                  newDocumentModel.setHomeId(documentModel.getHomeId());
+                  newDocumentModel.setRepositoryId(id);
+                  newSeriesModel.addDocumentRequest(newDocumentModel);
+               }
+            }
+         }
+      }
+      for (String xferSyntax : transferSyntaxUIDs)
+         newModel.addTransferSyntaxUID(xferSyntax);
+      return newModel;
+   }
    
 
 } // EO RetrieveImageRequestModel class

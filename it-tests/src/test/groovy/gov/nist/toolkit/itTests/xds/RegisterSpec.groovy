@@ -20,10 +20,10 @@ class RegisterSpec extends ToolkitSpecification {
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'BR14^^^&1.2.360&ISO'
-    String patientId2 = 'BR15^^^&1.2.360&ISO'
-    String reg = 'bill__reg'
-    SimId simId = new SimId(reg)
+    @Shared String patientId = 'BR14^^^&1.2.360&ISO'
+    @Shared String patientId2 = 'BR15^^^&1.2.360&ISO'
+    @Shared String reg = 'bill__reg'
+    @Shared SimId simId = new SimId(reg)
     @Shared String testSession = 'bill';
 
     def setupSpec() {   // one time setup done when class launched
@@ -48,6 +48,9 @@ class RegisterSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
+        spi.delete('reg', testSession)
+        spi.delete('reg', 'test')
+        api.deleteSimulatorIfItExists(simId)
         server.stop()
         ListenerFactory.terminateAll()
     }

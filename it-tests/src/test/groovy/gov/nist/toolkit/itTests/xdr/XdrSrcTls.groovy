@@ -30,7 +30,7 @@ class XdrSrcTls extends ToolkitSpecification {
     @Shared String recipientEndpoint = 'http://vm:8080/xdstools2/sim/bill__rec/rep/xdrpr'
     @Shared String recipientTLSEndpoint = 'https://vm:8443/xdstools2/sim/bill__rec/rep/xdrpr'
 
-    BasicSimParameters srcParams = new BasicSimParameters()
+    @Shared BasicSimParameters srcParams = new BasicSimParameters()
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -41,7 +41,7 @@ class XdrSrcTls extends ToolkitSpecification {
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-//        System.gc()
+        spi.delete(srcParams.id, srcParams.user)
         server.stop()
         ListenerFactory.terminateAll()
     }

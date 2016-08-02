@@ -19,16 +19,16 @@ import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import gov.nist.toolkit.toolkitServicesCommon.SimConfig
 import spock.lang.Shared
 /**
- * Test the Register transaction
+ * Test the OD Document Consumer Retrieve
  */
 class OdConsumerPersistenceSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
     @Shared String patientId = 'SR15^^^&1.2.460&ISO'
-    @Shared String testSession = 'sunil2';
+    @Shared String testSession = 'sunil2'
     @Shared SimConfig rrConfig = null
-    @Shared SimConfig oddsConfig = null;
+    @Shared SimConfig oddsConfig = null
     @Shared Session tkSession
 
     def setupSpec() {   // one time setup done when class launched
@@ -77,6 +77,8 @@ class OdConsumerPersistenceSpec extends ToolkitSpecification {
 
     def cleanupSpec() {  // one time shutdown when everything is done
 //        System.gc()
+        spi.delete('rr3', testSession)
+        spi.delete('odds3', testSession)
         server.stop()
         ListenerFactory.terminateAll()
     }

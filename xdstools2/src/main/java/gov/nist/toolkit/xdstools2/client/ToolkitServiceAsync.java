@@ -11,9 +11,7 @@ import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.IgOrchestrationRequest;
-import gov.nist.toolkit.services.client.RawResponse;
-import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.services.client.*;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
 import gov.nist.toolkit.tk.client.TkProps;
@@ -43,6 +41,8 @@ public interface ToolkitServiceAsync {
 	void isGazelleConfigFeedEnabled(AsyncCallback<Boolean> callback);
 	void reloadSystemFromGazelle(String systemName, AsyncCallback<String> callback);
 	void getSiteNamesWithRG(AsyncCallback<List<String>> callback);
+   void getSiteNamesWithRIG(AsyncCallback<List<String>> callback);
+   void getSiteNamesWithIDS(AsyncCallback<List<String>> callback);
 	void getSiteNamesByTranType(String transactionType, AsyncCallback<List<String>> callback);
 
 	void getDashboardRegistryData(AsyncCallback<List<RegistryStatus>> callback);
@@ -100,7 +100,7 @@ public interface ToolkitServiceAsync {
 	void reloadExternalSites(AsyncCallback<List<String>> callback);
 	void deleteSite(String siteName, AsyncCallback<String> callback);
 
-	void getSSandContents(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
+	void getSSandContents(SiteSpec site, String ssuid, Map<String, List<String>> codeSpec, AsyncCallback<List<Result>> callback);
 	void srcStoresDocVal(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
 	void findDocuments(SiteSpec site, String pid, boolean onDemand, AsyncCallback<List<Result>> callback);
 	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;
@@ -208,7 +208,10 @@ public interface ToolkitServiceAsync {
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
     void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRigTestOrchestration(RigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+	void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
 
 	void getServletContextName(AsyncCallback<String> callback);
 	//------------------------------------------------------------------------

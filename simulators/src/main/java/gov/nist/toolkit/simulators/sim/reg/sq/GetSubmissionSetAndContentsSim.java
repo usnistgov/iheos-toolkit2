@@ -90,8 +90,15 @@ public class GetSubmissionSetAndContentsSim extends GetSubmissionSetAndContents 
 				docEntries = mc.docEntryCollection.filterByFormatCode(format_code, docEntries);
 			if (conf_code != null)
 				docEntries = mc.docEntryCollection.filterByConfCode(conf_code, docEntries);
+			if (entry_type != null) {
+				docEntries = mc.docEntryCollection.filterByObjectType(entry_type, docEntries);
+				if (docEntries==null || (docEntries!=null && docEntries.isEmpty())) {
+					return new Metadata();
+				}
+			}
+
 		} catch (Exception e) {
-			getStoredQuerySupport().er.err(Code.XDSRegistryError, "Error filtering DocumentEntries by formatCode or confidentialityCode: " + e.getMessage(), this, null);
+			getStoredQuerySupport().er.err(Code.XDSRegistryError, "Error filtering DocumentEntries by formatCode, confidentialityCode, or documentEntryType: " + e.getMessage(), this, null);
 			return new Metadata();
 		}
 
