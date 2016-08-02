@@ -56,7 +56,25 @@ import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.engine.DefaultValidationContextFactory;
 import gov.nist.toolkit.valsupport.engine.MessageValidatorEngine;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
+<<<<<<< HEAD
 import gov.nist.toolkit.xdsexception.XdsException;
+=======
+import gov.nist.toolkit.xdsexception.client.XdsException;
+import org.apache.axiom.om.OMElement;
+import org.apache.log4j.Logger;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
+>>>>>>> feature/testlog-listing
 
 public class SimServlet  extends HttpServlet {
 	static Logger logger = Logger.getLogger(SimServlet.class);

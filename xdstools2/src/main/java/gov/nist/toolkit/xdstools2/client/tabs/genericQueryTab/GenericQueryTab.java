@@ -1,5 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -55,7 +56,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public VerticalPanel resultPanel = new VerticalPanel();
     // if false then tool takes responsibliity for placing it
     public boolean addResultsPanel = true;
-	public TabContainer myContainer;
 	CheckBox doTls = new CheckBox("TLS?");
 	ListBox samlListBox = new ListBox();
 	List<RadioButton> byActorButtons = null;
@@ -155,7 +155,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 			for (Result result : results) {
 				for (AssertionResult ar : result.assertions.assertions) {
 
-                    if (ar.assertion.startsWith("Report") && detailsTree != null) {
+                    if (ar.assertion.startsWith("ReportBuilder") && detailsTree != null) {
                         detailsTree.add(ar.assertion);
                     } else if (ar.assertion.startsWith("UseReport") && detailsTree != null) {
                             detailsTree.add(ar.assertion);
@@ -247,16 +247,6 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 	protected QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes, CoupledTransactions couplings) {
         return addQueryBoilerplate(runner, transactionTypes, couplings, true);
-//		if (queryBoilerplate != null) {
-//			queryBoilerplate.remove();
-//			queryBoilerplate = null;
-//		}
-//		queryBoilerplate = new QueryBoilerplate(
-//				this, runner, transactionTypes,
-//				couplings
-//				);
-//		return queryBoilerplate;
-
 	}
 
 	public QueryBoilerplate addQueryBoilerplate(ClickHandler runner, List<TransactionType> transactionTypes,
@@ -269,13 +259,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 		if (mainConfigPanelDivider == null) {
 			mainConfigPanelDivider = new HTML("<hr />");
-			topPanel.add(mainConfigPanelDivider);
+			tabTopPanel.add(mainConfigPanelDivider);
 			mainConfigPanel = new VerticalPanel();
-			topPanel.add(mainConfigPanel);
-			topPanel.add(new HTML("<hr />"));
+			tabTopPanel.add(mainConfigPanel);
+			tabTopPanel.add(new HTML("<hr />"));
 		}
         if (addResultsPanel)
-		    topPanel.add(resultPanel);
+		    tabTopPanel.add(resultPanel);
 		queryBoilerplate = new QueryBoilerplate(
 				this, runner, transactionTypes,
 				couplings
@@ -317,7 +307,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	protected void showMessage(String message) {		
 		HTML msgBox = new HTML();
 		msgBox.setHTML("<b>" + message + "</b>");
-		topPanel.add(msgBox);		
+		tabTopPanel.add(msgBox);
 	}
 
 	protected List<String> formatIds(String value) {
@@ -468,7 +458,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
 	public void initMainGrid() {
 		if (mainGrid == null) {
 			mainGrid = new FlexTable();
-			topPanel.add(mainGrid);
+			tabTopPanel.add(mainGrid);
 		}
 		while (mainGrid.getRowCount() > row_initial)
 			mainGrid.removeRow(mainGrid.getRowCount() - 1);
@@ -530,13 +520,13 @@ public abstract class GenericQueryTab  extends ToolWindow {
 
 
 		if (tlsEnabled) {
-			doTls = new CheckBox("");
+			doTls = new CheckBox("use TLS");
             doTls.setEnabled(tlsOptionEnabled);
 			if (getCommonSiteSpec() != null) {
                 doTls.setValue(getCommonSiteSpec().isTls());
             }
 			doTls.addClickHandler(new TlsSelector(this));
-			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("TLS"));
+//			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("TLS"));
 			commonParamGrid.setWidget(commonGridRow++, contentsColumn, doTls);
 		}
 
@@ -556,9 +546,12 @@ public abstract class GenericQueryTab  extends ToolWindow {
 			byActorButtons = siteLoader.addSitesForActor(selectByActor, row);
 			row++;
 		} else if (transactionTypes != null){    // most queries and retrieves use this
-			commonParamGrid.setWidget(commonGridRow, titleColumn, new HTML("Send to"));
+			FlexTable siteSelectionPanel = new FlexTable();
+			siteSelectionPanel.setWidget(0, 0, new HTML("Send to"));
+
 			FlexTable siteGrid = new FlexTable();
-			commonParamGrid.setWidget(commonGridRow++, contentsColumn, siteGrid);
+			siteSelectionPanel.setWidget(0, 1, siteGrid);
+
 			int siteGridRow = 0;
             Set<String> actorTypeNamesAlreadyDisplayed = new HashSet<>();
 			for (TransactionType tt : transactionTypes) {
@@ -567,11 +560,21 @@ public abstract class GenericQueryTab  extends ToolWindow {
                     String actorTypeName = at.getName();
                     if (!actorTypeNamesAlreadyDisplayed.contains(actorTypeName) && at.showInConfig()) {
                         actorTypeNamesAlreadyDisplayed.add(actorTypeName);
-                        siteGrid.setWidget(siteGridRow, 0, new HTML(at.getName()));
-                        siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+						Label label = new Label(at.getName() + ":");
+						label.getElement().getStyle().setFontWeight(Style.FontWeight.BOLDER);
+                        siteGrid.setWidget(siteGridRow, 0, label);
+						if (getSiteTableForTransactionsSize(tt) == 0) {
+							siteGrid.setWidget(siteGridRow++, 1, new Label("None Available"));
+						} else {
+							siteGrid.setWidget(siteGridRow++, 1, getSiteTableWidgetforTransactions(tt));
+						}
                     }
                 }
 			}
+
+			DecoratorPanel decoration = new DecoratorPanel();
+			decoration.add(siteSelectionPanel);
+			mainConfigPanel.add(decoration);
 		}
         if (autoAddRunnerButtons)
             addRunnerButtons(mainConfigPanel);
@@ -583,7 +586,7 @@ public abstract class GenericQueryTab  extends ToolWindow {
     Button inspectButon = new Button("Inspect Results");
 	HandlerRegistration inspectButtonHandler = null;
 
-    public void addRunnerButtons(VerticalPanel panel) {
+    public void addRunnerButtons(Panel panel) {
         boolean hasRunButton = runnerPanel.getWidgetIndex(runButton) > -1;
 
         // messed normal query tools
@@ -654,6 +657,10 @@ public abstract class GenericQueryTab  extends ToolWindow {
 		}
 //		mainGrid.setWidget(majorRow, startingCol, grid);
 		return grid;
+	}
+
+	int getSiteTableForTransactionsSize(TransactionType tt) {
+		return getSiteList(tt).size();
 	}
 
 	List<Site> getSiteList(TransactionType tt) {

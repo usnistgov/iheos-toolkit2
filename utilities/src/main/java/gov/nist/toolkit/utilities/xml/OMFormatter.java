@@ -1,7 +1,7 @@
 package gov.nist.toolkit.utilities.xml;
 
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.io.File;
 import java.util.Iterator;

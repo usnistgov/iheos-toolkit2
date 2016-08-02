@@ -2,10 +2,9 @@ package gov.nist.toolkit.valregmsg.registry.storedquery.support;
 
 import gov.nist.toolkit.docref.SqDocRef;
 import gov.nist.toolkit.valregmsg.registry.And;
-import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.SQCodedTerm;
-import gov.nist.toolkit.xdsexception.MetadataException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.math.BigInteger;
 import java.util.*;

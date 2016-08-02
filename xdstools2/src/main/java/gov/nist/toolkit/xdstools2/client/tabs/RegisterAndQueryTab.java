@@ -5,12 +5,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -35,21 +33,19 @@ public class RegisterAndQueryTab extends GenericQueryTab {
 	public RegisterAndQueryTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "RegisterAndQuery", select);
-		addToolHeader(container,topPanel, help);
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "RegisterAndQuery");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Register And Query</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		queryBoilerplate = addQueryBoilerplate(new Runner(), transactionTypes, couplings, true);
 

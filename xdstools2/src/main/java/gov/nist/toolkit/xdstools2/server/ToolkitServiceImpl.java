@@ -247,7 +247,32 @@ public class ToolkitServiceImpl extends RemoteServiceServlet implements
 	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getLogContent(sessionName, testInstance); }
 	public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
 		return session().xdsTestServiceManager().runMesaTest(environmentName,mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+    /**
+     * Get list of section names defined for the test in the order they should be executed
+     * @param test test name
+     * @return list of sections
+     * @throws Exception if something goes wrong
+     */
+	public List<String> getTestIndex(String test) throws Exception { return session().xdsTestServiceManager().getTestIndex(test); }
+
+    /**
+     * Get map of (collection name, collection description) pairs contained in testkit
+     * @param collectionSetName the collection name
+     * @return the map
+     * @throws Exception is something goes wrong
+     */
+	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getCollectionNames(collectionSetName); }
+	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception { return session().xdsTestServiceManager().getCollectionMembers(collectionSetName, collectionName); }
+	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception { return session().xdsTestServiceManager().getTestsOverview(sessionName, testInstances); }
+	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception { return session().xdsTestServiceManager().getTestLogDetails(sessionName, testInstance); }
+	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception { return session().xdsTestServiceManager().getTestCollections(collectionSetName); }
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure)  throws NoServletSessionException {
+		return session().xdsTestServiceManager().runMesaTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
 	}
+	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException {
+		return session().xdsTestServiceManager().runTest(mesaTestSession, siteSpec, testInstance, sections, params, null, stopOnFirstFailure);
+	}
+
 	public TestLogs getRawLogs(TestInstance logId)  throws NoServletSessionException { return session().xdsTestServiceManager().getRawLogs(logId); }
 	public List<String> getTestdataSetListing(String environmentName, String testSessionName, String testdataSetName)  throws NoServletSessionException {
         return session().xdsTestServiceManager().getTestdataSetListing(environmentName,testSessionName,testdataSetName);

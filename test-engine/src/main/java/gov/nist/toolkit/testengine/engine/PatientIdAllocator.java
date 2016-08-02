@@ -4,7 +4,7 @@ import gov.nist.toolkit.configDatatypes.client.Pid;
 import gov.nist.toolkit.common.datatypes.Hl7Date;
 import gov.nist.toolkit.http.httpclient.HttpClient;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.log4j.Logger;
 
 import java.io.FileNotFoundException;

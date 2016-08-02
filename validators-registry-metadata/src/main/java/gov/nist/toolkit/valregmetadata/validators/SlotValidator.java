@@ -5,7 +5,7 @@ import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.valregmetadata.datatype.FormatValidator;
 import gov.nist.toolkit.valregmetadata.datatype.FormatValidatorCalledIncorrectlyException;
 import gov.nist.toolkit.valregmetadata.model.Slot;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 /**
  *

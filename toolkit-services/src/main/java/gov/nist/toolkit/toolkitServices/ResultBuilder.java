@@ -4,6 +4,7 @@ import gov.nist.toolkit.actorfactory.client.*;
 import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
 import gov.nist.toolkit.toolkitServicesCommon.resource.OperationResultResource;
 import gov.nist.toolkit.xdsexception.*;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axis2.AxisFault;
 import org.apache.log4j.Logger;
 

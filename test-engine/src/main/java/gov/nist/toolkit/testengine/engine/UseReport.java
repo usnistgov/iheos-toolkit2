@@ -64,4 +64,9 @@ public class UseReport {
 
 	}
 
+	public boolean isResolved() {
+		return useAs != null && !useAs.equals("") &&
+				value != null && !value.equals("");
+	}
+
 }

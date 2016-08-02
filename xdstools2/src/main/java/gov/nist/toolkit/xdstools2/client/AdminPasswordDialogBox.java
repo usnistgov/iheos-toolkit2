@@ -4,17 +4,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 
 public class AdminPasswordDialogBox extends DialogBox {
 	PasswordTextBox passBox;
 	
-	public AdminPasswordDialogBox(VerticalPanel parent) {
+	public AdminPasswordDialogBox(DockLayoutPanel parent) {
 		
 		setPopupPosition(200, 200);
 		

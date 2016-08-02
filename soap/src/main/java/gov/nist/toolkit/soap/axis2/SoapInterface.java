@@ -6,7 +6,13 @@ import org.apache.axis2.AxisFault;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.LoadKeystoreException;
 import gov.nist.toolkit.xdsexception.XdsFormatException;
+<<<<<<< HEAD
 import gov.nist.toolkit.xdsexception.XdsInternalException;
+=======
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
+import org.apache.axiom.om.OMElement;
+import org.apache.axis2.AxisFault;
+>>>>>>> feature/testlog-listing
 
 public interface SoapInterface {
 

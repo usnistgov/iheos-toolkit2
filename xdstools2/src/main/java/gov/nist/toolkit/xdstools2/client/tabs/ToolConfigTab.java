@@ -24,17 +24,13 @@ public class ToolConfigTab extends GenericQueryTab {
 		super(new NullSiteActorManager());
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-
-
-		container.addTab(topPanel, "ToolConfig", select);
-		addToolHeader(container,topPanel, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "ToolConfig");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Configure XDS Toolkit</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		buildGrid();
 	}
@@ -79,7 +75,7 @@ public class ToolConfigTab extends GenericQueryTab {
 		else {
 			PasswordManagement.addSignInCallback(signedInCallback);
 
-			new AdminPasswordDialogBox(topPanel);
+			new AdminPasswordDialogBox(getRawPanel());
 
 			return;
 		}
@@ -88,29 +84,29 @@ public class ToolConfigTab extends GenericQueryTab {
 
 		HTML subtitle1 = new HTML();
 		subtitle1.setHTML("<h3>Properties</h3>");
-		topPanel.add(subtitle1);
+		tabTopPanel.add(subtitle1);
 
-		topPanel.add(grid);
+		tabTopPanel.add(grid);
 
 		Button goButton = new Button("Save");
 		goButton.addClickHandler(new Saver());
-		topPanel.add(goButton);
+		tabTopPanel.add(goButton);
 
 		HTML separator = new HTML();
 		separator.setHTML("<br/>");
-		topPanel.add(separator);
+		tabTopPanel.add(separator);
 
 		HTML subtitle2 = new HTML();
 		subtitle2.setHTML("<br/><br/>");
-		topPanel.add(subtitle2);
+		tabTopPanel.add(subtitle2);
 
-		topPanel.add(loadAllGazelleConfigs);
-		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(toolkitService, myContainer, "ALL"));
+		tabTopPanel.add(loadAllGazelleConfigs);
+		loadAllGazelleConfigs.addClickHandler(new LoadGazelleConfigsClickHandler(toolkitService, getTabContainer(), "ALL"));
 
-		topPanel.add(new HTML("<hr />"));
+		tabTopPanel.add(new HTML("<hr />"));
 		/* new code for testkit update */
-        TestkitConfigTool tkconf=new TestkitConfigTool(myContainer,toolkitService);
-        topPanel.add(tkconf);
+        TestkitConfigTool tkconf=new TestkitConfigTool(getTabContainer(),toolkitService);
+        tabTopPanel.add(tkconf);
 	}
 
 	class Saver implements ClickHandler {

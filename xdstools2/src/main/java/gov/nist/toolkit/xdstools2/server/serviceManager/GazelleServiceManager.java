@@ -5,7 +5,7 @@ import gov.nist.toolkit.actorfactory.SiteServiceManager;
 import gov.nist.toolkit.installation.Installation;
 import gov.nist.toolkit.session.server.Session;
 import gov.nist.toolkit.utilities.io.Io;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import gov.nist.toolkit.xdstools2.server.gazelle.actorConfig.*;
 import org.apache.log4j.Logger;
 

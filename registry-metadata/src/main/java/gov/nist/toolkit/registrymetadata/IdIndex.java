@@ -3,7 +3,7 @@ package gov.nist.toolkit.registrymetadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
 import gov.nist.toolkit.registrysupport.logging.LogMessage;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.MetadataException;
+import gov.nist.toolkit.xdsexception.client.MetadataException;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;

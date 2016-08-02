@@ -167,7 +167,7 @@ class TestSelectionManager {
                         itab.setResults(results);
                         itab.setSiteSpec(siteSpec);
                         itab.setToolkitService(toolkitService);
-                        itab.onTabLoad(tool.getToolContainer(), true, null);
+                        itab.onTabLoad(true, null);
                     }
                 });
             }
@@ -222,7 +222,7 @@ class TestSelectionManager {
                 }
 
                 public void onSuccess(String result) {
-                    new TextViewerTab().onTabLoad(tool.getToolContainer(), true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
+                    new TextViewerTab().onTabLoad(true, result, tool.getSelectedTest() + "#" + selectSectionList.getSelectedItemText());
                 }
 
             });
@@ -281,7 +281,7 @@ class TestSelectionManager {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 SimulatorMessageViewTab viewTab = new SimulatorMessageViewTab();
-                viewTab.onTabLoad(tool.getToolContainer(), true, simId);
+                viewTab.onTabLoad(true, simId);
             }
         });
 

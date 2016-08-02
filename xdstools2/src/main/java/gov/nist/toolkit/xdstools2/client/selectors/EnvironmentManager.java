@@ -17,7 +17,7 @@ public class EnvironmentManager extends Composite{
 	TabContainer tabContainer;
 	ToolkitServiceAsync toolkitService;
 	EnvironmentState environmentState;
-	Panel menuPanel;
+	Panel1 menuPanel;
 	HorizontalPanel environmentPanel = new HorizontalPanel();
 	ListBox environmentListBox = new ListBox();
 	static String choose = "-- Choose --";
@@ -26,10 +26,10 @@ public class EnvironmentManager extends Composite{
 
 
 	
-	public EnvironmentManager(TabContainer tabContainer, ToolkitServiceAsync toolkitService/*, Panel menuPanel*/) {
+	public EnvironmentManager(TabContainer tabContainer, ToolkitServiceAsync toolkitService/*, Panel1 menuPanel*/) {
 		this.tabContainer = tabContainer;
 		this.toolkitService = toolkitService;
-		this.environmentState = tabContainer.getEnvironmentState();
+		this.environmentState = Xdstools2.getInstance().getEnvironmentState();
 //		this.menuPanel = menuPanel;
 		environmentManager = this;
 		
@@ -44,7 +44,7 @@ public class EnvironmentManager extends Composite{
 	}
 	
 	void init() {
-		menuPanel=new Panel(environmentPanel);
+		menuPanel=new Panel1(environmentPanel);
 //		menuPanel.add(environmentPanel);
 
 		HTML environmentLabel = new HTML();

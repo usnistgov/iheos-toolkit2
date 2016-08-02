@@ -7,7 +7,7 @@ package gov.nist.toolkit.soap.http;
 
 import gov.nist.toolkit.soap.axis2.SoapInterface;
 import gov.nist.toolkit.xdsexception.XdsFormatException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 

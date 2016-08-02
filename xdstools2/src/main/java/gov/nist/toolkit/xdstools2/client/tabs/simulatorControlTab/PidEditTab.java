@@ -4,12 +4,11 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import gov.nist.toolkit.configDatatypes.client.Pid;
-import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.actorfactory.client.SimId;
 import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.configDatatypes.client.Pid;
+import gov.nist.toolkit.configDatatypes.client.PidBuilder;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.FindDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by bill on 9/21/15.
+ *
  */
 public class PidEditTab extends GenericQueryTab {
     SimulatorConfig config;
@@ -31,20 +30,17 @@ public class PidEditTab extends GenericQueryTab {
         simId = config.getId();
     }
 
-    public void onTabLoad(TabContainer container, boolean select, String eventName) {
-        myContainer = container;
-        topPanel = new VerticalPanel();
-
-        container.addTab(topPanel, "Pid Edit", select);
-        addToolHeader(container, topPanel, null);
+    @Override
+    public void onTabLoad(boolean select, String eventName) {
+        registerTab(select, "Pid Edit");
 
         addReloader();
 
-        topPanel.add(new HTML("<h2>Registry Simulator Patient ID Display/Edit</h2>"));
-        topPanel.add(new HTML("<h3>Simulator " + simId.toString() + "</h3>"));
+        tabTopPanel.add(new HTML("<h2>Registry Simulator Patient ID Display/Edit</h2>"));
+        tabTopPanel.add(new HTML("<h3>Simulator " + simId.toString() + "</h3>"));
 
         HorizontalPanel panel = new HorizontalPanel();
-        topPanel.add(panel);
+        tabTopPanel.add(panel);
         VerticalPanel listPanel = new VerticalPanel();
         panel.add(listPanel);
         listPanel.add(new HTML("Registered Patient IDs"));

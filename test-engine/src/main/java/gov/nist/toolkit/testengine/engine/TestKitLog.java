@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.engine;
 
 
 
-import gov.nist.toolkit.testenginelogging.TestDetails;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -31,9 +31,9 @@ public class TestKitLog {
 		String relativePath = null;
 
 		try {
-			relativePath = TestDetails.getLogicalPath(testPlan.getParentFile(), altTestKit);
+			relativePath = TestLogDetails.getLogicalPath(testPlan.getParentFile(), altTestKit);
 		} catch (Exception e) {
-			relativePath = TestDetails.getLogicalPath(testPlan.getParentFile(), testKit);
+			relativePath = TestLogDetails.getLogicalPath(testPlan.getParentFile(), testKit);
 		}
 		// formats:
 		//	tests/testname/section

@@ -1,7 +1,10 @@
 package gov.nist.toolkit.xdstools2.client;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import gov.nist.toolkit.actorfactory.client.*;
+import gov.nist.toolkit.actorfactory.client.SimId;
+import gov.nist.toolkit.actorfactory.client.Simulator;
+import gov.nist.toolkit.actorfactory.client.SimulatorConfig;
+import gov.nist.toolkit.actorfactory.client.SimulatorStats;
 import gov.nist.toolkit.actortransaction.client.Severity;
 import gov.nist.toolkit.actortransaction.client.TransactionInstance;
 import gov.nist.toolkit.configDatatypes.client.Pid;
@@ -9,12 +12,20 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -42,14 +53,12 @@ public interface ToolkitServiceAsync {
 	void isGazelleConfigFeedEnabled(AsyncCallback<Boolean> callback);
 	void reloadSystemFromGazelle(String systemName, AsyncCallback<String> callback);
 	void getSiteNamesWithRG(AsyncCallback<List<String>> callback);
-   void getSiteNamesWithRIG(AsyncCallback<List<String>> callback);
-   void getSiteNamesWithIDS(AsyncCallback<List<String>> callback);
 	void getSiteNamesByTranType(String transactionType, AsyncCallback<List<String>> callback);
 
 	void getDashboardRegistryData(AsyncCallback<List<RegistryStatus>> callback);
 	void getDashboardRepositoryData(AsyncCallback<List<RepositoryStatus>> callback);
 
-	void getLogContent(String sessionName, TestInstance testInstance, AsyncCallback<List<Result>> callback);
+	void getTestsOverview(String sessionName, List<TestInstance> testInstances, AsyncCallback<List<TestOverviewDTO>> callback);
 	void getUpdateNames(AsyncCallback<List<String>> callback);
 	
 	void getTransactionRequest(SimId simName, String actor, String trans, String event, AsyncCallback<String> callback);
@@ -92,7 +101,7 @@ public interface ToolkitServiceAsync {
 	void getRGNames(AsyncCallback<List<String>> callback);
 	void getIGNames(AsyncCallback<List<String>> callback);
 	void getRawLogs(TestInstance logId, AsyncCallback<TestLogs> callback);
-	void getTestdataSetListing(String environmentName, String sessionName,String testdataSetName, AsyncCallback<List<String>> callback);
+	void getTestdataSetListing(String testdataSetName, AsyncCallback<List<String>> callback);
 	void getCodesConfiguration(AsyncCallback<CodesResult> callback);
 	void getSite(String siteName, AsyncCallback<Site> callback);
 	void getAllSites(AsyncCallback<Collection<Site>> callback);
@@ -101,7 +110,7 @@ public interface ToolkitServiceAsync {
 	void reloadExternalSites(AsyncCallback<List<String>> callback);
 	void deleteSite(String siteName, AsyncCallback<String> callback);
 
-	void getSSandContents(SiteSpec site, String ssuid, Map<String, List<String>> codeSpec, AsyncCallback<List<Result>> callback);
+	void getSSandContents(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
 	void srcStoresDocVal(SiteSpec site, String ssuid, AsyncCallback<List<Result>> callback);
 	void findDocuments(SiteSpec site, String pid, boolean onDemand, AsyncCallback<List<Result>> callback);
 	void findDocumentsByRefId(SiteSpec site, String pid, List<String> refIds, AsyncCallback<List<Result>> callback) ;
@@ -124,9 +133,9 @@ public interface ToolkitServiceAsync {
 	void getRelated(SiteSpec site, ObjectRef or, List<String> assocs, AsyncCallback<List<Result>> callback);
 	void retrieveDocument(SiteSpec site, Uids uids, AsyncCallback<List<Result>> callback);
 	void retrieveImagingDocSet(SiteSpec site, Uids uids, String studyRequest, String transferSyntax, AsyncCallback<List<Result>> callback);
-	void submitRegistryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
-	void submitRepositoryTestdata(String testSessionName,SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
-	void submitXDRTestdata(String testSessionName,SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);
+	void submitRegistryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
+	void submitRepositoryTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
+	void submitXDRTestdata(SiteSpec site, String datasetName, String pid, AsyncCallback<List<Result>> callback);	
 	void provideAndRetrieve(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void lifecycleValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
 	void folderValidation(SiteSpec site, String pid, AsyncCallback<List<Result>> callback);
@@ -158,11 +167,14 @@ public interface ToolkitServiceAsync {
 	void addPatientIds(SimId simId, List<Pid> pids, AsyncCallback<String> callback) throws Exception;
 	void deletePatientIds(SimId simId, List<Pid> pids, AsyncCallback<Boolean> callback) throws Exception;
 
-	void getCollectionNames(String testSession,String collectionSetName, AsyncCallback<Map<String, String>> callback);
-	void getCollection(String testSessionName,String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
-	void getTestReadme(String testSession, String test, AsyncCallback<String> callback);
-	void getTestIndex(String testSession,String test, AsyncCallback<List<String>> callback);
-	void runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
+	void getCollectionNames(String collectionSetName, AsyncCallback<Map<String, String>> callback);
+	void getCollectionMembers(String collectionSetName, String collectionName, AsyncCallback<List<String>> callback);
+	void getTestCollections(String collectionSetName, AsyncCallback<List<TestCollectionDefinitionDAO>> callback);
+	void getCollection(String collectionSetName, String collectionName, AsyncCallback<Map<String, String>> callback);
+	void getTestReadme(String test, AsyncCallback<String> callback);
+	void getTestIndex(String test, AsyncCallback<List<String>> callback);
+	void runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<List<Result>> callback);
+	void runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure, AsyncCallback<TestOverviewDTO> callback) throws NoServletSessionException;
 	void isPrivateMesaTesting(AsyncCallback<Boolean> callback);
 	void addMesaTestSession(String name, AsyncCallback<Boolean> callback);
 	void delMesaTestSession(String name, AsyncCallback<Boolean> callback);
@@ -172,23 +184,13 @@ public interface ToolkitServiceAsync {
 	void sendPidToRegistry(SiteSpec site, Pid pid, AsyncCallback<List<Result>> callback) throws NoServletSessionException;
 	void getSimulatorEventRequest(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
 	void getSimulatorEventResponse(TransactionInstance ti, AsyncCallback<Result> callback) throws Exception;
+	void getTestLogDetails(String sessionName, TestInstance testInstance, AsyncCallback<LogFileContentDTO> callback);
 
 
-	void getTestplanAsText(String testSession,TestInstance testInstance, String section, AsyncCallback<String> callback);
+	void getTestplanAsText(TestInstance testInstance, String section, AsyncCallback<String> callback);
 
-	/**
-	 * This method copy the default testkit to a selected environment and triggers a code update based on
-	 * the affinity domain configuration file (codes.xml) located in the selected environment.
-	 * @param selectedEnvironment name of the target environment
-	 * @param callback Async. callback returning the update output as a String.
-     */
 	void configureTestkit(String selectedEnvironment,AsyncCallback<String> callback);
 
-	/**
-	 * This method tests if there already is a testkit configured in a selected environment.
-	 * @param selectedEnvironment name of the selected environment.
-	 * @param asyncCallback Async. callback returning a boolean.
-	 */
 	void doesTestkitExist(String selectedEnvironment, AsyncCallback<Boolean> asyncCallback);
 
 //	void getToolkitEnableNwHIN(AsyncCallback<String> notify);
@@ -209,20 +211,8 @@ public interface ToolkitServiceAsync {
 	void runSingleTest(Site site, int testId, AsyncCallback<Test> callback);
     void getTransactionErrorCodeRefs(String transactionName, Severity severity, AsyncCallback<List<String>> callback);
     void buildIgTestOrchestration(IgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildIigTestOrchestration(IigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-    void buildRigTestOrchestration(RigOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
-	void buildIdsTestOrchestration(IdsOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+    void buildRgTestOrchestration(RgOrchestrationRequest request, AsyncCallback<RawResponse> callback);
+
 
 	void getServletContextName(AsyncCallback<String> callback);
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	// Background test plan running methods related to On-Demand Documents
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	void register(String username, TestInstance testInstance, SiteSpec registry, Map<String, String> params, AsyncCallback<Result> callback);
-	void registerWithLocalizedTrackingInODDS(String username, TestInstance testInstance, SiteSpec registry, SimId odds, Map<String, String> params, AsyncCallback<Map<String, String>> callback);
-	void getOnDemandDocumentEntryDetails(SimId oddsSimId, AsyncCallback<List<DocumentEntryDetail>> callback);
-
-
 }

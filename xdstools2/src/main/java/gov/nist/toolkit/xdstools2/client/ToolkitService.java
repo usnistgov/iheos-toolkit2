@@ -14,12 +14,21 @@ import gov.nist.toolkit.registrymetadata.client.AnyIds;
 import gov.nist.toolkit.registrymetadata.client.ObjectRef;
 import gov.nist.toolkit.registrymetadata.client.ObjectRefs;
 import gov.nist.toolkit.registrymetadata.client.Uids;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.CodesResult;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.TestInstance;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.results.shared.Test;
-import gov.nist.toolkit.services.client.*;
+import gov.nist.toolkit.services.client.EnvironmentNotSelectedClientException;
+import gov.nist.toolkit.services.client.IgOrchestrationRequest;
+import gov.nist.toolkit.services.client.RawResponse;
+import gov.nist.toolkit.services.client.RgOrchestrationRequest;
+import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.sitemanagement.client.TransactionOfferings;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.tk.client.TkProps;
 import gov.nist.toolkit.valsupport.client.MessageValidationResults;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
@@ -36,11 +45,15 @@ public interface ToolkitService extends RemoteService  {
 	
 	/* Test management */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) throws NoServletSessionException ;
-	public Map<String, String> getCollectionNames(String testSession, String collectionSetName) throws Exception;
-	public Map<String, String> getCollection(String testSessionName,String collectionSetName, String collectionName) throws Exception;
-	public String getTestReadme(String testSession,String test) throws Exception;
-	public List<String> getTestIndex(String testSession,String test) throws Exception;
-	public List<Result> runMesaTest(String environmentName,String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
+	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception;
+	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception;
+	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception;
+	List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception;
+	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception;
+	public String getTestReadme(String test) throws Exception;
+	public List<String> getTestIndex(String test) throws Exception;
+	public List<Result> runMesaTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException ;
+	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections, Map<String, String> params, boolean stopOnFirstFailure) throws NoServletSessionException;
 	public boolean isPrivateMesaTesting() throws NoServletSessionException ;
 	public List<String> getMesaTestSessionNames() throws Exception;
 	public boolean addMesaTestSession(String name) throws Exception;
@@ -154,7 +167,7 @@ public interface ToolkitService extends RemoteService  {
 	
 	 List<String> getUpdateNames() throws NoServletSessionException ;
 	 List<TestInstance> getTestlogListing(String sessionName) throws Exception;
-	 List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception;
+	List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception;
 	
 	 List<RegistryStatus> getDashboardRegistryData() throws Exception;
 	 List<RepositoryStatus> getDashboardRepositoryData() throws Exception;

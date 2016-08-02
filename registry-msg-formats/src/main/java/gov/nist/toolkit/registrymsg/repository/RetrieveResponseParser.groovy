@@ -1,7 +1,7 @@
 package gov.nist.toolkit.registrymsg.repository;
 
 import gov.nist.toolkit.utilities.xml.XmlUtil;
-import gov.nist.toolkit.xdsexception.MetadataException
+import gov.nist.toolkit.xdsexception.client.MetadataException
 import groovy.transform.TypeChecked;
 import org.apache.axiom.om.OMElement;
 

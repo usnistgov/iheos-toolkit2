@@ -1,14 +1,9 @@
 package gov.nist.toolkit.valregmetadata.top;
 
 import gov.nist.toolkit.errorrecording.ErrorRecorder;
-import gov.nist.toolkit.errorrecording.client.XdsErrorCode;
 import gov.nist.toolkit.registrymetadata.Metadata;
-import gov.nist.toolkit.valregmetadata.top.CodeValidation;
-import gov.nist.toolkit.valregmetadata.top.ObjectStructureValidator;
-import gov.nist.toolkit.valregmetadata.top.SubmissionStructure;
 import gov.nist.toolkit.valsupport.client.ValidationContext;
 import gov.nist.toolkit.valsupport.registry.RegistryValidationInterface;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
 
 public class MetadataValidator {
 	Metadata m;

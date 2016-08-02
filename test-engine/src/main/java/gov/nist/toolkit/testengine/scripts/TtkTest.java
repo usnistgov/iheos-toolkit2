@@ -2,7 +2,7 @@ package gov.nist.toolkit.testengine.scripts;
 
 import gov.nist.toolkit.installation.ExternalCacheManager;
 import gov.nist.toolkit.testengine.engine.XdsTest;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.junit.Before;
 import org.junit.Test;
 

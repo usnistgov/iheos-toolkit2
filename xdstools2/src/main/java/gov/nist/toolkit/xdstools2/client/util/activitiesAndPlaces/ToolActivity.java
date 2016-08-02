@@ -18,7 +18,7 @@ public class ToolActivity extends AbstractActivity {
         // TODO the following can be refactored in a specific method such as openTab
         if(toolId!=null ) {
             // Open required tab
-            new ToolLauncher(xdstools2view, toolId).launch();
+            new ToolLauncher(toolId).launch();
             xdstools2view.resizeToolkit();
         }
     }

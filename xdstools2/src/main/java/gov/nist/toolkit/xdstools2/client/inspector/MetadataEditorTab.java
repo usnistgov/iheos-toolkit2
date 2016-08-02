@@ -9,10 +9,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.registrymetadata.client.Document;
 import gov.nist.toolkit.registrymetadata.client.MetadataCollection;
 import gov.nist.toolkit.registrymetadata.client.RegistryObject;
-import gov.nist.toolkit.results.client.*;
+import gov.nist.toolkit.results.client.Result;
+import gov.nist.toolkit.results.client.StepResult;
+import gov.nist.toolkit.results.client.TestLog;
+import gov.nist.toolkit.results.client.TestLogs;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.ToolWindow;
 
 import java.util.List;
@@ -44,19 +46,17 @@ public class MetadataEditorTab extends ToolWindow {
 
 	
 	@Override
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Editor", select);
-		topPanel.setWidth("100%");
-		addToolHeader(container,topPanel, null, siteSpec);
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Editor");
+		tabTopPanel.setWidth("100%");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Metadata Editor</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		HorizontalPanel hpanel = new HorizontalPanel();
-		topPanel.add(hpanel);
-		topPanel.setCellWidth(hpanel, "100%");
+		tabTopPanel.add(hpanel);
+//		tabTopPanel.setCellWidth(hpanel, "100%");
 		hpanel.setBorderWidth(1);
 
 //		historyPanel = new VerticalPanel();

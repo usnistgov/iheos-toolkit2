@@ -1,9 +1,9 @@
-package gov.nist.toolkit.itTests.testpath
+package gov.nist.toolkit.itTests.xds.od
 
 import gov.nist.toolkit.actorfactory.client.SimId
+import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.actortransaction.client.ActorType
 import gov.nist.toolkit.adt.ListenerFactory
-import gov.nist.toolkit.configDatatypes.SimulatorActorType
 import gov.nist.toolkit.installation.Installation
 import gov.nist.toolkit.itTests.support.ToolkitSpecification
 import gov.nist.toolkit.results.client.Result
@@ -13,17 +13,17 @@ import gov.nist.toolkit.toolkitApi.SimulatorBuilder
 import spock.lang.Shared
 
 /**
- * Created by onh2 on 5/17/16.
+ * Test the Register transaction
  */
-class TestkitPathFinderSpec extends ToolkitSpecification{
+class OdSpec extends ToolkitSpecification {
     @Shared SimulatorBuilder spi
 
 
     @Shared String urlRoot = String.format("http://localhost:%s/xdstools2", remoteToolkitPort)
-    String patientId = 'BR14^^^&1.2.360&ISO'
-    String reg = 'test__rep'
+    String patientId = 'SR14^^^&1.2.460&ISO'
+    String reg = 'sunil__rr2'
     SimId simId = new SimId(reg)
-    @Shared String testSession = 'test';
+    @Shared String testSession = 'sunil';
 
     def setupSpec() {   // one time setup done when class launched
         startGrizzly('8889')
@@ -36,18 +36,24 @@ class TestkitPathFinderSpec extends ToolkitSpecification{
 
         new BuildCollections().init(null)
 
-        spi.delete('rep', testSession)
+        spi.delete('rr2', testSession)
 
         spi.create(
-                'rep',
+                'rr2',
                 testSession,
                 SimulatorActorType.REPOSITORY_REGISTRY,
-                'testpath')
+                'test')
+
+        spi.delete('odds2', testSession)
+
+        spi.create(
+                'odds2',
+                testSession,
+                SimulatorActorType.ONDEMAND_DOCUMENT_SOURCE,
+                'test')
     }
 
     def cleanupSpec() {  // one time shutdown when everything is done
-        spi.delete('rep', 'testpath')
-        spi.delete('rep','test')
         server.stop()
         ListenerFactory.terminateAll()
     }
@@ -65,7 +71,7 @@ class TestkitPathFinderSpec extends ToolkitSpecification{
     // submits the patient id configured above to the registry in a Patient Identity Feed transaction
     def 'Submit Pid transaction to Registry simulator'() {
         when:
-        String siteName = 'test__rep'
+        String siteName = 'sunil__rr2'
         TestInstance testId = new TestInstance("15804")
         List<String> sections = new ArrayList<>()
         sections.add("section")
@@ -77,26 +83,43 @@ class TestkitPathFinderSpec extends ToolkitSpecification{
         List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
-        true
         results.size() == 1
         results.get(0).passed()
     }
 
-
-    def 'Run a failed test'() {
+    def 'Run all tests'() {
         when:
-        String siteName = 'test__rep'
-        TestInstance testId = new TestInstance("SingleDocument42")
+        String siteName = 'sunil__rr2'
+        TestInstance testId = new TestInstance("15806")
         List<String> sections = new ArrayList<>()
         Map<String, String> params = new HashMap<>()
         params.put('$patientid$', patientId)
         boolean stopOnFirstError = true
 
         and: 'Run'
-        List<Result> results = api.withEnvironment('testpath').runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
 
         then:
-        true
+        results.size() == 1
+        results.get(0).passed()
+    }
+    /**
+     * This section is here, with the other reg/rep tests, because the Retrieve needs the document entry id and the repository id from the previous PnR section.
+     * @return
+     */
+    def 'Run retrieve tests'() {
+        when:
+        String siteName = 'sunil__odds2'
+        TestInstance testId = new TestInstance("15806")
+        List<String> sections = ["Retrieve"]
+        Map<String, String> params = new HashMap<>()
+        params.put('$patientid$', patientId)
+        boolean stopOnFirstError = true
+
+        and: 'Run'
+        List<Result> results = api.runTest(testSession, siteName, testId, sections, params, stopOnFirstError)
+
+        then:
         results.size() == 1
         results.get(0).passed()
     }

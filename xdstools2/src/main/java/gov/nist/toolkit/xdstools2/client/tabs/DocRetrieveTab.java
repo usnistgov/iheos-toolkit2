@@ -6,14 +6,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.registrymetadata.client.Uid;
 import gov.nist.toolkit.registrymetadata.client.Uids;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.RetrieveSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -38,21 +36,19 @@ public class DocRetrieveTab extends GenericQueryTab {
 	public DocRetrieveTab() {
 		super(new RetrieveSiteActorManager());
 	}
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "RetrieveDoc", select);
-		addToolHeader(container,topPanel, null);
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "RetrieveDoc");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Retrieve Documents</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		HTML docUidLabel = new HTML();
 		docUidLabel.setText("Document UniqueIds");

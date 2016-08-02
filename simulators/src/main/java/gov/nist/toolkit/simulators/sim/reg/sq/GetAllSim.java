@@ -8,8 +8,8 @@ import gov.nist.toolkit.valregmsg.registry.SQCodeOr;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.GetAll;
 import gov.nist.toolkit.valregmsg.registry.storedquery.generic.QueryReturnType;
 import gov.nist.toolkit.valregmsg.registry.storedquery.support.StoredQuerySupport;
-import gov.nist.toolkit.xdsexception.MetadataValidationException;
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.MetadataValidationException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 
 import java.util.ArrayList;
 import java.util.HashSet;

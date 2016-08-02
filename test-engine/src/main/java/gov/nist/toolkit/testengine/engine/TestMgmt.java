@@ -3,7 +3,7 @@ package gov.nist.toolkit.testengine.engine;
 import gov.nist.toolkit.common.testsupport.OMGenerator;
 import gov.nist.toolkit.registrymetadata.Metadata;
 import gov.nist.toolkit.commondatatypes.MetadataSupport;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 
 import java.util.HashMap;
 import java.util.Iterator;

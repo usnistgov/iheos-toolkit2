@@ -1,7 +1,6 @@
 package gov.nist.toolkit.xdstools2.client.tabs;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import gov.nist.toolkit.results.client.AssertionResult;
 import gov.nist.toolkit.results.client.Result;
 import gov.nist.toolkit.xdstools2.client.TabContainer;
@@ -25,15 +24,14 @@ public class TextViewerTab extends ToolWindow {
 	
 	public void setResult(List<Result> results) { this.results = results; }
 
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {		
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, "Viewer", select);
-		topPanel.setWidth("100%");
-		addToolHeader(container,topPanel, null, null);
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, "Viewer");
+		tabTopPanel.setWidth("100%");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>Text Viewer</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 		if (results.size() > 0) {
 			Result result = results.get(0); 
@@ -46,27 +44,25 @@ public class TextViewerTab extends ToolWindow {
 				}
 				HTML er = new HTML();
 				er.setText(buf.toString());
-				topPanel.add(er);
+				tabTopPanel.add(er);
 			}
 
 			if (text != null) {
 				HTML stuff = new HTML();
 				stuff.setHTML(text.replaceAll("<", "&lt;").replaceAll("\\n", "<br />"));
-				topPanel.add(stuff);
+				tabTopPanel.add(stuff);
 			}
 		}
 
 	}
 
-	public void onTabLoad(TabContainer container, boolean select, String text, String titleString) {		
-		topPanel = new VerticalPanel();
-		container.addTab(topPanel, titleString, select);
-		topPanel.setWidth("100%");
-		addToolHeader(container,topPanel, null, null);
+	public void onTabLoad(boolean select, String text, String titleString) {
+		registerTab(select, titleString);
+		tabTopPanel.setWidth("100%");
 
 		HTML title = new HTML();
 		title.setHTML("<h2>" + titleString + "</h2>");
-		topPanel.add(title);
+		tabTopPanel.add(title);
 
 
 		if (text != null) {
@@ -75,7 +71,7 @@ public class TextViewerTab extends ToolWindow {
 				stuff.setHTML(text.replaceAll("<", "&lt;").replaceAll(" ", "&nbsp;").replaceAll("\\n", "<br />"));
 			else
 				stuff.setHTML(text);
-			topPanel.add(stuff);
+			tabTopPanel.add(stuff);
 		}
 	}
 

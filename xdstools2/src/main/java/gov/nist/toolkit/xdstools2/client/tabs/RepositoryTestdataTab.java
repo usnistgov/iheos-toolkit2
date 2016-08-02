@@ -3,11 +3,12 @@ package gov.nist.toolkit.xdstools2.client.tabs;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
 import gov.nist.toolkit.configDatatypes.client.TransactionType;
 import gov.nist.toolkit.xdstools2.client.CoupledTransactions;
 import gov.nist.toolkit.xdstools2.client.PopupMessage;
-import gov.nist.toolkit.xdstools2.client.TabContainer;
 import gov.nist.toolkit.xdstools2.client.siteActorManagers.GetDocumentsSiteActorManager;
 import gov.nist.toolkit.xdstools2.client.tabs.genericQueryTab.GenericQueryTab;
 
@@ -35,25 +36,18 @@ public class RepositoryTestdataTab  extends GenericQueryTab {
 	public RepositoryTestdataTab() {
 		super(new GetDocumentsSiteActorManager());
 	}
-	
-	public void onTabLoad(TabContainer container, boolean select, String eventName) {
-		
-		// Create top level VerticalPanel that defines this tab and link it into the
-		// tab system.  Also add Close button.
-		myContainer = container;
-		topPanel = new VerticalPanel();
-		
-		
-		container.addTab(topPanel, eventName, select);
-		addToolHeader(container, topPanel, help);
+
+	@Override
+	public void onTabLoad(boolean select, String eventName) {
+		registerTab(select, eventName);
 
 		// Build UI content of tab
-		topPanel.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
+		tabTopPanel.add(new HTML("<h2>Send XDS Provide & Register transaction</h2>"));
 
 		mainGrid = new FlexTable();
 		int row = 0;
 		
-		topPanel.add(mainGrid);
+		tabTopPanel.add(mainGrid);
 
 		mainGrid.setWidget(row,0, new HTML("Select Test Data Set"));
 

@@ -11,7 +11,7 @@ import gov.nist.toolkit.http.httpclient.HttpClient;
 import gov.nist.toolkit.http.httpclient.HttpClientInfo;
 import gov.nist.toolkit.xdsexception.HttpClientException;
 import gov.nist.toolkit.xdsexception.HttpCodeException;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.xml.sax.SAXException;
 
 import javax.mail.MessagingException;

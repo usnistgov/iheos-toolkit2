@@ -13,8 +13,10 @@ import gov.nist.toolkit.results.CommonService;
 import gov.nist.toolkit.results.ResultBuilder;
 import gov.nist.toolkit.results.client.*;
 import gov.nist.toolkit.results.shared.Test;
+import gov.nist.toolkit.session.client.TestOverviewDTO;
 import gov.nist.toolkit.session.server.CodesConfigurationBuilder;
 import gov.nist.toolkit.session.server.Session;
+import gov.nist.toolkit.session.server.TestOverviewBuilder;
 import gov.nist.toolkit.session.server.services.TestLogCache;
 import gov.nist.toolkit.sitemanagement.client.Site;
 import gov.nist.toolkit.sitemanagement.client.SiteSpec;
@@ -22,19 +24,23 @@ import gov.nist.toolkit.testengine.engine.ResultPersistence;
 import gov.nist.toolkit.testengine.engine.RetrieveB;
 import gov.nist.toolkit.testengine.engine.TestLogsBuilder;
 import gov.nist.toolkit.testengine.engine.Xdstest2;
-import gov.nist.toolkit.testenginelogging.LogFileContent;
-import gov.nist.toolkit.testenginelogging.LogMap;
-import gov.nist.toolkit.testenginelogging.TestDetails;
-import gov.nist.toolkit.testenginelogging.TestStepLogContent;
+import gov.nist.toolkit.testenginelogging.LogFileContentBuilder;
+import gov.nist.toolkit.testenginelogging.TestLogDetails;
+import gov.nist.toolkit.testenginelogging.client.LogFileContentDTO;
+import gov.nist.toolkit.testenginelogging.client.LogMapDTO;
+import gov.nist.toolkit.testenginelogging.client.TestStepLogContentDTO;
 import gov.nist.toolkit.testenginelogging.logrepository.LogRepository;
 import gov.nist.toolkit.testkitutilities.TestDefinition;
 import gov.nist.toolkit.testkitutilities.TestKit;
+import gov.nist.toolkit.testkitutilities.TestkitBuilder;
+import gov.nist.toolkit.testkitutilities.client.TestCollectionDefinitionDAO;
 import gov.nist.toolkit.utilities.io.Io;
 import gov.nist.toolkit.utilities.xml.OMFormatter;
+import gov.nist.toolkit.utilities.xml.Util;
 import gov.nist.toolkit.utilities.xml.XmlUtil;
 import gov.nist.toolkit.xdsexception.EnvironmentNotSelectedException;
 import gov.nist.toolkit.xdsexception.ExceptionUtil;
-import gov.nist.toolkit.xdsexception.XdsInternalException;
+import gov.nist.toolkit.xdsexception.client.XdsInternalException;
 import org.apache.axiom.om.OMElement;
 import org.apache.log4j.Logger;
 
@@ -46,7 +52,7 @@ import java.util.*;
 
 
 public class XdsTestServiceManager extends CommonService {
-//	private final UtilityRunner utilityRunner = new UtilityRunner(this);
+	//	private final UtilityRunner utilityRunner = new UtilityRunner(this);
 //	private final TestRunner testRunner = new TestRunner(this);
 	CodesConfiguration codesConfiguration = null;
 	// always reference through getTestKit()
@@ -57,8 +63,9 @@ public class XdsTestServiceManager extends CommonService {
 	static boolean allCiphersEnabled = false;
 
 	public XdsTestServiceManager(Session session)  {
-        this.session = session;
-        logger.info("XdsTestServiceManager: using session " + session.getId());
+		this.session = session;
+		if (session != null)
+			logger.info("XdsTestServiceManager: using session " + session.getId());
 	}
 
 	public static Logger getLogger() {
@@ -113,6 +120,12 @@ public class XdsTestServiceManager extends CommonService {
 		return new TestRunner(this).run(session, mesaTestSessionName, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
 	}
 
+	public TestOverviewDTO runTest(String mesaTestSession, SiteSpec siteSpec, TestInstance testInstance, List<String> sections,
+									Map<String, String> params, Map<String, Object> params2, boolean stopOnFirstFailure) throws Exception {
+		new TestRunner(this).run(session, mesaTestSession, siteSpec, testInstance, sections, params, params2, stopOnFirstFailure);
+		return getTestOverview(mesaTestSession, testInstance);
+	}
+
 	/**
 	 * Original Xdstools2 function to retrieve test results based on the current Session by providing a list of
 	 * TestInstance numbers / Test Ids.
@@ -121,7 +134,8 @@ public class XdsTestServiceManager extends CommonService {
 	 * @return
 	 */
 	public Map<String, Result> getTestResults(List<TestInstance> testInstances, String testSession) {
-		logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
+		if (session != null)
+			logger.debug(session.id() + ": " + "getTestResults() ids=" + testInstances + " testSession=" + testSession);
 
 		Map<String, Result> map = new HashMap<String, Result>();
 
@@ -137,17 +151,18 @@ public class XdsTestServiceManager extends CommonService {
 		return map;
 	}
 
-    public void delTestResults(List<TestInstance> testInstances, String testSession) {
-        logger.debug(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
-        ResultPersistence rp = new ResultPersistence();
-        for (TestInstance testInstance : testInstances) {
-            try {
-                rp.delete(testInstance, testSession);
-            }
-            catch (Exception e) {}
-        }
+	public void delTestResults(List<TestInstance> testInstances, String testSession) {
+		if (session != null)
+			logger.debug(session.id() + ": " + "delTestResults() ids=" + testInstances + " testSession=" + testSession);
+		ResultPersistence rp = new ResultPersistence();
+		for (TestInstance testInstance : testInstances) {
+			try {
+				rp.delete(testInstance, testSession);
+			}
+			catch (Exception e) {}
+		}
 
-    }
+	}
 
 	// this translates from the xds-common version of AssertionResults
 	// to the xdstools2.client version which is serializable and can be passed
@@ -173,36 +188,37 @@ public class XdsTestServiceManager extends CommonService {
 	 * separate from the current GUI session.
 	 */
 	public TestLogs getRawLogs(TestInstance testInstance) {
-		logger.debug(session.id() + ": " + "getRawLogs for " + testInstance.describe());
+		if (session != null)
+			logger.debug(session.id() + ": " + "getRawLogs for " + testInstance.describe());
 
-        LogMap logMap;
-        try {
-            logMap = LogRepository.logIn(testInstance);
-        } catch (Exception e) {
-            logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + testInstance));
-            TestLogs testLogs = new TestLogs();
-            testLogs.testInstance = testInstance;
-            testLogs.assertionResult = new AssertionResult(
-                    String.format("Internal Server Error: Cannot find logs for Test %s", testInstance),
-                    false);
-            return testLogs;
-        }
-
-        try {
-			TestLogs testLogs = TestLogsBuilder.build(logMap);
-			testLogs.testInstance = testInstance;
-            return testLogs;
+		LogMapDTO logMapDTO;
+		try {
+			logMapDTO = LogRepository.logIn(testInstance);
 		} catch (Exception e) {
-            TestLogs testLogs = new TestLogs();
+			logger.error(ExceptionUtil.exception_details(e, "Logs not available for " + testInstance));
+			TestLogs testLogs = new TestLogs();
+			testLogs.testInstance = testInstance;
+			testLogs.assertionResult = new AssertionResult(
+					String.format("Internal Server Error: Cannot find logs for Test %s", testInstance),
+					false);
+			return testLogs;
+		}
+
+		try {
+			TestLogs testLogs = TestLogsBuilder.build(logMapDTO);
+			testLogs.testInstance = testInstance;
+			return testLogs;
+		} catch (Exception e) {
+			TestLogs testLogs = new TestLogs();
 			testLogs.assertionResult = new AssertionResult(
 					ExceptionUtil.exception_details(e), false);
-            return testLogs;
+			return testLogs;
 		}
 	}
 
 	TestKit getTestKit() {
 		if (testKit == null)
-			testKit = new TestKit(Installation.installation().testkitFile());
+			testKit = TestkitBuilder.getTestKit();
 		return testKit;
 	}
 
@@ -211,7 +227,8 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public Map<String, String> getCollection(String collectionSetName, String collectionName) throws Exception  {
-		logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + collectionName);
+		if (session != null)
+			logger.debug(session.id() + ": " + "getCollection " + collectionSetName + ":" + collectionName);
 		try {
             System.out.println("ENVIRONMENT: "+session.getCurrentEnvName()+", SESSION: "+session.getMesaSessionName());
             Map<String,String> collection=new HashMap<String,String>();
@@ -231,20 +248,32 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
-	public String getTestReadme(String test) throws Exception {
-		logger.debug(session.id() + ": " + "getTestReadme " + test);
+	public List<String> getCollectionMembers(String collectionSetName, String collectionName) throws Exception {
+		if (session != null)
+			logger.debug(session.id() + ": " + "getCollectionMembers " + collectionSetName + ":" + collectionName);
 		try {
+<<<<<<< HEAD
             TestKit tk=new TestKit(Installation.installation().findTestkitFromTest(Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName()),test));
 			TestDefinition tt = new TestDefinition(tk.getTestDir(test));
 			return tt.getReadme();
+=======
+			return getTestKit().getCollectionMembers(collectionSetName, collectionName);
+>>>>>>> feature/testlog-listing
 		} catch (Exception e) {
-			logger.error("getTestReadme", e);
+			logger.error("getCollection", e);
 			throw new Exception(e.getMessage());
 		}
 	}
 
+	public String getTestReadme(String test) throws Exception {
+		if (session != null)
+			logger.debug(session.id() + ": " + "getTestReadme " + test);
+		return new TestDefinition(getTestKit().getTestDir(test)).getFullTestReadme();
+	}
+
 	public List<String> getTestIndex(String test) throws Exception   {
-		logger.debug(session.id() + ": " + "getTestIndex " + test);
+		if (session != null)
+			logger.debug(session.id() + ": " + "getTestIndex " + test);
 		TestDefinition tt;
 		try {
 			tt = new TestDefinition(getTestKit().getTestDir(test));
@@ -259,15 +288,41 @@ public class XdsTestServiceManager extends CommonService {
 		}
 	}
 
+	/**
+	 * Collect ID and title for each test collection
+	 * @param collectionSetName
+	 * @return List<TestCollectionDefinitionDAO>
+	 * @throws Exception if cannot scan testkit
+	 */
+	public List<TestCollectionDefinitionDAO> getTestCollections(String collectionSetName) throws Exception {
+		try {
+			return getTestKit().getTestCollections(collectionSetName);
+		} catch (Exception e) {
+			throw new Exception(ExceptionUtil.exception_details(e));
+		}
+	}
+
 	public boolean isPrivateMesaTesting() {
-		logger.debug(session.id() + ": " + "isPrivateMesaTesting");
+		if (session != null)
+			logger.debug(session.id() + ": " + "isPrivateMesaTesting");
 		return Installation.installation().propertyServiceManager().isTestLogCachePrivate();
 	}
 
 	public String getTestplanAsText(TestInstance testInstance, String section) throws Exception {
 		try {
+<<<<<<< HEAD
 			logger.debug(session.id() + ": " + "getTestplanAsText");
 			TestDetails ts = getTestDetails(testInstance, section);
+=======
+			if (session != null)
+				logger.debug(session.id() + ": " + "getTestplanAsText");
+			List<String> sections = new ArrayList<String>();
+			sections.add(section);
+
+			Xdstest2 xt2 = getNewXt();
+			xt2.addTest(testInstance, sections, null, false);
+			TestLogDetails ts = xt2.getTestSpec(testInstance);
+>>>>>>> feature/testlog-listing
 
 			File tsFile;
 
@@ -301,28 +356,37 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public List<TestInstance> getTestlogListing(String sessionName) throws Exception {
-		logger.debug(session.id() + ": " + "getTestlogListing(" + sessionName + ")");
+		if (session != null)
+			logger.debug(session.id() + ": " + "getTestlogListing(" + sessionName + ")");
 
-		List<String> names = getMesaTestSessionNames();
+		List<String> sessionNames = getMesaTestSessionNames();
 
-		if (!names.contains(sessionName))
+		if (!sessionNames.contains(sessionName))
 			throw new Exception("Don't understand session name " + sessionName);
 
-		File sessionDir = new File(Installation.installation().propertyServiceManager().getTestLogCache() + File.separator + sessionName);
+		File sessionDir = new File(Installation.installation().propertyServiceManager().getTestLogCache() +
+				File.separator + sessionName);
 
-		List<TestInstance> testInstances = new ArrayList<TestInstance>();
+		List<String> names = new ArrayList<>();
 
-		for (File area : sessionDir.listFiles()) {
-			if (!area.isDirectory())
+		for (File test : sessionDir.listFiles()) {
+			if (!test.isDirectory() || test.getName().equals("Results"))
 				continue;
-			for (File test : area.listFiles()) {
-				if (!test.isDirectory())
-					continue;
-				testInstances.add(new TestInstance(test.getName()));
-			}
+			names.add(test.getName());
 		}
 
+		List<TestInstance> testInstances = new ArrayList<TestInstance>();
+		for (String name : names) testInstances.add(new TestInstance(name));
+
 		return testInstances;
+	}
+
+	public List<TestOverviewDTO> getTestsOverview(String sessionName, List<TestInstance> testInstances) throws Exception {
+		List<TestOverviewDTO> results = new ArrayList<>();
+		for (TestInstance testInstance : testInstances) {
+			results.add(getTestOverview(sessionName, testInstance));
+		}
+		return results;
 	}
 
 	/**
@@ -335,66 +399,121 @@ public class XdsTestServiceManager extends CommonService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Result> getLogContent(String sessionName, TestInstance testInstance) throws Exception {
-		logger.debug(session.id() + ": " + "getLogContent(" + testInstance + ")");
+	public TestOverviewDTO getTestOverview(String sessionName, TestInstance testInstance) throws Exception {
+		try {
+			if (session != null)
+				logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
 
-		File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
+			testInstance.setUser(sessionName);
 
-		if (testDir == null)
-			throw new Exception("Cannot find log file for test " + testInstance);
+			File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
 
-		LogMap lm = buildLogMap(testDir, testInstance);
+			LogMapDTO lm = null;
+			if (testDir != null)
+				lm = buildLogMap(testDir, testInstance);
 
-		// this has a slightly different structure than the testkit
-		// so pass the parent dir so the tests dir can be navigated
-		File testkitDir = getTestKit().getTestsDir();
-		File testkitD = testkitDir.getParentFile();
+			// this has a slightly different structure than the testkit
+			// so pass the parent dir so the tests dir can be navigated
+			File testkitDir = getTestKit().getTestsDir();
+			File testkitD = testkitDir.getParentFile();
 
-		TestDetails testDetails = new TestDetails(testkitD, testInstance);
-		List<TestDetails> testDetailsList = new ArrayList<TestDetails>();
-		testDetailsList.add(testDetails);
+			TestLogDetails testLogDetails = new TestLogDetails(testkitD, testInstance);
+			List<TestLogDetails> testLogDetailsList = new ArrayList<TestLogDetails>();
+			testLogDetailsList.add(testLogDetails);
 
-		for (String section : lm.getLogFileContentMap().keySet()) {
-			LogFileContent ll = lm.getLogFileContentMap().get(section);
-			testDetails.addTestPlanLog(section, ll);
+			if (testDir != null) {
+				for (String section : lm.getLogFileContentMap().keySet()) {
+					LogFileContentDTO ll = lm.getLogFileContentMap().get(section);
+					testLogDetails.addTestPlanLog(section, ll);
+				}
+
+				// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
+				TestInstance logid = newTestLogId();
+
+				//  -  why is a method named getTestOverview doing a WRITE???????
+				if (session.transactionSettings.logRepository != null)
+					session.transactionSettings.logRepository.logOut(logid, lm);
+			}
+
+			TestOverviewDTO dto = new TestOverviewBuilder(session, testLogDetails).build();
+			if (testDir == null)
+				dto.setRun(false);
+			else
+				dto.setLogMapDTO(lm);
+			return dto;
+		} catch (Exception e) {
+			if (e.getMessage() != null) throw e;
+			throw new Exception(ExceptionUtil.exception_details(e));
 		}
-
-		// Save the created logs in the SessionCache (or testLogCache if this is a conformance test)
-		TestInstance logid = newTestLogId();
-
-        //  -  why is a method named getLogContent doing a WRITE???????
-		session.transactionSettings.logRepository.logOut(logid, lm);
-//		session.saveLogMapInSessionCache(lm, logid);
-
-		Result result = buildResult(testDetailsList, logid);
-
-		return asList(result);
 	}
 
-	public LogMap buildLogMap(File testDir, TestInstance testInstance) throws Exception {
-		LogMap lm = new LogMap();
+	public LogFileContentDTO getTestLogDetails(String sessionName, TestInstance testInstance) throws Exception {
+		try {
+			if (session != null)
+				logger.debug(session.id() + ": " + "getTestOverview(" + testInstance + ")");
+
+			testInstance.setUser(sessionName);
+
+			File testDir = getTestLogCache().getTestDir(sessionName, testInstance);
+
+			LogMapDTO lm = null;
+			if (testDir != null)
+				lm = buildLogMap(testDir, testInstance);
+
+			// this has a slightly different structure than the testkit
+			// so pass the parent dir so the tests dir can be navigated
+			File testkitDir = getTestKit().getTestsDir();
+			File testkitD = testkitDir.getParentFile();
+
+			String sectionName = testInstance.getSection();
+			File logFile;
+
+			if (sectionName == null) {
+				logFile = new File(testDir, "log.xml");
+			} else {
+				logFile = new File(new File(testDir, sectionName), "log.xml");
+			}
+
+			return new LogFileContentBuilder().build(logFile);
+
+//			return new TestLogDetails(testkitD, testInstance).getSectionLogMapDTO();
+		} catch (Exception e) {
+			if (e.getMessage() != null) throw e;
+			throw new Exception(ExceptionUtil.exception_details(e));
+		}
+
+	}
+
+	public LogMapDTO buildLogMap(File testDir, TestInstance testInstance) throws Exception {
+		LogMapDTO lm = new LogMapDTO();
 
 		// this has a slightly different structure than the testkit
 		// so pass the parent dir so the tests dir can be navigated
 		File testkitDir = getTestKit().getTestsDir();
 		File testkitD = testkitDir.getParentFile();
 
-		TestDetails testDetails = new TestDetails(testkitD, testInstance);
+		TestLogDetails testLogDetails = new TestLogDetails(testkitD, testInstance);
 
-		List<String> sectionNames = testDetails.getSectionsFromTestDef(new File(testkitDir + File.separator + testInstance));
+		List<String> sectionNames = testLogDetails.getSectionsFromTestDef(new File(testkitDir + File.separator + testInstance));
 
 		if (sectionNames.size() == 0) {
 			for (File f : testDir.listFiles()) {
 				if (f.isFile() && f.getName().equals("log.xml")) {
-					LogFileContent ll = new LogFileContent(f);
+					LogFileContentDTO ll = new LogFileContentBuilder().build(f);
 					lm.add(f.getName(), ll);
+				} else if (f.isDirectory()) {
+					File logfile = new File(f, "log.xml");
+					if (logfile.exists()) {
+						LogFileContentDTO ll = new LogFileContentBuilder().build(logfile);
+						lm.add(f.getName(), ll);
+					}
 				}
 			}
 
 		} else {
 			for (String sectionName : sectionNames ) {
 				File lfx = new File(testDir + File.separator + sectionName + File.separator + "log.xml");
-				LogFileContent ll = new LogFileContent(lfx);
+				LogFileContentDTO ll = new LogFileContentBuilder().build(lfx);
 				lm.add(sectionName, ll);
 			}
 		}
@@ -403,7 +522,8 @@ public class XdsTestServiceManager extends CommonService {
 	}
 
 	public CodesResult getCodesConfiguration() {
-		logger.debug(session.id() + ": " + "currentCodesConfiguration");
+		if (session != null)
+			logger.debug(session.id() + ": " + "currentCodesConfiguration");
 
 		CodesResult codesResult = new CodesResult();
 
@@ -466,10 +586,10 @@ public class XdsTestServiceManager extends CommonService {
 		return new TestInstance(UuidAllocator.allocate().replaceAll(":", "_"));
 	}
 
-	Result buildResult(List<TestDetails> testSpecs, TestInstance logId) throws Exception {
+	Result buildResult(List<TestLogDetails> testLogDetailses, TestInstance logId) throws Exception {
 		TestInstance testInstance;
-		if (testSpecs.size() == 1) {
-			testInstance = testSpecs.get(0).getTestInstance();
+		if (testLogDetailses.size() == 1) {
+			testInstance = testLogDetailses.get(0).getTestInstance();
 		} else {
 			testInstance = new TestInstance("Combined_Test");
 		}
@@ -483,30 +603,30 @@ public class XdsTestServiceManager extends CommonService {
 		//		// for Pre-Connectathon test results
 		//
 		//		SessionCache sc = new SessionCache(s, getTestLogCache());
-		//		for (LogMapItem item : lm.items) {
+		//		for (LogMapItemDTO item : lm.items) {
 		//			sc.addLogFile(item.log);
 		//
 		//		}
 
 		// load metadata results into Result
-		//		List<TestSpec> testSpecs = s.xt.getTestSpecs();
-		for (TestDetails testSpec : testSpecs) {
-			for (String section : testSpec.sectionLogMap.keySet()) {
+		//		List<TestSpec> testLogDetailses = s.xt.getTestSpecs();
+		for (TestLogDetails testLogDetails : testLogDetailses) {
+			for (String section : testLogDetails.sectionLogMapDTO.keySet()) {
 				if (section.equals("THIS"))
 					continue;
-				LogFileContent testlog = testSpec.sectionLogMap.get(section);
-				for (int i = 0; i < testlog.size(); i++) {
+				LogFileContentDTO logFileContentDTO = testLogDetails.sectionLogMapDTO.get(section);
+				for (int i = 0; i < logFileContentDTO.size(); i++) {
 					StepResult stepResult = new StepResult();
 					boolean stepPass = false;
 					result.stepResults.add(stepResult);
 					try {
-						TestStepLogContent tsLog = testlog.getTestStepLog(i);
+						TestStepLogContentDTO testStepLogContentDTO = logFileContentDTO.getTestStepLog(i);
 						stepResult.section = section;
-						stepResult.stepName = tsLog.getName();
-						stepResult.status = tsLog.getStatus();
+						stepResult.stepName = testStepLogContentDTO.getId();
+						stepResult.status = testStepLogContentDTO.getStatus();
 						stepPass = stepResult.status;
 
-                        logger.info("test section " + section + " has status " + stepPass);
+						logger.info("test section " + section + " has status " + stepPass);
 
 						// a transaction can have metadata in the request OR
 						// the response
@@ -515,7 +635,7 @@ public class XdsTestServiceManager extends CommonService {
 						// found
 						boolean inRequest = false;
 						try {
-							OMElement input = tsLog.getRawInputMetadata();
+							String input = testStepLogContentDTO.getInputMetadata();
 							Metadata m = MetadataParser
 									.parseNonSubmission(input);
 							if (m.getAllObjects().size() > 0) {
@@ -530,7 +650,7 @@ public class XdsTestServiceManager extends CommonService {
 						boolean inResponse = false;
 						if (inRequest == false) {
 							try {
-								OMElement reslt = tsLog.getRawResult();
+								String reslt = testStepLogContentDTO.getResult();
 								Metadata m = MetadataParser
 										.parseNonSubmission(reslt);
 								MetadataToMetadataCollectionParser mcp = new MetadataToMetadataCollectionParser(
@@ -546,20 +666,20 @@ public class XdsTestServiceManager extends CommonService {
 
 						// look for document contents
 						if (stepPass) {
-							OMElement response = null;
+							String response = null;
 							try {
-								response = tsLog.getRawResult();  // throws exception on Direct messages (no response)
+								response = testStepLogContentDTO.getResult();  // throws exception on Direct messages (no response)
 							} catch (Exception e) {
 
 							}
 							if (response != null) {
-								OMElement rdsr = response;
+								OMElement rdsr = Util.parse_xml(response);
 								if (!rdsr.getLocalName().equals(
 										"RetrieveDocumentSetResponse"))
 									rdsr = XmlUtil
 											.firstDecendentWithLocalName(
-                                                    response,
-                                                    "RetrieveDocumentSetResponse");
+													rdsr,
+													"RetrieveDocumentSetResponse");
 								if (rdsr != null) {
 
 									// Issue 103: We need to propogate the response status since the interpretation of a StepResult of "Pass" to "Success" is not detailed enough with the additional status of PartialSuccess. This fixes the issue of RetrieveDocs tool, displaying a "Success" when it is actually a PartialSuccess.
@@ -572,7 +692,7 @@ public class XdsTestServiceManager extends CommonService {
 
 									RetrieveB rb = new RetrieveB();
 									Map<String, RetrievedDocumentModel> resMap = rb
-											.parse_rep_response(response).getMap();
+											.parse_rep_response(rdsr).getMap();
 									for (String docUid : resMap.keySet()) {
 										RetrievedDocumentModel ri = resMap.get(docUid);
 										Document doc = new Document();
@@ -628,11 +748,11 @@ public class XdsTestServiceManager extends CommonService {
 		return  "DocumentCache/";
 	}
 
-    File getRepositoryCache() {
-        File cache = new File(Installation.installation().warHome(), "DocumentCache");
-        cache.mkdirs();
-        return cache;
-    }
+	File getRepositoryCache() {
+		File cache = new File(Installation.installation().warHome(), "DocumentCache");
+		cache.mkdirs();
+		return cache;
+	}
 
 	String getRepositoryCacheFileExtension(String mimetype) {
 		if (mimetype == null)
@@ -649,7 +769,8 @@ public class XdsTestServiceManager extends CommonService {
 
 
 	public List<String> getMesaTestSessionNames() throws Exception  {
-		logger.debug(session.id() + ": " + "getMesaTestSessionNames");
+		if (session != null)
+			logger.debug(session.id() + ": " + "getMesaTestSessionNames");
 		List<String> names = new ArrayList<String>();
 		File cache;
 		try {
@@ -677,12 +798,12 @@ public class XdsTestServiceManager extends CommonService {
 
 			if (name == null || name.equals(""))
 				throw new Exception("Cannot add test session with no name");
-            if (name.contains("__"))
-                throw new Exception("Cannot contain a double underscore (__)");
-            if (name.contains(" "))
-                throw new Exception("Cannot contain spaces");
-            if (name.contains("\t"))
-                throw new Exception("Cannot contain tabs");
+			if (name.contains("__"))
+				throw new Exception("Cannot contain a double underscore (__)");
+			if (name.contains(" "))
+				throw new Exception("Cannot contain spaces");
+			if (name.contains("\t"))
+				throw new Exception("Cannot contain tabs");
 		} catch (Exception e) {
 			logger.error("addMesaTestSession", e);
 			throw new Exception(e.getMessage());
@@ -706,10 +827,10 @@ public class XdsTestServiceManager extends CommonService {
 		File dir = new File(cache.toString() + File.separator + name);
 		Io.delete(dir);
 
-        // also delete simulators owned by this test session
+		// also delete simulators owned by this test session
 
-        SimDb.deleteSims(new SimDb().getSimIdsForUser(name));
-        SimCache.clear();
+		SimDb.deleteSims(new SimDb().getSimIdsForUser(name));
+		SimCache.clear();
 		return true;
 	}
 
@@ -721,10 +842,12 @@ public class XdsTestServiceManager extends CommonService {
 	 ******************************************************************/
 
 	public void setMesaTestSession(String sessionName) {
-		logger.debug(session.id() + ": " + "setMesaTestSession(" + sessionName + ")");
+		if (session != null)
+			logger.debug(session.id() + ": " + "setMesaTestSession(" + sessionName + ")");
 		session.setMesaSessionName(sessionName);
 	}
 
+<<<<<<< HEAD
 	public List<String> getTestdataSetListing(String environmentName,String testSessionName,String testdataSetName) {
 		logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
 		Set<String> testdataSetListing = new HashSet<String>();
@@ -733,30 +856,45 @@ public class XdsTestServiceManager extends CommonService {
 		}
 		testdataSetListing.addAll(getTestKit().getTestdataSetListing(testdataSetName));
 		return new ArrayList<String>(testdataSetListing);
+=======
+	public List<String> getTestdataSetListing(String testdataSetName) {
+		if (session != null)
+			logger.debug(session.id() + ": " + "getTestdataSetListing:" + testdataSetName);
+		return getTestKit().getTestdataSetListing(testdataSetName);
+>>>>>>> feature/testlog-listing
 	}
 
 	public List<String> getTestdataRegistryTests() {
-		logger.debug(session.id() + ": " + "getTestdataRegistryTests");
+		if (session != null)
+			logger.debug(session.id() + ": " + "getTestdataRegistryTests");
 		return getTestKit().getTestdataRegistryTests();
 	}
 
 	public List<String> getTestdataRepositoryTests() {
-		logger.debug(session.id() + ": " + "getTestdataRepositoryTests");
+		if (session != null)
+			logger.debug(session.id() + ": " + "getTestdataRepositoryTests");
 		return getTestKit().getTestdataRepositoryTests();
 	}
 
 	public List<String> getTestdataList(String listname) {
-		logger.debug(session.id() + ": " + "getTestdataList");
+		if (session != null)
+			logger.debug(session.id() + ": " + "getTestdataList");
 		return getTestKit().getTestdataSetListing(listname);
 	}
 
 	public String getNewPatientId(String assigningAuthority) {
+<<<<<<< HEAD
 		logger.debug(session.id() + ": " +
                 "getNewPatientId()");
+=======
+		if (session != null)
+			logger.debug(session.id() + ": " + "getNewPatientId()");
+>>>>>>> feature/testlog-listing
 		return session.allocateNewPid(assigningAuthority).asString();
 	}
 
 	public Map<String, String> getCollectionNames(String collectionSetName) throws Exception  {
+<<<<<<< HEAD
 		logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
         Map<String,String> collectionNames=new HashMap<String,String>();
         List<File> testkitsFiles=Installation.installation().testkitFiles(session.getCurrentEnvName(),session.getMesaSessionName());
@@ -770,10 +908,16 @@ public class XdsTestServiceManager extends CommonService {
             }
         }
         return collectionNames;
+=======
+		if (session != null)
+			logger.debug(session.id() + ": " + "getCollectionNames(" + collectionSetName + ")");
+		return getTestKit().getCollectionNames(collectionSetName);
+>>>>>>> feature/testlog-listing
 	}
 
 	public List<Result> sendPidToRegistry(SiteSpec site, Pid pid) {
-		logger.debug(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
+		if (session != null)
+			logger.debug(session.id() + ": " + "sendPidToRegistry(" + pid + ")");
 		session.setSiteSpec(site);
 		Map<String, String> params = new HashMap<>();
 		params.put("$pid$", pid.asString());
@@ -858,15 +1002,15 @@ public class XdsTestServiceManager extends CommonService {
 		//    public Test(int _id, boolean _isSection, String _idWithSection, String _name, String _description, String _timestamp, String _status){
 	}
 
-    public List<Test> deleteAllTestResults(String sessionName, Site site){
-        // Test data
-        return Arrays.asList(
-                new Test(10891, false, "10891", "10891", "test 1", "--", "not run"),
+	public List<Test> deleteAllTestResults(String sessionName, Site site){
+		// Test data
+		return Arrays.asList(
+				new Test(10891, false, "10891", "10891", "test 1", "--", "not run"),
 				new Test(10891, true, "10891a", "section a", "test 1", "--", "not run"),
 				new Test(10891, true, "10891b", "section b", "test 1", "--", "not run"),
-                new Test(17685, false, "17685", "17685", "test 2", "--", "not run")
-        );
-    }
+				new Test(17685, false, "17685", "17685", "test 2", "--", "not run")
+		);
+	}
 
 	public Test runSingleTest(String sessionName, Site site, int testId) {
 		// Test data

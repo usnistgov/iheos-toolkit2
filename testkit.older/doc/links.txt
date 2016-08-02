@@ -18,11 +18,11 @@
 
 [[XDS_Test_Management#Test_Data|test data]]
 
-[[XDS_Test_Management#Using_xdstest|Run and report the test using xdstest]]
+[[XDS_Test_Management#Using_xdstest|Run and reportBuilder the test using xdstest]]
 
 [[XDS_Test_Management#Configure_Public_Registry_Endpoint|Configure the WS Endpoint based on this pattern]]
 
-[[XDS_Test_Management#Using_Public_Registry_Server|Run and report the test]]
+[[XDS_Test_Management#Using_Public_Registry_Server|Run and reportBuilder the test]]
 
 # Follow [[XDS_Test_Management#Generic Testing Procedures Using xdstest|Generic Testing Procedures Using xdstest]]
 

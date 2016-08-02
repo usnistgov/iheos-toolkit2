@@ -1,6 +1,6 @@
 package gov.nist.toolkit.installation;
 
-import gov.nist.toolkit.xdsexception.XdsException;
+import gov.nist.toolkit.xdsexception.client.XdsException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
