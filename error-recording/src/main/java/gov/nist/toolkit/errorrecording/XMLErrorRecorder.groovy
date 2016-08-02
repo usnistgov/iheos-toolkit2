@@ -235,8 +235,15 @@ public class XMLErrorRecorder implements ErrorRecorder {
     }
 
     @Override
-    public void info(String dts, String name, String found, String expected, String RFC) {
-        println("NYI-info")
+    public void info(String _dts, String _name, String _found, String _expected, String _rfc) {
+        println("info")
+        def sw = new StringWriter()
+        def builder = new MarkupBuilder(sw)
+        builder.records() {
+            Info (name:_name, dts:_dts, found:_found, expected:_expected, rfc:_rfc)
+        }
+        def el = sw.write()
+        errRecords.add(el)
     }
 
     @Override
