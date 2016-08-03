@@ -157,13 +157,13 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(addHTML("<h3>Tools</h3>"));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.pidFavoritesLabel, new TabLauncher(TabContainer.instance(), TabLauncher.pidFavoritesLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.pidFavoritesLabel, new ToolLauncher(ToolLauncher.pidFavoritesLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.adminTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.adminTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.adminTabLabel, new ToolLauncher(ToolLauncher.adminTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.repositoryTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.repositoryTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.repositoryTabLabel, new ToolLauncher(ToolLauncher.repositoryTabLabel)));
 		row++;
 
 		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.testLogLabel, new ToolLauncher(ToolLauncher.testLogLabel)));
@@ -181,19 +181,19 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(addHTML("<h3>Tests</h3>"));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.mesaTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.mesaTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.mesaTabLabel, new ToolLauncher(ToolLauncher.mesaTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.igTestsTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.igTestsTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.igTestsTabLabel, new ToolLauncher(ToolLauncher.igTestsTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.rgTestsTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.rgTestsTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.rgTestsTabLabel, new ToolLauncher(ToolLauncher.rgTestsTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.iigTestsTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.iigTestsTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.iigTestsTabLabel, new ToolLauncher(ToolLauncher.iigTestsTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.idsTestsTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.idsTestsTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.idsTestsTabLabel, new ToolLauncher(ToolLauncher.idsTestsTabLabel)));
 		row++;
 
 		// ***************************************************************************
@@ -205,10 +205,10 @@ public class HomeTab extends GenericQueryTab {
 		Xdstools2.addtoMainMenu(addHTML("<h3>Simulators</h3>"));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.simulatorControlTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.simulatorControlTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.simulatorControlTabLabel, new ToolLauncher(ToolLauncher.simulatorControlTabLabel)));
 		row++;
 
-		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(TabLauncher.simulatorMessageViewTabLabel, new TabLauncher(TabContainer.instance(), TabLauncher.simulatorMessageViewTabLabel)));
+		Xdstools2.addtoMainMenu(HyperlinkFactory.launchTool(ToolLauncher.simulatorMessageViewTabLabel, new ToolLauncher(ToolLauncher.simulatorMessageViewTabLabel)));
 		row++;
 
 

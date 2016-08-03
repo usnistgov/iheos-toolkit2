@@ -32,7 +32,7 @@ public class PidEditTab extends GenericQueryTab {
 
     @Override
     public void onTabLoad(boolean select, String eventName) {
-        registerTab(select, "Pid Edit");
+        registerTab(select, "PidEdit");
 
         addReloader();
 

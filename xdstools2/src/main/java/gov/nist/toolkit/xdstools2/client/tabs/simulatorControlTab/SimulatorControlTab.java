@@ -287,7 +287,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 						public void onClick(ClickEvent clickEvent) {
 							SimulatorConfig config = getData();
 							PidEditTab editTab = new PidEditTab(config);
-							editTab.onTabLoad(true, null);
+							editTab.onTabLoad(true, "PID-Edit");
 						}
 					});
 					buttonPanel.add(pidButton);
@@ -307,7 +307,7 @@ public class SimulatorControlTab extends GenericQueryTab {
 							} else {
 								// Generic state-less type simulators
 								GenericQueryTab editTab = new EditTab(self, config);
-								editTab.onTabLoad(true, null);
+								editTab.onTabLoad(true, "SimConfig");
 							}
 
 

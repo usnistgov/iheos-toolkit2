@@ -60,8 +60,11 @@ public class ToolLauncher implements ClickHandler {
 	final static public String testsOverviewTabLabel = "Tests Overview";
 	final static public String igTestsTabLabel = "Initiating Gateway Tests";
 	final static public String rgTestsTabLabel = "Responding Gateway Tests";
+	final static public String iigTestsTabLabel = "Initiating Imaging Gateway Tests";
+	final static public String idsTestsTabLabel = "Imaging Document Source Tests";
 	final static public String imagingDocumentSetRetrieveTabLabel = "RetrieveImagingDocumentSet";
 	final static public String homeTabLabel = "Home";
+	final static public String adminTabLabel = "Site/Actor Configuration";
 
 
 
@@ -107,11 +110,14 @@ public class ToolLauncher implements ClickHandler {
 		tools.add(new ToolDef(pidFavoritesLabel, "PIDFav", "PIDFav"));
 		tools.add(new ToolDef(testsOverviewTabLabel, "TestsOver", "TestsOver"));
 		tools.add(new ToolDef(igTestsTabLabel, "IGTests", "IGTests"));
+		tools.add(new ToolDef(iigTestsTabLabel, "IIGTests", "IIGTests"));
+		tools.add(new ToolDef(idsTestsTabLabel, "IDSTests", "IDSTests"));
 		tools.add(new ToolDef(rgTestsTabLabel, "RGTests", "RGTests"));
 		tools.add(new ToolDef(imagingDocumentSetRetrieveTabLabel, "RetIDS", "RetIDS"));
 		tools.add(new ToolDef(testLogLabel, "TestLog", "TestLog"));
 		tools.add(new ToolDef(toolConfigTabLabel, "ToolkitConf", "ToolkitConf"));
 		tools.add(new ToolDef(homeTabLabel, "Home", "Home"));
+		tools.add(new ToolDef(adminTabLabel, "Admin", "Admin"));
 	}
 
 	private ToolDef getToolDef(String requestedName) {

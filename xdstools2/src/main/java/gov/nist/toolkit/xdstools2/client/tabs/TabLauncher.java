@@ -18,6 +18,7 @@ import gov.nist.toolkit.xdstools2.client.tabs.messageValidator.MessageValidatorT
 import gov.nist.toolkit.xdstools2.client.tabs.simulatorControlTab.SimulatorControlTab;
 import gov.nist.toolkit.xdstools2.client.tabs.testsOverviewTab.TestsOverviewTab;
 
+@Deprecated
 public class TabLauncher implements ClickHandler {
 	TabContainer container;
 	String tabType;
